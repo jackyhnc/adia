@@ -43,8 +43,9 @@ private final class NotchPanel: NSPanel {
 public final class NotchWindowController: NSWindowController {
 
     // MARK: Layout constants
-    private static let expandedWidth: CGFloat  = 340
-    private static let expandedHeight: CGFloat = 190
+    private static let expandedWidth: CGFloat          = 340
+    private static let expandedHeight: CGFloat         = 190
+    private static let creationExpandedHeight: CGFloat = 268
 
     // MARK: Private state
     private var notchPanel: NotchPanel { window as! NotchPanel }  // always safe: we create it
@@ -73,13 +74,12 @@ public final class NotchWindowController: NSWindowController {
     // MARK: State observation
 
     private func observeState() {
-        NotchState.shared.$isExpanded
+        Publishers.CombineLatest(NotchState.shared.$isExpanded, NotchState.shared.$isCreating)
             .dropFirst()
-            .sink { [weak self] expanded in
-                // Sink fires on whatever thread publishes; hop to MainActor explicitly.
+            .sink { [weak self] expanded, creating in
                 Task { @MainActor [weak self] in
                     guard let self else { return }
-                    self.positionPanel(expanded: expanded, animate: true)
+                    self.positionPanel(expanded: expanded, creating: creating, animate: true)
                     self.notchPanel.hasShadow = expanded
                 }
             }
@@ -88,9 +88,9 @@ public final class NotchWindowController: NSWindowController {
 
     // MARK: Panel sizing / positioning
 
-    private func positionPanel(expanded: Bool, animate: Bool) {
+    private func positionPanel(expanded: Bool, creating: Bool = false, animate: Bool) {
         guard let screen = NSScreen.main else { return }
-        let target = targetFrame(expanded: expanded, screen: screen)
+        let target = targetFrame(expanded: expanded, creating: creating, screen: screen)
         if animate {
             NSAnimationContext.runAnimationGroup { ctx in
                 ctx.duration = 0.28
@@ -125,11 +125,11 @@ public final class NotchWindowController: NSWindowController {
         )
     }
 
-    private func targetFrame(expanded: Bool, screen: NSScreen) -> NSRect {
+    private func targetFrame(expanded: Bool, creating: Bool = false, screen: NSScreen) -> NSRect {
         let base = notchBaseRect(screen: screen)
         guard expanded else { return base }
+        let h = creating ? Self.creationExpandedHeight : Self.expandedHeight
         let w = max(base.width, Self.expandedWidth)
-        let h = Self.expandedHeight
         let x = screen.frame.midX - w / 2
         let y = base.maxY - h   // grows downward from the notch top edge
         return NSRect(x: x, y: y, width: w, height: h)

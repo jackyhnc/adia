@@ -1,5 +1,30 @@
 # Adia — Build Progress
 
+## Run 3 — 2026-05-18
+
+### Shipped
+- **Task 4 complete: Session creation view**
+- `NotchState.swift` — added `@Published isCreating: Bool`, `startCreating()`, `stopCreating()`. `collapse()` now also resets `isCreating`. Guard in `startCreating()` prevents double-firing `CombineLatest` when already expanded.
+- `NotchWindowController.swift` — `observeState()` now uses `Publishers.CombineLatest($isExpanded, $isCreating)` so the panel resizes correctly when the form opens. Added `creationExpandedHeight = 268`. `positionPanel` and `targetFrame` accept `creating: Bool` parameter and select the appropriate height.
+- `SessionManager.swift` — `hosts.block()` is now non-fatal (do-catch with log); session starts even without root. The blocking engine task (task 9) will add the privileged XPC helper.
+- `NotchView.swift` — `idleBody` is now `@ViewBuilder private var idleBody: some View` with if/else on `state.isCreating`:
+  - Idle (default): "No active session" + "Start Session" button that calls `state.startCreating()` with spring animation.
+  - Creating: `SessionCreationFormView` with slide-up insertion transition.
+- New `SessionCreationFormView` (private struct in `NotchView.swift`):
+  - "WORKING ON" field — `TextField(axis: .vertical)` limited to 2 lines, dark background, white text, placeholder overlay.
+  - "DONE WHEN" field — single-line `TextField`, same styling.
+  - "Go" button — calls `SessionManager.start(task:successCriteria:)` via `Task { @MainActor in }`, then `state.stopCreating()`. Visually dimmed + non-interactive while `taskText` is empty or starting is in progress.
+  - "Cancel" link — calls `state.stopCreating()` with fade animation.
+  - `isStarting` local state prevents double-taps and shows "Starting…" label while async call is in flight.
+
+### Blocked
+- None.
+
+### Next agent should pick up
+- **Task 5: Screen capture pipeline** — Implement `ScreenCaptureManager` in `Sources/AdiCore/Capture/ScreenCaptureManager.swift`. Use `ScreenCaptureKit` (`SCShareableContent`, `SCStreamConfiguration`, `SCStream`, `SCStreamOutput` delegate). Set up a stream for the main display at ~1 FPS. Emit `CGImage` frames via `onFrame: (@Sendable (CGImage) async -> Void)?`. Start/stop wired to `SessionManager`. Requires Screen Recording permission — request it on start. Must compile even when `ScreenCaptureKit` is unavailable via the existing `#if canImport` guard.
+
+---
+
 ## Run 1 — 2026-05-18
 
 ### Shipped

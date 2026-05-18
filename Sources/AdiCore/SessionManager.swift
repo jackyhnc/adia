@@ -21,7 +21,13 @@ public final class SessionManager: ObservableObject {
         let s = Session(task: task, successCriteria: successCriteria, phase: .active)
         session = s
         await detector.attach(session: s)
-        try await hosts.block(domains: s.blockedDomains)
+        // Blocking requires root; failure is non-fatal — the Blocking Engine task
+        // adds a privileged XPC helper for this.
+        do {
+            try await hosts.block(domains: s.blockedDomains)
+        } catch {
+            print("[SessionManager] hosts blocking unavailable: \(error)")
+        }
         try await captureManager.start()
     }
 

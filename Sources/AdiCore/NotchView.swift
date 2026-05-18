@@ -157,18 +157,30 @@ private struct ExpandedView: View {
 
     // MARK: Idle body
 
+    @ViewBuilder
     private var idleBody: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("No active session")
-                .font(.system(size: 13))
-                .foregroundStyle(.white.opacity(0.45))
+        if state.isCreating {
+            SessionCreationFormView(state: state, session: session)
+                .transition(.asymmetric(
+                    insertion: .move(edge: .bottom).combined(with: .opacity),
+                    removal: .opacity
+                ))
+        } else {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("No active session")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.white.opacity(0.45))
 
-            AdiButton(label: "Start Session", style: .primary) {
-                // Session creation — implemented in task 4
+                AdiButton(label: "Start Session", style: .primary) {
+                    withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
+                        state.startCreating()
+                    }
+                }
             }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
+            .transition(.opacity)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 14)
     }
 
     // MARK: Helpers
@@ -215,6 +227,126 @@ private struct StatusBadge: View {
         case .onTask:    return "On Task"
         case .offTask:   return "Off Task"
         case .ambiguous: return "Check In"
+        }
+    }
+}
+
+// MARK: - Session Creation Form
+
+private struct SessionCreationFormView: View {
+    @ObservedObject var state: NotchState
+    @ObservedObject var session: SessionManager
+
+    @State private var taskText: String = ""
+    @State private var criteriaText: String = ""
+    @State private var isStarting: Bool = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            fieldGroup(
+                label: "WORKING ON",
+                placeholder: "e.g. Write my ENGL 101 essay",
+                text: $taskText,
+                multiline: true
+            )
+            .padding(.bottom, 8)
+
+            fieldGroup(
+                label: "DONE WHEN",
+                placeholder: "e.g. Submitted to Canvas",
+                text: $criteriaText,
+                multiline: false
+            )
+            .padding(.bottom, 14)
+
+            HStack(spacing: 8) {
+                AdiButton(label: isStarting ? "Starting…" : "Go", style: .primary) {
+                    startSession()
+                }
+                .opacity(canStart ? 1 : 0.45)
+                .allowsHitTesting(canStart && !isStarting)
+
+                Button("Cancel") {
+                    withAnimation(.easeOut(duration: 0.18)) {
+                        state.stopCreating()
+                    }
+                }
+                .buttonStyle(.plain)
+                .font(.system(size: 12))
+                .foregroundStyle(.white.opacity(0.4))
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 10)
+        .padding(.bottom, 14)
+    }
+
+    private var canStart: Bool {
+        !taskText.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
+    private func startSession() {
+        let t = taskText.trimmingCharacters(in: .whitespaces)
+        let c = criteriaText.trimmingCharacters(in: .whitespaces)
+        guard !t.isEmpty, !isStarting else { return }
+        isStarting = true
+        Task { @MainActor in
+            do {
+                try await session.start(task: t, successCriteria: c)
+                state.stopCreating()
+            } catch {
+                // start() only throws from captureManager.start(); stay in form on error
+                print("[SessionCreation] start failed: \(error)")
+            }
+            isStarting = false
+        }
+    }
+
+    @ViewBuilder
+    private func fieldGroup(
+        label: String,
+        placeholder: String,
+        text: Binding<String>,
+        multiline: Bool
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label)
+                .font(.system(size: 9, weight: .bold))
+                .foregroundStyle(.white.opacity(0.35))
+                .tracking(1.5)
+
+            ZStack(alignment: .topLeading) {
+                if text.wrappedValue.isEmpty {
+                    Text(placeholder)
+                        .font(.system(size: 12))
+                        .foregroundStyle(.white.opacity(0.22))
+                        .padding(.horizontal, 9)
+                        .padding(.vertical, 7)
+                        .allowsHitTesting(false)
+                }
+                if multiline {
+                    TextField("", text: text, axis: .vertical)
+                        .lineLimit(2...2)
+                        .font(.system(size: 12))
+                        .foregroundStyle(.white)
+                        .textFieldStyle(.plain)
+                        .padding(.horizontal, 9)
+                        .padding(.vertical, 7)
+                } else {
+                    TextField("", text: text)
+                        .font(.system(size: 12))
+                        .foregroundStyle(.white)
+                        .textFieldStyle(.plain)
+                        .padding(.horizontal, 9)
+                        .padding(.vertical, 7)
+                }
+            }
+            .background(Color.white.opacity(0.06))
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .stroke(Color.white.opacity(0.10), lineWidth: 0.5)
+            )
         }
     }
 }
