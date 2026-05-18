@@ -1,8 +1,8 @@
 # Adia — Build Goals
 
 - [x] Xcode project scaffold: Swift Package + targets (AdiApp, AdiCore, AdiTests), Package.swift, folder structure
-- [ ] Notch UI: NSPanel subclass positioned in notch area, collapsed state (minimal dot) + expanded state (task info + actions)
-- [ ] Session model: SessionState enum, task description, success criteria, start time, whitelist
+- [x] Notch UI: NSPanel subclass positioned in notch area, collapsed state (minimal dot) + expanded state (task info + actions)
+- [x] Session model: SessionState enum, task description, success criteria, start time, whitelist
 - [ ] Session creation view: SwiftUI form for task + criteria input, Go button
 - [ ] Screen capture pipeline: ScreenCaptureKit SCStream wrapper, emits CGImage every 1-2s
 - [ ] Claude API client: async/await wrapper for vision + chat completions, reads ANTHROPIC_API_KEY from ProcessInfo

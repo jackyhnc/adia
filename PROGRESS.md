@@ -23,4 +23,31 @@
 - None.
 
 ### Next agent should pick up
-- **Task 2: Notch UI** — `NSPanel` subclass (`NotchPanel`) positioned in the notch area using `NSScreen` built-in camera notch rect APIs, collapsed state (small dot/indicator), expanded state (task name + criteria + elapsed + Done/Exit buttons). Replace the placeholder `NotchWindowController`.
+- **Task 2: Notch UI** — see Run 2.
+
+---
+
+## Run 2 — 2026-05-18
+
+### Shipped
+- **Task 2 complete: Notch UI**
+- **Task 3 checked off: Session model** — was fully implemented in Run 1; checkbox was missed.
+- `AdiCore/NotchState.swift` — `@MainActor ObservableObject` (`NotchState`) with `isExpanded`, `expand()`, `collapse()`, `toggle()`. Observed by controller via Combine; observed by SwiftUI views via `@ObservedObject`.
+- `AdiCore/NotchWindowController.swift` — full rewrite. Private `NotchPanel: NSPanel` (borderless, `nonactivatingPanel`, `statusBar+1` level, `canJoinAllSpaces`, clear background, no shadow in collapsed state). `NotchWindowController` positions the panel using `NSScreen.main?.auxiliaryTopLeftArea/Right` + `safeAreaInsets.top` on notch-equipped displays; falls back to top-center 200×32 pill on non-notch Macs. Animates expand/collapse (0.28s ease-in-out) via `NSAnimationContext`. Subscribes to `NotchState.$isExpanded` via Combine and resizes the panel on changes.
+- `AdiCore/NotchView.swift` — full SwiftUI hierarchy:
+  - `NotchRootView` — root, switches between collapsed/expanded with spring animation
+  - `CollapsedView` — dark capsule pill with colored status dot (green/orange/red) + "Focus" label; expand on tap or hover
+  - `ExpandedView` — dark card dropping from notch: header (ADIA label + close ×), task name (2-line), live elapsed timer via `TimelineView(.periodic)`, `StatusBadge` (on-task/off-task/check-in capsule), action buttons (Done, Chat, Exit), idle state (no session)
+  - `StatusBadge` — colored dot + label capsule
+  - `AdiButton` — primary (white bg/black text), secondary (ghost), destructive (red tint)
+
+### Architecture notes
+- Panel geometry: collapsed rect = notch slot (or 200×32 fallback). Expanded rect grows downward from `base.maxY` to a fixed 190pt height, 340pt wide (centered on screen).
+- SwiftUI singletons (`NotchState.shared`, `SessionManager.shared`) are injected at the `@MainActor` controller init site rather than accessed as defaults in struct inits — avoids Swift 6 actor-isolation compile errors.
+- Force cast `window as! NotchPanel` is safe and commented — the controller creates the panel in its own `init()`.
+
+### Blocked
+- None.
+
+### Next agent should pick up
+- **Task 4: Session creation view** — SwiftUI form (task description + success criteria text fields, Go button). On tap: calls `SessionManager.shared.start(task:successCriteria:)`. Should appear inside the expanded notch view when no session is active (the idle state's "Start Session" button already exists; wire it to a sheet or inline form). The expanded idle body already has a "Start Session" button stub at `NotchView.swift:ExpandedView.idleBody`.
