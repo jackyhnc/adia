@@ -21,6 +21,10 @@ public final class SessionManager: ObservableObject {
         let s = Session(task: task, successCriteria: successCriteria, phase: .active)
         session = s
         await detector.attach(session: s)
+        // Wire screen frames into the on-task detector.
+        captureManager.onFrame = { [weak self] frame in
+            await self?.handleFrame(frame)
+        }
         // Blocking requires root; failure is non-fatal — the Blocking Engine task
         // adds a privileged XPC helper for this.
         do {
