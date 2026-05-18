@@ -1,18 +1,31 @@
 import AppKit
 import AdiCore
 
-@MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    private var notchController: NotchWindowController?
+    var notchController: NotchWindowController?
+    var appState: AppState?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Run as agent — no dock icon, no menu bar icon.
+        // Hide from Dock — we live in the notch only
         NSApp.setActivationPolicy(.accessory)
-        notchController = NotchWindowController()
-        notchController?.showWindow(nil)
+
+        let state = AppState()
+        self.appState = state
+
+        // Restore in-progress session from disk
+        if let saved = try? SessionPersistence.shared.load(), saved.status == .active {
+            state.session = saved
+        }
+
+        let controller = NotchWindowController(appState: state)
+        notchController = controller
+        controller.show()
     }
 
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        false
+    func applicationWillTerminate(_ notification: Notification) {
+        // Ensure hosts are unblocked if app quits unexpectedly mid-session
+        if appState?.session?.status == .active {
+            try? BlockingEngine.shared.unblockAll()
+        }
     }
 }

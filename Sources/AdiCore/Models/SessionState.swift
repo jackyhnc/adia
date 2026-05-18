@@ -1,78 +1,74 @@
 import Foundation
 
-// MARK: - Session Phase
-
-public enum SessionPhase: String, Codable, Sendable {
+public enum SessionStatus: String, Codable, Sendable, Equatable {
     case idle
     case active
-    case verifying
-    case complete
-    case earlyExitPending
+    case paused
+    case completed
+    case abandoned
 }
 
-// MARK: - On-task classification
-
-public enum OnTaskStatus: String, Codable, Sendable {
+public enum OnTaskStatus: String, Codable, Sendable, Equatable {
     case onTask
     case offTask
     case ambiguous
+    case unknown
 }
 
-// MARK: - Verification result
+public struct SessionTask: Codable, Sendable, Identifiable, Equatable {
+    public let id: UUID
+    public var description: String
+    public var successCriteria: String
 
-public struct VerificationResult: Codable, Sendable {
-    public let verified: Bool
-    public let explanation: String
-
-    public init(verified: Bool, explanation: String) {
-        self.verified = verified
-        self.explanation = explanation
+    public init(id: UUID = UUID(), description: String, successCriteria: String) {
+        self.id = id
+        self.description = description
+        self.successCriteria = successCriteria
     }
 }
 
-// MARK: - Session
-
-public struct Session: Codable, Sendable, Identifiable {
+public struct Session: Codable, Sendable, Identifiable, Equatable {
     public let id: UUID
-    public var task: String
-    public var successCriteria: String
+    public var task: SessionTask
+    public var status: SessionStatus
     public var startTime: Date
-    public var phase: SessionPhase
-    public var whitelistedDomains: [String]
-    public var blockedDomains: [String]
+    public var endTime: Date?
+    public var whitelist: [String]
+    public var lastOnTaskStatus: OnTaskStatus
+    public var offTaskCount: Int
 
     public init(
         id: UUID = UUID(),
-        task: String,
-        successCriteria: String,
+        task: SessionTask,
+        status: SessionStatus = .idle,
         startTime: Date = Date(),
-        phase: SessionPhase = .idle,
-        whitelistedDomains: [String] = [],
-        blockedDomains: [String] = Session.defaultBlockedDomains
+        endTime: Date? = nil,
+        whitelist: [String] = [],
+        lastOnTaskStatus: OnTaskStatus = .unknown,
+        offTaskCount: Int = 0
     ) {
         self.id = id
         self.task = task
-        self.successCriteria = successCriteria
+        self.status = status
         self.startTime = startTime
-        self.phase = phase
-        self.whitelistedDomains = whitelistedDomains
-        self.blockedDomains = blockedDomains
+        self.endTime = endTime
+        self.whitelist = whitelist
+        self.lastOnTaskStatus = lastOnTaskStatus
+        self.offTaskCount = offTaskCount
     }
 
-    public var elapsed: TimeInterval { Date().timeIntervalSince(startTime) }
+    public var elapsedTime: TimeInterval {
+        (endTime ?? Date()).timeIntervalSince(startTime)
+    }
 
-    public static let defaultBlockedDomains: [String] = [
-        "twitter.com", "x.com",
-        "reddit.com",
-        "youtube.com",
-        "instagram.com",
-        "tiktok.com",
-        "facebook.com",
-        "netflix.com",
-        "twitch.tv",
-        "discord.com",
-        "slack.com",
-        "hacker-news.firebaseapp.com",
-        "news.ycombinator.com",
-    ]
+    public func elapsedFormatted() -> String {
+        let seconds = Int(elapsedTime)
+        let h = seconds / 3600
+        let m = (seconds % 3600) / 60
+        let s = seconds % 60
+        if h > 0 {
+            return String(format: "%d:%02d:%02d", h, m, s)
+        }
+        return String(format: "%d:%02d", m, s)
+    }
 }

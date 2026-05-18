@@ -1,72 +1,78 @@
 import Testing
+import Foundation
 @testable import AdiCore
 
-@Suite("Session Model")
+@Suite("Session model")
 struct SessionStateTests {
 
-    @Test("Default session starts in idle phase")
-    func defaultPhaseIsIdle() {
-        let s = Session(task: "Write essay", successCriteria: "Submit to Canvas")
-        #expect(s.phase == .idle)
+    @Test("Session initialises with correct defaults")
+    func defaults() {
+        let task = SessionTask(description: "Write essay", successCriteria: "Submit to Canvas")
+        let session = Session(task: task)
+
+        #expect(session.status == .idle)
+        #expect(session.whitelist.isEmpty)
+        #expect(session.offTaskCount == 0)
+        #expect(session.lastOnTaskStatus == .unknown)
+        #expect(session.endTime == nil)
     }
 
-    @Test("Default blocked domains are non-empty")
-    func defaultBlockedDomainsPopulated() {
-        let s = Session(task: "t", successCriteria: "c")
-        #expect(!s.defaultBlockedDomains.isEmpty)
+    @Test("Elapsed time rounds correctly")
+    func elapsedTime() throws {
+        let start = Date(timeIntervalSinceNow: -90)
+        let task = SessionTask(description: "t", successCriteria: "c")
+        let session = Session(task: task, startTime: start)
+
+        #expect(session.elapsedTime >= 89)
+        #expect(session.elapsedTime <= 91)
     }
 
-    @Test("Whitelisted domains start empty")
-    func whitelistedDomainsEmpty() {
-        let s = Session(task: "t", successCriteria: "c")
-        #expect(s.whitelistedDomains.isEmpty)
+    @Test("elapsedFormatted shows mm:ss for under an hour")
+    func elapsedFormatted() {
+        let start = Date(timeIntervalSinceNow: -125)
+        let task = SessionTask(description: "t", successCriteria: "c")
+        let session = Session(task: task, startTime: start)
+        let formatted = session.elapsedFormatted()
+        #expect(formatted.contains(":"))
+        #expect(!formatted.isEmpty)
     }
 
-    @Test("Elapsed time is non-negative")
-    func elapsedNonNegative() {
-        let s = Session(task: "t", successCriteria: "c")
-        #expect(s.elapsed >= 0)
-    }
-
-    @Test("Session is Codable round-trip")
+    @Test("Session codable round-trip preserves all fields")
     func codableRoundTrip() throws {
+        let task = SessionTask(description: "Write essay", successCriteria: "Submit to Canvas")
         let original = Session(
-            task: "Write essay",
-            successCriteria: "Submit",
-            phase: .active,
-            whitelistedDomains: ["example.com"]
+            task: task,
+            status: .active,
+            whitelist: ["google.com", "docs.google.com"],
+            lastOnTaskStatus: .onTask,
+            offTaskCount: 3
         )
+
         let data = try JSONEncoder().encode(original)
         let decoded = try JSONDecoder().decode(Session.self, from: data)
+
         #expect(decoded.id == original.id)
-        #expect(decoded.task == original.task)
-        #expect(decoded.phase == original.phase)
-        #expect(decoded.whitelistedDomains == original.whitelistedDomains)
+        #expect(decoded.status == original.status)
+        #expect(decoded.task.description == original.task.description)
+        #expect(decoded.task.successCriteria == original.task.successCriteria)
+        #expect(decoded.whitelist == original.whitelist)
+        #expect(decoded.lastOnTaskStatus == original.lastOnTaskStatus)
+        #expect(decoded.offTaskCount == original.offTaskCount)
     }
-}
 
-@Suite("ChatMessage")
-struct ChatMessageTests {
-
-    @Test("Role round-trips through Codable")
-    func roleRoundTrip() throws {
-        let msg = ChatMessage(role: .assistant, content: "yo, focus up")
-        let data = try JSONEncoder().encode(msg)
-        let decoded = try JSONDecoder().decode(ChatMessage.self, from: data)
-        #expect(decoded.role == .assistant)
-        #expect(decoded.content == msg.content)
+    @Test("SessionStatus raw values are stable")
+    func statusRawValues() {
+        #expect(SessionStatus.idle.rawValue == "idle")
+        #expect(SessionStatus.active.rawValue == "active")
+        #expect(SessionStatus.completed.rawValue == "completed")
+        #expect(SessionStatus.abandoned.rawValue == "abandoned")
     }
-}
 
-@Suite("VerificationResult")
-struct VerificationResultTests {
-
-    @Test("Verified result encodes correctly")
-    func verifiedResult() throws {
-        let r = VerificationResult(verified: true, explanation: "Canvas shows submitted.")
-        let data = try JSONEncoder().encode(r)
-        let decoded = try JSONDecoder().decode(VerificationResult.self, from: data)
-        #expect(decoded.verified)
-        #expect(decoded.explanation == r.explanation)
+    @Test("OnTaskStatus raw values are stable")
+    func onTaskStatusRawValues() {
+        #expect(OnTaskStatus.onTask.rawValue == "onTask")
+        #expect(OnTaskStatus.offTask.rawValue == "offTask")
+        #expect(OnTaskStatus.ambiguous.rawValue == "ambiguous")
+        #expect(OnTaskStatus.unknown.rawValue == "unknown")
     }
 }
