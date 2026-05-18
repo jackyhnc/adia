@@ -1,113 +1,94 @@
 import Testing
+import Foundation
 @testable import AdiCore
 
-// Tests for pure parsing logic in ClaudeClient — no network calls, no API key required.
-
-@Suite("ClaudeClient response parsing")
+@Suite("ClaudeClient parsing")
 struct ClaudeClientParsingTests {
 
-    @Test("OnTaskClassification parses onTask")
-    func parsesOnTask() {
-        let classification = ClaudeClientTestHelper.parseClassification(
-            #"{"status":"onTask","confidence":0.95,"reason":"Screen shows essay editor."}"#
-        )
-        #expect(classification.status == .onTask)
-        #expect(classification.confidence == 0.95)
-        #expect(classification.reason == "Screen shows essay editor.")
+    @Test func parsesOnTask() {
+        let c = parseClassification(#"{"status":"onTask","confidence":0.95,"reason":"Screen shows essay editor."}"#)
+        #expect(c.status == .onTask)
+        #expect(abs(c.confidence - 0.95) < 0.001)
+        #expect(c.reason == "Screen shows essay editor.")
     }
 
-    @Test("OnTaskClassification parses offTask")
-    func parsesOffTask() {
-        let classification = ClaudeClientTestHelper.parseClassification(
-            #"{"status":"offTask","confidence":0.88,"reason":"Reddit open."}"#
-        )
-        #expect(classification.status == .offTask)
-        #expect(classification.confidence == 0.88)
+    @Test func parsesOffTask() {
+        let c = parseClassification(#"{"status":"offTask","confidence":0.88,"reason":"Reddit open."}"#)
+        #expect(c.status == .offTask)
+        #expect(abs(c.confidence - 0.88) < 0.001)
     }
 
-    @Test("OnTaskClassification falls back to ambiguous on bad JSON")
-    func fallsBackOnBadJson() {
-        let classification = ClaudeClientTestHelper.parseClassification("not json at all")
-        #expect(classification.status == .ambiguous)
-        #expect(classification.confidence == 0.5)
+    @Test func fallsBackToAmbiguousOnBadJSON() {
+        let c = parseClassification("not json at all")
+        #expect(c.status == .ambiguous)
+        #expect(abs(c.confidence - 0.5) < 0.001)
     }
 
-    @Test("OnTaskClassification strips markdown fences")
-    func stripsMarkdownFences() {
+    @Test func stripsMarkdownFences() {
         let raw = "```json\n{\"status\":\"onTask\",\"confidence\":0.9,\"reason\":\"ok\"}\n```"
-        let classification = ClaudeClientTestHelper.parseClassification(raw)
-        #expect(classification.status == .onTask)
+        let c = parseClassification(raw)
+        #expect(c.status == .onTask)
     }
 
-    @Test("VerificationResult parses verified=true")
-    func parsesVerified() {
-        let result = ClaudeClientTestHelper.parseVerification(
-            #"{"verified":true,"explanation":"Canvas confirmation page visible."}"#
-        )
-        #expect(result.verified == true)
-        #expect(result.explanation == "Canvas confirmation page visible.")
+    @Test func parsesVerifiedTrue() {
+        let r = parseVerification(#"{"verified":true,"explanation":"Canvas confirmation page visible."}"#)
+        #expect(r.verified)
+        #expect(r.explanation == "Canvas confirmation page visible.")
     }
 
-    @Test("VerificationResult parses verified=false")
-    func parsesNotVerified() {
-        let result = ClaudeClientTestHelper.parseVerification(
-            #"{"verified":false,"explanation":"No submission receipt on screen."}"#
-        )
-        #expect(result.verified == false)
+    @Test func parsesVerifiedFalse() {
+        let r = parseVerification(#"{"verified":false,"explanation":"No submission receipt on screen."}"#)
+        #expect(!r.verified)
     }
 
-    @Test("VerificationResult falls back on bad JSON")
-    func verificationFallsBack() {
-        let result = ClaudeClientTestHelper.parseVerification("garbage")
-        #expect(result.verified == false)
+    @Test func verificationFallsBackOnBadJSON() {
+        let r = parseVerification("garbage")
+        #expect(!r.verified)
     }
 
-    @Test("VerificationResult strips markdown fences")
-    func verificationStripsMarkdown() {
+    @Test func verificationStripsMarkdown() {
         let raw = "```json\n{\"verified\":false,\"explanation\":\"nope\"}\n```"
-        let result = ClaudeClientTestHelper.parseVerification(raw)
-        #expect(result.verified == false)
-        #expect(result.explanation == "nope")
+        let r = parseVerification(raw)
+        #expect(!r.verified)
+        #expect(r.explanation == "nope")
     }
-}
 
-// Exposes ClaudeClient's private parsing logic for unit testing
-// via internal test helpers that replicate the stripping + parsing.
-enum ClaudeClientTestHelper {
-    static func parseClassification(_ text: String) -> OnTaskClassification {
-        let cleaned = stripMarkdownFences(text)
-        guard
-            let data   = cleaned.data(using: .utf8),
-            let json   = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-            let status = json["status"] as? String
+    // MARK: - Helpers
+
+    private func parseClassification(_ text: String) -> OnTaskClassification {
+        let cleaned = strip(text)
+        guard let data = cleaned.data(using: .utf8),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let status = json["status"] as? String
         else {
             return OnTaskClassification(status: .ambiguous, confidence: 0.5, reason: text)
         }
-        let onTaskStatus: OnTaskStatus
+        let s: OnTaskStatus
         switch status {
-        case "onTask":  onTaskStatus = .onTask
-        case "offTask": onTaskStatus = .offTask
-        default:        onTaskStatus = .ambiguous
+        case "onTask":  s = .onTask
+        case "offTask": s = .offTask
+        default:        s = .ambiguous
         }
-        let confidence = json["confidence"] as? Double ?? 0.7
-        let reason     = json["reason"]     as? String ?? ""
-        return OnTaskClassification(status: onTaskStatus, confidence: confidence, reason: reason)
+        return OnTaskClassification(
+            status: s,
+            confidence: json["confidence"] as? Double ?? 0.7,
+            reason: json["reason"] as? String ?? ""
+        )
     }
 
-    static func parseVerification(_ text: String) -> VerificationResult {
-        let cleaned = stripMarkdownFences(text)
-        guard
-            let data        = cleaned.data(using: .utf8),
-            let json        = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-            let verified    = json["verified"]    as? Bool,
-            let explanation = json["explanation"] as? String
+    private func parseVerification(_ text: String) -> VerificationResult {
+        let cleaned = strip(text)
+        guard let data = cleaned.data(using: .utf8),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let verified = json["verified"] as? Bool,
+              let explanation = json["explanation"] as? String
         else {
             return VerificationResult(verified: false, explanation: text)
         }
         return VerificationResult(verified: verified, explanation: explanation)
     }
 
-    private static func stripMarkdownFences(_ text: String) -> String {
+    private func strip(_ text: String) -> String {
         text
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: "```json", with: "")

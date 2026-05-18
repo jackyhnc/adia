@@ -24,7 +24,6 @@ private final class NotchPanel: NSPanel {
         isMovableByWindowBackground = false
         isReleasedWhenClosed = false
         hidesOnDeactivate = false
-        // Float above status bar items and fullscreen apps.
         level = .init(rawValue: NSWindow.Level.statusBar.rawValue + 1)
         backgroundColor = .clear
         isOpaque = false
@@ -32,7 +31,6 @@ private final class NotchPanel: NSPanel {
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
     }
 
-    // Accept mouse events without making the app the key application.
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { false }
 }
@@ -43,12 +41,14 @@ private final class NotchPanel: NSPanel {
 public final class NotchWindowController: NSWindowController {
 
     // MARK: Layout constants
-    private static let expandedWidth: CGFloat          = 340
-    private static let expandedHeight: CGFloat         = 190
-    private static let creationExpandedHeight: CGFloat = 268
+    private static let expandedWidth: CGFloat           = 340
+    private static let expandedHeight: CGFloat          = 190
+    private static let creationExpandedHeight: CGFloat  = 268
+    private static let conversationHeight: CGFloat      = 390
+    private static let verificationHeight: CGFloat      = 220
 
     // MARK: Private state
-    private var notchPanel: NotchPanel { window as! NotchPanel }  // always safe: we create it
+    private var notchPanel: NotchPanel { window as! NotchPanel }
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: Init
@@ -57,8 +57,6 @@ public final class NotchWindowController: NSWindowController {
         let panel = NotchPanel()
         super.init(window: panel)
 
-        // SwiftUI content — singletons are passed explicitly so the view init
-        // runs in this @MainActor context where accessing them is safe.
         let rootView = NotchRootView(state: .shared, session: .shared)
         panel.contentView = NSHostingView(rootView: rootView)
 
@@ -74,13 +72,41 @@ public final class NotchWindowController: NSWindowController {
     // MARK: State observation
 
     private func observeState() {
-        Publishers.CombineLatest(NotchState.shared.$isExpanded, NotchState.shared.$isCreating)
+        // Combine all state signals that affect panel size.
+        Publishers.CombineLatest4(
+            NotchState.shared.$isExpanded,
+            NotchState.shared.$isCreating,
+            NotchState.shared.$showingConversation,
+            NotchState.shared.$isVerifying
+        )
+        .dropFirst()
+        .sink { [weak self] expanded, creating, conversation, verifying in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.positionPanel(
+                    expanded: expanded,
+                    creating: creating,
+                    conversation: conversation,
+                    verifying: verifying,
+                    animate: true
+                )
+                self.notchPanel.hasShadow = expanded
+            }
+        }
+        .store(in: &cancellables)
+
+        // Also react to verificationResult appearing (different height than verifying spinner).
+        NotchState.shared.$verificationResult
             .dropFirst()
-            .sink { [weak self] expanded, creating in
+            .sink { [weak self] _ in
                 Task { @MainActor [weak self] in
-                    guard let self else { return }
-                    self.positionPanel(expanded: expanded, creating: creating, animate: true)
-                    self.notchPanel.hasShadow = expanded
+                    self?.positionPanel(
+                        expanded: NotchState.shared.isExpanded,
+                        creating: NotchState.shared.isCreating,
+                        conversation: NotchState.shared.showingConversation,
+                        verifying: NotchState.shared.isVerifying,
+                        animate: true
+                    )
                 }
             }
             .store(in: &cancellables)
@@ -88,9 +114,21 @@ public final class NotchWindowController: NSWindowController {
 
     // MARK: Panel sizing / positioning
 
-    private func positionPanel(expanded: Bool, creating: Bool = false, animate: Bool) {
+    private func positionPanel(
+        expanded: Bool,
+        creating: Bool = false,
+        conversation: Bool = false,
+        verifying: Bool = false,
+        animate: Bool
+    ) {
         guard let screen = NSScreen.main else { return }
-        let target = targetFrame(expanded: expanded, creating: creating, screen: screen)
+        let target = targetFrame(
+            expanded: expanded,
+            creating: creating,
+            conversation: conversation,
+            verifying: verifying,
+            screen: screen
+        )
         if animate {
             NSAnimationContext.runAnimationGroup { ctx in
                 ctx.duration = 0.28
@@ -102,7 +140,6 @@ public final class NotchWindowController: NSWindowController {
         }
     }
 
-    /// The notch slot on MacBook Pro 14/16". Falls back to a top-center pill on other Macs.
     private func notchBaseRect(screen: NSScreen) -> NSRect {
         if #available(macOS 12.0, *),
            screen.safeAreaInsets.top > 0,
@@ -125,13 +162,30 @@ public final class NotchWindowController: NSWindowController {
         )
     }
 
-    private func targetFrame(expanded: Bool, creating: Bool = false, screen: NSScreen) -> NSRect {
+    private func targetFrame(
+        expanded: Bool,
+        creating: Bool,
+        conversation: Bool,
+        verifying: Bool,
+        screen: NSScreen
+    ) -> NSRect {
         let base = notchBaseRect(screen: screen)
         guard expanded else { return base }
-        let h = creating ? Self.creationExpandedHeight : Self.expandedHeight
+
+        let h: CGFloat
+        if conversation {
+            h = Self.conversationHeight
+        } else if verifying || NotchState.shared.verificationResult != nil {
+            h = Self.verificationHeight
+        } else if creating {
+            h = Self.creationExpandedHeight
+        } else {
+            h = Self.expandedHeight
+        }
+
         let w = max(base.width, Self.expandedWidth)
         let x = screen.frame.midX - w / 2
-        let y = base.maxY - h   // grows downward from the notch top edge
+        let y = base.maxY - h
         return NSRect(x: x, y: y, width: w, height: h)
     }
 }

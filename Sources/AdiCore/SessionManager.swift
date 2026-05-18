@@ -1,7 +1,7 @@
 import Foundation
 import CoreGraphics
 
-// Central coordinator: owns the active session and drives the state machine.
+/// Central coordinator: owns the active session and drives the state machine.
 @MainActor
 public final class SessionManager: ObservableObject {
     public static let shared = SessionManager()
@@ -12,6 +12,8 @@ public final class SessionManager: ObservableObject {
     private let captureManager = ScreenCaptureManager.shared
     private let detector = OnTaskDetector()
     private let hosts = HostsFileManager.shared
+    private let persistence = SessionPersistence.shared
+    private let callout = CalloutManager.shared
 
     private init() {}
 
@@ -20,31 +22,106 @@ public final class SessionManager: ObservableObject {
     public func start(task: String, successCriteria: String) async throws {
         let s = Session(task: task, successCriteria: successCriteria, phase: .active)
         session = s
+        persistence.save(s)
+
         await detector.attach(session: s)
-        // Wire screen frames into the on-task detector.
         captureManager.onFrame = { [weak self] frame in
             await self?.handleFrame(frame)
         }
-        // Blocking requires root; failure is non-fatal — the Blocking Engine task
-        // adds a privileged XPC helper for this.
+
+        // Local block server (non-fatal)
+        LocalBlockServer.shared.start(blockedDomains: s.blockedDomains, taskDescription: s.task)
+
+        // /etc/hosts blocking requires root — non-fatal
         do {
             try await hosts.block(domains: s.blockedDomains)
         } catch {
-            print("[SessionManager] hosts blocking unavailable: \(error)")
+            print("[SessionManager] hosts blocking unavailable (needs root): \(error)")
         }
+
         try await captureManager.start()
     }
 
-    public func endSession() async throws {
+    public func endSession() async {
         captureManager.stop()
-        try await hosts.unblockAll()
+        LocalBlockServer.shared.stop()
+        do { try await hosts.unblockAll() } catch {
+            print("[SessionManager] hosts cleanup failed: \(error)")
+        }
         await detector.detach()
+        persistence.clear()
         session = nil
         onTaskStatus = .onTask
+
+        NotchState.shared.clearCallout()
+        NotchState.shared.setVerifying(false)
+        NotchState.shared.setVerificationResult(nil)
+        NotchState.shared.exitConversation()
+        NotchState.shared.collapse()
     }
 
-    public func handleFrame(_ frame: CoreGraphics.CGImage) async {
+    // MARK: - Frame handling
+
+    public func handleFrame(_ frame: CGImage) async {
         let status = await detector.evaluate(frame: frame)
         onTaskStatus = status
+        callout.evaluate(status)
+    }
+
+    // MARK: - Task verification
+
+    /// Called when the user taps "Done". Captures last frame, sends to Claude for verification.
+    public func verifyAndEnd() async {
+        guard let s = session else { return }
+        guard let frame = captureManager.lastFrame else {
+            // No frame yet (capture just started) — end without verification.
+            await endSession()
+            return
+        }
+        NotchState.shared.setVerifying(true)
+        do {
+            let result = try await ClaudeClient.shared.verify(
+                image: frame,
+                taskDescription: s.task,
+                successCriteria: s.successCriteria
+            )
+            NotchState.shared.setVerificationResult(result)
+            if result.verified {
+                // Brief pause so the user sees "verified ✓" before everything unblocks.
+                try? await Task.sleep(for: .seconds(1.2))
+                await endSession()
+            }
+            // If not verified, session stays active — user sees the explanation.
+        } catch {
+            NotchState.shared.setVerifying(false)
+            print("[SessionManager] verification error: \(error)")
+        }
+    }
+
+    // MARK: - Whitelist
+
+    /// Removes a domain from the block list for the remainder of the session.
+    public func whitelist(domain: String) async {
+        guard var s = session else { return }
+        let base = domain.hasPrefix("www.") ? String(domain.dropFirst(4)) : domain
+        s.whitelistedDomains.append(base)
+        s.blockedDomains.removeAll { $0 == base || $0 == "www.\(base)" }
+        session = s
+        persistence.save(s)
+        do {
+            try await hosts.block(domains: s.blockedDomains)
+        } catch {
+            print("[SessionManager] whitelist hosts rewrite failed: \(error)")
+        }
+    }
+
+    // MARK: - Restore on launch
+
+    /// Call on app launch to restore a session that survived a crash or relaunch.
+    public func restoreIfNeeded() async {
+        guard let saved = persistence.load() else { return }
+        // Rehydrate state without restarting capture — the user needs to re-tap Go.
+        // Just restore so the UI shows "you had an active session".
+        session = saved
     }
 }

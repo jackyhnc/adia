@@ -3,7 +3,6 @@ import SwiftUI
 // MARK: - Root
 
 /// Installed as the content of NotchWindowController's NSHostingView.
-/// Switches between collapsed pill and expanded card.
 struct NotchRootView: View {
     @ObservedObject var state: NotchState
     @ObservedObject var session: SessionManager
@@ -66,16 +65,13 @@ private struct CollapsedView: View {
 private struct ExpandedView: View {
     @ObservedObject var state: NotchState
     @ObservedObject var session: SessionManager
+    @ObservedObject private var conversation: ConversationManager = .shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             header
             Divider().overlay(Color.white.opacity(0.07))
-            if let s = session.session {
-                activeBody(s)
-            } else {
-                idleBody
-            }
+            content
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
@@ -89,10 +85,41 @@ private struct ExpandedView: View {
         .shadow(color: .black.opacity(0.55), radius: 24, x: 0, y: 10)
     }
 
+    // MARK: Content switcher
+
+    @ViewBuilder
+    private var content: some View {
+        if state.showingConversation {
+            ConversationView(manager: .shared)
+        } else if state.isVerifying {
+            verifyingBody
+        } else if let result = state.verificationResult {
+            verificationResultBody(result)
+        } else if let s = session.session {
+            activeBody(s)
+        } else {
+            idleBody
+        }
+    }
+
     // MARK: Header
 
     private var header: some View {
         HStack {
+            if state.showingConversation {
+                Button {
+                    state.exitConversation()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(.white.opacity(0.5))
+                        .frame(width: 22, height: 22)
+                        .background(Color.white.opacity(0.07))
+                        .clipShape(Circle())
+                }
+                .buttonStyle(.plain)
+                .padding(.trailing, 4)
+            }
             Text("ADIA")
                 .font(.system(size: 10, weight: .black, design: .rounded))
                 .foregroundStyle(.white.opacity(0.45))
@@ -117,42 +144,101 @@ private struct ExpandedView: View {
 
     @ViewBuilder
     private func activeBody(_ s: Session) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(s.task)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.white)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: 0) {
+            // Callout banner
+            if let callout = state.calloutMessage {
+                Text(callout)
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 12)
+                    .padding(.bottom, 4)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
 
-            HStack(alignment: .center) {
-                // Live elapsed timer — no @State needed, TimelineView handles it
-                TimelineView(.periodic(from: s.startTime, by: 1.0)) { ctx in
-                    Text(elapsed(from: s.startTime, to: ctx.date))
-                        .font(.system(size: 12, weight: .medium, design: .monospaced))
-                        .foregroundStyle(.white.opacity(0.6))
+            VStack(alignment: .leading, spacing: 6) {
+                Text(s.task)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(state.calloutMessage != nil ? .white.opacity(0.5) : .white)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                HStack(alignment: .center) {
+                    TimelineView(.periodic(from: s.startTime, by: 1.0)) { ctx in
+                        Text(elapsed(from: s.startTime, to: ctx.date))
+                            .font(.system(size: 12, weight: .medium, design: .monospaced))
+                            .foregroundStyle(.white.opacity(0.6))
+                    }
+                    Spacer()
+                    StatusBadge(status: session.onTaskStatus)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, state.calloutMessage != nil ? 8 : 12)
+
+            HStack(spacing: 8) {
+                AdiButton(label: "Done", style: .primary) {
+                    Task { await SessionManager.shared.verifyAndEnd() }
+                }
+                AdiButton(label: "Chat", style: .secondary) {
+                    state.startConversation(.reasoning(domain: nil))
                 }
                 Spacer()
-                StatusBadge(status: session.onTaskStatus)
+                AdiButton(label: "Exit", style: .destructive) {
+                    state.startConversation(.earlyExit)
+                }
             }
+            .padding(.horizontal, 16)
+            .padding(.top, 10)
+            .padding(.bottom, 14)
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 12)
+        .animation(.easeOut(duration: 0.2), value: state.calloutMessage)
+    }
 
-        HStack(spacing: 8) {
-            AdiButton(label: "Done", style: .primary) {
-                Task { try? await SessionManager.shared.endSession() }
+    // MARK: Verifying body
+
+    private var verifyingBody: some View {
+        VStack(spacing: 10) {
+            ProgressView()
+                .progressViewStyle(.circular)
+                .scaleEffect(0.7)
+                .tint(.white.opacity(0.6))
+            Text("checking your work…")
+                .font(.system(size: 12))
+                .foregroundStyle(.white.opacity(0.5))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 28)
+    }
+
+    // MARK: Verification result body
+
+    @ViewBuilder
+    private func verificationResultBody(_ result: VerificationResult) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: result.verified ? "checkmark.circle.fill" : "xmark.circle.fill")
+                    .foregroundStyle(result.verified ? .green : Color(red: 1, green: 0.3, blue: 0.3))
+                Text(result.verified ? "task verified ✓" : "not done yet")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.white)
             }
-            AdiButton(label: "Chat", style: .secondary) {
-                // Reasoning conversation — implemented in task 11
-            }
-            Spacer()
-            AdiButton(label: "Exit", style: .destructive) {
-                Task { try? await SessionManager.shared.endSession() }
+
+            Text(result.explanation)
+                .font(.system(size: 12))
+                .foregroundStyle(.white.opacity(0.55))
+                .fixedSize(horizontal: false, vertical: true)
+
+            if !result.verified {
+                AdiButton(label: "Keep going", style: .primary) {
+                    NotchState.shared.setVerificationResult(nil)
+                    NotchState.shared.collapse()
+                }
+                .padding(.top, 4)
             }
         }
         .padding(.horizontal, 16)
-        .padding(.top, 10)
-        .padding(.bottom, 14)
+        .padding(.vertical, 14)
     }
 
     // MARK: Idle body
@@ -170,7 +256,6 @@ private struct ExpandedView: View {
                 Text("No active session")
                     .font(.system(size: 13))
                     .foregroundStyle(.white.opacity(0.45))
-
                 AdiButton(label: "Start Session", style: .primary) {
                     withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
                         state.startCreating()
@@ -295,7 +380,6 @@ private struct SessionCreationFormView: View {
                 try await session.start(task: t, successCriteria: c)
                 state.stopCreating()
             } catch {
-                // start() only throws from captureManager.start(); stay in form on error
                 print("[SessionCreation] start failed: \(error)")
             }
             isStarting = false

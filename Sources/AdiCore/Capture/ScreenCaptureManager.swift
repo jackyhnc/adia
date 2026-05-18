@@ -20,6 +20,9 @@ private final class StreamOutputBridge: NSObject, SCStreamOutput, @unchecked Sen
         guard let cgImage = cgImage(from: pixelBuffer) else { return }
         let callback = onFrame
         Task { await callback?(cgImage) }
+        // Store for on-demand access (e.g. task verification).
+        // Assigned here on the stream queue; ScreenCaptureManager.lastFrame is lock-protected.
+        ScreenCaptureManager.shared.lastFrame = cgImage
     }
 
     private func cgImage(from pixelBuffer: CVPixelBuffer) -> CGImage? {
@@ -55,6 +58,15 @@ public final class ScreenCaptureManager: @unchecked Sendable {
     public var onFrame: (@Sendable (CGImage) async -> Void)? {
         get { bridge.onFrame }
         set { bridge.onFrame = newValue }
+    }
+
+    // Most-recent captured frame. Written from the stream queue, read from @MainActor.
+    // Protected by a lock for Swift 6 sendability.
+    private let frameLock = NSLock()
+    private var _lastFrame: CGImage?
+    public var lastFrame: CGImage? {
+        get { frameLock.withLock { _lastFrame } }
+        set { frameLock.withLock { _lastFrame = newValue } }
     }
 
     private var stream: SCStream?
