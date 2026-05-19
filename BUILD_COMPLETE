@@ -1,0 +1,28 @@
+All 14 goals in GOAL.md are implemented and committed.
+
+Completed tasks:
+1. Xcode project scaffold (Package.swift, AdiApp/AdiCore/AdiTests targets)
+2. Notch UI (NotchPanel, collapsed pill, expanded card, animations)
+3. Session model (SessionState, SessionPhase, OnTaskStatus, VerificationResult)
+4. Session creation view (task + criteria form, Go button, inline in notch)
+5. Screen capture pipeline (ScreenCaptureKit SCStream, 1 FPS, CGImage frames)
+6. Claude API client (vision + chat, haiku for classify, sonnet for verify)
+7. On-task detection (OnTaskDetector actor, rate-limiting guard, 1s min interval)
+8. Callout system (CalloutManager, threshold=2 consecutive frames, friend-tone messages)
+9. Blocking engine (HostsFileManager, /etc/hosts markers, non-fatal without root)
+10. Blocked page (LocalBlockServer NWListener on port 80/8080, styled HTML)
+11. Reasoning conversation (ConversationManager, AI grants/denies access, context memory)
+12. Task verification (claude-sonnet-4-6 vision, strict evidence-based, verified/not-verified)
+13. Early exit conversation (AI tries to motivate, user can always override)
+14. Session persistence (UserDefaults JSON round-trip, stale session pruning)
+
+Additional shipped:
+- SettingsStore (Keychain API key storage)
+- OnboardingView (welcome → API key → license → done)
+- LicenseManager (trial, licensed, validation against adia.app)
+- Comprehensive test suite (SessionState, HostsFileManager, ClaudeClient, CalloutManager, SessionPersistence)
+
+Known user actions required (see USER_TODO.md):
+- Apple Developer account + code signing
+- App Store submission
+- adia.app domain + license backend hosting
