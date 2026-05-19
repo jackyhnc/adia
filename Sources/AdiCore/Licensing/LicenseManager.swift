@@ -91,6 +91,22 @@ public final class LicenseManager: ObservableObject {
         refreshLocalStatus()
     }
 
+    /// Test-only: clears all license + trial state so tests start from a clean slate.
+    /// Marked internal so it doesn't appear in the public API surface.
+    internal func resetForTesting() {
+        Keychain.delete(service: keychainService, account: keychainAccount)
+        defaults.removeObject(forKey: lastValidatedKey)
+        defaults.removeObject(forKey: trialStartKey)
+        refreshLocalStatus()
+    }
+
+    /// Test-only: forces the trial-start date to a specific time so the status
+    /// machine can be exercised across trial windows without waiting wall-clock days.
+    internal func _setTrialStartDateForTesting(_ date: Date) {
+        defaults.set(date, forKey: trialStartKey)
+        refreshLocalStatus()
+    }
+
     // MARK: - Status computation
 
     private func refreshLocalStatus() {
