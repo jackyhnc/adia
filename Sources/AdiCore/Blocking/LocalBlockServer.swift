@@ -13,6 +13,8 @@ public final class LocalBlockServer: @unchecked Sendable {
 
     private init() {}
 
+    internal init(forTesting: ()) {}
+
     public func start(blockedDomains: [String], taskDescription: String) {
         self.taskDescription = taskDescription
         stop()
