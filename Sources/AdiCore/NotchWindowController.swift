@@ -43,6 +43,7 @@ public final class NotchWindowController: NSWindowController {
     // MARK: Layout constants
     private static let expandedWidth: CGFloat           = 340
     private static let expandedHeight: CGFloat          = 190
+    private static let calloutExpandedHeight: CGFloat   = 225  // extra room for callout banner
     private static let creationExpandedHeight: CGFloat  = 268
     private static let conversationHeight: CGFloat      = 390
     private static let verificationHeight: CGFloat      = 220
@@ -88,6 +89,7 @@ public final class NotchWindowController: NSWindowController {
                     creating: creating,
                     conversation: conversation,
                     verifying: verifying,
+                    hasCallout: NotchState.shared.calloutMessage != nil,
                     animate: true
                 )
                 self.notchPanel.hasShadow = expanded
@@ -95,18 +97,22 @@ public final class NotchWindowController: NSWindowController {
         }
         .store(in: &cancellables)
 
-        // Also react to verificationResult appearing (different height than verifying spinner).
+        // React to verificationResult appearing (different height than verifying spinner).
         NotchState.shared.$verificationResult
             .dropFirst()
             .sink { [weak self] _ in
                 Task { @MainActor [weak self] in
-                    self?.positionPanel(
-                        expanded: NotchState.shared.isExpanded,
-                        creating: NotchState.shared.isCreating,
-                        conversation: NotchState.shared.showingConversation,
-                        verifying: NotchState.shared.isVerifying,
-                        animate: true
-                    )
+                    self?.repositionFromCurrentState(animate: true)
+                }
+            }
+            .store(in: &cancellables)
+
+        // React to callout appearing/disappearing — panel needs extra height for the banner.
+        NotchState.shared.$calloutMessage
+            .dropFirst()
+            .sink { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    self?.repositionFromCurrentState(animate: true)
                 }
             }
             .store(in: &cancellables)
@@ -114,11 +120,23 @@ public final class NotchWindowController: NSWindowController {
 
     // MARK: Panel sizing / positioning
 
+    private func repositionFromCurrentState(animate: Bool) {
+        positionPanel(
+            expanded: NotchState.shared.isExpanded,
+            creating: NotchState.shared.isCreating,
+            conversation: NotchState.shared.showingConversation,
+            verifying: NotchState.shared.isVerifying,
+            hasCallout: NotchState.shared.calloutMessage != nil,
+            animate: animate
+        )
+    }
+
     private func positionPanel(
         expanded: Bool,
         creating: Bool = false,
         conversation: Bool = false,
         verifying: Bool = false,
+        hasCallout: Bool = false,
         animate: Bool
     ) {
         guard let screen = NSScreen.main else { return }
@@ -127,6 +145,7 @@ public final class NotchWindowController: NSWindowController {
             creating: creating,
             conversation: conversation,
             verifying: verifying,
+            hasCallout: hasCallout,
             screen: screen
         )
         if animate {
@@ -167,6 +186,7 @@ public final class NotchWindowController: NSWindowController {
         creating: Bool,
         conversation: Bool,
         verifying: Bool,
+        hasCallout: Bool = false,
         screen: NSScreen
     ) -> NSRect {
         let base = notchBaseRect(screen: screen)
@@ -179,6 +199,8 @@ public final class NotchWindowController: NSWindowController {
             h = Self.verificationHeight
         } else if creating {
             h = Self.creationExpandedHeight
+        } else if hasCallout {
+            h = Self.calloutExpandedHeight
         } else {
             h = Self.expandedHeight
         }

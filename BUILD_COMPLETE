@@ -1,0 +1,26 @@
+All 14 items in GOAL.md are implemented and verified.
+
+Completed runs:
+  Run 1 — Scaffold, session model, hosts file manager
+  Run 2 — Notch UI (collapsed + expanded panel), session model checkbox
+  Run 3 — Session creation form (SwiftUI inline form in notch)
+  Run 4 — Screen capture pipeline, Claude API client
+  Run 5 — On-task detection, callout system, blocking engine, blocked page,
+           reasoning conversation, task verification, early exit conversation,
+           session persistence, settings store (Keychain), license manager,
+           onboarding flow, paywall view
+  Run 6 — Rate-limiting guard in OnTaskDetector, callout panel-height fix
+           in NotchWindowController, missing callout threshold tests
+
+What ships:
+  - AdiApp (macOS 14+, no dock icon, notch overlay panel)
+  - AdiCore library — all features implemented, no stubs
+  - AdiTests — session model, hosts file, Claude client, callout manager,
+    session persistence tests
+
+What still needs a human (see USER_TODO.md):
+  - Apple Developer account + code signing + notarization
+  - Stripe products + webhook
+  - Resend email + domain DNS
+  - Vercel deploy for adia.app
+  - First git tag + GitHub Actions release

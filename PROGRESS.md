@@ -1,5 +1,36 @@
 # Adia — Build Progress
 
+## Run 6 — 2026-05-19
+
+### Shipped
+- **OnTaskDetector rate limiting** (`Sources/AdiCore/AI/OnTaskDetector.swift`)
+  - Added `lastEvaluatedAt: Date?` guard with 2.5s minimum interval between Claude classify calls.
+  - Without this, every 1fps ScreenCaptureKit frame triggered a full vision API call; bursts or overlapping async calls would hammer the API unnecessarily.
+  - Skipped frames return `.ambiguous` so the callout streak counter doesn't advance.
+  - `attach()` and `detach()` both reset `lastEvaluatedAt`.
+  - Removed the stale "Placeholder" comment.
+
+- **NotchWindowController callout height fix** (`Sources/AdiCore/NotchWindowController.swift`)
+  - Added `calloutExpandedHeight = 225` constant.
+  - Added `$calloutMessage` subscription alongside `$verificationResult` so the panel resizes when a callout banner appears/disappears.
+  - Extracted `repositionFromCurrentState(animate:)` helper used by both the new callout subscription and the existing verificationResult subscription.
+  - `targetFrame` now accepts `hasCallout: Bool` and selects `calloutExpandedHeight` when a callout is active, preventing content overflow.
+
+- **CalloutManager threshold tests** (`Tests/AdiTests/CalloutManagerTests.swift`)
+  - Added `offTaskThresholdFires`: verifies callout fires at exactly threshold (2), not before, and doesn't re-fire within the same streak.
+  - Added `streakResetsOnOnTask`: verifies a second off-task run triggers another callout after the streak resets.
+
+- **BUILD_COMPLETE** written — all 14 GOAL.md items complete.
+
+### Blocked
+- None.
+
+### Next agent
+- No coding tasks remain. All GOAL.md items are complete.
+- Human steps are in USER_TODO.md (Apple Developer account, Stripe, domain, first release tag).
+
+---
+
 ## Run 4 — 2026-05-18
 
 ### Shipped
