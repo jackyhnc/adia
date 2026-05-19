@@ -25,6 +25,16 @@ public actor OnTaskDetector {
         currentSession = nil
     }
 
+    // MARK: - Test helpers (internal)
+
+    internal func _setLastEvaluatedAtForTesting(_ date: Date) {
+        lastEvaluatedAt = date
+    }
+
+    internal func _setLastStatusForTesting(_ status: OnTaskStatus) {
+        lastStatus = status
+    }
+
     public func evaluate(frame: CGImage) async -> OnTaskStatus {
         guard let session = currentSession else { return .onTask }
         guard await client.isConfigured() else { return .onTask }

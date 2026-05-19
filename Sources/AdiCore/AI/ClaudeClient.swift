@@ -24,8 +24,12 @@ public actor ClaudeClient {
         return ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"]
     }
 
+    // Set to non-nil in unit tests to override the real key check.
+    internal var _isConfiguredOverride: Bool? = nil
+
     public func isConfigured() async -> Bool {
-        await currentKey() != nil
+        if let override = _isConfiguredOverride { return override }
+        return await currentKey() != nil
     }
 
     // MARK: - On-task classification (claude-haiku-4-5)
