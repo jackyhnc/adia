@@ -20,7 +20,7 @@ public actor OnTaskDetector {
 
     public func evaluate(frame: CGImage) async -> OnTaskStatus {
         guard let session = currentSession else { return .onTask }
-        guard await client.isConfigured else { return .onTask }
+        guard await client.isConfigured() else { return .onTask }
         do {
             let result = try await client.classify(
                 image: frame,

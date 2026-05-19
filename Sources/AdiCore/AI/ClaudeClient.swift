@@ -7,19 +7,26 @@ import AppKit
 public actor ClaudeClient {
     public static let shared = ClaudeClient()
 
-    private let apiKey: String?
     private let baseURL = URL(string: "https://api.anthropic.com/v1/messages")!
     private let urlSession: URLSession
 
     private init() {
-        apiKey = ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"]
         let cfg = URLSessionConfiguration.default
         cfg.timeoutIntervalForRequest  = 30
         cfg.timeoutIntervalForResource = 60
         urlSession = URLSession(configuration: cfg)
     }
 
-    public var isConfigured: Bool { apiKey != nil }
+    /// Resolve API key from SettingsStore (Keychain) first, then env var.
+    private func currentKey() async -> String? {
+        if let k = await MainActor.run(body: { SettingsStore.shared.anthropicAPIKey }),
+           !k.isEmpty { return k }
+        return ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"]
+    }
+
+    public func isConfigured() async -> Bool {
+        await currentKey() != nil
+    }
 
     // MARK: - On-task classification (claude-haiku-4-5)
 
@@ -28,7 +35,7 @@ public actor ClaudeClient {
         taskDescription: String,
         successCriteria: String
     ) async throws -> OnTaskClassification {
-        guard let key = apiKey else { throw ClaudeError.missingAPIKey }
+        guard let key = await currentKey() else { throw ClaudeError.missingAPIKey }
         let b64 = try encodeImageToBase64(image)
         let system = """
         You are a strict focus monitor watching a student's screen during a deep work session.
@@ -66,7 +73,7 @@ public actor ClaudeClient {
         taskDescription: String,
         successCriteria: String
     ) async throws -> VerificationResult {
-        guard let key = apiKey else { throw ClaudeError.missingAPIKey }
+        guard let key = await currentKey() else { throw ClaudeError.missingAPIKey }
         let b64 = try encodeImageToBase64(image)
         let system = """
         You are a strict task verifier. A student claims to have completed their work.
@@ -103,7 +110,7 @@ public actor ClaudeClient {
         messages: [ChatMessage],
         systemPrompt: String
     ) async throws -> String {
-        guard let key = apiKey else { throw ClaudeError.missingAPIKey }
+        guard let key = await currentKey() else { throw ClaudeError.missingAPIKey }
         let apiMessages: [[String: Any]] = messages.map { msg in
             ["role": msg.role.rawValue, "content": msg.content]
         }

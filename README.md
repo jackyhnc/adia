@@ -73,6 +73,31 @@ The CLI runner requires Swift Testing framework paths that are already wired in 
 
 Default blocked domains live in `Sources/AdiCore/Models/SessionState.swift` (`Session.defaultBlockedDomains`). Sessions persist for 24h in `UserDefaults` so a crash mid-session doesn't lose your context.
 
+## Ship it
+
+```bash
+VERSION=0.1.0 scripts/release.sh           # build → sign → notarize → DMG
+```
+
+That produces `dist/Adia-0.1.0.dmg`. With Apple Developer credentials set as env vars it's signed + notarized; without them it falls back to an ad-hoc-signed DMG (works locally; Gatekeeper will warn).
+
+Full deployment guide (Stripe, Resend, Vercel, GitHub Actions): see [DEPLOY.md](DEPLOY.md).
+
+## Repo layout
+
+```
+Sources/            Swift app + library
+Tests/              Swift test suites
+scripts/            build-app, sign, notarize, build-dmg, release
+Resources/          entitlements, Info.plist template, app icon
+web/                Next.js — adia.app marketing site + license/billing API
+.github/workflows/  CI + release-on-tag pipeline
+BRAND.md            positioning, pricing
+DEPLOY.md           how to actually ship
+PRIVACY.md          privacy policy
+TERMS.md            EULA
+```
+
 ## Status
 
-v1, hackathon build. See `GOAL.md` for the feature checklist and `USER_TODO.md` for the items that need your hand (API key, permissions, signing).
+v0.1, ready to ship pending: domain + Apple Developer + Stripe accounts. See [DEPLOY.md](DEPLOY.md) for the launch checklist and `USER_TODO.md` for the manual items.
