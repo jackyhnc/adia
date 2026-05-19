@@ -12,9 +12,17 @@ const dbPath = process.env.LICENSE_DB_PATH
 fs.mkdirSync(path.dirname(dbPath), { recursive: true });
 
 let _db: Database.Database | null = null;
+let _resolvedPath = dbPath;
+
+export function resetDbForTesting(newPath?: string) {
+  if (_db) { _db.close(); _db = null; }
+  _resolvedPath = newPath ?? dbPath;
+  if (newPath) fs.mkdirSync(path.dirname(newPath), { recursive: true });
+}
+
 function db(): Database.Database {
   if (_db) return _db;
-  _db = new Database(dbPath);
+  _db = new Database(_resolvedPath);
   _db.pragma('journal_mode = WAL');
   _db.exec(`
     CREATE TABLE IF NOT EXISTS licenses (
