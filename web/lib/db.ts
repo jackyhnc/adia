@@ -21,13 +21,14 @@ function db(): Database.Database {
       key            TEXT PRIMARY KEY,
       email          TEXT NOT NULL,
       plan           TEXT NOT NULL,
-      stripe_session TEXT,
+      stripe_session TEXT UNIQUE,
       stripe_sub     TEXT,
       status         TEXT NOT NULL DEFAULT 'active',
       issued_at      TEXT NOT NULL,
       expires_at     TEXT,
       machine_count  INTEGER NOT NULL DEFAULT 0
     );
+    CREATE INDEX IF NOT EXISTS idx_licenses_email ON licenses(email);
     CREATE TABLE IF NOT EXISTS activations (
       license_key   TEXT NOT NULL,
       machine_hash  TEXT NOT NULL,
@@ -53,6 +54,9 @@ export type License = {
   expiresAt: string | null;
 };
 
+/// Returns the license key written, or the EXISTING key when a row with the same
+/// stripe_session already exists (idempotency: re-delivered webhooks must not
+/// double-issue licenses).
 export function insertLicense(row: {
   key: string;
   email: string;
@@ -60,7 +64,13 @@ export function insertLicense(row: {
   stripeSession?: string;
   stripeSub?: string;
   expiresAt: string | null;
-}) {
+}): string {
+  if (row.stripeSession) {
+    const existing = db()
+      .prepare('SELECT key FROM licenses WHERE stripe_session = ?')
+      .get(row.stripeSession) as { key: string } | undefined;
+    if (existing) return existing.key;
+  }
   db().prepare(`
     INSERT INTO licenses (key, email, plan, stripe_session, stripe_sub, issued_at, expires_at)
     VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -74,13 +84,15 @@ export function insertLicense(row: {
     new Date().toISOString(),
     row.expiresAt,
   );
+  return row.key;
 }
 
 export function findLicense(key: string, email?: string): License | null {
+  const cleanKey = key.trim().toUpperCase();
   const row = email
     ? db().prepare('SELECT * FROM licenses WHERE key = ? AND email = ?')
-        .get(key, email.toLowerCase())
-    : db().prepare('SELECT * FROM licenses WHERE key = ?').get(key);
+        .get(cleanKey, email.trim().toLowerCase())
+    : db().prepare('SELECT * FROM licenses WHERE key = ?').get(cleanKey);
   if (!row) return null;
   const r = row as any;
   return {

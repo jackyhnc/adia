@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     if (!email) return NextResponse.json({ ok: true });
 
     const key = generateLicenseKey();
-    insertLicense({
+    const writtenKey = insertLicense({
       key,
       email,
       plan,
@@ -40,7 +40,10 @@ export async function POST(req: NextRequest) {
       stripeSub: session.subscription ?? undefined,
       expiresAt: planExpiry(plan),
     });
-    await sendLicenseEmail(email, key, plan);
+    // Only send the email on first issuance, not on webhook re-delivery.
+    if (writtenKey === key) {
+      await sendLicenseEmail(email, key, plan);
+    }
   }
 
   if (event.type === 'customer.subscription.deleted') {
