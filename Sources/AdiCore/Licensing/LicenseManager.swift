@@ -107,6 +107,12 @@ public final class LicenseManager: ObservableObject {
         refreshLocalStatus()
     }
 
+    internal func _injectLicenseForTesting(_ info: LicenseInfo) {
+        store(info)
+        defaults.set(Date(), forKey: lastValidatedKey)
+        refreshLocalStatus()
+    }
+
     // MARK: - Status computation
 
     private func refreshLocalStatus() {

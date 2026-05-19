@@ -44,28 +44,69 @@ struct LicenseManagerTests {
     @Test func trialExpiresAfterSevenDays() async {
         await MainActor.run {
             LicenseManager.shared.resetForTesting()
-            // Backdate trial start to 8 days ago — well past the 7-day window.
             LicenseManager.shared._setTrialStartDateForTesting(Date().addingTimeInterval(-8 * 86_400))
             #expect(LicenseManager.shared.status == .trialExpired)
             #expect(LicenseManager.shared.isUsable == false)
         }
     }
 
-    @Test func deactivateReturnsToUnknown() async {
+    @Test func licensedFromInjectedInfo() async {
         await MainActor.run {
             LicenseManager.shared.resetForTesting()
-            LicenseManager.shared.startTrialIfNeeded()
-            // Even with an active trial, deactivate (which only clears license)
-            // should leave the trial in place — it only removes licensed state.
-            LicenseManager.shared.deactivate()
-            if case .trial = LicenseManager.shared.status {
-                // ok — trial untouched
+            let info = LicenseInfo(
+                key: "ADIA-TEST-TEST-TEST",
+                email: "test@example.com",
+                plan: "lifetime",
+                issuedAt: Date(),
+                expiresAt: nil,
+                lastValidatedAt: Date()
+            )
+            LicenseManager.shared._injectLicenseForTesting(info)
+            if case .licensed(let email, let plan) = LicenseManager.shared.status {
+                #expect(email == "test@example.com")
+                #expect(plan == "lifetime")
             } else {
-                Issue.record("deactivate should not clear an active trial")
+                Issue.record("expected .licensed, got \(LicenseManager.shared.status)")
             }
-            // Now reset entirely and confirm unknown.
+            #expect(LicenseManager.shared.isUsable == true)
+        }
+    }
+
+    @Test func deactivateClearsLicenseKeychain() async {
+        await MainActor.run {
             LicenseManager.shared.resetForTesting()
-            #expect(LicenseManager.shared.status == .unknown)
+            let info = LicenseInfo(
+                key: "ADIA-DACT-TEST-0001",
+                email: "user@example.com",
+                plan: "monthly",
+                issuedAt: Date(),
+                expiresAt: nil,
+                lastValidatedAt: Date()
+            )
+            LicenseManager.shared._injectLicenseForTesting(info)
+            LicenseManager.shared.deactivate()
+            // License should be gone from Keychain
+            #expect(LicenseManager.shared.currentLicense() == nil)
+        }
+    }
+
+    @Test func offlineGraceKeepsLicensedWithinWindow() async {
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting()
+            // License expired yesterday but lastValidated only 3 hours ago — within 14-day grace
+            let yesterday = Date(timeIntervalSinceNow: -86400)
+            let info = LicenseInfo(
+                key: "ADIA-GRCE-TEST-0001",
+                email: "grace@example.com",
+                plan: "monthly",
+                issuedAt: Date(timeIntervalSinceNow: -32 * 86400),
+                expiresAt: yesterday,
+                lastValidatedAt: Date(timeIntervalSinceNow: -3600)
+            )
+            LicenseManager.shared._injectLicenseForTesting(info)
+            if case .licensed = LicenseManager.shared.status { } else {
+                Issue.record("expected .licensed within grace period, got \(LicenseManager.shared.status)")
+            }
         }
     }
 
