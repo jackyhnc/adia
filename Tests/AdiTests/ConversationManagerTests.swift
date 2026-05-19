@@ -1,0 +1,110 @@
+import Testing
+import Foundation
+@testable import AdiCore
+
+@Suite("ConversationManager")
+struct ConversationManagerTests {
+
+    private func reset() async {
+        await MainActor.run {
+            ConversationManager.shared.reset()
+        }
+    }
+
+    // MARK: - start(mode:)
+
+    @Test func startReasoningSeedsOpeningMessage() async {
+        await reset()
+        await MainActor.run {
+            ConversationManager.shared.start(mode: .reasoning(domain: "youtube.com"))
+        }
+        let messages = await MainActor.run { ConversationManager.shared.messages }
+        #expect(messages.count == 1)
+        #expect(messages[0].role == .assistant)
+        #expect(messages[0].content.contains("youtube.com"))
+    }
+
+    @Test func startReasoningNilDomainFallsBackToGeneric() async {
+        await reset()
+        await MainActor.run {
+            ConversationManager.shared.start(mode: .reasoning(domain: nil))
+        }
+        let messages = await MainActor.run { ConversationManager.shared.messages }
+        #expect(messages.count == 1)
+        #expect(messages[0].content.contains("that site"))
+    }
+
+    @Test func startEarlyExitSeedsOpeningMessage() async {
+        await reset()
+        await MainActor.run {
+            ConversationManager.shared.start(mode: .earlyExit)
+        }
+        let messages = await MainActor.run { ConversationManager.shared.messages }
+        #expect(messages.count == 1)
+        #expect(messages[0].role == .assistant)
+        #expect(!messages[0].content.isEmpty)
+    }
+
+    // MARK: - reset()
+
+    @Test func resetClearsMessages() async {
+        await MainActor.run {
+            ConversationManager.shared.start(mode: .earlyExit)
+        }
+        await reset()
+        let messages = await MainActor.run { ConversationManager.shared.messages }
+        #expect(messages.isEmpty)
+    }
+
+    @Test func resetClearsMode() async {
+        await MainActor.run {
+            ConversationManager.shared.start(mode: .earlyExit)
+        }
+        await reset()
+        let mode = await MainActor.run { ConversationManager.shared.mode }
+        #expect(mode == nil)
+    }
+
+    @Test func resetClearsAccessGranted() async {
+        await MainActor.run {
+            ConversationManager.shared.start(mode: .reasoning(domain: "test.com"))
+        }
+        await reset()
+        let granted = await MainActor.run { ConversationManager.shared.accessGranted }
+        #expect(granted == nil)
+    }
+
+    @Test func resetClearsIsLoading() async {
+        await reset()
+        let loading = await MainActor.run { ConversationManager.shared.isLoading }
+        #expect(loading == false)
+    }
+
+    // MARK: - parseAccessDecision (static pure helper)
+
+    @Test func parseGrantedReturnsTrue() {
+        #expect(ConversationManager.parseAccessDecision(in: "Sure thing! [ACCESS GRANTED]") == true)
+    }
+
+    @Test func parseDeniedReturnsFalse() {
+        #expect(ConversationManager.parseAccessDecision(in: "Not today. [ACCESS DENIED]") == false)
+    }
+
+    @Test func parseNeitherReturnsNil() {
+        #expect(ConversationManager.parseAccessDecision(in: "Let me think about that...") == nil)
+    }
+
+    @Test func parseEmptyStringReturnsNil() {
+        #expect(ConversationManager.parseAccessDecision(in: "") == nil)
+    }
+
+    @Test func parseGrantedMidSentence() {
+        let reply = "This is clearly task-relevant. [ACCESS GRANTED] Good luck!"
+        #expect(ConversationManager.parseAccessDecision(in: reply) == true)
+    }
+
+    @Test func parseDeniedAtStart() {
+        let reply = "[ACCESS DENIED] Focus on your work."
+        #expect(ConversationManager.parseAccessDecision(in: reply) == false)
+    }
+}

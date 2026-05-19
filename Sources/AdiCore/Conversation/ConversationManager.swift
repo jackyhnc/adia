@@ -124,19 +124,23 @@ public final class ConversationManager: ObservableObject {
         }
     }
 
+    /// Pure helper: returns true for GRANTED, false for DENIED, nil if neither.
+    public static func parseAccessDecision(in reply: String) -> Bool? {
+        if reply.contains("[ACCESS GRANTED]") { return true }
+        if reply.contains("[ACCESS DENIED]") { return false }
+        return nil
+    }
+
     private func parseAccessDecision(from reply: String) {
-        if reply.contains("[ACCESS GRANTED]") {
-            accessGranted = true
-            if case .reasoning(let domain) = mode, let d = domain, !d.isEmpty {
-                Task { @MainActor in
-                    await SessionManager.shared.whitelist(domain: d)
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    NotchState.shared.exitConversation()
-                }
+        guard let decision = Self.parseAccessDecision(in: reply) else { return }
+        accessGranted = decision
+        if decision, case .reasoning(let domain) = mode, let d = domain, !d.isEmpty {
+            Task { @MainActor in
+                await SessionManager.shared.whitelist(domain: d)
             }
-        } else if reply.contains("[ACCESS DENIED]") {
-            accessGranted = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                NotchState.shared.exitConversation()
+            }
         }
     }
 }
