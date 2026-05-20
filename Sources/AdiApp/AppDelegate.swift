@@ -6,9 +6,26 @@ import AdiCore
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var notchController: NotchWindowController?
     private var onboardingWindow: NSWindow?
+    private var windowCloseObserver: NSObjectProtocol?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+
+        // Restore accessory policy when every non-panel window closes (e.g. Settings).
+        // willCloseNotification fires just before close; the Task hop ensures the window
+        // is fully gone before we check NSApp.windows.
+        windowCloseObserver = NotificationCenter.default.addObserver(
+            forName: NSWindow.willCloseNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            Task { @MainActor in
+                let hasRegularWindow = NSApp.windows.contains { !($0 is NSPanel) && $0.isVisible }
+                if !hasRegularWindow {
+                    NSApp.setActivationPolicy(.accessory)
+                }
+            }
+        }
 
         Task {
             await LicenseManager.shared.bootstrap()

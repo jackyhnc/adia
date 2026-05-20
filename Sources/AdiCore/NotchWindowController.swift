@@ -43,6 +43,9 @@ public final class NotchWindowController: NSWindowController {
     // MARK: Layout constants
     private static let expandedWidth: CGFloat           = 340
     private static let expandedHeight: CGFloat          = 190
+    // Extra height for active-session view when a callout banner is visible:
+    // callout text (~35pt) pushes task + buttons past the base 190pt frame.
+    private static let calloutExpandedHeight: CGFloat   = 235
     private static let creationExpandedHeight: CGFloat  = 268
     private static let conversationHeight: CGFloat      = 390
     private static let verificationHeight: CGFloat      = 220
@@ -105,6 +108,24 @@ public final class NotchWindowController: NSWindowController {
                         creating: NotchState.shared.isCreating,
                         conversation: NotchState.shared.showingConversation,
                         verifying: NotchState.shared.isVerifying,
+                        animate: true
+                    )
+                }
+            }
+            .store(in: &cancellables)
+
+        // React to callout banner appearing/disappearing — the banner adds ~40pt to
+        // active-session content, so the panel height must switch between two constants.
+        NotchState.shared.$calloutMessage
+            .dropFirst()
+            .sink { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    let s = NotchState.shared
+                    self?.positionPanel(
+                        expanded: s.isExpanded,
+                        creating: s.isCreating,
+                        conversation: s.showingConversation,
+                        verifying: s.isVerifying,
                         animate: true
                     )
                 }
@@ -179,6 +200,8 @@ public final class NotchWindowController: NSWindowController {
             h = Self.verificationHeight
         } else if creating {
             h = Self.creationExpandedHeight
+        } else if NotchState.shared.calloutMessage != nil {
+            h = Self.calloutExpandedHeight
         } else {
             h = Self.expandedHeight
         }
