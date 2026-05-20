@@ -8,8 +8,8 @@ public actor HostsFileManager {
     public static let shared = HostsFileManager()
 
     private let hostsPath = "/etc/hosts"
-    private let blockMarkerBegin = "# adia-block-begin"
-    private let blockMarkerEnd   = "# adia-block-end"
+    private static let blockMarkerBegin = "# adia-block-begin"
+    private static let blockMarkerEnd   = "# adia-block-end"
 
     private init() {}
 
@@ -17,20 +17,20 @@ public actor HostsFileManager {
 
     public func block(domains: [String]) async throws {
         var content = try readHosts()
-        content = stripped(content)
-        content += buildBlock(domains: domains)
+        content = Self.stripped(content)
+        content += Self.buildBlock(domains: domains)
         try writeHosts(content)
     }
 
     public func unblockAll() async throws {
         var content = try readHosts()
-        content = stripped(content)
+        content = Self.stripped(content)
         try writeHosts(content)
     }
 
     public func currentlyBlocked() throws -> [String] {
         let content = try readHosts()
-        return parseBlocked(content)
+        return Self.parseBlocked(content)
     }
 
     // MARK: - Private helpers
@@ -43,8 +43,10 @@ public actor HostsFileManager {
         try content.write(toFile: hostsPath, atomically: true, encoding: .utf8)
     }
 
-    private func stripped(_ content: String) -> String {
-        // Walk lines, discarding everything between the adia markers (inclusive).
+    // MARK: - Pure string helpers (nonisolated static — testable without actor hop)
+
+    // Walks lines, discarding everything between the adia markers (inclusive).
+    internal nonisolated static func stripped(_ content: String) -> String {
         let lines = content.components(separatedBy: "\n")
         var result: [String] = []
         var inBlock = false
@@ -57,16 +59,18 @@ public actor HostsFileManager {
             .trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
     }
 
-    private func buildBlock(domains: [String]) -> String {
+    internal nonisolated static func buildBlock(domains: [String]) -> String {
         let lines = domains.flatMap { domain in
             ["127.0.0.1 \(domain)", "127.0.0.1 www.\(domain)"]
         }.joined(separator: "\n")
         return "\n\(blockMarkerBegin)\n\(lines)\n\(blockMarkerEnd)\n"
     }
 
-    private func parseBlocked(_ content: String) -> [String] {
+    internal nonisolated static func parseBlocked(_ content: String) -> [String] {
         guard let begin = content.range(of: blockMarkerBegin),
-              let end   = content.range(of: blockMarkerEnd) else { return [] }
+              let end   = content.range(of: blockMarkerEnd),
+              begin.upperBound <= end.lowerBound  // malformed content guard
+        else { return [] }
         let block = String(content[begin.upperBound..<end.lowerBound])
         return block.components(separatedBy: .newlines)
             .compactMap { line -> String? in

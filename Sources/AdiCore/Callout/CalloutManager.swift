@@ -45,7 +45,10 @@ public final class CalloutManager {
         NotchState.shared.showCallout(message)
     }
 
-    private func reset() {
+    /// Resets streak counters and clears any active callout.
+    /// Call this when a session ends or a new session starts so stale streak
+    /// state from the prior session doesn't suppress the first callout.
+    public func reset() {
         consecutiveOffTask = 0
         hasFiredForStreak = false
         NotchState.shared.clearCallout()

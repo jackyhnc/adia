@@ -80,4 +80,27 @@ struct CalloutManagerTests {
             #expect(NotchState.shared.calloutMessage != nil)
         }
     }
+
+    /// Verifies that public reset() clears streak state so a fresh session can
+    /// immediately trigger a callout without inheriting the prior session's streak.
+    @Test func publicResetAllowsNewStreakToFire() async {
+        await MainActor.run {
+            // Build up a fired streak (hasFiredForStreak = true)
+            CalloutManager.shared.evaluate(.onTask)
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask) // fires
+            #expect(NotchState.shared.calloutMessage != nil)
+
+            // Simulate session end → new session start
+            CalloutManager.shared.reset()
+            // reset() calls clearCallout() internally
+            #expect(NotchState.shared.calloutMessage == nil)
+
+            // A brand-new off-task streak must fire despite hasFiredForStreak
+            // having been true in the previous session.
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask)
+            #expect(NotchState.shared.calloutMessage != nil)
+        }
+    }
 }

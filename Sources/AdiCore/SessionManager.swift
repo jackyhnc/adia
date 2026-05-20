@@ -24,6 +24,7 @@ public final class SessionManager: ObservableObject {
         session = s
         persistence.save(s)
 
+        callout.reset()  // clear streak state left over from any prior session
         await detector.attach(session: s)
         captureManager.onFrame = { [weak self] frame in
             await self?.handleFrame(frame)

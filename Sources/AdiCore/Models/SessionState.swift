@@ -72,6 +72,11 @@ public struct Session: Codable, Sendable, Identifiable {
         "twitch.tv",
         "discord.com",
         "slack.com",
+        "pinterest.com",
+        "snapchat.com",
+        "threads.net",
+        "tumblr.com",
+        "9gag.com",
         "hacker-news.firebaseapp.com",
         "news.ycombinator.com",
     ]

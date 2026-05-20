@@ -58,7 +58,7 @@ public final class SettingsStore: ObservableObject {
     }
 
     private static func writeKey(_ value: String, service: String, account: String) {
-        let data = value.data(using: .utf8)!
+        let data = value.data(using: .utf8)!  // .utf8 encoding never fails for Swift String
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
