@@ -20,7 +20,12 @@ public final class SessionManager: ObservableObject {
     // MARK: - Session lifecycle
 
     public func start(task: String, successCriteria: String) async throws {
-        let s = Session(task: task, successCriteria: successCriteria, phase: .active)
+        let s = Session(
+            task: task,
+            successCriteria: successCriteria,
+            phase: .active,
+            blockedDomains: SettingsStore.shared.effectiveBlockedDomains
+        )
         session = s
         persistence.save(s)
 

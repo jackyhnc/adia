@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 // MARK: - Root
 
@@ -125,6 +126,22 @@ private struct ExpandedView: View {
                 .foregroundStyle(.white.opacity(0.45))
                 .tracking(2.5)
             Spacer()
+            // Settings gear — only shown when no session is active.
+            if session.session == nil && !state.showingConversation {
+                Button {
+                    NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                    NSApp.setActivationPolicy(.regular)
+                    NSApp.activate(ignoringOtherApps: true)
+                } label: {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.4))
+                        .frame(width: 22, height: 22)
+                        .background(Color.white.opacity(0.07))
+                        .clipShape(Circle())
+                }
+                .buttonStyle(.plain)
+            }
             Button { state.collapse() } label: {
                 Image(systemName: "xmark")
                     .font(.system(size: 10, weight: .semibold))

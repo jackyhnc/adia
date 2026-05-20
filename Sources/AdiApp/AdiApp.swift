@@ -1,4 +1,5 @@
 import SwiftUI
+import AdiCore
 
 @main
 struct AdiApp: App {
@@ -7,7 +8,7 @@ struct AdiApp: App {
     var body: some Scene {
         // No default window — Adia lives in the notch overlay only.
         Settings {
-            EmptyView()
+            SettingsView()
         }
     }
 }

@@ -10,6 +10,10 @@ public final class SettingsStore: ObservableObject {
     private let keychainService = "app.adia.keys"
     private let keychainAccount = "anthropic_api_key"
 
+    // UserDefaults keys for domain lists
+    private static let customDomainsKey  = "adia.customBlockedDomains"
+    private static let disabledDomainsKey = "adia.disabledDefaultDomains"
+
     @Published public private(set) var anthropicAPIKey: String?
     @Published public var crashReportsEnabled: Bool {
         didSet { defaults.set(crashReportsEnabled, forKey: "crashReportsEnabled") }
@@ -18,11 +22,30 @@ public final class SettingsStore: ObservableObject {
         didSet { defaults.set(usageAnalyticsEnabled, forKey: "usageAnalyticsEnabled") }
     }
 
+    /// Domains the user added on top of the default list.
+    @Published public private(set) var customBlockedDomains: [String] {
+        didSet { Self.saveDomainList(customBlockedDomains, key: Self.customDomainsKey, to: defaults) }
+    }
+
+    /// Subset of `Session.defaultBlockedDomains` the user has disabled.
+    @Published public private(set) var disabledDefaultDomains: Set<String> {
+        didSet { Self.saveDomainList(Array(disabledDefaultDomains), key: Self.disabledDomainsKey, to: defaults) }
+    }
+
+    /// Active block list for new sessions: enabled defaults + custom additions.
+    public var effectiveBlockedDomains: [String] {
+        let enabled = Session.defaultBlockedDomains.filter { !disabledDefaultDomains.contains($0) }
+        let extra = customBlockedDomains.filter { !enabled.contains($0) }
+        return enabled + extra
+    }
+
     private init() {
-        crashReportsEnabled = defaults.object(forKey: "crashReportsEnabled") as? Bool ?? true
+        crashReportsEnabled  = defaults.object(forKey: "crashReportsEnabled")  as? Bool ?? true
         usageAnalyticsEnabled = defaults.object(forKey: "usageAnalyticsEnabled") as? Bool ?? true
         anthropicAPIKey = Self.readKey(service: keychainService, account: keychainAccount)
             ?? ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"]
+        customBlockedDomains  = Self.loadDomainList(key: Self.customDomainsKey,  from: defaults)
+        disabledDefaultDomains = Set(Self.loadDomainList(key: Self.disabledDomainsKey, from: defaults))
     }
 
     public var hasAPIKey: Bool {
@@ -39,6 +62,62 @@ public final class SettingsStore: ObservableObject {
             Self.writeKey(trimmed, service: keychainService, account: keychainAccount)
             anthropicAPIKey = trimmed
         }
+    }
+
+    // MARK: - Domain management
+
+    /// Add a domain to the custom block list. Normalizes the input (strips https://, www.).
+    public func addCustomDomain(_ raw: String) {
+        let domain = Self.normalizeDomain(raw)
+        guard !domain.isEmpty,
+              !customBlockedDomains.contains(domain),
+              !Session.defaultBlockedDomains.contains(domain)
+        else { return }
+        customBlockedDomains.append(domain)
+    }
+
+    public func removeCustomDomain(_ domain: String) {
+        customBlockedDomains.removeAll { $0 == domain }
+    }
+
+    /// Enable or disable a domain from the built-in default list.
+    public func setDefaultDomain(_ domain: String, enabled: Bool) {
+        if enabled {
+            disabledDefaultDomains.remove(domain)
+        } else {
+            disabledDefaultDomains.insert(domain)
+        }
+    }
+
+    /// Whether a built-in default domain is currently enabled.
+    public func isDefaultDomainEnabled(_ domain: String) -> Bool {
+        !disabledDefaultDomains.contains(domain)
+    }
+
+    // MARK: - Domain persistence helpers
+
+    private static func saveDomainList(_ list: [String], key: String, to defaults: UserDefaults) {
+        guard let data = try? JSONEncoder().encode(list) else { return }
+        defaults.set(data, forKey: key)
+    }
+
+    private static func loadDomainList(key: String, from defaults: UserDefaults) -> [String] {
+        guard let data = defaults.data(forKey: key),
+              let list = try? JSONDecoder().decode([String].self, from: data)
+        else { return [] }
+        return list
+    }
+
+    /// Strips protocol, www, and path components: "https://www.example.com/foo" → "example.com"
+    static func normalizeDomain(_ raw: String) -> String {
+        var s = raw.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        for prefix in ["https://", "http://"] {
+            if s.hasPrefix(prefix) { s = String(s.dropFirst(prefix.count)) }
+        }
+        if s.hasPrefix("www.") { s = String(s.dropFirst(4)) }
+        s = s.components(separatedBy: "/").first ?? s
+        s = s.components(separatedBy: "?").first ?? s
+        return s
     }
 
     // MARK: - Keychain helpers
