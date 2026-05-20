@@ -82,6 +82,61 @@ export default function Pricing() {
           <strong>Students:</strong> 50% off with .edu email. Email us for a code.
         </p>
       </div>
+
+      <FAQ />
     </section>
+  );
+}
+
+function FAQ() {
+  const items = [
+    {
+      q: 'How much does Claude actually cost me?',
+      a: 'Typical sessions run 1–5 cents on Anthropic\'s side. A heavy day of deep work might hit 25 cents. You pay Anthropic directly with their pricing — we don\'t mark it up.',
+    },
+    {
+      q: 'Can I share a license across my Mac and my laptop?',
+      a: 'Yes. Each license activates on up to 3 of your personal machines. If you switch hardware, email support@adia.app and we\'ll reset a seat.',
+    },
+    {
+      q: 'What happens at the end of the 7-day trial?',
+      a: 'Adia stops starting new sessions until you enter a license. We never auto-charge — there\'s no card on file during the trial.',
+    },
+    {
+      q: 'What if Adia falsely verifies my work as done?',
+      a: 'Tell us and we\'ll refund the session\'s worth of trust. The model is strict by default and looks for concrete evidence (submission pages, file metadata, timestamps). It\'s wrong sometimes — it\'s a tool, not a judge.',
+    },
+    {
+      q: 'Does Adia work without a notch?',
+      a: 'Yes — on any macOS 14+ Mac the panel sits at the top of the screen where the notch would be. It just looks nicest on a notched MacBook.',
+    },
+    {
+      q: 'Windows?',
+      a: 'Not yet. On the roadmap once we hit 1,000 paying users.',
+    },
+    {
+      q: 'Will you train on my screen?',
+      a: 'No. We never see your screen — it goes from your Mac directly to Anthropic\'s API with your key. We have no server you could leak to.',
+    },
+    {
+      q: 'Can I cancel anytime?',
+      a: 'Yes. Use /billing to open the Stripe portal. Lifetime is, well, lifetime — no need to cancel.',
+    },
+  ];
+  return (
+    <div className="mt-16 max-w-2xl">
+      <h2 className="text-2xl font-semibold tracking-tight">Questions</h2>
+      <div className="mt-6 space-y-3">
+        {items.map((it) => (
+          <details key={it.q} className="card group">
+            <summary className="cursor-pointer font-medium list-none flex justify-between items-center">
+              <span>{it.q}</span>
+              <span className="text-ink/40 group-open:rotate-45 transition">+</span>
+            </summary>
+            <p className="mt-3 text-sm text-ink/70">{it.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
   );
 }

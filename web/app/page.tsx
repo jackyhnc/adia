@@ -50,6 +50,36 @@ export default function Home() {
         />
       </section>
 
+      {/* Demo / how-it-works */}
+      <section className="pb-20">
+        <h2 className="text-3xl font-semibold tracking-tight">A session, end to end.</h2>
+        <p className="mt-2 text-ink/70 max-w-xl">
+          Four steps. About a second of friction. Then you're locked in.
+        </p>
+        <ol className="mt-8 grid md:grid-cols-2 gap-4">
+          <Step
+            n={1}
+            title="Click the notch."
+            body="The pill expands. Type the task — 'write ENGL 101 essay'. Type the proof — 'submit to Canvas'. Hit Go."
+          />
+          <Step
+            n={2}
+            title="Distractions disappear."
+            body="Default blocklist drops into /etc/hosts. Twitter, Reddit, YouTube, TikTok — all served the 'get back to work' page."
+          />
+          <Step
+            n={3}
+            title="Wander, get called out."
+            body="After two off-task frames, the notch lights up: yo, what are you doing? Soft enough to ignore, sharp enough to sting."
+          />
+          <Step
+            n={4}
+            title="Done? Adia checks."
+            body="Tap Done. Last screenshot goes to Claude with your success criteria. Submission page on screen? Verified. Vibes? Try again."
+          />
+        </ol>
+      </section>
+
       <section className="rounded-2xl bg-ink text-paper p-10 md:p-14 mb-12">
         <h2 className="text-3xl font-semibold tracking-tight">Built for the next hour.</h2>
         <p className="mt-4 text-paper/80 max-w-xl">
@@ -69,5 +99,17 @@ function Feature({ title, body }: { title: string; body: string }) {
       <h3 className="font-semibold">{title}</h3>
       <p className="mt-2 text-sm text-ink/70">{body}</p>
     </div>
+  );
+}
+
+function Step({ n, title, body }: { n: number; title: string; body: string }) {
+  return (
+    <li className="card flex gap-4">
+      <div className="text-3xl font-semibold text-ink/30 leading-none">{n}</div>
+      <div>
+        <h3 className="font-semibold">{title}</h3>
+        <p className="mt-1 text-sm text-ink/70">{body}</p>
+      </div>
+    </li>
   );
 }

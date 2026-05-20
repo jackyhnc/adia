@@ -28,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <nav className="flex gap-6 text-sm">
             <Link href="/pricing" className="no-underline hover:opacity-70">Pricing</Link>
             <Link href="/download" className="no-underline hover:opacity-70">Download</Link>
+            <Link href="/changelog" className="no-underline hover:opacity-70">Changelog</Link>
             <a href="https://github.com/jackyhnc/adia" className="no-underline hover:opacity-70">GitHub</a>
           </nav>
         </header>
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-4 justify-between text-sm text-ink/60">
             <div>© 2026 Adia</div>
             <div className="flex gap-5">
+              <Link href="/billing" className="no-underline hover:opacity-70">Billing</Link>
               <Link href="/privacy" className="no-underline hover:opacity-70">Privacy</Link>
               <Link href="/terms" className="no-underline hover:opacity-70">Terms</Link>
               <a href="mailto:support@adia.app" className="no-underline hover:opacity-70">Support</a>

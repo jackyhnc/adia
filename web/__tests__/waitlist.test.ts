@@ -4,12 +4,14 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { NextRequest } from 'next/server';
 import { resetDbForTesting } from '@/lib/db';
+import { _resetForTesting as resetRateLimit } from '@/lib/ratelimit';
 
 let dbPath: string;
 
 beforeEach(() => {
   dbPath = path.join(os.tmpdir(), `adia-waitlist-${Date.now()}.db`);
   resetDbForTesting(dbPath);
+  resetRateLimit();
 });
 
 afterEach(() => {

@@ -5,12 +5,14 @@ import fs from 'node:fs';
 import { NextRequest } from 'next/server';
 import { resetDbForTesting, insertLicense } from '@/lib/db';
 import { planExpiry } from '@/lib/license';
+import { _resetForTesting as resetRateLimit } from '@/lib/ratelimit';
 
 let dbPath: string;
 
 beforeEach(() => {
   dbPath = path.join(os.tmpdir(), `adia-activate-${Date.now()}.db`);
   resetDbForTesting(dbPath);
+  resetRateLimit();
 });
 
 afterEach(() => {
