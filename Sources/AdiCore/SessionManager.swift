@@ -28,24 +28,7 @@ public final class SessionManager: ObservableObject {
         )
         session = s
         persistence.save(s)
-
-        callout.reset()  // clear streak state left over from any prior session
-        await detector.attach(session: s)
-        captureManager.onFrame = { [weak self] frame in
-            await self?.handleFrame(frame)
-        }
-
-        // Local block server (non-fatal)
-        LocalBlockServer.shared.start(blockedDomains: s.blockedDomains, taskDescription: s.task)
-
-        // /etc/hosts blocking requires root — non-fatal
-        do {
-            try await hosts.block(domains: s.blockedDomains)
-        } catch {
-            print("[SessionManager] hosts blocking unavailable (needs root): \(error)")
-        }
-
-        try await captureManager.start()
+        try await activate(s)
     }
 
     public func endSession() async {
@@ -109,7 +92,9 @@ public final class SessionManager: ObservableObject {
     /// Removes a domain from the block list for the remainder of the session.
     public func whitelist(domain: String) async {
         guard var s = session else { return }
-        let base = domain.hasPrefix("www.") ? String(domain.dropFirst(4)) : domain
+        let trimmed = domain.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return }
+        let base = trimmed.hasPrefix("www.") ? String(trimmed.dropFirst(4)) : trimmed
         s.whitelistedDomains.append(base)
         s.blockedDomains.removeAll { $0 == base || $0 == "www.\(base)" }
         session = s
@@ -124,10 +109,47 @@ public final class SessionManager: ObservableObject {
     // MARK: - Restore on launch
 
     /// Call on app launch to restore a session that survived a crash or relaunch.
+    /// Re-wires capture and blocking so the session is truly active, not just displayed.
     public func restoreIfNeeded() async {
         guard let saved = persistence.load() else { return }
-        // Rehydrate state without restarting capture — the user needs to re-tap Go.
-        // Just restore so the UI shows "you had an active session".
-        session = saved
+        var s = saved
+        s.phase = .active
+        session = s
+        persistence.save(s)
+        do {
+            try await activate(s)
+        } catch {
+            print("[SessionManager] restore failed, session will be shown but capture is inactive: \(error)")
+        }
+    }
+
+    // MARK: - Test helpers
+
+    internal func _injectSessionForTesting(_ session: Session?) {
+        self.session = session
+    }
+
+    // MARK: - Private helpers
+
+    /// Wires up the capture pipeline, blocking engine, and on-task detector for a session.
+    /// Throws if screen capture cannot be started (e.g. permission denied).
+    private func activate(_ s: Session) async throws {
+        callout.reset()  // clear streak state left over from any prior session
+        await detector.attach(session: s)
+        captureManager.onFrame = { [weak self] frame in
+            await self?.handleFrame(frame)
+        }
+
+        // Local block server (non-fatal)
+        LocalBlockServer.shared.start(blockedDomains: s.blockedDomains, taskDescription: s.task)
+
+        // /etc/hosts blocking requires root — non-fatal
+        do {
+            try await hosts.block(domains: s.blockedDomains)
+        } catch {
+            print("[SessionManager] hosts blocking unavailable (needs root): \(error)")
+        }
+
+        try await captureManager.start()
     }
 }

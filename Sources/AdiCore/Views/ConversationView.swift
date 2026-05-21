@@ -107,7 +107,8 @@ public struct ConversationView: View {
                 .foregroundStyle(granted ? Color.green : Color(red: 1, green: 0.3, blue: 0.3))
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.vertical, 8)
-        } else {
+        } else if !domain.isEmpty {
+            // Only show grant/deny chips when there's a specific blocked domain to act on.
             HStack(spacing: 8) {
                 ActionChip(label: "Grant Access", color: .green) {
                     manager.grantAccess(domain: domain)
