@@ -71,14 +71,14 @@ public struct OnboardingView: View {
 
     private var apiKeyScreen: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("OpenAI API key").font(.headline)
-            Text("Adia uses GPT to watch your screen. You bring your own API key — we never see your data.")
+            Text("Anthropic API key").font(.headline)
+            Text("Adia uses Claude to watch your screen. You bring your own API key — we never see your data.")
                 .foregroundStyle(.secondary)
                 .font(.callout)
-            SecureField("sk-proj-...", text: $apiKeyDraft)
+            SecureField("sk-ant-...", text: $apiKeyDraft)
                 .textFieldStyle(.roundedBorder)
-            Link("Get a key from platform.openai.com →",
-                 destination: URL(string: "https://platform.openai.com/api-keys")!)
+            Link("Get a key from console.anthropic.com →",
+                 destination: URL(string: "https://console.anthropic.com/settings/api-keys")!)
                 .font(.callout)
             Spacer()
         }

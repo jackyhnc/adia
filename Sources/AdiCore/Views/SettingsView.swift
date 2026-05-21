@@ -38,7 +38,7 @@ private struct AccountSettingsTab: View {
             Section {
                 apiKeyRow
             } header: {
-                Text("OpenAI API Key")
+                Text("Anthropic API Key")
             } footer: {
                 Text("Used for screen analysis. Never sent to Adia servers.")
                     .foregroundStyle(.secondary)
@@ -59,7 +59,7 @@ private struct AccountSettingsTab: View {
     private var apiKeyRow: some View {
         if editingAPIKey {
             HStack {
-                SecureField("sk-proj-…", text: $apiKeyDraft)
+                SecureField("sk-ant-…", text: $apiKeyDraft)
                 Button("Save") {
                     settings.setAPIKey(apiKeyDraft)
                     apiKeyDraft   = ""

@@ -4,14 +4,15 @@ import CoreGraphics
 import AppKit
 #endif
 
-/// Backend AI client. Despite the name (kept for blast-radius reasons), it currently
-/// hits OpenAI's Chat Completions API — gpt-5.4-mini for all three call types.
-/// Swap the model + base URL constants below to switch providers.
+/// Anthropic Claude API client.
+/// Uses claude-haiku-4-5-20251001 for fast on-task classification and
+/// claude-sonnet-4-6 for verification (higher reasoning quality).
 public actor ClaudeClient {
     public static let shared = ClaudeClient()
 
-    private let baseURL = URL(string: "https://api.openai.com/v1/chat/completions")!
-    private let model = "gpt-5.4-mini"
+    private let baseURL     = URL(string: "https://api.anthropic.com/v1/messages")!
+    private let haikuModel  = "claude-haiku-4-5-20251001"
+    private let sonnetModel = "claude-sonnet-4-6"
     private let urlSession: URLSession
 
     private init() {
@@ -21,15 +22,11 @@ public actor ClaudeClient {
         urlSession = URLSession(configuration: cfg)
     }
 
-    /// Resolve API key from SettingsStore (Keychain) first, then env vars.
-    /// Accepts OPENAI_API_KEY or ANTHROPIC_API_KEY (the latter for back-compat
-    /// with existing setups — the value is what matters, not the variable name).
+    /// Resolve API key: Keychain (SettingsStore) first, then ANTHROPIC_API_KEY env var.
     private func currentKey() async -> String? {
         if let k = await MainActor.run(body: { SettingsStore.shared.anthropicAPIKey }),
            !k.isEmpty { return k }
-        let env = ProcessInfo.processInfo.environment
-        if let k = env["OPENAI_API_KEY"], !k.isEmpty { return k }
-        return env["ANTHROPIC_API_KEY"]
+        return ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"]
     }
 
     // Set to non-nil in unit tests to override the real key check.
@@ -61,14 +58,15 @@ public actor ClaudeClient {
         Respond ONLY with valid JSON — no prose, no markdown fences:
         {"status":"onTask","confidence":0.95,"reason":"one sentence"}
         """
-        let messages: [[String: Any]] = [
-            ["role": "system", "content": system],
-            ["role": "user", "content": [
+        let messages: [[String: Any]] = [[
+            "role": "user",
+            "content": [
                 ["type": "text", "text": "Classify this screen. JSON only."],
-                imageContent(b64, detail: "low"),
-            ]],
-        ]
-        let text = try await post(key: key, messages: messages, maxTokens: 150)
+                imageContent(b64),
+            ] as [[String: Any]],
+        ]]
+        let text = try await post(key: key, model: haikuModel, system: system,
+                                  messages: messages, maxTokens: 150)
         return parseClassification(text)
     }
 
@@ -93,14 +91,15 @@ public actor ClaudeClient {
         or
         {"verified":false,"explanation":"one sentence explaining what is missing"}
         """
-        let messages: [[String: Any]] = [
-            ["role": "system", "content": system],
-            ["role": "user", "content": [
+        let messages: [[String: Any]] = [[
+            "role": "user",
+            "content": [
                 ["type": "text", "text": "Is the task verifiably complete? JSON only."],
-                imageContent(b64, detail: "high"),
-            ]],
-        ]
-        let text = try await post(key: key, messages: messages, maxTokens: 300)
+                imageContent(b64),
+            ] as [[String: Any]],
+        ]]
+        let text = try await post(key: key, model: sonnetModel, system: system,
+                                  messages: messages, maxTokens: 300)
         return parseVerification(text)
     }
 
@@ -111,48 +110,39 @@ public actor ClaudeClient {
         systemPrompt: String
     ) async throws -> String {
         guard let key = await currentKey() else { throw ClaudeError.missingAPIKey }
-        var apiMessages: [[String: Any]] = [["role": "system", "content": systemPrompt]]
-        for msg in messages {
-            apiMessages.append(["role": msg.role.rawValue, "content": msg.content])
+        let apiMessages: [[String: Any]] = messages.map { msg in
+            ["role": msg.role.rawValue, "content": msg.content]
         }
-        return try await post(key: key, messages: apiMessages, maxTokens: 600)
+        return try await post(key: key, model: haikuModel, system: systemPrompt,
+                              messages: apiMessages, maxTokens: 600)
     }
 
     // MARK: - HTTP
 
-    /// Posts a Chat Completions request and returns the assistant message text.
-    /// Uses `max_completion_tokens` (gpt-5.x family) and falls back to `max_tokens`
-    /// on 400 for older models that don't recognize the newer field.
+    /// Posts to the Anthropic Messages API and returns the first content block's text.
     private func post(
         key: String,
+        model: String,
+        system: String,
         messages: [[String: Any]],
         maxTokens: Int
     ) async throws -> String {
-        var body: [String: Any] = [
+        let body: [String: Any] = [
             "model": model,
+            "max_tokens": maxTokens,
+            "system": system,
             "messages": messages,
-            "max_completion_tokens": maxTokens,
         ]
 
         var req = URLRequest(url: baseURL)
         req.httpMethod = "POST"
-        req.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
+        req.setValue(key,          forHTTPHeaderField: "x-api-key")
+        req.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        var (data, response) = try await urlSession.data(for: req)
-        var statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
-
-        // Retry with `max_tokens` for legacy models that reject `max_completion_tokens`.
-        if statusCode == 400,
-           let errStr = String(data: data, encoding: .utf8),
-           errStr.contains("max_completion_tokens") {
-            body.removeValue(forKey: "max_completion_tokens")
-            body["max_tokens"] = maxTokens
-            req.httpBody = try JSONSerialization.data(withJSONObject: body)
-            (data, response) = try await urlSession.data(for: req)
-            statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
-        }
+        let (data, response) = try await urlSession.data(for: req)
+        let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
 
         guard (200..<300).contains(statusCode) else {
             let bodyStr = String(data: data, encoding: .utf8) ?? "<unreadable>"
@@ -160,11 +150,10 @@ public actor ClaudeClient {
         }
 
         guard
-            let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-            let choices = json["choices"] as? [[String: Any]],
-            let first = choices.first,
-            let message = first["message"] as? [String: Any],
-            let text = message["content"] as? String
+            let json    = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+            let content = json["content"] as? [[String: Any]],
+            let first   = content.first,
+            let text    = first["text"] as? String
         else {
             throw ClaudeError.decodingError("unexpected response shape")
         }
@@ -173,13 +162,14 @@ public actor ClaudeClient {
 
     // MARK: - Image helpers
 
-    /// OpenAI Chat Completions image content: data URL with optional `detail`.
-    private func imageContent(_ base64: String, detail: String) -> [String: Any] {
+    /// Anthropic Messages API image content block (base64 source).
+    private func imageContent(_ base64: String) -> [String: Any] {
         [
-            "type": "image_url",
-            "image_url": [
-                "url": "data:image/jpeg;base64,\(base64)",
-                "detail": detail,
+            "type": "image",
+            "source": [
+                "type": "base64",
+                "media_type": "image/jpeg",
+                "data": base64,
             ] as [String: Any],
         ]
     }
@@ -202,7 +192,7 @@ public actor ClaudeClient {
 
     // MARK: - Response parsers
 
-    private func parseClassification(_ text: String) -> OnTaskClassification {
+    func parseClassification(_ text: String) -> OnTaskClassification {
         let cleaned = stripMarkdownFences(text)
         guard
             let data   = cleaned.data(using: .utf8),
@@ -222,7 +212,7 @@ public actor ClaudeClient {
         return OnTaskClassification(status: onTaskStatus, confidence: confidence, reason: reason)
     }
 
-    private func parseVerification(_ text: String) -> VerificationResult {
+    func parseVerification(_ text: String) -> VerificationResult {
         let cleaned = stripMarkdownFences(text)
         guard
             let data        = cleaned.data(using: .utf8),

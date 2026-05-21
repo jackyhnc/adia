@@ -33,7 +33,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // the license screen unless they've actually run out of trial.
             LicenseManager.shared.startTrialIfNeeded()
             // Only show onboarding if there's literally no API key anywhere —
-            // Keychain, env, or ~/.adia/openai_key. Once a key is set, the app
+            // Keychain, env, or ~/.adia/anthropic_key. Once a key is set, the app
             // opens straight to the notch.
             if SettingsStore.shared.hasAPIKey {
                 showNotch()
