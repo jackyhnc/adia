@@ -43,7 +43,9 @@ public final class SettingsStore: ObservableObject {
         crashReportsEnabled  = defaults.object(forKey: "crashReportsEnabled")  as? Bool ?? true
         usageAnalyticsEnabled = defaults.object(forKey: "usageAnalyticsEnabled") as? Bool ?? true
         anthropicAPIKey = Self.readKey(service: keychainService, account: keychainAccount)
+            ?? ProcessInfo.processInfo.environment["OPENAI_API_KEY"]
             ?? ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"]
+            ?? Self.readKeyFromHomeFile()
         customBlockedDomains  = Self.loadDomainList(key: Self.customDomainsKey,  from: defaults)
         disabledDefaultDomains = Set(Self.loadDomainList(key: Self.disabledDomainsKey, from: defaults))
     }
@@ -118,6 +120,24 @@ public final class SettingsStore: ObservableObject {
         s = s.components(separatedBy: "/").first ?? s
         s = s.components(separatedBy: "?").first ?? s
         return s
+    }
+
+    // MARK: - Home-file fallback
+    //
+    // Single-line text file at ~/.adia/openai_key (or ~/.adia/anthropic_key for
+    // back-compat). Lets you keep a dev key out of the repo without having to
+    // export an env var before every launch — drop the key there once and the
+    // app picks it up forever. The file lives outside the repo by design.
+
+    private static func readKeyFromHomeFile() -> String? {
+        let home = NSHomeDirectory()
+        for filename in ["openai_key", "anthropic_key", "api_key"] {
+            let path = "\(home)/.adia/\(filename)"
+            guard let raw = try? String(contentsOfFile: path, encoding: .utf8) else { continue }
+            let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !trimmed.isEmpty { return trimmed }
+        }
+        return nil
     }
 
     // MARK: - Keychain helpers

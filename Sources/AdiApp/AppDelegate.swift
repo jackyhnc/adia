@@ -29,12 +29,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         Task {
             await LicenseManager.shared.bootstrap()
-            let needsOnboarding = !SettingsStore.shared.hasAPIKey
-                || LicenseManager.shared.status == .unknown
-            if needsOnboarding {
-                showOnboarding()
-            } else {
+            // Silently start the trial on first launch so the user never sees
+            // the license screen unless they've actually run out of trial.
+            LicenseManager.shared.startTrialIfNeeded()
+            // Only show onboarding if there's literally no API key anywhere —
+            // Keychain, env, or ~/.adia/openai_key. Once a key is set, the app
+            // opens straight to the notch.
+            if SettingsStore.shared.hasAPIKey {
                 showNotch()
+            } else {
+                showOnboarding()
             }
         }
     }
