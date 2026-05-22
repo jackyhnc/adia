@@ -43,6 +43,12 @@ public final class CalloutManager {
     private func fire() {
         let message = Self.callouts.randomElement() ?? "focus."
         NotchState.shared.showCallout(message)
+        // Auto-dismiss after 8 seconds if the user hasn't recovered to on-task yet.
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(8))
+            guard let self, self.hasFiredForStreak else { return }
+            NotchState.shared.clearCallout()
+        }
     }
 
     /// Resets streak counters and clears any active callout.

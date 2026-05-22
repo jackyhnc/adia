@@ -86,8 +86,10 @@ public final class ConversationManager: ObservableObject {
     private func openingMessage(for mode: ConversationMode?) -> String {
         switch mode {
         case .reasoning(let domain):
-            let site = domain.flatMap { $0.isEmpty ? nil : $0 } ?? "that site"
-            return "why do you need \(site) right now?"
+            if let d = domain, !d.isEmpty {
+                return "why do you need \(d) right now?"
+            }
+            return "what's up?"
         case .earlyExit:
             return "you want to stop? what happened?"
         case nil:

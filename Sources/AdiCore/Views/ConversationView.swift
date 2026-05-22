@@ -108,7 +108,7 @@ public struct ConversationView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.vertical, 8)
         } else if !domain.isEmpty {
-            // Only show grant/deny chips when there's a specific blocked domain to act on.
+            // Grant/deny chips for a specific blocked domain.
             HStack(spacing: 8) {
                 ActionChip(label: "Grant Access", color: .green) {
                     manager.grantAccess(domain: domain)
@@ -117,6 +117,13 @@ public struct ConversationView: View {
                     manager.denyAccess()
                     NotchState.shared.exitConversation()
                 }
+            }
+            .padding(.horizontal, 12)
+            .padding(.bottom, 10)
+        } else {
+            // No specific domain — user opened Chat while on-task. Give them a way to close.
+            ActionChip(label: "Close", color: Color.white.opacity(0.5)) {
+                NotchState.shared.exitConversation()
             }
             .padding(.horizontal, 12)
             .padding(.bottom, 10)

@@ -81,6 +81,19 @@ struct CalloutManagerTests {
         }
     }
 
+    /// Verify callout shows a non-empty message string from the callouts pool.
+    @Test func calloutMessageIsNonEmpty() async {
+        await MainActor.run {
+            CalloutManager.shared.evaluate(.onTask) // reset streak
+            NotchState.shared.clearCallout()
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask)
+            let msg = NotchState.shared.calloutMessage
+            #expect(msg != nil)
+            #expect(!(msg ?? "").isEmpty)
+        }
+    }
+
     /// Verifies that public reset() clears streak state so a fresh session can
     /// immediately trigger a callout without inheriting the prior session's streak.
     @Test func publicResetAllowsNewStreakToFire() async {

@@ -24,14 +24,35 @@ struct ConversationManagerTests {
         #expect(messages[0].content.contains("youtube.com"))
     }
 
-    @Test func startReasoningNilDomainFallsBackToGeneric() async {
+    @Test func startReasoningNilDomainUsesGenericOpening() async {
         await reset()
         await MainActor.run {
             ConversationManager.shared.start(mode: .reasoning(domain: nil))
         }
         let messages = await MainActor.run { ConversationManager.shared.messages }
         #expect(messages.count == 1)
-        #expect(messages[0].content.contains("that site"))
+        // nil domain should say "what's up?" not ask about a specific site
+        #expect(messages[0].content == "what's up?")
+    }
+
+    @Test func startReasoningEmptyDomainUsesGenericOpening() async {
+        await reset()
+        await MainActor.run {
+            ConversationManager.shared.start(mode: .reasoning(domain: ""))
+        }
+        let messages = await MainActor.run { ConversationManager.shared.messages }
+        #expect(messages.count == 1)
+        #expect(messages[0].content == "what's up?")
+    }
+
+    @Test func startReasoningWithDomainMentionsDomainInOpening() async {
+        await reset()
+        await MainActor.run {
+            ConversationManager.shared.start(mode: .reasoning(domain: "twitter.com"))
+        }
+        let messages = await MainActor.run { ConversationManager.shared.messages }
+        #expect(messages.count == 1)
+        #expect(messages[0].content.contains("twitter.com"))
     }
 
     @Test func startEarlyExitSeedsOpeningMessage() async {
