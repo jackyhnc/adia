@@ -76,8 +76,19 @@ public final class LocalBlockServer: @unchecked Sendable {
         return "this site"
     }
 
+    internal static func htmlEscape(_ text: String) -> String {
+        text
+            .replacingOccurrences(of: "&", with: "&amp;")
+            .replacingOccurrences(of: "<", with: "&lt;")
+            .replacingOccurrences(of: ">", with: "&gt;")
+            .replacingOccurrences(of: "\"", with: "&quot;")
+    }
+
     private func blockedHTML(domain: String) -> String {
-        let task = taskDescription.isEmpty ? "you have work to do." : "you said you'd \(taskDescription)."
+        let safeDomain = Self.htmlEscape(domain)
+        let safeTask = taskDescription.isEmpty
+            ? "you have work to do."
+            : "you said you'd \(Self.htmlEscape(taskDescription))."
         return """
         <!DOCTYPE html>
         <html lang="en">
@@ -119,9 +130,9 @@ public final class LocalBlockServer: @unchecked Sendable {
           </style>
         </head>
         <body>
-          <div class="domain">\(domain)</div>
+          <div class="domain">\(safeDomain)</div>
           <h1>get back to work.</h1>
-          <p>\(task)</p>
+          <p>\(safeTask)</p>
           <div class="hint">open adia from the notch to request access</div>
         </body>
         </html>

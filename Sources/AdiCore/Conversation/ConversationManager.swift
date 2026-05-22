@@ -65,7 +65,8 @@ public final class ConversationManager: ObservableObject {
         Task { @MainActor in
             await SessionManager.shared.whitelist(domain: domain)
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(800))
             NotchState.shared.exitConversation()
         }
     }
@@ -140,7 +141,8 @@ public final class ConversationManager: ObservableObject {
             Task { @MainActor in
                 await SessionManager.shared.whitelist(domain: d)
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            Task { @MainActor in
+                try? await Task.sleep(for: .seconds(1))
                 NotchState.shared.exitConversation()
             }
         }

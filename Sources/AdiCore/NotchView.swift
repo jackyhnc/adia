@@ -36,10 +36,12 @@ private struct CollapsedView: View {
             Circle()
                 .fill(dotColor)
                 .frame(width: 7, height: 7)
-            if session.session != nil {
-                Text("Focus")
-                    .font(.system(size: 11, weight: .medium, design: .rounded))
-                    .foregroundStyle(.white.opacity(0.85))
+            if let s = session.session {
+                TimelineView(.periodic(from: s.startTime, by: 60)) { ctx in
+                    Text(collapsedElapsed(from: s.startTime, to: ctx.date))
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.85))
+                }
             }
         }
         .padding(.horizontal, 14)
@@ -49,6 +51,15 @@ private struct CollapsedView: View {
         .contentShape(Capsule())
         .onTapGesture { state.expand() }
         .onHover { if $0 { state.expand() } }
+    }
+
+    private func collapsedElapsed(from start: Date, to now: Date) -> String {
+        let total = max(0, Int(now.timeIntervalSince(start)))
+        let h = total / 3600
+        let m = (total % 3600) / 60
+        if h > 0 { return "\(h)h \(m)m" }
+        if m > 0 { return "\(m)m" }
+        return "Focus"
     }
 
     private var dotColor: Color {

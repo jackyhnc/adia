@@ -120,6 +120,7 @@ public final class ScreenCaptureManager: @unchecked Sendable {
     private init() {}
 
     public var onFrame: (@Sendable (CGImage) async -> Void)?
+    public var lastFrame: CGImage? { nil }
 
     public func start() async throws { throw CaptureError.unavailable }
     public func stop() {}

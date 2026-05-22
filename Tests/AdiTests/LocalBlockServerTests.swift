@@ -47,4 +47,35 @@ struct LocalBlockServerTests {
         LocalBlockServer.shared.start(blockedDomains: [], taskDescription: "")
         LocalBlockServer.shared.stop()
     }
+
+    // MARK: - htmlEscape
+
+    @Test func htmlEscapePassthroughForPlainText() {
+        #expect(LocalBlockServer.htmlEscape("hello world") == "hello world")
+    }
+
+    @Test func htmlEscapeAmpersand() {
+        #expect(LocalBlockServer.htmlEscape("bread & butter") == "bread &amp; butter")
+    }
+
+    @Test func htmlEscapeAngleBrackets() {
+        #expect(LocalBlockServer.htmlEscape("<script>alert(1)</script>") == "&lt;script&gt;alert(1)&lt;/script&gt;")
+    }
+
+    @Test func htmlEscapeDoubleQuote() {
+        #expect(LocalBlockServer.htmlEscape("say \"hello\"") == "say &quot;hello&quot;")
+    }
+
+    @Test func htmlEscapeAllSpecialCharsInTaskDescription() {
+        let input = "submit <ENGL 101> essay & \"cover page\""
+        let escaped = LocalBlockServer.htmlEscape(input)
+        #expect(escaped.contains("&lt;ENGL 101&gt;"))
+        #expect(escaped.contains("&amp;"))
+        #expect(escaped.contains("&quot;cover page&quot;"))
+        #expect(!escaped.contains("<ENGL"))
+    }
+
+    @Test func htmlEscapeEmptyString() {
+        #expect(LocalBlockServer.htmlEscape("") == "")
+    }
 }
