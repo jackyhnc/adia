@@ -22,6 +22,11 @@ public final class CalloutManager {
         "c'mon.",
     ]
 
+    // Stored reference so a new streak or reset() cancels a pending auto-dismiss.
+    // Without this, two consecutive streaks produce two tasks; the first task's
+    // 8s timer fires mid-second-streak and clears the wrong callout.
+    private var autoDismissTask: Task<Void, Never>?
+
     private init() {}
 
     /// Call this with each new on-task classification.
@@ -43,11 +48,15 @@ public final class CalloutManager {
     private func fire() {
         let message = Self.callouts.randomElement() ?? "focus."
         NotchState.shared.showCallout(message)
-        // Auto-dismiss after 8 seconds if the user hasn't recovered to on-task yet.
-        Task { @MainActor [weak self] in
-            try? await Task.sleep(for: .seconds(8))
-            guard let self, self.hasFiredForStreak else { return }
-            NotchState.shared.clearCallout()
+        // Cancel any pending auto-dismiss from a prior streak before starting a new one.
+        autoDismissTask?.cancel()
+        autoDismissTask = Task { @MainActor in
+            do {
+                try await Task.sleep(for: .seconds(8))
+                NotchState.shared.clearCallout()
+            } catch {
+                // Task was cancelled — reset() was called or a new streak started.
+            }
         }
     }
 
@@ -55,6 +64,8 @@ public final class CalloutManager {
     /// Call this when a session ends or a new session starts so stale streak
     /// state from the prior session doesn't suppress the first callout.
     public func reset() {
+        autoDismissTask?.cancel()
+        autoDismissTask = nil
         consecutiveOffTask = 0
         hasFiredForStreak = false
         NotchState.shared.clearCallout()

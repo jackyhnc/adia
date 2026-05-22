@@ -37,12 +37,16 @@ public actor OnTaskDetector {
 
     public func evaluate(frame: CGImage) async -> OnTaskStatus {
         guard let session = currentSession else { return .onTask }
-        guard await client.isConfigured() else { return .onTask }
 
+        // Rate-limit check first — skips the isConfigured() MainActor hop on
+        // every throttled frame (all but 1 per second at 1 FPS capture).
         let now = Date()
         if let last = lastEvaluatedAt, now.timeIntervalSince(last) < minInterval {
             return lastStatus
         }
+
+        // Only hop to MainActor to read the API key when we're about to make a call.
+        guard await client.isConfigured() else { return .onTask }
         lastEvaluatedAt = now
 
         do {

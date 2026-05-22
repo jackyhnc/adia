@@ -93,6 +93,18 @@ struct SettingsStoreTests {
         #expect(SettingsStore.normalizeDomain("Reddit.COM") == "reddit.com")
     }
 
+    @Test func normalizeDomainStripsPort() {
+        #expect(SettingsStore.normalizeDomain("example.com:8080") == "example.com")
+    }
+
+    @Test func normalizeDomainStripsPortWithPathAndScheme() {
+        #expect(SettingsStore.normalizeDomain("https://www.example.com:443/path?q=1") == "example.com")
+    }
+
+    @Test func normalizeDomainPortOnlyBareHost() {
+        #expect(SettingsStore.normalizeDomain("localhost:3000") == "localhost")
+    }
+
     // MARK: - Custom domain management
 
     private func resetDomains() async {

@@ -109,7 +109,7 @@ public final class SettingsStore: ObservableObject {
         return list
     }
 
-    /// Strips protocol, www, and path components: "https://www.example.com/foo" → "example.com"
+    /// Strips protocol, www, path, query, and port: "https://www.example.com:8080/foo?q=1" → "example.com"
     static func normalizeDomain(_ raw: String) -> String {
         var s = raw.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         for prefix in ["https://", "http://"] {
@@ -118,6 +118,10 @@ public final class SettingsStore: ObservableObject {
         if s.hasPrefix("www.") { s = String(s.dropFirst(4)) }
         s = s.components(separatedBy: "/").first ?? s
         s = s.components(separatedBy: "?").first ?? s
+        // Strip optional port ("example.com:8080" → "example.com"). Without this,
+        // the /etc/hosts entry "127.0.0.1 example.com:8080" is syntactically invalid
+        // and the domain would not be blocked.
+        s = s.components(separatedBy: ":").first ?? s
         return s
     }
 

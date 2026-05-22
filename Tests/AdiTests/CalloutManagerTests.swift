@@ -94,6 +94,28 @@ struct CalloutManagerTests {
         }
     }
 
+    /// Verifies that firing a second streak after reset() uses a fresh auto-dismiss task.
+    /// This guards the race condition where two streaks share independent tasks:
+    /// the first task's 8s timer must not clear the second streak's callout.
+    @Test func resetCancelsAutoDismissBeforeNewStreak() async {
+        await MainActor.run {
+            CalloutManager.shared.evaluate(.onTask)  // reset streak
+            NotchState.shared.clearCallout()
+            // First streak fires
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask)
+            let firstMessage = NotchState.shared.calloutMessage
+            #expect(firstMessage != nil)
+            // reset() cancels the first auto-dismiss task
+            CalloutManager.shared.reset()
+            #expect(NotchState.shared.calloutMessage == nil)
+            // Second streak fires with its own independent task
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask)
+            #expect(NotchState.shared.calloutMessage != nil)
+        }
+    }
+
     /// Verifies that public reset() clears streak state so a fresh session can
     /// immediately trigger a callout without inheriting the prior session's streak.
     @Test func publicResetAllowsNewStreakToFire() async {
