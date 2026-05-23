@@ -1,5 +1,19 @@
 # Adia — Build Progress
 
+## Run 15 — 2026-05-23
+
+### Shipped
+- **Refactor: `NotchWindowController` — remove mixed parameter/singleton access** — `targetFrame` previously took boolean parameters (`expanded`, `creating`, `conversation`, `verifying`) for most state but read `NotchState.shared.verificationResult` and `NotchState.shared.calloutMessage` directly, creating an inconsistency where the function's output depended on both its parameters and hidden global state. Refactored: `positionPanel(animate:)` and `targetFrame(screen:)` now take no state parameters and read all sizing state from `NotchState.shared` directly (safe because both are exclusively called from `@MainActor`). The six separate Combine sinks in `observeState()` collapsed into a single shared `reposition` closure, eliminating the pattern where each sink had to re-read the same state it was already receiving.
+- **Fix: add `.serialized` to 4 test suites that share mutable `@MainActor` singletons** — `CalloutManagerTests`, `ConversationManagerTests`, `OnTaskDetectorTests`, and `SessionManagerTests` all access their respective singletons across multiple `await MainActor.run` calls within a single test. Without `.serialized`, Swift Testing's default concurrent execution allows two tests to interleave between those calls and race on shared mutable state. `NotchStateTests` already had `.serialized`; applied the same fix to the four remaining suites.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. No outstanding code tasks. Remaining gaps are hardware-only: (1) integration smoke test on a real macOS machine with `ANTHROPIC_API_KEY`; (2) UX test of the notch panel on a MacBook with a physical notch.
+
+---
+
 ## Run 14 — 2026-05-23
 
 ### Shipped
