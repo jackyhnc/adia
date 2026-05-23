@@ -3,7 +3,8 @@ import Foundation
 import CoreGraphics
 @testable import AdiCore
 
-@Suite("OnTaskDetector")
+/// Tests run serially: ClaudeClient.shared._isConfiguredOverride is mutated across tests.
+@Suite("OnTaskDetector", .serialized)
 struct OnTaskDetectorTests {
 
     /// Creates a minimal 1x1 CGImage for use as a dummy frame.

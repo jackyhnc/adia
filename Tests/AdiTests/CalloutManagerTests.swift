@@ -1,7 +1,9 @@
 import Testing
 @testable import AdiCore
 
-@Suite("CalloutManager")
+/// Tests run serially: CalloutManager.shared and NotchState.shared are @MainActor singletons.
+/// Concurrent tests could interleave between MainActor.run calls and race on shared state.
+@Suite("CalloutManager", .serialized)
 struct CalloutManagerTests {
 
     @Test func onTaskNoCallout() async {

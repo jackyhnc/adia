@@ -2,7 +2,8 @@ import Testing
 import Foundation
 @testable import AdiCore
 
-@Suite("SessionManager — pure logic")
+/// Tests run serially: SessionManager.shared is a @MainActor singleton.
+@Suite("SessionManager — pure logic", .serialized)
 struct SessionManagerTests {
 
     private func injectSession(_ session: Session?) async {

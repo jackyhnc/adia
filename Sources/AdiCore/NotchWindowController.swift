@@ -63,7 +63,7 @@ public final class NotchWindowController: NSWindowController {
         let rootView = NotchRootView(state: .shared, session: .shared)
         panel.contentView = NSHostingView(rootView: rootView)
 
-        positionPanel(expanded: false, animate: false)
+        positionPanel(animate: false)
         panel.orderFrontRegardless()
 
         observeState()
@@ -75,81 +75,29 @@ public final class NotchWindowController: NSWindowController {
     // MARK: State observation
 
     private func observeState() {
-        // Combine all state signals that affect panel size.
-        Publishers.CombineLatest4(
-            NotchState.shared.$isExpanded,
-            NotchState.shared.$isCreating,
-            NotchState.shared.$showingConversation,
-            NotchState.shared.$isVerifying
-        )
-        .dropFirst()
-        .sink { [weak self] expanded, creating, conversation, verifying in
+        // Single handler: positionPanel reads all state from NotchState.shared directly,
+        // so every property that affects panel size can share the same sink.
+        let reposition: (Any) -> Void = { [weak self] _ in
             Task { @MainActor [weak self] in
                 guard let self else { return }
-                self.positionPanel(
-                    expanded: expanded,
-                    creating: creating,
-                    conversation: conversation,
-                    verifying: verifying,
-                    animate: true
-                )
-                self.notchPanel.hasShadow = expanded
+                self.positionPanel(animate: true)
+                self.notchPanel.hasShadow = NotchState.shared.isExpanded
             }
         }
-        .store(in: &cancellables)
 
-        // Also react to verificationResult appearing (different height than verifying spinner).
-        NotchState.shared.$verificationResult
-            .dropFirst()
-            .sink { [weak self] _ in
-                Task { @MainActor [weak self] in
-                    self?.positionPanel(
-                        expanded: NotchState.shared.isExpanded,
-                        creating: NotchState.shared.isCreating,
-                        conversation: NotchState.shared.showingConversation,
-                        verifying: NotchState.shared.isVerifying,
-                        animate: true
-                    )
-                }
-            }
-            .store(in: &cancellables)
-
-        // React to callout banner appearing/disappearing — the banner adds ~40pt to
-        // active-session content, so the panel height must switch between two constants.
-        NotchState.shared.$calloutMessage
-            .dropFirst()
-            .sink { [weak self] _ in
-                Task { @MainActor [weak self] in
-                    let s = NotchState.shared
-                    self?.positionPanel(
-                        expanded: s.isExpanded,
-                        creating: s.isCreating,
-                        conversation: s.showingConversation,
-                        verifying: s.isVerifying,
-                        animate: true
-                    )
-                }
-            }
-            .store(in: &cancellables)
+        NotchState.shared.$isExpanded.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        NotchState.shared.$isCreating.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        NotchState.shared.$showingConversation.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        NotchState.shared.$isVerifying.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        NotchState.shared.$verificationResult.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        NotchState.shared.$calloutMessage.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
     }
 
     // MARK: Panel sizing / positioning
 
-    private func positionPanel(
-        expanded: Bool,
-        creating: Bool = false,
-        conversation: Bool = false,
-        verifying: Bool = false,
-        animate: Bool
-    ) {
+    private func positionPanel(animate: Bool) {
         guard let screen = NSScreen.main else { return }
-        let target = targetFrame(
-            expanded: expanded,
-            creating: creating,
-            conversation: conversation,
-            verifying: verifying,
-            screen: screen
-        )
+        let target = targetFrame(screen: screen)
         if animate {
             NSAnimationContext.runAnimationGroup { ctx in
                 ctx.duration = 0.28
@@ -183,24 +131,22 @@ public final class NotchWindowController: NSWindowController {
         )
     }
 
-    private func targetFrame(
-        expanded: Bool,
-        creating: Bool,
-        conversation: Bool,
-        verifying: Bool,
-        screen: NSScreen
-    ) -> NSRect {
+    /// Reads all panel-sizing state from NotchState.shared. Called exclusively from
+    /// @MainActor context, so direct singleton access is safe and avoids the prior
+    /// inconsistency of mixing boolean parameters with singleton reads.
+    private func targetFrame(screen: NSScreen) -> NSRect {
+        let state = NotchState.shared
         let base = notchBaseRect(screen: screen)
-        guard expanded else { return base }
+        guard state.isExpanded else { return base }
 
         let h: CGFloat
-        if conversation {
+        if state.showingConversation {
             h = Self.conversationHeight
-        } else if verifying || NotchState.shared.verificationResult != nil {
+        } else if state.isVerifying || state.verificationResult != nil {
             h = Self.verificationHeight
-        } else if creating {
+        } else if state.isCreating {
             h = Self.creationExpandedHeight
-        } else if NotchState.shared.calloutMessage != nil {
+        } else if state.calloutMessage != nil {
             h = Self.calloutExpandedHeight
         } else {
             h = Self.expandedHeight

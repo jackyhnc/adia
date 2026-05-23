@@ -2,7 +2,9 @@ import Testing
 import Foundation
 @testable import AdiCore
 
-@Suite("ConversationManager")
+/// Tests run serially: ConversationManager.shared is a @MainActor singleton.
+/// Without .serialized, concurrent tests can interleave between MainActor.run calls and race.
+@Suite("ConversationManager", .serialized)
 struct ConversationManagerTests {
 
     private func reset() async {
