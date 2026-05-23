@@ -85,7 +85,10 @@ private struct ExpandedView: View {
             Divider().overlay(Color.white.opacity(0.07))
             content
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        // maxHeight: .infinity ensures the dark background fills the entire fixed-size
+        // NSPanel rather than stopping at content height, which would leave the lower
+        // portion of the panel transparent (clear panel background shows through).
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Color(red: 0.07, green: 0.07, blue: 0.07))

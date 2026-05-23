@@ -86,9 +86,15 @@ public final class LocalBlockServer: @unchecked Sendable {
 
     private func blockedHTML(domain: String) -> String {
         let safeDomain = Self.htmlEscape(domain)
-        let safeTask = taskDescription.isEmpty
-            ? "you have work to do."
-            : "you said you'd \(Self.htmlEscape(taskDescription))."
+        let safeTask: String
+        if taskDescription.isEmpty {
+            safeTask = "you have work to do."
+        } else {
+            // Lowercase the first letter so "Write ENGL 101 essay" becomes
+            // "you said you'd write ENGL 101 essay." not "...Write..."
+            let lowered = taskDescription.prefix(1).lowercased() + taskDescription.dropFirst()
+            safeTask = "you said you'd \(Self.htmlEscape(lowered))."
+        }
         return """
         <!DOCTYPE html>
         <html lang="en">
