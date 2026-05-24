@@ -104,6 +104,7 @@ public final class ScreenCaptureManager: @unchecked Sendable {
     public func stop() {
         stream?.stopCapture { _ in }
         stream = nil
+        lastFrame = nil
     }
 }
 

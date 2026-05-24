@@ -105,6 +105,18 @@ struct SettingsStoreTests {
         #expect(SettingsStore.normalizeDomain("localhost:3000") == "localhost")
     }
 
+    @Test func normalizeDomainStripsFragment() {
+        #expect(SettingsStore.normalizeDomain("example.com#section") == "example.com")
+    }
+
+    @Test func normalizeDomainStripsFragmentWithFullURL() {
+        #expect(SettingsStore.normalizeDomain("https://en.wikipedia.org/wiki/Essay#Introduction") == "en.wikipedia.org")
+    }
+
+    @Test func normalizeDomainBareFragmentWithWww() {
+        #expect(SettingsStore.normalizeDomain("www.example.com#top") == "example.com")
+    }
+
     // MARK: - Custom domain management
 
     private func resetDomains() async {

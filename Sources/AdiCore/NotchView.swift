@@ -356,23 +356,45 @@ private struct SessionCreationFormView: View {
     @State private var taskText: String = ""
     @State private var criteriaText: String = ""
     @State private var isStarting: Bool = false
+    @FocusState private var focused: FormField?
+
+    private enum FormField: Hashable { case task, criteria }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            fieldGroup(
-                label: "WORKING ON",
-                placeholder: "e.g. Write my ENGL 101 essay",
-                text: $taskText,
-                multiline: true
-            )
+            fieldGroup(label: "WORKING ON") {
+                ZStack(alignment: .topLeading) {
+                    if taskText.isEmpty {
+                        fieldPlaceholder("e.g. Write my ENGL 101 essay")
+                    }
+                    TextField("", text: $taskText, axis: .vertical)
+                        .lineLimit(2...2)
+                        .font(.system(size: 12))
+                        .foregroundStyle(.white)
+                        .textFieldStyle(.plain)
+                        .padding(.horizontal, 9)
+                        .padding(.vertical, 7)
+                        .focused($focused, equals: .task)
+                        .onSubmit { focused = .criteria }
+                }
+            }
             .padding(.bottom, 8)
 
-            fieldGroup(
-                label: "DONE WHEN",
-                placeholder: "e.g. Submitted to Canvas",
-                text: $criteriaText,
-                multiline: false
-            )
+            fieldGroup(label: "DONE WHEN") {
+                ZStack(alignment: .topLeading) {
+                    if criteriaText.isEmpty {
+                        fieldPlaceholder("e.g. Submitted to Canvas")
+                    }
+                    TextField("", text: $criteriaText)
+                        .font(.system(size: 12))
+                        .foregroundStyle(.white)
+                        .textFieldStyle(.plain)
+                        .padding(.horizontal, 9)
+                        .padding(.vertical, 7)
+                        .focused($focused, equals: .criteria)
+                        .onSubmit { if canStart { startSession() } }
+                }
+            }
             .padding(.bottom, 14)
 
             HStack(spacing: 8) {
@@ -395,6 +417,12 @@ private struct SessionCreationFormView: View {
         .padding(.horizontal, 16)
         .padding(.top, 10)
         .padding(.bottom, 14)
+        .onAppear {
+            Task { @MainActor in
+                try? await Task.sleep(for: .milliseconds(300))
+                focused = .task
+            }
+        }
     }
 
     private var canStart: Bool {
@@ -417,51 +445,29 @@ private struct SessionCreationFormView: View {
         }
     }
 
+    private func fieldPlaceholder(_ text: String) -> some View {
+        Text(text)
+            .font(.system(size: 12))
+            .foregroundStyle(.white.opacity(0.22))
+            .padding(.horizontal, 9)
+            .padding(.vertical, 7)
+            .allowsHitTesting(false)
+    }
+
     @ViewBuilder
-    private func fieldGroup(
-        label: String,
-        placeholder: String,
-        text: Binding<String>,
-        multiline: Bool
-    ) -> some View {
+    private func fieldGroup<Content: View>(label: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(label)
                 .font(.system(size: 9, weight: .bold))
                 .foregroundStyle(.white.opacity(0.35))
                 .tracking(1.5)
-
-            ZStack(alignment: .topLeading) {
-                if text.wrappedValue.isEmpty {
-                    Text(placeholder)
-                        .font(.system(size: 12))
-                        .foregroundStyle(.white.opacity(0.22))
-                        .padding(.horizontal, 9)
-                        .padding(.vertical, 7)
-                        .allowsHitTesting(false)
-                }
-                if multiline {
-                    TextField("", text: text, axis: .vertical)
-                        .lineLimit(2...2)
-                        .font(.system(size: 12))
-                        .foregroundStyle(.white)
-                        .textFieldStyle(.plain)
-                        .padding(.horizontal, 9)
-                        .padding(.vertical, 7)
-                } else {
-                    TextField("", text: text)
-                        .font(.system(size: 12))
-                        .foregroundStyle(.white)
-                        .textFieldStyle(.plain)
-                        .padding(.horizontal, 9)
-                        .padding(.vertical, 7)
-                }
-            }
-            .background(Color.white.opacity(0.06))
-            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .stroke(Color.white.opacity(0.10), lineWidth: 0.5)
-            )
+            content()
+                .background(Color.white.opacity(0.06))
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .stroke(Color.white.opacity(0.10), lineWidth: 0.5)
+                )
         }
     }
 }

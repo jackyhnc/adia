@@ -1,5 +1,20 @@
 # Adia — Build Progress
 
+## Run 16 — 2026-05-24
+
+### Shipped
+- **UX: Auto-focus in `SessionCreationFormView`** — The form previously appeared without focus, forcing the user to click the "WORKING ON" field before typing. Added `@FocusState private var focused: FormField?` and a `FormField` enum (`task`, `criteria`). On `onAppear`, a 300ms Task sleep (letting the slide-up animation settle) requests focus on the task field. Return in the task field moves focus to the criteria field; Return in the criteria field submits the form if `canStart`. Refactored `fieldGroup` from `(label:placeholder:text:multiline:)` to `(label:content:)` using a `@ViewBuilder` closure — the new signature lets `@FocusState` bindings be applied directly on the `TextField`s inside the closure, which the old generic-parameter design made impossible to thread through. Extracted the placeholder `Text` into a `fieldPlaceholder` helper to avoid repetition.
+- **Fix: `ScreenCaptureManager.stop()` clears `lastFrame`** — Previously `stop()` set `stream = nil` but left `_lastFrame` pointing at the last captured frame from the ended session. If a new session started and the user immediately tapped "Done" before any new frame arrived, `verifyAndEnd()` would send the stale frame from the *previous* session to Claude for verification. Added `lastFrame = nil` in `stop()` (after `stream = nil`) so each session starts with a clean slate. The `lastFrame` setter is already lock-protected (`NSLock`), so this is safe from the stream queue.
+- **Fix: `normalizeDomain` strips URL fragment identifiers** — `example.com#section` was not stripped by the existing path-split (`"/"`) or query-split (`"?"`) logic; it passed through verbatim, producing the syntactically invalid `/etc/hosts` entry `127.0.0.1 example.com#section`. Added `s = s.components(separatedBy: "#").first ?? s` before the port-strip step (fragments cannot appear in domain names, so splitting on `#` is always safe). Three new `@Test` cases in `SettingsStoreTests`: bare fragment, full URL with path+fragment, www+fragment.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Remaining gaps are hardware-only: (1) integration smoke test on a real macOS machine with `ANTHROPIC_API_KEY`; (2) UX test of the notch panel on a MacBook with a physical notch.
+
+---
+
 ## Run 15 — 2026-05-23
 
 ### Shipped
