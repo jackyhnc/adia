@@ -10,7 +10,7 @@ import AppKit
 public actor ClaudeClient {
     public static let shared = ClaudeClient()
 
-    private let baseURL     = URL(string: "https://api.anthropic.com/v1/messages")!
+    private let baseURL     = URL(string: "https://api.anthropic.com/v1/messages")!  // hardcoded constant — URL(_:) always succeeds
     private let haikuModel  = "claude-haiku-4-5-20251001"
     private let sonnetModel = "claude-sonnet-4-6"
     private let urlSession: URLSession

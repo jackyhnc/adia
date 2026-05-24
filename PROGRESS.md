@@ -1,5 +1,21 @@
 # Adia — Build Progress
 
+## Run 17 — 2026-05-24
+
+### Shipped
+- **Fix: `SessionManager.whitelist(domain:)` deduplication** — Calling `whitelist(domain:)` twice with the same domain previously appended the domain twice to `whitelistedDomains`. A second call with `"reddit.com"` would produce `["reddit.com", "reddit.com"]`, meaning `HostsFileManager` would attempt to write duplicate `/etc/hosts` entries on the second unblock and the whitelist UI could show duplicate chips. Fixed by adding `guard !s.whitelistedDomains.contains(base) else { return }` before the `append`. The `blockedDomains.removeAll` after it was already idempotent, so no change needed there.
+- **Fix: Force-unwrap comment on `ClaudeClient.baseURL`** — Quality rule: no force unwraps without an explaining comment. `URL(string: "https://...")!` is safe for a hardcoded string literal but violated the rule. Added `// hardcoded constant — URL(_:) always succeeds`.
+- **Tests: `whitelistDeduplicatesDuplicateDomain`** — New test in `SessionManagerTests` verifies that calling `whitelist(domain:)` twice with `"reddit.com"` results in exactly one entry in `whitelistedDomains`, not two.
+- **Tests: `elapsedReflectsStartTime`** — New test in `SessionModelTests` creates a `Session` with `startTime = Date(timeIntervalSinceNow: -60)` and asserts `elapsed ∈ [58, 62]`. The previous `elapsedNonNegative` test only verified the property returned a non-negative value — it could not catch a broken implementation that always returned `0`.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Remaining gaps are hardware-only: (1) integration smoke test on a real macOS machine with `ANTHROPIC_API_KEY`; (2) UX test of the notch panel on a MacBook with a physical notch.
+
+---
+
 ## Run 16 — 2026-05-24
 
 ### Shipped

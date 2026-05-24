@@ -74,6 +74,29 @@ struct SessionManagerTests {
         await injectSession(nil)
     }
 
+    @Test func whitelistDeduplicatesDuplicateDomain() async {
+        let s = Session(
+            task: "Study",
+            successCriteria: "Done",
+            blockedDomains: ["reddit.com"]
+        )
+        await injectSession(s)
+        // First whitelist call — should add "reddit.com"
+        await MainActor.run {
+            Task { await SessionManager.shared.whitelist(domain: "reddit.com") }
+        }
+        try? await Task.sleep(for: .milliseconds(50))
+        // Second call with the same domain — should be a no-op
+        await MainActor.run {
+            Task { await SessionManager.shared.whitelist(domain: "reddit.com") }
+        }
+        try? await Task.sleep(for: .milliseconds(50))
+        let domains = await MainActor.run { SessionManager.shared.session?.whitelistedDomains ?? [] }
+        #expect(domains.filter { $0 == "reddit.com" }.count == 1,
+                "duplicate whitelist call must not create duplicate entries")
+        await injectSession(nil)
+    }
+
     @Test func whitelistNoSessionIsNoOp() async {
         await injectSession(nil)
         // Should not crash

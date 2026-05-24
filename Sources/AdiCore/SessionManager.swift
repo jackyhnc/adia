@@ -95,6 +95,7 @@ public final class SessionManager: ObservableObject {
         let trimmed = domain.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty else { return }
         let base = trimmed.hasPrefix("www.") ? String(trimmed.dropFirst(4)) : trimmed
+        guard !s.whitelistedDomains.contains(base) else { return }
         s.whitelistedDomains.append(base)
         s.blockedDomains.removeAll { $0 == base || $0 == "www.\(base)" }
         session = s

@@ -24,6 +24,13 @@ struct SessionModelTests {
         #expect(s.elapsed >= 0)
     }
 
+    @Test func elapsedReflectsStartTime() {
+        let startTime = Date(timeIntervalSinceNow: -60)
+        let s = Session(task: "t", successCriteria: "c", startTime: startTime)
+        // Allow ±2s of test-execution jitter around the expected 60s
+        #expect(s.elapsed >= 58 && s.elapsed <= 62)
+    }
+
     @Test func codableRoundTrip() throws {
         let original = Session(
             task: "Write essay",
