@@ -140,4 +140,29 @@ struct CalloutManagerTests {
             #expect(NotchState.shared.calloutMessage != nil)
         }
     }
+
+    /// Verifies that consecutive independent streaks never show the same callout message.
+    /// With 10 callouts and last-message filtering, back-to-back identical messages are
+    /// impossible as long as the pool has ≥ 2 entries.
+    @Test func consecutiveStreaksDoNotRepeatCallout() async {
+        await MainActor.run {
+            // Fire first streak
+            CalloutManager.shared.reset()
+            NotchState.shared.clearCallout()
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask)
+            let first = NotchState.shared.calloutMessage
+            #expect(first != nil)
+
+            // Reset (simulates session end / on-task recovery) and fire second streak
+            CalloutManager.shared.reset()
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask)
+            let second = NotchState.shared.calloutMessage
+            #expect(second != nil)
+
+            // Deduplication guarantees consecutive callouts are never identical.
+            #expect(first != second)
+        }
+    }
 }

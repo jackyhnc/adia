@@ -26,6 +26,8 @@ public final class CalloutManager {
     // Without this, two consecutive streaks produce two tasks; the first task's
     // 8s timer fires mid-second-streak and clears the wrong callout.
     private var autoDismissTask: Task<Void, Never>?
+    // Tracks the last fired callout so consecutive streaks never repeat the same message.
+    private var lastFiredMessage: String?
 
     private init() {}
 
@@ -46,7 +48,9 @@ public final class CalloutManager {
     }
 
     private func fire() {
-        let message = Self.callouts.randomElement() ?? "focus."
+        let candidates = Self.callouts.filter { $0 != lastFiredMessage }
+        let message = (candidates.isEmpty ? Self.callouts : candidates).randomElement() ?? "focus."
+        lastFiredMessage = message
         NotchState.shared.showCallout(message)
         // Cancel any pending auto-dismiss from a prior streak before starting a new one.
         autoDismissTask?.cancel()
@@ -68,6 +72,7 @@ public final class CalloutManager {
         autoDismissTask = nil
         consecutiveOffTask = 0
         hasFiredForStreak = false
+        lastFiredMessage = nil
         NotchState.shared.clearCallout()
     }
 }

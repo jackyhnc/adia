@@ -19,6 +19,10 @@ public final class LocalBlockServer: @unchecked Sendable {
         self.taskDescription = taskDescription
         stop()
 
+        // Capture taskDescription as a local constant so the connection handler closure
+        // never reads self.taskDescription from a different thread (serverQueue vs. MainActor).
+        let capturedTask = taskDescription
+
         // Try port 80 first (needs root), fall back to 8080.
         for port in [80, 8080] {
             guard let nwPort = NWEndpoint.Port(rawValue: UInt16(port)) else { continue }
@@ -27,7 +31,7 @@ public final class LocalBlockServer: @unchecked Sendable {
                 params.allowLocalEndpointReuse = true
                 let l = try NWListener(using: params, on: nwPort)
                 l.newConnectionHandler = { [weak self] conn in
-                    self?.handle(conn)
+                    self?.handle(conn, taskDescription: capturedTask)
                 }
                 l.stateUpdateHandler = { state in
                     if case .failed(let err) = state {
@@ -51,13 +55,13 @@ public final class LocalBlockServer: @unchecked Sendable {
 
     // MARK: - Connection handling
 
-    private func handle(_ connection: NWConnection) {
+    private func handle(_ connection: NWConnection, taskDescription: String) {
         connection.start(queue: serverQueue)
         connection.receive(minimumIncompleteLength: 1, maximumLength: 8192) { [weak self] data, _, _, _ in
             guard let self, let data else { connection.cancel(); return }
             let request = String(data: data, encoding: .utf8) ?? ""
             let host = self.extractHost(from: request)
-            let html = self.blockedHTML(domain: host)
+            let html = self.blockedHTML(domain: host, taskDescription: taskDescription)
             let body = html.data(using: .utf8) ?? Data()
             let header = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: \(body.count)\r\nConnection: close\r\n\r\n"
             var response = (header.data(using: .utf8) ?? Data())
@@ -84,7 +88,7 @@ public final class LocalBlockServer: @unchecked Sendable {
             .replacingOccurrences(of: "\"", with: "&quot;")
     }
 
-    private func blockedHTML(domain: String) -> String {
+    private func blockedHTML(domain: String, taskDescription: String) -> String {
         let safeDomain = Self.htmlEscape(domain)
         let safeTask: String
         if taskDescription.isEmpty {
