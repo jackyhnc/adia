@@ -1,5 +1,21 @@
 # Adia — Build Progress
 
+## Run 18 — 2026-05-25
+
+### Shipped
+- **Fix: `LocalBlockServer` data race** — `taskDescription` was a `var` set on `@MainActor` (in `start()`) but read on `serverQueue` (in `handle()` → `blockedHTML()`). With `@unchecked Sendable`, the compiler doesn't catch this. Fixed by capturing `taskDescription` as a local `let` constant (`capturedTask`) in `start()` before the `newConnectionHandler` closure, then threading it through `handle(_:taskDescription:)` and `blockedHTML(domain:taskDescription:)` as explicit parameters. `self.taskDescription` is kept for potential future reads on the main actor but is no longer accessed from `serverQueue`.
+- **Fix: `CalloutManager` callout deduplication** — `fire()` previously called `randomElement()` on the full 10-item callout pool, giving a 10% chance of repeating the same message in consecutive independent off-task streaks (e.g. user goes off-task, comes back, immediately goes off again). Added `private var lastFiredMessage: String?`: `fire()` now filters `lastFiredMessage` from the candidate pool before `randomElement()`, making back-to-back identical callouts impossible. `reset()` clears `lastFiredMessage` so sessions start with a fresh pool.
+- **Fix: `MessageBubble.cleanedContent` empty bubble** — When Claude responded with exactly `[ACCESS GRANTED]` or `[ACCESS DENIED]` and no surrounding text (valid per the system prompt but rare), stripping the token produced `""`, rendering a visible but blank message bubble. Added a contextual fallback: content containing `[ACCESS GRANTED]` → `"ok, you're in."`; `[ACCESS DENIED]` → `"no."`. Normal responses where the token is appended to explanation text are unaffected.
+- **Test: `consecutiveStreaksDoNotRepeatCallout`** — New `@Test` in `CalloutManagerTests` fires two independent off-task streaks (with `reset()` between them) and asserts the two callout messages are different, providing a deterministic regression guard for the deduplication logic.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Remaining gaps are hardware-only: (1) integration smoke test on a real macOS machine with `ANTHROPIC_API_KEY`; (2) UX test of the notch panel on a MacBook with a physical notch.
+
+---
+
 ## Run 17 — 2026-05-24
 
 ### Shipped
