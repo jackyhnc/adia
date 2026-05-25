@@ -356,6 +356,7 @@ private struct SessionCreationFormView: View {
     @State private var taskText: String = ""
     @State private var criteriaText: String = ""
     @State private var isStarting: Bool = false
+    @State private var startError: String? = nil
     @FocusState private var focused: FormField?
 
     private enum FormField: Hashable { case task, criteria }
@@ -413,6 +414,14 @@ private struct SessionCreationFormView: View {
                 .font(.system(size: 12))
                 .foregroundStyle(.white.opacity(0.4))
             }
+
+            if let err = startError {
+                Text(err)
+                    .font(.system(size: 11))
+                    .foregroundStyle(Color(red: 1, green: 0.3, blue: 0.3))
+                    .padding(.top, 4)
+                    .transition(.opacity)
+            }
         }
         .padding(.horizontal, 16)
         .padding(.top, 10)
@@ -434,11 +443,15 @@ private struct SessionCreationFormView: View {
         let c = criteriaText.trimmingCharacters(in: .whitespaces)
         guard !t.isEmpty, !isStarting else { return }
         isStarting = true
+        startError = nil
         Task { @MainActor in
             do {
                 try await session.start(task: t, successCriteria: c)
                 state.stopCreating()
+            } catch CaptureError.permissionDenied {
+                withAnimation { startError = "Screen Recording permission required. Grant it in System Settings → Privacy." }
             } catch {
+                withAnimation { startError = "Couldn't start session. Try again." }
                 print("[SessionCreation] start failed: \(error)")
             }
             isStarting = false

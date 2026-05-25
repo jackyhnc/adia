@@ -1,5 +1,19 @@
 # Adia — Build Progress
 
+## Run 19 — 2026-05-25
+
+### Shipped
+- **Fix: `SessionManager.start()` partial-state rollback** — When `activate()` throws (only possible path: `captureManager.start()` raising `CaptureError.permissionDenied` or `.noDisplayFound`), the prior code left `session` set and the session saved to `SessionPersistence`. On next launch `restoreIfNeeded()` would then try to restore a session that never fully started. Fix: wrapped `activate()` in a do/catch that rolls back all side effects — clears `session`, `persistence`, `captureManager.onFrame`, detaches `detector`, stops `LocalBlockServer`, and calls `hosts.unblockAll()` (since `hosts.block()` may have succeeded before `captureManager.start()` threw).
+- **Fix: `SessionCreationFormView` silent failure** — When `start()` threw, `isStarting` reset and the form re-enabled, but nothing told the user what went wrong. Added `@State private var startError: String?`; specific catch for `CaptureError.permissionDenied` shows "Screen Recording permission required. Grant it in System Settings → Privacy."; generic catch shows "Couldn't start session. Try again." Error appears inline below the button row with an animated `.opacity` transition. `startError` is cleared on each new attempt.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Remaining gaps are hardware-only: (1) integration smoke test on a real macOS machine with `ANTHROPIC_API_KEY`; (2) UX test of the notch panel on a MacBook with a physical notch.
+
+---
+
 ## Run 18 — 2026-05-25
 
 ### Shipped

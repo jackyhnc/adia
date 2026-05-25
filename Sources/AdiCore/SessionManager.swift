@@ -28,7 +28,23 @@ public final class SessionManager: ObservableObject {
         )
         session = s
         persistence.save(s)
-        try await activate(s)
+        do {
+            try await activate(s)
+        } catch {
+            // activate() failed (e.g. screen-capture permission denied) — roll back so
+            // the session doesn't appear active and restoreIfNeeded() doesn't try to
+            // restart a session that never fully started.
+            // /etc/hosts may have been written before captureManager.start() threw — undo it.
+            session = nil
+            persistence.clear()
+            captureManager.onFrame = nil
+            await detector.detach()
+            LocalBlockServer.shared.stop()
+            do { try await hosts.unblockAll() } catch {
+                print("[SessionManager] hosts cleanup after failed start: \(error)")
+            }
+            throw error
+        }
     }
 
     public func endSession() async {
