@@ -1,5 +1,26 @@
 # Adia — Build Progress
 
+## Run 20 — 2026-05-26
+
+### Shipped
+- **feat: Session history tracking** — All 14 GOAL.md items were already complete; added the first post-checklist feature: every session (verified or early-exit) is now recorded to `~/Library/Application Support/Adia/history.json`.
+  - `SessionRecord` — Codable, Sendable model: task, successCriteria, startTime, endTime, completedSuccessfully, calloutCount.
+  - `SessionHistory` actor — prepends records newest-first, caps at 50, uses `.atomic` writes; internal `init(fileURL:)` constructor enables test isolation.
+  - `CalloutManager.calloutCount` — public property incremented in `fire()`, zeroed in `reset()`.
+  - `SessionManager.endSession()` — reads `callout.calloutCount` and builds a `SessionRecord` before teardown; `sessionEndedSuccessfully` flag is set in `verifyAndEnd()` when Claude confirms task completion.
+  - `SettingsView` — new "History" tab (`SessionRecordRow`: ✓/↩ icon, task text, formatted duration, callout count badge, date). Window height bumped 400→440.
+  - Tests: `SessionHistoryTests` (10 cases: round-trip, ordering, field preservation, cap-at-50, cap-keeps-newest, clear, duration, accumulation) + 4 new `CalloutManagerTests` for `calloutCount` increment/reset behaviour.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. History feature shipped as bonus.
+- Remaining gap is hardware-only: (1) integration smoke test on a real macOS machine with `ANTHROPIC_API_KEY`; (2) UX test of notch panel on a MacBook with a physical notch.
+- Possible next improvements: (a) session stats summary card on the main notch idle screen; (b) streak counter ("3 sessions today"); (c) export history as CSV from Settings.
+
+---
+
 ## Run 19 — 2026-05-25
 
 ### Shipped
