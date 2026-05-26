@@ -1,5 +1,20 @@
 import Foundation
 
+// MARK: - SessionStats
+
+/// Snapshot of the user's focus activity, used by the idle notch UI.
+public struct SessionStats: Sendable {
+    /// Sessions that started today (local calendar day).
+    public let todayCount: Int
+    /// Total focused minutes logged today.
+    public let todayMinutes: Int
+    /// Consecutive calendar days with ≥1 session, ending at the most recent session day.
+    /// 0 if there have been no sessions, or if the last session was more than 1 day ago.
+    public let streak: Int
+}
+
+// MARK: - SessionHistory
+
 public actor SessionHistory {
     public static let shared = SessionHistory()
 
@@ -40,6 +55,44 @@ public actor SessionHistory {
     /// Deletes the history file.
     public func clear() {
         try? FileManager.default.removeItem(at: fileURL)
+    }
+
+    /// Computes a stats snapshot from the current history.
+    public func stats() -> SessionStats {
+        let records = _load()
+        guard !records.isEmpty else {
+            return SessionStats(todayCount: 0, todayMinutes: 0, streak: 0)
+        }
+        let cal = Calendar.current
+        let now = Date()
+
+        let todayRecords = records.filter { cal.isDate($0.startTime, inSameDayAs: now) }
+        let todayMinutes = Int(todayRecords.reduce(0.0) { $0 + $1.duration } / 60)
+
+        // Build the set of calendar days that contain at least one session.
+        let daySet = Set(records.map { cal.startOfDay(for: $0.startTime) })
+        let today = cal.startOfDay(for: now)
+
+        // Walk backward from the most recent session day that includes today or yesterday.
+        let startDay: Date
+        if daySet.contains(today) {
+            startDay = today
+        } else if let yesterday = cal.date(byAdding: .day, value: -1, to: today),
+                  daySet.contains(yesterday) {
+            startDay = yesterday
+        } else {
+            return SessionStats(todayCount: todayRecords.count, todayMinutes: todayMinutes, streak: 0)
+        }
+
+        var streak = 0
+        var day = startDay
+        while daySet.contains(day) {
+            streak += 1
+            guard let prev = cal.date(byAdding: .day, value: -1, to: day) else { break }
+            day = prev
+        }
+
+        return SessionStats(todayCount: todayRecords.count, todayMinutes: todayMinutes, streak: streak)
     }
 
     // MARK: - Private helpers

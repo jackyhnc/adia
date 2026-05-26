@@ -136,4 +136,119 @@ struct SessionHistoryTests {
         let loaded = await history.load()
         #expect(loaded.count == 3)
     }
+
+    // MARK: - stats()
+
+    @Test func statsEmptyHistoryReturnsZeros() async throws {
+        let history = try makeHistory()
+        let s = await history.stats()
+        #expect(s.todayCount == 0)
+        #expect(s.todayMinutes == 0)
+        #expect(s.streak == 0)
+    }
+
+    @Test func statsTodayCountAndMinutes() async throws {
+        let history = try makeHistory()
+        // 30-minute session that ended just now, started 30 min ago
+        let r = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -1800),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+        await history.record(r)
+        let s = await history.stats()
+        #expect(s.todayCount == 1)
+        #expect(s.todayMinutes == 30)
+    }
+
+    @Test func statsIgnoresOldSessions() async throws {
+        let history = try makeHistory()
+        // Session from 3 days ago
+        let old = SessionRecord(
+            task: "Old",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3 * 86400),
+            endTime: Date(timeIntervalSinceNow: -3 * 86400 + 3600),
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+        await history.record(old)
+        let s = await history.stats()
+        #expect(s.todayCount == 0)
+        #expect(s.todayMinutes == 0)
+    }
+
+    @Test func statsStreakSingleDayToday() async throws {
+        let history = try makeHistory()
+        await history.record(makeRecord(task: "Focus"))
+        let s = await history.stats()
+        #expect(s.streak == 1)
+    }
+
+    @Test func statsStreakTwoDays() async throws {
+        let history = try makeHistory()
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        guard let yesterday = cal.date(byAdding: .day, value: -1, to: today),
+              let todayNoon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: today),
+              let yesterdayNoon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: yesterday)
+        else {
+            return
+        }
+        let r1 = SessionRecord(
+            task: "Today",
+            successCriteria: "Done",
+            startTime: todayNoon,
+            endTime: Date(timeInterval: 3600, since: todayNoon),
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+        let r2 = SessionRecord(
+            task: "Yesterday",
+            successCriteria: "Done",
+            startTime: yesterdayNoon,
+            endTime: Date(timeInterval: 3600, since: yesterdayNoon),
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+        await history.record(r1)
+        await history.record(r2)
+        let s = await history.stats()
+        #expect(s.todayCount == 1)
+        #expect(s.streak == 2)
+    }
+
+    @Test func statsStreakBrokenByGap() async throws {
+        let history = try makeHistory()
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        // Session today and 3 days ago (gap in between) → streak = 1 (today only)
+        guard let threeDaysAgo = cal.date(byAdding: .day, value: -3, to: today),
+              let todayNoon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: today),
+              let oldNoon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: threeDaysAgo)
+        else {
+            return
+        }
+        await history.record(SessionRecord(
+            task: "Today",
+            successCriteria: "Done",
+            startTime: todayNoon,
+            endTime: Date(timeInterval: 1800, since: todayNoon),
+            completedSuccessfully: true,
+            calloutCount: 0
+        ))
+        await history.record(SessionRecord(
+            task: "3 days ago",
+            successCriteria: "Done",
+            startTime: oldNoon,
+            endTime: Date(timeInterval: 1800, since: oldNoon),
+            completedSuccessfully: true,
+            calloutCount: 0
+        ))
+        let s = await history.stats()
+        #expect(s.streak == 1)  // gap breaks the streak
+    }
 }

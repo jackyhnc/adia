@@ -49,6 +49,8 @@ public final class NotchWindowController: NSWindowController {
     private static let creationExpandedHeight: CGFloat  = 268
     private static let conversationHeight: CGFloat      = 390
     private static let verificationHeight: CGFloat      = 220
+    // Idle state is taller than the active-session base to accommodate the stats line.
+    private static let idleExpandedHeight: CGFloat      = 220
 
     // MARK: Private state
     private var notchPanel: NotchPanel { window as! NotchPanel }
@@ -91,6 +93,8 @@ public final class NotchWindowController: NSWindowController {
         NotchState.shared.$isVerifying.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         NotchState.shared.$verificationResult.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         NotchState.shared.$calloutMessage.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        // Session start/end changes the height between idle (220pt) and active (190pt).
+        SessionManager.shared.$session.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
     }
 
     // MARK: Panel sizing / positioning
@@ -148,6 +152,8 @@ public final class NotchWindowController: NSWindowController {
             h = Self.creationExpandedHeight
         } else if state.calloutMessage != nil {
             h = Self.calloutExpandedHeight
+        } else if SessionManager.shared.session == nil {
+            h = Self.idleExpandedHeight
         } else {
             h = Self.expandedHeight
         }

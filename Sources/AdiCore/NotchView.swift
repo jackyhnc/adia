@@ -276,27 +276,7 @@ private struct ExpandedView: View {
 
     @ViewBuilder
     private var idleBody: some View {
-        if state.isCreating {
-            SessionCreationFormView(state: state, session: session)
-                .transition(.asymmetric(
-                    insertion: .move(edge: .bottom).combined(with: .opacity),
-                    removal: .opacity
-                ))
-        } else {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("No active session")
-                    .font(.system(size: 13))
-                    .foregroundStyle(.white.opacity(0.45))
-                AdiButton(label: "Start Session", style: .primary) {
-                    withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
-                        state.startCreating()
-                    }
-                }
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
-            .transition(.opacity)
-        }
+        IdleBody(state: state, session: session)
     }
 
     // MARK: Helpers
@@ -482,6 +462,78 @@ private struct SessionCreationFormView: View {
                         .stroke(Color.white.opacity(0.10), lineWidth: 0.5)
                 )
         }
+    }
+}
+
+// MARK: - Idle Body
+
+private struct IdleBody: View {
+    @ObservedObject var state: NotchState
+    @ObservedObject var session: SessionManager
+    @State private var sessionStats: SessionStats? = nil
+
+    var body: some View {
+        Group {
+            if state.isCreating {
+                SessionCreationFormView(state: state, session: session)
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .bottom).combined(with: .opacity),
+                        removal: .opacity
+                    ))
+            } else {
+                idleContent
+                    .transition(.opacity)
+            }
+        }
+        .task { sessionStats = await SessionHistory.shared.stats() }
+    }
+
+    private var idleContent: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            if let s = sessionStats, s.todayCount > 0 {
+                statsLine(s)
+            }
+            Text("No active session")
+                .font(.system(size: 13))
+                .foregroundStyle(.white.opacity(0.45))
+            AdiButton(label: "Start Session", style: .primary) {
+                withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
+                    state.startCreating()
+                }
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+    }
+
+    private func statsLine(_ s: SessionStats) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: "bolt.fill")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundStyle(.white.opacity(0.35))
+            Text(statsSummary(s))
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(.white.opacity(0.5))
+            if s.streak > 1 {
+                Text("·")
+                    .foregroundStyle(.white.opacity(0.2))
+                Text("🔥 \(s.streak)d streak")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.orange.opacity(0.8))
+            }
+        }
+    }
+
+    private func statsSummary(_ s: SessionStats) -> String {
+        let sessions = "\(s.todayCount) session\(s.todayCount == 1 ? "" : "s")"
+        guard s.todayMinutes > 0 else { return sessions }
+        let h = s.todayMinutes / 60
+        let m = s.todayMinutes % 60
+        let time: String
+        if h > 0 && m > 0 { time = "\(h)h \(m)m" }
+        else if h > 0 { time = "\(h)h" }
+        else { time = "\(m)m" }
+        return "\(sessions) · \(time)"
     }
 }
 

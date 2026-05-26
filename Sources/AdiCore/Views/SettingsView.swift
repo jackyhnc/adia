@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import UniformTypeIdentifiers
 
 // MARK: - Root Settings Window
 
@@ -247,14 +248,48 @@ private struct HistoryTab: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                List(records) { record in
-                    SessionRecordRow(record: record)
+                VStack(spacing: 0) {
+                    List(records) { record in
+                        SessionRecordRow(record: record)
+                    }
+                    .listStyle(.inset)
+
+                    HStack {
+                        Spacer()
+                        Button("Export CSV…") { exportCSV(records) }
+                            .buttonStyle(.borderless)
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .padding(.trailing, 12)
+                            .padding(.vertical, 8)
+                    }
+                    .background(.background)
                 }
-                .listStyle(.inset)
             }
         }
         .task {
             records = await SessionHistory.shared.load()
+        }
+    }
+
+    private func exportCSV(_ records: [SessionRecord]) {
+        var csv = "Date,Task,Success Criteria,Duration (min),Completed,Callouts\n"
+        let fmt = ISO8601DateFormatter()
+        for r in records {
+            let date = fmt.string(from: r.startTime)
+            let task = r.task.replacingOccurrences(of: "\"", with: "\"\"")
+            let criteria = r.successCriteria.replacingOccurrences(of: "\"", with: "\"\"")
+            let mins = Int(r.duration / 60)
+            let done = r.completedSuccessfully ? "Yes" : "No"
+            csv += "\"\(date)\",\"\(task)\",\"\(criteria)\",\(mins),\(done),\(r.calloutCount)\n"
+        }
+
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.commaSeparatedText]
+        panel.nameFieldStringValue = "adia-history.csv"
+        panel.begin { response in
+            guard response == .OK, let url = panel.url else { return }
+            try? csv.write(to: url, atomically: true, encoding: .utf8)
         }
     }
 }
