@@ -8,6 +8,10 @@ public struct SessionStats: Sendable {
     public let todayCount: Int
     /// Total focused minutes logged today.
     public let todayMinutes: Int
+    /// Sessions that started during the current calendar week (locale-aware week start).
+    public let weekCount: Int
+    /// Total focused minutes during the current calendar week.
+    public let weekMinutes: Int
     /// Consecutive calendar days with ≥1 session, ending at the most recent session day.
     /// 0 if there have been no sessions, or if the last session was more than 1 day ago.
     public let streak: Int
@@ -61,13 +65,16 @@ public actor SessionHistory {
     public func stats() -> SessionStats {
         let records = _load()
         guard !records.isEmpty else {
-            return SessionStats(todayCount: 0, todayMinutes: 0, streak: 0)
+            return SessionStats(todayCount: 0, todayMinutes: 0, weekCount: 0, weekMinutes: 0, streak: 0)
         }
         let cal = Calendar.current
         let now = Date()
 
         let todayRecords = records.filter { cal.isDate($0.startTime, inSameDayAs: now) }
         let todayMinutes = Int(todayRecords.reduce(0.0) { $0 + $1.duration } / 60)
+
+        let weekRecords = records.filter { cal.isDate($0.startTime, equalTo: now, toGranularity: .weekOfYear) }
+        let weekMinutes = Int(weekRecords.reduce(0.0) { $0 + $1.duration } / 60)
 
         // Build the set of calendar days that contain at least one session.
         let daySet = Set(records.map { cal.startOfDay(for: $0.startTime) })
@@ -81,7 +88,8 @@ public actor SessionHistory {
                   daySet.contains(yesterday) {
             startDay = yesterday
         } else {
-            return SessionStats(todayCount: todayRecords.count, todayMinutes: todayMinutes, streak: 0)
+            return SessionStats(todayCount: todayRecords.count, todayMinutes: todayMinutes,
+                                weekCount: weekRecords.count, weekMinutes: weekMinutes, streak: 0)
         }
 
         var streak = 0
@@ -92,7 +100,8 @@ public actor SessionHistory {
             day = prev
         }
 
-        return SessionStats(todayCount: todayRecords.count, todayMinutes: todayMinutes, streak: streak)
+        return SessionStats(todayCount: todayRecords.count, todayMinutes: todayMinutes,
+                            weekCount: weekRecords.count, weekMinutes: weekMinutes, streak: streak)
     }
 
     // MARK: - Private helpers

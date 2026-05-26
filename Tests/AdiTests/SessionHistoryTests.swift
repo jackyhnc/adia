@@ -221,6 +221,55 @@ struct SessionHistoryTests {
         #expect(s.streak == 2)
     }
 
+    @Test func statsWeekCountAndMinutes() async throws {
+        let history = try makeHistory()
+        let cal = Calendar.current
+        let now = Date()
+        // Session from today (within the week)
+        let todayRecord = SessionRecord(
+            task: "Today",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: now,
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+        // Session from 2 days ago — may or may not be in the same week; use a date that's
+        // definitely in the same ISO week (within 6 days from start of week).
+        guard let twoDaysAgo = cal.date(byAdding: .day, value: -2, to: now) else { return }
+        let twoDaysAgoRecord = SessionRecord(
+            task: "Two days ago",
+            successCriteria: "Done",
+            startTime: Date(timeInterval: -3600, since: twoDaysAgo),
+            endTime: twoDaysAgo,
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+        let thisWeek = cal.isDate(twoDaysAgo, equalTo: now, toGranularity: .weekOfYear)
+        await history.record(todayRecord)
+        await history.record(twoDaysAgoRecord)
+        let s = await history.stats()
+        #expect(s.weekCount == (thisWeek ? 2 : 1))
+        #expect(s.weekMinutes >= 60)  // at least the 60-minute today session
+    }
+
+    @Test func statsWeekIgnoresSessionsFromLastWeek() async throws {
+        let history = try makeHistory()
+        // Session from 10 days ago — guaranteed to be in a prior week
+        let old = SessionRecord(
+            task: "Old",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -10 * 86400 - 3600),
+            endTime: Date(timeIntervalSinceNow: -10 * 86400),
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+        await history.record(old)
+        let s = await history.stats()
+        #expect(s.weekCount == 0)
+        #expect(s.weekMinutes == 0)
+    }
+
     @Test func statsStreakBrokenByGap() async throws {
         let history = try makeHistory()
         let cal = Calendar.current

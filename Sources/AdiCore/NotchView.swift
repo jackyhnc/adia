@@ -30,6 +30,7 @@ struct NotchRootView: View {
 private struct CollapsedView: View {
     @ObservedObject var state: NotchState
     @ObservedObject var session: SessionManager
+    @State private var idleStreak: Int = 0
 
     var body: some View {
         HStack(spacing: 5) {
@@ -42,6 +43,10 @@ private struct CollapsedView: View {
                         .font(.system(size: 11, weight: .medium, design: .rounded))
                         .foregroundStyle(.white.opacity(0.85))
                 }
+            } else if idleStreak > 1 {
+                Text("🔥 \(idleStreak)d")
+                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .foregroundStyle(.orange.opacity(0.85))
             }
         }
         .padding(.horizontal, 14)
@@ -51,6 +56,10 @@ private struct CollapsedView: View {
         .contentShape(Capsule())
         .onTapGesture { state.expand() }
         .onHover { if $0 { state.expand() } }
+        .task(id: session.session?.id) {
+            guard session.session == nil else { return }
+            idleStreak = await SessionHistory.shared.stats().streak
+        }
     }
 
     private func collapsedElapsed(from start: Date, to now: Date) -> String {
@@ -485,7 +494,8 @@ private struct IdleBody: View {
                     .transition(.opacity)
             }
         }
-        .task { sessionStats = await SessionHistory.shared.stats() }
+        // Re-run whenever a session ends (id changes from UUID → nil) so stats stay fresh.
+        .task(id: session.session?.id) { sessionStats = await SessionHistory.shared.stats() }
     }
 
     private var idleContent: some View {

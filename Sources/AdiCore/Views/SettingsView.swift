@@ -231,6 +231,7 @@ private struct BlockingSettingsTab: View {
 
 private struct HistoryTab: View {
     @State private var records: [SessionRecord] = []
+    @State private var stats: SessionStats? = nil
 
     var body: some View {
         Group {
@@ -249,6 +250,9 @@ private struct HistoryTab: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 VStack(spacing: 0) {
+                    if let s = stats, s.weekCount > 0 {
+                        weeklySummaryHeader(s)
+                    }
                     List(records) { record in
                         SessionRecordRow(record: record)
                     }
@@ -269,7 +273,44 @@ private struct HistoryTab: View {
         }
         .task {
             records = await SessionHistory.shared.load()
+            stats = await SessionHistory.shared.stats()
         }
+    }
+
+    private func weeklySummaryHeader(_ s: SessionStats) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: "bolt.fill")
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(.secondary)
+            Text(weekSummaryText(s))
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(.secondary)
+            if s.streak > 1 {
+                Text("🔥 \(s.streak)d streak")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.orange)
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 2)
+                    .background(.orange.opacity(0.1))
+                    .clipShape(Capsule())
+            }
+            Spacer()
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 9)
+        .background(.background)
+    }
+
+    private func weekSummaryText(_ s: SessionStats) -> String {
+        let sessions = "\(s.weekCount) session\(s.weekCount == 1 ? "" : "s") this week"
+        guard s.weekMinutes > 0 else { return sessions }
+        let h = s.weekMinutes / 60
+        let m = s.weekMinutes % 60
+        let time: String
+        if h > 0 && m > 0 { time = "\(h)h \(m)m" }
+        else if h > 0 { time = "\(h)h" }
+        else { time = "\(m)m" }
+        return "\(sessions) · \(time)"
     }
 
     private func exportCSV(_ records: [SessionRecord]) {
