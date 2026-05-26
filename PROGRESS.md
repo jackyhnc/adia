@@ -1,5 +1,25 @@
 # Adia — Build Progress
 
+## Run 21 — 2026-05-26
+
+### Shipped
+- **feat: Idle notch stats, CSV export, session streak**
+  - `SessionStats` (public, Sendable) — snapshot of `todayCount`, `todayMinutes`, `streak` (consecutive calendar days with ≥1 session ending at the most recent active day, including yesterday if today has none).
+  - `SessionHistory.stats()` — computes the snapshot synchronously inside the actor from the on-disk record list; streak walks backward from today (or yesterday) using a `Set<Date>` of calendar-day starts.
+  - `IdleBody` (new private SwiftUI struct in `NotchView.swift`) — replaces the inline `idleBody` computed property in `ExpandedView`; loads stats async via `.task`; when `todayCount > 0` shows a compact `"N sessions · Xh Ym"` line with optional `"🔥 Nd streak"` pill above the Start Session button.
+  - `NotchWindowController` — `idleExpandedHeight = 220` (vs `expandedHeight = 190` for active session); `targetFrame` now checks `SessionManager.shared.session == nil` to select the idle height; new `SessionManager.shared.$session` Combine sink triggers reposition on session start/end so the panel resizes correctly when transitioning between idle and active states.
+  - `SettingsView.HistoryTab` — "Export CSV…" button (only when history is non-empty) opens `NSSavePanel` and writes a UTF-8 CSV with columns `Date,Task,Success Criteria,Duration (min),Completed,Callouts`.
+  - Tests: 6 new cases in `SessionHistoryTests` for `stats()` — empty→zeros, todayCount+minutes, old sessions ignored, streak single day, streak two consecutive days, streak broken by 1-day gap.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Remaining gap is hardware-only: (1) integration smoke test on a real macOS machine with `ANTHROPIC_API_KEY`; (2) UX test of notch panel on a MacBook with a physical notch.
+- Possible next improvements: (a) `NotchState.$isShowingStats` publish so `IdleBody` stats reload after a session ends even if the panel was already expanded; (b) streak badges on the collapsed pill for motivation; (c) weekly summary in the History tab header.
+
+---
+
 ## Run 20 — 2026-05-26
 
 ### Shipped
