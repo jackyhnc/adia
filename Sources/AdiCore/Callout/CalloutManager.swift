@@ -9,6 +9,9 @@ public final class CalloutManager {
     private var hasFiredForStreak = false
     private let threshold = 2  // frames before callout fires (~4-6 seconds at 1fps)
 
+    /// Total callouts fired in the current session. Reset to 0 when reset() is called.
+    public private(set) var calloutCount: Int = 0
+
     private static let callouts: [String] = [
         "yo, what are you doing?",
         "this isn't your essay.",
@@ -48,6 +51,7 @@ public final class CalloutManager {
     }
 
     private func fire() {
+        calloutCount += 1
         let candidates = Self.callouts.filter { $0 != lastFiredMessage }
         let message = (candidates.isEmpty ? Self.callouts : candidates).randomElement() ?? "focus."
         lastFiredMessage = message
@@ -73,6 +77,7 @@ public final class CalloutManager {
         consecutiveOffTask = 0
         hasFiredForStreak = false
         lastFiredMessage = nil
+        calloutCount = 0
         NotchState.shared.clearCallout()
     }
 }

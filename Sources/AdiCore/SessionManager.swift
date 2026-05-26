@@ -15,6 +15,10 @@ public final class SessionManager: ObservableObject {
     private let persistence = SessionPersistence.shared
     private let callout = CalloutManager.shared
 
+    // Set to true just before endSession() when verification succeeded, so the
+    // history record knows whether the session was completed or exited early.
+    private var sessionEndedSuccessfully = false
+
     private init() {}
 
     // MARK: - Session lifecycle
@@ -48,6 +52,20 @@ public final class SessionManager: ObservableObject {
     }
 
     public func endSession() async {
+        // Record the session before clearing it so we have all the data.
+        if let s = session {
+            let record = SessionRecord(
+                task: s.task,
+                successCriteria: s.successCriteria,
+                startTime: s.startTime,
+                endTime: Date(),
+                completedSuccessfully: sessionEndedSuccessfully,
+                calloutCount: callout.calloutCount
+            )
+            Task { await SessionHistory.shared.record(record) }
+        }
+        sessionEndedSuccessfully = false
+
         captureManager.stop()
         LocalBlockServer.shared.stop()
         do { try await hosts.unblockAll() } catch {
@@ -92,6 +110,7 @@ public final class SessionManager: ObservableObject {
             )
             NotchState.shared.setVerificationResult(result)
             if result.verified {
+                sessionEndedSuccessfully = true
                 // Brief pause so the user sees "verified ✓" before everything unblocks.
                 try? await Task.sleep(for: .seconds(1.2))
                 await endSession()

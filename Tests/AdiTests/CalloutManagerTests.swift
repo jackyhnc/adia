@@ -165,4 +165,48 @@ struct CalloutManagerTests {
             #expect(first != second)
         }
     }
+
+    // MARK: - calloutCount
+
+    @Test func calloutCountStartsAtZero() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            #expect(CalloutManager.shared.calloutCount == 0)
+        }
+    }
+
+    @Test func calloutCountIncrementOnFire() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask) // threshold hit → fires
+            #expect(CalloutManager.shared.calloutCount == 1)
+        }
+    }
+
+    @Test func calloutCountIncrementPerStreak() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            // First streak
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask)
+            // Recovery
+            CalloutManager.shared.evaluate(.onTask)
+            // Second streak
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask)
+            #expect(CalloutManager.shared.calloutCount == 2)
+        }
+    }
+
+    @Test func calloutCountResetsOnReset() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask)
+            #expect(CalloutManager.shared.calloutCount == 1)
+            CalloutManager.shared.reset()
+            #expect(CalloutManager.shared.calloutCount == 0)
+        }
+    }
 }
