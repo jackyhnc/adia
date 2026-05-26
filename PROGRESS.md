@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 22 — 2026-05-26
+
+### Shipped
+- **feat: Weekly stats, idle streak badge, stats reload fix**
+  - `SessionStats` — added `weekCount` (sessions started in the current calendar week) and `weekMinutes` (focused minutes this week), computed via `Calendar.isDate(_:equalTo:toGranularity:.weekOfYear)` so locale-aware week start is respected. All three `SessionStats` return points in `stats()` updated.
+  - `CollapsedView` (`NotchView.swift`) — when `session.session == nil` and `idleStreak > 1`, the collapsed notch pill now shows a `"🔥 Nd"` badge next to the status dot (motivational streak indicator). Loaded via `.task(id: session.session?.id)` so it refreshes each time a session ends, even if the pill was already visible.
+  - `IdleBody` (`NotchView.swift`) — bug fix: changed bare `.task { ... }` to `.task(id: session.session?.id) { ... }` so stats (today count, minutes, streak) re-load after a session ends while the notch panel is already expanded. Previously stats could be stale until the panel was collapsed and reopened.
+  - `SettingsView.HistoryTab` — added a compact weekly summary header above the session list. Displays `"N sessions this week · Xh Ym"` plus an optional `"🔥 Nd streak"` pill. Only shown when `weekCount > 0`. Stats loaded alongside records in the existing `.task`.
+  - Tests: `statsWeekCountAndMinutes` — inserts a today session + a 2-day-old session, uses `cal.isDate(_:equalTo:toGranularity:.weekOfYear)` to determine expected weekCount (1 or 2 depending on week boundary), asserts `weekMinutes >= 60`. `statsWeekIgnoresSessionsFromLastWeek` — 10-day-old session yields `weekCount == 0` and `weekMinutes == 0`.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) `weekCount`/`weekMinutes` in the idle notch stats line (currently shows today-only); could switch to "this week" framing if `todayCount == 0` but `weekCount > 0`.
+  - (b) HistoryTab: "Clear history" button with confirmation (currently only export is available; no way to wipe).
+  - (c) `NotchWindowController` idle height might need bumping if the streak pill in `IdleBody` ever wraps (current `idleExpandedHeight = 220`).
+  - (d) Integration smoke test on real macOS hardware with `ANTHROPIC_API_KEY`.
+
+---
+
 ## Run 21 — 2026-05-26
 
 ### Shipped
