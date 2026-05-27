@@ -1,5 +1,26 @@
 # Adia — Build Progress
 
+## Run 24 — 2026-05-27
+
+### Shipped
+- **feat: Expandable session detail rows in HistoryTab**
+  - `SessionRecordRow` — added `isExpanded: Bool` and `onTap: () -> Void` params. Summary row now shows a `chevron.up/down` affordance next to the date. Tapping anywhere on the summary row toggles an inline detail panel below it.
+  - Detail panel shows: full task text (no line limit), success criteria, start/end times (`.abbreviated` date + `.shortened` time), duration, callout count. All fields use a `detailField` helper with a small uppercase label + readable value text.
+  - `HistoryTab` — added `@State private var expandedRecordID: UUID?`; accordion behaviour (one row open at a time); `expandedRecordID` is also reset to `nil` on "Clear All" so a cleared list starts fresh.
+  - Animation: `.easeOut(0.18s)` + `.opacity.combined(with: .move(edge: .top))` transition for smooth open/close.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) Integration smoke test on real macOS hardware with `ANTHROPIC_API_KEY`.
+  - (b) `NotchWindowController` idle height: `idleExpandedHeight = 220` — verify it's sufficient when both stats line and streak pill are visible simultaneously.
+  - (c) HistoryTab multi-select + bulk delete (shift-click range, then "Delete selected").
+  - (d) Per-session notes field: let the user annotate a completed session with a short note stored in `SessionRecord`.
+
+---
+
 ## Run 23 — 2026-05-27
 
 ### Shipped
