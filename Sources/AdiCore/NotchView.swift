@@ -500,7 +500,7 @@ private struct IdleBody: View {
 
     private var idleContent: some View {
         VStack(alignment: .leading, spacing: 10) {
-            if let s = sessionStats, s.todayCount > 0 {
+            if let s = sessionStats, s.todayCount > 0 || s.weekCount > 0 {
                 statsLine(s)
             }
             Text("No active session")
@@ -521,7 +521,7 @@ private struct IdleBody: View {
             Image(systemName: "bolt.fill")
                 .font(.system(size: 9, weight: .bold))
                 .foregroundStyle(.white.opacity(0.35))
-            Text(statsSummary(s))
+            Text(idleStatsSummary(s))
                 .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(.white.opacity(0.5))
             if s.streak > 1 {
@@ -533,18 +533,34 @@ private struct IdleBody: View {
             }
         }
     }
+}
 
-    private func statsSummary(_ s: SessionStats) -> String {
-        let sessions = "\(s.todayCount) session\(s.todayCount == 1 ? "" : "s")"
-        guard s.todayMinutes > 0 else { return sessions }
-        let h = s.todayMinutes / 60
-        let m = s.todayMinutes % 60
-        let time: String
-        if h > 0 && m > 0 { time = "\(h)h \(m)m" }
-        else if h > 0 { time = "\(h)h" }
-        else { time = "\(m)m" }
-        return "\(sessions) · \(time)"
+// MARK: - Idle stats formatting (internal for testing)
+
+// When today has no sessions but this week does, use weekly framing so the idle
+// screen shows meaningful context ("3 sessions this week · 2h") on a slow day.
+internal func idleStatsSummary(_ s: SessionStats) -> String {
+    let count: Int
+    let minutes: Int
+    let suffix: String
+    if s.todayCount > 0 {
+        count = s.todayCount
+        minutes = s.todayMinutes
+        suffix = "session\(count == 1 ? "" : "s")"
+    } else {
+        count = s.weekCount
+        minutes = s.weekMinutes
+        suffix = "session\(count == 1 ? "" : "s") this week"
     }
+    let base = "\(count) \(suffix)"
+    guard minutes > 0 else { return base }
+    let h = minutes / 60
+    let m = minutes % 60
+    let time: String
+    if h > 0 && m > 0 { time = "\(h)h \(m)m" }
+    else if h > 0 { time = "\(h)h" }
+    else { time = "\(m)m" }
+    return "\(base) · \(time)"
 }
 
 // MARK: - AdiButton

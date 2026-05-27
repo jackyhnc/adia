@@ -1,5 +1,25 @@
 # Adia — Build Progress
 
+## Run 23 — 2026-05-27
+
+### Shipped
+- **feat: Clear history button + week-framing in idle notch stats**
+  - `SettingsView.HistoryTab` — added "Clear All" button in the footer bar (left of "Export CSV…"). Tapping it shows a native `.alert` confirmation with a destructive "Clear" action and a count ("delete all 7 session records"). On confirm: calls `SessionHistory.shared.clear()` and resets local `records`/`stats` state so the tab immediately shows the empty state. Button action wrapped in `Task { @MainActor in ... }` for Swift 6 safety.
+  - `IdleBody` (`NotchView.swift`) — changed stats visibility guard from `s.todayCount > 0` to `s.todayCount > 0 || s.weekCount > 0`. On days with no sessions yet, the idle notch now shows "X sessions this week · Xh Ym" framing (e.g. "3 sessions this week · 2h 30m") so users see meaningful momentum even before starting their first session of the day.
+  - `idleStatsSummary(_:)` — extracted as a module-level `internal` free function (was a private method on `IdleBody`) so it is directly testable. Today framing: "N session(s) · Xh Ym". Week framing when `todayCount == 0`: "N session(s) this week · Xh Ym".
+  - Tests: `IdleStatsSummaryTests` (+9 cases in `SessionHistoryTests.swift`) — covers today singular/plural, today with minutes/hours/exact-hour, week fallback singular/plural, week fallback with time, all-zeros edge case (no crash).
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) Integration smoke test on real macOS hardware with `ANTHROPIC_API_KEY`.
+  - (b) `NotchWindowController` idle height: `idleExpandedHeight = 220` — verify it's sufficient when both stats line and streak pill are visible simultaneously (rare layout where streak > 1 wraps).
+  - (c) Session detail view in HistoryTab: tap a row to expand it showing full task, success criteria, callout transcript summary.
+
+---
+
 ## Run 22 — 2026-05-26
 
 ### Shipped

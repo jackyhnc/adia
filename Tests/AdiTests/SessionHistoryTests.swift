@@ -301,3 +301,66 @@ struct SessionHistoryTests {
         #expect(s.streak == 1)  // gap breaks the streak
     }
 }
+
+// MARK: - idleStatsSummary formatting tests
+
+@Suite("IdleStatsSummary")
+struct IdleStatsSummaryTests {
+
+    private func stats(todayCount: Int = 0, todayMinutes: Int = 0,
+                       weekCount: Int = 0, weekMinutes: Int = 0,
+                       streak: Int = 0) -> SessionStats {
+        SessionStats(todayCount: todayCount, todayMinutes: todayMinutes,
+                     weekCount: weekCount, weekMinutes: weekMinutes,
+                     streak: streak)
+    }
+
+    @Test func todayCountNoTime() {
+        let s = stats(todayCount: 1)
+        #expect(idleStatsSummary(s) == "1 session")
+    }
+
+    @Test func todayCountPluralNoTime() {
+        let s = stats(todayCount: 3)
+        #expect(idleStatsSummary(s) == "3 sessions")
+    }
+
+    @Test func todayCountWithMinutes() {
+        let s = stats(todayCount: 2, todayMinutes: 45)
+        #expect(idleStatsSummary(s) == "2 sessions · 45m")
+    }
+
+    @Test func todayCountWithHoursAndMinutes() {
+        let s = stats(todayCount: 1, todayMinutes: 90)
+        #expect(idleStatsSummary(s) == "1 session · 1h 30m")
+    }
+
+    @Test func todayCountWithExactHour() {
+        let s = stats(todayCount: 2, todayMinutes: 120)
+        #expect(idleStatsSummary(s) == "2 sessions · 2h")
+    }
+
+    // When today is zero, fall back to weekly framing.
+    @Test func weekFallbackNoTime() {
+        let s = stats(weekCount: 4)
+        #expect(idleStatsSummary(s) == "4 sessions this week")
+    }
+
+    @Test func weekFallbackSingularNoTime() {
+        let s = stats(weekCount: 1)
+        #expect(idleStatsSummary(s) == "1 session this week")
+    }
+
+    @Test func weekFallbackWithMinutes() {
+        let s = stats(weekCount: 5, weekMinutes: 200)
+        // 200m = 3h 20m
+        #expect(idleStatsSummary(s) == "5 sessions this week · 3h 20m")
+    }
+
+    @Test func allZeros() {
+        let s = stats()
+        // Should not normally be displayed (caller guards weekCount > 0 || todayCount > 0),
+        // but function should not crash.
+        #expect(idleStatsSummary(s) == "0 sessions this week")
+    }
+}

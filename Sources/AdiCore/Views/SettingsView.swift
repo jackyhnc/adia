@@ -232,6 +232,7 @@ private struct BlockingSettingsTab: View {
 private struct HistoryTab: View {
     @State private var records: [SessionRecord] = []
     @State private var stats: SessionStats? = nil
+    @State private var showingClearAlert: Bool = false
 
     var body: some View {
         Group {
@@ -259,6 +260,12 @@ private struct HistoryTab: View {
                     .listStyle(.inset)
 
                     HStack {
+                        Button("Clear All") { showingClearAlert = true }
+                            .buttonStyle(.borderless)
+                            .font(.callout)
+                            .foregroundStyle(.red.opacity(0.7))
+                            .padding(.leading, 12)
+                            .padding(.vertical, 8)
                         Spacer()
                         Button("Export CSV…") { exportCSV(records) }
                             .buttonStyle(.borderless)
@@ -270,6 +277,18 @@ private struct HistoryTab: View {
                     .background(.background)
                 }
             }
+        }
+        .alert("Clear session history?", isPresented: $showingClearAlert) {
+            Button("Clear", role: .destructive) {
+                Task { @MainActor in
+                    await SessionHistory.shared.clear()
+                    records = []
+                    stats = nil
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This will permanently delete all \(records.count) session record\(records.count == 1 ? "" : "s"). This cannot be undone.")
         }
         .task {
             records = await SessionHistory.shared.load()
