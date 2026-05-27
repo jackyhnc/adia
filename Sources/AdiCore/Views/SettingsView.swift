@@ -233,6 +233,7 @@ private struct HistoryTab: View {
     @State private var records: [SessionRecord] = []
     @State private var stats: SessionStats? = nil
     @State private var showingClearAlert: Bool = false
+    @State private var expandedRecordID: UUID? = nil
 
     var body: some View {
         Group {
@@ -255,7 +256,15 @@ private struct HistoryTab: View {
                         weeklySummaryHeader(s)
                     }
                     List(records) { record in
-                        SessionRecordRow(record: record)
+                        SessionRecordRow(
+                            record: record,
+                            isExpanded: expandedRecordID == record.id,
+                            onTap: {
+                                withAnimation(.easeOut(duration: 0.18)) {
+                                    expandedRecordID = expandedRecordID == record.id ? nil : record.id
+                                }
+                            }
+                        )
                     }
                     .listStyle(.inset)
 
@@ -284,6 +293,7 @@ private struct HistoryTab: View {
                     await SessionHistory.shared.clear()
                     records = []
                     stats = nil
+                    expandedRecordID = nil
                 }
             }
             Button("Cancel", role: .cancel) {}
@@ -356,37 +366,94 @@ private struct HistoryTab: View {
 
 private struct SessionRecordRow: View {
     let record: SessionRecord
+    let isExpanded: Bool
+    let onTap: () -> Void
 
     var body: some View {
-        HStack(alignment: .top, spacing: 10) {
-            Image(systemName: record.completedSuccessfully ? "checkmark.circle.fill" : "arrow.uturn.left.circle.fill")
-                .foregroundStyle(record.completedSuccessfully ? .green : .secondary)
-                .font(.system(size: 16))
-                .padding(.top, 1)
+        VStack(alignment: .leading, spacing: 0) {
+            // Summary row — always visible
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: record.completedSuccessfully ? "checkmark.circle.fill" : "arrow.uturn.left.circle.fill")
+                    .foregroundStyle(record.completedSuccessfully ? .green : .secondary)
+                    .font(.system(size: 16))
+                    .padding(.top, 1)
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(record.task)
-                    .font(.body)
-                    .lineLimit(1)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(record.task)
+                        .font(.body)
+                        .lineLimit(1)
 
-                HStack(spacing: 10) {
-                    Label(formattedDuration(record.duration), systemImage: "clock")
-                    if record.calloutCount > 0 {
-                        Label("\(record.calloutCount) callout\(record.calloutCount == 1 ? "" : "s")",
-                              systemImage: "exclamationmark.bubble")
+                    HStack(spacing: 10) {
+                        Label(formattedDuration(record.duration), systemImage: "clock")
+                        if record.calloutCount > 0 {
+                            Label("\(record.calloutCount) callout\(record.calloutCount == 1 ? "" : "s")",
+                                  systemImage: "exclamationmark.bubble")
+                        }
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                HStack(spacing: 6) {
+                    Text(record.startTime, style: .date)
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        .font(.system(size: 9, weight: .semibold))
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            .padding(.vertical, 2)
+            .contentShape(Rectangle())
+            .onTapGesture { onTap() }
+
+            // Detail panel — shown when expanded
+            if isExpanded {
+                VStack(alignment: .leading, spacing: 10) {
+                    Divider()
+                        .padding(.top, 6)
+
+                    detailField("Task", record.task)
+
+                    if !record.successCriteria.isEmpty {
+                        detailField("Done when", record.successCriteria)
+                    }
+
+                    HStack(alignment: .top, spacing: 20) {
+                        detailField("Started",
+                            record.startTime.formatted(date: .abbreviated, time: .shortened))
+                        detailField("Ended",
+                            record.endTime.formatted(date: .abbreviated, time: .shortened))
+                    }
+
+                    HStack(alignment: .top, spacing: 20) {
+                        detailField("Duration", formattedDuration(record.duration))
+                        detailField("Callouts",
+                            record.calloutCount == 0 ? "None" : "\(record.calloutCount)")
                     }
                 }
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .padding(.bottom, 8)
+                .padding(.leading, 26) // visually aligns with task text
+                .transition(.opacity.combined(with: .move(edge: .top)))
             }
-
-            Spacer()
-
-            Text(record.startTime, style: .date)
-                .font(.caption)
-                .foregroundStyle(.tertiary)
         }
-        .padding(.vertical, 2)
+        .animation(.easeOut(duration: 0.18), value: isExpanded)
+    }
+
+    @ViewBuilder
+    private func detailField(_ label: String, _ value: String) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(label.uppercased())
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(.tertiary)
+                .tracking(0.8)
+            Text(value)
+                .font(.callout)
+                .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
 
     private func formattedDuration(_ interval: TimeInterval) -> String {
