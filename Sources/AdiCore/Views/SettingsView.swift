@@ -274,6 +274,17 @@ private struct HistoryTab: View {
                                         records[idx] = updated
                                     }
                                 }
+                            },
+                            onDelete: {
+                                let id = record.id
+                                Task { @MainActor in
+                                    await SessionHistory.shared.delete(id: id)
+                                    withAnimation(.easeOut(duration: 0.18)) {
+                                        records.removeAll { $0.id == id }
+                                        if expandedRecordID == id { expandedRecordID = nil }
+                                    }
+                                    stats = await SessionHistory.shared.stats()
+                                }
                             }
                         )
                     }
@@ -383,6 +394,8 @@ private struct SessionRecordRow: View {
     /// Called with the trimmed note text (empty string means "clear note") when
     /// the user commits an edit via Return or by moving focus away.
     var onNoteChange: ((String) -> Void)? = nil
+    /// Called when the user taps the trash button in the expanded detail panel.
+    var onDelete: (() -> Void)? = nil
 
     @State private var noteDraft: String = ""
     @FocusState private var noteFocused: Bool
@@ -453,6 +466,21 @@ private struct SessionRecordRow: View {
                     }
 
                     noteEditorField
+
+                    if onDelete != nil {
+                        HStack {
+                            Spacer()
+                            Button {
+                                onDelete?()
+                            } label: {
+                                Label("Delete session", systemImage: "trash")
+                                    .font(.callout)
+                                    .foregroundStyle(.red.opacity(0.7))
+                            }
+                            .buttonStyle(.borderless)
+                        }
+                        .padding(.top, 2)
+                    }
                 }
                 .padding(.bottom, 8)
                 .padding(.leading, 26) // visually aligns with task text

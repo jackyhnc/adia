@@ -186,6 +186,45 @@ struct SessionHistoryTests {
         #expect(loaded.count == 1)
     }
 
+    @Test func deleteUpdatesStats() async throws {
+        let history = try makeHistory()
+        // Two today-sessions; delete one; stats should reflect only one remaining.
+        let a = SessionRecord(
+            task: "A",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+        let b = SessionRecord(
+            task: "B",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -1800),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+        await history.record(a)
+        await history.record(b)
+        await history.delete(id: a.id)
+        let s = await history.stats()
+        #expect(s.todayCount == 1)
+        #expect(s.weekCount == 1)
+    }
+
+    @Test func deleteLastRecordYieldsZeroStats() async throws {
+        let history = try makeHistory()
+        let r = makeRecord()
+        await history.record(r)
+        await history.delete(id: r.id)
+        let s = await history.stats()
+        #expect(s.todayCount == 0)
+        #expect(s.streak == 0)
+        let loaded = await history.load()
+        #expect(loaded.isEmpty)
+    }
+
     // MARK: - note round-trip through Codable
 
     @Test func noteRoundTripsThroughJSON() async throws {
