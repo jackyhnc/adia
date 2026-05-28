@@ -56,6 +56,23 @@ public actor SessionHistory {
     /// Returns all records, newest first.
     public func load() -> [SessionRecord] { _load() }
 
+    /// Updates the note field for the record with the given id. No-op if not found.
+    /// Passing an empty or whitespace-only string clears the note (stores nil).
+    public func updateNote(id: UUID, note: String) {
+        var records = _load()
+        guard let idx = records.firstIndex(where: { $0.id == id }) else { return }
+        let trimmed = note.trimmingCharacters(in: .whitespaces)
+        records[idx].note = trimmed.isEmpty ? nil : trimmed
+        _save(records)
+    }
+
+    /// Removes a single record by id. No-op if not found.
+    public func delete(id: UUID) {
+        var records = _load()
+        records.removeAll { $0.id == id }
+        _save(records)
+    }
+
     /// Deletes the history file.
     public func clear() {
         try? FileManager.default.removeItem(at: fileURL)

@@ -263,6 +263,17 @@ private struct HistoryTab: View {
                                 withAnimation(.easeOut(duration: 0.18)) {
                                     expandedRecordID = expandedRecordID == record.id ? nil : record.id
                                 }
+                            },
+                            onNoteChange: { newNote in
+                                let id = record.id
+                                Task { @MainActor in
+                                    await SessionHistory.shared.updateNote(id: id, note: newNote)
+                                    if let idx = records.firstIndex(where: { $0.id == id }) {
+                                        var updated = records[idx]
+                                        updated.note = newNote.isEmpty ? nil : newNote
+                                        records[idx] = updated
+                                    }
+                                }
                             }
                         )
                     }
@@ -343,7 +354,7 @@ private struct HistoryTab: View {
     }
 
     private func exportCSV(_ records: [SessionRecord]) {
-        var csv = "Date,Task,Success Criteria,Duration (min),Completed,Callouts\n"
+        var csv = "Date,Task,Success Criteria,Duration (min),Completed,Callouts,Note\n"
         let fmt = ISO8601DateFormatter()
         for r in records {
             let date = fmt.string(from: r.startTime)
@@ -351,7 +362,8 @@ private struct HistoryTab: View {
             let criteria = r.successCriteria.replacingOccurrences(of: "\"", with: "\"\"")
             let mins = Int(r.duration / 60)
             let done = r.completedSuccessfully ? "Yes" : "No"
-            csv += "\"\(date)\",\"\(task)\",\"\(criteria)\",\(mins),\(done),\(r.calloutCount)\n"
+            let note = (r.note ?? "").replacingOccurrences(of: "\"", with: "\"\"")
+            csv += "\"\(date)\",\"\(task)\",\"\(criteria)\",\(mins),\(done),\(r.calloutCount),\"\(note)\"\n"
         }
 
         let panel = NSSavePanel()
@@ -368,6 +380,12 @@ private struct SessionRecordRow: View {
     let record: SessionRecord
     let isExpanded: Bool
     let onTap: () -> Void
+    /// Called with the trimmed note text (empty string means "clear note") when
+    /// the user commits an edit via Return or by moving focus away.
+    var onNoteChange: ((String) -> Void)? = nil
+
+    @State private var noteDraft: String = ""
+    @FocusState private var noteFocused: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -433,6 +451,8 @@ private struct SessionRecordRow: View {
                         detailField("Callouts",
                             record.calloutCount == 0 ? "None" : "\(record.calloutCount)")
                     }
+
+                    noteEditorField
                 }
                 .padding(.bottom, 8)
                 .padding(.leading, 26) // visually aligns with task text
@@ -440,6 +460,48 @@ private struct SessionRecordRow: View {
             }
         }
         .animation(.easeOut(duration: 0.18), value: isExpanded)
+        .onAppear { noteDraft = record.note ?? "" }
+        .onChange(of: record.note) { _, newNote in noteDraft = newNote ?? "" }
+    }
+
+    // MARK: Note editor
+
+    @ViewBuilder
+    private var noteEditorField: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("NOTE")
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(.tertiary)
+                .tracking(0.8)
+            ZStack(alignment: .leading) {
+                if noteDraft.isEmpty && !noteFocused {
+                    Text("Add a note…")
+                        .font(.callout)
+                        .foregroundStyle(Color.primary.opacity(0.25))
+                        .allowsHitTesting(false)
+                }
+                TextField("", text: $noteDraft)
+                    .font(.callout)
+                    .textFieldStyle(.plain)
+                    .focused($noteFocused)
+                    .onSubmit { commitNote() }
+                    .onChange(of: noteFocused) { _, isFocused in
+                        if !isFocused { commitNote() }
+                    }
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 6)
+            .background(Color.primary.opacity(0.04))
+            .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .stroke(Color.primary.opacity(noteFocused ? 0.18 : 0.08), lineWidth: 0.5)
+            )
+        }
+    }
+
+    private func commitNote() {
+        onNoteChange?(noteDraft.trimmingCharacters(in: .whitespaces))
     }
 
     @ViewBuilder

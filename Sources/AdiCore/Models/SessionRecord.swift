@@ -8,6 +8,9 @@ public struct SessionRecord: Codable, Sendable, Identifiable {
     public let endTime: Date
     public let completedSuccessfully: Bool
     public let calloutCount: Int
+    /// Optional user annotation added after the session ends. nil when not set.
+    /// Decoded as nil for records persisted before this field was introduced.
+    public var note: String?
 
     public init(
         id: UUID = UUID(),
@@ -16,7 +19,8 @@ public struct SessionRecord: Codable, Sendable, Identifiable {
         startTime: Date,
         endTime: Date,
         completedSuccessfully: Bool,
-        calloutCount: Int
+        calloutCount: Int,
+        note: String? = nil
     ) {
         self.id = id
         self.task = task
@@ -25,6 +29,7 @@ public struct SessionRecord: Codable, Sendable, Identifiable {
         self.endTime = endTime
         self.completedSuccessfully = completedSuccessfully
         self.calloutCount = calloutCount
+        self.note = note
     }
 
     public var duration: TimeInterval { endTime.timeIntervalSince(startTime) }

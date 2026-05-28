@@ -109,6 +109,110 @@ struct SessionHistoryTests {
         #expect(loaded[0].task == "Session \(limit + 4)")
     }
 
+    // MARK: - updateNote()
+
+    @Test func updateNoteSetsNote() async throws {
+        let history = try makeHistory()
+        let r = makeRecord(task: "Study")
+        await history.record(r)
+        await history.updateNote(id: r.id, note: "Got through chapter 4 in one go.")
+        let loaded = await history.load()
+        #expect(loaded[0].note == "Got through chapter 4 in one go.")
+    }
+
+    @Test func updateNoteTrimsWhitespace() async throws {
+        let history = try makeHistory()
+        let r = makeRecord()
+        await history.record(r)
+        await history.updateNote(id: r.id, note: "  good session  ")
+        let loaded = await history.load()
+        #expect(loaded[0].note == "good session")
+    }
+
+    @Test func updateNoteWithEmptyStringClearsNote() async throws {
+        let history = try makeHistory()
+        let r = makeRecord()
+        await history.record(r)
+        await history.updateNote(id: r.id, note: "initial note")
+        await history.updateNote(id: r.id, note: "")
+        let loaded = await history.load()
+        #expect(loaded[0].note == nil)
+    }
+
+    @Test func updateNoteOnMissingIDIsNoop() async throws {
+        let history = try makeHistory()
+        let r = makeRecord(task: "Real")
+        await history.record(r)
+        await history.updateNote(id: UUID(), note: "ghost note")
+        let loaded = await history.load()
+        #expect(loaded[0].note == nil)
+        #expect(loaded.count == 1)
+    }
+
+    @Test func updateNotePreservesOtherRecords() async throws {
+        let history = try makeHistory()
+        let a = makeRecord(task: "A")
+        let b = makeRecord(task: "B")
+        await history.record(a)
+        await history.record(b)
+        await history.updateNote(id: a.id, note: "Note for A")
+        let loaded = await history.load()
+        // Newest-first order: b is index 0, a is index 1
+        let noteA = loaded.first(where: { $0.id == a.id })?.note
+        let noteB = loaded.first(where: { $0.id == b.id })?.note
+        #expect(noteA == "Note for A")
+        #expect(noteB == nil)
+    }
+
+    // MARK: - delete()
+
+    @Test func deleteRemovesSingleRecord() async throws {
+        let history = try makeHistory()
+        let a = makeRecord(task: "A")
+        let b = makeRecord(task: "B")
+        await history.record(a)
+        await history.record(b)
+        await history.delete(id: a.id)
+        let loaded = await history.load()
+        #expect(loaded.count == 1)
+        #expect(loaded[0].id == b.id)
+    }
+
+    @Test func deleteOnMissingIDIsNoop() async throws {
+        let history = try makeHistory()
+        await history.record(makeRecord(task: "Keep"))
+        await history.delete(id: UUID())
+        let loaded = await history.load()
+        #expect(loaded.count == 1)
+    }
+
+    // MARK: - note round-trip through Codable
+
+    @Test func noteRoundTripsThroughJSON() async throws {
+        let history = try makeHistory()
+        let r = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0,
+            note: "really dialed in today"
+        )
+        await history.record(r)
+        let loaded = await history.load()
+        #expect(loaded[0].note == "really dialed in today")
+    }
+
+    @Test func nilNoteEncodesAndDecodesAsNil() async throws {
+        let history = try makeHistory()
+        let r = makeRecord()
+        #expect(r.note == nil)
+        await history.record(r)
+        let loaded = await history.load()
+        #expect(loaded[0].note == nil)
+    }
+
     // MARK: - clear()
 
     @Test func clearEmptiesHistory() async throws {
