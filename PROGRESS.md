@@ -1,5 +1,25 @@
 # Adia — Build Progress
 
+## Run 26 — 2026-05-28
+
+### Shipped
+- **feat: per-row delete button in HistoryTab expanded detail panel**
+  - `SessionRecordRow`: added `onDelete: (() -> Void)? = nil` callback. When `onDelete` is set, a right-aligned "Delete session" trash button appears at the bottom of each expanded detail panel (below the note editor field).
+  - `HistoryTab`: wires `onDelete:` for every row — calls `await SessionHistory.shared.delete(id:)`, animates the row out of `records`, collapses `expandedRecordID` if it was that row, then refreshes `stats` from the actor so the weekly summary header stays accurate.
+  - 2 new `SessionHistoryTests`: `deleteUpdatesStats` (confirms `todayCount`/`weekCount` drop after deleting one of two today-sessions) and `deleteLastRecordYieldsZeroStats` (confirms zeros and empty list after removing the only record).
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) HistoryTab multi-select + bulk delete (shift-click range, then "Delete selected").
+  - (b) `NotchWindowController` idle height: verify `idleExpandedHeight = 220` is sufficient when both stats line and streak pill are visible simultaneously.
+  - (c) Integration smoke test on real macOS hardware with `ANTHROPIC_API_KEY`.
+  - (d) Search/filter in HistoryTab (filter by task text or date range).
+
+---
+
 ## Run 25 — 2026-05-28
 
 ### Shipped
