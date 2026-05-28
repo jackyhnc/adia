@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 25 — 2026-05-28
+
+### Shipped
+- **feat: per-session notes — annotate completed sessions from History tab**
+  - `SessionRecord`: added `note: String?` (var, optional, defaults `nil`). Backward-compatible: synthesised `Codable` uses `decodeIfPresent` for optional fields, so existing `history.json` records decode cleanly with `note == nil`.
+  - `SessionHistory`: added `updateNote(id:note:)` — trims whitespace, writes `nil` for empty/whitespace-only input; also added `delete(id:)` for single-record removal.
+  - `SettingsView / SessionRecordRow`: inline note editor appears at the bottom of each expanded detail panel. Shows `"Add a note…"` placeholder when empty. Commits on Return (`onSubmit`) or focus loss (`onChange(of: noteFocused)`). `HistoryTab` wires `onNoteChange:` to both persist via `SessionHistory.shared` and immediately update the local `records` array.
+  - CSV export updated to include a Note column.
+  - 10 new `SessionHistoryTests` covering: set note, trim whitespace, clear by empty string, no-op on unknown id, multi-record isolation, `delete(id:)`, and Codable note round-trip (nil and non-nil).
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) Per-row delete in HistoryTab (swipe-to-delete or trash button in expanded detail), wired to the new `SessionHistory.delete(id:)`.
+  - (b) HistoryTab multi-select + bulk delete (shift-click range, then "Delete selected").
+  - (c) `NotchWindowController` idle height: verify `idleExpandedHeight = 220` is sufficient when both stats line and streak pill are visible simultaneously.
+  - (d) Integration smoke test on real macOS hardware with `ANTHROPIC_API_KEY`.
+
+---
+
 ## Run 24 — 2026-05-27
 
 ### Shipped
