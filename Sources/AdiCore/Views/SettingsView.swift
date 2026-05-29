@@ -248,6 +248,44 @@ internal func filterRecords(
     }
 }
 
+/// A single day bucket used by `groupedByDay`. `id` equals the section label.
+internal struct DayGroup: Identifiable {
+    var id: String { label }
+    let label: String
+    var records: [SessionRecord]
+}
+
+/// Returns the display label for a date: "Today", "Yesterday", or a locale-aware date string.
+/// `now` controls the year comparison; `calendar` controls today/yesterday checks.
+internal func dayLabel(for date: Date, calendar: Calendar = .current, now: Date = Date()) -> String {
+    if calendar.isDateInToday(date)     { return "Today" }
+    if calendar.isDateInYesterday(date) { return "Yesterday" }
+    let currentYear = calendar.component(.year, from: now)
+    let dateYear    = calendar.component(.year, from: date)
+    if dateYear == currentYear {
+        return date.formatted(.dateTime.month(.wide).day())
+    }
+    return date.formatted(.dateTime.month(.wide).day().year())
+}
+
+/// Groups records (expected newest-first) into `DayGroup` buckets without reordering.
+internal func groupedByDay(
+    _ records: [SessionRecord],
+    calendar: Calendar = .current,
+    now: Date = Date()
+) -> [DayGroup] {
+    var result: [DayGroup] = []
+    for record in records {
+        let label = dayLabel(for: record.startTime, calendar: calendar, now: now)
+        if !result.isEmpty && result[result.count - 1].label == label {
+            result[result.count - 1].records.append(record)
+        } else {
+            result.append(DayGroup(label: label, records: [record]))
+        }
+    }
+    return result
+}
+
 private struct HistoryTab: View {
     @State private var records: [SessionRecord] = []
     @State private var stats: SessionStats? = nil
@@ -305,46 +343,57 @@ private struct HistoryTab: View {
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
-                        List(filteredRecords) { record in
-                            if isSelectMode {
-                                SelectableRecordRow(
-                                    record: record,
-                                    isSelected: selectedIDs.contains(record.id)
-                                )
-                                .contentShape(Rectangle())
-                                .onTapGesture { toggleSelection(record.id) }
-                            } else {
-                                SessionRecordRow(
-                                    record: record,
-                                    isExpanded: expandedRecordID == record.id,
-                                    onTap: {
-                                        withAnimation(.easeOut(duration: 0.18)) {
-                                            expandedRecordID = expandedRecordID == record.id ? nil : record.id
-                                        }
-                                    },
-                                    onNoteChange: { newNote in
-                                        let id = record.id
-                                        Task { @MainActor in
-                                            await SessionHistory.shared.updateNote(id: id, note: newNote)
-                                            if let idx = records.firstIndex(where: { $0.id == id }) {
-                                                var updated = records[idx]
-                                                updated.note = newNote.isEmpty ? nil : newNote
-                                                records[idx] = updated
-                                            }
-                                        }
-                                    },
-                                    onDelete: {
-                                        let id = record.id
-                                        Task { @MainActor in
-                                            await SessionHistory.shared.delete(id: id)
-                                            withAnimation(.easeOut(duration: 0.18)) {
-                                                records.removeAll { $0.id == id }
-                                                if expandedRecordID == id { expandedRecordID = nil }
-                                            }
-                                            stats = await SessionHistory.shared.stats()
+                        List {
+                            ForEach(groupedByDay(filteredRecords)) { group in
+                                Section {
+                                    ForEach(group.records) { record in
+                                        if isSelectMode {
+                                            SelectableRecordRow(
+                                                record: record,
+                                                isSelected: selectedIDs.contains(record.id)
+                                            )
+                                            .contentShape(Rectangle())
+                                            .onTapGesture { toggleSelection(record.id) }
+                                        } else {
+                                            SessionRecordRow(
+                                                record: record,
+                                                isExpanded: expandedRecordID == record.id,
+                                                onTap: {
+                                                    withAnimation(.easeOut(duration: 0.18)) {
+                                                        expandedRecordID = expandedRecordID == record.id ? nil : record.id
+                                                    }
+                                                },
+                                                onNoteChange: { newNote in
+                                                    let id = record.id
+                                                    Task { @MainActor in
+                                                        await SessionHistory.shared.updateNote(id: id, note: newNote)
+                                                        if let idx = records.firstIndex(where: { $0.id == id }) {
+                                                            var updated = records[idx]
+                                                            updated.note = newNote.isEmpty ? nil : newNote
+                                                            records[idx] = updated
+                                                        }
+                                                    }
+                                                },
+                                                onDelete: {
+                                                    let id = record.id
+                                                    Task { @MainActor in
+                                                        await SessionHistory.shared.delete(id: id)
+                                                        withAnimation(.easeOut(duration: 0.18)) {
+                                                            records.removeAll { $0.id == id }
+                                                            if expandedRecordID == id { expandedRecordID = nil }
+                                                        }
+                                                        stats = await SessionHistory.shared.stats()
+                                                    }
+                                                }
+                                            )
                                         }
                                     }
-                                )
+                                } header: {
+                                    Text(group.label)
+                                        .font(.system(size: 11, weight: .semibold))
+                                        .foregroundStyle(.secondary)
+                                        .textCase(nil)
+                                }
                             }
                         }
                         .listStyle(.inset)
@@ -361,6 +410,14 @@ private struct HistoryTab: View {
                                 .opacity(selectedIDs.isEmpty ? 0 : 1)
                                 .disabled(selectedIDs.isEmpty)
                             Spacer()
+                            Button(allFilteredSelected ? "Deselect All" : "Select All") {
+                                toggleSelectAll()
+                            }
+                            .buttonStyle(.borderless)
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 8)
                             Button("Done") {
                                 isSelectMode = false
                                 selectedIDs = []
@@ -493,6 +550,18 @@ private struct HistoryTab: View {
         else if h > 0 { time = "\(h)h" }
         else { time = "\(m)m" }
         return "\(sessions) · \(time)"
+    }
+
+    private var allFilteredSelected: Bool {
+        !filteredRecords.isEmpty && filteredRecords.allSatisfy { selectedIDs.contains($0.id) }
+    }
+
+    private func toggleSelectAll() {
+        if allFilteredSelected {
+            selectedIDs = []
+        } else {
+            selectedIDs = Set(filteredRecords.map { $0.id })
+        }
     }
 
     private func toggleSelection(_ id: UUID) {

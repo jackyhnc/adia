@@ -655,3 +655,99 @@ struct FilterRecordsTests {
         #expect(result.isEmpty)
     }
 }
+
+// MARK: - groupedByDay tests
+
+@Suite("groupedByDay")
+struct GroupedByDayTests {
+
+    private func record(startOffset: TimeInterval, task: String = "Study") -> SessionRecord {
+        SessionRecord(
+            task: task,
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: startOffset),
+            endTime: Date(timeIntervalSinceNow: startOffset + 3600),
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+    }
+
+    @Test func emptyInputReturnsEmpty() {
+        #expect(groupedByDay([]).isEmpty)
+    }
+
+    @Test func singleTodayRecordProducesTodayGroup() {
+        let r = record(startOffset: -1800)
+        let groups = groupedByDay([r])
+        #expect(groups.count == 1)
+        #expect(groups[0].label == "Today")
+        #expect(groups[0].records.count == 1)
+    }
+
+    @Test func multipleTodayRecordsCollapsedIntoOneGroup() {
+        let r1 = record(startOffset: -600, task: "A")
+        let r2 = record(startOffset: -1200, task: "B")
+        let r3 = record(startOffset: -1800, task: "C")
+        let groups = groupedByDay([r1, r2, r3])
+        #expect(groups.count == 1)
+        #expect(groups[0].label == "Today")
+        #expect(groups[0].records.count == 3)
+    }
+
+    @Test func recordOrderPreservedWithinGroup() {
+        let r1 = record(startOffset: -300, task: "First")
+        let r2 = record(startOffset: -600, task: "Second")
+        let groups = groupedByDay([r1, r2])
+        #expect(groups.count == 1)
+        #expect(groups[0].records[0].task == "First")
+        #expect(groups[0].records[1].task == "Second")
+    }
+
+    @Test func todayAndYesterdayFormTwoSections() {
+        // 25 hours ago is always "yesterday" in calendar terms.
+        let todayRec     = record(startOffset: -600,   task: "Today session")
+        let yesterdayRec = record(startOffset: -90000, task: "Yesterday session")
+        let groups = groupedByDay([todayRec, yesterdayRec])
+        #expect(groups.count == 2)
+        #expect(groups[0].label == "Today")
+        #expect(groups[1].label == "Yesterday")
+        #expect(groups[0].records[0].task == "Today session")
+        #expect(groups[1].records[0].task == "Yesterday session")
+    }
+
+    @Test func pastYearLabelContainsYear() {
+        // ~400 days ago is always in a prior calendar year.
+        let offset: TimeInterval = -400 * 86400
+        let r = record(startOffset: offset)
+        let expectedYear = Calendar.current.component(.year, from: Date(timeIntervalSinceNow: offset))
+        let groups = groupedByDay([r])
+        #expect(groups.count == 1)
+        #expect(groups[0].label.contains("\(expectedYear)"))
+    }
+
+    @Test func currentYearLabelOmitsYear() {
+        // 30 days ago is almost always in the current calendar year (fails only in
+        // the first 30 days of the year, an acceptable edge case).
+        let offset: TimeInterval = -30 * 86400
+        let now = Date()
+        let date = Date(timeIntervalSinceNow: offset)
+        let cal = Calendar.current
+        guard cal.component(.year, from: date) == cal.component(.year, from: now) else { return }
+        let r = record(startOffset: offset)
+        let groups = groupedByDay([r])
+        #expect(groups.count == 1)
+        let label = groups[0].label
+        #expect(label != "Today" && label != "Yesterday")
+        #expect(!label.contains("\(cal.component(.year, from: now))"))
+    }
+
+    @Test func threeDifferentDaysProduceThreeSections() {
+        let today     = record(startOffset: -600,    task: "T")
+        let yesterday = record(startOffset: -90000,  task: "Y")   // 25h ago
+        let twoDays   = record(startOffset: -180000, task: "2D")  // 50h ago
+        let groups = groupedByDay([today, yesterday, twoDays])
+        #expect(groups.count == 3)
+        #expect(groups[0].label == "Today")
+        #expect(groups[1].label == "Yesterday")
+    }
+}
