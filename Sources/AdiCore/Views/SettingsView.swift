@@ -229,11 +229,47 @@ private struct BlockingSettingsTab: View {
 
 // MARK: - History Tab
 
+/// Pure filter — extracted for testability.
+internal func filterRecords(
+    _ records: [SessionRecord],
+    query: String,
+    completed: Bool?
+) -> [SessionRecord] {
+    var result = records
+    if let c = completed {
+        result = result.filter { $0.completedSuccessfully == c }
+    }
+    let q = query.trimmingCharacters(in: .whitespaces).lowercased()
+    guard !q.isEmpty else { return result }
+    return result.filter {
+        $0.task.lowercased().contains(q) ||
+        $0.successCriteria.lowercased().contains(q) ||
+        ($0.note?.lowercased().contains(q) ?? false)
+    }
+}
+
 private struct HistoryTab: View {
     @State private var records: [SessionRecord] = []
     @State private var stats: SessionStats? = nil
     @State private var showingClearAlert: Bool = false
     @State private var expandedRecordID: UUID? = nil
+    @State private var searchText: String = ""
+    @State private var completionFilter: CompletionFilter = .all
+
+    private enum CompletionFilter: String, CaseIterable {
+        case all = "All", completed = "Done", exitedEarly = "Exited"
+        var boolValue: Bool? {
+            switch self {
+            case .all: nil
+            case .completed: true
+            case .exitedEarly: false
+            }
+        }
+    }
+
+    private var filteredRecords: [SessionRecord] {
+        filterRecords(records, query: searchText, completed: completionFilter.boolValue)
+    }
 
     var body: some View {
         Group {
@@ -255,40 +291,53 @@ private struct HistoryTab: View {
                     if let s = stats, s.weekCount > 0 {
                         weeklySummaryHeader(s)
                     }
-                    List(records) { record in
-                        SessionRecordRow(
-                            record: record,
-                            isExpanded: expandedRecordID == record.id,
-                            onTap: {
-                                withAnimation(.easeOut(duration: 0.18)) {
-                                    expandedRecordID = expandedRecordID == record.id ? nil : record.id
-                                }
-                            },
-                            onNoteChange: { newNote in
-                                let id = record.id
-                                Task { @MainActor in
-                                    await SessionHistory.shared.updateNote(id: id, note: newNote)
-                                    if let idx = records.firstIndex(where: { $0.id == id }) {
-                                        var updated = records[idx]
-                                        updated.note = newNote.isEmpty ? nil : newNote
-                                        records[idx] = updated
-                                    }
-                                }
-                            },
-                            onDelete: {
-                                let id = record.id
-                                Task { @MainActor in
-                                    await SessionHistory.shared.delete(id: id)
+                    searchFilterBar
+                    if filteredRecords.isEmpty {
+                        VStack(spacing: 6) {
+                            Image(systemName: "magnifyingglass")
+                                .font(.system(size: 24))
+                                .foregroundStyle(.tertiary)
+                            Text("No matching sessions")
+                                .font(.callout)
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else {
+                        List(filteredRecords) { record in
+                            SessionRecordRow(
+                                record: record,
+                                isExpanded: expandedRecordID == record.id,
+                                onTap: {
                                     withAnimation(.easeOut(duration: 0.18)) {
-                                        records.removeAll { $0.id == id }
-                                        if expandedRecordID == id { expandedRecordID = nil }
+                                        expandedRecordID = expandedRecordID == record.id ? nil : record.id
                                     }
-                                    stats = await SessionHistory.shared.stats()
+                                },
+                                onNoteChange: { newNote in
+                                    let id = record.id
+                                    Task { @MainActor in
+                                        await SessionHistory.shared.updateNote(id: id, note: newNote)
+                                        if let idx = records.firstIndex(where: { $0.id == id }) {
+                                            var updated = records[idx]
+                                            updated.note = newNote.isEmpty ? nil : newNote
+                                            records[idx] = updated
+                                        }
+                                    }
+                                },
+                                onDelete: {
+                                    let id = record.id
+                                    Task { @MainActor in
+                                        await SessionHistory.shared.delete(id: id)
+                                        withAnimation(.easeOut(duration: 0.18)) {
+                                            records.removeAll { $0.id == id }
+                                            if expandedRecordID == id { expandedRecordID = nil }
+                                        }
+                                        stats = await SessionHistory.shared.stats()
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
+                        .listStyle(.inset)
                     }
-                    .listStyle(.inset)
 
                     HStack {
                         Button("Clear All") { showingClearAlert = true }
@@ -349,6 +398,44 @@ private struct HistoryTab: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 9)
+        .background(.background)
+    }
+
+    @ViewBuilder
+    private var searchFilterBar: some View {
+        HStack(spacing: 8) {
+            HStack(spacing: 4) {
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 12))
+                    .foregroundStyle(.tertiary)
+                TextField("Search sessions…", text: $searchText)
+                    .textFieldStyle(.plain)
+                    .font(.system(size: 13))
+                if !searchText.isEmpty {
+                    Button { searchText = "" } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 12))
+                            .foregroundStyle(.tertiary)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 5)
+            .background(Color.primary.opacity(0.05))
+            .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+
+            Picker("", selection: $completionFilter) {
+                ForEach(CompletionFilter.allCases, id: \.self) {
+                    Text($0.rawValue).tag($0)
+                }
+            }
+            .pickerStyle(.segmented)
+            .frame(width: 136)
+            .labelsHidden()
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
         .background(.background)
     }
 

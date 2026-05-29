@@ -507,3 +507,116 @@ struct IdleStatsSummaryTests {
         #expect(idleStatsSummary(s) == "0 sessions this week")
     }
 }
+
+// MARK: - filterRecords tests
+
+@Suite("filterRecords")
+struct FilterRecordsTests {
+
+    private func record(
+        task: String = "write essay",
+        criteria: String = "submit to Canvas",
+        note: String? = nil,
+        completed: Bool = true
+    ) -> SessionRecord {
+        SessionRecord(
+            task: task,
+            successCriteria: criteria,
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: completed,
+            calloutCount: 0,
+            note: note
+        )
+    }
+
+    @Test func emptyQueryReturnsAll() {
+        let records = [record(task: "essay"), record(task: "coding")]
+        let result = filterRecords(records, query: "", completed: nil)
+        #expect(result.count == 2)
+    }
+
+    @Test func whitespaceOnlyQueryReturnsAll() {
+        let records = [record(task: "essay"), record(task: "coding")]
+        let result = filterRecords(records, query: "   ", completed: nil)
+        #expect(result.count == 2)
+    }
+
+    @Test func queryMatchesTaskCaseInsensitive() {
+        let records = [record(task: "Write Essay"), record(task: "read textbook")]
+        let result = filterRecords(records, query: "essay", completed: nil)
+        #expect(result.count == 1)
+        #expect(result[0].task == "Write Essay")
+    }
+
+    @Test func queryMatchesSuccessCriteria() {
+        let records = [
+            record(task: "biology hw", criteria: "submit to Canvas"),
+            record(task: "coding", criteria: "push PR"),
+        ]
+        let result = filterRecords(records, query: "canvas", completed: nil)
+        #expect(result.count == 1)
+        #expect(result[0].task == "biology hw")
+    }
+
+    @Test func queryMatchesNote() {
+        let records = [
+            record(task: "research", note: "found great paper"),
+            record(task: "coding", note: nil),
+        ]
+        let result = filterRecords(records, query: "great paper", completed: nil)
+        #expect(result.count == 1)
+        #expect(result[0].task == "research")
+    }
+
+    @Test func queryNoMatchReturnsEmpty() {
+        let records = [record(task: "essay"), record(task: "coding")]
+        let result = filterRecords(records, query: "quantum physics", completed: nil)
+        #expect(result.isEmpty)
+    }
+
+    @Test func completedFilterKeepsOnlyCompleted() {
+        let records = [
+            record(task: "done task", completed: true),
+            record(task: "early exit", completed: false),
+        ]
+        let result = filterRecords(records, query: "", completed: true)
+        #expect(result.count == 1)
+        #expect(result[0].task == "done task")
+    }
+
+    @Test func exitedFilterKeepsOnlyExited() {
+        let records = [
+            record(task: "done task", completed: true),
+            record(task: "gave up", completed: false),
+        ]
+        let result = filterRecords(records, query: "", completed: false)
+        #expect(result.count == 1)
+        #expect(result[0].task == "gave up")
+    }
+
+    @Test func nilCompletedFilterKeepsAll() {
+        let records = [
+            record(task: "done", completed: true),
+            record(task: "exited", completed: false),
+        ]
+        let result = filterRecords(records, query: "", completed: nil)
+        #expect(result.count == 2)
+    }
+
+    @Test func combinedQueryAndCompletionFilter() {
+        let records = [
+            record(task: "essay", completed: true),
+            record(task: "essay draft", completed: false),
+            record(task: "coding", completed: true),
+        ]
+        let result = filterRecords(records, query: "essay", completed: true)
+        #expect(result.count == 1)
+        #expect(result[0].task == "essay")
+    }
+
+    @Test func emptyInputReturnsEmpty() {
+        let result = filterRecords([], query: "anything", completed: nil)
+        #expect(result.isEmpty)
+    }
+}
