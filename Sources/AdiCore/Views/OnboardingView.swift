@@ -1,184 +1,256 @@
 import SwiftUI
 import AppKit
+import CoreGraphics
 
+/// First-launch onboarding: a clean, dark, three-screen flow that introduces
+/// Adia and gets Screen Recording permission inline. The production API key is
+/// embedded at build time, so there is no key/license step — students just open
+/// it and go.
 public struct OnboardingView: View {
-    @ObservedObject private var settings = SettingsStore.shared
-    @ObservedObject private var license = LicenseManager.shared
+    public enum Step: Int, CaseIterable { case welcome, permission }
 
-    public enum Step: Int { case welcome, apiKey, license, done }
     @State private var step: Step = .welcome
-    @State private var apiKeyDraft: String = ""
-    @State private var licenseKeyDraft: String = ""
-    @State private var emailDraft: String = ""
-    @State private var activationError: String?
-    @State private var activating = false
+    @State private var screenGranted: Bool = CGPreflightScreenCaptureAccess()
+    @State private var polling = false
 
     public var onFinish: () -> Void
+    public init(onFinish: @escaping () -> Void) { self.onFinish = onFinish }
 
-    public init(onFinish: @escaping () -> Void) {
-        self.onFinish = onFinish
-    }
+    private static let bg = Color(red: 0.055, green: 0.055, blue: 0.06)
 
     public var body: some View {
-        VStack(spacing: 0) {
-            header
-            Divider().padding(.vertical, 12)
-            Group {
-                switch step {
-                case .welcome: welcome
-                case .apiKey:  apiKeyScreen
-                case .license: licenseScreen
-                case .done:    Color.clear
-                }
+        ZStack {
+            Self.bg.ignoresSafeArea()
+            VStack(spacing: 0) {
+                content
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.horizontal, 44)
+                    .padding(.top, 52)
+                footer
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            footer
         }
-        .padding(24)
-        .frame(width: 520, height: 460)
-        .background(Color(NSColor.windowBackgroundColor))
+        .frame(width: 560, height: 620)
+        .onAppear { screenGranted = CGPreflightScreenCaptureAccess() }
     }
 
-    private var header: some View {
-        HStack {
-            Text("Welcome to Adia").font(.title2).bold()
-            Spacer()
-            Text(stepLabel).foregroundStyle(.secondary).font(.caption)
-        }
-    }
+    // MARK: - Content switcher
 
-    private var stepLabel: String {
+    @ViewBuilder
+    private var content: some View {
         switch step {
-        case .welcome: return "1 of 3"
-        case .apiKey:  return "2 of 3"
-        case .license: return "3 of 3"
-        case .done:    return ""
+        case .welcome:    welcome
+        case .permission: permission
         }
     }
+
+    // MARK: - Welcome
 
     private var welcome: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text("The friend in your notch who keeps you on task.")
-                .font(.title3)
-            Text("Tell Adia what you're working on. It watches your screen, blocks distracting sites, and calls you out when you wander off — like a friend sitting next to you.")
-                .foregroundStyle(.secondary)
+        VStack(spacing: 0) {
             Spacer()
-            Label("Adia needs Screen Recording permission to work. macOS will ask you on first session.", systemImage: "info.circle")
-                .font(.callout)
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    private var apiKeyScreen: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Anthropic API key").font(.headline)
-            Text("Adia uses Claude to watch your screen. You bring your own API key — we never see your data.")
-                .foregroundStyle(.secondary)
-                .font(.callout)
-            SecureField("sk-ant-...", text: $apiKeyDraft)
-                .textFieldStyle(.roundedBorder)
-            Link("Get a key from console.anthropic.com →",
-                 destination: URL(string: "https://console.anthropic.com/settings/api-keys")!)
-                .font(.callout)
+            Text("adia")
+                .font(.system(size: 58, weight: .black, design: .rounded))
+                .foregroundStyle(.white)
+            Text("the friend in your notch\nwho keeps you on task")
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(.white.opacity(0.5))
+                .multilineTextAlignment(.center)
+                .lineSpacing(2)
+                .padding(.top, 10)
             Spacer()
-        }
-    }
-
-    private var licenseScreen: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            switch license.status {
-            case .licensed(let email, let plan):
-                Label("Activated as \(email) (\(plan))", systemImage: "checkmark.seal.fill")
-                    .foregroundStyle(.green)
-            case .trial(let days):
-                Label("Trial active — \(days) day\(days == 1 ? "" : "s") left",
-                      systemImage: "clock")
-            default:
-                EmptyView()
+            VStack(alignment: .leading, spacing: 16) {
+                featureRow("eye.fill", "Watches your screen",
+                           "Sees what you're doing, second by second.")
+                featureRow("hand.raised.fill", "Calls you out",
+                           "Drift off and it nudges you back — instantly.")
+                featureRow("checkmark.seal.fill", "Verifies you're done",
+                           "Checks you actually finished before you stop.")
             }
+            Spacer()
+        }
+    }
 
-            Text("Have a license key?").font(.headline)
-            TextField("Email", text: $emailDraft).textFieldStyle(.roundedBorder)
-            TextField("ADIA-XXXX-XXXX-XXXX", text: $licenseKeyDraft)
-                .textFieldStyle(.roundedBorder)
+    // MARK: - Permission
 
-            HStack {
-                Button(activating ? "Activating…" : "Activate") {
-                    Task { await activate() }
+    private var permission: some View {
+        VStack(spacing: 0) {
+            Spacer()
+            ZStack {
+                Circle()
+                    .fill(screenGranted ? Color.green.opacity(0.14) : Color.white.opacity(0.07))
+                    .frame(width: 96, height: 96)
+                Image(systemName: screenGranted ? "checkmark" : "rectangle.inset.filled.badge.record")
+                    .font(.system(size: 36, weight: .semibold))
+                    .foregroundStyle(screenGranted ? .green : .white.opacity(0.9))
+            }
+            Text(screenGranted ? "Screen Recording is on" : "One quick permission")
+                .font(.system(size: 23, weight: .bold))
+                .foregroundStyle(.white)
+                .padding(.top, 22)
+            Text(screenGranted
+                 ? "You're ready. Adia can see your screen to keep you honest."
+                 : "Adia needs Screen Recording to tell when you wander off task. Frames are sent only to the model that classifies them — nothing is stored.")
+                .font(.system(size: 14))
+                .foregroundStyle(.white.opacity(0.5))
+                .multilineTextAlignment(.center)
+                .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 10)
+                .padding(.horizontal, 8)
+            Spacer()
+            if !screenGranted {
+                pillButton("Enable Screen Recording", filled: true) { requestPermission() }
+                Text("Flip the Adia toggle on in the list, then relaunch — macOS only applies Screen Recording to a fresh launch.")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.white.opacity(0.3))
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 12)
+                    .padding(.horizontal, 12)
+                Button {
+                    relaunchApp()
+                } label: {
+                    Text("I've enabled it — Relaunch Adia")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(.white.opacity(0.6))
+                        .underline()
                 }
-                .disabled(activating || licenseKeyDraft.isEmpty || emailDraft.isEmpty)
-
-                Spacer()
-
-                Button("Start 7-day trial") {
-                    license.startTrialIfNeeded()
-                }
-                .disabled({ if case .trial = license.status { return true }; return false }())
+                .buttonStyle(.plain)
+                .padding(.top, 14)
             }
-
-            if let err = activationError {
-                Text(err).foregroundStyle(.red).font(.callout)
-            }
-
             Spacer()
-            Link("Buy a license at adia.app →",
-                 destination: URL(string: "https://adia.app/pricing")!)
-                .font(.callout)
         }
     }
+
+    // MARK: - Footer
 
     private var footer: some View {
         HStack {
-            if step != .welcome {
-                Button("Back") { step = Step(rawValue: step.rawValue - 1) ?? .welcome }
+            HStack(spacing: 7) {
+                ForEach(visibleSteps, id: \.rawValue) { s in
+                    Circle()
+                        .fill(s == step ? Color.white : Color.white.opacity(0.18))
+                        .frame(width: 7, height: 7)
+                }
             }
             Spacer()
-            Button(continueLabel) { advance() }
-                .buttonStyle(.borderedProminent)
-                .disabled(!canAdvance)
+            pillButton(continueLabel, filled: true, compact: true) { advance() }
+                .opacity(canAdvance ? 1 : 0.4)
+                .allowsHitTesting(canAdvance)
         }
+        .padding(.horizontal, 44)
+        .padding(.bottom, 34)
+    }
+
+    /// On the welcome screen we only show a 2nd dot if a permission step is coming.
+    private var visibleSteps: [Step] {
+        screenGranted ? [.welcome] : [.welcome, .permission]
     }
 
     private var continueLabel: String {
         switch step {
-        case .welcome: return "Continue"
-        case .apiKey:  return "Continue"
-        case .license: return "Finish"
-        case .done:    return "Done"
+        case .welcome:    return screenGranted ? "Open Adia" : "Continue"
+        case .permission: return "Open Adia"
         }
     }
 
+    /// The permission step is a hard gate: no proceeding until access is granted.
     private var canAdvance: Bool {
         switch step {
-        case .welcome: return true
-        case .apiKey:  return !apiKeyDraft.trimmingCharacters(in: .whitespaces).isEmpty
-            || settings.hasAPIKey
-        case .license: return license.isUsable
-        case .done:    return true
+        case .welcome:    return true
+        case .permission: return screenGranted
         }
     }
 
     private func advance() {
         switch step {
         case .welcome:
-            step = .apiKey
-        case .apiKey:
-            if !apiKeyDraft.trimmingCharacters(in: .whitespaces).isEmpty {
-                settings.setAPIKey(apiKeyDraft)
+            if screenGranted {
+                onFinish()
+            } else {
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) { step = .permission }
             }
-            step = .license
-        case .license:
-            onFinish()
-        case .done:
-            onFinish()
+        case .permission:
+            if screenGranted { onFinish() }
         }
     }
 
-    private func activate() async {
-        activating = true
-        activationError = nil
-        let err = await license.activate(key: licenseKeyDraft, email: emailDraft)
-        activating = false
-        activationError = err
+    // MARK: - Permission flow
+
+    private func requestPermission() {
+        if CGPreflightScreenCaptureAccess() {
+            screenGranted = true
+            return
+        }
+        // Triggers the system prompt the first time; afterwards it's a no-op that
+        // just reflects current status.
+        if CGRequestScreenCaptureAccess() {
+            screenGranted = true
+            return
+        }
+        // Not granted in-process — open the Settings pane and poll for the toggle.
+        NSWorkspace.shared.open(URL(string:
+            "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")!)
+        startPolling()
+    }
+
+    /// macOS only grants Screen Recording to a fresh process, so once the user has
+    /// flipped the toggle we relaunch a new instance and quit this one. On the next
+    /// launch the permission preflight passes and onboarding moves straight on.
+    private func relaunchApp() {
+        let url = Bundle.main.bundleURL
+        let config = NSWorkspace.OpenConfiguration()
+        config.createsNewApplicationInstance = true
+        NSWorkspace.shared.openApplication(at: url, configuration: config) { _, _ in
+            Task { @MainActor in NSApp.terminate(nil) }
+        }
+    }
+
+    private func startPolling() {
+        guard !polling else { return }
+        polling = true
+        Task { @MainActor in
+            for _ in 0..<600 where !screenGranted {   // ~10 min cap
+                try? await Task.sleep(for: .seconds(1))
+                if CGPreflightScreenCaptureAccess() {
+                    withAnimation { screenGranted = true }
+                    break
+                }
+            }
+            polling = false
+        }
+    }
+
+    // MARK: - Building blocks
+
+    @ViewBuilder
+    private func featureRow(_ icon: String, _ title: String, _ subtitle: String) -> some View {
+        HStack(spacing: 14) {
+            Image(systemName: icon)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 42, height: 42)
+                .background(Color.white.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(.system(size: 14, weight: .semibold)).foregroundStyle(.white)
+                Text(subtitle).font(.system(size: 12)).foregroundStyle(.white.opacity(0.45))
+            }
+            Spacer()
+        }
+    }
+
+    @ViewBuilder
+    private func pillButton(_ label: String, filled: Bool, compact: Bool = false,
+                            action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(label)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(filled ? .black : .white)
+                .padding(.horizontal, compact ? 22 : 30)
+                .padding(.vertical, compact ? 10 : 14)
+                .background(filled ? Color.white : Color.white.opacity(0.10))
+                .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
     }
 }

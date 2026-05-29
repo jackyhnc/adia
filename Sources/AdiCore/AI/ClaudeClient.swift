@@ -26,7 +26,9 @@ public actor ClaudeClient {
     private func currentKey() async -> String? {
         if let k = await MainActor.run(body: { SettingsStore.shared.anthropicAPIKey }),
            !k.isEmpty { return k }
-        return ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"]
+        let env = ProcessInfo.processInfo.environment
+        if let k = env["ANTHROPIC_API_KEY"], !k.isEmpty { return k }
+        return EmbeddedSecrets.resolvedKey
     }
 
     // Set to non-nil in unit tests to override the real key check.
@@ -101,6 +103,33 @@ public actor ClaudeClient {
         let text = try await post(key: key, model: sonnetModel, system: system,
                                   messages: messages, maxTokens: 300)
         return parseVerification(text)
+    }
+
+    // MARK: - Goal parsing (session creation)
+
+    /// Turns a free-text statement of intent ("write my history essay") into a
+    /// concrete task + success criteria. If the input is too vague to know when
+    /// the user would be done, returns a clarifying question instead of guessing.
+    public func parseGoal(_ input: String) async throws -> GoalParse {
+        guard let key = await currentKey() else { throw ClaudeError.missingAPIKey }
+        let system = """
+        You help a student start a focus session. They tell you, in their own words,
+        what they're about to work on. Convert it into:
+          - task: a clear one-line description of the work
+          - successCriteria: a concrete, screen-observable signal that it's done
+        If the statement is too vague to define a finish line, DO NOT guess — ask one
+        short clarifying question that offers two concrete options.
+        Respond ONLY with valid JSON, no markdown:
+        {"ok":true,"task":"...","successCriteria":"..."}
+        or
+        {"ok":false,"question":"Can you be more specific — e.g. X or Y?"}
+        """
+        let messages: [[String: Any]] = [
+            ["role": "user", "content": input],
+        ]
+        let text = try await post(key: key, model: haikuModel, system: system,
+                                  messages: messages, maxTokens: 200)
+        return parseGoalResponse(text, original: input)
     }
 
     // MARK: - Conversational chat (reasoning / early-exit)
@@ -212,6 +241,24 @@ public actor ClaudeClient {
         return OnTaskClassification(status: onTaskStatus, confidence: confidence, reason: reason)
     }
 
+    private func parseGoalResponse(_ text: String, original: String) -> GoalParse {
+        let cleaned = stripMarkdownFences(text)
+        guard
+            let data = cleaned.data(using: .utf8),
+            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+        else {
+            // Couldn't parse a structured reply — fall back to using the raw input
+            // as the task so the user is never blocked by a model hiccup.
+            return GoalParse(ok: true, task: original, successCriteria: "", question: nil)
+        }
+        if let ok = json["ok"] as? Bool, ok == false, let q = json["question"] as? String {
+            return GoalParse(ok: false, task: nil, successCriteria: nil, question: q)
+        }
+        let task = (json["task"] as? String) ?? original
+        let criteria = (json["successCriteria"] as? String) ?? ""
+        return GoalParse(ok: true, task: task, successCriteria: criteria, question: nil)
+    }
+
     func parseVerification(_ text: String) -> VerificationResult {
         let cleaned = stripMarkdownFences(text)
         guard
@@ -245,6 +292,20 @@ public struct OnTaskClassification: Sendable {
         self.status     = status
         self.confidence = confidence
         self.reason     = reason
+    }
+}
+
+public struct GoalParse: Sendable {
+    public let ok: Bool
+    public let task: String?
+    public let successCriteria: String?
+    public let question: String?
+
+    public init(ok: Bool, task: String?, successCriteria: String?, question: String?) {
+        self.ok = ok
+        self.task = task
+        self.successCriteria = successCriteria
+        self.question = question
     }
 }
 

@@ -185,15 +185,33 @@ private struct ExpandedView: View {
     @ViewBuilder
     private func activeBody(_ s: Session) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Callout banner
+            // Callout banner — appears only when you've been caught off-task.
+            // Styled to SHOUT: a red alert bar, big text, and the contextual
+            // "I need this" link to open chat and request access (whitelist).
             if let callout = state.calloutMessage {
-                Text(callout)
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 16)
-                    .padding(.top, 12)
-                    .padding(.bottom, 4)
-                    .transition(.move(edge: .top).combined(with: .opacity))
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(.white)
+                        Text(callout)
+                            .font(.system(size: 17, weight: .heavy))
+                            .foregroundStyle(.white)
+                    }
+                    Button {
+                        state.startConversation(.reasoning(domain: nil))
+                    } label: {
+                        Text("actually, I need this →")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundStyle(.white.opacity(0.8))
+                    }
+                    .buttonStyle(.plain)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .background(Color(red: 0.85, green: 0.15, blue: 0.15))
+                .transition(.move(edge: .top).combined(with: .opacity))
             }
 
             VStack(alignment: .leading, spacing: 6) {
@@ -219,9 +237,6 @@ private struct ExpandedView: View {
             HStack(spacing: 8) {
                 AdiButton(label: "Done", style: .primary) {
                     Task { await SessionManager.shared.verifyAndEnd() }
-                }
-                AdiButton(label: "Chat", style: .secondary) {
-                    state.startConversation(.reasoning(domain: nil))
                 }
                 Spacer()
                 AdiButton(label: "Exit", style: .destructive) {
@@ -342,134 +357,124 @@ private struct SessionCreationFormView: View {
     @ObservedObject var state: NotchState
     @ObservedObject var session: SessionManager
 
-    @State private var taskText: String = ""
-    @State private var criteriaText: String = ""
-    @State private var isStarting: Bool = false
-    @State private var startError: String? = nil
-    @FocusState private var focused: FormField?
-
-    private enum FormField: Hashable { case task, criteria }
+    @State private var inputText: String = ""
+    @State private var clarifyingQuestion: String?
+    @State private var isThinking: Bool = false
+    @FocusState private var inputFocused: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            fieldGroup(label: "WORKING ON") {
-                ZStack(alignment: .topLeading) {
-                    if taskText.isEmpty {
-                        fieldPlaceholder("e.g. Write my ENGL 101 essay")
-                    }
-                    TextField("", text: $taskText, axis: .vertical)
-                        .lineLimit(2...2)
-                        .font(.system(size: 12))
-                        .foregroundStyle(.white)
-                        .textFieldStyle(.plain)
-                        .padding(.horizontal, 9)
-                        .padding(.vertical, 7)
-                        .focused($focused, equals: .task)
-                        .onSubmit { focused = .criteria }
-                }
-            }
-            .padding(.bottom, 8)
+            Text("WHAT ARE YOU DOING?")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundStyle(.white.opacity(0.35))
+                .tracking(1.5)
+                .padding(.bottom, 4)
 
-            fieldGroup(label: "DONE WHEN") {
-                ZStack(alignment: .topLeading) {
-                    if criteriaText.isEmpty {
-                        fieldPlaceholder("e.g. Submitted to Canvas")
-                    }
-                    TextField("", text: $criteriaText)
+            ZStack(alignment: .topLeading) {
+                if inputText.isEmpty {
+                    Text("e.g. finish my history essay and submit it on Canvas")
                         .font(.system(size: 12))
-                        .foregroundStyle(.white)
-                        .textFieldStyle(.plain)
+                        .foregroundStyle(.white.opacity(0.22))
                         .padding(.horizontal, 9)
                         .padding(.vertical, 7)
-                        .focused($focused, equals: .criteria)
-                        .onSubmit { if canStart { startSession() } }
+                        .allowsHitTesting(false)
                 }
+                TextField("", text: $inputText, axis: .vertical)
+                    .lineLimit(2...3)
+                    .font(.system(size: 12))
+                    .foregroundStyle(.white)
+                    .textFieldStyle(.plain)
+                    .padding(.horizontal, 9)
+                    .padding(.vertical, 7)
+                    .focused($inputFocused)
+                    .onSubmit { submit() }
             }
-            .padding(.bottom, 14)
+            .background(Color.white.opacity(0.06))
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .stroke(clarifyingQuestion != nil
+                            ? Color.orange.opacity(0.5)
+                            : Color.white.opacity(0.10), lineWidth: 0.5)
+            )
+
+            // The AI asks for more detail when the goal is too vague to verify.
+            if let q = clarifyingQuestion {
+                Text(q)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.orange.opacity(0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 8)
+                    .transition(.opacity)
+            }
 
             HStack(spacing: 8) {
-                AdiButton(label: isStarting ? "Starting…" : "Go", style: .primary) {
-                    startSession()
+                AdiButton(label: isThinking ? "Thinking…" : "Go", style: .primary) {
+                    submit()
                 }
-                .opacity(canStart ? 1 : 0.45)
-                .allowsHitTesting(canStart && !isStarting)
+                .opacity(canSubmit ? 1 : 0.45)
+                .allowsHitTesting(canSubmit && !isThinking)
 
                 Button("Cancel") {
-                    withAnimation(.easeOut(duration: 0.18)) {
-                        state.stopCreating()
-                    }
+                    withAnimation(.easeOut(duration: 0.18)) { state.stopCreating() }
                 }
                 .buttonStyle(.plain)
                 .font(.system(size: 12))
                 .foregroundStyle(.white.opacity(0.4))
             }
-
-            if let err = startError {
-                Text(err)
-                    .font(.system(size: 11))
-                    .foregroundStyle(Color(red: 1, green: 0.3, blue: 0.3))
-                    .padding(.top, 4)
-                    .transition(.opacity)
-            }
+            .padding(.top, 14)
         }
         .padding(.horizontal, 16)
         .padding(.top, 10)
         .padding(.bottom, 14)
+        .animation(.easeOut(duration: 0.2), value: clarifyingQuestion)
         .onAppear {
             Task { @MainActor in
                 try? await Task.sleep(for: .milliseconds(300))
-                focused = .task
+                inputFocused = true
             }
         }
     }
 
-    private var canStart: Bool {
-        !taskText.trimmingCharacters(in: .whitespaces).isEmpty
+    private var canSubmit: Bool {
+        !inputText.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
-    private func startSession() {
-        let t = taskText.trimmingCharacters(in: .whitespaces)
-        let c = criteriaText.trimmingCharacters(in: .whitespaces)
-        guard !t.isEmpty, !isStarting else { return }
-        isStarting = true
-        startError = nil
+    private func submit() {
+        let text = inputText.trimmingCharacters(in: .whitespaces)
+        guard !text.isEmpty, !isThinking else { return }
+        isThinking = true
+        clarifyingQuestion = nil
         Task { @MainActor in
+            defer { isThinking = false }
             do {
-                try await session.start(task: t, successCriteria: c)
-                state.stopCreating()
+                let parsed = try await ClaudeClient.shared.parseGoal(text)
+                if parsed.ok {
+                    try await session.start(
+                        task: parsed.task ?? text,
+                        successCriteria: parsed.successCriteria ?? ""
+                    )
+                    state.stopCreating()
+                } else {
+                    withAnimation { clarifyingQuestion = parsed.question ?? "Can you be more specific?" }
+                }
             } catch CaptureError.permissionDenied {
-                withAnimation { startError = "Screen Recording permission required. Grant it in System Settings → Privacy." }
+                withAnimation {
+                    clarifyingQuestion = "Screen Recording permission required. Grant it in System Settings, then try again."
+                }
             } catch {
-                withAnimation { startError = "Couldn't start session. Try again." }
-                print("[SessionCreation] start failed: \(error)")
+                // Network/parse failure — don't trap the user; start with their raw words.
+                do {
+                    try await session.start(task: text, successCriteria: "")
+                    state.stopCreating()
+                } catch CaptureError.permissionDenied {
+                    withAnimation {
+                        clarifyingQuestion = "Screen Recording permission required. Grant it in System Settings, then try again."
+                    }
+                } catch {
+                    withAnimation { clarifyingQuestion = "Couldn't start — try again." }
+                }
             }
-            isStarting = false
-        }
-    }
-
-    private func fieldPlaceholder(_ text: String) -> some View {
-        Text(text)
-            .font(.system(size: 12))
-            .foregroundStyle(.white.opacity(0.22))
-            .padding(.horizontal, 9)
-            .padding(.vertical, 7)
-            .allowsHitTesting(false)
-    }
-
-    @ViewBuilder
-    private func fieldGroup<Content: View>(label: String, @ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(label)
-                .font(.system(size: 9, weight: .bold))
-                .foregroundStyle(.white.opacity(0.35))
-                .tracking(1.5)
-            content()
-                .background(Color.white.opacity(0.06))
-                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .stroke(Color.white.opacity(0.10), lineWidth: 0.5)
-                )
         }
     }
 }

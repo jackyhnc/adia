@@ -8,6 +8,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var onboardingWindow: NSWindow?
     private var windowCloseObserver: NSObjectProtocol?
 
+    static let onboardingDoneKey = "adia.hasCompletedOnboarding"
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
 
@@ -32,10 +34,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // Silently start the trial on first launch so the user never sees
             // the license screen unless they've actually run out of trial.
             LicenseManager.shared.startTrialIfNeeded()
-            // Only show onboarding if there's literally no API key anywhere —
-            // Keychain, env, or ~/.adia/anthropic_key. Once a key is set, the app
-            // opens straight to the notch.
-            if SettingsStore.shared.hasAPIKey {
+            // The production key is embedded, so onboarding is purely the
+            // welcome + Screen Recording permission flow. Show it once; after
+            // that the app opens straight to the notch.
+            if UserDefaults.standard.bool(forKey: Self.onboardingDoneKey) {
                 showNotch()
             } else {
                 showOnboarding()
@@ -58,8 +60,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self?.finishOnboarding()
         })
         let window = NSWindow(contentViewController: hosting)
-        window.styleMask = [.titled, .closable]
-        window.title = "Welcome to Adia"
+        window.styleMask = [.titled, .closable, .fullSizeContentView]
+        window.titleVisibility = .hidden
+        window.titlebarAppearsTransparent = true
+        window.isMovableByWindowBackground = true
+        window.backgroundColor = NSColor(red: 0.055, green: 0.055, blue: 0.06, alpha: 1)
         window.center()
         window.isReleasedWhenClosed = false
         NSApp.setActivationPolicy(.regular)
@@ -69,6 +74,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func finishOnboarding() {
+        UserDefaults.standard.set(true, forKey: Self.onboardingDoneKey)
         if case .unknown = LicenseManager.shared.status {
             LicenseManager.shared.startTrialIfNeeded()
         }

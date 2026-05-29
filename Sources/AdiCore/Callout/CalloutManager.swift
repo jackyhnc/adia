@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(AppKit)
+import AppKit
+#endif
 
 /// Watches consecutive off-task frames and fires friend-like callouts after a threshold.
 @MainActor
@@ -66,6 +69,10 @@ public final class CalloutManager {
                 // Task was cancelled — reset() was called or a new streak started.
             }
         }
+        #if canImport(AppKit)
+        // Shout — a sharp alert sound so the user can't ignore drifting off.
+        NSSound(named: "Sosumi")?.play()
+        #endif
     }
 
     /// Resets streak counters and clears any active callout.

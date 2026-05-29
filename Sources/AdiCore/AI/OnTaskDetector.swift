@@ -1,6 +1,16 @@
 import Foundation
 import CoreGraphics
 
+extension String {
+    func appendToFile(_ path: String) throws {
+        if let fh = FileHandle(forWritingAtPath: path) {
+            fh.seekToEndOfFile(); fh.write(Data(self.utf8)); fh.closeFile()
+        } else {
+            try self.write(toFile: path, atomically: false, encoding: .utf8)
+        }
+    }
+}
+
 public actor OnTaskDetector {
     private let client: ClaudeClient
     private var currentSession: Session?
@@ -55,9 +65,12 @@ public actor OnTaskDetector {
                 taskDescription: session.task,
                 successCriteria: session.successCriteria
             )
+            try? "[\(Date())] classify status=\(result.status) conf=\(result.confidence) reason=\(result.reason)\n"
+                .appendToFile("/tmp/adia_ai.log")
             lastStatus = result.status
             return result.status
         } catch {
+            try? "[\(Date())] classify ERROR \(error)\n".appendToFile("/tmp/adia_ai.log")
             return lastStatus
         }
     }

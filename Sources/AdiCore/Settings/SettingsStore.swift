@@ -42,11 +42,23 @@ public final class SettingsStore: ObservableObject {
     private init() {
         crashReportsEnabled  = defaults.object(forKey: "crashReportsEnabled")  as? Bool ?? true
         usageAnalyticsEnabled = defaults.object(forKey: "usageAnalyticsEnabled") as? Bool ?? true
-        anthropicAPIKey = Self.readKey(service: keychainService, account: keychainAccount)
-            ?? ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"]
-            ?? Self.readKeyFromHomeFile()
+        // Resolve the API key from the first source that yields a *non-empty*
+        // value. `nonEmpty` guards against blank env vars (e.g. an exported
+        // `ANTHROPIC_API_KEY=""`) or a stale Keychain entry short-circuiting the
+        // chain and suppressing the home-file / embedded fallbacks.
+        let env = ProcessInfo.processInfo.environment
+        anthropicAPIKey = Self.nonEmpty(Self.readKey(service: keychainService, account: keychainAccount))
+            ?? Self.nonEmpty(env["ANTHROPIC_API_KEY"])
+            ?? Self.nonEmpty(Self.readKeyFromHomeFile())
+            ?? EmbeddedSecrets.resolvedKey
         customBlockedDomains  = Self.loadDomainList(key: Self.customDomainsKey,  from: defaults)
         disabledDefaultDomains = Set(Self.loadDomainList(key: Self.disabledDomainsKey, from: defaults))
+    }
+
+    /// Returns the trimmed string, or nil if it is nil/empty/whitespace-only.
+    private static func nonEmpty(_ s: String?) -> String? {
+        guard let s, !s.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+        return s
     }
 
     public var hasAPIKey: Bool {
@@ -158,7 +170,11 @@ public final class SettingsStore: ObservableObject {
         var item: CFTypeRef?
         let status = SecItemCopyMatching(query as CFDictionary, &item)
         guard status == errSecSuccess, let data = item as? Data else { return nil }
-        return String(data: data, encoding: .utf8)
+        // Treat an empty/whitespace-only stored value as "no key" so a stale or
+        // blank Keychain entry doesn't short-circuit the resolution chain and
+        // suppress the env / home-file / embedded fallbacks.
+        guard let s = String(data: data, encoding: .utf8) else { return nil }
+        return s.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : s
     }
 
     private static func writeKey(_ value: String, service: String, account: String) {

@@ -41,16 +41,23 @@ private final class NotchPanel: NSPanel {
 public final class NotchWindowController: NSWindowController {
 
     // MARK: Layout constants
-    private static let expandedWidth: CGFloat           = 340
+    private static let expandedWidth: CGFloat           = 360
     private static let expandedHeight: CGFloat          = 190
     // Extra height for active-session view when a callout banner is visible:
-    // callout text (~35pt) pushes task + buttons past the base 190pt frame.
-    private static let calloutExpandedHeight: CGFloat   = 235
-    private static let creationExpandedHeight: CGFloat  = 268
+    // the red alert bar (~64pt) pushes task + buttons past the base frame.
+    private static let calloutExpandedHeight: CGFloat   = 260
+    private static let creationExpandedHeight: CGFloat  = 310
     private static let conversationHeight: CGFloat      = 390
     private static let verificationHeight: CGFloat      = 220
     // Idle state is taller than the active-session base to accommodate the stats line.
     private static let idleExpandedHeight: CGFloat      = 220
+
+    // Small always-visible indicator shown when collapsed, sitting just below the
+    // notch so the physical camera housing never hides it.
+    private static let indicatorWidth: CGFloat          = 78
+    private static let indicatorHeight: CGFloat         = 22
+    // Gap between the bottom of the notch/menu bar and our panel.
+    private static let topGap: CGFloat                  = 6
 
     // MARK: Private state
     private var notchPanel: NotchPanel { window as! NotchPanel }
@@ -141,7 +148,16 @@ public final class NotchWindowController: NSWindowController {
     private func targetFrame(screen: NSScreen) -> NSRect {
         let state = NotchState.shared
         let base = notchBaseRect(screen: screen)
-        guard state.isExpanded else { return base }
+
+        // Collapsed: a small indicator pill centered just below the notch so it's
+        // always visible (never hidden behind the camera housing).
+        guard state.isExpanded else {
+            let w = Self.indicatorWidth
+            let h = Self.indicatorHeight
+            let x = screen.frame.midX - w / 2
+            let y = base.minY - Self.topGap - h
+            return NSRect(x: x, y: y, width: w, height: h)
+        }
 
         let h: CGFloat
         if state.showingConversation {
@@ -158,9 +174,10 @@ public final class NotchWindowController: NSWindowController {
             h = Self.expandedHeight
         }
 
-        let w = max(base.width, Self.expandedWidth)
+        // Hang the card below the notch/menu bar, centered, fully on screen.
+        let w = Self.expandedWidth
         let x = screen.frame.midX - w / 2
-        let y = base.maxY - h
+        let y = base.minY - Self.topGap - h
         return NSRect(x: x, y: y, width: w, height: h)
     }
 }

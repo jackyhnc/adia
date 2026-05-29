@@ -11,8 +11,27 @@ ARCH="${ARCH:-arm64}"
 VERSION="${VERSION:-0.1.0}"
 BUILD="${BUILD:-$(date +%y%m%d%H%M)}"
 
-echo "→ swift build -c $CONFIG --arch $ARCH"
 cd "$ROOT"
+
+# Embed the production API key from ~/.adia/anthropic_key so the shipped app just
+# works with no key prompt. Secrets.swift is --skip-worktree, so this local
+# edit is never committed. Skipped if the key file is absent.
+KEYFILE="$HOME/.adia/anthropic_key"
+SECRETS="$ROOT/Sources/AdiCore/Secrets.swift"
+if [ -f "$KEYFILE" ] && [ -f "$SECRETS" ]; then
+  echo "→ embedding API key from $KEYFILE"
+  EMBED_KEY="$(tr -d '\n' < "$KEYFILE")" python3 - "$SECRETS" <<'PY'
+import os, re, sys
+p = sys.argv[1]
+key = os.environ["EMBED_KEY"]
+s = open(p).read()
+s = re.sub(r'public static let apiKey = ".*?"',
+           'public static let apiKey = "%s"' % key, s, count=1)
+open(p, "w").write(s)
+PY
+fi
+
+echo "→ swift build -c $CONFIG --arch $ARCH"
 swift build -c "$CONFIG" --arch "$ARCH" >/dev/null
 
 BIN="$ROOT/.build/$ARCH-apple-macosx/$CONFIG/Adia"
@@ -53,5 +72,10 @@ PLIST
 if [ -f "$ROOT/assets/AppIcon.icns" ]; then
   cp "$ROOT/assets/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 fi
+
+# Ad-hoc code-sign so macOS treats it as a valid app and TCC (Screen Recording)
+# can attach a grant. A real distribution build should sign with a Developer ID.
+echo "→ ad-hoc signing"
+codesign --force --deep --sign - "$APP" >/dev/null 2>&1 || echo "  (codesign failed — continuing unsigned)"
 
 echo "✓ built $APP ($VERSION build $BUILD)"

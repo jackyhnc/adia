@@ -1,5 +1,8 @@
 import Foundation
 import CoreGraphics
+#if canImport(AppKit)
+import AppKit
+#endif
 
 /// Central coordinator: owns the active session and drives the state machine.
 @MainActor
@@ -49,6 +52,14 @@ public final class SessionManager: ObservableObject {
             }
             throw error
         }
+    }
+
+    /// Opens System Settings → Privacy & Security → Screen Recording.
+    private static func openScreenRecordingSettings() {
+        let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")!
+        #if canImport(AppKit)
+        NSWorkspace.shared.open(url)
+        #endif
     }
 
     public func endSession() async {
@@ -186,6 +197,17 @@ public final class SessionManager: ObservableObject {
             print("[SessionManager] hosts blocking unavailable (needs root): \(error)")
         }
 
-        try await captureManager.start()
+        do {
+            try await captureManager.start()
+            try? "[\(Date())] capture STARTED ok — frames flowing\n".appendToFile("/tmp/adia_ai.log")
+        } catch CaptureError.permissionDenied {
+            try? "[\(Date())] capture FAILED: permissionDenied\n".appendToFile("/tmp/adia_ai.log")
+            NotchState.shared.showCallout("Screen Recording permission needed — enable Adia in System Settings, then start again.")
+            Self.openScreenRecordingSettings()
+            throw CaptureError.permissionDenied
+        } catch {
+            NotchState.shared.showCallout("Couldn't start screen monitoring: \(error.localizedDescription)")
+            throw error
+        }
     }
 }
