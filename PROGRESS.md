@@ -1,5 +1,29 @@
 # Adia — Build Progress
 
+## Run 29 — 2026-05-29
+
+### Shipped
+- **feat: date grouping + Select All in HistoryTab**
+  - `DayGroup` (internal, `Identifiable`) — section bucket with `label: String` and `var records: [SessionRecord]`.
+  - `dayLabel(for:calendar:now:)` (internal) — returns "Today", "Yesterday", or a locale-aware month+day string. Appends the calendar year only for dates in a prior year (e.g. "January 1, 2024" vs "May 24").
+  - `groupedByDay(_:calendar:now:)` (internal) — groups a newest-first record slice into `[DayGroup]` without reordering. Pure function, directly testable.
+  - `HistoryTab.List` now uses `ForEach(groupedByDay(filteredRecords))` with a `Section` per group so rows appear under "Today", "Yesterday", "May 24" etc. headers. Applies in both normal and select mode.
+  - `allFilteredSelected: Bool` + `toggleSelectAll()` added to `HistoryTab`.
+  - "Select All" / "Deselect All" button in select-mode footer (between delete button and "Done") selects/deselects all currently visible (filtered) records.
+  - 8 new `@Test` cases in `GroupedByDayTests`: empty, single-today, multi-today collapse, order preserved within group, today+yesterday two sections, past-year label contains year, current-year label omits year, three-day three-section structure.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) `NotchWindowController` idle height: verify `idleExpandedHeight = 220` is sufficient when both stats line and streak pill are visible simultaneously.
+  - (b) Integration smoke test on real macOS hardware with `ANTHROPIC_API_KEY`.
+  - (c) Keyboard shortcut (⌘A) to trigger "Select All" in HistoryTab select mode.
+  - (d) Persistent filter state: remember the selected `CompletionFilter` across Settings tab re-opens (currently resets to "All" each time).
+
+---
+
 ## Run 28 — 2026-05-29
 
 ### Shipped
