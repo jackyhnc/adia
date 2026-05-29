@@ -73,6 +73,14 @@ public actor SessionHistory {
         _save(records)
     }
 
+    /// Removes all records whose id is contained in `ids`. No-op for unknown ids or empty set.
+    public func deleteMultiple(ids: Set<UUID>) {
+        guard !ids.isEmpty else { return }
+        var records = _load()
+        records.removeAll { ids.contains($0.id) }
+        _save(records)
+    }
+
     /// Deletes the history file.
     public func clear() {
         try? FileManager.default.removeItem(at: fileURL)

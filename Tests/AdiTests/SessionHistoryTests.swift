@@ -225,6 +225,41 @@ struct SessionHistoryTests {
         #expect(loaded.isEmpty)
     }
 
+    // MARK: - deleteMultiple
+
+    @Test func deleteMultipleRemovesAllSpecified() async throws {
+        let history = try makeHistory()
+        let a = makeRecord(task: "A")
+        let b = makeRecord(task: "B")
+        let c = makeRecord(task: "C")
+        await history.record(a)
+        await history.record(b)
+        await history.record(c)
+        await history.deleteMultiple(ids: [a.id, c.id])
+        let loaded = await history.load()
+        #expect(loaded.count == 1)
+        #expect(loaded[0].task == "B")
+    }
+
+    @Test func deleteMultipleNoOpForUnknownIDs() async throws {
+        let history = try makeHistory()
+        let r = makeRecord(task: "Keep me")
+        await history.record(r)
+        await history.deleteMultiple(ids: [UUID(), UUID()])
+        let loaded = await history.load()
+        #expect(loaded.count == 1)
+        #expect(loaded[0].task == "Keep me")
+    }
+
+    @Test func deleteMultipleEmptySetIsNoOp() async throws {
+        let history = try makeHistory()
+        let r = makeRecord(task: "Keep me too")
+        await history.record(r)
+        await history.deleteMultiple(ids: [])
+        let loaded = await history.load()
+        #expect(loaded.count == 1)
+    }
+
     // MARK: - note round-trip through Codable
 
     @Test func noteRoundTripsThroughJSON() async throws {

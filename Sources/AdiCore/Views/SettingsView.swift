@@ -255,6 +255,8 @@ private struct HistoryTab: View {
     @State private var expandedRecordID: UUID? = nil
     @State private var searchText: String = ""
     @State private var completionFilter: CompletionFilter = .all
+    @State private var isSelectMode: Bool = false
+    @State private var selectedIDs: Set<UUID> = []
 
     private enum CompletionFilter: String, CaseIterable {
         case all = "All", completed = "Done", exitedEarly = "Exited"
@@ -304,55 +306,95 @@ private struct HistoryTab: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
                         List(filteredRecords) { record in
-                            SessionRecordRow(
-                                record: record,
-                                isExpanded: expandedRecordID == record.id,
-                                onTap: {
-                                    withAnimation(.easeOut(duration: 0.18)) {
-                                        expandedRecordID = expandedRecordID == record.id ? nil : record.id
-                                    }
-                                },
-                                onNoteChange: { newNote in
-                                    let id = record.id
-                                    Task { @MainActor in
-                                        await SessionHistory.shared.updateNote(id: id, note: newNote)
-                                        if let idx = records.firstIndex(where: { $0.id == id }) {
-                                            var updated = records[idx]
-                                            updated.note = newNote.isEmpty ? nil : newNote
-                                            records[idx] = updated
-                                        }
-                                    }
-                                },
-                                onDelete: {
-                                    let id = record.id
-                                    Task { @MainActor in
-                                        await SessionHistory.shared.delete(id: id)
+                            if isSelectMode {
+                                SelectableRecordRow(
+                                    record: record,
+                                    isSelected: selectedIDs.contains(record.id)
+                                )
+                                .contentShape(Rectangle())
+                                .onTapGesture { toggleSelection(record.id) }
+                            } else {
+                                SessionRecordRow(
+                                    record: record,
+                                    isExpanded: expandedRecordID == record.id,
+                                    onTap: {
                                         withAnimation(.easeOut(duration: 0.18)) {
-                                            records.removeAll { $0.id == id }
-                                            if expandedRecordID == id { expandedRecordID = nil }
+                                            expandedRecordID = expandedRecordID == record.id ? nil : record.id
                                         }
-                                        stats = await SessionHistory.shared.stats()
+                                    },
+                                    onNoteChange: { newNote in
+                                        let id = record.id
+                                        Task { @MainActor in
+                                            await SessionHistory.shared.updateNote(id: id, note: newNote)
+                                            if let idx = records.firstIndex(where: { $0.id == id }) {
+                                                var updated = records[idx]
+                                                updated.note = newNote.isEmpty ? nil : newNote
+                                                records[idx] = updated
+                                            }
+                                        }
+                                    },
+                                    onDelete: {
+                                        let id = record.id
+                                        Task { @MainActor in
+                                            await SessionHistory.shared.delete(id: id)
+                                            withAnimation(.easeOut(duration: 0.18)) {
+                                                records.removeAll { $0.id == id }
+                                                if expandedRecordID == id { expandedRecordID = nil }
+                                            }
+                                            stats = await SessionHistory.shared.stats()
+                                        }
                                     }
-                                }
-                            )
+                                )
+                            }
                         }
                         .listStyle(.inset)
                     }
 
                     HStack {
-                        Button("Clear All") { showingClearAlert = true }
-                            .buttonStyle(.borderless)
-                            .font(.callout)
-                            .foregroundStyle(.red.opacity(0.7))
-                            .padding(.leading, 12)
-                            .padding(.vertical, 8)
-                        Spacer()
-                        Button("Export CSV…") { exportCSV(records) }
+                        if isSelectMode {
+                            Button("Delete \(selectedIDs.count) selected") { deleteSelected() }
+                                .buttonStyle(.borderless)
+                                .font(.callout)
+                                .foregroundStyle(.red.opacity(0.7))
+                                .padding(.leading, 12)
+                                .padding(.vertical, 8)
+                                .opacity(selectedIDs.isEmpty ? 0 : 1)
+                                .disabled(selectedIDs.isEmpty)
+                            Spacer()
+                            Button("Done") {
+                                isSelectMode = false
+                                selectedIDs = []
+                            }
                             .buttonStyle(.borderless)
                             .font(.callout)
                             .foregroundStyle(.secondary)
                             .padding(.trailing, 12)
                             .padding(.vertical, 8)
+                        } else {
+                            Button("Clear All") { showingClearAlert = true }
+                                .buttonStyle(.borderless)
+                                .font(.callout)
+                                .foregroundStyle(.red.opacity(0.7))
+                                .padding(.leading, 12)
+                                .padding(.vertical, 8)
+                            Spacer()
+                            Button("Select") {
+                                isSelectMode = true
+                                expandedRecordID = nil
+                                selectedIDs = []
+                            }
+                            .buttonStyle(.borderless)
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 8)
+                            Button("Export CSV…") { exportCSV(records) }
+                                .buttonStyle(.borderless)
+                                .font(.callout)
+                                .foregroundStyle(.secondary)
+                                .padding(.trailing, 12)
+                                .padding(.vertical, 8)
+                        }
                     }
                     .background(.background)
                 }
@@ -365,6 +407,8 @@ private struct HistoryTab: View {
                     records = []
                     stats = nil
                     expandedRecordID = nil
+                    isSelectMode = false
+                    selectedIDs = []
                 }
             }
             Button("Cancel", role: .cancel) {}
@@ -412,7 +456,7 @@ private struct HistoryTab: View {
                     .textFieldStyle(.plain)
                     .font(.system(size: 13))
                 if !searchText.isEmpty {
-                    Button { searchText = "" } label: {
+                    Button { searchText = ""; completionFilter = .all } label: {
                         Image(systemName: "xmark.circle.fill")
                             .font(.system(size: 12))
                             .foregroundStyle(.tertiary)
@@ -449,6 +493,24 @@ private struct HistoryTab: View {
         else if h > 0 { time = "\(h)h" }
         else { time = "\(m)m" }
         return "\(sessions) · \(time)"
+    }
+
+    private func toggleSelection(_ id: UUID) {
+        if selectedIDs.contains(id) { selectedIDs.remove(id) } else { selectedIDs.insert(id) }
+    }
+
+    private func deleteSelected() {
+        let ids = selectedIDs
+        Task { @MainActor in
+            await SessionHistory.shared.deleteMultiple(ids: ids)
+            withAnimation(.easeOut(duration: 0.18)) {
+                records.removeAll { ids.contains($0.id) }
+                if let expanded = expandedRecordID, ids.contains(expanded) { expandedRecordID = nil }
+            }
+            selectedIDs = []
+            if records.isEmpty { isSelectMode = false }
+            stats = await SessionHistory.shared.stats()
+        }
     }
 
     private func exportCSV(_ records: [SessionRecord]) {
@@ -640,5 +702,38 @@ private struct SessionRecordRow: View {
         if h > 0 { return "\(h)h \(m)m" }
         if m > 0 { return "\(m)m" }
         return "<1m"
+    }
+}
+
+// MARK: - Selectable Record Row
+
+private struct SelectableRecordRow: View {
+    let record: SessionRecord
+    let isSelected: Bool
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                .foregroundStyle(isSelected ? Color.accentColor : Color.primary.opacity(0.3))
+                .font(.system(size: 18))
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(record.task)
+                    .font(.body)
+                    .lineLimit(1)
+                HStack(spacing: 6) {
+                    Image(systemName: record.completedSuccessfully
+                          ? "checkmark.circle.fill" : "arrow.uturn.left.circle.fill")
+                        .foregroundStyle(record.completedSuccessfully ? Color.green : Color.secondary)
+                        .font(.system(size: 11))
+                    Text(record.startTime, style: .date)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Spacer()
+        }
+        .padding(.vertical, 2)
+        .contentShape(Rectangle())
     }
 }
