@@ -1,5 +1,28 @@
 # Adia — Build Progress
 
+## Run 27 — 2026-05-29
+
+### Shipped
+- **feat: search + completion filter in HistoryTab**
+  - `filterRecords(_:query:completed:)` — pure `internal` free function at module scope (directly testable). Case-insensitive substring match across `task`, `successCriteria`, and `note` fields. Optional `Bool?` completion filter is applied first; `nil` means no filter.
+  - `HistoryTab.CompletionFilter` — nested enum (`.all` / `.completed` / `.exitedEarly`) with `boolValue: Bool?` that feeds directly into `filterRecords`.
+  - `HistoryTab.filteredRecords` — computed property wiring state into the filter; all list render/delete handlers correctly use `filteredRecords` for display while `records` stays as the canonical backing array.
+  - `searchFilterBar` — compact `HStack` above the session list: a rounded search field with a live clear (×) button + a `.segmented` Picker showing "All" / "Done" / "Exited". Only shown when there are records.
+  - "No matching sessions" empty state (magnifying glass icon + label) renders inside the list area when `filteredRecords` is empty but `records` is not, distinct from the pre-history "No sessions yet" state.
+  - 11 new `@Test` cases in a new `FilterRecordsTests` suite: empty query returns all, whitespace-only query returns all, task match case-insensitive, criteria match, note match, no-match → empty, completed filter, exited-early filter, nil filter returns all, combined query+completion filter, empty input → empty.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) HistoryTab multi-select + bulk delete (shift-click to select a range, then "Delete selected N").
+  - (b) `NotchWindowController` idle height: verify `idleExpandedHeight = 220` is sufficient when both stats line and streak pill are visible simultaneously.
+  - (c) Integration smoke test on real macOS hardware with `ANTHROPIC_API_KEY`.
+  - (d) "Reset search" also resets the completion filter (currently search clear button only clears `searchText`; user must manually click "All" in the picker).
+
+---
+
 ## Run 26 — 2026-05-28
 
 ### Shipped
