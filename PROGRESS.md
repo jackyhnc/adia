@@ -1,5 +1,30 @@
 # Adia — Build Progress
 
+## Run 28 — 2026-05-29
+
+### Shipped
+- **feat: multi-select + bulk delete in HistoryTab**
+  - `SessionHistory.deleteMultiple(ids: Set<UUID>)` — removes all records in the id set atomically; no-op for empty set or unknown ids.
+  - `HistoryTab`: added `isSelectMode: Bool` and `selectedIDs: Set<UUID>` state. A "Select" button appears in the footer (right of "Export CSV…") to enter selection mode.
+  - In select mode, each row renders as `SelectableRecordRow` — a compact row with a checkmark-circle (filled when selected, empty when not) + task text + date. Tapping toggles selection via `toggleSelection(_:)`.
+  - "Delete N selected" button (red, invisible when nothing is selected) bulk-deletes via `deleteMultiple`, animates rows out, refreshes stats, then auto-exits select mode when the list becomes empty.
+  - "Done" button exits select mode and clears `selectedIDs`. "Clear All" confirmation also resets both.
+  - `toggleSelection(_:)` and `deleteSelected()` extracted as private helpers.
+- **fix: search × also resets completion filter** — tapping the clear (×) button in the search field now resets the "All / Done / Exited" picker back to "All" in addition to clearing `searchText`.
+- **tests**: 3 new `@Test` cases — `deleteMultipleRemovesAllSpecified` (2-of-3 deleted, 1 remains), `deleteMultipleNoOpForUnknownIDs` (unknown ids leave records untouched), `deleteMultipleEmptySetIsNoOp` (empty set is a no-op).
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) Select-all shortcut in HistoryTab select mode (a "Select All" button that adds all `filteredRecords` ids to `selectedIDs`).
+  - (b) `NotchWindowController` idle height: verify `idleExpandedHeight = 220` is sufficient when both stats line and streak pill are visible simultaneously.
+  - (c) Integration smoke test on real macOS hardware with `ANTHROPIC_API_KEY`.
+  - (d) Session date grouping in HistoryTab (group rows by day: "Today", "Yesterday", "May 27", etc.).
+
+---
+
 ## Run 27 — 2026-05-29
 
 ### Shipped
