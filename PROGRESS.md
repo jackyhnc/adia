@@ -1,5 +1,29 @@
 # Adia — Build Progress
 
+## Run 31 — 2026-05-30
+
+### Shipped
+- **feat: session templates — pin and 1-tap launch recurring sessions**
+  - `SessionTemplate` (new model): `id`, `task`, `successCriteria`, `useCount`, `lastUsedAt`, `createdAt` — all `Codable`/`Sendable`.
+  - `SessionTemplateStore` (new actor): persists to `~/Library/Application Support/Adia/templates.json`. Methods: `add(task:successCriteria:)` (deduplicates on normalized task text, trims to max 10), `delete(id:)`, `recordUse(id:)` (increments count + sets date), `sorted()` (most recently used first).
+  - `IdleBody`: loads top-2 sorted templates in `.task(id:)`. Renders a "PINNED" section with compact quick-launch buttons (pin icon + task name + play icon). Tapping a template calls `SessionManager.shared.start(task:successCriteria:)` directly, records the use, and collapses the notch — no form required. Errors shown inline with `templateError` state.
+  - `NotchWindowController`: `idleExpandedHeight` now grows by 34pt per pinned template (capped at 2), driven by `NotchState.idleTemplateCount`. Subscribes to `$idleTemplateCount` so the panel resizes automatically when templates load.
+  - `NotchState`: `@Published public internal(set) var idleTemplateCount: Int = 0` — set by `IdleBody` after template load, read by controller for height calculation.
+  - `SessionCreationFormView`: pin icon toggle button (visible when task field is non-empty). When enabled and Go is tapped, the AI-parsed `task` + `successCriteria` are saved as a template after the session starts.
+  - **Tests** (`SessionTemplateTests.swift`): 14 tests — empty load, add/load, delete, dedup on task text, dedup case-insensitive, recordUse increments+sets date, recordUse multiple times, recordUse unknown id, sorted newest-first, sorted puts used before unused, max templates trim, Codable round-trip.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) Callout escalation: after N callouts in a session, escalate message intensity (louder sound, longer display, stronger language).
+  - (b) Template management in Settings: a "Templates" tab or section where users can view, reorder, rename, and delete pinned templates (currently only deletable via the store, no UI for management).
+  - (c) App blocking via NSWorkspace: detect when a distracting app (e.g. Discord, Instagram for Mac) becomes frontmost during a session and immediately fire a callout. STACK already lists "NSWorkspace observation for app monitoring" as planned.
+  - (d) Focus heatmap: weekly chart (7 columns, 1 per day) in the History tab showing session count/minutes per day at a glance.
+
+---
+
 ## Run 30 — 2026-05-30
 
 ### Shipped
