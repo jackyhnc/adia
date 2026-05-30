@@ -51,6 +51,8 @@ public final class NotchWindowController: NSWindowController {
     private static let verificationHeight: CGFloat      = 220
     // Idle state is taller than the active-session base to accommodate the stats line.
     private static let idleExpandedHeight: CGFloat      = 220
+    // Each pinned template button adds this much height to the idle panel.
+    private static let perTemplateHeight: CGFloat       = 34
 
     // Small always-visible indicator shown when collapsed, sitting just below the
     // notch so the physical camera housing never hides it.
@@ -102,6 +104,8 @@ public final class NotchWindowController: NSWindowController {
         NotchState.shared.$calloutMessage.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         // Session start/end changes the height between idle (220pt) and active (190pt).
         SessionManager.shared.$session.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        // Template count changes idle height.
+        NotchState.shared.$idleTemplateCount.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
     }
 
     // MARK: Panel sizing / positioning
@@ -169,7 +173,8 @@ public final class NotchWindowController: NSWindowController {
         } else if state.calloutMessage != nil {
             h = Self.calloutExpandedHeight
         } else if SessionManager.shared.session == nil {
-            h = Self.idleExpandedHeight
+            let tc = CGFloat(min(state.idleTemplateCount, 2))
+            h = Self.idleExpandedHeight + tc * Self.perTemplateHeight
         } else {
             h = Self.expandedHeight
         }

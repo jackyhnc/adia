@@ -360,6 +360,7 @@ private struct SessionCreationFormView: View {
     @State private var inputText: String = ""
     @State private var clarifyingQuestion: String?
     @State private var isThinking: Bool = false
+    @State private var pinAsTemplate: Bool = false
     @FocusState private var inputFocused: Bool
 
     var body: some View {
@@ -421,6 +422,21 @@ private struct SessionCreationFormView: View {
                 .buttonStyle(.plain)
                 .font(.system(size: 12))
                 .foregroundStyle(.white.opacity(0.4))
+
+                Spacer()
+
+                if canSubmit {
+                    Button {
+                        withAnimation(.easeOut(duration: 0.15)) { pinAsTemplate.toggle() }
+                    } label: {
+                        Image(systemName: pinAsTemplate ? "pin.fill" : "pin")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundStyle(pinAsTemplate ? .white.opacity(0.85) : .white.opacity(0.3))
+                    }
+                    .buttonStyle(.plain)
+                    .help(pinAsTemplate ? "Will save as pinned template" : "Pin as template")
+                    .transition(.opacity)
+                }
             }
             .padding(.top, 14)
         }
@@ -448,15 +464,18 @@ private struct SessionCreationFormView: View {
         guard !text.isEmpty, !isThinking else { return }
         isThinking = true
         clarifyingQuestion = nil
+        let shouldPin = pinAsTemplate
         Task { @MainActor in
             defer { isThinking = false }
             do {
                 let parsed = try await ClaudeClient.shared.parseGoal(text)
                 if parsed.ok {
-                    try await session.start(
-                        task: parsed.task ?? text,
-                        successCriteria: parsed.successCriteria ?? ""
-                    )
+                    let task = parsed.task ?? text
+                    let criteria = parsed.successCriteria ?? ""
+                    try await session.start(task: task, successCriteria: criteria)
+                    if shouldPin {
+                        Task { await SessionTemplateStore.shared.add(task: task, successCriteria: criteria) }
+                    }
                     state.stopCreating()
                 } else {
                     withAnimation { clarifyingQuestion = parsed.question ?? "Can you be more specific?" }
@@ -469,6 +488,9 @@ private struct SessionCreationFormView: View {
                 // Network/parse failure — don't trap the user; start with their raw words.
                 do {
                     try await session.start(task: text, successCriteria: "")
+                    if shouldPin {
+                        Task { await SessionTemplateStore.shared.add(task: text, successCriteria: "") }
+                    }
                     state.stopCreating()
                 } catch CaptureError.permissionDenied {
                     withAnimation {
@@ -489,6 +511,8 @@ private struct IdleBody: View {
     @ObservedObject var session: SessionManager
     @State private var sessionStats: SessionStats? = nil
     @State private var lastRecord: SessionRecord? = nil
+    @State private var templates: [SessionTemplate] = []
+    @State private var templateError: String? = nil
 
     var body: some View {
         Group {
@@ -507,6 +531,9 @@ private struct IdleBody: View {
         .task(id: session.session?.id) {
             sessionStats = await SessionHistory.shared.stats()
             lastRecord = await SessionHistory.shared.load().first
+            let sorted = await SessionTemplateStore.shared.sorted()
+            templates = Array(sorted.prefix(2))
+            NotchState.shared.idleTemplateCount = templates.count
         }
     }
 
@@ -515,14 +542,29 @@ private struct IdleBody: View {
             if let s = sessionStats, s.todayCount > 0 || s.weekCount > 0 {
                 statsLine(s)
             }
+
+            if !templates.isEmpty {
+                templateSection
+            }
+
+            if let err = templateError {
+                Text(err)
+                    .font(.system(size: 10))
+                    .foregroundStyle(.orange.opacity(0.8))
+                    .lineLimit(2)
+                    .transition(.opacity)
+            }
+
             Text("No active session")
                 .font(.system(size: 13))
                 .foregroundStyle(.white.opacity(0.45))
+
             AdiButton(label: "Start Session", style: .primary) {
                 withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
                     state.startCreating()
                 }
             }
+
             if let record = lastRecord {
                 Button {
                     withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
@@ -539,6 +581,65 @@ private struct IdleBody: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
+        .animation(.easeOut(duration: 0.18), value: templateError)
+    }
+
+    @ViewBuilder
+    private var templateSection: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text("PINNED")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundStyle(.white.opacity(0.3))
+                .tracking(1.5)
+
+            ForEach(templates) { t in
+                templateButton(t)
+            }
+        }
+    }
+
+    private func templateButton(_ t: SessionTemplate) -> some View {
+        Button {
+            launchTemplate(t)
+        } label: {
+            HStack(spacing: 7) {
+                Image(systemName: "pin.fill")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.35))
+                Text(t.task)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.75))
+                    .lineLimit(1)
+                Spacer()
+                Image(systemName: "play.fill")
+                    .font(.system(size: 9, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.25))
+            }
+            .padding(.horizontal, 9)
+            .padding(.vertical, 6)
+            .background(Color.white.opacity(0.07))
+            .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func launchTemplate(_ t: SessionTemplate) {
+        templateError = nil
+        Task { @MainActor in
+            do {
+                try await SessionManager.shared.start(task: t.task, successCriteria: t.successCriteria)
+                Task { await SessionTemplateStore.shared.recordUse(id: t.id) }
+                NotchState.shared.collapse()
+            } catch CaptureError.permissionDenied {
+                withAnimation {
+                    templateError = "Screen Recording permission required — enable Adia in System Settings."
+                }
+            } catch {
+                withAnimation {
+                    templateError = "Couldn't start session — try again."
+                }
+            }
+        }
     }
 
     private func statsLine(_ s: SessionStats) -> some View {

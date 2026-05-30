@@ -8,6 +8,9 @@ public final class NotchState: ObservableObject {
     @Published public private(set) var isCreating: Bool = false
     /// Task text to pre-populate the session creation form. Set by startCreating(prefill:), cleared by stopCreating() and collapse().
     @Published public private(set) var sessionCreationPrefill: String? = nil
+    /// Number of pinned templates currently shown in the idle notch. Updated by IdleBody when it loads templates.
+    /// Used by NotchWindowController to pick the correct idle panel height.
+    @Published public internal(set) var idleTemplateCount: Int = 0
 
     // Callout
     @Published public private(set) var calloutMessage: String? = nil
