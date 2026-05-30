@@ -1,5 +1,30 @@
 # Adia — Build Progress
 
+## Run 30 — 2026-05-30
+
+### Shipped
+- **feat: repeat-last-task button in idle notch**
+  - `NotchState.startCreating(prefill: String? = nil)` — new parameter stores the task text in a new `@Published sessionCreationPrefill: String?` property. `stopCreating()` and `collapse()` both clear it so stale text never leaks.
+  - `SessionCreationFormView.onAppear` reads `state.sessionCreationPrefill` and sets `inputText` if non-empty, pre-filling the creation form.
+  - `IdleBody` loads `SessionHistory.shared.load().first` alongside stats in the `.task(id:)` handler. When a prior record exists, renders a subtle "↺ <last task>" button below "Start Session". Tapping it calls `startCreating(prefill: record.task)` so repeat sessions take one tap.
+- **feat: persistent CompletionFilter in HistoryTab**
+  - Changed `@State private var completionFilter: CompletionFilter = .all` to `@AppStorage("historyCompletionFilter")`. The "All"/"Done"/"Exited" picker now survives Settings-tab reopens.
+- **feat: ⌘A keyboard shortcut for Select All in HistoryTab**
+  - Added `.keyboardShortcut("a", modifiers: .command)` to the "Select All"/"Deselect All" footer button. Fires only while `isSelectMode == true` (when the button is in the view hierarchy).
+- **tests**: 2 new `NotchStateTests` — `startCreatingWithPrefillStoresPrefill`, `stopCreatingClearsIsCreatingAndPrefill`. Updated `collapseResetsAllUIFlags` and `startCreatingSetsIsCreatingAndExpands` to also assert `sessionCreationPrefill == nil`.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) Session templating: let users save/name common sessions (e.g. "Morning deep work") and pick from a list in the idle notch.
+  - (b) `NotchWindowController` idle height: verify `idleExpandedHeight = 220` still gives enough room now that the repeat-last-task button is shown (adds ~26pt; total estimated ~183pt, still under 220).
+  - (c) Callout escalation: after N callouts in a session, escalate message intensity or play a louder sound.
+  - (d) Integration smoke test on real macOS hardware with `ANTHROPIC_API_KEY`.
+
+---
+
 ## Run 29 — 2026-05-29
 
 ### Shipped
