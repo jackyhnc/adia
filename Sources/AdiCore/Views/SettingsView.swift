@@ -292,7 +292,7 @@ private struct HistoryTab: View {
     @State private var showingClearAlert: Bool = false
     @State private var expandedRecordID: UUID? = nil
     @State private var searchText: String = ""
-    @State private var completionFilter: CompletionFilter = .all
+    @AppStorage("historyCompletionFilter") private var completionFilter: CompletionFilter = .all
     @State private var isSelectMode: Bool = false
     @State private var selectedIDs: Set<UUID> = []
 
@@ -413,6 +413,7 @@ private struct HistoryTab: View {
                             Button(allFilteredSelected ? "Deselect All" : "Select All") {
                                 toggleSelectAll()
                             }
+                            .keyboardShortcut("a", modifiers: .command)
                             .buttonStyle(.borderless)
                             .font(.callout)
                             .foregroundStyle(.secondary)

@@ -429,6 +429,9 @@ private struct SessionCreationFormView: View {
         .padding(.bottom, 14)
         .animation(.easeOut(duration: 0.2), value: clarifyingQuestion)
         .onAppear {
+            if let prefill = state.sessionCreationPrefill, !prefill.isEmpty {
+                inputText = prefill
+            }
             Task { @MainActor in
                 try? await Task.sleep(for: .milliseconds(300))
                 inputFocused = true
@@ -485,6 +488,7 @@ private struct IdleBody: View {
     @ObservedObject var state: NotchState
     @ObservedObject var session: SessionManager
     @State private var sessionStats: SessionStats? = nil
+    @State private var lastRecord: SessionRecord? = nil
 
     var body: some View {
         Group {
@@ -500,7 +504,10 @@ private struct IdleBody: View {
             }
         }
         // Re-run whenever a session ends (id changes from UUID → nil) so stats stay fresh.
-        .task(id: session.session?.id) { sessionStats = await SessionHistory.shared.stats() }
+        .task(id: session.session?.id) {
+            sessionStats = await SessionHistory.shared.stats()
+            lastRecord = await SessionHistory.shared.load().first
+        }
     }
 
     private var idleContent: some View {
@@ -515,6 +522,19 @@ private struct IdleBody: View {
                 withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
                     state.startCreating()
                 }
+            }
+            if let record = lastRecord {
+                Button {
+                    withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
+                        state.startCreating(prefill: record.task)
+                    }
+                } label: {
+                    Label(record.task, systemImage: "arrow.clockwise")
+                        .font(.system(size: 11))
+                        .lineLimit(1)
+                        .foregroundStyle(.white.opacity(0.35))
+                }
+                .buttonStyle(.plain)
             }
         }
         .padding(.horizontal, 16)

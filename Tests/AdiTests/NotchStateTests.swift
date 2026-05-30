@@ -37,7 +37,7 @@ struct NotchStateTests {
     @Test func collapseResetsAllUIFlags() async {
         await MainActor.run {
             NotchState.shared.expand()
-            NotchState.shared.startCreating()
+            NotchState.shared.startCreating(prefill: "my task")
             NotchState.shared.showCallout("yo!")
             NotchState.shared.setVerifying(true)
         }
@@ -45,6 +45,7 @@ struct NotchStateTests {
         await MainActor.run {
             #expect(NotchState.shared.isExpanded == false)
             #expect(NotchState.shared.isCreating == false)
+            #expect(NotchState.shared.sessionCreationPrefill == nil)
             #expect(NotchState.shared.calloutMessage == nil)
             #expect(NotchState.shared.isVerifying == false)
             #expect(NotchState.shared.verificationResult == nil)
@@ -60,17 +61,30 @@ struct NotchStateTests {
         await MainActor.run {
             #expect(NotchState.shared.isCreating == true)
             #expect(NotchState.shared.isExpanded == true)
+            #expect(NotchState.shared.sessionCreationPrefill == nil)
         }
     }
 
-    @Test func stopCreatingClearsIsCreating() async {
+    @Test func startCreatingWithPrefillStoresPrefill() async {
+        await reset()
+        await MainActor.run { NotchState.shared.startCreating(prefill: "finish my essay") }
+        await MainActor.run {
+            #expect(NotchState.shared.isCreating == true)
+            #expect(NotchState.shared.isExpanded == true)
+            #expect(NotchState.shared.sessionCreationPrefill == "finish my essay")
+        }
+    }
+
+    @Test func stopCreatingClearsIsCreatingAndPrefill() async {
         await reset()
         await MainActor.run {
-            NotchState.shared.startCreating()
+            NotchState.shared.startCreating(prefill: "finish my essay")
             NotchState.shared.stopCreating()
         }
-        let creating = await MainActor.run { NotchState.shared.isCreating }
-        #expect(creating == false)
+        await MainActor.run {
+            #expect(NotchState.shared.isCreating == false)
+            #expect(NotchState.shared.sessionCreationPrefill == nil)
+        }
     }
 
     // MARK: - Callout

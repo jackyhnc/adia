@@ -6,6 +6,8 @@ public final class NotchState: ObservableObject {
 
     @Published public private(set) var isExpanded: Bool = false
     @Published public private(set) var isCreating: Bool = false
+    /// Task text to pre-populate the session creation form. Set by startCreating(prefill:), cleared by stopCreating() and collapse().
+    @Published public private(set) var sessionCreationPrefill: String? = nil
 
     // Callout
     @Published public private(set) var calloutMessage: String? = nil
@@ -26,6 +28,7 @@ public final class NotchState: ObservableObject {
     public func collapse() {
         isExpanded = false
         isCreating = false
+        sessionCreationPrefill = nil
         showingConversation = false
         calloutMessage = nil
         verificationResult = nil
@@ -36,12 +39,16 @@ public final class NotchState: ObservableObject {
 
     // MARK: - Session creation
 
-    public func startCreating() {
+    public func startCreating(prefill: String? = nil) {
         if !isExpanded { isExpanded = true }
+        sessionCreationPrefill = prefill
         isCreating = true
     }
 
-    public func stopCreating() { isCreating = false }
+    public func stopCreating() {
+        isCreating = false
+        sessionCreationPrefill = nil
+    }
 
     // MARK: - Callout
 
