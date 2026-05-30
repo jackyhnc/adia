@@ -166,7 +166,9 @@ private struct AccountSettingsTab: View {
 private struct BlockingSettingsTab: View {
     @ObservedObject private var settings = SettingsStore.shared
     @State private var newDomain = ""
-    @FocusState private var addFieldFocused: Bool
+    @FocusState private var addDomainFocused: Bool
+    @State private var newAppBundleID = ""
+    @FocusState private var addAppFocused: Bool
 
     var body: some View {
         Form {
@@ -205,7 +207,7 @@ private struct BlockingSettingsTab: View {
                 }
                 HStack {
                     TextField("e.g. chess.com", text: $newDomain)
-                        .focused($addFieldFocused)
+                        .focused($addDomainFocused)
                         .onSubmit { addDomain() }
                     Button("Add") { addDomain() }
                         .disabled(newDomain.trimmingCharacters(in: .whitespaces).isEmpty)
@@ -216,6 +218,56 @@ private struct BlockingSettingsTab: View {
                 Text("Additional sites to block. Enter the domain without https:// or www.")
                     .foregroundStyle(.secondary)
             }
+
+            Section {
+                ForEach(Session.defaultBlockedApps) { app in
+                    Toggle(app.name, isOn: Binding(
+                        get: { settings.isDefaultAppEnabled(app.id) },
+                        set: { settings.setDefaultApp(app.id, enabled: $0) }
+                    ))
+                }
+            } header: {
+                Text("Blocked Apps")
+            } footer: {
+                Text("When one of these apps becomes active during a session, Adia calls you out immediately.")
+                    .foregroundStyle(.secondary)
+            }
+
+            Section {
+                if settings.customBlockedApps.isEmpty {
+                    Text("No custom apps")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(settings.customBlockedApps, id: \.self) { bundleID in
+                        HStack {
+                            Text(bundleID)
+                                .font(.system(.body, design: .monospaced))
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            Button {
+                                settings.removeCustomApp(bundleID)
+                            } label: {
+                                Image(systemName: "trash")
+                                    .foregroundStyle(.red.opacity(0.8))
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+                HStack {
+                    TextField("e.g. com.hnc.Discord", text: $newAppBundleID)
+                        .focused($addAppFocused)
+                        .font(.system(.body, design: .monospaced))
+                        .onSubmit { addApp() }
+                    Button("Add") { addApp() }
+                        .disabled(newAppBundleID.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            } header: {
+                Text("Custom Apps")
+            } footer: {
+                Text("Enter a bundle identifier (e.g. com.hnc.Discord). Find it in the app's Info.plist under CFBundleIdentifier.")
+                    .foregroundStyle(.secondary)
+            }
         }
         .formStyle(.grouped)
     }
@@ -223,7 +275,15 @@ private struct BlockingSettingsTab: View {
     private func addDomain() {
         settings.addCustomDomain(newDomain)
         newDomain = ""
-        addFieldFocused = false
+        addDomainFocused = false
+    }
+
+    private func addApp() {
+        let id = newAppBundleID.trimmingCharacters(in: .whitespaces)
+        guard !id.isEmpty else { return }
+        settings.addCustomApp(id)
+        newAppBundleID = ""
+        addAppFocused = false
     }
 }
 

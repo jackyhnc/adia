@@ -1,5 +1,34 @@
 # Adia — Build Progress
 
+## Run 32 — 2026-05-30
+
+### Shipped
+- **feat: app blocking via NSWorkspace — immediate callout when a blocked app becomes frontmost**
+  - `BlockedApp` (new model, `Sources/AdiCore/Models/BlockedApp.swift`): `id` (bundle identifier) + `name` (display name). `Codable`, `Sendable`, `Identifiable`.
+  - `Session.defaultBlockedApps: [BlockedApp]` — 8 apps: Discord, Steam, Twitch, WhatsApp, Telegram, Apple TV, Instagram, Facebook.
+  - `Session.defaultBlockedAppBundleIDs: [String]` — derived from `defaultBlockedApps`.
+  - `Session.blockedApps: [String]` — bundle IDs stored per-session. Manual `Codable` conformance (`init(from:)` + `encode(to:)`) handles the missing key gracefully for sessions persisted before this field was introduced (falls back to `defaultBlockedAppBundleIDs`).
+  - `AppMonitor` (new actor, `Sources/AdiCore/Blocking/AppMonitor.swift`): `@MainActor public final class`. Observes `NSWorkspace.didActivateApplicationNotification` on the main queue. `start(blockedBundleIDs:)` registers the observer; `stop()` removes it. `handle(bundleID:appName:)` checks membership and calls `CalloutManager.shared.fireAppCallout(_:)`. `static func callout(for:) -> String` mixes `%@`-format callouts (embedding the app name) with generic fallbacks — always returns a non-`%@` string.
+  - `CalloutManager.fireAppCallout(_:)` — new public method that bypasses the consecutive-frame threshold and fires immediately. Shares the same `display(_:)` helper as the screen-monitor path, so callout count, auto-dismiss, and deduplication all work the same way.
+  - `SettingsStore`: added `customBlockedApps: [String]`, `disabledDefaultApps: Set<String>`, `effectiveBlockedApps: [String]`, and CRUD methods `addCustomApp(_:)`, `removeCustomApp(_:)`, `setDefaultApp(_:enabled:)`, `isDefaultAppEnabled(_:)`. Persisted to UserDefaults alongside domain settings.
+  - `SessionManager.start(task:successCriteria:)`: passes `SettingsStore.shared.effectiveBlockedApps` to the `Session` init.
+  - `SessionManager.activate(_:)`: calls `AppMonitor.shared.start(blockedBundleIDs: Set(s.blockedApps))` after `callout.reset()`.
+  - `SessionManager.endSession()` and the failure-rollback path in `start()`: both call `AppMonitor.shared.stop()`.
+  - `BlockingSettingsTab` in `SettingsView`: added "Blocked Apps" section (default list with per-app toggles) and "Custom Apps" section (monospaced bundle-ID text field + Add button + delete per row).
+  - **Tests** (`AppMonitorTests.swift`, 9 tests): `calloutIsNonEmpty`, `calloutHasNoFormatSpecifier` (30 runs, never leaves `%@`), `calloutWithAppNameEitherContainsNameOrIsGeneric` (30 runs, always from known pool), `calloutPoolCoversNamedAndGenericEntries`, `calloutEmptyAppNameDoesNotCrash`, `calloutSpecialCharAppNameDoesNotCrash`, `defaultBlockedAppsHaveNonEmptyIDs`, `defaultBlockedAppBundleIDsMatchDefaultApps`, `defaultBlockedAppsAreUnique`, `sessionRoundTripPreservesBlockedApps`, `sessionDecodesLegacyJsonWithoutBlockedApps`.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) Callout escalation: after N callouts in a session, escalate message intensity (louder sound, longer display, stronger language).
+  - (b) Template management in Settings: a "Templates" tab or section where users can view, reorder, rename, and delete pinned templates.
+  - (c) Focus heatmap: weekly chart (7 columns, 1 per day) in the History tab showing session count/minutes per day at a glance.
+  - (d) Running-apps picker in Settings: populate the custom apps list from `NSWorkspace.shared.runningApplications` so users don't need to know bundle IDs.
+
+---
+
 ## Run 31 — 2026-05-30
 
 ### Shipped

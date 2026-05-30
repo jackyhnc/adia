@@ -54,19 +54,28 @@ public final class CalloutManager {
     }
 
     private func fire() {
-        calloutCount += 1
         let candidates = Self.callouts.filter { $0 != lastFiredMessage }
         let message = (candidates.isEmpty ? Self.callouts : candidates).randomElement() ?? "focus."
+        display(message)
+    }
+
+    /// Fires an immediate callout for a blocked app becoming frontmost (no threshold needed).
+    public func fireAppCallout(_ message: String) {
+        display(message)
+    }
+
+    private func display(_ message: String) {
+        calloutCount += 1
         lastFiredMessage = message
         NotchState.shared.showCallout(message)
-        // Cancel any pending auto-dismiss from a prior streak before starting a new one.
+        // Cancel any pending auto-dismiss from a prior callout before starting a new one.
         autoDismissTask?.cancel()
         autoDismissTask = Task { @MainActor in
             do {
                 try await Task.sleep(for: .seconds(8))
                 NotchState.shared.clearCallout()
             } catch {
-                // Task was cancelled — reset() was called or a new streak started.
+                // Task was cancelled — reset() was called or a new callout fired.
             }
         }
         #if canImport(AppKit)

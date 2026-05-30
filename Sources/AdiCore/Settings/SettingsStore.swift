@@ -11,8 +11,12 @@ public final class SettingsStore: ObservableObject {
     private let keychainAccount = "anthropic_api_key"
 
     // UserDefaults keys for domain lists
-    private static let customDomainsKey  = "adia.customBlockedDomains"
+    private static let customDomainsKey   = "adia.customBlockedDomains"
     private static let disabledDomainsKey = "adia.disabledDefaultDomains"
+
+    // UserDefaults keys for app lists
+    private static let customAppsKey     = "adia.customBlockedApps"
+    private static let disabledAppsKey   = "adia.disabledDefaultApps"
 
     @Published public private(set) var anthropicAPIKey: String?
     @Published public var crashReportsEnabled: Bool {
@@ -32,10 +36,29 @@ public final class SettingsStore: ObservableObject {
         didSet { Self.saveDomainList(Array(disabledDefaultDomains), key: Self.disabledDomainsKey, to: defaults) }
     }
 
-    /// Active block list for new sessions: enabled defaults + custom additions.
+    /// Active domain block list for new sessions: enabled defaults + custom additions.
     public var effectiveBlockedDomains: [String] {
         let enabled = Session.defaultBlockedDomains.filter { !disabledDefaultDomains.contains($0) }
         let extra = customBlockedDomains.filter { !enabled.contains($0) }
+        return enabled + extra
+    }
+
+    // MARK: - App blocking
+
+    /// Bundle IDs the user added on top of the default app block list.
+    @Published public private(set) var customBlockedApps: [String] {
+        didSet { Self.saveDomainList(customBlockedApps, key: Self.customAppsKey, to: defaults) }
+    }
+
+    /// Subset of `Session.defaultBlockedAppBundleIDs` the user has disabled.
+    @Published public private(set) var disabledDefaultApps: Set<String> {
+        didSet { Self.saveDomainList(Array(disabledDefaultApps), key: Self.disabledAppsKey, to: defaults) }
+    }
+
+    /// Active app block list for new sessions: enabled defaults + custom additions.
+    public var effectiveBlockedApps: [String] {
+        let enabled = Session.defaultBlockedAppBundleIDs.filter { !disabledDefaultApps.contains($0) }
+        let extra = customBlockedApps.filter { !enabled.contains($0) }
         return enabled + extra
     }
 
@@ -51,8 +74,10 @@ public final class SettingsStore: ObservableObject {
             ?? Self.nonEmpty(env["ANTHROPIC_API_KEY"])
             ?? Self.nonEmpty(Self.readKeyFromHomeFile())
             ?? EmbeddedSecrets.resolvedKey
-        customBlockedDomains  = Self.loadDomainList(key: Self.customDomainsKey,  from: defaults)
+        customBlockedDomains   = Self.loadDomainList(key: Self.customDomainsKey,   from: defaults)
         disabledDefaultDomains = Set(Self.loadDomainList(key: Self.disabledDomainsKey, from: defaults))
+        customBlockedApps      = Self.loadDomainList(key: Self.customAppsKey,      from: defaults)
+        disabledDefaultApps    = Set(Self.loadDomainList(key: Self.disabledAppsKey,    from: defaults))
     }
 
     /// Returns the trimmed string, or nil if it is nil/empty/whitespace-only.
@@ -105,6 +130,36 @@ public final class SettingsStore: ObservableObject {
     /// Whether a built-in default domain is currently enabled.
     public func isDefaultDomainEnabled(_ domain: String) -> Bool {
         !disabledDefaultDomains.contains(domain)
+    }
+
+    // MARK: - App management
+
+    /// Add a bundle ID to the custom app block list.
+    public func addCustomApp(_ bundleID: String) {
+        let id = bundleID.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !id.isEmpty,
+              !customBlockedApps.contains(id),
+              !Session.defaultBlockedAppBundleIDs.contains(id)
+        else { return }
+        customBlockedApps.append(id)
+    }
+
+    public func removeCustomApp(_ bundleID: String) {
+        customBlockedApps.removeAll { $0 == bundleID }
+    }
+
+    /// Enable or disable a bundle ID from the built-in default app list.
+    public func setDefaultApp(_ bundleID: String, enabled: Bool) {
+        if enabled {
+            disabledDefaultApps.remove(bundleID)
+        } else {
+            disabledDefaultApps.insert(bundleID)
+        }
+    }
+
+    /// Whether a built-in default app is currently enabled.
+    public func isDefaultAppEnabled(_ bundleID: String) -> Bool {
+        !disabledDefaultApps.contains(bundleID)
     }
 
     // MARK: - Domain persistence helpers

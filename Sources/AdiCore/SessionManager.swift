@@ -31,7 +31,8 @@ public final class SessionManager: ObservableObject {
             task: task,
             successCriteria: successCriteria,
             phase: .active,
-            blockedDomains: SettingsStore.shared.effectiveBlockedDomains
+            blockedDomains: SettingsStore.shared.effectiveBlockedDomains,
+            blockedApps: SettingsStore.shared.effectiveBlockedApps
         )
         session = s
         persistence.save(s)
@@ -46,6 +47,7 @@ public final class SessionManager: ObservableObject {
             persistence.clear()
             captureManager.onFrame = nil
             await detector.detach()
+            AppMonitor.shared.stop()
             LocalBlockServer.shared.stop()
             do { try await hosts.unblockAll() } catch {
                 print("[SessionManager] hosts cleanup after failed start: \(error)")
@@ -78,6 +80,7 @@ public final class SessionManager: ObservableObject {
         sessionEndedSuccessfully = false
 
         captureManager.stop()
+        AppMonitor.shared.stop()
         LocalBlockServer.shared.stop()
         do { try await hosts.unblockAll() } catch {
             print("[SessionManager] hosts cleanup failed: \(error)")
@@ -182,6 +185,7 @@ public final class SessionManager: ObservableObject {
     /// Throws if screen capture cannot be started (e.g. permission denied).
     private func activate(_ s: Session) async throws {
         callout.reset()  // clear streak state left over from any prior session
+        AppMonitor.shared.start(blockedBundleIDs: Set(s.blockedApps))
         await detector.attach(session: s)
         captureManager.onFrame = { [weak self] frame in
             await self?.handleFrame(frame)
