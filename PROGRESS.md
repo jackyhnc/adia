@@ -1,5 +1,31 @@
 # Adia — Build Progress
 
+## Run 34 — 2026-05-31
+
+### Shipped
+- **feat: callout escalation — 3 tiers of intensity across a session**
+  - **Tier 1** (callouts 1–2): friendly/direct pool ("yo, what are you doing?", "stop.", etc.), 8s auto-dismiss, Sosumi sound — unchanged from before.
+  - **Tier 2** (callouts 3–4): stronger language ("this is the third time.", "get back to work. now.", "what are you doing to yourself."), 12s auto-dismiss, Basso sound, deeper red `#B3070E` background.
+  - **Tier 3** (callout 5+): harshest messages ("STOP.", "every minute here hurts you.", "I am not letting this slide."), 20s auto-dismiss, Funk sound, near-black red `#800000` background, 19pt heavy font, `exclamationmark.3` icon, 16pt vertical padding — visually unmissable.
+  - **`CalloutManager`**: replaced single `callouts: [String]` pool with `tier1Callouts`, `tier2Callouts`, `tier3Callouts` arrays. `currentTier() -> Int` (internal) maps session `calloutCount` → tier (< 2 → 1, < 4 → 2, else 3). `static dismissDelay(for:) -> Duration` (internal) returns escalating durations. `fire()` selects pool by tier; `display(_:tier:)` passes tier to `NotchState.showCallout(_:tier:)` and plays tier-aware `NSSound`.
+  - **Bug fix (pre-existing)**: `evaluate(.onTask)` was calling public `reset()` which zeroed `calloutCount`, breaking session-level escalation and causing `calloutCountIncrementPerStreak` to silently produce wrong results. Fixed by extracting private `resetStreak()` (resets `consecutiveOffTask`, `hasFiredForStreak`, cancels auto-dismiss, clears callout) and making `evaluate(.onTask)` call `resetStreak()` instead. Session-level `calloutCount` now survives on-task recovery and only zeroes on explicit `reset()` (called by `SessionManager.activate()`).
+  - **`NotchState`**: added `@Published public private(set) var calloutTier: Int = 1`. `showCallout(_:tier:)` takes `tier: Int = 1` (backward-compatible with all existing callers). `clearCallout()` and `collapse()` both reset `calloutTier = 1`.
+  - **`NotchWindowController`**: `tier3CalloutExpandedHeight = 280` (vs `calloutExpandedHeight = 260`). `targetFrame` selects it when `state.calloutTier >= 3` so the larger tier-3 banner never clips.
+  - **`NotchView`**: `calloutBackground(tier:)` helper on `ExpandedView` returns `Color` darkening by tier. `activeBody(_:)` uses `let tier = state.calloutTier` to conditionally apply bigger icon, font size, and padding for tier 3.
+  - **Tests** (`CalloutManagerTests` +6, `NotchStateTests` +4): `onTaskRecoveryPreservesCalloutCount`, `tier1OnFirstCallout`, `tier2OnThirdCallout`, `tier3OnFifthCallout`, `currentTierBoundaries`, `dismissDelayEscalatesWithTier`, `showCalloutDefaultsTierToOne`, `showCalloutWithTierSetsCalloutTier`, `clearCalloutResetsTierToOne`, `collapseResetsTierToOne`.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) Template management in Settings: a "Templates" tab where users can view, reorder, rename, and delete pinned templates (currently only deletable via the store, no dedicated management UI).
+  - (b) Focus heatmap: weekly chart (7 columns, 1 per day) in the History tab showing session count/minutes per day at a glance.
+  - (c) Tier-3 shake animation: add a brief horizontal shake (keyframe animation) to the tier-3 callout banner on first appearance to make it even harder to ignore.
+  - (d) Callout escalation persistence across session restore: currently `calloutCount` resets on every `activate()`, so a restored session starts at tier 1. Could persist `calloutCount` in `SessionPersistence` if desired.
+
+---
+
 ## Run 33 — 2026-05-31
 
 ### Shipped
