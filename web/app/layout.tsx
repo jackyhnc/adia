@@ -3,6 +3,7 @@ import './globals.css';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://adia.app'),
   title: 'Adia — the friend in your notch who keeps you on task',
   description:
     'Tell Adia what you\'re working on. It watches your screen, blocks distracting sites, and calls you out when you wander. Verifies you actually finished.',

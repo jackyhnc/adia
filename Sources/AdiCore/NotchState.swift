@@ -18,6 +18,10 @@ public final class NotchState: ObservableObject {
     /// Resets to 1 when the callout is cleared.
     @Published public private(set) var calloutTier: Int = 1
 
+    // Blocker (escalated, full-screen intervention when a callout is ignored)
+    @Published public private(set) var isBlocking: Bool = false
+    @Published public private(set) var blockerMessage: String? = nil
+
     // Conversation (reasoning or early-exit)
     @Published public private(set) var showingConversation: Bool = false
 
@@ -40,6 +44,8 @@ public final class NotchState: ObservableObject {
         calloutTier = 1
         verificationResult = nil
         isVerifying = false
+        isBlocking = false
+        blockerMessage = nil
     }
 
     public func toggle() { isExpanded.toggle() }
@@ -68,6 +74,20 @@ public final class NotchState: ObservableObject {
     public func clearCallout() {
         calloutMessage = nil
         calloutTier = 1
+    }
+
+    // MARK: - Blocker
+
+    /// Escalates to the full-screen takeover. Keeps the notch expanded too so the
+    /// callout context remains coherent if the takeover is dismissed.
+    public func showBlocker(_ message: String) {
+        blockerMessage = message
+        isBlocking = true
+    }
+
+    public func clearBlocker() {
+        isBlocking = false
+        blockerMessage = nil
     }
 
     // MARK: - Conversation

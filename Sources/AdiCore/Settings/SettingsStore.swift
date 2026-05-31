@@ -8,7 +8,8 @@ public final class SettingsStore: ObservableObject {
 
     private let defaults = UserDefaults.standard
     private let keychainService = "app.adia.keys"
-    private let keychainAccount = "anthropic_api_key"
+    private let keychainAccount = "agent_ai_key"
+    private let legacyKeychainAccount = "anthropic_api_key"
 
     // UserDefaults keys for domain lists
     private static let customDomainsKey   = "adia.customBlockedDomains"
@@ -18,7 +19,7 @@ public final class SettingsStore: ObservableObject {
     private static let customAppsKey     = "adia.customBlockedApps"
     private static let disabledAppsKey   = "adia.disabledDefaultApps"
 
-    @Published public private(set) var anthropicAPIKey: String?
+    @Published public private(set) var agentAIKey: String?
     @Published public var crashReportsEnabled: Bool {
         didSet { defaults.set(crashReportsEnabled, forKey: "crashReportsEnabled") }
     }
@@ -65,15 +66,16 @@ public final class SettingsStore: ObservableObject {
     private init() {
         crashReportsEnabled  = defaults.object(forKey: "crashReportsEnabled")  as? Bool ?? true
         usageAnalyticsEnabled = defaults.object(forKey: "usageAnalyticsEnabled") as? Bool ?? true
-        // Resolve the API key from the first source that yields a *non-empty*
-        // value. `nonEmpty` guards against blank env vars (e.g. an exported
-        // `ANTHROPIC_API_KEY=""`) or a stale Keychain entry short-circuiting the
-        // chain and suppressing the home-file / embedded fallbacks.
+        // Resolve the agent AI key from the first source that yields a non-empty
+        // value. Legacy names are still accepted so existing local installs keep
+        // working after the user-facing naming moved away from provider branding.
         let env = ProcessInfo.processInfo.environment
-        anthropicAPIKey = Self.nonEmpty(Self.readKey(service: keychainService, account: keychainAccount))
-            ?? Self.nonEmpty(env["ANTHROPIC_API_KEY"])
-            ?? Self.nonEmpty(Self.readKeyFromHomeFile())
-            ?? EmbeddedSecrets.resolvedKey
+        agentAIKey = Self.openAICompatibleKey(Self.readKey(service: keychainService, account: keychainAccount))
+            ?? Self.openAICompatibleKey(Self.readKey(service: keychainService, account: legacyKeychainAccount))
+            ?? Self.openAICompatibleKey(env["OPENAI_API_KEY"])
+            ?? Self.openAICompatibleKey(env["ADIA_AGENT_AI_KEY"])
+            ?? Self.openAICompatibleKey(Self.readKeyFromHomeFile())
+            ?? Self.openAICompatibleKey(EmbeddedSecrets.resolvedKey)
         customBlockedDomains   = Self.loadDomainList(key: Self.customDomainsKey,   from: defaults)
         disabledDefaultDomains = Set(Self.loadDomainList(key: Self.disabledDomainsKey, from: defaults))
         customBlockedApps      = Self.loadDomainList(key: Self.customAppsKey,      from: defaults)
@@ -81,24 +83,40 @@ public final class SettingsStore: ObservableObject {
     }
 
     /// Returns the trimmed string, or nil if it is nil/empty/whitespace-only.
-    private static func nonEmpty(_ s: String?) -> String? {
+    private nonisolated static func nonEmpty(_ s: String?) -> String? {
         guard let s, !s.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
         return s
     }
 
+    public nonisolated static func openAICompatibleKey(_ s: String?) -> String? {
+        guard let value = nonEmpty(s) else { return nil }
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.hasPrefix("sk-"), !trimmed.hasPrefix("sk-ant-") else { return nil }
+        return trimmed
+    }
+
+    public nonisolated static func isOpenAICompatibleKey(_ s: String) -> Bool {
+        openAICompatibleKey(s) != nil
+    }
+
     public var hasAPIKey: Bool {
-        guard let k = anthropicAPIKey else { return false }
+        guard let k = agentAIKey else { return false }
         return !k.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
-    public func setAPIKey(_ key: String) {
+    @discardableResult
+    public func setAPIKey(_ key: String) -> Bool {
         let trimmed = key.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmed.isEmpty {
             Self.deleteKey(service: keychainService, account: keychainAccount)
-            anthropicAPIKey = nil
+            Self.deleteKey(service: keychainService, account: legacyKeychainAccount)
+            agentAIKey = nil
+            return true
         } else {
+            guard Self.isOpenAICompatibleKey(trimmed) else { return false }
             Self.writeKey(trimmed, service: keychainService, account: keychainAccount)
-            anthropicAPIKey = trimmed
+            agentAIKey = trimmed
+            return true
         }
     }
 
@@ -177,7 +195,7 @@ public final class SettingsStore: ObservableObject {
     }
 
     /// Strips protocol, www, path, query, fragment, and port: "https://www.example.com:8080/foo?q=1#sec" → "example.com"
-    static func normalizeDomain(_ raw: String) -> String {
+    nonisolated static func normalizeDomain(_ raw: String) -> String {
         var s = raw.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         for prefix in ["https://", "http://"] {
             if s.hasPrefix(prefix) { s = String(s.dropFirst(prefix.count)) }
@@ -197,17 +215,16 @@ public final class SettingsStore: ObservableObject {
 
     // MARK: - Home-file fallback
     //
-    // Single-line text file at ~/.adia/anthropic_key. Lets you keep a dev key out
-    // of the repo without exporting an env var before every launch. Lives outside
-    // the repo by design.
+    // Single-line text file at ~/.adia/openai_key or ~/.adia/agent_key. Legacy
+    // filenames are accepted when they contain an OpenAI-compatible key.
 
     private static func readKeyFromHomeFile() -> String? {
         let home = NSHomeDirectory()
-        for filename in ["anthropic_key", "api_key"] {
+        for filename in ["openai_key", "agent_key", "api_key", "anthropic_key"] {
             let path = "\(home)/.adia/\(filename)"
             guard let raw = try? String(contentsOfFile: path, encoding: .utf8) else { continue }
             let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-            if !trimmed.isEmpty { return trimmed }
+            if let key = openAICompatibleKey(trimmed) { return key }
         }
         return nil
     }

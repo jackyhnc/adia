@@ -1,5 +1,8 @@
 import Foundation
 import CoreGraphics
+#if canImport(AppKit)
+import AppKit
+#endif
 #if canImport(ScreenCaptureKit)
 import ScreenCaptureKit
 import CoreMedia
@@ -73,11 +76,32 @@ public final class ScreenCaptureManager: @unchecked Sendable {
     private let bridge = StreamOutputBridge()
 
     public func start() async throws {
-        let hasAccess = CGPreflightScreenCaptureAccess() || CGRequestScreenCaptureAccess()
-        guard hasAccess else { throw CaptureError.permissionDenied }
+        // `CGPreflightScreenCaptureAccess()` can return stale false after local
+        // rebuilds/re-signing even when System Settings shows the app enabled.
+        // Request once if needed, then let ScreenCaptureKit be the source of
+        // truth and map its failure into a user-facing permission error.
+        if !CGPreflightScreenCaptureAccess() {
+            AppLogger.warning("capture.preflight_failed")
+            #if canImport(AppKit)
+            await MainActor.run {
+                NSApp.setActivationPolicy(.regular)
+                NSApp.activate(ignoringOtherApps: true)
+            }
+            #endif
+            _ = CGRequestScreenCaptureAccess()
+        }
 
-        let content = try await SCShareableContent.current
+        let content: SCShareableContent
+        do {
+            content = try await SCShareableContent.current
+        } catch {
+            AppLogger.error("capture.shareable_content_failed", [
+                "error": String(describing: error)
+            ])
+            throw CaptureError.permissionDenied
+        }
         guard let display = content.displays.first else {
+            AppLogger.error("capture.no_display_found")
             throw CaptureError.noDisplayFound
         }
 
@@ -85,7 +109,7 @@ public final class ScreenCaptureManager: @unchecked Sendable {
         // Half-resolution is sufficient for vision inference and halves data volume.
         cfg.width  = max(1, display.width  / 2)
         cfg.height = max(1, display.height / 2)
-        cfg.minimumFrameInterval = CMTime(seconds: 1.0, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
+        cfg.minimumFrameInterval = CMTime(seconds: 0.5, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
         cfg.pixelFormat   = kCVPixelFormatType_32BGRA
         cfg.capturesAudio = false
         cfg.showsCursor   = false
@@ -99,12 +123,18 @@ public final class ScreenCaptureManager: @unchecked Sendable {
         try s.addStreamOutput(bridge, type: .screen, sampleHandlerQueue: .global(qos: .userInitiated))
         try await s.startCapture()
         stream = s
+        AppLogger.info("capture.started", [
+            "width": String(cfg.width),
+            "height": String(cfg.height),
+            "frameIntervalSeconds": "0.5"
+        ])
     }
 
     public func stop() {
         stream?.stopCapture { _ in }
         stream = nil
         lastFrame = nil
+        AppLogger.info("capture.stopped")
     }
 }
 

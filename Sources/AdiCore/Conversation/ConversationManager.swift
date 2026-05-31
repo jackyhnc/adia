@@ -42,7 +42,7 @@ public final class ConversationManager: ObservableObject {
         isLoading = true
         Task { @MainActor in
             do {
-                let reply = try await ClaudeClient.shared.chat(
+                let reply = try await AgentAIClient.shared.chat(
                     messages: messages,
                     systemPrompt: systemPrompt(for: mode)
                 )
@@ -128,7 +128,7 @@ public final class ConversationManager: ObservableObject {
     }
 
     /// Pure helper: returns true for GRANTED, false for DENIED, nil if neither.
-    public static func parseAccessDecision(in reply: String) -> Bool? {
+    public nonisolated static func parseAccessDecision(in reply: String) -> Bool? {
         if reply.contains("[ACCESS GRANTED]") { return true }
         if reply.contains("[ACCESS DENIED]") { return false }
         return nil

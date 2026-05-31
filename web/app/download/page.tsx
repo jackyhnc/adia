@@ -62,7 +62,7 @@ export default async function Download() {
       <ol className="mt-10 space-y-4 text-sm text-ink/80 list-decimal pl-5">
         <li>Open the .dmg and drag <b>Adia</b> to Applications.</li>
         <li>First launch: macOS will ask for <b>Screen Recording</b> permission. Grant it in System Settings → Privacy & Security.</li>
-        <li>Adia walks you through entering your Anthropic API key and starts your 7-day trial.</li>
+        <li>Adia walks you through entering your OpenAI API key and starts your 7-day trial.</li>
         <li>Click the dot in your notch, type your task, hit Go.</li>
       </ol>
     </section>

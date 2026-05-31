@@ -27,6 +27,10 @@ public final class SessionManager: ObservableObject {
     // MARK: - Session lifecycle
 
     public func start(task: String, successCriteria: String) async throws {
+        AppLogger.info("session.start_requested", [
+            "taskLength": String(task.count),
+            "criteriaLength": String(successCriteria.count)
+        ])
         let s = Session(
             task: task,
             successCriteria: successCriteria,
@@ -34,11 +38,12 @@ public final class SessionManager: ObservableObject {
             blockedDomains: SettingsStore.shared.effectiveBlockedDomains,
             blockedApps: SettingsStore.shared.effectiveBlockedApps
         )
-        session = s
-        persistence.save(s)
         do {
             try await activate(s)
+            session = s
+            persistence.save(s)
         } catch {
+            AppLogger.error("session.start_failed", ["error": String(describing: error)])
             // activate() failed (e.g. screen-capture permission denied) — roll back so
             // the session doesn't appear active and restoreIfNeeded() doesn't try to
             // restart a session that never fully started.
@@ -67,6 +72,10 @@ public final class SessionManager: ObservableObject {
     public func endSession() async {
         // Record the session before clearing it so we have all the data.
         if let s = session {
+            AppLogger.info("session.ending", [
+                "completedSuccessfully": String(sessionEndedSuccessfully),
+                "elapsedSeconds": String(Int(s.elapsed))
+            ])
             let record = SessionRecord(
                 task: s.task,
                 successCriteria: s.successCriteria,
@@ -107,7 +116,7 @@ public final class SessionManager: ObservableObject {
 
     // MARK: - Task verification
 
-    /// Called when the user taps "Done". Captures last frame, sends to Claude for verification.
+    /// Called when the user taps "Done". Captures the last frame and asks the agent to verify it.
     public func verifyAndEnd() async {
         guard let s = session else { return }
         guard let frame = captureManager.lastFrame else {
@@ -117,12 +126,16 @@ public final class SessionManager: ObservableObject {
         }
         NotchState.shared.setVerifying(true)
         do {
-            let result = try await ClaudeClient.shared.verify(
+            let result = try await AgentAIClient.shared.verify(
                 image: frame,
                 taskDescription: s.task,
                 successCriteria: s.successCriteria
             )
             NotchState.shared.setVerificationResult(result)
+            AppLogger.info("verification.result", [
+                "verified": String(result.verified),
+                "explanation": result.explanation
+            ])
             if result.verified {
                 sessionEndedSuccessfully = true
                 // Brief pause so the user sees "verified ✓" before everything unblocks.
@@ -132,6 +145,7 @@ public final class SessionManager: ObservableObject {
             // If not verified, session stays active — user sees the explanation.
         } catch {
             NotchState.shared.setVerifying(false)
+            AppLogger.error("verification.failed", ["error": String(describing: error)])
             print("[SessionManager] verification error: \(error)")
         }
     }
@@ -203,9 +217,9 @@ public final class SessionManager: ObservableObject {
 
         do {
             try await captureManager.start()
-            try? "[\(Date())] capture STARTED ok — frames flowing\n".appendToFile("/tmp/adia_ai.log")
+            AppLogger.info("session.capture_ready")
         } catch CaptureError.permissionDenied {
-            try? "[\(Date())] capture FAILED: permissionDenied\n".appendToFile("/tmp/adia_ai.log")
+            AppLogger.error("session.capture_permission_denied")
             NotchState.shared.showCallout("Screen Recording permission needed — enable Adia in System Settings, then start again.")
             Self.openScreenRecordingSettings()
             throw CaptureError.permissionDenied

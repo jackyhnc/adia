@@ -8,8 +8,13 @@ APP="${APP_PATH:-$ROOT/dist/Adia.app}"
 ZIP="$ROOT/dist/Adia-notarize.zip"
 
 if [ -z "${APPLE_ID:-}" ] || [ -z "${APPLE_TEAM_ID:-}" ] || [ -z "${APPLE_APP_PASSWORD:-}" ]; then
-  echo "⚠ Skipping notarization — APPLE_ID / APPLE_TEAM_ID / APPLE_APP_PASSWORD not set."
-  echo "  The DMG will still build, but users will see 'unidentified developer' on first open."
+  if [ "${ADIA_ALLOW_UNSIGNED_RELEASE:-0}" != "1" ]; then
+    echo "✗ APPLE_ID / APPLE_TEAM_ID / APPLE_APP_PASSWORD are required for production notarization."
+    echo "  Set ADIA_ALLOW_UNSIGNED_RELEASE=1 only for local/private test builds."
+    exit 1
+  fi
+  echo "⚠ Skipping notarization for local build."
+  echo "  Users will see 'unidentified developer'. Do not ship this artifact."
   exit 0
 fi
 

@@ -5,27 +5,23 @@ import AdiCore
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var notchController: NotchWindowController?
+    private var blockerController: FocusBlockerWindowController?
     private var onboardingWindow: NSWindow?
     private var windowCloseObserver: NSObjectProtocol?
 
     static let onboardingDoneKey = "adia.hasCompletedOnboarding"
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        NSApp.setActivationPolicy(.accessory)
+        NSApp.setActivationPolicy(.regular)
 
-        // Restore accessory policy when every non-panel window closes (e.g. Settings).
-        // willCloseNotification fires just before close; the Task hop ensures the window
-        // is fully gone before we check NSApp.windows.
+        // Keep Adia in the Dock even when the notch overlay is the only visible UI.
         windowCloseObserver = NotificationCenter.default.addObserver(
             forName: NSWindow.willCloseNotification,
             object: nil,
             queue: .main
         ) { _ in
             Task { @MainActor in
-                let hasRegularWindow = NSApp.windows.contains { !($0 is NSPanel) && $0.isVisible }
-                if !hasRegularWindow {
-                    NSApp.setActivationPolicy(.accessory)
-                }
+                NSApp.setActivationPolicy(.regular)
             }
         }
 
@@ -34,9 +30,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             // Silently start the trial on first launch so the user never sees
             // the license screen unless they've actually run out of trial.
             LicenseManager.shared.startTrialIfNeeded()
-            // The production key is embedded, so onboarding is purely the
-            // welcome + Screen Recording permission flow. Show it once; after
-            // that the app opens straight to the notch.
+            // Onboarding is the welcome + Screen Recording permission flow.
+            // API key configuration lives in Settings/Keychain or local env for dev.
             if UserDefaults.standard.bool(forKey: Self.onboardingDoneKey) {
                 showNotch()
             } else {
@@ -50,6 +45,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func showNotch() {
         if notchController == nil {
             notchController = NotchWindowController()
+        }
+        // The takeover window lives for the whole session lifetime, hidden until an
+        // ignored callout escalates (NotchState.isBlocking).
+        if blockerController == nil {
+            blockerController = FocusBlockerWindowController()
         }
         notchController?.showWindow(nil)
         Task { await SessionManager.shared.restoreIfNeeded() }
@@ -80,7 +80,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         onboardingWindow?.close()
         onboardingWindow = nil
-        NSApp.setActivationPolicy(.accessory)
+        NSApp.setActivationPolicy(.regular)
         showNotch()
     }
 }

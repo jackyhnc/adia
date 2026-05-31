@@ -1,27 +1,17 @@
 import Foundation
 import CoreGraphics
 
-extension String {
-    func appendToFile(_ path: String) throws {
-        if let fh = FileHandle(forWritingAtPath: path) {
-            fh.seekToEndOfFile(); fh.write(Data(self.utf8)); fh.closeFile()
-        } else {
-            try self.write(toFile: path, atomically: false, encoding: .utf8)
-        }
-    }
-}
-
 public actor OnTaskDetector {
-    private let client: ClaudeClient
+    private let client: AgentAIClient
     private var currentSession: Session?
 
-    // Rate-limit guard: don't call the API faster than once per second even if
-    // the capture pipeline delivers frames quicker than its configured 1 FPS.
+    // Rate-limit guard: fast enough to catch drift quickly without queueing
+    // overlapping model calls when ScreenCaptureKit delivers frames faster.
     private var lastEvaluatedAt: Date?
     private var lastStatus: OnTaskStatus = .onTask
-    private let minInterval: TimeInterval = 1.0
+    private let minInterval: TimeInterval = 0.6
 
-    public init(client: ClaudeClient = .shared) {
+    public init(client: AgentAIClient = .shared) {
         self.client = client
     }
 
@@ -52,25 +42,39 @@ public actor OnTaskDetector {
         // every throttled frame (all but 1 per second at 1 FPS capture).
         let now = Date()
         if let last = lastEvaluatedAt, now.timeIntervalSince(last) < minInterval {
+            AppLogger.info("classification.throttled", [
+                "lastStatus": lastStatus.rawValue
+            ])
             return lastStatus
         }
 
         // Only hop to MainActor to read the API key when we're about to make a call.
-        guard await client.isConfigured() else { return .onTask }
+        guard await client.isConfigured() else {
+            AppLogger.warning("classification.skipped", ["reason": "missing_api_key"])
+            return .onTask
+        }
         lastEvaluatedAt = now
 
         do {
+            let startedAt = Date()
             let result = try await client.classify(
                 image: frame,
                 taskDescription: session.task,
                 successCriteria: session.successCriteria
             )
-            try? "[\(Date())] classify status=\(result.status) conf=\(result.confidence) reason=\(result.reason)\n"
-                .appendToFile("/tmp/adia_ai.log")
+            AppLogger.info("classification.result", [
+                "status": result.status.rawValue,
+                "confidence": String(format: "%.2f", result.confidence),
+                "durationMs": String(Int(Date().timeIntervalSince(startedAt) * 1000)),
+                "reason": result.reason
+            ])
             lastStatus = result.status
             return result.status
         } catch {
-            try? "[\(Date())] classify ERROR \(error)\n".appendToFile("/tmp/adia_ai.log")
+            AppLogger.error("classification.failed", [
+                "error": String(describing: error),
+                "lastStatus": lastStatus.rawValue
+            ])
             return lastStatus
         }
     }

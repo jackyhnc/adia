@@ -27,7 +27,7 @@ Students get **50% off** with a `.edu` email (manual code on request).
 
 ## Why this model
 
-- **Bring-your-own Anthropic key** — Adia never pays for inference, so margins are clean and we don't gate features behind usage tiers.
+- **Bring-your-own OpenAI key** — Adia never pays for inference, so margins are clean and we don't gate features behind usage tiers.
 - **$7/mo is impulse territory** — same range as Cron, Raycast Pro, Things 3 subscription.
 - **Lifetime tier** captures power users early and seeds the launch with cash.
 - **No free forever tier** — focus app for committed users; the 7-day trial is generous enough.
@@ -36,7 +36,7 @@ Students get **50% off** with a `.edu` email (manual code on request).
 
 1. **Product Hunt launch** — Tuesday, week 2 after soft launch.
 2. **Twitter/X** — focus/productivity community, indie hackers.
-3. **Hacker News Show HN** — angle: "macOS notch-native focus app powered by Claude vision."
+3. **Hacker News Show HN** — angle: "macOS notch-native focus app powered by OpenAI vision."
 4. **Reddit** — r/macapps, r/productivity, r/getdisciplined.
 5. **TikTok / Instagram Reels** — short demo of the call-out moment.
 
@@ -52,4 +52,4 @@ Students get **50% off** with a `.edu` email (manual code on request).
 - Windows version (via Tauri or native)
 - Team plans
 - Adia for iOS (Focus Mode integration)
-- Adia-managed Claude proxy (no-key tier, +$3/mo)
+- Adia-managed OpenAI proxy (no-key tier, +$3/mo)

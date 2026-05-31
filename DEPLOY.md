@@ -68,7 +68,7 @@ VERSION=0.1.0 scripts/release.sh
 # → dist/Adia-0.1.0.dmg
 ```
 
-If any of those env vars is missing, the scripts gracefully skip signing/notarization and produce an ad-hoc-signed DMG (works locally but Gatekeeper will warn).
+Production releases fail fast if signing or notarization credentials are missing. For a private local test DMG only, you can set `ADIA_ALLOW_UNSIGNED_RELEASE=1`; do not upload that artifact to GitHub releases or distribute it to users.
 
 ### CI (GitHub Actions)
 

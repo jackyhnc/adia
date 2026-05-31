@@ -1,6 +1,8 @@
+import Foundation
 import Testing
 @testable import AdiCore
 
+@MainActor
 @Suite("AppMonitor")
 struct AppMonitorTests {
 

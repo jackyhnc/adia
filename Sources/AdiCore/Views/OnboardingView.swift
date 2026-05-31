@@ -2,16 +2,19 @@ import SwiftUI
 import AppKit
 import CoreGraphics
 
-/// First-launch onboarding: a clean, dark, three-screen flow that introduces
-/// Adia and gets Screen Recording permission inline. The production API key is
-/// embedded at build time, so there is no key/license step — students just open
-/// it and go.
+/// First-launch onboarding introduces Adia, captures the user's OpenAI key when
+/// needed, and gets Screen Recording permission inline.
 public struct OnboardingView: View {
-    public enum Step: Int, CaseIterable { case welcome, permission }
+    public enum Step: Int, CaseIterable { case welcome, key, permission }
 
     @State private var step: Step = .welcome
     @State private var screenGranted: Bool = CGPreflightScreenCaptureAccess()
+    @ObservedObject private var settings = SettingsStore.shared
+    @State private var apiKeyDraft: String = ""
+    @State private var apiKeyError: String?
     @State private var polling = false
+    @State private var settingsOpened = false
+    @FocusState private var apiKeyFocused: Bool
 
     public var onFinish: () -> Void
     public init(onFinish: @escaping () -> Void) { self.onFinish = onFinish }
@@ -30,7 +33,12 @@ public struct OnboardingView: View {
             }
         }
         .frame(width: 560, height: 620)
-        .onAppear { screenGranted = CGPreflightScreenCaptureAccess() }
+        .onAppear {
+            screenGranted = CGPreflightScreenCaptureAccess()
+            if settings.hasAPIKey && !screenGranted {
+                step = .permission
+            }
+        }
     }
 
     // MARK: - Content switcher
@@ -39,7 +47,75 @@ public struct OnboardingView: View {
     private var content: some View {
         switch step {
         case .welcome:    welcome
+        case .key:        key
         case .permission: permission
+        }
+    }
+
+    // MARK: - OpenAI key
+
+    private var key: some View {
+        VStack(spacing: 0) {
+            Spacer()
+            ZStack {
+                Circle()
+                    .fill(settings.hasAPIKey ? Color.green.opacity(0.14) : Color.white.opacity(0.07))
+                    .frame(width: 96, height: 96)
+                Image(systemName: settings.hasAPIKey ? "checkmark" : "key.fill")
+                    .font(.system(size: 34, weight: .semibold))
+                    .foregroundStyle(settings.hasAPIKey ? .green : .white.opacity(0.9))
+            }
+            Text(settings.hasAPIKey ? "OpenAI is connected" : "Connect OpenAI")
+                .font(.system(size: 23, weight: .bold))
+                .foregroundStyle(.white)
+                .padding(.top, 22)
+            Text(settings.hasAPIKey
+                 ? "Adia can now classify your screen and verify finished work."
+                 : "Paste your OpenAI API key. It is stored in macOS Keychain and used only from this Mac.")
+                .font(.system(size: 14))
+                .foregroundStyle(.white.opacity(0.5))
+                .multilineTextAlignment(.center)
+                .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 10)
+                .padding(.horizontal, 8)
+            Spacer()
+            if !settings.hasAPIKey {
+                VStack(alignment: .leading, spacing: 8) {
+                    SecureField("sk-proj-...", text: $apiKeyDraft)
+                        .textFieldStyle(.plain)
+                        .font(.system(size: 13, design: .monospaced))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 11)
+                        .background(Color.white.opacity(0.07))
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .stroke(apiKeyError == nil ? Color.white.opacity(0.12) : Color.red.opacity(0.55), lineWidth: 0.5)
+                        )
+                        .focused($apiKeyFocused)
+                        .onSubmit { saveAPIKey() }
+                    if let apiKeyError {
+                        Text(apiKeyError)
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundStyle(.orange.opacity(0.9))
+                    }
+                }
+                .padding(.horizontal, 8)
+                .onAppear {
+                    Task { @MainActor in
+                        try? await Task.sleep(for: .milliseconds(250))
+                        apiKeyFocused = true
+                    }
+                }
+                Link("Create an OpenAI API key",
+                     destination: URL(string: "https://platform.openai.com/api-keys")!)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.65))
+                    .padding(.top, 14)
+            }
+            Spacer()
         }
     }
 
@@ -83,13 +159,13 @@ public struct OnboardingView: View {
                     .font(.system(size: 36, weight: .semibold))
                     .foregroundStyle(screenGranted ? .green : .white.opacity(0.9))
             }
-            Text(screenGranted ? "Screen Recording is on" : "One quick permission")
+            Text(screenGranted ? "Screen Recording is on" : "Request screen access")
                 .font(.system(size: 23, weight: .bold))
                 .foregroundStyle(.white)
                 .padding(.top, 22)
             Text(screenGranted
                  ? "You're ready. Adia can see your screen to keep you honest."
-                 : "Adia needs Screen Recording to tell when you wander off task. Frames are sent only to the model that classifies them — nothing is stored.")
+                 : "Adia needs Screen Recording to tell when you wander off task. Click request access, drag Adia into the allowed apps list if macOS asks, then turn it on.")
                 .font(.system(size: 14))
                 .foregroundStyle(.white.opacity(0.5))
                 .multilineTextAlignment(.center)
@@ -99,8 +175,12 @@ public struct OnboardingView: View {
                 .padding(.horizontal, 8)
             Spacer()
             if !screenGranted {
-                pillButton("Enable Screen Recording", filled: true) { requestPermission() }
-                Text("Flip the Adia toggle on in the list, then relaunch — macOS only applies Screen Recording to a fresh launch.")
+                pillButton(settingsOpened ? "Check Access" : "Request Access", filled: true) {
+                    requestPermission()
+                }
+                Text(settingsOpened
+                     ? "Turn Adia on in System Settings. If Adia is missing, drag it from Finder into the app list, enable it, and Adia will bring you back here."
+                     : "Adia will open the exact Privacy setting and reveal the app in Finder so it can be dragged into the list.")
                     .font(.system(size: 11))
                     .foregroundStyle(.white.opacity(0.3))
                     .multilineTextAlignment(.center)
@@ -109,7 +189,7 @@ public struct OnboardingView: View {
                 Button {
                     relaunchApp()
                 } label: {
-                    Text("I've enabled it — Relaunch Adia")
+                    Text("I enabled it - Restart Adia")
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(.white.opacity(0.6))
                         .underline()
@@ -141,22 +221,28 @@ public struct OnboardingView: View {
         .padding(.bottom, 34)
     }
 
-    /// On the welcome screen we only show a 2nd dot if a permission step is coming.
     private var visibleSteps: [Step] {
-        screenGranted ? [.welcome] : [.welcome, .permission]
+        Step.allCases.filter { s in
+            switch s {
+            case .welcome: return true
+            case .key: return !settings.hasAPIKey
+            case .permission: return !screenGranted
+            }
+        }
     }
 
     private var continueLabel: String {
         switch step {
-        case .welcome:    return screenGranted ? "Open Adia" : "Continue"
+        case .welcome:    return settings.hasAPIKey && screenGranted ? "Open Adia" : "Continue"
+        case .key:        return settings.hasAPIKey ? "Continue" : "Save Key"
         case .permission: return "Open Adia"
         }
     }
 
-    /// The permission step is a hard gate: no proceeding until access is granted.
     private var canAdvance: Bool {
         switch step {
         case .welcome:    return true
+        case .key:        return settings.hasAPIKey || !apiKeyDraft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         case .permission: return screenGranted
         }
     }
@@ -164,14 +250,40 @@ public struct OnboardingView: View {
     private func advance() {
         switch step {
         case .welcome:
-            if screenGranted {
-                onFinish()
-            } else {
+            if !settings.hasAPIKey {
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) { step = .key }
+            } else if !screenGranted {
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) { step = .permission }
+            } else {
+                onFinish()
+            }
+        case .key:
+            if settings.hasAPIKey {
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) { step = .permission }
+            } else {
+                saveAPIKey()
             }
         case .permission:
             if screenGranted { onFinish() }
         }
+    }
+
+    private func saveAPIKey() {
+        let trimmed = apiKeyDraft.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            apiKeyError = "Paste your OpenAI API key to continue."
+            return
+        }
+        guard settings.setAPIKey(trimmed) else {
+            apiKeyError = "That does not look like an OpenAI key."
+            return
+        }
+        apiKeyDraft = ""
+        apiKeyError = nil
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+            step = screenGranted ? .welcome : .permission
+        }
+        if screenGranted { onFinish() }
     }
 
     // MARK: - Permission flow
@@ -188,6 +300,8 @@ public struct OnboardingView: View {
             return
         }
         // Not granted in-process — open the Settings pane and poll for the toggle.
+        settingsOpened = true
+        NSWorkspace.shared.activateFileViewerSelecting([Bundle.main.bundleURL])
         NSWorkspace.shared.open(URL(string:
             "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")!)
         startPolling()
@@ -213,6 +327,9 @@ public struct OnboardingView: View {
                 try? await Task.sleep(for: .seconds(1))
                 if CGPreflightScreenCaptureAccess() {
                     withAnimation { screenGranted = true }
+                    NSApp.activate(ignoringOtherApps: true)
+                    try? await Task.sleep(for: .milliseconds(450))
+                    onFinish()
                     break
                 }
             }

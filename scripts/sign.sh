@@ -10,8 +10,13 @@ ENTITLEMENTS="$ROOT/Resources/Adia.entitlements"
 ID="${DEVELOPER_ID_APPLICATION:-}"
 
 if [ -z "$ID" ]; then
-  echo "⚠ DEVELOPER_ID_APPLICATION not set — producing an ad-hoc signed build."
-  echo "  Users will see Gatekeeper warnings. Set DEVELOPER_ID_APPLICATION for a real ship."
+  if [ "${ADIA_ALLOW_UNSIGNED_RELEASE:-0}" != "1" ]; then
+    echo "✗ DEVELOPER_ID_APPLICATION is required for production signing."
+    echo "  Set ADIA_ALLOW_UNSIGNED_RELEASE=1 only for local/private test builds."
+    exit 1
+  fi
+  echo "⚠ DEVELOPER_ID_APPLICATION not set — producing an ad-hoc signed local build."
+  echo "  Users will see Gatekeeper warnings. Do not ship this artifact."
   codesign --force --options runtime --timestamp=none \
     --entitlements "$ENTITLEMENTS" \
     --sign "-" "$APP"

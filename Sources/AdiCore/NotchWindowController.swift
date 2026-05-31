@@ -41,27 +41,26 @@ private final class NotchPanel: NSPanel {
 public final class NotchWindowController: NSWindowController {
 
     // MARK: Layout constants
-    private static let expandedWidth: CGFloat           = 360
-    private static let expandedHeight: CGFloat          = 190
+    private static let expandedWidth: CGFloat           = 720
+    private static let expandedHeight: CGFloat          = 232
     // Extra height for active-session view when a callout banner is visible:
     // the red alert bar (~64pt) pushes task + buttons past the base frame.
-    private static let calloutExpandedHeight: CGFloat   = 260
+    private static let calloutExpandedHeight: CGFloat   = 302
     // Tier-3 callout uses larger font + more padding, needing 20pt more room.
-    private static let tier3CalloutExpandedHeight: CGFloat = 280
+    private static let tier3CalloutExpandedHeight: CGFloat = 322
     private static let creationExpandedHeight: CGFloat  = 310
-    private static let conversationHeight: CGFloat      = 390
-    private static let verificationHeight: CGFloat      = 220
+    private static let conversationHeight: CGFloat      = 430
+    private static let verificationHeight: CGFloat      = 250
     // Idle state is taller than the active-session base to accommodate the stats line.
     private static let idleExpandedHeight: CGFloat      = 220
     // Each pinned template button adds this much height to the idle panel.
     private static let perTemplateHeight: CGFloat       = 34
 
-    // Small always-visible indicator shown when collapsed, sitting just below the
-    // notch so the physical camera housing never hides it.
-    private static let indicatorWidth: CGFloat          = 78
-    private static let indicatorHeight: CGFloat         = 22
-    // Gap between the bottom of the notch/menu bar and our panel.
-    private static let topGap: CGFloat                  = 6
+    // Small always-visible indicator tucked beside the notch (never behind it).
+    private static let indicatorWidth: CGFloat          = 150
+    private static let indicatorHeight: CGFloat         = 36
+    // Horizontal gap between the notch edge and the collapsed indicator.
+    private static let indicatorSideGap: CGFloat        = 8
 
     // MARK: Private state
     private var notchPanel: NotchPanel { window as! NotchPanel }
@@ -153,15 +152,16 @@ public final class NotchWindowController: NSWindowController {
     /// inconsistency of mixing boolean parameters with singleton reads.
     private func targetFrame(screen: NSScreen) -> NSRect {
         let state = NotchState.shared
-        let base = notchBaseRect(screen: screen)
 
-        // Collapsed: a small indicator pill centered just below the notch so it's
-        // always visible (never hidden behind the camera housing).
+        // Collapsed: sit just to the RIGHT of the notch, vertically centered in the
+        // menu-bar band, so the physical camera housing never hides the indicator.
+        // (Centering it under the notch makes it invisible on real notched displays.)
         guard state.isExpanded else {
+            let base = notchBaseRect(screen: screen)
             let w = Self.indicatorWidth
             let h = Self.indicatorHeight
-            let x = screen.frame.midX - w / 2
-            let y = base.minY - Self.topGap - h
+            let x = base.maxX + Self.indicatorSideGap
+            let y = base.minY + (base.height - h) / 2
             return NSRect(x: x, y: y, width: w, height: h)
         }
 
@@ -181,10 +181,12 @@ public final class NotchWindowController: NSWindowController {
             h = Self.expandedHeight
         }
 
-        // Hang the card below the notch/menu bar, centered, fully on screen.
-        let w = Self.expandedWidth
+        // Attach the expanded panel to the top edge so it visually grows out of
+        // the notch. Cap width on smaller displays while keeping the reference
+        // "notch island" feel on wide MacBook screens.
+        let w = min(Self.expandedWidth, screen.frame.width - 96)
         let x = screen.frame.midX - w / 2
-        let y = base.minY - Self.topGap - h
+        let y = screen.frame.maxY - h
         return NSRect(x: x, y: y, width: w, height: h)
     }
 }

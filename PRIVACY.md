@@ -6,11 +6,11 @@ We collect as little as we can. Here's exactly what.
 
 ## What stays on your device
 
-- **Your screenshots.** Captured at ~1 frame per 1.5s during an active session. Sent to Anthropic for on-task classification, never stored, never sent to us.
-- **Your task description and success criteria.** Sent to Anthropic with each screenshot. Never sent to us.
-- **Your Anthropic API key.** Stored in macOS Keychain. Never leaves your machine.
+- **Your screenshots.** Captured during an active session. Sent to OpenAI for on-task classification, never stored, never sent to us.
+- **Your task description and success criteria.** Sent to OpenAI with each screenshot. Never sent to us.
+- **Your OpenAI API key.** Stored in macOS Keychain. Never leaves your machine except to authenticate requests to OpenAI.
 - **Session history.** Stored in `UserDefaults` for crash recovery only. Not sent anywhere.
-- **Conversation transcripts** (when you chat with Adia). Sent to Anthropic for response. Not stored by us.
+- **Conversation transcripts** (when you chat with Adia). Sent to OpenAI for response. Not stored by us.
 
 ## What we collect
 
@@ -24,13 +24,13 @@ We collect as little as we can. Here's exactly what.
 - Screen content.
 - Task descriptions or success criteria.
 - Chat transcripts.
-- Anthropic API responses.
+- OpenAI API responses.
 - Names of websites you visit.
 - Anything else from your screen.
 
 ## Third parties
 
-- **Anthropic** (`api.anthropic.com`) — processes your screenshots and chat messages under their own privacy policy.
+- **OpenAI** (`api.openai.com`) — processes your screenshots and chat messages under their own privacy policy.
 - **Stripe** — processes payments. They see your email, billing address, and card info. We see only the customer ID.
 - **Vercel / Cloudflare** — hosts our website and license API. They log IP addresses per their privacy policies.
 - **Resend** — sends your license email.

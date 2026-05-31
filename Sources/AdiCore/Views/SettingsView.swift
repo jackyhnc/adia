@@ -32,6 +32,7 @@ private struct AccountSettingsTab: View {
 
     @State private var apiKeyDraft:  String = ""
     @State private var editingAPIKey: Bool  = false
+    @State private var apiKeyError: String?
     @State private var licenseKey:   String = ""
     @State private var email:        String = ""
     @State private var activating:   Bool   = false
@@ -42,7 +43,7 @@ private struct AccountSettingsTab: View {
             Section {
                 apiKeyRow
             } header: {
-                Text("Anthropic API Key")
+                Text("OpenAI API Key")
             } footer: {
                 Text("Used for screen analysis. Never sent to Adia servers.")
                     .foregroundStyle(.secondary)
@@ -63,19 +64,29 @@ private struct AccountSettingsTab: View {
     private var apiKeyRow: some View {
         if editingAPIKey {
             HStack {
-                SecureField("sk-ant-…", text: $apiKeyDraft)
+                SecureField("sk-proj-...", text: $apiKeyDraft)
                 Button("Save") {
-                    settings.setAPIKey(apiKeyDraft)
-                    apiKeyDraft   = ""
-                    editingAPIKey = false
+                    if settings.setAPIKey(apiKeyDraft) {
+                        apiKeyDraft   = ""
+                        apiKeyError = nil
+                        editingAPIKey = false
+                    } else {
+                        apiKeyError = "Enter an OpenAI API key, not another provider's key."
+                    }
                 }
                 .disabled(apiKeyDraft.trimmingCharacters(in: .whitespaces).isEmpty)
                 Button("Cancel") {
                     apiKeyDraft   = ""
+                    apiKeyError = nil
                     editingAPIKey = false
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.secondary)
+            }
+            if let apiKeyError {
+                Text(apiKeyError)
+                    .font(.callout)
+                    .foregroundStyle(.red)
             }
         } else {
             HStack {
@@ -97,7 +108,7 @@ private struct AccountSettingsTab: View {
     }
 
     private var maskedKey: String {
-        guard let k = settings.anthropicAPIKey, k.count > 8 else { return "sk-•••••••" }
+        guard let k = settings.agentAIKey, k.count > 8 else { return "sk-•••••••" }
         let prefix = k.hasPrefix("sk-") ? String(k.prefix(min(7, k.count))) : "sk-"
         return "\(prefix)…\(k.suffix(6))"
     }

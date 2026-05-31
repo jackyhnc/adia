@@ -24,7 +24,7 @@ You may install Adia on up to 3 of your personal machines on the same license.
 
 ## 3. Bring-your-own API key
 
-Adia requires an Anthropic API key, which you obtain and pay Anthropic for directly. Your usage costs are between you and Anthropic. We don't mark up or resell their API.
+Adia requires an OpenAI API key, which you obtain and pay OpenAI for directly. Your usage costs are between you and OpenAI. We don't mark up or resell their API.
 
 ## 4. Refunds
 
@@ -40,7 +40,7 @@ Adia is provided **"as is"**. We don't promise:
 - That Adia will keep you focused.
 - That its on-task classification is correct.
 - That its task verification is correct (it can be fooled by misleading screens).
-- That it will work uninterrupted (it depends on Anthropic's API uptime).
+- That it will work uninterrupted (it depends on OpenAI API uptime).
 
 Adia is a tool, not a substitute for your own judgment. Don't use it as the sole gate on anything important.
 

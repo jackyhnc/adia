@@ -26,7 +26,7 @@ export default function Home() {
       <section className="grid md:grid-cols-3 gap-4 pb-20">
         <Feature
           title="It watches your screen."
-          body="ScreenCaptureKit + Claude vision classifies what you're doing every second. Local until it hits Anthropic — never sent to us."
+          body="ScreenCaptureKit + OpenAI vision classifies what you're doing every second. Local until it hits OpenAI — never sent to us."
         />
         <Feature
           title="It calls you out."
@@ -46,7 +46,7 @@ export default function Home() {
         />
         <Feature
           title="You own your key."
-          body="Bring your Anthropic API key. We never see your screen, your task, or your usage. Costs scale with your work, not our pricing."
+          body="Bring your OpenAI API key. We never see your screen, your task, or your usage. Costs scale with your work, not our pricing."
         />
       </section>
 
@@ -75,7 +75,7 @@ export default function Home() {
           <Step
             n={4}
             title="Done? Adia checks."
-            body="Tap Done. Last screenshot goes to Claude with your success criteria. Submission page on screen? Verified. Vibes? Try again."
+            body="Tap Done. Last screenshot goes to OpenAI with your success criteria. Submission page on screen? Verified. Vibes? Try again."
           />
         </ol>
       </section>

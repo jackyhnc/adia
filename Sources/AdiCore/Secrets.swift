@@ -12,7 +12,7 @@ import Foundation
 /// determined user. For a public launch, route model calls through a backend
 /// proxy that holds the key server-side instead of shipping it in the app.
 public enum EmbeddedSecrets {
-    /// Production Anthropic API key, injected at build time. Empty = not embedded.
+    /// Production agent AI key, injected at build time. Empty = not embedded.
     public static let apiKey = ""
 
     /// Non-empty embedded key, or nil.

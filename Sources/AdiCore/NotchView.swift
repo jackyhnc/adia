@@ -25,6 +25,32 @@ struct NotchRootView: View {
     }
 }
 
+// MARK: - Top-attached island shape
+
+private struct NotchIslandShape: Shape {
+    let radius: CGFloat
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let r = min(radius, rect.width / 2, rect.height / 2)
+        path.move(to: CGPoint(x: rect.minX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - r))
+        path.addQuadCurve(
+            to: CGPoint(x: rect.maxX - r, y: rect.maxY),
+            control: CGPoint(x: rect.maxX, y: rect.maxY)
+        )
+        path.addLine(to: CGPoint(x: rect.minX + r, y: rect.maxY))
+        path.addQuadCurve(
+            to: CGPoint(x: rect.minX, y: rect.maxY - r),
+            control: CGPoint(x: rect.minX, y: rect.maxY)
+        )
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.minY))
+        path.closeSubpath()
+        return path
+    }
+}
+
 // MARK: - Collapsed pill
 
 private struct CollapsedView: View {
@@ -51,9 +77,9 @@ private struct CollapsedView: View {
         }
         .padding(.horizontal, 14)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(red: 0.06, green: 0.06, blue: 0.06))
-        .clipShape(Capsule())
-        .contentShape(Capsule())
+        .background(Color(red: 0.015, green: 0.016, blue: 0.018))
+        .clipShape(NotchIslandShape(radius: 14))
+        .contentShape(NotchIslandShape(radius: 14))
         .onTapGesture { state.expand() }
         .onHover { if $0 { state.expand() } }
         .task(id: session.session?.id) {
@@ -99,14 +125,15 @@ private struct ExpandedView: View {
         // portion of the panel transparent (clear panel background shows through).
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color(red: 0.07, green: 0.07, blue: 0.07))
+            NotchIslandShape(radius: 26)
+                .fill(Color(red: 0.015, green: 0.016, blue: 0.018))
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(Color.white.opacity(0.08), lineWidth: 0.5)
+            NotchIslandShape(radius: 26)
+                .stroke(Color.white.opacity(0.055), lineWidth: 0.5)
         )
-        .shadow(color: .black.opacity(0.55), radius: 24, x: 0, y: 10)
+        .shadow(color: .black.opacity(0.35), radius: 18, x: 0, y: 8)
+        .clipShape(NotchIslandShape(radius: 26))
     }
 
     // MARK: Content switcher
@@ -443,7 +470,7 @@ private struct SessionCreationFormView: View {
                             : Color.white.opacity(0.10), lineWidth: 0.5)
             )
 
-            // The AI asks for more detail when the goal is too vague to verify.
+            // Adia asks for more detail when the goal is too vague to verify.
             if let q = clarifyingQuestion {
                 Text(q)
                     .font(.system(size: 11, weight: .medium))
@@ -454,7 +481,7 @@ private struct SessionCreationFormView: View {
             }
 
             HStack(spacing: 8) {
-                AdiButton(label: isThinking ? "Thinking…" : "Go", style: .primary) {
+                AdiButton(label: isThinking ? "Checking..." : "Go", style: .primary) {
                     submit()
                 }
                 .opacity(canSubmit ? 1 : 0.45)
@@ -506,43 +533,50 @@ private struct SessionCreationFormView: View {
     private func submit() {
         let text = inputText.trimmingCharacters(in: .whitespaces)
         guard !text.isEmpty, !isThinking else { return }
+        if let reason = AgentAIClient.localGoalRejectionReason(text) {
+            withAnimation { clarifyingQuestion = reason }
+            AppLogger.warning("goal.rejected_locally", ["reason": reason])
+            return
+        }
         isThinking = true
         clarifyingQuestion = nil
         let shouldPin = pinAsTemplate
         Task { @MainActor in
             defer { isThinking = false }
             do {
-                let parsed = try await ClaudeClient.shared.parseGoal(text)
-                if parsed.ok {
-                    let task = parsed.task ?? text
-                    let criteria = parsed.successCriteria ?? ""
-                    try await session.start(task: task, successCriteria: criteria)
-                    if shouldPin {
-                        Task { await SessionTemplateStore.shared.add(task: task, successCriteria: criteria) }
-                    }
-                    state.stopCreating()
-                } else {
-                    withAnimation { clarifyingQuestion = parsed.question ?? "Can you be more specific?" }
+                let parsed = try await AgentAIClient.shared.parseGoal(text)
+                guard parsed.ok,
+                      let task = parsed.task?.trimmingCharacters(in: .whitespacesAndNewlines),
+                      let criteria = parsed.successCriteria?.trimmingCharacters(in: .whitespacesAndNewlines),
+                      !task.isEmpty,
+                      !criteria.isEmpty
+                else {
+                    let question = parsed.question ?? "What would I be able to see on screen when this is done?"
+                    AppLogger.warning("goal.rejected_by_model", ["question": question])
+                    withAnimation { clarifyingQuestion = question }
+                    return
                 }
+                AppLogger.info("goal.accepted", [
+                    "taskLength": String(task.count),
+                    "criteriaLength": String(criteria.count)
+                ])
+                try await session.start(task: task, successCriteria: criteria)
+                if shouldPin {
+                    Task { await SessionTemplateStore.shared.add(task: task, successCriteria: criteria) }
+                }
+                state.stopCreating()
             } catch CaptureError.permissionDenied {
                 withAnimation {
                     clarifyingQuestion = "Screen Recording permission required. Grant it in System Settings, then try again."
                 }
-            } catch {
-                // Network/parse failure — don't trap the user; start with their raw words.
-                do {
-                    try await session.start(task: text, successCriteria: "")
-                    if shouldPin {
-                        Task { await SessionTemplateStore.shared.add(task: text, successCriteria: "") }
-                    }
-                    state.stopCreating()
-                } catch CaptureError.permissionDenied {
-                    withAnimation {
-                        clarifyingQuestion = "Screen Recording permission required. Grant it in System Settings, then try again."
-                    }
-                } catch {
-                    withAnimation { clarifyingQuestion = "Couldn't start — try again." }
+            } catch AgentAIError.missingAPIKey {
+                AppLogger.error("goal.validation_unavailable", ["reason": "missing_api_key"])
+                withAnimation {
+                    clarifyingQuestion = "Adia is not configured for monitoring yet. Add an OpenAI key, then try again."
                 }
+            } catch {
+                AppLogger.error("goal.start_failed", ["error": String(describing: error)])
+                withAnimation { clarifyingQuestion = "Couldn't start — try again." }
             }
         }
     }
@@ -747,8 +781,11 @@ private struct AdiButton: View {
             Text(label)
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(foreground)
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
                 .padding(.horizontal, 13)
                 .padding(.vertical, 6)
+                .frame(minWidth: 42)
                 .background(background)
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }

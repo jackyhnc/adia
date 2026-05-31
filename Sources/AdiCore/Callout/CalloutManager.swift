@@ -11,7 +11,11 @@ public final class CalloutManager {
 
     private var consecutiveOffTask = 0
     private var hasFiredForStreak = false
-    private let threshold = 2  // frames before callout fires (~4-6 seconds at 1fps)
+    private var hasEscalatedForStreak = false
+    private let threshold = 2  // frames before the notch callout fires (~4-6s at 0.5fps)
+    // If the callout is ignored and the streak continues, escalate to a full-screen
+    // takeover. Two more off-task frames past the callout (~another 4-6s).
+    private let escalateThreshold = 4
 
     /// Total callouts fired in the current session. Only zeroed by reset() (session start/end),
     /// not by on-task recovery — used for tier escalation across the session.
@@ -76,6 +80,10 @@ public final class CalloutManager {
                 hasFiredForStreak = true
                 fire()
             }
+            if consecutiveOffTask >= escalateThreshold && !hasEscalatedForStreak {
+                hasEscalatedForStreak = true
+                escalate()
+            }
         case .onTask:
             // Only reset the per-streak counters; calloutCount is session-level
             // and must survive recovery so tier escalation works across the session.
@@ -101,12 +109,29 @@ public final class CalloutManager {
     }
 
     /// Auto-dismiss delay: longer at higher tiers so the user can't easily ignore it.
-    internal static func dismissDelay(for tier: Int) -> Duration {
+    nonisolated internal static func dismissDelay(for tier: Int) -> Duration {
         switch tier {
         case 1: return .seconds(8)
         case 2: return .seconds(12)
         default: return .seconds(20)
         }
+    }
+
+    /// Escalates an ignored callout into the full-screen takeover.
+    private func escalate() {
+        let message = lastFiredMessage ?? "back to work."
+        NotchState.shared.showBlocker(message)
+        #if canImport(AppKit)
+        NSSound(named: "Sosumi")?.play()
+        #endif
+    }
+
+    /// Called by the takeover UI when the user dismisses it. We intentionally do NOT
+    /// clear `hasEscalatedForStreak`, so dismissing doesn't immediately re-throw the
+    /// takeover while they're still on the same off-task streak — it re-arms only
+    /// after they go back on task (which calls reset()).
+    public func dismissBlocker() {
+        NotchState.shared.clearBlocker()
     }
 
     /// Resets the current off-task streak without touching the session-level calloutCount.
@@ -117,7 +142,9 @@ public final class CalloutManager {
         autoDismissTask = nil
         consecutiveOffTask = 0
         hasFiredForStreak = false
+        hasEscalatedForStreak = false
         NotchState.shared.clearCallout()
+        NotchState.shared.clearBlocker()
         // lastFiredMessage intentionally preserved: dedup works across streaks within a session.
     }
 
@@ -128,9 +155,11 @@ public final class CalloutManager {
         autoDismissTask = nil
         consecutiveOffTask = 0
         hasFiredForStreak = false
+        hasEscalatedForStreak = false
         lastFiredMessage = nil
         calloutCount = 0
         NotchState.shared.clearCallout()
+        NotchState.shared.clearBlocker()
     }
 
     // MARK: - Private

@@ -72,7 +72,7 @@ export default function Pricing() {
 
       <div className="mt-10 text-sm text-ink/60 max-w-2xl">
         <p>
-          <strong>Bring-your-own Anthropic API key.</strong> Adia uses Claude (Anthropic) to watch your screen. You pay Anthropic directly for usage — typical sessions cost a few cents. We never charge you for inference.
+          <strong>Bring-your-own OpenAI API key.</strong> Adia uses OpenAI vision models to watch your screen. You pay OpenAI directly for usage — typical sessions cost a few cents. We never charge you for inference.
         </p>
         <p className="mt-3">
           <strong>Refunds:</strong> 14 days for subscriptions, 30 days for lifetime. Email{' '}
@@ -91,8 +91,8 @@ export default function Pricing() {
 function FAQ() {
   const items = [
     {
-      q: 'How much does Claude actually cost me?',
-      a: 'Typical sessions run 1–5 cents on Anthropic\'s side. A heavy day of deep work might hit 25 cents. You pay Anthropic directly with their pricing — we don\'t mark it up.',
+      q: 'How much does OpenAI usage cost me?',
+      a: 'Typical sessions run a few cents of OpenAI usage. A heavy day of deep work may cost more depending on model pricing and session length. You pay OpenAI directly — we don\'t mark it up.',
     },
     {
       q: 'Can I share a license across my Mac and my laptop?',
@@ -116,7 +116,7 @@ function FAQ() {
     },
     {
       q: 'Will you train on my screen?',
-      a: 'No. We never see your screen — it goes from your Mac directly to Anthropic\'s API with your key. We have no server you could leak to.',
+      a: 'No. We never see your screen — it goes from your Mac directly to OpenAI\'s API with your key. We have no server you could leak to.',
     },
     {
       q: 'Can I cancel anytime?',

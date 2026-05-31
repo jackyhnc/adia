@@ -7,44 +7,44 @@ struct SettingsStoreTests {
 
     private func reset() async {
         await MainActor.run {
-            SettingsStore.shared.setAPIKey("")
+            _ = SettingsStore.shared.setAPIKey("")
         }
     }
 
     @Test func setAndRetrieveAPIKey() async {
         await reset()
         await MainActor.run {
-            SettingsStore.shared.setAPIKey("sk-ant-test-key-12345")
+            _ = SettingsStore.shared.setAPIKey("sk-proj-test-key-12345")
         }
-        let key = await MainActor.run { SettingsStore.shared.anthropicAPIKey }
-        #expect(key == "sk-ant-test-key-12345")
+        let key = await MainActor.run { SettingsStore.shared.agentAIKey }
+        #expect(key == "sk-proj-test-key-12345")
     }
 
     @Test func setEmptyKeyClearsAPIKey() async {
         await MainActor.run {
-            SettingsStore.shared.setAPIKey("sk-ant-initial")
+            _ = SettingsStore.shared.setAPIKey("sk-proj-initial")
         }
         await MainActor.run {
-            SettingsStore.shared.setAPIKey("")
+            _ = SettingsStore.shared.setAPIKey("")
         }
-        let key = await MainActor.run { SettingsStore.shared.anthropicAPIKey }
+        let key = await MainActor.run { SettingsStore.shared.agentAIKey }
         #expect(key == nil)
     }
 
     @Test func setWhitespaceOnlyKeyClearsAPIKey() async {
         await MainActor.run {
-            SettingsStore.shared.setAPIKey("sk-ant-initial")
+            _ = SettingsStore.shared.setAPIKey("sk-proj-initial")
         }
         await MainActor.run {
-            SettingsStore.shared.setAPIKey("   \n\t  ")
+            _ = SettingsStore.shared.setAPIKey("   \n\t  ")
         }
-        let key = await MainActor.run { SettingsStore.shared.anthropicAPIKey }
+        let key = await MainActor.run { SettingsStore.shared.agentAIKey }
         #expect(key == nil)
     }
 
     @Test func hasAPIKeyTrueWhenKeySet() async {
         await MainActor.run {
-            SettingsStore.shared.setAPIKey("sk-ant-valid-key")
+            _ = SettingsStore.shared.setAPIKey("sk-proj-valid-key")
         }
         let has = await MainActor.run { SettingsStore.shared.hasAPIKey }
         #expect(has == true)
@@ -52,8 +52,8 @@ struct SettingsStoreTests {
 
     @Test func hasAPIKeyFalseWhenCleared() async {
         await MainActor.run {
-            SettingsStore.shared.setAPIKey("sk-ant-temp")
-            SettingsStore.shared.setAPIKey("")
+            _ = SettingsStore.shared.setAPIKey("sk-proj-temp")
+            _ = SettingsStore.shared.setAPIKey("")
         }
         let has = await MainActor.run { SettingsStore.shared.hasAPIKey }
         #expect(has == false)
@@ -61,10 +61,30 @@ struct SettingsStoreTests {
 
     @Test func keyTrimmedOnWrite() async {
         await MainActor.run {
-            SettingsStore.shared.setAPIKey("  sk-ant-padded  \n")
+            _ = SettingsStore.shared.setAPIKey("  sk-proj-padded  \n")
         }
-        let key = await MainActor.run { SettingsStore.shared.anthropicAPIKey }
-        #expect(key == "sk-ant-padded")
+        let key = await MainActor.run { SettingsStore.shared.agentAIKey }
+        #expect(key == "sk-proj-padded")
+    }
+
+    @Test func rejectsAnthropicLookingKey() async {
+        await reset()
+        let accepted = await MainActor.run {
+            SettingsStore.shared.setAPIKey("sk-ant-not-openai")
+        }
+        let key = await MainActor.run { SettingsStore.shared.agentAIKey }
+        #expect(accepted == false)
+        #expect(key == nil)
+    }
+
+    @Test func rejectsNonKeyString() async {
+        await reset()
+        let accepted = await MainActor.run {
+            SettingsStore.shared.setAPIKey("not-a-real-key")
+        }
+        let key = await MainActor.run { SettingsStore.shared.agentAIKey }
+        #expect(accepted == false)
+        #expect(key == nil)
     }
 
     // MARK: - normalizeDomain (static, pure)

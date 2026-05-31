@@ -187,7 +187,7 @@ private struct MessageBubble: View {
             .replacingOccurrences(of: "[ACCESS GRANTED]", with: "")
             .replacingOccurrences(of: "[ACCESS DENIED]", with: "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        // When Claude responds with only the decision token and no surrounding text,
+        // When the agent responds with only the decision token and no surrounding text,
         // `stripped` is empty — show a short contextual fallback instead of a blank bubble.
         if stripped.isEmpty {
             if message.content.contains("[ACCESS GRANTED]") { return "ok, you're in." }

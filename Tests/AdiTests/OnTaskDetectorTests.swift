@@ -3,7 +3,7 @@ import Foundation
 import CoreGraphics
 @testable import AdiCore
 
-/// Tests run serially: ClaudeClient.shared._isConfiguredOverride is mutated across tests.
+/// Tests run serially: AgentAIClient.shared._isConfiguredOverride is mutated across tests.
 @Suite("OnTaskDetector", .serialized)
 struct OnTaskDetectorTests {
 
@@ -33,8 +33,8 @@ struct OnTaskDetectorTests {
         let session = Session(task: "Study", successCriteria: "Finish chapter")
         await detector.attach(session: session)
         // Force isConfigured to return false regardless of env
-        await ClaudeClient.shared._setIsConfiguredOverride(false)
-        defer { Task { await ClaudeClient.shared._setIsConfiguredOverride(nil) } }
+        await AgentAIClient.shared._setIsConfiguredOverride(false)
+        defer { Task { await AgentAIClient.shared._setIsConfiguredOverride(nil) } }
 
         let status = await detector.evaluate(frame: dummyFrame())
         #expect(status == .onTask)
@@ -60,8 +60,8 @@ struct OnTaskDetectorTests {
         await detector.attach(session: session)
 
         // Force isConfigured false so classify() guard fires after rate-limit check
-        await ClaudeClient.shared._setIsConfiguredOverride(false)
-        defer { Task { await ClaudeClient.shared._setIsConfiguredOverride(nil) } }
+        await AgentAIClient.shared._setIsConfiguredOverride(false)
+        defer { Task { await AgentAIClient.shared._setIsConfiguredOverride(nil) } }
 
         // Set last evaluated to 2 seconds ago (beyond 1s minInterval)
         await detector._setLastEvaluatedAtForTesting(Date(timeIntervalSinceNow: -2.0))
@@ -74,7 +74,7 @@ struct OnTaskDetectorTests {
 }
 
 // Actor accessor for the testing override
-extension ClaudeClient {
+extension AgentAIClient {
     func _setIsConfiguredOverride(_ value: Bool?) {
         _isConfiguredOverride = value
     }

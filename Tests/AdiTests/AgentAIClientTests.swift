@@ -2,8 +2,8 @@ import Testing
 import Foundation
 @testable import AdiCore
 
-@Suite("ClaudeClient parsing")
-struct ClaudeClientParsingTests {
+@Suite("AgentAIClient parsing")
+struct AgentAIClientParsingTests {
 
     @Test func parsesOnTask() {
         let c = parseClassification(#"{"status":"onTask","confidence":0.95,"reason":"Screen shows essay editor."}"#)
