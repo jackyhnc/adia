@@ -17,6 +17,35 @@ public struct SessionStats: Sendable {
     public let streak: Int
 }
 
+// MARK: - DayActivity
+
+/// Focus activity for a single calendar day, used by the weekly heatmap.
+public struct DayActivity: Sendable {
+    /// The start of the calendar day (midnight local time).
+    public let date: Date
+    /// Number of sessions that started on this day.
+    public let sessionCount: Int
+    /// Total focused minutes logged on this day.
+    public let minutes: Int
+}
+
+/// Returns `[DayActivity]` for the 7 calendar days ending on `today` (oldest first).
+/// Index 0 = 6 days ago, index 6 = today. Pure function, directly testable.
+internal func weeklyHeatmapData(
+    _ records: [SessionRecord],
+    calendar: Calendar = .current,
+    today: Date = Date()
+) -> [DayActivity] {
+    let todayStart = calendar.startOfDay(for: today)
+    return (0..<7).compactMap { offset -> DayActivity? in
+        guard let date = calendar.date(byAdding: .day, value: offset - 6, to: todayStart)
+        else { return nil }
+        let dayRecs = records.filter { calendar.isDate($0.startTime, inSameDayAs: date) }
+        let mins = Int(dayRecs.reduce(0.0) { $0 + $1.duration } / 60)
+        return DayActivity(date: date, sessionCount: dayRecs.count, minutes: mins)
+    }
+}
+
 // MARK: - SessionHistory
 
 public actor SessionHistory {
@@ -84,6 +113,11 @@ public actor SessionHistory {
     /// Deletes the history file.
     public func clear() {
         try? FileManager.default.removeItem(at: fileURL)
+    }
+
+    /// Returns the last 7 calendar days of activity as a heatmap dataset.
+    public func weeklyHeatmap() -> [DayActivity] {
+        weeklyHeatmapData(_load())
     }
 
     /// Computes a stats snapshot from the current history.

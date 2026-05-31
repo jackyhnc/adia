@@ -20,7 +20,7 @@ public struct SettingsView: View {
                 .tag(2)
         }
         .padding(20)
-        .frame(width: 480, height: 440)
+        .frame(width: 480, height: 500)
     }
 }
 
@@ -477,6 +477,7 @@ internal func groupedByDay(
 private struct HistoryTab: View {
     @State private var records: [SessionRecord] = []
     @State private var stats: SessionStats? = nil
+    @State private var heatmapDays: [DayActivity] = []
     @State private var showingClearAlert: Bool = false
     @State private var expandedRecordID: UUID? = nil
     @State private var searchText: String = ""
@@ -516,8 +517,8 @@ private struct HistoryTab: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 VStack(spacing: 0) {
-                    if let s = stats, s.weekCount > 0 {
-                        weeklySummaryHeader(s)
+                    if heatmapDays.count == 7 {
+                        weeklySection(stats)
                     }
                     searchFilterBar
                     if filteredRecords.isEmpty {
@@ -571,6 +572,7 @@ private struct HistoryTab: View {
                                                             if expandedRecordID == id { expandedRecordID = nil }
                                                         }
                                                         stats = await SessionHistory.shared.stats()
+                                                        heatmapDays = await SessionHistory.shared.weeklyHeatmap()
                                                     }
                                                 }
                                             )
@@ -652,6 +654,7 @@ private struct HistoryTab: View {
                     await SessionHistory.shared.clear()
                     records = []
                     stats = nil
+                    heatmapDays = []
                     expandedRecordID = nil
                     isSelectMode = false
                     selectedIDs = []
@@ -664,30 +667,41 @@ private struct HistoryTab: View {
         .task {
             records = await SessionHistory.shared.load()
             stats = await SessionHistory.shared.stats()
+            heatmapDays = await SessionHistory.shared.weeklyHeatmap()
         }
     }
 
-    private func weeklySummaryHeader(_ s: SessionStats) -> some View {
-        HStack(spacing: 8) {
-            Image(systemName: "bolt.fill")
-                .font(.system(size: 11, weight: .bold))
-                .foregroundStyle(.secondary)
-            Text(weekSummaryText(s))
-                .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(.secondary)
-            if s.streak > 1 {
-                Text("🔥 \(s.streak)d streak")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(.orange)
-                    .padding(.horizontal, 7)
-                    .padding(.vertical, 2)
-                    .background(.orange.opacity(0.1))
-                    .clipShape(Capsule())
+    @ViewBuilder
+    private func weeklySection(_ s: SessionStats?) -> some View {
+        VStack(spacing: 0) {
+            if let s, s.weekCount > 0 {
+                HStack(spacing: 8) {
+                    Image(systemName: "bolt.fill")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(.secondary)
+                    Text(weekSummaryText(s))
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(.secondary)
+                    if s.streak > 1 {
+                        Text("🔥 \(s.streak)d streak")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(.orange)
+                            .padding(.horizontal, 7)
+                            .padding(.vertical, 2)
+                            .background(.orange.opacity(0.1))
+                            .clipShape(Capsule())
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 9)
+                .padding(.bottom, 6)
             }
-            Spacer()
+            WeekHeatmapView(days: heatmapDays)
+                .padding(.horizontal, 16)
+                .padding(.top, s == nil || (s?.weekCount ?? 0) == 0 ? 9.0 : 0.0)
+                .padding(.bottom, 9)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 9)
         .background(.background)
     }
 
@@ -768,6 +782,7 @@ private struct HistoryTab: View {
             selectedIDs = []
             if records.isEmpty { isSelectMode = false }
             stats = await SessionHistory.shared.stats()
+            heatmapDays = await SessionHistory.shared.weeklyHeatmap()
         }
     }
 
@@ -793,6 +808,59 @@ private struct HistoryTab: View {
         }
     }
 }
+
+// MARK: - Week Heatmap
+
+private struct WeekHeatmapView: View {
+    let days: [DayActivity]
+
+    private var maxMinutes: Int { max(1, days.map(\.minutes).max() ?? 1) }
+
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 0) {
+            ForEach(days.indices, id: \.self) { i in
+                columnView(days[i])
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func columnView(_ day: DayActivity) -> some View {
+        let isToday = Calendar.current.isDateInToday(day.date)
+        let fraction = day.minutes > 0
+            ? CGFloat(day.minutes) / CGFloat(maxMinutes)
+            : 0
+        // minimum visible height of 4pt when sessions exist, 0 otherwise
+        let filledH: CGFloat = fraction > 0 ? max(4, fraction * 40) : 0
+
+        return VStack(spacing: 4) {
+            ZStack(alignment: .bottom) {
+                // track
+                RoundedRectangle(cornerRadius: 3, style: .continuous)
+                    .fill(Color.secondary.opacity(0.1))
+                    .frame(height: 40)
+                // fill
+                if filledH > 0 {
+                    RoundedRectangle(cornerRadius: 3, style: .continuous)
+                        .fill(isToday ? Color.accentColor : Color.accentColor.opacity(0.45))
+                        .frame(height: filledH)
+                }
+            }
+            Text(dayAbbrev(day.date))
+                .font(.system(size: 9, weight: isToday ? .bold : .regular))
+                .foregroundStyle(isToday ? Color.primary : Color.secondary)
+                .frame(width: 24)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func dayAbbrev(_ date: Date) -> String {
+        let w = Calendar.current.component(.weekday, from: date)
+        return ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][(w - 1) % 7]
+    }
+}
+
+// MARK: - Session Record Row
 
 private struct SessionRecordRow: View {
     let record: SessionRecord

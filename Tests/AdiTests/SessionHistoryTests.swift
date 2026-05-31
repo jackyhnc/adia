@@ -751,3 +751,104 @@ struct GroupedByDayTests {
         #expect(groups[1].label == "Yesterday")
     }
 }
+
+// MARK: - weeklyHeatmapData tests
+
+@Suite("weeklyHeatmapData")
+struct WeeklyHeatmapDataTests {
+
+    private func makeRecord(calendarDaysAgo: Int, durationMinutes: Int = 60) -> SessionRecord {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        let dayStart = cal.date(byAdding: .day, value: -calendarDaysAgo, to: today)!
+        let noon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: dayStart)!
+        return SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: noon,
+            endTime: Date(timeInterval: TimeInterval(durationMinutes * 60), since: noon),
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+    }
+
+    @Test func emptyHistoryReturnsSevenZeroDays() {
+        let result = weeklyHeatmapData([])
+        #expect(result.count == 7)
+        #expect(result.allSatisfy { $0.sessionCount == 0 && $0.minutes == 0 })
+    }
+
+    @Test func alwaysReturnsSeven() {
+        let result = weeklyHeatmapData([makeRecord(calendarDaysAgo: 3)])
+        #expect(result.count == 7)
+    }
+
+    @Test func todaySessionShowsInLastSlot() {
+        let r = makeRecord(calendarDaysAgo: 0, durationMinutes: 45)
+        let result = weeklyHeatmapData([r])
+        let today = result.last!
+        #expect(today.sessionCount == 1)
+        #expect(today.minutes == 45)
+        // all others empty
+        #expect(result.dropLast().allSatisfy { $0.sessionCount == 0 })
+    }
+
+    @Test func yesterdaySessionShowsInSecondToLastSlot() {
+        let r = makeRecord(calendarDaysAgo: 1, durationMinutes: 30)
+        let result = weeklyHeatmapData([r])
+        #expect(result[5].sessionCount == 1)
+        #expect(result[5].minutes == 30)
+        #expect(result[6].sessionCount == 0)
+    }
+
+    @Test func sessionSixDaysAgoShowsInFirstSlot() {
+        let r = makeRecord(calendarDaysAgo: 6, durationMinutes: 60)
+        let result = weeklyHeatmapData([r])
+        #expect(result[0].sessionCount == 1)
+        #expect(result[0].minutes == 60)
+        #expect(result[1...].allSatisfy { $0.sessionCount == 0 })
+    }
+
+    @Test func sessionSevenDaysAgoNotIncluded() {
+        let r = makeRecord(calendarDaysAgo: 7, durationMinutes: 60)
+        let result = weeklyHeatmapData([r])
+        #expect(result.allSatisfy { $0.sessionCount == 0 })
+    }
+
+    @Test func multipleSessionsSameDayAccumulate() {
+        let r1 = makeRecord(calendarDaysAgo: 0, durationMinutes: 30)
+        let r2 = makeRecord(calendarDaysAgo: 0, durationMinutes: 45)
+        let result = weeklyHeatmapData([r1, r2])
+        let today = result.last!
+        #expect(today.sessionCount == 2)
+        #expect(today.minutes == 75)
+    }
+
+    @Test func resultIsOrderedOldestFirst() {
+        let result = weeklyHeatmapData([])
+        for i in 1..<result.count {
+            #expect(result[i].date > result[i - 1].date)
+        }
+    }
+
+    @Test func datesAreCalendarDayBoundaries() {
+        let result = weeklyHeatmapData([])
+        let cal = Calendar.current
+        for day in result {
+            let startOfDay = cal.startOfDay(for: day.date)
+            #expect(abs(day.date.timeIntervalSince(startOfDay)) < 1)
+        }
+    }
+
+    @Test func lastSlotIsToday() {
+        let result = weeklyHeatmapData([])
+        #expect(Calendar.current.isDateInToday(result.last!.date))
+    }
+
+    @Test func firstSlotIsSixDaysAgo() {
+        let result = weeklyHeatmapData([])
+        let cal = Calendar.current
+        let sixDaysAgo = cal.date(byAdding: .day, value: -6, to: cal.startOfDay(for: Date()))!
+        #expect(abs(result.first!.date.timeIntervalSince(sixDaysAgo)) < 1)
+    }
+}
