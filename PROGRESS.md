@@ -1,5 +1,29 @@
 # Adia — Build Progress
 
+## Run 35 — 2026-05-31
+
+### Shipped
+- **feat: focus heatmap — 7-column weekly bar chart in History tab**
+  - **`DayActivity`** (public, `Sendable`): `date` (start of calendar day), `sessionCount`, `minutes`. Lives in `SessionHistory.swift`.
+  - **`weeklyHeatmapData(_:calendar:today:)`** (internal free function): pure computation over `[SessionRecord]`; returns exactly 7 `DayActivity` values for the calendar days `[today-6 … today]`, oldest first. Filters each day by `calendar.isDate(_:inSameDayAs:)`, sums durations. Directly testable without an actor hop.
+  - **`SessionHistory.weeklyHeatmap()`**: thin public actor wrapper that calls `weeklyHeatmapData(_load())`.
+  - **`WeekHeatmapView`** (private SwiftUI struct in `SettingsView.swift`): 7-column `HStack(alignment: .bottom)`. Each column has a 40pt gray track (`secondary.opacity(0.1)`) with a bottom-aligned `RoundedRectangle` fill proportional to `minutes / maxMinutes`; today's column uses full `accentColor`, past days 45% opacity. Minimum fill of 4pt ensures any day with sessions has a visible bar. 9pt day-abbreviation label (bold for today) sits below each column.
+  - **`HistoryTab` integration**: `weeklySection(_:)` replaces `weeklySummaryHeader(_:)`. Shows the existing text summary + streak pill when `weekCount > 0`, then always renders `WeekHeatmapView`. Shown whenever `heatmapDays.count == 7` (populated in `.task`). Heatmap is reloaded alongside `stats` after single-delete, bulk-delete, and clear-all.
+  - **Window height**: `SettingsView.frame` bumped `440 → 500` to give the session list adequate room alongside the new ~62pt heatmap section.
+  - **Tests** (`WeeklyHeatmapDataTests`, 10 cases): `emptyHistoryReturnsSevenZeroDays`, `alwaysReturnsSeven`, `todaySessionShowsInLastSlot`, `yesterdaySessionShowsInSecondToLastSlot`, `sessionSixDaysAgoShowsInFirstSlot`, `sessionSevenDaysAgoNotIncluded`, `multipleSessionsSameDayAccumulate`, `resultIsOrderedOldestFirst`, `datesAreCalendarDayBoundaries`, `lastSlotIsToday`, `firstSlotIsSixDaysAgo`.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) Template management in Settings: a "Templates" tab where users can view, reorder, rename, and delete pinned templates (currently only deletable via the store, no dedicated management UI).
+  - (b) Tier-3 shake animation: add a brief horizontal shake (keyframe animation) to the tier-3 callout banner on first appearance to make it even harder to ignore.
+  - (c) Callout escalation persistence across session restore: currently `calloutCount` resets on every `activate()`, so a restored session starts at tier 1. Could persist `calloutCount` in `SessionPersistence` if desired.
+  - (d) Heatmap tooltip: show a small popover with "N sessions · Xh Ym" when hovering over a heatmap column (`.onHover` + `popover`).
+
+---
+
 ## Run 34 — 2026-05-31
 
 ### Shipped
