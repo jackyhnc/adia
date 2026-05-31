@@ -169,6 +169,7 @@ private struct BlockingSettingsTab: View {
     @FocusState private var addDomainFocused: Bool
     @State private var newAppBundleID = ""
     @FocusState private var addAppFocused: Bool
+    @State private var showingAppPicker = false
 
     var body: some View {
         Form {
@@ -254,6 +255,18 @@ private struct BlockingSettingsTab: View {
                         }
                     }
                 }
+                Button {
+                    showingAppPicker = true
+                } label: {
+                    Label("Pick from running apps…", systemImage: "apps.iphone.badge.plus")
+                }
+                .popover(isPresented: $showingAppPicker, arrowEdge: .bottom) {
+                    RunningAppsPickerView(
+                        alreadyBlocked: Set(settings.effectiveBlockedApps),
+                        isPresented: $showingAppPicker,
+                        onPick: { settings.addCustomApp($0) }
+                    )
+                }
                 HStack {
                     TextField("e.g. com.hnc.Discord", text: $newAppBundleID)
                         .focused($addAppFocused)
@@ -265,7 +278,7 @@ private struct BlockingSettingsTab: View {
             } header: {
                 Text("Custom Apps")
             } footer: {
-                Text("Enter a bundle identifier (e.g. com.hnc.Discord). Find it in the app's Info.plist under CFBundleIdentifier.")
+                Text("Pick a running app to add it instantly, or type a bundle identifier manually.")
                     .foregroundStyle(.secondary)
             }
         }
@@ -284,6 +297,121 @@ private struct BlockingSettingsTab: View {
         settings.addCustomApp(id)
         newAppBundleID = ""
         addAppFocused = false
+    }
+}
+
+// MARK: - Running Apps Picker
+
+private struct RunningAppInfo: Identifiable {
+    let id: String      // bundle identifier
+    let name: String
+    let icon: NSImage?
+}
+
+private struct RunningAppsPickerView: View {
+    let alreadyBlocked: Set<String>
+    @Binding var isPresented: Bool
+    let onPick: (String) -> Void
+
+    @State private var query = ""
+    @State private var apps: [RunningAppInfo] = []
+
+    private var filtered: [RunningAppInfo] {
+        guard !query.isEmpty else { return apps }
+        let q = query.lowercased()
+        return apps.filter {
+            $0.name.lowercased().contains(q) || $0.id.lowercased().contains(q)
+        }
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            TextField("Search apps…", text: $query)
+                .textFieldStyle(.roundedBorder)
+                .padding(12)
+
+            Divider()
+
+            if filtered.isEmpty {
+                VStack(spacing: 8) {
+                    Image(systemName: "apps.iphone")
+                        .font(.largeTitle)
+                        .foregroundStyle(.secondary)
+                    Text(query.isEmpty ? "No blockable apps running." : "No apps match \"\(query)\".")
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .frame(height: 180)
+                .frame(maxWidth: .infinity)
+            } else {
+                List(filtered) { app in
+                    Button {
+                        onPick(app.id)
+                        isPresented = false
+                    } label: {
+                        HStack(spacing: 10) {
+                            Group {
+                                if let icon = app.icon {
+                                    Image(nsImage: icon)
+                                        .resizable()
+                                        .interpolation(.high)
+                                } else {
+                                    Image(systemName: "app.fill")
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            .frame(width: 28, height: 28)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(app.name)
+                                    .fontWeight(.medium)
+                                    .foregroundStyle(alreadyBlocked.contains(app.id) ? .secondary : .primary)
+                                Text(app.id)
+                                    .font(.system(.caption, design: .monospaced))
+                                    .foregroundStyle(.tertiary)
+                            }
+
+                            Spacer()
+
+                            if alreadyBlocked.contains(app.id) {
+                                Text("Blocked")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(.secondary.opacity(0.12), in: Capsule())
+                            }
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(alreadyBlocked.contains(app.id))
+                }
+                .frame(height: 260)
+                .listStyle(.plain)
+            }
+        }
+        .frame(width: 320)
+        .task { loadApps() }
+    }
+
+    private func loadApps() {
+        let defaultIDs = Set(Session.defaultBlockedAppBundleIDs)
+        var seen = Set<String>()
+        var result: [RunningAppInfo] = []
+        for app in NSWorkspace.shared.runningApplications {
+            guard
+                let bundleID = app.bundleIdentifier,
+                let name = app.localizedName,
+                !name.isEmpty,
+                !bundleID.hasPrefix("com.apple."),
+                seen.insert(bundleID).inserted,
+                !defaultIDs.contains(bundleID)
+            else { continue }
+            result.append(RunningAppInfo(id: bundleID, name: name, icon: app.icon))
+        }
+        result.sort { $0.name.localizedCompare($1.name) == .orderedAscending }
+        apps = result
     }
 }
 

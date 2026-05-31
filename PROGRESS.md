@@ -1,5 +1,26 @@
 # Adia — Build Progress
 
+## Run 33 — 2026-05-31
+
+### Shipped
+- **feat: running-apps picker in Blocking Settings — add apps without knowing bundle IDs**
+  - `RunningAppInfo` (private struct in `SettingsView.swift`): `id` (bundle identifier), `name`, `icon: NSImage?`. Used as the list model for the picker.
+  - `RunningAppsPickerView` (private struct in `SettingsView.swift`): SwiftUI popover content. On `.task`, loads `NSWorkspace.shared.runningApplications`, filters out Apple system apps (`com.apple.*` prefix), apps already in `Session.defaultBlockedAppBundleIDs`, and deduplicates by bundle ID. Results sorted alphabetically by name. Displays each app's icon (28×28 from `NSRunningApplication.icon`), display name (bold), and bundle ID (caption monospaced). Live search field (name or bundle ID substring match). Apps already in `effectiveBlockedApps` are shown with a greyed "Blocked" capsule and their button is disabled so they can't be double-added. Tapping a non-blocked row calls `SettingsStore.shared.addCustomApp(_:)` and dismisses the popover.
+  - `BlockingSettingsTab`: added `@State private var showingAppPicker = false`. A "Pick from running apps…" button row (with `apps.iphone.badge.plus` icon) sits above the manual bundle-ID text field. The `.popover(isPresented: $showingAppPicker, arrowEdge: .bottom)` modifier attaches `RunningAppsPickerView` to the button. Footer text updated to reflect both input paths.
+  - No tests added — `loadApps()` delegates entirely to `NSWorkspace.shared.runningApplications` which is environment-dependent and not unit-testable in isolation; the pure filter logic (search matching, duplicate guard) is trivial.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) Callout escalation: after N callouts in a session, escalate message intensity (louder sound, longer display, stronger language).
+  - (b) Template management in Settings: a "Templates" tab where users can view, reorder, rename, and delete pinned templates (currently only deletable via the store, no dedicated management UI).
+  - (c) Focus heatmap: weekly chart (7 columns, 1 per day) in the History tab showing session count/minutes per day at a glance.
+  - (d) Callout sound: play a short system sound (`NSSound.beep()` or a named sound) when a callout fires, reinforcing the visual alert.
+
+---
+
 ## Run 32 — 2026-05-30
 
 ### Shipped
