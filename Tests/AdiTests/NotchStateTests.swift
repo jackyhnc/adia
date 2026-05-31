@@ -107,6 +107,43 @@ struct NotchStateTests {
         #expect(msg == nil)
     }
 
+    // MARK: - Callout tier
+
+    @Test func showCalloutDefaultsTierToOne() async {
+        await reset()
+        await MainActor.run { NotchState.shared.showCallout("focus.") }
+        let tier = await MainActor.run { NotchState.shared.calloutTier }
+        #expect(tier == 1)
+    }
+
+    @Test func showCalloutWithTierSetsCalloutTier() async {
+        await reset()
+        await MainActor.run { NotchState.shared.showCallout("STOP.", tier: 3) }
+        await MainActor.run {
+            #expect(NotchState.shared.calloutTier == 3)
+            #expect(NotchState.shared.calloutMessage == "STOP.")
+        }
+    }
+
+    @Test func clearCalloutResetsTierToOne() async {
+        await reset()
+        await MainActor.run {
+            NotchState.shared.showCallout("STOP.", tier: 3)
+            NotchState.shared.clearCallout()
+        }
+        let tier = await MainActor.run { NotchState.shared.calloutTier }
+        #expect(tier == 1)
+    }
+
+    @Test func collapseResetsTierToOne() async {
+        await MainActor.run {
+            NotchState.shared.showCallout("STOP.", tier: 3)
+            NotchState.shared.collapse()
+        }
+        let tier = await MainActor.run { NotchState.shared.calloutTier }
+        #expect(tier == 1)
+    }
+
     // MARK: - Verification
 
     @Test func setVerifyingTrueExpandsAndClearsResult() async {

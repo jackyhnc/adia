@@ -186,16 +186,17 @@ private struct ExpandedView: View {
     private func activeBody(_ s: Session) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             // Callout banner — appears only when you've been caught off-task.
-            // Styled to SHOUT: a red alert bar, big text, and the contextual
-            // "I need this" link to open chat and request access (whitelist).
+            // Visually escalates with the session callout tier: deeper red, larger
+            // text, and a heavier icon as the user keeps drifting off task.
             if let callout = state.calloutMessage {
+                let tier = state.calloutTier
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 8) {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .font(.system(size: 16, weight: .bold))
+                        Image(systemName: tier >= 3 ? "exclamationmark.3" : "exclamationmark.triangle.fill")
+                            .font(.system(size: tier >= 3 ? 18 : 16, weight: .bold))
                             .foregroundStyle(.white)
                         Text(callout)
-                            .font(.system(size: 17, weight: .heavy))
+                            .font(.system(size: tier >= 3 ? 19 : 17, weight: .heavy))
                             .foregroundStyle(.white)
                     }
                     Button {
@@ -209,8 +210,8 @@ private struct ExpandedView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 16)
-                .padding(.vertical, 12)
-                .background(Color(red: 0.85, green: 0.15, blue: 0.15))
+                .padding(.vertical, tier >= 3 ? 16 : 12)
+                .background(calloutBackground(tier: tier))
                 .transition(.move(edge: .top).combined(with: .opacity))
             }
 
@@ -304,6 +305,15 @@ private struct ExpandedView: View {
     }
 
     // MARK: Helpers
+
+    /// Background color for the callout banner, darkening with escalation tier.
+    private func calloutBackground(tier: Int) -> Color {
+        switch tier {
+        case 1: return Color(red: 0.85, green: 0.15, blue: 0.15)
+        case 2: return Color(red: 0.70, green: 0.05, blue: 0.05)
+        default: return Color(red: 0.50, green: 0.00, blue: 0.00)
+        }
+    }
 
     private func elapsed(from start: Date, to now: Date) -> String {
         let total = max(0, Int(now.timeIntervalSince(start)))

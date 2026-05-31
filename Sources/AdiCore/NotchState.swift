@@ -14,6 +14,9 @@ public final class NotchState: ObservableObject {
 
     // Callout
     @Published public private(set) var calloutMessage: String? = nil
+    /// Escalation tier for the current callout: 1 = mild, 2 = stronger, 3 = harshest.
+    /// Resets to 1 when the callout is cleared.
+    @Published public private(set) var calloutTier: Int = 1
 
     // Conversation (reasoning or early-exit)
     @Published public private(set) var showingConversation: Bool = false
@@ -34,6 +37,7 @@ public final class NotchState: ObservableObject {
         sessionCreationPrefill = nil
         showingConversation = false
         calloutMessage = nil
+        calloutTier = 1
         verificationResult = nil
         isVerifying = false
     }
@@ -55,12 +59,16 @@ public final class NotchState: ObservableObject {
 
     // MARK: - Callout
 
-    public func showCallout(_ message: String) {
+    public func showCallout(_ message: String, tier: Int = 1) {
         calloutMessage = message
+        calloutTier = tier
         isExpanded = true
     }
 
-    public func clearCallout() { calloutMessage = nil }
+    public func clearCallout() {
+        calloutMessage = nil
+        calloutTier = 1
+    }
 
     // MARK: - Conversation
 

@@ -209,4 +209,102 @@ struct CalloutManagerTests {
             #expect(CalloutManager.shared.calloutCount == 0)
         }
     }
+
+    // MARK: - On-task recovery preserves calloutCount
+
+    /// Verifies that returning on-task does NOT reset calloutCount, so tier escalation
+    /// correctly accumulates across multiple off-task streaks within a session.
+    @Test func onTaskRecoveryPreservesCalloutCount() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            // First streak
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask) // fires, count = 1
+            // Recovery
+            CalloutManager.shared.evaluate(.onTask)  // resetStreak only — count must stay 1
+            #expect(CalloutManager.shared.calloutCount == 1)
+            // Second streak
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask) // fires, count = 2
+            #expect(CalloutManager.shared.calloutCount == 2)
+        }
+    }
+
+    // MARK: - Tier escalation
+
+    /// First callout uses tier-1 pool (calloutCount == 0 before fire).
+    @Test func tier1OnFirstCallout() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask) // fires — tier 1
+            #expect(NotchState.shared.calloutTier == 1)
+        }
+    }
+
+    /// After two callouts (count == 2 before third fire), tier escalates to 2.
+    @Test func tier2OnThirdCallout() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            // Fire first two callouts with on-task recovery between each
+            for _ in 0..<2 {
+                CalloutManager.shared.evaluate(.offTask)
+                CalloutManager.shared.evaluate(.offTask)
+                CalloutManager.shared.evaluate(.onTask) // streak reset; calloutCount preserved
+            }
+            // Third callout
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask)
+            #expect(NotchState.shared.calloutTier == 2)
+        }
+    }
+
+    /// After four callouts (count == 4 before fifth fire), tier escalates to 3.
+    @Test func tier3OnFifthCallout() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            // Fire first four callouts with on-task recovery between each
+            for _ in 0..<4 {
+                CalloutManager.shared.evaluate(.offTask)
+                CalloutManager.shared.evaluate(.offTask)
+                CalloutManager.shared.evaluate(.onTask) // streak reset; calloutCount preserved
+            }
+            // Fifth callout
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask)
+            #expect(NotchState.shared.calloutTier == 3)
+        }
+    }
+
+    /// Verifies currentTier() boundaries: 0–1 → tier 1, 2–3 → tier 2, 4+ → tier 3.
+    @Test func currentTierBoundaries() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            #expect(CalloutManager.shared.currentTier() == 1) // count = 0
+            // Manually fire to increment count without full reset between checks
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask) // count = 1
+            CalloutManager.shared.evaluate(.onTask)  // streak reset, count stays 1
+            #expect(CalloutManager.shared.currentTier() == 1) // count = 1
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask) // count = 2
+            CalloutManager.shared.evaluate(.onTask)
+            #expect(CalloutManager.shared.currentTier() == 2) // count = 2
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask) // count = 3
+            CalloutManager.shared.evaluate(.onTask)
+            #expect(CalloutManager.shared.currentTier() == 2) // count = 3
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask) // count = 4
+            CalloutManager.shared.evaluate(.onTask)
+            #expect(CalloutManager.shared.currentTier() == 3) // count = 4
+        }
+    }
+
+    /// Dismiss delay increases with tier so higher-tier callouts are harder to ignore.
+    @Test func dismissDelayEscalatesWithTier() async {
+        #expect(CalloutManager.dismissDelay(for: 1) == .seconds(8))
+        #expect(CalloutManager.dismissDelay(for: 2) == .seconds(12))
+        #expect(CalloutManager.dismissDelay(for: 3) == .seconds(20))
+    }
 }

@@ -46,6 +46,8 @@ public final class NotchWindowController: NSWindowController {
     // Extra height for active-session view when a callout banner is visible:
     // the red alert bar (~64pt) pushes task + buttons past the base frame.
     private static let calloutExpandedHeight: CGFloat   = 260
+    // Tier-3 callout uses larger font + more padding, needing 20pt more room.
+    private static let tier3CalloutExpandedHeight: CGFloat = 280
     private static let creationExpandedHeight: CGFloat  = 310
     private static let conversationHeight: CGFloat      = 390
     private static let verificationHeight: CGFloat      = 220
@@ -171,7 +173,7 @@ public final class NotchWindowController: NSWindowController {
         } else if state.isCreating {
             h = Self.creationExpandedHeight
         } else if state.calloutMessage != nil {
-            h = Self.calloutExpandedHeight
+            h = state.calloutTier >= 3 ? Self.tier3CalloutExpandedHeight : Self.calloutExpandedHeight
         } else if SessionManager.shared.session == nil {
             let tc = CGFloat(min(state.idleTemplateCount, 2))
             h = Self.idleExpandedHeight + tc * Self.perTemplateHeight
