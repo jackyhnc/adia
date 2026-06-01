@@ -1,5 +1,29 @@
 # Adia — Build Progress
 
+## Run 37 — 2026-06-01
+
+### Shipped
+- **feat: tier-3 callout shake animation — horizontal shake on first banner appearance**
+  - Extracted the inline callout banner VStack from `ExpandedView.activeBody(_:)` into a new `private struct CalloutBanner: View` in `NotchView.swift`.
+  - `CalloutBanner` takes `message: String`, `tier: Int`, and `onChat: () -> Void`. All styling previously on the inline block (escalating icon, font size, vertical padding, background color) is preserved identically.
+  - `@State private var shakeTrigger: Bool = false` — toggled each time a tier-3 callout fires. SwiftUI's `keyframeAnimator(initialValue:trigger:)` plays the shake sequence whenever `shakeTrigger` changes.
+  - Keyframe sequence: `0 → -9 → 9 → -7 → 7 → -4 → 4 → 0` px horizontal offset over ~280ms (8 `LinearKeyframe` steps). Amplitude damps from 9px to 0 giving a natural error-shake feel.
+  - `.onChange(of: message, initial: true)` with `initial: true` triggers the shake both on first appearance (via `initial: true`) and if a new tier-3 message replaces the current one while the banner is still visible. Tier 1 and 2 banners are unaffected (condition: `tier >= 3`).
+  - `bannerBackground` private computed property consolidates the tier→color switch that was previously `ExpandedView.calloutBackground(tier:)`.
+  - No new tests — the shake is purely visual; tier escalation and `calloutTier` state transitions are already covered by `CalloutManagerTests` and `NotchStateTests`.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) Template management in Settings: a "Templates" tab where users can view, reorder, rename, and delete pinned templates (currently only deletable via the store, no dedicated management UI).
+  - (b) Callout escalation persistence across session restore: currently `calloutCount` resets on every `activate()`, so a restored session starts at tier 1. Could persist `calloutCount` in `SessionPersistence` if desired.
+  - (c) Empty-day heatmap opacity variation: give days with 0 sessions a subtly different track color (e.g. even lighter or slightly different hue) to make the gap between active and inactive days more pronounced.
+  - (d) Keyboard shortcut to start/stop session: e.g. ⌘Return to open the session creation form from the idle notch.
+
+---
+
 ## Run 36 — 2026-06-01
 
 ### Shipped

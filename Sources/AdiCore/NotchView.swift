@@ -188,31 +188,11 @@ private struct ExpandedView: View {
             // Callout banner — appears only when you've been caught off-task.
             // Visually escalates with the session callout tier: deeper red, larger
             // text, and a heavier icon as the user keeps drifting off task.
+            // Tier-3 banners also shake horizontally on first appearance via keyframeAnimator.
             if let callout = state.calloutMessage {
-                let tier = state.calloutTier
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 8) {
-                        Image(systemName: tier >= 3 ? "exclamationmark.3" : "exclamationmark.triangle.fill")
-                            .font(.system(size: tier >= 3 ? 18 : 16, weight: .bold))
-                            .foregroundStyle(.white)
-                        Text(callout)
-                            .font(.system(size: tier >= 3 ? 19 : 17, weight: .heavy))
-                            .foregroundStyle(.white)
-                    }
-                    Button {
-                        state.startConversation(.reasoning(domain: nil))
-                    } label: {
-                        Text("actually, I need this →")
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundStyle(.white.opacity(0.8))
-                    }
-                    .buttonStyle(.plain)
+                CalloutBanner(message: callout, tier: state.calloutTier) {
+                    state.startConversation(.reasoning(domain: nil))
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 16)
-                .padding(.vertical, tier >= 3 ? 16 : 12)
-                .background(calloutBackground(tier: tier))
-                .transition(.move(edge: .top).combined(with: .opacity))
             }
 
             VStack(alignment: .leading, spacing: 6) {
@@ -306,15 +286,6 @@ private struct ExpandedView: View {
 
     // MARK: Helpers
 
-    /// Background color for the callout banner, darkening with escalation tier.
-    private func calloutBackground(tier: Int) -> Color {
-        switch tier {
-        case 1: return Color(red: 0.85, green: 0.15, blue: 0.15)
-        case 2: return Color(red: 0.70, green: 0.05, blue: 0.05)
-        default: return Color(red: 0.50, green: 0.00, blue: 0.00)
-        }
-    }
-
     private func elapsed(from start: Date, to now: Date) -> String {
         let total = max(0, Int(now.timeIntervalSince(start)))
         let h = total / 3600
@@ -323,6 +294,69 @@ private struct ExpandedView: View {
         return h > 0
             ? String(format: "%d:%02d:%02d", h, m, s)
             : String(format: "%02d:%02d", m, s)
+    }
+}
+
+// MARK: - Callout Banner
+
+/// Escalating callout banner shown at the top of the active-session notch card.
+/// Tier 3 banners play a brief horizontal shake on first appearance so the message
+/// is impossible to dismiss with a casual glance.
+private struct CalloutBanner: View {
+    let message: String
+    let tier: Int
+    let onChat: () -> Void
+
+    // Toggled each time a tier-3 callout fires to trigger the keyframe animator.
+    @State private var shakeTrigger: Bool = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                Image(systemName: tier >= 3 ? "exclamationmark.3" : "exclamationmark.triangle.fill")
+                    .font(.system(size: tier >= 3 ? 18 : 16, weight: .bold))
+                    .foregroundStyle(.white)
+                Text(message)
+                    .font(.system(size: tier >= 3 ? 19 : 17, weight: .heavy))
+                    .foregroundStyle(.white)
+            }
+            Button(action: onChat) {
+                Text("actually, I need this →")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.8))
+            }
+            .buttonStyle(.plain)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 16)
+        .padding(.vertical, tier >= 3 ? 16 : 12)
+        .background(bannerBackground)
+        // Horizontal shake: 9px amplitude dampening to 0 over ~280ms, tier-3 only.
+        .keyframeAnimator(initialValue: CGFloat(0), trigger: shakeTrigger) { content, offsetX in
+            content.offset(x: offsetX)
+        } keyframes: { _ in
+            LinearKeyframe(CGFloat(0),  duration: 0.01)
+            LinearKeyframe(CGFloat(-9), duration: 0.05)
+            LinearKeyframe(CGFloat(9),  duration: 0.05)
+            LinearKeyframe(CGFloat(-7), duration: 0.05)
+            LinearKeyframe(CGFloat(7),  duration: 0.05)
+            LinearKeyframe(CGFloat(-4), duration: 0.04)
+            LinearKeyframe(CGFloat(4),  duration: 0.04)
+            LinearKeyframe(CGFloat(0),  duration: 0.04)
+        }
+        .transition(.move(edge: .top).combined(with: .opacity))
+        // Fire shake when a tier-3 callout first appears (initial: true) or its message changes.
+        .onChange(of: message, initial: true) {
+            if tier >= 3 { shakeTrigger.toggle() }
+        }
+    }
+
+    private var bannerBackground: Color {
+        switch tier {
+        case 1: return Color(red: 0.85, green: 0.15, blue: 0.15)
+        case 2: return Color(red: 0.70, green: 0.05, blue: 0.05)
+        default: return Color(red: 0.50, green: 0.00, blue: 0.00)
+        }
     }
 }
 
