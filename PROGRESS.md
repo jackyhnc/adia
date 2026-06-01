@@ -1,5 +1,28 @@
 # Adia — Build Progress
 
+## Run 36 — 2026-06-01
+
+### Shipped
+- **feat: heatmap column hover tooltip — show sessions and duration on mouseover**
+  - Each of the 7 day columns in `WeekHeatmapView` now responds to `.onHover`: when the cursor enters a column, a compact floating label appears 26pt above the bar showing "N sessions · Xh Ym" (e.g. "3 sessions · 1h 30m") or "no sessions" for empty days.
+  - Tooltip uses `.regularMaterial` background (`RoundedRectangle` at 4pt radius), 9pt medium font — matches the heatmap's compact aesthetic.
+  - Smooth fade via `.transition(.opacity)` + `.animation(.easeInOut(duration: 0.12), value: hoveredIndex)` on the containing HStack.
+  - `.zIndex(hoveredIndex == i ? 1 : 0)` on each column ensures the active tooltip floats above neighboring columns without clipping.
+  - Extracted `heatmapFormatMinutes(_:)` and `heatmapTooltipText(for:)` as `internal` free functions in `SettingsView.swift` so the pure formatting logic is testable without a view context.
+  - **Tests** (`HeatmapTooltipTests`, 11 cases): `formatMinutesZero`, `formatMinutesUnderAnHour`, `formatMinutesExactHour`, `formatMinutesExactTwoHours`, `formatMinutesHoursAndMinutes`, `formatMinutesLargeValue`, `tooltipNoSessions`, `tooltipOneSingular`, `tooltipManyPlural`, `tooltipExactHour`, `tooltipOneSessionExactHour`.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) Template management in Settings: a "Templates" tab where users can view, reorder, rename, and delete pinned templates (currently only deletable via the store, no dedicated management UI).
+  - (b) Tier-3 shake animation: add a brief horizontal shake (keyframe animation) to the tier-3 callout banner on first appearance to make it even harder to ignore.
+  - (c) Callout escalation persistence across session restore: currently `calloutCount` resets on every `activate()`, so a restored session starts at tier 1. Could persist `calloutCount` in `SessionPersistence` if desired.
+  - (d) Empty-day heatmap opacity variation: give days with 0 sessions a subtly different track color (e.g. even lighter or slightly different hue) to make the gap between active and inactive days more pronounced.
+
+---
+
 ## Run 35 — 2026-05-31
 
 ### Shipped
