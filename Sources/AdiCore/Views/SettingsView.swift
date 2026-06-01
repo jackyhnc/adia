@@ -811,8 +811,25 @@ private struct HistoryTab: View {
 
 // MARK: - Week Heatmap
 
+/// Formats a minute count as a compact duration string: "45m", "1h", "1h 30m".
+internal func heatmapFormatMinutes(_ minutes: Int) -> String {
+    let h = minutes / 60
+    let m = minutes % 60
+    if h > 0 && m > 0 { return "\(h)h \(m)m" }
+    if h > 0 { return "\(h)h" }
+    return "\(m)m"
+}
+
+/// Returns the tooltip label for a single heatmap column day.
+internal func heatmapTooltipText(for day: DayActivity) -> String {
+    if day.sessionCount == 0 { return "no sessions" }
+    let sessions = day.sessionCount == 1 ? "1 session" : "\(day.sessionCount) sessions"
+    return "\(sessions) · \(heatmapFormatMinutes(day.minutes))"
+}
+
 private struct WeekHeatmapView: View {
     let days: [DayActivity]
+    @State private var hoveredIndex: Int? = nil
 
     private var maxMinutes: Int { max(1, days.map(\.minutes).max() ?? 1) }
 
@@ -820,9 +837,29 @@ private struct WeekHeatmapView: View {
         HStack(alignment: .bottom, spacing: 0) {
             ForEach(days.indices, id: \.self) { i in
                 columnView(days[i])
+                    .onHover { isHovering in hoveredIndex = isHovering ? i : nil }
+                    .zIndex(hoveredIndex == i ? 1 : 0)
+                    .overlay(alignment: .top) {
+                        if hoveredIndex == i {
+                            tooltipLabel(days[i])
+                                .offset(y: -26)
+                                .transition(.opacity)
+                        }
+                    }
             }
         }
         .frame(maxWidth: .infinity)
+        .animation(.easeInOut(duration: 0.12), value: hoveredIndex)
+    }
+
+    private func tooltipLabel(_ day: DayActivity) -> some View {
+        Text(heatmapTooltipText(for: day))
+            .font(.system(size: 9, weight: .medium))
+            .foregroundStyle(Color.primary)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 3)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
+            .fixedSize()
     }
 
     private func columnView(_ day: DayActivity) -> some View {

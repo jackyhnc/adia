@@ -852,3 +852,65 @@ struct WeeklyHeatmapDataTests {
         #expect(abs(result.first!.date.timeIntervalSince(sixDaysAgo)) < 1)
     }
 }
+
+// MARK: - HeatmapTooltipTests
+
+@Suite("HeatmapTooltip")
+struct HeatmapTooltipTests {
+
+    private func day(sessionCount: Int, minutes: Int) -> DayActivity {
+        DayActivity(date: Date(), sessionCount: sessionCount, minutes: minutes)
+    }
+
+    // heatmapFormatMinutes
+
+    @Test func formatMinutesZero() {
+        #expect(heatmapFormatMinutes(0) == "0m")
+    }
+
+    @Test func formatMinutesUnderAnHour() {
+        #expect(heatmapFormatMinutes(45) == "45m")
+    }
+
+    @Test func formatMinutesExactHour() {
+        #expect(heatmapFormatMinutes(60) == "1h")
+    }
+
+    @Test func formatMinutesExactTwoHours() {
+        #expect(heatmapFormatMinutes(120) == "2h")
+    }
+
+    @Test func formatMinutesHoursAndMinutes() {
+        #expect(heatmapFormatMinutes(90) == "1h 30m")
+    }
+
+    @Test func formatMinutesLargeValue() {
+        #expect(heatmapFormatMinutes(185) == "3h 5m")
+    }
+
+    // heatmapTooltipText
+
+    @Test func tooltipNoSessions() {
+        #expect(heatmapTooltipText(for: day(sessionCount: 0, minutes: 0)) == "no sessions")
+    }
+
+    @Test func tooltipOneSingular() {
+        let text = heatmapTooltipText(for: day(sessionCount: 1, minutes: 45))
+        #expect(text == "1 session · 45m")
+    }
+
+    @Test func tooltipManyPlural() {
+        let text = heatmapTooltipText(for: day(sessionCount: 3, minutes: 90))
+        #expect(text == "3 sessions · 1h 30m")
+    }
+
+    @Test func tooltipExactHour() {
+        let text = heatmapTooltipText(for: day(sessionCount: 2, minutes: 60))
+        #expect(text == "2 sessions · 1h")
+    }
+
+    @Test func tooltipOneSessionExactHour() {
+        let text = heatmapTooltipText(for: day(sessionCount: 1, minutes: 120))
+        #expect(text == "1 session · 2h")
+    }
+}
