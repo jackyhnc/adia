@@ -135,6 +135,54 @@ struct SessionTemplateTests {
         #expect(sorted[1].task == "Unused")
     }
 
+    // MARK: - update
+
+    @Test func updateChangesBothFields() async {
+        let store = makeStore()
+        await store.add(task: "Original task", successCriteria: "Original criteria")
+        let id = await store.load()[0].id
+        await store.update(id: id, task: "Updated task", successCriteria: "Updated criteria")
+        let templates = await store.load()
+        #expect(templates.count == 1)
+        #expect(templates[0].task == "Updated task")
+        #expect(templates[0].successCriteria == "Updated criteria")
+    }
+
+    @Test func updatePreservesOtherFields() async {
+        let store = makeStore()
+        await store.add(task: "Task", successCriteria: "Criteria")
+        let id = await store.load()[0].id
+        await store.recordUse(id: id)
+        await store.update(id: id, task: "New task", successCriteria: "New criteria")
+        let templates = await store.load()
+        #expect(templates[0].id == id)
+        #expect(templates[0].useCount == 1)
+        #expect(templates[0].lastUsedAt != nil)
+    }
+
+    @Test func updateUnknownIdIsNoOp() async {
+        let store = makeStore()
+        await store.add(task: "Keep me", successCriteria: "Original")
+        await store.update(id: UUID(), task: "Changed", successCriteria: "Changed criteria")
+        let templates = await store.load()
+        #expect(templates.count == 1)
+        #expect(templates[0].task == "Keep me")
+        #expect(templates[0].successCriteria == "Original")
+    }
+
+    @Test func updateDoesNotAffectOtherTemplates() async {
+        let store = makeStore()
+        await store.add(task: "Task A", successCriteria: "Criteria A")
+        await store.add(task: "Task B", successCriteria: "Criteria B")
+        let templates = await store.load()
+        let idA = templates.first(where: { $0.task == "Task A" })!.id
+        await store.update(id: idA, task: "Task A updated", successCriteria: "Criteria A updated")
+        let after = await store.load()
+        let b = after.first(where: { $0.task == "Task B" })
+        #expect(b != nil)
+        #expect(b?.successCriteria == "Criteria B")
+    }
+
     // MARK: - Max templates limit
 
     @Test func exceedingMaxTemplatesTrimsToLimit() async {

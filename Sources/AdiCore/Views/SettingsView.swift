@@ -15,9 +15,12 @@ public struct SettingsView: View {
             BlockingSettingsTab()
                 .tabItem { Label("Blocking", systemImage: "hand.raised.fill") }
                 .tag(1)
+            TemplatesSettingsTab()
+                .tabItem { Label("Templates", systemImage: "pin.fill") }
+                .tag(2)
             HistoryTab()
                 .tabItem { Label("History", systemImage: "clock.arrow.circlepath") }
-                .tag(2)
+                .tag(3)
         }
         .padding(20)
         .frame(width: 480, height: 500)
@@ -1109,5 +1112,210 @@ private struct SelectableRecordRow: View {
         }
         .padding(.vertical, 2)
         .contentShape(Rectangle())
+    }
+}
+
+// MARK: - Templates Tab
+
+private struct TemplatesSettingsTab: View {
+    @State private var templates: [SessionTemplate] = []
+    @State private var editingTemplate: SessionTemplate? = nil
+
+    var body: some View {
+        Group {
+            if templates.isEmpty {
+                VStack(spacing: 8) {
+                    Image(systemName: "pin.slash")
+                        .font(.system(size: 32))
+                        .foregroundStyle(.secondary)
+                    Text("No saved templates")
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                    Text("Tap the pin icon when starting a session to save it as a template.")
+                        .font(.callout)
+                        .foregroundStyle(.tertiary)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: 280)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                VStack(spacing: 0) {
+                    List {
+                        ForEach(templates) { template in
+                            TemplateRow(template: template) {
+                                editingTemplate = template
+                            } onDelete: {
+                                let id = template.id
+                                Task { @MainActor in
+                                    await SessionTemplateStore.shared.delete(id: id)
+                                    await reloadTemplates()
+                                }
+                            }
+                        }
+                    }
+                    .listStyle(.inset)
+
+                    HStack {
+                        Text("\(templates.count) template\(templates.count == 1 ? "" : "s") · sorted by recent use")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                        Spacer()
+                    }
+                    .background(.background)
+                }
+            }
+        }
+        .task { await reloadTemplates() }
+        .sheet(item: $editingTemplate) { template in
+            EditTemplateSheet(template: template) {
+                Task { @MainActor in await reloadTemplates() }
+            }
+        }
+    }
+
+    private func reloadTemplates() async {
+        templates = await SessionTemplateStore.shared.sorted()
+    }
+}
+
+// MARK: - Template Row
+
+private struct TemplateRow: View {
+    let template: SessionTemplate
+    let onEdit: () -> Void
+    let onDelete: () -> Void
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "pin.fill")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(.secondary)
+                .padding(.top, 2)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(template.task)
+                    .font(.body)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                if !template.successCriteria.isEmpty {
+                    Text(template.successCriteria)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+
+                HStack(spacing: 8) {
+                    if template.useCount > 0 {
+                        Label("\(template.useCount) use\(template.useCount == 1 ? "" : "s")",
+                              systemImage: "play.fill")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                    if let date = template.lastUsedAt {
+                        Text(date, style: .relative)
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+            }
+
+            Spacer()
+
+            HStack(spacing: 6) {
+                Button(action: onEdit) {
+                    Image(systemName: "pencil")
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.borderless)
+                .help("Edit template")
+
+                Button(action: onDelete) {
+                    Image(systemName: "trash")
+                        .foregroundStyle(.red.opacity(0.8))
+                }
+                .buttonStyle(.borderless)
+                .help("Delete template")
+            }
+        }
+        .padding(.vertical, 3)
+    }
+}
+
+// MARK: - Edit Template Sheet
+
+private struct EditTemplateSheet: View {
+    let template: SessionTemplate
+    let onSave: () -> Void
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var taskDraft: String
+    @State private var criteriaDraft: String
+
+    init(template: SessionTemplate, onSave: @escaping () -> Void) {
+        self.template = template
+        self.onSave = onSave
+        _taskDraft = State(initialValue: template.task)
+        _criteriaDraft = State(initialValue: template.successCriteria)
+    }
+
+    private var canSave: Bool {
+        !taskDraft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !criteriaDraft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Edit Template")
+                .font(.headline)
+                .padding(.horizontal, 20)
+                .padding(.top, 18)
+                .padding(.bottom, 12)
+
+            Divider()
+
+            Form {
+                Section {
+                    TextField("Task description", text: $taskDraft, axis: .vertical)
+                        .lineLimit(2...4)
+                } header: {
+                    Text("Working on")
+                }
+
+                Section {
+                    TextField("Success criteria", text: $criteriaDraft, axis: .vertical)
+                        .lineLimit(2...4)
+                } header: {
+                    Text("Done when")
+                }
+            }
+            .formStyle(.grouped)
+
+            Divider()
+
+            HStack {
+                Button("Cancel") { dismiss() }
+                    .keyboardShortcut(.cancelAction)
+                    .buttonStyle(.borderless)
+                Spacer()
+                Button("Save") {
+                    let id = template.id
+                    let t = taskDraft.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let c = criteriaDraft.trimmingCharacters(in: .whitespacesAndNewlines)
+                    Task {
+                        await SessionTemplateStore.shared.update(id: id, task: t, successCriteria: c)
+                        onSave()
+                    }
+                    dismiss()
+                }
+                .keyboardShortcut(.defaultAction)
+                .disabled(!canSave)
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 14)
+        }
+        .frame(width: 380, height: 280)
     }
 }

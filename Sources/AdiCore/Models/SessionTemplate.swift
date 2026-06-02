@@ -81,6 +81,16 @@ public actor SessionTemplateStore {
         _save(templates)
     }
 
+    /// Updates the task text and success criteria for an existing template by ID.
+    /// No-op if the ID is not found.
+    public func update(id: UUID, task: String, successCriteria: String) {
+        var templates = _load()
+        guard let idx = templates.firstIndex(where: { $0.id == id }) else { return }
+        templates[idx].task = task
+        templates[idx].successCriteria = successCriteria
+        _save(templates)
+    }
+
     /// Increments useCount and sets lastUsedAt to now for the given id.
     public func recordUse(id: UUID) {
         var templates = _load()
