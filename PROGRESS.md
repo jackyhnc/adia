@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 38 — 2026-06-02
+
+### Shipped
+- **feat: Templates tab in Settings — view, edit, and delete saved templates**
+  - `SessionTemplateStore.update(id:task:successCriteria:)` — new actor method for direct ID-based edit. Finds the entry by UUID, mutates both fields, writes atomically. No-op for unknown IDs. Preserves `useCount`, `lastUsedAt`, `createdAt`.
+  - **`TemplatesSettingsTab`** (private struct in `SettingsView.swift`): fourth tab (tag 2, `pin.fill` icon), History tab moved to tag 3. Loads from `SessionTemplateStore.shared.sorted()` in `.task`. Empty state shows `pin.slash` icon + instructions. Non-empty state shows a `List` with an inset style and a footer "N templates · sorted by recent use".
+  - **`TemplateRow`** (private struct): `pin.fill` icon, task text (2-line), criteria (1-line secondary), use count + relative timestamp in caption; pencil (edit) and trash (delete) action buttons with `.help` tooltips. Delete path awaits `SessionTemplateStore.shared.delete` then reloads.
+  - **`EditTemplateSheet`** (private struct): 380×280 modal sheet. Two `TextField(axis:.vertical)` fields pre-populated from the template. Save (⏎) / Cancel (⎋) keyboard shortcuts. Save button disabled if either field is blank. On save: calls `SessionTemplateStore.shared.update`, invokes `onSave` callback (triggers list reload), dismisses.
+  - **Tests** (`SessionTemplateTests` +4): `updateChangesBothFields`, `updatePreservesOtherFields` (id/useCount/lastUsedAt survive an edit), `updateUnknownIdIsNoOp`, `updateDoesNotAffectOtherTemplates`.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) Callout escalation persistence across session restore: `calloutCount` resets on every `activate()`, so a restored session starts at tier 1. Could persist `calloutCount` in `SessionPersistence` / `SessionRecord` and restore it in `CalloutManager.reset()`.
+  - (b) Empty-day heatmap opacity variation: give days with 0 sessions a subtly different track color (e.g. even lighter or slightly different hue) to make the gap between active/inactive days more pronounced.
+  - (c) Keyboard shortcut to start/stop session: global hotkey (e.g. `⌘Return` or `⌘⇧F`) to open the session creation form from anywhere, expanding the notch if collapsed.
+  - (d) Template reorder: drag-to-reorder in the new Templates tab — requires adding an explicit `displayOrder: Int` field to `SessionTemplate` and a `reorder(fromOffsets:toOffset:)` method to `SessionTemplateStore`.
+
+---
+
 ## Run 37 — 2026-06-01
 
 ### Shipped
