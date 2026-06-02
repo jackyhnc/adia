@@ -52,6 +52,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             blockerController = FocusBlockerWindowController()
         }
         notchController?.showWindow(nil)
+        GlobalHotkeyManager.shared.start()
         Task { await SessionManager.shared.restoreIfNeeded() }
     }
 

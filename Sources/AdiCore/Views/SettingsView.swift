@@ -57,6 +57,19 @@ private struct AccountSettingsTab: View {
             } header: {
                 Text("License")
             }
+
+            Section {
+                LabeledContent("Open / close Adia") {
+                    Text(GlobalHotkeyManager.shortcutLabel)
+                        .font(.system(.body, design: .monospaced))
+                        .foregroundStyle(.secondary)
+                }
+            } header: {
+                Text("Keyboard Shortcuts")
+            } footer: {
+                Text("Works globally — press from any app to expand the notch.")
+                    .foregroundStyle(.secondary)
+            }
         }
         .formStyle(.grouped)
     }

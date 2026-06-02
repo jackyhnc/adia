@@ -1,5 +1,29 @@
 # Adia — Build Progress
 
+## Run 39 — 2026-06-02
+
+### Shipped
+- **feat: global keyboard shortcut ⌃⌥A — expand Adia notch from any app**
+  - `GlobalHotkeyManager` (`Sources/AdiCore/GlobalHotkeyManager.swift`): new `@MainActor public final class`. Registers both a local monitor (consumes event when Adia is key, prevents double-handling) and a global monitor (observes from any foreground app). Hotkey: `⌃⌥A` (Control+Option+A) — low-conflict combination not used by common apps.
+  - `start()` / `stop()` lifecycle methods. `#if canImport(AppKit)` guards throughout for Linux build compatibility.
+  - `fire()`: when no session is active → calls `NotchState.shared.startCreating()` (expands notch, opens session form); when session is active → calls `NotchState.shared.toggle()` (expand/collapse).
+  - Key code `0x00` is the virtual key for the 'A' position on QWERTY layouts (position-based, layout-independent).
+  - `AppDelegate.showNotch()` — added `GlobalHotkeyManager.shared.start()` call after the notch window and blocker window are created.
+  - `SettingsView` Account tab — added "Keyboard Shortcuts" section showing `⌃⌥A → Open / close Adia` with a "Works globally" footer hint.
+  - No new tests: pure logic (`fire()`) delegates to `NotchState`/`SessionManager` which are already tested; monitor registration is AppKit I/O not suited for unit tests.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) Callout escalation persistence across session restore: `calloutCount` resets on every `activate()`, so a restored session starts at tier 1. Could persist `calloutCount` in `SessionPersistence` / `SessionRecord` and restore it in `CalloutManager.reset()`.
+  - (b) Empty-day heatmap opacity variation: give days with 0 sessions a subtly different track color to make active/inactive gap more pronounced.
+  - (c) Template reorder: drag-to-reorder in the Templates tab — requires adding `displayOrder: Int` to `SessionTemplate` and a `reorder(fromOffsets:toOffset:)` method to `SessionTemplateStore`.
+  - (d) Menu bar presence: add a `NSStatusItem` with a simple icon so users can click the menu bar icon as an alternative to the hotkey (useful on non-notch Macs).
+
+---
+
 ## Run 38 — 2026-06-02
 
 ### Shipped
