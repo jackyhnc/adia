@@ -2,7 +2,7 @@ import SwiftUI
 import AppKit
 import CoreGraphics
 
-/// First-launch onboarding introduces Adia, captures the user's OpenAI key when
+/// First-launch onboarding introduces Adia, captures the user's Claude API key when
 /// needed, and gets Screen Recording permission inline.
 public struct OnboardingView: View {
     public enum Step: Int, CaseIterable { case welcome, key, permission }
@@ -52,7 +52,7 @@ public struct OnboardingView: View {
         }
     }
 
-    // MARK: - OpenAI key
+    // MARK: - Claude API key
 
     private var key: some View {
         VStack(spacing: 0) {
@@ -65,13 +65,13 @@ public struct OnboardingView: View {
                     .font(.system(size: 34, weight: .semibold))
                     .foregroundStyle(settings.hasAPIKey ? .green : .white.opacity(0.9))
             }
-            Text(settings.hasAPIKey ? "OpenAI is connected" : "Connect OpenAI")
+            Text(settings.hasAPIKey ? "Claude is connected" : "Connect Claude")
                 .font(.system(size: 23, weight: .bold))
                 .foregroundStyle(.white)
                 .padding(.top, 22)
             Text(settings.hasAPIKey
                  ? "Adia can now classify your screen and verify finished work."
-                 : "Paste your OpenAI API key. It is stored in macOS Keychain and used only from this Mac.")
+                 : "Paste your Claude API key. It is stored in macOS Keychain and used only from this Mac.")
                 .font(.system(size: 14))
                 .foregroundStyle(.white.opacity(0.5))
                 .multilineTextAlignment(.center)
@@ -82,7 +82,7 @@ public struct OnboardingView: View {
             Spacer()
             if !settings.hasAPIKey {
                 VStack(alignment: .leading, spacing: 8) {
-                    SecureField("sk-proj-...", text: $apiKeyDraft)
+                    SecureField("sk-ant-...", text: $apiKeyDraft)
                         .textFieldStyle(.plain)
                         .font(.system(size: 13, design: .monospaced))
                         .foregroundStyle(.white)
@@ -109,8 +109,8 @@ public struct OnboardingView: View {
                         apiKeyFocused = true
                     }
                 }
-                Link("Create an OpenAI API key",
-                     destination: URL(string: "https://platform.openai.com/api-keys")!)
+                Link("Get a Claude API key at console.anthropic.com",
+                     destination: URL(string: "https://console.anthropic.com/settings/keys")!)
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.65))
                     .padding(.top, 14)
@@ -271,11 +271,11 @@ public struct OnboardingView: View {
     private func saveAPIKey() {
         let trimmed = apiKeyDraft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else {
-            apiKeyError = "Paste your OpenAI API key to continue."
+            apiKeyError = "Paste your Claude API key to continue."
             return
         }
         guard settings.setAPIKey(trimmed) else {
-            apiKeyError = "That does not look like an OpenAI key."
+            apiKeyError = "That does not look like a Claude key (should start with sk-ant-)."
             return
         }
         apiKeyDraft = ""

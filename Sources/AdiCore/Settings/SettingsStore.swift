@@ -70,12 +70,12 @@ public final class SettingsStore: ObservableObject {
         // value. Legacy names are still accepted so existing local installs keep
         // working after the user-facing naming moved away from provider branding.
         let env = ProcessInfo.processInfo.environment
-        agentAIKey = Self.openAICompatibleKey(Self.readKey(service: keychainService, account: keychainAccount))
-            ?? Self.openAICompatibleKey(Self.readKey(service: keychainService, account: legacyKeychainAccount))
-            ?? Self.openAICompatibleKey(env["OPENAI_API_KEY"])
-            ?? Self.openAICompatibleKey(env["ADIA_AGENT_AI_KEY"])
-            ?? Self.openAICompatibleKey(Self.readKeyFromHomeFile())
-            ?? Self.openAICompatibleKey(EmbeddedSecrets.resolvedKey)
+        agentAIKey = Self.anthropicCompatibleKey(Self.readKey(service: keychainService, account: keychainAccount))
+            ?? Self.anthropicCompatibleKey(Self.readKey(service: keychainService, account: legacyKeychainAccount))
+            ?? Self.anthropicCompatibleKey(env["ANTHROPIC_API_KEY"])
+            ?? Self.anthropicCompatibleKey(env["ADIA_AGENT_AI_KEY"])
+            ?? Self.anthropicCompatibleKey(Self.readKeyFromHomeFile())
+            ?? Self.anthropicCompatibleKey(EmbeddedSecrets.resolvedKey)
         customBlockedDomains   = Self.loadDomainList(key: Self.customDomainsKey,   from: defaults)
         disabledDefaultDomains = Set(Self.loadDomainList(key: Self.disabledDomainsKey, from: defaults))
         customBlockedApps      = Self.loadDomainList(key: Self.customAppsKey,      from: defaults)
@@ -88,15 +88,15 @@ public final class SettingsStore: ObservableObject {
         return s
     }
 
-    public nonisolated static func openAICompatibleKey(_ s: String?) -> String? {
+    public nonisolated static func anthropicCompatibleKey(_ s: String?) -> String? {
         guard let value = nonEmpty(s) else { return nil }
         let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard trimmed.hasPrefix("sk-"), !trimmed.hasPrefix("sk-ant-") else { return nil }
+        guard trimmed.hasPrefix("sk-ant-") else { return nil }
         return trimmed
     }
 
-    public nonisolated static func isOpenAICompatibleKey(_ s: String) -> Bool {
-        openAICompatibleKey(s) != nil
+    public nonisolated static func isAnthropicCompatibleKey(_ s: String) -> Bool {
+        anthropicCompatibleKey(s) != nil
     }
 
     public var hasAPIKey: Bool {
@@ -113,7 +113,7 @@ public final class SettingsStore: ObservableObject {
             agentAIKey = nil
             return true
         } else {
-            guard Self.isOpenAICompatibleKey(trimmed) else { return false }
+            guard Self.isAnthropicCompatibleKey(trimmed) else { return false }
             Self.writeKey(trimmed, service: keychainService, account: keychainAccount)
             agentAIKey = trimmed
             return true
@@ -215,16 +215,16 @@ public final class SettingsStore: ObservableObject {
 
     // MARK: - Home-file fallback
     //
-    // Single-line text file at ~/.adia/openai_key or ~/.adia/agent_key. Legacy
-    // filenames are accepted when they contain an OpenAI-compatible key.
+    // Single-line text file at ~/.adia/anthropic_key or ~/.adia/agent_key.
+    // Legacy filenames are still checked for smooth migration.
 
     private static func readKeyFromHomeFile() -> String? {
         let home = NSHomeDirectory()
-        for filename in ["openai_key", "agent_key", "api_key", "anthropic_key"] {
+        for filename in ["anthropic_key", "agent_key", "api_key", "openai_key"] {
             let path = "\(home)/.adia/\(filename)"
             guard let raw = try? String(contentsOfFile: path, encoding: .utf8) else { continue }
             let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-            if let key = openAICompatibleKey(trimmed) { return key }
+            if let key = anthropicCompatibleKey(trimmed) { return key }
         }
         return nil
     }

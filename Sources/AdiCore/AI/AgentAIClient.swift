@@ -4,20 +4,21 @@ import CoreGraphics
 import AppKit
 #endif
 
-/// Provider-backed AI client for goal parsing, screen classification, verification,
-/// and conversational guardrails.
+/// Anthropic Claude-backed AI client for goal parsing, screen classification,
+/// verification, and conversational guardrails.
 public actor AgentAIClient {
     public static let shared = AgentAIClient()
 
-    private let baseURL = URL(string: "https://api.openai.com/v1/responses")!
+    private let baseURL = URL(string: "https://api.anthropic.com/v1/messages")!
+    private let anthropicVersion = "2023-06-01"
     private let fastModel: String
     private let strongModel: String
     private let urlSession: URLSession
 
     private init() {
         let env = ProcessInfo.processInfo.environment
-        fastModel = env["ADIA_OPENAI_FAST_MODEL"] ?? env["ADIA_OPENAI_MODEL"] ?? "gpt-5-mini"
-        strongModel = env["ADIA_OPENAI_STRONG_MODEL"] ?? env["ADIA_OPENAI_MODEL"] ?? "gpt-5-mini"
+        fastModel   = env["ADIA_CLAUDE_FAST_MODEL"]   ?? "claude-haiku-4-5-20251001"
+        strongModel = env["ADIA_CLAUDE_STRONG_MODEL"] ?? "claude-sonnet-4-6"
 
         let cfg = URLSessionConfiguration.default
         cfg.timeoutIntervalForRequest  = 30
@@ -25,14 +26,14 @@ public actor AgentAIClient {
         urlSession = URLSession(configuration: cfg)
     }
 
-    /// Resolve the configured agent AI key.
+    /// Resolve the configured Claude / Anthropic API key.
     private func currentKey() async -> String? {
         if let k = await MainActor.run(body: { SettingsStore.shared.agentAIKey }),
-           Self.looksLikeOpenAIKey(k) { return k }
+           Self.looksLikeAnthropicKey(k) { return k }
         let env = ProcessInfo.processInfo.environment
-        if let k = env["OPENAI_API_KEY"], Self.looksLikeOpenAIKey(k) { return k }
-        if let k = env["ADIA_AGENT_AI_KEY"], Self.looksLikeOpenAIKey(k) { return k }
-        if let k = EmbeddedSecrets.resolvedKey, Self.looksLikeOpenAIKey(k) { return k }
+        if let k = env["ANTHROPIC_API_KEY"],   Self.looksLikeAnthropicKey(k) { return k }
+        if let k = env["ADIA_AGENT_AI_KEY"],   Self.looksLikeAnthropicKey(k) { return k }
+        if let k = EmbeddedSecrets.resolvedKey, Self.looksLikeAnthropicKey(k) { return k }
         return nil
     }
 
@@ -65,15 +66,15 @@ public actor AgentAIClient {
         Respond ONLY with valid JSON — no prose, no markdown fences:
         {"status":"onTask","confidence":0.95,"reason":"one sentence"}
         """
-        let input: [[String: Any]] = [[
+        let messages: [[String: Any]] = [[
             "role": "user",
             "content": [
-                ["type": "input_text", "text": "Classify this screen. JSON only."],
-                imageContent(b64, detail: "low"),
+                ["type": "text", "text": "Classify this screen. JSON only."],
+                imageContent(b64),
             ] as [[String: Any]],
         ]]
-        let text = try await post(key: key, model: fastModel, instructions: system,
-                                  input: input, maxOutputTokens: 500)
+        let text = try await post(key: key, model: fastModel, system: system,
+                                  messages: messages, maxTokens: 500)
         return parseClassification(text)
     }
 
@@ -98,25 +99,22 @@ public actor AgentAIClient {
         or
         {"verified":false,"explanation":"one sentence explaining what is missing"}
         """
-        let input: [[String: Any]] = [[
+        let messages: [[String: Any]] = [[
             "role": "user",
             "content": [
-                ["type": "input_text", "text": "Is the task verifiably complete? JSON only."],
-                imageContent(b64, detail: "high"),
+                ["type": "text", "text": "Is the task verifiably complete? JSON only."],
+                imageContent(b64),
             ] as [[String: Any]],
         ]]
-        let text = try await post(key: key, model: strongModel, instructions: system,
-                                  input: input, maxOutputTokens: 700)
+        let text = try await post(key: key, model: strongModel, system: system,
+                                  messages: messages, maxTokens: 700)
         return parseVerification(text)
     }
 
     // MARK: - Goal parsing (session creation)
 
     /// Turns a free-text statement of intent ("write my history essay", "homework",
-    /// "make a presentation") into a task + a best-effort success signal. The bar is
-    /// deliberately LOW: we only need enough to later judge, from a screenshot,
-    /// whether the person is on-task and whether they've finished. The real judgment
-    /// happens at classification + verification time, not here.
+    /// "make a presentation") into a task + a best-effort success signal.
     public func parseGoal(_ input: String) async throws -> GoalParse {
         guard let key = await currentKey() else { throw AgentAIError.missingAPIKey }
         let system = """
@@ -149,14 +147,12 @@ public actor AgentAIClient {
         or
         {"ok":false,"question":"..."}
         """
-        let responseInput: [[String: Any]] = [[
+        let messages: [[String: Any]] = [[
             "role": "user",
-            "content": [
-                ["type": "input_text", "text": input],
-            ],
+            "content": input,
         ]]
-        let text = try await post(key: key, model: fastModel, instructions: system,
-                                  input: responseInput, maxOutputTokens: 500)
+        let text = try await post(key: key, model: fastModel, system: system,
+                                  messages: messages, maxTokens: 500)
         return parseGoalResponse(text, original: input)
     }
 
@@ -167,39 +163,36 @@ public actor AgentAIClient {
         systemPrompt: String
     ) async throws -> String {
         guard let key = await currentKey() else { throw AgentAIError.missingAPIKey }
-        let apiInput: [[String: Any]] = messages.map { msg in
-            [
-                "role": msg.role.rawValue,
-                "content": [
-                    ["type": "input_text", "text": msg.content],
-                ],
-            ]
+        let apiMessages: [[String: Any]] = messages.map { msg in
+            ["role": msg.role.rawValue, "content": msg.content]
         }
-        return try await post(key: key, model: fastModel, instructions: systemPrompt,
-                              input: apiInput, maxOutputTokens: 900)
+        return try await post(key: key, model: fastModel, system: systemPrompt,
+                              messages: apiMessages, maxTokens: 900)
     }
 
     // MARK: - HTTP
 
-    /// Posts to OpenAI Responses API and returns the first output text block.
+    /// Posts to the Anthropic Messages API and returns the first text block.
     private func post(
         key: String,
         model: String,
-        instructions: String,
-        input: [[String: Any]],
-        maxOutputTokens: Int
+        system: String,
+        messages: [[String: Any]],
+        maxTokens: Int
     ) async throws -> String {
-        let body: [String: Any] = [
+        var body: [String: Any] = [
             "model": model,
-            "instructions": instructions,
-            "input": input,
-            "max_output_tokens": maxOutputTokens,
-            "reasoning": ["effort": "minimal"],
+            "max_tokens": maxTokens,
+            "messages": messages,
         ]
+        if !system.isEmpty {
+            body["system"] = system
+        }
 
         var req = URLRequest(url: baseURL)
         req.httpMethod = "POST"
-        req.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
+        req.setValue(key, forHTTPHeaderField: "x-api-key")
+        req.setValue(anthropicVersion, forHTTPHeaderField: "anthropic-version")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
@@ -222,12 +215,15 @@ public actor AgentAIClient {
 
     // MARK: - Image helpers
 
-    /// Responses API image content block (base64 data URL).
-    private func imageContent(_ base64: String, detail: String) -> [String: Any] {
+    /// Anthropic base64 image content block.
+    private func imageContent(_ base64: String) -> [String: Any] {
         [
-            "type": "input_image",
-            "image_url": "data:image/jpeg;base64,\(base64)",
-            "detail": detail,
+            "type": "image",
+            "source": [
+                "type": "base64",
+                "media_type": "image/jpeg",
+                "data": base64,
+            ] as [String: Any],
         ]
     }
 
@@ -270,9 +266,6 @@ public actor AgentAIClient {
     }
 
     private func parseGoalResponse(_ text: String, original: String) -> GoalParse {
-        // If the model couldn't be parsed at all (network glitch / malformed JSON),
-        // do not silently start a session with invented criteria. Only accept when
-        // the model deliberately returns valid ok:true JSON.
         guard
             let data = stripMarkdownFences(text).data(using: .utf8),
             let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
@@ -307,18 +300,13 @@ public actor AgentAIClient {
         return GoalParse(ok: true, task: task, successCriteria: criteria, question: nil)
     }
 
-    /// Cheap local guard run BEFORE the model call. Intentionally minimal: it only
-    /// catches empty input and obvious non-work ("doing nothing", scrolling social,
-    /// watching video). Real work/study tasks — including broad ones like "homework"
-    /// or "study" — pass straight through to the (permissive) model parser.
+    /// Cheap local guard run BEFORE the model call.
     public static func localGoalRejectionReason(_ input: String) -> String? {
         let cleaned = input.trimmingCharacters(in: .whitespacesAndNewlines)
         let lower = cleaned.lowercased()
         if cleaned.isEmpty {
             return "Tell me what you're working on."
         }
-        // Pure-leisure / non-task inputs (exact match only, so "research instagram
-        // marketing" or "study netflix's business model" still pass).
         let leisureExact: Set<String> = [
             "stuff", "something", "anything", "whatever", "idk", "nothing",
             "chill", "relax", "browse", "scroll", "scrolling", "doomscroll"
@@ -354,26 +342,16 @@ public actor AgentAIClient {
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    private static func looksLikeOpenAIKey(_ value: String) -> Bool {
+    private static func looksLikeAnthropicKey(_ value: String) -> Bool {
         let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.hasPrefix("sk-") && !trimmed.hasPrefix("sk-ant-")
+        return trimmed.hasPrefix("sk-ant-")
     }
 
     private static func extractOutputText(from json: [String: Any]) -> String? {
-        if let direct = json["output_text"] as? String, !direct.isEmpty {
-            return direct
-        }
-        guard let output = json["output"] as? [[String: Any]] else { return nil }
-        var pieces: [String] = []
-        for item in output {
-            guard let content = item["content"] as? [[String: Any]] else { continue }
-            for block in content {
-                if let text = block["text"] as? String {
-                    pieces.append(text)
-                } else if let text = block["output_text"] as? String {
-                    pieces.append(text)
-                }
-            }
+        guard let content = json["content"] as? [[String: Any]] else { return nil }
+        let pieces = content.compactMap { block -> String? in
+            guard (block["type"] as? String) == "text" else { return nil }
+            return block["text"] as? String
         }
         let joined = pieces.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
         return joined.isEmpty ? nil : joined

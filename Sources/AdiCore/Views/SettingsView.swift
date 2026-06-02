@@ -46,7 +46,7 @@ private struct AccountSettingsTab: View {
             Section {
                 apiKeyRow
             } header: {
-                Text("OpenAI API Key")
+                Text("Claude API Key")
             } footer: {
                 Text("Used for screen analysis. Never sent to Adia servers.")
                     .foregroundStyle(.secondary)
@@ -80,14 +80,14 @@ private struct AccountSettingsTab: View {
     private var apiKeyRow: some View {
         if editingAPIKey {
             HStack {
-                SecureField("sk-proj-...", text: $apiKeyDraft)
+                SecureField("sk-ant-...", text: $apiKeyDraft)
                 Button("Save") {
                     if settings.setAPIKey(apiKeyDraft) {
                         apiKeyDraft   = ""
                         apiKeyError = nil
                         editingAPIKey = false
                     } else {
-                        apiKeyError = "Enter an OpenAI API key, not another provider's key."
+                        apiKeyError = "Enter a Claude API key (starts with sk-ant-)."
                     }
                 }
                 .disabled(apiKeyDraft.trimmingCharacters(in: .whitespaces).isEmpty)

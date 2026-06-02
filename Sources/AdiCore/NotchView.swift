@@ -572,7 +572,7 @@ private struct SessionCreationFormView: View {
             } catch AgentAIError.missingAPIKey {
                 AppLogger.error("goal.validation_unavailable", ["reason": "missing_api_key"])
                 withAnimation {
-                    clarifyingQuestion = "Adia is not configured for monitoring yet. Add an OpenAI key, then try again."
+                    clarifyingQuestion = "Adia is not configured for monitoring yet. Add a Claude API key in Settings, then try again."
                 }
             } catch {
                 AppLogger.error("goal.start_failed", ["error": String(describing: error)])

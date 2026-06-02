@@ -1,5 +1,45 @@
 # Adia — Build Progress
 
+## Run 40 — 2026-06-02
+
+### Shipped
+- **refactor: migrate AI client from OpenAI to Claude (Anthropic) API**
+  - `AgentAIClient.swift` — full HTTP layer rewrite:
+    - Base URL changed from `https://api.openai.com/v1/responses` → `https://api.anthropic.com/v1/messages`
+    - Auth header changed from `Authorization: Bearer <key>` → `x-api-key: <key>` with `anthropic-version: 2023-06-01`
+    - Fast model: `claude-haiku-4-5-20251001` (from `ADIA_CLAUDE_FAST_MODEL` env or default). Used for classify, parseGoal, chat.
+    - Strong model: `claude-sonnet-4-6` (from `ADIA_CLAUDE_STRONG_MODEL` env or default). Used for verify.
+    - Request body format: `{model, max_tokens, system, messages}` (Anthropic Messages API) — replaces OpenAI Responses API `{model, instructions, input, max_output_tokens}`.
+    - Image content block: `{type:"image", source:{type:"base64", media_type:"image/jpeg", data:...}}` — replaces OpenAI `{type:"input_image", image_url:..., detail:...}`.
+    - Text content blocks: `{type:"text", text:...}` — was `{type:"input_text", text:...}`.
+    - Multi-turn chat messages now serialize as `{role, content: String}` (text-only, Anthropic shorthand).
+    - `extractOutputText()` now reads from Anthropic response's `content[{type:text, text:...}]` array instead of OpenAI's `output[content[text|output_text]]` nesting.
+    - `looksLikeAnthropicKey()` (private): accepts `sk-ant-*` prefix; was `looksLikeOpenAIKey` which accepted `sk-*` but rejected `sk-ant-*`.
+    - `currentKey()` reads env vars `ANTHROPIC_API_KEY`, `ADIA_AGENT_AI_KEY` in that order.
+  - `SettingsStore.swift`:
+    - `openAICompatibleKey` and `isOpenAICompatibleKey` (public) renamed to `anthropicCompatibleKey` / `isAnthropicCompatibleKey`. No callers outside this file, so no ABI break.
+    - Key validation inverted: now requires `sk-ant-` prefix (was requiring `sk-` but excluding `sk-ant-`).
+    - Env var resolution order in `init`: `ANTHROPIC_API_KEY` first, then `ADIA_AGENT_AI_KEY`.
+    - Home-file fallback: `anthropic_key` now checked first (was last).
+  - `SettingsView.swift`: "OpenAI API Key" → "Claude API Key"; placeholder `sk-proj-...` → `sk-ant-...`; error copy updated.
+  - `OnboardingView.swift`: "Connect OpenAI" → "Connect Claude"; all user-facing OpenAI mentions updated. API key link now points to `console.anthropic.com/settings/keys`.
+  - `NotchView.swift`: "Add an OpenAI key" error message → "Add a Claude API key in Settings".
+  - `SettingsStoreTests.swift`: all `sk-proj-*` test keys updated to `sk-ant-*`; `rejectsAnthropicLookingKey` test flipped and renamed to `rejectsOpenAILookingKey` + added `acceptsAnthropicKey` test.
+  - `GOAL.md`: updated checklist items to reflect Claude/Anthropic terminology.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. The app is now wired to Claude API (claude-haiku-4-5-20251001 for fast inference, claude-sonnet-4-6 for verification). The `ANTHROPIC_API_KEY` env var is the primary key source.
+- Possible next improvements:
+  - (a) Callout escalation persistence: `calloutCount` resets on session restore; persist it in `SessionPersistence`/`SessionRecord`.
+  - (b) Empty-day heatmap opacity: give days with 0 sessions a subtly different track color.
+  - (c) Template reorder: drag-to-reorder in Templates tab (add `displayOrder: Int` to `SessionTemplate`).
+  - (d) Menu bar item: `NSStatusItem` as an alternative to the hotkey, useful on non-notch Macs.
+
+---
+
 ## Run 39 — 2026-06-02
 
 ### Shipped
