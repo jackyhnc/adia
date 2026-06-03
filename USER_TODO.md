@@ -85,5 +85,5 @@ GitHub Actions builds, signs, notarizes, packages, and creates a Release with th
 
 ## Always
 
-- [ ] Your `OPENAI_API_KEY` is your responsibility — Adia bills nothing for inference, you pay OpenAI directly.
+- [ ] Your `ANTHROPIC_API_KEY` is your responsibility — Adia bills nothing for inference, you pay Anthropic directly.
 - [ ] Screen Recording + Accessibility permissions get granted by each user on first launch.

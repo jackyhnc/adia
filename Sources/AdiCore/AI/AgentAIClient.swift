@@ -75,7 +75,7 @@ public actor AgentAIClient {
         ]]
         let text = try await post(key: key, model: fastModel, system: system,
                                   messages: messages, maxTokens: 500)
-        return parseClassification(text)
+        return Self.parseClassification(text)
     }
 
     // MARK: - Task verification
@@ -108,7 +108,7 @@ public actor AgentAIClient {
         ]]
         let text = try await post(key: key, model: strongModel, system: system,
                                   messages: messages, maxTokens: 700)
-        return parseVerification(text)
+        return Self.parseVerification(text)
     }
 
     // MARK: - Goal parsing (session creation)
@@ -153,7 +153,7 @@ public actor AgentAIClient {
         ]]
         let text = try await post(key: key, model: fastModel, system: system,
                                   messages: messages, maxTokens: 500)
-        return parseGoalResponse(text, original: input)
+        return Self.parseGoalResponse(text, original: input)
     }
 
     // MARK: - Conversational chat (reasoning / early-exit)
@@ -245,7 +245,7 @@ public actor AgentAIClient {
 
     // MARK: - Response parsers
 
-    func parseClassification(_ text: String) -> OnTaskClassification {
+    static func parseClassification(_ text: String) -> OnTaskClassification {
         let cleaned = stripMarkdownFences(text)
         guard
             let data   = cleaned.data(using: .utf8),
@@ -265,7 +265,7 @@ public actor AgentAIClient {
         return OnTaskClassification(status: onTaskStatus, confidence: confidence, reason: reason)
     }
 
-    private func parseGoalResponse(_ text: String, original: String) -> GoalParse {
+    private static func parseGoalResponse(_ text: String, original: String) -> GoalParse {
         guard
             let data = stripMarkdownFences(text).data(using: .utf8),
             let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
@@ -321,7 +321,7 @@ public actor AgentAIClient {
         return nil
     }
 
-    func parseVerification(_ text: String) -> VerificationResult {
+    static func parseVerification(_ text: String) -> VerificationResult {
         let cleaned = stripMarkdownFences(text)
         guard
             let data        = cleaned.data(using: .utf8),
@@ -334,7 +334,7 @@ public actor AgentAIClient {
         return VerificationResult(verified: verified, explanation: explanation)
     }
 
-    private func stripMarkdownFences(_ text: String) -> String {
+    private static func stripMarkdownFences(_ text: String) -> String {
         text
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: "```json", with: "")
