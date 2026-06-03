@@ -1,5 +1,33 @@
 # Adia — Build Progress
 
+## Run 43 — 2026-06-03
+
+### Shipped
+- **test: Claude API integration smoke test** (`Tests/AdiTests/ClaudeAPIIntegrationTests.swift`)
+  - New `@Suite("Claude API Integration", .enabled(if: hasAnthropicKey, ...))` — entire suite is auto-skipped when `ANTHROPIC_API_KEY` is absent, so CI never fails.
+  - `hasAnthropicKey` (private module-scope constant): evaluates once at test startup; requires `sk-ant-` prefix and non-empty value.
+  - **`parseGoalAcceptsAcademicTask`** — calls `parseGoal("write my history essay")`, asserts `ok == true`, non-empty `task` and `successCriteria`, `question == nil`.
+  - **`parseGoalAcceptsHomework`** — same shape for `"homework"`.
+  - **`parseGoalAcceptsPresentation`** — same shape for `"make a presentation"`.
+  - **`parseGoalRejectsEmptyViaLocalGuard`** / **`parseGoalRejectsLeisureViaLocalGuard`** — verifies the fast `localGoalRejectionReason(_:)` path fires before any network hop for empty/leisure input.
+  - **`parseGoalReturnsQuestionForVagueInput`** — confirms local guard catches `"stuff"`.
+  - **`chatReturnsNonEmptyResponse`** — sends one-word instruction, asserts non-empty response.
+  - **`chatFollowsSystemPromptTone`** — asks `2+2`, system says "single number only", asserts `"4"` in response.
+  - **`chatMultiTurnCarriesContext`** — three-turn conversation establishing "favourite colour is blue", asserts follow-up contains `"blue"`.
+  - **`parseGoalResponseIsWellFormed`** — round-trip check on `"study for my biology exam"`: whichever branch fires (ok/reject), the output is structurally valid.
+  - Run with: `ANTHROPIC_API_KEY=sk-ant-... swift test`
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Callout escalation persistence: `calloutCount` resets on session restore. Persist it in `SessionPersistence` / `SessionRecord` and restore in `CalloutManager.reset()`.
+  - (b) Empty-day heatmap opacity: give days with 0 sessions a subtly different track color to make the active/inactive gap more pronounced.
+  - (c) Template reorder: drag-to-reorder in the Templates tab (add `displayOrder: Int` to `SessionTemplate`, `reorder(fromOffsets:toOffset:)` to `SessionTemplateStore`).
+
+---
+
 ## Run 42 — 2026-06-03
 
 ### Shipped
