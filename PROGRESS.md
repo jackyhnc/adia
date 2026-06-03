@@ -1,5 +1,19 @@
 # Adia — Build Progress
 
+## Run 41 — 2026-06-03
+
+### Shipped
+- **refactor: make response parsers static, eliminate test duplication**
+  - `AgentAIClient.swift`: `parseClassification`, `parseVerification`, `parseGoalResponse`, `stripMarkdownFences` promoted from instance methods to `static`. They carried no actor state; making them static makes their pure nature explicit and lets tests call the real implementations without async/await.
+  - `AgentAIClientTests.swift`: removed ~40 lines of duplicated parsing helpers (`parseClassification`, `parseVerification`, `strip`). Tests now call `AgentAIClient.parseClassification(...)` and `AgentAIClient.parseVerification(...)` directly. Added 8 new test cases (ambiguous status, unknown status, missing confidence default, markdown-strip-verified-true, local rejection for empty/whitespace/stuff/youtube/tiktok).
+  - `USER_TODO.md`: corrected stale `OPENAI_API_KEY` → `ANTHROPIC_API_KEY` reference left over from the OpenAI-era docs.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals are complete. Consider: integration smoke test hitting the real Claude API (key is in env), UI polish pass, or adding a "focus streak" feature to history tracking.
+
 ## Run 40 — 2026-06-02
 
 ### Shipped
