@@ -26,6 +26,9 @@ public final class SettingsStore: ObservableObject {
     @Published public var usageAnalyticsEnabled: Bool {
         didSet { defaults.set(usageAnalyticsEnabled, forKey: "usageAnalyticsEnabled") }
     }
+    @Published public var showMenuBarItem: Bool {
+        didSet { defaults.set(showMenuBarItem, forKey: "adia.showMenuBarItem") }
+    }
 
     /// Domains the user added on top of the default list.
     @Published public private(set) var customBlockedDomains: [String] {
@@ -66,6 +69,7 @@ public final class SettingsStore: ObservableObject {
     private init() {
         crashReportsEnabled  = defaults.object(forKey: "crashReportsEnabled")  as? Bool ?? true
         usageAnalyticsEnabled = defaults.object(forKey: "usageAnalyticsEnabled") as? Bool ?? true
+        showMenuBarItem       = defaults.object(forKey: "adia.showMenuBarItem")  as? Bool ?? true
         // Resolve the agent AI key from the first source that yields a non-empty
         // value. Legacy names are still accepted so existing local installs keep
         // working after the user-facing naming moved away from provider branding.

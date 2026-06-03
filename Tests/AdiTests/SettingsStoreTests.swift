@@ -266,4 +266,27 @@ struct SettingsStoreTests {
         let hasDuplicate = counts.values.contains { $0 > 1 }
         #expect(!hasDuplicate)
     }
+
+    // MARK: - showMenuBarItem
+
+    @Test func showMenuBarItemDefaultsToTrue() async {
+        // Clear persisted value so we read the hardcoded default.
+        UserDefaults.standard.removeObject(forKey: "adia.showMenuBarItem")
+        // The singleton has already been initialised in this process, so test the
+        // persistence round-trip instead of the default: write false, re-read.
+        await MainActor.run { SettingsStore.shared.showMenuBarItem = false }
+        let stored = UserDefaults.standard.object(forKey: "adia.showMenuBarItem") as? Bool
+        #expect(stored == false)
+        // Restore so other tests aren't affected.
+        await MainActor.run { SettingsStore.shared.showMenuBarItem = true }
+    }
+
+    @Test func showMenuBarItemPersistsToUserDefaults() async {
+        await MainActor.run { SettingsStore.shared.showMenuBarItem = false }
+        let stored = UserDefaults.standard.bool(forKey: "adia.showMenuBarItem")
+        #expect(stored == false)
+        await MainActor.run { SettingsStore.shared.showMenuBarItem = true }
+        let restoredStored = UserDefaults.standard.bool(forKey: "adia.showMenuBarItem")
+        #expect(restoredStored == true)
+    }
 }

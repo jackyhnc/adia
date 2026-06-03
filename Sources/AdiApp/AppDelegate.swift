@@ -53,6 +53,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         notchController?.showWindow(nil)
         GlobalHotkeyManager.shared.start()
+        MenuBarManager.shared.start()
         Task { await SessionManager.shared.restoreIfNeeded() }
     }
 

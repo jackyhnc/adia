@@ -64,10 +64,21 @@ private struct AccountSettingsTab: View {
                         .font(.system(.body, design: .monospaced))
                         .foregroundStyle(.secondary)
                 }
+                Toggle("Show in menu bar", isOn: Binding(
+                    get: { settings.showMenuBarItem },
+                    set: { newValue in
+                        settings.showMenuBarItem = newValue
+                        if newValue {
+                            MenuBarManager.shared.start()
+                        } else {
+                            MenuBarManager.shared.stop()
+                        }
+                    }
+                ))
             } header: {
                 Text("Keyboard Shortcuts")
             } footer: {
-                Text("Works globally — press from any app to expand the notch.")
+                Text("Works globally — press from any app to expand the notch. The menu bar icon provides the same controls on non-notch Macs.")
                     .foregroundStyle(.secondary)
             }
         }
