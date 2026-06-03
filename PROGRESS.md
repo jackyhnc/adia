@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 42 — 2026-06-03
+
+### Shipped
+- **feat: menu bar status item — NSStatusItem with left-click toggle and right-click context menu**
+  - `MenuBarManager` (`Sources/AdiCore/MenuBarManager.swift`): new `@MainActor public final class`. Creates an `NSStatusItem` (square length) in the system menu bar when `SettingsStore.shared.showMenuBarItem` is `true`. Left-click fires the same open/close logic as `GlobalHotkeyManager` (`startCreating` when idle, `toggle` when session active). Right-click pops a context menu showing current session state, Start/End Session, Settings…, and Quit Adia.
+  - Icon: `"a.circle"` (idle) / `"a.circle.fill"` (session active), both `.isTemplate = true` so they adapt to dark/light menu bar automatically.
+  - Subscribes to `SessionManager.$session` via Combine to keep the icon in sync with session state without polling.
+  - `SettingsStore.showMenuBarItem: Bool` — new `@Published` property persisted to UserDefaults (`adia.showMenuBarItem`), defaults `true`. Controls whether `MenuBarManager.start()` actually creates the status item.
+  - `AppDelegate.showNotch()` — calls `MenuBarManager.shared.start()` after `GlobalHotkeyManager` so both controls are active from launch.
+  - `SettingsView` Account tab — adds a "Show in menu bar" toggle in the Keyboard Shortcuts section. Toggling off calls `MenuBarManager.stop()` (removes the item immediately); toggling on calls `start()`. Footer text updated to mention the menu bar as a notch fallback for non-notch Macs.
+  - **Tests** (`SettingsStoreTests` +2): `showMenuBarItemDefaultsToTrue` (verifies persistence round-trip to UserDefaults), `showMenuBarItemPersistsToUserDefaults` (write `false` → stored `false`, write `true` → stored `true`).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Callout escalation persistence: `calloutCount` resets on session restore. Persist it in `SessionPersistence` / `SessionRecord` and restore in `CalloutManager.reset()`.
+  - (b) Empty-day heatmap opacity: give days with 0 sessions a subtly different track color to make the active/inactive gap more pronounced.
+  - (c) Template reorder: drag-to-reorder in the Templates tab (add `displayOrder: Int` to `SessionTemplate`, `reorder(fromOffsets:toOffset:)` to `SessionTemplateStore`).
+  - (d) Integration smoke test: hit the real Claude API with the `ANTHROPIC_API_KEY` in env; parse and log classification + verification responses.
+
 ## Run 41 — 2026-06-03
 
 ### Shipped
