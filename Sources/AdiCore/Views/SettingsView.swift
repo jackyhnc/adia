@@ -910,9 +910,9 @@ private struct WeekHeatmapView: View {
 
         return VStack(spacing: 4) {
             ZStack(alignment: .bottom) {
-                // track
+                // track — dimmer for empty days so active days read as more distinct
                 RoundedRectangle(cornerRadius: 3, style: .continuous)
-                    .fill(Color.secondary.opacity(0.1))
+                    .fill(Color.secondary.opacity(day.minutes > 0 ? 0.1 : 0.05))
                     .frame(height: 40)
                 // fill
                 if filledH > 0 {
@@ -1142,6 +1142,7 @@ private struct SelectableRecordRow: View {
 // MARK: - Templates Tab
 
 private struct TemplatesSettingsTab: View {
+    @ObservedObject private var settings = SettingsStore.shared
     @State private var templates: [SessionTemplate] = []
     @State private var editingTemplate: SessionTemplate? = nil
 
@@ -1183,13 +1184,18 @@ private struct TemplatesSettingsTab: View {
                     }
                     .listStyle(.inset)
 
-                    HStack {
+                    HStack(spacing: 0) {
                         Text("\(templates.count) template\(templates.count == 1 ? "" : "s") · drag to reorder")
                             .font(.caption)
                             .foregroundStyle(.tertiary)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
                         Spacer()
+                        Toggle("Notch: use reorder", isOn: $settings.idleTemplatesFollowManualOrder)
+                            .toggleStyle(.switch)
+                            .controlSize(.mini)
+                            .help("When on, the notch quick-launch row shows templates in your drag order. When off, it shows the two most-recently used.")
+                            .padding(.horizontal, 12)
                     }
                     .background(.background)
                 }

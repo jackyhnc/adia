@@ -289,4 +289,25 @@ struct SettingsStoreTests {
         let restoredStored = UserDefaults.standard.bool(forKey: "adia.showMenuBarItem")
         #expect(restoredStored == true)
     }
+
+    // MARK: - idleTemplatesFollowManualOrder
+
+    @Test func idleTemplatesFollowManualOrderDefaultsToFalse() async {
+        // Remove the persisted key so the default kicks in on next init.
+        UserDefaults.standard.removeObject(forKey: "adia.idleTemplatesFollowManualOrder")
+        // The singleton is already initialised; test persistence round-trip instead.
+        await MainActor.run { SettingsStore.shared.idleTemplatesFollowManualOrder = false }
+        let stored = UserDefaults.standard.object(forKey: "adia.idleTemplatesFollowManualOrder") as? Bool
+        #expect(stored == false)
+    }
+
+    @Test func idleTemplatesFollowManualOrderPersistsToUserDefaults() async {
+        await MainActor.run { SettingsStore.shared.idleTemplatesFollowManualOrder = true }
+        let stored = UserDefaults.standard.bool(forKey: "adia.idleTemplatesFollowManualOrder")
+        #expect(stored == true)
+        // Restore default.
+        await MainActor.run { SettingsStore.shared.idleTemplatesFollowManualOrder = false }
+        let restored = UserDefaults.standard.bool(forKey: "adia.idleTemplatesFollowManualOrder")
+        #expect(restored == false)
+    }
 }

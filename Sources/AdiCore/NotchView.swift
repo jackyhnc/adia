@@ -689,8 +689,11 @@ private struct IdleBody: View {
         .task(id: session.session?.id) {
             sessionStats = await SessionHistory.shared.stats()
             lastRecord = await SessionHistory.shared.load().first
-            let sorted = await SessionTemplateStore.shared.sorted()
-            templates = Array(sorted.prefix(2))
+            let followManual = SettingsStore.shared.idleTemplatesFollowManualOrder
+            let ordered = followManual
+                ? await SessionTemplateStore.shared.load()
+                : await SessionTemplateStore.shared.sorted()
+            templates = Array(ordered.prefix(2))
             NotchState.shared.idleTemplateCount = templates.count
         }
     }

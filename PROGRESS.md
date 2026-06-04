@@ -1,5 +1,29 @@
 # Adia — Build Progress
 
+## Run 48 — 2026-06-04
+
+### Shipped
+- **feat: empty-day heatmap opacity — dimmer track for days with 0 sessions**
+  - `WeekHeatmapView.columnView` in `SettingsView.swift`: track `RoundedRectangle` fill changed from a flat `secondary.opacity(0.1)` to `secondary.opacity(day.minutes > 0 ? 0.1 : 0.05)`. Days that had sessions keep the existing 10% opacity track; days with zero sessions drop to 5%. The fill bar is still absent for empty days, so active days now read as more distinct in two ways: brighter track + visible fill bar.
+- **feat: idle notch template order toggle — show pinned templates by drag order or recency**
+  - `SettingsStore.idleTemplatesFollowManualOrder: Bool` — new `@Published` property persisted to UserDefaults (`adia.idleTemplatesFollowManualOrder`), default `false` (recency order, unchanged from before).
+  - `IdleBody.body.task` in `NotchView.swift`: reads `SettingsStore.shared.idleTemplatesFollowManualOrder` and branches:
+    - `false` (default): `SessionTemplateStore.shared.sorted()` — top-2 by most recently used (existing behaviour).
+    - `true`: `SessionTemplateStore.shared.load()` — file order (the drag-to-reorder order from the Templates settings tab).
+  - `TemplatesSettingsTab` in `SettingsView.swift`: added `@ObservedObject private var settings = SettingsStore.shared`. Footer bar now includes a compact `Toggle("Notch: use reorder", ...)` switch (`controlSize: .mini`, `.toggleStyle(.switch)`, `.help(...)` tooltip) on the trailing edge alongside the existing count label.
+  - **Tests (+2)** in `SettingsStoreTests.swift`: `idleTemplatesFollowManualOrderDefaultsToFalse` (write `false`, read back from UserDefaults → `false`), `idleTemplatesFollowManualOrderPersistsToUserDefaults` (write `true` → stored `true`, write `false` → stored `false`).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Verification history persistence: `verificationHistory` lives only in `NotchState` (in-memory). If the app is relaunched mid-session-verification, history is lost. Could persist it alongside `SessionPersistence` keyed by session ID.
+  - (b) `TemplatesSettingsTab` "Notch: use reorder" toggle visibility: currently only shown when templates exist (non-empty state). Consider showing the setting even in the empty state so users can configure it before adding templates.
+  - (c) Idle notch live refresh on `idleTemplatesFollowManualOrder` change: currently `IdleBody` re-queries templates only when `session.session?.id` changes. If the user toggles the setting while idle, the order doesn't update until the next session end. Could add `$idleTemplatesFollowManualOrder` to the `.task(id:)` dependency.
+
+---
+
 ## Run 47 — 2026-06-04
 
 ### Shipped
