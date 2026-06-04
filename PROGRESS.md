@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 44 — 2026-06-04
+
+### Shipped
+- **feat: template drag-to-reorder in Settings Templates tab**
+  - `SessionTemplateStore.reorder(fromOffsets:toOffset:)` — new public actor method. Loads the template array, calls `Array.move(fromOffsets:toOffset:)` (same semantics as SwiftUI `.onMove`), saves atomically. No intermediate sort.
+  - `SessionTemplateStore.add()` — changed `append` → `insert(at: 0)` so the newest template surfaces at the top of the user-visible list. When trimming over the 10-template cap, the existing `lastUsedAt`-sort is still used to keep the most-valuable entries.
+  - `TemplatesSettingsTab.reloadTemplates()` — now calls `load()` (file order = display order) instead of `sorted()`. The idle notch still uses `sorted()` (lastUsedAt order) so the 2 most-recently-used templates continue to appear there regardless of manual reorder.
+  - `ForEach.onMove` wired in the Settings List: updates local `@State` immediately (optimistic), then persists via `Task { await store.reorder(...) }`.
+  - Footer text: "sorted by recent use" → "drag to reorder".
+  - **Tests (+5)**: `addPrependsNewTemplateAtFront`, `reorderMovesItemToFront`, `reorderIsPersisted`, `reorderOnSingleItemIsNoOp`, `reorderPreservesTemplateFields`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Callout escalation persistence: `calloutCount` resets on session restore. Persist it in `SessionPersistence` / `SessionRecord` and restore in `CalloutManager.reset()`.
+  - (b) Empty-day heatmap opacity: give days with 0 sessions a subtly different track color (e.g. `secondary.opacity(0.05)`) to make active/inactive days more distinct.
+  - (c) Idle notch template order: the idle notch currently shows top 2 by `lastUsedAt`. Could add a `SettingsStore.idleNotchTemplatesFollowManualOrder: Bool` toggle so users can choose whether the notch respects manual reorder or recency.
+
+---
+
 ## Run 43 — 2026-06-03
 
 ### Shipped
