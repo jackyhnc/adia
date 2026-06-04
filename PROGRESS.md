@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 50 — 2026-06-04
+
+### Shipped
+- **feat: persist verification history across crash/relaunch**
+  - `VerificationAttempt`: added `Codable` conformance (all fields — `timestamp: Date`, `result: VerificationResult`, `attemptNumber: Int` — are already codable types; no manual implementation needed).
+  - `Session`: new field `verificationHistory: [VerificationAttempt]` (default `[]`, init parameter added with default). Manual `Codable` updated: `CodingKeys` gains `.verificationHistory`; `init(from:)` uses `decodeIfPresent` with `?? []` so sessions persisted before this change decode cleanly; `encode(to:)` encodes the array.
+  - `NotchState.restoreVerificationHistory(_:)` — new public `@MainActor` method that sets `verificationHistory` directly. Does not expand the notch or modify other state. Called only by `SessionManager.restoreIfNeeded()` after crash recovery.
+  - `SessionManager.verifyAndEnd()` — after `setVerificationResult(result)` for a **not-verified** result (session continues), reads `NotchState.shared.verificationHistory` back into a copy of `session` and writes it to `SessionPersistence`. This is the sync point: when the user crashes between "not verified" and their next attempt, the persisted attempt count is correct.
+  - `SessionManager.restoreIfNeeded()` — after `activate(s)`, if `s.verificationHistory` is non-empty, calls `NotchState.shared.restoreVerificationHistory(s.verificationHistory)` so the attempt counter resumes correctly without expanding or otherwise disrupting the restored active-session UX.
+  - **Tests (+7)**: `saveLoadRoundTripPreservesVerificationHistory` (2-attempt history survives JSONEncoder→UserDefaults→JSONDecoder round-trip, both attempt numbers and explanations verified), `verificationHistoryDefaultsToEmptyForLegacySession` (key stripped from JSON → decoded as `[]`) — in `SessionPersistenceTests`; `restoreVerificationHistoryPopulatesHistory` (2-entry restore, checks count and field values), `afterRestoreNextResultIsAttemptThree` (restore 2 entries, then call `setVerificationResult` → `attemptNumber == 3`), `restoreVerificationHistoryDoesNotExpandNotch` (history restored, `isExpanded` stays `false`) — in `NotchStateTests`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) `SettingsView` window height adaptive: currently fixed at `500`. If future tabs grow taller, consider making it adaptive or bumping to `520`.
+  - (b) Verify-and-end `session` capture races: in `verifyAndEnd()`, the `guard let s = session` and the later `if var updated = session` both capture `session`. In theory `session` could go nil between them (e.g. `endSession()` called concurrently), though the UI prevents this. Could be made more robust with a single `guard let` at the top and passing `s` through.
+  - (c) Verification history UI: the `VerificationAttemptRow` in `NotchView.swift` already shows history when `count > 1`. After a crash restore with 2 prior attempts, the user sees "attempt 3" immediately on the next verification — the counter is correct, but the prior-attempt rows are not shown until a new result comes in (because the row section only renders when `state.verificationHistory.count > 1`). Already working correctly because `restoreVerificationHistory` populates the array before the next `setVerificationResult` appends.
+
+---
+
 ## Run 49 — 2026-06-04
 
 ### Shipped
