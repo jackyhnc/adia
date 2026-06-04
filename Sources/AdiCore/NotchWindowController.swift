@@ -51,6 +51,8 @@ public final class NotchWindowController: NSWindowController {
     private static let creationExpandedHeight: CGFloat  = 310
     private static let conversationHeight: CGFloat      = 430
     private static let verificationHeight: CGFloat      = 250
+    /// Extra height when the verification panel shows a scrollable history of past attempts.
+    private static let verificationHistoryHeight: CGFloat = 350
     // Idle state is taller than the active-session base to accommodate the stats line.
     private static let idleExpandedHeight: CGFloat      = 220
     // Each pinned template button adds this much height to the idle panel.
@@ -102,6 +104,7 @@ public final class NotchWindowController: NSWindowController {
         NotchState.shared.$showingConversation.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         NotchState.shared.$isVerifying.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         NotchState.shared.$verificationResult.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        NotchState.shared.$verificationHistory.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         NotchState.shared.$calloutMessage.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         // Session start/end changes the height between idle (220pt) and active (190pt).
         SessionManager.shared.$session.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
@@ -169,7 +172,8 @@ public final class NotchWindowController: NSWindowController {
         if state.showingConversation {
             h = Self.conversationHeight
         } else if state.isVerifying || state.verificationResult != nil {
-            h = Self.verificationHeight
+            // Grow the panel when there's a history of previous attempts to display.
+            h = state.verificationHistory.count > 1 ? Self.verificationHistoryHeight : Self.verificationHeight
         } else if state.isCreating {
             h = Self.creationExpandedHeight
         } else if state.calloutMessage != nil {

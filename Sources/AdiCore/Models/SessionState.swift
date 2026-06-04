@@ -30,6 +30,21 @@ public struct VerificationResult: Codable, Sendable {
     }
 }
 
+// MARK: - Verification attempt (one entry in the within-session history)
+
+public struct VerificationAttempt: Sendable {
+    public let timestamp: Date
+    public let result: VerificationResult
+    /// 1-based index: first attempt = 1.
+    public let attemptNumber: Int
+
+    public init(timestamp: Date = Date(), result: VerificationResult, attemptNumber: Int) {
+        self.timestamp = timestamp
+        self.result = result
+        self.attemptNumber = attemptNumber
+    }
+}
+
 // MARK: - Session
 
 public struct Session: Sendable, Identifiable {

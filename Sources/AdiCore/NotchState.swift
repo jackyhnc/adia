@@ -28,6 +28,10 @@ public final class NotchState: ObservableObject {
     // Verification
     @Published public private(set) var isVerifying: Bool = false
     @Published public private(set) var verificationResult: VerificationResult? = nil
+    /// Ordered list of all verification attempts this session, oldest first.
+    /// Appended each time setVerificationResult is called with a non-nil result.
+    /// Cleared on collapse() so each session starts fresh.
+    @Published public private(set) var verificationHistory: [VerificationAttempt] = []
 
     private init() {}
 
@@ -46,6 +50,7 @@ public final class NotchState: ObservableObject {
         isVerifying = false
         isBlocking = false
         blockerMessage = nil
+        verificationHistory = []
     }
 
     public func toggle() { isExpanded.toggle() }
@@ -118,5 +123,12 @@ public final class NotchState: ObservableObject {
     public func setVerificationResult(_ result: VerificationResult?) {
         verificationResult = result
         isVerifying = false
+        if let result {
+            let attempt = VerificationAttempt(
+                result: result,
+                attemptNumber: verificationHistory.count + 1
+            )
+            verificationHistory.append(attempt)
+        }
     }
 }

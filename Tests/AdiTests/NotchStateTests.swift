@@ -40,6 +40,7 @@ struct NotchStateTests {
             NotchState.shared.startCreating(prefill: "my task")
             NotchState.shared.showCallout("yo!")
             NotchState.shared.setVerifying(true)
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "not yet"))
         }
         await MainActor.run { NotchState.shared.collapse() }
         await MainActor.run {
@@ -50,6 +51,7 @@ struct NotchStateTests {
             #expect(NotchState.shared.isVerifying == false)
             #expect(NotchState.shared.verificationResult == nil)
             #expect(NotchState.shared.showingConversation == false)
+            #expect(NotchState.shared.verificationHistory.isEmpty)
         }
     }
 
@@ -252,5 +254,74 @@ struct NotchStateTests {
             #expect(NotchState.shared.isExpanded == false)
             #expect(NotchState.shared.isVerifying == false)
         }
+    }
+
+    // MARK: - Verification history
+
+    @Test func setVerificationResultAppendsToHistory() async {
+        await reset()
+        await MainActor.run {
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "not yet"))
+        }
+        let count = await MainActor.run { NotchState.shared.verificationHistory.count }
+        #expect(count == 1)
+    }
+
+    @Test func multipleResultsAccumulateInHistory() async {
+        await reset()
+        await MainActor.run {
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "first try"))
+            NotchState.shared.setVerifying(true)
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "second try"))
+            NotchState.shared.setVerifying(true)
+            NotchState.shared.setVerificationResult(VerificationResult(verified: true, explanation: "done"))
+        }
+        await MainActor.run {
+            #expect(NotchState.shared.verificationHistory.count == 3)
+            #expect(NotchState.shared.verificationHistory[0].attemptNumber == 1)
+            #expect(NotchState.shared.verificationHistory[2].attemptNumber == 3)
+        }
+    }
+
+    @Test func historyPreservesExplanations() async {
+        await reset()
+        await MainActor.run {
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "didn't see submission"))
+            NotchState.shared.setVerifying(true)
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "canvas still loading"))
+        }
+        await MainActor.run {
+            #expect(NotchState.shared.verificationHistory[0].result.explanation == "didn't see submission")
+            #expect(NotchState.shared.verificationHistory[1].result.explanation == "canvas still loading")
+        }
+    }
+
+    @Test func setVerificationResultNilDoesNotAppendToHistory() async {
+        await reset()
+        await MainActor.run {
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "not yet"))
+            NotchState.shared.setVerificationResult(nil)
+        }
+        // nil clears current result but doesn't add a blank entry to history.
+        let count = await MainActor.run { NotchState.shared.verificationHistory.count }
+        #expect(count == 1)
+    }
+
+    @Test func collapseClearsVerificationHistory() async {
+        await reset()
+        await MainActor.run {
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "first"))
+            NotchState.shared.setVerifying(true)
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "second"))
+            NotchState.shared.collapse()
+        }
+        let count = await MainActor.run { NotchState.shared.verificationHistory.count }
+        #expect(count == 0)
+    }
+
+    @Test func historyIsEmptyOnFreshState() async {
+        await reset()
+        let count = await MainActor.run { NotchState.shared.verificationHistory.count }
+        #expect(count == 0)
     }
 }

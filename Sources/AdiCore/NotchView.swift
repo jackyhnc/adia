@@ -278,6 +278,9 @@ private struct ExpandedView: View {
 
     @ViewBuilder
     private func verificationResultBody(_ result: VerificationResult) -> some View {
+        let history = state.verificationHistory
+        let previousAttempts = history.count > 1 ? Array(history.dropLast()) : []
+
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 6) {
                 Image(systemName: result.verified ? "checkmark.circle.fill" : "xmark.circle.fill")
@@ -285,6 +288,15 @@ private struct ExpandedView: View {
                 Text(result.verified ? "task verified ✓" : "not done yet")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
+                if history.count > 1 {
+                    Text("attempt \(history.count)")
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.3))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.white.opacity(0.07))
+                        .clipShape(Capsule())
+                }
             }
 
             Text(result.explanation)
@@ -303,6 +315,26 @@ private struct ExpandedView: View {
                     }
                 }
                 .padding(.top, 4)
+            }
+
+            if !previousAttempts.isEmpty {
+                Divider()
+                    .overlay(Color.white.opacity(0.08))
+                    .padding(.top, 4)
+
+                Text("PREVIOUS ATTEMPTS")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.3))
+                    .tracking(1.2)
+
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        ForEach(Array(previousAttempts.reversed().enumerated()), id: \.offset) { _, attempt in
+                            VerificationAttemptRow(attempt: attempt)
+                        }
+                    }
+                }
+                .frame(maxHeight: 100)
             }
         }
         .padding(.horizontal, 16)
@@ -424,6 +456,49 @@ private struct StatusBadge: View {
         case .offTask:   return "Off Task"
         case .ambiguous: return "Check In"
         }
+    }
+}
+
+// MARK: - Verification Attempt Row
+
+/// Compact row representing one past (non-current) verification attempt in the history list.
+private struct VerificationAttemptRow: View {
+    let attempt: VerificationAttempt
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 8) {
+            Image(systemName: attempt.result.verified ? "checkmark.circle.fill" : "xmark.circle")
+                .font(.system(size: 10))
+                .foregroundStyle(attempt.result.verified ? .green.opacity(0.7) : Color(red: 1, green: 0.3, blue: 0.3).opacity(0.6))
+                .frame(width: 14)
+                .padding(.top, 1)
+
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 6) {
+                    Text("Attempt \(attempt.attemptNumber)")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(.white.opacity(0.45))
+                    Text(relativeTime(attempt.timestamp))
+                        .font(.system(size: 10))
+                        .foregroundStyle(.white.opacity(0.25))
+                }
+                Text(attempt.result.explanation)
+                    .font(.system(size: 11))
+                    .foregroundStyle(.white.opacity(0.35))
+                    .lineLimit(2)
+            }
+        }
+        .padding(.vertical, 4)
+        .padding(.horizontal, 8)
+        .background(Color.white.opacity(0.04))
+        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+    }
+
+    private func relativeTime(_ date: Date) -> String {
+        let elapsed = Int(Date().timeIntervalSince(date))
+        if elapsed < 60 { return "just now" }
+        let minutes = elapsed / 60
+        return "\(minutes)m ago"
     }
 }
 
