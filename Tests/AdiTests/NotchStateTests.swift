@@ -215,4 +215,42 @@ struct NotchStateTests {
         let result = await MainActor.run { NotchState.shared.verificationResult }
         #expect(result == nil)
     }
+
+    // Regression: tapping "Try again" after a not-verified result calls setVerifying(true),
+    // which must clear the old result so the spinner appears (not a stale "not done yet" card).
+    @Test func retryAfterNotVerifiedClearsResult() async {
+        await reset()
+        await MainActor.run {
+            // Simulate the not-verified result state.
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "didn't see the submission"))
+        }
+        await MainActor.run {
+            #expect(NotchState.shared.verificationResult != nil)
+            #expect(NotchState.shared.isVerifying == false)
+        }
+        // Simulate what verifyAndEnd() does on retry: setVerifying(true).
+        await MainActor.run {
+            NotchState.shared.setVerifying(true)
+        }
+        await MainActor.run {
+            #expect(NotchState.shared.isVerifying == true)
+            #expect(NotchState.shared.verificationResult == nil)
+            #expect(NotchState.shared.isExpanded == true)
+        }
+    }
+
+    @Test func retryKeepGoingCollapsesClearsResult() async {
+        await reset()
+        await MainActor.run {
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "not yet"))
+            // Simulate "Keep going" button action.
+            NotchState.shared.setVerificationResult(nil)
+            NotchState.shared.collapse()
+        }
+        await MainActor.run {
+            #expect(NotchState.shared.verificationResult == nil)
+            #expect(NotchState.shared.isExpanded == false)
+            #expect(NotchState.shared.isVerifying == false)
+        }
+    }
 }

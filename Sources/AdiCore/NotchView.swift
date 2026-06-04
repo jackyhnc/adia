@@ -293,9 +293,14 @@ private struct ExpandedView: View {
                 .fixedSize(horizontal: false, vertical: true)
 
             if !result.verified {
-                AdiButton(label: "Keep going", style: .primary) {
-                    NotchState.shared.setVerificationResult(nil)
-                    NotchState.shared.collapse()
+                HStack(spacing: 8) {
+                    AdiButton(label: "Try again", style: .secondary) {
+                        Task { await SessionManager.shared.verifyAndEnd() }
+                    }
+                    AdiButton(label: "Keep going", style: .primary) {
+                        NotchState.shared.setVerificationResult(nil)
+                        NotchState.shared.collapse()
+                    }
                 }
                 .padding(.top, 4)
             }

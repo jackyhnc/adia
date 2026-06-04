@@ -1,5 +1,28 @@
 # Adia — Build Progress
 
+## Run 46 — 2026-06-04
+
+### Shipped
+- **feat: "Try again" button in verification result — re-verify without ending session**
+  - `verificationResultBody` in `NotchView.swift`: when the verification result is not-verified, the button row is now an `HStack` with two `AdiButton`s side by side.
+  - **"Try again"** (`.secondary` style): calls `Task { await SessionManager.shared.verifyAndEnd() }`. This immediately invokes `setVerifying(true)` (clearing the stale not-verified result), shows the spinner, re-captures `captureManager.lastFrame` (the latest screen state), and sends it to claude-sonnet-4-6 for re-verification. Session stays active the whole time.
+  - **"Keep going"** (`.primary` style): unchanged — clears the result and collapses the notch, resuming the session silently.
+  - No changes to `SessionManager.verifyAndEnd()` or `NotchState` were needed — the state machine already supports this path: `setVerifying(true)` clears `verificationResult`, causing the content switcher to show `verifyingBody` (spinner) instead of the stale result card.
+  - **Tests (+2)** in `NotchStateTests.swift`:
+    - `retryAfterNotVerifiedClearsResult` — seeds a not-verified result, calls `setVerifying(true)` (the action "Try again" triggers), asserts `verificationResult == nil`, `isVerifying == true`, `isExpanded == true`.
+    - `retryKeepGoingCollapsesClearsResult` — seeds a not-verified result, simulates "Keep going" sequence (`setVerificationResult(nil)` + `collapse()`), asserts `verificationResult == nil`, `isExpanded == false`, `isVerifying == false`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Empty-day heatmap opacity: give days with 0 sessions a subtly different track color (e.g. `secondary.opacity(0.05)`) to make active/inactive days more distinct.
+  - (b) Idle notch template order toggle: `SettingsStore.idleNotchTemplatesFollowManualOrder: Bool` — lets users choose whether the notch shows top-2 by recency (current) or manual reorder order.
+  - (c) Verification history: show past verification attempts within a session (how many times the user tried, what Claude said each time) in the expanded notch card, so the user can adapt their approach.
+
+---
+
 ## Run 45 — 2026-06-04
 
 ### Shipped
