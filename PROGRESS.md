@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 47 — 2026-06-04
+
+### Shipped
+- **feat: verification attempt history within a session**
+  - `VerificationAttempt` (new `Sendable` struct in `SessionState.swift`): `timestamp: Date`, `result: VerificationResult`, `attemptNumber: Int` (1-based). Simple value type, no persistence needed.
+  - `NotchState.verificationHistory: [VerificationAttempt]` — new `@Published public private(set)` array. `setVerificationResult(_:)` appends a new `VerificationAttempt` on every non-nil result call. `setVerificationResult(nil)` does not append (nil = "Keep going" / clear, not an attempt). `collapse()` clears the array so each session starts fresh.
+  - `verificationResultBody` in `NotchView.swift`: when `state.verificationHistory.count > 1` (there's at least one prior attempt besides the current one), the header shows an `"attempt N"` capsule. Below the action buttons a `"PREVIOUS ATTEMPTS"` section renders a 100pt-max `ScrollView` of `VerificationAttemptRow` entries in reverse order (most recent prior attempt first) so the user sees the most recent context at the top.
+  - `VerificationAttemptRow` (new private struct): icon (✓/✗) + `"Attempt N"` label + relative timestamp (`"just now"` / `"Nm ago"`) + 2-line truncated explanation. Styled recessed with `Color.white.opacity(0.04)` background so it reads as secondary to the current result.
+  - `NotchWindowController`: new `verificationHistoryHeight = 350` constant. `targetFrame` selects it when `state.verificationHistory.count > 1` (vs `verificationHeight = 250` for first attempt). Added `$verificationHistory` Combine sink so the panel resizes automatically on the first retry without waiting for another published change.
+  - **Tests (+6)** in `NotchStateTests`: `setVerificationResultAppendsToHistory`, `multipleResultsAccumulateInHistory` (3 sequential results → history.count==3, attemptNumbers 1/2/3), `historyPreservesExplanations`, `setVerificationResultNilDoesNotAppendToHistory` (nil call doesn't grow count), `collapseClearsVerificationHistory`, `historyIsEmptyOnFreshState`. Updated `collapseResetsAllUIFlags` to also assert `verificationHistory.isEmpty`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Empty-day heatmap opacity: give days with 0 sessions a subtly different track color (e.g. `secondary.opacity(0.05)`) to make active/inactive days more distinct from never-used days.
+  - (b) Idle notch template order toggle: `SettingsStore.idleNotchTemplatesFollowManualOrder: Bool` — lets users choose whether the notch shows top-2 by recency (current) or manual reorder order.
+  - (c) Verification history persistence: currently `verificationHistory` lives only in `NotchState` (in-memory). If the app is relaunched mid-session-verification, history is lost. Could persist it alongside `SessionPersistence` keyed by session ID.
+
+---
+
 ## Run 46 — 2026-06-04
 
 ### Shipped
