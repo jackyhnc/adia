@@ -664,9 +664,16 @@ private struct SessionCreationFormView: View {
 
 // MARK: - Idle Body
 
+/// Composite key so `.task` re-fires on session change OR sort-order setting change.
+private struct IdleTaskID: Hashable {
+    var sessionID: UUID?
+    var followManualOrder: Bool
+}
+
 private struct IdleBody: View {
     @ObservedObject var state: NotchState
     @ObservedObject var session: SessionManager
+    @ObservedObject private var settings = SettingsStore.shared
     @State private var sessionStats: SessionStats? = nil
     @State private var lastRecord: SessionRecord? = nil
     @State private var templates: [SessionTemplate] = []
@@ -685,12 +692,11 @@ private struct IdleBody: View {
                     .transition(.opacity)
             }
         }
-        // Re-run whenever a session ends (id changes from UUID → nil) so stats stay fresh.
-        .task(id: session.session?.id) {
+        // Re-run when a session ends OR when the template sort-order setting changes.
+        .task(id: IdleTaskID(sessionID: session.session?.id, followManualOrder: settings.idleTemplatesFollowManualOrder)) {
             sessionStats = await SessionHistory.shared.stats()
             lastRecord = await SessionHistory.shared.load().first
-            let followManual = SettingsStore.shared.idleTemplatesFollowManualOrder
-            let ordered = followManual
+            let ordered = settings.idleTemplatesFollowManualOrder
                 ? await SessionTemplateStore.shared.load()
                 : await SessionTemplateStore.shared.sorted()
             templates = Array(ordered.prefix(2))

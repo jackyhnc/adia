@@ -1,5 +1,28 @@
 # Adia — Build Progress
 
+## Run 49 — 2026-06-04
+
+### Shipped
+- **fix: idle notch live refresh when `idleTemplatesFollowManualOrder` is toggled**
+  - `IdleTaskID` (new private `Hashable` struct in `NotchView.swift`): combines `sessionID: UUID?` and `followManualOrder: Bool` into a single composite key.
+  - `IdleBody`: added `@ObservedObject private var settings = SettingsStore.shared`. Changed `.task(id: session.session?.id)` to `.task(id: IdleTaskID(sessionID: session.session?.id, followManualOrder: settings.idleTemplatesFollowManualOrder))`. Now the async task re-fires immediately when the user toggles the sort-order setting while idle — previously the template list only refreshed after a session ended.
+  - Removed the redundant `let followManual = SettingsStore.shared.idleTemplatesFollowManualOrder` local inside the task body; replaced with `settings.idleTemplatesFollowManualOrder` which is already observed.
+- **fix: "Notch: use reorder" toggle visible in empty Templates settings state**
+  - `TemplatesSettingsTab.body` refactored from `Group { if empty { ... } else { VStack { List + footer } } }` to `VStack { if empty { ... } else { List } + footer }`. The footer `HStack` (text label + `Toggle`) is now unconditionally rendered at the bottom.
+  - Footer label adapts: `"No templates yet"` when empty, `"N templates · drag to reorder"` otherwise.
+  - Users can now configure the notch sort-order preference before saving any templates.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Verification history persistence: `verificationHistory` lives only in `NotchState` (in-memory). If the app is relaunched mid-session-verification, history is lost. Could persist it alongside `SessionPersistence` keyed by session ID.
+  - (b) Idle notch panel height when settings toggle fires: `NotchWindowController` currently resizes on `$idleTemplateCount` changes. Toggling `idleTemplatesFollowManualOrder` may change the template count (e.g. load() vs sorted() can return different numbers); height will auto-adjust because `idleTemplateCount` is updated inside the same task. No fix needed.
+  - (c) `SettingsView` window height: currently fixed at `500`. If future tabs grow taller, consider making the window height adaptive or bumping to `520`.
+
+---
+
 ## Run 48 — 2026-06-04
 
 ### Shipped

@@ -1147,7 +1147,7 @@ private struct TemplatesSettingsTab: View {
     @State private var editingTemplate: SessionTemplate? = nil
 
     var body: some View {
-        Group {
+        VStack(spacing: 0) {
             if templates.isEmpty {
                 VStack(spacing: 8) {
                     Image(systemName: "pin.slash")
@@ -1164,42 +1164,43 @@ private struct TemplatesSettingsTab: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                VStack(spacing: 0) {
-                    List {
-                        ForEach(templates) { template in
-                            TemplateRow(template: template) {
-                                editingTemplate = template
-                            } onDelete: {
-                                let id = template.id
-                                Task { @MainActor in
-                                    await SessionTemplateStore.shared.delete(id: id)
-                                    await reloadTemplates()
-                                }
+                List {
+                    ForEach(templates) { template in
+                        TemplateRow(template: template) {
+                            editingTemplate = template
+                        } onDelete: {
+                            let id = template.id
+                            Task { @MainActor in
+                                await SessionTemplateStore.shared.delete(id: id)
+                                await reloadTemplates()
                             }
                         }
-                        .onMove { fromOffsets, toOffset in
-                            templates.move(fromOffsets: fromOffsets, toOffset: toOffset)
-                            Task { await SessionTemplateStore.shared.reorder(fromOffsets: fromOffsets, toOffset: toOffset) }
-                        }
                     }
-                    .listStyle(.inset)
-
-                    HStack(spacing: 0) {
-                        Text("\(templates.count) template\(templates.count == 1 ? "" : "s") · drag to reorder")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                        Spacer()
-                        Toggle("Notch: use reorder", isOn: $settings.idleTemplatesFollowManualOrder)
-                            .toggleStyle(.switch)
-                            .controlSize(.mini)
-                            .help("When on, the notch quick-launch row shows templates in your drag order. When off, it shows the two most-recently used.")
-                            .padding(.horizontal, 12)
+                    .onMove { fromOffsets, toOffset in
+                        templates.move(fromOffsets: fromOffsets, toOffset: toOffset)
+                        Task { await SessionTemplateStore.shared.reorder(fromOffsets: fromOffsets, toOffset: toOffset) }
                     }
-                    .background(.background)
                 }
+                .listStyle(.inset)
             }
+
+            // Footer always visible so the setting is configurable before templates are added.
+            HStack(spacing: 0) {
+                Text(templates.isEmpty
+                     ? "No templates yet"
+                     : "\(templates.count) template\(templates.count == 1 ? "" : "s") · drag to reorder")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                Spacer()
+                Toggle("Notch: use reorder", isOn: $settings.idleTemplatesFollowManualOrder)
+                    .toggleStyle(.switch)
+                    .controlSize(.mini)
+                    .help("When on, the notch quick-launch row shows templates in your drag order. When off, it shows the two most-recently used.")
+                    .padding(.horizontal, 12)
+            }
+            .background(.background)
         }
         .task { await reloadTemplates() }
         .sheet(item: $editingTemplate) { template in
