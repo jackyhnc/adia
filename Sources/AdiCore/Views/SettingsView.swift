@@ -1176,11 +1176,15 @@ private struct TemplatesSettingsTab: View {
                                 }
                             }
                         }
+                        .onMove { fromOffsets, toOffset in
+                            templates.move(fromOffsets: fromOffsets, toOffset: toOffset)
+                            Task { await SessionTemplateStore.shared.reorder(fromOffsets: fromOffsets, toOffset: toOffset) }
+                        }
                     }
                     .listStyle(.inset)
 
                     HStack {
-                        Text("\(templates.count) template\(templates.count == 1 ? "" : "s") · sorted by recent use")
+                        Text("\(templates.count) template\(templates.count == 1 ? "" : "s") · drag to reorder")
                             .font(.caption)
                             .foregroundStyle(.tertiary)
                             .padding(.horizontal, 12)
@@ -1200,7 +1204,7 @@ private struct TemplatesSettingsTab: View {
     }
 
     private func reloadTemplates() async {
-        templates = await SessionTemplateStore.shared.sorted()
+        templates = await SessionTemplateStore.shared.load()
     }
 }
 

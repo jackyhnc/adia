@@ -66,12 +66,21 @@ public actor SessionTemplateStore {
             templates[idx].successCriteria = successCriteria
         } else {
             let t = SessionTemplate(task: task, successCriteria: successCriteria)
-            templates.append(t)
+            templates.insert(t, at: 0)  // newest template appears first in display order
             if templates.count > Self.maxTemplates {
-                // Drop the one used least recently.
+                // Drop the one used least recently to stay under the cap.
                 templates = Array(_sorted(templates).prefix(Self.maxTemplates))
             }
         }
+        _save(templates)
+    }
+
+    /// Moves templates within the display order and persists the new order.
+    /// `fromOffsets` and `toOffset` follow `Array.move(fromOffsets:toOffset:)` semantics
+    /// (same as SwiftUI's `.onMove` callback).
+    public func reorder(fromOffsets: IndexSet, toOffset: Int) {
+        var templates = _load()
+        templates.move(fromOffsets: fromOffsets, toOffset: toOffset)
         _save(templates)
     }
 

@@ -204,4 +204,67 @@ struct SessionTemplateTests {
         #expect(loaded[0].successCriteria == "Can summarize main ideas")
         #expect(loaded[0].useCount == 0)
     }
+
+    // MARK: - Prepend on add
+
+    @Test func addPrependsNewTemplateAtFront() async {
+        let store = makeStore()
+        await store.add(task: "Task A", successCriteria: "")
+        await store.add(task: "Task B", successCriteria: "")
+        let loaded = await store.load()
+        // B was added last so it should be at index 0 (front of display order).
+        #expect(loaded[0].task == "Task B")
+        #expect(loaded[1].task == "Task A")
+    }
+
+    // MARK: - Reorder
+
+    @Test func reorderMovesItemToFront() async {
+        let store = makeStore()
+        await store.add(task: "Task A", successCriteria: "")
+        await store.add(task: "Task B", successCriteria: "")
+        await store.add(task: "Task C", successCriteria: "")
+        // After prepend-adds, load order is [C, B, A].
+        // Move item at index 2 (A) to front (offset 0).
+        await store.reorder(fromOffsets: IndexSet(integer: 2), toOffset: 0)
+        let loaded = await store.load()
+        #expect(loaded[0].task == "Task A")
+        #expect(loaded[1].task == "Task C")
+        #expect(loaded[2].task == "Task B")
+    }
+
+    @Test func reorderIsPersisted() async {
+        let store = makeStore()
+        await store.add(task: "First", successCriteria: "")
+        await store.add(task: "Second", successCriteria: "")
+        // After prepend-adds, load order is [Second, First].
+        // Move First (index 1) to front (offset 0).
+        await store.reorder(fromOffsets: IndexSet(integer: 1), toOffset: 0)
+        // Load again — a fresh read should reflect the persisted order.
+        let loaded = await store.load()
+        #expect(loaded[0].task == "First")
+        #expect(loaded[1].task == "Second")
+    }
+
+    @Test func reorderOnSingleItemIsNoOp() async {
+        let store = makeStore()
+        await store.add(task: "Only one", successCriteria: "")
+        await store.reorder(fromOffsets: IndexSet(integer: 0), toOffset: 0)
+        let loaded = await store.load()
+        #expect(loaded.count == 1)
+        #expect(loaded[0].task == "Only one")
+    }
+
+    @Test func reorderPreservesTemplateFields() async {
+        let store = makeStore()
+        await store.add(task: "Task A", successCriteria: "Criteria A")
+        await store.add(task: "Task B", successCriteria: "Criteria B")
+        let idA = await store.load().first(where: { $0.task == "Task A" })!.id
+        // Load order is [B, A]. Move A to front.
+        await store.reorder(fromOffsets: IndexSet(integer: 1), toOffset: 0)
+        let loaded = await store.load()
+        #expect(loaded[0].task == "Task A")
+        #expect(loaded[0].id == idA)
+        #expect(loaded[0].successCriteria == "Criteria A")
+    }
 }
