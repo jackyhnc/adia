@@ -307,4 +307,38 @@ struct CalloutManagerTests {
         #expect(CalloutManager.dismissDelay(for: 2) == .seconds(12))
         #expect(CalloutManager.dismissDelay(for: 3) == .seconds(20))
     }
+
+    // MARK: - Restore (session resume after crash/relaunch)
+
+    /// restore(count:) sets calloutCount so a relaunched session resumes at the right tier.
+    @Test func restoreCountSetsCalloutCount() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            #expect(CalloutManager.shared.calloutCount == 0)
+            CalloutManager.shared.restore(count: 4)
+            #expect(CalloutManager.shared.calloutCount == 4)
+        }
+    }
+
+    /// After restore(count: 4), the next callout fires at tier 3 (≥4 means tier 3).
+    @Test func restoreCountAffectsTierOnNextFire() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            CalloutManager.shared.restore(count: 4) // simulate 4 prior callouts
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask) // fires — should be tier 3
+            #expect(NotchState.shared.calloutTier == 3)
+        }
+    }
+
+    /// reset() after restore() zeroes the count again (clean-slate for a brand-new session).
+    @Test func resetAfterRestoreZeroesCount() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            CalloutManager.shared.restore(count: 3)
+            #expect(CalloutManager.shared.calloutCount == 3)
+            CalloutManager.shared.reset()
+            #expect(CalloutManager.shared.calloutCount == 0)
+        }
+    }
 }

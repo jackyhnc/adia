@@ -42,6 +42,8 @@ public struct Session: Sendable, Identifiable {
     public var blockedDomains: [String]
     /// Bundle IDs of apps that trigger an immediate callout when opened.
     public var blockedApps: [String]
+    /// Cumulative callouts fired this session. Persisted so tier escalation survives a crash/relaunch.
+    public var calloutCount: Int
 
     public init(
         id: UUID = UUID(),
@@ -51,7 +53,8 @@ public struct Session: Sendable, Identifiable {
         phase: SessionPhase = .idle,
         whitelistedDomains: [String] = [],
         blockedDomains: [String] = Session.defaultBlockedDomains,
-        blockedApps: [String] = Session.defaultBlockedAppBundleIDs
+        blockedApps: [String] = Session.defaultBlockedAppBundleIDs,
+        calloutCount: Int = 0
     ) {
         self.id = id
         self.task = task
@@ -61,6 +64,7 @@ public struct Session: Sendable, Identifiable {
         self.whitelistedDomains = whitelistedDomains
         self.blockedDomains = blockedDomains
         self.blockedApps = blockedApps
+        self.calloutCount = calloutCount
     }
 
     public var elapsed: TimeInterval { Date().timeIntervalSince(startTime) }
@@ -106,7 +110,7 @@ public struct Session: Sendable, Identifiable {
 extension Session: Codable {
     private enum CodingKeys: String, CodingKey {
         case id, task, successCriteria, startTime, phase
-        case whitelistedDomains, blockedDomains, blockedApps
+        case whitelistedDomains, blockedDomains, blockedApps, calloutCount
     }
 
     public init(from decoder: Decoder) throws {
@@ -121,6 +125,8 @@ extension Session: Codable {
         // Gracefully decode missing key (old sessions pre-app-blocking).
         blockedApps = (try? c.decode([String].self, forKey: .blockedApps))
             ?? Session.defaultBlockedAppBundleIDs
+        // Gracefully decode missing key (old sessions pre-callout-persistence).
+        calloutCount = (try? c.decode(Int.self, forKey: .calloutCount)) ?? 0
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -133,5 +139,6 @@ extension Session: Codable {
         try c.encode(whitelistedDomains, forKey: .whitelistedDomains)
         try c.encode(blockedDomains,     forKey: .blockedDomains)
         try c.encode(blockedApps,        forKey: .blockedApps)
+        try c.encode(calloutCount,       forKey: .calloutCount)
     }
 }

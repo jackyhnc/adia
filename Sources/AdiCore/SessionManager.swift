@@ -112,6 +112,14 @@ public final class SessionManager: ObservableObject {
         let status = await detector.evaluate(frame: frame)
         onTaskStatus = status
         callout.evaluate(status)
+        // Sync the live calloutCount back to the persisted session so a restored session
+        // can resume tier escalation from the right tier. Only writes when count changed
+        // (i.e. when a callout just fired) — not on every frame.
+        if var s = session, s.calloutCount != callout.calloutCount {
+            s.calloutCount = callout.calloutCount
+            session = s
+            persistence.save(s)
+        }
     }
 
     // MARK: - Task verification
@@ -198,7 +206,8 @@ public final class SessionManager: ObservableObject {
     /// Wires up the capture pipeline, blocking engine, and on-task detector for a session.
     /// Throws if screen capture cannot be started (e.g. permission denied).
     private func activate(_ s: Session) async throws {
-        callout.reset()  // clear streak state left over from any prior session
+        callout.reset()                        // clear streak state left over from any prior session
+        callout.restore(count: s.calloutCount) // for restored sessions: resume tier escalation
         AppMonitor.shared.start(blockedBundleIDs: Set(s.blockedApps))
         await detector.attach(session: s)
         captureManager.onFrame = { [weak self] frame in

@@ -148,6 +148,13 @@ public final class CalloutManager {
         // lastFiredMessage intentionally preserved: dedup works across streaks within a session.
     }
 
+    /// Restores the session-level callout count after a crash/relaunch.
+    /// Must be called after reset() so the tier escalation continues from where it left off
+    /// instead of restarting at tier 1. For new sessions calloutCount is 0 so this is a no-op.
+    public func restore(count: Int) {
+        calloutCount = count
+    }
+
     /// Full session reset — zeroes calloutCount and clears all state.
     /// Called by SessionManager.activate() at session start and by tests between sessions.
     public func reset() {
