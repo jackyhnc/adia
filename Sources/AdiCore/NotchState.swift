@@ -131,4 +131,10 @@ public final class NotchState: ObservableObject {
             verificationHistory.append(attempt)
         }
     }
+
+    /// Restores persisted verification history into the live state (called after session restore on launch).
+    /// Does not expand or modify any other state — the user resumes in active mode and can retry verification.
+    public func restoreVerificationHistory(_ history: [VerificationAttempt]) {
+        verificationHistory = history
+    }
 }

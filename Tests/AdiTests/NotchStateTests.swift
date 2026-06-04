@@ -324,4 +324,54 @@ struct NotchStateTests {
         let count = await MainActor.run { NotchState.shared.verificationHistory.count }
         #expect(count == 0)
     }
+
+    // MARK: - Restore verification history
+
+    @Test func restoreVerificationHistoryPopulatesHistory() async {
+        await reset()
+        let attempts = [
+            VerificationAttempt(
+                result: VerificationResult(verified: false, explanation: "essay not submitted"),
+                attemptNumber: 1
+            ),
+            VerificationAttempt(
+                result: VerificationResult(verified: false, explanation: "canvas still loading"),
+                attemptNumber: 2
+            ),
+        ]
+        await MainActor.run { NotchState.shared.restoreVerificationHistory(attempts) }
+        await MainActor.run {
+            #expect(NotchState.shared.verificationHistory.count == 2)
+            #expect(NotchState.shared.verificationHistory[0].attemptNumber == 1)
+            #expect(NotchState.shared.verificationHistory[1].result.explanation == "canvas still loading")
+        }
+    }
+
+    @Test func afterRestoreNextResultIsAttemptThree() async {
+        await reset()
+        let prior = [
+            VerificationAttempt(result: VerificationResult(verified: false, explanation: "a"), attemptNumber: 1),
+            VerificationAttempt(result: VerificationResult(verified: false, explanation: "b"), attemptNumber: 2),
+        ]
+        await MainActor.run {
+            NotchState.shared.restoreVerificationHistory(prior)
+            // Simulate the user retrying verification after a restore.
+            NotchState.shared.setVerificationResult(VerificationResult(verified: true, explanation: "done"))
+        }
+        await MainActor.run {
+            #expect(NotchState.shared.verificationHistory.count == 3)
+            #expect(NotchState.shared.verificationHistory[2].attemptNumber == 3)
+        }
+    }
+
+    @Test func restoreVerificationHistoryDoesNotExpandNotch() async {
+        await reset()
+        await MainActor.run {
+            NotchState.shared.restoreVerificationHistory([
+                VerificationAttempt(result: VerificationResult(verified: false, explanation: "x"), attemptNumber: 1)
+            ])
+        }
+        let expanded = await MainActor.run { NotchState.shared.isExpanded }
+        #expect(expanded == false)
+    }
 }

@@ -32,7 +32,7 @@ public struct VerificationResult: Codable, Sendable {
 
 // MARK: - Verification attempt (one entry in the within-session history)
 
-public struct VerificationAttempt: Sendable {
+public struct VerificationAttempt: Codable, Sendable {
     public let timestamp: Date
     public let result: VerificationResult
     /// 1-based index: first attempt = 1.
@@ -59,6 +59,8 @@ public struct Session: Sendable, Identifiable {
     public var blockedApps: [String]
     /// Cumulative callouts fired this session. Persisted so tier escalation survives a crash/relaunch.
     public var calloutCount: Int
+    /// Verification attempts made this session. Persisted so attempt numbering survives a crash/relaunch.
+    public var verificationHistory: [VerificationAttempt]
 
     public init(
         id: UUID = UUID(),
@@ -69,7 +71,8 @@ public struct Session: Sendable, Identifiable {
         whitelistedDomains: [String] = [],
         blockedDomains: [String] = Session.defaultBlockedDomains,
         blockedApps: [String] = Session.defaultBlockedAppBundleIDs,
-        calloutCount: Int = 0
+        calloutCount: Int = 0,
+        verificationHistory: [VerificationAttempt] = []
     ) {
         self.id = id
         self.task = task
@@ -80,6 +83,7 @@ public struct Session: Sendable, Identifiable {
         self.blockedDomains = blockedDomains
         self.blockedApps = blockedApps
         self.calloutCount = calloutCount
+        self.verificationHistory = verificationHistory
     }
 
     public var elapsed: TimeInterval { Date().timeIntervalSince(startTime) }
@@ -126,6 +130,7 @@ extension Session: Codable {
     private enum CodingKeys: String, CodingKey {
         case id, task, successCriteria, startTime, phase
         case whitelistedDomains, blockedDomains, blockedApps, calloutCount
+        case verificationHistory
     }
 
     public init(from decoder: Decoder) throws {
@@ -142,18 +147,21 @@ extension Session: Codable {
             ?? Session.defaultBlockedAppBundleIDs
         // Gracefully decode missing key (old sessions pre-callout-persistence).
         calloutCount = (try? c.decode(Int.self, forKey: .calloutCount)) ?? 0
+        // Gracefully decode missing key (old sessions pre-verification-history).
+        verificationHistory = (try? c.decode([VerificationAttempt].self, forKey: .verificationHistory)) ?? []
     }
 
     public func encode(to encoder: Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
-        try c.encode(id,                 forKey: .id)
-        try c.encode(task,               forKey: .task)
-        try c.encode(successCriteria,    forKey: .successCriteria)
-        try c.encode(startTime,          forKey: .startTime)
-        try c.encode(phase,              forKey: .phase)
-        try c.encode(whitelistedDomains, forKey: .whitelistedDomains)
-        try c.encode(blockedDomains,     forKey: .blockedDomains)
-        try c.encode(blockedApps,        forKey: .blockedApps)
-        try c.encode(calloutCount,       forKey: .calloutCount)
+        try c.encode(id,                  forKey: .id)
+        try c.encode(task,                forKey: .task)
+        try c.encode(successCriteria,     forKey: .successCriteria)
+        try c.encode(startTime,           forKey: .startTime)
+        try c.encode(phase,               forKey: .phase)
+        try c.encode(whitelistedDomains,  forKey: .whitelistedDomains)
+        try c.encode(blockedDomains,      forKey: .blockedDomains)
+        try c.encode(blockedApps,         forKey: .blockedApps)
+        try c.encode(calloutCount,        forKey: .calloutCount)
+        try c.encode(verificationHistory, forKey: .verificationHistory)
     }
 }

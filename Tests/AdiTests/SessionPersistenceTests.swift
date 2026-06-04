@@ -66,4 +66,59 @@ struct SessionPersistenceTests {
         #expect(loaded.calloutCount == 0)
         p.clear()
     }
+
+    @Test func saveLoadRoundTripPreservesVerificationHistory() throws {
+        let p = SessionPersistence.shared
+        let attempts = [
+            VerificationAttempt(
+                timestamp: Date(timeIntervalSinceNow: -60),
+                result: VerificationResult(verified: false, explanation: "canvas not open"),
+                attemptNumber: 1
+            ),
+            VerificationAttempt(
+                timestamp: Date(timeIntervalSinceNow: -10),
+                result: VerificationResult(verified: false, explanation: "essay tab not visible"),
+                attemptNumber: 2
+            ),
+        ]
+        let original = Session(
+            task: "Write ENGL 101 essay",
+            successCriteria: "Submit to Canvas",
+            phase: .active,
+            verificationHistory: attempts
+        )
+        p.save(original)
+        let loaded = try #require(p.load())
+        #expect(loaded.verificationHistory.count == 2)
+        #expect(loaded.verificationHistory[0].attemptNumber == 1)
+        #expect(loaded.verificationHistory[0].result.explanation == "canvas not open")
+        #expect(loaded.verificationHistory[1].attemptNumber == 2)
+        #expect(loaded.verificationHistory[1].result.verified == false)
+        p.clear()
+    }
+
+    @Test func verificationHistoryDefaultsToEmptyForLegacySession() throws {
+        // Strip the verificationHistory key to simulate sessions persisted before this feature.
+        let p = SessionPersistence.shared
+        let original = Session(
+            task: "old task",
+            successCriteria: "old criteria",
+            phase: .active,
+            verificationHistory: [
+                VerificationAttempt(
+                    result: VerificationResult(verified: false, explanation: "not done"),
+                    attemptNumber: 1
+                )
+            ]
+        )
+        let encoded = try JSONEncoder().encode(original)
+        let jsonObject = (try JSONSerialization.jsonObject(with: encoded)) as? [String: Any]
+        var dict = try #require(jsonObject)
+        dict.removeValue(forKey: "verificationHistory")
+        let stripped = try JSONSerialization.data(withJSONObject: dict)
+        UserDefaults.standard.set(stripped, forKey: "adia.activeSession")
+        let loaded = try #require(p.load())
+        #expect(loaded.verificationHistory.isEmpty)
+        p.clear()
+    }
 }

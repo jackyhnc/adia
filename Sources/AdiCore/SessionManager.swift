@@ -149,8 +149,15 @@ public final class SessionManager: ObservableObject {
                 // Brief pause so the user sees "verified ✓" before everything unblocks.
                 try? await Task.sleep(for: .seconds(1.2))
                 await endSession()
+            } else {
+                // Session continues — persist the updated history so attempt numbering
+                // survives a crash/relaunch before the user retries verification.
+                if var updated = session {
+                    updated.verificationHistory = NotchState.shared.verificationHistory
+                    session = updated
+                    persistence.save(updated)
+                }
             }
-            // If not verified, session stays active — user sees the explanation.
         } catch {
             NotchState.shared.setVerifying(false)
             AppLogger.error("verification.failed", ["error": String(describing: error)])
@@ -192,6 +199,11 @@ public final class SessionManager: ObservableObject {
             try await activate(s)
         } catch {
             print("[SessionManager] restore failed, session will be shown but capture is inactive: \(error)")
+        }
+        // Restore verification attempt history so the notch shows the correct attempt number
+        // if the user retries verification after a crash/relaunch.
+        if !s.verificationHistory.isEmpty {
+            NotchState.shared.restoreVerificationHistory(s.verificationHistory)
         }
     }
 
