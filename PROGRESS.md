@@ -1,5 +1,26 @@
 # Adia — Build Progress
 
+## Run 45 — 2026-06-04
+
+### Shipped
+- **feat: callout escalation persistence across session restarts**
+  - `Session.calloutCount: Int` (default 0) — new field on the Session model. Persisted via the manual Codable implementation using `decodeIfPresent` so old sessions without the key decode cleanly to 0 (backward-compat). Encoded in `encode(to:)`.
+  - `CalloutManager.restore(count:)` — new public method sets `calloutCount` directly. Designed to be called after `reset()` so streak state is cleared but the session-level tier counter is preserved. For new sessions with `calloutCount = 0` this is a no-op.
+  - `SessionManager.activate()` — now calls `callout.restore(count: s.calloutCount)` immediately after `callout.reset()`. This is the only call site: new sessions pass 0 (no-op), restored sessions pass the saved count so they resume at the correct tier (1/2/3).
+  - `SessionManager.handleFrame()` — after `callout.evaluate(status)`, checks if `callout.calloutCount != session.calloutCount`. If so (a callout just fired), syncs the new count back into `session` and calls `persistence.save(s)`. This is an O(1) int comparison on every ~1fps frame; actual UserDefaults writes happen only when a callout fires.
+  - **Tests (+5)**: `restoreCountSetsCalloutCount`, `restoreCountAffectsTierOnNextFire` (verifies tier 3 fires after restoring count=4), `resetAfterRestoreZeroesCount` — in `CalloutManagerTests`; `saveLoadRoundTripPreservesCalloutCount`, `calloutCountDefaultsToZeroForLegacySession` (strips key from encoded JSON, verifies 0 fallback) — in `SessionPersistenceTests`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Empty-day heatmap opacity: give days with 0 sessions a subtly different track color (e.g. `secondary.opacity(0.05)`) to make active/inactive days more distinct.
+  - (b) Idle notch template order toggle: `SettingsStore.idleNotchTemplatesFollowManualOrder: Bool` toggle so users can choose whether the notch shows top-2 by recency (current) or manual reorder order.
+  - (c) Session verification retry: after a "not verified" result, show a "Try again" button that re-captures and re-verifies without ending the session, so the user doesn't need to wait for a new screen state.
+
+---
+
 ## Run 44 — 2026-06-04
 
 ### Shipped
