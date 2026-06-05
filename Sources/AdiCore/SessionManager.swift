@@ -54,6 +54,7 @@ public final class SessionManager: ObservableObject {
             await detector.detach()
             AppMonitor.shared.stop()
             LocalBlockServer.shared.stop()
+            SleepBlocker.shared.stop()
             do { try await hosts.unblockAll() } catch {
                 print("[SessionManager] hosts cleanup after failed start: \(error)")
             }
@@ -91,6 +92,7 @@ public final class SessionManager: ObservableObject {
         captureManager.stop()
         AppMonitor.shared.stop()
         LocalBlockServer.shared.stop()
+        SleepBlocker.shared.stop()
         do { try await hosts.unblockAll() } catch {
             print("[SessionManager] hosts cleanup failed: \(error)")
         }
@@ -146,12 +148,15 @@ public final class SessionManager: ObservableObject {
             ])
             if result.verified {
                 sessionEndedSuccessfully = true
+                SessionNotifier.shared.sendSessionComplete(task: s.task)
                 // Brief pause so the user sees "verified ✓" before everything unblocks.
                 try? await Task.sleep(for: .seconds(1.2))
                 await endSession()
             } else {
                 // Session continues — persist the updated history so attempt numbering
                 // survives a crash/relaunch before the user retries verification.
+                // Re-read session rather than using the stale `s` so any whitelisting
+                // done during the verification await is not overwritten.
                 if var updated = session {
                     updated.verificationHistory = NotchState.shared.verificationHistory
                     session = updated
@@ -205,6 +210,8 @@ public final class SessionManager: ObservableObject {
         if !s.verificationHistory.isEmpty {
             NotchState.shared.restoreVerificationHistory(s.verificationHistory)
         }
+        // Notify the user that their session survived the relaunch.
+        SessionNotifier.shared.sendSessionRestored(task: s.task)
     }
 
     // MARK: - Test helpers
@@ -220,6 +227,7 @@ public final class SessionManager: ObservableObject {
     private func activate(_ s: Session) async throws {
         callout.reset()                        // clear streak state left over from any prior session
         callout.restore(count: s.calloutCount) // for restored sessions: resume tier escalation
+        SleepBlocker.shared.start()
         AppMonitor.shared.start(blockedBundleIDs: Set(s.blockedApps))
         await detector.attach(session: s)
         captureManager.onFrame = { [weak self] frame in
