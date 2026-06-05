@@ -2,6 +2,9 @@ import Foundation
 #if canImport(UserNotifications)
 @preconcurrency import UserNotifications
 #endif
+#if canImport(AppKit)
+import AppKit
+#endif
 
 /// Posts macOS system notifications for key session lifecycle events.
 /// On non-macOS platforms all methods are no-ops.
@@ -47,6 +50,13 @@ public final class SessionNotifier: NSObject {
         #endif
     }
 
+    /// Expands the notch panel. Called when the user taps a notification banner.
+    /// Exposed as `internal` (not private) so unit tests can invoke it directly
+    /// without needing a real `UNNotificationResponse`.
+    func expandNotch() {
+        NotchState.shared.expand()
+    }
+
     #if canImport(UserNotifications)
     private func schedule(_ content: UNMutableNotificationContent, id: String) {
         let request = UNNotificationRequest(identifier: id, content: content, trigger: nil)
@@ -75,6 +85,23 @@ extension SessionNotifier: UNUserNotificationCenterDelegate {
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
         completionHandler(SessionNotifier.foregroundPresentationOptions)
+    }
+
+    /// Called when the user taps an Adia notification banner.
+    /// Brings the app to the front and expands the notch so the user can
+    /// immediately see the current session state without hunting for the window.
+    nonisolated public func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        Task { @MainActor in
+            SessionNotifier.shared.expandNotch()
+            #if canImport(AppKit)
+            NSApp.activate(ignoringOtherApps: true)
+            #endif
+        }
+        completionHandler()
     }
 }
 #endif

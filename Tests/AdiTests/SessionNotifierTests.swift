@@ -36,4 +36,27 @@ struct SessionNotifierTests {
         #expect(opts.contains(.sound))
         #endif
     }
+
+    /// Verifies that tapping a notification banner expands the notch from its collapsed state.
+    @Test func notificationTapExpandsNotchFromCollapsed() {
+        NotchState.shared.collapse()
+        SessionNotifier.shared.expandNotch()
+        #expect(NotchState.shared.isExpanded)
+    }
+
+    /// Verifies that `expandNotch()` is idempotent — calling it while the notch
+    /// is already expanded does not collapse or otherwise disturb it.
+    @Test func notificationTapIsIdempotentWhenAlreadyExpanded() {
+        NotchState.shared.expand()
+        SessionNotifier.shared.expandNotch()
+        #expect(NotchState.shared.isExpanded)
+    }
+
+    /// Verifies that the delegate responds to the `didReceive` selector so
+    /// macOS will invoke it when the user taps a banner.
+    @Test func delegateImplementsDidReceiveSelector() {
+        let notifier = SessionNotifier.shared
+        let sel = NSSelectorFromString("userNotificationCenter:didReceive:withCompletionHandler:")
+        #expect(notifier.responds(to: sel))
+    }
 }
