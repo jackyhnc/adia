@@ -267,4 +267,65 @@ struct SessionTemplateTests {
         #expect(loaded[0].id == idA)
         #expect(loaded[0].successCriteria == "Criteria A")
     }
+
+    // MARK: - Preferred duration
+
+    @Test func addWithPreferredDurationStoresIt() async {
+        let store = makeStore()
+        await store.add(task: "Write essay", successCriteria: "Submitted", preferredDuration: 2700)
+        let templates = await store.load()
+        #expect(templates[0].preferredDuration == 2700)
+    }
+
+    @Test func addWithoutPreferredDurationDefaultsToNil() async {
+        let store = makeStore()
+        await store.add(task: "Quick task", successCriteria: "Done")
+        let templates = await store.load()
+        #expect(templates[0].preferredDuration == nil)
+    }
+
+    @Test func addDuplicateTaskUpdatesPreferredDuration() async {
+        let store = makeStore()
+        await store.add(task: "Essay", successCriteria: "Submitted", preferredDuration: 2700)
+        await store.add(task: "Essay", successCriteria: "Submitted", preferredDuration: 5400)
+        let templates = await store.load()
+        #expect(templates.count == 1)
+        #expect(templates[0].preferredDuration == 5400)
+    }
+
+    @Test func addDuplicateTaskClearsPreferredDurationWhenNil() async {
+        let store = makeStore()
+        await store.add(task: "Essay", successCriteria: "Submitted", preferredDuration: 2700)
+        await store.add(task: "Essay", successCriteria: "Submitted", preferredDuration: nil)
+        let templates = await store.load()
+        #expect(templates.count == 1)
+        #expect(templates[0].preferredDuration == nil)
+    }
+
+    @Test func updateWithPreferredDurationStoresIt() async {
+        let store = makeStore()
+        await store.add(task: "Task", successCriteria: "Criteria")
+        let id = await store.load()[0].id
+        await store.update(id: id, task: "Task", successCriteria: "Criteria", preferredDuration: 3600)
+        let templates = await store.load()
+        #expect(templates[0].preferredDuration == 3600)
+    }
+
+    @Test func preferredDurationSurvivesCodecRoundTrip() async {
+        let store = makeStore()
+        await store.add(task: "Study session", successCriteria: "Notes done", preferredDuration: 4500)
+        let loaded = await store.load()
+        #expect(loaded[0].preferredDuration == 4500)
+    }
+
+    @Test func legacyJSONWithoutPreferredDurationDecodesAsNil() throws {
+        // JSON that a previous agent wrote — no preferredDuration key.
+        let json = """
+        [{"id":"00000000-0000-0000-0000-000000000001","task":"Write paper","successCriteria":"Submitted","useCount":2,"lastUsedAt":null,"createdAt":700000000.0}]
+        """
+        let data = try #require(json.data(using: .utf8))
+        let templates = try JSONDecoder().decode([SessionTemplate].self, from: data)
+        #expect(templates.count == 1)
+        #expect(templates[0].preferredDuration == nil)
+    }
 }

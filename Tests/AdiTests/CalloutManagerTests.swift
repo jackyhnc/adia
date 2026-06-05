@@ -435,4 +435,31 @@ struct CalloutManagerTests {
             }
         }
     }
+
+    // MARK: - Word-boundary extraction (false-positive prevention)
+
+    @Test func extractTaskKeywordIgnoresReadingInsideThreading() {
+        // "threading" contains "reading" as a substring — must NOT match
+        #expect(CalloutManager.extractTaskKeyword(from: "I am threading the model") == nil)
+        #expect(CalloutManager.extractTaskKeyword(from: "multi-threading performance") == nil)
+    }
+
+    @Test func extractTaskKeywordIgnoresTestInsideContest() {
+        // "contest", "latest", "protest" contain "test" as a substring — must NOT match "studying"
+        #expect(CalloutManager.extractTaskKeyword(from: "enter the coding contest") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "latest news") == nil)
+        #expect(CalloutManager.extractTaskKeyword(from: "protest march") == nil)
+    }
+
+    @Test func extractTaskKeywordIgnoresBookInsideFacebook() {
+        // "facebook" contains "book" as a substring — must NOT match "reading"
+        #expect(CalloutManager.extractTaskKeyword(from: "check facebook") == nil)
+    }
+
+    @Test func extractTaskKeywordStillMatchesStandaloneWords() {
+        // Whole-word matches must still work
+        #expect(CalloutManager.extractTaskKeyword(from: "finish reading the book") == "reading")
+        #expect(CalloutManager.extractTaskKeyword(from: "study for the test") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "read the article") == "reading")
+    }
 }

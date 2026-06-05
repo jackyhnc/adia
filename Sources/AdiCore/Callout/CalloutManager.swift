@@ -116,32 +116,33 @@ public final class CalloutManager {
     /// Returns nil when no recognizable subject keyword is found — generic pool is used instead.
     public static func extractTaskKeyword(from task: String) -> String? {
         let lower = task.lowercased()
-        if lower.contains("essay") || lower.contains("paper") || lower.contains("thesis") {
+        // Match whole words only — prevents false positives like "threading" → "reading",
+        // "industry" → "study", "facebook" → "book", "contest" → "test".
+        func word(_ w: String) -> Bool {
+            lower.range(of: "\\b\(w)\\b", options: .regularExpression) != nil
+        }
+        if word("essay") || word("paper") || word("thesis") {
             return "essay"
         }
-        if lower.contains("presentation") || lower.contains("slides") || lower.contains("deck")
-            || lower.contains("powerpoint") || lower.contains("keynote") {
+        if word("presentation") || word("slides") || word("deck") || word("powerpoint") || word("keynote") {
             return "presentation"
         }
-        if lower.contains("code") || lower.contains("coding") || lower.contains("programming")
-            || lower.contains("bug") || lower.contains("feature") || lower.contains("function") {
+        if word("code") || word("coding") || word("programming") || word("bug") || word("feature") || word("function") {
             return "code"
         }
-        if lower.contains("report") || lower.contains("document") || lower.contains("doc") {
+        if word("report") || word("document") || word("doc") {
             return "report"
         }
-        if lower.contains("study") || lower.contains("studying") || lower.contains("exam")
-            || lower.contains("quiz") || lower.contains("test") {
+        if word("study") || word("studying") || word("exam") || word("quiz") || word("test") {
             return "studying"
         }
-        if lower.contains("reading") || lower.contains("book") || lower.contains("chapter")
-            || lower.contains("article") {
+        if word("reading") || word("book") || word("chapter") || word("article") {
             return "reading"
         }
-        if lower.contains("homework") || lower.contains("assignment") || lower.contains("problem set") {
+        if word("homework") || word("assignment") || lower.contains("problem set") {
             return "homework"
         }
-        if lower.contains("research") {
+        if word("research") {
             return "research"
         }
         return nil

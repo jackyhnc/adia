@@ -763,7 +763,7 @@ private struct SessionCreationFormView: View {
                 ])
                 try await session.start(task: task, successCriteria: criteria, targetDuration: durationSeconds)
                 if shouldPin {
-                    Task { await SessionTemplateStore.shared.add(task: task, successCriteria: criteria) }
+                    Task { await SessionTemplateStore.shared.add(task: task, successCriteria: criteria, preferredDuration: durationSeconds) }
                 }
                 state.stopCreating()
             } catch CaptureError.permissionDenied {
@@ -899,6 +899,11 @@ private struct IdleBody: View {
                     .foregroundStyle(.white.opacity(0.75))
                     .lineLimit(1)
                 Spacer()
+                if let dur = t.preferredDuration {
+                    Text(templateDurationLabel(dur))
+                        .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(.white.opacity(0.35))
+                }
                 Image(systemName: "play.fill")
                     .font(.system(size: 9, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.25))
@@ -911,11 +916,25 @@ private struct IdleBody: View {
         .buttonStyle(.plain)
     }
 
+    private func templateDurationLabel(_ seconds: TimeInterval) -> String {
+        let mins = Int(seconds) / 60
+        if mins >= 60 {
+            let h = mins / 60
+            let m = mins % 60
+            return m == 0 ? "\(h)h" : "\(h)h\(m)m"
+        }
+        return "\(mins)m"
+    }
+
     private func launchTemplate(_ t: SessionTemplate) {
         templateError = nil
         Task { @MainActor in
             do {
-                try await SessionManager.shared.start(task: t.task, successCriteria: t.successCriteria)
+                try await SessionManager.shared.start(
+                    task: t.task,
+                    successCriteria: t.successCriteria,
+                    targetDuration: t.preferredDuration
+                )
                 Task { await SessionTemplateStore.shared.recordUse(id: t.id) }
                 NotchState.shared.collapse()
             } catch CaptureError.permissionDenied {
