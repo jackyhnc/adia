@@ -1,5 +1,32 @@
 # Adia — Build Progress
 
+## Run 54 — 2026-06-05
+
+### Shipped
+- **feat: task-context-aware callout messages**
+  - `CalloutManager.extractTaskKeyword(from:)` — new `public static` pure function. Maps a free-text task description to one of 8 subject keywords: `"essay"` (essay/paper/thesis), `"presentation"` (slides/deck/powerpoint/keynote), `"code"` (coding/bug/feature/function), `"report"` (report/document/doc), `"studying"` (study/exam/quiz/test), `"reading"` (reading/book/chapter/article), `"homework"` (homework/assignment), `"research"`. Returns `nil` for generic inputs like "work" or "get things done".
+  - `CalloutManager.setTask(_:)` — new `public` method that calls `extractTaskKeyword` and stores the result. Called by `SessionManager.activate()` after `reset()` + `restore(count:)` so every new and crash-restored session gets correct context immediately.
+  - `CalloutManager.taskAwareCallouts(keyword:tier:)` — new `internal` method returning 2–3 task-specific callout strings per tier. Tier 1: "get back to your essay.", "this isn't your essay.", "your essay isn't going to finish itself." Tier 2: "stop putting off your essay.", "you need to work on your essay, not this." Tier 3: "CLOSE THIS. open your essay.", "your essay deadline isn't moving." 
+  - `fire()` updated: blends `taskAwareCallouts` into the generic tier pool when `taskKeyword != nil`. Generic pool remains dominant in size so generic messages still fire proportionally. Task-aware messages appear ~(k / n+k) of the time.
+  - `reset()` now clears `taskKeyword = nil` so session cleanup is complete.
+  - Removed hardcoded `"this isn't your essay."` from `tier1Callouts` static pool — replaced by the dynamic "this isn't your [keyword]." template that adapts to the actual task.
+  - `currentTaskKeyword: String?` exposed as `internal var` for unit test inspection.
+  - `SessionManager.activate()` — added `callout.setTask(s.task)` after `callout.restore(count:)`.
+  - **Tests (+12)** in `CalloutManagerTests.swift`: `extractTaskKeywordFromEssayInput` (essay/paper/thesis inputs), `extractTaskKeywordFromCodeInput` (bug/coding/feature), `extractTaskKeywordFromPresentationInput` (presentation/slides/deck), `extractTaskKeywordFromStudyInput` (study/quiz), `extractTaskKeywordFromHomeworkInput` (homework/assignment), `extractTaskKeywordFromResearchInput`, `extractTaskKeywordReturnsNilForGenericInput` (work/""/generic phrases), `setTaskStoresExtractedKeyword`, `setTaskWithUnknownTaskStoresNil`, `resetClearsTaskKeyword`, `taskAwareCalloutsContainKeyword` (all tier-1/2/3 messages for "essay" contain "essay"), `taskAwareCalloutsSubstituteKeywordPerTier` (verified for 4 keywords × 3 tiers).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) `SettingsView` window height adaptive — currently fixed at `500`. If future tabs grow taller, make height computed from tab content.
+  - (b) Integration test for `SleepBlocker.start()` — could verify the assertion is registered with `IOPMCopyAssertionsByProcess`.
+  - (c) Session duration goal: let the user optionally set a target work duration (e.g. 90 min) and show a countdown or progress arc in the collapsed notch. Adds `targetDuration: TimeInterval?` to `Session`.
+  - (d) Keyword extraction edge case: "threading" contains "reading" → returns "reading" instead of nil. Low impact for target users (students), but could be addressed with word-boundary logic if needed.
+  - (e) Auto-suggest recently whitelisted domain on "not verified": surface `session.whitelistedDomains.last` in the verification result view so the user knows what site they can visit to finish the task.
+
+---
+
 ## Run 53 — 2026-06-05
 
 ### Shipped
