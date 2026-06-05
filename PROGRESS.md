@@ -1,5 +1,34 @@
 # Adia — Build Progress
 
+## Run 51 — 2026-06-05
+
+### Shipped
+- **feat: prevent display sleep during focus sessions**
+  - `SleepBlocker` (`Sources/AdiCore/SleepBlocker.swift`): new `@MainActor public final class`. Wraps `IOPMAssertionCreateWithName(kIOPMAssertPreventUserIdleDisplaySleep, ...)` / `IOPMAssertionRelease`. `start()` is idempotent; `stop()` is a safe no-op if not active. `isActive: Bool` for inspection.
+  - `#if canImport(IOKit)` guards throughout — non-macOS builds get a state-tracking stub that compiles cleanly.
+  - `SessionManager.activate()` — calls `SleepBlocker.shared.start()` at the top of every session (new and restored).
+  - `SessionManager.endSession()` — calls `SleepBlocker.shared.stop()`.
+  - `SessionManager.start()` error-rollback path — also calls `SleepBlocker.shared.stop()` so a failed activate doesn't leave the assertion dangling.
+  - **Tests (+6)** in `SleepBlockerTests.swift`: `inactiveByDefault`, `startActivatesBlocker`, `stopDeactivatesBlocker`, `doubleStartIsIdempotent`, `stopWithoutStartIsNoOp`, `restartAfterStopWorks`.
+- **feat: system notifications for session complete and session restore**
+  - `SessionNotifier` (`Sources/AdiCore/SessionNotifier.swift`): new `@MainActor public final class`. `requestPermission()` requests `UNUserNotificationCenter` `.alert + .sound` permission once. `sendSessionComplete(task:)` fires "Session complete ✓" banner when Claude verifies the task done — surfaces the success even if the notch collapses before the user looks up. `sendSessionRestored(task:)` fires "Session restored" banner on crash-recovery relaunch.
+  - `@preconcurrency import UserNotifications` + `#if canImport(UserNotifications)` guards for Swift 6 compatibility and non-macOS builds.
+  - `AppDelegate.showNotch()` — calls `SessionNotifier.shared.requestPermission()` once at startup (after the notch window is up, before `restoreIfNeeded`).
+  - `SessionManager.verifyAndEnd()` — calls `sendSessionComplete(task: s.task)` immediately after `sessionEndedSuccessfully = true`, before the 1.2s display pause.
+  - `SessionManager.restoreIfNeeded()` — calls `sendSessionRestored(task: s.task)` after fully restoring capture + history.
+  - Added clarifying comment in `verifyAndEnd()` not-verified path explaining why `session` is re-read rather than using the stale `s` (preserves any whitelist changes made during the verification await).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) `UNUserNotificationCenterDelegate.userNotificationCenter(_:willPresent:withCompletionHandler:)` — macOS by default suppresses banners when the app is frontmost. If Adia is in a non-interactive fullscreen state where the notch is visible but the window counts as "active", users might not see the completion notification. Adding the delegate with `completionHandler([.banner, .sound])` ensures banners fire regardless of foreground state.
+  - (b) `SettingsView` window height adaptive — currently fixed at `500`. If future tabs grow taller, bump to `520` or make height computed.
+  - (c) Integration test for `SleepBlocker.start()` — currently exercised by unit tests that call `IOPMAssertionCreateWithName` on macOS; could add a test that verifies the assertion is actually registered with `IOPMCopyAssertionsByProcess`.
+
+---
+
 ## Run 50 — 2026-06-04
 
 ### Shipped
