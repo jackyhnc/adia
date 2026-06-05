@@ -1,5 +1,28 @@
 # Adia — Build Progress
 
+## Run 57 — 2026-06-05
+
+### Shipped
+- **fix + feat: preserve and edit preferredDuration in EditTemplateSheet**
+  - **Bug fixed**: `EditTemplateSheet` was calling `SessionTemplateStore.update(id:task:successCriteria:)` without the `preferredDuration` parameter, which defaulted to `nil` and silently wiped the stored duration on every save. Now the save handler captures `let dur: TimeInterval? = selectedMinutes.map { TimeInterval($0 * 60) }` and passes it explicitly.
+  - **Duration chip row added** to `EditTemplateSheet`: same four presets (25m / 45m / 1h / 90m) as the session creation form, styled with `Color.accentColor` fill for the selected chip. A clear button (`xmark.circle.fill`) appears when a chip is active.
+  - **Snap-to-preset on open**: `init` converts `template.preferredDuration` (seconds) to integer minutes, checks membership in `{25, 45, 60, 90}`, and pre-selects the matching chip. Non-preset values (e.g., a 30-minute duration set programmatically) get no chip pre-selected (treated as nil) without data loss at the store level.
+  - **Sheet height** bumped 280 → 360 to accommodate the new Duration Goal section.
+  - **Tests (+3)** in `SessionTemplateTests.swift`: `updateWithNilPreferredDurationClearsStoredValue` (regression guard: passing nil to update overwrites an existing value), `updatePersistsAllThreeFieldsTogether` (task + criteria + duration all committed in one update call), `updatePreservesDurationWhenPassedThrough` (simulates the fixed EditTemplateSheet path: read template.preferredDuration, pass it back unchanged, verify it survives).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) `SettingsView` window height adaptive — currently fixed at `500`. Make height computed from tab content.
+  - (b) Integration test for `SleepBlocker.start()` — verify assertion is registered with `IOPMCopyAssertionsByProcess`.
+  - (c) Keyword extraction: could add "lab" → "research", "pset" → "homework", "midterm" → "studying" for more student-centric inputs.
+  - (d) Auto-suggest recently whitelisted domain on "not verified": surface `session.whitelistedDomains.last` in the verification result view.
+  - (e) Non-preset duration in EditTemplateSheet: if a template has a stored duration that doesn't match any chip (e.g. 30 min saved programmatically), the current init snaps to nil. Could add a custom time picker or show a text hint like "Custom: 30m (no chip)" alongside the presets.
+
+---
+
 ## Run 56 — 2026-06-05
 
 ### Shipped
