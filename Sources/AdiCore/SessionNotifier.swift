@@ -5,11 +5,19 @@ import Foundation
 
 /// Posts macOS system notifications for key session lifecycle events.
 /// On non-macOS platforms all methods are no-ops.
+///
+/// Registers itself as `UNUserNotificationCenter.delegate` so banners fire
+/// even when Adia is the frontmost application (macOS suppresses them otherwise).
 @MainActor
-public final class SessionNotifier {
+public final class SessionNotifier: NSObject {
     public static let shared = SessionNotifier()
 
-    private init() {}
+    private override init() {
+        super.init()
+        #if canImport(UserNotifications)
+        UNUserNotificationCenter.current().delegate = self
+        #endif
+    }
 
     /// Requests system notification permission once. Safe to call multiple times.
     public func requestPermission() {
@@ -48,3 +56,25 @@ public final class SessionNotifier {
     }
     #endif
 }
+
+// MARK: - UNUserNotificationCenterDelegate
+
+#if canImport(UserNotifications)
+extension SessionNotifier: UNUserNotificationCenterDelegate {
+    /// Options returned to the system when a notification fires while Adia is frontmost.
+    /// Exposed as a constant so tests can verify the value without needing a real `UNNotification`.
+    /// `nonisolated` so the `nonisolated` `willPresent` method can read it without an actor hop.
+    nonisolated public static let foregroundPresentationOptions: UNNotificationPresentationOptions = [.banner, .sound]
+
+    /// Called when a notification is about to be presented while the app is frontmost.
+    /// Returning `.banner` and `.sound` overrides macOS's default suppression so
+    /// Adia's session-complete and session-restored banners always appear.
+    nonisolated public func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler(SessionNotifier.foregroundPresentationOptions)
+    }
+}
+#endif
