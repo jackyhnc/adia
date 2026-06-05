@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 53 — 2026-06-05
+
+### Shipped
+- **feat: expand notch when user taps notification banner**
+  - `SessionNotifier.expandNotch()` (internal): testable helper that calls `NotchState.shared.expand()`. Kept `internal` (not `private`) so unit tests can invoke it directly without needing a real `UNNotificationResponse`.
+  - `userNotificationCenter(_:didReceive:withCompletionHandler:)` added to the `UNUserNotificationCenterDelegate` extension. `nonisolated` per the delegate protocol; dispatches `expandNotch()` + `NSApp.activate(ignoringOtherApps: true)` to the `@MainActor` via `Task { @MainActor in ... }`; calls `completionHandler()` immediately (no need to await the UI hop, per Apple docs).
+  - `#if canImport(AppKit) import AppKit #endif` added at the top of `SessionNotifier.swift` to expose `NSApp`.
+  - **Tests (+3)** in `SessionNotifierTests.swift`: `notificationTapExpandsNotchFromCollapsed` (collapses notch, calls `expandNotch()`, checks `isExpanded == true`), `notificationTapIsIdempotentWhenAlreadyExpanded` (expands first, calls again, stays expanded), `delegateImplementsDidReceiveSelector` (`responds(to: NSSelectorFromString("userNotificationCenter:didReceive:withCompletionHandler:"))` is true).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) `SettingsView` window height adaptive — currently fixed at `500`. If future tabs grow taller, bump to `520` or make height computed from tab content.
+  - (b) Integration test for `SleepBlocker.start()` — currently exercised by unit tests that call `IOPMAssertionCreateWithName` on macOS; could add a test that verifies the assertion is actually registered with `IOPMCopyAssertionsByProcess`.
+  - (c) `userNotificationCenter(_:didReceive:withCompletionHandler:)` — DONE in this run.
+  - (d) Make `SettingsView` window height adaptive to content — currently hardcoded to `500` in `AppDelegate`. Tabs could compute their intrinsic height via `GeometryReader` or a `PreferenceKey` and update the window on tab switch.
+  - (e) When session verification shows "not verified", auto-suggest the most-recently-visited blocked site as a potential relevant resource — pull from `HostsFileManager` whitelist and surface it in the callout or notch.
+
+---
+
 ## Run 52 — 2026-06-05
 
 ### Shipped
