@@ -1,5 +1,31 @@
 # Adia — Build Progress
 
+## Run 55 — 2026-06-05
+
+### Shipped
+- **feat: session duration goal with progress arc and countdown**
+  - `Session.targetDuration: TimeInterval?` — new optional field (default `nil`). `decodeIfPresent` for backward compat (old sessions decode to nil). `encodeIfPresent` so nil omits the key from JSON.
+  - `SessionManager.start(targetDuration:)` — new optional parameter (default `nil`), threads the chosen duration into the `Session` init.
+  - **Session creation form** — DURATION chip row: `25m / 45m / 60m / 90m` compact chips between the text field and the clarifying question. Tapping a selected chip deselects it (nil = no limit). White fill + black text for selected state, 10pt semibold text.
+  - **`ProgressDot`** (new private struct in `NotchView.swift`): when `progress` is `nil` renders the original 7×7 colored dot; when set (0…1) renders a 13×13 arc ring (1.5pt stroke) with a 5pt center dot. `CollapsedView` uses a `TimelineView(.periodic(by: 1.0))` to update the arc every second — only when a duration goal is active (no-goal sessions continue using the cheap static `Circle()`).
+  - **`ProgressBar`** (new private struct): full-width 3pt-tall progress bar using `GeometryReader` so the fill accurately scales to available width. Shown in the expanded active-session card below the elapsed timer row, inside a 1s `TimelineView`.
+  - **Remaining time label** in the expanded active-session elapsed row: when target is set, a small secondary label appears alongside the monospaced elapsed timer ("45m left" / "1h 20m left" / "< 1m left" / "done").
+  - `NotchWindowController.creationExpandedHeight` bumped 310 → 348 to accommodate the new chip row.
+  - **Tests (+9)**: `SessionDurationTests` (6 cases — `targetDurationDefaultsToNil`, `targetDurationStoredInInit`, codable round-trip with value, codable round-trip with nil, legacy JSON backward compat decodes as nil, nil not encoded as key); `SessionPersistenceTests` (3 new cases — `saveLoadRoundTripPreservesTargetDuration` (5400s), `targetDurationDefaultsToNilForLegacySession` (key stripped from JSON), `nilTargetDurationRoundTrips`).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) `SettingsView` window height adaptive — currently fixed at `500`. Make height computed from tab content.
+  - (b) Integration test for `SleepBlocker.start()` — verify assertion is registered with `IOPMCopyAssertionsByProcess`.
+  - (c) Keyword extraction edge case: "threading" contains "reading" → returns `"reading"` keyword. Fix with word-boundary regex in `extractTaskKeyword`.
+  - (d) Auto-suggest recently whitelisted domain on "not verified": surface `session.whitelistedDomains.last` in the verification result view.
+  - (e) Template duration memory: when launching a session from a pinned template, let the template optionally store a preferred duration so the user doesn't have to re-select chips.
+
+---
+
 ## Run 54 — 2026-06-05
 
 ### Shipped
