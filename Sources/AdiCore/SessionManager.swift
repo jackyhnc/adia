@@ -227,6 +227,7 @@ public final class SessionManager: ObservableObject {
     private func activate(_ s: Session) async throws {
         callout.reset()                        // clear streak state left over from any prior session
         callout.restore(count: s.calloutCount) // for restored sessions: resume tier escalation
+        callout.setTask(s.task)                // extract keyword so callouts reference the task
         SleepBlocker.shared.start()
         AppMonitor.shared.start(blockedBundleIDs: Set(s.blockedApps))
         await detector.attach(session: s)

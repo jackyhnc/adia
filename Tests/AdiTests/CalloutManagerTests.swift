@@ -341,4 +341,98 @@ struct CalloutManagerTests {
             #expect(CalloutManager.shared.calloutCount == 0)
         }
     }
+
+    // MARK: - Task context keyword extraction
+
+    @Test func extractTaskKeywordFromEssayInput() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my history essay") == "essay")
+        #expect(CalloutManager.extractTaskKeyword(from: "ENGL 101 paper") == "essay")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my thesis") == "essay")
+    }
+
+    @Test func extractTaskKeywordFromCodeInput() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fix the login bug") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish coding the API") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "implement the new feature") == "code")
+    }
+
+    @Test func extractTaskKeywordFromPresentationInput() {
+        #expect(CalloutManager.extractTaskKeyword(from: "make a presentation") == "presentation")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my slides") == "presentation")
+        #expect(CalloutManager.extractTaskKeyword(from: "build the pitch deck") == "presentation")
+    }
+
+    @Test func extractTaskKeywordFromStudyInput() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for biology exam") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "study for the quiz") == "studying")
+    }
+
+    @Test func extractTaskKeywordFromHomeworkInput() {
+        #expect(CalloutManager.extractTaskKeyword(from: "do my homework") == "homework")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the assignment") == "homework")
+    }
+
+    @Test func extractTaskKeywordFromResearchInput() {
+        #expect(CalloutManager.extractTaskKeyword(from: "research on tariffs") == "research")
+    }
+
+    @Test func extractTaskKeywordReturnsNilForGenericInput() {
+        #expect(CalloutManager.extractTaskKeyword(from: "get things done") == nil)
+        #expect(CalloutManager.extractTaskKeyword(from: "work") == nil)
+        #expect(CalloutManager.extractTaskKeyword(from: "") == nil)
+    }
+
+    @Test func setTaskStoresExtractedKeyword() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            CalloutManager.shared.setTask("write my ENGL 101 essay")
+            #expect(CalloutManager.shared.currentTaskKeyword == "essay")
+        }
+    }
+
+    @Test func setTaskWithUnknownTaskStoresNil() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            CalloutManager.shared.setTask("get things done")
+            #expect(CalloutManager.shared.currentTaskKeyword == nil)
+        }
+    }
+
+    @Test func resetClearsTaskKeyword() async {
+        await MainActor.run {
+            CalloutManager.shared.setTask("write my essay")
+            #expect(CalloutManager.shared.currentTaskKeyword == "essay")
+            CalloutManager.shared.reset()
+            #expect(CalloutManager.shared.currentTaskKeyword == nil)
+        }
+    }
+
+    @Test func taskAwareCalloutsContainKeyword() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier1 = manager.taskAwareCallouts(keyword: "essay", tier: 1)
+            let tier2 = manager.taskAwareCallouts(keyword: "essay", tier: 2)
+            let tier3 = manager.taskAwareCallouts(keyword: "essay", tier: 3)
+            #expect(!tier1.isEmpty)
+            #expect(!tier2.isEmpty)
+            #expect(!tier3.isEmpty)
+            #expect(tier1.allSatisfy { $0.contains("essay") })
+            #expect(tier2.allSatisfy { $0.contains("essay") })
+            #expect(tier3.allSatisfy { $0.contains("essay") })
+        }
+    }
+
+    @Test func taskAwareCalloutsSubstituteKeywordPerTier() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let keywords = ["code", "presentation", "homework", "research"]
+            for kw in keywords {
+                for tier in 1...3 {
+                    let msgs = manager.taskAwareCallouts(keyword: kw, tier: tier)
+                    #expect(msgs.allSatisfy { $0.contains(kw) },
+                            "tier \(tier) messages for '\(kw)' must all contain the keyword")
+                }
+            }
+        }
+    }
 }

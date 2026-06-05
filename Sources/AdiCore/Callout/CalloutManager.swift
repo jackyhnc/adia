@@ -21,12 +21,18 @@ public final class CalloutManager {
     /// not by on-task recovery — used for tier escalation across the session.
     public private(set) var calloutCount: Int = 0
 
+    /// Keyword extracted from the current session task (e.g. "essay", "code", "presentation").
+    /// When set, task-specific messages are blended into the tier-1–3 callout pools.
+    private var taskKeyword: String? = nil
+
+    /// Exposed for unit tests — production code mutates this via setTask().
+    internal var currentTaskKeyword: String? { taskKeyword }
+
     // MARK: - Tiered message pools
 
     // Tier 1 (callouts 1–2): friendly but direct
     private static let tier1Callouts: [String] = [
         "yo, what are you doing?",
-        "this isn't your essay.",
         "stop.",
         "back to work.",
         "that's not why you're here.",
@@ -98,6 +104,72 @@ public final class CalloutManager {
         display(message, tier: currentTier())
     }
 
+    // MARK: - Task context
+
+    /// Extracts a focus keyword from the session task and stores it for message blending.
+    /// Call from SessionManager.activate() after reset() so tier escalation is already restored.
+    public func setTask(_ task: String) {
+        taskKeyword = Self.extractTaskKeyword(from: task)
+    }
+
+    /// Derives a one-word subject from a free-text task description.
+    /// Returns nil when no recognizable subject keyword is found — generic pool is used instead.
+    public static func extractTaskKeyword(from task: String) -> String? {
+        let lower = task.lowercased()
+        if lower.contains("essay") || lower.contains("paper") || lower.contains("thesis") {
+            return "essay"
+        }
+        if lower.contains("presentation") || lower.contains("slides") || lower.contains("deck")
+            || lower.contains("powerpoint") || lower.contains("keynote") {
+            return "presentation"
+        }
+        if lower.contains("code") || lower.contains("coding") || lower.contains("programming")
+            || lower.contains("bug") || lower.contains("feature") || lower.contains("function") {
+            return "code"
+        }
+        if lower.contains("report") || lower.contains("document") || lower.contains("doc") {
+            return "report"
+        }
+        if lower.contains("study") || lower.contains("studying") || lower.contains("exam")
+            || lower.contains("quiz") || lower.contains("test") {
+            return "studying"
+        }
+        if lower.contains("reading") || lower.contains("book") || lower.contains("chapter")
+            || lower.contains("article") {
+            return "reading"
+        }
+        if lower.contains("homework") || lower.contains("assignment") || lower.contains("problem set") {
+            return "homework"
+        }
+        if lower.contains("research") {
+            return "research"
+        }
+        return nil
+    }
+
+    /// Returns task-specific callout strings for the given keyword and tier.
+    /// Exposed `internal` so unit tests can inspect message content directly.
+    internal func taskAwareCallouts(keyword: String, tier: Int) -> [String] {
+        switch tier {
+        case 1:
+            return [
+                "get back to your \(keyword).",
+                "this isn't your \(keyword).",
+                "your \(keyword) isn't going to finish itself.",
+            ]
+        case 2:
+            return [
+                "stop putting off your \(keyword).",
+                "you need to work on your \(keyword), not this.",
+            ]
+        default:
+            return [
+                "CLOSE THIS. open your \(keyword).",
+                "your \(keyword) deadline isn't moving.",
+            ]
+        }
+    }
+
     // MARK: - Escalation logic
 
     /// Returns 1, 2, or 3 based on callouts already fired this session.
@@ -155,7 +227,7 @@ public final class CalloutManager {
         calloutCount = count
     }
 
-    /// Full session reset — zeroes calloutCount and clears all state.
+    /// Full session reset — zeroes calloutCount and clears all state including task context.
     /// Called by SessionManager.activate() at session start and by tests between sessions.
     public func reset() {
         autoDismissTask?.cancel()
@@ -165,6 +237,7 @@ public final class CalloutManager {
         hasEscalatedForStreak = false
         lastFiredMessage = nil
         calloutCount = 0
+        taskKeyword = nil
         NotchState.shared.clearCallout()
         NotchState.shared.clearBlocker()
     }
@@ -173,11 +246,17 @@ public final class CalloutManager {
 
     private func fire() {
         let tier = currentTier()
-        let pool: [String]
+        var pool: [String]
         switch tier {
         case 1: pool = Self.tier1Callouts
         case 2: pool = Self.tier2Callouts
         default: pool = Self.tier3Callouts
+        }
+        // Blend in task-specific messages when session context is available.
+        // They're added to — not replacing — the generic pool so generic messages
+        // still fire proportionally. Task-aware messages appear ~(k / n+k) of the time.
+        if let keyword = taskKeyword {
+            pool += taskAwareCallouts(keyword: keyword, tier: tier)
         }
         let candidates = pool.filter { $0 != lastFiredMessage }
         let message = (candidates.isEmpty ? pool : candidates).randomElement() ?? "focus."
