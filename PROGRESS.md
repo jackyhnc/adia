@@ -1,5 +1,31 @@
 # Adia — Build Progress
 
+## Run 56 — 2026-06-05
+
+### Shipped
+- **fix + feat: word-boundary keyword extraction + template duration memory**
+  - `extractTaskKeyword` — replaced all `lower.contains(keyword)` checks with a `word(_ w: String) -> Bool` helper using `String.range(of: "\\b\(w)\\b", options: .regularExpression)`. Fixes false positives: "threading" → no longer matches "reading"; "contest"/"latest"/"protest" → no longer match "test" → "studying"; "facebook" → no longer matches "book" → "reading". All existing keyword tests continue to pass (whole-word inputs like "study", "reading", "test", "book" still match correctly).
+  - `SessionTemplate.preferredDuration: TimeInterval?` — new optional field (default `nil`). Moved struct to manual `Codable` conformance (extension) with `decodeIfPresent` / `encodeIfPresent` for full backward compat: old JSON without the key decodes to `nil`, `nil` is not written to JSON.
+  - `SessionTemplateStore.add(task:successCriteria:preferredDuration:)` — new optional `preferredDuration` param (default `nil`). Both the "new template" and "deduplication update" paths now persist the duration. So re-pinning a task with a different chip selection updates the stored duration.
+  - `SessionTemplateStore.update(id:task:successCriteria:preferredDuration:)` — same, accepts and stores `preferredDuration`.
+  - **`launchTemplate`** in `NotchView` — passes `t.preferredDuration` as `targetDuration` to `SessionManager.shared.start`. Template launches now automatically restore the progress arc and countdown from Run 55 without the user having to re-select a chip.
+  - **Template pin in creation form** — the `shouldPin` path now passes `durationSeconds` as `preferredDuration: durationSeconds` to `SessionTemplateStore.shared.add`, so the chip selection at creation time is remembered in the template.
+  - **`templateButton`** — shows a small monospaced duration badge (e.g. "25m", "1h", "1h30m") to the right of the task name when `preferredDuration != nil`. Uses `templateDurationLabel(_ seconds:)` private helper that formats minutes < 60 as "Nm", exact hours as "Nh", and mixed as "NhMm".
+  - **Tests (+13)**: `extractTaskKeywordIgnoresReadingInsideThreading` (2 inputs), `extractTaskKeywordIgnoresTestInsideContest` (contest/latest/protest × 3 inputs), `extractTaskKeywordIgnoresBookInsideFacebook`, `extractTaskKeywordStillMatchesStandaloneWords` (reading/studying/article × 3); template duration: `addWithPreferredDurationStoresIt`, `addWithoutPreferredDurationDefaultsToNil`, `addDuplicateTaskUpdatesPreferredDuration`, `addDuplicateTaskClearsPreferredDurationWhenNil`, `updateWithPreferredDurationStoresIt`, `preferredDurationSurvivesCodecRoundTrip`, `legacyJSONWithoutPreferredDurationDecodesAsNil`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) `SettingsView` window height adaptive — currently fixed at `500`. Make height computed from tab content.
+  - (b) Integration test for `SleepBlocker.start()` — verify assertion is registered with `IOPMCopyAssertionsByProcess`.
+  - (c) Keyword extraction: could add "lab" → "research", "pset" → "homework", "midterm" → "studying" for more student-centric inputs.
+  - (d) Auto-suggest recently whitelisted domain on "not verified": surface `session.whitelistedDomains.last` in the verification result view.
+  - (e) Template edit UI in SettingsView — currently templates can only be reordered/deleted; no way to edit task text or success criteria in-place without re-creating.
+
+---
+
 ## Run 55 — 2026-06-05
 
 ### Shipped
