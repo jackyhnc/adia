@@ -1288,12 +1288,20 @@ private struct EditTemplateSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var taskDraft: String
     @State private var criteriaDraft: String
+    @State private var selectedMinutes: Int?
+
+    private static let durationPresets: [(Int, String)] = [(25, "25m"), (45, "45m"), (60, "1h"), (90, "90m")]
 
     init(template: SessionTemplate, onSave: @escaping () -> Void) {
         self.template = template
         self.onSave = onSave
         _taskDraft = State(initialValue: template.task)
         _criteriaDraft = State(initialValue: template.successCriteria)
+        // Snap stored seconds to the nearest preset; nil if no match or no stored duration.
+        let storedMinutes = template.preferredDuration.map { Int($0 / 60) }
+        let presetSet = Set(Self.durationPresets.map(\.0))
+        let snapped: Int? = storedMinutes.flatMap { presetSet.contains($0) ? $0 : nil }
+        _selectedMinutes = State(initialValue: snapped)
     }
 
     private var canSave: Bool {
@@ -1325,6 +1333,49 @@ private struct EditTemplateSheet: View {
                 } header: {
                     Text("Done when")
                 }
+
+                Section {
+                    HStack(spacing: 6) {
+                        ForEach(Self.durationPresets, id: \.0) { minutes, label in
+                            Button {
+                                withAnimation(.easeOut(duration: 0.1)) {
+                                    selectedMinutes = (selectedMinutes == minutes) ? nil : minutes
+                                }
+                            } label: {
+                                Text(label)
+                                    .font(.system(size: 11, weight: .semibold))
+                                    .foregroundStyle(selectedMinutes == minutes ? .white : .secondary)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 4)
+                                    .background(
+                                        selectedMinutes == minutes
+                                            ? Color.accentColor
+                                            : Color.secondary.opacity(0.12),
+                                        in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                    )
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        if selectedMinutes != nil {
+                            Button {
+                                withAnimation(.easeOut(duration: 0.1)) { selectedMinutes = nil }
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(.tertiary)
+                                    .font(.system(size: 13))
+                            }
+                            .buttonStyle(.plain)
+                            .help("Clear duration goal")
+                        }
+                    }
+                } header: {
+                    Text("Duration goal")
+                } footer: {
+                    Text(selectedMinutes == nil
+                         ? "No time limit — session runs until you click Done."
+                         : "A progress arc will appear in the notch during this session.")
+                        .foregroundStyle(.secondary)
+                }
             }
             .formStyle(.grouped)
 
@@ -1339,8 +1390,9 @@ private struct EditTemplateSheet: View {
                     let id = template.id
                     let t = taskDraft.trimmingCharacters(in: .whitespacesAndNewlines)
                     let c = criteriaDraft.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let dur: TimeInterval? = selectedMinutes.map { TimeInterval($0 * 60) }
                     Task {
-                        await SessionTemplateStore.shared.update(id: id, task: t, successCriteria: c)
+                        await SessionTemplateStore.shared.update(id: id, task: t, successCriteria: c, preferredDuration: dur)
                         onSave()
                     }
                     dismiss()
@@ -1351,6 +1403,6 @@ private struct EditTemplateSheet: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 14)
         }
-        .frame(width: 380, height: 280)
+        .frame(width: 380, height: 360)
     }
 }

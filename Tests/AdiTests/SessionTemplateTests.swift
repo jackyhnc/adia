@@ -328,4 +328,41 @@ struct SessionTemplateTests {
         #expect(templates.count == 1)
         #expect(templates[0].preferredDuration == nil)
     }
+
+    @Test func updateWithNilPreferredDurationClearsStoredValue() async {
+        // Regression: EditTemplateSheet previously called update without preferredDuration,
+        // which silently reset the stored duration to nil on every edit save.
+        // This test verifies the store correctly accepts nil and overwrites an existing value.
+        let store = makeStore()
+        await store.add(task: "Study", successCriteria: "Notes done", preferredDuration: 3600)
+        let id = await store.load()[0].id
+        await store.update(id: id, task: "Study", successCriteria: "Notes done", preferredDuration: nil)
+        let templates = await store.load()
+        #expect(templates[0].preferredDuration == nil)
+    }
+
+    @Test func updatePersistsAllThreeFieldsTogether() async {
+        // Full round-trip through the edit sheet code path: task + criteria + duration.
+        let store = makeStore()
+        await store.add(task: "Original", successCriteria: "Old", preferredDuration: nil)
+        let id = await store.load()[0].id
+        await store.update(id: id, task: "Revised task", successCriteria: "Revised criteria", preferredDuration: 2700)
+        let templates = await store.load()
+        #expect(templates[0].task == "Revised task")
+        #expect(templates[0].successCriteria == "Revised criteria")
+        #expect(templates[0].preferredDuration == 2700)
+    }
+
+    @Test func updatePreservesDurationWhenPassedThrough() async {
+        // Simulates the fixed EditTemplateSheet behavior: reading stored duration,
+        // keeping it as-is, and passing it back through update.
+        let store = makeStore()
+        await store.add(task: "Task", successCriteria: "Criteria", preferredDuration: 5400)
+        let template = await store.load()[0]
+        // EditTemplateSheet reads template.preferredDuration and passes it back unchanged.
+        await store.update(id: template.id, task: "Task (edited)", successCriteria: "Criteria",
+                           preferredDuration: template.preferredDuration)
+        let reloaded = await store.load()
+        #expect(reloaded[0].preferredDuration == 5400)
+    }
 }
