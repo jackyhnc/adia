@@ -1,5 +1,26 @@
 # Adia — Build Progress
 
+## Run 52 — 2026-06-05
+
+### Shipped
+- **feat: UNUserNotificationCenterDelegate — notifications fire while app is frontmost**
+  - `SessionNotifier` now extends `NSObject` and conforms to `UNUserNotificationCenterDelegate`.
+  - `init()` sets `UNUserNotificationCenter.current().delegate = self` so macOS invokes `willPresent(_:withCompletionHandler:)` instead of silently suppressing banners when Adia is the active application.
+  - `willPresent` returns `[.banner, .sound]` via `foregroundPresentationOptions` (a `nonisolated static let` constant so the `nonisolated` delegate method can read it without an actor hop, Swift 6-clean).
+  - `foregroundPresentationOptions` is public so tests can verify the value without needing a real `UNNotification` instance.
+  - **Tests (+3)** in `SessionNotifierTests.swift`: `sharedIsRegisteredAsNotificationDelegate` (checks `UNUserNotificationCenter.current().delegate === SessionNotifier.shared`), `conformsToUNUserNotificationCenterDelegate` (protocol conformance check), `foregroundPresentationOptionsIncludeBannerAndSound` (verifies `.banner` and `.sound` are both present).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) `SettingsView` window height adaptive — currently fixed at `500`. If future tabs grow taller, bump to `520` or make height computed from tab content.
+  - (b) Integration test for `SleepBlocker.start()` — currently exercised by unit tests that call `IOPMAssertionCreateWithName` on macOS; could add a test that verifies the assertion is actually registered with `IOPMCopyAssertionsByProcess`.
+  - (c) `userNotificationCenter(_:didReceive:withCompletionHandler:)` — handle user tapping the notification banner to bring the Adia notch into focus (expand the notch panel). Currently the delegate doesn't implement this method so tapping the banner does nothing.
+
+---
+
 ## Run 51 — 2026-06-05
 
 ### Shipped
