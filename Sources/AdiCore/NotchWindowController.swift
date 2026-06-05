@@ -48,7 +48,7 @@ public final class NotchWindowController: NSWindowController {
     private static let calloutExpandedHeight: CGFloat   = 302
     // Tier-3 callout uses larger font + more padding, needing 20pt more room.
     private static let tier3CalloutExpandedHeight: CGFloat = 322
-    private static let creationExpandedHeight: CGFloat  = 310
+    private static let creationExpandedHeight: CGFloat  = 348
     private static let conversationHeight: CGFloat      = 430
     private static let verificationHeight: CGFloat      = 250
     /// Extra height when the verification panel shows a scrollable history of past attempts.

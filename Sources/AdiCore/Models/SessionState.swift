@@ -61,6 +61,8 @@ public struct Session: Sendable, Identifiable {
     public var calloutCount: Int
     /// Verification attempts made this session. Persisted so attempt numbering survives a crash/relaunch.
     public var verificationHistory: [VerificationAttempt]
+    /// Optional target work duration in seconds. nil = no goal. Shown as a progress arc in the collapsed notch.
+    public var targetDuration: TimeInterval?
 
     public init(
         id: UUID = UUID(),
@@ -72,7 +74,8 @@ public struct Session: Sendable, Identifiable {
         blockedDomains: [String] = Session.defaultBlockedDomains,
         blockedApps: [String] = Session.defaultBlockedAppBundleIDs,
         calloutCount: Int = 0,
-        verificationHistory: [VerificationAttempt] = []
+        verificationHistory: [VerificationAttempt] = [],
+        targetDuration: TimeInterval? = nil
     ) {
         self.id = id
         self.task = task
@@ -84,6 +87,7 @@ public struct Session: Sendable, Identifiable {
         self.blockedApps = blockedApps
         self.calloutCount = calloutCount
         self.verificationHistory = verificationHistory
+        self.targetDuration = targetDuration
     }
 
     public var elapsed: TimeInterval { Date().timeIntervalSince(startTime) }
@@ -130,7 +134,7 @@ extension Session: Codable {
     private enum CodingKeys: String, CodingKey {
         case id, task, successCriteria, startTime, phase
         case whitelistedDomains, blockedDomains, blockedApps, calloutCount
-        case verificationHistory
+        case verificationHistory, targetDuration
     }
 
     public init(from decoder: Decoder) throws {
@@ -149,6 +153,8 @@ extension Session: Codable {
         calloutCount = (try? c.decode(Int.self, forKey: .calloutCount)) ?? 0
         // Gracefully decode missing key (old sessions pre-verification-history).
         verificationHistory = (try? c.decode([VerificationAttempt].self, forKey: .verificationHistory)) ?? []
+        // Gracefully decode missing key (old sessions without duration goal).
+        targetDuration = try? c.decode(TimeInterval.self, forKey: .targetDuration)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -163,5 +169,6 @@ extension Session: Codable {
         try c.encode(blockedApps,         forKey: .blockedApps)
         try c.encode(calloutCount,        forKey: .calloutCount)
         try c.encode(verificationHistory, forKey: .verificationHistory)
+        try c.encodeIfPresent(targetDuration, forKey: .targetDuration)
     }
 }

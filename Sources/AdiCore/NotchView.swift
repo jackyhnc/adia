@@ -51,6 +51,58 @@ private struct NotchIslandShape: Shape {
     }
 }
 
+// MARK: - Progress dot (collapsed notch indicator)
+
+/// Shows a plain colored dot when `progress` is nil, or a thin arc ring with a
+/// center dot when `progress` is set (0…1). Used in the collapsed notch to visualise
+/// progress toward a target duration.
+private struct ProgressDot: View {
+    let color: Color
+    let progress: Double?
+
+    var body: some View {
+        if let p = progress {
+            ZStack {
+                Circle()
+                    .stroke(color.opacity(0.2), lineWidth: 1.5)
+                Circle()
+                    .trim(from: 0, to: CGFloat(p))
+                    .stroke(color, style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                Circle()
+                    .fill(color)
+                    .frame(width: 5, height: 5)
+            }
+            .frame(width: 13, height: 13)
+        } else {
+            Circle()
+                .fill(color)
+                .frame(width: 7, height: 7)
+        }
+    }
+}
+
+// MARK: - Progress bar (expanded active session)
+
+/// Full-width horizontal progress bar — 3pt tall. Uses GeometryReader to fill the
+/// available width so the fill accurately reflects `progress` (0…1).
+private struct ProgressBar: View {
+    let progress: CGFloat
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 1.5, style: .continuous)
+                    .fill(Color.white.opacity(0.08))
+                RoundedRectangle(cornerRadius: 1.5, style: .continuous)
+                    .fill(Color.white.opacity(0.5))
+                    .frame(width: geo.size.width * max(0, min(1, progress)))
+            }
+        }
+        .frame(height: 3)
+    }
+}
+
 // MARK: - Collapsed pill
 
 private struct CollapsedView: View {
@@ -60,9 +112,19 @@ private struct CollapsedView: View {
 
     var body: some View {
         HStack(spacing: 5) {
-            Circle()
-                .fill(dotColor)
-                .frame(width: 7, height: 7)
+            // Dot — shows a progress arc when a target duration is set for the active session.
+            if let s = session.session, s.targetDuration != nil {
+                TimelineView(.periodic(from: s.startTime, by: 1.0)) { ctx in
+                    let elapsed = max(0, ctx.date.timeIntervalSince(s.startTime))
+                    let progress = s.targetDuration.map { min(1.0, elapsed / $0) }
+                    ProgressDot(color: dotColor, progress: progress)
+                }
+            } else {
+                Circle()
+                    .fill(dotColor)
+                    .frame(width: 7, height: 7)
+            }
+
             if let s = session.session {
                 TimelineView(.periodic(from: s.startTime, by: 60)) { ctx in
                     Text(collapsedElapsed(from: s.startTime, to: ctx.date))
@@ -231,12 +293,28 @@ private struct ExpandedView: View {
 
                 HStack(alignment: .center) {
                     TimelineView(.periodic(from: s.startTime, by: 1.0)) { ctx in
-                        Text(elapsed(from: s.startTime, to: ctx.date))
-                            .font(.system(size: 12, weight: .medium, design: .monospaced))
-                            .foregroundStyle(.white.opacity(0.6))
+                        HStack(spacing: 8) {
+                            Text(elapsed(from: s.startTime, to: ctx.date))
+                                .font(.system(size: 12, weight: .medium, design: .monospaced))
+                                .foregroundStyle(.white.opacity(0.6))
+                            if let target = s.targetDuration {
+                                let remaining = max(0, target - ctx.date.timeIntervalSince(s.startTime))
+                                Text(durationRemaining(remaining))
+                                    .font(.system(size: 10, weight: .medium))
+                                    .foregroundStyle(.white.opacity(0.35))
+                            }
+                        }
                     }
                     Spacer()
                     StatusBadge(status: session.onTaskStatus)
+                }
+
+                if let target = s.targetDuration {
+                    TimelineView(.periodic(from: s.startTime, by: 1.0)) { ctx in
+                        let progress = min(1.0, ctx.date.timeIntervalSince(s.startTime) / target)
+                        ProgressBar(progress: CGFloat(progress))
+                    }
+                    .frame(height: 3)
                 }
             }
             .padding(.horizontal, 16)
@@ -358,6 +436,17 @@ private struct ExpandedView: View {
         return h > 0
             ? String(format: "%d:%02d:%02d", h, m, s)
             : String(format: "%02d:%02d", m, s)
+    }
+
+    private func durationRemaining(_ seconds: TimeInterval) -> String {
+        guard seconds > 0 else { return "done" }
+        let total = Int(seconds)
+        let h = total / 3600
+        let m = (total % 3600) / 60
+        if h > 0 && m > 0 { return "\(h)h \(m)m left" }
+        if h > 0 { return "\(h)h left" }
+        if m > 0 { return "\(m)m left" }
+        return "< 1m left"
     }
 }
 
@@ -512,7 +601,10 @@ private struct SessionCreationFormView: View {
     @State private var clarifyingQuestion: String?
     @State private var isThinking: Bool = false
     @State private var pinAsTemplate: Bool = false
+    @State private var targetMinutes: Int? = nil
     @FocusState private var inputFocused: Bool
+
+    private let durationPresets: [(Int, String)] = [(25, "25m"), (45, "45m"), (60, "1h"), (90, "90m")]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -549,6 +641,34 @@ private struct SessionCreationFormView: View {
                             ? Color.orange.opacity(0.5)
                             : Color.white.opacity(0.10), lineWidth: 0.5)
             )
+
+            // Duration goal — optional quick-select chips. Tapping a selected chip deselects it.
+            HStack(spacing: 0) {
+                Text("DURATION")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.3))
+                    .tracking(1.5)
+                Spacer()
+                HStack(spacing: 4) {
+                    ForEach(durationPresets, id: \.0) { minutes, label in
+                        Button {
+                            withAnimation(.easeOut(duration: 0.1)) {
+                                targetMinutes = (targetMinutes == minutes) ? nil : minutes
+                            }
+                        } label: {
+                            Text(label)
+                                .font(.system(size: 10, weight: .semibold))
+                                .foregroundStyle(targetMinutes == minutes ? .black : .white.opacity(0.5))
+                                .padding(.horizontal, 7)
+                                .padding(.vertical, 3)
+                                .background(targetMinutes == minutes ? Color.white : Color.white.opacity(0.08))
+                                .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+            .padding(.top, 8)
 
             // Adia asks for more detail when the goal is too vague to verify.
             if let q = clarifyingQuestion {
@@ -621,6 +741,7 @@ private struct SessionCreationFormView: View {
         isThinking = true
         clarifyingQuestion = nil
         let shouldPin = pinAsTemplate
+        let durationSeconds: TimeInterval? = targetMinutes.map { TimeInterval($0 * 60) }
         Task { @MainActor in
             defer { isThinking = false }
             do {
@@ -640,7 +761,7 @@ private struct SessionCreationFormView: View {
                     "taskLength": String(task.count),
                     "criteriaLength": String(criteria.count)
                 ])
-                try await session.start(task: task, successCriteria: criteria)
+                try await session.start(task: task, successCriteria: criteria, targetDuration: durationSeconds)
                 if shouldPin {
                     Task { await SessionTemplateStore.shared.add(task: task, successCriteria: criteria) }
                 }

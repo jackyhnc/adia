@@ -47,6 +47,51 @@ struct SessionModelTests {
     }
 }
 
+@Suite("Session duration goal")
+struct SessionDurationTests {
+
+    @Test func targetDurationDefaultsToNil() {
+        let s = Session(task: "t", successCriteria: "c")
+        #expect(s.targetDuration == nil)
+    }
+
+    @Test func targetDurationStoredInInit() {
+        let s = Session(task: "t", successCriteria: "c", targetDuration: 5400)
+        #expect(s.targetDuration == 5400)
+    }
+
+    @Test func targetDurationPreservedInCodableRoundTrip() throws {
+        let s = Session(task: "t", successCriteria: "c", targetDuration: 5400)
+        let data = try JSONEncoder().encode(s)
+        let decoded = try JSONDecoder().decode(Session.self, from: data)
+        #expect(decoded.targetDuration == 5400)
+    }
+
+    @Test func nilTargetDurationPreservedInCodableRoundTrip() throws {
+        let s = Session(task: "t", successCriteria: "c", targetDuration: nil)
+        let data = try JSONEncoder().encode(s)
+        let decoded = try JSONDecoder().decode(Session.self, from: data)
+        #expect(decoded.targetDuration == nil)
+    }
+
+    @Test func legacySessionWithoutTargetDurationDecodesAsNil() throws {
+        let s = Session(task: "old task", successCriteria: "c", phase: .active, targetDuration: 3600)
+        let encoded = try JSONEncoder().encode(s)
+        var dict = try #require((try JSONSerialization.jsonObject(with: encoded)) as? [String: Any])
+        dict.removeValue(forKey: "targetDuration")
+        let stripped = try JSONSerialization.data(withJSONObject: dict)
+        let decoded = try JSONDecoder().decode(Session.self, from: stripped)
+        #expect(decoded.targetDuration == nil)
+    }
+
+    @Test func targetDurationNotEncodedWhenNil() throws {
+        let s = Session(task: "t", successCriteria: "c", targetDuration: nil)
+        let data = try JSONEncoder().encode(s)
+        let dict = try #require((try JSONSerialization.jsonObject(with: data)) as? [String: Any])
+        #expect(dict["targetDuration"] == nil)
+    }
+}
+
 @Suite("ChatMessage")
 struct ChatMessageTests {
 

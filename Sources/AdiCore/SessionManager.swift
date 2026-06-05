@@ -26,7 +26,7 @@ public final class SessionManager: ObservableObject {
 
     // MARK: - Session lifecycle
 
-    public func start(task: String, successCriteria: String) async throws {
+    public func start(task: String, successCriteria: String, targetDuration: TimeInterval? = nil) async throws {
         AppLogger.info("session.start_requested", [
             "taskLength": String(task.count),
             "criteriaLength": String(successCriteria.count)
@@ -36,7 +36,8 @@ public final class SessionManager: ObservableObject {
             successCriteria: successCriteria,
             phase: .active,
             blockedDomains: SettingsStore.shared.effectiveBlockedDomains,
-            blockedApps: SettingsStore.shared.effectiveBlockedApps
+            blockedApps: SettingsStore.shared.effectiveBlockedApps,
+            targetDuration: targetDuration
         )
         do {
             try await activate(s)
