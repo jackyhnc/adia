@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 61 — 2026-06-06
+
+### Shipped
+- **feat: haptic feedback on task completion + fix verified card panel height**
+  - `SessionManager.verifyAndEnd()` — fires `NSHapticFeedbackManager.defaultPerformer.perform(.levelChange, ...)` when Claude marks the session verified. Gives a satisfying physical confirmation on MacBooks with Force Touch trackpad at the exact moment of success. `#if canImport(AppKit)` guarded.
+  - `NotchWindowController.targetFrame` — new `verifiedCardHeight = 210` constant. When `verificationResult?.verified == true` the panel uses this compact height instead of the shared `verificationHistoryHeight = 350`. Verified cards never show the scrollable previous-attempts section, so 350pt left ~140pt of empty space below the "End Session" button on third-attempt success runs.
+  - `NotchWindowController.observeState` — added `$calloutTier` Combine sink. Previous code only subscribed to `$calloutMessage`; if the same message string fired at a higher tier, the panel would not resize from `calloutExpandedHeight` (302) to `tier3CalloutExpandedHeight` (322). Now tier escalation always triggers a reposition even if the message text is identical.
+  - **Tests (+2)** in `NotchStateTests`: `verifiedResultSignalsVerifiedFlagRegardlessOfHistoryCount` (3-attempt session ending in verified → `verificationResult.verified==true` even with `history.count==3`, confirming the compact-height branch fires); `notVerifiedWithHistorySignalsHistoryHeight` (2 failed attempts → `verified==false` and `count>1`, confirming the history-height branch fires).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) `SettingsView` window height adaptive — currently fixed at `500`. Could use a custom tab switcher so each tab reports its natural height.
+  - (b) Integration test for `SleepBlocker.start()` — verify assertion is registered with `IOPMCopyAssertionsByProcess`.
+  - (c) Onboarding permission step: the "reveal in Finder" UX — on M1/Intel the Adia binary may need to be dragged from within the bundle's Contents/MacOS folder to grant permission. Could improve discoverability.
+  - (d) Second haptic "tada" pattern: two rapid `.levelChange` pulses (50ms apart via `Task.sleep`) instead of a single pulse for a more celebratory feel. Would need careful testing on hardware to verify it doesn't feel jarring.
+  - (e) `calloutTier` sink newly added — could verify with an integration test that tier-3 fires a `Funk` NSSound (currently only verifiable on hardware).
+
+---
+
 ## Run 60 — 2026-06-06
 
 ### Shipped
