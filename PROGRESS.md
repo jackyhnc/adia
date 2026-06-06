@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 64 — 2026-06-06
+
+### Shipped
+- **feat: focus score tracking — on-task % per session, surfaced in completion card + history**
+  - `SessionManager`: `@Published onTaskCheckCount: Int` and `@Published totalCheckCount: Int` — incremented in `handleFrame()` on every AI classification result; `focusScore: Double?` computed property (nil when totalCheckCount == 0). Both counters reset to 0 in `activate()` (new session / restore) and again in `endSession()` (clean state for next session). `_injectCheckCountsForTesting(onTask:total:)` test helper added alongside the existing session-inject helper.
+  - `SessionRecord`: new `onTaskChecks: Int` and `totalChecks: Int` fields. Manual `Codable` extension with `decodeIfPresent ?? 0` backward compat so all existing history records decode cleanly. `focusScore: Double?` computed property (nil when `totalChecks == 0`). CSV export gains a "Focus Score (%)" column (empty string for pre-feature records, integer percentage for new ones).
+  - `NotchView` — completion stats row: when `session.focusScore != nil && session.totalCheckCount >= 5`, appends `· 87% focused` with an SF Symbol `target` icon next to the elapsed time and callout count. The `>= 5` guard filters out sessions too short to have statistically meaningful sample sizes.
+  - `SettingsView` — `SessionRecordRow` summary caption: same `>= 5` guard + `"87% focused"` label after callouts. `SessionRecordRow` detail panel: new `"Focus score"` field shows `"87%"` in the `HStack` alongside Duration and Callouts.
+  - **Tests (+10)**: `SessionManagerTests` — `onTaskCheckCountDefaultsToZero`, `totalCheckCountDefaultsToZero`, `focusScoreNilWhenNoChecksEvaluated`, `focusScoreReflectsInjectedCounts`; `SessionHistoryTests` — `focusScoreNilWhenTotalChecksIsZero`, `focusScoreWhenAllOnTask`, `focusScoreWhenPartiallyOnTask`, `focusScoreWhenNoneOnTask`, `focusScoreRoundTripsThroughJSON`, `legacyJSONWithoutCheckCountsDecodesWithZeroAndNilFocusScore`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Onboarding Screen Recording permission: the "reveal in Finder" UX could be improved — change `Bundle.main.bundleURL` to `Bundle.main.executableURL` in `requestPermission()` so Finder reveals the binary inside `Contents/MacOS/` rather than the app bundle, matching macOS's expectations when dragging into Screen Recording privacy list.
+  - (b) Focus score threshold tuning — currently `>= 5` total checks required to show. Could expose this as a constant in `SessionManager` so it's easy to adjust via tests.
+  - (c) SettingsView History tab: could add a "Focus score" column to the bulk-select/export view for at-a-glance comparison across sessions.
+  - (d) Session note field in completion card: currently only editable in the History settings tab. Could add a quick note field on the completion stats card so users can annotate sessions immediately after finishing.
+
+---
+
 ## Run 63 — 2026-06-06
 
 ### Shipped
