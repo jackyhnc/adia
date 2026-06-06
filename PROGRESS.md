@@ -1,5 +1,28 @@
 # Adia — Build Progress
 
+## Run 62 — 2026-06-06
+
+### Shipped
+- **feat: double haptic "tada" at session completion + IOPMCopyAssertionsByProcess integration tests**
+  - `HapticPlayer` (new `@MainActor enum` in `SessionManager.swift`): centralises Force Touch feedback. `successPulseDelay: Duration = .milliseconds(50)` is a `nonisolated static let` so tests can access it without a main-actor hop. `performSuccess() async` fires two `.levelChange` pulses 50 ms apart via `NSHapticFeedbackManager.defaultPerformer` — the trackpad registers them as two distinct events, producing a "tada" double-beat instead of the previous single pulse. `#if canImport(AppKit)` guard means the call is a no-op on non-macOS and on Macs without Force Touch hardware.
+  - `SessionManager.verifyAndEnd()` — replaced the inline `#if canImport(AppKit) NSHapticFeedbackManager … #endif` block with `await HapticPlayer.performSuccess()`. Cleaner, testable, and the 50 ms await still comfortably precedes the 5-second stats-card display window.
+  - **Tests (+2)** in `SessionManagerTests`: `hapticSuccessPulseDelayIs50ms` (asserts the constant is exactly 50 ms — change requires an intentional commit); `hapticPlayerPerformSuccessCompletesWithoutHanging` (awaits the function directly from the test — if it deadlocked the test runner would time out; passing proves the async path terminates cleanly).
+  - **`SleepBlockerTests`** — `import IOKit.pwr_mgt` added under `#if canImport(IOKit)`. Two new integration tests that query the real OS assertion table:
+    - `startRegistersAssertionWithOS`: calls `SleepBlocker.shared.start()`, then `IOPMCopyAssertionsByProcess`, looks for an assertion named `"Adia focus session"` under the test process's PID. Skips gracefully (early return) when `IOPMCopyAssertionsByProcess` returns non-success (sandboxed CI). Uses `Issue.record` rather than `#expect(false)` so the failure is diagnostic when the PID entry is missing.
+    - `stopRemovesAssertionFromOS`: starts then immediately stops, queries again, asserts the assertion is absent — verifying `IOPMAssertionRelease` actually de-registers it from the OS table, not just clearing our internal flag.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) `SettingsView` window height adaptive — currently fixed at `500`. Could use a per-tab height map driven by `@AppStorage("settingsSelectedTab")` or a `PreferenceKey`.
+  - (b) Onboarding permission step: the "reveal in Finder" UX — on M1/Intel the Adia binary may need to be dragged from within the bundle's `Contents/MacOS` folder to grant Screen Recording permission. Could improve discoverability.
+  - (c) `HapticPlayer.performSuccess` second-pulse timing — current 50 ms is a constant. Could expose a `secondPulseDelay` in `SettingsStore` for A/B testing on hardware, but probably overkill.
+  - (d) `SleepBlocker` assertion name localisation — "Adia focus session" is hardcoded as a CFString literal. Could derive it from `Bundle.main.bundleIdentifier` or `kCFBundleNameKey` so it updates automatically if the app name changes.
+
+---
+
 ## Run 61 — 2026-06-06
 
 ### Shipped

@@ -150,13 +150,7 @@ public final class SessionManager: ObservableObject {
             if result.verified {
                 sessionEndedSuccessfully = true
                 SessionNotifier.shared.sendSessionComplete(task: s.task)
-                #if canImport(AppKit)
-                // Haptic pulse on the Force Touch trackpad — gives a satisfying physical
-                // confirmation the moment the AI marks the session complete.
-                NSHapticFeedbackManager.defaultPerformer.perform(
-                    .levelChange, performanceTime: .default
-                )
-                #endif
+                await HapticPlayer.performSuccess()
                 // Give the user up to 5s to read their stats and click End Session.
                 // If they click the button first, session becomes nil and the guard below
                 // prevents a redundant endSession() call.
@@ -267,5 +261,27 @@ public final class SessionManager: ObservableObject {
             NotchState.shared.showCallout("Couldn't start screen monitoring: \(error.localizedDescription)")
             throw error
         }
+    }
+}
+
+// MARK: - HapticPlayer
+
+/// Delivers Force Touch haptic feedback at key moments.
+/// The two-pulse success sequence is more celebratory than a single pulse — the second
+/// beat lands ~50 ms after the first, which the trackpad registers as a distinct event.
+@MainActor
+enum HapticPlayer {
+    /// Gap between the two success pulses. Short enough to feel simultaneous, long enough
+    /// for the trackpad firmware to fire two separate actuations.
+    nonisolated static let successPulseDelay: Duration = .milliseconds(50)
+
+    /// Fires two rapid `.levelChange` pulses for a "tada" feel on verified session completion.
+    /// Safe to call on Macs without a Force Touch trackpad — the call is silently ignored.
+    static func performSuccess() async {
+        #if canImport(AppKit)
+        NSHapticFeedbackManager.defaultPerformer.perform(.levelChange, performanceTime: .default)
+        try? await Task.sleep(for: successPulseDelay)
+        NSHapticFeedbackManager.defaultPerformer.perform(.levelChange, performanceTime: .default)
+        #endif
     }
 }

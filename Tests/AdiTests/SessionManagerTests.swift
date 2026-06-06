@@ -133,4 +133,17 @@ struct SessionManagerTests {
         #expect(loaded == nil, "stale session should be discarded by load()")
         SessionPersistence.shared.clear()
     }
+
+    // MARK: - HapticPlayer
+
+    @Test func hapticSuccessPulseDelayIs50ms() {
+        #expect(HapticPlayer.successPulseDelay == .milliseconds(50))
+    }
+
+    @Test func hapticPlayerPerformSuccessCompletesWithoutHanging() async {
+        // On hardware without a Force Touch trackpad the #if canImport(AppKit) block
+        // is a no-op. On Force Touch hardware the two pulses fire 50 ms apart.
+        // Either way performSuccess() must return — the await here enforces it.
+        await HapticPlayer.performSuccess()
+    }
 }
