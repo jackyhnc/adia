@@ -116,6 +116,8 @@ public final class NotchWindowController: NSWindowController {
         NotchState.shared.$calloutTier.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         // Session start/end changes the height between idle (220pt) and active (190pt).
         SessionManager.shared.$session.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        // Timer expiry shows the amber banner at the same height as a tier-1 callout.
+        SessionManager.shared.$timerExpired.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         // Template count changes idle height.
         NotchState.shared.$idleTemplateCount.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         NotchState.shared.$idleHasNote.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
@@ -193,6 +195,9 @@ public final class NotchWindowController: NSWindowController {
             h = Self.creationExpandedHeight
         } else if state.calloutMessage != nil {
             h = state.calloutTier >= 3 ? Self.tier3CalloutExpandedHeight : Self.calloutExpandedHeight
+        } else if SessionManager.shared.timerExpired {
+            // Amber "time's up" banner: same footprint as a tier-1 callout banner.
+            h = Self.calloutExpandedHeight
         } else if SessionManager.shared.session == nil {
             let tc = CGFloat(min(state.idleTemplateCount, 2))
             h = Self.idleExpandedHeight + tc * Self.perTemplateHeight + (state.idleHasNote ? Self.idleNoteHeight : 0)

@@ -11,6 +11,9 @@ public final class SessionManager: ObservableObject {
 
     @Published public private(set) var session: Session?
     @Published public private(set) var onTaskStatus: OnTaskStatus = .onTask
+    /// True from the moment the session's target duration elapses until the session ends.
+    /// Triggers the notch to auto-expand and show the "time's up" banner.
+    @Published public private(set) var timerExpired: Bool = false
     /// Minimum number of AI classification frames required before the focus score is
     /// considered statistically meaningful and shown in the UI.
     public static let minChecksForFocusScore: Int = 5
@@ -36,6 +39,9 @@ public final class SessionManager: ObservableObject {
     // Set to true just before endSession() when verification succeeded, so the
     // history record knows whether the session was completed or exited early.
     private var sessionEndedSuccessfully = false
+
+    /// Fires when the session's target duration elapses. Cancelled by endSession().
+    private var durationTimerTask: Task<Void, Never>?
 
     /// Captures the most-recently-created SessionRecord. Only written inside endSession().
     /// Exposed for unit tests; nil until the first session ends in this process lifetime.
@@ -114,6 +120,9 @@ public final class SessionManager: ObservableObject {
         sessionEndedSuccessfully = false
         onTaskCheckCount = 0
         totalCheckCount  = 0
+        durationTimerTask?.cancel()
+        durationTimerTask = nil
+        timerExpired = false
 
         captureManager.stop()
         AppMonitor.shared.stop()
@@ -247,6 +256,15 @@ public final class SessionManager: ObservableObject {
 
     // MARK: - Test helpers
 
+    /// Called when the session's target duration elapses.
+    /// Exposed as `internal` so unit tests can invoke it without sleeping real time.
+    internal func handleDurationExpired() {
+        guard session != nil else { return }
+        timerExpired = true
+        NotchState.shared.expand()
+        SessionNotifier.shared.sendTimerExpired(task: session?.task ?? "")
+    }
+
     internal func _injectSessionForTesting(_ session: Session?) {
         self.session = session
     }
@@ -254,6 +272,14 @@ public final class SessionManager: ObservableObject {
     internal func _injectCheckCountsForTesting(onTask: Int, total: Int) {
         onTaskCheckCount = onTask
         totalCheckCount  = total
+    }
+
+    /// Resets timer-expiry state without running the full session teardown.
+    /// Use in unit tests after calling `handleDurationExpired()` directly.
+    internal func _resetTimerForTesting() {
+        durationTimerTask?.cancel()
+        durationTimerTask = nil
+        timerExpired = false
     }
 
     // MARK: - Private helpers
@@ -286,6 +312,19 @@ public final class SessionManager: ObservableObject {
         do {
             try await captureManager.start()
             AppLogger.info("session.capture_ready")
+            // Start the duration countdown only after the session is fully active.
+            // For restored sessions, sleep only for the time remaining (elapsed already counts).
+            if let dur = s.targetDuration {
+                let remaining = max(0, dur - s.elapsed)
+                durationTimerTask?.cancel()
+                durationTimerTask = Task {
+                    if remaining > 0 {
+                        try? await Task.sleep(for: Duration.seconds(remaining))
+                    }
+                    guard !Task.isCancelled else { return }
+                    handleDurationExpired()
+                }
+            }
         } catch CaptureError.permissionDenied {
             AppLogger.error("session.capture_permission_denied")
             NotchState.shared.showCallout("Screen Recording permission needed — enable Adia in System Settings, then start again.")

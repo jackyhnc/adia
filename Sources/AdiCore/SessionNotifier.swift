@@ -40,6 +40,17 @@ public final class SessionNotifier: NSObject {
         #endif
     }
 
+    /// Fires a "Time's up" banner when the session's target duration elapses.
+    public func sendTimerExpired(task: String) {
+        #if canImport(UserNotifications)
+        let content = UNMutableNotificationContent()
+        content.title = "Time's up ⏰"
+        content.body = task.isEmpty ? "Open Adia to verify your work." : "Open Adia to verify: \(task)"
+        content.sound = .default
+        schedule(content, id: "adia.session.timer_expired")
+        #endif
+    }
+
     /// Fires a "Session restored" banner when a crash-recovered session is re-activated on launch.
     public func sendSessionRestored(task: String) {
         #if canImport(UserNotifications)

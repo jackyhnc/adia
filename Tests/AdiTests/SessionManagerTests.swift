@@ -214,6 +214,59 @@ struct SessionManagerTests {
         #expect(record?.note == "covered all sections, felt solid")
     }
 
+    // MARK: - Duration timer expiry
+
+    @Test func timerExpiredDefaultsToFalse() async {
+        let expired = await MainActor.run { SessionManager.shared.timerExpired }
+        #expect(expired == false)
+    }
+
+    @Test func handleDurationExpiredSetsFlag() async {
+        let s = Session(task: "Write essay", successCriteria: "Submit")
+        await injectSession(s)
+        await MainActor.run { SessionManager.shared.handleDurationExpired() }
+        let expired = await MainActor.run { SessionManager.shared.timerExpired }
+        #expect(expired == true)
+        // Clean up
+        await injectSession(nil)
+        await MainActor.run { SessionManager.shared._resetTimerForTesting() }
+    }
+
+    @Test func handleDurationExpiredWithNoSessionIsNoOp() async {
+        await injectSession(nil)
+        await MainActor.run { SessionManager.shared.handleDurationExpired() }
+        let expired = await MainActor.run { SessionManager.shared.timerExpired }
+        #expect(expired == false)
+    }
+
+    @Test func handleDurationExpiredExpandsNotch() async {
+        let s = Session(task: "Code review", successCriteria: "All comments resolved")
+        await injectSession(s)
+        await MainActor.run {
+            NotchState.shared.collapse()
+            SessionManager.shared.handleDurationExpired()
+        }
+        let expanded = await MainActor.run { NotchState.shared.isExpanded }
+        #expect(expanded == true)
+        // Clean up
+        await injectSession(nil)
+        await MainActor.run {
+            SessionManager.shared._resetTimerForTesting()
+            NotchState.shared.collapse()
+        }
+    }
+
+    @Test func endSessionResetsTimerExpiredFlag() async {
+        let s = Session(task: "Study biology", successCriteria: "Finish chapter 4")
+        await injectSession(s)
+        await MainActor.run { SessionManager.shared.handleDurationExpired() }
+        let before = await MainActor.run { SessionManager.shared.timerExpired }
+        #expect(before == true)
+        await SessionManager.shared.endSession()
+        let after = await MainActor.run { SessionManager.shared.timerExpired }
+        #expect(after == false)
+    }
+
     // MARK: - HapticPlayer
 
     @Test func hapticSuccessPulseDelayIs50ms() {

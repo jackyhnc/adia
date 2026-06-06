@@ -289,12 +289,17 @@ private struct ExpandedView: View {
                 CalloutBanner(message: callout, tier: state.calloutTier) {
                     state.startConversation(.reasoning(domain: nil))
                 }
+            } else if session.timerExpired {
+                // Timer-expiry banner: amber (not red) so it reads as a milestone, not a rebuke.
+                TimerExpiredBanner {
+                    Task { await SessionManager.shared.verifyAndEnd() }
+                }
             }
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(s.task)
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(state.calloutMessage != nil ? .white.opacity(0.5) : .white)
+                    .foregroundStyle((state.calloutMessage != nil || session.timerExpired) ? .white.opacity(0.5) : .white)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
 
@@ -325,7 +330,7 @@ private struct ExpandedView: View {
                 }
             }
             .padding(.horizontal, 16)
-            .padding(.top, state.calloutMessage != nil ? 8 : 12)
+            .padding(.top, (state.calloutMessage != nil || session.timerExpired) ? 8 : 12)
 
             HStack(spacing: 8) {
                 AdiButton(label: "Done", style: .primary) {
@@ -341,6 +346,7 @@ private struct ExpandedView: View {
             .padding(.bottom, 14)
         }
         .animation(.easeOut(duration: 0.2), value: state.calloutMessage)
+        .animation(.easeOut(duration: 0.2), value: session.timerExpired)
     }
 
     // MARK: Verifying body
@@ -594,6 +600,36 @@ private struct CalloutBanner: View {
         case 2: return Color(red: 0.70, green: 0.05, blue: 0.05)
         default: return Color(red: 0.50, green: 0.00, blue: 0.00)
         }
+    }
+}
+
+// MARK: - TimerExpiredBanner
+
+private struct TimerExpiredBanner: View {
+    let onVerify: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                Image(systemName: "timer")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(.white)
+                Text("time's up — how'd it go?")
+                    .font(.system(size: 17, weight: .heavy))
+                    .foregroundStyle(.white)
+            }
+            Button(action: onVerify) {
+                Text("verify now →")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.85))
+            }
+            .buttonStyle(.plain)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(Color(red: 0.60, green: 0.42, blue: 0.0))
+        .transition(.move(edge: .top).combined(with: .opacity))
     }
 }
 
