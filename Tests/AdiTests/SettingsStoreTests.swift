@@ -345,4 +345,44 @@ struct SettingsStoreTests {
             #expect(accountHeight <= height)
         }
     }
+
+    // MARK: - selectableRowStats
+
+    private func makeRecord(durationSeconds: TimeInterval, onTaskChecks: Int = 0, totalChecks: Int = 0) -> SessionRecord {
+        let start = Date(timeIntervalSince1970: 0)
+        return SessionRecord(
+            task: "Test task",
+            successCriteria: "Done",
+            startTime: start,
+            endTime: start.addingTimeInterval(durationSeconds),
+            completedSuccessfully: true,
+            calloutCount: 0,
+            onTaskChecks: onTaskChecks,
+            totalChecks: totalChecks
+        )
+    }
+
+    @Test func selectableRowStatsDurationOnlyWhenNoChecks() {
+        let record = makeRecord(durationSeconds: 45 * 60)
+        // totalChecks == 0 → no focus score
+        #expect(selectableRowStats(record: record, minChecks: 5) == "45m")
+    }
+
+    @Test func selectableRowStatsAppendsFocusScoreAboveMinChecks() {
+        // 8 on-task out of 10 total → 80%; 10 >= minChecks(5)
+        let record = makeRecord(durationSeconds: 45 * 60, onTaskChecks: 8, totalChecks: 10)
+        #expect(selectableRowStats(record: record, minChecks: 5) == "45m · 80%")
+    }
+
+    @Test func selectableRowStatsHidesFocusScoreBelowMinChecks() {
+        // 3 on-task out of 4 total → 75% score but 4 < minChecks(5) → omit score
+        let record = makeRecord(durationSeconds: 45 * 60, onTaskChecks: 3, totalChecks: 4)
+        #expect(selectableRowStats(record: record, minChecks: 5) == "45m")
+    }
+
+    @Test func selectableRowStatsFormatsHoursAndMinutes() {
+        // 90 minutes → "1h 30m", no focus score
+        let record = makeRecord(durationSeconds: 90 * 60)
+        #expect(selectableRowStats(record: record, minChecks: 5) == "1h 30m")
+    }
 }

@@ -510,6 +510,21 @@ internal func dayLabel(for date: Date, calendar: Calendar = .current, now: Date 
     return date.formatted(.dateTime.month(.wide).day().year())
 }
 
+/// Formats compact trailing stats for the selectable record row.
+/// Returns "45m", "1h 30m", or "45m · 87%" when a valid focus score is available.
+/// `minChecks` is passed explicitly so tests can override without touching the singleton.
+internal func selectableRowStats(record: SessionRecord, minChecks: Int) -> String {
+    let total = max(0, Int(record.duration))
+    let h = total / 3600
+    let m = (total % 3600) / 60
+    let dur: String
+    if h > 0 { dur = "\(h)h \(m)m" }
+    else if m > 0 { dur = "\(m)m" }
+    else { dur = "<1m" }
+    guard let score = record.focusScore, record.totalChecks >= minChecks else { return dur }
+    return "\(dur) · \(Int(score * 100))%"
+}
+
 /// Groups records (expected newest-first) into `DayGroup` buckets without reordering.
 internal func groupedByDay(
     _ records: [SessionRecord],
@@ -1156,6 +1171,9 @@ private struct SelectableRecordRow: View {
                 }
             }
             Spacer()
+            Text(selectableRowStats(record: record, minChecks: SessionManager.minChecksForFocusScore))
+                .font(.system(size: 11, design: .monospaced))
+                .foregroundStyle(.tertiary)
         }
         .padding(.vertical, 2)
         .contentShape(Rectangle())
