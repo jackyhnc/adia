@@ -43,6 +43,11 @@ public final class SessionManager: ObservableObject {
     /// Fires when the session's target duration elapses. Cancelled by endSession().
     private var durationTimerTask: Task<Void, Never>?
 
+    /// Periodically re-opens the notch while the timer has expired but the user hasn't
+    /// verified yet. Cancelled by endSession() and _resetTimerForTesting().
+    /// Exposed as `internal private(set)` so tests can assert it is non-nil / nil.
+    internal private(set) var timerExpiredRearmTask: Task<Void, Never>?
+
     /// Captures the most-recently-created SessionRecord. Only written inside endSession().
     /// Exposed for unit tests; nil until the first session ends in this process lifetime.
     internal private(set) var _lastEndedRecord: SessionRecord?
@@ -122,6 +127,8 @@ public final class SessionManager: ObservableObject {
         totalCheckCount  = 0
         durationTimerTask?.cancel()
         durationTimerTask = nil
+        timerExpiredRearmTask?.cancel()
+        timerExpiredRearmTask = nil
         timerExpired = false
 
         captureManager.stop()
@@ -261,6 +268,10 @@ public final class SessionManager: ObservableObject {
     /// can instantly tell the difference between "done" and "get back to work".
     internal static let timerExpiredSoundName: String = "Glass"
 
+    /// How long to wait before re-opening the notch after a timer-expiry dismissal.
+    /// Exposed as `internal` so tests can assert it is exactly 10 minutes.
+    internal static let timerExpiredRearmInterval: TimeInterval = 600
+
     /// Called when the session's target duration elapses.
     /// Exposed as `internal` so unit tests can invoke it without sleeping real time.
     internal func handleDurationExpired() {
@@ -271,6 +282,20 @@ public final class SessionManager: ObservableObject {
         #if canImport(AppKit)
         NSSound(named: Self.timerExpiredSoundName)?.play()
         #endif
+        // Re-arm: if the user collapses the notch without verifying, re-open it every
+        // rearmInterval until they either verify or explicitly end the session.
+        timerExpiredRearmTask?.cancel()
+        timerExpiredRearmTask = Task {
+            while !Task.isCancelled {
+                try? await Task.sleep(for: Duration.seconds(Self.timerExpiredRearmInterval))
+                guard !Task.isCancelled, timerExpired, session != nil else { return }
+                NotchState.shared.expand()
+                SessionNotifier.shared.sendTimerExpired(task: session?.task ?? "")
+                #if canImport(AppKit)
+                NSSound(named: Self.timerExpiredSoundName)?.play()
+                #endif
+            }
+        }
     }
 
     internal func _injectSessionForTesting(_ session: Session?) {
@@ -287,6 +312,8 @@ public final class SessionManager: ObservableObject {
     internal func _resetTimerForTesting() {
         durationTimerTask?.cancel()
         durationTimerTask = nil
+        timerExpiredRearmTask?.cancel()
+        timerExpiredRearmTask = nil
         timerExpired = false
     }
 

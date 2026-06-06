@@ -297,4 +297,41 @@ struct SessionManagerTests {
                            "Submarine", "Tink"]
         #expect(knownSounds.contains(SessionManager.timerExpiredSoundName))
     }
+
+    // MARK: - Timer expiry re-arm
+
+    @Test func timerExpiredRearmIntervalIs600() {
+        // 10 minutes. Changing this silently would let users ignore expiry indefinitely.
+        #expect(SessionManager.timerExpiredRearmInterval == 600)
+    }
+
+    @Test func handleDurationExpiredSchedulesRearmTask() async {
+        let s = Session(task: "Write report", successCriteria: "Submitted")
+        await injectSession(s)
+        await MainActor.run { SessionManager.shared.handleDurationExpired() }
+        let hasRearm = await MainActor.run { SessionManager.shared.timerExpiredRearmTask != nil }
+        #expect(hasRearm == true)
+        // Clean up
+        await injectSession(nil)
+        await MainActor.run { SessionManager.shared._resetTimerForTesting() }
+    }
+
+    @Test func endSessionCancelsRearmTask() async {
+        let s = Session(task: "Read chapter 5", successCriteria: "Summarised")
+        await injectSession(s)
+        await MainActor.run { SessionManager.shared.handleDurationExpired() }
+        await SessionManager.shared.endSession()
+        let hasRearm = await MainActor.run { SessionManager.shared.timerExpiredRearmTask != nil }
+        #expect(hasRearm == false)
+    }
+
+    @Test func resetTimerForTestingCancelsRearmTask() async {
+        let s = Session(task: "Code review", successCriteria: "All comments resolved")
+        await injectSession(s)
+        await MainActor.run { SessionManager.shared.handleDurationExpired() }
+        await MainActor.run { SessionManager.shared._resetTimerForTesting() }
+        let hasRearm = await MainActor.run { SessionManager.shared.timerExpiredRearmTask != nil }
+        #expect(hasRearm == false)
+        await injectSession(nil)
+    }
 }
