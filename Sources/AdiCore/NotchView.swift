@@ -383,6 +383,18 @@ private struct ExpandedView: View {
                 .fixedSize(horizontal: false, vertical: true)
 
             if !result.verified {
+                // Surface the most recently whitelisted domain as a hint — the user may
+                // need to visit it to complete the task (e.g. upload to Canvas, submit a form).
+                if let domain = session.session?.whitelistedDomains.last {
+                    HStack(spacing: 4) {
+                        Image(systemName: "link")
+                            .font(.system(size: 10))
+                        Text("\(domain) is whitelisted — go finish there")
+                            .font(.system(size: 11))
+                    }
+                    .foregroundStyle(.white.opacity(0.38))
+                    .padding(.top, 2)
+                }
                 HStack(spacing: 8) {
                     AdiButton(label: "Try again", style: .secondary) {
                         Task { await SessionManager.shared.verifyAndEnd() }

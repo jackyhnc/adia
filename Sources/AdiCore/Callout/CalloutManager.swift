@@ -133,16 +133,18 @@ public final class CalloutManager {
         if word("report") || word("document") || word("doc") {
             return "report"
         }
-        if word("study") || word("studying") || word("exam") || word("quiz") || word("test") {
+        if word("study") || word("studying") || word("exam") || word("quiz") || word("test")
+            || word("midterm") || word("midterms") || word("finals") || word("notes")
+            || word("flashcard") || word("flashcards") || word("lecture") {
             return "studying"
         }
         if word("reading") || word("book") || word("chapter") || word("article") {
             return "reading"
         }
-        if word("homework") || word("assignment") || lower.contains("problem set") {
+        if word("homework") || word("assignment") || lower.contains("problem set") || word("pset") {
             return "homework"
         }
-        if word("research") {
+        if word("research") || word("lab") {
             return "research"
         }
         return nil

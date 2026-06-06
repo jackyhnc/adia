@@ -462,4 +462,53 @@ struct CalloutManagerTests {
         #expect(CalloutManager.extractTaskKeyword(from: "study for the test") == "studying")
         #expect(CalloutManager.extractTaskKeyword(from: "read the article") == "reading")
     }
+
+    // MARK: - Student-centric keyword additions
+
+    @Test func extractTaskKeywordFromMidterm() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my midterm") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "midterm tomorrow") == "studying")
+    }
+
+    @Test func extractTaskKeywordFromFinals() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finals week prep") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "reviewing for finals") == "studying")
+    }
+
+    @Test func extractTaskKeywordFromNotes() {
+        #expect(CalloutManager.extractTaskKeyword(from: "take notes on the lecture") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "review my notes") == "studying")
+    }
+
+    @Test func extractTaskKeywordFromFlashcards() {
+        #expect(CalloutManager.extractTaskKeyword(from: "make flashcards for bio") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "go through flashcard deck") == "studying")
+    }
+
+    @Test func extractTaskKeywordFromPset() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish pset 3") == "homework")
+        #expect(CalloutManager.extractTaskKeyword(from: "math pset due tonight") == "homework")
+    }
+
+    @Test func extractTaskKeywordFromLab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write up the chemistry lab") == "research")
+        #expect(CalloutManager.extractTaskKeyword(from: "bio lab report") == "research")
+    }
+
+    @Test func extractTaskKeywordFromLecture() {
+        // lectures are study-mode activities — map to "studying"
+        // ("review the lecture slides" maps to "presentation" because "slides" fires first)
+        #expect(CalloutManager.extractTaskKeyword(from: "watch lecture 4") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "re-watch lecture recording") == "studying")
+    }
+
+    @Test func extractTaskKeywordLabDoesNotMatchElaboration() {
+        // "elaboration" contains "lab" — must NOT match "research"
+        #expect(CalloutManager.extractTaskKeyword(from: "write an elaboration on the topic") == nil)
+    }
+
+    @Test func extractTaskKeywordPsetDoesNotMatchUpset() {
+        // "upset" does not contain "pset" as a word boundary match
+        #expect(CalloutManager.extractTaskKeyword(from: "feeling upset about grades") == nil)
+    }
 }
