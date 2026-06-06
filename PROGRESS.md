@@ -1,5 +1,25 @@
 # Adia — Build Progress
 
+## Run 69 — 2026-06-06
+
+### Shipped
+- **feat: callout count in History multi-select row badge**
+  - `selectableRowStats(record:minChecks:)` — updated to produce `"45m · 3⚠ · 80%"` when `calloutCount > 0` and focus score is available. When calloutCount is 0 the badge is unchanged (`"45m · 80%"` or `"45m"`). Uses a `parts` array joined by `" · "` to cleanly assemble duration + optional callout badge + optional focus score. The `⚠` (U+26A0) text character is compact at 11pt monospaced without being emoji-heavy.
+  - `makeRecord` test helper in `SettingsStoreTests` — added `calloutCount: Int = 0` parameter (default keeps all existing tests passing).
+  - **Tests (+4)**: `selectableRowStatsShowsCalloutCountWhenNonZero` (3 callouts, no score → "45m · 3⚠"), `selectableRowStatsShowsCalloutAndFocusScore` (3 callouts + 80% → "45m · 3⚠ · 80%"), `selectableRowStatsOmitsCalloutWhenZero` (0 callouts + score → "45m · 80%", no ⚠), `selectableRowStatsSingleCalloutIsNotPlural` (1 callout → "30m · 1⚠").
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Onboarding Screen Recording permission UX: `requestPermission()` reveals `Bundle.main.bundleURL` — could change to `Bundle.main.executableURL` so Finder reveals the binary inside `Contents/MacOS/`, which is more useful for dragging into Privacy settings.
+  - (b) `selectableRowStats` separator: the `" · "` (U+00B7 middle dot) is fine at 11pt but at very small sizes may be faint. Could switch to `" / "` or `" - "` if hardware testing shows it fades.
+  - (c) Export CSV vs badge parity: CSV already exports `calloutCount` as a column. The selectable row badge now surfaces the same data inline — the two views are in sync.
+  - (d) Onboarding: the Screen Recording permission step currently shows `Bundle.main.bundleURL` to `NSWorkspace.shared.activateFileViewerSelecting`. `Bundle.main.executableURL` would reveal the actual binary at `Contents/MacOS/Adia`, which is the drag target for the Privacy settings list.
+
+---
+
 ## Run 68 — 2026-06-06
 
 ### Shipped
