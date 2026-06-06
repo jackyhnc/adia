@@ -176,6 +176,9 @@ private struct ExpandedView: View {
     @ObservedObject var session: SessionManager
     @ObservedObject private var conversation: ConversationManager = .shared
 
+    @State private var completionNote: String = ""
+    @FocusState private var noteFieldFocused: Bool
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             header
@@ -196,6 +199,10 @@ private struct ExpandedView: View {
         )
         .shadow(color: .black.opacity(0.35), radius: 18, x: 0, y: 8)
         .clipShape(NotchIslandShape(radius: 26))
+        .onChange(of: state.verificationResult?.verified) { _, _ in
+            // Reset the draft note whenever the verification card changes state.
+            completionNote = ""
+        }
     }
 
     // MARK: Content switcher
@@ -404,10 +411,49 @@ private struct ExpandedView: View {
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(.white.opacity(0.45))
                 }
-                AdiButton(label: "End Session", style: .primary) {
-                    Task { await SessionManager.shared.endSession() }
+                // Quick note field — lets the user annotate the session immediately
+                // at the moment of completion rather than hunting for it in History later.
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("SESSION NOTE")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.3))
+                        .tracking(1.2)
+                    ZStack(alignment: .leading) {
+                        if completionNote.isEmpty && !noteFieldFocused {
+                            Text("Add a note…")
+                                .font(.system(size: 11))
+                                .foregroundStyle(.white.opacity(0.22))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 5)
+                                .allowsHitTesting(false)
+                        }
+                        TextField("", text: $completionNote)
+                            .font(.system(size: 11))
+                            .foregroundStyle(.white)
+                            .textFieldStyle(.plain)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 5)
+                            .focused($noteFieldFocused)
+                            .onSubmit {
+                                let trimmed = completionNote.trimmingCharacters(in: .whitespaces)
+                                completionNote = ""
+                                Task { await SessionManager.shared.endSession(note: trimmed.isEmpty ? nil : trimmed) }
+                            }
+                    }
+                    .background(Color.white.opacity(0.06))
+                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                            .stroke(Color.white.opacity(noteFieldFocused ? 0.15 : 0.07), lineWidth: 0.5)
+                    )
                 }
-                .padding(.top, 4)
+                .padding(.top, 6)
+                AdiButton(label: "End Session", style: .primary) {
+                    let trimmed = completionNote.trimmingCharacters(in: .whitespaces)
+                    completionNote = ""
+                    Task { await SessionManager.shared.endSession(note: trimmed.isEmpty ? nil : trimmed) }
+                }
+                .padding(.top, 6)
             } else {
                 // Surface the most recently whitelisted domain as a hint — the user may
                 // need to visit it to complete the task (e.g. upload to Canvas, submit a form).

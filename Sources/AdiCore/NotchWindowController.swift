@@ -50,7 +50,8 @@ public final class NotchWindowController: NSWindowController {
     private static let tier3CalloutExpandedHeight: CGFloat = 322
     private static let creationExpandedHeight: CGFloat  = 348
     private static let conversationHeight: CGFloat      = 430
-    private static let verifiedCardHeight: CGFloat       = 210
+    // Extra height accommodates the SESSION NOTE text field added in the verified card.
+    private static let verifiedCardHeight: CGFloat       = 265
     private static let verificationHeight: CGFloat      = 250
     /// Extra height when the verification panel shows a scrollable history of past attempts.
     private static let verificationHistoryHeight: CGFloat = 350

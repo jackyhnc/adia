@@ -164,6 +164,24 @@ struct SessionManagerTests {
         await MainActor.run { SessionManager.shared._injectCheckCountsForTesting(onTask: 0, total: 0) }
     }
 
+    // MARK: - endSession(note:)
+
+    @Test func endSessionDefaultNoteIsNil() async {
+        let s = Session(task: "Write essay", successCriteria: "Submit to Canvas")
+        await injectSession(s)
+        await SessionManager.shared.endSession()
+        let record = await MainActor.run { SessionManager.shared._lastEndedRecord }
+        #expect(record?.note == nil)
+    }
+
+    @Test func endSessionNoteIsPassedThroughToRecord() async {
+        let s = Session(task: "Study biology", successCriteria: "Finish chapter 4")
+        await injectSession(s)
+        await SessionManager.shared.endSession(note: "covered all sections, felt solid")
+        let record = await MainActor.run { SessionManager.shared._lastEndedRecord }
+        #expect(record?.note == "covered all sections, felt solid")
+    }
+
     // MARK: - HapticPlayer
 
     @Test func hapticSuccessPulseDelayIs50ms() {

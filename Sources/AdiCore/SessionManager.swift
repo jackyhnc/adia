@@ -33,6 +33,10 @@ public final class SessionManager: ObservableObject {
     // history record knows whether the session was completed or exited early.
     private var sessionEndedSuccessfully = false
 
+    /// Captures the most-recently-created SessionRecord. Only written inside endSession().
+    /// Exposed for unit tests; nil until the first session ends in this process lifetime.
+    internal private(set) var _lastEndedRecord: SessionRecord?
+
     private init() {}
 
     // MARK: - Session lifecycle
@@ -82,7 +86,7 @@ public final class SessionManager: ObservableObject {
         #endif
     }
 
-    public func endSession() async {
+    public func endSession(note: String? = nil) async {
         // Record the session before clearing it so we have all the data.
         if let s = session {
             AppLogger.info("session.ending", [
@@ -96,9 +100,11 @@ public final class SessionManager: ObservableObject {
                 endTime: Date(),
                 completedSuccessfully: sessionEndedSuccessfully,
                 calloutCount: callout.calloutCount,
+                note: note,
                 onTaskChecks: onTaskCheckCount,
                 totalChecks: totalCheckCount
             )
+            _lastEndedRecord = record
             Task { await SessionHistory.shared.record(record) }
         }
         sessionEndedSuccessfully = false
