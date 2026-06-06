@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 60 — 2026-06-06
+
+### Shipped
+- **feat: session completion card — stats + explicit End Session button**
+  - `verificationResultBody` — when `result.verified == true`, the notch now shows a stats row (elapsed time + callout count, e.g. "42m · 3 callouts") plus an explicit **End Session** button instead of auto-dismissing after 1.2 seconds. The stats row reads from the still-active `session.session` while it's alive; once the user clicks End Session (or the 5-second auto-end fires), `endSession()` clears it and the notch collapses.
+  - `SessionManager.verifyAndEnd()` — extended auto-end sleep from 1.2 s to 5 s, giving the user time to read their stats. Added `if session != nil` guard before the fallback `endSession()` call so tapping the button first doesn't trigger a redundant second call.
+  - `sessionElapsedLabel(seconds:)` — new `internal` helper in `NotchView.swift` that formats a second count as a compact label: `"<1m"`, `"45m"`, `"1h"`, `"1h 30m"`. Follows same convention as `heatmapFormatMinutes`.
+  - **Tests (+11)**: `SessionElapsedLabelTests` suite in `SessionHistoryTests.swift` — zero, sub-minute (30s, 59s), negative clamp, exact 1m, 45m, 59m, 1h, 1h 30m, 2h, 2h 2m.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) `SettingsView` window height adaptive — currently fixed at `500`. Could use a custom tab switcher so each tab reports its natural height.
+  - (b) Integration test for `SleepBlocker.start()` — verify assertion is registered with `IOPMCopyAssertionsByProcess`.
+  - (c) Onboarding permission step: currently opens System Settings correctly (already uses `x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture`). Could improve the "reveal in Finder" UX — currently reveals the bundle, but on M1/Intel the Adia binary may need to be dragged from within the bundle's Contents/MacOS folder.
+  - (d) Session completion card: could add a confetti or haptic burst (`NSHapticFeedbackManager`) on verified=true for celebration.
+  - (e) `NotchWindowController` panel sizing: the panel height for the verified card is shared with the non-verified card. If the session had many callouts AND a whitelisted domain hint, the verified card could overflow. Could compute required height for verified vs non-verified states.
+
+---
+
 ## Run 59 — 2026-06-06
 
 ### Shipped
