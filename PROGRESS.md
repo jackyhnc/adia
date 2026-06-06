@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 67 — 2026-06-06
+
+### Shipped
+- **refactor: extract `minChecksForFocusScore` constant + idle card duration badge**
+  - `SessionManager.minChecksForFocusScore: Int = 5` — new `public static let`. The `>= 5` hardcode that guards focus-score display was scattered across 3 sites; all three now reference this single constant so changing the threshold only requires one edit.
+  - `NotchView.swift:405` — `session.totalCheckCount >= 5` → `session.totalCheckCount >= SessionManager.minChecksForFocusScore`.
+  - `SettingsView.swift` — both `record.totalChecks >= 5` occurrences (row caption + detail panel) updated to `>= SessionManager.minChecksForFocusScore`.
+  - **Idle card duration badge**: the "repeat last session" button in `IdleBody` now shows a compact elapsed-time badge on the trailing edge when `record.duration >= 60`. Restructured the label from a single `Label(task, systemImage:)` to an explicit `HStack` with `Image` + `Text` + `Spacer(minLength: 0)` + optional duration badge (`sessionElapsedLabel(seconds:)`, 9pt monospaced). Visual parity with template buttons that already show their `preferredDuration`.
+  - **Tests (+3)** in `SessionManagerTests`: `minChecksForFocusScoreIs5` (asserts constant == 5, prevents silent changes), `focusScoreRecordBelowMinChecksThresholdHasNoDisplayableScore` (4 checks → `totalChecks < minChecks`, score non-nil but below display gate), `focusScoreRecordAtMinChecksThresholdIsDisplayable` (exactly 5 checks → `totalChecks >= minChecks`, score displayable).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Onboarding Screen Recording permission UX: `requestPermission()` reveals `Bundle.main.bundleURL` — could change to `Bundle.main.executableURL` so Finder reveals the binary inside `Contents/MacOS/`, which is more useful for dragging into Privacy settings.
+  - (b) SettingsView History tab: add a "Focus score" column to the bulk list view (multi-select/export view) for at-a-glance comparison across sessions without opening the detail panel.
+  - (c) Idle card "last session" link: DONE in this run — duration badge now shows next to the task name.
+  - (d) `minChecksForFocusScore` constant: DONE in this run.
+
+---
+
 ## Run 66 — 2026-06-06
 
 ### Shipped

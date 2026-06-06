@@ -987,7 +987,7 @@ private struct SessionRecordRow: View {
                             Label("\(record.calloutCount) callout\(record.calloutCount == 1 ? "" : "s")",
                                   systemImage: "exclamationmark.bubble")
                         }
-                        if let score = record.focusScore, record.totalChecks >= 5 {
+                        if let score = record.focusScore, record.totalChecks >= SessionManager.minChecksForFocusScore {
                             Label("\(Int(score * 100))% focused", systemImage: "target")
                         }
                     }
@@ -1033,7 +1033,7 @@ private struct SessionRecordRow: View {
                         detailField("Duration", formattedDuration(record.duration))
                         detailField("Callouts",
                             record.calloutCount == 0 ? "None" : "\(record.calloutCount)")
-                        if let score = record.focusScore, record.totalChecks >= 5 {
+                        if let score = record.focusScore, record.totalChecks >= SessionManager.minChecksForFocusScore {
                             detailField("Focus score", "\(Int(score * 100))%")
                         }
                     }

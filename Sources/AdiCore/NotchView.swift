@@ -402,7 +402,7 @@ private struct ExpandedView: View {
                                 systemImage: "exclamationmark.bubble.fill"
                             )
                         }
-                        if let score = session.focusScore, session.totalCheckCount >= 5 {
+                        if let score = session.focusScore, session.totalCheckCount >= SessionManager.minChecksForFocusScore {
                             Text("·")
                                 .foregroundStyle(.white.opacity(0.2))
                             Label("\(Int(score * 100))% focused", systemImage: "target")
@@ -945,10 +945,19 @@ private struct IdleBody: View {
                             state.startCreating(prefill: record.task)
                         }
                     } label: {
-                        Label(record.task, systemImage: "arrow.clockwise")
-                            .font(.system(size: 11))
-                            .lineLimit(1)
-                            .foregroundStyle(.white.opacity(0.35))
+                        HStack(spacing: 5) {
+                            Image(systemName: "arrow.clockwise")
+                                .font(.system(size: 11))
+                            Text(record.task)
+                                .font(.system(size: 11))
+                                .lineLimit(1)
+                            Spacer(minLength: 0)
+                            if record.duration >= 60 {
+                                Text(sessionElapsedLabel(seconds: Int(record.duration)))
+                                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                            }
+                        }
+                        .foregroundStyle(.white.opacity(0.35))
                     }
                     .buttonStyle(.plain)
 

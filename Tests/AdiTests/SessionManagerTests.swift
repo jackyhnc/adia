@@ -164,6 +164,38 @@ struct SessionManagerTests {
         await MainActor.run { SessionManager.shared._injectCheckCountsForTesting(onTask: 0, total: 0) }
     }
 
+    // MARK: - minChecksForFocusScore
+
+    @Test func minChecksForFocusScoreIs5() {
+        // Changing this value requires updating the UI display guard in NotchView and SettingsView.
+        #expect(SessionManager.minChecksForFocusScore == 5)
+    }
+
+    @Test func focusScoreRecordBelowMinChecksThresholdHasNoDisplayableScore() {
+        let now = Date()
+        let record = SessionRecord(
+            task: "Write essay", successCriteria: "Submit",
+            startTime: now, endTime: now.addingTimeInterval(3600),
+            completedSuccessfully: true, calloutCount: 0,
+            onTaskChecks: 3, totalChecks: SessionManager.minChecksForFocusScore - 1
+        )
+        // focusScore exists (non-nil), but the display guard hides it below the threshold.
+        #expect(record.focusScore != nil)
+        #expect(record.totalChecks < SessionManager.minChecksForFocusScore)
+    }
+
+    @Test func focusScoreRecordAtMinChecksThresholdIsDisplayable() {
+        let now = Date()
+        let record = SessionRecord(
+            task: "Write essay", successCriteria: "Submit",
+            startTime: now, endTime: now.addingTimeInterval(3600),
+            completedSuccessfully: true, calloutCount: 0,
+            onTaskChecks: 5, totalChecks: SessionManager.minChecksForFocusScore
+        )
+        #expect(record.focusScore != nil)
+        #expect(record.totalChecks >= SessionManager.minChecksForFocusScore)
+    }
+
     // MARK: - endSession(note:)
 
     @Test func endSessionDefaultNoteIsNil() async {

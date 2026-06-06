@@ -11,6 +11,10 @@ public final class SessionManager: ObservableObject {
 
     @Published public private(set) var session: Session?
     @Published public private(set) var onTaskStatus: OnTaskStatus = .onTask
+    /// Minimum number of AI classification frames required before the focus score is
+    /// considered statistically meaningful and shown in the UI.
+    public static let minChecksForFocusScore: Int = 5
+
     /// Number of AI screen-classification frames that came back as "on-task" this session.
     @Published public private(set) var onTaskCheckCount: Int = 0
     /// Total AI screen-classification frames evaluated this session (on-task + off-task + ambiguous).
