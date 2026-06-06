@@ -413,4 +413,29 @@ struct NotchStateTests {
             // verified==false and count > 1 → history panel height applies
         }
     }
+
+    // MARK: - idleHasNote
+
+    @Test func idleHasNoteDefaultsToFalse() async {
+        await reset()
+        let v = await MainActor.run { NotchState.shared.idleHasNote }
+        #expect(v == false)
+    }
+
+    @Test func settingIdleHasNoteTrueRaisesFlag() async {
+        await reset()
+        await MainActor.run { NotchState.shared.idleHasNote = true }
+        let v = await MainActor.run { NotchState.shared.idleHasNote }
+        #expect(v == true)
+    }
+
+    @Test func collapseDoesNotClearIdleHasNote() async {
+        // idleHasNote persists across collapse — it reflects lastRecord state,
+        // not transient UI state, and is only updated when IdleBody reloads.
+        await reset()
+        await MainActor.run { NotchState.shared.idleHasNote = true }
+        await MainActor.run { NotchState.shared.collapse() }
+        let v = await MainActor.run { NotchState.shared.idleHasNote }
+        #expect(v == true)
+    }
 }

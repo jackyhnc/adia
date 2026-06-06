@@ -11,6 +11,9 @@ public final class NotchState: ObservableObject {
     /// Number of pinned templates currently shown in the idle notch. Updated by IdleBody when it loads templates.
     /// Used by NotchWindowController to pick the correct idle panel height.
     @Published public internal(set) var idleTemplateCount: Int = 0
+    /// True when the most recent session record has a note. Updated by IdleBody alongside idleTemplateCount.
+    /// Used by NotchWindowController to add extra height for the note row.
+    @Published public internal(set) var idleHasNote: Bool = false
 
     // Callout
     @Published public private(set) var calloutMessage: String? = nil

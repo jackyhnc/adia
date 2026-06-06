@@ -59,6 +59,8 @@ public final class NotchWindowController: NSWindowController {
     private static let idleExpandedHeight: CGFloat      = 220
     // Each pinned template button adds this much height to the idle panel.
     private static let perTemplateHeight: CGFloat       = 34
+    // Extra height reserved for the 2-line last-session note row in the idle panel.
+    private static let idleNoteHeight: CGFloat          = 28
 
     // Small always-visible indicator tucked beside the notch (never behind it).
     private static let indicatorWidth: CGFloat          = 150
@@ -116,6 +118,7 @@ public final class NotchWindowController: NSWindowController {
         SessionManager.shared.$session.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         // Template count changes idle height.
         NotchState.shared.$idleTemplateCount.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        NotchState.shared.$idleHasNote.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
     }
 
     // MARK: Panel sizing / positioning
@@ -192,7 +195,7 @@ public final class NotchWindowController: NSWindowController {
             h = state.calloutTier >= 3 ? Self.tier3CalloutExpandedHeight : Self.calloutExpandedHeight
         } else if SessionManager.shared.session == nil {
             let tc = CGFloat(min(state.idleTemplateCount, 2))
-            h = Self.idleExpandedHeight + tc * Self.perTemplateHeight
+            h = Self.idleExpandedHeight + tc * Self.perTemplateHeight + (state.idleHasNote ? Self.idleNoteHeight : 0)
         } else {
             h = Self.expandedHeight
         }

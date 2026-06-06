@@ -906,6 +906,7 @@ private struct IdleBody: View {
                 : await SessionTemplateStore.shared.sorted()
             templates = Array(ordered.prefix(2))
             NotchState.shared.idleTemplateCount = templates.count
+            NotchState.shared.idleHasNote = lastRecord?.note != nil
         }
     }
 
@@ -938,17 +939,27 @@ private struct IdleBody: View {
             }
 
             if let record = lastRecord {
-                Button {
-                    withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
-                        state.startCreating(prefill: record.task)
+                VStack(alignment: .leading, spacing: 3) {
+                    Button {
+                        withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
+                            state.startCreating(prefill: record.task)
+                        }
+                    } label: {
+                        Label(record.task, systemImage: "arrow.clockwise")
+                            .font(.system(size: 11))
+                            .lineLimit(1)
+                            .foregroundStyle(.white.opacity(0.35))
                     }
-                } label: {
-                    Label(record.task, systemImage: "arrow.clockwise")
-                        .font(.system(size: 11))
-                        .lineLimit(1)
-                        .foregroundStyle(.white.opacity(0.35))
+                    .buttonStyle(.plain)
+
+                    if let note = record.note {
+                        Text(note)
+                            .font(.system(size: 10).italic())
+                            .foregroundStyle(.white.opacity(0.28))
+                            .lineLimit(2)
+                            .padding(.leading, 17)
+                    }
                 }
-                .buttonStyle(.plain)
             }
         }
         .padding(.horizontal, 16)
