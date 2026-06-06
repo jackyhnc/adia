@@ -1,5 +1,33 @@
 # Adia — Build Progress
 
+## Run 58 — 2026-06-06
+
+### Shipped
+- **feat: student-centric keyword expansion in `extractTaskKeyword`**
+  - Added 7 new trigger words mapped to existing keyword categories:
+    - `midterm` / `midterms` / `finals` / `notes` / `flashcard` / `flashcards` / `lecture` → `"studying"`
+    - `pset` → `"homework"` (shorthand for "problem set", common in CS/STEM courses)
+    - `lab` → `"research"` (chemistry lab, bio lab report, etc.)
+  - All new terms use the same `\b` word-boundary regex guard as existing terms, preventing false positives: "elaboration" does not match "lab"; "upset" does not match "pset".
+  - `lecture` intentionally maps to `"studying"` (not `"reading"`) since watching/reviewing lecture recordings is a study activity. Note: `"review the lecture slides"` still maps to `"presentation"` because `slides` fires earlier in the chain.
+  - **Tests (+9)**: `extractTaskKeywordFromMidterm`, `extractTaskKeywordFromFinals`, `extractTaskKeywordFromNotes`, `extractTaskKeywordFromFlashcards`, `extractTaskKeywordFromPset`, `extractTaskKeywordFromLab`, `extractTaskKeywordFromLecture`, `extractTaskKeywordLabDoesNotMatchElaboration`, `extractTaskKeywordPsetDoesNotMatchUpset`.
+
+- **feat: whitelisted domain hint in "not verified" result card**
+  - When task verification returns not-verified, `verificationResultBody` now checks `session.session?.whitelistedDomains.last`. If the user has whitelisted any site during the session (e.g., canvas.edu to submit an essay), a compact hint row appears above the action buttons: `🔗 canvas.edu is whitelisted — go finish there`. Styled at 11pt, 38% white opacity — informative without distracting from the "Try again" / "Keep going" buttons. This closes the UX gap where a user has the right site whitelisted but forgets they can go there to complete the task.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) `SettingsView` window height adaptive — currently fixed at `500`. Make height computed from tab content.
+  - (b) Integration test for `SleepBlocker.start()` — verify assertion is registered with `IOPMCopyAssertionsByProcess`.
+  - (c) Non-preset duration in `EditTemplateSheet` — if a template has a stored duration that doesn't match any chip (e.g. 30 min saved programmatically), show a "Custom: 30m" text hint alongside the presets instead of silently treating it as nil.
+  - (d) `SettingsView` keyboard shortcut to open: expose the `⌃⌥A` shortcut in the onboarding walkthrough so new users know how to open Adia from anywhere.
+  - (e) Callout tone for `"studying"` keyword: current messages are generic ("get back to your studying." sounds slightly awkward — "get back to studying." flows better). Could add a special-cased message format for the `studying` keyword that drops the possessive "your".
+
+---
+
 ## Run 57 — 2026-06-05
 
 ### Shipped
