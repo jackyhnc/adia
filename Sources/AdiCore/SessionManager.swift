@@ -150,9 +150,11 @@ public final class SessionManager: ObservableObject {
             if result.verified {
                 sessionEndedSuccessfully = true
                 SessionNotifier.shared.sendSessionComplete(task: s.task)
-                // Brief pause so the user sees "verified ✓" before everything unblocks.
-                try? await Task.sleep(for: .seconds(1.2))
-                await endSession()
+                // Give the user up to 5s to read their stats and click End Session.
+                // If they click the button first, session becomes nil and the guard below
+                // prevents a redundant endSession() call.
+                try? await Task.sleep(for: .seconds(5))
+                if session != nil { await endSession() }
             } else {
                 // Session continues — persist the updated history so attempt numbering
                 // survives a crash/relaunch before the user retries verification.

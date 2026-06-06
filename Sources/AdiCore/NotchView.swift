@@ -382,7 +382,28 @@ private struct ExpandedView: View {
                 .foregroundStyle(.white.opacity(0.55))
                 .fixedSize(horizontal: false, vertical: true)
 
-            if !result.verified {
+            if result.verified {
+                // Stats row while session is still active — endSession() will clear it.
+                if let s = session.session {
+                    HStack(spacing: 8) {
+                        Label(sessionElapsedLabel(seconds: Int(s.elapsed)), systemImage: "clock.fill")
+                        if s.calloutCount > 0 {
+                            Text("·")
+                                .foregroundStyle(.white.opacity(0.2))
+                            Label(
+                                "\(s.calloutCount) callout\(s.calloutCount == 1 ? "" : "s")",
+                                systemImage: "exclamationmark.bubble.fill"
+                            )
+                        }
+                    }
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.45))
+                }
+                AdiButton(label: "End Session", style: .primary) {
+                    Task { await SessionManager.shared.endSession() }
+                }
+                .padding(.top, 4)
+            } else {
                 // Surface the most recently whitelisted domain as a hint — the user may
                 // need to visit it to complete the task (e.g. upload to Canvas, submit a form).
                 if let domain = session.session?.whitelistedDomains.last {
@@ -1006,6 +1027,20 @@ internal func idleStatsSummary(_ s: SessionStats) -> String {
     else if h > 0 { time = "\(h)h" }
     else { time = "\(m)m" }
     return "\(base) · \(time)"
+}
+
+// MARK: - Session completion helpers (internal for testing)
+
+/// Returns a compact elapsed-time label for the session completion card.
+/// Examples: "<1m", "45m", "1h", "1h 30m".
+internal func sessionElapsedLabel(seconds: Int) -> String {
+    let total = max(0, seconds)
+    let h = total / 3600
+    let m = (total % 3600) / 60
+    if h > 0 && m > 0 { return "\(h)h \(m)m" }
+    if h > 0 { return "\(h)h" }
+    if m > 0 { return "\(m)m" }
+    return "<1m"
 }
 
 // MARK: - AdiButton

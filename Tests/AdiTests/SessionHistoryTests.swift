@@ -914,3 +914,53 @@ struct HeatmapTooltipTests {
         #expect(text == "1 session · 2h")
     }
 }
+
+// MARK: - sessionElapsedLabel tests
+
+@Suite("sessionElapsedLabel")
+struct SessionElapsedLabelTests {
+
+    @Test func zeroSecondsReturnsSubMinute() {
+        #expect(sessionElapsedLabel(seconds: 0) == "<1m")
+    }
+
+    @Test func thirtySecondsReturnsSubMinute() {
+        #expect(sessionElapsedLabel(seconds: 30) == "<1m")
+    }
+
+    @Test func fiftyNineSecondsReturnsSubMinute() {
+        #expect(sessionElapsedLabel(seconds: 59) == "<1m")
+    }
+
+    @Test func negativeSecondsClampedToSubMinute() {
+        #expect(sessionElapsedLabel(seconds: -120) == "<1m")
+    }
+
+    @Test func exactlyOneMinute() {
+        #expect(sessionElapsedLabel(seconds: 60) == "1m")
+    }
+
+    @Test func fortyFiveMinutes() {
+        #expect(sessionElapsedLabel(seconds: 45 * 60) == "45m")
+    }
+
+    @Test func fiftyNineMinutes() {
+        #expect(sessionElapsedLabel(seconds: 59 * 60) == "59m")
+    }
+
+    @Test func exactlyOneHour() {
+        #expect(sessionElapsedLabel(seconds: 3600) == "1h")
+    }
+
+    @Test func oneHourThirtyMinutes() {
+        #expect(sessionElapsedLabel(seconds: 5400) == "1h 30m")
+    }
+
+    @Test func twoHours() {
+        #expect(sessionElapsedLabel(seconds: 7200) == "2h")
+    }
+
+    @Test func twoHoursTwoMinutes() {
+        #expect(sessionElapsedLabel(seconds: 7320) == "2h 2m")
+    }
+}
