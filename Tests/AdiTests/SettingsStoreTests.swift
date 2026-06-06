@@ -348,7 +348,12 @@ struct SettingsStoreTests {
 
     // MARK: - selectableRowStats
 
-    private func makeRecord(durationSeconds: TimeInterval, onTaskChecks: Int = 0, totalChecks: Int = 0) -> SessionRecord {
+    private func makeRecord(
+        durationSeconds: TimeInterval,
+        calloutCount: Int = 0,
+        onTaskChecks: Int = 0,
+        totalChecks: Int = 0
+    ) -> SessionRecord {
         let start = Date(timeIntervalSince1970: 0)
         return SessionRecord(
             task: "Test task",
@@ -356,7 +361,7 @@ struct SettingsStoreTests {
             startTime: start,
             endTime: start.addingTimeInterval(durationSeconds),
             completedSuccessfully: true,
-            calloutCount: 0,
+            calloutCount: calloutCount,
             onTaskChecks: onTaskChecks,
             totalChecks: totalChecks
         )
@@ -364,12 +369,12 @@ struct SettingsStoreTests {
 
     @Test func selectableRowStatsDurationOnlyWhenNoChecks() {
         let record = makeRecord(durationSeconds: 45 * 60)
-        // totalChecks == 0 → no focus score
+        // totalChecks == 0, calloutCount == 0 → duration only
         #expect(selectableRowStats(record: record, minChecks: 5) == "45m")
     }
 
     @Test func selectableRowStatsAppendsFocusScoreAboveMinChecks() {
-        // 8 on-task out of 10 total → 80%; 10 >= minChecks(5)
+        // 8 on-task out of 10 total → 80%; 10 >= minChecks(5), no callouts
         let record = makeRecord(durationSeconds: 45 * 60, onTaskChecks: 8, totalChecks: 10)
         #expect(selectableRowStats(record: record, minChecks: 5) == "45m · 80%")
     }
@@ -381,8 +386,33 @@ struct SettingsStoreTests {
     }
 
     @Test func selectableRowStatsFormatsHoursAndMinutes() {
-        // 90 minutes → "1h 30m", no focus score
+        // 90 minutes → "1h 30m", no focus score, no callouts
         let record = makeRecord(durationSeconds: 90 * 60)
         #expect(selectableRowStats(record: record, minChecks: 5) == "1h 30m")
+    }
+
+    @Test func selectableRowStatsShowsCalloutCountWhenNonZero() {
+        // 3 callouts, no focus score → "45m · 3⚠"
+        let record = makeRecord(durationSeconds: 45 * 60, calloutCount: 3)
+        #expect(selectableRowStats(record: record, minChecks: 5) == "45m · 3⚠")
+    }
+
+    @Test func selectableRowStatsShowsCalloutAndFocusScore() {
+        // 3 callouts, 8/10 on-task → "45m · 3⚠ · 80%"
+        let record = makeRecord(durationSeconds: 45 * 60, calloutCount: 3, onTaskChecks: 8, totalChecks: 10)
+        #expect(selectableRowStats(record: record, minChecks: 5) == "45m · 3⚠ · 80%")
+    }
+
+    @Test func selectableRowStatsOmitsCalloutWhenZero() {
+        // calloutCount == 0, score present → "45m · 80%" (no ⚠ in badge)
+        let record = makeRecord(durationSeconds: 45 * 60, calloutCount: 0, onTaskChecks: 8, totalChecks: 10)
+        #expect(selectableRowStats(record: record, minChecks: 5) == "45m · 80%")
+        #expect(!selectableRowStats(record: record, minChecks: 5).contains("⚠"))
+    }
+
+    @Test func selectableRowStatsSingleCalloutIsNotPlural() {
+        // 1 callout — the count should show as "1⚠" not "1 callout"
+        let record = makeRecord(durationSeconds: 30 * 60, calloutCount: 1)
+        #expect(selectableRowStats(record: record, minChecks: 5) == "30m · 1⚠")
     }
 }

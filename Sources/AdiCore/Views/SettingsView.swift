@@ -511,7 +511,8 @@ internal func dayLabel(for date: Date, calendar: Calendar = .current, now: Date 
 }
 
 /// Formats compact trailing stats for the selectable record row.
-/// Returns "45m", "1h 30m", or "45m · 87%" when a valid focus score is available.
+/// Returns "45m", "45m · 3⚠", "45m · 87%", or "45m · 3⚠ · 87%" depending on
+/// whether callouts fired and whether a valid focus score is available.
 /// `minChecks` is passed explicitly so tests can override without touching the singleton.
 internal func selectableRowStats(record: SessionRecord, minChecks: Int) -> String {
     let total = max(0, Int(record.duration))
@@ -521,8 +522,12 @@ internal func selectableRowStats(record: SessionRecord, minChecks: Int) -> Strin
     if h > 0 { dur = "\(h)h \(m)m" }
     else if m > 0 { dur = "\(m)m" }
     else { dur = "<1m" }
-    guard let score = record.focusScore, record.totalChecks >= minChecks else { return dur }
-    return "\(dur) · \(Int(score * 100))%"
+    var parts = [dur]
+    if record.calloutCount > 0 { parts.append("\(record.calloutCount)⚠") }
+    if let score = record.focusScore, record.totalChecks >= minChecks {
+        parts.append("\(Int(score * 100))%")
+    }
+    return parts.joined(separator: " · ")
 }
 
 /// Groups records (expected newest-first) into `DayGroup` buckets without reordering.
