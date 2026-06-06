@@ -1,5 +1,28 @@
 # Adia — Build Progress
 
+## Run 72 — 2026-06-06
+
+### Shipped
+- **feat: timer-expiry re-arm — re-opens notch every 10 min until user verifies**
+  - `SessionManager.timerExpiredRearmInterval: TimeInterval = 600` — new `internal static let`. 10-minute re-arm interval, guarded by a test so any accidental weakening produces a CI failure.
+  - `SessionManager.timerExpiredRearmTask: Task<Void, Never>?` — `internal private(set)`. Started inside `handleDurationExpired()` after the initial banner fires. The task loops: sleeps 10 minutes, then if `timerExpired` is still true and the session is still active, re-expands the notch, re-sends the "Time's up" notification, and replays the Glass chime. Loops until the task is cancelled.
+  - `handleDurationExpired()` — cancels any in-flight rearm before creating a new one (idempotent). The `Task { while !Task.isCancelled { ... } }` body runs on `@MainActor` (inherits actor context), so `timerExpired` and `session` accesses are race-free.
+  - `endSession()` — adds `timerExpiredRearmTask?.cancel() / = nil` before `timerExpired = false`, so the loop terminates synchronously on the next `isCancelled` check.
+  - `_resetTimerForTesting()` — same cancellation/nil treatment so test cleanup is clean.
+  - **Tests (+4)**: `timerExpiredRearmIntervalIs600` (constant guard), `handleDurationExpiredSchedulesRearmTask` (task is non-nil after expiry), `endSessionCancelsRearmTask` (task is nil after endSession), `resetTimerForTestingCancelsRearmTask` (task is nil after test reset).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) App force-hide refinement: `NSRunningApplication.hide()` (Run 71) hides windows but Command-Tab brings the app back. Could add a `NSWorkspace.shared.frontmostApplication` observation loop that re-hides a blocked app within ~200ms of re-activation — more aggressive but closer to "no soft blocks".
+  - (b) Onboarding Screen Recording permission UX: `requestPermission()` reveals `Bundle.main.bundleURL` — could change to `Bundle.main.executableURL` so Finder reveals the binary inside `Contents/MacOS/`, which is the correct drag target for the Privacy settings list.
+  - (c) App-level block page: when a blocked app is force-hidden, the user sees whatever was frontmost before. Could show a brief Adia overlay or notification explaining why the app was hidden.
+  - (d) Re-arm interval configurability: `timerExpiredRearmInterval` is currently fixed at 600s. Could expose it as a `SettingsStore` preference ("remind me every: 5m / 10m / 15m") for users who want more or less aggressive reminders.
+
+---
+
 ## Run 71 — 2026-06-06
 
 ### Shipped
