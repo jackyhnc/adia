@@ -1,5 +1,26 @@
 # Adia — Build Progress
 
+## Run 66 — 2026-06-06
+
+### Shipped
+- **feat: surface last session note in idle notch card**
+  - `NotchState.idleHasNote: Bool` — new `@Published internal(set)` flag. Set by `IdleBody.task` alongside `idleTemplateCount` when the idle panel loads its template+record data. Reads `lastRecord?.note != nil`.
+  - `IdleBody.idleContent` — the `if let record = lastRecord` block now wraps the repeat-button and an optional note in a `VStack(alignment: .leading, spacing: 3)`. When `record.note != nil`, a `Text(note).font(.system(size: 10).italic())` label appears below the button at 28% white opacity, 2-line max, indented 17pt to align with the label text after the SF Symbol.
+  - `NotchWindowController` — new `idleNoteHeight: CGFloat = 28` constant. Idle panel height formula gains `+ (state.idleHasNote ? Self.idleNoteHeight : 0)` so the panel auto-grows when a note row is shown. Added `$idleHasNote` Combine sink in `observeState` so the panel repositions immediately when `IdleBody` sets the flag.
+  - **Tests (+3)** in `NotchStateTests`: `idleHasNoteDefaultsToFalse`, `settingIdleHasNoteTrueRaisesFlag`, `collapseDoesNotClearIdleHasNote` (verifies the flag persists across `collapse()` — it reflects DB state, not transient UI state, and is only refreshed when IdleBody reloads).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Onboarding Screen Recording permission UX: `requestPermission()` reveals `Bundle.main.bundleURL` — could change to `Bundle.main.executableURL` so Finder reveals the binary inside `Contents/MacOS/`, which is more useful for dragging into Privacy settings.
+  - (b) SettingsView History tab: add a "Focus score" column to the bulk list view (multi-select/export view) for at-a-glance comparison across sessions without opening the detail panel.
+  - (c) Focus score threshold: `>= 5` total checks required to show is a constant inside `SessionManager`. Could expose it as `internal static let minChecksForFocusScore: Int = 5` so it's easy to tune via tests.
+  - (d) Idle card "last session" link: when no note is set, the repeat-button label shows just the task. Could show a compact duration badge (similar to template buttons) if `lastRecord.duration > 0`.
+
+---
+
 ## Run 65 — 2026-06-06
 
 ### Shipped
