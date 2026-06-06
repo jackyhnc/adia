@@ -5,10 +5,25 @@ import UniformTypeIdentifiers
 // MARK: - Root Settings Window
 
 public struct SettingsView: View {
+    /// Persisted so the user lands on their last-used tab on re-open.
+    @AppStorage("settingsSelectedTab") private var selectedTab: Int = 0
+
+    /// Per-tab window heights (points). Each value is hand-tuned to the natural
+    /// content density of that tab — avoiding wasted whitespace on compact tabs
+    /// while giving scrollable tabs more breathing room.
+    static let tabHeights: [Int: CGFloat] = [
+        0: 400,   // Account  — 3 compact sections
+        1: 560,   // Blocking — many toggles, benefits from tall viewport
+        2: 460,   // Templates — list + footer row
+        3: 540,   // History  — heatmap + session list
+    ]
+
+    var currentHeight: CGFloat { Self.tabHeights[selectedTab] ?? 500 }
+
     public init() {}
 
     public var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             AccountSettingsTab()
                 .tabItem { Label("Account", systemImage: "person.circle") }
                 .tag(0)
@@ -23,7 +38,8 @@ public struct SettingsView: View {
                 .tag(3)
         }
         .padding(20)
-        .frame(width: 480, height: 500)
+        .frame(width: 480, height: currentHeight)
+        .animation(.easeOut(duration: 0.18), value: selectedTab)
     }
 }
 

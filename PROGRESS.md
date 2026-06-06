@@ -1,5 +1,28 @@
 # Adia — Build Progress
 
+## Run 63 — 2026-06-06
+
+### Shipped
+- **feat: SettingsView adaptive height per tab**
+  - `SettingsView.tabHeights: [Int: CGFloat]` — new `static let` dictionary mapping each of the 4 tab indices to a hand-tuned height: Account (0) → 400pt, Blocking (1) → 560pt, Templates (2) → 460pt, History (3) → 540pt. Reasoning: Account has 3 compact sections and wasted whitespace at 500pt; Blocking has 18 domain toggles + 8 app toggles and benefits from extra viewport; Templates and History are comfortably mid-range.
+  - `SettingsView.currentHeight: CGFloat` — computed property reads `tabHeights[selectedTab] ?? 500` (fallback for future tabs).
+  - `@AppStorage("settingsSelectedTab") private var selectedTab: Int = 0` — persists the last-used tab across window re-opens so the user lands where they left off.
+  - `TabView` now uses `TabView(selection: $selectedTab)` to wire the selection binding.
+  - `.animation(.easeOut(duration: 0.18), value: selectedTab)` — softens the window height transition when switching tabs; SwiftUI propagates the new intrinsic size to the `Settings` scene window automatically.
+  - **Tests (+4)** in `SettingsStoreTests.swift`: `settingsViewTabHeightsCoversAllFourTabs` (all 4 tags 0–3 have entries), `settingsViewAllTabHeightsArePositive` (no zero/negative heights), `settingsViewBlockingTabIsTallestTab` (tab 1 ≥ all others), `settingsViewAccountTabIsShortestTab` (tab 0 ≤ all others).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Onboarding Screen Recording permission: the "reveal in Finder" UX could be improved — on M1/Intel the Adia binary may need to be dragged from within the bundle's `Contents/MacOS` folder. Could improve discoverability with a direct "Reveal binary" button.
+  - (b) `HapticPlayer.performSuccess` second-pulse timing — current 50 ms is a constant. Could expose a `secondPulseDelay` in `SettingsStore` for experimentation, but probably overkill.
+  - (c) `SleepBlocker` assertion name localisation — "Adia focus session" is hardcoded as a `CFString` literal. Could derive it from `Bundle.main.bundleIdentifier` or `kCFBundleNameKey`.
+  - (d) SettingsView width adaptive — currently fixed at 480pt. Could be widened for the History tab to show more session data per row.
+
+---
+
 ## Run 62 — 2026-06-06
 
 ### Shipped

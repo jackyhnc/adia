@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import SwiftUI
 @testable import AdiCore
 
 @Suite("SettingsStore")
@@ -309,5 +310,39 @@ struct SettingsStoreTests {
         await MainActor.run { SettingsStore.shared.idleTemplatesFollowManualOrder = false }
         let restored = UserDefaults.standard.bool(forKey: "adia.idleTemplatesFollowManualOrder")
         #expect(restored == false)
+    }
+
+    // MARK: - SettingsView adaptive tab heights
+
+    @Test func settingsViewTabHeightsCoversAllFourTabs() {
+        #expect(SettingsView.tabHeights.count == 4)
+        for tag in 0...3 {
+            #expect(SettingsView.tabHeights[tag] != nil)
+        }
+    }
+
+    @Test func settingsViewAllTabHeightsArePositive() {
+        for (_, height) in SettingsView.tabHeights {
+            #expect(height > 0)
+        }
+    }
+
+    @Test func settingsViewBlockingTabIsTallestTab() {
+        // Blocking tab (1) has many toggles — it should have the most height.
+        let blockingHeight = SettingsView.tabHeights[1] ?? 0
+        for (tag, height) in SettingsView.tabHeights where tag != 1 {
+            #expect(blockingHeight >= height)
+        }
+    }
+
+    @Test func settingsViewAccountTabIsShortestTab() {
+        // Account tab (0) has 3 compact sections — it should have the least height.
+        guard let accountHeight = SettingsView.tabHeights[0] else {
+            Issue.record("Account tab (0) has no height entry")
+            return
+        }
+        for (tag, height) in SettingsView.tabHeights where tag != 0 {
+            #expect(accountHeight <= height)
+        }
     }
 }
