@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 65 — 2026-06-06
+
+### Shipped
+- **feat: session note field in completion card**
+  - `SessionManager.endSession(note: String? = nil)` — new optional parameter threads the user's annotation directly into `SessionRecord(note:)` at the moment the record is created (instead of requiring a separate `updateNote` call via History tab). Empty/nil note stores `nil`; the existing `updateNote` path in Settings still works for later edits. `_lastEndedRecord: SessionRecord?` test helper captures the most-recently-created record for assertions.
+  - `ExpandedView` (NotchView.swift): `@State private var completionNote: String = ""` + `@FocusState private var noteFieldFocused: Bool`. When `result.verified`, a **SESSION NOTE** field appears between the stats row and the End Session button. Dark-themed: `Color.white.opacity(0.06)` background, 11pt white text, placeholder "Add a note…" (22% opacity), focus-sensitive border ring. Pressing Return commits the note and ends the session identically to clicking the button.
+  - End Session button updated to pass `completionNote.trimmingCharacters(in: .whitespaces)` as note (nil when blank). `completionNote` is reset to `""` in the button action and via `.onChange(of: state.verificationResult?.verified)` so stale text never leaks between sessions.
+  - `NotchWindowController.verifiedCardHeight`: 210 → 265 (adds 55pt for the note label + field).
+  - **Tests (+2)** in `SessionManagerTests`: `endSessionDefaultNoteIsNil` (no note arg → `_lastEndedRecord?.note == nil`), `endSessionNoteIsPassedThroughToRecord` (note arg → note stored in record).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Onboarding Screen Recording permission UX: `requestPermission()` reveals `Bundle.main.bundleURL` (the .app bundle). Could change to `Bundle.main.executableURL` so Finder reveals the binary inside `Contents/MacOS/` — more useful when users need to drag it into Privacy settings.
+  - (b) SettingsView History tab: add a "Focus score" column to the compact session list rows for at-a-glance comparison across sessions without opening the detail panel.
+  - (c) Session note in idle card: when the notch is idle and shows the last session's stats, surface the note if one was set — a quick reminder of what the user wrote while the session was fresh.
+  - (d) Focus score threshold: `>= 5` total checks required to show is a constant inside `SessionManager`. Could expose it as `internal static let minChecksForFocusScore: Int = 5` so it's easy to adjust via tests.
+
+---
+
 ## Run 64 — 2026-06-06
 
 ### Shipped
