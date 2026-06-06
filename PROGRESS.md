@@ -1,5 +1,25 @@
 # Adia — Build Progress
 
+## Run 68 — 2026-06-06
+
+### Shipped
+- **feat: duration + focus score badge in History multi-select row**
+  - `selectableRowStats(record:minChecks:)` — new `internal` pure function in `SettingsView.swift`. Takes a `SessionRecord` and a `minChecks` threshold; returns a compact stat string: `"<1m"`, `"45m"`, `"1h 30m"`, or `"45m · 80%"` when a valid focus score exists (`totalChecks >= minChecks`). The explicit `minChecks` parameter makes the function directly testable without touching the singleton.
+  - `SelectableRecordRow` — adds a trailing `Text(selectableRowStats(...))` view (11pt monospaced, `.tertiary` color) so the History tab's multi-select mode shows per-session stats at a glance. Previously the selectable rows showed only task name, outcome icon, and date; now duration and focus score are visible without expanding the row or leaving select mode.
+  - **Tests (+4)** in `SettingsStoreTests`: `selectableRowStatsDurationOnlyWhenNoChecks` (no checks → duration only), `selectableRowStatsAppendsFocusScoreAboveMinChecks` (8/10 on-task, ≥5 checks → "45m · 80%"), `selectableRowStatsHidesFocusScoreBelowMinChecks` (4 checks < 5 threshold → score omitted), `selectableRowStatsFormatsHoursAndMinutes` (90 min → "1h 30m").
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Onboarding Screen Recording permission UX: `requestPermission()` reveals `Bundle.main.bundleURL` — could change to `Bundle.main.executableURL` so Finder reveals the binary inside `Contents/MacOS/`, which is more useful for dragging into Privacy settings.
+  - (b) SettingsView History tab — selectable rows could also show `calloutCount` in the trailing badge (e.g. "45m · 3⚠ · 80%") for even richer bulk comparison, though this may be too crowded at 11pt.
+  - (c) `selectableRowStats` format: the "·" separator is a Unicode middle dot (U+00B7). Could switch to "/" or "-" if the font renders it too faintly at small sizes.
+  - (d) Export CSV already includes focus score; select-mode row now mirrors that — the two data views are now in sync.
+
+---
+
 ## Run 67 — 2026-06-06
 
 ### Shipped
