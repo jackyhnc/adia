@@ -1,5 +1,30 @@
 # Adia — Build Progress
 
+## Run 70 — 2026-06-06
+
+### Shipped
+- **feat: auto-expand notch + timer-expired banner when session duration goal elapses**
+  - `SessionManager.timerExpired: Bool` — new `@Published` flag, flips true when the duration countdown reaches zero, reset by `endSession()`.
+  - `SessionManager.durationTimerTask: Task<Void, Never>?` — private unstructured task started in `activate()` immediately after `captureManager.start()` succeeds. Sleeps for `max(0, targetDuration - session.elapsed)` so crash-recovered sessions resume with the correct remaining time. Cancelled and nilled in `endSession()` and if `activate()` throws.
+  - `SessionManager.handleDurationExpired()` — `internal` (not private) so unit tests can invoke it without sleeping real time. Sets `timerExpired = true`, calls `NotchState.shared.expand()`, and fires `SessionNotifier.shared.sendTimerExpired(task:)`.
+  - `SessionNotifier.sendTimerExpired(task:)` — new notification method. Title "Time's up ⏰", body "Open Adia to verify: <task>". ID `adia.session.timer_expired` (stable so a second expiry in the same session replaces the first banner).
+  - `TimerExpiredBanner` (new private struct in `NotchView.swift`) — amber background `(0.60, 0.42, 0.0)`, `timer` SF Symbol, "time's up — how'd it go?" heavy text, and a "verify now →" button that calls `verifyAndEnd()`. Uses `.transition(.move(edge: .top).combined(with: .opacity))`.
+  - `activeBody` in `NotchView` — shows `TimerExpiredBanner` in the same slot as `CalloutBanner` when `session.timerExpired && state.calloutMessage == nil`. Off-task callout takes visual priority; timer banner shows between sessions. Task text dims and top padding tightens (8pt → same as callout) when banner is visible.
+  - `NotchWindowController` — subscribes to `SessionManager.shared.$timerExpired`; `targetFrame` routes to `calloutExpandedHeight (302pt)` when `timerExpired` is true and no callout is showing.
+  - **Tests (+5)** in `SessionManagerTests`: `timerExpiredDefaultsToFalse`, `handleDurationExpiredSetsFlag` (flag becomes true), `handleDurationExpiredWithNoSessionIsNoOp` (no session → flag stays false), `handleDurationExpiredExpandsNotch` (notch auto-opens), `endSessionResetsTimerExpiredFlag` (endSession zeroes the flag).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Onboarding Screen Recording permission: `requestPermission()` uses `Bundle.main.bundleURL` for Finder reveal — the correct drag target for Screen Recording IS the `.app` bundle, so this is actually correct and can be left alone.
+  - (b) App force-hide on blocked app detection: `AppMonitor.handle()` calls out when a blocked app activates but doesn't actually hide it. Adding `NSWorkspace.shared.runningApplications.first(where: { $0.bundleIdentifier == bundleID })?.hide()` would enforce "no soft blocks" at the app level.
+  - (c) Callout escalation for timerExpired state: when the timer banner is dismissed (user collapses notch), if they don't verify within e.g. 10 minutes, auto-reopen. Currently the banner only fires once.
+  - (d) Timer expiry sound: `NSSound(named: "Glass")?.play()` in `handleDurationExpired()` would give a satisfying "done" chime distinct from the off-task Sosumi/Basso/Funk sounds.
+
+---
+
 ## Run 69 — 2026-06-06
 
 ### Shipped
