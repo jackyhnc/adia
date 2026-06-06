@@ -150,6 +150,13 @@ public final class SessionManager: ObservableObject {
             if result.verified {
                 sessionEndedSuccessfully = true
                 SessionNotifier.shared.sendSessionComplete(task: s.task)
+                #if canImport(AppKit)
+                // Haptic pulse on the Force Touch trackpad — gives a satisfying physical
+                // confirmation the moment the AI marks the session complete.
+                NSHapticFeedbackManager.defaultPerformer.perform(
+                    .levelChange, performanceTime: .default
+                )
+                #endif
                 // Give the user up to 5s to read their stats and click End Session.
                 // If they click the button first, session becomes nil and the guard below
                 // prevents a redundant endSession() call.

@@ -374,4 +374,43 @@ struct NotchStateTests {
         let expanded = await MainActor.run { NotchState.shared.isExpanded }
         #expect(expanded == false)
     }
+
+    // MARK: - Panel height selection signals
+    // NotchWindowController.targetFrame() branches on verificationResult?.verified to
+    // pick verifiedCardHeight (210) instead of verificationHistoryHeight (350). These
+    // tests confirm the state properties that drive those branches are set correctly.
+
+    @Test func verifiedResultSignalsVerifiedFlagRegardlessOfHistoryCount() async {
+        // After two not-verified attempts followed by a verified one, history.count == 3
+        // but verificationResult?.verified == true → panel should use compact verified height.
+        await reset()
+        await MainActor.run {
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "first"))
+            NotchState.shared.setVerifying(true)
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "second"))
+            NotchState.shared.setVerifying(true)
+            NotchState.shared.setVerificationResult(VerificationResult(verified: true, explanation: "done!"))
+        }
+        await MainActor.run {
+            #expect(NotchState.shared.verificationResult?.verified == true)
+            #expect(NotchState.shared.verificationHistory.count == 3)
+            // history.count > 1 but verified==true → compact card, not history panel
+        }
+    }
+
+    @Test func notVerifiedWithHistorySignalsHistoryHeight() async {
+        // After two not-verified attempts, history.count > 1 and verified==false →
+        // panel should use the taller history height to show previous attempts.
+        await reset()
+        await MainActor.run {
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "first"))
+            NotchState.shared.setVerifying(true)
+            NotchState.shared.setVerificationResult(VerificationResult(verified: false, explanation: "second"))
+        }
+        await MainActor.run {
+            #expect(NotchState.shared.verificationResult?.verified == false)
+            #expect(NotchState.shared.verificationHistory.count == 2)
+            // verified==false and count > 1 → history panel height applies
+        }
+    }
 }

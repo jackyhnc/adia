@@ -50,6 +50,7 @@ public final class NotchWindowController: NSWindowController {
     private static let tier3CalloutExpandedHeight: CGFloat = 322
     private static let creationExpandedHeight: CGFloat  = 348
     private static let conversationHeight: CGFloat      = 430
+    private static let verifiedCardHeight: CGFloat       = 210
     private static let verificationHeight: CGFloat      = 250
     /// Extra height when the verification panel shows a scrollable history of past attempts.
     private static let verificationHistoryHeight: CGFloat = 350
@@ -106,6 +107,10 @@ public final class NotchWindowController: NSWindowController {
         NotchState.shared.$verificationResult.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         NotchState.shared.$verificationHistory.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         NotchState.shared.$calloutMessage.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        // calloutTier can change without the message string changing (same text, escalated tier),
+        // so subscribe to it explicitly so the panel resizes from calloutExpandedHeight to
+        // tier3CalloutExpandedHeight even if CalloutManager re-fires an identical message string.
+        NotchState.shared.$calloutTier.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         // Session start/end changes the height between idle (220pt) and active (190pt).
         SessionManager.shared.$session.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         // Template count changes idle height.
@@ -172,8 +177,14 @@ public final class NotchWindowController: NSWindowController {
         if state.showingConversation {
             h = Self.conversationHeight
         } else if state.isVerifying || state.verificationResult != nil {
-            // Grow the panel when there's a history of previous attempts to display.
-            h = state.verificationHistory.count > 1 ? Self.verificationHistoryHeight : Self.verificationHeight
+            // Verified card only shows stats + End Session — no history section, so it
+            // never needs the extra history height regardless of attempt count.
+            if let result = state.verificationResult, result.verified {
+                h = Self.verifiedCardHeight
+            } else {
+                // Not-verified card can show a scrollable previous-attempts section.
+                h = state.verificationHistory.count > 1 ? Self.verificationHistoryHeight : Self.verificationHeight
+            }
         } else if state.isCreating {
             h = Self.creationExpandedHeight
         } else if state.calloutMessage != nil {
