@@ -841,7 +841,7 @@ private struct HistoryTab: View {
     }
 
     private func exportCSV(_ records: [SessionRecord]) {
-        var csv = "Date,Task,Success Criteria,Duration (min),Completed,Callouts,Note\n"
+        var csv = "Date,Task,Success Criteria,Duration (min),Completed,Callouts,Focus Score (%),Note\n"
         let fmt = ISO8601DateFormatter()
         for r in records {
             let date = fmt.string(from: r.startTime)
@@ -850,7 +850,8 @@ private struct HistoryTab: View {
             let mins = Int(r.duration / 60)
             let done = r.completedSuccessfully ? "Yes" : "No"
             let note = (r.note ?? "").replacingOccurrences(of: "\"", with: "\"\"")
-            csv += "\"\(date)\",\"\(task)\",\"\(criteria)\",\(mins),\(done),\(r.calloutCount),\"\(note)\"\n"
+            let focusPct = r.focusScore.map { String(Int($0 * 100)) } ?? ""
+            csv += "\"\(date)\",\"\(task)\",\"\(criteria)\",\(mins),\(done),\(r.calloutCount),\(focusPct),\"\(note)\"\n"
         }
 
         let panel = NSSavePanel()
@@ -986,6 +987,9 @@ private struct SessionRecordRow: View {
                             Label("\(record.calloutCount) callout\(record.calloutCount == 1 ? "" : "s")",
                                   systemImage: "exclamationmark.bubble")
                         }
+                        if let score = record.focusScore, record.totalChecks >= 5 {
+                            Label("\(Int(score * 100))% focused", systemImage: "target")
+                        }
                     }
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -1029,6 +1033,9 @@ private struct SessionRecordRow: View {
                         detailField("Duration", formattedDuration(record.duration))
                         detailField("Callouts",
                             record.calloutCount == 0 ? "None" : "\(record.calloutCount)")
+                        if let score = record.focusScore, record.totalChecks >= 5 {
+                            detailField("Focus score", "\(Int(score * 100))%")
+                        }
                     }
 
                     noteEditorField

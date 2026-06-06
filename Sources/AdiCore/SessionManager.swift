@@ -11,6 +11,17 @@ public final class SessionManager: ObservableObject {
 
     @Published public private(set) var session: Session?
     @Published public private(set) var onTaskStatus: OnTaskStatus = .onTask
+    /// Number of AI screen-classification frames that came back as "on-task" this session.
+    @Published public private(set) var onTaskCheckCount: Int = 0
+    /// Total AI screen-classification frames evaluated this session (on-task + off-task + ambiguous).
+    @Published public private(set) var totalCheckCount: Int = 0
+
+    /// Fraction of classified frames that were on-task (0.0–1.0).
+    /// nil before any frames have been classified.
+    public var focusScore: Double? {
+        guard totalCheckCount > 0 else { return nil }
+        return Double(onTaskCheckCount) / Double(totalCheckCount)
+    }
 
     private let captureManager = ScreenCaptureManager.shared
     private let detector = OnTaskDetector()
@@ -84,11 +95,15 @@ public final class SessionManager: ObservableObject {
                 startTime: s.startTime,
                 endTime: Date(),
                 completedSuccessfully: sessionEndedSuccessfully,
-                calloutCount: callout.calloutCount
+                calloutCount: callout.calloutCount,
+                onTaskChecks: onTaskCheckCount,
+                totalChecks: totalCheckCount
             )
             Task { await SessionHistory.shared.record(record) }
         }
         sessionEndedSuccessfully = false
+        onTaskCheckCount = 0
+        totalCheckCount  = 0
 
         captureManager.stop()
         AppMonitor.shared.stop()
@@ -115,6 +130,8 @@ public final class SessionManager: ObservableObject {
         let status = await detector.evaluate(frame: frame)
         onTaskStatus = status
         callout.evaluate(status)
+        totalCheckCount += 1
+        if status == .onTask { onTaskCheckCount += 1 }
         // Sync the live calloutCount back to the persisted session so a restored session
         // can resume tier escalation from the right tier. Only writes when count changed
         // (i.e. when a callout just fired) — not on every frame.
@@ -224,11 +241,18 @@ public final class SessionManager: ObservableObject {
         self.session = session
     }
 
+    internal func _injectCheckCountsForTesting(onTask: Int, total: Int) {
+        onTaskCheckCount = onTask
+        totalCheckCount  = total
+    }
+
     // MARK: - Private helpers
 
     /// Wires up the capture pipeline, blocking engine, and on-task detector for a session.
     /// Throws if screen capture cannot be started (e.g. permission denied).
     private func activate(_ s: Session) async throws {
+        onTaskCheckCount = 0
+        totalCheckCount  = 0
         callout.reset()                        // clear streak state left over from any prior session
         callout.restore(count: s.calloutCount) // for restored sessions: resume tier escalation
         callout.setTask(s.task)                // extract keyword so callouts reference the task

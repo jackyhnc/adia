@@ -448,6 +448,94 @@ struct SessionHistoryTests {
         #expect(s.weekMinutes == 0)
     }
 
+    // MARK: - SessionRecord.focusScore
+
+    @Test func focusScoreNilWhenTotalChecksIsZero() {
+        let r = makeRecord()
+        #expect(r.totalChecks == 0)
+        #expect(r.focusScore == nil)
+    }
+
+    @Test func focusScoreWhenAllOnTask() {
+        let r = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0,
+            onTaskChecks: 60,
+            totalChecks: 60
+        )
+        #expect(r.focusScore == 1.0)
+    }
+
+    @Test func focusScoreWhenPartiallyOnTask() {
+        let r = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 2,
+            onTaskChecks: 45,
+            totalChecks: 60
+        )
+        #expect(abs((r.focusScore ?? 0) - 0.75) < 0.001)
+    }
+
+    @Test func focusScoreWhenNoneOnTask() {
+        let r = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: false,
+            calloutCount: 10,
+            onTaskChecks: 0,
+            totalChecks: 20
+        )
+        #expect(r.focusScore == 0.0)
+    }
+
+    @Test func focusScoreRoundTripsThroughJSON() throws {
+        let original = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0,
+            onTaskChecks: 80,
+            totalChecks: 100
+        )
+        let data = try JSONEncoder().encode(original)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: data)
+        #expect(decoded.onTaskChecks == 80)
+        #expect(decoded.totalChecks == 100)
+        #expect(abs((decoded.focusScore ?? 0) - 0.8) < 0.001)
+    }
+
+    @Test func legacyJSONWithoutCheckCountsDecodesWithZeroAndNilFocusScore() throws {
+        // Simulate a record saved before focus score tracking was added.
+        let original = SessionRecord(
+            task: "Old task",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 1
+        )
+        var json = (try JSONSerialization.jsonObject(with: JSONEncoder().encode(original))) as! [String: Any]
+        json.removeValue(forKey: "onTaskChecks")
+        json.removeValue(forKey: "totalChecks")
+        let strippedData = try JSONSerialization.data(withJSONObject: json)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: strippedData)
+        #expect(decoded.onTaskChecks == 0)
+        #expect(decoded.totalChecks == 0)
+        #expect(decoded.focusScore == nil)
+    }
+
     @Test func statsStreakBrokenByGap() async throws {
         let history = try makeHistory()
         let cal = Calendar.current

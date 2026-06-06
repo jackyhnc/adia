@@ -134,6 +134,36 @@ struct SessionManagerTests {
         SessionPersistence.shared.clear()
     }
 
+    // MARK: - Focus score (onTaskCheckCount / totalCheckCount)
+
+    @Test func onTaskCheckCountDefaultsToZero() async {
+        let count = await MainActor.run { SessionManager.shared.onTaskCheckCount }
+        // Reset any carry-over from prior tests, then verify the zero state.
+        await MainActor.run { SessionManager.shared._injectCheckCountsForTesting(onTask: 0, total: 0) }
+        let reset = await MainActor.run { SessionManager.shared.onTaskCheckCount }
+        #expect(reset == 0)
+        _ = count   // suppress unused-variable warning
+    }
+
+    @Test func totalCheckCountDefaultsToZero() async {
+        await MainActor.run { SessionManager.shared._injectCheckCountsForTesting(onTask: 0, total: 0) }
+        let total = await MainActor.run { SessionManager.shared.totalCheckCount }
+        #expect(total == 0)
+    }
+
+    @Test func focusScoreNilWhenNoChecksEvaluated() async {
+        await MainActor.run { SessionManager.shared._injectCheckCountsForTesting(onTask: 0, total: 0) }
+        let score = await MainActor.run { SessionManager.shared.focusScore }
+        #expect(score == nil)
+    }
+
+    @Test func focusScoreReflectsInjectedCounts() async {
+        await MainActor.run { SessionManager.shared._injectCheckCountsForTesting(onTask: 8, total: 10) }
+        let score = await MainActor.run { SessionManager.shared.focusScore }
+        #expect(score == 0.8)
+        await MainActor.run { SessionManager.shared._injectCheckCountsForTesting(onTask: 0, total: 0) }
+    }
+
     // MARK: - HapticPlayer
 
     @Test func hapticSuccessPulseDelayIs50ms() {

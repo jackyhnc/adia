@@ -395,6 +395,11 @@ private struct ExpandedView: View {
                                 systemImage: "exclamationmark.bubble.fill"
                             )
                         }
+                        if let score = session.focusScore, session.totalCheckCount >= 5 {
+                            Text("·")
+                                .foregroundStyle(.white.opacity(0.2))
+                            Label("\(Int(score * 100))% focused", systemImage: "target")
+                        }
                     }
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(.white.opacity(0.45))
