@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 71 — 2026-06-06
+
+### Shipped
+- **feat: force-hide blocked apps on activation + Glass sound on timer expiry**
+  - `AppMonitor.handle()` — after firing the callout, now calls `NSRunningApplication.hide()` on the blocked app immediately. Enforces the "no soft blocks" design principle: the user cannot continue using a blocked app by ignoring or dismissing the callout banner. `#if canImport(AppKit)` guarded. The hide path is gated on `Self.forceHidesBlockedApps` (a `public static let` = `true`) so the behavior is documented as explicit policy and easily tested.
+  - `AppMonitor.forceHidesBlockedApps: Bool = true` — new `public static let`. Acts as a machine-readable policy statement and allows a test to assert the constant is `true` (preventing silent weakening of enforcement).
+  - `SessionManager.timerExpiredSoundName: String = "Glass"` — new `internal static let`. "Glass" is audibly distinct from the off-task callout sounds (Sosumi tier-1, Basso tier-2, Funk tier-3) so the user can immediately tell "time's up" from "get back to work" without looking at the screen.
+  - `SessionManager.handleDurationExpired()` — added `NSSound(named: Self.timerExpiredSoundName)?.play()` inside `#if canImport(AppKit)` guard. Plays on every timer expiry; silently no-ops if the sound file is missing (optional chaining).
+  - **Tests (+3)**: `forceHidesBlockedAppsIsTrue` (guards against softening enforcement), `timerExpiredSoundNameIsGlass` (prevents silent rename), `timerExpiredSoundNameIsKnownMacOSSystemSound` (validates against the 14 known macOS system sound names — catches typos that would produce silence).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Callout escalation for timerExpired: when the timer banner is dismissed (user collapses notch) without verifying, auto-reopen the notch after e.g. 10 minutes. `handleDurationExpired()` currently fires once; a looping `Task.sleep` + `expand()` would implement the re-arm.
+  - (b) App force-hide: `NSRunningApplication.hide()` hides the window but doesn't prevent the user from Command-Tabbing back. Adding `NSWorkspace.shared.runningApplications.first(where: ...).activate(options: [])` after a short delay would keep bringing Adia back to front, but that may be too aggressive. As shipped, force-hide is a good balance.
+  - (c) Onboarding Screen Recording permission UX: `requestPermission()` reveals `Bundle.main.bundleURL` — could change to `Bundle.main.executableURL` so Finder reveals the binary inside `Contents/MacOS/`, which is the correct drag target for the Privacy settings list.
+  - (d) App-level block page: when a blocked app is force-hidden, the user sees whatever was frontmost before (usually Adia or the desktop). Could show a brief overlay or notification explaining why the app was hidden, similar to the blocked site reasoning page.
+
+---
+
 ## Run 70 — 2026-06-06
 
 ### Shipped
