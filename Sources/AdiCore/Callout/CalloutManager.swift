@@ -153,6 +153,48 @@ public final class CalloutManager {
     /// Returns task-specific callout strings for the given keyword and tier.
     /// Exposed `internal` so unit tests can inspect message content directly.
     internal func taskAwareCallouts(keyword: String, tier: Int) -> [String] {
+        // "studying" doesn't fit "your studying" grammatically — use natural gerund phrasing.
+        if keyword == "studying" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to studying.",
+                    "you're not studying right now.",
+                    "studying won't do itself.",
+                ]
+            case 2:
+                return [
+                    "stop putting off studying.",
+                    "you need to be studying, not doing this.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Start studying.",
+                    "your study session is ticking away.",
+                ]
+            }
+        }
+        // "reading" has the same possessive awkwardness as "studying".
+        if keyword == "reading" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to reading.",
+                    "you're not reading right now.",
+                    "that reading won't do itself.",
+                ]
+            case 2:
+                return [
+                    "stop putting off your reading.",
+                    "you need to be reading, not doing this.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Get back to reading.",
+                    "the reading deadline isn't moving.",
+                ]
+            }
+        }
         switch tier {
         case 1:
             return [

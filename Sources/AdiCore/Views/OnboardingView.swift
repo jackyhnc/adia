@@ -141,6 +141,8 @@ public struct OnboardingView: View {
                            "Drift off and it nudges you back — instantly.")
                 featureRow("checkmark.seal.fill", "Verifies you're done",
                            "Checks you actually finished before you stop.")
+                featureRow("keyboard.fill", "⌃⌥A from anywhere",
+                           "Expand Adia from any app without switching windows.")
             }
             Spacer()
         }

@@ -1,5 +1,36 @@
 # Adia — Build Progress
 
+## Run 59 — 2026-06-06
+
+### Shipped
+- **fix: natural phrasing for "studying" and "reading" callout keywords**
+  - `CalloutManager.taskAwareCallouts(keyword:tier:)` — added two early-return branches before the generic `switch tier` block, one for `"studying"` and one for `"reading"`.
+  - `"studying"` tier 1: "get back to studying." / "you're not studying right now." / "studying won't do itself." — drops the awkward "your studying" possessive.
+  - `"studying"` tier 2: "stop putting off studying." / "you need to be studying, not doing this."
+  - `"studying"` tier 3: "CLOSE THIS. Start studying." / "your study session is ticking away."
+  - `"reading"` tier 1/3 similarly avoid "your reading" as a direct object; tier 2 keeps "stop putting off your reading." which is natural English.
+  - **Tests (+2)**: `taskAwareCalloutsStudyingUsesNaturalPhrasing` (all 3 tiers: non-empty, contain "study"/"Study", none contain "your studying"), `taskAwareCalloutsReadingUsesNaturalPhrasing` (all 3 tiers: non-empty, contain "read"/"Read"; tiers 1+3 don't use "your reading" as a verb phrase).
+
+- **feat: custom duration hint in EditTemplateSheet**
+  - `EditTemplateSheet` — new `let customDurationHint: String?` property. Computed in `init` by checking whether `template.preferredDuration` (converted to minutes) matches any preset chip (25/45/60/90). Non-matching values are formatted via `heatmapFormatMinutes` (reuses existing helper: "30m", "2h", "1h 15m"). Preset durations → nil (chip pre-selected as before).
+  - Duration Goal section footer: when no chip is selected AND `customDurationHint` is non-nil, an amber text line appears above the standard footer: "Saved: 30m — select a preset to keep a time limit, or save as-is to clear it." This closes the UX gap where a template's non-standard duration was silently treated as nil with no visible indication.
+
+- **feat: ⌃⌥A shortcut row in onboarding welcome screen**
+  - `OnboardingView.welcome` — added a 4th `featureRow` after "Verifies you're done": `("keyboard.fill", "⌃⌥A from anywhere", "Expand Adia from any app without switching windows.")`. New users now learn about the global hotkey during first launch rather than discovering it by accident or reading Settings.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) `SettingsView` window height adaptive — currently fixed at `500`. Make height computed from tab content.
+  - (b) Integration test for `SleepBlocker.start()` — verify assertion is registered with `IOPMCopyAssertionsByProcess`.
+  - (c) `EditTemplateSheet` clear-custom-duration button — currently if user saves without selecting a chip, the non-preset duration is cleared. Could add a "Clear" link next to the orange hint so users can explicitly clear it, and change save path to preserve custom durations when no chip is active and the hint is showing.
+  - (d) Callout tone for `"report"` keyword: "get back to your report." is slightly better but "your doc" / "your document" work well. No change needed unless testing shows awkwardness.
+  - (e) Onboarding: the permission step (Screen Recording) could link directly to the specific Privacy pane section rather than opening System Settings generally.
+
+---
+
 ## Run 58 — 2026-06-06
 
 ### Shipped

@@ -1289,6 +1289,9 @@ private struct EditTemplateSheet: View {
     @State private var taskDraft: String
     @State private var criteriaDraft: String
     @State private var selectedMinutes: Int?
+    /// Non-nil when the template's stored duration doesn't match any preset chip.
+    /// Shown as a hint so the user understands why no chip is pre-selected.
+    let customDurationHint: String?
 
     private static let durationPresets: [(Int, String)] = [(25, "25m"), (45, "45m"), (60, "1h"), (90, "90m")]
 
@@ -1302,6 +1305,10 @@ private struct EditTemplateSheet: View {
         let presetSet = Set(Self.durationPresets.map(\.0))
         let snapped: Int? = storedMinutes.flatMap { presetSet.contains($0) ? $0 : nil }
         _selectedMinutes = State(initialValue: snapped)
+        // If there's a stored duration that doesn't match any preset, format a display label.
+        customDurationHint = storedMinutes.flatMap { m in
+            presetSet.contains(m) ? nil : heatmapFormatMinutes(m)
+        }
     }
 
     private var canSave: Bool {
@@ -1371,10 +1378,16 @@ private struct EditTemplateSheet: View {
                 } header: {
                     Text("Duration goal")
                 } footer: {
-                    Text(selectedMinutes == nil
-                         ? "No time limit — session runs until you click Done."
-                         : "A progress arc will appear in the notch during this session.")
-                        .foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 4) {
+                        if selectedMinutes == nil, let hint = customDurationHint {
+                            Text("Saved: \(hint) — select a preset to keep a time limit, or save as-is to clear it.")
+                                .foregroundStyle(.orange.opacity(0.8))
+                        }
+                        Text(selectedMinutes == nil
+                             ? "No time limit — session runs until you click Done."
+                             : "A progress arc will appear in the notch during this session.")
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             .formStyle(.grouped)

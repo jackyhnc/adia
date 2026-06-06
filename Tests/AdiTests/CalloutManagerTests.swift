@@ -436,6 +436,41 @@ struct CalloutManagerTests {
         }
     }
 
+    // "studying" uses natural gerund phrasing — "your studying" sounds awkward.
+    @Test func taskAwareCalloutsStudyingUsesNaturalPhrasing() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "studying", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) studying messages must not be empty")
+                // Must contain a study-root word; must NOT contain "your studying"
+                #expect(msgs.allSatisfy { $0.contains("study") || $0.contains("Study") },
+                        "tier \(tier) studying messages must reference studying")
+                #expect(msgs.allSatisfy { !$0.contains("your studying") },
+                        "tier \(tier) studying messages must not use 'your studying'")
+            }
+        }
+    }
+
+    // "reading" uses natural gerund phrasing — "your reading" sounds awkward as a direct object.
+    @Test func taskAwareCalloutsReadingUsesNaturalPhrasing() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "reading", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) reading messages must not be empty")
+                #expect(msgs.allSatisfy { $0.contains("read") || $0.contains("Read") },
+                        "tier \(tier) reading messages must reference reading")
+                // Tier 2 says "your reading" intentionally for natural phrasing — only tier 1 and 3 drop it.
+                let noYourReadingTiers = [1, 3]
+                if noYourReadingTiers.contains(tier) {
+                    #expect(msgs.allSatisfy { !$0.contains("your reading") },
+                            "tier \(tier) reading messages must not use 'your reading'")
+                }
+            }
+        }
+    }
+
     // MARK: - Word-boundary extraction (false-positive prevention)
 
     @Test func extractTaskKeywordIgnoresReadingInsideThreading() {
