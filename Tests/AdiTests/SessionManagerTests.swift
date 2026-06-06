@@ -279,4 +279,22 @@ struct SessionManagerTests {
         // Either way performSuccess() must return — the await here enforces it.
         await HapticPlayer.performSuccess()
     }
+
+    // MARK: - Timer expiry sound
+
+    @Test func timerExpiredSoundNameIsGlass() {
+        // "Glass" is intentionally distinct from the off-task callout sounds
+        // (Sosumi/Basso/Funk) so the user can immediately tell "done" from "get back to work".
+        // Changing this constant requires an explicit, intentional commit.
+        #expect(SessionManager.timerExpiredSoundName == "Glass")
+    }
+
+    @Test func timerExpiredSoundNameIsKnownMacOSSystemSound() {
+        // All macOS system sounds live in /System/Library/Sounds/ as .aiff files.
+        // This test guards against typos that would silently produce no sound.
+        let knownSounds = ["Basso", "Blow", "Bottle", "Frog", "Funk", "Glass",
+                           "Hero", "Morse", "Ping", "Pop", "Purr", "Sosumi",
+                           "Submarine", "Tink"]
+        #expect(knownSounds.contains(SessionManager.timerExpiredSoundName))
+    }
 }

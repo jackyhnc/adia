@@ -64,7 +64,21 @@ public final class AppMonitor {
     private func handle(bundleID: String, appName: String) {
         guard blockedBundleIDs.contains(bundleID) else { return }
         CalloutManager.shared.fireAppCallout(Self.callout(for: appName))
+        #if canImport(AppKit)
+        // Enforce "no soft blocks": immediately hide the app so the user cannot
+        // continue using it after dismissing or ignoring the callout.
+        if Self.forceHidesBlockedApps {
+            NSWorkspace.shared.runningApplications
+                .first { $0.bundleIdentifier == bundleID }?
+                .hide()
+        }
+        #endif
     }
+
+    /// When true, blocked apps are force-hidden the moment they activate during a session.
+    /// Enforces the "no soft blocks" design principle: the user cannot continue using a
+    /// blocked app simply by ignoring the callout banner.
+    public static let forceHidesBlockedApps: Bool = true
 
     /// Returns a callout message for a blocked app. Internal for direct testing.
     static func callout(for appName: String) -> String {

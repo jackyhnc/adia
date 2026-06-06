@@ -256,6 +256,11 @@ public final class SessionManager: ObservableObject {
 
     // MARK: - Test helpers
 
+    /// Sound played when the session timer expires. "Glass" is a clean, positive chime
+    /// distinct from the off-task callout sounds (Sosumi / Basso / Funk), so the user
+    /// can instantly tell the difference between "done" and "get back to work".
+    internal static let timerExpiredSoundName: String = "Glass"
+
     /// Called when the session's target duration elapses.
     /// Exposed as `internal` so unit tests can invoke it without sleeping real time.
     internal func handleDurationExpired() {
@@ -263,6 +268,9 @@ public final class SessionManager: ObservableObject {
         timerExpired = true
         NotchState.shared.expand()
         SessionNotifier.shared.sendTimerExpired(task: session?.task ?? "")
+        #if canImport(AppKit)
+        NSSound(named: Self.timerExpiredSoundName)?.play()
+        #endif
     }
 
     internal func _injectSessionForTesting(_ session: Session?) {

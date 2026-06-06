@@ -86,6 +86,17 @@ struct AppMonitorTests {
         #expect(decoded.blockedApps == ["com.hnc.Discord"])
     }
 
+    // MARK: - Force-hide behaviour
+
+    @Test func forceHidesBlockedAppsIsTrue() {
+        // Enforces the "no soft blocks" design principle: blocked apps must be
+        // force-hidden on activation, not just called out. Changing this to false
+        // weakens enforcement and requires an intentional, documented decision.
+        #expect(AppMonitor.forceHidesBlockedApps == true)
+    }
+
+    // MARK: - Session Codable
+
     @Test func sessionDecodesLegacyJsonWithoutBlockedApps() throws {
         // Simulate an old persisted session that has no blockedApps key.
         let legacyJSON = """
