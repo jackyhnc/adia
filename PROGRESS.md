@@ -58,6 +58,16 @@
   `GoalParse`/`ChatMessage` initializers, `Result<_, MockAgentAIError>.get()`,
   `Duration.zero`/`.milliseconds`). CI (`macos-15` runner) will build and test on push.
 
+### CI confirmation
+- First push (`e79c215`, run `27093603049`) failed to compile:
+  `await MainActor.run({ ... })` (parenthesized-closure-as-argument) doesn't resolve
+  against `MainActor.run<T>(resultType:body:)` in this toolchain — produces "missing
+  argument label 'resultType:'" / "closure passed to parameter of type 'Bool.Type'".
+  Fixed by switching both `isLoading`-polling loops in the new `send()` tests to the
+  established trailing-closure form `await MainActor.run { ... }` used pervasively
+  elsewhere in the file. Pushed as `f0a133d`; **CI run `27093667399` confirmed green**
+  (`"conclusion":"success"`) — the DI seam refactor is fully shipped and verified.
+
 ### Branch hygiene
 - Found `HEAD` detached at `4f407ab` with local `main` stale at `9819c9b` (50 commits
   behind) — the recurring issue Runs 78/79/81 all hit. `git update-ref refs/heads/main
