@@ -5,8 +5,26 @@ import Foundation
 @preconcurrency import UserNotifications
 #endif
 
+// `sharedIsRegisteredAsNotificationDelegate` calls `UNUserNotificationCenter.current()`
+// directly (to read back `.delegate`), which *crashes the whole process* (uncaught
+// NSInternalInconsistencyException "bundleProxyForCurrentProcess is nil") when run
+// from a binary that isn't a proper .app bundle — e.g. the `swift test` /
+// `swiftpm-testing-helper` process used by CI and `swift test` from the command line.
+// There's no way to catch this (it aborts via libc++abi before Swift error handling
+// runs), so the whole suite is skipped there rather than risk one test taking down the
+// process. (`SessionNotifier` itself guards its own `UNUserNotificationCenter` calls —
+// see `SessionNotifier.canUseNotificationCenter` — so `.shared` alone is safe; this
+// gate exists for the test that reaches past it to the framework directly.)
+// `Bundle.main.bundleIdentifier` is reliably nil in that context and non-nil inside
+// the real Adia.app.
+private let runningInAppBundle: Bool = Bundle.main.bundleIdentifier != nil
+
 @MainActor
-@Suite("SessionNotifier", .serialized)
+@Suite(
+    "SessionNotifier",
+    .serialized,
+    .enabled(if: runningInAppBundle, "UNUserNotificationCenter crashes the swift test process outside an app bundle")
+)
 struct SessionNotifierTests {
 
     /// Verifies that accessing `SessionNotifier.shared` registers it as the

@@ -15,9 +15,20 @@ import AppKit
 public final class SessionNotifier: NSObject {
     public static let shared = SessionNotifier()
 
+    /// `UNUserNotificationCenter.current()` *crashes the whole process* (uncaught
+    /// `NSInternalInconsistencyException`, "bundleProxyForCurrentProcess is nil") when
+    /// called from a binary that isn't a proper `.app` bundle — e.g. `swift test` /
+    /// `swiftpm-testing-helper`, used by CI and `swift test` from the command line.
+    /// It's an Objective-C exception that aborts via `libc++abi` before Swift error
+    /// handling runs, so it cannot be caught — the only option is to never call it
+    /// outside a real app bundle. `Bundle.main.bundleIdentifier` is reliably nil in
+    /// that context and non-nil inside the real Adia.app.
+    private static let canUseNotificationCenter: Bool = Bundle.main.bundleIdentifier != nil
+
     private override init() {
         super.init()
         #if canImport(UserNotifications)
+        guard Self.canUseNotificationCenter else { return }
         UNUserNotificationCenter.current().delegate = self
         #endif
     }
@@ -25,6 +36,7 @@ public final class SessionNotifier: NSObject {
     /// Requests system notification permission once. Safe to call multiple times.
     public func requestPermission() {
         #if canImport(UserNotifications)
+        guard Self.canUseNotificationCenter else { return }
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
         #endif
     }
@@ -92,6 +104,7 @@ public final class SessionNotifier: NSObject {
 
     #if canImport(UserNotifications)
     private func schedule(_ content: UNMutableNotificationContent, id: String) {
+        guard Self.canUseNotificationCenter else { return }
         let request = UNNotificationRequest(identifier: id, content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request) { error in
             if let error { print("[SessionNotifier] notification error: \(error)") }

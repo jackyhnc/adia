@@ -87,32 +87,79 @@
        output. The assertion was asserting something impossible for this input.
        Removed it, keeping the `!msg.isEmpty` "doesn't crash" check the test name
        promises, with a comment explaining why.
+  6. **(this commit)** — `79e33d1` got *past* those four (the log shows all of round 5's
+     fixes holding — `licensedFromInjectedInfo`/`offlineGraceKeepsLicensedWithinWindow`/
+     `statsWeekCountAndMinutes` all started running) but the **whole `swift-test`
+     process aborted mid-run** with `libc++abi: terminating due to uncaught exception
+     of type NSException` / `*** Terminating app due to uncaught exception
+     'NSInternalInconsistencyException', reason: 'bundleProxyForCurrentProcess is nil:
+     mainBundle.bundleURL file:///Applications/Xcode_16.app/.../usr/libexec/swift/pm/'`.
+     The crash's stack trace pinpoints `SessionNotifierTests
+     .sharedIsRegisteredAsNotificationDelegate` → `UNUserNotificationCenter.current()`.
+     This is a known Foundation/UserNotifications limitation: `UNUserNotificationCenter
+     .current()` requires a real `.app` bundle context and **aborts the whole process
+     with an uncaught Objective-C exception** (not a catchable Swift error — it goes
+     through `libc++abi` before Swift error handling even runs) when called from a
+     bare binary like the `swift test` / `swiftpm-testing-helper` process. Two-part fix:
+     - **`SessionNotifier.swift`** — added `private static let canUseNotificationCenter
+       = Bundle.main.bundleIdentifier != nil` (nil in `swift test`, non-nil inside
+       Adia.app) and guarded all four `UNUserNotificationCenter.current()` call sites
+       (`init`, `requestPermission`, `schedule`) with it, so `SessionNotifier.shared`
+       itself is now safe to construct from any context — a real fix that also
+       protects the `SessionManagerTests`/`AppMonitorTests` code paths that reach
+       `SessionNotifier.shared` indirectly (`handleDurationExpired` →
+       `sendTimerExpired`, etc.) and would otherwise crash the *whole suite* the
+       moment any test touched the singleton.
+     - **`SessionNotifierTests.swift`** — `sharedIsRegisteredAsNotificationDelegate`
+       still calls `UNUserNotificationCenter.current()` *directly* (to read back
+       `.delegate`), bypassing the new guard. Gated the entire `@Suite("SessionNotifier")`
+       with `.enabled(if: Bundle.main.bundleIdentifier != nil, "...")`, mirroring the
+       `ClaudeAPIIntegrationTests`/`hasAnthropicKey` skip-when-unavailable idiom — the
+       suite simply doesn't run outside a real app bundle (it'll run fine in Xcode/on
+       a packaged build where notification delivery can actually be exercised).
 
 ### Verification
 - **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH) — every
   fix was verified by reading the actual CI failure logs via the GitHub MCP tools
   (`actions_list` → `list_workflow_jobs`, `get_job_logs`) after each push, not by local
   builds. This is the loop: push → poll CI → read logs → diagnose → fix → repeat.
-- CI run 133 (head `6a7a7cf`) is the first run where `swift test` compiled and
-  executed to completion — confirms rounds 1–4 are *fully* resolved. The only
-  remaining red was four genuine test-logic issues (not compile errors), all
-  addressed by this commit. The "Exited with unexpected signal code 6" line in that
-  run's log is just the runner's exit-status annotation for the overall failed `swift
-  test` invocation (note the log shows tests continuing to print *after* it, due to
-  async buffering) — not a separate crash; it should disappear once these four
-  failures are fixed.
+- CI run 133 (head `6a7a7cf`) was the first run where `swift test` compiled and
+  executed to completion — confirms rounds 1–4 are *fully* resolved. It surfaced
+  four genuine test-logic issues (not compile errors), fixed in `79e33d1`. But CI
+  run 134 (head `79e33d1`) showed those fixes were never actually validated to
+  pass: the "Exited with unexpected signal code 6" line — which the round-5 notes
+  above mischaracterized as a harmless runner annotation — turned out to precede a
+  **real, whole-process-aborting `NSInternalInconsistencyException`** from
+  `UNUserNotificationCenter.current()` (see round 6 above), which killed `swift
+  test` mid-suite before `licensedFromInjectedInfo`/etc. could fully report (the
+  log showed them merely "started"). That crash is what round 6 fixes.
+- Round 6's `SessionNotifier`/`SessionNotifierTests` fix is committed as `<HEAD
+  after this entry — see git log>`. It has *not yet* been confirmed green by CI —
+  that is the very next thing to check.
 
 ### Blocked
 - None.
 
 ### Next agent
-- **Confirm CI is fully green** on `main` at head (commit after `6a7a7cf`, this
-  round-5 fix). If `swift-test` still fails, pull the job log
-  (`mcp__github__get_job_logs`) and check whether it's a *new* failure class or a
-  flake — `statsWeekCountAndMinutes`-style off-by-one-microsecond `Date()` issues can
-  recur elsewhere if a similar "two independent `Date()` calls, then floor-divide"
-  pattern exists; grep for `Date(timeIntervalSinceNow:` paired with a separately
-  captured `now` in the same test.
+- **Confirm CI is fully green** on `main` at the new head (the commit that lands
+  the `SessionNotifier.swift` + `SessionNotifierTests.swift` fix described in round
+  6 above, landed right after `79e33d1`). Poll with `mcp__github__actions_list` →
+  `list_workflow_jobs` → `get_job_logs` on the new `swift-test` run.
+  - If it's green: round 6 was the last masked layer — the four round-5 test fixes
+    (which never got to run to completion before) should now finally execute and
+    pass. Update this file with a final "CI is green" confirmation and you're done.
+  - If `swift-test` still fails, check whether the four round-5 fixes
+    (`statsWeekCountAndMinutes`, `licensedFromInjectedInfo`,
+    `offlineGraceKeepsLicensedWithinWindow`, `calloutSpecialCharAppNameDoesNotCrash`)
+    now run to completion and pass — if they fail differently than before, that's a
+    *new* layer the crash was masking. Also watch for the same off-by-microsecond
+    `Date()` pattern recurring elsewhere: grep for `Date(timeIntervalSinceNow:`
+    paired with a separately captured `now` in the same test.
+  - Also watch for *other* singletons/types that touch platform frameworks
+    requiring a real `.app` bundle (`UNUserNotificationCenter`, possibly others in
+    `AppKit`/`CoreLocation`/etc.) — `Bundle.main.bundleIdentifier != nil` is the
+    established guard idiom now (see `SessionNotifier.canUseNotificationCenter`);
+    apply the same pattern if a new crash of this shape appears.
 - All 14 GOAL.md items remain complete (per `BUILD_COMPLETE`). Focus areas: integration
   smoke testing on a real macOS machine with a notch, or any new features the user
   requests.
