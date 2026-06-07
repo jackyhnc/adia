@@ -1,5 +1,83 @@
 # Adia — Build Progress
 
+## Run 83 — 2026-06-07
+
+### Shipped
+- **feat: cross-domain "house style" memory signal for reasoning conversations**
+  Closes the open improvement carried since Run 79 (item (a), recarried by Runs 80
+  and 82): `memoryFragment` only ever looked at *repeat* asks about the *same* domain.
+  A user who got denied YouTube, then Reddit, then X — and was now trying TikTok for
+  the first time — got a completely fresh, suspicion-free system prompt for that ask,
+  even though the pattern across the session (three different sites, all weak excuses,
+  all denied) is exactly the kind of "testing the limits" behavior the AI should weigh.
+  - **`ConversationManager.crossDomainSignal(for:history:)`** (new pure static helper,
+    `Sources/AdiCore/Conversation/ConversationManager.swift`) — filters
+    `reasoningHistory` to attempts about *other* domains (case-insensitive exclusion of
+    the one currently being asked about), counts distinct other domains and aggregate
+    granted/denied totals, and fires only when **both** (a) there are >= 2 distinct
+    other domains in play **and** (b) denials outnumber grants among them. Returns `""`
+    otherwise — a single unrelated prior ask, or a history of legitimately-granted asks
+    elsewhere, never taints a fresh first-time request. When it fires, the fragment
+    reads: "Beyond \<site\>, the user has asked about N other sites this session — D
+    denied, G granted. That's a pattern worth weighing (they may be testing your
+    limits), but still judge *this* request on its own merits — don't let history
+    elsewhere sink a genuinely good reason." The closing caveat is the prompt-tuning
+    safeguard Run 79/80/82 all flagged as the risk to manage — it explicitly tells the
+    model not to let cross-domain history override the merits of the current ask.
+  - **`systemPrompt(for:)`** — now computes `history` once, derives both `memory`
+    (same-domain, existing) and `crossSignal` (new) from it, and appends both to the
+    `.reasoning` system prompt (`...be direct.\(memory)\(crossSignal)`). Byte-identical
+    to the old prompt whenever neither fires (the overwhelmingly common case — most
+    sessions never accumulate a multi-domain denial pattern).
+  - **Tests** (+8, `Tests/AdiTests/ConversationManagerTests.swift`):
+    `crossDomainSignalEmptyForNoHistory`, `crossDomainSignalEmptyForBlankDomain`,
+    `crossDomainSignalEmptyWhenOnlyOneOtherDomain` (the >= 2 distinct domains gate),
+    `crossDomainSignalEmptyWhenOthersWereMostlyGranted` (the denied > granted gate —
+    proves a history of legitimate grants never trips the signal),
+    `crossDomainSignalFiresWhenMultipleDistinctDomainsMostlyDenied` (asserts the exact
+    rendered counts and the "testing your limits" framing),
+    `crossDomainSignalExcludesCurrentDomainFromCount`,
+    `crossDomainSignalIsCaseInsensitiveOnCurrentDomain`, and
+    `crossDomainSignalDedupesRepeatedAsksToSameOtherDomain` (3 attempts across 2 other
+    domains → "2 other sites" / "3 of those asks were denied", proving distinct-domain
+    counting is independent from raw attempt counting).
+
+### Verification
+- **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH) —
+  verified brace/paren balance across both touched files (`ConversationManager.swift`
+  55/55 braces, 97/97 parens; `ConversationManagerTests.swift` 73/73 braces, 239/239
+  parens — both delta 0). The new helper follows `memoryFragment`'s exact proven
+  pattern (`nonisolated static func ... -> String`, trim-and-guard-empty, `Set` +
+  `filter`/`reduce`-style counting, multi-line string-literal fragment appended
+  conditionally to the system prompt). CI (`macos-15` runner) will build and test on
+  push.
+
+### Branch hygiene
+- Session started with `HEAD` detached at `6861dc9` and local `main` stale at
+  `9819c9b` (the recurring issue Runs 78–82 all hit — see Run 82's note (c)).
+  `git fetch origin main` showed the *actual* remote tip was `6861dc9` (the local
+  `refs/remotes/origin/main` cache was stale, not `main` itself — `git ls-remote
+  --heads origin` confirmed). `git checkout main && git reset --hard origin/main`
+  aligned cleanly; no work was lost.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off; `BUILD_COMPLETE` still accurate.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) **Branch hygiene keeps recurring (5th+ time)** — the session-start hook
+    proactively running `git checkout main && git reset --hard origin/main` would
+    eliminate this entirely; every run so far has had to rediscover and fix it by hand.
+  - (b) Now that `crossDomainSignal` exists alongside `memoryFragment`, consider
+    whether the *combination* — same-domain repeat + cross-domain pattern firing
+    together — produces an overly long system-prompt fragment that needs trimming for
+    very long sessions with heavy reasoning-conversation usage.
+  - (c) Carried from Run 82 (d): `ClaudeAPIIntegrationTests` could potentially gain
+    mock-backed deterministic equivalents now that the `AgentAIService` DI seam exists
+    — though the existing real-network tests have unique value (catching live
+    prompt/schema drift), so supplement, don't replace.
+
+---
 ## Run 82 — 2026-06-07
 
 ### Shipped

@@ -141,14 +141,16 @@ public final class ConversationManager: ObservableObject {
         switch mode {
         case .reasoning(let domain):
             let site = domain.flatMap { $0.isEmpty ? nil : $0 } ?? "this website"
-            let memory = domain.map { Self.memoryFragment(for: $0, history: session?.reasoningHistory ?? []) } ?? ""
+            let history = session?.reasoningHistory ?? []
+            let memory = domain.map { Self.memoryFragment(for: $0, history: history) } ?? ""
+            let crossSignal = domain.map { Self.crossDomainSignal(for: $0, history: history) } ?? ""
             return """
             You are Adia, a strict focus monitor. A student wants access to \(site) while working on: "\(task)". \
             Success criteria: "\(criteria)".
             Be a firm but fair friend. One sentence per message. Push back on weak excuses.
             If the reason is genuinely task-relevant, end your message with exactly: [ACCESS GRANTED]
             If you're denying, end with: [ACCESS DENIED]
-            Never grant access for entertainment or distraction. No corporate tone — be direct.\(memory)
+            Never grant access for entertainment or distraction. No corporate tone — be direct.\(memory)\(crossSignal)
             """
         case .earlyExit:
             return """
@@ -205,6 +207,34 @@ public final class ConversationManager: ObservableObject {
         Earlier this session, the user already asked about \(trimmed) \(prior.count == 1 ? "once" : "\(prior.count) times"):
         \(lines.joined(separator: "\n"))
         Use this memory — call out repeat asks, and don't let them re-litigate a denial with the same weak reason.
+        """
+    }
+
+    /// Pure helper: detects a "house style" cross-domain pattern — the user trying
+    /// several *different* sites this session and getting turned down more often than
+    /// not. Returns "" unless the pattern is real (>= 2 distinct other domains AND
+    /// denials outnumber grants among them), so a single unrelated prior ask — or a
+    /// history of legitimately-granted asks elsewhere — never makes the AI suspicious
+    /// of what might be a perfectly genuine first-time request.
+    public nonisolated static func crossDomainSignal(for domain: String, history: [ReasoningAttempt]) -> String {
+        let trimmed = domain.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return "" }
+
+        let others = history.filter { $0.domain.caseInsensitiveCompare(trimmed) != .orderedSame }
+        guard !others.isEmpty else { return "" }
+
+        var distinctDomains = Set<String>()
+        var grantedCount = 0
+        var deniedCount = 0
+        for attempt in others {
+            distinctDomains.insert(attempt.domain.lowercased())
+            if attempt.granted { grantedCount += 1 } else { deniedCount += 1 }
+        }
+        guard distinctDomains.count >= 2, deniedCount > grantedCount else { return "" }
+
+        return """
+
+        Beyond \(trimmed), the user has asked about \(distinctDomains.count) other sites this session — \(deniedCount) of those asks were denied, \(grantedCount) granted. That's a pattern worth weighing (they may be testing your limits), but still judge *this* request on its own merits — don't let history elsewhere sink a genuinely good reason.
         """
     }
 }

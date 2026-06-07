@@ -214,6 +214,79 @@ struct ConversationManagerTests {
         #expect(fragment.contains("no reason recorded"))
     }
 
+    // MARK: - crossDomainSignal (static pure helper)
+
+    @Test func crossDomainSignalEmptyForNoHistory() {
+        #expect(ConversationManager.crossDomainSignal(for: "youtube.com", history: []) == "")
+    }
+
+    @Test func crossDomainSignalEmptyForBlankDomain() {
+        let history = [ReasoningAttempt(domain: "reddit.com", granted: false, summary: "no")]
+        #expect(ConversationManager.crossDomainSignal(for: "  ", history: history) == "")
+    }
+
+    @Test func crossDomainSignalEmptyWhenOnlyOneOtherDomain() {
+        let history = [
+            ReasoningAttempt(domain: "reddit.com", granted: false, summary: "weak"),
+            ReasoningAttempt(domain: "reddit.com", granted: false, summary: "weaker"),
+        ]
+        #expect(ConversationManager.crossDomainSignal(for: "youtube.com", history: history) == "")
+    }
+
+    @Test func crossDomainSignalEmptyWhenOthersWereMostlyGranted() {
+        let history = [
+            ReasoningAttempt(domain: "reddit.com", granted: true, summary: "lecture thread"),
+            ReasoningAttempt(domain: "x.com", granted: true, summary: "professor's announcement"),
+            ReasoningAttempt(domain: "tumblr.com", granted: false, summary: "weak excuse"),
+        ]
+        #expect(ConversationManager.crossDomainSignal(for: "youtube.com", history: history) == "")
+    }
+
+    @Test func crossDomainSignalFiresWhenMultipleDistinctDomainsMostlyDenied() {
+        let history = [
+            ReasoningAttempt(domain: "reddit.com", granted: false, summary: "no"),
+            ReasoningAttempt(domain: "x.com", granted: false, summary: "no"),
+            ReasoningAttempt(domain: "tumblr.com", granted: true, summary: "ok fine"),
+        ]
+        let signal = ConversationManager.crossDomainSignal(for: "youtube.com", history: history)
+        #expect(signal.contains("3 other sites"))
+        #expect(signal.contains("2 of those asks were denied"))
+        #expect(signal.contains("1 granted"))
+        #expect(signal.contains("testing your limits"))
+    }
+
+    @Test func crossDomainSignalExcludesCurrentDomainFromCount() {
+        let history = [
+            ReasoningAttempt(domain: "youtube.com", granted: false, summary: "earlier ask"),
+            ReasoningAttempt(domain: "reddit.com", granted: false, summary: "no"),
+            ReasoningAttempt(domain: "x.com", granted: false, summary: "no"),
+        ]
+        let signal = ConversationManager.crossDomainSignal(for: "youtube.com", history: history)
+        #expect(signal.contains("2 other sites"))
+        #expect(!signal.contains("youtube.com has asked"))
+    }
+
+    @Test func crossDomainSignalIsCaseInsensitiveOnCurrentDomain() {
+        let history = [
+            ReasoningAttempt(domain: "YouTube.com", granted: false, summary: "earlier ask"),
+            ReasoningAttempt(domain: "reddit.com", granted: false, summary: "no"),
+            ReasoningAttempt(domain: "x.com", granted: false, summary: "no"),
+        ]
+        let signal = ConversationManager.crossDomainSignal(for: "youtube.com", history: history)
+        #expect(signal.contains("2 other sites"))
+    }
+
+    @Test func crossDomainSignalDedupesRepeatedAsksToSameOtherDomain() {
+        let history = [
+            ReasoningAttempt(domain: "reddit.com", granted: false, summary: "weak excuse #1"),
+            ReasoningAttempt(domain: "reddit.com", granted: false, summary: "weak excuse #2"),
+            ReasoningAttempt(domain: "x.com", granted: false, summary: "no"),
+        ]
+        let signal = ConversationManager.crossDomainSignal(for: "youtube.com", history: history)
+        #expect(signal.contains("2 other sites"))
+        #expect(signal.contains("3 of those asks were denied"))
+    }
+
     // MARK: - send(_:) — exercised end-to-end via the injected mock agent client
 
     /// `send` previously could only be exercised against the real `AgentAIClient`
