@@ -398,7 +398,8 @@ struct SettingsStoreTests {
         durationSeconds: TimeInterval,
         calloutCount: Int = 0,
         onTaskChecks: Int = 0,
-        totalChecks: Int = 0
+        totalChecks: Int = 0,
+        reasoningAttempts: Int = 0
     ) -> SessionRecord {
         let start = Date(timeIntervalSince1970: 0)
         return SessionRecord(
@@ -409,7 +410,8 @@ struct SettingsStoreTests {
             completedSuccessfully: true,
             calloutCount: calloutCount,
             onTaskChecks: onTaskChecks,
-            totalChecks: totalChecks
+            totalChecks: totalChecks,
+            reasoningAttempts: reasoningAttempts
         )
     }
 
@@ -460,5 +462,27 @@ struct SettingsStoreTests {
         // 1 callout — the count should show as "1⚠" not "1 callout"
         let record = makeRecord(durationSeconds: 30 * 60, calloutCount: 1)
         #expect(selectableRowStats(record: record, minChecks: 5) == "30m · 1⚠")
+    }
+
+    @Test func selectableRowStatsAppendsReasoningAttemptsWhenNonZero() {
+        let record = makeRecord(durationSeconds: 45 * 60, reasoningAttempts: 2)
+        #expect(selectableRowStats(record: record, minChecks: 5) == "45m · asked 2×")
+    }
+
+    @Test func selectableRowStatsOmitsReasoningAttemptsWhenZero() {
+        let record = makeRecord(durationSeconds: 45 * 60, reasoningAttempts: 0)
+        #expect(!selectableRowStats(record: record, minChecks: 5).contains("asked"))
+    }
+
+    @Test func selectableRowStatsCombinesAllStats() {
+        // callouts, focus score, and reasoning attempts all present, in order
+        let record = makeRecord(
+            durationSeconds: 45 * 60,
+            calloutCount: 3,
+            onTaskChecks: 8,
+            totalChecks: 10,
+            reasoningAttempts: 1
+        )
+        #expect(selectableRowStats(record: record, minChecks: 5) == "45m · 3⚠ · 80% · asked 1×")
     }
 }

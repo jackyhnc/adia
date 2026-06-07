@@ -291,6 +291,29 @@ struct SessionManagerTests {
         #expect(record?.note == "covered all sections, felt solid")
     }
 
+    @Test func endSessionCapturesReasoningHistoryCounts() async {
+        var s = Session(task: "Write essay", successCriteria: "Submit to Canvas")
+        s.reasoningHistory = [
+            ReasoningAttempt(domain: "youtube.com", granted: false, summary: "wanted a study video"),
+            ReasoningAttempt(domain: "youtube.com", granted: true, summary: "found the lecture recording"),
+            ReasoningAttempt(domain: "twitter.com", granted: false, summary: "just bored")
+        ]
+        await injectSession(s)
+        await SessionManager.shared.endSession()
+        let record = await MainActor.run { SessionManager.shared._lastEndedRecord }
+        #expect(record?.reasoningAttempts == 3)
+        #expect(record?.reasoningGranted == 1)
+    }
+
+    @Test func endSessionWithNoReasoningHistoryRecordsZeros() async {
+        let s = Session(task: "Write essay", successCriteria: "Submit to Canvas")
+        await injectSession(s)
+        await SessionManager.shared.endSession()
+        let record = await MainActor.run { SessionManager.shared._lastEndedRecord }
+        #expect(record?.reasoningAttempts == 0)
+        #expect(record?.reasoningGranted == 0)
+    }
+
     /// Regression test for a race where `verifyAndEnd()` awaits a multi-second network
     /// call (and, on success, an additional 5s sleep) while holding a stale reference to
     /// the session. If the user taps "End Session" directly during that window, the

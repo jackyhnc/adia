@@ -413,6 +413,15 @@ private struct ExpandedView: View {
                                 .foregroundStyle(.white.opacity(0.2))
                             Label("\(Int(score * 100))% focused", systemImage: "target")
                         }
+                        if !s.reasoningHistory.isEmpty {
+                            Text("·")
+                                .foregroundStyle(.white.opacity(0.2))
+                            let granted = s.reasoningHistory.filter(\.granted).count
+                            Label(
+                                "asked \(s.reasoningHistory.count)×, \(granted) granted",
+                                systemImage: "bubble.left.and.text.bubble.right.fill"
+                            )
+                        }
                     }
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(.white.opacity(0.45))

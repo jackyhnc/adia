@@ -1,5 +1,72 @@
 # Adia — Build Progress
 
+## Run 80 — 2026-06-07
+
+### Shipped
+- **feat: surface reasoning-conversation stats in session history** — Run 79 added
+  `Session.reasoningHistory: [ReasoningAttempt]` (the AI's memory of site-access asks
+  within a session) but nothing displayed it after the session ended. This run wires
+  it through to `SessionRecord` and every place `calloutCount`/`focusScore` are shown,
+  per Run 79's "Next agent" suggestion (b).
+  - **`SessionRecord`** (`Sources/AdiCore/Models/SessionRecord.swift`) — two new stored
+    `Int` fields, `reasoningAttempts` and `reasoningGranted`, following the exact
+    `onTaskChecks`/`totalChecks` pattern: default `0` in the initializer, `CodingKeys`
+    entry, `decodeIfPresent ... ?? 0` for legacy-record safety, and explicit `encode`.
+  - **`SessionManager.endSession()`** (`Sources/AdiCore/SessionManager.swift:122-123`)
+    — populates the new fields from `s.reasoningHistory.count` and
+    `s.reasoningHistory.filter(\.granted).count` at record-creation time.
+  - **`NotchView.swift`** completion-card stats row — appends
+    `"asked N×, M granted"` (with a `bubble.left.and.text.bubble.right.fill` icon)
+    when `reasoningHistory` is non-empty, mirroring the existing callout/focus-score
+    `Label`s.
+  - **`SettingsView.swift`** — four spots mirrored: `selectableRowStats` (compact
+    `"asked N×"` suffix), the collapsed history row `Label`, the expanded detail panel
+    (`detailField("Site access asks", "N asked, M granted")`), and the CSV export
+    (two new columns, `Site Access Asks,Site Access Granted`).
+  - **Tests** (+9): `SessionHistoryTests` gained `reasoningStatsRoundTripThroughJSON`
+    and `legacyJSONWithoutReasoningStatsDecodesWithZero` (mirroring the
+    `focusScoreRoundTripsThroughJSON`/legacy pair). `SessionManagerTests` gained
+    `endSessionCapturesReasoningHistoryCounts` (3 attempts, 1 granted → record reflects
+    both) and `endSessionWithNoReasoningHistoryRecordsZeros`. `SettingsStoreTests`
+    gained `selectableRowStatsAppendsReasoningAttemptsWhenNonZero`,
+    `selectableRowStatsOmitsReasoningAttemptsWhenZero`, and
+    `selectableRowStatsCombinesAllStats` (verifies ordering: duration → callouts →
+    focus score → reasoning asks), plus extended the `makeRecord` helper with a
+    `reasoningAttempts` parameter.
+
+### Branch hygiene
+- Local `HEAD` was detached at `244286a` again on session start (same recurring issue
+  Run 79 flagged as item (c)). `git fetch origin main` confirmed `origin/main` was
+  already at `244286a` (45 commits ahead of the stale local `main` ref at `9819c9b`).
+  `git checkout main && git merge --ff-only 244286a` fast-forwarded cleanly — no lost
+  work, just a stale local branch pointer.
+
+### Blocked
+- **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH) —
+  could not run `swift build`/`swift test` locally. Verified brace/paren balance
+  across all 7 touched files (delta is 0/0 each — e.g. `SessionRecord.swift` 9/9
+  braces, 37/37 parens) and that every new symbol follows an existing,
+  proven-to-compile sibling pattern (`onTaskChecks`/`totalChecks`/`focusScore` for
+  the model+Codable bits, `calloutCount`/`focusScore` `Label`s for the UI bits).
+  CI (`macos-15` runner) will build and test on push.
+
+### Next agent
+- All 14 GOAL.md items remain checked off; `BUILD_COMPLETE` still accurate. Possible
+  next improvements:
+  - (a) Carried from Run 79: a broader "house style" memory signal across *different*
+    domains (e.g. "asked for access to 3 different sites and been denied each time")
+    — needs careful prompt-tuning so it doesn't make the AI suspicious of legitimate
+    first-time asks.
+  - (b) Carried from Run 78: `AgentAIClient` DI seam refactor for deterministic tests
+    (still unstarted — moderately large, scope carefully).
+  - (c) Branch hygiene keeps recurring (3rd+ time) — if it happens again, consider
+    whether the session-start hook should `git checkout main` proactively.
+  - (d) The History stats surfaces are getting crowded (duration, callouts, focus
+    score, reasoning asks). If more stats get added later, consider a compact
+    "session stats" popover instead of an ever-growing `HStack`/CSV column list.
+
+---
+
 ## Run 79 — 2026-06-07
 
 ### Shipped

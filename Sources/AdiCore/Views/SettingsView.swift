@@ -526,8 +526,9 @@ internal func dayLabel(for date: Date, calendar: Calendar = .current, now: Date 
 }
 
 /// Formats compact trailing stats for the selectable record row.
-/// Returns "45m", "45m · 3⚠", "45m · 87%", or "45m · 3⚠ · 87%" depending on
-/// whether callouts fired and whether a valid focus score is available.
+/// Returns "45m", "45m · 3⚠", "45m · 87%", "45m · 3⚠ · 87%", or with an
+/// "asked N×" suffix appended when the user made reasoning-conversation
+/// access requests, depending on which stats are present.
 /// `minChecks` is passed explicitly so tests can override without touching the singleton.
 internal func selectableRowStats(record: SessionRecord, minChecks: Int) -> String {
     let total = max(0, Int(record.duration))
@@ -542,6 +543,7 @@ internal func selectableRowStats(record: SessionRecord, minChecks: Int) -> Strin
     if let score = record.focusScore, record.totalChecks >= minChecks {
         parts.append("\(Int(score * 100))%")
     }
+    if record.reasoningAttempts > 0 { parts.append("asked \(record.reasoningAttempts)×") }
     return parts.joined(separator: " · ")
 }
 
@@ -876,7 +878,7 @@ private struct HistoryTab: View {
     }
 
     private func exportCSV(_ records: [SessionRecord]) {
-        var csv = "Date,Task,Success Criteria,Duration (min),Completed,Callouts,Focus Score (%),Note\n"
+        var csv = "Date,Task,Success Criteria,Duration (min),Completed,Callouts,Focus Score (%),Site Access Asks,Site Access Granted,Note\n"
         let fmt = ISO8601DateFormatter()
         for r in records {
             let date = fmt.string(from: r.startTime)
@@ -886,7 +888,7 @@ private struct HistoryTab: View {
             let done = r.completedSuccessfully ? "Yes" : "No"
             let note = (r.note ?? "").replacingOccurrences(of: "\"", with: "\"\"")
             let focusPct = r.focusScore.map { String(Int($0 * 100)) } ?? ""
-            csv += "\"\(date)\",\"\(task)\",\"\(criteria)\",\(mins),\(done),\(r.calloutCount),\(focusPct),\"\(note)\"\n"
+            csv += "\"\(date)\",\"\(task)\",\"\(criteria)\",\(mins),\(done),\(r.calloutCount),\(focusPct),\(r.reasoningAttempts),\(r.reasoningGranted),\"\(note)\"\n"
         }
 
         let panel = NSSavePanel()
@@ -1025,6 +1027,12 @@ private struct SessionRecordRow: View {
                         if let score = record.focusScore, record.totalChecks >= SessionManager.minChecksForFocusScore {
                             Label("\(Int(score * 100))% focused", systemImage: "target")
                         }
+                        if record.reasoningAttempts > 0 {
+                            Label(
+                                "asked \(record.reasoningAttempts)×",
+                                systemImage: "bubble.left.and.text.bubble.right"
+                            )
+                        }
                     }
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -1071,6 +1079,11 @@ private struct SessionRecordRow: View {
                         if let score = record.focusScore, record.totalChecks >= SessionManager.minChecksForFocusScore {
                             detailField("Focus score", "\(Int(score * 100))%")
                         }
+                    }
+
+                    if record.reasoningAttempts > 0 {
+                        detailField("Site access asks",
+                            "\(record.reasoningAttempts) asked, \(record.reasoningGranted) granted")
                     }
 
                     noteEditorField

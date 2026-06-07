@@ -17,6 +17,13 @@ public struct SessionRecord: Sendable, Identifiable {
     /// Total screen-capture frames classified (on-task + off-task + ambiguous).
     /// Zero for sessions recorded before this field was introduced.
     public let totalChecks: Int
+    /// Number of times the user asked the reasoning AI for access to a blocked
+    /// site during this session. Zero for sessions recorded before this field
+    /// was introduced (and for sessions where the user never asked).
+    public let reasoningAttempts: Int
+    /// Of `reasoningAttempts`, how many were granted by the AI.
+    /// Zero for sessions recorded before this field was introduced.
+    public let reasoningGranted: Int
 
     public init(
         id: UUID = UUID(),
@@ -28,7 +35,9 @@ public struct SessionRecord: Sendable, Identifiable {
         calloutCount: Int,
         note: String? = nil,
         onTaskChecks: Int = 0,
-        totalChecks: Int = 0
+        totalChecks: Int = 0,
+        reasoningAttempts: Int = 0,
+        reasoningGranted: Int = 0
     ) {
         self.id = id
         self.task = task
@@ -40,6 +49,8 @@ public struct SessionRecord: Sendable, Identifiable {
         self.note = note
         self.onTaskChecks = onTaskChecks
         self.totalChecks = totalChecks
+        self.reasoningAttempts = reasoningAttempts
+        self.reasoningGranted = reasoningGranted
     }
 
     public var duration: TimeInterval { endTime.timeIntervalSince(startTime) }
@@ -59,6 +70,7 @@ extension SessionRecord: Codable {
         case id, task, successCriteria, startTime, endTime
         case completedSuccessfully, calloutCount, note
         case onTaskChecks, totalChecks
+        case reasoningAttempts, reasoningGranted
     }
 
     public init(from decoder: Decoder) throws {
@@ -73,6 +85,8 @@ extension SessionRecord: Codable {
         note                 = try c.decodeIfPresent(String.self, forKey: .note)
         onTaskChecks         = try c.decodeIfPresent(Int.self,    forKey: .onTaskChecks) ?? 0
         totalChecks          = try c.decodeIfPresent(Int.self,    forKey: .totalChecks)  ?? 0
+        reasoningAttempts    = try c.decodeIfPresent(Int.self,    forKey: .reasoningAttempts) ?? 0
+        reasoningGranted     = try c.decodeIfPresent(Int.self,    forKey: .reasoningGranted)  ?? 0
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -87,5 +101,7 @@ extension SessionRecord: Codable {
         try c.encodeIfPresent(note,         forKey: .note)
         try c.encode(onTaskChecks,          forKey: .onTaskChecks)
         try c.encode(totalChecks,           forKey: .totalChecks)
+        try c.encode(reasoningAttempts,     forKey: .reasoningAttempts)
+        try c.encode(reasoningGranted,      forKey: .reasoningGranted)
     }
 }

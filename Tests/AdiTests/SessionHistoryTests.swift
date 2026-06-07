@@ -536,6 +536,42 @@ struct SessionHistoryTests {
         #expect(decoded.focusScore == nil)
     }
 
+    @Test func reasoningStatsRoundTripThroughJSON() throws {
+        let original = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0,
+            reasoningAttempts: 3,
+            reasoningGranted: 1
+        )
+        let data = try JSONEncoder().encode(original)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: data)
+        #expect(decoded.reasoningAttempts == 3)
+        #expect(decoded.reasoningGranted == 1)
+    }
+
+    @Test func legacyJSONWithoutReasoningStatsDecodesWithZero() throws {
+        // Simulate a record saved before reasoning-history tracking was added.
+        let original = SessionRecord(
+            task: "Old task",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 1
+        )
+        var json = (try JSONSerialization.jsonObject(with: JSONEncoder().encode(original))) as! [String: Any]
+        json.removeValue(forKey: "reasoningAttempts")
+        json.removeValue(forKey: "reasoningGranted")
+        let strippedData = try JSONSerialization.data(withJSONObject: json)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: strippedData)
+        #expect(decoded.reasoningAttempts == 0)
+        #expect(decoded.reasoningGranted == 0)
+    }
+
     @Test func statsStreakBrokenByGap() async throws {
         let history = try makeHistory()
         let cal = Calendar.current

@@ -119,7 +119,9 @@ public final class SessionManager: ObservableObject {
                 calloutCount: callout.calloutCount,
                 note: note,
                 onTaskChecks: onTaskCheckCount,
-                totalChecks: totalCheckCount
+                totalChecks: totalCheckCount,
+                reasoningAttempts: s.reasoningHistory.count,
+                reasoningGranted: s.reasoningHistory.filter(\.granted).count
             )
             _lastEndedRecord = record
             Task { await SessionHistory.shared.record(record) }
