@@ -1,5 +1,63 @@
 # Adia — Build Progress
 
+## Run 75 — 2026-06-07
+
+### Shipped
+- **fix: rate-limit "closed <app>" notification to prevent banner spam**
+  - Implements follow-up (c) from Run 74's notes: rapid Cmd-Tabbing into/out of the
+    same blocked app was firing `SessionNotifier.sendBlockedAppHidden()` on every
+    `didActivateApplicationNotification`, scheduling a fresh notification request
+    each time even though the stable notification ID prevented visual stacking.
+  - `AppMonitor.shouldSendHiddenNotification(forBundleID:lastBundleID:lastNotifiedAt:now:minInterval:)`
+    — new `static` **pure** decision function: returns `true` immediately for a
+    different app than last time, or once `minInterval` has elapsed since the last
+    notification for the *same* app. Mirrors `OnTaskDetector`'s rate-limiting guard
+    pattern (`lastEvaluatedAt` + `minInterval`), but kept `static` and side-effect-free
+    so it's directly testable with controlled `Date` values — no `NSWorkspace`
+    activation choreography required in tests.
+  - `AppMonitor.lastHiddenNotificationBundleID` / `lastHiddenNotificationAt` —
+    new `internal private(set)` state, recorded in `handle()` immediately before
+    calling `SessionNotifier.shared.sendBlockedAppHidden`. Reset to `nil` in `stop()`
+    alongside `currentTask` so stale guard state never leaks into the next session.
+  - `AppMonitor.hiddenNotificationMinInterval: TimeInterval = 3.0` — new `static let`.
+    3 seconds absorbs a rapid Cmd-Tab flurry into the same blocked app while staying
+    short enough that re-hiding the same app after a real gap still explains itself
+    promptly.
+  - `handle()` — now gates the `sendBlockedAppHidden` call behind
+    `shouldSendHiddenNotification(forBundleID:)` (a private instance wrapper around
+    the pure static function using the monitor's own guard state + `Date()`).
+  - **Tests (+8)**: `allowsFirstNotificationWithNoPriorState`,
+    `allowsImmediateNotificationForDifferentApp`,
+    `suppressesRapidRefireForSameAppWithinInterval`,
+    `allowsRefireForSameAppAfterIntervalElapses`,
+    `allowsRefireExactlyAtIntervalBoundary`, `hiddenNotificationMinIntervalIsPositive`,
+    `hiddenNotificationMinIntervalIsReasonable`, `startResetsHiddenNotificationGuardState`.
+    All exercise the pure static decision function with controlled `Date` offsets —
+    no flakiness from real-time sleeps or `NSWorkspace` notification plumbing.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+- **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH) —
+  could not run `swift build`/`swift test` locally. Verified brace/paren balance and
+  reviewed the diff carefully against the existing `OnTaskDetector` rate-limiting
+  pattern it mirrors; CI (`macos-15` runner) will build and test on push.
+
+### Next agent
+- All goals complete. Possible next improvements (carried over / refined):
+  - (a) Re-hide interval / re-arm interval / hidden-notification-interval configurability:
+    `AppMonitor.reHideIntervalMilliseconds` (200ms), `SessionManager.timerExpiredRearmInterval`
+    (600s), and the new `AppMonitor.hiddenNotificationMinInterval` (3s) are all hardcoded.
+    Could expose as `SettingsStore` preferences if users want to tune enforcement aggressiveness.
+  - (b) Onboarding Screen Recording permission UX: `requestPermission()` reveals
+    `Bundle.main.bundleURL` — Run 70 concluded the `.app` bundle IS the correct Finder
+    drag target for Privacy settings, so likely no change needed; worth a final runtime
+    check on a real Mac.
+  - (c) Consider applying the same `static` pure-decision-function refactor to other
+    rate-limiting guards (e.g. `OnTaskDetector`'s `minInterval` check) for consistency
+    and easier unit testing without actor-isolation friction.
+
+---
+
 ## Run 74 — 2026-06-07
 
 ### Shipped

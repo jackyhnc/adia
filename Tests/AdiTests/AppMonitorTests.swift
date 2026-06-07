@@ -155,7 +155,63 @@ struct AppMonitorTests {
         AppMonitor.shared.stop()
     }
 
-    // MARK: - Session Codable
+    // MARK: - "closed <app>" notification rate-limiting (pure decision function)
+
+    @Test func allowsFirstNotificationWithNoPriorState() {
+        let now = Date()
+        #expect(AppMonitor.shouldSendHiddenNotification(
+            forBundleID: "com.hnc.Discord", lastBundleID: nil, lastNotifiedAt: nil, now: now))
+    }
+
+    @Test func allowsImmediateNotificationForDifferentApp() {
+        let now = Date()
+        #expect(AppMonitor.shouldSendHiddenNotification(
+            forBundleID: "com.hnc.Slack", lastBundleID: "com.hnc.Discord",
+            lastNotifiedAt: now, now: now))
+    }
+
+    @Test func suppressesRapidRefireForSameAppWithinInterval() {
+        let last = Date()
+        let justAfter = last.addingTimeInterval(0.5)
+        #expect(!AppMonitor.shouldSendHiddenNotification(
+            forBundleID: "com.hnc.Discord", lastBundleID: "com.hnc.Discord",
+            lastNotifiedAt: last, now: justAfter, minInterval: 3.0))
+    }
+
+    @Test func allowsRefireForSameAppAfterIntervalElapses() {
+        let last = Date()
+        let muchLater = last.addingTimeInterval(5.0)
+        #expect(AppMonitor.shouldSendHiddenNotification(
+            forBundleID: "com.hnc.Discord", lastBundleID: "com.hnc.Discord",
+            lastNotifiedAt: last, now: muchLater, minInterval: 3.0))
+    }
+
+    @Test func allowsRefireExactlyAtIntervalBoundary() {
+        let last = Date()
+        let atBoundary = last.addingTimeInterval(3.0)
+        #expect(AppMonitor.shouldSendHiddenNotification(
+            forBundleID: "com.hnc.Discord", lastBundleID: "com.hnc.Discord",
+            lastNotifiedAt: last, now: atBoundary, minInterval: 3.0))
+    }
+
+    @Test func hiddenNotificationMinIntervalIsPositive() {
+        #expect(AppMonitor.hiddenNotificationMinInterval > 0)
+    }
+
+    @Test func hiddenNotificationMinIntervalIsReasonable() {
+        // Long enough to absorb a Cmd-Tab flurry, short enough to still feel responsive.
+        #expect(AppMonitor.hiddenNotificationMinInterval >= 1.0)
+        #expect(AppMonitor.hiddenNotificationMinInterval <= 30.0)
+    }
+
+    @Test func startResetsHiddenNotificationGuardState() {
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Discord"])
+        AppMonitor.shared.stop()
+        #expect(AppMonitor.shared.lastHiddenNotificationBundleID == nil)
+        #expect(AppMonitor.shared.lastHiddenNotificationAt == nil)
+    }
+
+    // MARK: - Session Codable (legacy decode)
 
     @Test func sessionDecodesLegacyJsonWithoutBlockedApps() throws {
         // Simulate an old persisted session that has no blockedApps key.

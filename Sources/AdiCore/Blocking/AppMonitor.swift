@@ -29,6 +29,17 @@ public final class AppMonitor {
     /// the hide completed.
     internal private(set) var reHideTask: Task<Void, Never>?
 
+    /// Bundle ID + timestamp of the most recent "closed <app>" notification, used to
+    /// suppress duplicate banners when the user rapidly Cmd-Tabs into and out of the
+    /// same blocked app. Mirrors `OnTaskDetector`'s rate-limiting guard.
+    internal private(set) var lastHiddenNotificationBundleID: String?
+    internal private(set) var lastHiddenNotificationAt: Date?
+
+    /// Minimum time between "closed <app>" banners for the *same* app. 3 seconds is
+    /// long enough to absorb a rapid Cmd-Tab flurry but short enough that re-hiding a
+    /// different app (or the same app after a real gap) still explains itself promptly.
+    static let hiddenNotificationMinInterval: TimeInterval = 3.0
+
     // Format strings use %@ for the app name; plain strings are generic fallbacks.
     static let callouts: [String] = [
         "yo, why are you in %@?",
@@ -83,6 +94,8 @@ public final class AppMonitor {
         reHideTask = nil
         blockedBundleIDs = []
         currentTask = ""
+        lastHiddenNotificationBundleID = nil
+        lastHiddenNotificationAt = nil
     }
 
     private func startReHideLoop() {
@@ -118,10 +131,39 @@ public final class AppMonitor {
                 .first { $0.bundleIdentifier == bundleID }?
                 .hide()
             // Explain *why* the app vanished — without this, force-hiding looks
-            // like a crash or glitch rather than deliberate enforcement.
-            SessionNotifier.shared.sendBlockedAppHidden(appName: appName, task: currentTask)
+            // like a crash or glitch rather than deliberate enforcement. Rate-limited
+            // so a rapid Cmd-Tab flurry into the same app doesn't pile up requests.
+            if shouldSendHiddenNotification(forBundleID: bundleID) {
+                lastHiddenNotificationBundleID = bundleID
+                lastHiddenNotificationAt = Date()
+                SessionNotifier.shared.sendBlockedAppHidden(appName: appName, task: currentTask)
+            }
         }
         #endif
+    }
+
+    /// Returns `true` if a "closed <app>" banner should fire for `bundleID` now,
+    /// given when (if ever) a banner last fired for some bundle ID. Pure and
+    /// `static` so the rate-limiting decision is directly testable without
+    /// driving `NSWorkspace` activation notifications. Internal for testing.
+    static func shouldSendHiddenNotification(
+        forBundleID bundleID: String,
+        lastBundleID: String?,
+        lastNotifiedAt: Date?,
+        now: Date,
+        minInterval: TimeInterval = AppMonitor.hiddenNotificationMinInterval
+    ) -> Bool {
+        guard bundleID == lastBundleID, let last = lastNotifiedAt else { return true }
+        return now.timeIntervalSince(last) >= minInterval
+    }
+
+    private func shouldSendHiddenNotification(forBundleID bundleID: String) -> Bool {
+        Self.shouldSendHiddenNotification(
+            forBundleID: bundleID,
+            lastBundleID: lastHiddenNotificationBundleID,
+            lastNotifiedAt: lastHiddenNotificationAt,
+            now: Date()
+        )
     }
 
     /// When true, blocked apps are force-hidden the moment they activate during a session.
