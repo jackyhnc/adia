@@ -18,7 +18,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer || true
-      - run: swift test
+      # `--no-parallel`: many suites share @MainActor singletons (NotchState.shared,
+      # SettingsStore.shared, CalloutManager.shared, ...). `.serialized` on a @Suite only
+      # serializes *within* that suite — Swift Testing still runs different suites
+      # concurrently by default, which races on the shared singleton state and produces
+      # flaky cross-suite failures (e.g. NotchStateTests reading a calloutMessage that
+      # CalloutManagerTests just wrote). Disabling parallelism entirely is the only way
+      # to make these singleton-backed suites deterministic without rewriting them to
+      # use injected per-test instances.
+      - run: swift test --no-parallel
 
   web:
     runs-on: ubuntu-latest

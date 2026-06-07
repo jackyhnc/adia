@@ -133,33 +133,87 @@
   `UNUserNotificationCenter.current()` (see round 6 above), which killed `swift
   test` mid-suite before `licensedFromInjectedInfo`/etc. could fully report (the
   log showed them merely "started"). That crash is what round 6 fixes.
-- Round 6's `SessionNotifier`/`SessionNotifierTests` fix is committed as `<HEAD
-  after this entry — see git log>`. It has *not yet* been confirmed green by CI —
-  that is the very next thing to check.
+- Round 6's `SessionNotifier`/`SessionNotifierTests` fix landed as `a447f18`. CI run
+  27092848182 (head `a447f18`) confirms the crash is **gone** — for the first time
+  ever, `swift test` ran *all 480 tests to completion* ("Test run with 480 tests
+  failed after 1.225 seconds with 18 issues" — no `libc++abi`/`NSException` abort).
+  Rounds 1–6 are now fully validated as real, durable fixes.
+  7. **(this commit)** — with the crash gone, 18 *new* failures surfaced — another
+     masked layer, and the deepest yet: most are **cross-suite race conditions**.
+     - Two were genuine pure-function/test mismatches (no concurrency involved):
+       `extractTaskKeywordFromFlashcards` expected `"go through flashcard deck"` →
+       `"studying"`, but `extractTaskKeyword`'s rule order matches `"deck"` →
+       `"presentation"` *before* it reaches the `"flashcard"` rule (same documented
+       precedence quirk as `"review the lecture slides"` → `"presentation"`, see the
+       comment on `extractTaskKeywordFromLecture`); `extractTaskKeywordFromLab`
+       similarly expected `"bio lab report"` → `"research"` but `"report"` fires
+       first. Fixed by following the established pattern: changed the example
+       phrases to non-colliding ones (`"go through my flashcards"`, `"finish the bio
+       lab"`) with an explanatory comment, exactly like `extractTaskKeywordFromLecture`
+       already does for its own collision.
+     - The other 16 (`setAndRetrieveAPIKey`, `acceptsAnthropicKey`,
+       `disablingDefaultDomainRemovesFromEffective`, `removeCustomDomainRemovesIt`,
+       `timerExpiredRearmIntervalConvertsMinutesToSeconds`, `toggleFlipsExpanded`,
+       `showCalloutSetsMessageAndExpands`, `clearCalloutRemovesMessage`,
+       `showCalloutWithTierSetsCalloutTier`, …) are **races on shared `@MainActor`
+       singletons** (`SettingsStore.shared`, `NotchState.shared`,
+       `CalloutManager.shared`). Smoking gun: `clearCalloutRemovesMessage` expected
+       `nil` after `clearCallout()` but read back `"that's not why you're here."` — a
+       message `NotchStateTests` never set, meaning a *different, concurrently-running
+       suite* (`CalloutManagerTests`/`SleepBlockerTests`/etc.) wrote it mid-test.
+       `.serialized` on `@Suite` only serializes tests *within* that suite — Swift
+       Testing still runs different suites concurrently by default, so any two suites
+       that touch the same singleton race regardless of `.serialized`. Some affected
+       suites (`SettingsStoreTests`) don't even have `.serialized`. Fix: added
+       `--no-parallel` to the `swift test` invocation in `ci.yml` — this disables
+       Swift Testing's parallel execution globally (not just per-suite), making the
+       *entire* run deterministic without rewriting dozens of tests to use injected
+       per-test instances instead of `.shared` singletons.
+
+### Verification
+- **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH) — every
+  fix was verified by reading the actual CI failure logs via the GitHub MCP tools
+  (`actions_list` → `list_workflow_jobs`, `get_job_logs`) after each push, not by local
+  builds. This is the loop: push → poll CI → read logs → diagnose → fix → repeat.
+- CI run 27092848182 (head `a447f18`, round 6's fix) is the **first run ever** where
+  `swift test` ran all 480 tests to completion with no process abort — definitive
+  proof rounds 1–6 are fully resolved. Its 18 residual failures are what round 7
+  (this commit) addresses.
+- Round 7's fix (`--no-parallel` + two CalloutManager test-phrase corrections) is
+  committed as `<HEAD after this entry — see git log>`. It has *not yet* been
+  confirmed green by CI — that is the very next thing to check.
 
 ### Blocked
 - None.
 
 ### Next agent
-- **Confirm CI is fully green** on `main` at the new head (the commit that lands
-  the `SessionNotifier.swift` + `SessionNotifierTests.swift` fix described in round
-  6 above, landed right after `79e33d1`). Poll with `mcp__github__actions_list` →
+- **Confirm CI is fully green** on `main` at the new head (the commit landing
+  round 7's `ci.yml` `--no-parallel` change + `CalloutManagerTests.swift` fixes,
+  right after `a447f18`). Poll with `mcp__github__actions_list` →
   `list_workflow_jobs` → `get_job_logs` on the new `swift-test` run.
-  - If it's green: round 6 was the last masked layer — the four round-5 test fixes
-    (which never got to run to completion before) should now finally execute and
-    pass. Update this file with a final "CI is green" confirmation and you're done.
-  - If `swift-test` still fails, check whether the four round-5 fixes
-    (`statsWeekCountAndMinutes`, `licensedFromInjectedInfo`,
-    `offlineGraceKeepsLicensedWithinWindow`, `calloutSpecialCharAppNameDoesNotCrash`)
-    now run to completion and pass — if they fail differently than before, that's a
-    *new* layer the crash was masking. Also watch for the same off-by-microsecond
-    `Date()` pattern recurring elsewhere: grep for `Date(timeIntervalSinceNow:`
-    paired with a separately captured `now` in the same test.
-  - Also watch for *other* singletons/types that touch platform frameworks
-    requiring a real `.app` bundle (`UNUserNotificationCenter`, possibly others in
-    `AppKit`/`CoreLocation`/etc.) — `Bundle.main.bundleIdentifier != nil` is the
-    established guard idiom now (see `SessionNotifier.canUseNotificationCenter`);
-    apply the same pattern if a new crash of this shape appears.
+  - If it's green: 🎉 — `main` is finally fully green after 7 rounds / 8 commits.
+    Update this file with a final wrap-up confirming green status and the complete
+    commit chain (`c20f9cc → be07311 → 3de4d6a → 6a7a7cf → 79e33d1 → a447f18 →
+    <round 7>`), and you're done — no further action needed.
+  - If `swift-test` still fails: check whether `--no-parallel` actually eliminated
+    the race-condition failures (the 16 singleton-state ones). If new/different
+    failures appear in the *same tests*, `--no-parallel` may not fully serialize
+    Swift Testing's execution on this toolchain version — in that case the more
+    invasive fix is adding `.serialized` to every `@Suite` that touches a `.shared`
+    singleton (`SettingsStore`, `NotchState`, `CalloutManager`, `SessionManager`,
+    `AppMonitor`, `SleepBlocker`, `ConversationManager`, ...) AND verifying Swift
+    Testing actually serializes *across* suites when *all* of them carry that trait
+    (it may not — `.serialized` trait docs describe per-suite scope only). Worth
+    checking the Swift Testing version bundled with Xcode 16 for any global
+    serialization configuration option before going down that path.
+  - Watch for the same off-by-microsecond `Date()` pattern recurring elsewhere: grep
+    for `Date(timeIntervalSinceNow:` paired with a separately captured `now` in the
+    same test (this bit `statsWeekCountAndMinutes` in round 5).
+  - Watch for *other* singletons/types that touch platform frameworks requiring a
+    real `.app` bundle (`UNUserNotificationCenter`, possibly `AppKit`/`CoreLocation`/
+    etc.) — `Bundle.main.bundleIdentifier != nil` is the established guard idiom now
+    (see `SessionNotifier.canUseNotificationCenter`); apply the same pattern if a new
+    crash of this shape appears.
 - All 14 GOAL.md items remain complete (per `BUILD_COMPLETE`). Focus areas: integration
   smoke testing on a real macOS machine with a notch, or any new features the user
   requests.

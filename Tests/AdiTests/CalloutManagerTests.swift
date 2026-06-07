@@ -516,8 +516,10 @@ struct CalloutManagerTests {
     }
 
     @Test func extractTaskKeywordFromFlashcards() {
+        // ("go through flashcard deck" maps to "presentation" because "deck" fires first —
+        // same precedence quirk as "review the lecture slides", see extractTaskKeywordFromLecture)
         #expect(CalloutManager.extractTaskKeyword(from: "make flashcards for bio") == "studying")
-        #expect(CalloutManager.extractTaskKeyword(from: "go through flashcard deck") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "go through my flashcards") == "studying")
     }
 
     @Test func extractTaskKeywordFromPset() {
@@ -526,8 +528,10 @@ struct CalloutManagerTests {
     }
 
     @Test func extractTaskKeywordFromLab() {
+        // ("bio lab report" maps to "report" because "report" fires first — same
+        // precedence quirk as "review the lecture slides", see extractTaskKeywordFromLecture)
         #expect(CalloutManager.extractTaskKeyword(from: "write up the chemistry lab") == "research")
-        #expect(CalloutManager.extractTaskKeyword(from: "bio lab report") == "research")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the bio lab") == "research")
     }
 
     @Test func extractTaskKeywordFromLecture() {
