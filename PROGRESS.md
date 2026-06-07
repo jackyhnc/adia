@@ -1,5 +1,87 @@
 # Adia — Build Progress
 
+## Run 84 — 2026-06-07
+
+### Shipped
+- **test: cover `parseGoalResponse` — the one pure AI-response parser with zero tests**
+  `AgentAIClient` has three pure JSON → model-result parsers: `parseClassification`,
+  `parseVerification`, and `parseGoalResponse`. The first two are fully covered in
+  `AgentAIClientTests.swift` (15 tests between them); `parseGoalResponse` — which backs
+  the entire session-creation flow (`NotchView.submit()` → `parseGoal` → this) — had
+  **none**, because it was `private` (the other two are `static` / internal, reachable
+  via `@testable import`). Its only exercise was through `ClaudeAPIIntegrationTests`,
+  which is `.enabled(if: hasAnthropicKey)` and therefore **never runs in CI** (no
+  `ANTHROPIC_API_KEY` secret is wired into `ci.yml`'s `swift-test` job) — this carries
+  forward Run 83(c)/Run 82(d)'s "mock/deterministic equivalents for the integration
+  suite" thread, applied to the one parser that had literally no safety net at all.
+  - **`AgentAIClient.swift`**: dropped `private` from `parseGoalResponse(_:original:)`
+    — one-word visibility change, matching its siblings' `static func` (internal)
+    visibility. No behavioral change.
+  - **`AgentAIClientTests.swift`** (+12 tests, new "Goal-response parsing" section):
+    `parsesAcceptedGoal`, `acceptedGoalFallsBackToOriginalWhenTaskMissing`,
+    `acceptedGoalFallsBackToOriginalWhenTaskBlank` (the `flatMap { $0.isEmpty ? nil :
+    $0 } ?? original` branch — empty/whitespace-only `task` from the model silently
+    replaced by the user's original wording), `acceptedGoalSynthesizesCriteriaWhenMissing`
+    / `WhenBlank` (the `"On-screen, the work \"\(task)\" looks finished."` fallback —
+    fires when the model omits or blanks `successCriteria`), `acceptedGoalTrimsWhitespace`,
+    `rejectsWithModelQuestion`, `rejectsWithDefaultQuestionWhenModelOmitsOne` /
+    `WhenModelQuestionIsBlank` (the `(q?.isEmpty == false ? q : nil) ?? default`
+    fallback chain — both the "key absent" and "key present but blank" paths),
+    `rejectsWithDefaultQuestionOnUnparsableJSON` (garbage text → the
+    "I couldn't understand that…" fallback, distinct from the model's own `ok:false`
+    rejection message), and `goalResponseStripsMarkdownFences` (mirrors the existing
+    `stripsMarkdownFences`/`verificationStripsMarkdown` coverage for the third parser).
+    Every branch of the function — accept/reject, present/missing/blank for each of
+    `task`/`successCriteria`/`question`, and the bad-JSON fallback — now has a
+    dedicated, deterministic, no-network test.
+
+### Verification
+- **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH —
+  confirmed again this run). Verified brace/paren/bracket balance across both touched
+  files via a small Python script: `AgentAIClient.swift` 56/56 `{}`, 123/123 `()`,
+  58/58 `[]`; `AgentAIClientTests.swift` 52/52 `{}`, 125/125 `()` (delta 0 on both,
+  before vs. after edits). Hand-traced every new assertion against the actual
+  `parseGoalResponse` control flow (the `ok == false` branch's `q?.isEmpty == false ?
+  q : nil` ternary in particular — confirmed `nil`, `"   "`, and a real string all
+  resolve to the expected branch). CI (`macos-15` runner, `swift test --no-parallel`)
+  will build and run these on push.
+
+### Branch hygiene
+- Session started with `HEAD` detached at `28d5a58`, local `main` stale at `9819c9b`
+  — the exact recurring issue Run 83 flagged as "(a), 5th+ time". `git fetch origin
+  main && git checkout main && git reset --hard origin/main` resolved it cleanly (no
+  local work lost — confirmed `git status` clean before the reset). Still unresolved
+  as a systemic fix; see "Next agent" below.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off; `BUILD_COMPLETE` still accurate.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) **Branch hygiene recurring (6th+ time)** — carried again from Run 83(a). A
+    `SessionStart` hook running `git fetch origin main && git checkout main && git
+    reset --hard origin/main` (only when the working tree is clean — it always is, on
+    a fresh container) would end this permanently. The `session-start-hook` skill in
+    this environment is scoped to dependency-install hooks, not git hygiene, so this
+    would need a hand-written `.claude/hooks/session-start.sh` + `.claude/settings.json`
+    registration — worth a dedicated run since it touches harness config, not app code.
+  - (b) Carried from Run 83(b): now that `parseGoalResponse` joins `parseClassification`
+    /`parseVerification` with full coverage, **all three** `AgentAIClient` pure parsers
+    have dedicated test sections — that thread is closed. The only remaining
+    network-shaped logic without a deterministic equivalent is the live-chat behavior
+    in `ClaudeAPIIntegrationTests` (`chatReturnsNonEmptyResponse`, `chatFollowsSystemPromptTone`,
+    `chatMultiTurnCarriesContext`) — but `ConversationManager` already has the
+    `_aiClient`/`MockAgentAIClient` DI seam and deterministic chat-flow tests
+    (`ConversationManagerTests`), so this is genuinely supplementary, not a gap.
+  - (c) `NotchView.submit()` calls `AgentAIClient.shared.parseGoal(text)` directly
+    (not through a DI seam — it's a `View` struct, and `_aiClient` lives on
+    `SessionManager`/`ConversationManager`). A future run could thread a
+    `parseGoal: (String) async throws -> GoalParse` closure through the view for
+    deterministic UI-flow tests of `submit()`'s branches (accept / model-reject /
+    `missingAPIKey` / `permissionDenied`) — currently untested because the view is
+    wired straight to the singleton.
+
+---
 ## Run 83 — 2026-06-07
 
 ### Shipped

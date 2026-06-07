@@ -266,7 +266,7 @@ public actor AgentAIClient {
         return OnTaskClassification(status: onTaskStatus, confidence: confidence, reason: reason)
     }
 
-    private static func parseGoalResponse(_ text: String, original: String) -> GoalParse {
+    static func parseGoalResponse(_ text: String, original: String) -> GoalParse {
         guard
             let data = stripMarkdownFences(text).data(using: .utf8),
             let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]

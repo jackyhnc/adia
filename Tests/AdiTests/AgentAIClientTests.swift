@@ -111,4 +111,104 @@ struct AgentAIClientParsingTests {
     @Test func localRejectionRejectsTikTok() {
         #expect(AgentAIClient.localGoalRejectionReason("scroll tiktok") != nil)
     }
+
+    // MARK: - Goal-response parsing (model round-trip → GoalParse)
+    //
+    // `parseGoal(_:)` is gated on a live `ANTHROPIC_API_KEY` (see
+    // `ClaudeAPIIntegrationTests`, which never runs in CI), but the pure JSON → GoalParse
+    // mapping it delegates to — `parseGoalResponse(_:original:)` — had zero coverage even
+    // though its siblings `parseClassification`/`parseVerification` are fully tested.
+    // These exercise that mapping directly, deterministically, with no network involved.
+
+    @Test func parsesAcceptedGoal() {
+        let g = AgentAIClient.parseGoalResponse(
+            #"{"ok":true,"task":"write my history essay","successCriteria":"Essay submitted on Canvas with a confirmation receipt visible."}"#,
+            original: "write my history essay"
+        )
+        #expect(g.ok)
+        #expect(g.task == "write my history essay")
+        #expect(g.successCriteria == "Essay submitted on Canvas with a confirmation receipt visible.")
+        #expect(g.question == nil)
+    }
+
+    @Test func acceptedGoalFallsBackToOriginalWhenTaskMissing() {
+        let g = AgentAIClient.parseGoalResponse(
+            #"{"ok":true,"successCriteria":"Slides look complete."}"#,
+            original: "make a presentation"
+        )
+        #expect(g.ok)
+        #expect(g.task == "make a presentation")
+    }
+
+    @Test func acceptedGoalFallsBackToOriginalWhenTaskBlank() {
+        let g = AgentAIClient.parseGoalResponse(
+            #"{"ok":true,"task":"   ","successCriteria":"Slides look complete."}"#,
+            original: "make a presentation"
+        )
+        #expect(g.task == "make a presentation")
+    }
+
+    @Test func acceptedGoalSynthesizesCriteriaWhenMissing() {
+        let g = AgentAIClient.parseGoalResponse(
+            #"{"ok":true,"task":"homework"}"#,
+            original: "homework"
+        )
+        #expect(g.ok)
+        #expect(g.successCriteria == "On-screen, the work \"homework\" looks finished.")
+    }
+
+    @Test func acceptedGoalSynthesizesCriteriaWhenBlank() {
+        let g = AgentAIClient.parseGoalResponse(
+            #"{"ok":true,"task":"homework","successCriteria":"   "}"#,
+            original: "homework"
+        )
+        #expect(g.successCriteria == "On-screen, the work \"homework\" looks finished.")
+    }
+
+    @Test func acceptedGoalTrimsWhitespace() {
+        let g = AgentAIClient.parseGoalResponse(
+            #"{"ok":true,"task":"  write my essay  ","successCriteria":"  done when submitted  "}"#,
+            original: "write my essay"
+        )
+        #expect(g.task == "write my essay")
+        #expect(g.successCriteria == "done when submitted")
+    }
+
+    @Test func rejectsWithModelQuestion() {
+        let g = AgentAIClient.parseGoalResponse(
+            #"{"ok":false,"question":"What subject is this for?"}"#,
+            original: "work"
+        )
+        #expect(!g.ok)
+        #expect(g.task == nil)
+        #expect(g.successCriteria == nil)
+        #expect(g.question == "What subject is this for?")
+    }
+
+    @Test func rejectsWithDefaultQuestionWhenModelOmitsOne() {
+        let g = AgentAIClient.parseGoalResponse(#"{"ok":false}"#, original: "work")
+        #expect(!g.ok)
+        #expect(g.question == "What are you working on? Just name the subject or what you're trying to finish.")
+    }
+
+    @Test func rejectsWithDefaultQuestionWhenModelQuestionIsBlank() {
+        let g = AgentAIClient.parseGoalResponse(#"{"ok":false,"question":"   "}"#, original: "work")
+        #expect(g.question == "What are you working on? Just name the subject or what you're trying to finish.")
+    }
+
+    @Test func rejectsWithDefaultQuestionOnUnparsableJSON() {
+        let g = AgentAIClient.parseGoalResponse("not json at all", original: "be productive")
+        #expect(!g.ok)
+        #expect(g.task == nil)
+        #expect(g.successCriteria == nil)
+        #expect(g.question == "I couldn't understand that. What should I be able to see on screen when you're done?")
+    }
+
+    @Test func goalResponseStripsMarkdownFences() {
+        let raw = "```json\n{\"ok\":true,\"task\":\"edit my resume\",\"successCriteria\":\"Resume saved with updated date.\"}\n```"
+        let g = AgentAIClient.parseGoalResponse(raw, original: "edit my resume")
+        #expect(g.ok)
+        #expect(g.task == "edit my resume")
+        #expect(g.successCriteria == "Resume saved with updated date.")
+    }
 }
