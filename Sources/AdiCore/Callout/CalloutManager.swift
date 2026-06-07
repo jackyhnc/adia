@@ -114,7 +114,7 @@ public final class CalloutManager {
 
     /// Derives a one-word subject from a free-text task description.
     /// Returns nil when no recognizable subject keyword is found — generic pool is used instead.
-    public static func extractTaskKeyword(from task: String) -> String? {
+    public nonisolated static func extractTaskKeyword(from task: String) -> String? {
         let lower = task.lowercased()
         // Match whole words only — prevents false positives like "threading" → "reading",
         // "industry" → "study", "facebook" → "book", "contest" → "test".
