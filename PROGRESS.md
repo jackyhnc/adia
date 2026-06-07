@@ -3,17 +3,21 @@
 ## Run 81 — 2026-06-07
 
 ### Shipped
-- **fix: unblock failing CI (multi-round saga, 4 commits)** — found `main` had been
-  red for many consecutive runs (at least 104–128). All 14 GOAL.md items were already
-  checked off and `BUILD_COMPLETE` already existed from a prior run, so — since "swift
-  build must succeed on every commit" is an explicit quality bar — restoring CI health
-  became this run's one chunk of progress. Note: this session's repo started in a
-  detached-HEAD state at `8aeebd2` while local `main` pointed at the much older
-  `9819c9b` (run 51) — re-fetched origin and reset `main` to track `origin/main`.
+- **fix: unblock failing CI — main is GREEN again (7-round saga, 6 commits)** — found
+  `main` had been red for many consecutive runs (at least 104–135). All 14 GOAL.md
+  items were already checked off and `BUILD_COMPLETE` already existed from a prior
+  run, so — since "swift build must succeed on every commit" is an explicit quality
+  bar — restoring CI health became this run's one chunk of progress, and it grew into
+  the entire run: **CI run 27092979150 (head `3102ac1`) is now fully green — every
+  job (`swift`, `swift-test`, `web`, `web-test`, `pipeline-smoke`) passes.** Note:
+  this session's repo started in a detached-HEAD state at `8aeebd2` while local
+  `main` pointed at the much older `9819c9b` (run 51) — re-fetched origin and reset
+  `main` to track `origin/main`.
 
-  Each fix below uncovered the next: the test target was failing to *compile*, so
-  later compiler passes (and their errors) were masked until the earlier ones cleared.
-  Four rounds, four commits, all landed on `main`:
+  Each fix below uncovered the next: first the test target failed to *compile*, then
+  once it compiled it crashed mid-run, then once it ran to completion it had
+  cross-suite races — masking layer after layer until each was peeled back. Seven
+  rounds, six commits, all landed on `main`:
 
   1. **`c20f9cc`** — two compile-time issues:
      - `swift-test`: `Tests/AdiTests/SessionManagerTests.swift:468`
@@ -178,45 +182,48 @@
 - CI run 27092848182 (head `a447f18`, round 6's fix) is the **first run ever** where
   `swift test` ran all 480 tests to completion with no process abort — definitive
   proof rounds 1–6 are fully resolved. Its 18 residual failures are what round 7
-  (this commit) addresses.
-- Round 7's fix (`--no-parallel` + two CalloutManager test-phrase corrections) is
-  committed as `<HEAD after this entry — see git log>`. It has *not yet* been
-  confirmed green by CI — that is the very next thing to check.
+  (this commit) addressed.
+- **CI run 27092979150 (head `3102ac1`, round 7's fix) is FULLY GREEN — `main` is
+  unblocked. 🎉** All five jobs (`swift`, `swift-test`, `web`, `web-test`,
+  `pipeline-smoke`) report `conclusion: success`. `swift test --no-parallel`
+  completed in ~59s (12:46:37–12:47:36) — serializing execution did *not* meaningfully
+  slow the suite down (480 tests, no long `Task.sleep`s in test code beyond a few
+  `.milliseconds(50/300)`). This is the **first fully-green `main` CI run** after a
+  streak of at least 104–136 consecutive red runs.
 
 ### Blocked
 - None.
 
-### Next agent
-- **Confirm CI is fully green** on `main` at the new head (the commit landing
-  round 7's `ci.yml` `--no-parallel` change + `CalloutManagerTests.swift` fixes,
-  right after `a447f18`). Poll with `mcp__github__actions_list` →
-  `list_workflow_jobs` → `get_job_logs` on the new `swift-test` run.
-  - If it's green: 🎉 — `main` is finally fully green after 7 rounds / 8 commits.
-    Update this file with a final wrap-up confirming green status and the complete
-    commit chain (`c20f9cc → be07311 → 3de4d6a → 6a7a7cf → 79e33d1 → a447f18 →
-    <round 7>`), and you're done — no further action needed.
-  - If `swift-test` still fails: check whether `--no-parallel` actually eliminated
-    the race-condition failures (the 16 singleton-state ones). If new/different
-    failures appear in the *same tests*, `--no-parallel` may not fully serialize
-    Swift Testing's execution on this toolchain version — in that case the more
-    invasive fix is adding `.serialized` to every `@Suite` that touches a `.shared`
-    singleton (`SettingsStore`, `NotchState`, `CalloutManager`, `SessionManager`,
-    `AppMonitor`, `SleepBlocker`, `ConversationManager`, ...) AND verifying Swift
-    Testing actually serializes *across* suites when *all* of them carry that trait
-    (it may not — `.serialized` trait docs describe per-suite scope only). Worth
-    checking the Swift Testing version bundled with Xcode 16 for any global
-    serialization configuration option before going down that path.
-  - Watch for the same off-by-microsecond `Date()` pattern recurring elsewhere: grep
-    for `Date(timeIntervalSinceNow:` paired with a separately captured `now` in the
-    same test (this bit `statsWeekCountAndMinutes` in round 5).
-  - Watch for *other* singletons/types that touch platform frameworks requiring a
-    real `.app` bundle (`UNUserNotificationCenter`, possibly `AppKit`/`CoreLocation`/
-    etc.) — `Bundle.main.bundleIdentifier != nil` is the established guard idiom now
-    (see `SessionNotifier.canUseNotificationCenter`); apply the same pattern if a new
-    crash of this shape appears.
-- All 14 GOAL.md items remain complete (per `BUILD_COMPLETE`). Focus areas: integration
-  smoke testing on a real macOS machine with a notch, or any new features the user
-  requests.
+### Next agent — CI is GREEN, no action required on this front
+- `main` is healthy as of `3102ac1` (CI run 136 / 27092979150, all 5 jobs green).
+  The complete fix chain that restored it, in order:
+  `c20f9cc → be07311 → 3de4d6a → 6a7a7cf → 79e33d1 → a447f18 → 3102ac1`
+  (7 rounds across 6 commits — rounds 6 and 7 each landed standalone, rounds 1–5
+  shared earlier commits per the breakdown above).
+- **Do not re-add test parallelism** (`swift test` without `--no-parallel`,
+  removing `.serialized` traits, etc.) without first confirming the affected
+  suites no longer share `@MainActor` singletons (`SettingsStore.shared`,
+  `NotchState.shared`, `CalloutManager.shared`, `SessionManager.shared`,
+  `AppMonitor.shared`, ...) — re-enabling it will silently reintroduce the
+  18-failure flake-storm from round 7.
+- If a *future* `swift-test` run goes red, two recurring failure classes to check
+  for first (both bit this saga more than once):
+  - **Off-by-microsecond `Date()` math**: grep for `Date(timeIntervalSinceNow:`
+    paired with a separately captured `now` in the same test — two independent
+    `Date()` calls a few µs apart can floor-divide to the wrong integer (bit
+    `statsWeekCountAndMinutes` in round 5).
+  - **Platform-framework crashes outside `.app` bundles**: anything that calls
+    `UNUserNotificationCenter.current()` (or similar AppKit/CoreLocation framework
+    singletons) directly aborts the *whole process* via an uncaught Objective-C
+    exception when run from `swift test`'s bare binary — uncatchable in Swift. The
+    established guard is `Bundle.main.bundleIdentifier != nil`
+    (see `SessionNotifier.canUseNotificationCenter` / the `SessionNotifierTests`
+    `@Suite(.enabled(if:))` gate) — apply the same pattern to any new singleton
+    that wraps a bundle-dependent framework.
+- All 14 GOAL.md items remain complete (per `BUILD_COMPLETE`) and CI is green —
+  there is no outstanding build-health work. Focus areas for future runs:
+  integration smoke testing on a real macOS machine with a notch, or any new
+  features the user requests.
 
 ---
 
