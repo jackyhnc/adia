@@ -35,6 +35,15 @@ public final class LicenseManager: ObservableObject {
     private let trialDays = 7
     private let offlineGraceDays = 14
 
+    /// Test-only stand-in for the Keychain. `nil` = not in test mode (use the real
+    /// Keychain). `.some(nil)` = test mode, no stored license. `.some(info)` = test
+    /// mode, license present. CI's headless macOS runner can't reliably read/write
+    /// the login Keychain (locked, no interactive session), so `SecItemAdd`/
+    /// `SecItemCopyMatching` silently no-op there — license-state tests inject
+    /// through this in-memory seam instead so they exercise real status-machine
+    /// logic without depending on OS Keychain availability.
+    private var testLicenseOverride: LicenseInfo??
+
     // Force unwrap is safe: constant, well-formed URL string — `URL(string:)` cannot fail for it.
     public var serverBaseURL: URL = URL(string: "https://adia.app")!
 
@@ -64,6 +73,7 @@ public final class LicenseManager: ObservableObject {
     }
 
     public func currentLicense() -> LicenseInfo? {
+        if let override = testLicenseOverride { return override }
         guard let data = Keychain.read(service: keychainService, account: keychainAccount),
               let info = try? JSONDecoder().decode(LicenseInfo.self, from: data)
         else { return nil }
@@ -87,14 +97,17 @@ public final class LicenseManager: ObservableObject {
     }
 
     public func deactivate() {
+        if testLicenseOverride != nil { testLicenseOverride = .some(nil) }
         Keychain.delete(service: keychainService, account: keychainAccount)
         defaults.removeObject(forKey: lastValidatedKey)
         refreshLocalStatus()
     }
 
     /// Test-only: clears all license + trial state so tests start from a clean slate.
-    /// Marked internal so it doesn't appear in the public API surface.
+    /// Marked internal so it doesn't appear in the public API surface. Also arms the
+    /// in-memory Keychain stand-in (see `testLicenseOverride`) for the rest of the test.
     internal func resetForTesting() {
+        testLicenseOverride = .some(nil)
         Keychain.delete(service: keychainService, account: keychainAccount)
         defaults.removeObject(forKey: lastValidatedKey)
         defaults.removeObject(forKey: trialStartKey)
@@ -109,7 +122,7 @@ public final class LicenseManager: ObservableObject {
     }
 
     internal func _injectLicenseForTesting(_ info: LicenseInfo) {
-        store(info)
+        testLicenseOverride = info
         defaults.set(Date(), forKey: lastValidatedKey)
         refreshLocalStatus()
     }
@@ -200,6 +213,7 @@ public final class LicenseManager: ObservableObject {
     }
 
     private func store(_ info: LicenseInfo) {
+        if testLicenseOverride != nil { testLicenseOverride = info; return }
         guard let data = try? JSONEncoder.iso.encode(info) else { return }
         Keychain.write(data, service: keychainService, account: keychainAccount)
     }

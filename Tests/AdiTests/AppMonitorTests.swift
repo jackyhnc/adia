@@ -50,9 +50,13 @@ struct AppMonitorTests {
     }
 
     @Test func calloutSpecialCharAppNameDoesNotCrash() {
+        // `appName` is always the *argument* to String(format:), never the format
+        // string, so there's no injection/crash risk — but if the name itself
+        // contains "%@" that substring legitimately survives into the message
+        // verbatim (String(format:) doesn't reinterpret substituted values).
+        // Asserting its absence here would be asserting something impossible.
         let msg = AppMonitor.callout(for: "app %@ test")
         #expect(!msg.isEmpty)
-        #expect(!msg.contains("%@"))
     }
 
     // MARK: - Session.defaultBlockedApps

@@ -407,7 +407,10 @@ struct SessionHistoryTests {
         let todayRecord = SessionRecord(
             task: "Today",
             successCriteria: "Done",
-            startTime: Date(timeIntervalSinceNow: -3600),
+            // Derive from `now` (not a fresh `Date(timeIntervalSinceNow:)`) so the
+            // duration is exactly 3600s — two independent `Date()` calls a few
+            // microseconds apart can yield 3599.99...s, which `Int(/60)` floors to 59.
+            startTime: now.addingTimeInterval(-3600),
             endTime: now,
             completedSuccessfully: true,
             calloutCount: 0

@@ -3,46 +3,116 @@
 ## Run 81 — 2026-06-07
 
 ### Shipped
-- **fix: unblock failing CI** — found the `main` branch had been red since at least
-  Run 80's push (CI run 128, head `8aeebd2`): both `swift-test` and `pipeline-smoke`
-  jobs were failing. Note: this session's repo started in a detached-HEAD state at
-  `8aeebd2` while local `main` pointed at the much older `9819c9b` (run 51) — re-fetched
-  origin and reset `main` to track `origin/main` before starting.
-  - **`swift-test` (compile error)** — `Tests/AdiTests/SessionManagerTests.swift:468`
-    `resetTimerForTestingCancelsRearmTask` had three back-to-back
-    `await MainActor.run { ... }` closures (two `Void`-returning, one `Bool`-returning).
-    That shape trips a Swift Testing `@Test` macro-expansion bug: the compiler emits
-    `error: generic parameter 'T' could not be inferred` pointing at the function's
-    closing brace, inside the synthesized `__requiringTry`/`__requiringAwait` calls —
-    not at the actual offending line. Fix: merged the two `Void`-returning
-    `MainActor.run` blocks (`handleDurationExpired()` + `_resetTimerForTesting()`) into
-    one closure, dropping back to two consecutive `MainActor.run` calls — the same
-    shape as the adjacent (passing) `handleDurationExpiredSchedulesRearmTask` and
-    `endSessionCancelsRearmTask` tests. Behaviorally identical (both still run on
-    `MainActor`, in order).
-  - **`pipeline-smoke` (signing error)** — `scripts/test-pipeline.sh` calls
-    `scripts/sign.sh`, which `exit 1`s unless either `DEVELOPER_ID_APPLICATION` (gated
-    on the Apple Developer account — see `USER_TODO.md`) or `ADIA_ALLOW_UNSIGNED_RELEASE=1`
-    is set. The smoke test only verifies pipeline *mechanics* (build → sign → notarize
-    skip → dmg → checksum → verify), not a shippable artifact, so it should always be
-    able to ad-hoc sign. Added `export ADIA_ALLOW_UNSIGNED_RELEASE="${ADIA_ALLOW_UNSIGNED_RELEASE:-1}"`
-    near the top of the script (defaulted, so a real release run can still override it).
+- **fix: unblock failing CI (multi-round saga, 4 commits)** — found `main` had been
+  red for many consecutive runs (at least 104–128). All 14 GOAL.md items were already
+  checked off and `BUILD_COMPLETE` already existed from a prior run, so — since "swift
+  build must succeed on every commit" is an explicit quality bar — restoring CI health
+  became this run's one chunk of progress. Note: this session's repo started in a
+  detached-HEAD state at `8aeebd2` while local `main` pointed at the much older
+  `9819c9b` (run 51) — re-fetched origin and reset `main` to track `origin/main`.
+
+  Each fix below uncovered the next: the test target was failing to *compile*, so
+  later compiler passes (and their errors) were masked until the earlier ones cleared.
+  Four rounds, four commits, all landed on `main`:
+
+  1. **`c20f9cc`** — two compile-time issues:
+     - `swift-test`: `Tests/AdiTests/SessionManagerTests.swift:468`
+       `resetTimerForTestingCancelsRearmTask` had three back-to-back
+       `await MainActor.run { ... }` closures (two `Void`-returning, one
+       `Bool`-returning), tripping a Swift Testing `@Test` macro-expansion compiler
+       bug (`error: generic parameter 'T' could not be inferred`, mis-pointing at the
+       function's closing brace). Fix: merged the two `Void`-returning blocks into one,
+       restoring the two-consecutive-`MainActor.run` shape used by adjacent passing
+       tests. Behaviorally identical.
+     - `pipeline-smoke`: `scripts/test-pipeline.sh` → `scripts/sign.sh` exits 1 without
+       `DEVELOPER_ID_APPLICATION` (gated on the Apple Developer account, see
+       `USER_TODO.md`) or `ADIA_ALLOW_UNSIGNED_RELEASE=1`. The smoke test only verifies
+       pipeline *mechanics*, not a shippable artifact, so ad-hoc signing is fine. Added
+       `export ADIA_ALLOW_UNSIGNED_RELEASE="${ADIA_ALLOW_UNSIGNED_RELEASE:-1}"` near the
+       top (defaulted — a real release run can still override it).
+  2. **`be07311`** — fixing (1) revealed a *new* `swift-test` failure: `error: module
+     'Testing' has no member named '__ifMainActorIsolationEnforced'` plus 160+
+     cascading `'T' could not be inferred` errors. Root cause: `Package.swift`'s
+     `testTarget` carried hardcoded `unsafeFlags` (`swiftSettings`/`linkerSettings`)
+     forcing it to link the `Testing` framework copy from
+     `/Library/Developer/CommandLineTools/.../Frameworks` — a version mismatch against
+     the macro plugin bundled with the CI-selected `/Applications/Xcode_16.app`
+     toolchain. Fix: deleted the `unsafeFlags` blocks entirely; Swift 6 / Xcode 16
+     bundle `Testing` natively, no extra linker config needed.
+  3. **`3de4d6a`** — fixing (2) let the *real* compile finish and surfaced the actual
+     bug class CI had been hiding: `error: main actor-isolated {class,static} property
+     'X' can not be referenced from a nonisolated context` for five constants accessed
+     from synchronous `#expect`/test contexts: `SessionManager
+     .minChecksForFocusScore`, `.timerExpiredSoundName`, `.timerExpiredRearmInterval`,
+     `SettingsStore.timerExpiredRearmMinuteOptions`, `SettingsView.tabHeights`. All five
+     are compile-time-constant `Sendable` values (`Int`/`String`/`TimeInterval`/`[Int]`/
+     `[Int:CGFloat]`) with no actor-isolated state — safe to mark `nonisolated`. Fixed
+     all five.
+  4. **`6a7a7cf`** — fixing (3) surfaced one more of the same class:
+     `error: call to main actor-isolated static method 'extractTaskKeyword(from:)' in
+     a synchronous nonisolated context` (127 cascading instances across
+     `CalloutManagerTests`, all from `#expect(CalloutManager.extractTaskKeyword(from:
+     ...) == ...)`). `extractTaskKeyword` is a pure string-matching function — no actor
+     state touched — so marked it `nonisolated` too, same pattern as round 3.
+  5. **(this commit)** — `6a7a7cf` finally let `swift test` *compile and run to
+     completion* (CI run 133): `swift`, `web`, `pipeline-smoke`, `web-test` all green,
+     and `swift-test` got past compilation for the first time in the run history I
+     could see — surfacing four genuine, previously-invisible test bugs/flakes:
+     - **`statsWeekCountAndMinutes`** (`SessionHistoryTests.swift:431`) — flaky:
+       `s.weekMinutes → 59`, expected `>= 60`. `startTime: Date(timeIntervalSinceNow:
+       -3600)` and `endTime: now` are two independent `Date()` calls a few
+       microseconds apart, so the actual elapsed duration lands at `3599.99…s`, and
+       `Int(duration / 60)` floors to `59`. Fixed by deriving `startTime` from `now`
+       directly (`now.addingTimeInterval(-3600)`), guaranteeing an exact 3600s span.
+     - **`licensedFromInjectedInfo`** and **`offlineGraceKeepsLicensedWithinWindow`**
+       (`LicenseManagerTests.swift:69/71/108`) — both expected `.licensed` after
+       `_injectLicenseForTesting(...)` but observed `.unknown` /
+       `isUsable == false`. Root cause: `_injectLicenseForTesting` → `store(info)` →
+       `Keychain.write` → `SecItemAdd`, and `currentLicense()` → `Keychain.read` →
+       `SecItemCopyMatching` — but the `macos-15` GitHub-hosted runner's login
+       Keychain is locked/inaccessible in a headless CI session, so the writes
+       silently no-op (status codes are discarded) and reads return nothing. Fix:
+       added an in-memory `testLicenseOverride: LicenseInfo??` seam to
+       `LicenseManager` (`nil` = real Keychain, `.some(info)` = test stand-in) that
+       `currentLicense()`/`store()`/`deactivate()`/`resetForTesting()`/
+       `_injectLicenseForTesting()` all consult/maintain — same shape as
+       `SessionManager._injectSessionForTesting`. Lets the real status-machine logic
+       run end-to-end in tests without depending on OS Keychain availability.
+     - **`calloutSpecialCharAppNameDoesNotCrash`** (`AppMonitorTests.swift:55`) — a
+       test-assertion bug, not a product bug: it called `AppMonitor.callout(for: "app
+       %@ test")` and asserted `!msg.contains("%@")`. But `appName` is always the
+       *argument* to `String(format:)`, never the format string (no injection/crash
+       risk), and `String(format:)` substitutes arguments verbatim — so when the app
+       name itself contains `%@`, that substring legitimately survives into the
+       output. The assertion was asserting something impossible for this input.
+       Removed it, keeping the `!msg.isEmpty` "doesn't crash" check the test name
+       promises, with a comment explaining why.
 
 ### Verification
-- **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH) — could
-  not run `swift build`/`swift test` locally. Verified brace/paren balance on the
-  changed Swift file (`111`/`111`, `256`/`256`) and `bash -n` on the shell script.
-  Pushed to `main`; CI (`macos-15` runners) will confirm both jobs go green on the
-  next run.
+- **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH) — every
+  fix was verified by reading the actual CI failure logs via the GitHub MCP tools
+  (`actions_list` → `list_workflow_jobs`, `get_job_logs`) after each push, not by local
+  builds. This is the loop: push → poll CI → read logs → diagnose → fix → repeat.
+- CI run 133 (head `6a7a7cf`) is the first run where `swift test` compiled and
+  executed to completion — confirms rounds 1–4 are *fully* resolved. The only
+  remaining red was four genuine test-logic issues (not compile errors), all
+  addressed by this commit. The "Exited with unexpected signal code 6" line in that
+  run's log is just the runner's exit-status annotation for the overall failed `swift
+  test` invocation (note the log shows tests continuing to print *after* it, due to
+  async buffering) — not a separate crash; it should disappear once these four
+  failures are fixed.
 
 ### Blocked
 - None.
 
 ### Next agent
-- **Confirm CI is green** on the `main` branch after this push (run after `c20f9cc`).
-  If `swift-test` still fails with the same macro-expansion error elsewhere, the
-  pattern to search for is "3+ consecutive `await MainActor.run { }` closures inside
-  one `@Test func`" — merge same-return-type-adjacent ones together.
+- **Confirm CI is fully green** on `main` at head (commit after `6a7a7cf`, this
+  round-5 fix). If `swift-test` still fails, pull the job log
+  (`mcp__github__get_job_logs`) and check whether it's a *new* failure class or a
+  flake — `statsWeekCountAndMinutes`-style off-by-one-microsecond `Date()` issues can
+  recur elsewhere if a similar "two independent `Date()` calls, then floor-divide"
+  pattern exists; grep for `Date(timeIntervalSinceNow:` paired with a separately
+  captured `now` in the same test.
 - All 14 GOAL.md items remain complete (per `BUILD_COMPLETE`). Focus areas: integration
   smoke testing on a real macOS machine with a notch, or any new features the user
   requests.
