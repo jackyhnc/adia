@@ -468,8 +468,10 @@ struct SessionManagerTests {
     @Test func resetTimerForTestingCancelsRearmTask() async {
         let s = Session(task: "Code review", successCriteria: "All comments resolved")
         await injectSession(s)
-        await MainActor.run { SessionManager.shared.handleDurationExpired() }
-        await MainActor.run { SessionManager.shared._resetTimerForTesting() }
+        await MainActor.run {
+            SessionManager.shared.handleDurationExpired()
+            SessionManager.shared._resetTimerForTesting()
+        }
         let hasRearm = await MainActor.run { SessionManager.shared.timerExpiredRearmTask != nil }
         #expect(hasRearm == false)
         await injectSession(nil)

@@ -12,6 +12,11 @@ DIST="$ROOT/dist"
 
 export VERSION
 
+# Smoke-testing the pipeline mechanics, not producing a shippable artifact —
+# ad-hoc signing is fine here even though `sign.sh` requires a Developer ID
+# for real releases (DEVELOPER_ID_APPLICATION is part of USER_TODO.md).
+export ADIA_ALLOW_UNSIGNED_RELEASE="${ADIA_ALLOW_UNSIGNED_RELEASE:-1}"
+
 echo "=== test-pipeline: starting ==="
 
 # ── 1. Build app ──────────────────────────────────────────────────────────────
