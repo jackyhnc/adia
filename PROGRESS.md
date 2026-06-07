@@ -1,5 +1,28 @@
 # Adia — Build Progress
 
+## Run 73 — 2026-06-07
+
+### Shipped
+- **feat: re-hide loop in AppMonitor — re-hides blocked apps every 200 ms**
+  - `AppMonitor.reHideIntervalMilliseconds: Int = 200` — new `static let`. 200 ms is fast enough to close the Command-Tab re-activation window within one human-perceptible frame while keeping CPU cost negligible.
+  - `AppMonitor.reHideTask: Task<Void, Never>?` — `internal private(set)`. Created by `startReHideLoop()`, cancelled and nilled in `stop()`.
+  - `startReHideLoop()` — private; called from `start()` after the empty-IDs guard. Cancels any prior task then creates a new one that loops: call `reHideIfNeeded()`, sleep 200 ms, repeat until `Task.isCancelled`.
+  - `reHideIfNeeded()` — private; checks `NSWorkspace.shared.frontmostApplication`, if its `bundleIdentifier` is in `blockedBundleIDs` and `forceHidesBlockedApps == true`, calls `frontmost.hide()`. `#if canImport(AppKit)` guarded. No-op on Linux CI.
+  - `stop()` — added `reHideTask?.cancel(); reHideTask = nil` before clearing `blockedBundleIDs`.
+  - **Tests (+5)**: `reHideIntervalIsAtMost200ms` (constant guard), `reHideIntervalIsPositive`, `startWithBlockedAppsStartsReHideTask` (non-nil after start), `stopCancelsReHideTask` (nil after stop), `startWithEmptyBundleIDsDoesNotStartReHideTask` (early-return path leaves task nil).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Onboarding Screen Recording permission UX: `requestPermission()` reveals `Bundle.main.bundleURL` — could change to `Bundle.main.executableURL` so Finder reveals the binary inside `Contents/MacOS/`, which is the correct drag target for the Privacy settings list.
+  - (b) App-level block page: when a blocked app is force-hidden, the user sees whatever was frontmost before. Could show a brief Adia overlay or notification explaining why the app was hidden.
+  - (c) Re-arm interval configurability: `timerExpiredRearmInterval` is currently fixed at 600s. Could expose it as a `SettingsStore` preference ("remind me every: 5m / 10m / 15m").
+  - (d) Re-hide interval configurability: `AppMonitor.reHideIntervalMilliseconds` is now 200 ms. Could expose as a debug preference or test helper if users report excessive CPU from the polling loop.
+
+---
+
 ## Run 72 — 2026-06-06
 
 ### Shipped
