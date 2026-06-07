@@ -40,6 +40,55 @@ struct SessionManagerTests {
         return ctx.makeImage()!
     }
 
+    // MARK: - recordReasoningAttempt(domain:granted:summary:)
+
+    @Test func recordReasoningAttemptAppendsToHistory() async {
+        let s = Session(task: "Essay", successCriteria: "Submitted to Canvas")
+        await injectSession(s)
+        await MainActor.run {
+            SessionManager.shared.recordReasoningAttempt(domain: "youtube.com", granted: false, summary: "no academic reason")
+        }
+        let history = await MainActor.run { SessionManager.shared.session?.reasoningHistory ?? [] }
+        #expect(history.count == 1)
+        #expect(history[0].domain == "youtube.com")
+        #expect(history[0].granted == false)
+        #expect(history[0].summary == "no academic reason")
+        await injectSession(nil)
+    }
+
+    @Test func recordReasoningAttemptAccumulatesAcrossCalls() async {
+        let s = Session(task: "Essay", successCriteria: "Submitted to Canvas")
+        await injectSession(s)
+        await MainActor.run {
+            SessionManager.shared.recordReasoningAttempt(domain: "youtube.com", granted: false, summary: "first ask")
+            SessionManager.shared.recordReasoningAttempt(domain: "youtube.com", granted: false, summary: "second ask")
+        }
+        let history = await MainActor.run { SessionManager.shared.session?.reasoningHistory ?? [] }
+        #expect(history.count == 2)
+        #expect(history.map(\.summary) == ["first ask", "second ask"])
+        await injectSession(nil)
+    }
+
+    @Test func recordReasoningAttemptIgnoresBlankDomain() async {
+        let s = Session(task: "Essay", successCriteria: "Submitted to Canvas")
+        await injectSession(s)
+        await MainActor.run {
+            SessionManager.shared.recordReasoningAttempt(domain: "   ", granted: true, summary: "n/a")
+        }
+        let history = await MainActor.run { SessionManager.shared.session?.reasoningHistory ?? [] }
+        #expect(history.isEmpty)
+        await injectSession(nil)
+    }
+
+    @Test func recordReasoningAttemptNoOpWithoutActiveSession() async {
+        await injectSession(nil)
+        await MainActor.run {
+            SessionManager.shared.recordReasoningAttempt(domain: "youtube.com", granted: true, summary: "n/a")
+        }
+        let session = await MainActor.run { SessionManager.shared.session }
+        #expect(session == nil)
+    }
+
     // MARK: - whitelist(domain:)
 
     @Test func whitelistEmptyDomainIsNoOp() async {

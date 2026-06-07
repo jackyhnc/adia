@@ -62,6 +62,7 @@ public final class ConversationManager: ObservableObject {
     /// Called by the "Grant Access" button or when AI grants in-band.
     public func grantAccess(domain: String) {
         accessGranted = true
+        recordOutcome(domain: domain, granted: true)
         Task { @MainActor in
             await SessionManager.shared.whitelist(domain: domain)
         }
@@ -73,6 +74,30 @@ public final class ConversationManager: ObservableObject {
 
     public func denyAccess() {
         accessGranted = false
+        if case .reasoning(let domain) = mode, let d = domain, !d.isEmpty {
+            recordOutcome(domain: d, granted: false)
+        }
+    }
+
+    /// Persists this conversation's verdict to the session so a later ask about the
+    /// same domain carries memory of what was already argued and decided.
+    private func recordOutcome(domain: String, granted: Bool) {
+        let summary = Self.summarize(messages: messages)
+        SessionManager.shared.recordReasoningAttempt(domain: domain, granted: granted, summary: summary)
+    }
+
+    /// Pure helper: the last assistant message, trimmed of decision tags and truncated
+    /// to a length safe for re-injection into a future system prompt.
+    public nonisolated static func summarize(messages: [ChatMessage], maxLength: Int = 160) -> String {
+        guard let last = messages.last(where: { $0.role == .assistant }) else { return "" }
+        var text = last.content
+            .replacingOccurrences(of: "[ACCESS GRANTED]", with: "")
+            .replacingOccurrences(of: "[ACCESS DENIED]", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        if text.count > maxLength {
+            text = String(text.prefix(maxLength)).trimmingCharacters(in: .whitespacesAndNewlines) + "…"
+        }
+        return text
     }
 
     /// Called by the "Exit Session" button.
@@ -107,13 +132,14 @@ public final class ConversationManager: ObservableObject {
         switch mode {
         case .reasoning(let domain):
             let site = domain.flatMap { $0.isEmpty ? nil : $0 } ?? "this website"
+            let memory = domain.map { Self.memoryFragment(for: $0, history: session?.reasoningHistory ?? []) } ?? ""
             return """
             You are Adia, a strict focus monitor. A student wants access to \(site) while working on: "\(task)". \
             Success criteria: "\(criteria)".
             Be a firm but fair friend. One sentence per message. Push back on weak excuses.
             If the reason is genuinely task-relevant, end your message with exactly: [ACCESS GRANTED]
             If you're denying, end with: [ACCESS DENIED]
-            Never grant access for entertainment or distraction. No corporate tone — be direct.
+            Never grant access for entertainment or distraction. No corporate tone — be direct.\(memory)
             """
         case .earlyExit:
             return """
@@ -137,7 +163,9 @@ public final class ConversationManager: ObservableObject {
     private func parseAccessDecision(from reply: String) {
         guard let decision = Self.parseAccessDecision(in: reply) else { return }
         accessGranted = decision
-        if decision, case .reasoning(let domain) = mode, let d = domain, !d.isEmpty {
+        guard case .reasoning(let domain) = mode, let d = domain, !d.isEmpty else { return }
+        recordOutcome(domain: d, granted: decision)
+        if decision {
             Task { @MainActor in
                 await SessionManager.shared.whitelist(domain: d)
             }
@@ -146,5 +174,28 @@ public final class ConversationManager: ObservableObject {
                 NotchState.shared.exitConversation()
             }
         }
+    }
+
+    // MARK: - Memory injection
+
+    /// Pure helper: renders prior reasoning attempts for `domain` as a system-prompt
+    /// fragment so the AI can call out repeat asks instead of starting fresh each time.
+    /// Returns "" when there's no relevant history (the common case — first ask).
+    public nonisolated static func memoryFragment(for domain: String, history: [ReasoningAttempt]) -> String {
+        let trimmed = domain.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return "" }
+        let prior = history.filter { $0.domain.caseInsensitiveCompare(trimmed) == .orderedSame }
+        guard !prior.isEmpty else { return "" }
+        let lines = prior.enumerated().map { index, attempt -> String in
+            let verdict = attempt.granted ? "GRANTED" : "DENIED"
+            let reason = attempt.summary.isEmpty ? "no reason recorded" : attempt.summary
+            return "  \(index + 1). \(verdict) — \(reason)"
+        }
+        return """
+
+        Earlier this session, the user already asked about \(trimmed) \(prior.count == 1 ? "once" : "\(prior.count) times"):
+        \(lines.joined(separator: "\n"))
+        Use this memory — call out repeat asks, and don't let them re-litigate a denial with the same weak reason.
+        """
     }
 }

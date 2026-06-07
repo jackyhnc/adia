@@ -1,5 +1,89 @@
 # Adia — Build Progress
 
+## Run 79 — 2026-06-07
+
+### Shipped
+- **feat: reasoning-conversation memory across attempts within a session**
+  - The PRD explicitly calls for the access-reasoning AI to "carry context across
+    attempts within a session," and GOAL.md item 13 says the same — but
+    `ConversationManager.start(mode:)` unconditionally reset `messages = []`, so a
+    user who got denied access to a domain and came back ten minutes later with the
+    same (or a slightly different) excuse got a completely fresh conversation. The AI
+    had no way to know it had already heard — and rejected — that argument.
+  - **`ReasoningAttempt`** (`Sources/AdiCore/Models/SessionState.swift`) — new
+    `Codable, Sendable` struct: `timestamp`, `domain`, `granted: Bool`, `summary: String`
+    (a truncated capture of the AI's final reasoning). Added `Session.reasoningHistory:
+    [ReasoningAttempt]` with the same graceful-decode-missing-key pattern as
+    `verificationHistory`/`targetDuration` (old persisted sessions decode to `[]`).
+  - **`SessionManager.recordReasoningAttempt(domain:granted:summary:)`** — mirrors
+    `whitelist(domain:)`: trims/validates the domain, no-ops without an active session,
+    appends to `reasoningHistory`, persists. Synchronous (`@MainActor`, no I/O beyond
+    `persistence.save`).
+  - **`ConversationManager`**:
+    - `recordOutcome(domain:granted:)` — calls `summarize(messages:)` (the last
+      assistant message, decision tags stripped, truncated to 160 chars with an
+      ellipsis) and forwards to `SessionManager.shared.recordReasoningAttempt`. Wired
+      into all three decision paths: `grantAccess` (manual chip), `denyAccess` (manual
+      chip, only when `mode` is `.reasoning`), and `parseAccessDecision(from:)` (AI
+      decides in-band via `[ACCESS GRANTED]`/`[ACCESS DENIED]`).
+    - `memoryFragment(for:history:)` — pure static helper that filters
+      `reasoningHistory` to the domain being asked about (case-insensitive), and
+      renders a numbered "Earlier this session, the user already asked about X
+      N times: 1. DENIED — <reason> …" block instructing the AI to "call out repeat
+      asks, and don't let them re-litigate a denial with the same weak reason."
+      Returns `""` when there's no relevant history — the common first-ask case stays
+      byte-identical to the old prompt.
+    - `systemPrompt(for:)` now appends `memoryFragment(...)` to the `.reasoning` system
+      prompt, reading `session?.reasoningHistory` fresh on every `send()` so
+      newly-recorded attempts are visible on the very next message — including a second
+      ask about the *same* domain within the *same* conversation (e.g. user gets denied,
+      argues a new angle — the system prompt for that follow-up message already includes
+      the just-recorded denial).
+  - **Tests** (+19): `ConversationManagerTests` gained `summarize*` (5: tag-stripping,
+    truncation, last-assistant-only, empty, user-only) and `memoryFragment*` (7: empty
+    history, unrelated domain, blank domain, verdict+reason rendering, case-insensitive
+    domain match, multi-attempt counting, missing-summary fallback). `SessionManagerTests`
+    gained `recordReasoningAttempt*` (4: appends, accumulates, ignores blank domain,
+    no-ops without a session). `SessionStateTests` gained `reasoningHistory*` (3: empty
+    default, Codable round-trip, legacy-decode-as-empty).
+
+### Housekeeping
+- **Branch hygiene**: found local `HEAD` detached again at `5580e0e` (45 commits ahead
+  of the locally-cached `main` at `9819c9b`). `git fetch origin main` showed
+  `origin/main` was already at `5580e0e` (Run 78's push succeeded; only the local ref
+  was stale). `git checkout main && git merge --ff-only 5580e0e` fast-forwarded
+  cleanly. This is the third time — see Run 78's note (c); the cause looks like the
+  container restoring a detached checkout rather than a branch on session start.
+
+### Blocked
+- Nothing. **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on
+  PATH) — could not run `swift build`/`swift test` locally. Verified brace/paren
+  balance across all 6 touched files (delta is 0/0 each), and that every new symbol
+  (`ReasoningAttempt`, `recordReasoningAttempt`, `recordOutcome`, `summarize`,
+  `memoryFragment`) follows an existing, proven-to-compile sibling pattern
+  (`VerificationAttempt`/`whitelist`/`parseAccessDecision`). CI (`macos-15` runner)
+  will build and test on push.
+
+### Next agent
+- All 14 GOAL.md items remain checked off; `BUILD_COMPLETE` still accurate. This run's
+  feature closes a real gap between the PRD/GOAL.md text ("context memory") and the
+  prior implementation (full reset on every `start`). Possible next improvements:
+  - (a) `memoryFragment` currently only fires for the *exact* domain being asked about.
+    A broader "house style" memory (e.g. "the user has asked for access to 3 different
+    sites and been denied each time — they may be testing your limits") could be a
+    nice escalation signal, but would need careful prompt-tuning to avoid making the AI
+    overly suspicious of legitimate first-time asks for unrelated sites.
+  - (b) Consider surfacing `reasoningHistory` in the session completion card / History
+    view (mirroring how `calloutCount` and `focusScore` are shown) — could be a useful
+    "you asked for access N times, were granted M" stat for self-reflection.
+  - (c) Branch hygiene — keep checking `HEAD` vs `main` at the start of each run; this
+    is the third recovery. If it keeps recurring, consider whether the session-start
+    hook should `git checkout main` proactively before any work begins.
+  - (d) Carried from Run 78: `AgentAIClient` DI seam refactor for deterministic tests
+    (still unstarted — moderately large, scope carefully).
+
+---
+
 ## Run 78 — 2026-06-07
 
 ### Shipped

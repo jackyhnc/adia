@@ -45,6 +45,26 @@ public struct VerificationAttempt: Codable, Sendable {
     }
 }
 
+// MARK: - Reasoning attempt (one entry in the within-session reasoning-conversation memory)
+
+/// Records the outcome of a single "argue for site access" conversation so the AI can
+/// reference it if the user comes back asking about the same domain again — the PRD
+/// calls for the AI to "carry context across attempts within a session."
+public struct ReasoningAttempt: Codable, Sendable {
+    public let timestamp: Date
+    public let domain: String
+    public let granted: Bool
+    /// Short justification — the AI's final reasoning, truncated for prompt-injection use.
+    public let summary: String
+
+    public init(timestamp: Date = Date(), domain: String, granted: Bool, summary: String) {
+        self.timestamp = timestamp
+        self.domain = domain
+        self.granted = granted
+        self.summary = summary
+    }
+}
+
 // MARK: - Session
 
 public struct Session: Sendable, Identifiable {
@@ -63,6 +83,9 @@ public struct Session: Sendable, Identifiable {
     public var verificationHistory: [VerificationAttempt]
     /// Optional target work duration in seconds. nil = no goal. Shown as a progress arc in the collapsed notch.
     public var targetDuration: TimeInterval?
+    /// Reasoning ("argue for access") conversation outcomes, keyed implicitly by domain.
+    /// Lets the AI recall — and call out — repeat asks for the same site within a session.
+    public var reasoningHistory: [ReasoningAttempt]
 
     public init(
         id: UUID = UUID(),
@@ -75,7 +98,8 @@ public struct Session: Sendable, Identifiable {
         blockedApps: [String] = Session.defaultBlockedAppBundleIDs,
         calloutCount: Int = 0,
         verificationHistory: [VerificationAttempt] = [],
-        targetDuration: TimeInterval? = nil
+        targetDuration: TimeInterval? = nil,
+        reasoningHistory: [ReasoningAttempt] = []
     ) {
         self.id = id
         self.task = task
@@ -88,6 +112,7 @@ public struct Session: Sendable, Identifiable {
         self.calloutCount = calloutCount
         self.verificationHistory = verificationHistory
         self.targetDuration = targetDuration
+        self.reasoningHistory = reasoningHistory
     }
 
     public var elapsed: TimeInterval { Date().timeIntervalSince(startTime) }
@@ -134,7 +159,7 @@ extension Session: Codable {
     private enum CodingKeys: String, CodingKey {
         case id, task, successCriteria, startTime, phase
         case whitelistedDomains, blockedDomains, blockedApps, calloutCount
-        case verificationHistory, targetDuration
+        case verificationHistory, targetDuration, reasoningHistory
     }
 
     public init(from decoder: Decoder) throws {
@@ -155,6 +180,8 @@ extension Session: Codable {
         verificationHistory = (try? c.decode([VerificationAttempt].self, forKey: .verificationHistory)) ?? []
         // Gracefully decode missing key (old sessions without duration goal).
         targetDuration = try? c.decode(TimeInterval.self, forKey: .targetDuration)
+        // Gracefully decode missing key (old sessions pre-reasoning-memory).
+        reasoningHistory = (try? c.decode([ReasoningAttempt].self, forKey: .reasoningHistory)) ?? []
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -170,5 +197,6 @@ extension Session: Codable {
         try c.encode(calloutCount,        forKey: .calloutCount)
         try c.encode(verificationHistory, forKey: .verificationHistory)
         try c.encodeIfPresent(targetDuration, forKey: .targetDuration)
+        try c.encode(reasoningHistory, forKey: .reasoningHistory)
     }
 }

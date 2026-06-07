@@ -254,6 +254,19 @@ public final class SessionManager: ObservableObject {
         }
     }
 
+    // MARK: - Reasoning memory
+
+    /// Appends a reasoning-conversation outcome to the session so a later ask about the
+    /// same domain can be answered with full context ("you already asked about this").
+    public func recordReasoningAttempt(domain: String, granted: Bool, summary: String) {
+        guard var s = session else { return }
+        let trimmed = domain.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return }
+        s.reasoningHistory.append(ReasoningAttempt(domain: trimmed, granted: granted, summary: summary))
+        session = s
+        persistence.save(s)
+    }
+
     // MARK: - Restore on launch
 
     /// Call on app launch to restore a session that survived a crash or relaunch.

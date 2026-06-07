@@ -130,4 +130,87 @@ struct ConversationManagerTests {
         let reply = "[ACCESS DENIED] Focus on your work."
         #expect(ConversationManager.parseAccessDecision(in: reply) == false)
     }
+
+    // MARK: - summarize (static pure helper)
+
+    @Test func summarizeStripsDecisionTags() {
+        let messages = [ChatMessage(role: .assistant, content: "this is genuinely relevant. [ACCESS GRANTED]")]
+        let summary = ConversationManager.summarize(messages: messages)
+        #expect(!summary.contains("[ACCESS GRANTED]"))
+        #expect(summary == "this is genuinely relevant.")
+    }
+
+    @Test func summarizeTruncatesLongReplies() {
+        let long = String(repeating: "a", count: 300)
+        let messages = [ChatMessage(role: .assistant, content: long)]
+        let summary = ConversationManager.summarize(messages: messages, maxLength: 50)
+        #expect(summary.count <= 51) // 50 chars + ellipsis
+        #expect(summary.hasSuffix("…"))
+    }
+
+    @Test func summarizeUsesLastAssistantMessage() {
+        let messages = [
+            ChatMessage(role: .assistant, content: "first take. [ACCESS DENIED]"),
+            ChatMessage(role: .user, content: "but it's for research!"),
+            ChatMessage(role: .assistant, content: "still no. [ACCESS DENIED]"),
+        ]
+        let summary = ConversationManager.summarize(messages: messages)
+        #expect(summary == "still no.")
+    }
+
+    @Test func summarizeEmptyMessagesReturnsEmptyString() {
+        #expect(ConversationManager.summarize(messages: []) == "")
+    }
+
+    @Test func summarizeIgnoresUserOnlyMessages() {
+        let messages = [ChatMessage(role: .user, content: "hello")]
+        #expect(ConversationManager.summarize(messages: messages) == "")
+    }
+
+    // MARK: - memoryFragment (static pure helper)
+
+    @Test func memoryFragmentEmptyForNoHistory() {
+        #expect(ConversationManager.memoryFragment(for: "youtube.com", history: []) == "")
+    }
+
+    @Test func memoryFragmentEmptyForUnrelatedDomain() {
+        let history = [ReasoningAttempt(domain: "reddit.com", granted: false, summary: "not relevant")]
+        #expect(ConversationManager.memoryFragment(for: "youtube.com", history: history) == "")
+    }
+
+    @Test func memoryFragmentEmptyForBlankDomain() {
+        let history = [ReasoningAttempt(domain: "reddit.com", granted: false, summary: "not relevant")]
+        #expect(ConversationManager.memoryFragment(for: "  ", history: history) == "")
+    }
+
+    @Test func memoryFragmentIncludesPriorVerdictAndReason() {
+        let history = [ReasoningAttempt(domain: "youtube.com", granted: false, summary: "no academic justification")]
+        let fragment = ConversationManager.memoryFragment(for: "youtube.com", history: history)
+        #expect(fragment.contains("DENIED"))
+        #expect(fragment.contains("no academic justification"))
+        #expect(fragment.contains("once"))
+    }
+
+    @Test func memoryFragmentIsCaseInsensitiveOnDomain() {
+        let history = [ReasoningAttempt(domain: "YouTube.com", granted: true, summary: "needed for lecture video")]
+        let fragment = ConversationManager.memoryFragment(for: "youtube.com", history: history)
+        #expect(fragment.contains("GRANTED"))
+    }
+
+    @Test func memoryFragmentCountsMultiplePriorAttempts() {
+        let history = [
+            ReasoningAttempt(domain: "reddit.com", granted: false, summary: "weak excuse #1"),
+            ReasoningAttempt(domain: "reddit.com", granted: false, summary: "weak excuse #2"),
+        ]
+        let fragment = ConversationManager.memoryFragment(for: "reddit.com", history: history)
+        #expect(fragment.contains("2 times"))
+        #expect(fragment.contains("weak excuse #1"))
+        #expect(fragment.contains("weak excuse #2"))
+    }
+
+    @Test func memoryFragmentFallsBackWhenSummaryMissing() {
+        let history = [ReasoningAttempt(domain: "x.com", granted: false, summary: "")]
+        let fragment = ConversationManager.memoryFragment(for: "x.com", history: history)
+        #expect(fragment.contains("no reason recorded"))
+    }
 }

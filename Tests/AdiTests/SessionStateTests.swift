@@ -90,6 +90,34 @@ struct SessionDurationTests {
         let dict = try #require((try JSONSerialization.jsonObject(with: data)) as? [String: Any])
         #expect(dict["targetDuration"] == nil)
     }
+
+    // MARK: - reasoningHistory
+
+    @Test func reasoningHistoryDefaultsToEmpty() {
+        let s = Session(task: "t", successCriteria: "c")
+        #expect(s.reasoningHistory.isEmpty)
+    }
+
+    @Test func reasoningHistoryPreservedInCodableRoundTrip() throws {
+        let attempt = ReasoningAttempt(domain: "youtube.com", granted: false, summary: "no academic reason given")
+        let s = Session(task: "t", successCriteria: "c", reasoningHistory: [attempt])
+        let data = try JSONEncoder().encode(s)
+        let decoded = try JSONDecoder().decode(Session.self, from: data)
+        #expect(decoded.reasoningHistory.count == 1)
+        #expect(decoded.reasoningHistory[0].domain == "youtube.com")
+        #expect(decoded.reasoningHistory[0].granted == false)
+        #expect(decoded.reasoningHistory[0].summary == "no academic reason given")
+    }
+
+    @Test func legacySessionWithoutReasoningHistoryDecodesAsEmpty() throws {
+        let s = Session(task: "old task", successCriteria: "c", phase: .active)
+        let encoded = try JSONEncoder().encode(s)
+        var dict = try #require((try JSONSerialization.jsonObject(with: encoded)) as? [String: Any])
+        dict.removeValue(forKey: "reasoningHistory")
+        let stripped = try JSONSerialization.data(withJSONObject: dict)
+        let decoded = try JSONDecoder().decode(Session.self, from: stripped)
+        #expect(decoded.reasoningHistory.isEmpty)
+    }
 }
 
 @Suite("ChatMessage")
