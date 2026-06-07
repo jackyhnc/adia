@@ -236,7 +236,8 @@ struct ConversationManagerTests {
         // Poll for completion instead of a fixed sleep — `send` resolves as soon as
         // the (synchronous, in-memory) mock's `chat` returns.
         for _ in 0..<200 {
-            if await MainActor.run({ ConversationManager.shared.isLoading }) == false { break }
+            let stillLoading = await MainActor.run { ConversationManager.shared.isLoading }
+            if !stillLoading { break }
             try? await Task.sleep(for: .milliseconds(10))
         }
 
@@ -266,7 +267,8 @@ struct ConversationManagerTests {
         }
 
         for _ in 0..<200 {
-            if await MainActor.run({ ConversationManager.shared.isLoading }) == false { break }
+            let stillLoading = await MainActor.run { ConversationManager.shared.isLoading }
+            if !stillLoading { break }
             try? await Task.sleep(for: .milliseconds(10))
         }
 
