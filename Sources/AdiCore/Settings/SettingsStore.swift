@@ -72,7 +72,7 @@ public final class SettingsStore: ObservableObject {
 
     /// Allowed values for `timerExpiredRearmMinutes`, shown as a picker in Settings.
     /// 10 is the historical default — fast enough to keep nudging, slow enough not to nag.
-    public static let timerExpiredRearmMinuteOptions: [Int] = [5, 10, 15, 30]
+    public nonisolated static let timerExpiredRearmMinuteOptions: [Int] = [5, 10, 15, 30]
 
     /// `timerExpiredRearmMinutes` converted to seconds for `Task.sleep`.
     public var timerExpiredRearmInterval: TimeInterval {

@@ -11,7 +11,7 @@ public struct SettingsView: View {
     /// Per-tab window heights (points). Each value is hand-tuned to the natural
     /// content density of that tab — avoiding wasted whitespace on compact tabs
     /// while giving scrollable tabs more breathing room.
-    static let tabHeights: [Int: CGFloat] = [
+    nonisolated static let tabHeights: [Int: CGFloat] = [
         0: 400,   // Account  — 3 compact sections
         1: 560,   // Blocking — many toggles, benefits from tall viewport
         2: 460,   // Templates — list + footer row

@@ -16,7 +16,7 @@ public final class SessionManager: ObservableObject {
     @Published public private(set) var timerExpired: Bool = false
     /// Minimum number of AI classification frames required before the focus score is
     /// considered statistically meaningful and shown in the UI.
-    public static let minChecksForFocusScore: Int = 5
+    public nonisolated static let minChecksForFocusScore: Int = 5
 
     /// Number of AI screen-classification frames that came back as "on-task" this session.
     @Published public private(set) var onTaskCheckCount: Int = 0
@@ -298,13 +298,13 @@ public final class SessionManager: ObservableObject {
     /// Sound played when the session timer expires. "Glass" is a clean, positive chime
     /// distinct from the off-task callout sounds (Sosumi / Basso / Funk), so the user
     /// can instantly tell the difference between "done" and "get back to work".
-    internal static let timerExpiredSoundName: String = "Glass"
+    internal nonisolated static let timerExpiredSoundName: String = "Glass"
 
     /// Default re-arm interval, used as the fallback when no user preference is stored.
     /// `SettingsStore.timerExpiredRearmInterval` is the live, user-configurable value
     /// (Settings → "Remind me every"); this constant only documents/guards the default.
     /// Exposed as `internal` so tests can assert the default is exactly 10 minutes.
-    internal static let timerExpiredRearmInterval: TimeInterval = 600
+    internal nonisolated static let timerExpiredRearmInterval: TimeInterval = 600
 
     /// Called when the session's target duration elapses.
     /// Exposed as `internal` so unit tests can invoke it without sleeping real time.
