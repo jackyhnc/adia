@@ -1,5 +1,54 @@
 # Adia — Build Progress
 
+## Run 81 — 2026-06-07
+
+### Shipped
+- **fix: unblock failing CI** — found the `main` branch had been red since at least
+  Run 80's push (CI run 128, head `8aeebd2`): both `swift-test` and `pipeline-smoke`
+  jobs were failing. Note: this session's repo started in a detached-HEAD state at
+  `8aeebd2` while local `main` pointed at the much older `9819c9b` (run 51) — re-fetched
+  origin and reset `main` to track `origin/main` before starting.
+  - **`swift-test` (compile error)** — `Tests/AdiTests/SessionManagerTests.swift:468`
+    `resetTimerForTestingCancelsRearmTask` had three back-to-back
+    `await MainActor.run { ... }` closures (two `Void`-returning, one `Bool`-returning).
+    That shape trips a Swift Testing `@Test` macro-expansion bug: the compiler emits
+    `error: generic parameter 'T' could not be inferred` pointing at the function's
+    closing brace, inside the synthesized `__requiringTry`/`__requiringAwait` calls —
+    not at the actual offending line. Fix: merged the two `Void`-returning
+    `MainActor.run` blocks (`handleDurationExpired()` + `_resetTimerForTesting()`) into
+    one closure, dropping back to two consecutive `MainActor.run` calls — the same
+    shape as the adjacent (passing) `handleDurationExpiredSchedulesRearmTask` and
+    `endSessionCancelsRearmTask` tests. Behaviorally identical (both still run on
+    `MainActor`, in order).
+  - **`pipeline-smoke` (signing error)** — `scripts/test-pipeline.sh` calls
+    `scripts/sign.sh`, which `exit 1`s unless either `DEVELOPER_ID_APPLICATION` (gated
+    on the Apple Developer account — see `USER_TODO.md`) or `ADIA_ALLOW_UNSIGNED_RELEASE=1`
+    is set. The smoke test only verifies pipeline *mechanics* (build → sign → notarize
+    skip → dmg → checksum → verify), not a shippable artifact, so it should always be
+    able to ad-hoc sign. Added `export ADIA_ALLOW_UNSIGNED_RELEASE="${ADIA_ALLOW_UNSIGNED_RELEASE:-1}"`
+    near the top of the script (defaulted, so a real release run can still override it).
+
+### Verification
+- **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH) — could
+  not run `swift build`/`swift test` locally. Verified brace/paren balance on the
+  changed Swift file (`111`/`111`, `256`/`256`) and `bash -n` on the shell script.
+  Pushed to `main`; CI (`macos-15` runners) will confirm both jobs go green on the
+  next run.
+
+### Blocked
+- None.
+
+### Next agent
+- **Confirm CI is green** on the `main` branch after this push (run after `c20f9cc`).
+  If `swift-test` still fails with the same macro-expansion error elsewhere, the
+  pattern to search for is "3+ consecutive `await MainActor.run { }` closures inside
+  one `@Test func`" — merge same-return-type-adjacent ones together.
+- All 14 GOAL.md items remain complete (per `BUILD_COMPLETE`). Focus areas: integration
+  smoke testing on a real macOS machine with a notch, or any new features the user
+  requests.
+
+---
+
 ## Run 80 — 2026-06-07
 
 ### Shipped
