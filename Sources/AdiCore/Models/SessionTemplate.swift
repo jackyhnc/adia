@@ -71,6 +71,9 @@ public actor SessionTemplateStore {
     static let maxTemplates = 10
 
     private init() {
+        // Force unwrap is safe: `.userDomainMask` always resolves to exactly one
+        // directory (~/Library/Application Support) on macOS — `urls(for:in:)`
+        // never returns an empty array for this combination.
         let support = FileManager.default.urls(
             for: .applicationSupportDirectory, in: .userDomainMask
         ).first!

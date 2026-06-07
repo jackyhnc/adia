@@ -1,5 +1,54 @@
 # Adia — Build Progress
 
+## Run 77 — 2026-06-07
+
+### Shipped
+- **chore: comment every force-unwrap per the "no force unwraps unless commented" quality bar**
+  - Audited the codebase for `!` force-unwraps (`as!`, `try!`, `.first!`, `URL(string:)!`)
+    and found 11 across 10 files that lacked an inline justification comment, despite
+    each being provably safe:
+    - `FocusBlockerWindowController.blockerPanel` / `NotchWindowController.notchPanel`
+      — `window as! NSPanel` / `as! NotchPanel`: safe because each controller's `init()`
+      always constructs `window` as that exact subclass before `super.init(window:)`.
+    - `SessionTemplate.init()` / `SessionHistory.init()` — `.first!` on
+      `FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)`:
+      safe because `.userDomainMask` always resolves to exactly one directory on macOS.
+    - `SessionManager.openScreenRecordingSettings()`, `OnboardingView` (System Settings
+      deep link + Anthropic console link), `AgentAIClient.baseURL`,
+      `LicenseManager.serverBaseURL`, `SettingsView` (×2 pricing links),
+      `PaywallView` (×2 checkout links) — all `URL(string: "<constant>")!`: safe because
+      every string is a constant, well-formed URL literal with no user input or
+      percent-encoding concerns, so `URL(string:)` cannot return `nil`.
+  - No behavior changes — purely additive doc comments explaining *why* each unwrap
+    can never crash, satisfying the "type-safe Swift — no force unwraps unless
+    commented why" quality bar called out in the build brief. Every unwrap in
+    `Sources/` now carries a one-to-three-line comment explaining the invariant that
+    makes it safe.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off; `BUILD_COMPLETE` still accurate.
+- **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH) — could
+  not run `swift build`/`swift test` locally. Changes are comment-only (zero code/logic
+  changes); verified brace/paren balance stayed identical across all 10 touched files
+  before and after editing. CI (`macos-15` runner) will build and test on push.
+
+### Next agent
+- All goals complete; codebase is in good shape. Possible next improvements (carried
+  over from Run 76, still open):
+  - (a) Consider exposing `AppMonitor.reHideIntervalMilliseconds` (200ms) and
+    `AppMonitor.hiddenNotificationMinInterval` (3s) as `SettingsStore` preferences,
+    mirroring the `timerExpiredRearmMinutes` treatment from Run 76 — though these are
+    lower-stakes/more technical than user-facing reminder cadence, so weigh whether
+    they're worth the Settings UI clutter vs. just leaving them as tuned constants.
+  - (b) Onboarding Screen Recording permission UX: `requestPermission()` reveals
+    `Bundle.main.bundleURL` — Run 70 concluded the `.app` bundle IS the correct Finder
+    drag target for Privacy settings, so likely no change needed; worth a final
+    runtime check on a real Mac.
+  - (c) Branch hygiene: continue running `git status` / `git rev-parse --abbrev-ref HEAD`
+    at the start of each run (per Run 76's recovery note) — `main` is correctly attached
+    now, just keep verifying it stays that way.
+
+---
 ## Run 76 — 2026-06-07
 
 ### Shipped

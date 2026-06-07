@@ -35,6 +35,7 @@ public final class LicenseManager: ObservableObject {
     private let trialDays = 7
     private let offlineGraceDays = 14
 
+    // Force unwrap is safe: constant, well-formed URL string — `URL(string:)` cannot fail for it.
     public var serverBaseURL: URL = URL(string: "https://adia.app")!
 
     private init() {

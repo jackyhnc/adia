@@ -187,6 +187,7 @@ private struct AccountSettingsTab: View {
                         .foregroundStyle(.orange)
                 }
                 Link("Upgrade at adia.app →",
+                     // Force unwrap is safe: constant, well-formed URL string.
                      destination: URL(string: "https://adia.app/pricing")!)
                     .font(.callout)
             }
@@ -212,6 +213,7 @@ private struct AccountSettingsTab: View {
             .disabled(activating || licenseKey.isEmpty || email.isEmpty)
             Spacer()
             Link("Buy a license →",
+                 // Force unwrap is safe: constant, well-formed URL string.
                  destination: URL(string: "https://adia.app/pricing")!)
                 .font(.callout)
         }

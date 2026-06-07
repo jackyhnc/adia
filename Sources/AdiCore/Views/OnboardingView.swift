@@ -110,6 +110,7 @@ public struct OnboardingView: View {
                     }
                 }
                 Link("Get a Claude API key at console.anthropic.com",
+                     // Force unwrap is safe: constant, well-formed URL string.
                      destination: URL(string: "https://console.anthropic.com/settings/keys")!)
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.65))
@@ -304,6 +305,7 @@ public struct OnboardingView: View {
         // Not granted in-process — open the Settings pane and poll for the toggle.
         settingsOpened = true
         NSWorkspace.shared.activateFileViewerSelecting([Bundle.main.bundleURL])
+        // Force unwrap is safe: constant, well-formed URL string.
         NSWorkspace.shared.open(URL(string:
             "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")!)
         startPolling()

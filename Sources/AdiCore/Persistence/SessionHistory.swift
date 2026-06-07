@@ -57,6 +57,9 @@ public actor SessionHistory {
 
     // Production init: writes to ~/Library/Application Support/Adia/history.json
     private init() {
+        // Force unwrap is safe: `.userDomainMask` always resolves to exactly one
+        // directory (~/Library/Application Support) on macOS — `urls(for:in:)`
+        // never returns an empty array for this combination.
         let support = FileManager.default.urls(
             for: .applicationSupportDirectory, in: .userDomainMask
         ).first!

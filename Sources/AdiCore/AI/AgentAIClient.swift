@@ -9,6 +9,7 @@ import AppKit
 public actor AgentAIClient {
     public static let shared = AgentAIClient()
 
+    // Force unwrap is safe: constant, well-formed URL string — `URL(string:)` cannot fail for it.
     private let baseURL = URL(string: "https://api.anthropic.com/v1/messages")!
     private let anthropicVersion = "2023-06-01"
     private let fastModel: String

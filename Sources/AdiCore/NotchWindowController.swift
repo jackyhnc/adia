@@ -69,6 +69,9 @@ public final class NotchWindowController: NSWindowController {
     private static let indicatorSideGap: CGFloat        = 8
 
     // MARK: Private state
+    // Force cast is safe: `init()` below always constructs `window` as a `NotchPanel`
+    // before calling `super.init(window:)`, so this controller never observes any
+    // other window type.
     private var notchPanel: NotchPanel { window as! NotchPanel }
     private var cancellables = Set<AnyCancellable>()
 

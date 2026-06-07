@@ -95,6 +95,8 @@ public final class SessionManager: ObservableObject {
 
     /// Opens System Settings → Privacy & Security → Screen Recording.
     private static func openScreenRecordingSettings() {
+        // Force unwrap is safe: this is a constant, well-formed URL string (no user
+        // input, no percent-encoding concerns) — `URL(string:)` cannot fail for it.
         let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")!
         #if canImport(AppKit)
         NSWorkspace.shared.open(url)
