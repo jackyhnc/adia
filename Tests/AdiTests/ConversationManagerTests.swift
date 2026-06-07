@@ -213,4 +213,72 @@ struct ConversationManagerTests {
         let fragment = ConversationManager.memoryFragment(for: "x.com", history: history)
         #expect(fragment.contains("no reason recorded"))
     }
+
+    // MARK: - send(_:) — exercised end-to-end via the injected mock agent client
+
+    /// `send` previously could only be exercised against the real `AgentAIClient`
+    /// (a live network round-trip requiring `ANTHROPIC_API_KEY`). The
+    /// `_injectAIClientForTesting` seam lets it run deterministically in CI: the
+    /// mock returns a canned reply containing `[ACCESS GRANTED]`, and this asserts
+    /// the full pipeline — message append, decision parsing, `accessGranted`,
+    /// `isLoading` toggling — runs correctly off of it.
+    @Test func sendAppendsReplyAndParsesGrantedDecisionFromMockChat() async {
+        await reset()
+        let mock = MockAgentAIClient()
+        await mock.setChatResult(.success("That's clearly relevant to your essay. [ACCESS GRANTED]"))
+        let realClient = await MainActor.run { ConversationManager.shared._aiClient }
+        await MainActor.run {
+            ConversationManager.shared._injectAIClientForTesting(mock)
+            ConversationManager.shared.start(mode: .reasoning(domain: "docs.google.com"))
+            ConversationManager.shared.send("I need this to cite a source in my essay")
+        }
+
+        // Poll for completion instead of a fixed sleep — `send` resolves as soon as
+        // the (synchronous, in-memory) mock's `chat` returns.
+        for _ in 0..<200 {
+            if await MainActor.run({ ConversationManager.shared.isLoading }) == false { break }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+
+        let messages = await MainActor.run { ConversationManager.shared.messages }
+        let granted = await MainActor.run { ConversationManager.shared.accessGranted }
+        #expect(messages.count == 3, "opening + user + assistant reply")
+        #expect(messages[1].role == .user)
+        #expect(messages[1].content == "I need this to cite a source in my essay")
+        #expect(messages[2].role == .assistant)
+        #expect(messages[2].content.contains("[ACCESS GRANTED]"))
+        #expect(granted == true)
+        #expect(await mock.chatCallCount == 1)
+
+        await MainActor.run { ConversationManager.shared._injectAIClientForTesting(realClient) }
+        await reset()
+    }
+
+    @Test func sendSurfacesFallbackMessageWhenChatThrows() async {
+        await reset()
+        let mock = MockAgentAIClient()
+        await mock.setChatResult(.failure(MockAgentAIError(message: "network down")))
+        let realClient = await MainActor.run { ConversationManager.shared._aiClient }
+        await MainActor.run {
+            ConversationManager.shared._injectAIClientForTesting(mock)
+            ConversationManager.shared.start(mode: .earlyExit)
+            ConversationManager.shared.send("never mind, I'll keep going")
+        }
+
+        for _ in 0..<200 {
+            if await MainActor.run({ ConversationManager.shared.isLoading }) == false { break }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+
+        let messages = await MainActor.run { ConversationManager.shared.messages }
+        #expect(messages.count == 3)
+        #expect(messages[2].role == .assistant)
+        #expect(messages[2].content == "something went wrong. try again.")
+        // earlyExit mode never sets accessGranted, regardless of chat outcome
+        let granted = await MainActor.run { ConversationManager.shared.accessGranted }
+        #expect(granted == nil)
+
+        await MainActor.run { ConversationManager.shared._injectAIClientForTesting(realClient) }
+        await reset()
+    }
 }

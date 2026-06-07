@@ -14,7 +14,16 @@ public final class ConversationManager: ObservableObject {
     @Published public private(set) var mode: ConversationMode?
     @Published public private(set) var accessGranted: Bool? = nil
 
+    /// Real `AgentAIClient.shared` in production; swapped for `MockAgentAIClient`
+    /// in tests via `_injectAIClientForTesting` for deterministic chat replies.
+    internal var _aiClient: any AgentAIService = AgentAIClient.shared
+
     private init() {}
+
+    /// See `SessionManager._injectAIClientForTesting` — same seam, same purpose.
+    internal func _injectAIClientForTesting(_ client: any AgentAIService) {
+        _aiClient = client
+    }
 
     // MARK: - Lifecycle
 
@@ -42,7 +51,7 @@ public final class ConversationManager: ObservableObject {
         isLoading = true
         Task { @MainActor in
             do {
-                let reply = try await AgentAIClient.shared.chat(
+                let reply = try await _aiClient.chat(
                     messages: messages,
                     systemPrompt: systemPrompt(for: mode)
                 )

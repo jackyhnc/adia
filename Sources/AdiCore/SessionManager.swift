@@ -36,6 +36,12 @@ public final class SessionManager: ObservableObject {
     private let persistence = SessionPersistence.shared
     private let callout = CalloutManager.shared
 
+    /// The agent backing verification calls. Real `AgentAIClient.shared` in production;
+    /// swapped for a deterministic `MockAgentAIClient` in tests via `_injectAIClientForTesting`
+    /// so races like `verifyAndEnd()` vs. manual `endSession()` can be exercised without a
+    /// live network round-trip or `ANTHROPIC_API_KEY`.
+    internal var _aiClient: any AgentAIService = AgentAIClient.shared
+
     // Set to true just before endSession() when verification succeeded, so the
     // history record knows whether the session was completed or exited early.
     private var sessionEndedSuccessfully = false
@@ -190,7 +196,7 @@ public final class SessionManager: ObservableObject {
         let sessionID = s.id
         NotchState.shared.setVerifying(true)
         do {
-            let result = try await AgentAIClient.shared.verify(
+            let result = try await _aiClient.verify(
                 image: frame,
                 taskDescription: s.task,
                 successCriteria: s.successCriteria
@@ -335,6 +341,13 @@ public final class SessionManager: ObservableObject {
 
     internal func _injectSessionForTesting(_ session: Session?) {
         self.session = session
+    }
+
+    /// Swaps the agent client for a deterministic stand-in (or restores the real
+    /// `AgentAIClient.shared` by passing it back in). Lets tests control `verify()`'s
+    /// timing/result without a network call — see `MockAgentAIClient`.
+    internal func _injectAIClientForTesting(_ client: any AgentAIService) {
+        _aiClient = client
     }
 
     internal func _injectCheckCountsForTesting(onTask: Int, total: Int) {

@@ -2,7 +2,7 @@ import Foundation
 import CoreGraphics
 
 public actor OnTaskDetector {
-    private let client: AgentAIClient
+    private let client: any AgentAIService
     private var currentSession: Session?
 
     // Rate-limit guard: fast enough to catch drift quickly without queueing
@@ -11,7 +11,7 @@ public actor OnTaskDetector {
     private var lastStatus: OnTaskStatus = .onTask
     private let minInterval: TimeInterval = 0.6
 
-    public init(client: AgentAIClient = .shared) {
+    public init(client: any AgentAIService = AgentAIClient.shared) {
         self.client = client
     }
 

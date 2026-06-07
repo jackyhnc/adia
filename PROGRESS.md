@@ -1,5 +1,90 @@
 # Adia — Build Progress
 
+## Run 82 — 2026-06-07
+
+### Shipped
+- **feat: `AgentAIService` DI seam — deterministic agent-call testing without a network round-trip**
+  Closes the long-carried "Run 78/80 next-improvement (b)": `AgentAIClient` had no
+  abstraction, so any test that touched `verify`/`chat`/`classify`/`parseGoal` either
+  needed a live `ANTHROPIC_API_KEY` (gated `.enabled(if:)`, silently skipped in most
+  environments) or couldn't be written at all. `verifyAndEndDiscardsStaleResultAfterManualEndSession`
+  — the regression test for Run 78's stale-verification race fix — was the prime
+  example: it made a real `claude-sonnet-4-6` call and only ran when a key was present.
+  - **`AgentAIService`** (new file, `Sources/AdiCore/AI/AgentAIService.swift`) — a
+    `Sendable` protocol mirroring `AgentAIClient`'s public surface
+    (`isConfigured`, `classify`, `verify`, `parseGoal`, `chat`). `extension AgentAIClient:
+    AgentAIService {}` makes the real client conform for free — actor-isolated `async`
+    methods satisfy non-isolated `async` protocol requirements with no extra glue.
+  - **`OnTaskDetector`** — `client` is now typed `any AgentAIService` (was a concrete
+    `AgentAIClient`); `init(client:)` defaults to `AgentAIClient.shared` unchanged. This
+    detector already had the DI *shape*, just not the abstraction needed to inject a
+    test double — one-line type change.
+  - **`SessionManager`** / **`ConversationManager`** — added `internal var _aiClient:
+    any AgentAIService = AgentAIClient.shared` and `_injectAIClientForTesting(_:)`,
+    mirroring the existing `_injectSessionForTesting`/`_setTrialStartDateForTesting`
+    seam pattern. `verifyAndEnd()` and `send()` now call through `_aiClient` instead of
+    `AgentAIClient.shared` directly.
+  - **`MockAgentAIClient`** (new test helper, `Tests/AdiTests/MockAgentAIClient.swift`)
+    — an actor conforming to `AgentAIService` with per-method canned `Result` responses
+    (backed by a small `Sendable` `MockAgentAIError` so `Result<_, MockAgentAIError>`
+    stays `Sendable` across the actor boundary — `Result<_, any Error>` would not),
+    configurable artificial delays (for race-condition tests), and call counters.
+  - **Rewrote `verifyAndEndDiscardsStaleResultAfterManualEndSession`** — no longer
+    gated behind `ANTHROPIC_API_KEY`; injects a `MockAgentAIClient` whose `verify()`
+    resolves "verified" after a 200ms artificial delay (replacing the unpredictable
+    real-network timing — and the real code path's 5s post-success sleep, which is
+    never reached because the staleness guard fires immediately once `endSession()`
+    has cleared `session`). Now runs deterministically, every CI run, in well under a
+    second — down from "skipped everywhere except a machine with a live key."
+  - **New deterministic tests** enabled by the seam:
+    - `OnTaskDetectorTests`: `evaluateReturnsClassificationFromInjectedMockClient`,
+      `evaluateFallsBackToLastStatusWhenClientThrows` (the latter exercises a path —
+      classify throwing mid-evaluation — that was previously untestable; confirms
+      `evaluate` returns the cached `lastStatus`, not a hardcoded `.onTask`).
+    - `ConversationManagerTests`: `sendAppendsReplyAndParsesGrantedDecisionFromMockChat`
+      (full `send()` pipeline: user message append → mocked `chat` → assistant reply
+      append → `[ACCESS GRANTED]` parsing → `accessGranted == true` → `isLoading`
+      toggling) and `sendSurfacesFallbackMessageWhenChatThrows` (catch path: "something
+      went wrong. try again." fallback message, `accessGranted` stays `nil` in
+      `.earlyExit` mode).
+
+### Verification
+- **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH) —
+  verified brace/paren balance across all 8 touched/created files (delta 0/0 each),
+  confirmed `AgentAIClient`'s methods are `public func ... async throws`/`async ->`
+  (satisfying the new protocol's non-isolated `async` requirements — the same pattern
+  Swift uses for any actor conforming to a `Sendable` async protocol), confirmed every
+  new symbol's call-site types match (`OnTaskClassification`/`VerificationResult`/
+  `GoalParse`/`ChatMessage` initializers, `Result<_, MockAgentAIError>.get()`,
+  `Duration.zero`/`.milliseconds`). CI (`macos-15` runner) will build and test on push.
+
+### Branch hygiene
+- Found `HEAD` detached at `4f407ab` with local `main` stale at `9819c9b` (50 commits
+  behind) — the recurring issue Runs 78/79/81 all hit. `git update-ref refs/heads/main
+  origin/main && git reset --hard origin/main` resolved it cleanly (origin was already
+  correct; only the local ref was stale).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off; `BUILD_COMPLETE` still accurate.
+
+### Next agent
+- All goals complete; CI was green at `4f407ab` before this run's push. Possible next
+  improvements (carried over, still open):
+  - (a) Run 80's "house style" cross-domain memory signal for reasoning conversations
+    — needs careful prompt-tuning so it doesn't make the AI suspicious of legitimate
+    first-time asks.
+  - (b) Run 80's reasoningHistory-in-History-view surfacing idea.
+  - (c) **Branch hygiene keeps recurring (4th+ time)** — strongly consider whether the
+    session-start hook should run `git checkout main && git reset --hard origin/main`
+    proactively, since every run so far has had to rediscover and fix this by hand.
+  - (d) Now that the `AgentAIService` seam exists, `ClaudeAPIIntegrationTests` could
+    potentially be supplemented with mock-backed deterministic equivalents — though its
+    current real-network tests still have unique value (catching live prompt/schema
+    drift against the actual API), so don't replace them, just consider whether more
+    coverage belongs alongside.
+
+---
+
 ## Run 81 — 2026-06-07
 
 ### Shipped

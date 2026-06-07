@@ -71,6 +71,38 @@ struct OnTaskDetectorTests {
         let status = await detector.evaluate(frame: dummyFrame())
         #expect(status == .onTask)
     }
+
+    /// With a real (non-`AgentAIClient`) backing client injected via the
+    /// `AgentAIService` DI seam, `evaluate` runs the full classify path
+    /// deterministically — no `ANTHROPIC_API_KEY`/network needed.
+    @Test func evaluateReturnsClassificationFromInjectedMockClient() async {
+        let mock = MockAgentAIClient()
+        await mock.setClassifyResult(.success(OnTaskClassification(status: .offTask, confidence: 0.92, reason: "Reddit is open")))
+        let detector = OnTaskDetector(client: mock)
+        let session = Session(task: "Write essay", successCriteria: "Submitted to Canvas")
+        await detector.attach(session: session)
+
+        let status = await detector.evaluate(frame: dummyFrame())
+        #expect(status == .offTask)
+        #expect(await mock.classifyCallCount == 1)
+    }
+
+    /// `evaluate` falls back to the cached `lastStatus` (rather than crashing or
+    /// returning `.onTask`) when the underlying client throws mid-classification.
+    @Test func evaluateFallsBackToLastStatusWhenClientThrows() async {
+        let mock = MockAgentAIClient()
+        await mock.setClassifyResult(.failure(MockAgentAIError(message: "rate limited")))
+        let detector = OnTaskDetector(client: mock)
+        let session = Session(task: "Write essay", successCriteria: "Submitted to Canvas")
+        await detector.attach(session: session)
+        await detector._setLastStatusForTesting(.offTask)
+        // Force the rate-limit guard to allow this call through immediately.
+        await detector._setLastEvaluatedAtForTesting(Date(timeIntervalSinceNow: -2.0))
+
+        let status = await detector.evaluate(frame: dummyFrame())
+        #expect(status == .offTask, "on failure, evaluate should return the cached lastStatus rather than resetting to onTask")
+        #expect(await mock.classifyCallCount == 1)
+    }
 }
 
 // Actor accessor for the testing override
