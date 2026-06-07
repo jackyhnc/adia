@@ -128,6 +128,33 @@ struct AppMonitorTests {
         AppMonitor.shared.stop()
     }
 
+    // MARK: - currentTask tracking (powers the "closed <app>" explanation banner)
+
+    @Test func startStoresTaskForExplanationBanner() {
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Discord"], task: "write essay")
+        #expect(AppMonitor.shared.currentTask == "write essay")
+        AppMonitor.shared.stop()
+    }
+
+    @Test func startWithoutTaskDefaultsToEmptyString() {
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Discord"])
+        #expect(AppMonitor.shared.currentTask == "")
+        AppMonitor.shared.stop()
+    }
+
+    @Test func stopClearsCurrentTask() {
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Discord"], task: "write essay")
+        AppMonitor.shared.stop()
+        #expect(AppMonitor.shared.currentTask == "")
+    }
+
+    @Test func restartReplacesStaleTaskFromPriorSession() {
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Discord"], task: "write essay")
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Slack"], task: "read chapter 3")
+        #expect(AppMonitor.shared.currentTask == "read chapter 3")
+        AppMonitor.shared.stop()
+    }
+
     // MARK: - Session Codable
 
     @Test func sessionDecodesLegacyJsonWithoutBlockedApps() throws {

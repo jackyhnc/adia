@@ -1,5 +1,29 @@
 # Adia — Build Progress
 
+## Run 74 — 2026-06-07
+
+### Shipped
+- **feat: "closed <app>" explanation banner when a blocked app is force-hidden**
+  - Implements follow-up (c) from Run 73's notes: "when a blocked app is force-hidden, the user sees whatever was frontmost before — could show a brief Adia overlay or notification explaining why the app was hidden."
+  - `SessionNotifier.sendBlockedAppHidden(appName:task:)` — new method. Posts a system notification titled `"closed <appName>"` with a friend-toned body that names the actual task (`"that's not \"write essay\". get back to it."`) or falls back to a generic line when no task is set. Uses the stable identifier `adia.session.blocked_app_hidden` so rapid re-activations of the same app replace the previous banner instead of stacking up.
+  - `SessionNotifier.blockedAppHiddenBody(task:)` — new `static` pure copy-builder, extracted so tests can verify the message text without a real `UNNotificationContent`.
+  - `AppMonitor.currentTask: String` — new `internal private(set)` property holding the active session's task description. Set by `start(blockedBundleIDs:task:)` (new `task` parameter, defaults to `""`), cleared by `stop()`.
+  - `AppMonitor.handle()` — after force-hiding a blocked app, now calls `SessionNotifier.shared.sendBlockedAppHidden(appName:task:)` so the user understands *why* the app vanished instead of it looking like a crash or glitch. Only fires from the activation-triggered `handle()` path, not the 200ms re-hide poll loop, so it can't spam.
+  - `SessionManager.activate()` — updated the `AppMonitor.shared.start(...)` call site to pass `task: s.task`.
+  - **Tests (+7)**: `AppMonitorTests`: `startStoresTaskForExplanationBanner`, `startWithoutTaskDefaultsToEmptyString`, `stopClearsCurrentTask`, `restartReplacesStaleTaskFromPriorSession`. `SessionNotifierTests`: `blockedAppHiddenBodyMentionsTaskWhenPresent`, `blockedAppHiddenBodyFallsBackWhenTaskIsEmpty`, `blockedAppHiddenBodyIsNotEmpty`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+- **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH) — could not run `swift build`/`swift test` locally. Changes were reviewed carefully for type correctness against the existing `SessionNotifier`/`AppMonitor` patterns (mirrors `sendTimerExpired` exactly); CI (`macos-15` runner) will build and test on push.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Re-hide interval / re-arm interval configurability: both `AppMonitor.reHideIntervalMilliseconds` (200ms) and `SessionManager.timerExpiredRearmInterval` (600s) are hardcoded. Could expose as `SettingsStore` preferences.
+  - (b) Onboarding Screen Recording permission UX: `requestPermission()` reveals `Bundle.main.bundleURL` — Run 70 concluded the `.app` bundle IS the correct Finder drag target for Privacy settings, so likely no change needed; worth a final runtime check on a real Mac.
+  - (c) Rate-limit `sendBlockedAppHidden`: currently it fires on every `didActivateApplicationNotification` for a blocked app. If a user rapidly Cmd-Tabs into/out of a blocked app, the stable notification ID prevents banner pile-up, but each call still schedules a request. Could add a `lastNotifiedBundleID`/timestamp guard mirroring `OnTaskDetector`'s rate-limiting if this proves noisy in practice.
+
+---
+
 ## Run 73 — 2026-06-07
 
 ### Shipped

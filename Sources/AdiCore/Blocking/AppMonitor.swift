@@ -12,6 +12,12 @@ public final class AppMonitor {
     private var blockedBundleIDs: Set<String> = []
     private var observation: NSObjectProtocol?
 
+    /// The active session's task description, used to explain *why* a blocked
+    /// app was hidden (e.g. "that's not \"write essay\". get back to it.").
+    /// Set on `start(blockedBundleIDs:task:)`, cleared on `stop()`.
+    /// `internal private(set)` so tests can assert it without exposing a setter.
+    internal private(set) var currentTask: String = ""
+
     /// How often (in milliseconds) the re-hide loop polls the frontmost application.
     /// 200 ms is fast enough to catch Command-Tab re-activations within a single
     /// human-perceptible frame while staying cheap on CPU.
@@ -38,9 +44,12 @@ public final class AppMonitor {
     private init() {}
 
     /// Start monitoring. Fires an immediate callout whenever a blocked app activates.
-    public func start(blockedBundleIDs: Set<String>) {
+    /// `task` is the session's task description, surfaced in the "closed <app>"
+    /// notification so the user knows why the app vanished.
+    public func start(blockedBundleIDs: Set<String>, task: String = "") {
         stop()  // remove any prior observer before registering a new one
         self.blockedBundleIDs = blockedBundleIDs
+        self.currentTask = task
         guard !blockedBundleIDs.isEmpty else { return }
         #if canImport(AppKit)
         observation = NSWorkspace.shared.notificationCenter.addObserver(
@@ -73,6 +82,7 @@ public final class AppMonitor {
         reHideTask?.cancel()
         reHideTask = nil
         blockedBundleIDs = []
+        currentTask = ""
     }
 
     private func startReHideLoop() {
@@ -107,6 +117,9 @@ public final class AppMonitor {
             NSWorkspace.shared.runningApplications
                 .first { $0.bundleIdentifier == bundleID }?
                 .hide()
+            // Explain *why* the app vanished — without this, force-hiding looks
+            // like a crash or glitch rather than deliberate enforcement.
+            SessionNotifier.shared.sendBlockedAppHidden(appName: appName, task: currentTask)
         }
         #endif
     }

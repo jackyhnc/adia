@@ -52,7 +52,32 @@ struct SessionNotifierTests {
         #expect(NotchState.shared.isExpanded)
     }
 
-    /// Verifies that the delegate responds to the `didReceive` selector so
+    // MARK: - blockedAppHiddenBody(task:) — pure copy builder
+
+    /// Verifies the body explains the situation by name when a task is set —
+    /// users should never see a bare "get back to it" if Adia knows the task.
+    @Test func blockedAppHiddenBodyMentionsTaskWhenPresent() {
+        let body = SessionNotifier.blockedAppHiddenBody(task: "write essay")
+        #expect(body.contains("write essay"))
+    }
+
+    /// Verifies the body falls back to a generic friend-like message when the
+    /// session has no task description (e.g. a restored session edge case).
+    @Test func blockedAppHiddenBodyFallsBackWhenTaskIsEmpty() {
+        let body = SessionNotifier.blockedAppHiddenBody(task: "")
+        #expect(!body.isEmpty)
+        #expect(!body.contains("\"\""))
+    }
+
+    /// Verifies the copy stays in Adia's direct, friend-like voice (no corporate
+    /// "this application has been blocked" phrasing).
+    @Test func blockedAppHiddenBodyIsNotEmpty() {
+        for task in ["", "submit ENGL 101 essay to Canvas", "read chapter 3"] {
+            #expect(!SessionNotifier.blockedAppHiddenBody(task: task).isEmpty)
+        }
+    }
+
+    /// Verifies the delegate responds to the `didReceive` selector so
     /// macOS will invoke it when the user taps a banner.
     @Test func delegateImplementsDidReceiveSelector() {
         let notifier = SessionNotifier.shared

@@ -51,6 +51,28 @@ public final class SessionNotifier: NSObject {
         #endif
     }
 
+    /// Fires a banner explaining why a blocked app was force-hidden, so the user
+    /// understands what happened instead of just seeing an app vanish mid-use.
+    /// Uses a stable identifier so rapid re-activations of the same app replace
+    /// the previous banner rather than stacking up a pile of notifications.
+    public func sendBlockedAppHidden(appName: String, task: String) {
+        #if canImport(UserNotifications)
+        let content = UNMutableNotificationContent()
+        content.title = "closed \(appName)"
+        content.body = Self.blockedAppHiddenBody(task: task)
+        content.sound = .default
+        schedule(content, id: "adia.session.blocked_app_hidden")
+        #endif
+    }
+
+    /// Pure body-text builder for `sendBlockedAppHidden`, exposed so tests can
+    /// verify the friend-like copy without needing a real `UNNotificationContent`.
+    static func blockedAppHiddenBody(task: String) -> String {
+        task.isEmpty
+            ? "that's not what you're working on. get back to it."
+            : "that's not \"\(task)\". get back to it."
+    }
+
     /// Fires a "Session restored" banner when a crash-recovered session is re-activated on launch.
     public func sendSessionRestored(task: String) {
         #if canImport(UserNotifications)

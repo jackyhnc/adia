@@ -328,7 +328,7 @@ public final class SessionManager: ObservableObject {
         callout.restore(count: s.calloutCount) // for restored sessions: resume tier escalation
         callout.setTask(s.task)                // extract keyword so callouts reference the task
         SleepBlocker.shared.start()
-        AppMonitor.shared.start(blockedBundleIDs: Set(s.blockedApps))
+        AppMonitor.shared.start(blockedBundleIDs: Set(s.blockedApps), task: s.task)
         await detector.attach(session: s)
         captureManager.onFrame = { [weak self] frame in
             await self?.handleFrame(frame)
