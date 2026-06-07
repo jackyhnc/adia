@@ -95,6 +95,39 @@ struct AppMonitorTests {
         #expect(AppMonitor.forceHidesBlockedApps == true)
     }
 
+    // MARK: - Re-hide loop
+
+    @Test func reHideIntervalIsAtMost200ms() {
+        // Guard against accidentally lengthening the interval: 200 ms keeps the
+        // re-hide snappy enough to prevent visible dwell in a blocked app after
+        // a Command-Tab. Any increase must be a deliberate, tested decision.
+        #expect(AppMonitor.reHideIntervalMilliseconds <= 200)
+    }
+
+    @Test func reHideIntervalIsPositive() {
+        #expect(AppMonitor.reHideIntervalMilliseconds > 0)
+    }
+
+    @Test func startWithBlockedAppsStartsReHideTask() {
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Discord"])
+        #expect(AppMonitor.shared.reHideTask != nil)
+        AppMonitor.shared.stop()
+    }
+
+    @Test func stopCancelsReHideTask() {
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Discord"])
+        AppMonitor.shared.stop()
+        #expect(AppMonitor.shared.reHideTask == nil)
+    }
+
+    @Test func startWithEmptyBundleIDsDoesNotStartReHideTask() {
+        // When there are no blocked apps, no polling is needed.
+        AppMonitor.shared.stop()  // ensure clean state
+        AppMonitor.shared.start(blockedBundleIDs: [])
+        #expect(AppMonitor.shared.reHideTask == nil)
+        AppMonitor.shared.stop()
+    }
+
     // MARK: - Session Codable
 
     @Test func sessionDecodesLegacyJsonWithoutBlockedApps() throws {

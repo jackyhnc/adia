@@ -12,6 +12,17 @@ public final class AppMonitor {
     private var blockedBundleIDs: Set<String> = []
     private var observation: NSObjectProtocol?
 
+    /// How often (in milliseconds) the re-hide loop polls the frontmost application.
+    /// 200 ms is fast enough to catch Command-Tab re-activations within a single
+    /// human-perceptible frame while staying cheap on CPU.
+    static let reHideIntervalMilliseconds: Int = 200
+
+    /// Background task that periodically checks whether the frontmost app is blocked
+    /// and re-hides it if so. Catches cases where `NSRunningApplication.hide()` fired
+    /// in response to an activation notification but the user Command-Tabbed back before
+    /// the hide completed.
+    internal private(set) var reHideTask: Task<Void, Never>?
+
     // Format strings use %@ for the app name; plain strings are generic fallbacks.
     static let callouts: [String] = [
         "yo, why are you in %@?",
@@ -48,6 +59,7 @@ public final class AppMonitor {
             }
         }
         #endif
+        startReHideLoop()
     }
 
     /// Stop monitoring and clear the blocked list.
@@ -58,7 +70,31 @@ public final class AppMonitor {
             observation = nil
         }
         #endif
+        reHideTask?.cancel()
+        reHideTask = nil
         blockedBundleIDs = []
+    }
+
+    private func startReHideLoop() {
+        reHideTask?.cancel()
+        reHideTask = Task { [weak self] in
+            while !Task.isCancelled {
+                self?.reHideIfNeeded()
+                try? await Task.sleep(for: .milliseconds(Self.reHideIntervalMilliseconds))
+            }
+        }
+    }
+
+    private func reHideIfNeeded() {
+        guard Self.forceHidesBlockedApps, !blockedBundleIDs.isEmpty else { return }
+        #if canImport(AppKit)
+        guard
+            let frontmost = NSWorkspace.shared.frontmostApplication,
+            let bundleID = frontmost.bundleIdentifier,
+            blockedBundleIDs.contains(bundleID)
+        else { return }
+        frontmost.hide()
+        #endif
     }
 
     private func handle(bundleID: String, appName: String) {
