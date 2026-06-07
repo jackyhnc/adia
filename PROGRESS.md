@@ -1,5 +1,79 @@
 # Adia — Build Progress
 
+## Run 78 — 2026-06-07
+
+### Shipped
+- **fix: race condition in `SessionManager.verifyAndEnd()` could act on a stale session**
+  - `verifyAndEnd()` captures `session` into a local `s`, then `await`s a multi-second
+    network call to `AgentAIClient.shared.verify(...)` and (on a verified result) an
+    additional 5s `Task.sleep`. Nothing prevented the user from tapping "End Session"
+    directly during that window — `endSession()` runs to completion (clears `session`,
+    resets `sessionEndedSuccessfully`, persists a `SessionRecord` reflecting the manual
+    exit, tears down all subsystems). When the in-flight `verify()` later resolved with
+    `verified == true`, the old code would still: set `sessionEndedSuccessfully = true`
+    (a stale flag now mutating freshly-cleared/new-session state), fire a "session
+    complete" notification + success haptic for a session the user had already manually
+    ended, and leave `sessionEndedSuccessfully` dangling `true` — capable of tainting
+    the *next* session's `SessionRecord.completedSuccessfully` if that next session
+    ended before the flag was otherwise reset.
+  - **Fix**: `verifyAndEnd()` now snapshots `let sessionID = s.id` before the first
+    `await`, and re-checks `session?.id == sessionID` (a) immediately after `verify()`
+    resolves — discarding the result entirely (logged as `verification.discarded_stale`)
+    if the session was ended/replaced — and (b) again after the 5s post-success sleep,
+    before calling `endSession()`. This makes the whole verification flow a no-op once
+    the session it was verifying no longer exists, regardless of how `verify()` resolves.
+  - **Test** (`Tests/AdiTests/SessionManagerTests.swift`):
+    `verifyAndEndDiscardsStaleResultAfterManualEndSession` — injects a session, sets a
+    dummy `lastFrame`, kicks off `verifyAndEnd()` as a background task, races it with a
+    direct `endSession(note:)` ~300ms later (mirroring a user tapping "End Session"
+    mid-verification), then awaits the verification task to fully resolve and asserts
+    `_lastEndedRecord` still reflects the manual end (same `id`, same `note`) — i.e. the
+    stale result did not create/overwrite a second record. This test makes a real network
+    call to `claude-sonnet-4-6` (no DI seam exists for `AgentAIClient` without a larger
+    refactor), so — like `ClaudeAPIIntegrationTests` — it's gated behind
+    `.enabled(if: sessionManagerHasAnthropicKey)` and skips automatically when
+    `ANTHROPIC_API_KEY` isn't set.
+
+### Housekeeping
+- **Branch hygiene**: found local `HEAD` detached again at `63f4b82` (44 commits ahead
+  of the locally-cached `main`/`origin/main` at `9819c9b`). Fetched `origin/main`
+  (which already had all 44 commits — pushes during prior runs succeeded, only the
+  local ref was stale), confirmed `git checkout main && git merge --ff-only origin/main`
+  fast-forwarded cleanly with zero conflicts, and verified `git status` now shows
+  "On branch main … up to date with 'origin/main'". Future commits will land on `main`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off; `BUILD_COMPLETE` still accurate.
+- **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH) — could
+  not run `swift build`/`swift test` locally. Verified brace/paren balance on both
+  touched files; the fix is a small, mechanical guard-clause addition mirroring the
+  existing `if session != nil { await endSession() }` check it replaces, and the new
+  test follows the exact `ClaudeAPIIntegrationTests` gating pattern already proven to
+  compile in CI. CI (`macos-15` runner) will build and test on push.
+
+### Next agent
+- All goals complete. Possible next improvements (carried over from Run 77, still open):
+  - (a) `AppMonitor.reHideIntervalMilliseconds` (200ms) / `hiddenNotificationMinInterval`
+    (3s) remain hardcoded constants — Run 77 judged exposing them as `SettingsStore`
+    preferences to be UI clutter for low-value technical knobs; still seems right to leave
+    as-is unless a concrete user complaint surfaces.
+  - (b) Onboarding Screen Recording permission UX — Run 70 concluded the `.app` bundle
+    IS the correct Finder drag target; worth a final runtime check on a real Mac.
+  - (c) **Branch hygiene**: keep running `git status` / checking `HEAD` vs `main` at the
+    start of each run — this is the second time `HEAD` has drifted detached. If it's
+    detached again next run, repeat the `git checkout main && git merge --ff-only
+    origin/main` recovery (safe: it only fast-forwards, never rewrites history).
+  - (d) Consider whether `AgentAIClient` is worth refactoring behind a protocol/DI seam
+    — several integration tests (this run's included) are gated on a real network call
+    purely because there's no way to inject a fake response. A `VerifyingClient` protocol
+    with `AgentAIClient: VerifyingClient` and a test double would let races, error paths,
+    and parsing be tested deterministically without `ANTHROPIC_API_KEY`. This would be a
+    moderately large refactor (touches `OnTaskDetector`, `SessionManager`,
+    `ConversationManager`, and several test files) — worth scoping carefully before
+    starting.
+
+---
+
 ## Run 77 — 2026-06-07
 
 ### Shipped

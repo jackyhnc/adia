@@ -1,6 +1,16 @@
 import Testing
 import Foundation
+import CoreGraphics
 @testable import AdiCore
+
+/// `verifyAndEndDiscardsStaleResultAfterManualEndSession` makes a real network call to
+/// Anthropic (verification is not mockable without a larger DI refactor of `AgentAIClient`),
+/// so it's gated the same way `ClaudeAPIIntegrationTests` is — skipped when no key is present.
+private let sessionManagerHasAnthropicKey: Bool = {
+    guard let key = ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"],
+          !key.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
+    return key.hasPrefix("sk-ant-")
+}()
 
 /// Tests run serially: SessionManager.shared is a @MainActor singleton.
 @Suite("SessionManager — pure logic", .serialized)
@@ -10,6 +20,24 @@ struct SessionManagerTests {
         await MainActor.run {
             SessionManager.shared._injectSessionForTesting(session)
         }
+    }
+
+    /// Minimal 1x1 CGImage — enough to satisfy `verifyAndEnd`'s `lastFrame` guard and
+    /// to be JPEG-encoded and POSTed to the verification endpoint.
+    private func dummyFrame() -> CGImage {
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        // Force unwrap is safe: a 1x1 8bpc RGBA bitmap context with these fixed,
+        // well-formed parameters always succeeds — there's no way for `CGContext.init`
+        // or `makeImage()` to return nil here.
+        let ctx = CGContext(
+            data: nil,
+            width: 1, height: 1,
+            bitsPerComponent: 8,
+            bytesPerRow: 4,
+            space: colorSpace,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        )!
+        return ctx.makeImage()!
     }
 
     // MARK: - whitelist(domain:)
@@ -212,6 +240,46 @@ struct SessionManagerTests {
         await SessionManager.shared.endSession(note: "covered all sections, felt solid")
         let record = await MainActor.run { SessionManager.shared._lastEndedRecord }
         #expect(record?.note == "covered all sections, felt solid")
+    }
+
+    /// Regression test for a race where `verifyAndEnd()` awaits a multi-second network
+    /// call (and, on success, an additional 5s sleep) while holding a stale reference to
+    /// the session. If the user taps "End Session" directly during that window, the
+    /// stale verification result must NOT resurrect/duplicate the session record or
+    /// fire a second `endSession()` — see the `sessionID` staleness guard added to
+    /// `verifyAndEnd()`.
+    @Test(.enabled(if: sessionManagerHasAnthropicKey, "Requires ANTHROPIC_API_KEY=sk-ant-... in environment"))
+    func verifyAndEndDiscardsStaleResultAfterManualEndSession() async {
+        let s = Session(task: "Write essay", successCriteria: "Essay submitted to Canvas")
+        await injectSession(s)
+
+        let priorFrame = await MainActor.run { ScreenCaptureManager.shared.lastFrame }
+        await MainActor.run { ScreenCaptureManager.shared.lastFrame = dummyFrame() }
+
+        // Kick off verification (slow: real network round-trip to claude-sonnet-4-6)
+        // without awaiting it — this is what tapping "Done" does.
+        let verifyTask = Task { await SessionManager.shared.verifyAndEnd() }
+
+        // Give verifyAndEnd time to capture the session synchronously and reach its
+        // first suspension point (the network call), then race it — exactly what
+        // tapping "End Session" mid-verification does.
+        try? await Task.sleep(for: .milliseconds(300))
+        await SessionManager.shared.endSession(note: "manual end mid-verification")
+
+        let manualRecord = await MainActor.run { SessionManager.shared._lastEndedRecord }
+        #expect(manualRecord?.note == "manual end mid-verification")
+        #expect(manualRecord?.completedSuccessfully == false)
+
+        // Let the in-flight verification fully resolve (including its possible 5s
+        // post-success sleep) and confirm it did not clobber the manually-created
+        // record with a second, stale `endSession()` call.
+        await verifyTask.value
+        let finalRecord = await MainActor.run { SessionManager.shared._lastEndedRecord }
+        #expect(finalRecord?.id == manualRecord?.id, "stale verification result must not create/overwrite a session record")
+        #expect(finalRecord?.note == "manual end mid-verification")
+
+        await MainActor.run { ScreenCaptureManager.shared.lastFrame = priorFrame }
+        await injectSession(nil)
     }
 
     // MARK: - Duration timer expiry

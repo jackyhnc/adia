@@ -180,6 +180,12 @@ public final class SessionManager: ObservableObject {
             await endSession()
             return
         }
+        // Snapshot the session's identity. `verify()` and the post-success sleep below
+        // both `await` for several seconds — long enough for the user to tap "End Session"
+        // directly (or even start a brand-new session) while this call is in flight. Every
+        // place below that mutates shared state must re-check `session?.id == sessionID`
+        // so a stale verification result can't act on a session that's already gone.
+        let sessionID = s.id
         NotchState.shared.setVerifying(true)
         do {
             let result = try await AgentAIClient.shared.verify(
@@ -187,6 +193,14 @@ public final class SessionManager: ObservableObject {
                 taskDescription: s.task,
                 successCriteria: s.successCriteria
             )
+            guard session?.id == sessionID else {
+                // The session was ended (or replaced by a new one) while we were
+                // awaiting verification — discard this result, it no longer applies.
+                AppLogger.info("verification.discarded_stale", [
+                    "verified": String(result.verified)
+                ])
+                return
+            }
             NotchState.shared.setVerificationResult(result)
             AppLogger.info("verification.result", [
                 "verified": String(result.verified),
@@ -197,15 +211,16 @@ public final class SessionManager: ObservableObject {
                 SessionNotifier.shared.sendSessionComplete(task: s.task)
                 await HapticPlayer.performSuccess()
                 // Give the user up to 5s to read their stats and click End Session.
-                // If they click the button first, session becomes nil and the guard below
-                // prevents a redundant endSession() call.
+                // If they click the button first (or start a new session), `session?.id`
+                // no longer matches and we must not touch the new session's state.
                 try? await Task.sleep(for: .seconds(5))
-                if session != nil { await endSession() }
+                if session?.id == sessionID { await endSession() }
             } else {
                 // Session continues — persist the updated history so attempt numbering
                 // survives a crash/relaunch before the user retries verification.
                 // Re-read session rather than using the stale `s` so any whitelisting
-                // done during the verification await is not overwritten.
+                // done during the verification await is not overwritten. The identity
+                // check above already guarantees `session` is still this same session.
                 if var updated = session {
                     updated.verificationHistory = NotchState.shared.verificationHistory
                     session = updated
