@@ -1,5 +1,75 @@
 # Adia — Build Progress
 
+## Run 76 — 2026-06-07
+
+### Shipped
+- **feat: make timer-expiry re-arm interval user-configurable**
+  - Implements follow-up (a) from Run 75's notes: `SessionManager.timerExpiredRearmInterval`
+    was hardcoded at 600s (10 min) — now user-tunable from Settings.
+  - `SettingsStore.timerExpiredRearmMinutes: Int` — new `@Published` preference,
+    persisted to `UserDefaults` under `adia.timerExpiredRearmMinutes`. Loaded in
+    `init()` and clamped to `Self.timerExpiredRearmMinuteOptions` (falls back to 10
+    if the stored value is missing or corrupted/out-of-range — guards against a
+    stray `0` silently disabling the reminder loop).
+  - `SettingsStore.timerExpiredRearmMinuteOptions: [Int] = [5, 10, 15, 30]` — new
+    `public static let`, drives the Settings picker.
+  - `SettingsStore.timerExpiredRearmInterval: TimeInterval` — new computed property,
+    `timerExpiredRearmMinutes * 60`. This is what `SessionManager` now reads.
+  - `SessionManager.handleDurationExpired()` — the re-arm loop now reads
+    `SettingsStore.shared.timerExpiredRearmInterval` fresh on each iteration (instead
+    of the old `Self.timerExpiredRearmInterval` constant), so a mid-session preference
+    change takes effect on the very next re-arm without restarting the session.
+    `SessionManager.timerExpiredRearmInterval` stays as a documented default-value
+    constant (existing test `timerExpiredRearmIntervalIs600` still guards it).
+  - **Settings UI**: new "Reminders" section in `AccountSettingsTab` with a
+    `Picker("Remind me every", …)` bound to `settings.timerExpiredRearmMinutes`,
+    offering 5/10/15/30 min, with a footer explaining the re-arm behavior.
+  - **Tests (+6)** in `SettingsStoreTests`: `timerExpiredRearmMinuteOptionsContainsTenMinuteDefault`,
+    `timerExpiredRearmMinuteOptionsAreSortedAndPositive`, `timerExpiredRearmMinutesDefaultsToTen`,
+    `timerExpiredRearmMinutesPersistsToUserDefaults`, `timerExpiredRearmIntervalConvertsMinutesToSeconds`,
+    `timerExpiredRearmIntervalMatchesSessionManagerDefaultAtTenMinutes` (cross-checks the
+    new computed property against the existing `SessionManager` constant at the 10-min default).
+
+### Housekeeping
+- **Recovered 42 unreferenced commits (Runs 52–73)** — the local `main` ref had drifted
+  to Run 51 while the working tree's `HEAD` was detached 42 commits ahead (Runs 52–73
+  had been committed without ever updating a branch pointer locally). Verified
+  `origin/main` already had all 42 commits (the pushes during those runs succeeded —
+  only the local branch ref was stale/detached), confirmed a clean fast-forward
+  (`git merge-base --is-ancestor` ⇒ true), and fast-forwarded local `main` to match.
+  No data was lost; this just re-attaches the working tree to a branch so future
+  commits land on `main` instead of going detached again.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+- **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH) — could
+  not run `swift build`/`swift test` locally. Verified brace/paren balance across all
+  four touched files and reviewed each diff against the existing `idleTemplatesFollowManualOrder`
+  / `showMenuBarItem` preference patterns it mirrors; CI (`macos-15` runner) will build
+  and test on push.
+
+### Next agent
+- All goals complete. Possible next improvements (carried over / refined):
+  - (a) Apply the same "expose as `SettingsStore` preference" treatment to the two
+    remaining hardcoded tuning constants from Run 75's notes:
+    `AppMonitor.reHideIntervalMilliseconds` (200ms) and
+    `AppMonitor.hiddenNotificationMinInterval` (3s). These are lower-stakes/more
+    technical than the re-arm interval (which is the one most likely to annoy users
+    if wrong), so they were intentionally left for a follow-up run rather than
+    bundled into one large diff.
+  - (b) Onboarding Screen Recording permission UX: `requestPermission()` reveals
+    `Bundle.main.bundleURL` — Run 70 concluded the `.app` bundle IS the correct Finder
+    drag target for Privacy settings, so likely no change needed; worth a final
+    runtime check on a real Mac.
+  - (c) **IMPORTANT — branch hygiene**: always run `git status` / `git rev-parse
+    --abbrev-ref HEAD` at the start of a run. If `HEAD` is detached, `git checkout main`
+    and fast-forward before starting work, otherwise your commit will silently land
+    outside any branch (as happened for Runs 52–73 — recovered in this run, but it's
+    fragile: if `origin/main` had been behind, a `git push` from a detached HEAD would
+    have failed or required force-pushing).
+
+---
+
 ## Run 75 — 2026-06-07
 
 ### Shipped

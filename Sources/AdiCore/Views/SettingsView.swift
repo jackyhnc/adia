@@ -97,6 +97,19 @@ private struct AccountSettingsTab: View {
                 Text("Works globally — press from any app to expand the notch. The menu bar icon provides the same controls on non-notch Macs.")
                     .foregroundStyle(.secondary)
             }
+
+            Section {
+                Picker("Remind me every", selection: $settings.timerExpiredRearmMinutes) {
+                    ForEach(SettingsStore.timerExpiredRearmMinuteOptions, id: \.self) { minutes in
+                        Text("\(minutes) min").tag(minutes)
+                    }
+                }
+            } header: {
+                Text("Reminders")
+            } footer: {
+                Text("When your session's timer runs out, Adia re-opens the notch on this interval until you verify you're done or end the session.")
+                    .foregroundStyle(.secondary)
+            }
         }
         .formStyle(.grouped)
     }

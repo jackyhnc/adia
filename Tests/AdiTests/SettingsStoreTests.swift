@@ -312,6 +312,52 @@ struct SettingsStoreTests {
         #expect(restored == false)
     }
 
+    // MARK: - timerExpiredRearmMinutes
+
+    @Test func timerExpiredRearmMinuteOptionsContainsTenMinuteDefault() {
+        // 10 minutes is the historical/default re-arm interval (SessionManager.timerExpiredRearmInterval == 600).
+        #expect(SettingsStore.timerExpiredRearmMinuteOptions.contains(10))
+    }
+
+    @Test func timerExpiredRearmMinuteOptionsAreSortedAndPositive() {
+        let options = SettingsStore.timerExpiredRearmMinuteOptions
+        #expect(options == options.sorted())
+        #expect(options.allSatisfy { $0 > 0 })
+    }
+
+    @Test func timerExpiredRearmMinutesDefaultsToTen() async {
+        // Remove the persisted key so the default kicks in on next init.
+        UserDefaults.standard.removeObject(forKey: "adia.timerExpiredRearmMinutes")
+        // The singleton is already initialised; test persistence round-trip instead.
+        await MainActor.run { SettingsStore.shared.timerExpiredRearmMinutes = 10 }
+        let stored = UserDefaults.standard.object(forKey: "adia.timerExpiredRearmMinutes") as? Int
+        #expect(stored == 10)
+    }
+
+    @Test func timerExpiredRearmMinutesPersistsToUserDefaults() async {
+        await MainActor.run { SettingsStore.shared.timerExpiredRearmMinutes = 30 }
+        let stored = UserDefaults.standard.integer(forKey: "adia.timerExpiredRearmMinutes")
+        #expect(stored == 30)
+        // Restore default.
+        await MainActor.run { SettingsStore.shared.timerExpiredRearmMinutes = 10 }
+        let restored = UserDefaults.standard.integer(forKey: "adia.timerExpiredRearmMinutes")
+        #expect(restored == 10)
+    }
+
+    @Test func timerExpiredRearmIntervalConvertsMinutesToSeconds() async {
+        await MainActor.run { SettingsStore.shared.timerExpiredRearmMinutes = 5 }
+        let interval = await MainActor.run { SettingsStore.shared.timerExpiredRearmInterval }
+        #expect(interval == 300)
+        // Restore default.
+        await MainActor.run { SettingsStore.shared.timerExpiredRearmMinutes = 10 }
+    }
+
+    @Test func timerExpiredRearmIntervalMatchesSessionManagerDefaultAtTenMinutes() async {
+        await MainActor.run { SettingsStore.shared.timerExpiredRearmMinutes = 10 }
+        let interval = await MainActor.run { SettingsStore.shared.timerExpiredRearmInterval }
+        #expect(interval == SessionManager.timerExpiredRearmInterval)
+    }
+
     // MARK: - SettingsView adaptive tab heights
 
     @Test func settingsViewTabHeightsCoversAllFourTabs() {

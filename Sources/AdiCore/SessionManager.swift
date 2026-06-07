@@ -268,8 +268,10 @@ public final class SessionManager: ObservableObject {
     /// can instantly tell the difference between "done" and "get back to work".
     internal static let timerExpiredSoundName: String = "Glass"
 
-    /// How long to wait before re-opening the notch after a timer-expiry dismissal.
-    /// Exposed as `internal` so tests can assert it is exactly 10 minutes.
+    /// Default re-arm interval, used as the fallback when no user preference is stored.
+    /// `SettingsStore.timerExpiredRearmInterval` is the live, user-configurable value
+    /// (Settings → "Remind me every"); this constant only documents/guards the default.
+    /// Exposed as `internal` so tests can assert the default is exactly 10 minutes.
     internal static let timerExpiredRearmInterval: TimeInterval = 600
 
     /// Called when the session's target duration elapses.
@@ -283,11 +285,12 @@ public final class SessionManager: ObservableObject {
         NSSound(named: Self.timerExpiredSoundName)?.play()
         #endif
         // Re-arm: if the user collapses the notch without verifying, re-open it every
-        // rearmInterval until they either verify or explicitly end the session.
+        // rearmInterval (user-configurable in Settings, default 10 min) until they
+        // either verify or explicitly end the session.
         timerExpiredRearmTask?.cancel()
         timerExpiredRearmTask = Task {
             while !Task.isCancelled {
-                try? await Task.sleep(for: Duration.seconds(Self.timerExpiredRearmInterval))
+                try? await Task.sleep(for: Duration.seconds(SettingsStore.shared.timerExpiredRearmInterval))
                 guard !Task.isCancelled, timerExpired, session != nil else { return }
                 NotchState.shared.expand()
                 SessionNotifier.shared.sendTimerExpired(task: session?.task ?? "")
