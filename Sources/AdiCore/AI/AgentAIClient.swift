@@ -387,6 +387,36 @@ public struct GoalParse: Sendable {
     }
 }
 
+/// What `NotchView.SessionCreationFormView.submit()` should do with a `GoalParse`
+/// result: either start the session with the (trimmed, non-empty) task/criteria,
+/// or surface a clarifying question and let the user revise their input.
+public enum GoalSubmissionOutcome: Sendable, Equatable {
+    case accepted(task: String, successCriteria: String)
+    case needsClarification(question: String)
+}
+
+extension GoalParse {
+    /// Pure decision mirroring `submit()`'s branch logic — extracted so the
+    /// accept/reject/fallback paths can be tested without SwiftUI, `@MainActor`,
+    /// or a network round-trip. `ok == false`, a missing/blank `task`, or a
+    /// missing/blank `successCriteria` all fall through to `.needsClarification`,
+    /// using the model's own `question` when present and non-blank, else `defaultQuestion`.
+    public func resolveSubmission(
+        defaultQuestion: String = "What would I be able to see on screen when this is done?"
+    ) -> GoalSubmissionOutcome {
+        guard ok,
+              let task = task?.trimmingCharacters(in: .whitespacesAndNewlines),
+              let criteria = successCriteria?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !task.isEmpty,
+              !criteria.isEmpty
+        else {
+            let q = question?.trimmingCharacters(in: .whitespacesAndNewlines)
+            return .needsClarification(question: (q?.isEmpty == false ? q : nil) ?? defaultQuestion)
+        }
+        return .accepted(task: task, successCriteria: criteria)
+    }
+}
+
 public enum AgentAIError: Error, Sendable {
     case missingAPIKey
     case httpError(Int, String)

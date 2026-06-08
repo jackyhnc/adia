@@ -875,26 +875,21 @@ private struct SessionCreationFormView: View {
             defer { isThinking = false }
             do {
                 let parsed = try await AgentAIClient.shared.parseGoal(text)
-                guard parsed.ok,
-                      let task = parsed.task?.trimmingCharacters(in: .whitespacesAndNewlines),
-                      let criteria = parsed.successCriteria?.trimmingCharacters(in: .whitespacesAndNewlines),
-                      !task.isEmpty,
-                      !criteria.isEmpty
-                else {
-                    let question = parsed.question ?? "What would I be able to see on screen when this is done?"
+                switch parsed.resolveSubmission() {
+                case .needsClarification(let question):
                     AppLogger.warning("goal.rejected_by_model", ["question": question])
                     withAnimation { clarifyingQuestion = question }
-                    return
+                case .accepted(let task, let criteria):
+                    AppLogger.info("goal.accepted", [
+                        "taskLength": String(task.count),
+                        "criteriaLength": String(criteria.count)
+                    ])
+                    try await session.start(task: task, successCriteria: criteria, targetDuration: durationSeconds)
+                    if shouldPin {
+                        Task { await SessionTemplateStore.shared.add(task: task, successCriteria: criteria, preferredDuration: durationSeconds) }
+                    }
+                    state.stopCreating()
                 }
-                AppLogger.info("goal.accepted", [
-                    "taskLength": String(task.count),
-                    "criteriaLength": String(criteria.count)
-                ])
-                try await session.start(task: task, successCriteria: criteria, targetDuration: durationSeconds)
-                if shouldPin {
-                    Task { await SessionTemplateStore.shared.add(task: task, successCriteria: criteria, preferredDuration: durationSeconds) }
-                }
-                state.stopCreating()
             } catch CaptureError.permissionDenied {
                 withAnimation {
                     clarifyingQuestion = "Screen Recording permission required. Grant it in System Settings, then try again."

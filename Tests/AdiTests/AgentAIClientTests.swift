@@ -211,4 +211,66 @@ struct AgentAIClientParsingTests {
         #expect(g.task == "edit my resume")
         #expect(g.successCriteria == "Resume saved with updated date.")
     }
+
+    // MARK: - GoalParse → GoalSubmissionOutcome (NotchView.submit() branch logic)
+    //
+    // `SessionCreationFormView.submit()` switches on what `parseGoal` returns to decide
+    // whether to start the session or show a clarifying question. That branch logic lived
+    // inline in a `View` (untestable without SwiftUI/@MainActor/network) — `resolveSubmission`
+    // extracts it as a pure function on `GoalParse` so every accept/reject/fallback path has
+    // a deterministic test, mirroring the pure-parser coverage above.
+
+    @Test func resolveSubmissionAcceptsValidGoal() {
+        let g = GoalParse(ok: true, task: "write my essay", successCriteria: "Essay submitted on Canvas.", question: nil)
+        #expect(g.resolveSubmission() == .accepted(task: "write my essay", successCriteria: "Essay submitted on Canvas."))
+    }
+
+    @Test func resolveSubmissionTrimsAcceptedFields() {
+        let g = GoalParse(ok: true, task: "  write my essay  ", successCriteria: "  done when submitted  ", question: nil)
+        #expect(g.resolveSubmission() == .accepted(task: "write my essay", successCriteria: "done when submitted"))
+    }
+
+    @Test func resolveSubmissionAsksClarificationWhenModelRejects() {
+        let g = GoalParse(ok: false, task: nil, successCriteria: nil, question: "What subject is this for?")
+        #expect(g.resolveSubmission() == .needsClarification(question: "What subject is this for?"))
+    }
+
+    @Test func resolveSubmissionUsesDefaultQuestionWhenModelRejectsWithoutOne() {
+        let g = GoalParse(ok: false, task: nil, successCriteria: nil, question: nil)
+        #expect(g.resolveSubmission() == .needsClarification(question: "What would I be able to see on screen when this is done?"))
+    }
+
+    @Test func resolveSubmissionUsesDefaultQuestionWhenModelRejectionQuestionIsBlank() {
+        let g = GoalParse(ok: false, task: nil, successCriteria: nil, question: "   ")
+        #expect(g.resolveSubmission() == .needsClarification(question: "What would I be able to see on screen when this is done?"))
+    }
+
+    @Test func resolveSubmissionAsksClarificationWhenTaskMissingDespiteOk() {
+        // Defensive: `parseGoalResponse` never produces this shape (it falls back to
+        // `original`), but `GoalParse` can be constructed directly — e.g. by a future
+        // parser or a test mock — so the guard must hold for the full type, not just
+        // the values one code path happens to produce.
+        let g = GoalParse(ok: true, task: nil, successCriteria: "Essay submitted.", question: "Anything else?")
+        #expect(g.resolveSubmission() == .needsClarification(question: "Anything else?"))
+    }
+
+    @Test func resolveSubmissionAsksClarificationWhenTaskBlankDespiteOk() {
+        let g = GoalParse(ok: true, task: "   ", successCriteria: "Essay submitted.", question: nil)
+        #expect(g.resolveSubmission() == .needsClarification(question: "What would I be able to see on screen when this is done?"))
+    }
+
+    @Test func resolveSubmissionAsksClarificationWhenCriteriaMissingDespiteOk() {
+        let g = GoalParse(ok: true, task: "write my essay", successCriteria: nil, question: nil)
+        #expect(g.resolveSubmission() == .needsClarification(question: "What would I be able to see on screen when this is done?"))
+    }
+
+    @Test func resolveSubmissionAsksClarificationWhenCriteriaBlankDespiteOk() {
+        let g = GoalParse(ok: true, task: "write my essay", successCriteria: "   ", question: nil)
+        #expect(g.resolveSubmission() == .needsClarification(question: "What would I be able to see on screen when this is done?"))
+    }
+
+    @Test func resolveSubmissionRespectsCustomDefaultQuestion() {
+        let g = GoalParse(ok: false, task: nil, successCriteria: nil, question: nil)
+        #expect(g.resolveSubmission(defaultQuestion: "Tell me more?") == .needsClarification(question: "Tell me more?"))
+    }
 }

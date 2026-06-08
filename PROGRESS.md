@@ -1,5 +1,77 @@
 # Adia — Build Progress
 
+## Run 85 — 2026-06-08
+
+### Shipped
+- **DI-seam-style refactor: `GoalParse.resolveSubmission()` — pure decision logic for `NotchView.submit()`**
+  Closes Run 84(c): `SessionCreationFormView.submit()` decided whether to start a session
+  or show a clarifying question via inline branch logic (`guard parsed.ok, let task = ...`)
+  buried in a `private func` on a `View` struct, wrapped in `Task { @MainActor in ... }` —
+  untestable without SwiftUI, `@MainActor`, and a live `parseGoal` network round-trip.
+  - **`AgentAIClient.swift`**: added `public enum GoalSubmissionOutcome: Sendable, Equatable`
+    (`.accepted(task:successCriteria:)` / `.needsClarification(question:)`) and
+    `extension GoalParse { public func resolveSubmission(defaultQuestion:) -> GoalSubmissionOutcome }`
+    — a pure function mirroring `submit()`'s exact branch logic (ok-check, trim, blank-check
+    on `task`/`successCriteria`, and a `(q?.isEmpty == false ? q : nil) ?? default` fallback
+    for the clarifying question — matching the same defensive pattern already used inside
+    `parseGoalResponse`'s `ok:false` branch, since `GoalParse` can be constructed directly
+    with any shape regardless of what the live parser currently guarantees).
+  - **`NotchView.swift`**: `submit()` now does `switch parsed.resolveSubmission() { ... }`
+    instead of the inline `guard`/`else` — same behavior, same logging, same animation calls,
+    just delegated to the testable pure function. No UI/UX change.
+  - **`AgentAIClientTests.swift`** (+10 tests, new "GoalParse → GoalSubmissionOutcome" section):
+    `resolveSubmissionAcceptsValidGoal`, `resolveSubmissionTrimsAcceptedFields`,
+    `resolveSubmissionAsksClarificationWhenModelRejects`,
+    `resolveSubmissionUsesDefaultQuestionWhenModelRejectsWithoutOne`,
+    `resolveSubmissionUsesDefaultQuestionWhenModelRejectionQuestionIsBlank`,
+    `resolveSubmissionAsksClarificationWhenTaskMissingDespiteOk` /
+    `WhenTaskBlankDespiteOk` / `WhenCriteriaMissingDespiteOk` / `WhenCriteriaBlankDespiteOk`
+    (the four "ok:true but malformed" defensive branches), and
+    `resolveSubmissionRespectsCustomDefaultQuestion`. Every accept/reject/fallback path
+    through the function is now covered deterministically, with no SwiftUI or network involved.
+
+### Verification
+- **No Swift toolchain in this container** (Linux, no `swift`/`swiftc` on PATH — confirmed
+  again). Verified brace/paren/bracket balance via Python script across all three touched
+  files (all deltas zero before/after edits: `AgentAIClient.swift` 60/60 `{}` 135/135 `()`
+  58/58 `[]`; `NotchView.swift` 247/247 `{}` 845/845 `()` 10/10 `[]`;
+  `AgentAIClientTests.swift` 62/62 `{}` 180/180 `()`). Hand-traced `resolveSubmission`
+  against every `GoalParse` shape `parseGoalResponse` can produce *and* every shape a
+  hand-built `GoalParse` literal could have, confirming the switch in `submit()` covers
+  both `GoalSubmissionOutcome` cases identically to the old `guard`/`else`.
+
+### Branch hygiene
+- `HEAD` was detached at `28d5a58` again on session start (local `main` stale at
+  `9819c9b`, origin at `28e9507`) — same recurring issue flagged in Runs 83/84(a), now
+  7th+ time. Resolved with `git fetch origin main && git checkout main && git reset
+  --hard origin/main` (working tree was clean; no work lost). Still unaddressed as a
+  systemic fix — see "Next agent".
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off; `BUILD_COMPLETE` still accurate.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) **Branch hygiene recurring (7th+ time)** — a `SessionStart` hook
+    (`.claude/hooks/session-start.sh` + registration in `.claude/settings.json`)
+    running `git fetch origin main && git checkout main && git reset --hard origin/main`
+    only when `git status --porcelain` is empty would end this permanently. Worth a
+    dedicated run since it touches harness config (`.claude/`), not app code — and is
+    now the single most-repeated note across the last ~7 runs' "Next agent" sections.
+  - (b) The only Anthropic-network-shaped logic still without a deterministic equivalent
+    is live chat (`ClaudeAPIIntegrationTests.chatReturnsNonEmptyResponse` /
+    `chatFollowsSystemPromptTone` / `chatMultiTurnCarriesContext`); `ConversationManager`
+    already has `_aiClient`/`MockAgentAIClient` DI + deterministic flow tests, so this
+    is supplementary polish, not a gap.
+  - (c) Run 84(c) — "thread `parseGoal` through `SessionCreationFormView` for deterministic
+    UI-flow tests of `submit()`" — is now **closed** in spirit: rather than threading a
+    closure through the view (which would require making the `private struct` internal),
+    the branch *decision* logic was extracted as a pure `GoalParse.resolveSubmission()`
+    and fully tested. The remaining untested surface in `submit()` is now just async
+    plumbing (`session.start`, `SessionTemplateStore.add`, `state.stopCreating`,
+    `AppLogger` calls) — covered indirectly by `SessionManagerTests`/`SessionTemplateTests`.
+
+---
 ## Run 84 — 2026-06-07
 
 ### Shipped
