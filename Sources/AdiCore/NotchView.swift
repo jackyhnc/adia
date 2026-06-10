@@ -713,10 +713,7 @@ private struct VerificationAttemptRow: View {
     }
 
     private func relativeTime(_ date: Date) -> String {
-        let elapsed = Int(Date().timeIntervalSince(date))
-        if elapsed < 60 { return "just now" }
-        let minutes = elapsed / 60
-        return "\(minutes)m ago"
+        verificationRelativeTime(date)
     }
 }
 
@@ -1138,6 +1135,22 @@ internal func idleStatsSummary(_ s: SessionStats) -> String {
     else if h > 0 { time = "\(h)h" }
     else { time = "\(m)m" }
     return "\(base) · \(time)"
+}
+
+// MARK: - Verification attempt helpers (internal for testing)
+
+/// Returns a human-readable relative time label for a verification attempt timestamp.
+/// Examples: "just now", "5m ago", "1h ago", "2h 15m ago".
+/// `now` is injectable so the function is deterministically testable.
+internal func verificationRelativeTime(_ date: Date, now: Date = Date()) -> String {
+    let elapsed = max(0, Int(now.timeIntervalSince(date)))
+    if elapsed < 60 { return "just now" }
+    let totalMinutes = elapsed / 60
+    let hours = totalMinutes / 60
+    let minutes = totalMinutes % 60
+    if hours > 0 && minutes > 0 { return "\(hours)h \(minutes)m ago" }
+    if hours > 0 { return "\(hours)h ago" }
+    return "\(totalMinutes)m ago"
 }
 
 // MARK: - Session completion helpers (internal for testing)

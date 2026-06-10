@@ -1091,3 +1091,56 @@ struct SessionElapsedLabelTests {
         #expect(sessionElapsedLabel(seconds: 7320) == "2h 2m")
     }
 }
+
+// MARK: - verificationRelativeTime tests
+
+@Suite("verificationRelativeTime")
+struct VerificationRelativeTimeTests {
+    private let anchor = Date(timeIntervalSinceReferenceDate: 1_000_000)
+
+    private func t(_ seconds: Int) -> Date {
+        Date(timeIntervalSince1970: anchor.timeIntervalSince1970 - TimeInterval(seconds))
+    }
+
+    @Test func justNow() {
+        #expect(verificationRelativeTime(t(0), now: anchor) == "just now")
+    }
+
+    @Test func fiftyNineSecondsAgo() {
+        #expect(verificationRelativeTime(t(59), now: anchor) == "just now")
+    }
+
+    @Test func oneMinuteAgo() {
+        #expect(verificationRelativeTime(t(60), now: anchor) == "1m ago")
+    }
+
+    @Test func fiveMinutesAgo() {
+        #expect(verificationRelativeTime(t(5 * 60), now: anchor) == "5m ago")
+    }
+
+    @Test func fiftyNineMinutesAgo() {
+        #expect(verificationRelativeTime(t(59 * 60), now: anchor) == "59m ago")
+    }
+
+    @Test func exactlyOneHourAgo() {
+        #expect(verificationRelativeTime(t(3600), now: anchor) == "1h ago")
+    }
+
+    @Test func oneHourFifteenMinutesAgo() {
+        #expect(verificationRelativeTime(t(75 * 60), now: anchor) == "1h 15m ago")
+    }
+
+    @Test func twoHoursAgo() {
+        #expect(verificationRelativeTime(t(7200), now: anchor) == "2h ago")
+    }
+
+    @Test func twoHoursTenMinutesAgo() {
+        #expect(verificationRelativeTime(t(2 * 3600 + 10 * 60), now: anchor) == "2h 10m ago")
+    }
+
+    @Test func futureTimestampClampsToJustNow() {
+        // date is 30s in the future — elapsed is negative, clamped to 0 → "just now"
+        let future = Date(timeIntervalSince1970: anchor.timeIntervalSince1970 + 30)
+        #expect(verificationRelativeTime(future, now: anchor) == "just now")
+    }
+}
