@@ -1,5 +1,32 @@
 # Adia — Build Progress
 
+## Run 86 — 2026-06-10
+
+### Shipped
+- **fix: `verificationRelativeTime` — extract as testable helper, fix hour formatting**
+  `VerificationAttemptRow` had a private `relativeTime` helper that (a) couldn't be unit-tested
+  from outside the struct and (b) produced "120m ago" instead of "2h ago" for attempts older
+  than 1 hour — a real UI regression for long sessions with early failed verifications.
+  - Extracted as `internal func verificationRelativeTime(_ date: Date, now: Date = Date())`
+    in `NotchView.swift`, following the existing `idleStatsSummary` / `sessionElapsedLabel`
+    pattern of testable free functions for view-layer formatting logic.
+  - Added full hour support: "1h ago", "2h 15m ago" matching `sessionElapsedLabel`'s format.
+  - Negative elapsed (future timestamp) clamped to 0 so it shows "just now" safely.
+  - Added 11 deterministic tests in `SessionHistoryTests.swift` covering: just-now,
+    sub-minute boundary, exact minutes, 59m boundary, exact 1h, mixed h+m, 2h, 2h 10m,
+    and future-timestamp clamping.
+
+### Blocked
+- None.
+
+### Next agent should pick up
+- All 14 goal-checklist items are complete. Quality improvements remain:
+  - Consider adding more edge-case tests for `SessionManager.verifyAndEnd()` race conditions
+  - Consider adding export functionality (CSV/JSON) for session history
+  - Consider adding keyboard shortcut display in the `GlobalHotkeyManager` for discoverability
+
+---
+
 ## Run 85 — 2026-06-08
 
 ### Shipped
