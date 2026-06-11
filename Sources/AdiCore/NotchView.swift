@@ -109,6 +109,8 @@ private struct CollapsedView: View {
     @ObservedObject var state: NotchState
     @ObservedObject var session: SessionManager
     @State private var idleStreak: Int = 0
+    @State private var idleTodayCount: Int = 0
+    @State private var idleTodayMinutes: Int = 0
 
     var body: some View {
         HStack(spacing: 5) {
@@ -131,10 +133,19 @@ private struct CollapsedView: View {
                         .font(.system(size: 11, weight: .medium, design: .rounded))
                         .foregroundStyle(.white.opacity(0.85))
                 }
-            } else if idleStreak > 1 {
-                Text("🔥 \(idleStreak)d")
-                    .font(.system(size: 11, weight: .medium, design: .rounded))
-                    .foregroundStyle(.orange.opacity(0.85))
+            } else if idleTodayCount > 0 || idleStreak > 1 {
+                HStack(spacing: 6) {
+                    if idleTodayCount > 0 {
+                        Text(collapsedIdleStats())
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .foregroundStyle(.white.opacity(0.5))
+                    }
+                    if idleStreak > 1 {
+                        Text("🔥 \(idleStreak)d")
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .foregroundStyle(.orange.opacity(0.85))
+                    }
+                }
             }
         }
         .padding(.horizontal, 14)
@@ -146,7 +157,10 @@ private struct CollapsedView: View {
         .onHover { if $0 { state.expand() } }
         .task(id: session.session?.id) {
             guard session.session == nil else { return }
-            idleStreak = await SessionHistory.shared.stats().streak
+            let s = await SessionHistory.shared.stats()
+            idleStreak = s.streak
+            idleTodayCount = s.todayCount
+            idleTodayMinutes = s.todayMinutes
         }
     }
 
@@ -157,6 +171,15 @@ private struct CollapsedView: View {
         if h > 0 { return "\(h)h \(m)m" }
         if m > 0 { return "\(m)m" }
         return "Focus"
+    }
+
+    private func collapsedIdleStats() -> String {
+        let h = idleTodayMinutes / 60
+        let m = idleTodayMinutes % 60
+        if h > 0 && m > 0 { return "\(idleTodayCount) · \(h)h \(m)m" }
+        if h > 0 { return "\(idleTodayCount) · \(h)h" }
+        if m > 0 { return "\(idleTodayCount) · \(m)m" }
+        return "\(idleTodayCount)"
     }
 
     private var dotColor: Color {
