@@ -691,6 +691,17 @@ private struct HistoryTab: View {
                                 .opacity(selectedIDs.isEmpty ? 0 : 1)
                                 .disabled(selectedIDs.isEmpty)
                             Spacer()
+                            Button("Export \(selectedIDs.count)…") {
+                                let selected = records.filter { selectedIDs.contains($0.id) }
+                                presentExportPanel(records: selected, filename: "adia-selected-sessions.csv")
+                            }
+                            .buttonStyle(.borderless)
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 8)
+                            .opacity(selectedIDs.isEmpty ? 0 : 1)
+                            .disabled(selectedIDs.isEmpty)
                             Button(allFilteredSelected ? "Deselect All" : "Select All") {
                                 toggleSelectAll()
                             }
@@ -727,12 +738,14 @@ private struct HistoryTab: View {
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 8)
-                            Button("Export CSV…") { exportCSV(records) }
-                                .buttonStyle(.borderless)
-                                .font(.callout)
-                                .foregroundStyle(.secondary)
-                                .padding(.trailing, 12)
-                                .padding(.vertical, 8)
+                            Button("Export CSV…") {
+                                presentExportPanel(records: records, filename: "adia-history.csv")
+                            }
+                            .buttonStyle(.borderless)
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .padding(.trailing, 12)
+                            .padding(.vertical, 8)
                         }
                     }
                     .background(.background)
@@ -877,23 +890,11 @@ private struct HistoryTab: View {
         }
     }
 
-    private func exportCSV(_ records: [SessionRecord]) {
-        var csv = "Date,Task,Success Criteria,Duration (min),Completed,Callouts,Focus Score (%),Site Access Asks,Site Access Granted,Note\n"
-        let fmt = ISO8601DateFormatter()
-        for r in records {
-            let date = fmt.string(from: r.startTime)
-            let task = r.task.replacingOccurrences(of: "\"", with: "\"\"")
-            let criteria = r.successCriteria.replacingOccurrences(of: "\"", with: "\"\"")
-            let mins = Int(r.duration / 60)
-            let done = r.completedSuccessfully ? "Yes" : "No"
-            let note = (r.note ?? "").replacingOccurrences(of: "\"", with: "\"\"")
-            let focusPct = r.focusScore.map { String(Int($0 * 100)) } ?? ""
-            csv += "\"\(date)\",\"\(task)\",\"\(criteria)\",\(mins),\(done),\(r.calloutCount),\(focusPct),\(r.reasoningAttempts),\(r.reasoningGranted),\"\(note)\"\n"
-        }
-
+    private func presentExportPanel(records: [SessionRecord], filename: String) {
+        let csv = sessionRecordsToCSV(records)
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.commaSeparatedText]
-        panel.nameFieldStringValue = "adia-history.csv"
+        panel.nameFieldStringValue = filename
         panel.begin { response in
             guard response == .OK, let url = panel.url else { return }
             try? csv.write(to: url, atomically: true, encoding: .utf8)
