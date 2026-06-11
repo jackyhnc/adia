@@ -1,5 +1,44 @@
 # Adia — Build Progress
 
+## Run 88 — 2026-06-11
+
+### Shipped
+- **feat: wire CSV export to canonical backend, add Export Selected in select mode**
+  - Removed the stale 10-column `exportCSV(_ records:)` in `HistoryTab` (SettingsView.swift)
+    that duplicated RFC 4180 quoting logic. Replaced with `presentExportPanel(records:filename:)`
+    which calls `sessionRecordsToCSV` — the canonical 14-column export already covered by 22
+    unit tests in `SessionHistoryTests.swift`.
+  - Added "Export N…" button in select-mode footer so users can export a chosen subset of
+    sessions (e.g. this week only) without having to post-process a full dump. Button follows
+    the same visibility pattern as "Delete N selected": faded/disabled when nothing is selected.
+  - Non-select "Export CSV…" button now also goes through `presentExportPanel`, producing the
+    same 14-column output (id, task, successCriteria, startTime, endTime, durationSeconds,
+    completedSuccessfully, calloutCount, onTaskChecks, totalChecks, focusScore,
+    reasoningAttempts, reasoningGranted, note) instead of the old ad-hoc 10-column format.
+
+### Branch hygiene
+- main was at HEAD detached (same recurring issue from Runs 81-87). Resolved with
+  `git cherry-pick --abort && git fetch origin main && git reset --hard origin/main`,
+  then re-applied edits cleanly.
+
+### Blocked
+- None.
+
+### Next agent should pick up
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) **Branch hygiene (9th+ time)** — a `SessionStart` hook in `.claude/settings.json`
+    running `git fetch && git checkout main && git reset --hard origin/main` (when working tree
+    is clean) would end this permanently. Use the `session-start-hook` skill.
+  - (b) **Idle stats in the notch** — `CollapsedView` shows streak (🔥 Nd) but not today's
+    session count or focused-time total. `SessionStats.todayCount` / `todayMinutes` are
+    available from `SessionHistory.shared.stats()` — a brief "2 sessions · 45m" label next
+    to the streak badge would complete the at-a-glance picture.
+  - (c) **JSON export alongside CSV** — `SessionHistory.exportJSON()` using the existing
+    `Codable` conformance on `SessionRecord`. Could be surfaced as an alternate format
+    in a menu from the export button, or as a separate "Export JSON…" button.
+
+---
+
 ## Run 87 — 2026-06-11
 
 ### Shipped
