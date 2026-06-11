@@ -1,5 +1,57 @@
 # Adia — Build Progress
 
+## Run 90 — 2026-06-11
+
+### Shipped
+- **feat: JSON export for session history alongside CSV**
+  Closes Run 89 suggestion (b). The export story in Settings > History was
+  CSV-only; JSON is now available too.
+  - `sessionRecordsToJSON(_ records: [SessionRecord]) -> String` — pure free
+    function in `SessionHistory.swift` using `JSONEncoder` with
+    `.prettyPrinted`, `.sortedKeys`, and `.iso8601` date encoding. Returns
+    `"[]"` on empty input; uses the existing `Codable` conformance on
+    `SessionRecord` (no new serialization logic).
+  - `SessionHistory.exportJSON() -> String` — actor method mirroring
+    `exportCSV()`, delegates to `sessionRecordsToJSON(_load())`.
+  - `SettingsView.swift` — "Export CSV…" button (non-select mode) and
+    "Export N…" button (select mode) both promoted to `Menu` with "CSV…" and
+    "JSON…" sub-items. New `presentExportPanelJSON(records:filename:)` private
+    helper uses `NSSavePanel` with `UTType.json` allowed content type.
+  - **17 new tests**:
+    - `SessionRecordsToJSONTests` (7): `emptyInputReturnsEmptyArray`,
+      `singleRecordProducesValidJSON`, `multipleRecordsRoundTrip`,
+      `outputIsPrettyPrinted`, `outputIsValidUTF8String`,
+      `recordIDIsPreservedInJSON`, `nilNoteIsAbsentFromJSON`.
+    - `SessionHistoryExportJSONTests` (3 actor integration): `emptyHistoryReturnsEmptyArray`,
+      `reflectsRecordedSessions`, `afterClearReturnsEmptyArray`.
+
+### Branch hygiene
+- Found `HEAD` detached from `refs/heads/main` again on session start
+  (now 10th+ time). Resolved with `git fetch origin main && git checkout
+  main && git reset --hard origin/main`.
+
+### Blocked
+- None.
+
+### Next agent should pick up
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) **Branch hygiene (11th time)** — use the `session-start-hook` skill
+    to configure a `SessionStart` hook in `.claude/settings.json` that runs
+    `git fetch origin main && git checkout main && git reset --hard origin/main`
+    when the working tree is clean. This would permanently end the detached-HEAD
+    issue.
+  - (b) **`focusScore` included in JSON** — `SessionRecord.focusScore` is a
+    computed property (`var`), not a stored field, so it does not appear in the
+    JSON output (only stored properties are Codable). If consumers of the JSON
+    export want `focusScore` pre-computed, add a custom encoding step or a
+    wrapper type. Currently not a bug — just a known limitation of the Codable
+    approach.
+  - (c) **Session notes editing** — `SessionRecord.note` is a `var` but there
+    is no UI to set it after a session ends. Adding an inline text field in the
+    expanded history row would complete the note story.
+
+---
+
 ## Run 89 — 2026-06-11
 
 ### Shipped
