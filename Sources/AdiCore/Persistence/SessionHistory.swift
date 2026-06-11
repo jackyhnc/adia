@@ -46,6 +46,48 @@ internal func weeklyHeatmapData(
     }
 }
 
+// MARK: - CSV export
+
+/// Wraps `value` in double-quotes if it contains a comma, double-quote, CR, or LF.
+/// Embedded double-quotes are escaped by doubling them (RFC 4180).
+private func csvEscape(_ value: String) -> String {
+    let needsQuoting = value.contains(",") || value.contains("\"")
+        || value.contains("\n") || value.contains("\r")
+    guard needsQuoting else { return value }
+    return "\"\(value.replacingOccurrences(of: "\"", with: "\"\""))\""
+}
+
+/// Returns `records` formatted as RFC 4180 CSV with a header row.
+/// Columns: id, task, successCriteria, startTime, endTime, durationSeconds,
+/// completedSuccessfully, calloutCount, onTaskChecks, totalChecks, focusScore,
+/// reasoningAttempts, reasoningGranted, note.
+/// `focusScore` is empty when no frames were classified; `note` is empty when nil.
+/// Empty input returns only the header row (no trailing newline).
+internal func sessionRecordsToCSV(_ records: [SessionRecord]) -> String {
+    let iso = ISO8601DateFormatter()
+    let header = "id,task,successCriteria,startTime,endTime,durationSeconds,completedSuccessfully,calloutCount,onTaskChecks,totalChecks,focusScore,reasoningAttempts,reasoningGranted,note"
+    let rows = records.map { r -> String in
+        let cols: [String] = [
+            r.id.uuidString,
+            csvEscape(r.task),
+            csvEscape(r.successCriteria),
+            iso.string(from: r.startTime),
+            iso.string(from: r.endTime),
+            String(Int(r.duration)),
+            r.completedSuccessfully ? "true" : "false",
+            String(r.calloutCount),
+            String(r.onTaskChecks),
+            String(r.totalChecks),
+            r.focusScore.map { String(format: "%.3f", $0) } ?? "",
+            String(r.reasoningAttempts),
+            String(r.reasoningGranted),
+            r.note.map { csvEscape($0) } ?? ""
+        ]
+        return cols.joined(separator: ",")
+    }
+    return ([header] + rows).joined(separator: "\n")
+}
+
 // MARK: - SessionHistory
 
 public actor SessionHistory {
@@ -116,6 +158,12 @@ public actor SessionHistory {
     /// Deletes the history file.
     public func clear() {
         try? FileManager.default.removeItem(at: fileURL)
+    }
+
+    /// Returns all history records as RFC 4180 CSV (header row included).
+    /// Suitable for export via NSSavePanel or share sheet.
+    public func exportCSV() -> String {
+        sessionRecordsToCSV(_load())
     }
 
     /// Returns the last 7 calendar days of activity as a heatmap dataset.

@@ -1144,3 +1144,238 @@ struct VerificationRelativeTimeTests {
         #expect(verificationRelativeTime(future, now: anchor) == "just now")
     }
 }
+
+// MARK: - sessionRecordsToCSV tests
+
+@Suite("sessionRecordsToCSV")
+struct SessionRecordsToCSVTests {
+
+    private static let expectedHeader = "id,task,successCriteria,startTime,endTime,durationSeconds,completedSuccessfully,calloutCount,onTaskChecks,totalChecks,focusScore,reasoningAttempts,reasoningGranted,note"
+
+    private func record(
+        task: String = "Study",
+        successCriteria: String = "Done",
+        note: String? = nil,
+        completedSuccessfully: Bool = true,
+        calloutCount: Int = 0,
+        onTaskChecks: Int = 0,
+        totalChecks: Int = 0,
+        reasoningAttempts: Int = 0,
+        reasoningGranted: Int = 0
+    ) -> SessionRecord {
+        let start = Date(timeIntervalSinceNow: -3600)
+        return SessionRecord(
+            task: task,
+            successCriteria: successCriteria,
+            startTime: start,
+            endTime: Date(),
+            completedSuccessfully: completedSuccessfully,
+            calloutCount: calloutCount,
+            note: note,
+            onTaskChecks: onTaskChecks,
+            totalChecks: totalChecks,
+            reasoningAttempts: reasoningAttempts,
+            reasoningGranted: reasoningGranted
+        )
+    }
+
+    /// Split a data row by comma. Safe only when no field contains a comma.
+    private func cols(_ row: Substring) -> [String] {
+        String(row).components(separatedBy: ",")
+    }
+
+    @Test func emptyInputReturnsHeaderOnly() {
+        let csv = sessionRecordsToCSV([])
+        #expect(csv == Self.expectedHeader)
+    }
+
+    @Test func headerHasFourteenColumns() {
+        let csv = sessionRecordsToCSV([])
+        let headerCols = csv.components(separatedBy: ",")
+        #expect(headerCols.count == 14)
+    }
+
+    @Test func headerColumnNamesAreCorrect() {
+        let csv = sessionRecordsToCSV([])
+        let c = csv.components(separatedBy: ",")
+        #expect(c[0]  == "id")
+        #expect(c[1]  == "task")
+        #expect(c[2]  == "successCriteria")
+        #expect(c[3]  == "startTime")
+        #expect(c[4]  == "endTime")
+        #expect(c[5]  == "durationSeconds")
+        #expect(c[6]  == "completedSuccessfully")
+        #expect(c[7]  == "calloutCount")
+        #expect(c[8]  == "onTaskChecks")
+        #expect(c[9]  == "totalChecks")
+        #expect(c[10] == "focusScore")
+        #expect(c[11] == "reasoningAttempts")
+        #expect(c[12] == "reasoningGranted")
+        #expect(c[13] == "note")
+    }
+
+    @Test func singleRecordProducesHeaderPlusOneDataRow() {
+        let csv = sessionRecordsToCSV([record()])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(rows.count == 2)
+        #expect(String(rows[0]) == Self.expectedHeader)
+    }
+
+    @Test func threeRecordsProduceFourRows() {
+        let csv = sessionRecordsToCSV([record(), record(), record()])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(rows.count == 4)
+    }
+
+    @Test func completedSuccessfullyTrueEncodesAsTrue() {
+        let csv = sessionRecordsToCSV([record(completedSuccessfully: true)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(cols(rows[1])[6] == "true")
+    }
+
+    @Test func completedSuccessfullyFalseEncodesAsFalse() {
+        let csv = sessionRecordsToCSV([record(completedSuccessfully: false)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(cols(rows[1])[6] == "false")
+    }
+
+    @Test func nilFocusScoreEncodesAsEmptyString() {
+        // totalChecks == 0 → focusScore is nil
+        let csv = sessionRecordsToCSV([record(onTaskChecks: 0, totalChecks: 0)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(cols(rows[1])[10] == "")
+    }
+
+    @Test func focusScoreFormattedToThreeDecimals() {
+        // 3/4 = 0.75 → "0.750"
+        let csv = sessionRecordsToCSV([record(onTaskChecks: 3, totalChecks: 4)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(cols(rows[1])[10] == "0.750")
+    }
+
+    @Test func perfectFocusScoreIsOnePointZeroZeroZero() {
+        let csv = sessionRecordsToCSV([record(onTaskChecks: 10, totalChecks: 10)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(cols(rows[1])[10] == "1.000")
+    }
+
+    @Test func nilNoteEncodesAsEmptyString() {
+        let csv = sessionRecordsToCSV([record(note: nil)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(cols(rows[1])[13] == "")
+    }
+
+    @Test func plainNoteIsUnquoted() {
+        let csv = sessionRecordsToCSV([record(note: "solid session")])
+        #expect(csv.hasSuffix("solid session"))
+    }
+
+    @Test func taskWithCommaIsWrappedInDoubleQuotes() {
+        let csv = sessionRecordsToCSV([record(task: "Chapter 1, Chapter 2")])
+        #expect(csv.contains("\"Chapter 1, Chapter 2\""))
+    }
+
+    @Test func taskWithDoubleQuoteHasEscapedInternalQuote() {
+        let csv = sessionRecordsToCSV([record(task: "Write \"draft\"")])
+        // RFC 4180: quote → double-quote inside a quoted field
+        #expect(csv.contains("\"Write \"\"draft\"\"\""))
+    }
+
+    @Test func noteWithCommaIsWrappedInDoubleQuotes() {
+        let csv = sessionRecordsToCSV([record(note: "focused, mostly")])
+        #expect(csv.contains("\"focused, mostly\""))
+    }
+
+    @Test func successCriteriaWithCommaIsWrappedInDoubleQuotes() {
+        let csv = sessionRecordsToCSV([record(successCriteria: "Open essay, click Submit")])
+        #expect(csv.contains("\"Open essay, click Submit\""))
+    }
+
+    @Test func plainFieldsAreNotWrappedInQuotes() {
+        let csv = sessionRecordsToCSV([record(task: "Study", successCriteria: "Done", note: "good")])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        let c = cols(rows[1])
+        // task and successCriteria contain no special chars — must not be quoted
+        #expect(c[1] == "Study")
+        #expect(c[2] == "Done")
+    }
+
+    @Test func reasoningStatsAreInCorrectColumns() {
+        let csv = sessionRecordsToCSV([record(reasoningAttempts: 5, reasoningGranted: 2)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        let c = cols(rows[1])
+        #expect(c[11] == "5")
+        #expect(c[12] == "2")
+    }
+
+    @Test func calloutCountIsInCorrectColumn() {
+        let csv = sessionRecordsToCSV([record(calloutCount: 7)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(cols(rows[1])[7] == "7")
+    }
+
+    @Test func rowsAreInSameOrderAsInput() {
+        let a = record(task: "Alpha")
+        let b = record(task: "Beta")
+        let c = record(task: "Gamma")
+        let csv = sessionRecordsToCSV([a, b, c])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(String(rows[1]).contains("Alpha"))
+        #expect(String(rows[2]).contains("Beta"))
+        #expect(String(rows[3]).contains("Gamma"))
+    }
+}
+
+// MARK: - SessionHistory.exportCSV() integration
+
+@Suite("SessionHistory exportCSV")
+struct SessionHistoryExportCSVTests {
+
+    private func makeHistory() throws -> SessionHistory {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("AdiCSVTest-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        return SessionHistory(fileURL: dir.appendingPathComponent("history.json"))
+    }
+
+    @Test func emptyHistoryReturnsHeaderOnly() async throws {
+        let history = try makeHistory()
+        let csv = await history.exportCSV()
+        #expect(csv.hasPrefix("id,task,successCriteria"))
+        #expect(!csv.contains("\n"))  // no data rows → no newline
+    }
+
+    @Test func reflectsRecordedSessions() async throws {
+        let history = try makeHistory()
+        let r = SessionRecord(
+            task: "Write essay",
+            successCriteria: "Submitted to Canvas",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 2
+        )
+        await history.record(r)
+        let csv = await history.exportCSV()
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(rows.count == 2)
+        #expect(String(rows[1]).contains("Write essay"))
+        #expect(String(rows[1]).contains("true"))
+    }
+
+    @Test func afterClearReturnsHeaderOnly() async throws {
+        let history = try makeHistory()
+        await history.record(SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -1800),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0
+        ))
+        await history.clear()
+        let csv = await history.exportCSV()
+        #expect(!csv.contains("\n"))  // header only
+        #expect(csv.hasPrefix("id,"))
+    }
+}
