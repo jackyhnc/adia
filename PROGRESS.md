@@ -1,5 +1,64 @@
 # Adia — Build Progress
 
+## Run 92 — 2026-06-11
+
+### Shipped
+- **fix: correct JSON export test assertions for iso8601 dates and empty arrays**
+  CI was failing (run 27371110364) with 5 test failures all from the JSON export
+  tests added in Run 90. Two root causes:
+
+  (a) **Empty array format mismatch** — `emptyInputReturnsEmptyArray`,
+      `emptyHistoryReturnsEmptyArray`, `afterClearReturnsEmptyArray` all used
+      `json.trimmingCharacters(in: .whitespaces) == "[]"` to assert the output.
+      `JSONEncoder` with `.prettyPrinted` encodes an empty array as `"[\n\n]"` or
+      `"[ ]"` (not `"[]"`). `.trimmingCharacters(in: .whitespaces)` only removes
+      leading/trailing whitespace; interior whitespace is untouched, so the
+      comparison always fails. Fixed by stripping all whitespace:
+      `json.filter { !$0.isWhitespace } == "[]"` — this collapses any
+      pretty-printed empty-array variant to `"[]"` for the structural check.
+
+  (b) **Date decoding strategy mismatch** — `singleRecordProducesValidJSON` and
+      `reflectsRecordedSessions` used a plain `JSONDecoder()` to round-trip JSON
+      produced by `sessionRecordsToJSON`, which sets
+      `.dateEncodingStrategy = .iso8601`. The plain decoder defaults to
+      `.deferredToDate` (expects a `Double` epoch), so it threw
+      `typeMismatch(Swift.Double, ...)` on `startTime`/`endTime`. Fixed by adding
+      `decoder.dateDecodingStrategy = .iso8601` to match the encoder — consistent
+      with `multipleRecordsRoundTrip` and `computedFieldsDoNotBreakRoundTrip`
+      which already set this correctly.
+
+  Also strengthened `nilNoteIsAbsentFromJSON` which was using `try?` and
+  accidentally passing even when decoding failed (`nil?.first?.note == nil` is
+  vacuously true). Now uses `try #require` + explicit `.iso8601` strategy.
+
+### Branch hygiene
+- Found `HEAD` detached from `refs/heads/main` again on session start (12th+ time).
+  Resolved with `git fetch origin main && git checkout main && git reset --hard
+  origin/main`.
+
+### Blocked
+- None.
+
+### Next agent should pick up
+- All 14 GOAL.md items remain complete. CI should be green after this fix.
+- Possible next improvements:
+  - (a) **Branch hygiene (13th time)** — use the `session-start-hook` skill to
+    configure a `SessionStart` hook in `.claude/settings.json` that runs
+    `git fetch origin main && git checkout main && git reset --hard origin/main`
+    when the working tree is clean. This would permanently end the detached-HEAD
+    issue for all future runs.
+  - (b) **`actions/checkout@v4` Node.js 20 deprecation** — CI logs show a warning
+    that `actions/checkout@v4` is using Node.js 20, which will be forcibly removed
+    from GitHub Actions runners on Sep 16, 2026 (with forced Node.js 24 default
+    starting Jun 16, 2026). Update `.github/workflows/ci.yml` to `actions/checkout@v5`
+    or add `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true` to the workflow env to suppress
+    the warning now.
+  - (c) **Keyboard shortcut display** — already done (line 79 of SettingsView.swift
+    shows `GlobalHotkeyManager.shortcutLabel` in a "Keyboard Shortcuts" section).
+    Previous run notes suggesting it was missing were stale.
+
+---
+
 ## Run 91 — 2026-06-11
 
 ### Shipped
