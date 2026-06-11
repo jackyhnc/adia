@@ -1404,14 +1404,17 @@ struct SessionRecordsToJSONTests {
 
     @Test func emptyInputReturnsEmptyArray() {
         let json = sessionRecordsToJSON([])
-        #expect(json.trimmingCharacters(in: .whitespaces) == "[]")
+        // .prettyPrinted may emit "[ ]" or "[\n\n]" — strip all whitespace to compare structure
+        #expect(json.filter { !$0.isWhitespace } == "[]")
     }
 
     @Test func singleRecordProducesValidJSON() throws {
         let r = record(task: "Write essay", successCriteria: "Submitted")
         let json = sessionRecordsToJSON([r])
         let data = try #require(json.data(using: .utf8))
-        let decoded = try JSONDecoder().decode([SessionRecord].self, from: data)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decoded = try decoder.decode([SessionRecord].self, from: data)
         #expect(decoded.count == 1)
         #expect(decoded[0].task == "Write essay")
         #expect(decoded[0].successCriteria == "Submitted")
@@ -1456,16 +1459,16 @@ struct SessionRecordsToJSONTests {
         #expect(json.contains(r.id.uuidString))
     }
 
-    @Test func nilNoteIsAbsentFromJSON() {
+    @Test func nilNoteIsAbsentFromJSON() throws {
         let r = record()
         #expect(r.note == nil)
         // SessionRecord.encode uses encodeIfPresent for note — nil omits the key
         let json = sessionRecordsToJSON([r])
-        // note key should be absent when nil (encodeIfPresent)
-        // The JSON may or may not include "note" depending on encoder — just verify it round-trips
-        let data = json.data(using: .utf8)!
-        let decoded = try? JSONDecoder().decode([SessionRecord].self, from: data)
-        #expect(decoded?.first?.note == nil)
+        let data = try #require(json.data(using: .utf8))
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decoded = try decoder.decode([SessionRecord].self, from: data)
+        #expect(decoded.first?.note == nil)
     }
 
     // focusScore and durationSeconds are computed — verify they appear in the JSON output.
@@ -1562,7 +1565,8 @@ struct SessionHistoryExportJSONTests {
     @Test func emptyHistoryReturnsEmptyArray() async throws {
         let history = try makeHistory()
         let json = await history.exportJSON()
-        #expect(json.trimmingCharacters(in: .whitespaces) == "[]")
+        // .prettyPrinted may emit "[ ]" or "[\n\n]" — strip all whitespace to compare structure
+        #expect(json.filter { !$0.isWhitespace } == "[]")
     }
 
     @Test func reflectsRecordedSessions() async throws {
@@ -1581,7 +1585,9 @@ struct SessionHistoryExportJSONTests {
         #expect(json.contains("Read chapter"))
         #expect(json.contains("Notes taken"))
         let data = try #require(json.data(using: .utf8))
-        let decoded = try JSONDecoder().decode([SessionRecord].self, from: data)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decoded = try decoder.decode([SessionRecord].self, from: data)
         #expect(decoded.count == 1)
         #expect(decoded[0].id == r.id)
     }
@@ -1599,6 +1605,7 @@ struct SessionHistoryExportJSONTests {
         ))
         await history.clear()
         let json = await history.exportJSON()
-        #expect(json.trimmingCharacters(in: .whitespaces) == "[]")
+        // .prettyPrinted may emit "[ ]" or "[\n\n]" — strip all whitespace to compare structure
+        #expect(json.filter { !$0.isWhitespace } == "[]")
     }
 }
