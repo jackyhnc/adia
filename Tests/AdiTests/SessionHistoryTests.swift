@@ -1467,6 +1467,84 @@ struct SessionRecordsToJSONTests {
         let decoded = try? JSONDecoder().decode([SessionRecord].self, from: data)
         #expect(decoded?.first?.note == nil)
     }
+
+    // focusScore and durationSeconds are computed — verify they appear in the JSON output.
+
+    @Test func focusScoreKeyIsPresentInJSONWhenChecksExist() throws {
+        let now = Date()
+        let r = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: now.addingTimeInterval(-3600),
+            endTime: now,
+            completedSuccessfully: true,
+            calloutCount: 0,
+            onTaskChecks: 4,
+            totalChecks: 5
+        )
+        let json = sessionRecordsToJSON([r])
+        let data = try #require(json.data(using: .utf8))
+        let obj = try JSONSerialization.jsonObject(with: data) as! [[String: Any]]
+        #expect(obj.first?["focusScore"] != nil)
+        let score = try #require(obj.first?["focusScore"] as? Double)
+        #expect(abs(score - 0.8) < 0.001)
+    }
+
+    @Test func focusScoreKeyIsAbsentFromJSONWhenNoChecks() throws {
+        // totalChecks == 0 → focusScore is nil → encodeIfPresent omits the key
+        let r = record()
+        #expect(r.totalChecks == 0)
+        let json = sessionRecordsToJSON([r])
+        let data = try #require(json.data(using: .utf8))
+        let obj = try JSONSerialization.jsonObject(with: data) as! [[String: Any]]
+        #expect(obj.first?["focusScore"] == nil)
+    }
+
+    @Test func durationSecondsKeyIsPresentInJSON() throws {
+        let now = Date()
+        let start = now.addingTimeInterval(-7200)   // 2 hours ago
+        let r = SessionRecord(
+            task: "Deep work",
+            successCriteria: "Done",
+            startTime: start,
+            endTime: now,
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+        let json = sessionRecordsToJSON([r])
+        let data = try #require(json.data(using: .utf8))
+        let obj = try JSONSerialization.jsonObject(with: data) as! [[String: Any]]
+        let seconds = try #require(obj.first?["durationSeconds"] as? Int)
+        #expect(seconds == 7200)
+    }
+
+    @Test func computedFieldsDoNotBreakRoundTrip() throws {
+        // Encoding now adds focusScore + durationSeconds; decoding ignores them
+        // (derived from stored fields). Verify the decoded record is identical.
+        let now = Date()
+        let r = SessionRecord(
+            task: "Essay",
+            successCriteria: "Submitted",
+            startTime: now.addingTimeInterval(-1800),
+            endTime: now,
+            completedSuccessfully: true,
+            calloutCount: 2,
+            onTaskChecks: 3,
+            totalChecks: 4
+        )
+        let json = sessionRecordsToJSON([r])
+        let data = try #require(json.data(using: .utf8))
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decoded = try decoder.decode([SessionRecord].self, from: data)
+        let d = try #require(decoded.first)
+        #expect(d.id == r.id)
+        #expect(d.task == r.task)
+        #expect(d.onTaskChecks == r.onTaskChecks)
+        #expect(d.totalChecks == r.totalChecks)
+        // focusScore is re-derived from onTaskChecks/totalChecks after decode
+        #expect(abs((d.focusScore ?? 0) - 0.75) < 0.001)
+    }
 }
 
 // MARK: - SessionHistory.exportJSON() integration

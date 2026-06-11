@@ -71,6 +71,9 @@ extension SessionRecord: Codable {
         case completedSuccessfully, calloutCount, note
         case onTaskChecks, totalChecks
         case reasoningAttempts, reasoningGranted
+        // Computed convenience fields — encoded for external consumers, never decoded
+        // (they are derived from stored fields above on decode).
+        case focusScore, durationSeconds
     }
 
     public init(from decoder: Decoder) throws {
@@ -103,5 +106,9 @@ extension SessionRecord: Codable {
         try c.encode(totalChecks,           forKey: .totalChecks)
         try c.encode(reasoningAttempts,     forKey: .reasoningAttempts)
         try c.encode(reasoningGranted,      forKey: .reasoningGranted)
+        // Convenience computed fields for external consumers (e.g. JSON export tools).
+        // Not decoded — derived from onTaskChecks/totalChecks and startTime/endTime above.
+        try c.encodeIfPresent(focusScore,   forKey: .focusScore)
+        try c.encode(Int(duration),         forKey: .durationSeconds)
     }
 }
