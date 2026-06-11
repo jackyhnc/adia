@@ -1,5 +1,59 @@
 # Adia — Build Progress
 
+## Run 91 — 2026-06-11
+
+### Shipped
+- **feat: include `focusScore` and `durationSeconds` in `SessionRecord` JSON encoding**
+  Closes Run 90 suggestion (b). `SessionRecord.focusScore` (computed from `onTaskChecks /
+  totalChecks`) and `duration` (computed from `endTime - startTime`) were absent from JSON
+  export even though the CSV export already included both. External consumers of the JSON
+  had to re-derive these manually.
+  - Added `.focusScore` and `.durationSeconds` to `CodingKeys`.
+  - `encode(to:)` now writes `try c.encodeIfPresent(focusScore, forKey: .focusScore)` and
+    `try c.encode(Int(duration), forKey: .durationSeconds)` — matching the CSV's 14-column
+    layout: `focusScore` is omitted when nil (`totalChecks == 0`), `durationSeconds` is an
+    integer count of seconds.
+  - `init(from:)` is **unchanged** — both remain derived from their underlying stored fields
+    (`onTaskChecks`/`totalChecks`, `startTime`/`endTime`) on decode. The decoder silently
+    ignores the extra keys, keeping backward compatibility with records that predate this
+    change.
+  - **4 new tests** in `SessionRecordsToJSONTests`:
+    - `focusScoreKeyIsPresentInJSONWhenChecksExist` — asserts the key exists and value ≈ 0.8
+      for a record with 4/5 on-task checks.
+    - `focusScoreKeyIsAbsentFromJSONWhenNoChecks` — asserts the key is absent when
+      `totalChecks == 0` (nil `focusScore` → `encodeIfPresent` omits it).
+    - `durationSecondsKeyIsPresentInJSON` — asserts `durationSeconds == 7200` for a 2-hour
+      session.
+    - `computedFieldsDoNotBreakRoundTrip` — encodes a record, decodes it, and verifies the
+      decoded `focusScore` (0.75) is re-derived from the stored checks, not from the
+      now-present JSON key.
+
+### Branch hygiene
+- Found `HEAD` detached from `refs/heads/main` again on session start (11th+ time).
+  Resolved with `git fetch origin main && git checkout main && git reset --hard
+  origin/main`.
+
+### Blocked
+- None.
+
+### Next agent should pick up
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) **Branch hygiene (12th time)** — use the `session-start-hook` skill to configure a
+    `SessionStart` hook in `.claude/settings.json` that runs `git fetch origin main &&
+    git checkout main && git reset --hard origin/main` when the working tree is clean.
+    This would permanently end the detached-HEAD issue for all future runs.
+  - (b) **Session notes UI is fully wired** — `SessionRecord.note`, `SessionHistory.
+    updateNote`, and the inline `noteEditorField` in `SettingsView`'s expanded history row
+    are all implemented. Run 90 suggestion (c) was already done; nothing left there.
+  - (c) **Keyboard shortcut display in Settings** — `GlobalHotkeyManager.shortcutLabel`
+    (`"⌃⌥A"`) is defined but never shown in `SettingsView`. A single label next to
+    "Global shortcut" in the General tab would complete the discoverability story.
+  - (d) **`durationSeconds` in JSON is now `Int`** — matches the CSV `durationSeconds`
+    column (also integer). If sub-second precision is ever wanted, it can be promoted to
+    `Double`; for now integer seconds match the CSV and are simpler for consumers.
+
+---
+
 ## Run 90 — 2026-06-11
 
 ### Shipped
