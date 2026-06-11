@@ -691,11 +691,17 @@ private struct HistoryTab: View {
                                 .opacity(selectedIDs.isEmpty ? 0 : 1)
                                 .disabled(selectedIDs.isEmpty)
                             Spacer()
-                            Button("Export \(selectedIDs.count)…") {
-                                let selected = records.filter { selectedIDs.contains($0.id) }
-                                presentExportPanel(records: selected, filename: "adia-selected-sessions.csv")
+                            Menu("Export \(selectedIDs.count)…") {
+                                Button("CSV…") {
+                                    let selected = records.filter { selectedIDs.contains($0.id) }
+                                    presentExportPanel(records: selected, filename: "adia-selected-sessions.csv")
+                                }
+                                Button("JSON…") {
+                                    let selected = records.filter { selectedIDs.contains($0.id) }
+                                    presentExportPanelJSON(records: selected, filename: "adia-selected-sessions.json")
+                                }
                             }
-                            .buttonStyle(.borderless)
+                            .menuStyle(.borderlessButton)
                             .font(.callout)
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 8)
@@ -738,10 +744,15 @@ private struct HistoryTab: View {
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 8)
-                            Button("Export CSV…") {
-                                presentExportPanel(records: records, filename: "adia-history.csv")
+                            Menu("Export…") {
+                                Button("CSV…") {
+                                    presentExportPanel(records: records, filename: "adia-history.csv")
+                                }
+                                Button("JSON…") {
+                                    presentExportPanelJSON(records: records, filename: "adia-history.json")
+                                }
                             }
-                            .buttonStyle(.borderless)
+                            .menuStyle(.borderlessButton)
                             .font(.callout)
                             .foregroundStyle(.secondary)
                             .padding(.trailing, 12)
@@ -898,6 +909,17 @@ private struct HistoryTab: View {
         panel.begin { response in
             guard response == .OK, let url = panel.url else { return }
             try? csv.write(to: url, atomically: true, encoding: .utf8)
+        }
+    }
+
+    private func presentExportPanelJSON(records: [SessionRecord], filename: String) {
+        let json = sessionRecordsToJSON(records)
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.json]
+        panel.nameFieldStringValue = filename
+        panel.begin { response in
+            guard response == .OK, let url = panel.url else { return }
+            try? json.write(to: url, atomically: true, encoding: .utf8)
         }
     }
 }

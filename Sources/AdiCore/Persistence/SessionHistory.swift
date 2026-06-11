@@ -88,6 +88,19 @@ internal func sessionRecordsToCSV(_ records: [SessionRecord]) -> String {
     return ([header] + rows).joined(separator: "\n")
 }
 
+// MARK: - JSON export
+
+/// Returns `records` as a pretty-printed UTF-8 JSON string.
+/// Dates are ISO 8601 (fractional seconds). Empty input returns `"[]"`.
+internal func sessionRecordsToJSON(_ records: [SessionRecord]) -> String {
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+    encoder.dateEncodingStrategy = .iso8601
+    guard let data = try? encoder.encode(records),
+          let text = String(data: data, encoding: .utf8) else { return "[]" }
+    return text
+}
+
 // MARK: - SessionHistory
 
 public actor SessionHistory {
@@ -164,6 +177,12 @@ public actor SessionHistory {
     /// Suitable for export via NSSavePanel or share sheet.
     public func exportCSV() -> String {
         sessionRecordsToCSV(_load())
+    }
+
+    /// Returns all history records as a pretty-printed JSON string.
+    /// Suitable for export via NSSavePanel or share sheet.
+    public func exportJSON() -> String {
+        sessionRecordsToJSON(_load())
     }
 
     /// Returns the last 7 calendar days of activity as a heatmap dataset.

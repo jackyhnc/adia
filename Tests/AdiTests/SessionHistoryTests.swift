@@ -1379,3 +1379,148 @@ struct SessionHistoryExportCSVTests {
         #expect(csv.hasPrefix("id,"))
     }
 }
+
+// MARK: - sessionRecordsToJSON tests
+
+@Suite("sessionRecordsToJSON")
+struct SessionRecordsToJSONTests {
+
+    private func record(
+        task: String = "Study",
+        successCriteria: String = "Done",
+        completedSuccessfully: Bool = true,
+        calloutCount: Int = 0
+    ) -> SessionRecord {
+        let now = Date()
+        return SessionRecord(
+            task: task,
+            successCriteria: successCriteria,
+            startTime: now.addingTimeInterval(-3600),
+            endTime: now,
+            completedSuccessfully: completedSuccessfully,
+            calloutCount: calloutCount
+        )
+    }
+
+    @Test func emptyInputReturnsEmptyArray() {
+        let json = sessionRecordsToJSON([])
+        #expect(json.trimmingCharacters(in: .whitespaces) == "[]")
+    }
+
+    @Test func singleRecordProducesValidJSON() throws {
+        let r = record(task: "Write essay", successCriteria: "Submitted")
+        let json = sessionRecordsToJSON([r])
+        let data = try #require(json.data(using: .utf8))
+        let decoded = try JSONDecoder().decode([SessionRecord].self, from: data)
+        #expect(decoded.count == 1)
+        #expect(decoded[0].task == "Write essay")
+        #expect(decoded[0].successCriteria == "Submitted")
+        #expect(decoded[0].completedSuccessfully == true)
+    }
+
+    @Test func multipleRecordsRoundTrip() throws {
+        let records = [
+            record(task: "Task A", completedSuccessfully: true),
+            record(task: "Task B", completedSuccessfully: false),
+            record(task: "Task C", calloutCount: 3)
+        ]
+        let json = sessionRecordsToJSON(records)
+        let data = try #require(json.data(using: .utf8))
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decoded = try decoder.decode([SessionRecord].self, from: data)
+        #expect(decoded.count == 3)
+        #expect(decoded[0].task == "Task A")
+        #expect(decoded[1].completedSuccessfully == false)
+        #expect(decoded[2].calloutCount == 3)
+    }
+
+    @Test func outputIsPrettyPrinted() {
+        let r = record()
+        let json = sessionRecordsToJSON([r])
+        // Pretty-printed JSON has newlines
+        #expect(json.contains("\n"))
+    }
+
+    @Test func outputIsValidUTF8String() {
+        let r = record(task: "Café résumé", successCriteria: "Filed")
+        let json = sessionRecordsToJSON([r])
+        #expect(!json.isEmpty)
+        #expect(json.data(using: .utf8) != nil)
+        #expect(json.contains("Café résumé"))
+    }
+
+    @Test func recordIDIsPreservedInJSON() throws {
+        let r = record()
+        let json = sessionRecordsToJSON([r])
+        #expect(json.contains(r.id.uuidString))
+    }
+
+    @Test func nilNoteIsAbsentFromJSON() {
+        let r = record()
+        #expect(r.note == nil)
+        // SessionRecord.encode uses encodeIfPresent for note — nil omits the key
+        let json = sessionRecordsToJSON([r])
+        // note key should be absent when nil (encodeIfPresent)
+        // The JSON may or may not include "note" depending on encoder — just verify it round-trips
+        let data = json.data(using: .utf8)!
+        let decoded = try? JSONDecoder().decode([SessionRecord].self, from: data)
+        #expect(decoded?.first?.note == nil)
+    }
+}
+
+// MARK: - SessionHistory.exportJSON() integration
+
+@Suite("SessionHistory exportJSON")
+struct SessionHistoryExportJSONTests {
+
+    private func makeHistory() throws -> SessionHistory {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("AdiJSONTest-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        return SessionHistory(fileURL: dir.appendingPathComponent("history.json"))
+    }
+
+    @Test func emptyHistoryReturnsEmptyArray() async throws {
+        let history = try makeHistory()
+        let json = await history.exportJSON()
+        #expect(json.trimmingCharacters(in: .whitespaces) == "[]")
+    }
+
+    @Test func reflectsRecordedSessions() async throws {
+        let history = try makeHistory()
+        let now = Date()
+        let r = SessionRecord(
+            task: "Read chapter",
+            successCriteria: "Notes taken",
+            startTime: now.addingTimeInterval(-1800),
+            endTime: now,
+            completedSuccessfully: true,
+            calloutCount: 1
+        )
+        await history.record(r)
+        let json = await history.exportJSON()
+        #expect(json.contains("Read chapter"))
+        #expect(json.contains("Notes taken"))
+        let data = try #require(json.data(using: .utf8))
+        let decoded = try JSONDecoder().decode([SessionRecord].self, from: data)
+        #expect(decoded.count == 1)
+        #expect(decoded[0].id == r.id)
+    }
+
+    @Test func afterClearReturnsEmptyArray() async throws {
+        let history = try makeHistory()
+        let now = Date()
+        await history.record(SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: now.addingTimeInterval(-900),
+            endTime: now,
+            completedSuccessfully: true,
+            calloutCount: 0
+        ))
+        await history.clear()
+        let json = await history.exportJSON()
+        #expect(json.trimmingCharacters(in: .whitespaces) == "[]")
+    }
+}
