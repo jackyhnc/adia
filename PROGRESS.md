@@ -1,5 +1,49 @@
 # Adia — Build Progress
 
+## Run 89 — 2026-06-11
+
+### Shipped
+- **feat: show today's session count + focused time in collapsed notch idle state**
+  `CollapsedView` previously showed only the streak badge (`🔥 Nd`) when idle, leaving
+  the notch visually empty on days where the user had completed sessions but their streak
+  was 1 (or zero). This run closes Run 88's suggestion (b).
+  - Added `@State private var idleTodayCount: Int = 0` and `idleTodayMinutes: Int = 0`
+    to `CollapsedView`. The `.task(id: session.session?.id)` now batch-fetches all three
+    idle stats from a single `await SessionHistory.shared.stats()` call (was already
+    fetching `streak`; now captures `todayCount` + `todayMinutes` in the same call with
+    no extra overhead).
+  - New `collapsedIdleStats() -> String` private helper formats the stats compactly:
+    `"2 · 45m"`, `"2 · 1h 30m"`, `"2 · 2h"`, or just `"2"` when no time logged yet.
+    Same h/m arithmetic pattern as `collapsedElapsed(from:to:)`.
+  - Idle display condition broadened from `idleStreak > 1` to
+    `idleTodayCount > 0 || idleStreak > 1` — now shows an `HStack` with both labels
+    when available: `"2 · 45m  🔥 3d"`. Stats text is dim (white 50%) so it doesn't
+    compete with the orange streak badge. Either label omitted when its condition is
+    not met (count=0, streak<=1).
+
+### Branch hygiene
+- Found `HEAD` detached from `refs/heads/main` again on session start (same recurring
+  issue logged in Runs 81–88, now 9th+ time). `git fetch origin main && git checkout
+  main && git reset --hard origin/main` resolved it cleanly.
+
+### Blocked
+- None.
+
+### Next agent should pick up
+- All 14 GOAL.md items remain complete. Possible next improvements:
+  - (a) **Branch hygiene (10th time)** — use the `session-start-hook` skill to configure
+    a `SessionStart` hook in `.claude/settings.json` that runs
+    `git fetch origin main && git checkout main && git reset --hard origin/main` when
+    working tree is clean. This would permanently end the detached-HEAD issue.
+  - (b) **JSON export alongside CSV** — `SessionHistory.exportJSON()` using the existing
+    `Codable` conformance on `SessionRecord`. Surface as alternate format in the export
+    button menu, or as a separate "Export JSON…" button in SettingsView's History tab.
+  - (c) **Keyboard shortcut display in Settings** — `GlobalHotkeyManager.shortcutLabel`
+    (`"⌃⌥A"`) is defined but never shown in `SettingsView`. A single label next to
+    "Global shortcut" would complete the discoverability story.
+
+---
+
 ## Run 88 — 2026-06-11
 
 ### Shipped
