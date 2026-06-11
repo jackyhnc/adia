@@ -1,5 +1,62 @@
 # Adia — Build Progress
 
+## Run 87 — 2026-06-11
+
+### Shipped
+- **feat: CSV export for session history — `sessionRecordsToCSV()` + `SessionHistory.exportCSV()`**
+  Added full RFC 4180-compliant CSV export of focus session data to `SessionHistory.swift`:
+  - `private func csvEscape(_ value: String) -> String` — file-private per-field
+    quoting helper: wraps fields containing `,`, `"`, `\n`, or `\r` in double-quotes,
+    doubles any embedded double-quotes per RFC 4180 §2.7.
+  - `internal func sessionRecordsToCSV(_ records: [SessionRecord]) -> String` — pure
+    free function (same pattern as `weeklyHeatmapData`, `idleStatsSummary`, etc.) that
+    produces a 14-column CSV: `id, task, successCriteria, startTime, endTime,
+    durationSeconds, completedSuccessfully, calloutCount, onTaskChecks, totalChecks,
+    focusScore, reasoningAttempts, reasoningGranted, note`. ISO 8601 dates;
+    `focusScore` formatted as `"0.750"` (3 decimals) or `""` when nil;
+    `note` is `""` when nil.
+  - `public func exportCSV() -> String` — actor method on `SessionHistory` that
+    delegates to `sessionRecordsToCSV(_load())`. Suitable for surfacing via
+    `NSSavePanel` or share sheet.
+  - **22 new tests** in `SessionHistoryTests.swift`:
+    - `SessionRecordsToCSVTests` (19 tests): `emptyInputReturnsHeaderOnly`,
+      `headerHasFourteenColumns`, `headerColumnNamesAreCorrect`,
+      `singleRecordProducesHeaderPlusOneDataRow`, `threeRecordsProduceFourRows`,
+      `completedSuccessfullyTrueEncodesAsTrue`, `completedSuccessfullyFalseEncodesAsFalse`,
+      `nilFocusScoreEncodesAsEmptyString`, `focusScoreFormattedToThreeDecimals`,
+      `perfectFocusScoreIsOnePointZeroZeroZero`, `nilNoteEncodesAsEmptyString`,
+      `plainNoteIsUnquoted`, `taskWithCommaIsWrappedInDoubleQuotes`,
+      `taskWithDoubleQuoteHasEscapedInternalQuote`, `noteWithCommaIsWrappedInDoubleQuotes`,
+      `successCriteriaWithCommaIsWrappedInDoubleQuotes`, `plainFieldsAreNotWrappedInQuotes`,
+      `reasoningStatsAreInCorrectColumns`, `calloutCountIsInCorrectColumn`,
+      `rowsAreInSameOrderAsInput`.
+    - `SessionHistoryExportCSVTests` (3 actor integration tests): `emptyHistoryReturnsHeaderOnly`,
+      `reflectsRecordedSessions`, `afterClearReturnsHeaderOnly`.
+
+### Branch hygiene
+- Started with HEAD detached (same recurring issue from Runs 81-86). Resolved with
+  `git fetch origin main && git checkout main && git reset --hard origin/main`
+  (clean working tree, no work lost).
+
+### Blocked
+- None.
+
+### Next agent should pick up
+- All 14 GOAL.md items are complete. Possible next improvements:
+  - (a) **Branch hygiene (8th+ time)** — `SessionStart` hook in
+    `.claude/settings.json` running `git fetch && checkout && reset --hard`
+    when working tree is clean would end this permanently. Use the
+    `session-start-hook` skill (`/session-start-hook`) to configure it.
+  - (b) **Expose CSV export in the UI** — add an "Export CSV…" button to
+    `SettingsView`'s session history tab that calls `SessionHistory.shared.exportCSV()`
+    and presents an `NSSavePanel`. The backend (`exportCSV()`) is fully shipped and
+    tested; only the UI trigger is missing.
+  - (c) **Keyboard shortcut display** — `GlobalHotkeyManager.shortcutLabel` (`"⌃⌥A"`)
+    is defined but not shown in `SettingsView`. A single line next to "Global shortcut"
+    would complete the discoverability story.
+
+---
+
 ## Run 86 — 2026-06-10
 
 ### Shipped
