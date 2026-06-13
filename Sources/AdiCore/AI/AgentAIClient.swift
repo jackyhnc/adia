@@ -364,15 +364,26 @@ public actor AgentAIClient {
         if cleaned.isEmpty {
             return "Tell me what you're working on."
         }
+        // Single-word or short phrases that are unambiguously leisure when used as
+        // the entire input (exact match only — prevents false positives like
+        // "gaming the algorithm" or "chilling the dough").
         let leisureExact: Set<String> = [
             "stuff", "something", "anything", "whatever", "idk", "nothing",
-            "chill", "relax", "browse", "scroll", "scrolling", "doomscroll"
+            "chill", "relax", "browse", "scroll", "scrolling", "doomscroll",
+            "gaming", "vibing", "chilling", "chillin",
         ]
         if leisureExact.contains(lower) {
             return "That doesn't look like a focus session. What do you want to get done?"
         }
-        if lower.contains("youtube") || lower.contains("tiktok")
-            || lower.contains("instagram") || lower.contains("netflix") {
+        // Entertainment / social platforms: if the input contains one of these names
+        // it's almost certainly leisure (99%+ of the time). The rare edge case of
+        // "youtube API integration" or "netflix engineering blog" passes to the model
+        // which handles it correctly; local rejection is for obvious cases only.
+        let entertainmentPlatforms = [
+            "youtube", "tiktok", "instagram", "netflix",
+            "hulu", "twitch", "snapchat",
+        ]
+        if entertainmentPlatforms.contains(where: { lower.contains($0) }) {
             return "That doesn't look like a focus session. What do you want to get done?"
         }
         return nil

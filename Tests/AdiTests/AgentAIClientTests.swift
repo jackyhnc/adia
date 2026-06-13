@@ -112,6 +112,46 @@ struct AgentAIClientParsingTests {
         #expect(AgentAIClient.localGoalRejectionReason("scroll tiktok") != nil)
     }
 
+    // MARK: - Local rejection — gaming / streaming additions
+
+    @Test func localRejectionRejectsGaming() {
+        // Exact-match: standalone "gaming" as a session goal is pure leisure.
+        #expect(AgentAIClient.localGoalRejectionReason("gaming") != nil)
+    }
+
+    @Test func localRejectionRejectsVibing() {
+        #expect(AgentAIClient.localGoalRejectionReason("vibing") != nil)
+    }
+
+    @Test func localRejectionRejectsChilling() {
+        #expect(AgentAIClient.localGoalRejectionReason("chilling") != nil)
+    }
+
+    @Test func localRejectionRejectsHulu() {
+        #expect(AgentAIClient.localGoalRejectionReason("watch hulu") != nil)
+    }
+
+    @Test func localRejectionRejectsTwitch() {
+        #expect(AgentAIClient.localGoalRejectionReason("browse twitch") != nil)
+    }
+
+    @Test func localRejectionRejectsSnapchat() {
+        #expect(AgentAIClient.localGoalRejectionReason("snapchat") != nil)
+    }
+
+    // gaming should NOT block legitimate tasks where "gaming" appears as a word
+    // in a different context — but the exact-match guard only fires when the ENTIRE
+    // input is "gaming", so "gaming the algorithm" must still pass through to the model.
+    @Test func localRejectionAcceptsGamingContext() {
+        // "gaming the algorithm" is a strategy phrase, not a leisure request.
+        #expect(AgentAIClient.localGoalRejectionReason("gaming the algorithm") == nil)
+    }
+
+    @Test func localRejectionAcceptsGameDevelopment() {
+        // "game development" is a legitimate software project.
+        #expect(AgentAIClient.localGoalRejectionReason("finish game development feature") == nil)
+    }
+
     // MARK: - Goal-response parsing (model round-trip → GoalParse)
     //
     // `parseGoal(_:)` is gated on a live `ANTHROPIC_API_KEY` (see

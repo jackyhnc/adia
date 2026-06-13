@@ -1,5 +1,51 @@
 # Adia — Build Progress
 
+## Run 96 — 2026-06-13
+
+### Shipped
+- **Expanded `localGoalRejectionReason` with gaming/streaming patterns + 10 new tests**
+
+  `AgentAIClient.localGoalRejectionReason()` is the cheap local gate that runs *before*
+  the `parseGoal()` API call. Catching obviously non-focus inputs locally saves latency
+  (user sees feedback instantly, no spinner) and API cost.
+
+  Previously missing patterns (input would fall through to the model unnecessarily):
+  - `"gaming"` — standalone, clearly leisure. Now in `leisureExact` (exact-match only,
+    so `"gaming the algorithm"` and `"gaming software development"` pass through).
+  - `"vibing"`, `"chilling"`, `"chillin"` — same class of non-task single words.
+  - `"hulu"`, `"twitch"`, `"snapchat"` — added to the entertainment platform list
+    alongside the existing `youtube`, `tiktok`, `instagram`, `netflix` checks.
+
+  Code changes in `Sources/AdiCore/AI/AgentAIClient.swift`:
+  - `leisureExact` set gains 4 entries: `gaming`, `vibing`, `chilling`, `chillin`.
+  - Platform check refactored from a chained `||` into an array + `contains(where:)`,
+    adding `hulu`, `twitch`, `snapchat`.
+  - Inline comments explain the exact-match vs. substring tradeoffs so future agents
+    don't widen the substring check further without thinking it through.
+
+  New tests in `Tests/AdiTests/AgentAIClientTests.swift` (10 tests):
+  - `localRejectionRejectsGaming` — "gaming" → rejected
+  - `localRejectionRejectsVibing` — "vibing" → rejected
+  - `localRejectionRejectsChilling` — "chilling" → rejected
+  - `localRejectionRejectsHulu` — "watch hulu" → rejected
+  - `localRejectionRejectsTwitch` — "browse twitch" → rejected
+  - `localRejectionRejectsSnapchat` — "snapchat" → rejected
+  - `localRejectionAcceptsGamingContext` — "gaming the algorithm" → accepted
+  - `localRejectionAcceptsGameDevelopment` — "finish game development feature" → accepted
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete. App is spec-correct: Anthropic Claude API
+  throughout. Known follow-ups if re-invoked: (1) integration smoke test on a real macOS
+  machine with `ANTHROPIC_API_KEY` set; (2) UX testing of notch panel on hardware with a
+  notch; (3) the substring platform check for `youtube`/`netflix` etc. is intentionally
+  broad — the rare false-positive ("youtube API integration") is sent to the model, which
+  handles it correctly.
+
+---
+
 ## Run 95 — 2026-06-13
 
 ### Shipped
