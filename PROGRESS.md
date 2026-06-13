@@ -3123,3 +3123,26 @@
 
 ### Next agent should pick up
 - **Task 4: Session creation view** — SwiftUI form (task description + success criteria text fields, Go button). On tap: calls `SessionManager.shared.start(task:successCriteria:)`. Should appear inside the expanded notch view when no session is active (the idle state's "Start Session" button already exists; wire it to a sheet or inline form). The expanded idle body already has a "Start Session" button stub at `NotchView.swift:ExpandedView.idleBody`.
+
+## Run 94 — 2026-06-13
+
+### Shipped
+- Extended `CalloutManager.extractTaskKeyword` to detect two new knowledge-worker task types:
+  - **"design"** (keywords: design, designing, mockup, wireframe, prototype, figma, sketch) — covers UX/product/creative sessions
+  - **"email"** (keywords: email, emails, inbox, newsletter) — covers inbox/outreach/comms sessions
+  - Both fall through to the generic `taskAwareCallouts` template ("get back to your design." etc.), which already handles noun-based keywords correctly — no special phrasing needed.
+- Added `linkedin.com` and `amazon.com` to `Session.defaultBlockedDomains`:
+  - LinkedIn is the single biggest professional procrastination trap not previously blocked.
+  - Amazon covers shopping-while-working distraction common during study/focus sessions.
+- Added 9 new tests across `CalloutManagerTests` and `SessionStateTests`:
+  - `extractTaskKeywordFromDesign` — verifies all 6 design-related trigger words
+  - `taskAwareCalloutsDesignContainsKeyword` — verifies tier 1/2/3 messages contain "design"
+  - `extractTaskKeywordFromEmail` — verifies all 4 email-related trigger words
+  - `taskAwareCalloutsEmailContainsKeyword` — verifies tier 1/2/3 messages contain "email"
+  - `extractTaskKeywordStudyTakesPriorityOverDesign` — guards keyword check ordering
+  - `extractTaskKeywordEmailDoesNotMatchDesign` — guards no cross-contamination between checks
+  - `defaultBlockedDomainsIncludeCoreDistractors` — asserts linkedin.com and amazon.com presence
+
+### Next agent
+- All 14 original goals remain complete. BUILD_COMPLETE is still valid.
+- Possible further improvements: block `espn.com` and other sports/news sites, add more blocked Mac apps for the default list, consider making the early-exit conversation use the stronger model (claude-sonnet-4-6) for more persuasive motivational responses.

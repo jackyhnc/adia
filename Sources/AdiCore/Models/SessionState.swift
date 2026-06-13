@@ -135,6 +135,8 @@ public struct Session: Sendable, Identifiable {
         "9gag.com",
         "hacker-news.firebaseapp.com",
         "news.ycombinator.com",
+        "linkedin.com",
+        "amazon.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

@@ -147,6 +147,13 @@ public final class CalloutManager {
         if word("research") || word("lab") {
             return "research"
         }
+        if word("design") || word("designing") || word("mockup") || word("wireframe")
+            || word("prototype") || word("figma") || word("sketch") {
+            return "design"
+        }
+        if word("email") || word("emails") || word("inbox") || word("newsletter") {
+            return "email"
+        }
         return nil
     }
 

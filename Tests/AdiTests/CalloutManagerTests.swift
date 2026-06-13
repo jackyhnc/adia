@@ -550,4 +550,58 @@ struct CalloutManagerTests {
         // "upset" does not contain "pset" as a word boundary match
         #expect(CalloutManager.extractTaskKeyword(from: "feeling upset about grades") == nil)
     }
+
+    // MARK: - Knowledge-worker keyword additions: design
+
+    @Test func extractTaskKeywordFromDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the UI design") == "design")
+        #expect(CalloutManager.extractTaskKeyword(from: "create a mockup for the landing page") == "design")
+        #expect(CalloutManager.extractTaskKeyword(from: "wireframe the onboarding flow") == "design")
+        #expect(CalloutManager.extractTaskKeyword(from: "build a prototype for the new feature") == "design")
+        #expect(CalloutManager.extractTaskKeyword(from: "designing the dashboard in Figma") == "design")
+        #expect(CalloutManager.extractTaskKeyword(from: "open the sketch file") == "design")
+    }
+
+    @Test func taskAwareCalloutsDesignContainsKeyword() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "design", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) design messages must not be empty")
+                #expect(msgs.allSatisfy { $0.contains("design") },
+                        "tier \(tier) design messages must contain 'design'")
+            }
+        }
+    }
+
+    // MARK: - Knowledge-worker keyword additions: email
+
+    @Test func extractTaskKeywordFromEmail() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write 5 important emails") == "email")
+        #expect(CalloutManager.extractTaskKeyword(from: "clear my inbox") == "email")
+        #expect(CalloutManager.extractTaskKeyword(from: "draft the client email") == "email")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish writing the newsletter") == "email")
+    }
+
+    @Test func taskAwareCalloutsEmailContainsKeyword() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "email", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) email messages must not be empty")
+                #expect(msgs.allSatisfy { $0.contains("email") },
+                        "tier \(tier) email messages must contain 'email'")
+            }
+        }
+    }
+
+    @Test func extractTaskKeywordStudyTakesPriorityOverDesign() {
+        // "study" check runs before "design" — "study industrial design" maps to studying, not design.
+        #expect(CalloutManager.extractTaskKeyword(from: "study industrial design") == "studying")
+    }
+
+    @Test func extractTaskKeywordEmailDoesNotMatchDesign() {
+        // "design" and "email" live in separate checks — no cross-contamination.
+        #expect(CalloutManager.extractTaskKeyword(from: "design the email template") == "design")
+    }
 }

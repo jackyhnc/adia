@@ -14,6 +14,15 @@ struct SessionModelTests {
         #expect(!Session.defaultBlockedDomains.isEmpty)
     }
 
+    @Test func defaultBlockedDomainsIncludeCoreDistractors() {
+        let domains = Session.defaultBlockedDomains
+        for expected in ["twitter.com", "reddit.com", "youtube.com", "instagram.com",
+                         "tiktok.com", "facebook.com", "netflix.com", "linkedin.com",
+                         "amazon.com"] {
+            #expect(domains.contains(expected), "expected \(expected) in default blocked domains")
+        }
+    }
+
     @Test func whitelistedDomainsEmpty() {
         let s = Session(task: "t", successCriteria: "c")
         #expect(s.whitelistedDomains.isEmpty)
