@@ -1,5 +1,55 @@
 # Adia — Build Progress
 
+## Run 94 — 2026-06-13
+
+### Shipped
+- **feat: adaptive polling rate in OnTaskDetector**
+  Added `consecutiveOnTaskFrames` counter and computed `adaptiveMinInterval` to
+  `OnTaskDetector`. The classify interval now backs off as on-task confidence
+  builds:
+  - 0–2 consecutive on-task frames → 1.0s (tight, catches drift fast)
+  - 3–9 consecutive on-task frames → 3.0s (steady focus, back off)
+  - 10+ consecutive on-task frames → 8.0s (deep focus, check infrequently)
+  Any off-task or ambiguous result immediately resets the counter to 0, snapping
+  the interval back to 1.0s for the next check. This cuts ~80% of classify()
+  calls during long uninterrupted focus streaks, reducing API costs and battery
+  drain while keeping drift detection fast.
+
+  Added 8 new tests in `OnTaskDetectorTests`:
+  - `adaptiveIntervalIsOneSecondAtSessionStart`
+  - `adaptiveIntervalBacksOffAfterThreeOnTaskFrames`
+  - `adaptiveIntervalMaxesOutAtTenOnTaskFrames`
+  - `onTaskResultIncrementsConsecutiveCounter`
+  - `offTaskResultResetsConsecutiveCounter`
+  - `ambiguousResultResetsConsecutiveCounter`
+  - `deepFocusStreakThrottlesSubsequentFrames`
+  - `attachResetsAdaptiveState`
+
+  Also updated log output in `classification.throttled` and
+  `classification.result` to surface `consecutiveOnTask` and
+  `nextIntervalSeconds` for easier debugging.
+
+### Blocked
+- None.
+
+### Next agent should pick up
+- All 14 GOAL.md items remain complete.
+- Possible next improvements:
+  - (a) **Branch hygiene (15th time)** — use the `session-start-hook` skill to
+    configure a `SessionStart` hook in `.claude/settings.json` that runs
+    `git fetch origin main && git checkout main && git reset --hard origin/main`
+    when the working tree is clean. This would end the detached-HEAD issue
+    permanently.
+  - (b) **Retry / backoff on HTTP 429 / 5xx** — `AgentAIClient.post()` currently
+    throws immediately on any non-2xx response. Adding exponential backoff with
+    jitter for 429 and 5xx would make the app more robust during API outages or
+    when rate limits are hit mid-session.
+  - (c) **Streaming for reasoning/early-exit chat** — `AgentAIClient.chat()` waits
+    for the full response before returning. Switching to the streaming Messages API
+    would make the conversational UI feel significantly more responsive.
+
+---
+
 ## Run 93 — 2026-06-13
 
 ### Shipped

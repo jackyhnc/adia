@@ -5,11 +5,26 @@ public actor OnTaskDetector {
     private let client: any AgentAIService
     private var currentSession: Session?
 
-    // Rate-limit guard: fast enough to catch drift quickly without queueing
-    // overlapping model calls when ScreenCaptureKit delivers frames faster.
+    // Rate-limit guard: skips overlapping classify() calls when ScreenCaptureKit
+    // delivers frames faster than the model can respond.
     private var lastEvaluatedAt: Date?
     private var lastStatus: OnTaskStatus = .onTask
-    private let minInterval: TimeInterval = 0.6
+
+    // Adaptive back-off: consecutive on-task frames let the interval grow so we
+    // call the model less during deep focus, while any off-task result snaps it back.
+    private var consecutiveOnTaskFrames: Int = 0
+
+    // Adaptive interval: tighter polling when uncertain, relaxed during focus streaks.
+    // 0–2 on-task frames: 1s  (catch drift fast)
+    // 3–9 on-task frames: 3s  (steady focus — back off)
+    // 10+ on-task frames: 8s  (deep focus — check infrequently)
+    var adaptiveMinInterval: TimeInterval {
+        switch consecutiveOnTaskFrames {
+        case 0..<3:  return 1.0
+        case 3..<10: return 3.0
+        default:     return 8.0
+        }
+    }
 
     public init(client: any AgentAIService = AgentAIClient.shared) {
         self.client = client
@@ -19,10 +34,12 @@ public actor OnTaskDetector {
         currentSession = session
         lastEvaluatedAt = nil
         lastStatus = .onTask
+        consecutiveOnTaskFrames = 0
     }
 
     public func detach() {
         currentSession = nil
+        consecutiveOnTaskFrames = 0
     }
 
     // MARK: - Test helpers (internal)
@@ -35,15 +52,25 @@ public actor OnTaskDetector {
         lastStatus = status
     }
 
+    internal func _setConsecutiveOnTaskFramesForTesting(_ count: Int) {
+        consecutiveOnTaskFrames = count
+    }
+
+    internal func _consecutiveOnTaskFrames() -> Int {
+        consecutiveOnTaskFrames
+    }
+
     public func evaluate(frame: CGImage) async -> OnTaskStatus {
         guard let session = currentSession else { return .onTask }
 
-        // Rate-limit check first — skips the isConfigured() MainActor hop on
-        // every throttled frame (all but 1 per second at 1 FPS capture).
+        // Adaptive rate-limit: skips the isConfigured() MainActor hop on throttled frames.
         let now = Date()
-        if let last = lastEvaluatedAt, now.timeIntervalSince(last) < minInterval {
+        let interval = adaptiveMinInterval
+        if let last = lastEvaluatedAt, now.timeIntervalSince(last) < interval {
             AppLogger.info("classification.throttled", [
-                "lastStatus": lastStatus.rawValue
+                "lastStatus": lastStatus.rawValue,
+                "intervalSeconds": String(format: "%.1f", interval),
+                "consecutiveOnTask": String(consecutiveOnTaskFrames),
             ])
             return lastStatus
         }
@@ -62,11 +89,19 @@ public actor OnTaskDetector {
                 taskDescription: session.task,
                 successCriteria: session.successCriteria
             )
+            // Update adaptive counter: grow streak on on-task, reset immediately otherwise.
+            if result.status == .onTask {
+                consecutiveOnTaskFrames += 1
+            } else {
+                consecutiveOnTaskFrames = 0
+            }
             AppLogger.info("classification.result", [
                 "status": result.status.rawValue,
                 "confidence": String(format: "%.2f", result.confidence),
                 "durationMs": String(Int(Date().timeIntervalSince(startedAt) * 1000)),
-                "reason": result.reason
+                "reason": result.reason,
+                "consecutiveOnTask": String(consecutiveOnTaskFrames),
+                "nextIntervalSeconds": String(format: "%.1f", adaptiveMinInterval),
             ])
             lastStatus = result.status
             return result.status

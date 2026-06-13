@@ -49,7 +49,7 @@ struct OnTaskDetectorTests {
         await detector._setLastEvaluatedAtForTesting(Date())
         await detector._setLastStatusForTesting(.offTask)
 
-        // Within minInterval → returns cached .offTask without any API call
+        // Within minInterval (1.0s at 0 on-task streak) → returns cached .offTask without any API call
         let status = await detector.evaluate(frame: dummyFrame())
         #expect(status == .offTask)
     }
@@ -63,13 +63,114 @@ struct OnTaskDetectorTests {
         await AgentAIClient.shared._setIsConfiguredOverride(false)
         defer { Task { await AgentAIClient.shared._setIsConfiguredOverride(nil) } }
 
-        // Set last evaluated to 2 seconds ago (beyond 1s minInterval)
+        // Set last evaluated to 2 seconds ago (beyond 1s base minInterval)
         await detector._setLastEvaluatedAtForTesting(Date(timeIntervalSinceNow: -2.0))
         await detector._setLastStatusForTesting(.offTask)
 
         // Rate limit expired + no API key → returns .onTask (from the isConfigured guard)
         let status = await detector.evaluate(frame: dummyFrame())
         #expect(status == .onTask)
+    }
+
+    // MARK: - Adaptive polling rate
+
+    @Test func adaptiveIntervalIsOneSecondAtSessionStart() async {
+        let detector = OnTaskDetector()
+        let session = Session(task: "Study", successCriteria: "Done")
+        await detector.attach(session: session)
+        // Fresh attach: 0 consecutive on-task frames → 1.0s interval
+        let interval = await detector.adaptiveMinInterval
+        #expect(interval == 1.0)
+    }
+
+    @Test func adaptiveIntervalBacksOffAfterThreeOnTaskFrames() async {
+        let detector = OnTaskDetector()
+        let session = Session(task: "Study", successCriteria: "Done")
+        await detector.attach(session: session)
+        await detector._setConsecutiveOnTaskFramesForTesting(3)
+        let interval = await detector.adaptiveMinInterval
+        #expect(interval == 3.0)
+    }
+
+    @Test func adaptiveIntervalMaxesOutAtTenOnTaskFrames() async {
+        let detector = OnTaskDetector()
+        let session = Session(task: "Study", successCriteria: "Done")
+        await detector.attach(session: session)
+        await detector._setConsecutiveOnTaskFramesForTesting(10)
+        let interval = await detector.adaptiveMinInterval
+        #expect(interval == 8.0)
+    }
+
+    @Test func onTaskResultIncrementsConsecutiveCounter() async {
+        let mock = MockAgentAIClient()
+        await mock.setClassifyResult(.success(OnTaskClassification(status: .onTask, confidence: 0.95, reason: "Working")))
+        let detector = OnTaskDetector(client: mock)
+        let session = Session(task: "Write essay", successCriteria: "Submitted")
+        await detector.attach(session: session)
+
+        _ = await detector.evaluate(frame: dummyFrame())
+        let count = await detector._consecutiveOnTaskFrames()
+        #expect(count == 1)
+    }
+
+    @Test func offTaskResultResetsConsecutiveCounter() async {
+        let mock = MockAgentAIClient()
+        await mock.setClassifyResult(.success(OnTaskClassification(status: .offTask, confidence: 0.9, reason: "Reddit open")))
+        let detector = OnTaskDetector(client: mock)
+        let session = Session(task: "Write essay", successCriteria: "Submitted")
+        await detector.attach(session: session)
+        // Simulate a prior on-task streak
+        await detector._setConsecutiveOnTaskFramesForTesting(7)
+
+        _ = await detector.evaluate(frame: dummyFrame())
+        let count = await detector._consecutiveOnTaskFrames()
+        #expect(count == 0, "off-task result should reset the consecutive counter")
+    }
+
+    @Test func ambiguousResultResetsConsecutiveCounter() async {
+        let mock = MockAgentAIClient()
+        await mock.setClassifyResult(.success(OnTaskClassification(status: .ambiguous, confidence: 0.5, reason: "Unclear")))
+        let detector = OnTaskDetector(client: mock)
+        let session = Session(task: "Write essay", successCriteria: "Submitted")
+        await detector.attach(session: session)
+        await detector._setConsecutiveOnTaskFramesForTesting(5)
+
+        _ = await detector.evaluate(frame: dummyFrame())
+        let count = await detector._consecutiveOnTaskFrames()
+        #expect(count == 0, "ambiguous result should reset the consecutive counter")
+    }
+
+    @Test func deepFocusStreakThrottlesSubsequentFrames() async {
+        let mock = MockAgentAIClient()
+        await mock.setClassifyResult(.success(OnTaskClassification(status: .onTask, confidence: 0.99, reason: "Deep work")))
+        let detector = OnTaskDetector(client: mock)
+        let session = Session(task: "Write essay", successCriteria: "Submitted")
+        await detector.attach(session: session)
+
+        // Simulate 10 consecutive on-task frames → 8s interval
+        await detector._setConsecutiveOnTaskFramesForTesting(10)
+        await detector._setLastEvaluatedAtForTesting(Date(timeIntervalSinceNow: -4.0))
+        await detector._setLastStatusForTesting(.onTask)
+
+        // 4s has elapsed but interval is 8s → should throttle (return cached, no classify call)
+        let beforeCount = await mock.classifyCallCount
+        _ = await detector.evaluate(frame: dummyFrame())
+        let afterCount = await mock.classifyCallCount
+        #expect(afterCount == beforeCount, "should throttle: 4s < 8s adaptive interval")
+    }
+
+    @Test func attachResetsAdaptiveState() async {
+        let detector = OnTaskDetector()
+        let session = Session(task: "Study", successCriteria: "Done")
+        await detector.attach(session: session)
+        await detector._setConsecutiveOnTaskFramesForTesting(15)
+
+        // Re-attach (new session) resets everything
+        await detector.attach(session: session)
+        let count = await detector._consecutiveOnTaskFrames()
+        let interval = await detector.adaptiveMinInterval
+        #expect(count == 0)
+        #expect(interval == 1.0)
     }
 
     /// With a real (non-`AgentAIClient`) backing client injected via the
