@@ -4,11 +4,14 @@ on:
     branches: [main]
   pull_request:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   swift:
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer || true
       - run: swift build -c debug
       - run: swift build -c release
@@ -16,7 +19,7 @@ jobs:
   swift-test:
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer || true
       # `--no-parallel`: many suites share @MainActor singletons (NotchState.shared,
       # SettingsStore.shared, CalloutManager.shared, ...). `.serialized` on a @Suite only
@@ -32,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: web } }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with: { node-version: '20', cache: 'npm', cache-dependency-path: 'web/package-lock.json' }
       - run: npm ci || npm install
@@ -44,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: web } }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-node@v4
         with: { node-version: '20', cache: 'npm', cache-dependency-path: 'web/package-lock.json' }
       - run: npm ci || npm install
@@ -53,6 +56,6 @@ jobs:
   pipeline-smoke:
     runs-on: macos-15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer || true
       - run: bash scripts/test-pipeline.sh

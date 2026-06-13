@@ -1,5 +1,44 @@
 # Adia — Build Progress
 
+## Run 93 — 2026-06-13
+
+### Shipped
+- **fix: CI Node.js 20 deprecation — upgrade checkout@v4 → v5 and force Node 24**
+  GitHub Actions is forcing Node.js 24 as the default starting Jun 16, 2026
+  (3 days away). All 5 occurrences of `actions/checkout@v4` upgraded to
+  `actions/checkout@v5` (which uses Node 24). Added `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'`
+  at the workflow level to also cover `actions/setup-node@v4` (no v5 pinning
+  needed — env var suppresses the Node 20 runner warning for any remaining v4
+  actions).
+
+- **feat: prompt caching on all Anthropic API calls**
+  Converted `body["system"] = system` (plain String) to the array content-block
+  format with `cache_control: {type: "ephemeral"}` in `AgentAIClient.post()`.
+  Prompt caching is GA (no beta header needed). `classify()` is called every
+  1–2 seconds during a session with an identical system prompt; caching that
+  prefix reduces cost and latency once the prompt exceeds the 2048-token minimum
+  (Haiku 4.5). The change is a no-op below threshold — the API silently skips
+  caching for short prompts, so there is zero regression risk.
+
+### Branch hygiene
+- Found `HEAD` detached on session start (13th+ time). Resolved with
+  `git fetch origin main && git checkout main && git reset --hard origin/main`.
+
+### Blocked
+- None.
+
+### Next agent should pick up
+- All 14 GOAL.md items remain complete.
+- Possible next improvements:
+  - (a) **Branch hygiene (14th time)** — implement the `session-start-hook` skill
+    to write a `SessionStart` hook to `.claude/settings.json` so the detached-HEAD
+    fix runs automatically at the start of every session.
+  - (b) **Prompt caching threshold** — if session task descriptions grow long, the
+    2048-token threshold will be reliably hit and `cache_read_input_tokens` in
+    API responses will confirm hits. No code change needed; monitor usage logs.
+
+---
+
 ## Run 92 — 2026-06-11
 
 ### Shipped

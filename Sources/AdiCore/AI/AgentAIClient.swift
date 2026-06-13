@@ -187,7 +187,12 @@ public actor AgentAIClient {
             "messages": messages,
         ]
         if !system.isEmpty {
-            body["system"] = system
+            // Array format enables prompt caching (GA — no beta header needed).
+            // The system prompt is stable within a session; cache_control marks it as
+            // cacheable so repeated classify() calls reuse the cached prefix.
+            body["system"] = [
+                ["type": "text", "text": system, "cache_control": ["type": "ephemeral"]] as [String: Any]
+            ]
         }
 
         var req = URLRequest(url: baseURL)
