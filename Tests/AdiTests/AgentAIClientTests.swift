@@ -273,4 +273,85 @@ struct AgentAIClientParsingTests {
         let g = GoalParse(ok: false, task: nil, successCriteria: nil, question: nil)
         #expect(g.resolveSubmission(defaultQuestion: "Tell me more?") == .needsClarification(question: "Tell me more?"))
     }
+
+    // MARK: - Retry/backoff helpers
+
+    @Test func isRetryable429() {
+        #expect(AgentAIClient.isRetryableStatusCode(429))
+    }
+
+    @Test func isRetryable500() {
+        #expect(AgentAIClient.isRetryableStatusCode(500))
+    }
+
+    @Test func isRetryable503() {
+        #expect(AgentAIClient.isRetryableStatusCode(503))
+    }
+
+    @Test func isRetryable599() {
+        #expect(AgentAIClient.isRetryableStatusCode(599))
+    }
+
+    @Test func isNotRetryable400() {
+        #expect(!AgentAIClient.isRetryableStatusCode(400))
+    }
+
+    @Test func isNotRetryable401() {
+        #expect(!AgentAIClient.isRetryableStatusCode(401))
+    }
+
+    @Test func isNotRetryable403() {
+        #expect(!AgentAIClient.isRetryableStatusCode(403))
+    }
+
+    @Test func isNotRetryable404() {
+        #expect(!AgentAIClient.isRetryableStatusCode(404))
+    }
+
+    @Test func isNotRetryable200() {
+        #expect(!AgentAIClient.isRetryableStatusCode(200))
+    }
+
+    @Test func retryDelayAttempt1IsAboutOneSecond() {
+        // attempt=1 → base=1s, jitter ±20% → [0.8, 1.2]
+        let d = AgentAIClient.retryDelay(attempt: 1, retryAfterSeconds: nil)
+        #expect(d >= 0.8 && d <= 1.2)
+    }
+
+    @Test func retryDelayAttempt2IsAboutTwoSeconds() {
+        // attempt=2 → base=2s → [1.6, 2.4]
+        let d = AgentAIClient.retryDelay(attempt: 2, retryAfterSeconds: nil)
+        #expect(d >= 1.6 && d <= 2.4)
+    }
+
+    @Test func retryDelayAttempt3IsAboutFourSeconds() {
+        // attempt=3 → base=4s → [3.2, 4.8]
+        let d = AgentAIClient.retryDelay(attempt: 3, retryAfterSeconds: nil)
+        #expect(d >= 3.2 && d <= 4.8)
+    }
+
+    @Test func retryDelayIsCappedAt30Seconds() {
+        // attempt=10 → base=512s → should cap at 30s
+        let d = AgentAIClient.retryDelay(attempt: 10, retryAfterSeconds: nil)
+        #expect(d <= 30.0)
+    }
+
+    @Test func retryDelayUsesRetryAfterHeaderWhenPresent() {
+        let d = AgentAIClient.retryDelay(attempt: 1, retryAfterSeconds: 12.0)
+        #expect(abs(d - 12.0) < 0.001)
+    }
+
+    @Test func retryDelayCapRetryAfterAt30() {
+        let d = AgentAIClient.retryDelay(attempt: 1, retryAfterSeconds: 120.0)
+        #expect(abs(d - 30.0) < 0.001)
+    }
+
+    @Test func retryDelayRetryAfterZeroIsZero() {
+        let d = AgentAIClient.retryDelay(attempt: 1, retryAfterSeconds: 0)
+        #expect(abs(d) < 0.001)
+    }
+
+    @Test func maxRetriesIsThree() {
+        #expect(AgentAIClient.maxRetries == 3)
+    }
 }

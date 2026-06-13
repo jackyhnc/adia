@@ -1,5 +1,65 @@
 # Adia — Build Progress
 
+## Run 95 — 2026-06-13
+
+### Shipped
+- **feat: retry/backoff on HTTP 429 and 5xx in AgentAIClient.post()**
+
+  `post()` previously threw immediately on any non-2xx response. A 429 rate-limit
+  or transient 503 during a focus session would surface as a visible error callout
+  and reset the on-task classifier, which is distracting and unnecessary.
+
+  Changes to `Sources/AdiCore/AI/AgentAIClient.swift`:
+  - Replaced the single `urlSession.data(for: req)` call with a `while true` retry
+    loop, tracking `retryAttempt` (1-based, incremented on each retryable failure).
+  - On 429 or 5xx: increments `retryAttempt`, computes a delay, logs
+    `api.retry`, sleeps, then loops. After `maxRetries` (3) retries, throws the
+    last error.
+  - On any other non-2xx (400, 401, 403, 404, …): throws immediately — no retry.
+  - On 2xx: extracts and returns the text block as before.
+  - Two new `internal static` helpers (testable without mocking URLSession):
+    - `isRetryableStatusCode(_ code: Int) -> Bool` — true for 429 and 500–599.
+    - `retryDelay(attempt: Int, retryAfterSeconds: TimeInterval?) -> TimeInterval`
+      — exponential backoff (1 s, 2 s, 4 s, …) with ±20% jitter, capped at 30 s.
+      For 429 responses that include a `Retry-After` header, that value overrides
+      the exponential formula (still capped at 30 s so a bad server can't stall).
+  - `maxRetries = 3` (static constant, exposed `internal` for tests).
+
+  New tests in `Tests/AdiTests/AgentAIClientTests.swift` (15 tests):
+  - `isRetryable429/500/503/599` — true cases
+  - `isNotRetryable400/401/403/404/200` — false cases
+  - `retryDelayAttempt1IsAboutOneSecond` — [0.8, 1.2]
+  - `retryDelayAttempt2IsAboutTwoSeconds` — [1.6, 2.4]
+  - `retryDelayAttempt3IsAboutFourSeconds` — [3.2, 4.8]
+  - `retryDelayIsCappedAt30Seconds` — attempt=10 → ≤30
+  - `retryDelayUsesRetryAfterHeaderWhenPresent` — 12s exact
+  - `retryDelayCapRetryAfterAt30` — 120s → 30s
+  - `retryDelayRetryAfterZeroIsZero` — 0s exact
+  - `maxRetriesIsThree`
+
+### Branch hygiene
+- Found `HEAD` detached on session start (14th+ time). Resolved with
+  `git fetch origin main && git checkout main && git reset --hard origin/main`.
+
+### Blocked
+- None.
+
+### Next agent should pick up
+- All 14 GOAL.md items remain complete.
+- Possible next improvements:
+  - (a) **Branch hygiene (15th time)** — use the `session-start-hook` skill to
+    configure a `SessionStart` hook in `.claude/settings.json` that runs
+    `git fetch origin main && git checkout main && git reset --hard origin/main`
+    when the working tree is clean. This would end the detached-HEAD issue
+    permanently.
+  - (b) **Streaming for reasoning/early-exit chat** — `AgentAIClient.chat()` waits
+    for the full response before returning. Switching to the streaming Messages API
+    would make the conversational UI feel significantly more responsive.
+  - (c) **Session history view** — expose the `SessionHistory` records in a SwiftUI
+    list accessible from the idle notch, letting users review past sessions.
+
+---
+
 ## Run 94 — 2026-06-13
 
 ### Shipped

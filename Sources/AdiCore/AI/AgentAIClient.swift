@@ -173,7 +173,34 @@ public actor AgentAIClient {
 
     // MARK: - HTTP
 
+    /// Max number of retries after the initial attempt. Retries only on 429 and 5xx.
+    internal static let maxRetries = 3
+
+    /// Returns true if the HTTP status code warrants a retry (rate-limit or server error).
+    /// 4xx errors other than 429 (bad request, auth failure, etc.) are not retried.
+    internal static func isRetryableStatusCode(_ code: Int) -> Bool {
+        code == 429 || (500...599).contains(code)
+    }
+
+    /// Exponential backoff with ±20% jitter: base 1 s, doubling each retry, capped at 30 s.
+    /// When `retryAfterSeconds` is present (parsed from the `Retry-After` header on a 429
+    /// response), it overrides the exponential calculation — still capped at 30 s so a
+    /// misbehaving server cannot stall the app indefinitely.
+    ///
+    /// - Parameters:
+    ///   - attempt: 1-based retry index (1 → 1 s base, 2 → 2 s, 3 → 4 s, …)
+    ///   - retryAfterSeconds: server-supplied delay hint; `nil` → use exponential formula.
+    internal static func retryDelay(attempt: Int, retryAfterSeconds: TimeInterval?) -> TimeInterval {
+        if let explicit = retryAfterSeconds {
+            return min(max(explicit, 0), 30.0)
+        }
+        let base = pow(2.0, Double(attempt - 1)) // 1s, 2s, 4s, 8s, …
+        let jitter = Double.random(in: 0.8...1.2)
+        return min(base * jitter, 30.0)
+    }
+
     /// Posts to the Anthropic Messages API and returns the first text block.
+    /// Retries up to `maxRetries` times on 429 and 5xx with exponential backoff.
     private func post(
         key: String,
         model: String,
@@ -202,21 +229,45 @@ public actor AgentAIClient {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (data, response) = try await urlSession.data(for: req)
-        let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+        var retryAttempt = 0
+        while true {
+            let (data, response) = try await urlSession.data(for: req)
+            let http = response as? HTTPURLResponse
+            let statusCode = http?.statusCode ?? 0
 
-        guard (200..<300).contains(statusCode) else {
+            if (200..<300).contains(statusCode) {
+                guard
+                    let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                    let text = Self.extractOutputText(from: json)
+                else {
+                    throw AgentAIError.decodingError("unexpected response shape")
+                }
+                return text
+            }
+
             let bodyStr = String(data: data, encoding: .utf8) ?? "<unreadable>"
-            throw AgentAIError.httpError(statusCode, bodyStr)
-        }
+            let err = AgentAIError.httpError(statusCode, bodyStr)
 
-        guard
-            let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-            let text = Self.extractOutputText(from: json)
-        else {
-            throw AgentAIError.decodingError("unexpected response shape")
+            retryAttempt += 1
+            guard Self.isRetryableStatusCode(statusCode), retryAttempt <= Self.maxRetries else {
+                throw err
+            }
+
+            // For 429: honour the server's Retry-After hint when present.
+            let retryAfter: TimeInterval? = http.flatMap { resp in
+                guard let v = resp.value(forHTTPHeaderField: "Retry-After"),
+                      let secs = TimeInterval(v) else { return nil }
+                return secs
+            }
+            let delay = Self.retryDelay(attempt: retryAttempt, retryAfterSeconds: retryAfter)
+            AppLogger.warning("api.retry", [
+                "attempt":      String(retryAttempt),
+                "statusCode":   String(statusCode),
+                "delaySeconds": String(format: "%.1f", delay),
+                "model":        model,
+            ])
+            try await Task.sleep(for: Duration.seconds(delay))
         }
-        return text
     }
 
     // MARK: - Image helpers
