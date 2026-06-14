@@ -1,5 +1,46 @@
 # Adia — Build Progress
 
+## Run 104 — 2026-06-14
+
+### Shipped
+- **test: fireAppCallout and report/document/doc keyword tests (+14 tests)**
+
+  **(a) fireAppCallout (8 new tests in `CalloutManagerTests.swift`)**
+  - `fireAppCalloutShowsMessageImmediately` — message appears without any `evaluate(.offTask)` calls.
+  - `fireAppCalloutIncrementsCalloutCount` — `calloutCount` goes from 0 to 1.
+  - `fireAppCalloutBypassesOffTaskThreshold` — fires without the 2-frame threshold.
+  - `fireAppCalloutUsesCurrentTierAtCalloutCountZero` — tier 1 when count is 0.
+  - `fireAppCalloutUsesCurrentTierAtCalloutCountTwo` — tier 2 when count is 2.
+  - `fireAppCalloutDoesNotPreventSubsequentThresholdCallout` — `hasFiredForStreak` is not set by
+    `fireAppCallout`, so a following off-task streak still fires through the normal threshold path.
+  - `multipleFireAppCalloutsAccumulateCalloutCount` — 3 calls → `calloutCount == 3`.
+  - `fireAppCalloutResetsCancelsAndReplacesAutoDismiss` — rapid back-to-back calls replace the
+    auto-dismiss task; `calloutMessage` reflects the most recent call.
+
+  **(b) report/document/doc keyword (6 new tests)**
+  - `extractTaskKeywordFromReport` — "quarterly report", "client report", "update the document",
+    and "edit the doc" all yield "report" via `extractTaskKeyword`.
+  - `extractTaskKeywordReportTakesPriorityOverLab` — "bio lab report" contains both "report"
+    (rank 4) and "lab" (rank 8); "report" wins. Documents the precedence quirk mentioned in the
+    existing lab-keyword comment but not previously tested.
+  - `taskAwareCalloutsReportContainsKeyword` — all 3 tiers produce non-empty messages with "report"
+    via the generic `"get back to your \(keyword)"` template.
+  - `taskAwareCalloutsDocumentContainsKeyword` — defensive test: verifies the generic template
+    correctly substitutes arbitrary keywords, covering future changes that might add "document"
+    as a distinct return value from `extractTaskKeyword`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All known quality items are implemented. Possible future additions:
+  - Verify `sendAndReply` behavior in `ConversationManager` when the streaming buffer is empty
+    on the first chunk (the `"…"` placeholder in `StreamingBubble`).
+  - Add an integration smoke-test that exercises `AgentAIClient.parseGoal` with a sample task
+    string against the real API (uses `ANTHROPIC_API_KEY` from env).
+
+---
+
 ## Run 103 — 2026-06-14
 
 ### Shipped
