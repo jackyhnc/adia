@@ -166,6 +166,8 @@ public struct Session: Sendable, Identifiable {
         // News (procrastination disguised as staying informed)
         "cnn.com",
         "foxnews.com",
+        "bbc.com",
+        "theguardian.com",
         // Other time sinks
         "quora.com",
         "fandom.com",

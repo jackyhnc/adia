@@ -814,8 +814,8 @@ private struct HistoryTab: View {
                             Text(weekSummaryText(s))
                                 .font(.system(size: 12, weight: .medium))
                                 .foregroundStyle(.secondary)
-                            if s.streak > 1 {
-                                Text("🔥 \(s.streak)d streak")
+                            if s.streak > 0 {
+                                Text(streakDisplayLabel(current: s.streak, best: s.bestStreak))
                                     .font(.system(size: 11, weight: .semibold))
                                     .foregroundStyle(.orange)
                                     .padding(.horizontal, 7)

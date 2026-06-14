@@ -128,7 +128,8 @@ public final class SessionManager: ObservableObject {
                 totalChecks: totalCheckCount,
                 reasoningAttempts: s.reasoningHistory.count,
                 reasoningGranted: s.reasoningHistory.filter(\.granted).count,
-                blockedDomains: s.blockedDomains
+                blockedDomains: s.blockedDomains,
+                blockedApps: s.blockedApps
             )
             _lastEndedRecord = record
             Task { await SessionHistory.shared.record(record) }

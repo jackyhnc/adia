@@ -252,7 +252,7 @@ struct DefaultBlockedDomainsCoverageTests {
 
     @Test func defaultBlockedDomainsIncludeNewsSites() {
         let domains = Session.defaultBlockedDomains
-        for site in ["cnn.com", "foxnews.com"] {
+        for site in ["cnn.com", "foxnews.com", "bbc.com", "theguardian.com"] {
             #expect(domains.contains(site), "expected \(site) in default blocked domains")
         }
     }
@@ -302,5 +302,40 @@ struct DefaultBlockedAppsTests {
     @Test func defaultBlockedAppsHaveNonEmptyIDs() {
         #expect(Session.defaultBlockedApps.allSatisfy { !$0.id.isEmpty },
                 "every BlockedApp must have a non-empty bundle identifier")
+    }
+}
+
+// MARK: - streakDisplayLabel (settings weekly-section consistency)
+
+/// These tests verify that the shared `streakDisplayLabel` function — now used by
+/// both the notch stats line and the SettingsView History weekly section — produces
+/// the correct output for the key edge cases that the old `> 1` guard used to hide.
+@Suite("SettingsView streak display (streakDisplayLabel)")
+struct SettingsViewStreakDisplayTests {
+
+    @Test func oneDayStreakIsNotEmpty() {
+        // Before the fix, streak == 1 was hidden. After fix, it must produce a label.
+        let label = streakDisplayLabel(current: 1, best: 1)
+        #expect(!label.isEmpty)
+        #expect(label.contains("1d streak"))
+    }
+
+    @Test func zeroDayStreakProducesLabel() {
+        // Caller gates on streak > 0 so this never renders, but the function
+        // itself should not crash or return garbage.
+        let label = streakDisplayLabel(current: 0, best: 0)
+        #expect(label.contains("0d streak"))
+    }
+
+    @Test func streakBelowBestIncludesBestAnnotation() {
+        // SettingsView now shows the best-streak annotation just like the notch.
+        let label = streakDisplayLabel(current: 3, best: 7)
+        #expect(label == "🔥 3d streak (best: 7d)")
+    }
+
+    @Test func streakAtBestOmitsBestAnnotation() {
+        let label = streakDisplayLabel(current: 5, best: 5)
+        #expect(label == "🔥 5d streak")
+        #expect(!label.contains("best:"))
     }
 }

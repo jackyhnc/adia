@@ -575,6 +575,38 @@ struct SessionHistoryTests {
         #expect(decoded.reasoningGranted == 0)
     }
 
+    @Test func legacyJSONWithoutBlockedAppsDecodesWithEmpty() throws {
+        // Simulate a record saved before blockedApps tracking was added.
+        let original = SessionRecord(
+            task: "Old task",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+        var json = (try JSONSerialization.jsonObject(with: JSONEncoder().encode(original))) as! [String: Any]
+        json.removeValue(forKey: "blockedApps")
+        let strippedData = try JSONSerialization.data(withJSONObject: json)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: strippedData)
+        #expect(decoded.blockedApps.isEmpty)
+    }
+
+    @Test func blockedAppsRoundTripsThroughJSON() throws {
+        let original = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0,
+            blockedApps: ["com.spotify.client", "com.hnc.Discord"]
+        )
+        let data = try JSONEncoder().encode(original)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: data)
+        #expect(decoded.blockedApps == ["com.spotify.client", "com.hnc.Discord"])
+    }
+
     @Test func statsStreakBrokenByGap() async throws {
         let history = try makeHistory()
         let cal = Calendar.current
@@ -1361,7 +1393,7 @@ struct VerificationRelativeTimeTests {
 @Suite("sessionRecordsToCSV")
 struct SessionRecordsToCSVTests {
 
-    private static let expectedHeader = "id,task,successCriteria,startTime,endTime,durationSeconds,completedSuccessfully,calloutCount,onTaskChecks,totalChecks,focusScore,reasoningAttempts,reasoningGranted,blockedSites,note"
+    private static let expectedHeader = "id,task,successCriteria,startTime,endTime,durationSeconds,completedSuccessfully,calloutCount,onTaskChecks,totalChecks,focusScore,reasoningAttempts,reasoningGranted,blockedSites,blockedApps,note"
 
     private func record(
         task: String = "Study",
@@ -1373,7 +1405,8 @@ struct SessionRecordsToCSVTests {
         totalChecks: Int = 0,
         reasoningAttempts: Int = 0,
         reasoningGranted: Int = 0,
-        blockedDomains: [String] = []
+        blockedDomains: [String] = [],
+        blockedApps: [String] = []
     ) -> SessionRecord {
         let start = Date(timeIntervalSinceNow: -3600)
         return SessionRecord(
@@ -1388,7 +1421,8 @@ struct SessionRecordsToCSVTests {
             totalChecks: totalChecks,
             reasoningAttempts: reasoningAttempts,
             reasoningGranted: reasoningGranted,
-            blockedDomains: blockedDomains
+            blockedDomains: blockedDomains,
+            blockedApps: blockedApps
         )
     }
 
@@ -1402,10 +1436,10 @@ struct SessionRecordsToCSVTests {
         #expect(csv == Self.expectedHeader)
     }
 
-    @Test func headerHasFifteenColumns() {
+    @Test func headerHasSixteenColumns() {
         let csv = sessionRecordsToCSV([])
         let headerCols = csv.components(separatedBy: ",")
-        #expect(headerCols.count == 15)
+        #expect(headerCols.count == 16)
     }
 
     @Test func headerColumnNamesAreCorrect() {
@@ -1425,7 +1459,8 @@ struct SessionRecordsToCSVTests {
         #expect(c[11] == "reasoningAttempts")
         #expect(c[12] == "reasoningGranted")
         #expect(c[13] == "blockedSites")
-        #expect(c[14] == "note")
+        #expect(c[14] == "blockedApps")
+        #expect(c[15] == "note")
     }
 
     @Test func singleRecordProducesHeaderPlusOneDataRow() {
@@ -1476,7 +1511,7 @@ struct SessionRecordsToCSVTests {
     @Test func nilNoteEncodesAsEmptyString() {
         let csv = sessionRecordsToCSV([record(note: nil)])
         let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
-        #expect(cols(rows[1])[14] == "")
+        #expect(cols(rows[1])[15] == "")
     }
 
     @Test func plainNoteIsUnquoted() {
@@ -1568,6 +1603,41 @@ struct SessionRecordsToCSVTests {
         // Pipe separator contains no comma → field is unquoted, safe to check via contains
         #expect(String(rows[1]).contains("reddit.com|twitter.com"))
         #expect(cols(rows[1])[13] == "reddit.com|twitter.com")
+    }
+
+    // MARK: - blockedApps column
+
+    @Test func emptyBlockedAppsEncodesAsEmptyString() {
+        let csv = sessionRecordsToCSV([record(blockedApps: [])])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        // Column 14 = blockedApps
+        #expect(cols(rows[1])[14] == "")
+    }
+
+    @Test func blockedAppsJoinedWithPipeSeparator() {
+        let csv = sessionRecordsToCSV([record(blockedApps: ["com.spotify.client", "com.hnc.Discord"])])
+        #expect(csv.contains("com.spotify.client|com.hnc.Discord"))
+    }
+
+    @Test func singleBlockedAppIsUnquoted() {
+        let csv = sessionRecordsToCSV([record(blockedApps: ["com.spotify.client"])])
+        #expect(csv.contains("com.spotify.client"))
+        #expect(!csv.contains("\"com.spotify.client\""))
+    }
+
+    @Test func blockedAppsColumnIsAtIndex14() {
+        let csv = sessionRecordsToCSV([record(blockedApps: ["com.spotify.client", "com.hnc.Discord"])])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        let header = csv.components(separatedBy: "\n")[0].components(separatedBy: ",")
+        #expect(header[14] == "blockedApps")
+        #expect(cols(rows[1])[14] == "com.spotify.client|com.hnc.Discord")
+    }
+
+    @Test func blockedAppsBundleIDsWithDotsAreUnquoted() {
+        // Bundle IDs contain dots but not commas — must not be quoted
+        let csv = sessionRecordsToCSV([record(blockedApps: ["com.apple.Music"])])
+        #expect(!csv.contains("\"com.apple.Music\""))
+        #expect(csv.contains("com.apple.Music"))
     }
 }
 

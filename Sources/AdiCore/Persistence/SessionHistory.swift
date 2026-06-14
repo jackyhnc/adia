@@ -122,7 +122,7 @@ private func csvEscape(_ value: String) -> String {
 /// Empty input returns only the header row (no trailing newline).
 internal func sessionRecordsToCSV(_ records: [SessionRecord]) -> String {
     let iso = ISO8601DateFormatter()
-    let header = "id,task,successCriteria,startTime,endTime,durationSeconds,completedSuccessfully,calloutCount,onTaskChecks,totalChecks,focusScore,reasoningAttempts,reasoningGranted,blockedSites,note"
+    let header = "id,task,successCriteria,startTime,endTime,durationSeconds,completedSuccessfully,calloutCount,onTaskChecks,totalChecks,focusScore,reasoningAttempts,reasoningGranted,blockedSites,blockedApps,note"
     let rows = records.map { r -> String in
         let cols: [String] = [
             r.id.uuidString,
@@ -139,6 +139,7 @@ internal func sessionRecordsToCSV(_ records: [SessionRecord]) -> String {
             String(r.reasoningAttempts),
             String(r.reasoningGranted),
             r.blockedDomains.isEmpty ? "" : csvEscape(r.blockedDomains.joined(separator: "|")),
+            r.blockedApps.isEmpty ? "" : csvEscape(r.blockedApps.joined(separator: "|")),
             r.note.map { csvEscape($0) } ?? ""
         ]
         return cols.joined(separator: ",")

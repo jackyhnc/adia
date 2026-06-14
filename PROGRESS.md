@@ -1,5 +1,59 @@
 # Adia — Build Progress
 
+## Run 109 — 2026-06-14
+
+### Shipped
+- **SettingsView streak display fix** — The History tab weekly section now shows
+  the streak badge for ANY active streak (`streak > 0`), matching the notch.
+  Previously the badge required `streak > 1`, silently hiding day-one streaks
+  from users who were on their very first session. The badge now also calls the
+  shared `streakDisplayLabel(current:best:)` helper (used by the notch) so it
+  shows "🔥 3d streak (best: 7d)" when the user is below their personal best —
+  same annotation the notch has shown since run 107.
+  - 4 new tests in `SettingsViewStreakDisplayTests`: `oneDayStreakIsNotEmpty`,
+    `zeroDayStreakProducesLabel`, `streakBelowBestIncludesBestAnnotation`,
+    `streakAtBestOmitsBestAnnotation`.
+
+- **bbc.com and theguardian.com added to blocked domains** (49 → 51). Both are
+  major news outlets that function as procrastination disguised as staying
+  informed, consistent with the existing CNN / Fox News entries in the same
+  category. `defaultBlockedDomainsIncludeNewsSites` test updated to cover all
+  four news sites.
+
+- **`blockedApps: [String]` added to SessionRecord** — The session record now
+  persists which app bundle IDs were blocked during the session (snapshot at
+  session end), symmetric with the existing `blockedDomains` field.
+  - `SessionRecord.init` gains `blockedApps: [String] = []` with backward-
+    compatible default — all existing call sites compile without changes.
+  - `Codable` updated: decodes with `decodeIfPresent … ?? []` so records
+    written before this field was introduced load cleanly.
+  - `SessionManager.endSession()` now passes `blockedApps: s.blockedApps`.
+  - **CSV export updated** (15 → 16 columns): `blockedApps` column inserted at
+    index 14 (before `note` at index 15), pipe-separated bundle IDs, same
+    quoting rules as `blockedSites`.
+  - 9 new tests: `emptyBlockedAppsEncodesAsEmptyString`,
+    `blockedAppsJoinedWithPipeSeparator`, `singleBlockedAppIsUnquoted`,
+    `blockedAppsColumnIsAtIndex14`, `blockedAppsBundleIDsWithDotsAreUnquoted`,
+    `legacyJSONWithoutBlockedAppsDecodesWithEmpty`,
+    `blockedAppsRoundTripsThroughJSON`; plus `headerHasFifteenColumns` renamed
+    to `headerHasSixteenColumns` (count updated to 16) and `nilNoteEncodesAsEmptyString`
+    index updated from 14 → 15.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- Remaining possible additions:
+  - `ConversationView` auto-send: replace the 300 ms heuristic with `.onAppear`
+    on the first `MessageBubble` — more robust timing (low priority; existing
+    code works well in practice).
+  - Rename the Session.defaultBlockedDomains count test since count is now 51
+    (or just keep the "> 20" threshold which still holds).
+  - Consider adding `theguardian.com` to `defaultBlockedDomainsIncludeNewsSites`
+    test (already done in this run).
+
+---
+
 ## Run 108 — 2026-06-14
 
 ### Shipped
