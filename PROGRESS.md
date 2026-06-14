@@ -1,5 +1,58 @@
 # Adia — Build Progress
 
+## Run 113 — 2026-06-14
+
+### Shipped
+- **"project" and "proposal" task keywords with natural callouts (+12 tests)**
+
+  `extractTaskKeyword` previously returned `nil` for tasks like "work on my CS project"
+  or "write a grant proposal", so only the generic callout pool fired. Now both are
+  recognized as first-class keywords with dedicated tiered messages.
+
+  **`extractTaskKeyword` additions (CalloutManager.swift)**
+  - `"project"` / `"projects"` → keyword `"project"` (inserted after `"email"`, before `"blog"`)
+  - `"proposal"` / `"proposals"` → keyword `"proposal"` (inserted after `"project"`)
+  - Word-boundary regex prevents false positives: "projectile" does NOT match "project".
+  - Priority ordering: "design project" → `"design"` (design check runs first); "thesis proposal"
+    → `"essay"` (thesis check runs first); "project proposal" → `"project"` (project check runs
+    before proposal).
+
+  **`taskAwareCallouts` handlers (CalloutManager.swift)**
+  - Both keywords get dedicated tier-1/2/3 handlers so tier-3 avoids the generic
+    "CLOSE THIS. open your project/proposal." phrasing (which sounds like opening a file).
+  - project tier 3: "CLOSE THIS. Go finish your project." / "your project deadline is real."
+  - proposal tier 3: "CLOSE THIS. Go finish your proposal." / "your proposal deadline isn't moving."
+
+  **12 new tests (CalloutManagerTests.swift)**
+  - `extractTaskKeywordFromProject` — 4 input variants map to "project"
+  - `extractTaskKeywordProjectDoesNotMatchProjectile` — false-positive guard
+  - `extractTaskKeywordDesignProjectMapsToDesign` — priority ordering guard
+  - `taskAwareCalloutsProjectContainsKeyword` — all tiers contain "project"
+  - `taskAwareCalloutsProjectTier3AvoidsOpenPhrase` — no "open your project" in tier 3
+  - `taskAwareCalloutsProjectTier3UsesActionPhrasing` — tier 3 contains action word
+  - `extractTaskKeywordFromProposal` — 4 input variants including priority-ordering cases
+  - `extractTaskKeywordThesisProposalMapsToEssay` — "thesis proposal" → essay guard
+  - `extractTaskKeywordProjectProposalMapsToProject` — "project proposal" → project guard
+  - `taskAwareCalloutsProposalContainsKeyword` — all tiers contain "proposal"
+  - `taskAwareCalloutsProposalTier3AvoidsOpenPhrase` — no "open your proposal" in tier 3
+  - `taskAwareCalloutsProposalTier3UsesActionPhrasing` — tier 3 contains action word
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - Add `"amp"` to `HostsFileManager.additionalBlockedSubdomainPrefixes` to block
+    Google AMP bypass (e.g. `amp.reddit.com`).
+  - Add more blocked Mac app bundle IDs to `SettingsStore.defaultBlockedApps`
+    (e.g. `com.spotify.client`, `com.discord`).
+  - `ConversationView` auto-send: the 300 ms heuristic could be replaced with
+    `.onAppear` on the first AI `MessageBubble` for a more reliable trigger.
+  - Verify the "blockedApps" CSV column in session history export actually contains data.
+
+---
+
 ## Run 112 — 2026-06-14
 
 ### Shipped
