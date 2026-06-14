@@ -1,5 +1,52 @@
 # Adia — Build Progress
 
+## Run 108 — 2026-06-14
+
+### Shipped
+- **All-time summary line in SettingsView History tab** — The History tab
+  header now shows a secondary "clock" row ("47 sessions · 23h 3m total")
+  below the weekly stats whenever the user has any recorded sessions.
+  - New `internal func allTimeSummaryText(_ s: SessionStats) -> String`
+    placed as a top-level helper (alongside `filterRecords`, `groupedByDay`
+    etc.) so it is directly testable via `@testable import AdiCore`.
+  - `weeklySection` restructured: outer guard now triggers on
+    `weekCount > 0 || allTimeCount > 0`; inner HStacks are independently
+    gated so weekly and all-time rows appear only when relevant.
+  - 5 new tests: `AllTimeSummaryTextTests` — zero minutes (no time suffix),
+    minutes-only, hours-only, hours+minutes, singular "session" grammar.
+
+- **Blocked lists expanded**
+  - `defaultBlockedApps` (10 → 12): Apple Music (`com.apple.Music`) and
+    Podcasts (`com.apple.podcasts`) added — both are passive-listening
+    distractions that pull focus away from the task.
+  - `defaultBlockedDomains` (45 → 47): `aliexpress.com` and `walmart.com`
+    added under the Shopping comment — same impulse-shopping category as
+    amazon/ebay/etsy.
+  - 3 new tests: `defaultBlockedAppsContainsAppleMusic`,
+    `defaultBlockedAppsContainsPodcasts`,
+    `defaultBlockedDomainsIncludeShoppingSites` expanded to cover all five
+    shopping domains.
+
+- **Pushed 52 previously-unpushed commits to origin/main** — All runs
+  52-108 are now live on the remote.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- Remaining possible additions:
+  - `ConversationView` auto-send delay: replace the 300 ms heuristic with
+    `.onAppear` on the first `MessageBubble` — more robust timing.
+  - Use `streakDisplayLabel(current:best:)` in SettingsView `weeklySection`
+    to match the notch's streak display (currently SettingsView uses `> 1`
+    threshold and plain text, while the notch uses the shared helper with
+    best-streak annotation).
+  - Session export: add a "blocked_apps" column to CSV export in
+    `sessionRecordsToCSV`.
+  - Add `bbc.com` or `theguardian.com` to blocked news domains.
+
+---
+
 ## Run 107 — 2026-06-14
 
 ### Shipped
