@@ -1,5 +1,60 @@
 # Adia — Build Progress
 
+## Run 100 — 2026-06-14
+
+### Shipped
+- **feat: 4 quality improvements — callback race fix, auto-send, criteria in early-exit, blocked domains in record**
+
+  **(a) LocalBlockServer callback race fix (fix b from run 99)**
+  - `start()` now accepts `onBlockedDomainAccessed: (@Sendable (String) -> Void)? = nil` as
+    a parameter. The callback is assigned to `self.onBlockedDomainAccessed` after `stop()` but
+    before `l.start(queue: serverQueue)` — guarantees no incoming connection can miss the callback.
+  - `stop()` now clears `onBlockedDomainAccessed = nil` so a subsequent `start()` without a
+    callback always starts clean. Callers no longer need to zero the property separately.
+  - `SessionManager.activate()` passes the callback into `start()` instead of setting it after.
+  - Removed the now-redundant `LocalBlockServer.shared.onBlockedDomainAccessed = nil` lines
+    from `endSession()` and the error rollback in `start()`.
+  - **Tests (+4)**: `startWithCallbackParameterSetsCallbackBeforeListenerBegins`,
+    `stopClearsOnBlockedDomainAccessed`, `startWithNilCallbackLeavesCallbackNil`,
+    `secondStartOverridesPreviousCallback`.
+
+  **(b) ConversationView auto-send on blocked-domain reasoning (fix a from run 99)**
+  - `.task(id: manager.messages.first?.id)` modifier fires `autoSendOpeningIfNeeded()` once
+    per conversation start. When mode is `.reasoning(domain: X)` with a non-empty X and
+    `messages.count == 1`, auto-sends `"I'm trying to access [domain]"` after 300 ms, so the
+    AI replies immediately when the notch expands after a blocked-page visit.
+  - A second guard after the delay (`messages.count == 1, !isLoading`) prevents double-sends
+    if the user types before the 300 ms window expires.
+
+  **(c) earlyExit system prompt includes success criteria (fix c from run 99)**
+  - `ConversationManager.systemPrompt(for: .earlyExit)` now appends the session's success
+    criteria when non-empty, so the AI can make specific motivational arguments ("you haven't
+    submitted to Canvas yet") rather than generic ones.
+
+  **(d) SessionRecord stores blocked domains (fix d from run 99)**
+  - `SessionRecord` gains `blockedDomains: [String]` (default `[]`, `decodeIfPresent` — safe
+    for legacy records). `SessionManager.endSession()` snapshots `s.blockedDomains` so the
+    history view can later show "blocked N sites during this session."
+  - **Tests (+6)**: `blockedDomainsDefaultsToEmpty`, `blockedDomainsStoredInInit`,
+    `blockedDomainsPreservedInCodableRoundTrip`, `legacyRecordWithoutBlockedDomainsDecodesAsEmpty`,
+    `endSessionStoresBlockedDomainsInRecord`, `endSessionWithNoBlockedDomainsRecordsEmptyList`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All run 99 improvement suggestions are now implemented. Remaining ideas for future quality work:
+  - (a) History view in SettingsView: show `blockedDomains.count` per session record (field now
+    available in `SessionRecord`). Display as "blocked 14 sites" below each session row.
+  - (b) `ConversationView` auto-send followup: the 300ms delay is a heuristic — consider
+    using `onAppear` of the first message bubble instead for a more robust trigger.
+  - (c) Template edit UI in SettingsView — templates can only be reordered/deleted; no
+    in-place edit of task text or success criteria without re-creating the template.
+  - (d) Integration test for `SleepBlocker.start()` — verify assertion is registered with
+    `IOPMCopyAssertionsByProcess`.
+
+---
+
 ## Run 99 — 2026-06-14
 
 ### Shipped
