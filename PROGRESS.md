@@ -1,5 +1,49 @@
 # Adia — Build Progress
 
+## Run 111 — 2026-06-14
+
+### Shipped
+- **Natural callout messages for "homework" and "research" keywords**
+  - Previously both fell through to the generic template, producing tier-3 messages that sounded
+    odd: `"CLOSE THIS. open your homework."` (you don't "open" homework) and
+    `"CLOSE THIS. open your research."` (passive, unclear action).
+  - Added dedicated `keyword == "homework"` handler:
+    - T1: "get back to your homework.", "this isn't your homework.", "your homework isn't going to do itself."
+    - T2: "stop putting off your homework.", "you need to do your homework, not this."
+    - T3: "CLOSE THIS. Go finish your homework.", "your homework deadline isn't moving."
+  - Added dedicated `keyword == "research"` handler:
+    - T1: "get back to your research.", "this isn't your research.", "your research isn't going to do itself."
+    - T2: "stop avoiding your research.", "you need to be doing your research, not this."
+    - T3: "CLOSE THIS. Get back to your research.", "your research deadline isn't moving."
+  - All messages still contain their keyword so `taskAwareCalloutsSubstituteKeywordPerTier` passes.
+  - **6 new tests** in `CalloutManagerTests`:
+    `taskAwareCalloutsHomeworkContainsKeyword`, `taskAwareCalloutsHomeworkTier3AvoidsOpenPhrase`,
+    `taskAwareCalloutsHomeworkTier3UsesActionPhrasing`, `taskAwareCalloutsResearchContainsKeyword`,
+    `taskAwareCalloutsResearchTier3AvoidsOpenPhrase`.
+
+- **Blocked domains expanded (51 → 53)**: Added 2 music streaming sites that function as
+  passive-listening procrastination during deep work:
+  - `soundcloud.com` — music/audio streaming
+  - `bandcamp.com` — music discovery/streaming
+  - **1 new test** in `SessionStateTests`: `defaultBlockedDomainsIncludeMusicStreamingSites`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- Remaining possible polish:
+  - `ConversationView` auto-send: replace the 300 ms heuristic with `.onAppear`
+    on the first `MessageBubble` — more robust timing (low priority; existing
+    code works well in practice).
+  - Add `design` special handler — currently falls through to generic template.
+    "CLOSE THIS. open your design." sounds like opening Figma; could be improved
+    to "CLOSE THIS. Open Figma." or "your design is waiting in Figma." but this
+    is debatable since opening Figma IS the right action.
+  - Consider adding `npr.org`, `ap.org` (AP News) to the news procrastination block.
+  - All 14 GOAL.md tasks remain checked. No new tasks needed.
+
+---
+
 ## Run 110 — 2026-06-14
 
 ### Shipped
