@@ -90,6 +90,7 @@ public final class SessionManager: ObservableObject {
             captureManager.onFrame = nil
             await detector.detach()
             AppMonitor.shared.stop()
+            LocalBlockServer.shared.onBlockedDomainAccessed = nil
             LocalBlockServer.shared.stop()
             SleepBlocker.shared.stop()
             do { try await hosts.unblockAll() } catch {
@@ -143,6 +144,7 @@ public final class SessionManager: ObservableObject {
 
         captureManager.stop()
         AppMonitor.shared.stop()
+        LocalBlockServer.shared.onBlockedDomainAccessed = nil
         LocalBlockServer.shared.stop()
         SleepBlocker.shared.stop()
         do { try await hosts.unblockAll() } catch {
@@ -384,6 +386,15 @@ public final class SessionManager: ObservableObject {
 
         // Local block server (non-fatal)
         LocalBlockServer.shared.start(blockedDomains: s.blockedDomains, taskDescription: s.task)
+        // Auto-expand the notch into reasoning mode whenever the user visits a blocked page.
+        LocalBlockServer.shared.onBlockedDomainAccessed = { domain in
+            Task { @MainActor in
+                guard SessionManager.shared.session != nil,
+                      !NotchState.shared.showingConversation,
+                      !NotchState.shared.isVerifying else { return }
+                NotchState.shared.startConversation(.reasoning(domain: domain))
+            }
+        }
 
         // /etc/hosts blocking requires root — non-fatal
         do {

@@ -11,6 +11,17 @@ public final class LocalBlockServer: @unchecked Sendable {
     private let serverQueue = DispatchQueue(label: "adia.blockserver", qos: .utility)
     private var taskDescription: String = ""
 
+    /// Minimum seconds between callbacks for the same domain — prevents rapid-reload spam.
+    internal static let notifyMinInterval: TimeInterval = 10.0
+
+    /// Called on serverQueue when a blocked domain request arrives (rate-limited per domain).
+    /// Set from @MainActor during session lifecycle; not concurrent with active page serving.
+    var onBlockedDomainAccessed: (@Sendable (String) -> Void)? = nil
+
+    // Rate-limit state — only accessed from serverQueue.
+    private var lastNotifyDomain: String? = nil
+    private var lastNotifyAt: Date? = nil
+
     private init() {}
 
     internal init(forTesting: ()) {}
@@ -51,6 +62,8 @@ public final class LocalBlockServer: @unchecked Sendable {
     public func stop() {
         listener?.cancel()
         listener = nil
+        lastNotifyDomain = nil
+        lastNotifyAt = nil
     }
 
     // MARK: - Connection handling
@@ -61,6 +74,18 @@ public final class LocalBlockServer: @unchecked Sendable {
             guard let self, let data else { connection.cancel(); return }
             let request = String(data: data, encoding: .utf8) ?? ""
             let host = self.extractHost(from: request)
+            // Auto-expand the notch into reasoning mode when a blocked page is served.
+            if let callback = self.onBlockedDomainAccessed,
+               Self.shouldNotifyCallback(
+                   forDomain: host,
+                   lastDomain: self.lastNotifyDomain,
+                   lastNotifiedAt: self.lastNotifyAt,
+                   now: Date()
+               ) {
+                self.lastNotifyDomain = host
+                self.lastNotifyAt = Date()
+                callback(host)
+            }
             let html = self.blockedHTML(domain: host, taskDescription: taskDescription)
             let body = html.data(using: .utf8) ?? Data()
             let header = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: \(body.count)\r\nConnection: close\r\n\r\n"
@@ -78,6 +103,19 @@ public final class LocalBlockServer: @unchecked Sendable {
             }
         }
         return "this site"
+    }
+
+    /// Pure helper — true if the blocked-domain callback should fire for `domain` right now.
+    /// Extracted as `internal static` so tests can verify rate-limiting without a live connection.
+    internal static func shouldNotifyCallback(
+        forDomain domain: String,
+        lastDomain: String?,
+        lastNotifiedAt: Date?,
+        now: Date,
+        minInterval: TimeInterval = LocalBlockServer.notifyMinInterval
+    ) -> Bool {
+        guard domain == lastDomain, let last = lastNotifiedAt else { return true }
+        return now.timeIntervalSince(last) >= minInterval
     }
 
     internal static func htmlEscape(_ text: String) -> String {
@@ -143,7 +181,7 @@ public final class LocalBlockServer: @unchecked Sendable {
           <div class="domain">\(safeDomain)</div>
           <h1>get back to work.</h1>
           <p>\(safeTask)</p>
-          <div class="hint">open adia from the notch to request access</div>
+          <div class="hint">adia is opening above — chat there to request access</div>
         </body>
         </html>
         """

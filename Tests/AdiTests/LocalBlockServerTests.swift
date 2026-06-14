@@ -78,4 +78,73 @@ struct LocalBlockServerTests {
     @Test func htmlEscapeEmptyString() {
         #expect(LocalBlockServer.htmlEscape("") == "")
     }
+
+    // MARK: - shouldNotifyCallback (rate-limiting for auto-reasoning trigger)
+
+    @Test func shouldNotifyCallbackFirstCallReturnsTrue() {
+        #expect(LocalBlockServer.shouldNotifyCallback(
+            forDomain: "youtube.com",
+            lastDomain: nil,
+            lastNotifiedAt: nil,
+            now: Date()
+        ))
+    }
+
+    @Test func shouldNotifyCallbackSameDomainWithinIntervalReturnsFalse() {
+        let now = Date()
+        let recent = now.addingTimeInterval(-5)
+        #expect(!LocalBlockServer.shouldNotifyCallback(
+            forDomain: "youtube.com",
+            lastDomain: "youtube.com",
+            lastNotifiedAt: recent,
+            now: now,
+            minInterval: 10.0
+        ))
+    }
+
+    @Test func shouldNotifyCallbackSameDomainAfterIntervalReturnsTrue() {
+        let now = Date()
+        let old = now.addingTimeInterval(-15)
+        #expect(LocalBlockServer.shouldNotifyCallback(
+            forDomain: "youtube.com",
+            lastDomain: "youtube.com",
+            lastNotifiedAt: old,
+            now: now,
+            minInterval: 10.0
+        ))
+    }
+
+    @Test func shouldNotifyCallbackDifferentDomainIgnoresInterval() {
+        let now = Date()
+        let recent = now.addingTimeInterval(-2)
+        #expect(LocalBlockServer.shouldNotifyCallback(
+            forDomain: "reddit.com",
+            lastDomain: "youtube.com",
+            lastNotifiedAt: recent,
+            now: now,
+            minInterval: 10.0
+        ))
+    }
+
+    @Test func shouldNotifyCallbackExactlyAtIntervalBoundaryReturnsTrue() {
+        let now = Date()
+        let boundary = now.addingTimeInterval(-10)
+        #expect(LocalBlockServer.shouldNotifyCallback(
+            forDomain: "twitter.com",
+            lastDomain: "twitter.com",
+            lastNotifiedAt: boundary,
+            now: now,
+            minInterval: 10.0
+        ))
+    }
+
+    @Test func onBlockedDomainAccessedCallbackCanBeSetAndCleared() {
+        let server = LocalBlockServer(forTesting: ())
+        var fired = false
+        server.onBlockedDomainAccessed = { _ in fired = true }
+        #expect(server.onBlockedDomainAccessed != nil)
+        server.onBlockedDomainAccessed = nil
+        #expect(server.onBlockedDomainAccessed == nil)
+        _ = fired  // suppress unused warning
+    }
 }

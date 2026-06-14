@@ -1,5 +1,58 @@
 # Adia — Build Progress
 
+## Run 98 — 2026-06-14
+
+### Shipped
+- **feat: auto-open reasoning conversation when a blocked domain is visited**
+  - `LocalBlockServer.onBlockedDomainAccessed: (@Sendable (String) -> Void)?` — new callback
+    property. Fired from `serverQueue` when an incoming HTTP request is received (i.e., the
+    user's browser landed on a blocked page). Rate-limited per domain: same domain triggers
+    at most once per 10 seconds (`notifyMinInterval`) to absorb page-reload spam.
+  - `LocalBlockServer.shouldNotifyCallback(forDomain:lastDomain:lastNotifiedAt:now:minInterval:)`
+    — new `internal static` pure helper (mirrors `AppMonitor.shouldSendHiddenNotification`)
+    so the rate-limiting decision is unit-testable without a live TCP connection.
+  - Rate-limit state (`lastNotifyDomain`, `lastNotifyAt`) — private, only accessed from
+    `serverQueue`. Cleared by `stop()` so a new session starts fresh.
+  - **`SessionManager.activate()`** — after `LocalBlockServer.shared.start(...)`, sets
+    `onBlockedDomainAccessed` to a `@Sendable` closure that dispatches to `@MainActor` and
+    calls `NotchState.shared.startConversation(.reasoning(domain: domain))`. Guards:
+    `session != nil` (must be active), `!showingConversation` (don't interrupt an ongoing
+    chat), `!isVerifying` (don't interrupt verification). Domain passed into reasoning mode
+    so the opening AI message names the specific blocked site.
+  - **`SessionManager.endSession()`** and **error rollback in `start()`** — clear callback
+    (`= nil`) before `LocalBlockServer.shared.stop()` so no stale callbacks fire after
+    the session ends.
+  - **Blocked page hint text** updated from "open adia from the notch to request access" to
+    "adia is opening above — chat there to request access".
+  - **Tests (+6)** in `LocalBlockServerTests.swift`:
+    `shouldNotifyCallbackFirstCallReturnsTrue` (nil last state → always fires),
+    `shouldNotifyCallbackSameDomainWithinIntervalReturnsFalse` (5s elapsed, 10s limit → false),
+    `shouldNotifyCallbackSameDomainAfterIntervalReturnsTrue` (15s elapsed → true),
+    `shouldNotifyCallbackDifferentDomainIgnoresInterval` (different domain → always fires),
+    `shouldNotifyCallbackExactlyAtIntervalBoundaryReturnsTrue` (exactly at limit → true),
+    `onBlockedDomainAccessedCallbackCanBeSetAndCleared` (set/clear via isolated test instance).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Integration test for `SleepBlocker.start()` — verify assertion is registered with
+    `IOPMCopyAssertionsByProcess`.
+  - (b) Template edit UI in SettingsView — templates can only be reordered/deleted; no
+    in-place edit of task text or success criteria without re-creating the template.
+  - (c) `ConversationView` auto-send pre-fill: when reasoning opens for a specific domain,
+    the AI opening message already names it — could also auto-send a user message like
+    "I'm trying to open [domain]" so the user doesn't have to type first.
+  - (d) Blocked-page countdown: embed session elapsed or remaining duration in the blocked
+    HTML so users can see their progress without opening Adia.
+  - (e) `LocalBlockServer` callback first-request race: callback set from `@MainActor` after
+    `start()` returns — an extremely fast first connection could miss the auto-open (sub-ms
+    window, acceptable in practice). Could be eliminated by accepting callback as a param of
+    `start()`.
+
+---
+
 ## Run 97 — 2026-06-14
 
 ### Shipped
