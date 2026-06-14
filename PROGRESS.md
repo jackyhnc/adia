@@ -1,5 +1,53 @@
 # Adia — Build Progress
 
+## Run 105 — 2026-06-14
+
+### Shipped
+- **fix+test: streaming edge cases and crossDomainSignal "0 granted" phrasing (+6 tests)**
+
+  **(a) Empty-stream guard in `ConversationManager.send()`**
+  - If `chatStream` completes without yielding any text (e.g. a malformed SSE
+    response with no `text_delta` events), the old code would append a blank
+    `ChatMessage` — rendered as an empty bubble in the UI.
+  - Fixed: `finalContent = accumulated.isEmpty ? "something went wrong. try again." : accumulated`
+  - Also corrects `parseAccessDecision(from:)` to use `finalContent` instead of
+    the now-empty `accumulated`, so the access decision isn't evaluated against `""`.
+  - New test: `sendEmptyStreamFallsBackToErrorMessage`
+
+  **(b) `crossDomainSignal` "0 granted" phrasing**
+  - When all cross-domain asks were denied, the signal was emitting the awkward string
+    "3 of those asks were denied, 0 granted" into the AI system prompt.
+  - Fixed: `grantedClause = grantedCount > 0 ? ", \(grantedCount) granted" : ""`
+  - New tests: `crossDomainSignalOmitsGrantedCountWhenZero`,
+    `crossDomainSignalIncludesGrantedCountWhenNonZero`
+
+  **(c) Multi-chunk `MockAgentAIClient` + streaming content tests**
+  - `MockAgentAIClient.setChatStreamChunks([String])`: configures `chatStream` to
+    yield each element as a distinct chunk instead of a single blob. Pass `[]` to
+    simulate an empty stream.
+  - `setChatResult` now clears any prior `chatStreamChunks` override.
+  - New test: `sendAccumulatesMultipleChunksIntoSingleMessage` — verifies the
+    `accumulated += chunk` loop concatenates 3 chunks ("hello", " there", " friend")
+    into one final assistant message.
+  - New test: `streamingContentIsEmptyStringImmediatelyAfterSend` — documents and
+    tests the contract that `streamingContent == ""` (not nil) immediately after
+    `send()` returns, while the Task is still queued. This is the trigger that makes
+    `StreamingBubble` show the "…" placeholder during the first network RTT.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- Remaining possible additions:
+  - `ConversationView` auto-send: the 300 ms delay heuristic (before auto-sending
+    "I'm trying to access \(domain)") could be replaced with `.onAppear` on the first
+    `MessageBubble` for a more reliable trigger.
+  - Session export: add "blocked_sites" column to CSV export in `sessionRecordsToCSV`.
+  - Consider an integration smoke test that exercises the full `classify` → `evaluate`
+    → callout pipeline end-to-end with a real screenshot (requires `ANTHROPIC_API_KEY`).
+
+---
+
 ## Run 104 — 2026-06-14
 
 ### Shipped
