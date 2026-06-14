@@ -171,6 +171,85 @@ public actor AgentAIClient {
                               messages: apiMessages, maxTokens: 900)
     }
 
+    // MARK: - Streaming chat
+
+    /// Streams a chat response token-by-token via the Anthropic streaming Messages API.
+    /// Returns an AsyncThrowingStream that yields text chunks as they arrive from the server.
+    /// The caller accumulates chunks to produce the full response.
+    public func chatStream(
+        messages: [ChatMessage],
+        systemPrompt: String
+    ) async throws -> AsyncThrowingStream<String, Error> {
+        guard let key = await currentKey() else { throw AgentAIError.missingAPIKey }
+
+        // Capture actor-isolated state into local constants before escaping the actor.
+        let session  = urlSession
+        let model    = fastModel
+        let apiURL   = baseURL
+        let version  = anthropicVersion
+
+        let apiMessages: [[String: Any]] = messages.map { msg in
+            ["role": msg.role.rawValue, "content": msg.content] as [String: Any]
+        }
+        var body: [String: Any] = [
+            "model":      model,
+            "max_tokens": 900,
+            "stream":     true,
+            "messages":   apiMessages,
+        ]
+        if !systemPrompt.isEmpty {
+            body["system"] = [
+                ["type": "text", "text": systemPrompt,
+                 "cache_control": ["type": "ephemeral"]] as [String: Any]
+            ]
+        }
+
+        var req = URLRequest(url: apiURL)
+        req.httpMethod = "POST"
+        req.setValue(key,         forHTTPHeaderField: "x-api-key")
+        req.setValue(version,     forHTTPHeaderField: "anthropic-version")
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+        return AsyncThrowingStream { continuation in
+            Task {
+                do {
+                    let (asyncBytes, response) = try await session.bytes(for: req)
+                    let http       = response as? HTTPURLResponse
+                    let statusCode = http?.statusCode ?? 0
+                    guard (200..<300).contains(statusCode) else {
+                        throw AgentAIError.httpError(statusCode,
+                            "streaming failed with HTTP \(statusCode)")
+                    }
+                    for try await line in asyncBytes.lines {
+                        if let chunk = AgentAIClient.parseSSELine(line) {
+                            continuation.yield(chunk)
+                        }
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+        }
+    }
+
+    /// Parses one Server-Sent Events line and returns the text delta it carries.
+    /// Returns nil for all non-text-delta events (message_start, ping, etc.).
+    internal static func parseSSELine(_ line: String) -> String? {
+        guard line.hasPrefix("data: ") else { return nil }
+        let json = String(line.dropFirst(6))
+        guard json != "[DONE]",
+              let data  = json.data(using: .utf8),
+              let obj   = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              (obj["type"] as? String) == "content_block_delta",
+              let delta = obj["delta"] as? [String: Any],
+              (delta["type"] as? String) == "text_delta",
+              let text  = delta["text"] as? String
+        else { return nil }
+        return text
+    }
+
     // MARK: - HTTP
 
     /// Max number of retries after the initial attempt. Retries only on 429 and 5xx.

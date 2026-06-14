@@ -27,6 +27,11 @@ public protocol AgentAIService: Sendable {
         messages: [ChatMessage],
         systemPrompt: String
     ) async throws -> String
+
+    func chatStream(
+        messages: [ChatMessage],
+        systemPrompt: String
+    ) async throws -> AsyncThrowingStream<String, Error>
 }
 
 extension AgentAIClient: AgentAIService {}

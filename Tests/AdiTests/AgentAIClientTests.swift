@@ -394,4 +394,58 @@ struct AgentAIClientParsingTests {
     @Test func maxRetriesIsThree() {
         #expect(AgentAIClient.maxRetries == 3)
     }
+
+    // MARK: - SSE streaming line parser
+
+    @Test func parseSSELineReturnsTextForTextDeltaEvent() {
+        let line = #"data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"hello"}}"#
+        #expect(AgentAIClient.parseSSELine(line) == "hello")
+    }
+
+    @Test func parseSSELineReturnsEmptyStringTextDelta() {
+        // Empty text deltas are valid — yield them so the caller can decide.
+        let line = #"data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":""}}"#
+        #expect(AgentAIClient.parseSSELine(line) == "")
+    }
+
+    @Test func parseSSELineIgnoresMessageStartEvent() {
+        let line = #"data: {"type":"message_start","message":{"id":"msg_01","type":"message"}}"#
+        #expect(AgentAIClient.parseSSELine(line) == nil)
+    }
+
+    @Test func parseSSELineIgnoresPingEvent() {
+        let line = #"data: {"type":"ping"}"#
+        #expect(AgentAIClient.parseSSELine(line) == nil)
+    }
+
+    @Test func parseSSELineIgnoresContentBlockStart() {
+        let line = #"data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}"#
+        #expect(AgentAIClient.parseSSELine(line) == nil)
+    }
+
+    @Test func parseSSELineIgnoresMessageDelta() {
+        let line = #"data: {"type":"message_delta","delta":{"stop_reason":"end_turn"}}"#
+        #expect(AgentAIClient.parseSSELine(line) == nil)
+    }
+
+    @Test func parseSSELineIgnoresMessageStop() {
+        let line = #"data: {"type":"message_stop"}"#
+        #expect(AgentAIClient.parseSSELine(line) == nil)
+    }
+
+    @Test func parseSSELineIgnoresNonDataLines() {
+        #expect(AgentAIClient.parseSSELine("event: content_block_delta") == nil)
+        #expect(AgentAIClient.parseSSELine("") == nil)
+        #expect(AgentAIClient.parseSSELine(":") == nil)
+    }
+
+    @Test func parseSSELineIgnoresDoneTerminator() {
+        #expect(AgentAIClient.parseSSELine("data: [DONE]") == nil)
+    }
+
+    @Test func parseSSELineIgnoresInputTokensDelta() {
+        // input_json_delta is not a text delta — should be ignored.
+        let line = #"data: {"type":"content_block_delta","index":0,"delta":{"type":"input_json_delta","partial_json":"{}"}}"#
+        #expect(AgentAIClient.parseSSELine(line) == nil)
+    }
 }

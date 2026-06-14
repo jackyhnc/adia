@@ -90,4 +90,18 @@ actor MockAgentAIClient: AgentAIService {
         chatCallCount += 1
         return try chatResult.get()
     }
+
+    func chatStream(messages: [ChatMessage], systemPrompt: String) async throws -> AsyncThrowingStream<String, Error> {
+        chatCallCount += 1
+        let result = chatResult
+        return AsyncThrowingStream { continuation in
+            switch result {
+            case .success(let text):
+                continuation.yield(text)
+                continuation.finish()
+            case .failure(let error):
+                continuation.finish(throwing: error)
+            }
+        }
+    }
 }

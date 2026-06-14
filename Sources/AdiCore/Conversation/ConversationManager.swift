@@ -11,6 +11,7 @@ public final class ConversationManager: ObservableObject {
 
     @Published public private(set) var messages: [ChatMessage] = []
     @Published public private(set) var isLoading: Bool = false
+    @Published public private(set) var streamingContent: String? = nil
     @Published public private(set) var mode: ConversationMode?
     @Published public private(set) var accessGranted: Bool? = nil
 
@@ -40,6 +41,7 @@ public final class ConversationManager: ObservableObject {
         messages = []
         accessGranted = nil
         isLoading = false
+        streamingContent = nil
     }
 
     // MARK: - Messaging
@@ -49,17 +51,25 @@ public final class ConversationManager: ObservableObject {
         guard !trimmed.isEmpty, !isLoading else { return }
         messages.append(ChatMessage(role: .user, content: trimmed))
         isLoading = true
+        streamingContent = ""
         Task { @MainActor in
             do {
-                let reply = try await _aiClient.chat(
+                let stream = try await _aiClient.chatStream(
                     messages: messages,
                     systemPrompt: systemPrompt(for: mode)
                 )
-                messages.append(ChatMessage(role: .assistant, content: reply))
+                var accumulated = ""
+                for try await chunk in stream {
+                    accumulated += chunk
+                    streamingContent = accumulated
+                }
+                streamingContent = nil
+                messages.append(ChatMessage(role: .assistant, content: accumulated))
                 if case .reasoning = mode {
-                    parseAccessDecision(from: reply)
+                    parseAccessDecision(from: accumulated)
                 }
             } catch {
+                streamingContent = nil
                 messages.append(ChatMessage(role: .assistant, content: "something went wrong. try again."))
             }
             isLoading = false

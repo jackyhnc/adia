@@ -356,4 +356,62 @@ struct ConversationManagerTests {
         await MainActor.run { ConversationManager.shared._injectAIClientForTesting(realClient) }
         await reset()
     }
+
+    /// After streaming completes (success or failure), `streamingContent` must be nil
+    /// so the streaming bubble is removed from the UI and replaced by the final message.
+    @Test func streamingContentIsNilAfterSuccessfulChat() async {
+        await reset()
+        let mock = MockAgentAIClient()
+        await mock.setChatResult(.success("you're doing great, keep it up"))
+        let realClient = await MainActor.run { ConversationManager.shared._aiClient }
+        await MainActor.run {
+            ConversationManager.shared._injectAIClientForTesting(mock)
+            ConversationManager.shared.start(mode: .earlyExit)
+            ConversationManager.shared.send("I'll keep going")
+        }
+
+        for _ in 0..<200 {
+            let stillLoading = await MainActor.run { ConversationManager.shared.isLoading }
+            if !stillLoading { break }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+
+        let streaming = await MainActor.run { ConversationManager.shared.streamingContent }
+        #expect(streaming == nil, "streamingContent must be nil after chat completes")
+        let messages = await MainActor.run { ConversationManager.shared.messages }
+        #expect(messages.last?.content == "you're doing great, keep it up")
+
+        await MainActor.run { ConversationManager.shared._injectAIClientForTesting(realClient) }
+        await reset()
+    }
+
+    @Test func streamingContentIsNilAfterFailedChat() async {
+        await reset()
+        let mock = MockAgentAIClient()
+        await mock.setChatResult(.failure(MockAgentAIError(message: "timeout")))
+        let realClient = await MainActor.run { ConversationManager.shared._aiClient }
+        await MainActor.run {
+            ConversationManager.shared._injectAIClientForTesting(mock)
+            ConversationManager.shared.start(mode: .earlyExit)
+            ConversationManager.shared.send("let me out")
+        }
+
+        for _ in 0..<200 {
+            let stillLoading = await MainActor.run { ConversationManager.shared.isLoading }
+            if !stillLoading { break }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+
+        let streaming = await MainActor.run { ConversationManager.shared.streamingContent }
+        #expect(streaming == nil, "streamingContent must be nil even after error")
+
+        await MainActor.run { ConversationManager.shared._injectAIClientForTesting(realClient) }
+        await reset()
+    }
+
+    @Test func resetClearsStreamingContent() async {
+        await reset()
+        let streaming = await MainActor.run { ConversationManager.shared.streamingContent }
+        #expect(streaming == nil)
+    }
 }

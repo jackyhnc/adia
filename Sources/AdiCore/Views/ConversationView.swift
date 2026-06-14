@@ -28,7 +28,11 @@ public struct ConversationView: View {
                         MessageBubble(message: msg)
                             .id(msg.id)
                     }
-                    if manager.isLoading {
+                    if let streaming = manager.streamingContent {
+                        StreamingBubble(text: streaming)
+                            .id("streaming")
+                    } else if manager.isLoading {
+                        // Fallback for any non-streaming loading state.
                         TypingIndicator()
                             .id("typing")
                     }
@@ -46,6 +50,11 @@ public struct ConversationView: View {
                     if let last = manager.messages.last {
                         proxy.scrollTo(last.id, anchor: .bottom)
                     }
+                }
+            }
+            .onChange(of: manager.streamingContent) {
+                withAnimation(.easeOut(duration: 0.05)) {
+                    proxy.scrollTo("streaming", anchor: .bottom)
                 }
             }
             .onChange(of: manager.isLoading) {
@@ -194,6 +203,30 @@ private struct MessageBubble: View {
             if message.content.contains("[ACCESS DENIED]") { return "no." }
         }
         return stripped
+    }
+}
+
+// MARK: - StreamingBubble
+
+/// Shows an assistant message as it arrives token-by-token.
+/// Displays "…" when the buffer is still empty (first network RTT).
+private struct StreamingBubble: View {
+    let text: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 6) {
+            Text("adia")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundStyle(.white.opacity(0.3))
+                .tracking(1)
+                .padding(.top, 2)
+                .frame(width: 30, alignment: .trailing)
+            Text(text.isEmpty ? "…" : text)
+                .font(.system(size: 12))
+                .foregroundStyle(.white)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 }
 
