@@ -385,7 +385,7 @@ public final class SessionManager: ObservableObject {
         }
 
         // Local block server (non-fatal)
-        LocalBlockServer.shared.start(blockedDomains: s.blockedDomains, taskDescription: s.task)
+        LocalBlockServer.shared.start(blockedDomains: s.blockedDomains, taskDescription: s.task, sessionStartTime: s.startTime)
         // Auto-expand the notch into reasoning mode whenever the user visits a blocked page.
         LocalBlockServer.shared.onBlockedDomainAccessed = { domain in
             Task { @MainActor in

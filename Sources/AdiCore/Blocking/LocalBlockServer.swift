@@ -26,13 +26,14 @@ public final class LocalBlockServer: @unchecked Sendable {
 
     internal init(forTesting: ()) {}
 
-    public func start(blockedDomains: [String], taskDescription: String) {
+    public func start(blockedDomains: [String], taskDescription: String, sessionStartTime: Date? = nil) {
         self.taskDescription = taskDescription
         stop()
 
-        // Capture taskDescription as a local constant so the connection handler closure
-        // never reads self.taskDescription from a different thread (serverQueue vs. MainActor).
+        // Capture both values as local constants so the connection handler closure
+        // never reads self from a different thread (serverQueue vs. MainActor).
         let capturedTask = taskDescription
+        let capturedStart = sessionStartTime
 
         // Try port 80 first (needs root), fall back to 8080.
         for port in [80, 8080] {
@@ -42,7 +43,7 @@ public final class LocalBlockServer: @unchecked Sendable {
                 params.allowLocalEndpointReuse = true
                 let l = try NWListener(using: params, on: nwPort)
                 l.newConnectionHandler = { [weak self] conn in
-                    self?.handle(conn, taskDescription: capturedTask)
+                    self?.handle(conn, taskDescription: capturedTask, sessionStartTime: capturedStart)
                 }
                 l.stateUpdateHandler = { state in
                     if case .failed(let err) = state {
@@ -68,7 +69,7 @@ public final class LocalBlockServer: @unchecked Sendable {
 
     // MARK: - Connection handling
 
-    private func handle(_ connection: NWConnection, taskDescription: String) {
+    private func handle(_ connection: NWConnection, taskDescription: String, sessionStartTime: Date?) {
         connection.start(queue: serverQueue)
         connection.receive(minimumIncompleteLength: 1, maximumLength: 8192) { [weak self] data, _, _, _ in
             guard let self, let data else { connection.cancel(); return }
@@ -86,7 +87,7 @@ public final class LocalBlockServer: @unchecked Sendable {
                 self.lastNotifyAt = Date()
                 callback(host)
             }
-            let html = self.blockedHTML(domain: host, taskDescription: taskDescription)
+            let html = Self.blockedHTML(domain: host, taskDescription: taskDescription, sessionStartTime: sessionStartTime)
             let body = html.data(using: .utf8) ?? Data()
             let header = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: \(body.count)\r\nConnection: close\r\n\r\n"
             var response = (header.data(using: .utf8) ?? Data())
@@ -126,7 +127,39 @@ public final class LocalBlockServer: @unchecked Sendable {
             .replacingOccurrences(of: "\"", with: "&quot;")
     }
 
-    private func blockedHTML(domain: String, taskDescription: String) -> String {
+    /// Formats `date` as an ISO 8601 UTC string suitable for `Date.parse()` in JavaScript.
+    internal static func isoFormat(_ date: Date) -> String {
+        let fmt = ISO8601DateFormatter()
+        fmt.formatOptions = [.withInternetDateTime]
+        return fmt.string(from: date)
+    }
+
+    /// Returns a self-contained `<script>` block that reads the ISO timestamp `startISO`,
+    /// computes elapsed time, and updates `#elapsed` every second.
+    internal static func elapsedScriptTag(startISO: String) -> String {
+        """
+        <script>
+        (function() {
+          var start = Date.parse("\(startISO)");
+          function tick() {
+            var s = Math.floor((Date.now() - start) / 1000);
+            var m = Math.floor(s / 60);
+            var h = Math.floor(m / 60);
+            var txt;
+            if (h > 0) { txt = h + 'h ' + (m % 60) + 'm in'; }
+            else if (m > 0) { txt = m + 'm in'; }
+            else { txt = 'just started'; }
+            var el = document.getElementById('elapsed');
+            if (el) { el.textContent = txt; }
+          }
+          tick();
+          setInterval(tick, 1000);
+        })();
+        </script>
+        """
+    }
+
+    internal static func blockedHTML(domain: String, taskDescription: String, sessionStartTime: Date? = nil) -> String {
         let safeDomain = Self.htmlEscape(domain)
         let safeTask: String
         if taskDescription.isEmpty {
@@ -137,6 +170,7 @@ public final class LocalBlockServer: @unchecked Sendable {
             let lowered = taskDescription.prefix(1).lowercased() + taskDescription.dropFirst()
             safeTask = "you said you'd \(Self.htmlEscape(lowered))."
         }
+        let elapsedScript = sessionStartTime.map { Self.elapsedScriptTag(startISO: Self.isoFormat($0)) } ?? ""
         return """
         <!DOCTYPE html>
         <html lang="en">
@@ -163,7 +197,14 @@ public final class LocalBlockServer: @unchecked Sendable {
               color: rgba(255,255,255,0.3);
               letter-spacing: 0.15em;
               text-transform: uppercase;
-              margin-bottom: 14px;
+              margin-bottom: 8px;
+            }
+            .elapsed {
+              font-size: 11px;
+              color: rgba(255,255,255,0.18);
+              letter-spacing: 0.08em;
+              margin-bottom: 18px;
+              min-height: 1em;
             }
             h1 { font-size: 36px; font-weight: 700; margin-bottom: 10px; }
             p {
@@ -179,10 +220,11 @@ public final class LocalBlockServer: @unchecked Sendable {
         </head>
         <body>
           <div class="domain">\(safeDomain)</div>
+          <div class="elapsed" id="elapsed"></div>
           <h1>get back to work.</h1>
           <p>\(safeTask)</p>
           <div class="hint">adia is opening above — chat there to request access</div>
-        </body>
+        \(elapsedScript)</body>
         </html>
         """
     }

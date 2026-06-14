@@ -147,4 +147,82 @@ struct LocalBlockServerTests {
         #expect(server.onBlockedDomainAccessed == nil)
         _ = fired  // suppress unused warning
     }
+
+    // MARK: - isoFormat
+
+    @Test func isoFormatProducesISO8601String() {
+        // A known epoch value: 2024-01-15T10:30:00Z = 1705314600
+        let date = Date(timeIntervalSince1970: 1_705_314_600)
+        let iso = LocalBlockServer.isoFormat(date)
+        #expect(iso == "2024-01-15T10:30:00Z")
+    }
+
+    @Test func isoFormatRoundTrips() {
+        let original = Date(timeIntervalSince1970: 1_700_000_000)
+        let iso = LocalBlockServer.isoFormat(original)
+        let parsed = ISO8601DateFormatter().date(from: iso)
+        #expect(parsed != nil)
+        #expect(abs(parsed!.timeIntervalSince(original)) < 1.0)
+    }
+
+    // MARK: - elapsedScriptTag
+
+    @Test func elapsedScriptTagContainsProvidedISO() {
+        let iso = "2024-01-15T10:30:00Z"
+        let script = LocalBlockServer.elapsedScriptTag(startISO: iso)
+        #expect(script.contains(iso))
+    }
+
+    @Test func elapsedScriptTagContainsSetInterval() {
+        let script = LocalBlockServer.elapsedScriptTag(startISO: "2024-01-01T00:00:00Z")
+        #expect(script.contains("setInterval"))
+    }
+
+    @Test func elapsedScriptTagReferencesElapsedElementID() {
+        let script = LocalBlockServer.elapsedScriptTag(startISO: "2024-01-01T00:00:00Z")
+        #expect(script.contains("getElementById('elapsed')") || script.contains("getElementById(\"elapsed\")"))
+    }
+
+    @Test func elapsedScriptTagIsWrappedInScriptTags() {
+        let script = LocalBlockServer.elapsedScriptTag(startISO: "2024-01-01T00:00:00Z")
+        #expect(script.contains("<script>"))
+        #expect(script.contains("</script>"))
+    }
+
+    // MARK: - blockedHTML elapsed integration
+
+    @Test func blockedHTMLContainsElapsedDivAlways() {
+        let html = LocalBlockServer.blockedHTML(domain: "youtube.com", taskDescription: "write essay")
+        #expect(html.contains("id=\"elapsed\""))
+    }
+
+    @Test func blockedHTMLIncludesScriptWhenStartTimeGiven() {
+        let start = Date(timeIntervalSince1970: 1_705_314_600)
+        let html = LocalBlockServer.blockedHTML(
+            domain: "youtube.com",
+            taskDescription: "write essay",
+            sessionStartTime: start
+        )
+        #expect(html.contains("<script>"))
+        #expect(html.contains(LocalBlockServer.isoFormat(start)))
+    }
+
+    @Test func blockedHTMLOmitsScriptWhenNoStartTime() {
+        let html = LocalBlockServer.blockedHTML(
+            domain: "youtube.com",
+            taskDescription: "write essay",
+            sessionStartTime: nil
+        )
+        #expect(!html.contains("<script>"))
+    }
+
+    @Test func blockedHTMLStartDoesNotCrashWithStartTime() {
+        let start = Date()
+        LocalBlockServer.shared.start(
+            blockedDomains: ["youtube.com"],
+            taskDescription: "Study session",
+            sessionStartTime: start
+        )
+        LocalBlockServer.shared.stop()
+    }
 }
