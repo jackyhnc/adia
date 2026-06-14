@@ -1,5 +1,54 @@
 # Adia — Build Progress
 
+## Run 112 — 2026-06-14
+
+### Shipped
+- **test: vision + streaming integration tests for classify/verify/chatStream (+5 tests)**
+
+  Added `CoreGraphics` import and a `makeSyntheticScreenshot()` helper to
+  `ClaudeAPIIntegrationTests.swift`. Creates a minimal 200×150 RGBA context (white background +
+  dark text-like rectangle) that gives the vision model something to interpret without requiring
+  screen-capture permissions.
+
+  **(a) classify pipeline (2 new tests)**
+  - `classifyReturnsParsedStatusForSyntheticImage` — full round-trip: synthetic CGImage →
+    JPEG base64 encoding → claude-haiku-4-5 → JSON parse → `OnTaskClassification`. Asserts
+    `confidence` is in [0, 1] and `reason` is non-empty.
+  - `classifyBlankImageIsNotOnTask` — blank/minimal image submitted against a Canvas essay
+    submission task should classify as `.offTask` or `.ambiguous`, never `.onTask`. Documents
+    expected model behaviour for edge-case input.
+
+  **(b) verify pipeline (2 new tests)**
+  - `verifyReturnsParsedResultForSyntheticImage` — full round-trip: synthetic CGImage →
+    JPEG base64 → claude-sonnet-4-6 → JSON parse → `VerificationResult`. Asserts `explanation`
+    is non-empty.
+  - `verifyRejectsSyntheticImageAsNotComplete` — blank image cannot satisfy a Canvas submission
+    confirmation criterion. Asserts `verified == false`.
+
+  **(c) streaming pipeline (1 new test)**
+  - `chatStreamYieldsNonEmptyResponse` — calls `chatStream()` with haiku model, collects all
+    SSE chunks, asserts at least one chunk arrived and the concatenated result is non-empty.
+    Exercises the `parseSSELine()` parser in a live network call.
+
+  All five tests are inside the existing `@Suite(.enabled(if: hasAnthropicKey, ...))` guard,
+  so CI without the API key silently skips them.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- Integration coverage is now comprehensive: parseGoal, chat (haiku + sonnet), classify (vision),
+  verify (vision), chatStream. Remaining ideas:
+  - `ConversationView` auto-send: the 300 ms heuristic could be replaced with `.onAppear` on the
+    first AI `MessageBubble` for a more reliable trigger — low priority since the current approach
+    works well in practice.
+  - New `extractTaskKeyword` aliases: "project" → currently unrecognized (falls through to nil →
+    generic pool). Could add "project", "thesis", "proposal" as keywords with specific callouts.
+  - Session export: verify the "blockedApps" CSV column has data (added run ~101 for domains,
+    check if apps column was also added).
+
+---
+
 ## Run 111 — 2026-06-14
 
 ### Shipped
