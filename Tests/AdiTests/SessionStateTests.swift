@@ -228,7 +228,7 @@ struct DefaultBlockedDomainsCoverageTests {
 
     @Test func defaultBlockedDomainsIncludeShoppingSites() {
         let domains = Session.defaultBlockedDomains
-        for site in ["ebay.com", "etsy.com"] {
+        for site in ["amazon.com", "ebay.com", "etsy.com", "aliexpress.com", "walmart.com"] {
             #expect(domains.contains(site), "expected \(site) in default blocked domains")
         }
     }
@@ -276,6 +276,16 @@ struct DefaultBlockedAppsTests {
     @Test func defaultBlockedAppsContainsWeChat() {
         #expect(Session.defaultBlockedAppBundleIDs.contains("com.tencent.xinWeChat"),
                 "WeChat must be blocked by default")
+    }
+
+    @Test func defaultBlockedAppsContainsAppleMusic() {
+        #expect(Session.defaultBlockedAppBundleIDs.contains("com.apple.Music"),
+                "Apple Music must be blocked by default (passive-listening distraction)")
+    }
+
+    @Test func defaultBlockedAppsContainsPodcasts() {
+        #expect(Session.defaultBlockedAppBundleIDs.contains("com.apple.podcasts"),
+                "Podcasts must be blocked by default (passive-listening distraction)")
     }
 
     @Test func defaultBlockedAppsNoDuplicates() {
