@@ -256,6 +256,20 @@ struct DefaultBlockedDomainsCoverageTests {
             #expect(domains.contains(site), "expected \(site) in default blocked domains")
         }
     }
+
+    @Test func defaultBlockedDomainsIncludeGamingPlatforms() {
+        let domains = Session.defaultBlockedDomains
+        for site in ["steampowered.com", "epicgames.com"] {
+            #expect(domains.contains(site), "expected \(site) in default blocked domains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsIncludeAdditionalStreamingServices() {
+        let domains = Session.defaultBlockedDomains
+        for site in ["max.com", "crunchyroll.com", "peacocktv.com"] {
+            #expect(domains.contains(site), "expected \(site) in default blocked domains")
+        }
+    }
 }
 
 @Suite("Session defaultBlockedApps")

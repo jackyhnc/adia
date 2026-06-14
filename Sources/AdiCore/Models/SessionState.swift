@@ -135,6 +135,11 @@ public struct Session: Sendable, Identifiable {
         "hulu.com",
         "disneyplus.com",
         "primevideo.com",
+        "max.com",
+        "crunchyroll.com",
+        "peacocktv.com",
+        "steampowered.com",
+        "epicgames.com",
         // Messaging & community
         "discord.com",
         "slack.com",

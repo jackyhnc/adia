@@ -794,4 +794,67 @@ struct CalloutManagerTests {
             #expect(NotchState.shared.calloutMessage == "second message")
         }
     }
+
+    // MARK: - Special "code" callouts (natural coding-specific phrasing)
+
+    @Test func taskAwareCalloutsCodeContainsKeyword() async {
+        // All code-specific messages must contain "code" to pass the generic keyword test.
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "code", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) code messages must not be empty")
+                #expect(msgs.allSatisfy { $0.contains("code") || $0.contains("Code") },
+                        "tier \(tier) code messages must contain 'code'")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsCodeTier3AvoidsBadGenericPhrase() async {
+        // The generic template produces "CLOSE THIS. open your code." which sounds unnatural.
+        // The special handler must NOT produce this phrase.
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "code", tier: 3)
+            #expect(tier3.allSatisfy { !$0.contains("open your code") },
+                    "tier 3 code messages must not use awkward 'open your code' phrasing")
+        }
+    }
+
+    @Test func taskAwareCalloutsCodeUsesActionPhrasing() async {
+        // Tier 3 must be action-oriented: "Commit", "write", or "ship" — not generic deadline framing.
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "code", tier: 3)
+            let actionWords = ["Commit", "commit", "write", "Write", "ship", "Ship"]
+            #expect(tier3.contains { msg in actionWords.contains { msg.contains($0) } },
+                    "tier 3 code messages must include at least one action-oriented phrase")
+        }
+    }
+
+    // MARK: - Special "presentation" callouts (natural presentation-specific phrasing)
+
+    @Test func taskAwareCalloutsPresentationContainsKeyword() async {
+        // All presentation-specific messages must contain "presentation".
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "presentation", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) presentation messages must not be empty")
+                #expect(msgs.allSatisfy { $0.contains("presentation") },
+                        "tier \(tier) presentation messages must contain 'presentation'")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsPresentationTier3AvoidsBadGenericPhrase() async {
+        // The generic template produces "CLOSE THIS. open your presentation." which is passive.
+        // The special handler replaces this with action-oriented phrasing.
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "presentation", tier: 3)
+            #expect(tier3.allSatisfy { !$0.contains("open your presentation") },
+                    "tier 3 presentation messages must not use passive 'open your presentation' phrasing")
+        }
+    }
 }

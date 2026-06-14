@@ -248,6 +248,48 @@ public final class CalloutManager {
                 ]
             }
         }
+        // "code" — "CLOSE THIS. open your code." sounds unnatural; use action-oriented phrasing.
+        if keyword == "code" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your code.",
+                    "this isn't your code.",
+                    "that code isn't going to ship itself.",
+                ]
+            case 2:
+                return [
+                    "stop procrastinating on your code.",
+                    "you need to be writing code, not browsing.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Commit the code.",
+                    "your code won't write itself.",
+                ]
+            }
+        }
+        // "presentation" — "CLOSE THIS. open your presentation." sounds passive; use direct action.
+        if keyword == "presentation" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your presentation.",
+                    "this isn't your presentation.",
+                    "your presentation isn't going to build itself.",
+                ]
+            case 2:
+                return [
+                    "stop avoiding your presentation.",
+                    "you need to be working on your presentation, not this.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Finish the presentation.",
+                    "your presentation won't finish itself.",
+                ]
+            }
+        }
         switch tier {
         case 1:
             return [

@@ -1,5 +1,52 @@
 # Adia — Build Progress
 
+## Run 110 — 2026-06-14
+
+### Shipped
+- **Special task-aware callouts for "code" and "presentation" keywords**
+  - The generic fallback template was producing awkward tier-3 messages:
+    `"CLOSE THIS. open your code."` and `"CLOSE THIS. open your presentation."` —
+    neither sounds like something a person would say.
+  - Added dedicated `keyword == "code"` handler with action-oriented phrasing:
+    - T1: "get back to your code.", "this isn't your code.", "that code isn't going to ship itself."
+    - T2: "stop procrastinating on your code.", "you need to be writing code, not browsing."
+    - T3: "CLOSE THIS. Commit the code.", "your code won't write itself."
+  - Added dedicated `keyword == "presentation"` handler:
+    - T1: "get back to your presentation.", "this isn't your presentation.", "your presentation isn't going to build itself."
+    - T2: "stop avoiding your presentation.", "you need to be working on your presentation, not this."
+    - T3: "CLOSE THIS. Finish the presentation.", "your presentation won't finish itself."
+  - All messages still contain their keyword so the existing `taskAwareCalloutsSubstituteKeywordPerTier` test continues to pass.
+  - **5 new tests** in `CalloutManagerTests`:
+    `taskAwareCalloutsCodeContainsKeyword`, `taskAwareCalloutsCodeTier3AvoidsBadGenericPhrase`,
+    `taskAwareCalloutsCodeUsesActionPhrasing`, `taskAwareCalloutsPresentationContainsKeyword`,
+    `taskAwareCalloutsPresentationTier3AvoidsBadGenericPhrase`.
+
+- **Blocked domains expanded (44 → 49)**: Added 5 gaming/streaming sites that function
+  as procrastination vectors not previously covered:
+  - `steampowered.com` — Steam Store (game browsing/purchasing)
+  - `epicgames.com` — Epic Games Store
+  - `max.com` — HBO Max streaming (was missing; Netflix/Hulu/Disney+ were there)
+  - `crunchyroll.com` — Anime streaming
+  - `peacocktv.com` — Peacock streaming
+  - **2 new tests** in `SessionStateTests`:
+    `defaultBlockedDomainsIncludeGamingPlatforms`,
+    `defaultBlockedDomainsIncludeAdditionalStreamingServices`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- Remaining possible additions:
+  - `ConversationView` auto-send: replace the 300 ms heuristic with `.onAppear`
+    on the first `MessageBubble` — more robust timing (low priority; existing
+    code works well in practice).
+  - Add `soundcloud.com` or `bandcamp.com` to blocked music sites if desired.
+  - Consider adding more task-keyword special handlers for remaining generic cases:
+    "homework" ("CLOSE THIS. open your homework." sounds odd),
+    "research" ("CLOSE THIS. open your research." sounds passive).
+
+---
+
 ## Run 109 — 2026-06-14
 
 ### Shipped
