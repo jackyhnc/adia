@@ -701,6 +701,113 @@ struct CalloutManagerTests {
         }
     }
 
+    // MARK: - Knowledge-worker / student keyword additions: project
+
+    @Test func extractTaskKeywordFromProject() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my CS project") == "project")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the group project") == "project")
+        #expect(CalloutManager.extractTaskKeyword(from: "complete the class projects") == "project")
+        #expect(CalloutManager.extractTaskKeyword(from: "my project is due tomorrow") == "project")
+    }
+
+    @Test func extractTaskKeywordProjectDoesNotMatchProjectile() {
+        // "projectile" contains "project" as a substring — word-boundary check must prevent this.
+        #expect(CalloutManager.extractTaskKeyword(from: "calculate projectile motion") == nil)
+    }
+
+    @Test func extractTaskKeywordDesignProjectMapsToDesign() {
+        // "design" check runs before "project" — "design project" should map to design, not project.
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my design project") == "design")
+    }
+
+    @Test func taskAwareCalloutsProjectContainsKeyword() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "project", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) project messages must not be empty")
+                #expect(msgs.allSatisfy { $0.contains("project") },
+                        "tier \(tier) project messages must contain 'project'")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsProjectTier3AvoidsOpenPhrase() async {
+        // The generic template produces "CLOSE THIS. open your project." which sounds like opening a file.
+        // The special handler must NOT produce this phrase.
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "project", tier: 3)
+            #expect(tier3.allSatisfy { !$0.contains("open your project") },
+                    "tier 3 project messages must not use 'open your project' phrasing")
+        }
+    }
+
+    @Test func taskAwareCalloutsProjectTier3UsesActionPhrasing() async {
+        // Tier 3 must be action-oriented: "finish", "Go" — not vague "open".
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "project", tier: 3)
+            let actionWords = ["finish", "Finish", "Go", "go", "complete", "Complete"]
+            #expect(tier3.contains { msg in actionWords.contains { msg.contains($0) } },
+                    "tier 3 project messages must include at least one action-oriented phrase")
+        }
+    }
+
+    // MARK: - Knowledge-worker / student keyword additions: proposal
+
+    @Test func extractTaskKeywordFromProposal() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a grant proposal") == "proposal")
+        #expect(CalloutManager.extractTaskKeyword(from: "draft the business proposal") == "proposal")
+        #expect(CalloutManager.extractTaskKeyword(from: "write two proposals for the client") == "proposal")
+        // "finish my project proposal" — "project" check runs before "proposal"; maps to project.
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my project proposal") == "project")
+    }
+
+    @Test func extractTaskKeywordThesisProposalMapsToEssay() {
+        // "thesis" check runs before "proposal" — "thesis proposal" must map to essay, not proposal.
+        #expect(CalloutManager.extractTaskKeyword(from: "write my thesis proposal") == "essay")
+    }
+
+    @Test func extractTaskKeywordProjectProposalMapsToProject() {
+        // "project" check runs before "proposal" — "project proposal" maps to project.
+        #expect(CalloutManager.extractTaskKeyword(from: "work on the project proposal") == "project")
+    }
+
+    @Test func taskAwareCalloutsProposalContainsKeyword() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "proposal", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) proposal messages must not be empty")
+                #expect(msgs.allSatisfy { $0.contains("proposal") },
+                        "tier \(tier) proposal messages must contain 'proposal'")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsProposalTier3AvoidsOpenPhrase() async {
+        // The generic template would produce "CLOSE THIS. open your proposal." which sounds passive.
+        // The special handler must NOT produce this phrase.
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "proposal", tier: 3)
+            #expect(tier3.allSatisfy { !$0.contains("open your proposal") },
+                    "tier 3 proposal messages must not use 'open your proposal' phrasing")
+        }
+    }
+
+    @Test func taskAwareCalloutsProposalTier3UsesActionPhrasing() async {
+        // Tier 3 must be action-oriented — direct, not passive.
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "proposal", tier: 3)
+            let actionWords = ["finish", "Finish", "Go", "go", "write", "Write"]
+            #expect(tier3.contains { msg in actionWords.contains { msg.contains($0) } },
+                    "tier 3 proposal messages must include at least one action-oriented phrase")
+        }
+    }
+
     // MARK: - fireAppCallout
 
     @Test func fireAppCalloutShowsMessageImmediately() async {

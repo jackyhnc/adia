@@ -154,6 +154,12 @@ public final class CalloutManager {
         if word("email") || word("emails") || word("inbox") {
             return "email"
         }
+        if word("project") || word("projects") {
+            return "project"
+        }
+        if word("proposal") || word("proposals") {
+            return "proposal"
+        }
         if word("blog") || word("newsletter") {
             return "writing"
         }
@@ -329,6 +335,48 @@ public final class CalloutManager {
                 return [
                     "CLOSE THIS. Get back to your research.",
                     "your research deadline isn't moving.",
+                ]
+            }
+        }
+        // "project" — "CLOSE THIS. open your project." sounds like opening a file; use action phrasing.
+        if keyword == "project" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your project.",
+                    "this isn't your project.",
+                    "your project isn't going to finish itself.",
+                ]
+            case 2:
+                return [
+                    "stop avoiding your project.",
+                    "you need to work on your project, not this.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Go finish your project.",
+                    "your project deadline is real.",
+                ]
+            }
+        }
+        // "proposal" — "CLOSE THIS. open your proposal." sounds passive; use direct writing-focused phrasing.
+        if keyword == "proposal" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your proposal.",
+                    "this isn't your proposal.",
+                    "your proposal won't write itself.",
+                ]
+            case 2:
+                return [
+                    "stop putting off your proposal.",
+                    "you need to write your proposal, not browse.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Go finish your proposal.",
+                    "your proposal deadline isn't moving.",
                 ]
             }
         }
