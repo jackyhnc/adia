@@ -1,5 +1,32 @@
 # Adia — Build Progress
 
+## Run 101 — 2026-06-14
+
+### Shipped
+- **feat: show blocked domain count in session history rows**
+  - `selectableRowStats`: appends `"N blocked"` segment after `"asked N×"` when `blockedDomains.count > 0`. The field was already stored in `SessionRecord` (added run 100) but never surfaced in the UI.
+  - `SessionRecordRow` compact summary labels: adds a `Label("N site(s) blocked", systemImage: "hand.raised.fill")` in the stats `HStack` alongside callouts, focus score, and reasoning attempts labels.
+  - `SessionRecordRow` expanded detail panel: adds a `detailField("Blocked sites", ...)` showing up to 5 domain names joined by commas; when more than 5 were blocked appends `" +N more"` so the field stays readable.
+  - **Tests (+5)** in `SettingsStoreTests.swift`:
+    `selectableRowStatsShowsBlockedDomainsWhenNonEmpty`,
+    `selectableRowStatsSingleBlockedDomainSingular`,
+    `selectableRowStatsOmitsBlockedDomainsWhenEmpty`,
+    `selectableRowStatsBlockedAppearsAfterReasoningAttempts`,
+    `selectableRowStatsCombinesAllStatsIncludingBlocked`.
+  - `makeRecord` helper updated with `blockedDomains: [String] = []` parameter so all new and existing tests compile without change.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- Remaining quality ideas:
+  - (a) `ConversationView` auto-send: the 300 ms delay is a heuristic — consider using `onAppear` on the first AI message bubble for a more robust trigger that fires only after the view renders.
+  - (b) Template edit UI: currently `EditTemplateSheet` only supports preset duration chips (25m/45m/60m/90m). A free-form text field or stepper for arbitrary durations would let users set e.g. 2h blocks.
+  - (c) History export: CSV/JSON export is already wired but doesn't include `blockedDomains` in the CSV columns. `sessionRecordsToCSV` should add a "blocked_sites" column.
+  - (d) History tab: a "Blocked Sites" column in the selectable-row export (CSV) already has all data via `blockedDomains` — wire it up.
+
+---
+
 ## Run 100 — 2026-06-14
 
 ### Shipped

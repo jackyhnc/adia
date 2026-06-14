@@ -1150,7 +1150,7 @@ struct VerificationRelativeTimeTests {
 @Suite("sessionRecordsToCSV")
 struct SessionRecordsToCSVTests {
 
-    private static let expectedHeader = "id,task,successCriteria,startTime,endTime,durationSeconds,completedSuccessfully,calloutCount,onTaskChecks,totalChecks,focusScore,reasoningAttempts,reasoningGranted,note"
+    private static let expectedHeader = "id,task,successCriteria,startTime,endTime,durationSeconds,completedSuccessfully,calloutCount,onTaskChecks,totalChecks,focusScore,reasoningAttempts,reasoningGranted,blockedSites,note"
 
     private func record(
         task: String = "Study",
@@ -1161,7 +1161,8 @@ struct SessionRecordsToCSVTests {
         onTaskChecks: Int = 0,
         totalChecks: Int = 0,
         reasoningAttempts: Int = 0,
-        reasoningGranted: Int = 0
+        reasoningGranted: Int = 0,
+        blockedDomains: [String] = []
     ) -> SessionRecord {
         let start = Date(timeIntervalSinceNow: -3600)
         return SessionRecord(
@@ -1175,7 +1176,8 @@ struct SessionRecordsToCSVTests {
             onTaskChecks: onTaskChecks,
             totalChecks: totalChecks,
             reasoningAttempts: reasoningAttempts,
-            reasoningGranted: reasoningGranted
+            reasoningGranted: reasoningGranted,
+            blockedDomains: blockedDomains
         )
     }
 
@@ -1189,10 +1191,10 @@ struct SessionRecordsToCSVTests {
         #expect(csv == Self.expectedHeader)
     }
 
-    @Test func headerHasFourteenColumns() {
+    @Test func headerHasFifteenColumns() {
         let csv = sessionRecordsToCSV([])
         let headerCols = csv.components(separatedBy: ",")
-        #expect(headerCols.count == 14)
+        #expect(headerCols.count == 15)
     }
 
     @Test func headerColumnNamesAreCorrect() {
@@ -1211,7 +1213,8 @@ struct SessionRecordsToCSVTests {
         #expect(c[10] == "focusScore")
         #expect(c[11] == "reasoningAttempts")
         #expect(c[12] == "reasoningGranted")
-        #expect(c[13] == "note")
+        #expect(c[13] == "blockedSites")
+        #expect(c[14] == "note")
     }
 
     @Test func singleRecordProducesHeaderPlusOneDataRow() {
@@ -1262,7 +1265,7 @@ struct SessionRecordsToCSVTests {
     @Test func nilNoteEncodesAsEmptyString() {
         let csv = sessionRecordsToCSV([record(note: nil)])
         let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
-        #expect(cols(rows[1])[13] == "")
+        #expect(cols(rows[1])[14] == "")
     }
 
     @Test func plainNoteIsUnquoted() {
@@ -1323,6 +1326,37 @@ struct SessionRecordsToCSVTests {
         #expect(String(rows[1]).contains("Alpha"))
         #expect(String(rows[2]).contains("Beta"))
         #expect(String(rows[3]).contains("Gamma"))
+    }
+
+    // MARK: - blockedSites column
+
+    @Test func emptyBlockedDomainsEncodesAsEmptyString() {
+        let csv = sessionRecordsToCSV([record(blockedDomains: [])])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        // Column 13 = blockedSites; no quoted value → empty
+        #expect(cols(rows[1])[13] == "")
+    }
+
+    @Test func blockedDomainsJoinedWithPipeSeparator() {
+        let csv = sessionRecordsToCSV([record(blockedDomains: ["reddit.com", "twitter.com"])])
+        #expect(csv.contains("reddit.com|twitter.com"))
+    }
+
+    @Test func singleBlockedDomainIsUnquoted() {
+        let csv = sessionRecordsToCSV([record(blockedDomains: ["reddit.com"])])
+        #expect(csv.contains("reddit.com"))
+        // Single domain has no pipe or comma so must not be quoted
+        #expect(!csv.contains("\"reddit.com\""))
+    }
+
+    @Test func blockedDomainsColumnIsAtIndex13() {
+        let csv = sessionRecordsToCSV([record(blockedDomains: ["reddit.com", "twitter.com"])])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        let header = csv.components(separatedBy: "\n")[0].components(separatedBy: ",")
+        #expect(header[13] == "blockedSites")
+        // Pipe separator contains no comma → field is unquoted, safe to check via contains
+        #expect(String(rows[1]).contains("reddit.com|twitter.com"))
+        #expect(cols(rows[1])[13] == "reddit.com|twitter.com")
     }
 }
 

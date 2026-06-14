@@ -399,7 +399,8 @@ struct SettingsStoreTests {
         calloutCount: Int = 0,
         onTaskChecks: Int = 0,
         totalChecks: Int = 0,
-        reasoningAttempts: Int = 0
+        reasoningAttempts: Int = 0,
+        blockedDomains: [String] = []
     ) -> SessionRecord {
         let start = Date(timeIntervalSince1970: 0)
         return SessionRecord(
@@ -411,7 +412,8 @@ struct SettingsStoreTests {
             calloutCount: calloutCount,
             onTaskChecks: onTaskChecks,
             totalChecks: totalChecks,
-            reasoningAttempts: reasoningAttempts
+            reasoningAttempts: reasoningAttempts,
+            blockedDomains: blockedDomains
         )
     }
 
@@ -484,5 +486,41 @@ struct SettingsStoreTests {
             reasoningAttempts: 1
         )
         #expect(selectableRowStats(record: record, minChecks: 5) == "45m · 3⚠ · 80% · asked 1×")
+    }
+
+    // MARK: - selectableRowStats blocked domains
+
+    @Test func selectableRowStatsShowsBlockedDomainsWhenNonEmpty() {
+        let record = makeRecord(durationSeconds: 45 * 60, blockedDomains: ["reddit.com", "twitter.com"])
+        #expect(selectableRowStats(record: record, minChecks: 5) == "45m · 2 blocked")
+    }
+
+    @Test func selectableRowStatsSingleBlockedDomainSingular() {
+        let record = makeRecord(durationSeconds: 45 * 60, blockedDomains: ["reddit.com"])
+        #expect(selectableRowStats(record: record, minChecks: 5) == "45m · 1 blocked")
+    }
+
+    @Test func selectableRowStatsOmitsBlockedDomainsWhenEmpty() {
+        let record = makeRecord(durationSeconds: 45 * 60, blockedDomains: [])
+        #expect(!selectableRowStats(record: record, minChecks: 5).contains("blocked"))
+    }
+
+    @Test func selectableRowStatsBlockedAppearsAfterReasoningAttempts() {
+        // Ordering: duration · asked N× · N blocked (not reversed)
+        let record = makeRecord(durationSeconds: 45 * 60, reasoningAttempts: 2, blockedDomains: ["reddit.com"])
+        #expect(selectableRowStats(record: record, minChecks: 5) == "45m · asked 2× · 1 blocked")
+    }
+
+    @Test func selectableRowStatsCombinesAllStatsIncludingBlocked() {
+        // All five stat types present in their defined order
+        let record = makeRecord(
+            durationSeconds: 45 * 60,
+            calloutCount: 3,
+            onTaskChecks: 8,
+            totalChecks: 10,
+            reasoningAttempts: 1,
+            blockedDomains: ["reddit.com", "twitter.com", "discord.com"]
+        )
+        #expect(selectableRowStats(record: record, minChecks: 5) == "45m · 3⚠ · 80% · asked 1× · 3 blocked")
     }
 }

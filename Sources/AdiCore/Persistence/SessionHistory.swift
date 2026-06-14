@@ -60,12 +60,13 @@ private func csvEscape(_ value: String) -> String {
 /// Returns `records` formatted as RFC 4180 CSV with a header row.
 /// Columns: id, task, successCriteria, startTime, endTime, durationSeconds,
 /// completedSuccessfully, calloutCount, onTaskChecks, totalChecks, focusScore,
-/// reasoningAttempts, reasoningGranted, note.
+/// reasoningAttempts, reasoningGranted, blockedSites, note.
 /// `focusScore` is empty when no frames were classified; `note` is empty when nil.
+/// `blockedSites` lists domains separated by `|` (pipe), quoted when non-empty.
 /// Empty input returns only the header row (no trailing newline).
 internal func sessionRecordsToCSV(_ records: [SessionRecord]) -> String {
     let iso = ISO8601DateFormatter()
-    let header = "id,task,successCriteria,startTime,endTime,durationSeconds,completedSuccessfully,calloutCount,onTaskChecks,totalChecks,focusScore,reasoningAttempts,reasoningGranted,note"
+    let header = "id,task,successCriteria,startTime,endTime,durationSeconds,completedSuccessfully,calloutCount,onTaskChecks,totalChecks,focusScore,reasoningAttempts,reasoningGranted,blockedSites,note"
     let rows = records.map { r -> String in
         let cols: [String] = [
             r.id.uuidString,
@@ -81,6 +82,7 @@ internal func sessionRecordsToCSV(_ records: [SessionRecord]) -> String {
             r.focusScore.map { String(format: "%.3f", $0) } ?? "",
             String(r.reasoningAttempts),
             String(r.reasoningGranted),
+            r.blockedDomains.isEmpty ? "" : csvEscape(r.blockedDomains.joined(separator: "|")),
             r.note.map { csvEscape($0) } ?? ""
         ]
         return cols.joined(separator: ",")
