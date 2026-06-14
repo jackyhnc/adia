@@ -1,5 +1,84 @@
 # Adia — Build Progress
 
+## Run 97 — 2026-06-14
+
+### Shipped
+- **feat: streaming chat responses in ConversationManager + SSE parser**
+
+  Previously `ConversationManager.send()` called `AgentAIClient.chat()`, which
+  waited for the entire response before returning. Users saw a typing indicator
+  for 1–3 seconds per turn before any text appeared. Switching to the Anthropic
+  streaming Messages API (`stream: true`) lets tokens appear as they arrive.
+
+  **`AgentAIClient` (Sources/AdiCore/AI/AgentAIClient.swift)**
+  - `chatStream(messages:systemPrompt:)` — `async throws -> AsyncThrowingStream<String, Error>`.
+    Builds the request with `stream: true` (same prompt-caching header as `post()`),
+    then starts `URLSession.bytes(for:)` inside the stream's `Task {}`. Each SSE
+    line is parsed by `parseSSELine()` and yielded as a text chunk.
+  - `parseSSELine(_ line: String) -> String?` — `internal static`, extracts `delta.text`
+    from `content_block_delta / text_delta` events; returns `nil` for all other
+    event types (`message_start`, `ping`, `content_block_stop`, `message_delta`,
+    `message_stop`, `input_json_delta`).
+
+  **`AgentAIService` protocol (Sources/AdiCore/AI/AgentAIService.swift)**
+  - Added `chatStream(messages:systemPrompt:) async throws -> AsyncThrowingStream<String, Error>`.
+    `chat()` stays in the protocol (used directly in integration tests).
+
+  **`MockAgentAIClient` (Tests/AdiTests/MockAgentAIClient.swift)**
+  - `chatStream()` yields the canned `chatResult` as a single chunk and finishes.
+    Also increments `chatCallCount`, so all existing assertions on that counter pass.
+
+  **`ConversationManager` (Sources/AdiCore/Conversation/ConversationManager.swift)**
+  - New `@Published public private(set) var streamingContent: String? = nil`:
+    - `nil` = idle
+    - `""` = connecting (request sent, no tokens yet)
+    - `"hello…"` = in-progress (growing as tokens arrive)
+  - `send()` now calls `chatStream()`, accumulates chunks into `streamingContent`,
+    then on completion sets `streamingContent = nil` and appends the full
+    `ChatMessage` to `messages`. Both success and error paths nil out `streamingContent`
+    before returning control.
+  - `reset()` now clears `streamingContent` alongside the other state.
+
+  **`ConversationView` (Sources/AdiCore/Views/ConversationView.swift)**
+  - Replaced the `TypingIndicator` branch with a `StreamingBubble` that renders
+    `streamingContent` live. Shows `"…"` during the first RTT before any tokens
+    arrive. The old `TypingIndicator` remains as a fallback for any future
+    non-streaming loading paths.
+  - Added `.onChange(of: manager.streamingContent)` to auto-scroll the list
+    anchor to `"streaming"` as the bubble grows vertically.
+
+  **Tests (13 new)**
+  - `AgentAIClientTests` — 10 SSE parser tests:
+    `parseSSELineReturnsTextForTextDeltaEvent`, `parseSSELineReturnsEmptyStringTextDelta`,
+    `parseSSELineIgnoresMessageStartEvent`, `parseSSELineIgnoresPingEvent`,
+    `parseSSELineIgnoresContentBlockStart`, `parseSSELineIgnoresMessageDelta`,
+    `parseSSELineIgnoresMessageStop`, `parseSSELineIgnoresNonDataLines`,
+    `parseSSELineIgnoresDoneTerminator`, `parseSSELineIgnoresInputTokensDelta`.
+  - `ConversationManagerTests` — 3 streaming-content tests:
+    `streamingContentIsNilAfterSuccessfulChat`, `streamingContentIsNilAfterFailedChat`,
+    `resetClearsStreamingContent`.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 GOAL.md items remain complete.
+- Possible next improvements:
+  - (a) **Branch hygiene** — use the `session-start-hook` skill to configure a
+    `SessionStart` hook that auto-runs `git fetch origin main && git checkout main
+    && git reset --hard origin/main` on each session start. Detached HEAD keeps
+    appearing (16th time this run).
+  - (b) **Session history view** — expose `SessionHistory` records in a SwiftUI
+    list accessible from the idle notch, letting users review past sessions.
+  - (c) **Streaming error handling in UI** — if `chatStream()` yields a partial
+    response before erroring, the fallback message currently discards the partial
+    text. Could surface what was received before the error.
+  - (d) **Integration smoke test for chatStream** — add a `ClaudeAPIIntegrationTests`
+    test that calls `AgentAIClient.shared.chatStream()` with `ANTHROPIC_API_KEY`
+    set and verifies at least one chunk arrives.
+
+---
+
 ## Run 96 — 2026-06-13
 
 ### Shipped
