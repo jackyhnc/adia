@@ -1854,3 +1854,35 @@ struct SessionHistoryExportJSONTests {
         #expect(json.filter { !$0.isWhitespace } == "[]")
     }
 }
+
+// MARK: - allTimeSummaryText tests
+
+@Suite("AllTimeSummaryText")
+struct AllTimeSummaryTextTests {
+
+    private func stats(allTimeCount: Int, allTimeMinutes: Int) -> SessionStats {
+        SessionStats(todayCount: 0, todayMinutes: 0, weekCount: 0, weekMinutes: 0, streak: 0,
+                     allTimeCount: allTimeCount, allTimeMinutes: allTimeMinutes)
+    }
+
+    @Test func zeroMinutesShowsTotalWithoutTime() {
+        #expect(allTimeSummaryText(stats(allTimeCount: 5, allTimeMinutes: 0)) == "5 sessions total")
+    }
+
+    @Test func minutesOnlyShowsMinutesSuffix() {
+        #expect(allTimeSummaryText(stats(allTimeCount: 3, allTimeMinutes: 45)) == "3 sessions · 45m total")
+    }
+
+    @Test func hoursOnlyShowsHoursSuffix() {
+        #expect(allTimeSummaryText(stats(allTimeCount: 10, allTimeMinutes: 120)) == "10 sessions · 2h total")
+    }
+
+    @Test func hoursAndMinutesAreBothShown() {
+        // 23h 3m = 1383 minutes
+        #expect(allTimeSummaryText(stats(allTimeCount: 47, allTimeMinutes: 1383)) == "47 sessions · 23h 3m total")
+    }
+
+    @Test func singularSessionLabel() {
+        #expect(allTimeSummaryText(stats(allTimeCount: 1, allTimeMinutes: 30)) == "1 session · 30m total")
+    }
+}

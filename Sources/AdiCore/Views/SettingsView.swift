@@ -565,6 +565,21 @@ internal func groupedByDay(
     return result
 }
 
+/// Formats the all-time summary shown below the weekly stats line in the History tab header.
+/// Returns "X sessions · Yh Zm total" or "X sessions total" when no minutes are logged.
+internal func allTimeSummaryText(_ s: SessionStats) -> String {
+    let count = s.allTimeCount
+    let sessions = "\(count) session\(count == 1 ? "" : "s")"
+    guard s.allTimeMinutes > 0 else { return "\(sessions) total" }
+    let h = s.allTimeMinutes / 60
+    let m = s.allTimeMinutes % 60
+    let time: String
+    if h > 0 && m > 0 { time = "\(h)h \(m)m" }
+    else if h > 0 { time = "\(h)h" }
+    else { time = "\(m)m" }
+    return "\(sessions) · \(time) total"
+}
+
 private struct HistoryTab: View {
     @State private var records: [SessionRecord] = []
     @State private var stats: SessionStats? = nil
@@ -789,24 +804,39 @@ private struct HistoryTab: View {
     @ViewBuilder
     private func weeklySection(_ s: SessionStats?) -> some View {
         VStack(spacing: 0) {
-            if let s, s.weekCount > 0 {
-                HStack(spacing: 8) {
-                    Image(systemName: "bolt.fill")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(.secondary)
-                    Text(weekSummaryText(s))
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(.secondary)
-                    if s.streak > 1 {
-                        Text("🔥 \(s.streak)d streak")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(.orange)
-                            .padding(.horizontal, 7)
-                            .padding(.vertical, 2)
-                            .background(.orange.opacity(0.1))
-                            .clipShape(Capsule())
+            if let s, s.weekCount > 0 || s.allTimeCount > 0 {
+                VStack(alignment: .leading, spacing: 4) {
+                    if s.weekCount > 0 {
+                        HStack(spacing: 8) {
+                            Image(systemName: "bolt.fill")
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundStyle(.secondary)
+                            Text(weekSummaryText(s))
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundStyle(.secondary)
+                            if s.streak > 1 {
+                                Text("🔥 \(s.streak)d streak")
+                                    .font(.system(size: 11, weight: .semibold))
+                                    .foregroundStyle(.orange)
+                                    .padding(.horizontal, 7)
+                                    .padding(.vertical, 2)
+                                    .background(.orange.opacity(0.1))
+                                    .clipShape(Capsule())
+                            }
+                            Spacer()
+                        }
                     }
-                    Spacer()
+                    if s.allTimeCount > 0 {
+                        HStack(spacing: 6) {
+                            Image(systemName: "clock.arrow.circlepath")
+                                .font(.system(size: 10, weight: .regular))
+                                .foregroundStyle(.tertiary)
+                            Text(allTimeSummaryText(s))
+                                .font(.system(size: 11))
+                                .foregroundStyle(.tertiary)
+                            Spacer()
+                        }
+                    }
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 9)
@@ -814,7 +844,7 @@ private struct HistoryTab: View {
             }
             WeekHeatmapView(days: heatmapDays)
                 .padding(.horizontal, 16)
-                .padding(.top, s == nil || (s?.weekCount ?? 0) == 0 ? 9.0 : 0.0)
+                .padding(.top, (s == nil || ((s?.weekCount ?? 0) == 0 && (s?.allTimeCount ?? 0) == 0)) ? 9.0 : 0.0)
                 .padding(.bottom, 9)
         }
         .background(.background)
