@@ -161,6 +161,9 @@ public struct Session: Sendable, Identifiable {
         "amazon.com",
         "ebay.com",
         "etsy.com",
+        // News (procrastination disguised as staying informed)
+        "cnn.com",
+        "foxnews.com",
         // Other time sinks
         "quora.com",
         "fandom.com",
@@ -175,6 +178,8 @@ public struct Session: Sendable, Identifiable {
         BlockedApp(id: "com.apple.TV",                   name: "Apple TV"),
         BlockedApp(id: "com.burbn.instagram",            name: "Instagram"),
         BlockedApp(id: "com.facebook.Facebook",          name: "Facebook"),
+        BlockedApp(id: "com.spotify.client",             name: "Spotify"),
+        BlockedApp(id: "com.tencent.xinWeChat",          name: "WeChat"),
     ]
 
     public static var defaultBlockedAppBundleIDs: [String] {

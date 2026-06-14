@@ -580,7 +580,8 @@ struct CalloutManagerTests {
         #expect(CalloutManager.extractTaskKeyword(from: "write 5 important emails") == "email")
         #expect(CalloutManager.extractTaskKeyword(from: "clear my inbox") == "email")
         #expect(CalloutManager.extractTaskKeyword(from: "draft the client email") == "email")
-        #expect(CalloutManager.extractTaskKeyword(from: "finish writing the newsletter") == "email")
+        // "newsletter" now maps to "writing" since writing a newsletter is a content task.
+        #expect(CalloutManager.extractTaskKeyword(from: "finish writing the newsletter") == "writing")
     }
 
     @Test func taskAwareCalloutsEmailContainsKeyword() async {
@@ -589,10 +590,59 @@ struct CalloutManagerTests {
             for tier in 1...3 {
                 let msgs = manager.taskAwareCallouts(keyword: "email", tier: tier)
                 #expect(!msgs.isEmpty, "tier \(tier) email messages must not be empty")
-                #expect(msgs.allSatisfy { $0.contains("email") },
-                        "tier \(tier) email messages must contain 'email'")
+                // Natural email phrasing uses both "email" and "inbox" — accept either.
+                #expect(msgs.allSatisfy { $0.contains("email") || $0.contains("inbox") },
+                        "tier \(tier) email messages must reference email or inbox")
             }
         }
+    }
+
+    // "email" uses inbox-centric phrasing — "this isn't your email" sounds unnatural.
+    @Test func taskAwareCalloutsEmailUsesNaturalPhrasing() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "email", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) email messages must not be empty")
+                #expect(msgs.allSatisfy { !$0.contains("this isn't your email") },
+                        "tier \(tier) must not use awkward 'this isn't your email' phrasing")
+                #expect(msgs.allSatisfy { !$0.contains("your email isn't going to finish") },
+                        "tier \(tier) must not use awkward 'finish itself' phrasing for email")
+            }
+        }
+    }
+
+    // MARK: - Knowledge-worker keyword additions: writing (blog, newsletter, content)
+
+    @Test func extractTaskKeywordFromWriting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a blog post") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my blog") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "write the weekly newsletter") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "draft the newsletter for Monday") == "writing")
+    }
+
+    @Test func taskAwareCalloutsWritingUsesNaturalPhrasing() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "writing", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) writing messages must not be empty")
+                // Must reference writing-related words
+                let writingWords = ["writ", "post", "draft", "browse"]
+                #expect(msgs.allSatisfy { msg in writingWords.contains { msg.contains($0) } },
+                        "tier \(tier) writing messages must reference writing activity")
+            }
+        }
+    }
+
+    @Test func extractTaskKeywordBlogDoesNotMatchEmail() {
+        // "blog" and "email" are separate keywords — a blog task must not map to email.
+        #expect(CalloutManager.extractTaskKeyword(from: "write a blog post") != "email")
+    }
+
+    @Test func extractTaskKeywordEssayTakesPriorityOverWriting() {
+        // "essay" check runs before "blog" — "write a blog-style essay" maps to essay, not writing.
+        #expect(CalloutManager.extractTaskKeyword(from: "write a long-form essay") == "essay")
     }
 
     @Test func extractTaskKeywordStudyTakesPriorityOverDesign() {

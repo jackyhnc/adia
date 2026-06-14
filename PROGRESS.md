@@ -1,5 +1,28 @@
 # Adia — Build Progress
 
+## Run 106 — 2026-06-14
+
+### Shipped
+- **Email callout grammar fix** — `taskAwareCallouts(keyword: "email")` now uses inbox-centric phrasing instead of the generic template which produced awkward strings like "this isn't your email" and "your email isn't going to finish itself." New messages: "those emails aren't going to write themselves.", "stop avoiding your inbox.", "your inbox isn't going to clear itself." etc. Updated `taskAwareCalloutsEmailContainsKeyword` test to accept either "email" or "inbox" (both are natural for email tasks). Added `taskAwareCalloutsEmailUsesNaturalPhrasing` test to pin the specific awkward phrases are gone.
+
+- **"writing" keyword** — new task keyword for blog posts, newsletters, and content creation. Trigger words: `blog`, `newsletter` (newsletter moved from the "email" bucket since writing a newsletter is a content task, not email). Returns keyword `"writing"` with three-tier phrasing: "get back to your writing.", "that post isn't going to write itself.", "CLOSE THIS. Open your draft." etc. Updated `extractTaskKeywordFromEmail` test to reflect newsletter→writing reclassification. Added 4 new tests: `extractTaskKeywordFromWriting`, `taskAwareCalloutsWritingUsesNaturalPhrasing`, `extractTaskKeywordBlogDoesNotMatchEmail`, `extractTaskKeywordEssayTakesPriorityOverWriting`.
+
+- **Blocked Mac apps expanded** (8 → 10): Added Spotify (`com.spotify.client`) and WeChat (`com.tencent.xinWeChat`) to `Session.defaultBlockedApps`. Both are pervasive procrastination vectors — Spotify for distraction listening and WeChat for social messaging. Added 4 new tests: `defaultBlockedAppsContainsSpotify`, `defaultBlockedAppsContainsWeChat`, `defaultBlockedAppsNoDuplicates`, `defaultBlockedAppsHaveNonEmpty*`.
+
+- **Blocked domains expanded** (43 → 45): Added `cnn.com` and `foxnews.com` under a "News (procrastination disguised as staying informed)" comment. Added `defaultBlockedDomainsIncludeNewsSites` test.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- Remaining possible additions:
+  - Add Apple Music (`com.apple.Music`) and Podcasts (`com.apple.podcasts`) to blocked apps — both are passive-listening distractions.
+  - Add `aliexpress.com` and `walmart.com` to blocked shopping domains.
+  - `ConversationView` auto-send delay: replace the 300 ms heuristic with `.onAppear` on the first `MessageBubble`.
+  - Session export: add "blocked_sites" column to CSV export in `sessionRecordsToCSV`.
+
+---
+
 ## Run 105 — 2026-06-14
 
 ### Shipped

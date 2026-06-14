@@ -249,4 +249,48 @@ struct DefaultBlockedDomainsCoverageTests {
     @Test func defaultBlockedDomainsCountExceedsTwenty() {
         #expect(Session.defaultBlockedDomains.count > 20, "expected a broad blocklist")
     }
+
+    @Test func defaultBlockedDomainsIncludeNewsSites() {
+        let domains = Session.defaultBlockedDomains
+        for site in ["cnn.com", "foxnews.com"] {
+            #expect(domains.contains(site), "expected \(site) in default blocked domains")
+        }
+    }
+}
+
+@Suite("Session defaultBlockedApps")
+struct DefaultBlockedAppsTests {
+
+    @Test func defaultBlockedAppsContainsCoreDistractors() {
+        let ids = Session.defaultBlockedAppBundleIDs
+        for bundleID in ["com.hnc.Discord", "com.valvesoftware.steam", "com.apple.TV"] {
+            #expect(ids.contains(bundleID), "expected \(bundleID) in defaultBlockedAppBundleIDs")
+        }
+    }
+
+    @Test func defaultBlockedAppsContainsSpotify() {
+        #expect(Session.defaultBlockedAppBundleIDs.contains("com.spotify.client"),
+                "Spotify must be blocked by default")
+    }
+
+    @Test func defaultBlockedAppsContainsWeChat() {
+        #expect(Session.defaultBlockedAppBundleIDs.contains("com.tencent.xinWeChat"),
+                "WeChat must be blocked by default")
+    }
+
+    @Test func defaultBlockedAppsNoDuplicates() {
+        let ids = Session.defaultBlockedAppBundleIDs
+        let unique = Set(ids)
+        #expect(unique.count == ids.count, "duplicate bundle IDs in defaultBlockedApps")
+    }
+
+    @Test func defaultBlockedAppsHaveNonEmptyNames() {
+        #expect(Session.defaultBlockedApps.allSatisfy { !$0.name.isEmpty },
+                "every BlockedApp must have a non-empty display name")
+    }
+
+    @Test func defaultBlockedAppsHaveNonEmptyIDs() {
+        #expect(Session.defaultBlockedApps.allSatisfy { !$0.id.isEmpty },
+                "every BlockedApp must have a non-empty bundle identifier")
+    }
 }

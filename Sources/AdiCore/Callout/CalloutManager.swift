@@ -151,8 +151,11 @@ public final class CalloutManager {
             || word("prototype") || word("figma") || word("sketch") {
             return "design"
         }
-        if word("email") || word("emails") || word("inbox") || word("newsletter") {
+        if word("email") || word("emails") || word("inbox") {
             return "email"
+        }
+        if word("blog") || word("newsletter") {
+            return "writing"
         }
         return nil
     }
@@ -199,6 +202,49 @@ public final class CalloutManager {
                 return [
                     "CLOSE THIS. Get back to reading.",
                     "the reading deadline isn't moving.",
+                ]
+            }
+        }
+        // "email" — "this isn't your email" and "your email isn't going to finish itself"
+        // sound unnatural. Use inbox-centric phrasing instead.
+        if keyword == "email" {
+            switch tier {
+            case 1:
+                return [
+                    "those emails aren't going to write themselves.",
+                    "get back to your email.",
+                    "close this and go handle that email.",
+                ]
+            case 2:
+                return [
+                    "stop avoiding your inbox.",
+                    "you have emails waiting — not this.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Go handle your email.",
+                    "your inbox isn't going to clear itself.",
+                ]
+            }
+        }
+        // "writing" — covers blog posts, newsletters, content creation.
+        if keyword == "writing" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your writing.",
+                    "that post isn't going to write itself.",
+                    "close this and start writing.",
+                ]
+            case 2:
+                return [
+                    "stop putting off your writing.",
+                    "you need to write, not browse.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Open your draft.",
+                    "your writing isn't getting done.",
                 ]
             }
         }
