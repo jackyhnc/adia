@@ -604,4 +604,144 @@ struct CalloutManagerTests {
         // "design" and "email" live in separate checks — no cross-contamination.
         #expect(CalloutManager.extractTaskKeyword(from: "design the email template") == "design")
     }
+
+    // MARK: - Knowledge-worker keyword additions: report / document / doc
+
+    @Test func extractTaskKeywordFromReport() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my quarterly report") == "report")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the client report") == "report")
+        #expect(CalloutManager.extractTaskKeyword(from: "update the document") == "report")
+        #expect(CalloutManager.extractTaskKeyword(from: "edit the doc") == "report")
+    }
+
+    @Test func extractTaskKeywordReportTakesPriorityOverLab() {
+        // "report" check (rank 4) runs before "lab" (rank 8) in extractTaskKeyword.
+        // "bio lab report" contains both "report" and "lab"; "report" wins.
+        #expect(CalloutManager.extractTaskKeyword(from: "write up the bio lab report") == "report")
+        #expect(CalloutManager.extractTaskKeyword(from: "bio lab report due Friday") == "report")
+    }
+
+    @Test func taskAwareCalloutsReportContainsKeyword() async {
+        // "report" hits the generic template branch — "get back to your report" etc.
+        // Verify all tiers produce non-empty message arrays that contain the keyword.
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "report", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) report messages must not be empty")
+                #expect(msgs.allSatisfy { $0.contains("report") },
+                        "tier \(tier) report messages must contain 'report'")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsDocumentContainsKeyword() async {
+        // extractTaskKeyword always returns "report" for document/doc/report inputs;
+        // "document" is never passed directly in production. This verifies the generic
+        // template path handles arbitrary keywords correctly — defensive against future
+        // changes that might add "document" as a distinct return value.
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "document", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) document messages must not be empty")
+                #expect(msgs.allSatisfy { $0.contains("document") },
+                        "tier \(tier) document messages must contain 'document'")
+            }
+        }
+    }
+
+    // MARK: - fireAppCallout
+
+    @Test func fireAppCalloutShowsMessageImmediately() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            NotchState.shared.clearCallout()
+            CalloutManager.shared.fireAppCallout("close Discord. now.")
+            #expect(NotchState.shared.calloutMessage == "close Discord. now.")
+        }
+    }
+
+    @Test func fireAppCalloutIncrementsCalloutCount() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            #expect(CalloutManager.shared.calloutCount == 0)
+            CalloutManager.shared.fireAppCallout("close Steam.")
+            #expect(CalloutManager.shared.calloutCount == 1)
+        }
+    }
+
+    @Test func fireAppCalloutBypassesOffTaskThreshold() async {
+        // Normal off-task callouts need 2 consecutive frames to fire;
+        // fireAppCallout fires unconditionally — no evaluate(.offTask) calls needed.
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            NotchState.shared.clearCallout()
+            #expect(NotchState.shared.calloutMessage == nil)
+            CalloutManager.shared.fireAppCallout("get out of Twitch.")
+            #expect(NotchState.shared.calloutMessage == "get out of Twitch.")
+        }
+    }
+
+    @Test func fireAppCalloutUsesCurrentTierAtCalloutCountZero() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()   // calloutCount = 0 → tier 1
+            CalloutManager.shared.fireAppCallout("close that.")
+            #expect(NotchState.shared.calloutTier == 1)
+        }
+    }
+
+    @Test func fireAppCalloutUsesCurrentTierAtCalloutCountTwo() async {
+        await MainActor.run {
+            // Drive calloutCount to 2 via threshold-based callouts, then fire an app callout.
+            CalloutManager.shared.reset()
+            for _ in 0..<2 {
+                CalloutManager.shared.evaluate(.offTask)
+                CalloutManager.shared.evaluate(.offTask)
+                CalloutManager.shared.evaluate(.onTask)
+            }
+            #expect(CalloutManager.shared.calloutCount == 2)
+            CalloutManager.shared.fireAppCallout("close Steam.")
+            #expect(NotchState.shared.calloutTier == 2)
+        }
+    }
+
+    @Test func fireAppCalloutDoesNotPreventSubsequentThresholdCallout() async {
+        // fireAppCallout does not set hasFiredForStreak — a subsequent off-task
+        // streak can still fire its own threshold-based callout independently.
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            CalloutManager.shared.evaluate(.onTask)  // reset streak state
+            NotchState.shared.clearCallout()
+            // App callout fires immediately
+            CalloutManager.shared.fireAppCallout("close Discord. now.")
+            #expect(NotchState.shared.calloutMessage == "close Discord. now.")
+            NotchState.shared.clearCallout()
+            // Threshold-based detection still active — 2 off-task frames should fire
+            CalloutManager.shared.evaluate(.offTask)
+            CalloutManager.shared.evaluate(.offTask)
+            #expect(NotchState.shared.calloutMessage != nil)
+        }
+    }
+
+    @Test func multipleFireAppCalloutsAccumulateCalloutCount() async {
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            CalloutManager.shared.fireAppCallout("close Discord.")
+            CalloutManager.shared.fireAppCallout("close Steam.")
+            CalloutManager.shared.fireAppCallout("close Twitch.")
+            #expect(CalloutManager.shared.calloutCount == 3)
+        }
+    }
+
+    @Test func fireAppCalloutResetsCancelsAndReplacesAutoDismiss() async {
+        // Each fireAppCallout installs a fresh auto-dismiss task; prior task is cancelled.
+        // Indirectly verified by confirming calloutMessage reflects the most recent call.
+        await MainActor.run {
+            CalloutManager.shared.reset()
+            CalloutManager.shared.fireAppCallout("first message")
+            CalloutManager.shared.fireAppCallout("second message")
+            #expect(NotchState.shared.calloutMessage == "second message")
+        }
+    }
 }
