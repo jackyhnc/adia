@@ -857,4 +857,67 @@ struct CalloutManagerTests {
                     "tier 3 presentation messages must not use passive 'open your presentation' phrasing")
         }
     }
+
+    // MARK: - Special "homework" callouts (natural homework-specific phrasing)
+
+    @Test func taskAwareCalloutsHomeworkContainsKeyword() async {
+        // All homework-specific messages must contain "homework".
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "homework", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) homework messages must not be empty")
+                #expect(msgs.allSatisfy { $0.contains("homework") },
+                        "tier \(tier) homework messages must contain 'homework'")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsHomeworkTier3AvoidsOpenPhrase() async {
+        // The generic template produces "CLOSE THIS. open your homework." which sounds like
+        // opening a file. The special handler replaces it with "Go finish your homework."
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "homework", tier: 3)
+            #expect(tier3.allSatisfy { !$0.contains("open your homework") },
+                    "tier 3 homework messages must not use awkward 'open your homework' phrasing")
+        }
+    }
+
+    @Test func taskAwareCalloutsHomeworkTier3UsesActionPhrasing() async {
+        // Tier 3 must use "finish" or "do" — concrete action, not vague "open".
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "homework", tier: 3)
+            let actionWords = ["finish", "Finish", "do", "Do", "complete", "Complete"]
+            #expect(tier3.contains { msg in actionWords.contains { msg.contains($0) } },
+                    "tier 3 homework messages must include at least one action-oriented phrase")
+        }
+    }
+
+    // MARK: - Special "research" callouts (natural research-specific phrasing)
+
+    @Test func taskAwareCalloutsResearchContainsKeyword() async {
+        // All research-specific messages must contain "research".
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "research", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) research messages must not be empty")
+                #expect(msgs.allSatisfy { $0.contains("research") },
+                        "tier \(tier) research messages must contain 'research'")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsResearchTier3AvoidsOpenPhrase() async {
+        // The generic template produces "CLOSE THIS. open your research." which is passive.
+        // The special handler replaces it with direct "Get back to your research."
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "research", tier: 3)
+            #expect(tier3.allSatisfy { !$0.contains("open your research") },
+                    "tier 3 research messages must not use passive 'open your research' phrasing")
+        }
+    }
 }

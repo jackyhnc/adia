@@ -290,6 +290,48 @@ public final class CalloutManager {
                 ]
             }
         }
+        // "homework" — "CLOSE THIS. open your homework." sounds like opening a file, not doing work.
+        if keyword == "homework" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your homework.",
+                    "this isn't your homework.",
+                    "your homework isn't going to do itself.",
+                ]
+            case 2:
+                return [
+                    "stop putting off your homework.",
+                    "you need to do your homework, not this.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Go finish your homework.",
+                    "your homework deadline isn't moving.",
+                ]
+            }
+        }
+        // "research" — "CLOSE THIS. open your research." is passive; direct action framing works better.
+        if keyword == "research" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your research.",
+                    "this isn't your research.",
+                    "your research isn't going to do itself.",
+                ]
+            case 2:
+                return [
+                    "stop avoiding your research.",
+                    "you need to be doing your research, not this.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Get back to your research.",
+                    "your research deadline isn't moving.",
+                ]
+            }
+        }
         switch tier {
         case 1:
             return [

@@ -270,6 +270,13 @@ struct DefaultBlockedDomainsCoverageTests {
             #expect(domains.contains(site), "expected \(site) in default blocked domains")
         }
     }
+
+    @Test func defaultBlockedDomainsIncludeMusicStreamingSites() {
+        let domains = Session.defaultBlockedDomains
+        for site in ["soundcloud.com", "bandcamp.com"] {
+            #expect(domains.contains(site), "expected \(site) in default blocked domains (passive-listening distraction)")
+        }
+    }
 }
 
 @Suite("Session defaultBlockedApps")

@@ -140,6 +140,9 @@ public struct Session: Sendable, Identifiable {
         "peacocktv.com",
         "steampowered.com",
         "epicgames.com",
+        // Music streaming (passive-listening distraction during deep work)
+        "soundcloud.com",
+        "bandcamp.com",
         // Messaging & community
         "discord.com",
         "slack.com",
