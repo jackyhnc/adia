@@ -56,7 +56,8 @@ public final class ConversationManager: ObservableObject {
             do {
                 let stream = try await _aiClient.chatStream(
                     messages: messages,
-                    systemPrompt: systemPrompt(for: mode)
+                    systemPrompt: systemPrompt(for: mode),
+                    useStrongModel: true
                 )
                 var accumulated = ""
                 for try await chunk in stream {

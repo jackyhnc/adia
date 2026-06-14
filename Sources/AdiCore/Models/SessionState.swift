@@ -118,25 +118,52 @@ public struct Session: Sendable, Identifiable {
     public var elapsed: TimeInterval { Date().timeIntervalSince(startTime) }
 
     public static let defaultBlockedDomains: [String] = [
+        // Social media
         "twitter.com", "x.com",
         "reddit.com",
         "youtube.com",
         "instagram.com",
         "tiktok.com",
         "facebook.com",
+        "threads.net",
+        "snapchat.com",
+        "tumblr.com",
+        "pinterest.com",
+        // Streaming & gaming
         "netflix.com",
         "twitch.tv",
+        "hulu.com",
+        "disneyplus.com",
+        "primevideo.com",
+        // Messaging & community
         "discord.com",
         "slack.com",
-        "pinterest.com",
-        "snapchat.com",
-        "threads.net",
-        "tumblr.com",
         "9gag.com",
+        // Sports
+        "espn.com",
+        "nba.com",
+        "nfl.com",
+        "mlb.com",
+        "nhl.com",
+        "bleacherreport.com",
+        "cbssports.com",
+        // News & click-bait
+        "buzzfeed.com",
+        "huffpost.com",
+        "msn.com",
+        "dailymail.co.uk",
+        // Tech news (procrastination in disguise)
         "hacker-news.firebaseapp.com",
         "news.ycombinator.com",
+        // Professional procrastination
         "linkedin.com",
+        // Shopping
         "amazon.com",
+        "ebay.com",
+        "etsy.com",
+        // Other time sinks
+        "quora.com",
+        "fandom.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

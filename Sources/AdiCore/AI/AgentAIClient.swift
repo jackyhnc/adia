@@ -161,13 +161,15 @@ public actor AgentAIClient {
 
     public func chat(
         messages: [ChatMessage],
-        systemPrompt: String
+        systemPrompt: String,
+        useStrongModel: Bool
     ) async throws -> String {
         guard let key = await currentKey() else { throw AgentAIError.missingAPIKey }
         let apiMessages: [[String: Any]] = messages.map { msg in
             ["role": msg.role.rawValue, "content": msg.content]
         }
-        return try await post(key: key, model: fastModel, system: systemPrompt,
+        let model = useStrongModel ? strongModel : fastModel
+        return try await post(key: key, model: model, system: systemPrompt,
                               messages: apiMessages, maxTokens: 900)
     }
 
@@ -178,13 +180,14 @@ public actor AgentAIClient {
     /// The caller accumulates chunks to produce the full response.
     public func chatStream(
         messages: [ChatMessage],
-        systemPrompt: String
+        systemPrompt: String,
+        useStrongModel: Bool
     ) async throws -> AsyncThrowingStream<String, Error> {
         guard let key = await currentKey() else { throw AgentAIError.missingAPIKey }
 
         // Capture actor-isolated state into local constants before escaping the actor.
         let session  = urlSession
-        let model    = fastModel
+        let model    = useStrongModel ? strongModel : fastModel
         let apiURL   = baseURL
         let version  = anthropicVersion
 

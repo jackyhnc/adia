@@ -414,4 +414,48 @@ struct ConversationManagerTests {
         let streaming = await MainActor.run { ConversationManager.shared.streamingContent }
         #expect(streaming == nil)
     }
+
+    // MARK: - Strong model routing
+
+    /// Every conversation mode (reasoning + early-exit) should use the strong model so
+    /// the AI is more persuasive / nuanced for high-stakes human-facing interactions.
+    @Test func sendUsesStrongModelForReasoningConversation() async {
+        await reset()
+        let mock = MockAgentAIClient()
+        await mock.setChatResult(.success("ok sure [ACCESS GRANTED]"))
+        let realClient = await MainActor.run { ConversationManager.shared._aiClient }
+        await MainActor.run {
+            ConversationManager.shared._injectAIClientForTesting(mock)
+            ConversationManager.shared.start(mode: .reasoning(domain: "docs.google.com"))
+            ConversationManager.shared.send("I need this for citations")
+        }
+        for _ in 0..<200 {
+            let still = await MainActor.run { ConversationManager.shared.isLoading }
+            if !still { break }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+        #expect(await mock.lastUseStrongModel == true, "reasoning conversation must use strong model")
+        await MainActor.run { ConversationManager.shared._injectAIClientForTesting(realClient) }
+        await reset()
+    }
+
+    @Test func sendUsesStrongModelForEarlyExitConversation() async {
+        await reset()
+        let mock = MockAgentAIClient()
+        await mock.setChatResult(.success("you've got this, keep going"))
+        let realClient = await MainActor.run { ConversationManager.shared._aiClient }
+        await MainActor.run {
+            ConversationManager.shared._injectAIClientForTesting(mock)
+            ConversationManager.shared.start(mode: .earlyExit)
+            ConversationManager.shared.send("I'm tired")
+        }
+        for _ in 0..<200 {
+            let still = await MainActor.run { ConversationManager.shared.isLoading }
+            if !still { break }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+        #expect(await mock.lastUseStrongModel == true, "early-exit conversation must use strong model")
+        await MainActor.run { ConversationManager.shared._injectAIClientForTesting(realClient) }
+        await reset()
+    }
 }

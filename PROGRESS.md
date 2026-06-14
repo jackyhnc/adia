@@ -3379,3 +3379,41 @@
 ### Next agent
 - All 14 original goals remain complete. BUILD_COMPLETE is still valid.
 - Possible further improvements: block `espn.com` and other sports/news sites, add more blocked Mac apps for the default list, consider making the early-exit conversation use the stronger model (claude-sonnet-4-6) for more persuasive motivational responses.
+
+## Run 95 — 2026-06-14
+
+### Shipped
+- **Strong model for all user-facing conversations**: Both the reasoning ("argue for site access") and early-exit conversations now use `claude-sonnet-4-6` instead of `claude-haiku-4-5`. High-stakes persuasion and nuanced access-grant evaluation deserve the stronger model.
+  - Updated `AgentAIService` protocol: `chat` and `chatStream` now require `useStrongModel: Bool`; protocol extension provides 2-param convenience overloads (default `false`) for backward compat.
+  - `AgentAIClient` routes to `strongModel` when `useStrongModel: true`.
+  - `MockAgentAIClient` records `lastUseStrongModel` for test assertions.
+  - `ConversationManager.send` passes `useStrongModel: true` unconditionally — all conversation modes are high-stakes.
+
+- **Expanded blocked-domain list** (20 → 43 domains):
+  - Sports: `espn.com`, `nba.com`, `nfl.com`, `mlb.com`, `nhl.com`, `bleacherreport.com`, `cbssports.com`
+  - News/click-bait: `buzzfeed.com`, `huffpost.com`, `msn.com`, `dailymail.co.uk`
+  - Streaming: `hulu.com`, `disneyplus.com`, `primevideo.com`
+  - Shopping: `ebay.com`, `etsy.com`
+  - Time sinks: `quora.com`, `fandom.com`
+
+- **New tests** (8):
+  - `sendUsesStrongModelForReasoningConversation` — asserts `lastUseStrongModel == true` in reasoning mode
+  - `sendUsesStrongModelForEarlyExitConversation` — asserts `lastUseStrongModel == true` in early-exit mode
+  - `chatStrongModelReturnsNonEmptyResponse` — integration smoke test for the strong-model path
+  - `defaultBlockedDomainsIncludeSportsSites` — espn, nba, nfl, bleacherreport, cbssports
+  - `defaultBlockedDomainsIncludeNewsAndClickbait` — buzzfeed, huffpost, msn
+  - `defaultBlockedDomainsIncludeShoppingSites` — ebay, etsy
+  - `defaultBlockedDomainsIncludeTimeSinks` — quora, fandom
+  - `defaultBlockedDomainsNoDuplicates` — guard against accidental duplicate entries
+  - `defaultBlockedDomainsCountExceedsTwenty` — enforce breadth of blocklist
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - Add Mac apps to the blocked-app list (e.g. com.spotify.client for Spotify, com.tencent.xinWeChat for WeChat) — requires confirming bundle IDs.
+  - Consider adding `cnn.com`, `foxnews.com` to the blocklist (currently excluded to avoid blocking legitimate research).
+  - Extend `CalloutManager.extractTaskKeyword` for new task types (e.g. "code", "research", "reading").
+  - Consider early-exit and reasoning conversations streaming progress for better UX (currently non-streamed path not exercised — streaming is already the default).

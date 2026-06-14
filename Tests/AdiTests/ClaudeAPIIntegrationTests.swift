@@ -95,6 +95,16 @@ struct ClaudeAPIIntegrationTests {
         #expect(lower.contains("blue"), "expected 'blue' in follow-up response, got: \(response)")
     }
 
+    @Test func chatStrongModelReturnsNonEmptyResponse() async throws {
+        let messages = [ChatMessage(role: .user, content: "Reply with the single word: ok")]
+        let response = try await AgentAIClient.shared.chat(
+            messages: messages,
+            systemPrompt: "You are a terse assistant. Reply in one word only.",
+            useStrongModel: true
+        )
+        #expect(!response.isEmpty, "strong-model chat response should be non-empty")
+    }
+
     // MARK: - Response parser round-trip via live API
 
     @Test func parseGoalResponseIsWellFormed() async throws {

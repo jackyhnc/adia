@@ -208,3 +208,45 @@ struct SessionRecordBlockedDomainsTests {
         #expect(decoded.blockedDomains.isEmpty)
     }
 }
+
+@Suite("Session defaultBlockedDomains — sports & news")
+struct DefaultBlockedDomainsCoverageTests {
+
+    @Test func defaultBlockedDomainsIncludeSportsSites() {
+        let domains = Session.defaultBlockedDomains
+        for site in ["espn.com", "nba.com", "nfl.com", "bleacherreport.com", "cbssports.com"] {
+            #expect(domains.contains(site), "expected \(site) in default blocked domains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsIncludeNewsAndClickbait() {
+        let domains = Session.defaultBlockedDomains
+        for site in ["buzzfeed.com", "huffpost.com", "msn.com"] {
+            #expect(domains.contains(site), "expected \(site) in default blocked domains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsIncludeShoppingSites() {
+        let domains = Session.defaultBlockedDomains
+        for site in ["ebay.com", "etsy.com"] {
+            #expect(domains.contains(site), "expected \(site) in default blocked domains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsIncludeTimeSinks() {
+        let domains = Session.defaultBlockedDomains
+        for site in ["quora.com", "fandom.com"] {
+            #expect(domains.contains(site), "expected \(site) in default blocked domains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicates() {
+        let domains = Session.defaultBlockedDomains
+        let unique = Set(domains)
+        #expect(unique.count == domains.count, "duplicate entries in defaultBlockedDomains")
+    }
+
+    @Test func defaultBlockedDomainsCountExceedsTwenty() {
+        #expect(Session.defaultBlockedDomains.count > 20, "expected a broad blocklist")
+    }
+}

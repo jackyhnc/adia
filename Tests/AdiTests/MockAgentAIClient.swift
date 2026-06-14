@@ -30,6 +30,8 @@ actor MockAgentAIClient: AgentAIService {
     private(set) var classifyCallCount = 0
     private(set) var parseGoalCallCount = 0
     private(set) var chatCallCount = 0
+    /// Tracks the `useStrongModel` value from the most recent `chat`/`chatStream` call.
+    private(set) var lastUseStrongModel: Bool? = nil
 
     // MARK: - Configuration (call before injecting into the system under test)
 
@@ -86,13 +88,15 @@ actor MockAgentAIClient: AgentAIService {
         return try parseGoalResult.get()
     }
 
-    func chat(messages: [ChatMessage], systemPrompt: String) async throws -> String {
+    func chat(messages: [ChatMessage], systemPrompt: String, useStrongModel: Bool) async throws -> String {
         chatCallCount += 1
+        lastUseStrongModel = useStrongModel
         return try chatResult.get()
     }
 
-    func chatStream(messages: [ChatMessage], systemPrompt: String) async throws -> AsyncThrowingStream<String, Error> {
+    func chatStream(messages: [ChatMessage], systemPrompt: String, useStrongModel: Bool) async throws -> AsyncThrowingStream<String, Error> {
         chatCallCount += 1
+        lastUseStrongModel = useStrongModel
         let result = chatResult
         return AsyncThrowingStream { continuation in
             switch result {

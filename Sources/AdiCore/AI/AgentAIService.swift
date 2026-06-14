@@ -23,15 +23,38 @@ public protocol AgentAIService: Sendable {
 
     func parseGoal(_ input: String) async throws -> GoalParse
 
+    /// - Parameter useStrongModel: When `true`, routes to `claude-sonnet-4-6` instead of
+    ///   the fast haiku model. Use for high-stakes conversations (early-exit motivation,
+    ///   site-access reasoning) where nuanced judgment beats raw speed.
     func chat(
         messages: [ChatMessage],
-        systemPrompt: String
+        systemPrompt: String,
+        useStrongModel: Bool
     ) async throws -> String
 
+    /// Streaming variant — same model-selection semantics as `chat`.
     func chatStream(
         messages: [ChatMessage],
-        systemPrompt: String
+        systemPrompt: String,
+        useStrongModel: Bool
     ) async throws -> AsyncThrowingStream<String, Error>
+}
+
+// MARK: - Convenience overloads (fast model default)
+extension AgentAIService {
+    public func chat(
+        messages: [ChatMessage],
+        systemPrompt: String
+    ) async throws -> String {
+        try await chat(messages: messages, systemPrompt: systemPrompt, useStrongModel: false)
+    }
+
+    public func chatStream(
+        messages: [ChatMessage],
+        systemPrompt: String
+    ) async throws -> AsyncThrowingStream<String, Error> {
+        try await chatStream(messages: messages, systemPrompt: systemPrompt, useStrongModel: false)
+    }
 }
 
 extension AgentAIClient: AgentAIService {}
