@@ -1,5 +1,51 @@
 # Adia — Build Progress
 
+## Run 99 — 2026-06-14
+
+### Shipped
+- **feat: live elapsed-time counter in blocked page**
+  - `LocalBlockServer.start()` now accepts `sessionStartTime: Date? = nil` (backward-compatible).
+    `SessionManager.activate()` passes `session.startTime` so every blocked-page response
+    carries the session's actual start timestamp.
+  - `isoFormat(_ date:) -> String` — pure static helper, formats a `Date` as ISO 8601 UTC
+    (e.g. `"2024-01-15T10:30:00Z"`) ready for JS `Date.parse()`. Unit-tested for correctness
+    and round-trip fidelity.
+  - `elapsedScriptTag(startISO:) -> String` — pure static helper, returns a self-contained
+    `<script>` block. On page load and every 1 s: computes elapsed = `Date.now() - start`,
+    formats as "just started" / "5m in" / "1h 30m in", writes into `#elapsed`. IIFE-wrapped
+    to avoid polluting the global scope.
+  - `blockedHTML(domain:taskDescription:sessionStartTime:)` — promoted from `private` to
+    `internal static` for direct test access. `#elapsed` div is always rendered (prevents
+    layout shift even when no start time is available); the `<script>` is emitted only when
+    `sessionStartTime != nil`.
+  - `handle(_:taskDescription:sessionStartTime:)` — passes captured start time to `blockedHTML`.
+    The `capturedStart` local captures the value at `start()` time for thread safety
+    (same pattern as `capturedTask`).
+  - **Tests (+10)** in `LocalBlockServerTests.swift`:
+    `isoFormatProducesISO8601String`, `isoFormatRoundTrips`,
+    `elapsedScriptTagContainsProvidedISO`, `elapsedScriptTagContainsSetInterval`,
+    `elapsedScriptTagReferencesElapsedElementID`, `elapsedScriptTagIsWrappedInScriptTags`,
+    `blockedHTMLContainsElapsedDivAlways`, `blockedHTMLIncludesScriptWhenStartTimeGiven`,
+    `blockedHTMLOmitsScriptWhenNoStartTime`, `blockedHTMLStartDoesNotCrashWithStartTime`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Remaining quality improvements:
+  - (a) `ConversationView` auto-send: when reasoning mode opens for a specific domain, auto-
+    send a "I'm trying to open [domain]" user message so the AI responds immediately without
+    the user having to type first. Needs care to avoid double-sending on hot reload.
+  - (b) `LocalBlockServer` race on first connection: `onBlockedDomainAccessed` is set from
+    `@MainActor` after `start()` returns — a sub-ms first connection could miss it. Fix:
+    accept the callback as a parameter of `start()` so it's set before the listener activates.
+  - (c) `ConversationManager.systemPrompt`: for `.earlyExit`, the prompt doesn't include
+    the session's success criteria — adding it would help the AI make more specific arguments.
+  - (d) Session history: `SessionRecord` doesn't store the blocked domains list; adding it
+    would allow the history view to show "blocked 12 sites during this session."
+
+---
+
 ## Run 98 — 2026-06-14
 
 ### Shipped
