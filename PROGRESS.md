@@ -3801,3 +3801,31 @@
   - Consider adding `cnn.com`, `foxnews.com` to the blocklist (currently excluded to avoid blocking legitimate research).
   - Extend `CalloutManager.extractTaskKeyword` for new task types (e.g. "code", "research", "reading").
   - Consider early-exit and reasoning conversations streaming progress for better UX (currently non-streamed path not exercised — streaming is already the default).
+
+---
+
+## Run 109 — 2026-06-14
+
+### What shipped
+- **Mobile subdomain blocking** (`HostsFileManager.swift`):
+  - `buildBlock` now generates `/etc/hosts` entries for `m.`, `mobile.`, and `old.` subdomain variants alongside every bare domain (e.g. `reddit.com` now also blocks `m.reddit.com`, `mobile.reddit.com`, `old.reddit.com`).
+  - This closes a real bypass vector: users could previously navigate to `m.reddit.com` or `old.reddit.com` even when `reddit.com` was blocked.
+  - `parseBlocked` updated to filter all synthetic prefix variants so `currentlyBlocked()` still returns only canonical bare domains — existing round-trip tests unaffected.
+  - New constant `additionalBlockedSubdomainPrefixes: ["m", "mobile", "old"]` is `internal` so tests can reference it directly.
+
+- **New tests** (4) in `HostsFileManagerTests.swift`:
+  - `buildBlockIncludesMobileSubdomains` — iterates `additionalBlockedSubdomainPrefixes` and checks each variant appears in the generated block.
+  - `buildBlockMobileSubdomainsForMultipleDomains` — multi-domain spot check for `m.` and `old.` variants.
+  - `parseBlockedSkipsMobileSubdomainVariants` — manually crafted content with `m./mobile./old.` entries; asserts only the bare domain is returned.
+  - `buildThenParseRoundTripIncludesMobileEntries` — end-to-end: `buildBlock` produces mobile rows, `parseBlocked` strips them, round-trip still yields bare domains.
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 original goals remain complete. BUILD_COMPLETE is present.
+- Possible further improvements:
+  - Add `amp.` to `additionalBlockedSubdomainPrefixes` for Google AMP bypass prevention.
+  - Extend the default blocked domain list with additional time-sink sites.
+  - Add `i.`, `api.` and similar bypass vectors if user research surfaces them.
+  - Consider adding a UI indicator in Settings showing that mobile subdomains are auto-blocked.

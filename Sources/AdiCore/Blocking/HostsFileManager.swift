@@ -45,6 +45,11 @@ public actor HostsFileManager {
 
     // MARK: - Pure string helpers (nonisolated static — testable without actor hop)
 
+    // Subdomain prefixes added synthetically alongside every bare domain in the block.
+    // Prevents bypass via mobile/alternative site variants (m.reddit.com, old.reddit.com, etc.).
+    // parseBlocked skips these so round-trips only return canonical bare domains.
+    internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = ["m", "mobile", "old"]
+
     // Walks lines, discarding everything between the adia markers (inclusive).
     internal nonisolated static func stripped(_ content: String) -> String {
         let lines = content.components(separatedBy: "\n")
@@ -60,13 +65,19 @@ public actor HostsFileManager {
     }
 
     internal nonisolated static func buildBlock(domains: [String]) -> String {
-        let lines = domains.flatMap { domain in
-            ["127.0.0.1 \(domain)", "127.0.0.1 www.\(domain)"]
+        let lines = domains.flatMap { domain -> [String] in
+            var entries = ["127.0.0.1 \(domain)", "127.0.0.1 www.\(domain)"]
+            for prefix in additionalBlockedSubdomainPrefixes {
+                entries.append("127.0.0.1 \(prefix).\(domain)")
+            }
+            return entries
         }.joined(separator: "\n")
         return "\n\(blockMarkerBegin)\n\(lines)\n\(blockMarkerEnd)\n"
     }
 
     internal nonisolated static func parseBlocked(_ content: String) -> [String] {
+        // All synthetic subdomain prefixes we add — skip them so callers only see bare domains.
+        let syntheticPrefixes = (["www"] + additionalBlockedSubdomainPrefixes).map { "\($0)." }
         guard let begin = content.range(of: blockMarkerBegin),
               let end   = content.range(of: blockMarkerEnd),
               begin.upperBound <= end.lowerBound  // malformed content guard
@@ -77,7 +88,8 @@ public actor HostsFileManager {
                 let parts = line.split(separator: " ")
                 guard parts.count == 2, parts[0] == "127.0.0.1" else { return nil }
                 let domain = String(parts[1])
-                return domain.hasPrefix("www.") ? nil : domain
+                guard !syntheticPrefixes.contains(where: { domain.hasPrefix($0) }) else { return nil }
+                return domain
             }
     }
 }

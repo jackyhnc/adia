@@ -63,6 +63,21 @@ struct HostsFileManagerTests {
         #expect(block.contains("127.0.0.1 www.youtube.com"))
     }
 
+    @Test func buildBlockIncludesMobileSubdomains() {
+        let block = HostsFileManager.buildBlock(domains: ["reddit.com"])
+        for prefix in HostsFileManager.additionalBlockedSubdomainPrefixes {
+            #expect(block.contains("127.0.0.1 \(prefix).reddit.com"),
+                    "expected \(prefix).reddit.com in block")
+        }
+    }
+
+    @Test func buildBlockMobileSubdomainsForMultipleDomains() {
+        let block = HostsFileManager.buildBlock(domains: ["reddit.com", "twitter.com"])
+        #expect(block.contains("127.0.0.1 m.reddit.com"))
+        #expect(block.contains("127.0.0.1 m.twitter.com"))
+        #expect(block.contains("127.0.0.1 old.reddit.com"))
+    }
+
     @Test func buildBlockWrapsWithMarkers() {
         let block = HostsFileManager.buildBlock(domains: ["reddit.com"])
         #expect(block.contains("# adia-block-begin"))
@@ -102,6 +117,35 @@ struct HostsFileManagerTests {
         #expect(!domains.contains("www.youtube.com"))
         #expect(!domains.contains("www.reddit.com"))
         #expect(domains.count == 2)
+    }
+
+    @Test func parseBlockedSkipsMobileSubdomainVariants() {
+        // Content manually crafted with m./mobile./old. entries — all should be filtered.
+        let content = """
+        # adia-block-begin
+        127.0.0.1 reddit.com
+        127.0.0.1 www.reddit.com
+        127.0.0.1 m.reddit.com
+        127.0.0.1 mobile.reddit.com
+        127.0.0.1 old.reddit.com
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["reddit.com"])
+        #expect(!domains.contains("www.reddit.com"))
+        #expect(!domains.contains("m.reddit.com"))
+        #expect(!domains.contains("mobile.reddit.com"))
+        #expect(!domains.contains("old.reddit.com"))
+    }
+
+    @Test func buildThenParseRoundTripIncludesMobileEntries() {
+        // buildBlock now emits m./mobile./old. rows; parseBlocked must still return bare domains only.
+        let input = ["reddit.com", "twitter.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        // Sanity-check that the block actually has mobile entries before testing the filter.
+        #expect(block.contains("127.0.0.1 m.reddit.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input))
     }
 
     @Test func parseBlockedReturnsEmptyWhenNoMarkers() {
