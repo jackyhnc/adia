@@ -65,9 +65,15 @@ public final class ConversationManager: ObservableObject {
                     streamingContent = accumulated
                 }
                 streamingContent = nil
-                messages.append(ChatMessage(role: .assistant, content: accumulated))
+                // Guard against a stream that completes without yielding any text
+                // (e.g. a malformed SSE response with no text_delta events) so the
+                // UI never shows an empty bubble.
+                let finalContent = accumulated.isEmpty
+                    ? "something went wrong. try again."
+                    : accumulated
+                messages.append(ChatMessage(role: .assistant, content: finalContent))
                 if case .reasoning = mode {
-                    parseAccessDecision(from: accumulated)
+                    parseAccessDecision(from: finalContent)
                 }
             } catch {
                 streamingContent = nil
@@ -244,9 +250,10 @@ public final class ConversationManager: ObservableObject {
         }
         guard distinctDomains.count >= 2, deniedCount > grantedCount else { return "" }
 
+        let grantedClause = grantedCount > 0 ? ", \(grantedCount) granted" : ""
         return """
 
-        Beyond \(trimmed), the user has asked about \(distinctDomains.count) other sites this session — \(deniedCount) of those asks were denied, \(grantedCount) granted. That's a pattern worth weighing (they may be testing your limits), but still judge *this* request on its own merits — don't let history elsewhere sink a genuinely good reason.
+        Beyond \(trimmed), the user has asked about \(distinctDomains.count) other sites this session — \(deniedCount) of those asks were denied\(grantedClause). That's a pattern worth weighing (they may be testing your limits), but still judge *this* request on its own merits — don't let history elsewhere sink a genuinely good reason.
         """
     }
 }

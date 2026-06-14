@@ -25,6 +25,10 @@ actor MockAgentAIClient: AgentAIService {
     private var parseGoalResult: Result<GoalParse, MockAgentAIError> =
         .success(GoalParse(ok: true, task: "mock task", successCriteria: "mock criteria", question: nil))
     private var chatResult: Result<String, MockAgentAIError> = .success("mock reply")
+    /// When non-nil, `chatStream` yields each element as a separate chunk instead of
+    /// emitting a single `chatResult` string. Set to `[]` to simulate a stream that
+    /// completes without emitting any text.
+    private var chatStreamChunks: [String]? = nil
 
     private(set) var verifyCallCount = 0
     private(set) var classifyCallCount = 0
@@ -54,6 +58,13 @@ actor MockAgentAIClient: AgentAIService {
 
     func setChatResult(_ result: Result<String, MockAgentAIError>) {
         chatResult = result
+        chatStreamChunks = nil  // clear any prior chunk override
+    }
+
+    /// Configures `chatStream` to yield each element as a distinct SSE chunk.
+    /// Pass `[]` to simulate a stream that completes without yielding any text.
+    func setChatStreamChunks(_ chunks: [String]) {
+        chatStreamChunks = chunks
     }
 
     // MARK: - AgentAIService
@@ -97,6 +108,14 @@ actor MockAgentAIClient: AgentAIService {
     func chatStream(messages: [ChatMessage], systemPrompt: String, useStrongModel: Bool) async throws -> AsyncThrowingStream<String, Error> {
         chatCallCount += 1
         lastUseStrongModel = useStrongModel
+        if let chunks = chatStreamChunks {
+            return AsyncThrowingStream { continuation in
+                for chunk in chunks {
+                    continuation.yield(chunk)
+                }
+                continuation.finish()
+            }
+        }
         let result = chatResult
         return AsyncThrowingStream { continuation in
             switch result {

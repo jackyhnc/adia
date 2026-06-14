@@ -458,4 +458,124 @@ struct ConversationManagerTests {
         await MainActor.run { ConversationManager.shared._injectAIClientForTesting(realClient) }
         await reset()
     }
+
+    // MARK: - Streaming content initial state
+
+    /// Immediately after `send()` returns (but before the async stream task executes),
+    /// `streamingContent` must be `""` — not nil. The UI uses this as the trigger to
+    /// show a `StreamingBubble` with a "…" placeholder during the first network RTT.
+    @Test func streamingContentIsEmptyStringImmediatelyAfterSend() async {
+        await reset()
+        let mock = MockAgentAIClient()
+        await mock.setChatResult(.success("here you go"))
+        let realClient = await MainActor.run { ConversationManager.shared._aiClient }
+
+        let streamingAfterSend = await MainActor.run { () -> String? in
+            ConversationManager.shared._injectAIClientForTesting(mock)
+            ConversationManager.shared.start(mode: .earlyExit)
+            ConversationManager.shared.send("keep going")
+            // Captured synchronously before the Task body runs — must be "" not nil.
+            return ConversationManager.shared.streamingContent
+        }
+
+        #expect(streamingAfterSend == "",
+            "streamingContent must be \"\" (not nil) immediately after send — UI shows \"…\" placeholder")
+
+        for _ in 0..<200 {
+            let still = await MainActor.run { ConversationManager.shared.isLoading }
+            if !still { break }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+        await MainActor.run { ConversationManager.shared._injectAIClientForTesting(realClient) }
+        await reset()
+    }
+
+    // MARK: - Multi-chunk streaming accumulation
+
+    /// When the mock yields multiple distinct chunks, `send()` must concatenate them
+    /// into a single message. This exercises the `accumulated += chunk` loop without
+    /// a live network round-trip.
+    @Test func sendAccumulatesMultipleChunksIntoSingleMessage() async {
+        await reset()
+        let mock = MockAgentAIClient()
+        await mock.setChatStreamChunks(["hello", " there", " friend"])
+        let realClient = await MainActor.run { ConversationManager.shared._aiClient }
+        await MainActor.run {
+            ConversationManager.shared._injectAIClientForTesting(mock)
+            ConversationManager.shared.start(mode: .earlyExit)
+            ConversationManager.shared.send("still here")
+        }
+
+        for _ in 0..<200 {
+            let still = await MainActor.run { ConversationManager.shared.isLoading }
+            if !still { break }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+
+        let messages = await MainActor.run { ConversationManager.shared.messages }
+        let lastMsg = messages.last
+        #expect(lastMsg?.role == .assistant)
+        #expect(lastMsg?.content == "hello there friend",
+            "chunks must be concatenated in order into the final assistant message")
+        #expect(await mock.chatCallCount == 1)
+
+        await MainActor.run { ConversationManager.shared._injectAIClientForTesting(realClient) }
+        await reset()
+    }
+
+    /// A stream that completes without emitting any text (empty chunk list) must fall
+    /// back to the standard error message rather than appending an empty bubble.
+    @Test func sendEmptyStreamFallsBackToErrorMessage() async {
+        await reset()
+        let mock = MockAgentAIClient()
+        await mock.setChatStreamChunks([])  // stream yields nothing
+        let realClient = await MainActor.run { ConversationManager.shared._aiClient }
+        await MainActor.run {
+            ConversationManager.shared._injectAIClientForTesting(mock)
+            ConversationManager.shared.start(mode: .earlyExit)
+            ConversationManager.shared.send("give me something")
+        }
+
+        for _ in 0..<200 {
+            let still = await MainActor.run { ConversationManager.shared.isLoading }
+            if !still { break }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+
+        let messages = await MainActor.run { ConversationManager.shared.messages }
+        let lastMsg = messages.last
+        #expect(lastMsg?.role == .assistant)
+        #expect(lastMsg?.content == "something went wrong. try again.",
+            "empty stream must produce the error fallback, not a blank bubble")
+
+        await MainActor.run { ConversationManager.shared._injectAIClientForTesting(realClient) }
+        await reset()
+    }
+
+    // MARK: - crossDomainSignal granted-count formatting
+
+    /// When every other-site ask was denied (grantedCount == 0), the signal must not
+    /// output the awkward "0 granted" clause — it's omitted entirely.
+    @Test func crossDomainSignalOmitsGrantedCountWhenZero() {
+        let history = [
+            ReasoningAttempt(domain: "reddit.com", granted: false, summary: "weak"),
+            ReasoningAttempt(domain: "x.com",      granted: false, summary: "weak"),
+        ]
+        let signal = ConversationManager.crossDomainSignal(for: "youtube.com", history: history)
+        #expect(!signal.contains("0 granted"), "must not output \"0 granted\" — omit the clause instead")
+        #expect(signal.contains("2 of those asks were denied"))
+    }
+
+    /// When some asks were granted, the granted count is still included so the AI
+    /// has accurate context about the pattern.
+    @Test func crossDomainSignalIncludesGrantedCountWhenNonZero() {
+        let history = [
+            ReasoningAttempt(domain: "reddit.com", granted: false, summary: "no"),
+            ReasoningAttempt(domain: "x.com",      granted: true,  summary: "lecture thread"),
+            ReasoningAttempt(domain: "github.com", granted: false, summary: "no"),
+        ]
+        let signal = ConversationManager.crossDomainSignal(for: "youtube.com", history: history)
+        #expect(signal.contains("1 granted"), "non-zero granted count must appear in the signal")
+        #expect(signal.contains("2 of those asks were denied"))
+    }
 }
