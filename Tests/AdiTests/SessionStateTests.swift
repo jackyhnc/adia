@@ -152,3 +152,59 @@ struct VerificationResultTests {
         #expect(decoded.explanation == r.explanation)
     }
 }
+
+@Suite("SessionRecord — blockedDomains")
+struct SessionRecordBlockedDomainsTests {
+
+    @Test func blockedDomainsDefaultsToEmpty() {
+        let now = Date()
+        let record = SessionRecord(
+            task: "Write essay", successCriteria: "Submit",
+            startTime: now, endTime: now.addingTimeInterval(3600),
+            completedSuccessfully: true, calloutCount: 0
+        )
+        #expect(record.blockedDomains.isEmpty)
+    }
+
+    @Test func blockedDomainsStoredInInit() {
+        let now = Date()
+        let domains = ["reddit.com", "youtube.com"]
+        let record = SessionRecord(
+            task: "Write essay", successCriteria: "Submit",
+            startTime: now, endTime: now.addingTimeInterval(3600),
+            completedSuccessfully: true, calloutCount: 0,
+            blockedDomains: domains
+        )
+        #expect(record.blockedDomains == domains)
+    }
+
+    @Test func blockedDomainsPreservedInCodableRoundTrip() throws {
+        let now = Date()
+        let domains = ["twitter.com", "facebook.com", "tiktok.com"]
+        let record = SessionRecord(
+            task: "Study", successCriteria: "Done",
+            startTime: now, endTime: now.addingTimeInterval(7200),
+            completedSuccessfully: false, calloutCount: 3,
+            blockedDomains: domains
+        )
+        let data = try JSONEncoder().encode(record)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: data)
+        #expect(decoded.blockedDomains == domains)
+    }
+
+    @Test func legacyRecordWithoutBlockedDomainsDecodesAsEmpty() throws {
+        let now = Date()
+        let record = SessionRecord(
+            task: "Old session", successCriteria: "Done",
+            startTime: now, endTime: now.addingTimeInterval(1800),
+            completedSuccessfully: true, calloutCount: 1,
+            blockedDomains: ["youtube.com"]
+        )
+        let encoded = try JSONEncoder().encode(record)
+        var dict = try #require((try JSONSerialization.jsonObject(with: encoded)) as? [String: Any])
+        dict.removeValue(forKey: "blockedDomains")
+        let stripped = try JSONSerialization.data(withJSONObject: dict)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: stripped)
+        #expect(decoded.blockedDomains.isEmpty)
+    }
+}

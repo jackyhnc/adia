@@ -305,6 +305,30 @@ struct SessionManagerTests {
         #expect(record?.reasoningGranted == 0)
     }
 
+    @Test func endSessionStoresBlockedDomainsInRecord() async {
+        let s = Session(
+            task: "Write essay",
+            successCriteria: "Submit to Canvas",
+            blockedDomains: ["reddit.com", "youtube.com", "twitter.com"]
+        )
+        await injectSession(s)
+        await SessionManager.shared.endSession()
+        let record = await MainActor.run { SessionManager.shared._lastEndedRecord }
+        #expect(record?.blockedDomains == ["reddit.com", "youtube.com", "twitter.com"])
+    }
+
+    @Test func endSessionWithNoBlockedDomainsRecordsEmptyList() async {
+        let s = Session(
+            task: "Write essay",
+            successCriteria: "Submit to Canvas",
+            blockedDomains: []
+        )
+        await injectSession(s)
+        await SessionManager.shared.endSession()
+        let record = await MainActor.run { SessionManager.shared._lastEndedRecord }
+        #expect(record?.blockedDomains.isEmpty == true)
+    }
+
     /// Regression test for a race where `verifyAndEnd()` awaits a multi-second network
     /// call (and, on success, an additional 5s sleep) while holding a stale reference to
     /// the session. If the user taps "End Session" directly during that window, the

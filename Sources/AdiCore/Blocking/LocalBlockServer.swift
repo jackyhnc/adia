@@ -26,9 +26,19 @@ public final class LocalBlockServer: @unchecked Sendable {
 
     internal init(forTesting: ()) {}
 
-    public func start(blockedDomains: [String], taskDescription: String, sessionStartTime: Date? = nil) {
+    /// Starts the block server. `onBlockedDomainAccessed` is assigned before the listener
+    /// begins accepting connections, eliminating the race window that existed when the
+    /// callback was set separately by the caller after `start()` returned.
+    public func start(
+        blockedDomains: [String],
+        taskDescription: String,
+        sessionStartTime: Date? = nil,
+        onBlockedDomainAccessed: (@Sendable (String) -> Void)? = nil
+    ) {
         self.taskDescription = taskDescription
         stop()
+        // Set callback before the listener starts so the first connection can never miss it.
+        self.onBlockedDomainAccessed = onBlockedDomainAccessed
 
         // Capture both values as local constants so the connection handler closure
         // never reads self from a different thread (serverQueue vs. MainActor).
@@ -63,6 +73,7 @@ public final class LocalBlockServer: @unchecked Sendable {
     public func stop() {
         listener?.cancel()
         listener = nil
+        onBlockedDomainAccessed = nil
         lastNotifyDomain = nil
         lastNotifyAt = nil
     }

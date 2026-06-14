@@ -24,6 +24,9 @@ public struct SessionRecord: Sendable, Identifiable {
     /// Of `reasoningAttempts`, how many were granted by the AI.
     /// Zero for sessions recorded before this field was introduced.
     public let reasoningGranted: Int
+    /// Domains that were blocked during this session (snapshot at session end).
+    /// Empty array for sessions recorded before this field was introduced.
+    public let blockedDomains: [String]
 
     public init(
         id: UUID = UUID(),
@@ -37,7 +40,8 @@ public struct SessionRecord: Sendable, Identifiable {
         onTaskChecks: Int = 0,
         totalChecks: Int = 0,
         reasoningAttempts: Int = 0,
-        reasoningGranted: Int = 0
+        reasoningGranted: Int = 0,
+        blockedDomains: [String] = []
     ) {
         self.id = id
         self.task = task
@@ -51,6 +55,7 @@ public struct SessionRecord: Sendable, Identifiable {
         self.totalChecks = totalChecks
         self.reasoningAttempts = reasoningAttempts
         self.reasoningGranted = reasoningGranted
+        self.blockedDomains = blockedDomains
     }
 
     public var duration: TimeInterval { endTime.timeIntervalSince(startTime) }
@@ -71,6 +76,7 @@ extension SessionRecord: Codable {
         case completedSuccessfully, calloutCount, note
         case onTaskChecks, totalChecks
         case reasoningAttempts, reasoningGranted
+        case blockedDomains
         // Computed convenience fields — encoded for external consumers, never decoded
         // (they are derived from stored fields above on decode).
         case focusScore, durationSeconds
@@ -90,6 +96,7 @@ extension SessionRecord: Codable {
         totalChecks          = try c.decodeIfPresent(Int.self,    forKey: .totalChecks)  ?? 0
         reasoningAttempts    = try c.decodeIfPresent(Int.self,    forKey: .reasoningAttempts) ?? 0
         reasoningGranted     = try c.decodeIfPresent(Int.self,    forKey: .reasoningGranted)  ?? 0
+        blockedDomains       = try c.decodeIfPresent([String].self, forKey: .blockedDomains)  ?? []
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -106,6 +113,7 @@ extension SessionRecord: Codable {
         try c.encode(totalChecks,           forKey: .totalChecks)
         try c.encode(reasoningAttempts,     forKey: .reasoningAttempts)
         try c.encode(reasoningGranted,      forKey: .reasoningGranted)
+        try c.encode(blockedDomains,        forKey: .blockedDomains)
         // Convenience computed fields for external consumers (e.g. JSON export tools).
         // Not decoded — derived from onTaskChecks/totalChecks and startTime/endTime above.
         try c.encodeIfPresent(focusScore,   forKey: .focusScore)

@@ -148,6 +148,52 @@ struct LocalBlockServerTests {
         _ = fired  // suppress unused warning
     }
 
+    @Test func startWithCallbackParameterSetsCallbackBeforeListenerBegins() {
+        let server = LocalBlockServer(forTesting: ())
+        var callbackDomain: String?
+        server.start(
+            blockedDomains: [],
+            taskDescription: "Test task",
+            onBlockedDomainAccessed: { domain in callbackDomain = domain }
+        )
+        #expect(server.onBlockedDomainAccessed != nil)
+        server.stop()
+        _ = callbackDomain
+    }
+
+    @Test func stopClearsOnBlockedDomainAccessed() {
+        let server = LocalBlockServer(forTesting: ())
+        server.start(
+            blockedDomains: ["youtube.com"],
+            taskDescription: "Study",
+            onBlockedDomainAccessed: { _ in }
+        )
+        #expect(server.onBlockedDomainAccessed != nil)
+        server.stop()
+        #expect(server.onBlockedDomainAccessed == nil)
+    }
+
+    @Test func startWithNilCallbackLeavesCallbackNil() {
+        let server = LocalBlockServer(forTesting: ())
+        server.start(blockedDomains: [], taskDescription: "No callback")
+        #expect(server.onBlockedDomainAccessed == nil)
+        server.stop()
+    }
+
+    @Test func secondStartOverridesPreviousCallback() {
+        let server = LocalBlockServer(forTesting: ())
+        server.start(
+            blockedDomains: [],
+            taskDescription: "First",
+            onBlockedDomainAccessed: { _ in }
+        )
+        #expect(server.onBlockedDomainAccessed != nil)
+        // Second start without a callback: previous callback must be replaced with nil.
+        server.start(blockedDomains: [], taskDescription: "Second")
+        #expect(server.onBlockedDomainAccessed == nil)
+        server.stop()
+    }
+
     // MARK: - isoFormat
 
     @Test func isoFormatProducesISO8601String() {

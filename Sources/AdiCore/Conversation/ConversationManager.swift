@@ -163,8 +163,9 @@ public final class ConversationManager: ObservableObject {
             Never grant access for entertainment or distraction. No corporate tone — be direct.\(memory)\(crossSignal)
             """
         case .earlyExit:
+            let criteriaNote = criteria.isEmpty ? "" : " Success criteria: \"\(criteria)\"."
             return """
-            You are Adia. A student wants to quit their focus session after \(elapsed) min. Task: "\(task)".
+            You are Adia. A student wants to quit their focus session after \(elapsed) min. Task: "\(task)".\(criteriaNote)
             Try to talk them out of it — be a friend who genuinely wants them to succeed. \
             Ask what's wrong. Offer to adjust. Keep replies to 1-2 sentences.
             If they insist multiple times, let them go without judgment.

@@ -90,7 +90,6 @@ public final class SessionManager: ObservableObject {
             captureManager.onFrame = nil
             await detector.detach()
             AppMonitor.shared.stop()
-            LocalBlockServer.shared.onBlockedDomainAccessed = nil
             LocalBlockServer.shared.stop()
             SleepBlocker.shared.stop()
             do { try await hosts.unblockAll() } catch {
@@ -128,7 +127,8 @@ public final class SessionManager: ObservableObject {
                 onTaskChecks: onTaskCheckCount,
                 totalChecks: totalCheckCount,
                 reasoningAttempts: s.reasoningHistory.count,
-                reasoningGranted: s.reasoningHistory.filter(\.granted).count
+                reasoningGranted: s.reasoningHistory.filter(\.granted).count,
+                blockedDomains: s.blockedDomains
             )
             _lastEndedRecord = record
             Task { await SessionHistory.shared.record(record) }
@@ -144,7 +144,6 @@ public final class SessionManager: ObservableObject {
 
         captureManager.stop()
         AppMonitor.shared.stop()
-        LocalBlockServer.shared.onBlockedDomainAccessed = nil
         LocalBlockServer.shared.stop()
         SleepBlocker.shared.stop()
         do { try await hosts.unblockAll() } catch {
@@ -384,17 +383,22 @@ public final class SessionManager: ObservableObject {
             await self?.handleFrame(frame)
         }
 
-        // Local block server (non-fatal)
-        LocalBlockServer.shared.start(blockedDomains: s.blockedDomains, taskDescription: s.task, sessionStartTime: s.startTime)
-        // Auto-expand the notch into reasoning mode whenever the user visits a blocked page.
-        LocalBlockServer.shared.onBlockedDomainAccessed = { domain in
-            Task { @MainActor in
-                guard SessionManager.shared.session != nil,
-                      !NotchState.shared.showingConversation,
-                      !NotchState.shared.isVerifying else { return }
-                NotchState.shared.startConversation(.reasoning(domain: domain))
+        // Local block server (non-fatal). Callback is passed into start() so it is set
+        // before the listener begins accepting connections — eliminates the tiny race window
+        // where a first connection could arrive before the @MainActor callback assignment.
+        LocalBlockServer.shared.start(
+            blockedDomains: s.blockedDomains,
+            taskDescription: s.task,
+            sessionStartTime: s.startTime,
+            onBlockedDomainAccessed: { domain in
+                Task { @MainActor in
+                    guard SessionManager.shared.session != nil,
+                          !NotchState.shared.showingConversation,
+                          !NotchState.shared.isVerifying else { return }
+                    NotchState.shared.startConversation(.reasoning(domain: domain))
+                }
             }
-        }
+        )
 
         // /etc/hosts blocking requires root — non-fatal
         do {

@@ -16,6 +16,21 @@ public struct ConversationView: View {
             inputRow
             actionButtons
         }
+        .task(id: manager.messages.first?.id) {
+            await autoSendOpeningIfNeeded()
+        }
+    }
+
+    /// When reasoning mode opens for a specific blocked domain, auto-send a user message
+    /// so the AI replies immediately without the user needing to type first.
+    /// Guarded by message count == 1 and a short delay to avoid double-send on re-render.
+    private func autoSendOpeningIfNeeded() async {
+        guard case .reasoning(let domain) = manager.mode,
+              let d = domain, !d.isEmpty,
+              manager.messages.count == 1 else { return }
+        try? await Task.sleep(for: .milliseconds(300))
+        guard manager.messages.count == 1, !manager.isLoading else { return }
+        manager.send("I'm trying to access \(d)")
     }
 
     // MARK: - Message list
