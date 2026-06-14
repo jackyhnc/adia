@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 103 — 2026-06-14
+
+### Shipped
+- **feat: free-form custom duration in SessionCreationFormView**
+  - Added `@State private var customDurationText: String` to `SessionCreationFormView`.
+  - Added `private var parsedCustomMinutes: Int? { parseCustomDuration(customDurationText) }` — reuses the `internal` function already in `SettingsView.swift` (same module, `AdiCore`).
+  - Duration section restructured from a flat `HStack` to a `VStack` with two rows:
+    1. "DURATION" label + preset chips (25m/45m/1h/90m) — tapping a chip now also clears `customDurationText`.
+    2. Compact `ZStack`-based text field with dimmed placeholder `or type "2h", "90m", "1h30m"…`; typing deselects any active chip; shows `= 2h` (green) when parseable, `?` (orange) on unrecognised input.
+  - `submit()`: `durationSeconds` now falls back to `parsedCustomMinutes` when no preset chip is selected — `targetMinutes ?? parsedCustomMinutes`.
+  - This mirrors the `EditTemplateSheet` UX added in Run 102 and makes the session-creation flow consistent with template editing.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- No outstanding quality items from prior runs. Possible future ideas:
+  - Add "blocked_sites" column to CSV export in `sessionRecordsToCSV` (mentioned in Run 101, not yet done).
+  - `ConversationView` auto-send: the 300 ms delay is a heuristic — consider `.onAppear` on the first AI message bubble for a more reliable trigger.
+
+---
+
 ## Run 102 — 2026-06-14
 
 ### Shipped

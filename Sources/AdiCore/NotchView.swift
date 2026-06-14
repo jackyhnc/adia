@@ -751,9 +751,11 @@ private struct SessionCreationFormView: View {
     @State private var isThinking: Bool = false
     @State private var pinAsTemplate: Bool = false
     @State private var targetMinutes: Int? = nil
+    @State private var customDurationText: String = ""
     @FocusState private var inputFocused: Bool
 
     private let durationPresets: [(Int, String)] = [(25, "25m"), (45, "45m"), (60, "1h"), (90, "90m")]
+    private var parsedCustomMinutes: Int? { parseCustomDuration(customDurationText) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -791,30 +793,67 @@ private struct SessionCreationFormView: View {
                             : Color.white.opacity(0.10), lineWidth: 0.5)
             )
 
-            // Duration goal — optional quick-select chips. Tapping a selected chip deselects it.
-            HStack(spacing: 0) {
-                Text("DURATION")
-                    .font(.system(size: 9, weight: .bold))
-                    .foregroundStyle(.white.opacity(0.3))
-                    .tracking(1.5)
-                Spacer()
-                HStack(spacing: 4) {
-                    ForEach(durationPresets, id: \.0) { minutes, label in
-                        Button {
-                            withAnimation(.easeOut(duration: 0.1)) {
-                                targetMinutes = (targetMinutes == minutes) ? nil : minutes
+            // Duration goal — preset chips or a free-form text field (mutually exclusive).
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 0) {
+                    Text("DURATION")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.3))
+                        .tracking(1.5)
+                    Spacer()
+                    HStack(spacing: 4) {
+                        ForEach(durationPresets, id: \.0) { minutes, label in
+                            Button {
+                                withAnimation(.easeOut(duration: 0.1)) {
+                                    targetMinutes = (targetMinutes == minutes) ? nil : minutes
+                                    customDurationText = ""
+                                }
+                            } label: {
+                                Text(label)
+                                    .font(.system(size: 10, weight: .semibold))
+                                    .foregroundStyle(targetMinutes == minutes ? .black : .white.opacity(0.5))
+                                    .padding(.horizontal, 7)
+                                    .padding(.vertical, 3)
+                                    .background(targetMinutes == minutes ? Color.white : Color.white.opacity(0.08))
+                                    .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
                             }
-                        } label: {
-                            Text(label)
-                                .font(.system(size: 10, weight: .semibold))
-                                .foregroundStyle(targetMinutes == minutes ? .black : .white.opacity(0.5))
-                                .padding(.horizontal, 7)
-                                .padding(.vertical, 3)
-                                .background(targetMinutes == minutes ? Color.white : Color.white.opacity(0.08))
-                                .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
+                }
+                HStack(spacing: 6) {
+                    ZStack(alignment: .leading) {
+                        if customDurationText.isEmpty {
+                            Text("or type \u{201C}2h\u{201D}, \u{201C}90m\u{201D}, \u{201C}1h30m\u{201D}…")
+                                .font(.system(size: 10))
+                                .foregroundStyle(.white.opacity(0.2))
+                                .allowsHitTesting(false)
+                        }
+                        TextField("", text: $customDurationText)
+                            .font(.system(size: 10))
+                            .foregroundStyle(.white)
+                            .textFieldStyle(.plain)
+                            .onChange(of: customDurationText) { _, _ in
+                                if !customDurationText.trimmingCharacters(in: .whitespaces).isEmpty {
+                                    withAnimation(.easeOut(duration: 0.1)) { targetMinutes = nil }
+                                }
+                            }
+                    }
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 3)
+                    .background(Color.white.opacity(0.06))
+                    .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+                    Group {
+                        if let parsed = parsedCustomMinutes {
+                            Text("= \(heatmapFormatMinutes(parsed))")
+                                .foregroundStyle(.green.opacity(0.8))
+                        } else if !customDurationText.trimmingCharacters(in: .whitespaces).isEmpty {
+                            Text("?")
+                                .foregroundStyle(.orange.opacity(0.7))
+                        }
+                    }
+                    .font(.system(size: 10))
+                    .animation(.easeOut(duration: 0.15), value: parsedCustomMinutes)
                 }
             }
             .padding(.top, 8)
@@ -891,6 +930,7 @@ private struct SessionCreationFormView: View {
         clarifyingQuestion = nil
         let shouldPin = pinAsTemplate
         let durationSeconds: TimeInterval? = targetMinutes.map { TimeInterval($0 * 60) }
+            ?? parsedCustomMinutes.map { TimeInterval($0 * 60) }
         Task { @MainActor in
             defer { isThinking = false }
             do {
