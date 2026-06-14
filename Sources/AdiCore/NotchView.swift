@@ -1161,18 +1161,34 @@ private struct IdleBody: View {
             Text(idleStatsSummary(s))
                 .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(.white.opacity(0.5))
-            if s.streak > 1 {
+            if s.streak > 0 {
                 Text("·")
                     .foregroundStyle(.white.opacity(0.2))
-                Text("🔥 \(s.streak)d streak")
+                Text(streakLabel(s))
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(.orange.opacity(0.8))
             }
         }
     }
+
+    /// Builds the streak display label. Shows best streak in parens when the user
+    /// is below their personal best so they can see the record they're chasing.
+    private func streakLabel(_ s: SessionStats) -> String {
+        streakDisplayLabel(current: s.streak, best: s.bestStreak)
+    }
 }
 
 // MARK: - Idle stats formatting (internal for testing)
+
+/// Formats the streak+best-streak label shown in the idle notch stats row.
+/// Shows "🔥 3d streak" on its own when the user is at or above their best.
+/// Shows "🔥 3d streak (best: 7d)" when there's a personal best to chase.
+/// A streak of 1 is shown as "🔥 1d streak" (not hidden) — even a day-one streak matters.
+internal func streakDisplayLabel(current: Int, best: Int) -> String {
+    let base = "🔥 \(current)d streak"
+    guard best > current else { return base }
+    return "\(base) (best: \(best)d)"
+}
 
 // When today has no sessions but this week does, use weekly framing so the idle
 // screen shows meaningful context ("3 sessions this week · 2h") on a slow day.

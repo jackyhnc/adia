@@ -605,6 +605,217 @@ struct SessionHistoryTests {
         let s = await history.stats()
         #expect(s.streak == 1)  // gap breaks the streak
     }
+
+    // MARK: - allTimeCount / allTimeMinutes
+
+    @Test func statsAllTimeCountEmptyHistoryIsZero() async throws {
+        let history = try makeHistory()
+        let s = await history.stats()
+        #expect(s.allTimeCount == 0)
+        #expect(s.allTimeMinutes == 0)
+    }
+
+    @Test func statsAllTimeCountMatchesRecordCount() async throws {
+        let history = try makeHistory()
+        await history.record(makeRecord(task: "A"))
+        await history.record(makeRecord(task: "B"))
+        await history.record(makeRecord(task: "C"))
+        let s = await history.stats()
+        #expect(s.allTimeCount == 3)
+    }
+
+    @Test func statsAllTimeMinutesAccumulatesAcrossSessions() async throws {
+        let history = try makeHistory()
+        // 30-min session
+        let now = Date()
+        let r1 = SessionRecord(task: "A", successCriteria: "Done",
+                               startTime: now.addingTimeInterval(-1800), endTime: now,
+                               completedSuccessfully: true, calloutCount: 0)
+        // Another 30-min session
+        let r2 = SessionRecord(task: "B", successCriteria: "Done",
+                               startTime: now.addingTimeInterval(-3600),
+                               endTime: now.addingTimeInterval(-1800),
+                               completedSuccessfully: true, calloutCount: 0)
+        await history.record(r1)
+        await history.record(r2)
+        let s = await history.stats()
+        #expect(s.allTimeMinutes == 60)
+    }
+
+    // MARK: - bestStreak
+
+    @Test func statsBestStreakEmptyHistoryIsZero() async throws {
+        let history = try makeHistory()
+        let s = await history.stats()
+        #expect(s.bestStreak == 0)
+    }
+
+    @Test func statsBestStreakSingleDayIsOne() async throws {
+        let history = try makeHistory()
+        await history.record(makeRecord())
+        let s = await history.stats()
+        #expect(s.bestStreak == 1)
+    }
+
+    @Test func statsBestStreakEqualsCurrentWhenOnBest() async throws {
+        let history = try makeHistory()
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        guard let yesterday = cal.date(byAdding: .day, value: -1, to: today),
+              let todayNoon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: today),
+              let yNoon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: yesterday)
+        else { return }
+        await history.record(SessionRecord(task: "T", successCriteria: "Done",
+                                           startTime: todayNoon,
+                                           endTime: todayNoon.addingTimeInterval(1800),
+                                           completedSuccessfully: true, calloutCount: 0))
+        await history.record(SessionRecord(task: "Y", successCriteria: "Done",
+                                           startTime: yNoon,
+                                           endTime: yNoon.addingTimeInterval(1800),
+                                           completedSuccessfully: true, calloutCount: 0))
+        let s = await history.stats()
+        #expect(s.streak == 2)
+        #expect(s.bestStreak == 2)
+    }
+
+    @Test func statsBestStreakExceedsCurrentAfterGap() async throws {
+        // Three consecutive days from last week, then a gap, then today only.
+        // bestStreak = 3, current streak = 1.
+        let history = try makeHistory()
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        guard let todayNoon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: today)
+        else { return }
+        // Today
+        await history.record(SessionRecord(task: "Today", successCriteria: "Done",
+                                           startTime: todayNoon,
+                                           endTime: todayNoon.addingTimeInterval(1800),
+                                           completedSuccessfully: true, calloutCount: 0))
+        // 10, 11, 12 days ago (3 consecutive days, no gap among them, but gap to today)
+        for daysAgo in [10, 11, 12] {
+            guard let pastDay = cal.date(byAdding: .day, value: -daysAgo, to: today),
+                  let pastNoon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: pastDay)
+            else { continue }
+            await history.record(SessionRecord(task: "Past \(daysAgo)", successCriteria: "Done",
+                                               startTime: pastNoon,
+                                               endTime: pastNoon.addingTimeInterval(1800),
+                                               completedSuccessfully: true, calloutCount: 0))
+        }
+        let s = await history.stats()
+        #expect(s.streak == 1)
+        #expect(s.bestStreak == 3)
+    }
+}
+
+// MARK: - computeBestStreak unit tests
+
+@Suite("computeBestStreak")
+struct ComputeBestStreakTests {
+
+    private func record(daysAgo: Int) -> SessionRecord {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        let dayStart = cal.date(byAdding: .day, value: -daysAgo, to: today)!
+        let noon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: dayStart)!
+        return SessionRecord(task: "Study", successCriteria: "Done",
+                             startTime: noon,
+                             endTime: noon.addingTimeInterval(1800),
+                             completedSuccessfully: true, calloutCount: 0)
+    }
+
+    @Test func emptyRecordsReturnsZero() {
+        #expect(computeBestStreak(from: []) == 0)
+    }
+
+    @Test func singleDayReturnsOne() {
+        #expect(computeBestStreak(from: [record(daysAgo: 0)]) == 1)
+    }
+
+    @Test func twoDayGapReturnsBestOfOne() {
+        // Days 0 and 5 with a gap → best = 1
+        let records = [record(daysAgo: 0), record(daysAgo: 5)]
+        #expect(computeBestStreak(from: records) == 1)
+    }
+
+    @Test func twoConsecutiveDaysReturnsTwo() {
+        let records = [record(daysAgo: 0), record(daysAgo: 1)]
+        #expect(computeBestStreak(from: records) == 2)
+    }
+
+    @Test func threeConsecutiveDaysReturnsThree() {
+        let records = [record(daysAgo: 0), record(daysAgo: 1), record(daysAgo: 2)]
+        #expect(computeBestStreak(from: records) == 3)
+    }
+
+    @Test func twoRunsBestOfTwoIsReturned() {
+        // Days 0, 1 (streak=2) and days 5, 6, 7 (streak=3) → best = 3
+        let records = [
+            record(daysAgo: 0), record(daysAgo: 1),
+            record(daysAgo: 5), record(daysAgo: 6), record(daysAgo: 7),
+        ]
+        #expect(computeBestStreak(from: records) == 3)
+    }
+
+    @Test func multipleSessionsSameDayCountOnce() {
+        // Two sessions on the same day → streak = 1, not 2
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        let noon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: today)!
+        let afternoon = cal.date(bySettingHour: 15, minute: 0, second: 0, of: today)!
+        let r1 = SessionRecord(task: "Morning", successCriteria: "Done",
+                               startTime: noon, endTime: noon.addingTimeInterval(1800),
+                               completedSuccessfully: true, calloutCount: 0)
+        let r2 = SessionRecord(task: "Afternoon", successCriteria: "Done",
+                               startTime: afternoon, endTime: afternoon.addingTimeInterval(1800),
+                               completedSuccessfully: true, calloutCount: 0)
+        #expect(computeBestStreak(from: [r1, r2]) == 1)
+    }
+
+    @Test func orderOfRecordsDoesNotMatter() {
+        // Same 3-day streak, records given in reverse order
+        let records = [record(daysAgo: 2), record(daysAgo: 0), record(daysAgo: 1)]
+        #expect(computeBestStreak(from: records) == 3)
+    }
+
+    @Test func longerOlderStreakBeatsCurrentStreak() {
+        // 4-day streak ending 10 days ago, 1-day streak today → best = 4
+        let records = [
+            record(daysAgo: 0),
+            record(daysAgo: 10), record(daysAgo: 11), record(daysAgo: 12), record(daysAgo: 13),
+        ]
+        #expect(computeBestStreak(from: records) == 4)
+    }
+}
+
+// MARK: - streakDisplayLabel tests
+
+@Suite("StreakDisplayLabel")
+struct StreakDisplayLabelTests {
+
+    @Test func currentEqualsBestShowsNoRecord() {
+        #expect(streakDisplayLabel(current: 3, best: 3) == "🔥 3d streak")
+    }
+
+    @Test func currentExceedsBestIsImpossibleButHandledGracefully() {
+        // Shouldn't happen in production (best >= current always), but guard it.
+        #expect(streakDisplayLabel(current: 5, best: 3) == "🔥 5d streak")
+    }
+
+    @Test func currentBelowBestShowsRecord() {
+        #expect(streakDisplayLabel(current: 2, best: 7) == "🔥 2d streak (best: 7d)")
+    }
+
+    @Test func streakOfOneDayIsShown() {
+        #expect(streakDisplayLabel(current: 1, best: 1) == "🔥 1d streak")
+    }
+
+    @Test func streakOfOneDayWithHigherBestShowsRecord() {
+        #expect(streakDisplayLabel(current: 1, best: 5) == "🔥 1d streak (best: 5d)")
+    }
+
+    @Test func largeBestStreakIsFormatted() {
+        #expect(streakDisplayLabel(current: 14, best: 30) == "🔥 14d streak (best: 30d)")
+    }
 }
 
 // MARK: - idleStatsSummary formatting tests

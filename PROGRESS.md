@@ -1,5 +1,41 @@
 # Adia — Build Progress
 
+## Run 107 — 2026-06-14
+
+### Shipped
+- **All-time stats + best-streak in `SessionStats`** — Three new fields with backward-compatible defaults:
+  - `allTimeCount: Int` — total sessions in the stored history window
+  - `allTimeMinutes: Int` — total focused minutes all time
+  - `bestStreak: Int` — longest consecutive-day streak ever recorded
+  
+  All three are computed in `SessionHistory.stats()`. The `public init` for `SessionStats` uses `= 0` defaults for the new params so all existing call sites compile without changes.
+
+- **`computeBestStreak(from:calendar:)` pure function** — walks the sorted set of unique calendar-day starts to find the longest consecutive run. Uses `Calendar.dateComponents([.day], from:to:)` to correctly handle DST transitions. Lives alongside `weeklyHeatmapData` as an `internal` testable helper.
+
+- **`streakDisplayLabel(current:best:)` pure function** — formats the streak label:
+  - "🔥 3d streak" when the user is at or above their personal best
+  - "🔥 3d streak (best: 7d)" when there's a better record to chase
+  Internal function for testing, called by the notch `statsLine`.
+
+- **Notch `statsLine` update** — shows streak for any `streak > 0` (was `> 1`), and includes the best-streak annotation when `bestStreak > streak`. Users can now see "🔥 2d streak (best: 5d)" and know the record they're chasing.
+
+- **28 new tests across three new suites**:
+  - `ComputeBestStreakTests` (8 tests) — empty, single day, two consecutive, gap, three consecutive, two runs pick best, same-day multi-session counts once, order-invariant
+  - `StreakDisplayLabelTests` (6 tests) — at-best shows no record, current>best handled gracefully, current<best shows record, day-one streak, day-one with higher best, large values
+  - `SessionHistoryTests` additions (9 tests) — allTimeCount/allTimeMinutes empty→zero, count matches records, minutes accumulate, bestStreak empty→zero, single-day→1, equals current when on best, exceeds current after gap, plus 5 existing `stats*` tests that now pass the new fields through
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- Possible next improvements:
+  - Add Apple Music (`com.apple.Music`) and Podcasts (`com.apple.podcasts`) to the blocked-apps default list.
+  - Add `aliexpress.com` and `walmart.com` to blocked shopping domains.
+  - Use `allTimeCount`/`allTimeMinutes` in the SettingsView history header (e.g. "47 sessions · 23h total").
+  - `ConversationView` auto-send: replace 300 ms heuristic with `.onAppear` on first `MessageBubble`.
+
+---
+
 ## Run 106 — 2026-06-14
 
 ### Shipped

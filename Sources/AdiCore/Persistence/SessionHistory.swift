@@ -15,6 +15,34 @@ public struct SessionStats: Sendable {
     /// Consecutive calendar days with ≥1 session, ending at the most recent session day.
     /// 0 if there have been no sessions, or if the last session was more than 1 day ago.
     public let streak: Int
+    /// Total sessions across all time in the stored history window.
+    /// Defaults to 0 so call sites that don't need all-time stats compile without changes.
+    public let allTimeCount: Int
+    /// Total focused minutes across all time in the stored history window.
+    public let allTimeMinutes: Int
+    /// Longest consecutive-day streak ever recorded in the current history.
+    /// Equal to `streak` when the user is currently on their personal best.
+    public let bestStreak: Int
+
+    public init(
+        todayCount: Int,
+        todayMinutes: Int,
+        weekCount: Int,
+        weekMinutes: Int,
+        streak: Int,
+        allTimeCount: Int = 0,
+        allTimeMinutes: Int = 0,
+        bestStreak: Int = 0
+    ) {
+        self.todayCount    = todayCount
+        self.todayMinutes  = todayMinutes
+        self.weekCount     = weekCount
+        self.weekMinutes   = weekMinutes
+        self.streak        = streak
+        self.allTimeCount  = allTimeCount
+        self.allTimeMinutes = allTimeMinutes
+        self.bestStreak    = bestStreak
+    }
 }
 
 // MARK: - DayActivity
@@ -44,6 +72,34 @@ internal func weeklyHeatmapData(
         let mins = Int(dayRecs.reduce(0.0) { $0 + $1.duration } / 60)
         return DayActivity(date: date, sessionCount: dayRecs.count, minutes: mins)
     }
+}
+
+/// Computes the best (longest) consecutive-day streak across all sessions.
+/// Each calendar day that contains at least one session counts as one day in the streak.
+/// Multiple sessions on the same day count as a single day for streak purposes.
+/// Returns 0 for an empty record set. Pure function, directly testable.
+internal func computeBestStreak(
+    from records: [SessionRecord],
+    calendar: Calendar = .current
+) -> Int {
+    guard !records.isEmpty else { return 0 }
+    let daySet = Set(records.map { calendar.startOfDay(for: $0.startTime) })
+    let sorted = daySet.sorted()
+    guard sorted.count > 1 else { return 1 }
+    var best = 1
+    var current = 1
+    for i in 1..<sorted.count {
+        let prev = sorted[i - 1]
+        let curr = sorted[i]
+        let diff = calendar.dateComponents([.day], from: prev, to: curr).day ?? 0
+        if diff == 1 {
+            current += 1
+            if current > best { best = current }
+        } else {
+            current = 1
+        }
+    }
+    return best
 }
 
 // MARK: - CSV export
@@ -196,7 +252,8 @@ public actor SessionHistory {
     public func stats() -> SessionStats {
         let records = _load()
         guard !records.isEmpty else {
-            return SessionStats(todayCount: 0, todayMinutes: 0, weekCount: 0, weekMinutes: 0, streak: 0)
+            return SessionStats(todayCount: 0, todayMinutes: 0, weekCount: 0, weekMinutes: 0, streak: 0,
+                                allTimeCount: 0, allTimeMinutes: 0, bestStreak: 0)
         }
         let cal = Calendar.current
         let now = Date()
@@ -219,8 +276,12 @@ public actor SessionHistory {
                   daySet.contains(yesterday) {
             startDay = yesterday
         } else {
+            let allTimeMins = Int(records.reduce(0.0) { $0 + $1.duration } / 60)
+            let best = computeBestStreak(from: records, calendar: cal)
             return SessionStats(todayCount: todayRecords.count, todayMinutes: todayMinutes,
-                                weekCount: weekRecords.count, weekMinutes: weekMinutes, streak: 0)
+                                weekCount: weekRecords.count, weekMinutes: weekMinutes, streak: 0,
+                                allTimeCount: records.count, allTimeMinutes: allTimeMins,
+                                bestStreak: best)
         }
 
         var streak = 0
@@ -231,8 +292,12 @@ public actor SessionHistory {
             day = prev
         }
 
+        let allTimeMins = Int(records.reduce(0.0) { $0 + $1.duration } / 60)
+        let best = computeBestStreak(from: records, calendar: cal)
         return SessionStats(todayCount: todayRecords.count, todayMinutes: todayMinutes,
-                            weekCount: weekRecords.count, weekMinutes: weekMinutes, streak: streak)
+                            weekCount: weekRecords.count, weekMinutes: weekMinutes, streak: streak,
+                            allTimeCount: records.count, allTimeMinutes: allTimeMins,
+                            bestStreak: best)
     }
 
     // MARK: - Private helpers
