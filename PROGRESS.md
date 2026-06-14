@@ -1,5 +1,44 @@
 # Adia — Build Progress
 
+## Run 102 — 2026-06-14
+
+### Shipped
+- **feat: free-form custom duration in EditTemplateSheet**
+  - `parseCustomDuration(_ raw: String) -> Int?` — new `internal` pure function in `SettingsView.swift`.
+    Parses user-typed strings like "90", "90m", "90min", "2h", "1h30m", "1h 30m" into whole minutes.
+    Uses `Scanner` (no regex). Returns nil for empty input, zero, or unrecognised patterns.
+  - `EditTemplateSheet` updated:
+    - Replaced `let customDurationHint: String?` (dead-end hint) with `@State private var customText: String`.
+    - `customText` is pre-populated from the stored non-preset duration in `heatmapFormatMinutes` format
+      (e.g., a 2h template opens with "2h" already in the field — no data loss on edit).
+    - Chip taps now also clear `customText`; typing in `customText` deselects any chip.
+    - Footer shows "= 2h" (green) when parseable, or "Couldn't parse…" (orange) on bad input.
+    - Save logic: `selectedMinutes ?? parsedCustomMinutes` — preset takes precedence, custom is fallback.
+    - Sheet height bumped 360 → 400 to accommodate the extra field.
+  - `parsedCustomMinutes: Int?` — computed var on `EditTemplateSheet` using the new function.
+  - **Tests (+16)** in `SettingsStoreTests.swift`:
+    `parseCustomDurationBareNumber`, `parseCustomDurationMinutesSuffix`, `parseCustomDurationMinSuffix`,
+    `parseCustomDurationMinsSuffix`, `parseCustomDurationHourOnly`, `parseCustomDurationHourAndMinutes`,
+    `parseCustomDurationHourAndMinutesWithSpace`, `parseCustomDurationHourAndBareMinutes`,
+    `parseCustomDurationZeroHourWithMinutes`, `parseCustomDurationLeadingTrailingWhitespace`,
+    `parseCustomDurationCaseInsensitive`, `parseCustomDurationOneHour`, `parseCustomDurationZeroReturnsNil`,
+    `parseCustomDurationZeroMinutesReturnsNil`, `parseCustomDurationEmptyStringReturnsNil`,
+    `parseCustomDurationWhitespaceOnlyReturnsNil`, `parseCustomDurationAlphaOnlyReturnsNil`,
+    `parseCustomDurationGarbageSuffixReturnsNil`, `parseCustomDurationTrailingGarbageReturnsNil`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- Remaining quality ideas:
+  - (a) `ConversationView` auto-send: 300ms heuristic still in place. Consider using `.onAppear` on
+    the first `MessageBubble` for a more reliable trigger that fires after the view renders.
+  - (b) (Done this run) Custom duration in `EditTemplateSheet`.
+  - (c) Investigate whether `SessionCreationView` similarly limits duration input to preset chips;
+    if so, expose the same `parseCustomDuration` text field there for consistency.
+
+---
+
 ## Run 101 — 2026-06-14
 
 ### Shipped

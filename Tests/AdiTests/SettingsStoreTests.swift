@@ -523,4 +523,84 @@ struct SettingsStoreTests {
         )
         #expect(selectableRowStats(record: record, minChecks: 5) == "45m · 3⚠ · 80% · asked 1× · 3 blocked")
     }
+
+    // MARK: - parseCustomDuration
+
+    @Test func parseCustomDurationBareNumber() {
+        #expect(parseCustomDuration("90") == 90)
+    }
+
+    @Test func parseCustomDurationMinutesSuffix() {
+        #expect(parseCustomDuration("90m") == 90)
+    }
+
+    @Test func parseCustomDurationMinSuffix() {
+        #expect(parseCustomDuration("90min") == 90)
+    }
+
+    @Test func parseCustomDurationMinsSuffix() {
+        #expect(parseCustomDuration("90mins") == 90)
+    }
+
+    @Test func parseCustomDurationHourOnly() {
+        #expect(parseCustomDuration("2h") == 120)
+    }
+
+    @Test func parseCustomDurationHourAndMinutes() {
+        #expect(parseCustomDuration("1h30m") == 90)
+    }
+
+    @Test func parseCustomDurationHourAndMinutesWithSpace() {
+        #expect(parseCustomDuration("1h 30m") == 90)
+    }
+
+    @Test func parseCustomDurationHourAndBareMinutes() {
+        // "1h30" — no trailing "m" after minutes digit
+        #expect(parseCustomDuration("1h30") == 90)
+    }
+
+    @Test func parseCustomDurationZeroHourWithMinutes() {
+        #expect(parseCustomDuration("0h30m") == 30)
+    }
+
+    @Test func parseCustomDurationLeadingTrailingWhitespace() {
+        #expect(parseCustomDuration("  45m  ") == 45)
+    }
+
+    @Test func parseCustomDurationCaseInsensitive() {
+        #expect(parseCustomDuration("2H") == 120)
+    }
+
+    @Test func parseCustomDurationOneHour() {
+        #expect(parseCustomDuration("1h") == 60)
+    }
+
+    @Test func parseCustomDurationZeroReturnsNil() {
+        #expect(parseCustomDuration("0") == nil)
+    }
+
+    @Test func parseCustomDurationZeroMinutesReturnsNil() {
+        #expect(parseCustomDuration("0m") == nil)
+    }
+
+    @Test func parseCustomDurationEmptyStringReturnsNil() {
+        #expect(parseCustomDuration("") == nil)
+    }
+
+    @Test func parseCustomDurationWhitespaceOnlyReturnsNil() {
+        #expect(parseCustomDuration("   ") == nil)
+    }
+
+    @Test func parseCustomDurationAlphaOnlyReturnsNil() {
+        #expect(parseCustomDuration("abc") == nil)
+    }
+
+    @Test func parseCustomDurationGarbageSuffixReturnsNil() {
+        // "90x" — unrecognised suffix
+        #expect(parseCustomDuration("90x") == nil)
+    }
+
+    @Test func parseCustomDurationTrailingGarbageReturnsNil() {
+        #expect(parseCustomDuration("1h30m extra") == nil)
+    }
 }

@@ -935,6 +935,33 @@ internal func heatmapFormatMinutes(_ minutes: Int) -> String {
     return "\(m)m"
 }
 
+/// Parses a human-typed duration string into a whole number of minutes.
+/// Accepts: "90", "90m", "90min", "2h", "1h30m", "1h 30m".
+/// Returns nil for empty input, zero result, or unrecognised patterns.
+internal func parseCustomDuration(_ raw: String) -> Int? {
+    let s = raw.trimmingCharacters(in: .whitespaces).lowercased()
+    guard !s.isEmpty else { return nil }
+    let scanner = Scanner(string: s)
+    scanner.charactersToBeSkipped = nil
+    guard let first = scanner.scanInt() else { return nil }
+    _ = scanner.scanCharacters(from: .whitespaces)
+    if scanner.scanString("h") != nil {
+        _ = scanner.scanCharacters(from: .whitespaces)
+        let extra = scanner.scanInt() ?? 0
+        for suffix in ["mins", "min", "m"] {
+            if scanner.scanString(suffix) != nil { break }
+        }
+        guard scanner.isAtEnd else { return nil }
+        let total = first * 60 + extra
+        return total > 0 ? total : nil
+    }
+    for suffix in ["mins", "min", "m"] {
+        if scanner.scanString(suffix) != nil { break }
+    }
+    guard scanner.isAtEnd else { return nil }
+    return first > 0 ? first : nil
+}
+
 /// Returns the tooltip label for a single heatmap column day.
 internal func heatmapTooltipText(for day: DayActivity) -> String {
     if day.sessionCount == 0 { return "no sessions" }
@@ -1402,9 +1429,9 @@ private struct EditTemplateSheet: View {
     @State private var taskDraft: String
     @State private var criteriaDraft: String
     @State private var selectedMinutes: Int?
-    /// Non-nil when the template's stored duration doesn't match any preset chip.
-    /// Shown as a hint so the user understands why no chip is pre-selected.
-    let customDurationHint: String?
+    /// Free-form duration text typed by the user (e.g. "2h", "90m", "1h30m").
+    /// Pre-populated when the template's stored duration doesn't match any preset chip.
+    @State private var customText: String
 
     private static let durationPresets: [(Int, String)] = [(25, "25m"), (45, "45m"), (60, "1h"), (90, "90m")]
 
@@ -1418,11 +1445,12 @@ private struct EditTemplateSheet: View {
         let presetSet = Set(Self.durationPresets.map(\.0))
         let snapped: Int? = storedMinutes.flatMap { presetSet.contains($0) ? $0 : nil }
         _selectedMinutes = State(initialValue: snapped)
-        // If there's a stored duration that doesn't match any preset, format a display label.
-        customDurationHint = storedMinutes.flatMap { m in
-            presetSet.contains(m) ? nil : heatmapFormatMinutes(m)
-        }
+        // Pre-fill custom text when stored duration doesn't match any preset.
+        let customMinutes = storedMinutes.flatMap { presetSet.contains($0) ? nil : $0 }
+        _customText = State(initialValue: customMinutes.map { heatmapFormatMinutes($0) } ?? "")
     }
+
+    private var parsedCustomMinutes: Int? { parseCustomDuration(customText) }
 
     private var canSave: Bool {
         !taskDraft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
@@ -1459,7 +1487,12 @@ private struct EditTemplateSheet: View {
                         ForEach(Self.durationPresets, id: \.0) { minutes, label in
                             Button {
                                 withAnimation(.easeOut(duration: 0.1)) {
-                                    selectedMinutes = (selectedMinutes == minutes) ? nil : minutes
+                                    if selectedMinutes == minutes {
+                                        selectedMinutes = nil
+                                    } else {
+                                        selectedMinutes = minutes
+                                        customText = ""
+                                    }
                                 }
                             } label: {
                                 Text(label)
@@ -1488,17 +1521,41 @@ private struct EditTemplateSheet: View {
                             .help("Clear duration goal")
                         }
                     }
+                    HStack(spacing: 6) {
+                        TextField("or type a custom duration (e.g. 2h, 90m, 1h30m)", text: $customText)
+                            .font(.system(size: 12))
+                            .onChange(of: customText) {
+                                if !customText.trimmingCharacters(in: .whitespaces).isEmpty {
+                                    selectedMinutes = nil
+                                }
+                            }
+                        if !customText.isEmpty {
+                            Button { customText = "" } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(.tertiary)
+                                    .font(.system(size: 13))
+                            }
+                            .buttonStyle(.plain)
+                            .help("Clear custom duration")
+                        }
+                    }
                 } header: {
                     Text("Duration goal")
                 } footer: {
                     VStack(alignment: .leading, spacing: 4) {
-                        if selectedMinutes == nil, let hint = customDurationHint {
-                            Text("Saved: \(hint) — select a preset to keep a time limit, or save as-is to clear it.")
-                                .foregroundStyle(.orange.opacity(0.8))
+                        if selectedMinutes == nil {
+                            if let parsed = parsedCustomMinutes {
+                                Text("= \(heatmapFormatMinutes(parsed))")
+                                    .foregroundStyle(.green.opacity(0.9))
+                            } else if !customText.trimmingCharacters(in: .whitespaces).isEmpty {
+                                Text("Couldn't parse — try "2h", "90m", or "1h30m".")
+                                    .foregroundStyle(.orange.opacity(0.8))
+                            }
                         }
-                        Text(selectedMinutes == nil
-                             ? "No time limit — session runs until you click Done."
-                             : "A progress arc will appear in the notch during this session.")
+                        let hasGoal = selectedMinutes != nil || parsedCustomMinutes != nil
+                        Text(hasGoal
+                             ? "A progress arc will appear in the notch during this session."
+                             : "No time limit — session runs until you click Done.")
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -1517,6 +1574,7 @@ private struct EditTemplateSheet: View {
                     let t = taskDraft.trimmingCharacters(in: .whitespacesAndNewlines)
                     let c = criteriaDraft.trimmingCharacters(in: .whitespacesAndNewlines)
                     let dur: TimeInterval? = selectedMinutes.map { TimeInterval($0 * 60) }
+                        ?? parsedCustomMinutes.map { TimeInterval($0 * 60) }
                     Task {
                         await SessionTemplateStore.shared.update(id: id, task: t, successCriteria: c, preferredDuration: dur)
                         onSave()
@@ -1529,6 +1587,6 @@ private struct EditTemplateSheet: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 14)
         }
-        .frame(width: 380, height: 360)
+        .frame(width: 380, height: 400)
     }
 }
