@@ -1,5 +1,52 @@
 # Adia — Build Progress
 
+## Run 117 — 2026-06-15
+
+### Shipped
+- **feat: "application" callout keyword for job/internship/college apps + cover letters (+11 tests)**
+
+  **(a) extractTaskKeyword: new "application" keyword (CalloutManager.swift)**
+  - Matches: `word("application")`, `word("applications")`, `word("applying")`,
+    `lower.contains("cover letter")`, `lower.contains("job application")`,
+    `lower.contains("internship application")`, `lower.contains("college application")`
+  - Returns `"application"` → student career/application tasks get targeted callouts.
+  - `word("apply")` intentionally excluded — too broad; the specific forms cover real student
+    use cases without false positives like "apply a fix to the codebase."
+  - Precedence: runs after "resume/cv" so "update my résumé before applying" → resume.
+    Runs after code/design checks so "code the iOS application" → code, not application.
+    "build my web application" (no explicit code keyword) → application (acceptable).
+
+  **(b) taskAwareCallouts: "application" handler**
+  - Avoids "this isn't your application" — ambiguous with software apps.
+  - Tier 1: "get back to your application." / "that application isn't going to submit itself." / "close this and keep writing."
+  - Tier 2: "stop putting off your application." / "you need to finish your application, not browse."
+  - Tier 3: "CLOSE THIS. Submit the application." / "your application deadline isn't moving."
+
+  **Tests (+11)**: `extractTaskKeywordFromJobApplication`, `extractTaskKeywordFromCoverLetter`,
+  `extractTaskKeywordFromApplying`, `extractTaskKeywordApplicationDoesNotMatchSoftwareApp`,
+  `extractTaskKeywordApplicationDoesNotMatchDesignApp`, `extractTaskKeywordResumeApplicationPreference`,
+  `taskAwareCalloutsApplicationContainsKeyword`, `taskAwareCalloutsApplicationTier3AvoidsSoftwareAppPhrasing`,
+  `taskAwareCalloutsApplicationTier3UsesActionPhrasing`, `taskAwareCalloutsApplicationTier1AvoidsGenericIsntYourPhrasing`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All 14 original goals remain complete. Possible further improvements:
+  - `"en"` subdomain prefix for Wikipedia: add `"en"` to `additionalBlockedSubdomainPrefixes` in
+    `HostsFileManager.swift` so `en.wikipedia.org` is blocked when Wikipedia is on the custom blocked
+    list. Low priority since Wikipedia isn't in the default list, but a clean one-liner.
+  - Focus score history chart: mini sparkline or heatmap in History tab cells — colored cell
+    intensity based on average session focus score from `session.onTaskChecks / session.totalChecks`.
+  - Persist `timerExpiredRearmTask` UX test: verify that if the timer expired before a crash/relaunch,
+    the re-arm nudge fires on restore (remaining = 0 → handleDurationExpired()). Unit test only.
+  - `ConversationView` auto-send reliability: replace 300 ms heuristic with `.onAppear` on the
+    first AI `MessageBubble` for a more reliable initial-message trigger.
+  - "deadline" keyword: "my deadline is tonight", "due by midnight" — could map to a generic
+    urgency message rather than a specific keyword callout.
+
+---
+
 ## Run 116 — 2026-06-15
 
 ### Shipped
