@@ -317,6 +317,45 @@ public struct Session: Sendable, Identifiable {
         //   Algorithmically ranked and infinitely scrollable; a very common trap for CS and
         //   design students who rationalise time on Dribbble as professional development.
         "dribbble.com",
+        // Video sharing (non-streaming, but significant discovery-feed distraction)
+        // vimeo.com — premium/professional video hosting with curated "Staff Picks" and a
+        //   high-quality discovery browse page. More engaging than its professional reputation
+        //   implies: algorithmically promoted short films, animations, and creative work.
+        //   "Looking for video examples / reference for my presentation" is the primary
+        //   rationalization students and knowledge workers use to justify extended Vimeo browsing.
+        "vimeo.com",
+        // Photography & stock-media platforms (discovery-feed time sinks)
+        // 500px.com — dedicated photography community with an infinitely scrollable gallery
+        //   ("Discover" and "Popular" grids). Presents as a portfolio tool but the
+        //   browse/discover surface is the primary UX entry point. Same engagement pattern as
+        //   DeviantArt but for photography students and photographers specifically.
+        "500px.com",
+        // unsplash.com — free stock photo platform with a prominent "Editorial" and "Trending"
+        //   discover feed on the homepage and /explore route. "Finding images for my project /
+        //   presentation" is the most common rationalization; the discover section is high-quality,
+        //   scroll-optimised, and leads deep into visual rabbit holes.
+        "unsplash.com",
+        // flickr.com — long-form photography sharing with high-engagement "Explore" and group
+        //   gallery feeds. Similar engagement profile to 500px but with social/community layers
+        //   (groups, contacts, comments) that extend browse session length further.
+        "flickr.com",
+        // pexels.com — free stock photo and video platform with a "Trending" discover feed and
+        //   curated editorial collections. The video discover section (trending short clips) is
+        //   particularly habit-forming alongside the photo discovery grid.
+        "pexels.com",
+        // pixabay.com — free stock image and video library with discovery browse
+        //   ("Latest", "Popular", "Editors' Choice"). Same engage-to-browse pattern as
+        //   unsplash and pexels; technically-minded users often pivot between all three.
+        "pixabay.com",
+        // Social media proxy frontends (privacy-preserving mirrors that serve blocked platforms'
+        // content at a different domain, bypassing the parent-domain block)
+        // nitter.net — the most widely deployed public Nitter instance: a lightweight
+        //   Twitter/X frontend that renders the full tweet timeline, profile pages, search,
+        //   and media without requiring a Twitter account. Technically-aware users navigate
+        //   here directly when twitter.com and x.com are blocked to access the same content.
+        //   The proxy-frontend ecosystem is dynamic, but nitter.net is the canonical single
+        //   well-known domain that warrants an explicit block entry.
+        "nitter.net",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

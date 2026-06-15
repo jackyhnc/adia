@@ -1,5 +1,112 @@
 # Adia — Build Progress
 
+## Run 134 — 2026-06-15
+
+### Shipped
+
+**feat: video/photography platforms + social media proxy frontend + "watch" subdomain prefix (+22 tests)**
+
+#### `SessionState.swift` — 7 new entries in `defaultBlockedDomains`
+
+**Video sharing (non-streaming discovery-feed distraction):**
+- **`vimeo.com`** — professional video hosting with a curated "Staff Picks" and algorithmically
+  promoted discovery browse page. "Looking for video examples for my presentation" is the primary
+  rationalization students and knowledge workers use to justify extended Vimeo browsing. High-quality
+  content makes the engagement loop particularly sticky.
+
+**Photography & stock-media platforms (discovery-feed time sinks):**
+- **`500px.com`** — dedicated photography community with an infinitely scrollable gallery ("Discover"
+  and "Popular" grids). Presents as a portfolio tool but the browse/discover surface is the primary
+  entry point. Same engagement pattern as DeviantArt but for photography students specifically.
+- **`unsplash.com`** — free stock photo platform with a prominent "Editorial" and "Trending" discover
+  feed. "Finding images for my project / presentation" is the most common rationalization; the discover
+  section is high-quality and scroll-optimised.
+- **`flickr.com`** — long-form photography sharing with high-engagement "Explore" and group gallery
+  feeds. Social layers (groups, contacts) extend browse session length beyond simple gallery scrolling.
+- **`pexels.com`** — free stock photo and video platform with a "Trending" discover feed and curated
+  editorial collections. The short video discovery section is particularly habit-forming.
+- **`pixabay.com`** — free stock image and video library with discovery browse ("Popular", "Editors'
+  Choice"). Technically-minded users often pivot between unsplash, pexels, and pixabay.
+
+**Social media proxy frontends:**
+- **`nitter.net`** — the most widely deployed public Nitter instance: a lightweight Twitter/X
+  frontend that renders full tweet timelines, profile pages, and search at a different domain.
+  Technically-aware users navigate here when twitter.com and x.com are both blocked.
+
+#### `HostsFileManager.swift` — `"watch"` subdomain prefix (now 27 entries)
+
+- **`"watch"`** added to `additionalBlockedSubdomainPrefixes`. Covers:
+  - `watch.twitch.tv` — Twitch's standalone watch-page URL scheme; embedded and shared Twitch
+    links (from Reddit, Discord, social media) use `watch.twitch.tv/VIDEO_ID` as the canonical
+    watch destination, reachable without navigating through the twitch.tv homepage.
+  - `watch.plex.tv` — Plex's web player entry point, accessible directly via URL even when
+    no Plex app is running.
+  - Any other `watch.X` on blocked domains in the default or user-configured list.
+  - False-positive risk is low: no major productivity tool (GitHub, Notion, Linear, Figma)
+    exposes a `watch.` subdomain as a primary navigation target.
+
+#### Tests — 22 new `@Test` cases
+
+**`SessionStateTests.swift`** (11 new in two suites):
+
+`"Session defaultBlockedDomains — video sharing and photography platforms"` (8 new):
+- `defaultBlockedDomainsIncludeVimeo`
+- `defaultBlockedDomainsInclude500px`
+- `defaultBlockedDomainsIncludeUnsplash`
+- `defaultBlockedDomainsIncludeFlickr`
+- `defaultBlockedDomainsIncludePexels`
+- `defaultBlockedDomainsIncludePixabay`
+- `videoAndPhotographyDomainsAllPresentTogether` — checks all 6 in one pass
+- `defaultBlockedDomainsNoDuplicatesAfterVideoAndPhotographyAdditions` — duplicate guard
+
+`"Session defaultBlockedDomains — social media proxy frontends"` (3 new):
+- `defaultBlockedDomainsIncludeNitter`
+- `nitterIsDistinctFromTwitterDomain` — verifies nitter.net is independent of twitter.com/x.com
+- `defaultBlockedDomainsNoDuplicatesAfterProxyFrontendAdditions` — duplicate guard
+
+**`HostsFileManagerTests.swift`** (14 new in two suites):
+
+`"HostsFileManager — watch. subdomain prefix (direct-watch page subdomains)"` (6 new):
+- `watchPrefixIsInAdditionalPrefixesList`
+- `buildBlockIncludesWatchSubdomainForTwitch` — `watch.twitch.tv` in block
+- `parseBlockedFiltersWatchSubdomainVariant` — `watch.` entries stripped from `parseBlocked`
+- `buildThenParseRoundTripWithWatchPrefix` — round-trip yields only bare canonical domains
+- `watchPrefixDoesNotAffectProductivityToolsInRoundTrip` — no collateral for non-blocked domains
+- `noDuplicatesInAdditionalPrefixesListAfterWatchAddition` — prefix-list duplicate guard
+
+`"HostsFileManager — video sharing and photography domain blocks"` (8 new):
+- `buildBlockIncludesVimeo`
+- `buildBlockIncludesWatchSubdomainForVimeo`
+- `buildBlockIncludesUnsplash`
+- `buildBlockIncludesNitter`
+- `buildThenParseRoundTripWithVideoAndPhotographyDomains` — all 7 new domains round-trip cleanly
+- `noDuplicatesInDefaultBlockedListAfterVideoAndPhotographyAdditions`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **More social media proxy frontends**: The proxy ecosystem is dynamic, but other known
+    well-used instances (Libreddit, Teddit for Reddit) are largely defunct after Reddit's
+    2023 API changes. If new high-traffic instances emerge they should be added.
+  - **`cohost.org`** / **`mastodon.social`**: Fediverse social platforms popular with artists
+    and students as Twitter alternatives. Mastodon is federated (many instances), making
+    comprehensive blocking a whack-a-mole problem; blocking the largest public instance
+    (mastodon.social) plus cohost.org would cover the most common destinations.
+  - **`twitch.tv` CDN shard variants**: `static-cdn-*.jtvnw.net` use numeric/named shards
+    not solvable with /etc/hosts wildcards without an explicit list. Low priority.
+  - **`news.google.com` / `news.yahoo.com`**: Not covered since google.com and yahoo.com
+    are not in the default block list. Could add these as standalone explicit entries if
+    news-browsing becomes a common escape pattern.
+  - **`github.com`** block exception hardening: Users sometimes add github.com to their block
+    list (as a distraction), then can't access it for legitimate work. A smart whitelist
+    suggestion UX could detect "task requires GitHub" from the success criteria and
+    pre-whitelist github.com/docs/README before the session starts.
+
+---
+
 ## Run 133 — 2026-06-15
 
 ### Shipped

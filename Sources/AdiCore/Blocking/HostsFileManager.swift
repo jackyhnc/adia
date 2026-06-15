@@ -126,6 +126,12 @@ public actor HostsFileManager {
     //          live.youtube.com for streams; "gaming" closes the gaming-hub discovery page
     //          independently. False-positive risk is low: no common productivity tool
     //          (GitHub, Notion, Linear, Figma) exposes a "gaming." subdomain as a navigation target.
+    // "watch"  blocks watch.twitch.tv (Twitch's standalone watch page URL scheme, reachable
+    //          without touching the twitch.tv homepage — embedded or shared "watch" links use
+    //          this subdomain as the canonical destination). Also covers watch.plex.tv
+    //          (Plex's web player entry point) and similar direct-watch subdomains on blocked
+    //          entertainment platforms. False-positive risk is low: no major productivity tool
+    //          (GitHub, Notion, Linear, Figma) exposes a "watch." subdomain as a UI entry point.
     internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = [
         "m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips",
         "web",    // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
@@ -144,6 +150,7 @@ public actor HostsFileManager {
         "auth",   // authentication subdomains (auth.twitch.tv, auth.discord.com, auth.reddit.com etc.)
         "live",   // live-stream page subdomains (live.youtube.com, live.bilibili.com, live.kick.com etc.)
         "gaming", // gaming-hub subdomains (gaming.youtube.com, gaming.amazon.com etc.)
+        "watch",  // direct-watch subdomains (watch.twitch.tv, watch.plex.tv etc.)
     ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).

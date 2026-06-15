@@ -1196,3 +1196,101 @@ struct GamingSubdomainPrefixTests {
                 "no duplicate entries in additionalBlockedSubdomainPrefixes after gaming. was added")
     }
 }
+
+// MARK: - "watch" subdomain prefix (direct-watch subdomains on entertainment platforms)
+
+@Suite("HostsFileManager — watch. subdomain prefix (direct-watch page subdomains)")
+struct WatchSubdomainPrefixTests {
+
+    @Test func watchPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("watch"),
+                "\"watch\" must be present in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func buildBlockIncludesWatchSubdomainForTwitch() {
+        // watch.twitch.tv is Twitch's standalone watch-page subdomain —
+        // embedded / shared links use this as the canonical watch destination.
+        let block = HostsFileManager.buildBlock(domains: ["twitch.tv"])
+        #expect(block.contains("127.0.0.1 watch.twitch.tv"),
+                "watch.twitch.tv must appear in the block for twitch.tv")
+    }
+
+    @Test func parseBlockedFiltersWatchSubdomainVariant() {
+        // watch.X is a synthetic prefix entry — parseBlocked must strip it and return
+        // only the bare canonical domain so callers don't see doubled entries.
+        let block = HostsFileManager.buildBlock(domains: ["twitch.tv"])
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(parsed == ["twitch.tv"],
+                "parseBlocked must return only the bare canonical domain when watch. rows are present")
+    }
+
+    @Test func buildThenParseRoundTripWithWatchPrefix() {
+        let input = ["twitch.tv", "vimeo.com", "pexels.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "build → parse round-trip must be lossless with watch. prefix present")
+    }
+
+    @Test func watchPrefixDoesNotAffectProductivityToolsInRoundTrip() {
+        // Productivity tools are NOT in the default blocked list — confirm that a custom
+        // block containing only a productivity-style domain round-trips cleanly with watch. present.
+        let input = ["example-productivity.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(parsed == input,
+                "watch. prefix must not corrupt round-trip for non-blocked productivity tools")
+    }
+
+    @Test func noDuplicatesInAdditionalPrefixesListAfterWatchAddition() {
+        let prefixes = HostsFileManager.additionalBlockedSubdomainPrefixes
+        #expect(Set(prefixes).count == prefixes.count,
+                "no duplicate entries in additionalBlockedSubdomainPrefixes after watch. was added")
+    }
+}
+
+// MARK: - Video & photography domain blocks
+
+@Suite("HostsFileManager — video sharing and photography domain blocks")
+struct VideoAndPhotographyBlockTests {
+
+    @Test func buildBlockIncludesVimeo() {
+        let block = HostsFileManager.buildBlock(domains: ["vimeo.com"])
+        #expect(block.contains("127.0.0.1 vimeo.com"))
+        #expect(block.contains("127.0.0.1 www.vimeo.com"))
+    }
+
+    @Test func buildBlockIncludesWatchSubdomainForVimeo() {
+        // vimeo.com uses watch.vimeo.com for video playback links in some contexts.
+        let block = HostsFileManager.buildBlock(domains: ["vimeo.com"])
+        #expect(block.contains("127.0.0.1 watch.vimeo.com"),
+                "watch.vimeo.com must appear in the block for vimeo.com")
+    }
+
+    @Test func buildBlockIncludesUnsplash() {
+        let block = HostsFileManager.buildBlock(domains: ["unsplash.com"])
+        #expect(block.contains("127.0.0.1 unsplash.com"))
+        #expect(block.contains("127.0.0.1 www.unsplash.com"))
+    }
+
+    @Test func buildBlockIncludesNitter() {
+        // nitter.net — the Twitter/X proxy frontend domain.
+        let block = HostsFileManager.buildBlock(domains: ["nitter.net"])
+        #expect(block.contains("127.0.0.1 nitter.net"))
+        #expect(block.contains("127.0.0.1 www.nitter.net"))
+    }
+
+    @Test func buildThenParseRoundTripWithVideoAndPhotographyDomains() {
+        let input = ["vimeo.com", "500px.com", "unsplash.com", "flickr.com", "pexels.com", "pixabay.com", "nitter.net"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "build → parse round-trip must be lossless for video/photography/proxy domains")
+    }
+
+    @Test func noDuplicatesInDefaultBlockedListAfterVideoAndPhotographyAdditions() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate domain entries in defaultBlockedDomains after video/photography additions")
+    }
+}

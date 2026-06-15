@@ -1016,3 +1016,82 @@ struct ArtPortfolioBlocklistTests {
                 "duplicate entries found in defaultBlockedDomains after adding art portfolio platforms")
     }
 }
+
+// MARK: - Video sharing and photography platforms
+
+@Suite("Session defaultBlockedDomains — video sharing and photography platforms")
+struct VideoAndPhotographyBlocklistTests {
+
+    @Test func defaultBlockedDomainsIncludeVimeo() {
+        #expect(Session.defaultBlockedDomains.contains("vimeo.com"),
+                "vimeo.com (video platform with curated Staff Picks discover feed) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsInclude500px() {
+        #expect(Session.defaultBlockedDomains.contains("500px.com"),
+                "500px.com (photography community with infinitely scrollable gallery) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeUnsplash() {
+        #expect(Session.defaultBlockedDomains.contains("unsplash.com"),
+                "unsplash.com (free stock photo discover feed) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeFlickr() {
+        #expect(Session.defaultBlockedDomains.contains("flickr.com"),
+                "flickr.com (photography sharing with Explore and group feeds) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludePexels() {
+        #expect(Session.defaultBlockedDomains.contains("pexels.com"),
+                "pexels.com (free stock photo/video with Trending discover feed) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludePixabay() {
+        #expect(Session.defaultBlockedDomains.contains("pixabay.com"),
+                "pixabay.com (free stock image/video library with discovery browse) must be blocked by default")
+    }
+
+    @Test func videoAndPhotographyDomainsAllPresentTogether() {
+        let domains = Session.defaultBlockedDomains
+        for expected in ["vimeo.com", "500px.com", "unsplash.com", "flickr.com", "pexels.com", "pixabay.com"] {
+            #expect(domains.contains(expected),
+                    "\(expected) must be present in defaultBlockedDomains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterVideoAndPhotographyAdditions() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "duplicate entries found in defaultBlockedDomains after adding video/photography platforms")
+    }
+}
+
+// MARK: - Social media proxy frontends
+
+@Suite("Session defaultBlockedDomains — social media proxy frontends")
+struct SocialMediaProxyBlocklistTests {
+
+    @Test func defaultBlockedDomainsIncludeNitter() {
+        #expect(Session.defaultBlockedDomains.contains("nitter.net"),
+                "nitter.net (Twitter/X privacy proxy frontend) must be blocked by default")
+    }
+
+    @Test func nitterIsDistinctFromTwitterDomain() {
+        // nitter.net is a completely separate domain from twitter.com and x.com —
+        // it must be an explicit entry, not derivable from any existing block rule.
+        let domains = Session.defaultBlockedDomains
+        #expect(domains.contains("nitter.net"),
+                "nitter.net requires an explicit entry independent of twitter.com/x.com")
+        #expect(domains.contains("twitter.com"),
+                "twitter.com must also remain blocked alongside nitter.net")
+        #expect(domains.contains("x.com"),
+                "x.com must also remain blocked alongside nitter.net")
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterProxyFrontendAdditions() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "duplicate entries found in defaultBlockedDomains after adding proxy frontend domains")
+    }
+}
