@@ -356,6 +356,50 @@ public struct Session: Sendable, Identifiable {
         //   The proxy-frontend ecosystem is dynamic, but nitter.net is the canonical single
         //   well-known domain that warrants an explicit block entry.
         "nitter.net",
+        // Gaming platforms (dedicated distraction vectors for the student demographic)
+        // roblox.com — the Roblox platform website (game browser, Roblox Studio launcher,
+        //   account/avatar management). Particularly high-engagement for teen and young-adult
+        //   students; blocking the website also intercepts the web-based game launcher flow.
+        "roblox.com",
+        // itch.io — indie game marketplace with a high-engagement "Popular" and "On Sale"
+        //   browse feed. Popular with CS, game-development, and design students who rationalise
+        //   browsing as "looking for project inspiration". The time-limited-sale urgency pattern
+        //   significantly extends dwell time.
+        "itch.io",
+        // gog.com — DRM-free PC game store (CD Projekt). Distinct "Discover" and "Sale"
+        //   sections with curated deals. Game-store browsing during study is a common
+        //   displacement activity; the "wait, that's a good deal" pattern is hard to escape.
+        "gog.com",
+        // humblebundle.com — game bundle store with countdown-timer FOMO UX and a monthly
+        //   subscription tier. Students visit "just to check what's on sale" and stay far
+        //   longer than intended due to the time-pressure mechanics.
+        "humblebundle.com",
+        // Additional streaming services (beyond the core Netflix/Hulu/Disney+/etc. already blocked)
+        // paramountplus.com — Paramount+ (CBS library, Paramount releases, originals).
+        //   A student who can't load Netflix or Hulu may open Paramount+ without thinking twice.
+        "paramountplus.com",
+        // discoveryplus.com — Discovery+ (nature documentaries, reality TV, cooking, home shows).
+        //   Students frequently rationalise this as "educational" (Planet Earth, MythBusters);
+        //   the "just one episode" pattern is especially strong for documentary formats.
+        "discoveryplus.com",
+        // mubi.com — curated art-house and independent film streaming.
+        //   Popular with film studies, media arts, and humanities students who frame it as
+        //   "cultural enrichment". The platform's prestige ("real cinema") makes it feel more
+        //   legitimate than Netflix — same outcome, harder to self-interrupt.
+        "mubi.com",
+        // tubi.tv — free ad-supported streaming with a broad genre library (AVOD).
+        //   No subscription barrier means zero friction: "it's free, just a quick break."
+        //   The label "free" lowers the self-interruption threshold significantly.
+        "tubi.tv",
+        // pluto.tv — free live-channel and on-demand streaming (Paramount-owned AVOD).
+        //   The live-channel / "channel surfing" UX auto-plays continuously, replicating
+        //   broadcast TV's low-cognitive-effort consumption pattern — hard to consciously stop.
+        "pluto.tv",
+        // Regional social networks (significant distraction for non-Western-market students)
+        // vk.com — VKontakte, Russia's largest social network (~100M monthly active users).
+        //   Functionally equivalent to Facebook: news feed, messaging, video, groups.
+        //   A significant distraction vector for Eastern European students in particular.
+        "vk.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [
@@ -380,6 +424,11 @@ public struct Session: Sendable, Identifiable {
         // Both must be listed to catch whichever variant is installed.
         BlockedApp(id: "com.twitter.twitter-mac",        name: "Twitter (legacy)"),
         BlockedApp(id: "com.atebits.Tweetie2",           name: "X / Twitter"),
+        // epicgames.com is already blocked via /etc/hosts, but the Epic Games Launcher
+        // is a standalone macOS app (distinct bundle ID) that shows the full store browse
+        // interface locally without requiring a live connection to epicgames.com. Opening
+        // the launcher to "check what's free this week" is a classic student time sink.
+        BlockedApp(id: "com.epicgames.EpicGamesLauncher", name: "Epic Games Launcher"),
     ]
 
     public static var defaultBlockedAppBundleIDs: [String] {

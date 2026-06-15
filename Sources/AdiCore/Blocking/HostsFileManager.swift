@@ -132,6 +132,13 @@ public actor HostsFileManager {
     //          (Plex's web player entry point) and similar direct-watch subdomains on blocked
     //          entertainment platforms. False-positive risk is low: no major productivity tool
     //          (GitHub, Notion, Linear, Figma) exposes a "watch." subdomain as a UI entry point.
+    // "video"  blocks video.twitch.tv (Twitch's VOD/clip delivery subdomain), video.facebook.com
+    //          (Facebook Watch — a distinct subdomain from facebook.com that hosts the video-feed
+    //          browse UI), and video.dailymotion.com (Dailymotion's embedded video player, which
+    //          can be navigated to directly). False-positive risk is low: no major productivity
+    //          tool (GitHub, Notion, Linear, Figma) uses a "video." subdomain as a navigation
+    //          entry point; the edge case of "video.google.com" redirects to YouTube and is
+    //          not a standalone productively-visited URL.
     internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = [
         "m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips",
         "web",    // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
@@ -151,6 +158,7 @@ public actor HostsFileManager {
         "live",   // live-stream page subdomains (live.youtube.com, live.bilibili.com, live.kick.com etc.)
         "gaming", // gaming-hub subdomains (gaming.youtube.com, gaming.amazon.com etc.)
         "watch",  // direct-watch subdomains (watch.twitch.tv, watch.plex.tv etc.)
+        "video",  // video delivery / watch subdomains (video.twitch.tv, video.facebook.com etc.)
     ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).

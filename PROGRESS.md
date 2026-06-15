@@ -1,5 +1,108 @@
 # Adia — Build Progress
 
+## Run 135 — 2026-06-15
+
+### Shipped
+
+**feat: gaming platforms, streaming expansion, vk.com, Epic Games Launcher app block, "video" subdomain prefix (+20 tests)**
+
+#### `SessionState.swift` — 10 new entries in `defaultBlockedDomains`, 1 new entry in `defaultBlockedApps`
+
+**Gaming platforms (student demographic):**
+- **`roblox.com`** — the Roblox platform website (game browser, Roblox Studio launcher, account/avatar
+  management). Particularly high-engagement for teen and young-adult students; blocking the website also
+  intercepts the web-based game launcher flow.
+- **`itch.io`** — indie game marketplace with a high-engagement "Popular" and "On Sale" browse feed.
+  Popular with CS, game-development, and design students who rationalise browsing as "looking for project
+  inspiration". The time-limited-sale urgency pattern significantly extends dwell time.
+- **`gog.com`** — DRM-free PC game store (CD Projekt). Distinct "Discover" and "Sale" sections.
+  Game-store browsing during study is a common displacement activity.
+- **`humblebundle.com`** — game bundle store with countdown-timer FOMO UX and a monthly subscription
+  tier. Students visit "just to check what's on sale" and stay far longer than intended.
+
+**Additional streaming services:**
+- **`paramountplus.com`** — Paramount+ (CBS library, Paramount releases, originals). A student who
+  can't load Netflix or Hulu may switch to Paramount+ without thinking twice.
+- **`discoveryplus.com`** — Discovery+ (nature documentaries, reality TV). Students rationalise this
+  as "educational" (Planet Earth, MythBusters); the "just one episode" pattern is strong for
+  documentary formats.
+- **`mubi.com`** — curated art-house and independent film streaming. Popular with film/media/humanities
+  students who frame it as "cultural enrichment". The prestige makes it harder to self-interrupt.
+- **`tubi.tv`** — free AVOD streaming (no subscription). Zero friction: "it's free, just a quick break"
+  lowers the self-interruption threshold significantly.
+- **`pluto.tv`** — free live-channel + on-demand AVOD (Paramount-owned). The channel-surfing UX
+  auto-plays continuously, replicating broadcast TV's low-effort consumption pattern.
+
+**Regional social networks:**
+- **`vk.com`** — VKontakte, Russia's largest social network (~100M MAU globally). Functionally
+  equivalent to Facebook: news feed, messaging, video, groups.
+
+**New blocked app:**
+- **`com.epicgames.EpicGamesLauncher`** — Epic Games Launcher. The launcher shows the store browse
+  interface locally without needing a network connection to epicgames.com (which is already /etc/hosts
+  blocked). "Check what's free this week" is a classic student time sink.
+
+#### `HostsFileManager.swift` — `"video"` subdomain prefix (now 26 entries)
+
+- **`"video"`** added to `additionalBlockedSubdomainPrefixes`. Covers:
+  - `video.twitch.tv` — Twitch's VOD/clip delivery subdomain.
+  - `video.facebook.com` — Facebook Watch browse UI, a distinct subdomain from facebook.com.
+  - `video.dailymotion.com` — Dailymotion's embedded video player endpoint.
+  - Any other `video.X` on already-blocked domains.
+  - False-positive risk is low: no major productivity tool (GitHub, Notion, Linear, Figma) uses
+    a `video.` subdomain as a primary navigation entry point.
+
+#### Tests — 20 new `@Test` cases
+
+**`SessionStateTests.swift`** (17 new across 2 suites):
+
+`"Session defaultBlockedDomains — gaming platforms, streaming expansion, and regional social"` (12 tests):
+- `defaultBlockedDomainsIncludeRoblox`
+- `defaultBlockedDomainsIncludeItchIo`
+- `defaultBlockedDomainsIncludeGOG`
+- `defaultBlockedDomainsIncludeHumbleBundle`
+- `defaultBlockedDomainsIncludeParamountPlus`
+- `defaultBlockedDomainsIncludeDiscoveryPlus`
+- `defaultBlockedDomainsIncludeMubi`
+- `defaultBlockedDomainsIncludeTubiTv`
+- `defaultBlockedDomainsIncludePlutoTv`
+- `defaultBlockedDomainsIncludeVK`
+- `gamingAndStreamingDomainsAllPresentTogether` — bulk presence check for all 10 new domains
+- `defaultBlockedDomainsNoDuplicatesAfterGamingAndStreamingAdditions` — duplicate guard
+
+`"Session defaultBlockedApps — Epic Games Launcher"` (3 tests):
+- `defaultBlockedAppsIncludeEpicGamesLauncher`
+- `epicGamesLauncherBlockedAlongsideEpicGamesDomain` — verifies launcher app + epicgames.com web block coexist
+- `defaultBlockedAppsNoDuplicatesAfterEpicGamesLauncherAddition`
+
+**`HostsFileManagerTests.swift`** (7 new in `"HostsFileManager — video. subdomain prefix"`):
+- `videoPrefixIsInAdditionalPrefixesList`
+- `buildBlockIncludesVideoSubdomainForTwitch`
+- `buildBlockIncludesVideoSubdomainForFacebook`
+- `buildBlockIncludesVideoSubdomainForDailymotion`
+- `parseBlockedFiltersVideoSubdomainVariant`
+- `buildThenParseRoundTripWithVideoPrefix`
+- `noDuplicatesInAdditionalPrefixesListAfterVideoAddition`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **Short-form video alternatives**: `triller.co` (TikTok competitor), `likee.com` (Kwai/Likee).
+  - **More gaming stores**: `g2a.com`, `kinguin.net` (key reseller sites — less mainstream).
+  - **E-commerce expansion**: `bestbuy.com`, `target.com`, `wish.com`, `shein.com` (popular for
+    impulse shopping during study sessions).
+  - **`"shop"` subdomain prefix**: closes `shop.spotify.com`, `shop.twitch.tv` etc. (minor, as the
+    parent domains are already blocked, but would close merch-store bypass for non-blocked domains).
+  - **Battle.net launcher**: `net.battle.net.client` or `com.blizzard.Battle.net` — verify exact
+    macOS bundle ID before adding. The launcher is a significant distraction for gamers.
+  - **Crypto/trading distraction**: `coinbase.com`, `binance.com`, `robinhood.com` — relevant for
+    finance/economics students who "check prices" as procrastination.
+
+---
+
 ## Run 134 — 2026-06-15
 
 ### Shipped

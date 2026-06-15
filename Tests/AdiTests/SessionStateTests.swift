@@ -1095,3 +1095,127 @@ struct SocialMediaProxyBlocklistTests {
                 "duplicate entries found in defaultBlockedDomains after adding proxy frontend domains")
     }
 }
+
+// MARK: - Gaming platforms + additional streaming + regional social
+
+@Suite("Session defaultBlockedDomains — gaming platforms, streaming expansion, and regional social")
+struct GamingAndStreamingExpansionBlocklistTests {
+
+    // MARK: Gaming platforms
+
+    @Test func defaultBlockedDomainsIncludeRoblox() {
+        // roblox.com is the browser entry point for the Roblox platform — game browser,
+        // Roblox Studio launcher, and avatar/account management.
+        #expect(Session.defaultBlockedDomains.contains("roblox.com"),
+                "roblox.com must be blocked by default (high-engagement student gaming platform)")
+    }
+
+    @Test func defaultBlockedDomainsIncludeItchIo() {
+        // itch.io is an indie game marketplace with browse/discover feeds popular among
+        // CS, game-dev, and design students.
+        #expect(Session.defaultBlockedDomains.contains("itch.io"),
+                "itch.io must be blocked by default (indie game discovery feed — student time sink)")
+    }
+
+    @Test func defaultBlockedDomainsIncludeGOG() {
+        // gog.com (Good Old Games / CD Projekt) — DRM-free game store with curated
+        // sale and discovery sections.
+        #expect(Session.defaultBlockedDomains.contains("gog.com"),
+                "gog.com must be blocked by default (game store with discovery browse section)")
+    }
+
+    @Test func defaultBlockedDomainsIncludeHumbleBundle() {
+        // humblebundle.com — game bundle store with countdown-timer FOMO and subscription tier.
+        #expect(Session.defaultBlockedDomains.contains("humblebundle.com"),
+                "humblebundle.com must be blocked by default (time-limited bundle FOMO UX)")
+    }
+
+    // MARK: Additional streaming services
+
+    @Test func defaultBlockedDomainsIncludeParamountPlus() {
+        #expect(Session.defaultBlockedDomains.contains("paramountplus.com"),
+                "paramountplus.com must be blocked by default (major subscription streaming service)")
+    }
+
+    @Test func defaultBlockedDomainsIncludeDiscoveryPlus() {
+        // discoveryplus.com — nature/reality/documentary streaming rationalised as "educational".
+        #expect(Session.defaultBlockedDomains.contains("discoveryplus.com"),
+                "discoveryplus.com must be blocked by default (documentary streaming — 'educational' rationalization)")
+    }
+
+    @Test func defaultBlockedDomainsIncludeMubi() {
+        // mubi.com — art-house film streaming; popular with film/media/humanities students
+        // who frame it as cultural enrichment rather than procrastination.
+        #expect(Session.defaultBlockedDomains.contains("mubi.com"),
+                "mubi.com must be blocked by default (art-house film streaming — prestige procrastination)")
+    }
+
+    @Test func defaultBlockedDomainsIncludeTubiTv() {
+        // tubi.tv — free AVOD streaming; zero friction ("it's free") lowers self-interruption.
+        #expect(Session.defaultBlockedDomains.contains("tubi.tv"),
+                "tubi.tv must be blocked by default (free streaming — zero-friction distraction)")
+    }
+
+    @Test func defaultBlockedDomainsIncludePlutoTv() {
+        // pluto.tv — free live-channel + on-demand AVOD; channel-surfing UX auto-plays continuously.
+        #expect(Session.defaultBlockedDomains.contains("pluto.tv"),
+                "pluto.tv must be blocked by default (free channel-surfing streaming platform)")
+    }
+
+    // MARK: Regional social networks
+
+    @Test func defaultBlockedDomainsIncludeVK() {
+        // vk.com — VKontakte, Russia's largest social network (~100M MAU globally);
+        // functionally equivalent to Facebook.
+        #expect(Session.defaultBlockedDomains.contains("vk.com"),
+                "vk.com must be blocked by default (Russian social network, large global user base)")
+    }
+
+    // MARK: Bulk presence + no-duplicates guards
+
+    @Test func gamingAndStreamingDomainsAllPresentTogether() {
+        let domains = Session.defaultBlockedDomains
+        for expected in ["roblox.com", "itch.io", "gog.com", "humblebundle.com",
+                         "paramountplus.com", "discoveryplus.com", "mubi.com",
+                         "tubi.tv", "pluto.tv", "vk.com"] {
+            #expect(domains.contains(expected),
+                    "\(expected) must be present in defaultBlockedDomains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterGamingAndStreamingAdditions() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "duplicate entries found in defaultBlockedDomains after gaming/streaming expansion")
+    }
+}
+
+// MARK: - Epic Games Launcher app block
+
+@Suite("Session defaultBlockedApps — Epic Games Launcher")
+struct EpicGamesLauncherAppBlockTests {
+
+    @Test func defaultBlockedAppsIncludeEpicGamesLauncher() {
+        // The Epic Games Launcher is a standalone macOS app that shows the store browse
+        // interface without needing a network connection to epicgames.com.
+        #expect(Session.defaultBlockedAppBundleIDs.contains("com.epicgames.EpicGamesLauncher"),
+                "com.epicgames.EpicGamesLauncher must be blocked by default")
+    }
+
+    @Test func epicGamesLauncherBlockedAlongsideEpicGamesDomain() {
+        // Both the launcher app and the website must be covered — the app can
+        // show the store locally while the web block covers browser-based access.
+        let domains = Set(Session.defaultBlockedDomains)
+        let appIDs  = Set(Session.defaultBlockedAppBundleIDs)
+        #expect(domains.contains("epicgames.com"),
+                "epicgames.com (web store) must be blocked alongside the launcher app")
+        #expect(appIDs.contains("com.epicgames.EpicGamesLauncher"),
+                "com.epicgames.EpicGamesLauncher must be blocked alongside the epicgames.com web block")
+    }
+
+    @Test func defaultBlockedAppsNoDuplicatesAfterEpicGamesLauncherAddition() {
+        let ids = Session.defaultBlockedAppBundleIDs
+        #expect(Set(ids).count == ids.count,
+                "duplicate bundle IDs in defaultBlockedApps after adding Epic Games Launcher")
+    }
+}
