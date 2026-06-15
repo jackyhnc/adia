@@ -160,13 +160,14 @@ public actor SessionTemplateStore {
     }
 
     private func _sorted(_ templates: [SessionTemplate]) -> [SessionTemplate] {
+        // Use lastUsedAt when available, falling back to createdAt so a newly
+        // created template (lastUsedAt == nil) is treated as "used right now"
+        // and is never evicted in favour of older templates that happened to
+        // have a prior lastUsedAt recorded.
         templates.sorted { a, b in
-            switch (a.lastUsedAt, b.lastUsedAt) {
-            case let (al?, bl?): return al > bl
-            case (nil, _?):      return false
-            case (_?, nil):      return true
-            case (nil, nil):     return a.createdAt > b.createdAt
-            }
+            let aDate = a.lastUsedAt ?? a.createdAt
+            let bDate = b.lastUsedAt ?? b.createdAt
+            return aDate > bDate
         }
     }
 

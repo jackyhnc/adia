@@ -1033,4 +1033,57 @@ struct ImagesPrefixTests {
         #expect(Set(parsed) == Set(input),
                 "images. prefix must not corrupt parseBlocked output for productivity domains")
     }
+
+    // MARK: - HostsFileManager — auth. subdomain prefix
+
+    @Test func authPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("auth"),
+                "\"auth\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func buildBlockIncludesAuthSubdomainForTwitch() {
+        let block = HostsFileManager.buildBlock(domains: ["twitch.tv"])
+        #expect(block.contains("127.0.0.1 auth.twitch.tv"),
+                "auth.twitch.tv must appear in the block so the Twitch auth flow is blocked")
+    }
+
+    @Test func buildBlockIncludesAuthSubdomainForDiscord() {
+        let block = HostsFileManager.buildBlock(domains: ["discord.com"])
+        #expect(block.contains("127.0.0.1 auth.discord.com"),
+                "auth.discord.com must appear in the block so the Discord OAuth flow is blocked")
+    }
+
+    @Test func buildBlockIncludesAuthSubdomainForReddit() {
+        let block = HostsFileManager.buildBlock(domains: ["reddit.com"])
+        #expect(block.contains("127.0.0.1 auth.reddit.com"),
+                "auth.reddit.com must appear in the block so the Reddit auth endpoint is blocked")
+    }
+
+    @Test func parseBlockedFiltersAuthSubdomainVariant() {
+        // auth.X is a synthetic prefix entry — parseBlocked must strip it and return
+        // only the bare canonical domain so callers don't see doubled entries.
+        let block = HostsFileManager.buildBlock(domains: ["discord.com"])
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(parsed == ["discord.com"],
+                "parseBlocked must return only bare canonical domains after auth. rows are present")
+    }
+
+    @Test func buildThenParseRoundTripWithAuthPrefix() {
+        let input = ["twitch.tv", "discord.com", "reddit.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "build → parse round-trip must be lossless with auth. prefix present")
+    }
+
+    @Test func authPrefixDoesNotAffectProductivityToolsInRoundTrip() {
+        // Productivity tools (GitHub, Notion, Linear) are not in the default blocked list,
+        // so auth. entries are never generated for them — but even if they were added
+        // manually, the round-trip must remain correct.
+        let input = ["notion.so", "github.com", "linear.app"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "auth. prefix must not corrupt parseBlocked output for productivity domains")
+    }
 }

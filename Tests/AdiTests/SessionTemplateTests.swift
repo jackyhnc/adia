@@ -194,6 +194,29 @@ struct SessionTemplateTests {
         #expect(templates.count == SessionTemplateStore.maxTemplates)
     }
 
+    /// Regression: before the _sorted fix, a new template (lastUsedAt == nil) sorted
+    /// AFTER all templates that had a prior lastUsedAt, so it was immediately evicted
+    /// when 10 used templates already existed — the user lost their just-created template.
+    @Test func newTemplateIsRetainedWhenAllExistingTemplatesHaveBeenUsed() async {
+        let store = makeStore()
+        // Create 10 templates and record use on each so all have lastUsedAt != nil.
+        for i in 1...10 {
+            await store.add(task: "Task \(i)", successCriteria: "Criteria \(i)")
+            let id = await store.load().first!.id
+            await store.recordUse(id: id)
+        }
+        // Add an 11th template that has never been used (lastUsedAt == nil, createdAt == now).
+        await store.add(task: "Task 11 (brand new)", successCriteria: "Criteria 11")
+        let templates = await store.load()
+        #expect(templates.count == SessionTemplateStore.maxTemplates)
+        // The newly created template must be kept — it was just created so its effective
+        // sort date (createdAt) is more recent than any prior lastUsedAt.
+        #expect(
+            templates.contains(where: { $0.task == "Task 11 (brand new)" }),
+            "newly created template must not be evicted in favour of older used templates"
+        )
+    }
+
     // MARK: - Codable round-trip
 
     @Test func templateSurvivesRoundTrip() async {
