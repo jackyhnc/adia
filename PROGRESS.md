@@ -4449,3 +4449,61 @@ The `additionalBlockedSubdomainPrefixes` array is now `["m", "mobile", "old", "a
   - Add `preview.redd.it` and `v.redd.it` to `defaultBlockedDomains` — these Reddit CDN domains serve media and would bypass the reddit.com block if a user navigates to them directly.
   - Add a Settings UI note explaining that mobile, AMP, music, and TV subdomains are auto-blocked alongside each base domain.
   - Consider blocking `youtu.be`-like short domains for other platforms (e.g. `fb.me`, `instagr.am`).
+
+---
+
+## Run 111 — 2026-06-15
+
+### What shipped
+
+**Social short-link bypass domains + Reddit CDN domains + image subdomain prefix + Settings UI note**
+
+#### `SessionState.swift` — 6 new entries in `defaultBlockedDomains` (68 → 74 total)
+
+- **Social platform short-link bypass domains** (completely separate DNS names from their parent platforms):
+  - `redd.it` — Reddit's own short URL service (e.g. `https://redd.it/abc123`). Blocking `reddit.com` does NOT prevent `redd.it` links from loading — they resolve through a separate DNS name, exactly like `youtu.be` bypasses `youtube.com`. Now blocked.
+  - `instagr.am` — Instagram's official short URL service. Same bypass vector: `instagr.am` is a completely separate domain from `instagram.com`.
+  - `fb.me` — Facebook's short URL service, separate from `facebook.com`.
+
+- **Reddit CDN / media domains** (completely different TLD: `.redd.it` vs `.com`):
+  - `i.redd.it` — Reddit's image CDN, hosts all inline images in posts and comments. `/etc/hosts` entries for `reddit.com` (or even `i.reddit.com`) do NOT block `i.redd.it` since it has a completely different TLD.
+  - `v.redd.it` — Reddit's native video CDN, hosts video player embeds.
+  - `preview.redd.it` — Reddit's preview CDN, serves link/image thumbnails in feeds.
+
+#### `HostsFileManager.swift` — 1 new entry in `additionalBlockedSubdomainPrefixes`
+
+- `"i"` — generates `127.0.0.1 i.<domain>` entries alongside every blocked domain. Closes the image-CDN bypass via `i.reddit.com`, `i.instagram.com`, etc. (distinct from the `.redd.it` CDN domains above, which are explicit entries).
+- `additionalBlockedSubdomainPrefixes` is now `["m", "mobile", "old", "amp", "en", "music", "tv", "i"]`.
+
+#### `SettingsView.swift` — Settings Blocking tab footer note
+
+- The **Default Block List** section footer now explains that each blocked domain automatically also blocks its mobile (`m.`), AMP (`amp.`), image (`i.`), music (`music.`), TV (`tv.`), and older (`old.`, `en.`) subdomains — so bypass tricks like `m.reddit.com` or `music.youtube.com` are covered without extra configuration.
+
+#### Tests — 12 new `@Test` cases
+
+**`HostsFileManagerTests.swift`** (4 new in `"i. subdomain blocking (image-CDN bypass prevention)"`):
+- `buildBlockIncludesImageSubdomain` — `i.reddit.com` appears in generated block
+- `imagePrefixIsInAdditionalPrefixesList`
+- `parseBlockedFiltersImageSubdomainVariant` — `i.` entries are stripped from `parseBlocked` output
+- `buildThenParseRoundTripWithImagePrefix` — round-trip still yields bare domains
+
+**`SessionStateTests.swift`** (8 new in `"Session defaultBlockedDomains — social short-links and Reddit CDN bypass"`):
+- `defaultBlockedDomainsIncludeRedditShortLink` — redd.it is present
+- `defaultBlockedDomainsIncludeInstagramShortLink` — instagr.am is present
+- `defaultBlockedDomainsIncludeFacebookShortLink` — fb.me is present
+- `socialShortLinksBothPresentWithParents` — short-link and parent both independently present
+- `defaultBlockedDomainsIncludeRedditImageCDN` — i.redd.it is present
+- `defaultBlockedDomainsIncludeRedditVideoCDN` — v.redd.it is present
+- `defaultBlockedDomainsIncludeRedditPreviewCDN` — preview.redd.it is present
+- `redditCDNDomainsAreSeparateFromRedditCom` — all four reddit domains (reddit.com + 3 CDN) present
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 original goals remain complete. BUILD_COMPLETE is present.
+- Possible further improvements:
+  - Add `api.` to `additionalBlockedSubdomainPrefixes` — blocks e.g. `api.twitter.com` which some third-party clients use to load Twitter content even with `twitter.com` blocked.
+  - Add `external-preview.redd.it` to `defaultBlockedDomains` — another Reddit preview CDN variant that serves thumbnails for external links.
+  - Consider adding `clips.twitch.tv` to `defaultBlockedDomains` — Twitch clip URLs use a subdomain that the `"i"` prefix doesn't cover (the TLD is still `twitch.tv` so the `twitch.tv` entry + generated `m.twitch.tv` etc. entries don't generate a `clips.` row).
+  - Consider a `"clips"` prefix in `additionalBlockedSubdomainPrefixes` for Twitch clips bypass prevention.
