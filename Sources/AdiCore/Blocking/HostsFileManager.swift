@@ -69,21 +69,32 @@ public actor HostsFileManager {
     // "store" blocks store.steampowered.com and store.epicgames.com: the actual store pages that users
     //         navigate directly to for browsing and purchasing games; the root domains are already blocked
     //         but store.X is a common direct-link target that resolves as a distinct subdomain.
-    // "media" blocks media.discordapp.com (Discord's embedded video/GIF preview CDN): separate from
-    //         cdn.discordapp.com — Discord serves embedded GIF previews and video thumbnails through
-    //         media.discordapp.com; direct links to these assets bypass the discord.com and cdn. blocks.
-    // "lite"  blocks lite.tiktok.com: TikTok's stripped-down regional version available in some markets.
-    //         "lite" is not a common legitimate subdomain for productivity tools, so the false-positive
-    //         risk is negligible; closing the lite.tiktok.com escape hatch is the main motivation.
+    // "media"  blocks media.discordapp.com (Discord's embedded video/GIF preview CDN): separate from
+    //          cdn.discordapp.com — Discord serves embedded GIF previews and video thumbnails through
+    //          media.discordapp.com; direct links to these assets bypass the discord.com and cdn. blocks.
+    // "lite"   blocks lite.tiktok.com: TikTok's stripped-down regional version available in some markets.
+    //          "lite" is not a common legitimate subdomain for productivity tools, so the false-positive
+    //          risk is negligible; closing the lite.tiktok.com escape hatch is the main motivation.
+    // "player" blocks player.twitch.tv: Twitch's embeddable player iframe used on third-party sites
+    //          (news articles, gaming wikis, Reddit embeds). A user whose Twitch app and twitch.tv are
+    //          both blocked can still watch a live stream via an embedded player.twitch.tv iframe on an
+    //          otherwise-accessible page. "player" is not a common subdomain for productivity tools
+    //          (no player.github.com, player.notion.so, etc.) so false-positive risk is negligible.
+    // "assets" blocks assets.twitch.tv and similar static-asset CDN subdomains: sprite sheets, fonts,
+    //          and UI bundle files served from assets.X that can be independently loaded by cached or
+    //          service-worker-backed pages even when the main domain is blocked. Also covers
+    //          assets.discord.com and similar patterns on other blocked platforms.
     internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = [
         "m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips",
-        "web",   // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
-        "app",   // Slack Web App (app.slack.com)
-        "go",    // tracking-redirect subdomains (go.twitch.tv etc.)
-        "cdn",   // media/attachment CDN subdomains (cdn.discordapp.com etc.)
-        "store", // game store pages (store.steampowered.com, store.epicgames.com)
-        "media", // embedded video/GIF preview CDN (media.discordapp.com etc.)
-        "lite",  // stripped-down regional variants (lite.tiktok.com etc.)
+        "web",    // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
+        "app",    // Slack Web App (app.slack.com)
+        "go",     // tracking-redirect subdomains (go.twitch.tv etc.)
+        "cdn",    // media/attachment CDN subdomains (cdn.discordapp.com etc.)
+        "store",  // game store pages (store.steampowered.com, store.epicgames.com)
+        "media",  // embedded video/GIF preview CDN (media.discordapp.com etc.)
+        "lite",   // stripped-down regional variants (lite.tiktok.com etc.)
+        "player", // embeddable player iframes (player.twitch.tv etc.)
+        "assets", // static-asset CDN subdomains (assets.twitch.tv etc.)
     ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).

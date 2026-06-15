@@ -4,6 +4,10 @@ import SwiftUI
 public struct ConversationView: View {
     @ObservedObject public var manager: ConversationManager
     @State private var inputText: String = ""
+    /// Guards against two .onAppear callbacks firing in the same render pass — the
+    /// messages.count == 1 check is not safe because a second callback can fire before
+    /// the first send() increments the message array.
+    @State private var didAutoSend = false
 
     public init(manager: ConversationManager = .shared) {
         self.manager = manager
@@ -20,13 +24,14 @@ public struct ConversationView: View {
 
     /// When reasoning mode opens for a specific blocked domain, auto-send a user message
     /// so the AI replies immediately without the user needing to type first.
-    /// Called from `.onAppear` on the first AI bubble — the view being on-screen is the
-    /// reliable signal, no fixed sleep needed.
+    /// Called from `.onAppear` on the first AI bubble. The `didAutoSend` flag prevents
+    /// a double-send if two .onAppear callbacks race in the same render pass.
     private func autoSendOpeningIfNeeded() {
-        guard case .reasoning(let domain) = manager.mode,
+        guard !didAutoSend,
+              case .reasoning(let domain) = manager.mode,
               let d = domain, !d.isEmpty,
-              manager.messages.count == 1,
               !manager.isLoading else { return }
+        didAutoSend = true
         manager.send("I'm trying to access \(d)")
     }
 

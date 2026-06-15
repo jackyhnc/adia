@@ -746,6 +746,58 @@ struct DiscordNetDomainTests {
     }
 }
 
+// MARK: - Discord worker / edge-function domain (discordapp.io) bypass closure
+
+@Suite("Session defaultBlockedDomains — Discord worker domain (discordapp.io)")
+struct DiscordIODomainTests {
+
+    @Test func defaultBlockedDomainsIncludeDiscordIO() {
+        // discordapp.io is Discord's Cloudflare Workers / edge-function domain, separate from
+        // discordapp.com (CDN) and discordapp.net (WebRTC/gateway). It is used for status-page
+        // polling, experimental API endpoints, and worker scripts; leaving it unblocked while the
+        // other two are blocked exposes a residual direct-request route into Discord infrastructure.
+        #expect(Session.defaultBlockedDomains.contains("discordapp.io"),
+                "discordapp.io must be in defaultBlockedDomains (Discord worker/edge bypass)")
+    }
+
+    @Test func allFourDiscordInfrastructureDomainsArePresent() {
+        // Guard: all four Discord-related domains must coexist — each closes a different bypass.
+        // discord.com: main web app/login. discordapp.com: CDN media. discordapp.net: voice/WebRTC.
+        // discordapp.io: Cloudflare Workers / edge functions / status endpoints.
+        let domains = Set(Session.defaultBlockedDomains)
+        #expect(domains.contains("discord.com"),      "discord.com (main app) must be present")
+        #expect(domains.contains("discordapp.com"),   "discordapp.com (CDN) must be present")
+        #expect(domains.contains("discordapp.net"),   "discordapp.net (WebRTC/gateway) must be present")
+        #expect(domains.contains("discordapp.io"),    "discordapp.io (workers/edge) must be present")
+    }
+
+    @Test func discordIOIsDistinctFromDiscordNetAndDiscordApp() {
+        // Explicit sanity-check: .io, .net, and .com are distinct TLDs — each is an independent entry.
+        let domains = Set(Session.defaultBlockedDomains)
+        #expect(domains.contains("discordapp.io"))
+        #expect(domains.contains("discordapp.net"))
+        #expect(domains.contains("discordapp.com"))
+        #expect("discordapp.io" != "discordapp.net")
+        #expect("discordapp.io" != "discordapp.com")
+    }
+
+    @Test func subdomainPrefixesGenerateDiscordIOEntries() {
+        // Integration check: blocking discordapp.io must generate cdn., media., and other prefix
+        // entries alongside it, just as for discordapp.com and discordapp.net.
+        let block = HostsFileManager.buildBlock(domains: ["discordapp.io"])
+        #expect(block.contains("127.0.0.1 discordapp.io"))
+        #expect(block.contains("127.0.0.1 www.discordapp.io"))
+        #expect(block.contains("127.0.0.1 cdn.discordapp.io"))
+        #expect(block.contains("127.0.0.1 media.discordapp.io"))
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterDiscordIOAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "duplicate entries found in defaultBlockedDomains after adding discordapp.io")
+    }
+}
+
 // MARK: - streakDisplayLabel (settings weekly-section consistency)
 
 /// These tests verify that the shared `streakDisplayLabel` function — now used by

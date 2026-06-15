@@ -163,6 +163,10 @@ public struct Session: Sendable, Identifiable {
         // Discord's voice channels and the real-time gateway connect through *.discordapp.net endpoints;
         // blocking discord.com and discordapp.com leaves this infrastructure domain open for direct access.
         "discordapp.net",
+        // discordapp.io is Discord's worker / edge-function domain used for Cloudflare Workers,
+        // status-page polling, and experimental API endpoints. It is a distinct TLD from discordapp.com
+        // and discordapp.net; blocking those two leaves discordapp.io accessible for direct requests.
+        "discordapp.io",
         "slack.com",
         "9gag.com",
         // Messaging web clients (web.X bypasses native app blocks when apps are not running)

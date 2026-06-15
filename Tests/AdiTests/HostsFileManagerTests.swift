@@ -732,4 +732,104 @@ struct HostsFileManagerTests {
         #expect(Set(parsed) == Set(input),
                 "parseBlocked must return only bare canonical domains after store. rows are present")
     }
+
+    // MARK: - player. subdomain blocking (embedded Twitch player bypass prevention)
+
+    @Test func buildBlockIncludesPlayerSubdomainForTwitch() {
+        // player.twitch.tv is Twitch's embeddable player iframe used on third-party sites.
+        // A user whose twitch.tv is blocked can still watch a live stream via an embedded
+        // player.twitch.tv iframe on another page without this prefix.
+        let block = HostsFileManager.buildBlock(domains: ["twitch.tv"])
+        #expect(block.contains("127.0.0.1 player.twitch.tv"),
+                "player.twitch.tv must be blocked to prevent embedded-player bypass")
+    }
+
+    @Test func playerPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("player"),
+                "\"player\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func parseBlockedFiltersPlayerSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 twitch.tv
+        127.0.0.1 www.twitch.tv
+        127.0.0.1 player.twitch.tv
+        127.0.0.1 clips.twitch.tv
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["twitch.tv"])
+        #expect(!domains.contains("player.twitch.tv"),
+                "parseBlocked must filter out synthetic player. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithPlayerPrefix() {
+        let input = ["twitch.tv", "youtube.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 player.twitch.tv"))
+        #expect(block.contains("127.0.0.1 player.youtube.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after player. rows are present")
+    }
+
+    @Test func playerPrefixDoesNotAffectProductivityToolsInRoundTrip() {
+        // "player" is safe to add — productivity tools don't expose a player. subdomain.
+        let input = ["notion.so", "github.com", "linear.app"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "player. prefix must not corrupt parseBlocked output for productivity domains")
+    }
+
+    // MARK: - assets. subdomain blocking (static-asset CDN bypass prevention)
+
+    @Test func buildBlockIncludesAssetsSubdomainForTwitch() {
+        // assets.twitch.tv serves sprite sheets, fonts, and UI bundle files — a service-worker-
+        // backed page could load these independently even when twitch.tv itself is blocked.
+        let block = HostsFileManager.buildBlock(domains: ["twitch.tv"])
+        #expect(block.contains("127.0.0.1 assets.twitch.tv"),
+                "assets.twitch.tv must be blocked to prevent static-asset CDN bypass")
+    }
+
+    @Test func assetsPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("assets"),
+                "\"assets\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func parseBlockedFiltersAssetsSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 twitch.tv
+        127.0.0.1 www.twitch.tv
+        127.0.0.1 assets.twitch.tv
+        127.0.0.1 player.twitch.tv
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["twitch.tv"])
+        #expect(!domains.contains("assets.twitch.tv"),
+                "parseBlocked must filter out synthetic assets. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithAssetsPrefix() {
+        let input = ["twitch.tv", "discord.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 assets.twitch.tv"))
+        #expect(block.contains("127.0.0.1 assets.discord.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after assets. rows are present")
+    }
+
+    @Test func playerAndAssetsGeneratedTogetherForTwitch() {
+        // Both player. and assets. must be generated for twitch.tv simultaneously —
+        // they close independent bypass vectors and must coexist in the same block.
+        let block = HostsFileManager.buildBlock(domains: ["twitch.tv"])
+        #expect(block.contains("127.0.0.1 player.twitch.tv"))
+        #expect(block.contains("127.0.0.1 assets.twitch.tv"))
+        #expect(block.contains("127.0.0.1 clips.twitch.tv"))
+        #expect(block.contains("127.0.0.1 go.twitch.tv"))
+    }
 }
