@@ -1,5 +1,50 @@
 # Adia — Build Progress
 
+## Run 123 — 2026-06-15
+
+### Shipped
+- **feat: block theverge/techcrunch/wired + both Twitter/X bundle IDs (+4 tests)**
+
+  **New blocked domains (SessionState.swift — "Tech news" section)**
+  - `theverge.com` — tech/culture publication with high engagement; the "just one article"
+    trap is especially easy during research sessions.
+  - `techcrunch.com` — startup news; users can justify reading it as "research" but it's
+    rarely relevant to the actual session task.
+  - `wired.com` — long-form tech culture; same "productive-feeling" procrastination pattern
+    as medium.com (already blocked). Total blocked domains: 65 → 68.
+
+  **Fixed Twitter/X app blocking (SessionState.swift — defaultBlockedApps)**
+  - The Mac Catalyst X app uses bundle ID `com.atebits.Tweetie2` (iOS bundle ID carried
+    over via Catalyst), not `com.twitter.twitter-mac` (the pre-2022 native Mac app).
+  - Both IDs are now listed as separate `BlockedApp` entries so whichever variant is
+    installed gets caught. The legacy entry is renamed to "Twitter (legacy)" for clarity.
+
+  **4 new tests (SessionStateTests.swift)**
+  - `defaultBlockedDomainsIncludeTechNewsSites` — asserts `theverge.com`, `techcrunch.com`,
+    `wired.com` are all present in `defaultBlockedDomains`.
+  - `defaultBlockedAppsContainsTwitterLegacyAndCatalyst` — asserts both
+    `com.twitter.twitter-mac` and `com.atebits.Tweetie2` are in `defaultBlockedAppBundleIDs`.
+  - The existing `defaultBlockedAppsNoDuplicates` test guards that no bundle ID appears
+    twice — confirmed no duplicates (the two Twitter entries use distinct IDs).
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - `timerExpiredRearmTask` persistence test: verify that if the timer expired before a
+    crash/relaunch, the re-arm nudge fires on restore (remaining = 0 →
+    `handleDurationExpired()`). Unit test only.
+  - `ConversationView` auto-send: the 300 ms heuristic could be replaced with
+    `.onAppear` on the first AI `MessageBubble` — more robust timing.
+  - Consider adding `arstechnica.com` to the tech-news block (alongside theverge,
+    techcrunch, wired now added). Ars Technica is similarly "intellectual procrastination".
+  - Verify `tv.twitch.twitch-client` bundle ID — Twitch on Mac may also be a Catalyst
+    app using a different iOS-derived bundle ID.
+
+---
+
 ## Run 122 — 2026-06-15
 
 ### Shipped
