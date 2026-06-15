@@ -1337,4 +1337,21 @@ struct CalloutManagerTests {
         // A specific subject keyword takes precedence over the urgency catch-all
         #expect(CalloutManager.extractTaskKeyword(from: "essay due at 9am") == "essay")
     }
+
+    @Test func extractTaskKeywordDueAtNoon() {
+        // "due at noon" doesn't start with a digit so \bdue at \d misses it — explicit check needed
+        #expect(CalloutManager.extractTaskKeyword(from: "assignment due at noon") == "deadline")
+        #expect(CalloutManager.extractTaskKeyword(from: "submit by class, due at noon") == "deadline")
+    }
+
+    @Test func extractTaskKeywordDueAtEndOfDay() {
+        // "due at end of day" / "due at end of class" — non-digit time variants
+        #expect(CalloutManager.extractTaskKeyword(from: "project due at end of day") == "deadline")
+        #expect(CalloutManager.extractTaskKeyword(from: "this is due at end of class") == "deadline")
+    }
+
+    @Test func extractTaskKeywordDueAtNoonYieldsToEssay() {
+        // Subject keyword always wins over the urgency catch-all
+        #expect(CalloutManager.extractTaskKeyword(from: "essay due at noon") == "essay")
+    }
 }

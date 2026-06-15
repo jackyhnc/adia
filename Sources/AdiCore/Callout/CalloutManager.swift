@@ -186,6 +186,7 @@ public final class CalloutManager {
         // "residue at 3" (the \b word boundary rejects "residue").
         if word("deadline") || lower.contains("due by") || lower.contains("due tonight")
             || lower.contains("due tomorrow") || lower.contains("due at midnight")
+            || lower.contains("due at noon") || lower.contains("due at end of")
             || lower.contains("due in") || lower.contains("due before")
             || lower.range(of: #"\bdue at \d"#, options: .regularExpression) != nil {
             return "deadline"
