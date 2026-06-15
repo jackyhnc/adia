@@ -1,5 +1,65 @@
 # Adia — Build Progress
 
+## Run 131 — 2026-06-15
+
+### Shipped
+
+**fix: SessionTemplateStore eviction bug + "auth" subdomain prefix (+7 tests)**
+
+#### `SessionTemplate.swift` — `_sorted` eviction regression fix
+
+- **Bug**: `_sorted` used a four-case switch that placed templates with `lastUsedAt == nil`
+  AFTER every template with a prior `lastUsedAt`. When all 10 existing slots were occupied by
+  used templates, adding an 11th (brand-new) template triggered the cap-trim — and `prefix(10)`
+  evicted the new template immediately because it sorted last. The user lost their just-created
+  template with no visible indication.
+- **Fix**: replaced the four-case switch with `lastUsedAt ?? createdAt` as the unified sort key.
+  A new template's `createdAt` is always "right now," so it sorts to the top and the *oldest
+  previously-used* template is evicted instead.
+- **New test** `newTemplateIsRetainedWhenAllExistingTemplatesHaveBeenUsed`: creates 10 used templates,
+  adds an 11th, asserts the 11th is still present after cap-trim. This test would have failed before
+  the fix.
+
+#### `HostsFileManager.swift` — `"auth"` subdomain prefix (now 24 entries)
+
+- `"auth"` added to `additionalBlockedSubdomainPrefixes`.
+- Covers `auth.twitch.tv`, `auth.discord.com`, `auth.reddit.com`, `auth.spotify.com`, etc.
+- Closes the authentication re-entry vector: a user whose `twitch.tv` / `discord.com` is blocked
+  could still reach the login flow via `auth.X` to re-authenticate or switch accounts mid-session.
+- False-positive risk is low: productivity tools (GitHub, Notion, Linear) are NOT in the default
+  blocked list, so no `auth.` entries are generated for them.
+
+#### Tests — 7 new `@Test` cases
+
+**`SessionTemplateTests.swift`** (1 new):
+- `newTemplateIsRetainedWhenAllExistingTemplatesHaveBeenUsed` — regression for the eviction bug
+
+**`HostsFileManagerTests.swift`** (6 new in `"HostsFileManager — auth. subdomain prefix"`):
+- `authPrefixIsInAdditionalPrefixesList`
+- `buildBlockIncludesAuthSubdomainForTwitch`
+- `buildBlockIncludesAuthSubdomainForDiscord`
+- `buildBlockIncludesAuthSubdomainForReddit`
+- `parseBlockedFiltersAuthSubdomainVariant`
+- `buildThenParseRoundTripWithAuthPrefix`
+- `authPrefixDoesNotAffectProductivityToolsInRoundTrip`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Remaining low-priority improvements from prior runs:
+  - **`static-cdn.jtvnw.net` shard variants**: `static-cdn-*.jtvnw.net` (e.g. `static-cdn-ttv.jtvnw.net`)
+    use numeric/named shards — not solvable with `/etc/hosts` wildcards; would need an explicit list
+    of known shard hostnames if worth pursuing.
+  - **`ConversationView` mode-change completeness**: `manager.messages` is already cleared by
+    `ConversationManager.start()` synchronously before SwiftUI can react, so this is NOT an actual
+    bug. The PROGRESS.md concern was a false alarm.
+  - **Subdomain bypass completeness audit**: are there any other high-value entertainment subdomains
+    (e.g. `live.youtube.com`, `gaming.youtube.com`) not covered by the current prefix set?
+
+---
+
 ## Run 130 — 2026-06-15
 
 ### Shipped
