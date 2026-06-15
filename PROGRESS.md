@@ -1,5 +1,56 @@
 # Adia — Build Progress
 
+## Run 118 — 2026-06-15
+
+### Shipped
+- **feat: "deadline" callout keyword + "en" subdomain block (+12 tests)**
+
+  **(a) "deadline" keyword (CalloutManager.swift)**
+  - Matches: `word("deadline")`, `lower.contains("due by")`, `lower.contains("due tonight")`,
+    `lower.contains("due tomorrow")`, `lower.contains("due at midnight")`,
+    `lower.contains("due in")`, `lower.contains("due before")`.
+  - Returns `"deadline"` as a fallback for urgency language when no specific subject keyword
+    is found. Runs last in the chain so "essay due tonight" → essay, "homework due by midnight"
+    → homework, "ship the code, deadline is tomorrow" → code, etc.
+  - Tier 1: time-pressure framing: "you have a deadline. act like it." / "the clock is
+    ticking. get back to work." / "deadline incoming — stop."
+  - Tier 2: accountability framing: "you're burning deadline time." / "you set this deadline.
+    honor it."
+  - Tier 3: all-caps urgency: "CLOSE THIS. Your deadline is real." / "your deadline doesn't
+    care that you're here."
+
+  **(b) "en" subdomain prefix (HostsFileManager.swift)**
+  - Added `"en"` to `additionalBlockedSubdomainPrefixes` (alongside m., mobile., old., amp.)
+    so `en.wikipedia.org` — and `en.<any-custom-blocked-domain>` — is blocked automatically.
+    Prevents language-subdomain bypass when Wikipedia or other language-prefixed sites are on
+    the custom blocked list.
+
+  **Tests (+12)**: `extractTaskKeywordFromDeadlineWord`, `extractTaskKeywordFromDueBy`,
+  `extractTaskKeywordFromDueTomorrow`, `extractTaskKeywordFromDueIn`,
+  `extractTaskKeywordFromDueBefore`, `extractTaskKeywordDeadlineYieldsToEssay`,
+  `extractTaskKeywordDeadlineYieldsToHomework`, `extractTaskKeywordDeadlineYieldsToCode`,
+  `taskAwareCalloutsDeadlineNonEmpty`, `taskAwareCalloutsDeadlineTier1ContainsUrgency`,
+  `taskAwareCalloutsDeadlineTier3UsesAllCaps`,
+  `taskAwareCalloutsDeadlineTier3DoesNotUseGenericOpenPhrase`,
+  `buildBlockIncludesEnSubdomain`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All 14 original goals remain complete. Possible further improvements:
+  - Focus score history chart: mini sparkline or heatmap in History tab cells — colored cell
+    intensity based on average session focus score from `session.onTaskChecks / session.totalChecks`.
+  - Persist `timerExpiredRearmTask` UX test: verify that if the timer expired before a crash/relaunch,
+    the re-arm nudge fires on restore (remaining = 0 → handleDurationExpired()). Unit test only.
+  - `ConversationView` auto-send reliability: replace 300 ms heuristic with `.onAppear` on the
+    first AI `MessageBubble` for a more reliable initial-message trigger.
+  - "due at" variants: "due at 5pm", "due at end of day" — `lower.contains("due at")` is excluded
+    for now to avoid false positives like "residue at..." — a more precise regex like
+    `\bdue at \d` could safely match time-of-day patterns.
+
+---
+
 ## Run 117 — 2026-06-15
 
 ### Shipped
