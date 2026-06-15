@@ -119,6 +119,13 @@ public actor HostsFileManager {
     //          directly to live.youtube.com to watch live streams (sports, gaming, concerts) without
     //          touching the main YouTube domain. False-positive risk: no major productivity tool
     //          (GitHub, Notion, Linear, Figma) exposes a "live." subdomain as a primary URL.
+    // "gaming" blocks gaming.youtube.com (the legacy YouTube Gaming hub — a directly routable
+    //          subdomain that survived the YouTube Gaming → YouTube migration and is still
+    //          accessible even when youtube.com itself is blocked). Also covers gaming.amazon.com
+    //          (Amazon Prime Gaming portal for free game claims). The "live" prefix already closes
+    //          live.youtube.com for streams; "gaming" closes the gaming-hub discovery page
+    //          independently. False-positive risk is low: no common productivity tool
+    //          (GitHub, Notion, Linear, Figma) exposes a "gaming." subdomain as a navigation target.
     internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = [
         "m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips",
         "web",    // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
@@ -136,6 +143,7 @@ public actor HostsFileManager {
         "images", // image search / image CDN subdomains (images.google.com, images.fandom.com etc.)
         "auth",   // authentication subdomains (auth.twitch.tv, auth.discord.com, auth.reddit.com etc.)
         "live",   // live-stream page subdomains (live.youtube.com, live.bilibili.com, live.kick.com etc.)
+        "gaming", // gaming-hub subdomains (gaming.youtube.com, gaming.amazon.com etc.)
     ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).

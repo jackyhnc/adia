@@ -976,3 +976,43 @@ struct NewPlatformBlocklistTests {
                 "duplicate entries found in defaultBlockedDomains after adding new platforms")
     }
 }
+
+// MARK: - Art portfolio / creative procrastination platforms
+
+@Suite("Session defaultBlockedDomains — art portfolio and design procrastination platforms")
+struct ArtPortfolioBlocklistTests {
+
+    @Test func defaultBlockedDomainsIncludeDeviantArt() {
+        #expect(Session.defaultBlockedDomains.contains("deviantart.com"),
+                "deviantart.com (art community gallery) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeArtStation() {
+        #expect(Session.defaultBlockedDomains.contains("artstation.com"),
+                "artstation.com (professional concept art portfolio platform) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeBehance() {
+        #expect(Session.defaultBlockedDomains.contains("behance.net"),
+                "behance.net (Adobe creative portfolio platform) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeDribbble() {
+        #expect(Session.defaultBlockedDomains.contains("dribbble.com"),
+                "dribbble.com (UI/UX design community) must be blocked by default")
+    }
+
+    @Test func artPortfolioDomainsAllPresentTogether() {
+        let domains = Session.defaultBlockedDomains
+        for expected in ["deviantart.com", "artstation.com", "behance.net", "dribbble.com"] {
+            #expect(domains.contains(expected),
+                    "\(expected) must be present in defaultBlockedDomains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterArtPortfolioAdditions() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "duplicate entries found in defaultBlockedDomains after adding art portfolio platforms")
+    }
+}

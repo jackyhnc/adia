@@ -296,6 +296,27 @@ public struct Session: Sendable, Identifiable {
         // tenor.com — Google-owned GIF platform, the primary GIF source in many messaging apps
         //   (including Android messages). Direct navigation to tenor.com leads to browse mode.
         "tenor.com",
+        // Art portfolio / creative procrastination (design students and knowledge workers)
+        // deviantart.com — longstanding art community with a high-engagement gallery feed.
+        //   Browsing the "Popular" and "Newest" sections is passive and deeply habitual.
+        //   The "looking for reference or inspiration" justification is among the most common
+        //   self-deceptions that bring design/art students to gallery sites during work.
+        "deviantart.com",
+        // artstation.com — professional concept art / game art portfolio platform.
+        //   "Trending" and "New" feeds function identically to social media discovery feeds.
+        //   Especially distracting for design, game-development, and animation students, who
+        //   visit under the guise of "studying professional work" during their own project time.
+        "artstation.com",
+        // behance.net — Adobe's creative portfolio and discovery platform. High-engagement
+        //   curated-gallery browse feed (categories, "Moodboards", project showcases).
+        //   Students — especially graphic design and UX students — fall into "what does good
+        //   design look like?" browsing loops that are almost always displacement activity.
+        "behance.net",
+        // dribbble.com — UI/UX and graphic design community. "Shots" (polished design
+        //   screenshots) are engineered for rapid visual consumption and share well via link.
+        //   Algorithmically ranked and infinitely scrollable; a very common trap for CS and
+        //   design students who rationalise time on Dribbble as professional development.
+        "dribbble.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

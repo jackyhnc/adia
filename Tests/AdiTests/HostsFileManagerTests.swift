@@ -1139,3 +1139,60 @@ struct LiveSubdomainPrefixTests {
                 "no duplicate entries in additionalBlockedSubdomainPrefixes after live. was added")
     }
 }
+
+// MARK: - gaming. subdomain prefix
+
+@Suite("HostsFileManager — gaming. subdomain prefix (gaming-hub page subdomains)")
+struct GamingSubdomainPrefixTests {
+
+    @Test func gamingPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("gaming"),
+                "\"gaming\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func buildBlockIncludesGamingSubdomainForYouTube() {
+        let block = HostsFileManager.buildBlock(domains: ["youtube.com"])
+        #expect(block.contains("127.0.0.1 gaming.youtube.com"),
+                "gaming.youtube.com (legacy YouTube Gaming hub) must appear in the block")
+    }
+
+    @Test func buildBlockIncludesGamingSubdomainForAmazon() {
+        let block = HostsFileManager.buildBlock(domains: ["amazon.com"])
+        #expect(block.contains("127.0.0.1 gaming.amazon.com"),
+                "gaming.amazon.com (Amazon Prime Gaming portal) must appear in the block")
+    }
+
+    @Test func parseBlockedFiltersGamingSubdomainVariant() {
+        // gaming.X is a synthetic prefix entry — parseBlocked must strip it and return
+        // only the bare canonical domain so callers don't see doubled entries.
+        let block = HostsFileManager.buildBlock(domains: ["youtube.com"])
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(parsed == ["youtube.com"],
+                "parseBlocked must return only bare canonical domains when gaming. rows are present")
+    }
+
+    @Test func buildThenParseRoundTripWithGamingPrefix() {
+        let input = ["youtube.com", "amazon.com", "facebook.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "build → parse round-trip must be lossless with gaming. prefix present")
+    }
+
+    @Test func gamingPrefixDoesNotAffectProductivityToolsInRoundTrip() {
+        // Productivity tools are NOT in the default blocked list, so gaming.X entries
+        // are never generated for them. Confirm that a custom block containing only a
+        // productivity-style domain round-trips cleanly with the gaming prefix present.
+        let input = ["example-productivity.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(parsed == input,
+                "gaming. prefix must not corrupt round-trip for non-blocked productivity tools")
+    }
+
+    @Test func noDuplicatesInAdditionalPrefixesListAfterGamingAddition() {
+        let prefixes = HostsFileManager.additionalBlockedSubdomainPrefixes
+        #expect(Set(prefixes).count == prefixes.count,
+                "no duplicate entries in additionalBlockedSubdomainPrefixes after gaming. was added")
+    }
+}
