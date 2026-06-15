@@ -1,5 +1,39 @@
 # Adia — Build Progress
 
+## Run 115 — 2026-06-15
+
+### Shipped
+- **feat: persist focus score across crash/relaunch + show live score in active session**
+
+  **(a) Session model: `onTaskChecks` and `totalChecks` fields**
+  - Added `onTaskChecks: Int` and `totalChecks: Int` to `Session` struct (default 0).
+  - Backward-compatible `Codable`: both use `decodeIfPresent`-style optional fallback to 0 so existing saved sessions decode cleanly without the new keys.
+  - `CodingKeys` updated; both are encoded in `encode(to:)`.
+
+  **(b) SessionManager: sync check counts to persisted session on every frame**
+  - `handleFrame()` expanded: alongside `calloutCount`, now also syncs `onTaskChecks` and `totalChecks` into the persisted `Session` whenever they diverge from the last-saved values (effectively every frame since counts increment every frame). Uses a shared `dirty` flag so a single `persistence.save(s)` covers all changed fields.
+  - `activate()` now restores live counters from the saved session: `onTaskCheckCount = s.onTaskChecks` and `totalCheckCount = s.totalChecks`. Previously these were hard-reset to 0, so a crash/relaunch would show a focus score starting from zero — now they resume from the correct mid-session values.
+
+  **(c) NotchView: live focus score in the active session body**
+  - The elapsed-timer row (`12:34  45m left`) now shows a live focus score percentage (e.g. `85%`) between the elapsed time and the `StatusBadge`, but only after `totalCheckCount >= 5` (the minimum statistically meaningful threshold already used by the verification result card).
+  - `focusScoreColor(_:)` private helper on `ExpandedView`: green at ≥80%, amber at ≥60%, red below 60% — mirrors the mental model users have for what counts as "good" focus.
+  - `.transition(.opacity)` on the score text fades it in smoothly once the threshold is reached.
+
+  **Tests (+7)** in two suites:
+  - `SessionFocusCheckTests` (new suite in `SessionStateTests.swift`): `onTaskChecksDefaultsToZero`, `totalChecksDefaultsToZero`, `checkCountsPreservedInCodableRoundTrip`, `legacySessionWithoutCheckCountsDecodesAsZero`, `partialLegacySessionWithOnlyOnTaskChecksDecodesGracefully`, `checkCountsAreIndependentlyMutable`.
+  - `SessionManagerTests` (+2): `sessionPersistsCheckCountsOnHandleFrame`, `sessionWithPersistedCheckCountsRestoredOnActivate`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All goals complete. Possible next improvements:
+  - (a) Focus score in collapsed notch: show a small percentage or heat-color dot in the collapsed pill during a session (currently only shows elapsed time and a status-colored dot).
+  - (b) Focus score in History tab row: add the session focus score (if available) to the compact `SessionRecordRow` summary line alongside callout count and duration.
+  - (c) Persist `timerExpiredRearmTask` state across crashes: if the timer expired before a crash/relaunch, `timerExpired` is not restored by `restoreIfNeeded()` so the user won't get a re-arm nudge.
+
+---
+
 ## Run 114 — 2026-06-15
 
 ### Shipped
