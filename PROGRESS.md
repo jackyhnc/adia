@@ -1,5 +1,63 @@
 # Adia — Build Progress
 
+## Run 122 — 2026-06-15
+
+### Shipped
+- **feat: block 6 additional procrastination domains (+3 tests)**
+
+  Added 6 domains to `Session.defaultBlockedDomains` that were previously exploitable
+  as bypass routes or significant procrastination sinks not yet covered:
+
+  **New blocked domains (SessionState.swift)**
+  - `spotify.com` — Spotify's web player provides full audio streaming; blocking only
+    `com.spotify.client` (the native app) left the browser route wide open. Now both
+    vectors are closed.
+  - `medium.com` — long-form article platform; high click-through rate from social media
+    links and a major "5 more minutes" trap for knowledge workers.
+  - `substack.com` — newsletter/essay platform; widely linked from Twitter/Reddit and
+    easy to fall into during a session.
+  - `nytimes.com` — one of the highest-traffic news sites in the world; consistently
+    absent from the list despite cnn.com, bbc.com, and theguardian.com being present.
+  - `washingtonpost.com` — similarly prominent; completing the "quality news" category
+    alongside NYT.
+  - `npr.org` — suggested in run 121; public-radio news that functions as an intellectually
+    comfortable procrastination channel.
+  - `apnews.com` — suggested in run 121; clean wire-service layout makes it easy to justify
+    reading "just one more headline."
+
+  The total default blocked domain count grows from 59 → 65.
+
+  **3 new tests (SessionStateTests.swift)**
+  - `defaultBlockedDomainsIncludeSpotifyWebPlayer` — asserts `spotify.com` is present
+    with an explanatory message about the app-block bypass.
+  - `defaultBlockedDomainsIncludeLongFormReadingSites` — asserts both `medium.com` and
+    `substack.com` are present.
+  - `defaultBlockedDomainsIncludeMajorNewsSites` — asserts `nytimes.com`,
+    `washingtonpost.com`, `npr.org`, and `apnews.com` are all present.
+
+  The existing `defaultBlockedDomainsNoDuplicates` test guards that no entry appears
+  twice — no duplicates introduced.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - Mac Twitter/X bundle ID: `com.twitter.twitter-mac` may have changed to
+    `com.twitter.twitter` or `com.x.x` — worth verifying if the native X app
+    blocking actually fires on a real device.
+  - `timerExpiredRearmTask` persistence test: verify that if the timer expired before a
+    crash/relaunch, the re-arm nudge fires on restore (remaining = 0 →
+    `handleDurationExpired()`). Unit test only.
+  - `theverge.com`, `techcrunch.com`, `wired.com` — tech-news procrastination sites
+    not currently blocked (unlike news.ycombinator.com which is already blocked).
+  - Consider adding `"writing"` keyword alias for `"blog"` or `"newsletter"` to ensure
+    newsletter-writing sessions map to the dedicated "writing" handler (already covered
+    by word("blog") || word("newsletter") → "writing", so this may already work).
+
+---
+
 ## Run 121 — 2026-06-15
 
 ### Shipped

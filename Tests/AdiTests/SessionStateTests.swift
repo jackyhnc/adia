@@ -383,6 +383,29 @@ struct DefaultBlockedDomainsBypassTests {
         #expect(domains.contains("discord.gg") && domains.contains("discord.com"),
                 "both discord.gg and discord.com must be present as independent entries")
     }
+
+    @Test func defaultBlockedDomainsIncludeSpotifyWebPlayer() {
+        // spotify.com provides a full-featured web player; blocking only com.spotify.client
+        // (the native app) leaves the web route open.
+        #expect(Session.defaultBlockedDomains.contains("spotify.com"),
+                "spotify.com must be blocked: web player bypasses the native app block")
+    }
+
+    @Test func defaultBlockedDomainsIncludeLongFormReadingSites() {
+        let domains = Session.defaultBlockedDomains
+        for site in ["medium.com", "substack.com"] {
+            #expect(domains.contains(site),
+                    "expected \(site) in default blocked domains (long-form reading rabbit hole)")
+        }
+    }
+
+    @Test func defaultBlockedDomainsIncludeMajorNewsSites() {
+        let domains = Session.defaultBlockedDomains
+        for site in ["nytimes.com", "washingtonpost.com", "npr.org", "apnews.com"] {
+            #expect(domains.contains(site),
+                    "expected \(site) in default blocked domains (major news procrastination sink)")
+        }
+    }
 }
 
 @Suite("Session defaultBlockedApps")

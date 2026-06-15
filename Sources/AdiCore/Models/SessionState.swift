@@ -201,6 +201,16 @@ public struct Session: Sendable, Identifiable {
         "mangadex.org",
         // Professional procrastination
         "producthunt.com",
+        // Music streaming — web player bypasses the app block (com.spotify.client)
+        "spotify.com",
+        // Long-form reading rabbit holes (knowledge workers & students)
+        "medium.com",
+        "substack.com",
+        // Major news sites (procrastination disguised as staying informed)
+        "nytimes.com",
+        "washingtonpost.com",
+        "npr.org",
+        "apnews.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [
