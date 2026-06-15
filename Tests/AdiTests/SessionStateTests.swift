@@ -129,6 +129,59 @@ struct SessionDurationTests {
     }
 }
 
+@Suite("Session — focus score persistence")
+struct SessionFocusCheckTests {
+
+    @Test func onTaskChecksDefaultsToZero() {
+        let s = Session(task: "t", successCriteria: "c")
+        #expect(s.onTaskChecks == 0)
+    }
+
+    @Test func totalChecksDefaultsToZero() {
+        let s = Session(task: "t", successCriteria: "c")
+        #expect(s.totalChecks == 0)
+    }
+
+    @Test func checkCountsPreservedInCodableRoundTrip() throws {
+        let s = Session(task: "Essay", successCriteria: "Submit", onTaskChecks: 42, totalChecks: 50)
+        let data = try JSONEncoder().encode(s)
+        let decoded = try JSONDecoder().decode(Session.self, from: data)
+        #expect(decoded.onTaskChecks == 42)
+        #expect(decoded.totalChecks == 50)
+    }
+
+    @Test func legacySessionWithoutCheckCountsDecodesAsZero() throws {
+        let s = Session(task: "old task", successCriteria: "c", phase: .active)
+        let encoded = try JSONEncoder().encode(s)
+        var dict = try #require((try JSONSerialization.jsonObject(with: encoded)) as? [String: Any])
+        dict.removeValue(forKey: "onTaskChecks")
+        dict.removeValue(forKey: "totalChecks")
+        let stripped = try JSONSerialization.data(withJSONObject: dict)
+        let decoded = try JSONDecoder().decode(Session.self, from: stripped)
+        #expect(decoded.onTaskChecks == 0)
+        #expect(decoded.totalChecks == 0)
+    }
+
+    @Test func partialLegacySessionWithOnlyOnTaskChecksDecodesGracefully() throws {
+        let s = Session(task: "t", successCriteria: "c", onTaskChecks: 10, totalChecks: 15)
+        let encoded = try JSONEncoder().encode(s)
+        var dict = try #require((try JSONSerialization.jsonObject(with: encoded)) as? [String: Any])
+        dict.removeValue(forKey: "totalChecks")
+        let stripped = try JSONSerialization.data(withJSONObject: dict)
+        let decoded = try JSONDecoder().decode(Session.self, from: stripped)
+        #expect(decoded.onTaskChecks == 10)
+        #expect(decoded.totalChecks == 0)
+    }
+
+    @Test func checkCountsAreIndependentlyMutable() {
+        var s = Session(task: "t", successCriteria: "c")
+        s.onTaskChecks = 7
+        s.totalChecks = 10
+        #expect(s.onTaskChecks == 7)
+        #expect(s.totalChecks == 10)
+    }
+}
+
 @Suite("ChatMessage")
 struct ChatMessageTests {
 

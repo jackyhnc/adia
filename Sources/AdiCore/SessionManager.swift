@@ -170,13 +170,27 @@ public final class SessionManager: ObservableObject {
         callout.evaluate(status)
         totalCheckCount += 1
         if status == .onTask { onTaskCheckCount += 1 }
-        // Sync the live calloutCount back to the persisted session so a restored session
-        // can resume tier escalation from the right tier. Only writes when count changed
-        // (i.e. when a callout just fired) — not on every frame.
-        if var s = session, s.calloutCount != callout.calloutCount {
-            s.calloutCount = callout.calloutCount
-            session = s
-            persistence.save(s)
+        // Sync live counters back to the persisted session so a crash/relaunch can resume
+        // tier escalation and show a meaningful focus score for the full session.
+        // calloutCount only changes when a callout fires; check counts change every frame.
+        if var s = session {
+            var dirty = false
+            if s.calloutCount != callout.calloutCount {
+                s.calloutCount = callout.calloutCount
+                dirty = true
+            }
+            if s.onTaskChecks != onTaskCheckCount {
+                s.onTaskChecks = onTaskCheckCount
+                dirty = true
+            }
+            if s.totalChecks != totalCheckCount {
+                s.totalChecks = totalCheckCount
+                dirty = true
+            }
+            if dirty {
+                session = s
+                persistence.save(s)
+            }
         }
     }
 
@@ -372,8 +386,10 @@ public final class SessionManager: ObservableObject {
     /// Wires up the capture pipeline, blocking engine, and on-task detector for a session.
     /// Throws if screen capture cannot be started (e.g. permission denied).
     private func activate(_ s: Session) async throws {
-        onTaskCheckCount = 0
-        totalCheckCount  = 0
+        // Restore persisted check counts so focus score continues from where it left off
+        // after a crash/relaunch. For brand-new sessions both fields are 0 (the default).
+        onTaskCheckCount = s.onTaskChecks
+        totalCheckCount  = s.totalChecks
         callout.reset()                        // clear streak state left over from any prior session
         callout.restore(count: s.calloutCount) // for restored sessions: resume tier escalation
         callout.setTask(s.task)                // extract keyword so callouts reference the task

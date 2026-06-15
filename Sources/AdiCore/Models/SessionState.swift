@@ -86,6 +86,10 @@ public struct Session: Sendable, Identifiable {
     /// Reasoning ("argue for access") conversation outcomes, keyed implicitly by domain.
     /// Lets the AI recall — and call out — repeat asks for the same site within a session.
     public var reasoningHistory: [ReasoningAttempt]
+    /// On-task AI classification frames this session. Persisted so focus score survives a crash/relaunch.
+    public var onTaskChecks: Int
+    /// Total AI classification frames this session. Persisted so focus score survives a crash/relaunch.
+    public var totalChecks: Int
 
     public init(
         id: UUID = UUID(),
@@ -99,7 +103,9 @@ public struct Session: Sendable, Identifiable {
         calloutCount: Int = 0,
         verificationHistory: [VerificationAttempt] = [],
         targetDuration: TimeInterval? = nil,
-        reasoningHistory: [ReasoningAttempt] = []
+        reasoningHistory: [ReasoningAttempt] = [],
+        onTaskChecks: Int = 0,
+        totalChecks: Int = 0
     ) {
         self.id = id
         self.task = task
@@ -113,6 +119,8 @@ public struct Session: Sendable, Identifiable {
         self.verificationHistory = verificationHistory
         self.targetDuration = targetDuration
         self.reasoningHistory = reasoningHistory
+        self.onTaskChecks = onTaskChecks
+        self.totalChecks = totalChecks
     }
 
     public var elapsed: TimeInterval { Date().timeIntervalSince(startTime) }
@@ -205,13 +213,14 @@ public struct Session: Sendable, Identifiable {
     }
 }
 
-// MARK: - Codable (manual for backward-compatible blockedApps decode)
+// MARK: - Codable (manual for backward-compatible field decode)
 
 extension Session: Codable {
     private enum CodingKeys: String, CodingKey {
         case id, task, successCriteria, startTime, phase
         case whitelistedDomains, blockedDomains, blockedApps, calloutCount
         case verificationHistory, targetDuration, reasoningHistory
+        case onTaskChecks, totalChecks
     }
 
     public init(from decoder: Decoder) throws {
@@ -234,6 +243,9 @@ extension Session: Codable {
         targetDuration = try? c.decode(TimeInterval.self, forKey: .targetDuration)
         // Gracefully decode missing key (old sessions pre-reasoning-memory).
         reasoningHistory = (try? c.decode([ReasoningAttempt].self, forKey: .reasoningHistory)) ?? []
+        // Gracefully decode missing key (old sessions pre-focus-score-persistence).
+        onTaskChecks = (try? c.decode(Int.self, forKey: .onTaskChecks)) ?? 0
+        totalChecks  = (try? c.decode(Int.self, forKey: .totalChecks))  ?? 0
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -249,6 +261,8 @@ extension Session: Codable {
         try c.encode(calloutCount,        forKey: .calloutCount)
         try c.encode(verificationHistory, forKey: .verificationHistory)
         try c.encodeIfPresent(targetDuration, forKey: .targetDuration)
-        try c.encode(reasoningHistory, forKey: .reasoningHistory)
+        try c.encode(reasoningHistory,    forKey: .reasoningHistory)
+        try c.encode(onTaskChecks,        forKey: .onTaskChecks)
+        try c.encode(totalChecks,         forKey: .totalChecks)
     }
 }

@@ -340,6 +340,15 @@ private struct ExpandedView: View {
                             }
                         }
                     }
+                    // Focus score — shown after enough frames for a statistically meaningful
+                    // average. Updates live as each classification frame comes in.
+                    if let score = session.focusScore,
+                       session.totalCheckCount >= SessionManager.minChecksForFocusScore {
+                        Text("\(Int(score * 100))%")
+                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .foregroundStyle(focusScoreColor(score))
+                            .transition(.opacity)
+                    }
                     Spacer()
                     StatusBadge(status: session.onTaskStatus)
                 }
@@ -569,6 +578,15 @@ private struct ExpandedView: View {
         if h > 0 { return "\(h)h left" }
         if m > 0 { return "\(m)m left" }
         return "< 1m left"
+    }
+
+    /// Maps a focus score (0…1) to a color: green when mostly on-task, amber when
+    /// borderline, red when consistently off-task. Thresholds mirror the mental model
+    /// users bring — 80%+ is excellent focus, 60–80% is acceptable, below 60% is poor.
+    private func focusScoreColor(_ score: Double) -> Color {
+        if score >= 0.8 { return .green.opacity(0.75) }
+        if score >= 0.6 { return .yellow.opacity(0.75) }
+        return Color(red: 1, green: 0.3, blue: 0.3).opacity(0.75)
     }
 }
 
