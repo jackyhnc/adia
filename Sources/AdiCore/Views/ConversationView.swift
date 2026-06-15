@@ -67,6 +67,13 @@ public struct ConversationView: View {
             // (ExpandedView uses maxHeight: .infinity so this scroll view gets
             // all panel space minus the input row and action buttons).
             .frame(maxHeight: .infinity)
+            .onChange(of: manager.mode) {
+                // Reset the auto-send guard whenever the conversation mode changes so that
+                // reopening the view for a different domain fires the opening message again.
+                // Without this reset the flag persists across mode changes within the same
+                // view lifetime, silently skipping the auto-send for the second domain.
+                didAutoSend = false
+            }
             .onChange(of: manager.messages.count) {
                 withAnimation(.easeOut(duration: 0.15)) {
                     if let last = manager.messages.last {

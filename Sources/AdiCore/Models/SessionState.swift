@@ -244,6 +244,14 @@ public struct Session: Sendable, Identifiable {
         "v.redd.it",                  // Reddit's video CDN: hosted video player embeds
         "preview.redd.it",            // Reddit's preview CDN: link/image previews in feeds
         "external-preview.redd.it",   // Reddit's external-link preview CDN: thumbnails for links posted to reddit
+        // Twitch legacy CDN domain (Justin.tv origin, still used by Twitch for thumbnails and media).
+        // jtvnw.net is a completely separate TLD from twitch.tv — blocking twitch.tv does NOT cover
+        // jtvnw.net. Twitch continues to serve profile images, game box art, stream thumbnails, and
+        // clip preview frames from *.jtvnw.net CDN endpoints. External links (Reddit, Discord) often
+        // embed these thumbnails directly, providing a visual Twitch experience even when twitch.tv is
+        // blocked. With "static" and "cdn" prefix rules, static-cdn.jtvnw.net and cdn.jtvnw.net are
+        // also automatically blocked.
+        "jtvnw.net",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

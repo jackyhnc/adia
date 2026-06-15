@@ -84,6 +84,21 @@ public actor HostsFileManager {
     //          and UI bundle files served from assets.X that can be independently loaded by cached or
     //          service-worker-backed pages even when the main domain is blocked. Also covers
     //          assets.discord.com and similar patterns on other blocked platforms.
+    // "embed"  blocks embed.twitch.tv: the outer embed container page that wraps player.twitch.tv.
+    //          Third-party sites load the embed page at embed.twitch.tv/embed/... and player.twitch.tv
+    //          as a nested iframe. Blocking player. stops the stream itself; blocking embed. stops the
+    //          wrapper page that initialises it. Together they close the full embedded-stream vector.
+    //          "embed" is not a common subdomain for productivity tools so the false-positive risk is low.
+    // "vod"    blocks vod.twitch.tv: Twitch's video-on-demand archive/clip delivery subdomain.
+    //          External links to recorded Twitch content (VODs, highlights, clips published before
+    //          the clips.twitch.tv era) can still resolve through vod.twitch.tv even when the main
+    //          domain and clips. subdomain are both blocked. Low false-positive risk: no common
+    //          productivity tool exposes a vod. subdomain.
+    // "static" blocks static.twitch.tv and similar static-resource subdomains. Twitch's service
+    //          worker pre-caches static assets under static.twitch.tv; a cached Twitch shell can
+    //          continue rendering from static. even when twitch.tv is blocked. Also covers
+    //          static.xx.fbcdn.net patterns generated alongside facebook.com. False-positive risk
+    //          is low: no common productivity tool (Notion, GitHub, Linear) exposes a static. subdomain.
     internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = [
         "m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips",
         "web",    // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
@@ -95,6 +110,9 @@ public actor HostsFileManager {
         "lite",   // stripped-down regional variants (lite.tiktok.com etc.)
         "player", // embeddable player iframes (player.twitch.tv etc.)
         "assets", // static-asset CDN subdomains (assets.twitch.tv etc.)
+        "embed",  // embed wrapper pages (embed.twitch.tv etc.)
+        "vod",    // video-on-demand delivery subdomains (vod.twitch.tv etc.)
+        "static", // pre-cached static resources (static.twitch.tv etc.)
     ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).

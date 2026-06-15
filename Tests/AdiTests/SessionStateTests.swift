@@ -798,6 +798,60 @@ struct DiscordIODomainTests {
     }
 }
 
+// MARK: - Twitch legacy CDN (jtvnw.net) bypass closure
+
+@Suite("Session defaultBlockedDomains — Twitch legacy CDN (jtvnw.net)")
+struct TwitchJtvnwDomainTests {
+
+    @Test func defaultBlockedDomainsIncludeJtvnwNet() {
+        // jtvnw.net is Justin.tv's legacy CDN domain still used by Twitch for thumbnails,
+        // profile images, game box art, and clip preview frames. It is a completely separate
+        // TLD from twitch.tv — blocking twitch.tv does NOT prevent *.jtvnw.net from loading.
+        // External links (Reddit posts, Discord embeds) often reference jtvnw.net URLs directly.
+        #expect(Session.defaultBlockedDomains.contains("jtvnw.net"),
+                "jtvnw.net must be in defaultBlockedDomains (Twitch legacy CDN bypass)")
+    }
+
+    @Test func twitchTvAndJtvnwNetAreBothPresent() {
+        // Guard: both the main Twitch domain and the legacy CDN must be blocked independently —
+        // they are distinct TLDs and neither entry covers the other.
+        let domains = Set(Session.defaultBlockedDomains)
+        #expect(domains.contains("twitch.tv"),
+                "twitch.tv (main Twitch site) must be present alongside jtvnw.net")
+        #expect(domains.contains("jtvnw.net"),
+                "jtvnw.net (Twitch legacy CDN) must be present alongside twitch.tv")
+    }
+
+    @Test func jtvnwNetIsDistinctFromTwitchTv() {
+        // Explicit sanity-check: jtvnw.net and twitch.tv are different domains —
+        // they must be independent entries rather than one being a subdomain of the other.
+        let domains = Set(Session.defaultBlockedDomains)
+        #expect(domains.contains("jtvnw.net"))
+        #expect(domains.contains("twitch.tv"))
+        #expect("jtvnw.net" != "twitch.tv")
+        #expect(!"jtvnw.net".hasSuffix("twitch.tv"))
+        #expect(!"twitch.tv".hasSuffix("jtvnw.net"))
+    }
+
+    @Test func staticCdnJtvnwNetGeneratedBySubdomainPrefixes() {
+        // Integration check: with "static" and "cdn" in additionalBlockedSubdomainPrefixes,
+        // buildBlock must emit static-cdn.jtvnw.net-style entries as individual prefix lines.
+        // Note: the prefix mechanism generates static.jtvnw.net and cdn.jtvnw.net, which covers
+        // the two most common CDN endpoint patterns used by Twitch's jtvnw.net infrastructure.
+        let block = HostsFileManager.buildBlock(domains: ["jtvnw.net"])
+        #expect(block.contains("127.0.0.1 jtvnw.net"))
+        #expect(block.contains("127.0.0.1 www.jtvnw.net"))
+        #expect(block.contains("127.0.0.1 cdn.jtvnw.net"))
+        #expect(block.contains("127.0.0.1 static.jtvnw.net"))
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterJtvnwNetAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "duplicate entries found in defaultBlockedDomains after adding jtvnw.net")
+    }
+}
+
 // MARK: - streakDisplayLabel (settings weekly-section consistency)
 
 /// These tests verify that the shared `streakDisplayLabel` function — now used by

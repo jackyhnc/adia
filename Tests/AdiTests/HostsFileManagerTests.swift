@@ -832,4 +832,146 @@ struct HostsFileManagerTests {
         #expect(block.contains("127.0.0.1 clips.twitch.tv"))
         #expect(block.contains("127.0.0.1 go.twitch.tv"))
     }
+
+    // MARK: - embed. subdomain blocking (Twitch embed-wrapper page bypass prevention)
+
+    @Test func buildBlockIncludesEmbedSubdomainForTwitch() {
+        // embed.twitch.tv is the outer container page that wraps the player.twitch.tv iframe.
+        // Third-party sites initialise Twitch embeds by loading embed.twitch.tv/embed/...; blocking
+        // player. closes the stream iframe, but embed. closes the wrapper page that boots it.
+        let block = HostsFileManager.buildBlock(domains: ["twitch.tv"])
+        #expect(block.contains("127.0.0.1 embed.twitch.tv"),
+                "embed.twitch.tv must be blocked to prevent Twitch embed-wrapper bypass")
+    }
+
+    @Test func embedPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("embed"),
+                "\"embed\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func parseBlockedFiltersEmbedSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 twitch.tv
+        127.0.0.1 www.twitch.tv
+        127.0.0.1 embed.twitch.tv
+        127.0.0.1 player.twitch.tv
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["twitch.tv"])
+        #expect(!domains.contains("embed.twitch.tv"),
+                "parseBlocked must filter out synthetic embed. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithEmbedPrefix() {
+        let input = ["twitch.tv", "youtube.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 embed.twitch.tv"))
+        #expect(block.contains("127.0.0.1 embed.youtube.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after embed. rows are present")
+    }
+
+    @Test func embedPlayerAndAssetsAllGeneratedTogetherForTwitch() {
+        // embed., player., assets., clips., and go. must all be generated for twitch.tv —
+        // each closes an independent bypass route and they must coexist.
+        let block = HostsFileManager.buildBlock(domains: ["twitch.tv"])
+        #expect(block.contains("127.0.0.1 embed.twitch.tv"))
+        #expect(block.contains("127.0.0.1 player.twitch.tv"))
+        #expect(block.contains("127.0.0.1 assets.twitch.tv"))
+        #expect(block.contains("127.0.0.1 clips.twitch.tv"))
+    }
+
+    // MARK: - vod. subdomain blocking (Twitch VOD / video-on-demand bypass prevention)
+
+    @Test func buildBlockIncludesVodSubdomainForTwitch() {
+        // vod.twitch.tv serves Twitch's video-on-demand archive and highlight delivery.
+        // External links (Reddit, Discord) to recorded Twitch content can resolve through
+        // vod.twitch.tv even when twitch.tv and clips.twitch.tv are both blocked.
+        let block = HostsFileManager.buildBlock(domains: ["twitch.tv"])
+        #expect(block.contains("127.0.0.1 vod.twitch.tv"),
+                "vod.twitch.tv must be blocked to prevent VOD bypass")
+    }
+
+    @Test func vodPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("vod"),
+                "\"vod\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func parseBlockedFiltersVodSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 twitch.tv
+        127.0.0.1 www.twitch.tv
+        127.0.0.1 vod.twitch.tv
+        127.0.0.1 clips.twitch.tv
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["twitch.tv"])
+        #expect(!domains.contains("vod.twitch.tv"),
+                "parseBlocked must filter out synthetic vod. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithVodPrefix() {
+        let input = ["twitch.tv", "youtube.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 vod.twitch.tv"))
+        #expect(block.contains("127.0.0.1 vod.youtube.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after vod. rows are present")
+    }
+
+    // MARK: - static. subdomain blocking (Twitch service-worker cache bypass prevention)
+
+    @Test func buildBlockIncludesStaticSubdomainForTwitch() {
+        // static.twitch.tv is Twitch's service-worker pre-cache target for static resources.
+        // A cached Twitch shell can render from static. even when twitch.tv is blocked in /etc/hosts.
+        let block = HostsFileManager.buildBlock(domains: ["twitch.tv"])
+        #expect(block.contains("127.0.0.1 static.twitch.tv"),
+                "static.twitch.tv must be blocked to prevent service-worker cache bypass")
+    }
+
+    @Test func staticPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("static"),
+                "\"static\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func parseBlockedFiltersStaticSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 twitch.tv
+        127.0.0.1 www.twitch.tv
+        127.0.0.1 static.twitch.tv
+        127.0.0.1 assets.twitch.tv
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["twitch.tv"])
+        #expect(!domains.contains("static.twitch.tv"),
+                "parseBlocked must filter out synthetic static. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithStaticPrefix() {
+        let input = ["twitch.tv", "facebook.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 static.twitch.tv"))
+        #expect(block.contains("127.0.0.1 static.facebook.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after static. rows are present")
+    }
+
+    @Test func staticPrefixDoesNotAffectProductivityToolsInRoundTrip() {
+        // Verify "static" doesn't corrupt round-trips for productivity domains like github.com,
+        // notion.so, etc. None of these expose a meaningful static. subdomain used by users.
+        let input = ["notion.so", "github.com", "linear.app"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "static. prefix must not corrupt parseBlocked output for productivity domains")
+    }
 }
