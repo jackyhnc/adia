@@ -252,8 +252,11 @@ private struct BlockingSettingsTab: View {
             } header: {
                 Text("Default Block List")
             } footer: {
-                Text("Disabled domains are skipped in new sessions but not unblocked mid-session.")
-                    .foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Disabled domains are skipped in new sessions but not unblocked mid-session.")
+                    Text("Each blocked domain also automatically blocks its mobile (m.), AMP (amp.), image (i.), music (music.), TV (tv.), and older (old., en.) subdomains — so bypass tricks like m.reddit.com or music.youtube.com are covered without extra configuration.")
+                }
+                .foregroundStyle(.secondary)
             }
 
             Section {

@@ -211,6 +211,15 @@ public struct Session: Sendable, Identifiable {
         "washingtonpost.com",
         "npr.org",
         "apnews.com",
+        // Social platform short-link bypass domains (completely separate DNS names from parent)
+        "redd.it",               // Reddit's own short URL (redd.it/abc123) — bypasses reddit.com block
+        "instagr.am",            // Instagram's short URL — bypasses instagram.com block
+        "fb.me",                 // Facebook's short URL — bypasses facebook.com block
+        // Reddit CDN / media domains — served from completely separate hostnames; blocking
+        // reddit.com alone does NOT prevent access to these image/video CDN endpoints.
+        "i.redd.it",             // Reddit's image CDN: inline images in posts/comments
+        "v.redd.it",             // Reddit's video CDN: hosted video player embeds
+        "preview.redd.it",       // Reddit's preview CDN: link/image previews in feeds
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

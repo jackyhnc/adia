@@ -280,4 +280,44 @@ struct HostsFileManagerTests {
         #expect(!domains.contains("music.youtube.com"))
         #expect(!domains.contains("tv.youtube.com"))
     }
+
+    // MARK: - i. subdomain blocking (image-CDN bypass prevention)
+
+    @Test func buildBlockIncludesImageSubdomain() {
+        // i.reddit.com serves images and media independently of reddit.com.
+        // Without the "i" prefix, blocking reddit.com leaves i.reddit.com open.
+        let block = HostsFileManager.buildBlock(domains: ["reddit.com"])
+        #expect(block.contains("127.0.0.1 i.reddit.com"),
+                "i.reddit.com must be blocked to prevent image-CDN bypass")
+    }
+
+    @Test func imagePrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("i"),
+                "\"i\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func parseBlockedFiltersImageSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 reddit.com
+        127.0.0.1 www.reddit.com
+        127.0.0.1 i.reddit.com
+        127.0.0.1 m.reddit.com
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["reddit.com"])
+        #expect(!domains.contains("i.reddit.com"),
+                "parseBlocked must filter out synthetic i. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithImagePrefix() {
+        let input = ["reddit.com", "instagram.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 i.reddit.com"))
+        #expect(block.contains("127.0.0.1 i.instagram.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after i. rows are present")
+    }
 }

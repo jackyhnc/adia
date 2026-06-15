@@ -51,7 +51,8 @@ public actor HostsFileManager {
     // "amp"   prevents the Google AMP bypass: amp.reddit.com would otherwise bypass the reddit.com block.
     // "music" blocks music.youtube.com (YouTube Music) which lives on a distinct subdomain.
     // "tv"    blocks tv.youtube.com (YouTube TV) — another escape hatch from the youtube.com block.
-    internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = ["m", "mobile", "old", "amp", "en", "music", "tv"]
+    // "i"     blocks image-CDN subdomains: i.reddit.com serves images/media independently of reddit.com.
+    internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = ["m", "mobile", "old", "amp", "en", "music", "tv", "i"]
 
     // Walks lines, discarding everything between the adia markers (inclusive).
     internal nonisolated static func stripped(_ content: String) -> String {

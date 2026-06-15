@@ -408,6 +408,75 @@ struct DefaultBlockedDomainsBypassTests {
     }
 }
 
+@Suite("Session defaultBlockedDomains — social short-links and Reddit CDN bypass")
+struct DefaultBlockedDomainsSocialCDNTests {
+
+    // MARK: - Social platform short-link domains
+
+    @Test func defaultBlockedDomainsIncludeRedditShortLink() {
+        // redd.it is Reddit's own URL shortener (e.g. https://redd.it/abc123).
+        // It resolves through a completely separate DNS name — blocking reddit.com
+        // alone does NOT prevent redd.it links from loading.
+        #expect(Session.defaultBlockedDomains.contains("redd.it"),
+                "redd.it must be blocked: Reddit short-links bypass the reddit.com /etc/hosts entry")
+    }
+
+    @Test func defaultBlockedDomainsIncludeInstagramShortLink() {
+        // instagr.am is Instagram's official short URL service, separate from instagram.com.
+        #expect(Session.defaultBlockedDomains.contains("instagr.am"),
+                "instagr.am must be blocked: Instagram short-links bypass the instagram.com entry")
+    }
+
+    @Test func defaultBlockedDomainsIncludeFacebookShortLink() {
+        // fb.me is Facebook's short URL service, separate from facebook.com.
+        #expect(Session.defaultBlockedDomains.contains("fb.me"),
+                "fb.me must be blocked: Facebook short-links bypass the facebook.com entry")
+    }
+
+    @Test func socialShortLinksBothPresentWithParents() {
+        // Guard: short-link domains must be listed ALONGSIDE their parent, not instead of it.
+        let domains = Set(Session.defaultBlockedDomains)
+        #expect(domains.contains("redd.it")     && domains.contains("reddit.com"),
+                "both redd.it and reddit.com must be present as independent entries")
+        #expect(domains.contains("instagr.am")  && domains.contains("instagram.com"),
+                "both instagr.am and instagram.com must be present as independent entries")
+        #expect(domains.contains("fb.me")       && domains.contains("facebook.com"),
+                "both fb.me and facebook.com must be present as independent entries")
+    }
+
+    // MARK: - Reddit CDN domains (completely separate hostnames from reddit.com)
+
+    @Test func defaultBlockedDomainsIncludeRedditImageCDN() {
+        // i.redd.it hosts all inline images uploaded to Reddit posts and comments.
+        // It is a completely separate hostname — /etc/hosts entries for reddit.com
+        // and even i.reddit.com do NOT cover i.redd.it (different TLD: .it vs .com).
+        #expect(Session.defaultBlockedDomains.contains("i.redd.it"),
+                "i.redd.it must be blocked: Reddit image CDN is a separate hostname from reddit.com")
+    }
+
+    @Test func defaultBlockedDomainsIncludeRedditVideoCDN() {
+        // v.redd.it hosts Reddit's native video player. Same reasoning as i.redd.it.
+        #expect(Session.defaultBlockedDomains.contains("v.redd.it"),
+                "v.redd.it must be blocked: Reddit video CDN is a separate hostname from reddit.com")
+    }
+
+    @Test func defaultBlockedDomainsIncludeRedditPreviewCDN() {
+        // preview.redd.it serves link preview thumbnails and inline image previews in feeds.
+        #expect(Session.defaultBlockedDomains.contains("preview.redd.it"),
+                "preview.redd.it must be blocked: Reddit preview CDN is separate from reddit.com")
+    }
+
+    @Test func redditCDNDomainsAreSeparateFromRedditCom() {
+        // Sanity-check that these are explicit entries, not just side-effects of m./i. prefix rules.
+        let domains = Set(Session.defaultBlockedDomains)
+        #expect(domains.contains("reddit.com"))
+        // The three CDN domains have the .redd.it TLD — completely different from reddit.com.
+        #expect(domains.contains("i.redd.it"))
+        #expect(domains.contains("v.redd.it"))
+        #expect(domains.contains("preview.redd.it"))
+    }
+}
+
 @Suite("Session defaultBlockedApps")
 struct DefaultBlockedAppsTests {
 
