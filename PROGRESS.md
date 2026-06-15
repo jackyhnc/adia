@@ -1,5 +1,83 @@
 # Adia — Build Progress
 
+## Run 129 — 2026-06-15
+
+### Shipped
+
+**feat: embed/vod/static prefixes + jtvnw.net domain + ConversationView mode-change reset (+29 tests)**
+
+#### `HostsFileManager.swift` — 3 new entries in `additionalBlockedSubdomainPrefixes`
+
+`additionalBlockedSubdomainPrefixes` is now **22 entries**:
+`["m","mobile","old","amp","en","music","tv","i","api","clips","web","app","go","cdn","store","media","lite","player","assets","embed","vod","static"]`
+
+- **`"embed"`** — Closes the `embed.twitch.tv` wrapper-page bypass. Third-party sites boot Twitch
+  streams by loading `embed.twitch.tv/embed/...` as an outer container; `player.twitch.tv` is the inner
+  iframe. Blocking `player.` stops the stream; blocking `embed.` stops the page that initialises it.
+  Together they fully close the embedded-stream vector.
+
+- **`"vod"`** — Closes the `vod.twitch.tv` video-on-demand bypass. External links (Reddit, Discord)
+  to recorded Twitch content (VODs, highlights from the pre-clips era) resolve through `vod.twitch.tv`
+  independently of `twitch.tv` and `clips.twitch.tv`.
+
+- **`"static"`** — Closes the `static.twitch.tv` service-worker cache bypass. Twitch's service worker
+  pre-caches UI resources under `static.twitch.tv`; a cached shell can continue rendering even when
+  `twitch.tv` is blocked in `/etc/hosts`. Also covers `static.facebook.com` and similar patterns.
+
+#### `SessionState.swift` — 1 new entry in `defaultBlockedDomains`
+
+- **`jtvnw.net`** — Justin.tv's legacy CDN domain still actively used by Twitch for profile images,
+  game box art, stream thumbnails, and clip preview frames. Completely separate TLD from `twitch.tv`.
+  External links on Reddit and Discord frequently embed `jtvnw.net` thumbnail URLs directly. The
+  `"static"` and `"cdn"` prefix rules auto-generate `static.jtvnw.net` and `cdn.jtvnw.net` alongside it.
+
+#### `ConversationView.swift` — `didAutoSend` reset on mode change
+
+Added `.onChange(of: manager.mode)` that resets `didAutoSend = false` whenever the conversation mode
+changes. Previously the flag persisted across mode changes within the same view lifetime, silently
+skipping the auto-send opening message when the view was reused for a second blocked domain in the
+same session.
+
+#### Tests — 29 new `@Test` cases
+
+**`HostsFileManagerTests.swift`** (14 new, now **100 total**):
+- **embed. prefix** (5): `buildBlockIncludesEmbedSubdomainForTwitch`, `embedPrefixIsInAdditionalPrefixesList`,
+  `parseBlockedFiltersEmbedSubdomainVariant`, `buildThenParseRoundTripWithEmbedPrefix`,
+  `embedPlayerAndAssetsAllGeneratedTogetherForTwitch`
+- **vod. prefix** (4): `buildBlockIncludesVodSubdomainForTwitch`, `vodPrefixIsInAdditionalPrefixesList`,
+  `parseBlockedFiltersVodSubdomainVariant`, `buildThenParseRoundTripWithVodPrefix`
+- **static. prefix** (5): `buildBlockIncludesStaticSubdomainForTwitch`, `staticPrefixIsInAdditionalPrefixesList`,
+  `parseBlockedFiltersStaticSubdomainVariant`, `buildThenParseRoundTripWithStaticPrefix`,
+  `staticPrefixDoesNotAffectProductivityToolsInRoundTrip`
+
+**`SessionStateTests.swift`** (5 new in `"Twitch legacy CDN (jtvnw.net)"`, now **101 total**):
+- `defaultBlockedDomainsIncludeJtvnwNet`, `twitchTvAndJtvnwNetAreBothPresent`,
+  `jtvnwNetIsDistinctFromTwitchTv`, `staticCdnJtvnwNetGeneratedBySubdomainPrefixes`,
+  `defaultBlockedDomainsNoDuplicatesAfterJtvnwNetAddition`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **`"image"` prefix**: `image.tmdb.org`, `images.google.com`, `image.fandom.com` — image CDN subdomains
+    on entertainment/media sites. Low priority since those root domains are already blocked, but direct
+    image CDN links embedded in other pages could bypass host blocking.
+  - **`"auth"` prefix**: `auth.twitch.tv`, `auth.discord.com` — authentication subdomains; a user with
+    a valid session cookie could potentially access some API functionality through the auth subdomain.
+    Medium risk, medium false-positive risk (auth. is used by some productivity OAuth flows).
+  - **`ConversationView` mode-change reset completeness**: The `didAutoSend` flag now resets on mode
+    change, but `inputText` is not cleared. A user who typed something in the input field before the
+    mode changed would see the stale draft on re-open. Low priority — rare edge case.
+  - **`jtvnw.net` subdomain coverage**: `static-cdn.jtvnw.net` is Twitch's most-used CDN endpoint
+    pattern (literally `static-cdn` as a subdomain, not `static.cdn`). The current prefix mechanism
+    generates `static.jtvnw.net` and `cdn.jtvnw.net` as separate entries; `static-cdn.jtvnw.net`
+    would require an explicit additional entry rather than a prefix. Could add it directly to
+    `defaultBlockedDomains` as a literal string.
+
+---
+
 ## Run 128 — 2026-06-15
 
 ### Shipped
