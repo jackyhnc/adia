@@ -169,6 +169,13 @@ public final class CalloutManager {
         if word("cv") || lower.contains("résumé") || lower.contains("resumé") {
             return "resume"
         }
+        // "application" check runs after resume/cv so "apply to update my CV" maps to resume.
+        // word("apply") excluded — too broad ("apply a fix to the code" etc.) and code/design run first anyway.
+        if word("application") || word("applications") || lower.contains("cover letter")
+            || word("applying") || lower.contains("job application")
+            || lower.contains("internship application") || lower.contains("college application") {
+            return "application"
+        }
         if word("blog") || word("newsletter") {
             return "writing"
         }
@@ -428,6 +435,28 @@ public final class CalloutManager {
                 return [
                     "CLOSE THIS. Finish your résumé.",
                     "your résumé deadline isn't moving.",
+                ]
+            }
+        }
+        // "application" — job, internship, college applications, cover letters.
+        // Avoid "this isn't your application" — sounds like a software app, not a form.
+        if keyword == "application" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your application.",
+                    "that application isn't going to submit itself.",
+                    "close this and keep writing.",
+                ]
+            case 2:
+                return [
+                    "stop putting off your application.",
+                    "you need to finish your application, not browse.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Submit the application.",
+                    "your application deadline isn't moving.",
                 ]
             }
         }

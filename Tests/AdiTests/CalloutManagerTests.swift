@@ -1159,4 +1159,86 @@ struct CalloutManagerTests {
                     "tier 3 résumé messages must not use passive 'open your' phrasing")
         }
     }
+
+    // MARK: - Keyword additions: application (job/internship/college applications, cover letters)
+
+    @Test func extractTaskKeywordFromJobApplication() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my job application for Google") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "fill out the internship application") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my college application") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "submit my applications by tonight") == "application")
+    }
+
+    @Test func extractTaskKeywordFromCoverLetter() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a cover letter for Amazon") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the cover letter and send it") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "draft my cover letter") == "application")
+    }
+
+    @Test func extractTaskKeywordFromApplying() {
+        #expect(CalloutManager.extractTaskKeyword(from: "applying to summer internships") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "I am applying to grad school tonight") == "application")
+    }
+
+    @Test func extractTaskKeywordApplicationDoesNotMatchSoftwareApp() {
+        // "code" check runs before "application" — explicit coding tasks map to code, not application.
+        #expect(CalloutManager.extractTaskKeyword(from: "code the iOS application") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish coding my web application") == "code")
+        // "build my web application" without a coding keyword maps to "application" — acceptable.
+        #expect(CalloutManager.extractTaskKeyword(from: "build my web application") == "application")
+    }
+
+    @Test func extractTaskKeywordApplicationDoesNotMatchDesignApp() {
+        // "design" check runs before "application" — designing an app maps to design.
+        #expect(CalloutManager.extractTaskKeyword(from: "design the application UI in Figma") == "design")
+    }
+
+    @Test func extractTaskKeywordResumeApplicationPreference() {
+        // "resume" check runs before "application" — "update my résumé to apply" maps to resume.
+        #expect(CalloutManager.extractTaskKeyword(from: "update my résumé before applying") == "resume")
+    }
+
+    @Test func taskAwareCalloutsApplicationContainsKeyword() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "application", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) application messages must not be empty")
+                // Messages should reference "application" or "submit" or "writing" (cover letter context).
+                let appWords = ["application", "Application", "submit", "Submit", "writing", "Writing"]
+                #expect(msgs.allSatisfy { msg in appWords.contains { msg.contains($0) } },
+                        "tier \(tier) application messages must reference application or submission")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsApplicationTier3AvoidsSoftwareAppPhrasing() async {
+        // Must not use "open your application" — sounds like launching a software app.
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "application", tier: 3)
+            #expect(tier3.allSatisfy { !$0.contains("open your application") },
+                    "tier 3 application messages must not use 'open your application' phrasing")
+        }
+    }
+
+    @Test func taskAwareCalloutsApplicationTier3UsesActionPhrasing() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "application", tier: 3)
+            let actionWords = ["Submit", "submit", "CLOSE", "finish", "Finish", "deadline"]
+            #expect(tier3.contains { msg in actionWords.contains { msg.contains($0) } },
+                    "tier 3 application messages must use action-oriented phrasing")
+        }
+    }
+
+    @Test func taskAwareCalloutsApplicationTier1AvoidsGenericIsntYourPhrasing() async {
+        // "this isn't your application" sounds like a software app — must not appear.
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier1 = manager.taskAwareCallouts(keyword: "application", tier: 1)
+            #expect(tier1.allSatisfy { !$0.contains("this isn't your application") },
+                    "tier 1 application messages must avoid ambiguous software-app phrasing")
+        }
+    }
 }
