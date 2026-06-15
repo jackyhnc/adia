@@ -1,5 +1,88 @@
 # Adia — Build Progress
 
+## Run 133 — 2026-06-15
+
+### Shipped
+
+**feat: gaming. subdomain prefix + art/design portfolio domains (+20 tests)**
+
+#### `HostsFileManager.swift` — `"gaming"` subdomain prefix (now 26 entries)
+
+- **`"gaming"`** added to `additionalBlockedSubdomainPrefixes`. Covers:
+  - `gaming.youtube.com` — the legacy YouTube Gaming hub. This is a directly routable
+    subdomain that survived the YouTube Gaming product merger and remains accessible as a
+    gaming-discovery entry point even when `youtube.com` itself is blocked in the browser.
+    The `"live"` prefix (added in Run 132) covers `live.youtube.com` for streams; `"gaming"`
+    closes the gaming-hub discovery page path independently.
+  - `gaming.amazon.com` — Amazon Prime Gaming portal where users claim free games and browse
+    Twitch-integrated offers. Navigable directly at `gaming.amazon.com` even when `amazon.com`
+    is blocked.
+  - Any other `gaming.X` on blocked domains in the default or user-configured list.
+  - False-positive risk is low: no common productivity tool (GitHub, Notion, Linear, Figma)
+    exposes a `gaming.` subdomain as a primary navigation target.
+
+#### `SessionState.swift` — 4 new entries in `defaultBlockedDomains`
+
+Art portfolio / creative procrastination platforms — a category of time sinks that design
+students and knowledge workers visit under the guise of "finding reference" or "studying
+professional work":
+
+- **`deviantart.com`** — longstanding art community with a high-engagement gallery browsing
+  feed. "Looking for reference" is the most common self-deception for art/design students.
+  Direct navigation opens the discover/browse feed; no task-completion required.
+- **`artstation.com`** — professional concept art and game art portfolio platform. The
+  "Trending", "New", and category pages function identically to social media discovery feeds.
+  Especially distracting for game-development, animation, and design students.
+- **`behance.net`** — Adobe's creative portfolio and discovery platform. Curated gallery
+  browse ("Moodboards", featured projects, category pages) is a productive-feeling but
+  rarely task-relevant browsing trap for graphic design and UX students.
+- **`dribbble.com`** — UI/UX and graphic design community. Infinitely-scrollable "shots"
+  feed (polished design screenshots) is engineered for rapid visual consumption. Extremely
+  common trap for CS and design students who rationalise it as professional development.
+
+#### Tests — 20 new `@Test` cases
+
+**`SessionStateTests.swift`** (6 new in `"Session defaultBlockedDomains — art portfolio and design procrastination platforms"`):
+- `defaultBlockedDomainsIncludeDeviantArt`
+- `defaultBlockedDomainsIncludeArtStation`
+- `defaultBlockedDomainsIncludeBehance`
+- `defaultBlockedDomainsIncludeDribbble`
+- `artPortfolioDomainsAllPresentTogether` — checks all 4 in one pass
+- `defaultBlockedDomainsNoDuplicatesAfterArtPortfolioAdditions` — duplicate guard
+
+**`HostsFileManagerTests.swift`** (7 new in `"HostsFileManager — gaming. subdomain prefix (gaming-hub page subdomains)"`):
+- `gamingPrefixIsInAdditionalPrefixesList`
+- `buildBlockIncludesGamingSubdomainForYouTube` — `gaming.youtube.com` in block
+- `buildBlockIncludesGamingSubdomainForAmazon` — `gaming.amazon.com` in block
+- `parseBlockedFiltersGamingSubdomainVariant` — `gaming.` entries stripped from `parseBlocked`
+- `buildThenParseRoundTripWithGamingPrefix` — round-trip yields only bare canonical domains
+- `gamingPrefixDoesNotAffectProductivityToolsInRoundTrip` — no collateral for non-blocked domains
+- `noDuplicatesInAdditionalPrefixesListAfterGamingAddition` — prefix-list duplicate guard
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **`nitter.net` / social media proxy frontends**: `nitter.net` (Twitter proxy),
+    `proxitok.pabloferreiro.es` (TikTok proxy), and similar privacy-frontend proxies serve
+    blocked platforms' content under different domains. This is a whack-a-mole problem —
+    the proxy ecosystem is large and dynamic — but blocking the most well-known instances
+    (nitter.net, bibliogram for Instagram) would raise the bar for technically savvy users.
+  - **`vimeo.com`**: Professional video hosting but also a significant browsing distraction.
+    Vimeo's "Staff Picks" and discovery feed are high-quality video rabbit holes that users
+    visit to "find video examples" for presentations or class projects.
+  - **`twitch.tv` CDN shard variants**: `static-cdn-*.jtvnw.net` (e.g.,
+    `static-cdn-ttv.jtvnw.net`) use numeric/named shards — not solvable with `/etc/hosts`
+    wildcards without an explicit list of shard names. Low priority.
+  - **`500px.com`**: Photography community with an infinitely scrollable feed — same
+    pattern as DeviantArt/ArtStation but for photography students and photographers.
+  - **`unsplash.com`**: Free stock photo platform with a high-engagement discover feed;
+    "finding images for my project" is a common rationalization for extended browsing.
+
+---
+
 ## Run 132 — 2026-06-15
 
 ### Shipped
