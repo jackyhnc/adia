@@ -1,5 +1,76 @@
 # Adia — Build Progress
 
+## Run 124 — 2026-06-15
+
+### Shipped
+
+**arstechnica/external-preview.redd.it blocks + api./clips. subdomain prefixes (+16 tests)**
+
+#### `SessionState.swift` — 2 new entries in `defaultBlockedDomains`
+
+- **`arstechnica.com`** (tech-news section, alongside theverge/techcrunch/wired):
+  Ars Technica is in-depth tech journalism with the same "productive-feeling procrastination" 
+  dynamic as the other three — users rationalise it as research, but during a writing or 
+  coding session it almost never is. Now the tech-news category is complete: HN, theverge, 
+  techcrunch, wired, arstechnica (5 entries).
+
+- **`external-preview.redd.it`** (Reddit CDN section):
+  Serves thumbnails for external links submitted to Reddit. Completely separate hostname from
+  `reddit.com`, `preview.redd.it`, and `i.redd.it` — blocking any one of those three left
+  `external-preview.redd.it` accessible. The explicit Reddit CDN block is now 4 entries:
+  `i.redd.it`, `v.redd.it`, `preview.redd.it`, `external-preview.redd.it`.
+
+#### `HostsFileManager.swift` — 2 new entries in `additionalBlockedSubdomainPrefixes`
+
+- **`"api"`** — generates `api.<domain>` entries alongside every bare domain. Closes a bypass
+  where third-party Twitter/social clients POST to `api.twitter.com` even when `twitter.com`
+  is blocked in the browser. The entry also covers `api.reddit.com` etc.
+
+- **`"clips"`** — generates `clips.<domain>` entries, most importantly `clips.twitch.tv`.
+  Twitch clip share URLs (clips.twitch.tv/...) are widely embedded in Discord, Twitter, and
+  Reddit; a user can watch Twitch content via a clip link without ever navigating to `twitch.tv`.
+  `additionalBlockedSubdomainPrefixes` is now 10 entries:
+  `["m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips"]`.
+
+#### Tests — 16 new `@Test` cases
+
+**`SessionStateTests.swift`** (5 new in `"Session defaultBlockedDomains — arstechnica and external Reddit CDN"`):
+- `defaultBlockedDomainsIncludeArsTechnica`
+- `arsTechnicaIsInTechNewsCategoryAlongsideVergeAndTechCrunch` — all 4 tech-news sites present
+- `defaultBlockedDomainsIncludeExternalPreviewReddIt`
+- `allRedditCDNDomainsAreExplicitEntries` — all 4 redd.it CDN domains present
+- `externalPreviewAndPreviewAreSeparateEntries` — distinct hostnames, not one subsuming the other
+
+**`HostsFileManagerTests.swift`** (8 new — `api.` and `clips.` each get 4 tests):
+- `buildBlockIncludesApiSubdomain` / `apiPrefixIsInAdditionalPrefixesList`
+- `parseBlockedFiltersApiSubdomainVariant` / `buildThenParseRoundTripWithApiPrefix`
+- `buildBlockIncludesClipsSubdomain` / `clipsPrefixIsInAdditionalPrefixesList`
+- `parseBlockedFiltersClipsSubdomainVariant` / `buildThenParseRoundTripWithClipsPrefix`
+
+**`SessionManagerTests.swift`** (3 new in existing "Duration timer expiry" section):
+- `restoredSessionElapsedBeyondTargetHasZeroRemainingTime` — pure-math property: elapsed > target → remaining == 0
+- `restoredSessionElapsedExactlyAtTargetHasZeroRemainingTime` — edge case: elapsed == target → remaining ≤ 1s jitter
+- `timerExpiredRestorePathProducesLiveRearmTask` — after the immediate-fire path, timerExpired == true and rearmTask != nil
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - `"www2"` or `"secure"` as additional subdomain prefix for edge cases (e.g. secure.checkout.amazon.com
+    could be accessed without hitting the www. or bare domain block — though amazon.com + www.amazon.com
+    already cover most paths; evaluate whether this is a real bypass vector first).
+  - Look at the Twitch Mac Catalyst bundle ID: `tv.twitch.twitch-client` is the existing entry. The
+    Twitch iOS app uses `tv.twitch` as its bundle ID; the Catalyst port may use a different ID.
+    Research: open Activity Monitor on a Mac with Twitch installed and check the reported bundle ID.
+  - Consider adding `"go"` prefix for `go.redirecting-domain.com` style link tracking bypasses,
+    e.g. `go.twitch.tv` (Twitch's tracking redirect domain, distinct from clips.twitch.tv).
+  - `noDuplicatesInAdditionalPrefixesList` guard test: verify that `additionalBlockedSubdomainPrefixes`
+    contains no duplicates — protects against /etc/hosts bloat if a prefix is accidentally added twice.
+
+---
+
 ## Run 123 — 2026-06-15
 
 ### Shipped
