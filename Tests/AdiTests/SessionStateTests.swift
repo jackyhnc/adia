@@ -910,3 +910,69 @@ struct SettingsViewStreakDisplayTests {
         #expect(!label.contains("best:"))
     }
 }
+
+// MARK: - New blocked platforms (streaming / video / image hosts)
+
+@Suite("Session defaultBlockedDomains — new streaming, video, and image platforms")
+struct NewPlatformBlocklistTests {
+
+    @Test func defaultBlockedDomainsIncludeKick() {
+        #expect(Session.defaultBlockedDomains.contains("kick.com"),
+                "kick.com (major Twitch competitor) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeTrovo() {
+        #expect(Session.defaultBlockedDomains.contains("trovo.live"),
+                "trovo.live (Tencent live-streaming platform) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeRumble() {
+        #expect(Session.defaultBlockedDomains.contains("rumble.com"),
+                "rumble.com (alternative video platform) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeDailymotion() {
+        #expect(Session.defaultBlockedDomains.contains("dailymotion.com"),
+                "dailymotion.com (video platform) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeBilibili() {
+        #expect(Session.defaultBlockedDomains.contains("bilibili.com"),
+                "bilibili.com (video/anime platform) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeOdysee() {
+        #expect(Session.defaultBlockedDomains.contains("odysee.com"),
+                "odysee.com (decentralized video platform) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeImgur() {
+        #expect(Session.defaultBlockedDomains.contains("imgur.com"),
+                "imgur.com (image host and procrastination feed) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeGiphy() {
+        #expect(Session.defaultBlockedDomains.contains("giphy.com"),
+                "giphy.com (GIF discovery platform) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeTenor() {
+        #expect(Session.defaultBlockedDomains.contains("tenor.com"),
+                "tenor.com (Google GIF platform) must be blocked by default")
+    }
+
+    @Test func newStreamingPlatformsAllPresentTogether() {
+        let domains = Session.defaultBlockedDomains
+        for expected in ["kick.com", "trovo.live", "rumble.com", "dailymotion.com",
+                         "bilibili.com", "odysee.com", "imgur.com", "giphy.com", "tenor.com"] {
+            #expect(domains.contains(expected),
+                    "\(expected) must be present in defaultBlockedDomains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterNewPlatformAdditions() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "duplicate entries found in defaultBlockedDomains after adding new platforms")
+    }
+}

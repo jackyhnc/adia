@@ -1,5 +1,98 @@
 # Adia — Build Progress
 
+## Run 132 — 2026-06-15
+
+### Shipped
+
+**feat: new streaming/video/image platforms + "live" subdomain prefix (+18 tests)**
+
+#### `SessionState.swift` — 9 new entries in `defaultBlockedDomains`
+
+**Live-streaming platforms:**
+- **`kick.com`** — Major Twitch competitor that has overtaken Twitch for many audiences (gaming,
+  IRL streaming). Users commonly pivot to Kick when twitch.tv is blocked. Now covered alongside
+  `trovo.live` (Tencent's streaming platform, separate TLD from any existing entry).
+- **`trovo.live`** — Tencent's live-streaming platform (direct Twitch competitor globally and in
+  Asia). Has a `.live` TLD so it's not covered by any existing `*.tv` or `*.com` block rule.
+
+**Alternative video platforms:**
+- **`rumble.com`** — Video platform for news, commentary, and entertainment; users pivot to it
+  when youtube.com is blocked mid-session.
+- **`dailymotion.com`** — Long-form video platform; one of the oldest YouTube alternatives and
+  a common landing page for embedded video content from news/entertainment sites.
+- **`bilibili.com`** — Dominant video/anime/streaming platform in China and popular globally for
+  anime, gaming content, and long-form video essays.
+- **`odysee.com`** — Decentralized video platform (formerly LBRY); hosts news, gaming, and
+  entertainment; commonly linked from Reddit/Discord as a YouTube alternative.
+
+**Image-hosting / GIF platforms:**
+- **`imgur.com`** — The primary image host used throughout Reddit, Discord, and social media.
+  Even with reddit.com blocked, users navigate directly to imgur.com to browse meme galleries
+  and the Imgur discovery feed. The "cdn" and "i" prefix rules auto-generate `cdn.imgur.com`
+  and `i.imgur.com` alongside this entry.
+- **`giphy.com`** — GIF discovery platform; heavily linked from Slack, Discord, Twitter.
+  Direct navigation leads to a browse/explore mode that is its own time sink.
+- **`tenor.com`** — Google-owned GIF platform (primary GIF source in many messaging apps
+  including Android messages). Direct navigation to tenor.com opens a browse/search feed.
+
+#### `HostsFileManager.swift` — `"live"` subdomain prefix (now 25 entries)
+
+- **`"live"`** added to `additionalBlockedSubdomainPrefixes`. Covers:
+  - `live.youtube.com` — YouTube Live is routable as a distinct subdomain (separate from
+    `youtube.com`); users can navigate directly to it to watch live streams (sports, gaming,
+    concerts) while `youtube.com` appears to be blocked in the browser.
+  - `live.bilibili.com` — Bilibili's live-streaming section is served from a distinct subdomain.
+  - `live.kick.com` — Kick's live-stream entry point subdomain.
+  - Any other `live.X` on blocked domains in the default or user-configured list.
+  - False-positive risk is low: no major productivity tool (GitHub, Notion, Linear, Figma)
+    exposes a `live.` subdomain as a primary URL that users navigate to directly.
+
+#### Tests — 18 new `@Test` cases
+
+**`SessionStateTests.swift`** (11 new in `"Session defaultBlockedDomains — new streaming, video, and image platforms"`):
+- `defaultBlockedDomainsIncludeKick`
+- `defaultBlockedDomainsIncludeTrovo`
+- `defaultBlockedDomainsIncludeRumble`
+- `defaultBlockedDomainsIncludeDailymotion`
+- `defaultBlockedDomainsIncludeBilibili`
+- `defaultBlockedDomainsIncludeOdysee`
+- `defaultBlockedDomainsIncludeImgur`
+- `defaultBlockedDomainsIncludeGiphy`
+- `defaultBlockedDomainsIncludeTenor`
+- `newStreamingPlatformsAllPresentTogether` — checks all 9 in one pass
+- `defaultBlockedDomainsNoDuplicatesAfterNewPlatformAdditions` — duplicate guard re-run
+
+**`HostsFileManagerTests.swift`** (7 new in `"HostsFileManager — live. subdomain prefix"`):
+- `livePrefixIsInAdditionalPrefixesList`
+- `buildBlockIncludesLiveSubdomainForYouTube` — `live.youtube.com` in generated block
+- `buildBlockIncludesLiveSubdomainForBilibili` — `live.bilibili.com` in generated block
+- `buildBlockIncludesLiveSubdomainForKick` — `live.kick.com` in generated block
+- `parseBlockedFiltersLiveSubdomainVariant` — `live.` entries stripped from `parseBlocked` output
+- `buildThenParseRoundTripWithLivePrefix` — round-trip yields only bare canonical domains
+- `noDuplicatesInAdditionalPrefixesListAfterLiveAddition` — prefix-list duplicate guard
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **`"gaming"` subdomain prefix**: `gaming.youtube.com` is a distinct YouTube subdomain (legacy
+    YouTube Gaming URL); the `"live"` prefix now covers `live.youtube.com`, but `gaming.youtube.com`
+    is still open. False-positive risk: `gaming.github.com` does not exist; `gaming.` is not
+    a standard subdomain for productivity tools.
+  - **`deviantart.com` / `artstation.com`**: Popular art-portfolio platforms that students and
+    designers visit for "reference" — same productive-feeling procrastination pattern as Medium
+    or TechCrunch. Low urgency but genuine time sinks for design/art students.
+  - **`nitter.net` / `proxitok.pabloferreiro.es`**: Privacy-front-end proxies for Twitter and
+    TikTok. Technically savvy users may use these to access blocked platforms' content via a
+    proxy that has a different domain. Blocking specific known proxies is a whack-a-mole
+    problem; the broader pattern is not solvable with /etc/hosts.
+  - **`static-cdn.jtvnw.net` shard variants**: `static-cdn-*.jtvnw.net` numeric/named shards
+    are not solvable with /etc/hosts wildcards; would need an explicit list of known shard names.
+
+---
+
 ## Run 131 — 2026-06-15
 
 ### Shipped

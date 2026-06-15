@@ -1087,3 +1087,55 @@ struct ImagesPrefixTests {
                 "auth. prefix must not corrupt parseBlocked output for productivity domains")
     }
 }
+
+// MARK: - live. subdomain prefix
+
+@Suite("HostsFileManager — live. subdomain prefix (live-stream page subdomains)")
+struct LiveSubdomainPrefixTests {
+
+    @Test func livePrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("live"),
+                "\"live\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func buildBlockIncludesLiveSubdomainForYouTube() {
+        let block = HostsFileManager.buildBlock(domains: ["youtube.com"])
+        #expect(block.contains("127.0.0.1 live.youtube.com"),
+                "live.youtube.com (YouTube Live page) must appear in the block")
+    }
+
+    @Test func buildBlockIncludesLiveSubdomainForBilibili() {
+        let block = HostsFileManager.buildBlock(domains: ["bilibili.com"])
+        #expect(block.contains("127.0.0.1 live.bilibili.com"),
+                "live.bilibili.com (Bilibili live streaming) must appear in the block")
+    }
+
+    @Test func buildBlockIncludesLiveSubdomainForKick() {
+        let block = HostsFileManager.buildBlock(domains: ["kick.com"])
+        #expect(block.contains("127.0.0.1 live.kick.com"),
+                "live.kick.com must appear in the block alongside kick.com")
+    }
+
+    @Test func parseBlockedFiltersLiveSubdomainVariant() {
+        // live.X is a synthetic prefix entry — parseBlocked must strip it and return
+        // only the bare canonical domain so callers don't see doubled entries.
+        let block = HostsFileManager.buildBlock(domains: ["youtube.com"])
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(parsed == ["youtube.com"],
+                "parseBlocked must return only bare canonical domains when live. rows are present")
+    }
+
+    @Test func buildThenParseRoundTripWithLivePrefix() {
+        let input = ["youtube.com", "bilibili.com", "kick.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "build → parse round-trip must be lossless with live. prefix present")
+    }
+
+    @Test func noDuplicatesInAdditionalPrefixesListAfterLiveAddition() {
+        let prefixes = HostsFileManager.additionalBlockedSubdomainPrefixes
+        #expect(Set(prefixes).count == prefixes.count,
+                "no duplicate entries in additionalBlockedSubdomainPrefixes after live. was added")
+    }
+}
