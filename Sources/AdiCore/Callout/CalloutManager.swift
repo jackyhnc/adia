@@ -515,6 +515,50 @@ public final class CalloutManager {
                 ]
             }
         }
+        // "design" — "CLOSE THIS. open your design." sounds like opening a Finder file.
+        // Use Figma/tool-oriented phrasing that makes the next action obvious.
+        if keyword == "design" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your design.",
+                    "that design isn't going to finish itself.",
+                    "close this and keep designing.",
+                ]
+            case 2:
+                return [
+                    "stop avoiding your design.",
+                    "you need to be designing, not browsing.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Go finish the design.",
+                    "your design won't complete itself.",
+                ]
+            }
+        }
+        // "report" — "CLOSE THIS. open your report." implies opening a file, not writing one.
+        // Use writing-action phrasing to make the expected behaviour obvious.
+        if keyword == "report" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your report.",
+                    "that report isn't going to write itself.",
+                    "this isn't your report.",
+                ]
+            case 2:
+                return [
+                    "stop avoiding your report.",
+                    "you need to be writing your report, not browsing.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Go finish the report.",
+                    "your report deadline isn't moving.",
+                ]
+            }
+        }
         switch tier {
         case 1:
             return [

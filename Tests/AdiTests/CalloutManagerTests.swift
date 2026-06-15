@@ -574,6 +574,24 @@ struct CalloutManagerTests {
         }
     }
 
+    // "design" now has a dedicated handler — tier 3 must not produce "open your design".
+    @Test func taskAwareCalloutsDesignTier3AvoidsOpenPhrase() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "design", tier: 3)
+            #expect(tier3.allSatisfy { !$0.contains("open your design") },
+                    "tier 3 design must not use 'open your design' (sounds like opening a file)")
+        }
+    }
+
+    @Test func taskAwareCalloutsDesignTier3UsesActionPhrasing() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "design", tier: 3)
+            let actionWords = ["finish", "go", "complete", "keep", "back"]
+            #expect(tier3.contains { msg in actionWords.contains { msg.lowercased().contains($0) } },
+                    "tier 3 design must contain at least one action-oriented message")
+        }
+    }
+
     // MARK: - Knowledge-worker keyword additions: email
 
     @Test func extractTaskKeywordFromEmail() {
@@ -672,8 +690,6 @@ struct CalloutManagerTests {
     }
 
     @Test func taskAwareCalloutsReportContainsKeyword() async {
-        // "report" hits the generic template branch — "get back to your report" etc.
-        // Verify all tiers produce non-empty message arrays that contain the keyword.
         await MainActor.run {
             let manager = CalloutManager.shared
             for tier in 1...3 {
@@ -682,6 +698,24 @@ struct CalloutManagerTests {
                 #expect(msgs.allSatisfy { $0.contains("report") },
                         "tier \(tier) report messages must contain 'report'")
             }
+        }
+    }
+
+    // "report" now has a dedicated handler — tier 3 must not produce "open your report".
+    @Test func taskAwareCalloutsReportTier3AvoidsOpenPhrase() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "report", tier: 3)
+            #expect(tier3.allSatisfy { !$0.contains("open your report") },
+                    "tier 3 report must not use 'open your report' (sounds like opening a file)")
+        }
+    }
+
+    @Test func taskAwareCalloutsReportTier3UsesActionPhrasing() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "report", tier: 3)
+            let actionWords = ["finish", "go", "write", "keep", "back"]
+            #expect(tier3.contains { msg in actionWords.contains { msg.lowercased().contains($0) } },
+                    "tier 3 report must contain at least one action-oriented message")
         }
     }
 
