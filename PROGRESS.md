@@ -1,5 +1,84 @@
 # Adia — Build Progress
 
+## Run 125 — 2026-06-15
+
+### Shipped
+
+**feat: web/app/go subdomain prefixes + whatsapp.com/telegram.org domains (+20 tests)**
+
+#### `HostsFileManager.swift` — 3 new entries in `additionalBlockedSubdomainPrefixes`
+
+`additionalBlockedSubdomainPrefixes` is now **13 entries**:
+`["m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips", "web", "app", "go"]`
+
+- **`"web"`** — Closes the WhatsApp Web and Telegram Web bypass. These are full-featured
+  browser messaging clients at `web.whatsapp.com` and `web.telegram.org`. Previously,
+  blocking the native app bundle IDs (`net.whatsapp.WhatsApp`, `ru.keepcoder.Telegram`)
+  left the web clients entirely open when apps weren't running. The "web" prefix now
+  auto-generates `web.<domain>` entries for every domain in the blocklist.
+
+- **`"app"`** — Closes the Slack Web App bypass. Slack's browser client lives at
+  `app.slack.com`, not `slack.com`, so blocking `slack.com` in `/etc/hosts` left the
+  full Slack interface accessible via the web route. The "app" prefix closes this.
+
+- **`"go"`** — Blocks tracking-redirect subdomains like `go.twitch.tv`. Links shared
+  via Discord or Twitter may resolve through a `go.` subdomain before hitting the parent
+  domain; this prefix ensures those redirect chains are also blocked.
+
+#### `SessionState.swift` — 2 new entries in `defaultBlockedDomains`
+
+- **`whatsapp.com`** — Required for the "web" prefix to auto-generate `web.whatsapp.com`.
+  Also blocks direct navigation to `whatsapp.com` itself. Messaging domain + app block now
+  both present (domain: `whatsapp.com`, app: `net.whatsapp.WhatsApp`).
+
+- **`telegram.org`** — Required for the "web" prefix to auto-generate `web.telegram.org`.
+  Messaging domain + app block now both present (domain: `telegram.org`, app:
+  `ru.keepcoder.Telegram`). Total blocked domains: ~70 → ~72.
+
+#### Tests — 20 new `@Test` cases
+
+**`HostsFileManagerTests.swift`** (14 new):
+- `noDuplicatesInAdditionalPrefixesList` — guard against /etc/hosts bloat from accidental
+  prefix duplication (previously suggested in Run 124 next-agent notes, now shipped)
+- **web. prefix** (5): `buildBlockIncludesWebSubdomain`, `webPrefixIsInAdditionalPrefixesList`,
+  `buildBlockIncludesTelegramWebSubdomain`, `parseBlockedFiltersWebSubdomainVariant`,
+  `buildThenParseRoundTripWithWebPrefix`
+- **app. prefix** (4): `buildBlockIncludesAppSubdomain`, `appPrefixIsInAdditionalPrefixesList`,
+  `parseBlockedFiltersAppSubdomainVariant`, `buildThenParseRoundTripWithAppPrefix`
+- **go. prefix** (4): `buildBlockIncludesGoSubdomain`, `goPrefixIsInAdditionalPrefixesList`,
+  `parseBlockedFiltersGoSubdomainVariant`, `buildThenParseRoundTripWithGoPrefix`
+
+**`SessionStateTests.swift`** (6 new — `"Session defaultBlockedDomains — messaging web clients"`):
+- `defaultBlockedDomainsIncludeWhatsApp`
+- `defaultBlockedDomainsIncludeTelegram`
+- `whatsAppAndTelegramAreBothPresentAlongsideNativeAppEntries` — asserts domain + app coverage coexist
+- `webSubdomainPrefixGeneratesWhatsAppWebEntry` — integration check across SessionState + HostsFileManager
+- `webSubdomainPrefixGeneratesTelegramWebEntry` — same for Telegram
+- `defaultBlockedDomainsNoDuplicatesAfterMessagingAdditions` — duplicate guard re-run
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **`"store"` prefix**: `store.steampowered.com` and `store.epicgames.com` are the actual
+    store pages; users navigate directly to these subdomains. Adding "store" would close
+    this bypass for Steam and Epic. Lower priority since the root domains are already blocked
+    and browsers typically resolve the root first.
+  - **TikTok web**: `tiktok.com` is in the domain list. Check if there is a separate
+    `lite.tiktok.com` or region-specific variant (e.g. `www.tiktok.com/foryou`) — the
+    "www" prefix already generates `www.tiktok.com`, but `lite.tiktok.com` is not covered.
+  - **Discord CDN**: `cdn.discordapp.com` serves embedded media (images, videos); if Discord
+    is blocked but the CDN is not, users can directly access media shared in Discord channels
+    via CDN URLs saved before the block. Consider adding `discordapp.com` as a separate domain
+    entry so `cdn.discordapp.com` is covered. The "cdn" prefix is an alternative approach.
+  - **Twitch Mac Catalyst bundle ID**: The existing `tv.twitch.twitch-client` entry may be
+    wrong for the current Mac Catalyst X app. Needs verification via Activity Monitor on a
+    Mac with Twitch installed.
+
+---
+
 ## Run 124 — 2026-06-15
 
 ### Shipped
