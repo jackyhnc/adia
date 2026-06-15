@@ -1,5 +1,55 @@
 # Adia — Build Progress
 
+## Run 116 — 2026-06-15
+
+### Shipped
+- **feat: focus score in collapsed notch + CV/résumé callout keyword (+11 tests)**
+
+  **(a) Focus score in collapsed notch (NotchView.swift)**
+  - `CollapsedView` now shows a live focus score percentage (e.g. `87%`) after the elapsed
+    time text, color-coded green/amber/red, but only after `totalCheckCount >= 5` (the same
+    `SessionManager.minChecksForFocusScore` threshold used in the expanded view).
+  - Extracted the previously private `focusScoreColor(_:)` helper from `ExpandedView` into a
+    module-level `internal func focusScoreColor` so both `CollapsedView` and `ExpandedView`
+    share the same threshold constants (≥80% green, 60–79% amber, <60% red) without duplication.
+  - `.transition(.opacity)` on the score text fades it in smoothly once the threshold is crossed.
+
+  **(b) CV/résumé keyword (CalloutManager.swift)**
+  - `extractTaskKeyword` now recognizes `word("cv")`, `lower.contains("résumé")`, and
+    `lower.contains("resumé")` (alternate encoding) → keyword `"resume"`. Plain "resume"
+    (no accent) is intentionally excluded to avoid false-positive matches on "resume the
+    session" — only the clearly-noun forms are matched.
+  - `taskAwareCallouts` handler for `"resume"` with tier-1/2/3 messages using natural
+    "résumé" phrasing: e.g. "that résumé isn't going to write itself." / "CLOSE THIS.
+    Finish your résumé." — avoids passive "open your résumé" phrasing at tier 3.
+
+  **Tests (+11)**:
+  - `CalloutManagerTests` (+6): `extractTaskKeywordFromCV`, `extractTaskKeywordFromResume`,
+    `extractTaskKeywordCVDoesNotMatchCodingOrVideo`, `taskAwareCalloutsResumeContainsRelevantPhrasing`,
+    `taskAwareCalloutsResumeTier3UsesActionPhrasing`, `taskAwareCalloutsResumeTier3AvoidsPassiveOpenPhrase`.
+  - `NotchStateTests` (+5): `focusScoreColorGreenAtHighScore`, `focusScoreColorAmberAtMidScore`,
+    `focusScoreColorRedBelowSixty`, `focusScoreColorBoundaryAtEighty`, `focusScoreColorBoundaryAtSixty`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - Focus score history chart: a mini sparkline or heatmap of focus scores across past sessions
+    in the History tab's weekly heatmap view — e.g. a colored cell intensity based on average focus score.
+  - "application" keyword: match "job application", "internship application", "apply to X" for students
+    writing cover letters or filling out forms.
+  - Persist `timerExpiredRearmTask` UX: when session timer expires and the user collapses
+    without verifying, and then the app crash/relaunches — the Task already handles this
+    (remaining = 0 → handleDurationExpired() fires on restore), but verify with a unit test.
+  - `ConversationView` auto-send: the 300 ms heuristic could be replaced with `.onAppear`
+    on the first AI `MessageBubble` for a more reliable trigger.
+  - Add `"en"` subdomain prefix to block `en.wikipedia.org` when Wikipedia is in the custom
+    blocked list — low priority since Wikipedia isn't in the default list.
+
+---
+
 ## Run 115 — 2026-06-15
 
 ### Shipped

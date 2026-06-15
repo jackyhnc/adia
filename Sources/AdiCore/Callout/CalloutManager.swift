@@ -166,6 +166,9 @@ public final class CalloutManager {
         if word("video") || word("editing") || word("footage") || word("film") || word("filming") {
             return "video"
         }
+        if word("cv") || lower.contains("résumé") || lower.contains("resumé") {
+            return "resume"
+        }
         if word("blog") || word("newsletter") {
             return "writing"
         }
@@ -404,6 +407,27 @@ public final class CalloutManager {
                 return [
                     "CLOSE THIS. Go prep for that interview.",
                     "your interview is coming — this isn't helping.",
+                ]
+            }
+        }
+        // "resume" — CV / résumé writing. Use "résumé" in messages for clarity.
+        if keyword == "resume" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your résumé.",
+                    "that résumé isn't going to write itself.",
+                    "close this and keep writing.",
+                ]
+            case 2:
+                return [
+                    "stop putting off your résumé.",
+                    "you need to be writing your résumé, not browsing.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Finish your résumé.",
+                    "your résumé deadline isn't moving.",
                 ]
             }
         }

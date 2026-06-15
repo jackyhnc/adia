@@ -133,6 +133,14 @@ private struct CollapsedView: View {
                         .font(.system(size: 11, weight: .medium, design: .rounded))
                         .foregroundStyle(.white.opacity(0.85))
                 }
+                // Focus score — fades in once enough frames give a meaningful average.
+                if let score = session.focusScore,
+                   session.totalCheckCount >= SessionManager.minChecksForFocusScore {
+                    Text("\(Int(score * 100))%")
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(focusScoreColor(score))
+                        .transition(.opacity)
+                }
             } else if idleTodayCount > 0 || idleStreak > 1 {
                 HStack(spacing: 6) {
                     if idleTodayCount > 0 {
@@ -580,14 +588,6 @@ private struct ExpandedView: View {
         return "< 1m left"
     }
 
-    /// Maps a focus score (0…1) to a color: green when mostly on-task, amber when
-    /// borderline, red when consistently off-task. Thresholds mirror the mental model
-    /// users bring — 80%+ is excellent focus, 60–80% is acceptable, below 60% is poor.
-    private func focusScoreColor(_ score: Double) -> Color {
-        if score >= 0.8 { return .green.opacity(0.75) }
-        if score >= 0.6 { return .yellow.opacity(0.75) }
-        return Color(red: 1, green: 0.3, blue: 0.3).opacity(0.75)
-    }
 }
 
 // MARK: - Callout Banner
@@ -1232,6 +1232,16 @@ internal func idleStatsSummary(_ s: SessionStats) -> String {
     else if h > 0 { time = "\(h)h" }
     else { time = "\(m)m" }
     return "\(base) · \(time)"
+}
+
+// MARK: - Focus score color (internal for testing)
+
+/// Maps a focus score (0…1) to a display color.
+/// Green ≥80%, amber 60–79%, red <60% — mirrors the mental model users bring.
+internal func focusScoreColor(_ score: Double) -> Color {
+    if score >= 0.8 { return .green.opacity(0.75) }
+    if score >= 0.6 { return .yellow.opacity(0.75) }
+    return Color(red: 1, green: 0.3, blue: 0.3).opacity(0.75)
 }
 
 // MARK: - Verification attempt helpers (internal for testing)

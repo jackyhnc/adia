@@ -438,4 +438,35 @@ struct NotchStateTests {
         let v = await MainActor.run { NotchState.shared.idleHasNote }
         #expect(v == true)
     }
+
+    // MARK: - focusScoreColor
+
+    @Test func focusScoreColorGreenAtHighScore() {
+        // SwiftUI Color doesn't expose RGB directly; verify via boundary conditions.
+        #expect(focusScoreColor(0.80) == focusScoreColor(0.99),
+                "scores at or above 0.80 must share the same green color")
+    }
+
+    @Test func focusScoreColorAmberAtMidScore() {
+        #expect(focusScoreColor(0.60) == focusScoreColor(0.79),
+                "scores in [0.60, 0.80) must share the same amber color")
+    }
+
+    @Test func focusScoreColorRedBelowSixty() {
+        #expect(focusScoreColor(0.59) == focusScoreColor(0.00),
+                "scores below 0.60 must share the same red color")
+    }
+
+    @Test func focusScoreColorBoundaryAtEighty() {
+        // Exactly 0.80 is green; 0.799... is amber.
+        let green = focusScoreColor(0.80)
+        let amber = focusScoreColor(0.79)
+        #expect(green != amber, "0.80 must be green while 0.79 must be amber")
+    }
+
+    @Test func focusScoreColorBoundaryAtSixty() {
+        let amber = focusScoreColor(0.60)
+        let red   = focusScoreColor(0.59)
+        #expect(amber != red, "0.60 must be amber while 0.59 must be red")
+    }
 }

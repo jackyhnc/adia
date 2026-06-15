@@ -1110,4 +1110,53 @@ struct CalloutManagerTests {
                     "tier 3 video messages must include action-oriented phrasing")
         }
     }
+
+    // MARK: - CV / Résumé keyword
+
+    @Test func extractTaskKeywordFromCV() {
+        #expect(CalloutManager.extractTaskKeyword(from: "update my CV for the internship") == "resume")
+        #expect(CalloutManager.extractTaskKeyword(from: "build a cv from scratch") == "resume")
+        #expect(CalloutManager.extractTaskKeyword(from: "polish my CV before the deadline") == "resume")
+    }
+
+    @Test func extractTaskKeywordFromResume() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my résumé for summer jobs") == "resume")
+        #expect(CalloutManager.extractTaskKeyword(from: "update the résumé and send it out") == "resume")
+    }
+
+    @Test func extractTaskKeywordCVDoesNotMatchCodingOrVideo() {
+        // "cv" matched correctly but code and video take priority when both appear.
+        #expect(CalloutManager.extractTaskKeyword(from: "code a CV generator app") == "code")
+    }
+
+    @Test func taskAwareCalloutsResumeContainsRelevantPhrasing() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in [1, 2, 3] {
+                let msgs = manager.taskAwareCallouts(keyword: "resume", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) must have resume messages")
+                #expect(msgs.contains { $0.contains("résumé") || $0.contains("CV") },
+                        "tier \(tier) messages must reference résumé or CV")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsResumeTier3UsesActionPhrasing() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "resume", tier: 3)
+            let actionWords = ["Finish", "finish", "deadline", "Deadline", "CLOSE"]
+            #expect(tier3.contains { msg in actionWords.contains { msg.contains($0) } },
+                    "tier 3 résumé messages must use action-oriented phrasing")
+        }
+    }
+
+    @Test func taskAwareCalloutsResumeTier3AvoidsPassiveOpenPhrase() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "resume", tier: 3)
+            #expect(!tier3.contains { $0.lowercased().contains("open your") },
+                    "tier 3 résumé messages must not use passive 'open your' phrasing")
+        }
+    }
 }
