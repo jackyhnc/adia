@@ -1316,4 +1316,25 @@ struct CalloutManagerTests {
                     "tier 3 deadline messages must not use the generic 'open your X' fallback")
         }
     }
+
+    // MARK: - "due at <time>" keyword extraction
+
+    @Test func extractTaskKeywordFromDueAtHour() {
+        // "due at 5pm" — digit after "due at" matches \bdue at \d
+        #expect(CalloutManager.extractTaskKeyword(from: "assignment due at 5pm") == "deadline")
+    }
+
+    @Test func extractTaskKeywordFromDueAtSpecificTime() {
+        #expect(CalloutManager.extractTaskKeyword(from: "submit before it's due at 11:59") == "deadline")
+    }
+
+    @Test func extractTaskKeywordDueAtNoFalsePositiveResidue() {
+        // "residue at 3" must NOT produce "deadline" — \b blocks mid-word matches
+        #expect(CalloutManager.extractTaskKeyword(from: "check the residue at 3 spots") == nil)
+    }
+
+    @Test func extractTaskKeywordDueAtYieldsToEssay() {
+        // A specific subject keyword takes precedence over the urgency catch-all
+        #expect(CalloutManager.extractTaskKeyword(from: "essay due at 9am") == "essay")
+    }
 }
