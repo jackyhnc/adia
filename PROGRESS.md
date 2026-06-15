@@ -1,5 +1,80 @@
 # Adia — Build Progress
 
+## Run 130 — 2026-06-15
+
+### Shipped
+
+**fix: static-cdn.jtvnw.net explicit block + images. prefix + ConversationView inputText clear (+10 tests)**
+
+#### `SessionState.swift` — explicit `static-cdn.jtvnw.net` entry + comment fix
+
+- **`"static-cdn.jtvnw.net"`** added as an explicit literal to `defaultBlockedDomains`. Twitch's
+  primary thumbnail/image CDN uses a hyphen separator (`static-cdn.`), not a dot. The prefix
+  mechanism generates `prefix.domain` entries (dot-separated only), so `static-cdn.jtvnw.net`
+  was NOT covered despite the previous comment claiming it was. Profile images, game box art, and
+  stream preview thumbnails embedded in Reddit/Discord posts still loaded during blocked sessions.
+
+- **Comment corrected**: removed the incorrect claim that `static-cdn.jtvnw.net` was auto-generated
+  by the `"static"` and `"cdn"` prefix rules. The new comment explains the hyphen-vs-dot distinction.
+
+#### `HostsFileManager.swift` — `"images"` subdomain prefix (23rd entry)
+
+- **`"images"`** added to `additionalBlockedSubdomainPrefixes`. Covers:
+  - `images.google.com` — Google Image Search is independently routable from `google.com`;
+    a user whose `google.com` is blocked can still reach image search via the subdomain.
+  - `images.fandom.com` — Fandom's image CDN (direct image links from wikis).
+  - `images.tmdb.org` — TMDB movie/TV database thumbnails embedded in media pages.
+  - False-positive risk is low: no major productivity tool (Notion, GitHub, Linear) exposes
+    an `images.` subdomain that users navigate to directly.
+
+#### `ConversationView.swift` — `inputText` cleared on mode change
+
+- Added `inputText = ""` inside the `.onChange(of: manager.mode)` handler alongside the
+  existing `didAutoSend = false` reset. Previously, if a user typed text in the input field
+  and the conversation mode changed before they sent it (e.g., a second blocked domain triggered
+  a new reasoning conversation), the stale draft was visible when the view was reused.
+
+#### Tests — 10 new `@Test` cases
+
+**`SessionStateTests.swift`** (4 new + 1 renamed in `"Session defaultBlockedDomains — Twitch legacy CDN (jtvnw.net)"`):
+- **Renamed** `staticCdnJtvnwNetGeneratedBySubdomainPrefixes` →
+  `staticDotAndCdnDotJtvnwNetGeneratedByPrefixRules`. Updated comment + added negative assertion
+  that the hyphen variant is NOT emitted by the prefix mechanism.
+- **`defaultBlockedDomainsIncludesStaticCdnJtvnwNetExplicitly`**: verifies the literal
+  `static-cdn.jtvnw.net` entry is present in `defaultBlockedDomains`.
+- **`staticCdnJtvnwNetIsAdjacentToJtvnwNetInList`**: verifies both entries exist and that
+  `static-cdn.jtvnw.net` is recognisable as a jtvnw.net subdomain via suffix check.
+- **`defaultBlockedDomainsNoDuplicatesAfterStaticCdnJtvnwNetAddition`**: no-duplicates guard.
+
+**`HostsFileManagerTests.swift`** (6 new in `"HostsFileManager — images. subdomain prefix"`):
+- `imagesPrefixIsInAdditionalPrefixesList`
+- `buildBlockIncludesImagesSubdomainForGoogle`
+- `buildBlockIncludesImagesSubdomainForFandom`
+- `parseBlockedFiltersImagesSubdomainVariant`
+- `buildThenParseRoundTripWithImagesPrefix`
+- `imagesPrefixDoesNotAffectProductivityToolsInRoundTrip`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Remaining low-priority improvements from prior runs:
+  - **`"auth"` prefix**: `auth.twitch.tv`, `auth.discord.com` — authentication subdomains that
+    could expose API functionality via session cookies. Medium false-positive risk (OAuth flows
+    on productivity tools often use an `auth.` subdomain), so skip unless confident.
+  - **`ConversationView` mode change completeness**: Both `didAutoSend` and `inputText` are now
+    cleared on mode change. The remaining gap is `manager.messages` — if the view is reused for
+    a second conversation, the previous conversation's messages may still be visible until the
+    `ConversationManager` itself clears them. Depends on whether `ConversationManager.reset()`
+    is called on mode change.
+  - **`static-cdn.jtvnw.net` subdomain variants**: `static-cdn.jtvnw.net` is now explicitly
+    blocked, but Twitch also uses `static-cdn-*.jtvnw.net` (sharded CDN with numeric suffixes
+    like `static-cdn-ttv.jtvnw.net`). These would require wildcard blocking (not supported by
+    /etc/hosts) or additional explicit entries for each shard pattern.
+
+---
+
 ## Run 129 — 2026-06-15
 
 ### Shipped

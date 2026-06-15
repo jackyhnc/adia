@@ -99,6 +99,12 @@ public actor HostsFileManager {
     //          continue rendering from static. even when twitch.tv is blocked. Also covers
     //          static.xx.fbcdn.net patterns generated alongside facebook.com. False-positive risk
     //          is low: no common productivity tool (Notion, GitHub, Linear) exposes a static. subdomain.
+    // "images" blocks images.google.com (Google's image search — separately routable from google.com
+    //          and a significant standalone distraction vector). Also covers images.fandom.com,
+    //          images.tmdb.org (movie/TV database thumbnails), and similar entertainment image CDN
+    //          subdomains. Low false-positive risk: no common productivity tool exposes an "images."
+    //          subdomain. Note: static-cdn.jtvnw.net uses a hyphen ("static-cdn.") and is NOT covered
+    //          by this prefix — it must be listed explicitly in defaultBlockedDomains.
     internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = [
         "m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips",
         "web",    // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
@@ -113,6 +119,7 @@ public actor HostsFileManager {
         "embed",  // embed wrapper pages (embed.twitch.tv etc.)
         "vod",    // video-on-demand delivery subdomains (vod.twitch.tv etc.)
         "static", // pre-cached static resources (static.twitch.tv etc.)
+        "images", // image search / image CDN subdomains (images.google.com, images.fandom.com etc.)
     ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).

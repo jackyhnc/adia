@@ -73,6 +73,9 @@ public struct ConversationView: View {
                 // Without this reset the flag persists across mode changes within the same
                 // view lifetime, silently skipping the auto-send for the second domain.
                 didAutoSend = false
+                // Clear any stale draft text so the user doesn't see leftover input from a
+                // previous mode's conversation when the view is reused for a new one.
+                inputText = ""
             }
             .onChange(of: manager.messages.count) {
                 withAnimation(.easeOut(duration: 0.15)) {

@@ -975,3 +975,62 @@ struct HostsFileManagerTests {
                 "static. prefix must not corrupt parseBlocked output for productivity domains")
     }
 }
+
+// MARK: - images. prefix
+
+@Suite("HostsFileManager — images. subdomain prefix")
+struct ImagesPrefixTests {
+
+    @Test func imagesPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("images"),
+                "\"images\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func buildBlockIncludesImagesSubdomainForGoogle() {
+        // Google Image Search lives at images.google.com — a standalone distraction vector
+        // that resolves separately from google.com.
+        let block = HostsFileManager.buildBlock(domains: ["google.com"])
+        #expect(block.contains("127.0.0.1 images.google.com"),
+                "buildBlock must emit images.google.com when google.com is in the domain list")
+    }
+
+    @Test func buildBlockIncludesImagesSubdomainForFandom() {
+        // images.fandom.com is the Fandom wiki image CDN — separate from fandom.com itself.
+        let block = HostsFileManager.buildBlock(domains: ["fandom.com"])
+        #expect(block.contains("127.0.0.1 images.fandom.com"),
+                "buildBlock must emit images.fandom.com when fandom.com is in the domain list")
+    }
+
+    @Test func parseBlockedFiltersImagesSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 google.com
+        127.0.0.1 www.google.com
+        127.0.0.1 images.google.com
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["google.com"])
+        #expect(!domains.contains("images.google.com"),
+                "parseBlocked must filter out synthetic images. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithImagesPrefix() {
+        let input = ["google.com", "fandom.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 images.google.com"))
+        #expect(block.contains("127.0.0.1 images.fandom.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after images. rows are present")
+    }
+
+    @Test func imagesPrefixDoesNotAffectProductivityToolsInRoundTrip() {
+        // No common productivity tool (Notion, GitHub, Linear) exposes an images. subdomain.
+        let input = ["notion.so", "github.com", "linear.app"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "images. prefix must not corrupt parseBlocked output for productivity domains")
+    }
+}

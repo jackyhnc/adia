@@ -249,9 +249,16 @@ public struct Session: Sendable, Identifiable {
         // jtvnw.net. Twitch continues to serve profile images, game box art, stream thumbnails, and
         // clip preview frames from *.jtvnw.net CDN endpoints. External links (Reddit, Discord) often
         // embed these thumbnails directly, providing a visual Twitch experience even when twitch.tv is
-        // blocked. With "static" and "cdn" prefix rules, static-cdn.jtvnw.net and cdn.jtvnw.net are
-        // also automatically blocked.
+        // blocked. The "static" prefix rule generates static.jtvnw.net; the "cdn" prefix generates
+        // cdn.jtvnw.net. Both are auto-blocked alongside jtvnw.net.
         "jtvnw.net",
+        // static-cdn.jtvnw.net is Twitch's primary image/thumbnail CDN endpoint and the single
+        // most-used *.jtvnw.net hostname. The subdomain uses a hyphen ("static-cdn"), not a dot, so
+        // the prefix mechanism — which generates "prefix.domain" entries — does NOT cover it.
+        // static-cdn.jtvnw.net must be listed as an explicit literal entry here.
+        // Twitch serves nearly all profile images, game box art, and stream preview thumbnails from
+        // this hostname; Reddit and Discord frequently embed these URLs directly in posts and messages.
+        "static-cdn.jtvnw.net",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [
