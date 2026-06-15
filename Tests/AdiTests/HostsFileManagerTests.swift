@@ -78,6 +78,14 @@ struct HostsFileManagerTests {
         #expect(block.contains("127.0.0.1 old.reddit.com"))
     }
 
+    @Test func buildBlockIncludesEnSubdomain() {
+        // "en" prefix blocks en.wikipedia.org when Wikipedia is on a custom blocked list.
+        let block = HostsFileManager.buildBlock(domains: ["wikipedia.org"])
+        #expect(block.contains("127.0.0.1 en.wikipedia.org"),
+                "en.wikipedia.org must be blocked to prevent bypass via language subdomain")
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("en"))
+    }
+
     @Test func buildBlockWrapsWithMarkers() {
         let block = HostsFileManager.buildBlock(domains: ["reddit.com"])
         #expect(block.contains("# adia-block-begin"))

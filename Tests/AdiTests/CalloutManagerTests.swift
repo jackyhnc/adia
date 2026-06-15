@@ -1241,4 +1241,79 @@ struct CalloutManagerTests {
                     "tier 1 application messages must avoid ambiguous software-app phrasing")
         }
     }
+
+    // MARK: - "deadline" keyword extraction
+
+    @Test func extractTaskKeywordFromDeadlineWord() {
+        #expect(CalloutManager.extractTaskKeyword(from: "I have a deadline tonight") == "deadline")
+    }
+
+    @Test func extractTaskKeywordFromDueBy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "this is due by midnight") == "deadline")
+    }
+
+    @Test func extractTaskKeywordFromDueTomorrow() {
+        #expect(CalloutManager.extractTaskKeyword(from: "assignment due tomorrow morning") == "deadline")
+    }
+
+    @Test func extractTaskKeywordFromDueIn() {
+        #expect(CalloutManager.extractTaskKeyword(from: "project due in 2 hours") == "deadline")
+    }
+
+    @Test func extractTaskKeywordFromDueBefore() {
+        #expect(CalloutManager.extractTaskKeyword(from: "submit due before 11:59pm") == "deadline")
+    }
+
+    @Test func extractTaskKeywordDeadlineYieldsToEssay() {
+        // "essay" is more specific — "deadline" is a fallback only when no subject keyword found.
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my essay, deadline is tonight") == "essay")
+    }
+
+    @Test func extractTaskKeywordDeadlineYieldsToHomework() {
+        #expect(CalloutManager.extractTaskKeyword(from: "homework due by midnight") == "homework")
+    }
+
+    @Test func extractTaskKeywordDeadlineYieldsToCode() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ship the code, deadline is tomorrow") == "code")
+    }
+
+    // MARK: - "deadline" callout messages
+
+    @Test func taskAwareCalloutsDeadlineNonEmpty() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "deadline", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) deadline messages must not be empty")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsDeadlineTier1ContainsUrgency() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier1 = manager.taskAwareCallouts(keyword: "deadline", tier: 1)
+            let urgencyWords = ["deadline", "clock", "ticking", "ticks"]
+            #expect(tier1.contains { msg in urgencyWords.contains { msg.lowercased().contains($0) } },
+                    "tier 1 deadline messages must convey time pressure")
+        }
+    }
+
+    @Test func taskAwareCalloutsDeadlineTier3UsesAllCaps() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "deadline", tier: 3)
+            #expect(tier3.contains { $0.contains("CLOSE") || $0.contains("DEADLINE") },
+                    "tier 3 deadline messages must use all-caps urgency")
+        }
+    }
+
+    @Test func taskAwareCalloutsDeadlineTier3DoesNotUseGenericOpenPhrase() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "deadline", tier: 3)
+            #expect(tier3.allSatisfy { !$0.contains("open your deadline") },
+                    "tier 3 deadline messages must not use the generic 'open your X' fallback")
+        }
+    }
 }

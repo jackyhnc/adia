@@ -179,6 +179,14 @@ public final class CalloutManager {
         if word("blog") || word("newsletter") {
             return "writing"
         }
+        // Urgency language without a more specific subject — e.g. "I have a deadline tonight",
+        // "assignment due by midnight", "this is due tomorrow". Runs last so "essay due tonight"
+        // maps to "essay", not "deadline".
+        if word("deadline") || lower.contains("due by") || lower.contains("due tonight")
+            || lower.contains("due tomorrow") || lower.contains("due at midnight")
+            || lower.contains("due in") || lower.contains("due before") {
+            return "deadline"
+        }
         return nil
     }
 
@@ -457,6 +465,28 @@ public final class CalloutManager {
                 return [
                     "CLOSE THIS. Submit the application.",
                     "your application deadline isn't moving.",
+                ]
+            }
+        }
+        // "deadline" — urgency catch-all: due tonight, due by midnight, deadline incoming.
+        // Messages emphasize time pressure rather than task identity (which we don't know).
+        if keyword == "deadline" {
+            switch tier {
+            case 1:
+                return [
+                    "you have a deadline. act like it.",
+                    "the clock is ticking. get back to work.",
+                    "deadline incoming — stop.",
+                ]
+            case 2:
+                return [
+                    "you're burning deadline time.",
+                    "you set this deadline. honor it.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Your deadline is real.",
+                    "your deadline doesn't care that you're here.",
                 ]
             }
         }
