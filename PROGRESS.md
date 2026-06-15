@@ -1,5 +1,76 @@
 # Adia — Build Progress
 
+## Run 127 — 2026-06-15
+
+### Shipped
+
+**feat: media./lite. subdomain prefixes + discordapp.net domain (+16 tests)**
+
+#### `HostsFileManager.swift` — 2 new entries in `additionalBlockedSubdomainPrefixes`
+
+`additionalBlockedSubdomainPrefixes` is now **17 entries**:
+`["m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips", "web", "app", "go", "cdn", "store", "media", "lite"]`
+
+- **`"media"`** — Closes the Discord embedded-preview CDN bypass. `media.discordapp.com`
+  serves GIF previews and video thumbnails embedded in Discord messages. Run 126 added
+  `cdn.discordapp.com` (file attachments/avatars) but `media.discordapp.com` is a separate
+  hostname that remained open for direct embed links shared outside the app (iMessages,
+  emails, browser bookmarks). The "media" prefix auto-generates `media.X` for every domain
+  in the blocklist.
+
+- **`"lite"`** — Closes the `lite.tiktok.com` regional variant bypass. TikTok's stripped-down
+  browser app is available at `lite.tiktok.com` in some markets. "lite" is not a common
+  subdomain for productivity tools (no `lite.notion.so`, `lite.github.com`, etc.) so the
+  false-positive risk is negligible. The prefix also future-proofs against other platforms
+  rolling out lightweight variants.
+
+#### `SessionState.swift` — 1 new entry in `defaultBlockedDomains`
+
+- **`discordapp.net`** — Discord's WebRTC and real-time gateway infrastructure domain,
+  completely separate from `discordapp.com` (CDN) and `discord.com` (main web app). Voice
+  channels and the persistent gateway WebSocket connect through `*.discordapp.net` endpoints.
+  Blocking the other two Discord domains left `discordapp.net` accessible for direct access.
+  With the new "media" prefix, this also automatically generates `media.discordapp.net`.
+
+#### Tests — 16 new `@Test` cases
+
+**`HostsFileManagerTests.swift`** (11 new):
+- **media. prefix** (5): `buildBlockIncludesMediaSubdomain`, `mediaPrefixIsInAdditionalPrefixesList`,
+  `buildBlockIncludesDiscordMediaAlongsideDiscordCdn`, `parseBlockedFiltersMediaSubdomainVariant`,
+  `buildThenParseRoundTripWithMediaPrefix`
+- **lite. prefix** (6): `buildBlockIncludesLiteSubdomainForTikTok`, `litePrefixIsInAdditionalPrefixesList`,
+  `parseBlockedFiltersLiteSubdomainVariant`, `buildThenParseRoundTripWithLitePrefix`,
+  `litePrefixDoesNotAffectProductivityToolsInRoundTrip`
+
+**`SessionStateTests.swift`** (5 new in `"Session defaultBlockedDomains — Discord infrastructure (discordapp.net)"`):
+- `defaultBlockedDomainsIncludeDiscordNet`
+- `allThreeDiscordInfrastructureDomainsArePresent`
+- `discordNetIsNotTheSameAsDiscordApp`
+- `mediaSubdomainPrefixGeneratesDiscordNetMediaEntry` — integration check across SessionState + HostsFileManager
+- `defaultBlockedDomainsNoDuplicatesAfterDiscordNetAddition`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **`"assets"` prefix**: `assets.twitch.tv` and similar assets CDN subdomains. Lower priority
+    since cdn. and media. cover the main Discord bypass vectors.
+  - **`discordapp.io`**: Discord occasionally uses `.io` endpoints for status/worker services.
+    Very low priority — not a common user-facing bypass route.
+  - **`"player"` prefix**: `player.twitch.tv` embeds the Twitch player on third-party sites.
+    Someone could open a page with an embedded Twitch stream outside the blocked domains.
+  - **`"status"` prefix**: `status.discord.com` — very low priority, status page is read-only.
+  - **TikTok bundle ID verification**: confirm whether TikTok on macOS uses a Catalyst bundle ID
+    (e.g., `com.zhiliaoapp.musically`) in addition to or instead of the iOS sideload. Check
+    Activity Monitor on a Mac with TikTok installed — block whichever ID appears.
+  - **`ConversationView` auto-send initial domain check**: the `autoSendOpeningIfNeeded` guard
+    checks `manager.messages.count == 1` but a race could leave 2+ messages if two `.onAppear`
+    callbacks fire. Consider using a `@State private var didAutoSend = false` flag instead.
+
+---
+
 ## Run 126 — 2026-06-15
 
 ### Shipped
