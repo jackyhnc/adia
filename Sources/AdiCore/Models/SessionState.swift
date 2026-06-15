@@ -157,7 +157,12 @@ public struct Session: Sendable, Identifiable {
         // cdn.discordapp.com serves avatars, images, and file attachments; users can access
         // Discord media via direct CDN links even when discord.com itself is blocked in the browser.
         // The "cdn" subdomain prefix auto-generates cdn.discordapp.com alongside every domain entry.
+        // media.discordapp.com (covered by the "media" prefix) serves embedded GIF/video previews.
         "discordapp.com",
+        // discordapp.net is Discord's WebRTC and gateway infrastructure domain (separate from discordapp.com).
+        // Discord's voice channels and the real-time gateway connect through *.discordapp.net endpoints;
+        // blocking discord.com and discordapp.com leaves this infrastructure domain open for direct access.
+        "discordapp.net",
         "slack.com",
         "9gag.com",
         // Messaging web clients (web.X bypasses native app blocks when apps are not running)

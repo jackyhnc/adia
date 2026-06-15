@@ -69,6 +69,12 @@ public actor HostsFileManager {
     // "store" blocks store.steampowered.com and store.epicgames.com: the actual store pages that users
     //         navigate directly to for browsing and purchasing games; the root domains are already blocked
     //         but store.X is a common direct-link target that resolves as a distinct subdomain.
+    // "media" blocks media.discordapp.com (Discord's embedded video/GIF preview CDN): separate from
+    //         cdn.discordapp.com — Discord serves embedded GIF previews and video thumbnails through
+    //         media.discordapp.com; direct links to these assets bypass the discord.com and cdn. blocks.
+    // "lite"  blocks lite.tiktok.com: TikTok's stripped-down regional version available in some markets.
+    //         "lite" is not a common legitimate subdomain for productivity tools, so the false-positive
+    //         risk is negligible; closing the lite.tiktok.com escape hatch is the main motivation.
     internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = [
         "m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips",
         "web",   // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
@@ -76,6 +82,8 @@ public actor HostsFileManager {
         "go",    // tracking-redirect subdomains (go.twitch.tv etc.)
         "cdn",   // media/attachment CDN subdomains (cdn.discordapp.com etc.)
         "store", // game store pages (store.steampowered.com, store.epicgames.com)
+        "media", // embedded video/GIF preview CDN (media.discordapp.com etc.)
+        "lite",  // stripped-down regional variants (lite.tiktok.com etc.)
     ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).

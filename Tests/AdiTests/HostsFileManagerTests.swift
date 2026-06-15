@@ -586,6 +586,105 @@ struct HostsFileManagerTests {
                 "parseBlocked must return only bare canonical domains after cdn. rows are present")
     }
 
+    // MARK: - media. subdomain blocking (Discord embedded-video/GIF preview CDN bypass prevention)
+
+    @Test func buildBlockIncludesMediaSubdomain() {
+        // media.discordapp.com serves Discord's embedded GIF and video previews — a secondary
+        // CDN separate from cdn.discordapp.com. Direct links to GIF embeds bypass both the
+        // discord.com block and the cdn. prefix without this entry.
+        let block = HostsFileManager.buildBlock(domains: ["discordapp.com"])
+        #expect(block.contains("127.0.0.1 media.discordapp.com"),
+                "media.discordapp.com must be blocked to prevent Discord embedded-preview CDN bypass")
+    }
+
+    @Test func mediaPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("media"),
+                "\"media\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func buildBlockIncludesDiscordMediaAlongsideDiscordCdn() {
+        // Both media. and cdn. subdomain entries must be generated for discordapp.com together.
+        let block = HostsFileManager.buildBlock(domains: ["discordapp.com"])
+        #expect(block.contains("127.0.0.1 cdn.discordapp.com"))
+        #expect(block.contains("127.0.0.1 media.discordapp.com"))
+    }
+
+    @Test func parseBlockedFiltersMediaSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 discordapp.com
+        127.0.0.1 www.discordapp.com
+        127.0.0.1 cdn.discordapp.com
+        127.0.0.1 media.discordapp.com
+        127.0.0.1 m.discordapp.com
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["discordapp.com"])
+        #expect(!domains.contains("media.discordapp.com"),
+                "parseBlocked must filter out synthetic media. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithMediaPrefix() {
+        let input = ["discordapp.com", "discordapp.net"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 media.discordapp.com"))
+        #expect(block.contains("127.0.0.1 media.discordapp.net"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after media. rows are present")
+    }
+
+    // MARK: - lite. subdomain blocking (TikTok Lite regional variant bypass prevention)
+
+    @Test func buildBlockIncludesLiteSubdomainForTikTok() {
+        // lite.tiktok.com is TikTok's stripped-down browser app available in some regions.
+        // Blocking tiktok.com alone leaves the lite subdomain accessible as a bypass route.
+        let block = HostsFileManager.buildBlock(domains: ["tiktok.com"])
+        #expect(block.contains("127.0.0.1 lite.tiktok.com"),
+                "lite.tiktok.com must be blocked to prevent TikTok Lite bypass")
+    }
+
+    @Test func litePrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("lite"),
+                "\"lite\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func parseBlockedFiltersLiteSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 tiktok.com
+        127.0.0.1 www.tiktok.com
+        127.0.0.1 lite.tiktok.com
+        127.0.0.1 m.tiktok.com
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["tiktok.com"])
+        #expect(!domains.contains("lite.tiktok.com"),
+                "parseBlocked must filter out synthetic lite. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithLitePrefix() {
+        let input = ["tiktok.com", "reddit.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 lite.tiktok.com"))
+        #expect(block.contains("127.0.0.1 lite.reddit.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after lite. rows are present")
+    }
+
+    @Test func litePrefixDoesNotAffectProductivityToolsInRoundTrip() {
+        // "lite" is safe to add broadly — legitimate productivity subdomains like
+        // docs.google.com, notion.so, etc. don't use a "lite." variant.
+        let input = ["notion.so", "github.com", "google.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "lite. prefix must not corrupt parseBlocked output for productivity domains")
+    }
+
     // MARK: - store. subdomain blocking (Steam / Epic Games store bypass prevention)
 
     @Test func buildBlockIncludesStoreSubdomainForSteam() {
