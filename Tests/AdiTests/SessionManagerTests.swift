@@ -554,4 +554,60 @@ struct SessionManagerTests {
         #expect(hasRearm == false)
         await injectSession(nil)
     }
+
+    // MARK: - Timer expiry restore path (remaining == 0)
+
+    /// When a session outlasts its target duration (e.g. the user works past the timer),
+    /// the persisted session has `elapsed > targetDuration`. On restore, `activate()` computes
+    /// `remaining = max(0, targetDuration - elapsed)` which yields 0, so the duration Task
+    /// skips its sleep and calls `handleDurationExpired()` immediately. These three tests cover:
+    ///   1. The pure-math property that remaining is zero for an over-elapsed session.
+    ///   2. The edge case where elapsed exactly equals targetDuration.
+    ///   3. That the post-fire state (timerExpired + rearm task) is identical to normal expiry.
+
+    @Test func restoredSessionElapsedBeyondTargetHasZeroRemainingTime() {
+        let target: TimeInterval = 3600
+        let s = Session(
+            task: "Write essay",
+            successCriteria: "Submitted",
+            startTime: Date(timeIntervalSinceNow: -(target + 600)), // elapsed ≈ 1h10m for a 1h target
+            targetDuration: target
+        )
+        let remaining = max(0, target - s.elapsed)
+        #expect(remaining == 0,
+                "session elapsed beyond target must yield remaining == 0 so the timer fires immediately on restore")
+    }
+
+    @Test func restoredSessionElapsedExactlyAtTargetHasZeroRemainingTime() {
+        let target: TimeInterval = 1800
+        // Start time exactly `target` seconds ago (allow up to 2s of scheduling jitter).
+        let s = Session(
+            task: "Code review",
+            successCriteria: "All comments resolved",
+            startTime: Date(timeIntervalSinceNow: -target),
+            targetDuration: target
+        )
+        let remaining = max(0, target - s.elapsed)
+        // elapsed ≥ target (we started the timer first), so remaining must be 0.
+        #expect(remaining <= 1.0,
+                "session elapsed == target must yield remaining near zero (within scheduling jitter)")
+    }
+
+    @Test func timerExpiredRestorePathProducesLiveRearmTask() async {
+        // Simulate the restore path where remaining == 0 causes the durationTimerTask to call
+        // handleDurationExpired() without sleeping. The resulting state must be identical to
+        // a normal timer expiry: timerExpired == true and timerExpiredRearmTask != nil.
+        let s = Session(task: "Write report", successCriteria: "Draft submitted", targetDuration: 3600)
+        await injectSession(s)
+        await MainActor.run { SessionManager.shared.handleDurationExpired() }
+        let expired = await MainActor.run { SessionManager.shared.timerExpired }
+        let hasRearm = await MainActor.run { SessionManager.shared.timerExpiredRearmTask != nil }
+        #expect(expired == true,
+                "timerExpired must be set after immediate-fire (restore-path) call to handleDurationExpired()")
+        #expect(hasRearm == true,
+                "timerExpiredRearmTask must be live after immediate-fire restore path — same as normal expiry")
+        // Clean up
+        await injectSession(nil)
+        await MainActor.run { SessionManager.shared._resetTimerForTesting() }
+    }
 }

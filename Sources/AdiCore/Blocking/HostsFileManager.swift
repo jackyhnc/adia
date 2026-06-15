@@ -52,7 +52,11 @@ public actor HostsFileManager {
     // "music" blocks music.youtube.com (YouTube Music) which lives on a distinct subdomain.
     // "tv"    blocks tv.youtube.com (YouTube TV) — another escape hatch from the youtube.com block.
     // "i"     blocks image-CDN subdomains: i.reddit.com serves images/media independently of reddit.com.
-    internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = ["m", "mobile", "old", "amp", "en", "music", "tv", "i"]
+    // "api"   blocks api.twitter.com and similar endpoints used by third-party clients to load content
+    //         through the API even when the main domain (twitter.com) is blocked in the browser.
+    // "clips" blocks clips.twitch.tv: Twitch clip share URLs that bypass the top-level twitch.tv block.
+    //         Clips are widely embedded/shared and would otherwise be viewable during a session.
+    internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = ["m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips"]
 
     // Walks lines, discarding everything between the adia markers (inclusive).
     internal nonisolated static func stripped(_ content: String) -> String {

@@ -320,4 +320,84 @@ struct HostsFileManagerTests {
         #expect(Set(parsed) == Set(input),
                 "parseBlocked must return only bare canonical domains after i. rows are present")
     }
+
+    // MARK: - api. subdomain blocking (third-party client bypass prevention)
+
+    @Test func buildBlockIncludesApiSubdomain() {
+        // api.twitter.com is used by third-party clients to load Twitter content even when
+        // twitter.com is blocked in the browser. The "api" prefix closes this bypass.
+        let block = HostsFileManager.buildBlock(domains: ["twitter.com"])
+        #expect(block.contains("127.0.0.1 api.twitter.com"),
+                "api.twitter.com must be blocked to prevent third-party-client bypass")
+    }
+
+    @Test func apiPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("api"),
+                "\"api\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func parseBlockedFiltersApiSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 twitter.com
+        127.0.0.1 www.twitter.com
+        127.0.0.1 api.twitter.com
+        127.0.0.1 m.twitter.com
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["twitter.com"])
+        #expect(!domains.contains("api.twitter.com"),
+                "parseBlocked must filter out synthetic api. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithApiPrefix() {
+        let input = ["twitter.com", "reddit.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 api.twitter.com"))
+        #expect(block.contains("127.0.0.1 api.reddit.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after api. rows are present")
+    }
+
+    // MARK: - clips. subdomain blocking (Twitch clip bypass prevention)
+
+    @Test func buildBlockIncludesClipsSubdomain() {
+        // clips.twitch.tv URLs are widely shared and bypass the top-level twitch.tv block
+        // because "clips" is a distinct subdomain not covered by m./mobile./etc.
+        let block = HostsFileManager.buildBlock(domains: ["twitch.tv"])
+        #expect(block.contains("127.0.0.1 clips.twitch.tv"),
+                "clips.twitch.tv must be blocked to prevent Twitch-clip bypass")
+    }
+
+    @Test func clipsPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("clips"),
+                "\"clips\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func parseBlockedFiltersClipsSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 twitch.tv
+        127.0.0.1 www.twitch.tv
+        127.0.0.1 clips.twitch.tv
+        127.0.0.1 m.twitch.tv
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["twitch.tv"])
+        #expect(!domains.contains("clips.twitch.tv"),
+                "parseBlocked must filter out synthetic clips. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithClipsPrefix() {
+        let input = ["twitch.tv", "youtube.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 clips.twitch.tv"))
+        #expect(block.contains("127.0.0.1 clips.youtube.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after clips. rows are present")
+    }
 }

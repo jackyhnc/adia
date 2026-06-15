@@ -174,6 +174,7 @@ public struct Session: Sendable, Identifiable {
         "theverge.com",              // tech/culture publication: high-engagement, easy "just one article" trap
         "techcrunch.com",            // startup news: intellectually justifiable but rarely task-relevant
         "wired.com",                 // long-form tech culture: same "productive-feeling" trap as medium.com
+        "arstechnica.com",           // in-depth tech journalism: reads like research but is rarely task-relevant
         // Professional procrastination
         "linkedin.com",
         // Shopping
@@ -220,9 +221,10 @@ public struct Session: Sendable, Identifiable {
         "fb.me",                 // Facebook's short URL — bypasses facebook.com block
         // Reddit CDN / media domains — served from completely separate hostnames; blocking
         // reddit.com alone does NOT prevent access to these image/video CDN endpoints.
-        "i.redd.it",             // Reddit's image CDN: inline images in posts/comments
-        "v.redd.it",             // Reddit's video CDN: hosted video player embeds
-        "preview.redd.it",       // Reddit's preview CDN: link/image previews in feeds
+        "i.redd.it",                  // Reddit's image CDN: inline images in posts/comments
+        "v.redd.it",                  // Reddit's video CDN: hosted video player embeds
+        "preview.redd.it",            // Reddit's preview CDN: link/image previews in feeds
+        "external-preview.redd.it",   // Reddit's external-link preview CDN: thumbnails for links posted to reddit
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [
