@@ -1,5 +1,83 @@
 # Adia — Build Progress
 
+## Run 128 — 2026-06-15
+
+### Shipped
+
+**feat: player./assets. prefixes + discordapp.io domain + ConversationView race fix (+15 tests)**
+
+#### `HostsFileManager.swift` — 2 new entries in `additionalBlockedSubdomainPrefixes`
+
+`additionalBlockedSubdomainPrefixes` is now **19 entries**:
+`["m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips", "web", "app", "go", "cdn", "store", "media", "lite", "player", "assets"]`
+
+- **`"player"`** — Closes the `player.twitch.tv` embedded-player bypass. Twitch's embeddable
+  player iframe is used on third-party sites (gaming wikis, Reddit embeds, news articles).
+  A user whose Twitch app and `twitch.tv` are both blocked can still watch live streams
+  via an embedded `player.twitch.tv` iframe on an otherwise-accessible page. `"player"` is
+  not a common subdomain for productivity tools so the false-positive risk is negligible.
+
+- **`"assets"`** — Closes the `assets.twitch.tv` static-asset CDN bypass. Twitch serves
+  sprite sheets, fonts, and UI bundle files from `assets.twitch.tv` independently of the
+  main domain. Also covers `assets.discord.com` and similar patterns on other blocked
+  platforms.
+
+#### `SessionState.swift` — 1 new entry in `defaultBlockedDomains`
+
+- **`discordapp.io`** — Discord's Cloudflare Workers / edge-function domain used for
+  status-page polling, experimental API endpoints, and worker scripts. Distinct TLD from
+  `discordapp.com` and `discordapp.net`; blocking those two left `discordapp.io` open.
+  With the existing `cdn` and `media` prefixes this also auto-generates
+  `cdn.discordapp.io` and `media.discordapp.io`.
+
+#### `ConversationView.swift` — race condition fix
+
+Replaced the `manager.messages.count == 1` guard in `autoSendOpeningIfNeeded()` with a
+`@State private var didAutoSend = false` flag. The old guard was unsafe: two `.onAppear`
+callbacks could fire in the same render pass before the first `send()` call had incremented
+the message array, causing a double auto-send. The flag is set to `true` on the first call
+so any subsequent callback no-ops immediately.
+
+#### Tests — 15 new `@Test` cases
+
+**`HostsFileManagerTests.swift`** (10 new, now 86 total):
+- **player. prefix** (5): `buildBlockIncludesPlayerSubdomainForTwitch`,
+  `playerPrefixIsInAdditionalPrefixesList`, `parseBlockedFiltersPlayerSubdomainVariant`,
+  `buildThenParseRoundTripWithPlayerPrefix`, `playerPrefixDoesNotAffectProductivityToolsInRoundTrip`
+- **assets. prefix** (5): `buildBlockIncludesAssetsSubdomainForTwitch`,
+  `assetsPrefixIsInAdditionalPrefixesList`, `parseBlockedFiltersAssetsSubdomainVariant`,
+  `buildThenParseRoundTripWithAssetsPrefix`, `playerAndAssetsGeneratedTogetherForTwitch`
+
+**`SessionStateTests.swift`** (5 new in `"Session defaultBlockedDomains — Discord worker domain (discordapp.io)"`, now 96 total):
+- `defaultBlockedDomainsIncludeDiscordIO`
+- `allFourDiscordInfrastructureDomainsArePresent`
+- `discordIOIsDistinctFromDiscordNetAndDiscordApp`
+- `subdomainPrefixesGenerateDiscordIOEntries`
+- `defaultBlockedDomainsNoDuplicatesAfterDiscordIOAddition`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **`"embed"` prefix**: `embed.twitch.tv` is another Twitch embed subdomain (different
+    from `player.twitch.tv` — the embed page wrapper vs the player iframe itself). Low
+    priority since `player.` covers the iframe directly.
+  - **`"vod"` prefix**: `vod.twitch.tv` serves Twitch video-on-demand clips/archives.
+    External links (Reddit, Discord) often point to VOD URLs that bypass twitch.tv.
+  - **`"static"` prefix**: `static.twitch.tv` and `static-cdn.jtvnw.net` serve Twitch's
+    static content. Very low priority once player./assets. are blocked.
+  - **`jtvnw.net`**: Justin.tv's legacy CDN domain still used by Twitch for thumbnails and
+    media. A separate TLD from twitch.tv — blocking twitch.tv does NOT cover jtvnw.net.
+    Could add as an explicit domain entry alongside the existing twitch.tv entry.
+  - **`ConversationView` reset on mode change**: The `didAutoSend` flag should be reset
+    to `false` when `manager.mode` changes so re-opening reasoning for a different domain
+    triggers the auto-send again. Currently the flag persists across mode changes within
+    the same view lifetime. Low priority since the view is typically recreated.
+
+---
+
 ## Run 127 — 2026-06-15
 
 ### Shipped
