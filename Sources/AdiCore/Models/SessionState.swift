@@ -155,6 +155,11 @@ public struct Session: Sendable, Identifiable {
         "discord.com",
         "slack.com",
         "9gag.com",
+        // Messaging web clients (web.X bypasses native app blocks when apps are not running)
+        // WhatsApp Web (web.whatsapp.com) and Telegram Web (web.telegram.org) are full-featured
+        // browser clients — blocking only the native app bundle IDs leaves the web route open.
+        "whatsapp.com",
+        "telegram.org",
         // Sports
         "espn.com",
         "nba.com",

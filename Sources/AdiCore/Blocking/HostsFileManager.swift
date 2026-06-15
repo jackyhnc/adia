@@ -56,7 +56,19 @@ public actor HostsFileManager {
     //         through the API even when the main domain (twitter.com) is blocked in the browser.
     // "clips" blocks clips.twitch.tv: Twitch clip share URLs that bypass the top-level twitch.tv block.
     //         Clips are widely embedded/shared and would otherwise be viewable during a session.
-    internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = ["m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips"]
+    // "web"   blocks web.whatsapp.com (WhatsApp Web) and web.telegram.org (Telegram Web): both are
+    //         full-featured messaging clients that run entirely in the browser, bypassing the native
+    //         app block (net.whatsapp.WhatsApp / ru.keepcoder.Telegram) when those apps are closed.
+    // "app"   blocks app.slack.com (Slack's browser-based web app): the Slack web client lives at
+    //         app.slack.com, not slack.com, so blocking slack.com alone leaves the web app open.
+    // "go"    blocks go.twitch.tv and similar tracking-redirect subdomains: link shorteners and
+    //         campaign tracking use a "go." subdomain that resolves independently of the parent domain.
+    internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = [
+        "m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips",
+        "web",  // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
+        "app",  // Slack Web App (app.slack.com)
+        "go",   // tracking-redirect subdomains (go.twitch.tv etc.)
+    ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).
     internal nonisolated static func stripped(_ content: String) -> String {

@@ -361,6 +361,15 @@ struct HostsFileManagerTests {
                 "parseBlocked must return only bare canonical domains after api. rows are present")
     }
 
+    // MARK: - No duplicates guard (additionalBlockedSubdomainPrefixes integrity)
+
+    @Test func noDuplicatesInAdditionalPrefixesList() {
+        // Duplicate prefixes would bloat /etc/hosts with repeated entries for every domain.
+        let prefixes = HostsFileManager.additionalBlockedSubdomainPrefixes
+        #expect(Set(prefixes).count == prefixes.count,
+                "additionalBlockedSubdomainPrefixes must not contain duplicate entries")
+    }
+
     // MARK: - clips. subdomain blocking (Twitch clip bypass prevention)
 
     @Test func buildBlockIncludesClipsSubdomain() {
@@ -399,5 +408,132 @@ struct HostsFileManagerTests {
         let parsed = HostsFileManager.parseBlocked(block)
         #expect(Set(parsed) == Set(input),
                 "parseBlocked must return only bare canonical domains after clips. rows are present")
+    }
+
+    // MARK: - web. subdomain blocking (WhatsApp Web / Telegram Web bypass prevention)
+
+    @Test func buildBlockIncludesWebSubdomain() {
+        // web.whatsapp.com is WhatsApp's full browser client. Users whose native WhatsApp app
+        // is blocked can trivially switch to the web client without this prefix.
+        let block = HostsFileManager.buildBlock(domains: ["whatsapp.com"])
+        #expect(block.contains("127.0.0.1 web.whatsapp.com"),
+                "web.whatsapp.com must be blocked to prevent WhatsApp Web bypass")
+    }
+
+    @Test func webPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("web"),
+                "\"web\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func buildBlockIncludesTelegramWebSubdomain() {
+        // web.telegram.org is Telegram's browser client, separate from the native app.
+        let block = HostsFileManager.buildBlock(domains: ["telegram.org"])
+        #expect(block.contains("127.0.0.1 web.telegram.org"),
+                "web.telegram.org must be blocked to prevent Telegram Web bypass")
+    }
+
+    @Test func parseBlockedFiltersWebSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 whatsapp.com
+        127.0.0.1 www.whatsapp.com
+        127.0.0.1 web.whatsapp.com
+        127.0.0.1 m.whatsapp.com
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["whatsapp.com"])
+        #expect(!domains.contains("web.whatsapp.com"),
+                "parseBlocked must filter out synthetic web. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithWebPrefix() {
+        let input = ["whatsapp.com", "telegram.org"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 web.whatsapp.com"))
+        #expect(block.contains("127.0.0.1 web.telegram.org"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after web. rows are present")
+    }
+
+    // MARK: - app. subdomain blocking (Slack Web App bypass prevention)
+
+    @Test func buildBlockIncludesAppSubdomain() {
+        // app.slack.com is the URL of Slack's browser-based web app. Blocking slack.com alone
+        // leaves app.slack.com open — users can access the full Slack interface via the web.
+        let block = HostsFileManager.buildBlock(domains: ["slack.com"])
+        #expect(block.contains("127.0.0.1 app.slack.com"),
+                "app.slack.com must be blocked to prevent Slack Web App bypass")
+    }
+
+    @Test func appPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("app"),
+                "\"app\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func parseBlockedFiltersAppSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 slack.com
+        127.0.0.1 www.slack.com
+        127.0.0.1 app.slack.com
+        127.0.0.1 m.slack.com
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["slack.com"])
+        #expect(!domains.contains("app.slack.com"),
+                "parseBlocked must filter out synthetic app. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithAppPrefix() {
+        let input = ["slack.com", "discord.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 app.slack.com"))
+        #expect(block.contains("127.0.0.1 app.discord.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after app. rows are present")
+    }
+
+    // MARK: - go. subdomain blocking (tracking-redirect bypass prevention)
+
+    @Test func buildBlockIncludesGoSubdomain() {
+        // go.twitch.tv is used for campaign tracking redirects; links shared via Discord/Twitter
+        // may resolve through this subdomain even when twitch.tv itself is blocked.
+        let block = HostsFileManager.buildBlock(domains: ["twitch.tv"])
+        #expect(block.contains("127.0.0.1 go.twitch.tv"),
+                "go.twitch.tv must be blocked to prevent tracking-redirect bypass")
+    }
+
+    @Test func goPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("go"),
+                "\"go\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func parseBlockedFiltersGoSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 twitch.tv
+        127.0.0.1 www.twitch.tv
+        127.0.0.1 go.twitch.tv
+        127.0.0.1 m.twitch.tv
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["twitch.tv"])
+        #expect(!domains.contains("go.twitch.tv"),
+                "parseBlocked must filter out synthetic go. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithGoPrefix() {
+        let input = ["twitch.tv", "twitter.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 go.twitch.tv"))
+        #expect(block.contains("127.0.0.1 go.twitter.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after go. rows are present")
     }
 }
