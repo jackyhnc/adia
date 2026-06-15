@@ -4209,3 +4209,68 @@
   - Extend the default blocked domain list with additional time-sink sites.
   - Add `i.`, `api.` and similar bypass vectors if user research surfaces them.
   - Consider adding a UI indicator in Settings showing that mobile subdomains are auto-blocked.
+
+---
+
+## Run 110 — 2026-06-15
+
+### What shipped
+
+**Extended bypass protection + student/worker time-sink blocking**
+
+#### `SessionState.swift` — 10 new entries in `defaultBlockedDomains` (51 → 61 total)
+
+- **Short-link bypass domains** (circumvent parent domain blocks because they are completely separate domains):
+  - `youtu.be` — YouTube's short URL service. A youtube.com `/etc/hosts` entry does NOT block `https://youtu.be/…` links shared on social media — they resolve through a separate DNS name. Now blocked.
+  - `discord.gg` — Discord invite links. Discord blocks `discord.com` but `discord.gg` redirects into the app/web client and was previously unblocked. Now blocked.
+  - `t.co` — Twitter's link shortener. Any tweet link clicked or pasted would resolve through `t.co` even with `twitter.com` blocked. Now blocked.
+
+- **Games** (serious procrastination traps, especially for students):
+  - `chess.com` — web chess, extremely addictive, notorious focus-session killer.
+  - `lichess.org` — free/open chess, same problem.
+
+- **Reading & creative procrastination** (high-consumption, popular with students):
+  - `webtoons.com` — comic series with infinite scroll.
+  - `wattpad.com` — user-generated stories and fanfiction.
+  - `archiveofourown.org` — fanfiction archive, extremely popular and time-consuming.
+  - `mangadex.org` — manga reader.
+
+- **Professional procrastination**:
+  - `producthunt.com` — product discovery; commonly rationalised as "research" but rarely is.
+
+#### `HostsFileManager.swift` — 2 new entries in `additionalBlockedSubdomainPrefixes`
+
+- `"music"` — blocks `music.youtube.com` (YouTube Music). Previously, a user could open YouTube Music in the browser even with `youtube.com` blocked, because YouTube Music lives on a distinct subdomain that `/etc/hosts` does not cover without an explicit entry.
+- `"tv"` — blocks `tv.youtube.com` (YouTube TV). Same reasoning.
+
+The `additionalBlockedSubdomainPrefixes` array is now `["m", "mobile", "old", "amp", "en", "music", "tv"]`. All new entries are filtered by `parseBlocked` so `currentlyBlocked()` still returns only bare canonical domains — existing round-trip tests unaffected.
+
+#### Tests — 13 new `@Test` cases
+
+**`SessionStateTests.swift`** (7 new in new suite `"Session defaultBlockedDomains — bypass & student time sinks"`):
+- `defaultBlockedDomainsIncludeYouTubeBypassDomain` — youtu.be is present
+- `defaultBlockedDomainsIncludeDiscordGG` — discord.gg is present
+- `defaultBlockedDomainsIncludeTwitterLinkShortener` — t.co is present
+- `defaultBlockedDomainsIncludeGamingTimeSinks` — chess.com, lichess.org
+- `defaultBlockedDomainsIncludeStudentReadingTimeSinks` — webtoons.com, wattpad.com, archiveofourown.org, mangadex.org
+- `defaultBlockedDomainsIncludeProductHunt`
+- `bypassDomainsAreSeparateFromParentDomains` — asserts both the short-link domain AND its parent are in the list as independent entries
+
+**`HostsFileManagerTests.swift`** (6 new in existing `HostsFileManagerTests` suite):
+- `buildBlockIncludesMusicSubdomain` — music.youtube.com appears in generated block
+- `musicPrefixIsInAdditionalPrefixesList`
+- `buildBlockIncludesTVSubdomain` — tv.youtube.com appears in generated block
+- `tvPrefixIsInAdditionalPrefixesList`
+- `buildThenParseRoundTripWithMusicAndTVPrefixes` — extra rows don't corrupt parseBlocked output
+- `parseBlockedFiltersMusicAndTVSubdomainVariants` — music./tv. entries are stripped from parseBlocked results
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 original goals remain complete. BUILD_COMPLETE is present.
+- Possible further improvements:
+  - Add `i.` to `additionalBlockedSubdomainPrefixes` — blocks image-CDN subdomains (e.g. `i.reddit.com`).
+  - Add `preview.redd.it` and `v.redd.it` to `defaultBlockedDomains` — these Reddit CDN domains serve media and would bypass the reddit.com block if a user navigates to them directly.
+  - Add a Settings UI note explaining that mobile, AMP, music, and TV subdomains are auto-blocked alongside each base domain.
+  - Consider blocking `youtu.be`-like short domains for other platforms (e.g. `fb.me`, `instagr.am`).

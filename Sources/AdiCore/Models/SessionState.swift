@@ -187,6 +187,20 @@ public struct Session: Sendable, Identifiable {
         // Other time sinks
         "quora.com",
         "fandom.com",
+        // Bypass short-link domains (circumvent parent domain blocks if not listed separately)
+        "youtu.be",              // YouTube's short URL — bypasses the youtube.com block
+        "discord.gg",            // Discord invite links — separate domain from discord.com
+        "t.co",                  // Twitter's link shortener — follows the twitter.com block
+        // Games (serious procrastination trap for students and knowledge workers)
+        "chess.com",
+        "lichess.org",
+        // Reading & creative procrastination (popular with students)
+        "webtoons.com",
+        "wattpad.com",
+        "archiveofourown.org",   // fanfiction — extremely time-consuming
+        "mangadex.org",
+        // Professional procrastination
+        "producthunt.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

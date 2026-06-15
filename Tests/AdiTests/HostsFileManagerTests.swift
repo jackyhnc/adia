@@ -225,4 +225,59 @@ struct HostsFileManagerTests {
         let parsed = HostsFileManager.parseBlocked(block)
         #expect(Set(parsed) == Set(input))
     }
+
+    // MARK: - music / tv subdomain blocking (YouTube sub-services)
+
+    @Test func buildBlockIncludesMusicSubdomain() {
+        // music.youtube.com (YouTube Music) lives on a distinct subdomain not covered
+        // by blocking youtube.com alone — the "music" prefix closes this bypass.
+        let block = HostsFileManager.buildBlock(domains: ["youtube.com"])
+        #expect(block.contains("127.0.0.1 music.youtube.com"),
+                "music.youtube.com must be blocked to prevent YouTube Music bypass")
+    }
+
+    @Test func musicPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("music"),
+                "\"music\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func buildBlockIncludesTVSubdomain() {
+        // tv.youtube.com (YouTube TV) is another live YouTube subdomain that bypasses
+        // the youtube.com block without an explicit "tv" prefix entry.
+        let block = HostsFileManager.buildBlock(domains: ["youtube.com"])
+        #expect(block.contains("127.0.0.1 tv.youtube.com"),
+                "tv.youtube.com must be blocked to prevent YouTube TV bypass")
+    }
+
+    @Test func tvPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("tv"),
+                "\"tv\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func buildThenParseRoundTripWithMusicAndTVPrefixes() {
+        // Verify that the extra subdomain rows don't corrupt parseBlocked's output.
+        let input = ["youtube.com", "discord.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 music.youtube.com"))
+        #expect(block.contains("127.0.0.1 tv.youtube.com"))
+        #expect(block.contains("127.0.0.1 music.discord.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input), "parseBlocked must still return only bare domains after music/tv rows are present")
+    }
+
+    @Test func parseBlockedFiltersMusicAndTVSubdomainVariants() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 youtube.com
+        127.0.0.1 www.youtube.com
+        127.0.0.1 m.youtube.com
+        127.0.0.1 music.youtube.com
+        127.0.0.1 tv.youtube.com
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["youtube.com"])
+        #expect(!domains.contains("music.youtube.com"))
+        #expect(!domains.contains("tv.youtube.com"))
+    }
 }

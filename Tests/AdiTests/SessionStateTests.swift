@@ -332,6 +332,59 @@ struct DefaultBlockedDomainsCoverageTests {
     }
 }
 
+@Suite("Session defaultBlockedDomains — bypass & student time sinks")
+struct DefaultBlockedDomainsBypassTests {
+
+    @Test func defaultBlockedDomainsIncludeYouTubeBypassDomain() {
+        // youtu.be is a separate domain — youtube.com block does NOT cover it.
+        #expect(Session.defaultBlockedDomains.contains("youtu.be"),
+                "youtu.be must be blocked: YouTube short-links bypass the youtube.com /etc/hosts entry")
+    }
+
+    @Test func defaultBlockedDomainsIncludeDiscordGG() {
+        // discord.gg hosts invite links and is a completely separate domain from discord.com.
+        #expect(Session.defaultBlockedDomains.contains("discord.gg"),
+                "discord.gg must be blocked: Discord invite links bypass the discord.com entry")
+    }
+
+    @Test func defaultBlockedDomainsIncludeTwitterLinkShortener() {
+        // t.co is Twitter's link shortener — follows users out of the twitter.com block.
+        #expect(Session.defaultBlockedDomains.contains("t.co"),
+                "t.co must be blocked: Twitter short-links bypass the twitter.com entry")
+    }
+
+    @Test func defaultBlockedDomainsIncludeGamingTimeSinks() {
+        let domains = Session.defaultBlockedDomains
+        for site in ["chess.com", "lichess.org"] {
+            #expect(domains.contains(site),
+                    "expected \(site) in default blocked domains (addictive game for students/workers)")
+        }
+    }
+
+    @Test func defaultBlockedDomainsIncludeStudentReadingTimeSinks() {
+        let domains = Session.defaultBlockedDomains
+        for site in ["webtoons.com", "wattpad.com", "archiveofourown.org", "mangadex.org"] {
+            #expect(domains.contains(site),
+                    "expected \(site) in default blocked domains (high-consumption reading procrastination)")
+        }
+    }
+
+    @Test func defaultBlockedDomainsIncludeProductHunt() {
+        #expect(Session.defaultBlockedDomains.contains("producthunt.com"),
+                "producthunt.com must be blocked: professional procrastination disguised as research")
+    }
+
+    @Test func bypassDomainsAreSeparateFromParentDomains() {
+        // Guard: the short-link domains must not also have their parent in the list
+        // at a subdomain level — they are genuinely independent entries.
+        let domains = Set(Session.defaultBlockedDomains)
+        #expect(domains.contains("youtu.be") && domains.contains("youtube.com"),
+                "both youtu.be and youtube.com must be present as independent entries")
+        #expect(domains.contains("discord.gg") && domains.contains("discord.com"),
+                "both discord.gg and discord.com must be present as independent entries")
+    }
+}
+
 @Suite("Session defaultBlockedApps")
 struct DefaultBlockedAppsTests {
 
