@@ -1,5 +1,75 @@
 # Adia — Build Progress
 
+## Run 126 — 2026-06-15
+
+### Shipped
+
+**feat: Discord CDN block (cdn. prefix + discordapp.com) + gaming store prefix (+15 tests)**
+
+#### `HostsFileManager.swift` — 2 new entries in `additionalBlockedSubdomainPrefixes`
+
+`additionalBlockedSubdomainPrefixes` is now **15 entries**:
+`["m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips", "web", "app", "go", "cdn", "store"]`
+
+- **`"cdn"`** — Closes the Discord CDN bypass. Discord serves avatars, images, and file
+  attachments from `cdn.discordapp.com`, a completely separate hostname from `discord.com`.
+  A user whose Discord app and `discord.com` are both blocked can still access Discord media
+  via direct CDN links (shared in iMessages, emails, etc.) without this prefix. The "cdn"
+  prefix auto-generates `cdn.X` alongside every domain in the blocklist, so adding
+  `discordapp.com` to `defaultBlockedDomains` immediately produces the `cdn.discordapp.com`
+  entry. The prefix also covers other CDN subdomains for blocked platforms.
+
+- **`"store"`** — Closes the Steam and Epic Games store subdomain bypass.
+  `store.steampowered.com` and `store.epicgames.com` are the actual game catalog / storefront
+  pages that external links (Reddit, Discord, browser bookmarks) target directly. Blocking the
+  root domains `steampowered.com` / `epicgames.com` handles the root and `www.` subdomain, but
+  `store.X` resolves independently and was previously left open.
+
+#### `SessionState.swift` — 1 new entry in `defaultBlockedDomains`
+
+- **`discordapp.com`** — Discord's infrastructure/CDN domain, separate from `discord.com`.
+  Added to the Messaging & community section alongside the existing `discord.com` and
+  `discord.gg` entries. With the new "cdn" prefix, this automatically generates the
+  `cdn.discordapp.com` block entry that closes the CDN bypass.
+
+#### Tests — 15 new `@Test` cases
+
+**`HostsFileManagerTests.swift`** (10 new — cdn. and store. each get 5 tests):
+- **cdn. prefix** (5): `buildBlockIncludesCdnSubdomain`, `cdnPrefixIsInAdditionalPrefixesList`,
+  `buildBlockIncludesDiscordAppCdnAlongsideDiscordCom`, `parseBlockedFiltersCdnSubdomainVariant`,
+  `buildThenParseRoundTripWithCdnPrefix`
+- **store. prefix** (5): `buildBlockIncludesStoreSubdomainForSteam`, `buildBlockIncludesStoreSubdomainForEpic`,
+  `storePrefixIsInAdditionalPrefixesList`, `parseBlockedFiltersStoreSubdomainVariant`,
+  `buildThenParseRoundTripWithStorePrefix`
+
+**`SessionStateTests.swift`** (5 new in `"Session defaultBlockedDomains — Discord CDN (discordapp.com)"`):
+- `defaultBlockedDomainsIncludeDiscordApp`
+- `discordComAndDiscordAppAreBothPresent`
+- `cdnSubdomainPrefixGeneratesDiscordCDNEntry` — integration check across SessionState + HostsFileManager
+- `discordAppDomainAndDiscordGGBothPresentAlongsideDiscordCom`
+- `defaultBlockedDomainsNoDuplicatesAfterDiscordAppAddition`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **`"media"` prefix**: `media.discordapp.com` serves embedded video and GIF previews from
+    Discord separately from `cdn.discordapp.com`. Adding "media" would close this secondary
+    Discord CDN bypass. Lower priority since cdn. covers the main attack vector.
+  - **`"lite"` prefix**: `lite.tiktok.com` exists in some regions as a stripped-down version
+    of TikTok. Adding "lite" would auto-generate `lite.X` for every blocked domain. Low risk
+    since "lite" is not a common legitimate subdomain for productivity tools.
+  - **TikTok Catalyst / alternate bundle ID**: Verify whether the current TikTok macOS app uses
+    a bundle ID beyond the iOS sideload — check Activity Monitor on a Mac with TikTok installed.
+  - **`discordapp.net`**: Discord uses `discordapp.net` for their voice/WebRTC infrastructure.
+    Not easily accessible via browser, so low-priority for web blocking.
+  - **`ConversationView` auto-send reliability**: Replace the 300 ms heuristic with `.onAppear`
+    on the first AI `MessageBubble` for a more reliable initial-message trigger.
+
+---
+
 ## Run 125 — 2026-06-15
 
 ### Shipped

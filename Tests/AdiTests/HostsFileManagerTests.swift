@@ -536,4 +536,101 @@ struct HostsFileManagerTests {
         #expect(Set(parsed) == Set(input),
                 "parseBlocked must return only bare canonical domains after go. rows are present")
     }
+
+    // MARK: - cdn. subdomain blocking (Discord CDN / media-CDN bypass prevention)
+
+    @Test func buildBlockIncludesCdnSubdomain() {
+        // cdn.discordapp.com serves Discord avatars, images, and file attachments independently
+        // of discord.com — blocking discord.com alone leaves the CDN open for direct-link access.
+        let block = HostsFileManager.buildBlock(domains: ["discordapp.com"])
+        #expect(block.contains("127.0.0.1 cdn.discordapp.com"),
+                "cdn.discordapp.com must be blocked to prevent Discord CDN bypass")
+    }
+
+    @Test func cdnPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("cdn"),
+                "\"cdn\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func buildBlockIncludesDiscordAppCdnAlongsideDiscordCom() {
+        // Both discord.com (main site) and discordapp.com (CDN) must be blocked together.
+        // cdn.discordapp.com is the concrete bypass vector closed by this combination.
+        let block = HostsFileManager.buildBlock(domains: ["discord.com", "discordapp.com"])
+        #expect(block.contains("127.0.0.1 discord.com"))
+        #expect(block.contains("127.0.0.1 discordapp.com"))
+        #expect(block.contains("127.0.0.1 cdn.discordapp.com"))
+    }
+
+    @Test func parseBlockedFiltersCdnSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 discordapp.com
+        127.0.0.1 www.discordapp.com
+        127.0.0.1 cdn.discordapp.com
+        127.0.0.1 m.discordapp.com
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["discordapp.com"])
+        #expect(!domains.contains("cdn.discordapp.com"),
+                "parseBlocked must filter out synthetic cdn. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithCdnPrefix() {
+        let input = ["discordapp.com", "discord.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 cdn.discordapp.com"))
+        #expect(block.contains("127.0.0.1 cdn.discord.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after cdn. rows are present")
+    }
+
+    // MARK: - store. subdomain blocking (Steam / Epic Games store bypass prevention)
+
+    @Test func buildBlockIncludesStoreSubdomainForSteam() {
+        // store.steampowered.com is the direct URL users navigate to for Steam's game catalog.
+        // Blocking steampowered.com alone redirects the root, but store. is a distinct subdomain
+        // that external links (Reddit, Discord) often target directly.
+        let block = HostsFileManager.buildBlock(domains: ["steampowered.com"])
+        #expect(block.contains("127.0.0.1 store.steampowered.com"),
+                "store.steampowered.com must be blocked to prevent Steam store bypass")
+    }
+
+    @Test func buildBlockIncludesStoreSubdomainForEpic() {
+        // store.epicgames.com is the Epic Games Store's storefront; external links point here directly.
+        let block = HostsFileManager.buildBlock(domains: ["epicgames.com"])
+        #expect(block.contains("127.0.0.1 store.epicgames.com"),
+                "store.epicgames.com must be blocked to prevent Epic Games store bypass")
+    }
+
+    @Test func storePrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("store"),
+                "\"store\" must be in additionalBlockedSubdomainPrefixes")
+    }
+
+    @Test func parseBlockedFiltersStoreSubdomainVariant() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 steampowered.com
+        127.0.0.1 www.steampowered.com
+        127.0.0.1 store.steampowered.com
+        127.0.0.1 m.steampowered.com
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["steampowered.com"])
+        #expect(!domains.contains("store.steampowered.com"),
+                "parseBlocked must filter out synthetic store. entries")
+    }
+
+    @Test func buildThenParseRoundTripWithStorePrefix() {
+        let input = ["steampowered.com", "epicgames.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 store.steampowered.com"))
+        #expect(block.contains("127.0.0.1 store.epicgames.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input),
+                "parseBlocked must return only bare canonical domains after store. rows are present")
+    }
 }

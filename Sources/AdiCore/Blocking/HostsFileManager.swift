@@ -63,11 +63,19 @@ public actor HostsFileManager {
     //         app.slack.com, not slack.com, so blocking slack.com alone leaves the web app open.
     // "go"    blocks go.twitch.tv and similar tracking-redirect subdomains: link shorteners and
     //         campaign tracking use a "go." subdomain that resolves independently of the parent domain.
+    // "cdn"   blocks cdn.discordapp.com (Discord's media/attachment CDN): avatars, images, and file
+    //         attachments are served from cdn.discordapp.com independently of discord.com — users can
+    //         access Discord media via direct CDN links even when discord.com is blocked in the browser.
+    // "store" blocks store.steampowered.com and store.epicgames.com: the actual store pages that users
+    //         navigate directly to for browsing and purchasing games; the root domains are already blocked
+    //         but store.X is a common direct-link target that resolves as a distinct subdomain.
     internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = [
         "m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips",
-        "web",  // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
-        "app",  // Slack Web App (app.slack.com)
-        "go",   // tracking-redirect subdomains (go.twitch.tv etc.)
+        "web",   // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
+        "app",   // Slack Web App (app.slack.com)
+        "go",    // tracking-redirect subdomains (go.twitch.tv etc.)
+        "cdn",   // media/attachment CDN subdomains (cdn.discordapp.com etc.)
+        "store", // game store pages (store.steampowered.com, store.epicgames.com)
     ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).

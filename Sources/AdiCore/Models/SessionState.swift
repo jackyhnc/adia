@@ -153,6 +153,11 @@ public struct Session: Sendable, Identifiable {
         "bandcamp.com",
         // Messaging & community
         "discord.com",
+        // discordapp.com is Discord's infrastructure/CDN domain — separate from discord.com.
+        // cdn.discordapp.com serves avatars, images, and file attachments; users can access
+        // Discord media via direct CDN links even when discord.com itself is blocked in the browser.
+        // The "cdn" subdomain prefix auto-generates cdn.discordapp.com alongside every domain entry.
+        "discordapp.com",
         "slack.com",
         "9gag.com",
         // Messaging web clients (web.X bypasses native app blocks when apps are not running)
