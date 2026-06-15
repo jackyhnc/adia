@@ -1,5 +1,42 @@
 # Adia — Build Progress
 
+## Run 120 — 2026-06-15
+
+### Shipped
+- **feat: "due at noon" and "due at end of" deadline keyword variants (+3 tests)**
+
+  Added two explicit substring checks to `extractTaskKeyword` so natural-language
+  time words also trigger the "deadline" urgency catch-all in CalloutManager:
+  - `lower.contains("due at noon")` — catches "assignment due at noon", "submit by class, due at noon"
+  - `lower.contains("due at end of")` — catches "project due at end of day", "this is due at end of class"
+
+  The existing `\bdue at \d` regex only matched digit-started times ("due at 5pm",
+  "due at 11:59"). "due at noon" and "due at end of day" were missed.
+  Subject keywords still win when present ("essay due at noon" → essay, not deadline).
+
+  **Tests (+3)**: `extractTaskKeywordDueAtNoon`, `extractTaskKeywordDueAtEndOfDay`,
+  `extractTaskKeywordDueAtNoonYieldsToEssay`.
+
+  **Recovery note**: prior agents committed 68 runs (52–119) to a detached HEAD
+  that wasn't pushed to origin. This run discovered origin/main already had those
+  commits (previous agents force-pushed). Local main was fast-forwarded to run 119
+  and this commit added on top.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All 14 original goals remain complete. Possible further improvements:
+  - Focus score history chart: mini sparkline or heatmap in History tab cells — colored
+    cell intensity based on average session focus score. Would live inside `SessionRecordRow`.
+  - "due at dusk" / "due at dawn" — not currently caught. Could add as explicit substrings
+    if user research shows these are common natural-language patterns.
+  - `timerExpiredRearmTask` persistence test: verify that if the timer expired before a
+    crash/relaunch, the re-arm nudge fires on restore (remaining = 0 →
+    `handleDurationExpired()`). Unit test only.
+
+---
+
 ## Run 119 — 2026-06-15
 
 ### Shipped
