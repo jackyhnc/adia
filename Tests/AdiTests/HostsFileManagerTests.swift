@@ -180,4 +180,41 @@ struct HostsFileManagerTests {
         #expect(!reBlocked.contains("youtube.com"))
         #expect(reBlocked.contains("reddit.com"))
     }
+
+    // MARK: - AMP subdomain blocking
+
+    @Test func buildBlockIncludesAmpSubdomain() {
+        let block = HostsFileManager.buildBlock(domains: ["reddit.com"])
+        #expect(block.contains("127.0.0.1 amp.reddit.com"),
+                "amp.reddit.com must be blocked to prevent Google AMP bypass")
+    }
+
+    @Test func ampSubdomainPrefixIsInAdditionalPrefixesList() {
+        #expect(HostsFileManager.additionalBlockedSubdomainPrefixes.contains("amp"))
+    }
+
+    @Test func parseBlockedFiltersAmpSubdomain() {
+        let content = """
+        # adia-block-begin
+        127.0.0.1 reddit.com
+        127.0.0.1 www.reddit.com
+        127.0.0.1 m.reddit.com
+        127.0.0.1 mobile.reddit.com
+        127.0.0.1 old.reddit.com
+        127.0.0.1 amp.reddit.com
+        # adia-block-end
+        """
+        let domains = HostsFileManager.parseBlocked(content)
+        #expect(domains == ["reddit.com"])
+        #expect(!domains.contains("amp.reddit.com"))
+    }
+
+    @Test func buildThenParseRoundTripWithAmp() {
+        let input = ["reddit.com", "theguardian.com"]
+        let block = HostsFileManager.buildBlock(domains: input)
+        #expect(block.contains("127.0.0.1 amp.reddit.com"))
+        #expect(block.contains("127.0.0.1 amp.theguardian.com"))
+        let parsed = HostsFileManager.parseBlocked(block)
+        #expect(Set(parsed) == Set(input))
+    }
 }

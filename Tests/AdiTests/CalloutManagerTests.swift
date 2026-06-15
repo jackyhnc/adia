@@ -1027,4 +1027,87 @@ struct CalloutManagerTests {
                     "tier 3 research messages must not use passive 'open your research' phrasing")
         }
     }
+
+    // MARK: - Keyword additions: interview
+
+    @Test func extractTaskKeywordFromInterview() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for my job interview") == "interview")
+        #expect(CalloutManager.extractTaskKeyword(from: "practice coding interview questions") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "review for tomorrow's interviews") == "interview")
+        #expect(CalloutManager.extractTaskKeyword(from: "mock interview prep") == "interview")
+    }
+
+    @Test func extractTaskKeywordCodeInterviewMapsToCode() {
+        // "code" check runs before "interview" — coding interview prep should map to code.
+        #expect(CalloutManager.extractTaskKeyword(from: "practice coding interview questions") == "code")
+    }
+
+    @Test func taskAwareCalloutsInterviewContainsKeyword() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "interview", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) interview messages must not be empty")
+                let interviewWords = ["interview", "Interview", "prep", "Prep", "practice", "Practice"]
+                #expect(msgs.allSatisfy { msg in interviewWords.contains { msg.contains($0) } },
+                        "tier \(tier) interview messages must reference interview or practice")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsInterviewTier3UsesActionPhrasing() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "interview", tier: 3)
+            let actionWords = ["Go", "go", "prep", "Prep", "practice", "Practice", "coming"]
+            #expect(tier3.contains { msg in actionWords.contains { msg.contains($0) } },
+                    "tier 3 interview messages must include action-oriented phrasing")
+        }
+    }
+
+    // MARK: - Keyword additions: video
+
+    @Test func extractTaskKeywordFromVideo() {
+        #expect(CalloutManager.extractTaskKeyword(from: "edit the YouTube video") == "video")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish editing the footage") == "video")
+        #expect(CalloutManager.extractTaskKeyword(from: "cut the film for class") == "video")
+        #expect(CalloutManager.extractTaskKeyword(from: "filming the event recap") == "video")
+    }
+
+    @Test func extractTaskKeywordVideoDoesNotMatchVideoGameOrInterviewVideo() {
+        // "video interview" — "interview" check runs before "video"; should map to interview.
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for my video interview") == "interview")
+    }
+
+    @Test func taskAwareCalloutsVideoContainsKeyword() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "video", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) video messages must not be empty")
+                let videoWords = ["video", "Video", "edit", "Edit"]
+                #expect(msgs.allSatisfy { msg in videoWords.contains { msg.contains($0) } },
+                        "tier \(tier) video messages must reference video or editing")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsVideoTier3AvoidsOpenPhrase() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "video", tier: 3)
+            #expect(tier3.allSatisfy { !$0.contains("open your video") },
+                    "tier 3 video messages must not use passive 'open your video' phrasing")
+        }
+    }
+
+    @Test func taskAwareCalloutsVideoTier3UsesActionPhrasing() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let tier3 = manager.taskAwareCallouts(keyword: "video", tier: 3)
+            let actionWords = ["Finish", "finish", "editing", "Editing", "deadline", "Deadline"]
+            #expect(tier3.contains { msg in actionWords.contains { msg.contains($0) } },
+                    "tier 3 video messages must include action-oriented phrasing")
+        }
+    }
 }

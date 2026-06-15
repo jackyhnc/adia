@@ -160,6 +160,12 @@ public final class CalloutManager {
         if word("proposal") || word("proposals") {
             return "proposal"
         }
+        if word("interview") || word("interviews") {
+            return "interview"
+        }
+        if word("video") || word("editing") || word("footage") || word("film") || word("filming") {
+            return "video"
+        }
         if word("blog") || word("newsletter") {
             return "writing"
         }
@@ -377,6 +383,48 @@ public final class CalloutManager {
                 return [
                     "CLOSE THIS. Go finish your proposal.",
                     "your proposal deadline isn't moving.",
+                ]
+            }
+        }
+        // "interview" — frame around preparation, not "your interview" (which sounds like it's happening now).
+        if keyword == "interview" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to interview prep.",
+                    "your interview isn't going to prep itself.",
+                    "close this and practice.",
+                ]
+            case 2:
+                return [
+                    "stop putting off interview prep.",
+                    "you need to be practicing, not browsing.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Go prep for that interview.",
+                    "your interview is coming — this isn't helping.",
+                ]
+            }
+        }
+        // "video" — covers video editing, filming, post-production.
+        if keyword == "video" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your video.",
+                    "that video isn't going to edit itself.",
+                    "close this and keep editing.",
+                ]
+            case 2:
+                return [
+                    "stop putting off your video.",
+                    "you need to be editing, not watching.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Finish the video.",
+                    "your video deadline isn't moving.",
                 ]
             }
         }

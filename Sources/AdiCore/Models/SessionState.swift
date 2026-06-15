@@ -194,6 +194,10 @@ public struct Session: Sendable, Identifiable {
         BlockedApp(id: "com.tencent.xinWeChat",          name: "WeChat"),
         BlockedApp(id: "com.apple.Music",                name: "Apple Music"),
         BlockedApp(id: "com.apple.podcasts",             name: "Podcasts"),
+        BlockedApp(id: "com.netflix.Netflix",            name: "Netflix"),
+        BlockedApp(id: "com.reddit.Reddit",              name: "Reddit"),
+        BlockedApp(id: "com.mojang.minecraftlauncher",   name: "Minecraft"),
+        BlockedApp(id: "com.twitter.twitter-mac",        name: "Twitter"),
     ]
 
     public static var defaultBlockedAppBundleIDs: [String] {

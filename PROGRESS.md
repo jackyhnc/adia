@@ -1,5 +1,57 @@
 # Adia — Build Progress
 
+## Run 114 — 2026-06-15
+
+### Shipped
+- **AMP subdomain blocking, interview/video callout keywords, Netflix/Reddit/Minecraft/Twitter blocked apps (+14 tests)**
+
+  Three focused improvements to the blocking and callout systems:
+
+  **(a) Google AMP bypass fix (HostsFileManager.swift)**
+  - Added `"amp"` to `additionalBlockedSubdomainPrefixes` (was `["m", "mobile", "old"]`, now includes `"amp"`).
+  - Prevents users from accessing blocked sites via Google AMP URLs (e.g. `amp.reddit.com`).
+  - `parseBlocked` already filters synthetic prefixes, so round-trips still return bare canonical domains.
+  - **4 new tests**: `buildBlockIncludesAmpSubdomain`, `ampSubdomainPrefixIsInAdditionalPrefixesList`,
+    `parseBlockedFiltersAmpSubdomain`, `buildThenParseRoundTripWithAmp`.
+
+  **(b) New task keywords: "interview" and "video" (CalloutManager.swift)**
+  - `extractTaskKeyword` now recognizes:
+    - `"interview"` / `"interviews"` → keyword `"interview"` (checked before "video" so "video interview" → interview)
+    - `"video"` / `"editing"` / `"footage"` / `"film"` / `"filming"` → keyword `"video"`
+  - `taskAwareCallouts` handlers for both new keywords (tier 1/2/3 with natural action phrasing).
+    - interview tier 3: "CLOSE THIS. Go prep for that interview." / "your interview is coming — this isn't helping."
+    - video tier 3: "CLOSE THIS. Finish the video." / "your video deadline isn't moving."
+  - **10 new tests**: extractTaskKeywordFromInterview, extractTaskKeywordCodeInterviewMapsToCode,
+    taskAwareCalloutsInterviewContainsKeyword, taskAwareCalloutsInterviewTier3UsesActionPhrasing,
+    extractTaskKeywordFromVideo, extractTaskKeywordVideoDoesNotMatchVideoGameOrInterviewVideo,
+    taskAwareCalloutsVideoContainsKeyword, taskAwareCalloutsVideoTier3AvoidsOpenPhrase,
+    taskAwareCalloutsVideoTier3UsesActionPhrasing (+ 1 priority-ordering guard).
+
+  **(c) More blocked apps (SessionState.swift)**
+  - Added 4 new entries to `defaultBlockedApps`:
+    - `com.netflix.Netflix` → Netflix
+    - `com.reddit.Reddit` → Reddit (macOS app)
+    - `com.mojang.minecraftlauncher` → Minecraft
+    - `com.twitter.twitter-mac` → Twitter
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - Add "resume" / "cv" keyword for resume-writing sessions — skipped this run to avoid
+    false-positive on "resume the session" task phrasing (word-boundary regex helps but
+    "resume" is genuinely ambiguous).
+  - Add `"en"` subdomain prefix to block `en.wikipedia.org` when Wikipedia is in the custom
+    blocked list — low priority since Wikipedia isn't in the default list.
+  - `ConversationView` auto-send: the 300 ms heuristic could be replaced with `.onAppear`
+    on the first AI `MessageBubble` for a more reliable trigger.
+  - Verify the `com.twitter.twitter-mac` bundle ID is the correct one for the Mac Twitter/X app
+    (may have changed to `com.twitter.twitter` or `com.x.x`).
+
+---
+
 ## Run 113 — 2026-06-14
 
 ### Shipped

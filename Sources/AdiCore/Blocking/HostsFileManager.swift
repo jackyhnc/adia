@@ -48,7 +48,8 @@ public actor HostsFileManager {
     // Subdomain prefixes added synthetically alongside every bare domain in the block.
     // Prevents bypass via mobile/alternative site variants (m.reddit.com, old.reddit.com, etc.).
     // parseBlocked skips these so round-trips only return canonical bare domains.
-    internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = ["m", "mobile", "old"]
+    // "amp" prevents the Google AMP bypass: amp.reddit.com would otherwise bypass the reddit.com block.
+    internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = ["m", "mobile", "old", "amp"]
 
     // Walks lines, discarding everything between the adia markers (inclusive).
     internal nonisolated static func stripped(_ content: String) -> String {
