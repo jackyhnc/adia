@@ -1,5 +1,44 @@
 # Adia — Build Progress
 
+## Run 121 — 2026-06-15
+
+### Shipped
+- **feat: dedicated callout handlers for "design" and "report" keywords (+4 tests)**
+
+  Both keywords previously fell through the generic template, producing awkward tier-3
+  messages: "CLOSE THIS. open your design." and "CLOSE THIS. open your report." — both
+  sound like opening a Finder file, not doing work.
+
+  **`design` dedicated handler (CalloutManager.swift)**
+  - T1: "get back to your design.", "that design isn't going to finish itself.", "close this and keep designing."
+  - T2: "stop avoiding your design.", "you need to be designing, not browsing."
+  - T3: "CLOSE THIS. Go finish the design.", "your design won't complete itself."
+
+  **`report` dedicated handler (CalloutManager.swift)**
+  - T1: "get back to your report.", "that report isn't going to write itself.", "this isn't your report."
+  - T2: "stop avoiding your report.", "you need to be writing your report, not browsing."
+  - T3: "CLOSE THIS. Go finish the report.", "your report deadline isn't moving."
+
+  **4 new tests (CalloutManagerTests.swift)**
+  - `taskAwareCalloutsDesignTier3AvoidsOpenPhrase` — no "open your design" in tier 3
+  - `taskAwareCalloutsDesignTier3UsesActionPhrasing` — tier 3 contains action word
+  - `taskAwareCalloutsReportTier3AvoidsOpenPhrase` — no "open your report" in tier 3
+  - `taskAwareCalloutsReportTier3UsesActionPhrasing` — tier 3 contains action word
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - `ConversationView` auto-send: the 300 ms heuristic could be replaced with
+    `.onAppear` on the first AI `MessageBubble` — more robust timing.
+  - Consider adding `npr.org`, `apnews.com` to the news procrastination block.
+  - Verify the Mac Twitter/X bundle ID: `com.twitter.twitter-mac` may have changed
+    to `com.twitter.twitter` or `com.x.x`.
+
+---
+
 ## Run 120 — 2026-06-15
 
 ### Shipped
