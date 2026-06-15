@@ -1,5 +1,46 @@
 # Adia — Build Progress
 
+## Run 119 — 2026-06-15
+
+### Shipped
+- **feat: ConversationView auto-send via onAppear + "due at \<time>" deadline keyword (+4 tests)**
+
+  **(a) ConversationView auto-send reliability (ConversationView.swift)**
+  - Removed `.task(id: manager.messages.first?.id)` modifier and the 300ms
+    `Task.sleep` heuristic from `autoSendOpeningIfNeeded`.
+  - Added `.onAppear` on the first `MessageBubble` instead: SwiftUI fires `.onAppear`
+    only after the view is actually rendered and on-screen, so it is a reliable signal
+    that the panel is visible — no fixed sleep needed.
+  - `autoSendOpeningIfNeeded()` is now synchronous. Guard is unchanged:
+    `reasoning(domain)` mode + non-empty domain + `messages.count == 1` + `!isLoading`.
+
+  **(b) "due at \<time>" deadline keyword (CalloutManager.swift)**
+  - Added `\bdue at \d` regex to the deadline urgency catch-all.
+  - Catches: "due at 5pm", "due at 3am", "due at 11:59", "submit due at 3".
+  - The `\b` word boundary prevents false positives like "residue at 3".
+  - "due at midnight" was already covered by a substring check; the regex covers all
+    other time-of-day patterns without duplicating it.
+
+  **Tests (+4)**: `extractTaskKeywordFromDueAtHour`, `extractTaskKeywordFromDueAtSpecificTime`,
+  `extractTaskKeywordDueAtNoFalsePositiveResidue`, `extractTaskKeywordDueAtYieldsToEssay`.
+
+### Blocked
+- Nothing. All 14 GOAL.md items remain checked off.
+
+### Next agent
+- All 14 original goals remain complete. Possible further improvements:
+  - Focus score history chart: mini sparkline or heatmap in History tab cells — colored
+    cell intensity based on average session focus score from `session.onTaskChecks /
+    session.totalChecks`. Would live inside `SessionRecordRow` as a narrow colored pill.
+  - Persist `timerExpiredRearmTask` UX test: verify that if the timer expired before a
+    crash/relaunch, the re-arm nudge fires on restore (remaining = 0 →
+    `handleDurationExpired()`). Unit test only.
+  - "due at noon" / "due at end of day" — not covered by `\bdue at \d` since these
+    don't start with a digit. Could add `lower.contains("due at noon")` and
+    `lower.contains("due at end of")` as explicit substring checks.
+
+---
+
 ## Run 118 — 2026-06-15
 
 ### Shipped
