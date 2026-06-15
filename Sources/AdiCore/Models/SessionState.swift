@@ -171,6 +171,9 @@ public struct Session: Sendable, Identifiable {
         // Tech news (procrastination in disguise)
         "hacker-news.firebaseapp.com",
         "news.ycombinator.com",
+        "theverge.com",              // tech/culture publication: high-engagement, easy "just one article" trap
+        "techcrunch.com",            // startup news: intellectually justifiable but rarely task-relevant
+        "wired.com",                 // long-form tech culture: same "productive-feeling" trap as medium.com
         // Professional procrastination
         "linkedin.com",
         // Shopping
@@ -238,7 +241,12 @@ public struct Session: Sendable, Identifiable {
         BlockedApp(id: "com.netflix.Netflix",            name: "Netflix"),
         BlockedApp(id: "com.reddit.Reddit",              name: "Reddit"),
         BlockedApp(id: "com.mojang.minecraftlauncher",   name: "Minecraft"),
-        BlockedApp(id: "com.twitter.twitter-mac",        name: "Twitter"),
+        // Twitter/X ships two distinct bundle IDs on macOS:
+        // - com.twitter.twitter-mac: the legacy native Mac app (pre-2022)
+        // - com.atebits.Tweetie2: the Mac Catalyst port of the iOS app (current X app)
+        // Both must be listed to catch whichever variant is installed.
+        BlockedApp(id: "com.twitter.twitter-mac",        name: "Twitter (legacy)"),
+        BlockedApp(id: "com.atebits.Tweetie2",           name: "X / Twitter"),
     ]
 
     public static var defaultBlockedAppBundleIDs: [String] {

@@ -406,6 +406,16 @@ struct DefaultBlockedDomainsBypassTests {
                     "expected \(site) in default blocked domains (major news procrastination sink)")
         }
     }
+
+    @Test func defaultBlockedDomainsIncludeTechNewsSites() {
+        // theverge.com, techcrunch.com, wired.com are "intellectual" procrastination:
+        // they feel productive to read but are rarely task-relevant during a session.
+        let domains = Session.defaultBlockedDomains
+        for site in ["theverge.com", "techcrunch.com", "wired.com"] {
+            #expect(domains.contains(site),
+                    "expected \(site) in default blocked domains (tech-news procrastination sink)")
+        }
+    }
 }
 
 @Suite("Session defaultBlockedDomains — social short-links and Reddit CDN bypass")
@@ -505,6 +515,18 @@ struct DefaultBlockedAppsTests {
     @Test func defaultBlockedAppsContainsPodcasts() {
         #expect(Session.defaultBlockedAppBundleIDs.contains("com.apple.podcasts"),
                 "Podcasts must be blocked by default (passive-listening distraction)")
+    }
+
+    @Test func defaultBlockedAppsContainsTwitterLegacyAndCatalyst() {
+        // Twitter/X ships two different bundle IDs on macOS depending on which version
+        // is installed. Both must be present to cover all users:
+        // - com.twitter.twitter-mac: the old native Mac app (pre-2022)
+        // - com.atebits.Tweetie2: the current Mac Catalyst port of the iOS X app
+        let ids = Session.defaultBlockedAppBundleIDs
+        #expect(ids.contains("com.twitter.twitter-mac"),
+                "com.twitter.twitter-mac must be blocked (legacy native Mac Twitter)")
+        #expect(ids.contains("com.atebits.Tweetie2"),
+                "com.atebits.Tweetie2 must be blocked (current Mac Catalyst X app)")
     }
 
     @Test func defaultBlockedAppsNoDuplicates() {
