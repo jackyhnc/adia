@@ -1,5 +1,98 @@
 # Adia — Build Progress
 
+## Run 141 — 2026-06-16
+
+### Shipped
+
+**feat: gambling (betfair/888sport/sportingbet), gaming (kizi/agame/coolmathgames), AVOD (crackle/fawesome), community. + forums. prefixes (+36 tests)**
+
+#### `SessionState.swift` — 8 new domains in `defaultBlockedDomains`
+
+**Additional gambling operators (3 domains):**
+- **`betfair.com`** — Betfair Exchange (Flutter Entertainment); world's largest peer-to-peer betting exchange. Uniquely distinct from sportsbook operators: users set their own odds against other users, creating a real-time financial-trading-terminal UX. The "just one more order" pattern mirrors day-trading addiction.
+- **`888sport.com`** — 888 Holdings' sportsbook brand; separate domain from 888casino.com and 888poker.com despite same corporate parent. In-play betting + live event streaming; students who find the casino/poker sites blocked may pivot here.
+- **`sportingbet.com`** — Entain Group international sportsbook (same parent as Ladbrokes, Coral, bwin but distinct domain). Highest-recall Entain brand in Australia, Greece, and Brazil; primary fallback when the UK-centric Entain brands are blocked.
+
+**Additional browser gaming portals (3 domains):**
+- **`kizi.com`** — 30M+ MAU browser game portal, strong in Turkey and Eastern Europe. Common fallback when CrazyGames/Poki/SilverGames are blocked; strong "IO Games" and "2-Player" category discovery.
+- **`agame.com`** — 1,000+ HTML5 titles, daily game updates. Common secondary fallback to AddictingGames or Miniclip. Separate domain and TLD from all existing blocked entries.
+- **`coolmathgames.com`** — educational framing ("it's math practice") makes this the highest-risk gaming portal to leave unblocked. Catalogue is overwhelmingly non-mathematical puzzle/strategy games; "math" is legacy marketing.
+
+**Free ad-supported streaming (2 domains):**
+- **`crackle.com`** — Sony Pictures' free AVOD streaming. Same zero-friction "it's free, just a quick clip" trap as Tubi; full-length films and series.
+- **`fawesome.tv`** — free AVOD streaming, .tv TLD distinct from all existing blocked entries. No-registration web player; broad multi-genre catalogue.
+
+#### `HostsFileManager.swift` — 2 new subdomain prefixes (34 total)
+
+**`"community"`** — closes `community.spotify.com` (fan/artist forum), `community.discord.com` (hub feature subdomain), `community.twitch.tv`, and similar community-forum subdomains on already-blocked platforms. False-positive risk: no major productivity tool (GitHub, Notion, Linear, Figma, Jira, Confluence) uses `"community."` as a primary product URL.
+
+**`"forums"`** — closes `forums.steampowered.com`, `forums.blizzard.com`, `forums.epicgames.com`, and similar game-developer forum subdomains on already-blocked gaming platforms. "Checking patch notes" is the primary rationalisation for entering game forums; once inside, threaded discussions convert a 2-minute check into 45 minutes.
+
+#### Tests — 36 new `@Test` cases in 5 new `@Suite` groups
+
+**`SessionStateTests.swift`**:
+
+`"Session defaultBlockedDomains — additional gambling operators (betfair, 888sport, sportingbet)"` (8 tests):
+- `defaultBlockedDomainsIncludeBetfair`
+- `defaultBlockedDomainsInclude888sport`
+- `defaultBlockedDomainsIncludeSportingbet`
+- `allAdditionalGamblingOperators3AllPresentTogether`
+- `defaultBlockedDomainsNoDuplicatesAfterAdditionalGambling3Addition`
+- `additionalGamblingOperators3CoexistWithPriorGamblingEntries`
+- `betfairAppearsExactlyOnce`
+- `eightEightEightSportAppearsExactlyOnce`
+
+`"Session defaultBlockedDomains — additional browser gaming portals (kizi, agame, coolmathgames)"` (6 tests):
+- `defaultBlockedDomainsIncludeKizi`
+- `defaultBlockedDomainsIncludeAgame`
+- `defaultBlockedDomainsIncludeCoolMathGames`
+- `allAdditionalBrowserGaming3AllPresentTogether`
+- `defaultBlockedDomainsNoDuplicatesAfterAdditionalBrowserGaming3Addition`
+- `additionalBrowserGaming3CoexistsWithPriorBrowserGamingEntries`
+
+`"Session defaultBlockedDomains — free ad-supported streaming (crackle, fawesome)"` (6 tests):
+- `defaultBlockedDomainsIncludeCrackle`
+- `defaultBlockedDomainsIncludeFawesome`
+- `allFreeAVODStreamingPresentTogether`
+- `freeStreamingNoDuplicatesAfterAddition`
+- `freeStreamingCoexistsWithExistingStreamingEntries`
+- `crackleAppearsExactlyOnce`
+
+**`HostsFileManagerTests.swift`**:
+
+`"HostsFileManager — community. subdomain prefix"` (8 tests):
+- `communityPrefixIsInAdditionalPrefixesList`
+- `buildBlockIncludesCommunitySubdomainForSpotify`
+- `buildBlockIncludesCommunitySubdomainForDiscord`
+- `buildBlockIncludesCommunitySubdomainForTwitch`
+- `parseBlockedFiltersCommunitySubdomainVariant`
+- `buildThenParseRoundTripWithCommunityPrefix`
+- `communityPrefixIsDistinctFromSocialPrefix`
+- `noDuplicatesInAdditionalPrefixesListAfterCommunityAddition`
+
+`"HostsFileManager — forums. subdomain prefix"` (8 tests):
+- `forumsPrefixIsInAdditionalPrefixesList`
+- `buildBlockIncludesForumsSubdomainForSteam`
+- `buildBlockIncludesForumsSubdomainForBlizzard`
+- `buildBlockIncludesForumsSubdomainForEpicGames`
+- `parseBlockedFiltersForumsSubdomainVariant`
+- `buildThenParseRoundTripWithForumsPrefix`
+- `forumsPrefixIsDistinctFromCommunityPrefix`
+- `noDuplicatesInAdditionalPrefixesListAfterForumsAddition`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete. 172 unique domains in block list; 34 subdomain prefixes.
+- Possible further improvements:
+  - **More gambling**: `betway.be` (Betway's Belgium-licensed domain — .be TLD distinct from betway.com), `1xbet.com` (1xBet; major operator popular in CIS/Africa with aggressive student marketing), `melbet.com` (Melbet; broad global presence, especially Africa and South Asia, often second-recall after 1xBet).
+  - **More gaming portals**: `gameflare.com` (large HTML5 game portal, strong "Popular" discovery), `iogames.space` (aggregator specifically for IO games — a distinct genre portal not covered by kizi/poki), `spele.lv` (Baltic and Eastern European browser game portal).
+  - **More streaming**: `peacock.com` (NBCUniversal — already blocked as peacocktv.com, but peacock.com is a redirect alias that resolves separately and should be listed explicitly), `plex.tv` (Plex — free streaming tier alongside media server; distinct domain).
+  - **"blog" subdomain prefix**: `blog.twitch.tv`, `blog.discord.com`, `blog.spotify.com` — company news blogs on already-blocked platforms that surface "what's new" content as an engagement hook.
+  - **"status" subdomain prefix audit**: Check whether `status.` is worth adding (status pages are typically admin-only and low-engagement; probably not worth it).
+  - **"help" subdomain prefix audit**: `help.twitch.tv`, `help.discord.com` — currently unblocked; usually low-distraction but can be a research rabbit hole.
+
 ## Run 140 — 2026-06-16
 
 ### Shipped
