@@ -503,6 +503,83 @@ public struct Session: Sendable, Identifiable {
         //   with aggressive TV ad spend targeting sports viewers. The casino tab (slots, live tables)
         //   adjacent to the sportsbook extends sessions well beyond the original sports-check intent.
         "betmgm.com",
+        // Browser-based gaming portals (instant-play, no-download — lowest-friction gaming time sinks)
+        // crazygames.com — the largest browser-based game portal by monthly active users (~35 M MAU).
+        //   Autoplay "recommended games" after each session combined with curated category discovery
+        //   feeds mean time spent routinely far exceeds the "just one game" intent. Zero friction:
+        //   no download, no account required. A student with five minutes before a deadline will open
+        //   CrazyGames and surface for air thirty minutes later.
+        "crazygames.com",
+        // poki.com — major browser game hub (operated by Poki B.V., Amsterdam). In-session "You might
+        //   also like" carousels and genre category feeds create the same infinite-scroll engagement
+        //   loop as social media. No login required; works on any device. Among the most common
+        //   browser-tab procrastination destinations for high-school and college students who tell
+        //   themselves they will only play for five minutes.
+        "poki.com",
+        // miniclip.com — the original Flash-era browser game portal; retains a large Gen-Z and
+        //   Millennial user base via nostalgia and a catalogue of 1000+ HTML5-converted titles.
+        //   The site redesign (post-Flash 2021) introduced an algorithmically ranked "Popular" feed
+        //   and "New Games" discovery surface; the nostalgia factor significantly lowers
+        //   the self-interruption threshold — students feel the pull before they have made a decision.
+        "miniclip.com",
+        // kongregate.com — browser game portal with an RPG-style achievement system (badges, levels,
+        //   XP, daily challenges, leaderboards). The meta-game layer dramatically extends dwell time
+        //   beyond any single game: students return to claim daily bonuses, push badge progress, or
+        //   defend a leaderboard position — each a distinct re-engagement trigger that converts a
+        //   single session into an ongoing commitment. Particularly effective at hooking math/CS
+        //   students who are drawn to optimization games and achievement unlocks.
+        "kongregate.com",
+        // Additional online gambling and poker (extended coverage of the student male demographic)
+        // 888casino.com — 888 Holdings' flagship casino brand (est. 1997); one of the oldest
+        //   online gambling platforms globally. Offers poker (via 888poker.com network), casino
+        //   (slots, live tables, roulette), and sports betting under one unified account login.
+        //   888 Holdings is listed on the London Stock Exchange and operates at scale in 100+
+        //   countries; brand recognition among student gamblers is high and brand recall is immediate.
+        "888casino.com",
+        // 888poker.com — 888 Holdings' dedicated poker brand; runs on the same player pool as
+        //   888casino.com but under a distinct domain. Students familiar with PokerStars or
+        //   PartyPoker often use 888poker as an alternative when field sizes or tournament
+        //   structures suit their schedule. Must be listed separately: 888poker.com and
+        //   888casino.com resolve as independent DNS entries, not the same origin.
+        "888poker.com",
+        // partypoker.com — second largest online poker room globally by player traffic (after
+        //   PokerStars). Operates Mega Tournaments with fields of tens of thousands of players
+        //   and a deep MTT schedule across all buy-in levels. The scheduled-tournament format
+        //   with a late-registration window is the primary engagement hook: once a student
+        //   registers for a tournament, they are behaviorally committed to completing it.
+        //   Particularly popular with European students and with math/CS demographics who
+        //   frame poker as a skill-building exercise.
+        "partypoker.com",
+        // unibet.com — major European online betting operator (Kindred Group, Malta-licensed).
+        //   Full sportsbook, casino, and poker. Strong presence in the UK, Nordic countries,
+        //   and continental Europe; heavily marketed to sports-watching audiences via Premier
+        //   League and Champions League sponsorships. High-engagement in-play betting UI.
+        //   A student whose bet365 or betway block is active may pivot to Unibet from
+        //   memory without hesitation — closing this escape hatch requires listing it explicitly.
+        "unibet.com",
+        // williamhill.com — one of the most recognisable global bookmaker brands (est. 1934,
+        //   UK); now a global operation following Caesars Entertainment's 2022 US acquisition.
+        //   Heavy TV and stadium advertising ensures immediate brand recall. A student thinking
+        //   "I'll just check the odds" will navigate to William Hill before a lesser-known operator;
+        //   the comprehensive market offering (sports, casino, live betting) extends any quick
+        //   "odds check" into a full-length betting session.
+        "williamhill.com",
+        // Regional social networks (additional coverage)
+        // band.us — BAND, South Korean group community platform (Camp Mobile / Naver Corp).
+        //   Combines closed-group social networking, group messaging, shared calendars, live
+        //   streaming, and media sharing. Dominant in K-pop fan communities globally: fancam drops,
+        //   group polls, ticket-sale announcements, and event co-ordination all happen on BAND.
+        //   International students in K-pop circles check BAND habitually; the notification-driven
+        //   re-engagement model converts "I'll check one notification" into a 20-minute scroll.
+        //   The .us TLD is not covered by any regional TLD matching rule — must be listed explicitly.
+        "band.us",
+        // taringa.net — Latin America's largest Reddit-like discussion platform (~75 M registered
+        //   users, predominantly Argentina, Mexico, Colombia, Chile). Functionally equivalent to
+        //   Reddit: threaded posts, upvoting, trending categories, meme boards, video embeds.
+        //   A significant distraction for Latin American students; the "Hot" and "Trending" feeds
+        //   use the same algorithmically-ranked engagement mechanics as Reddit. The .net TLD is
+        //   not shared with any existing block rule — must be listed explicitly.
+        "taringa.net",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

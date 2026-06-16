@@ -149,6 +149,20 @@ public actor HostsFileManager {
     //          product feature. If a user manually adds a productivity tool that happens to have
     //          a shop., that shop would also be blocked — correct behaviour since the whole
     //          tool is blocked.
+    // "play"   blocks play.twitch.tv (Twitch's inline-stream URL scheme used in share links and
+    //          some embedded contexts — separate from the player.twitch.tv embed route already
+    //          covered by the "player" prefix), play.spotify.com (Spotify's legacy web-player
+    //          fallback URL: some browser extensions, share widgets, and older cached links
+    //          resolve to play.spotify.com rather than open.spotify.com, bypassing the
+    //          spotify.com parent-domain block), and play.hbo.com / play.max.com (HBO/Max's
+    //          direct-play URL scheme for film and episode links shared from the platform).
+    //          Also blocks play.kongregate.com (Kongregate's legacy game-host subdomain for
+    //          Flash-era titles converted to HTML5) and play.crazygames.com (CrazyGames' game
+    //          embed and share URL route). False-positive risk: GitHub Pages, documentation
+    //          sites, and interactive demo portals occasionally use a "play." subdomain for
+    //          an embeddable demo; however, no major productivity tool (Notion, Linear, Figma,
+    //          Jira, Confluence, GitHub) exposes a "play." subdomain as its primary product
+    //          URL — the risk is negligible across the default blocked-domain set.
     internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = [
         "m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips",
         "web",    // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
@@ -170,6 +184,7 @@ public actor HostsFileManager {
         "watch",  // direct-watch subdomains (watch.twitch.tv, watch.plex.tv etc.)
         "video",  // video delivery / watch subdomains (video.twitch.tv, video.facebook.com etc.)
         "shop",   // merchandise store subdomains (shop.spotify.com, shop.twitch.tv etc.)
+        "play",   // play.twitch.tv, play.spotify.com, play.hbo.com, play.kongregate.com etc.
     ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).

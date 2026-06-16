@@ -1546,3 +1546,187 @@ struct AdditionalEcommerceAndVideoBlockTests {
                 "clapper.tv must be an independent entry distinct from tiktok.com and triller.co")
     }
 }
+
+// MARK: - Browser-based gaming portals
+
+@Suite("Session defaultBlockedDomains — browser-based gaming portals")
+struct BrowserGamingBlockTests {
+
+    @Test func defaultBlockedDomainsIncludeCrazyGames() {
+        #expect(Session.defaultBlockedDomains.contains("crazygames.com"),
+                "crazygames.com (largest browser game portal, ~35M MAU) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludePoki() {
+        #expect(Session.defaultBlockedDomains.contains("poki.com"),
+                "poki.com (major browser game hub) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeMiniclip() {
+        #expect(Session.defaultBlockedDomains.contains("miniclip.com"),
+                "miniclip.com (original Flash-era browser game portal) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeKongregate() {
+        #expect(Session.defaultBlockedDomains.contains("kongregate.com"),
+                "kongregate.com (browser game portal with RPG achievement system) must be blocked by default")
+    }
+
+    @Test func allBrowserGamingDomainsAllPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["crazygames.com", "poki.com", "miniclip.com", "kongregate.com"] {
+            #expect(domains.contains(site),
+                    "\(site) must be present in defaultBlockedDomains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterBrowserGamingAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after browser gaming portal additions")
+    }
+
+    @Test func browserGamingPortalsAreDistinctFromSteamAndEpic() {
+        let domains = Set(Session.defaultBlockedDomains)
+        // Native game store platforms and browser game portals are separate categories.
+        #expect(domains.contains("steampowered.com"),
+                "steampowered.com must still be present alongside browser game portal entries")
+        #expect(domains.contains("epicgames.com"),
+                "epicgames.com must still be present alongside browser game portal entries")
+        for portal in ["crazygames.com", "poki.com", "miniclip.com", "kongregate.com"] {
+            #expect(domains.contains(portal),
+                    "\(portal) must be an independent entry distinct from Steam/Epic")
+        }
+    }
+
+    @Test func browserGamingPortalsAreDistinctFromItchAndGOG() {
+        let domains = Set(Session.defaultBlockedDomains)
+        // itch.io and gog.com are game marketplaces; the new entries are play portals — distinct.
+        #expect(domains.contains("itch.io"), "itch.io must still be present")
+        #expect(domains.contains("gog.com"), "gog.com must still be present")
+        for portal in ["crazygames.com", "poki.com", "miniclip.com", "kongregate.com"] {
+            #expect(domains.contains(portal),
+                    "\(portal) must coexist independently with itch.io and gog.com")
+        }
+    }
+}
+
+// MARK: - Extended gambling and poker
+
+@Suite("Session defaultBlockedDomains — extended gambling and poker")
+struct ExtendedGamblingBlockTests {
+
+    @Test func defaultBlockedDomainsInclude888Casino() {
+        #expect(Session.defaultBlockedDomains.contains("888casino.com"),
+                "888casino.com (888 Holdings flagship casino) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsInclude888Poker() {
+        #expect(Session.defaultBlockedDomains.contains("888poker.com"),
+                "888poker.com (888 Holdings dedicated poker brand, distinct domain) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludePartyPoker() {
+        #expect(Session.defaultBlockedDomains.contains("partypoker.com"),
+                "partypoker.com (second largest global online poker room) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeUnibet() {
+        #expect(Session.defaultBlockedDomains.contains("unibet.com"),
+                "unibet.com (Kindred Group major European sportsbook) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeWilliamHill() {
+        #expect(Session.defaultBlockedDomains.contains("williamhill.com"),
+                "williamhill.com (global bookmaker, est. 1934) must be blocked by default")
+    }
+
+    @Test func allExtendedGamblingDomainsAllPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["888casino.com", "888poker.com", "partypoker.com",
+                     "unibet.com", "williamhill.com"] {
+            #expect(domains.contains(site),
+                    "\(site) must be present in defaultBlockedDomains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterExtendedGamblingAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after extended gambling additions")
+    }
+
+    @Test func extendedGamblingDomainsCoexistWithExistingGamblingEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        // Prior run entries must still be present alongside the new additions.
+        for existing in ["draftkings.com", "fanduel.com", "bet365.com",
+                         "pokerstars.com", "betway.com", "bovada.lv", "betmgm.com"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior gambling entry) must still be present after run-138 additions")
+        }
+        for newSite in ["888casino.com", "888poker.com", "partypoker.com",
+                        "unibet.com", "williamhill.com"] {
+            #expect(domains.contains(newSite),
+                    "\(newSite) must be present as an independent new entry")
+        }
+    }
+
+    @Test func eightEightEightCasinoAndPokerAreSeparateEntries() {
+        // 888casino.com and 888poker.com are operated by the same corporate parent but are
+        // distinct DNS names resolving to different services — both must appear independently.
+        let domains = Session.defaultBlockedDomains
+        let casinoCount = domains.filter { $0 == "888casino.com" }.count
+        let pokerCount  = domains.filter { $0 == "888poker.com"  }.count
+        #expect(casinoCount == 1, "888casino.com must appear exactly once")
+        #expect(pokerCount  == 1, "888poker.com must appear exactly once")
+    }
+}
+
+// MARK: - Additional regional social networks
+
+@Suite("Session defaultBlockedDomains — additional regional social networks")
+struct AdditionalRegionalSocialBlockTests {
+
+    @Test func defaultBlockedDomainsIncludeBandUs() {
+        #expect(Session.defaultBlockedDomains.contains("band.us"),
+                "band.us (BAND K-pop fan community platform) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeTaringa() {
+        #expect(Session.defaultBlockedDomains.contains("taringa.net"),
+                "taringa.net (Latin American Reddit-like forum) must be blocked by default")
+    }
+
+    @Test func allAdditionalRegionalSocialDomainsAllPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["band.us", "taringa.net"] {
+            #expect(domains.contains(site),
+                    "\(site) must be present in defaultBlockedDomains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterRegionalSocialAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after regional social additions")
+    }
+
+    @Test func additionalRegionalSocialCoexistWithPriorRegionalEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        // Earlier regional entries (vk.com, weibo.com, line.me, kakaotalk.com) stay present.
+        for existing in ["vk.com", "weibo.com", "line.me", "kakaotalk.com"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior regional entry) must still be present after run-138 additions")
+        }
+        #expect(domains.contains("band.us"),    "band.us must coexist with prior regional entries")
+        #expect(domains.contains("taringa.net"), "taringa.net must coexist with prior regional entries")
+    }
+
+    @Test func bandUsIsDistinctFromKakaoAndLine() {
+        let domains = Set(Session.defaultBlockedDomains)
+        // band.us serves a different use case (fan communities) from kakaotalk.com (general messaging).
+        #expect(domains.contains("band.us"),       "band.us must be present")
+        #expect(domains.contains("kakaotalk.com"), "kakaotalk.com must still be present independently")
+        #expect(domains.contains("line.me"),       "line.me must still be present independently")
+    }
+}
