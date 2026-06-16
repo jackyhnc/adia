@@ -1,5 +1,97 @@
 # Adia — Build Progress
 
+## Run 140 — 2026-06-16
+
+### Shipped
+
+**feat: live TV streaming, gambling operators, gaming portals, social. prefix (+34 tests)**
+
+#### `SessionState.swift` — 9 new domains in `defaultBlockedDomains`
+
+**Live TV streaming escape hatches (3 domains):**
+- **`sling.com`** — Sling TV (Dish Network); first major live-TV-over-internet service. Once a live show is on, self-interruption is extremely hard. Escape hatch when Netflix/Hulu are blocked.
+- **`fubo.tv`** — FuboTV (NYSE: FUBO); sports-first live TV streaming (NFL, NBA, MLB, NHL, soccer). Acute distraction during live events. `.tv` TLD not covered by any existing rule.
+- **`philo.com`** — Philo; budget entertainment live TV ($25/month, no sports tier). On-demand library + live-channel autoplay combine Netflix-style browsing with passive broadcast consumption.
+
+**Additional gambling operators (3 domains):**
+- **`betfred.com`** — major UK bookmaker (privately held, ~1,600 high-street shops). Very high TV/stadium visibility; strong recall for UK students who find bet365/Ladbrokes blocked.
+- **`bwin.com`** — Entain Group / GVC Holdings; 20+ country presence, strong in German-speaking markets and continental Europe. Standard second-recall operator when bet365/unibet blocks are active.
+- **`sky.bet`** — Flutter Entertainment / Sky Sports integration; near-total brand recall in UK 18-35 male demographic. The `.bet` TLD is completely distinct from any existing blocked entry.
+
+**Browser gaming portals (2 domains):**
+- **`silvergames.com`** — ~15M MAU; low-friction, ad-light UX with genre-based discovery. First fallback destination when CrazyGames/Poki are blocked.
+- **`friv.com`** — Lumo Developments; minimalist grid-of-thumbnails UX. Massive presence in Latin America, Middle East. The zero-chrome UX makes time passing harder to notice than richer portals.
+
+**Global classifieds (1 domain):**
+- **`olx.com`** — OLX Group (Prosus/Naspers); 50+ country presence across Latin America, Eastern Europe, South Asia, Africa. User-generated listings change constantly → effectively infinite-scroll feed.
+
+#### `HostsFileManager.swift` — new `"social"` subdomain prefix (32nd prefix)
+
+Closes social.microsoft.com (Xbox Social hub: gamer profiles, activity feeds, friend lists), social.blizzard.com (Blizzard community/achievement feed), and similar community subdomains on already-blocked gaming/entertainment platforms. Low false-positive risk: no major productivity tool (GitHub, Notion, Linear, Figma) uses `"social."` as a primary product URL.
+
+#### Tests — 34 new `@Test` cases in 5 new `@Suite` groups
+
+**`SessionStateTests.swift`**:
+
+`"Session defaultBlockedDomains — live TV streaming services"` (8 tests):
+- `defaultBlockedDomainsIncludeSling`
+- `defaultBlockedDomainsIncludeFubo`
+- `defaultBlockedDomainsIncludePhilo`
+- `allLiveTVStreamingServicesAllPresentTogether`
+- `defaultBlockedDomainsNoDuplicatesAfterLiveTVAddition`
+- `liveTVStreamingCoexistsWithExistingStreamingServices`
+- `fuboUsedottvTLDNotDotCom`
+- `slingAppearsExactlyOnce`
+
+`"Session defaultBlockedDomains — additional gambling operators (betfred, bwin, sky.bet)"` (8 tests):
+- `defaultBlockedDomainsIncludeBetfred`
+- `defaultBlockedDomainsIncludeBwin`
+- `defaultBlockedDomainsIncludeSkyBet`
+- `allAdditionalGamblingOperators2AllPresentTogether`
+- `defaultBlockedDomainsNoDuplicatesAfterAdditionalGambling2Addition`
+- `additionalGamblingOperators2CoexistWithPriorGamblingEntries`
+- `skyBetUsesDotBetTLDNotDotCom`
+- `bwinAppearsExactlyOnce`
+
+`"Session defaultBlockedDomains — additional browser gaming portals (silvergames, friv)"` (6 tests):
+- `defaultBlockedDomainsIncludeSilverGames`
+- `defaultBlockedDomainsIncludeFriv`
+- `allAdditionalBrowserGaming2AllPresentTogether`
+- `defaultBlockedDomainsNoDuplicatesAfterAdditionalBrowserGaming2Addition`
+- `additionalBrowserGaming2CoexistsWithPriorBrowserGamingEntries`
+- `frivAppearsExactlyOnce`
+
+`"Session defaultBlockedDomains — global classifieds (OLX)"` (4 tests):
+- `defaultBlockedDomainsIncludeOlx`
+- `defaultBlockedDomainsNoDuplicatesAfterOlxAddition`
+- `olxCoexistsWithExistingEcommerceAndLatAmEntries`
+- `olxAppearsExactlyOnce`
+
+**`HostsFileManagerTests.swift`**:
+
+`"HostsFileManager — social. subdomain prefix"` (8 tests):
+- `socialPrefixIsInAdditionalPrefixesList`
+- `buildBlockIncludesSocialSubdomainForMicrosoft`
+- `buildBlockIncludesSocialSubdomainForBlizzard`
+- `buildBlockIncludesSocialSubdomainForDiscord`
+- `parseBlockedFiltersSocialSubdomainVariant`
+- `buildThenParseRoundTripWithSocialPrefix`
+- `socialPrefixIsDistinctFromNewsPrefix`
+- `noDuplicatesInAdditionalPrefixesListAfterSocialAddition`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete. 164 unique domains in block list; 32 subdomain prefixes.
+- Possible further improvements:
+  - **More gambling**: `betfair.com` (Betfair Exchange — peer-to-peer betting market, distinct from sportsbook model; uniquely habit-forming because users set their own odds), `888sport.com` (888 Holdings' sportsbook brand — same corporate parent as 888casino/888poker but separate domain), `sportingbet.com` (Entain Group international brand).
+  - **More gaming portals**: `kizi.com` (browser game portal popular in Turkey, Eastern Europe, and globally among younger demographics), `agame.com` (popular browser game portal, legacy HTML5 catalogue), `coolmathgames.com` (educational framing makes it uniquely insidious: students rationalise "it's math").
+  - **More streaming**: `crackle.com` (free ad-supported Sony streaming — distinct from Pluto/Tubi), `fawesome.tv` (free ad-supported streaming, broad genre catalogue).
+  - **"community" subdomain prefix**: `community.spotify.com`, `community.discord.com`, `community.twitch.tv` — community forums on already-blocked platforms that surface engaging content via a distinct subdomain.
+  - **"forums" subdomain prefix**: `forums.steampowered.com`, `forums.blizzard.com`, `forums.epicgames.com` — game developer forums accessible without the parent-domain store UI; "checking patch notes" becomes hours of forum browsing.
+  - **Subdomain coverage audit**: verify `"social."` prefix does not create false positives for productivity tools not currently in the default list (especially enterprise tools like Salesforce, HubSpot, Zendesk where "social" subdomains may be legitimate product URLs).
+
 ## Run 139 — 2026-06-16
 
 ### Shipped
