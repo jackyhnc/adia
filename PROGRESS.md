@@ -1,5 +1,91 @@
 # Adia — Build Progress
 
+## Run 139 — 2026-06-16
+
+### Shipped
+
+**feat: more browser gaming, gambling operators, LatAm e-commerce, news. prefix (+29 tests)**
+
+#### `SessionState.swift` — 7 new domains in `defaultBlockedDomains`
+
+**Additional browser-based gaming portals (3 domains):**
+- **`addictinggames.com`** — Nickelodeon/Viacom browser game portal (est. 2001); 100M+ registered users; "Genre" and "Most Popular" feeds; zero-friction immediate play.
+- **`armorgames.com`** — indie browser game portal with community-ranked discovery feed; popular with CS/game-dev students who rationalise "quality research"; zero login required.
+- **`y8.com`** — 300M+ user global browser game portal; strong presence in Asia, Eastern Europe, and Latin America; multilingual fallback destination when region-specific portals are blocked.
+
+**Additional gambling operators (3 domains):**
+- **`ladbrokes.com`** — Entain Group flagship UK bookmaker (150+ year brand); full sportsbook/casino; immediate muscle-memory recall for UK/Ireland students.
+- **`paddypower.com`** — Flutter Entertainment (FTSE 100); irreverent brand with maximum resonance in 18-25 male demographic; "Price Boosts" and live Cash Out drive impulse re-engagement.
+- **`coral.co.uk`** — Entain Group UK bookmaker; completely distinct `.co.uk` TLD from `ladbrokes.com`; must be listed separately. Second-recall operator after Ladbrokes for many UK students.
+
+**Latin American e-commerce (1 domain):**
+- **`mercadolibre.com`** — Latin America's dominant marketplace (MercadoLibre Inc., NASDAQ: MELI); 18-country presence; Flash Sales and personalized recommendation carousels create same engagement loop as Amazon.
+
+#### `HostsFileManager.swift` — new `"news"` subdomain prefix (31st prefix)
+
+Covers:
+- **`news.spotify.com`** — Spotify's editorial/articles portal accessible as a distinct subdomain.
+- **`news.reddit.com`** — Reddit's legacy news aggregation subdomain (separate from `www.` and `old.` routes).
+- **`news.google.com`** — Google News: standalone algorithmically curated news feed, completely distinct from `google.com`.
+- **`news.xbox.com`** / **`news.blizzard.com`** — gaming-platform news hubs that pull users into their ecosystems.
+- False-positive risk is low: no major productivity tool (Notion, Linear, Figma, Jira, Confluence, GitHub) uses `"news."` as a primary product URL.
+
+#### Tests — 29 new `@Test` cases in 4 new `@Suite` groups
+
+**`SessionStateTests.swift`**:
+
+`"Session defaultBlockedDomains — additional browser gaming portals"` (8 tests):
+- `defaultBlockedDomainsIncludeAddictingGames`
+- `defaultBlockedDomainsIncludeArmorGames`
+- `defaultBlockedDomainsIncludeY8`
+- `allAdditionalBrowserGamingPortalsAllPresentTogether`
+- `defaultBlockedDomainsNoDuplicatesAfterAdditionalBrowserGamingAddition`
+- `additionalBrowserGamingCoexistsWithPriorBrowserGamingEntries`
+- `additionalBrowserGamingPortalsAreDistinctFromSteamAndEpic`
+- `y8IsDistinctFromOtherGamingTLDs`
+
+`"Session defaultBlockedDomains — additional gambling operators"` (9 tests):
+- `defaultBlockedDomainsIncludeLadbrokes`
+- `defaultBlockedDomainsIncludePaddyPower`
+- `defaultBlockedDomainsIncludeCoral`
+- `allAdditionalGamblingOperatorsAllPresentTogether`
+- `defaultBlockedDomainsNoDuplicatesAfterAdditionalGamblingAddition`
+- `additionalGamblingOperatorsCoexistWithPriorGamblingEntries`
+- `coralUsesCoUkTLDNotComTLD`
+- `ladbrokesAndCoralAreSeparateEntitiesDespiteSameParent`
+
+`"Session defaultBlockedDomains — Latin American e-commerce"` (5 tests):
+- `defaultBlockedDomainsIncludeMercadoLibre`
+- `defaultBlockedDomainsNoDuplicatesAfterMercadoLibreAddition`
+- `mercadoLibreCoexistsWithExistingEcommerceEntries`
+- `mercadoLibreCoexistsWithLatAmRegionalEntries`
+- `mercadoLibreAppearExactlyOnce`
+
+**`HostsFileManagerTests.swift`**:
+
+`"HostsFileManager — news. subdomain prefix"` (8 tests):
+- `newsPrefixIsInAdditionalPrefixesList`
+- `buildBlockIncludesNewsSubdomainForSpotify`
+- `buildBlockIncludesNewsSubdomainForReddit`
+- `buildBlockIncludesNewsSubdomainForGoogleIfBlocked`
+- `parseBlockedFiltersNewsSubdomainVariant`
+- `buildThenParseRoundTripWithNewsPrefix`
+- `newsPrefixIsDistinctFromPlayPrefix`
+- `noDuplicatesInAdditionalPrefixesListAfterNewsAddition`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **`"social"` subdomain prefix**: `social.microsoft.com` (Xbox Social), `social.blizzard.com` — closes community/social subdomains on gaming platforms already blocked at their root. Evaluate false-positive risk against `social.` on productivity tools before adding.
+  - **More gambling operators**: `paddypower.com` is now added; remaining majors: `betfred.com` (UK bookmaker with massive TV presence), `skybet.com` / `sky.bet` (Sky Bet by Flutter Entertainment, dominant in UK), `bwin.com` (major European online betting platform, Entain Group alongside Ladbrokes/Coral).
+  - **More gaming portals**: `silvergames.com` (browser game portal popular in German-speaking markets), `friv.com` (minimalist browser game portal, huge in Latin America and children's demographics).
+  - **More LatAm platforms**: `hispachan.org` (Latin American imageboard, niche but high-engagement), `olx.com` (classifieds marketplace in Latin America / Eastern Europe — same "just checking prices" pattern as MercadoLibre).
+  - **Streaming escape hatches**: `sling.com` (Sling TV — live TV streaming over internet, distinct from on-demand platforms already blocked), `fubo.tv` (FuboTV sports-focused live TV streaming), `philo.com` (budget live TV streaming service).
+  - **Subdomain coverage audit**: verify `"news."` prefix doesn't create false positives (e.g., `news.ycombinator.com` is already blocked at root as `news.ycombinator.com` literal — no conflict; `news.google.com` only fires if user explicitly blocks `google.com`).
+
 ## Run 138 — 2026-06-16
 
 ### Shipped
