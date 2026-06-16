@@ -1,5 +1,87 @@
 # Adia — Build Progress
 
+## Run 136 — 2026-06-16
+
+### Shipped
+
+**feat: e-commerce, short-form video, game resellers, Battle.net, "shop" prefix (+25 tests)**
+
+#### `SessionState.swift` — 8 new domains, 1 new app block
+
+**Short-form video (TikTok competitors):**
+- **`triller.co`** — music-centric TikTok-format platform; a student whose tiktok.com is blocked may switch here without thinking. Same infinite-scroll autoplay format.
+- **`likee.com`** — Kwai-owned algorithmic short-video feed; popular with teen demographics globally; For-You feed optimised for maximum session length.
+
+**Game key resellers:**
+- **`g2a.com`** — largest grey-market game key reseller. "Just checking prices" drives long browse sessions; deal-discovery UX is highly engaging.
+- **`kinguin.net`** — direct G2A competitor; same deal-discovery/compare-prices engagement pattern.
+
+**E-commerce expansion:**
+- **`bestbuy.com`** — consumer electronics with Deals/flash-sales feeds; "checking hardware prices for my project" is the standard rationalization.
+- **`target.com`** — general merchandise with Trending/Deals UX; students visit for dorm items and stay in the product-discovery loop.
+- **`wish.com`** — infinite-scroll discount marketplace; among the highest engagement-per-visit metrics in e-commerce. "Just browsing" reliably extends to 30+ min.
+- **`shein.com`** — gamified fast-fashion e-commerce; flash discounts + daily check-in reward loop; highly optimised for maximum browse session length.
+
+**New app block:**
+- **`net.battle.net.client`** (Battle.net) — Blizzard game launcher shows the store/news UI locally from cached data; /etc/hosts block alone does not prevent the app from launching and displaying its browse interface.
+
+#### `HostsFileManager.swift` — `"shop"` subdomain prefix (now 27 entries)
+
+- **`"shop"`** added to `additionalBlockedSubdomainPrefixes`. Covers:
+  - `shop.spotify.com` — Spotify merchandise store
+  - `shop.twitch.tv` — Twitch merchandise subdomain
+  - `shop.epicgames.com` — Epic's merch page (distinct from `store.epicgames.com`)
+  - Any other `shop.X` on already-blocked domains
+  - Distinct from the existing `"store"` prefix; both are retained.
+  - False-positive risk is negligible — no major productivity tool exposes a `shop.` subdomain.
+
+#### Tests — 25 new `@Test` cases
+
+**`SessionStateTests.swift`** (17 new in 2 suites):
+
+`"Session defaultBlockedDomains — short-form video, game resellers, e-commerce"` (14 tests):
+- `defaultBlockedDomainsIncludeTrillerCo`
+- `defaultBlockedDomainsIncludeLikee`
+- `defaultBlockedDomainsIncludeG2A`
+- `defaultBlockedDomainsIncludeKinguin`
+- `defaultBlockedDomainsIncludeBestBuy`
+- `defaultBlockedDomainsIncludeTarget`
+- `defaultBlockedDomainsIncludeWish`
+- `defaultBlockedDomainsIncludeShein`
+- `allNewDomainsAllPresentTogether` — bulk presence check
+- `defaultBlockedDomainsNoDuplicatesAfterExpansion` — duplicate guard
+- `newShortVideoDomainsAreDistinctFromTikTok` — disjointness check
+- `newGameResellersAreDistinctFromSteamAndEpic` — disjointness check
+- `newEcommerceDomainsAreDistinctFromAmazon` — disjointness check
+
+`"Session defaultBlockedApps — Battle.net"` (3 tests):
+- `defaultBlockedAppsIncludeBattleNet`
+- `battleNetBlockedAlongsideBlizzardGames`
+- `defaultBlockedAppsNoDuplicatesAfterBattleNetAddition`
+
+**`HostsFileManagerTests.swift`** (8 new in `"HostsFileManager — shop. subdomain prefix"`):
+- `shopPrefixIsInAdditionalPrefixesList`
+- `buildBlockIncludesShopSubdomainForSpotify`
+- `buildBlockIncludesShopSubdomainForTwitch`
+- `buildBlockIncludesShopSubdomainForEpicGames`
+- `parseBlockedFiltersShopSubdomainVariant`
+- `buildThenParseRoundTripWithShopPrefix`
+- `shopPrefixIsDistinctFromStorePrefix`
+- `noDuplicatesInAdditionalPrefixesListAfterShopAddition`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **More regional social networks**: `weibo.com` (Chinese microblogging, huge user base), `kakaotalk.com` (South Korean messaging platform with web interface), `line.me` (dominant in Japan/Taiwan/Thailand).
+  - **Short-form video**: `clapper.tv`, `byte.app` (Vine successor — now defunct but domain may redirect), `zynn.com` (if still active).
+  - **Additional e-commerce**: `wayfair.com` (home furniture — high-dwell browse UX), `overstock.com`, `zalando.com` (European fashion e-commerce).
+  - **Sports betting / gambling** (high-impulse, major distraction for male student demographics): `draftkings.com`, `fanduel.com`, `bet365.com`.
+  - **`"checkout"` or `"cart"` subdomain prefix**: low-priority since parent e-commerce domains are already blocked.
+  - **Battle.net bundle ID verification**: `net.battle.net.client` is the documented macOS bundle ID but should be verified on a real macOS machine with Battle.net installed before shipping to users.
+
 ## Run 135 — 2026-06-15
 
 ### Shipped
