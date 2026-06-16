@@ -1219,3 +1219,151 @@ struct EpicGamesLauncherAppBlockTests {
                 "duplicate bundle IDs in defaultBlockedApps after adding Epic Games Launcher")
     }
 }
+
+// MARK: - Short-form video alternatives, game key resellers, e-commerce expansion, Battle.net
+
+@Suite("Session defaultBlockedDomains — short-form video, game resellers, e-commerce")
+struct ShortVideoResellersEcommerceBlocklistTests {
+
+    // MARK: Short-form video alternatives (TikTok competitors)
+
+    @Test func defaultBlockedDomainsIncludeTrillerCo() {
+        // triller.co is a dedicated TikTok competitor with the same infinite-scroll
+        // autoplay-next format. A student whose tiktok.com is blocked may pivot here.
+        #expect(Session.defaultBlockedDomains.contains("triller.co"),
+                "triller.co must be blocked by default (TikTok-format short-video platform)")
+    }
+
+    @Test func defaultBlockedDomainsIncludeLikee() {
+        // likee.com (Kwai-owned) is popular in emerging markets and among teen demographics;
+        // the For-You algorithmic feed is engineered for maximum session length.
+        #expect(Session.defaultBlockedDomains.contains("likee.com"),
+                "likee.com must be blocked by default (algorithmic short-video platform)")
+    }
+
+    // MARK: Game key reseller marketplaces
+
+    @Test func defaultBlockedDomainsIncludeG2A() {
+        // g2a.com — largest grey-market game key reseller; "checking prices" is a common
+        // student rationalization that leads to long browse sessions.
+        #expect(Session.defaultBlockedDomains.contains("g2a.com"),
+                "g2a.com must be blocked by default (game key reseller with deal-discovery feed)")
+    }
+
+    @Test func defaultBlockedDomainsIncludeKinguin() {
+        // kinguin.net — second-largest game key reseller; same deal-discovery engagement pattern.
+        #expect(Session.defaultBlockedDomains.contains("kinguin.net"),
+                "kinguin.net must be blocked by default (game key reseller, direct G2A competitor)")
+    }
+
+    // MARK: E-commerce expansion
+
+    @Test func defaultBlockedDomainsIncludeBestBuy() {
+        // bestbuy.com — consumer electronics with Deals sections and flash sales;
+        // "checking hardware prices for my project" is a common student rationalization.
+        #expect(Session.defaultBlockedDomains.contains("bestbuy.com"),
+                "bestbuy.com must be blocked by default (consumer electronics impulse browsing)")
+    }
+
+    @Test func defaultBlockedDomainsIncludeTarget() {
+        // target.com — general merchandise with Trending/Deals UX; students visit for
+        // dorm/lifestyle items and stay in the product-discovery loop.
+        #expect(Session.defaultBlockedDomains.contains("target.com"),
+                "target.com must be blocked by default (retail browse — dorm/lifestyle impulse shopping)")
+    }
+
+    @Test func defaultBlockedDomainsIncludeWish() {
+        // wish.com — infinite-scroll discount marketplace; among the highest engagement-per-visit
+        // metrics in e-commerce; "just browsing" routinely runs 30+ min.
+        #expect(Session.defaultBlockedDomains.contains("wish.com"),
+                "wish.com must be blocked by default (infinite-scroll discount marketplace)")
+    }
+
+    @Test func defaultBlockedDomainsIncludeShein() {
+        // shein.com — fast-fashion e-commerce with gamified daily check-ins and flash discounts;
+        // highly optimised for maximum browse session length.
+        #expect(Session.defaultBlockedDomains.contains("shein.com"),
+                "shein.com must be blocked by default (gamified fast-fashion e-commerce)")
+    }
+
+    // MARK: Bulk presence + no-duplicates guards
+
+    @Test func allNewDomainsAllPresentTogether() {
+        let domains = Session.defaultBlockedDomains
+        for expected in ["triller.co", "likee.com", "g2a.com", "kinguin.net",
+                         "bestbuy.com", "target.com", "wish.com", "shein.com"] {
+            #expect(domains.contains(expected),
+                    "\(expected) must be present in defaultBlockedDomains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterExpansion() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "duplicate entries found in defaultBlockedDomains after short-video/reseller/ecommerce expansion")
+    }
+
+    // MARK: Disjointness from existing entries (these are new independent TLDs)
+
+    @Test func newShortVideoDomainsAreDistinctFromTikTok() {
+        let domains = Set(Session.defaultBlockedDomains)
+        // These must coexist with tiktok.com as separate independent entries.
+        #expect(domains.contains("tiktok.com"),
+                "tiktok.com must still be present after triller.co and likee.com additions")
+        #expect(domains.contains("triller.co"),
+                "triller.co must be a separate block entry from tiktok.com")
+        #expect(domains.contains("likee.com"),
+                "likee.com must be a separate block entry from tiktok.com")
+    }
+
+    @Test func newGameResellersAreDistinctFromSteamAndEpic() {
+        let domains = Set(Session.defaultBlockedDomains)
+        // Key resellers are independently-navigated destinations, not subdomains of Steam/Epic.
+        #expect(domains.contains("steampowered.com"),
+                "steampowered.com must still be present after g2a.com/kinguin.net additions")
+        #expect(domains.contains("g2a.com") && domains.contains("kinguin.net"),
+                "g2a.com and kinguin.net must each be independent entries in the blocklist")
+    }
+
+    @Test func newEcommerceDomainsAreDistinctFromAmazon() {
+        let domains = Set(Session.defaultBlockedDomains)
+        // The new e-commerce additions are separate stores — amazon.com stays and new ones join it.
+        #expect(domains.contains("amazon.com"),
+                "amazon.com must still be present after bestbuy/target/wish/shein additions")
+        for site in ["bestbuy.com", "target.com", "wish.com", "shein.com"] {
+            #expect(domains.contains(site),
+                    "\(site) must be present alongside amazon.com as an independent block entry")
+        }
+    }
+}
+
+// MARK: - Battle.net launcher app block
+
+@Suite("Session defaultBlockedApps — Battle.net")
+struct BattleNetAppBlockTests {
+
+    @Test func defaultBlockedAppsIncludeBattleNet() {
+        // Battle.net launcher (net.battle.net.client) is Blizzard's game client;
+        // it shows the store/news UI locally from cached data — blocking battle.net
+        // via /etc/hosts alone does not prevent the app from launching.
+        #expect(Session.defaultBlockedAppBundleIDs.contains("net.battle.net.client"),
+                "net.battle.net.client must be blocked by default (Blizzard game launcher)")
+    }
+
+    @Test func battleNetBlockedAlongsideBlizzardGames() {
+        // The launcher app block pairs with the web block for blizzard-related browsing.
+        // (epicgames.com is already blocked; Battle.net launcher adds the app-layer coverage.)
+        let apps = Set(Session.defaultBlockedAppBundleIDs)
+        #expect(apps.contains("net.battle.net.client"),
+                "Battle.net launcher app must be in the blocked app list")
+        // Verify it coexists with the Epic Games Launcher entry added in the previous run.
+        #expect(apps.contains("com.epicgames.EpicGamesLauncher"),
+                "Epic Games Launcher must still be present after Battle.net addition")
+    }
+
+    @Test func defaultBlockedAppsNoDuplicatesAfterBattleNetAddition() {
+        let ids = Session.defaultBlockedAppBundleIDs
+        #expect(Set(ids).count == ids.count,
+                "duplicate bundle IDs in defaultBlockedApps after adding Battle.net")
+    }
+}

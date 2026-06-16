@@ -400,6 +400,41 @@ public struct Session: Sendable, Identifiable {
         //   Functionally equivalent to Facebook: news feed, messaging, video, groups.
         //   A significant distraction vector for Eastern European students in particular.
         "vk.com",
+        // Short-form video platforms (TikTok competitors — separate domains, not covered by tiktok.com)
+        // triller.co — music-centric short-form video app; replicates TikTok's infinite-scroll
+        //   autoplay-next format. Gained traction during TikTok regulatory uncertainty and
+        //   retains a dedicated user base. A student whose tiktok.com is blocked may switch here.
+        "triller.co",
+        // likee.com — Kwai-owned short-form video platform popular in emerging markets and
+        //   among teen demographics globally. The "For You" discovery feed is algorithmically
+        //   optimised for maximum engagement; same format as TikTok.
+        "likee.com",
+        // Game key reseller marketplaces (impulse purchase and "just checking prices" time sinks)
+        // g2a.com — the largest grey-market game key reseller. Students browse for cheap game
+        //   keys; the deal-discovery and compare-prices UX drives long dwell time.
+        //   "Just checking prices" is among the most common student rationalisations.
+        "g2a.com",
+        // kinguin.net — second-largest game key reseller (direct G2A competitor). Same
+        //   engagement pattern: browse discounts, compare prices, flash sales.
+        "kinguin.net",
+        // E-commerce expansion (impulse shopping during study sessions)
+        // bestbuy.com — consumer electronics retailer with prominent "Deals" sections,
+        //   top-seller feeds, and flash sales. "Checking hardware/software prices for my project"
+        //   is the standard rationalization; browse sessions run long regardless.
+        "bestbuy.com",
+        // target.com — general merchandise retailer with a highly polished browse UX
+        //   ("Trending", "Deals", category exploration). Students visit for dorm/lifestyle
+        //   items and stay in the product-discovery loop far longer than intended.
+        "target.com",
+        // wish.com — discount marketplace with an extremely addictive infinite-scroll product
+        //   feed. Among the highest engagement-per-visit metrics in e-commerce; "just browsing
+        //   deals" reliably extends into 30+ minute sessions.
+        "wish.com",
+        // shein.com — ultra-fast-fashion e-commerce with infinite-scroll discovery, flash
+        //   discounts, and gamified daily check-in rewards. Highly optimised for maximum browse
+        //   session length; one of the most engagement-addictive shopping UX patterns among
+        //   student demographics.
+        "shein.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [
@@ -429,6 +464,11 @@ public struct Session: Sendable, Identifiable {
         // interface locally without requiring a live connection to epicgames.com. Opening
         // the launcher to "check what's free this week" is a classic student time sink.
         BlockedApp(id: "com.epicgames.EpicGamesLauncher", name: "Epic Games Launcher"),
+        // Battle.net is Blizzard's game client and storefront. Opening it to "check patch
+        // notes" or browse the shop is a classic gamer procrastination pattern. The launcher
+        // shows the full store/news UI locally — blocking battle.net via /etc/hosts alone
+        // does not prevent the app from launching and displaying cached content.
+        BlockedApp(id: "net.battle.net.client", name: "Battle.net"),
     ]
 
     public static var defaultBlockedAppBundleIDs: [String] {

@@ -139,6 +139,16 @@ public actor HostsFileManager {
     //          tool (GitHub, Notion, Linear, Figma) uses a "video." subdomain as a navigation
     //          entry point; the edge case of "video.google.com" redirects to YouTube and is
     //          not a standalone productively-visited URL.
+    // "shop"   blocks shop.spotify.com (Spotify's merchandise store), shop.twitch.tv (Twitch
+    //          merchandise), shop.epicgames.com (Epic's merch store), and similar "shop."
+    //          subdomains on already-blocked entertainment/gaming platforms. These are functionally
+    //          separate subdomains from their parent domains; a user whose spotify.com and
+    //          twitch.tv are blocked can still navigate directly to shop.X without the parent-
+    //          domain block triggering. False-positive risk is negligible: no common productivity
+    //          tool (GitHub, Notion, Linear, Figma, Jira) exposes a "shop." subdomain as a
+    //          product feature. If a user manually adds a productivity tool that happens to have
+    //          a shop., that shop would also be blocked — correct behaviour since the whole
+    //          tool is blocked.
     internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = [
         "m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips",
         "web",    // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
@@ -159,6 +169,7 @@ public actor HostsFileManager {
         "gaming", // gaming-hub subdomains (gaming.youtube.com, gaming.amazon.com etc.)
         "watch",  // direct-watch subdomains (watch.twitch.tv, watch.plex.tv etc.)
         "video",  // video delivery / watch subdomains (video.twitch.tv, video.facebook.com etc.)
+        "shop",   // merchandise store subdomains (shop.spotify.com, shop.twitch.tv etc.)
     ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).
