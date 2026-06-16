@@ -1367,3 +1367,182 @@ struct BattleNetAppBlockTests {
                 "duplicate bundle IDs in defaultBlockedApps after adding Battle.net")
     }
 }
+
+// MARK: - Sports betting and gambling domains
+
+@Suite("Session defaultBlockedDomains — sports betting and gambling")
+struct SportsBettingBlockTests {
+
+    @Test func defaultBlockedDomainsIncludeDraftKings() {
+        #expect(Session.defaultBlockedDomains.contains("draftkings.com"),
+                "draftkings.com (US DFS/sports betting) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeFanDuel() {
+        #expect(Session.defaultBlockedDomains.contains("fanduel.com"),
+                "fanduel.com (US DFS/sports betting) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeBet365() {
+        #expect(Session.defaultBlockedDomains.contains("bet365.com"),
+                "bet365.com (global sportsbook) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludePokerStars() {
+        #expect(Session.defaultBlockedDomains.contains("pokerstars.com"),
+                "pokerstars.com (world's largest online poker platform) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeBetway() {
+        #expect(Session.defaultBlockedDomains.contains("betway.com"),
+                "betway.com (global sports betting) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeBovada() {
+        #expect(Session.defaultBlockedDomains.contains("bovada.lv"),
+                "bovada.lv (US-facing sportsbook/.lv TLD) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeBetMGM() {
+        #expect(Session.defaultBlockedDomains.contains("betmgm.com"),
+                "betmgm.com (MGM digital sportsbook) must be blocked by default")
+    }
+
+    @Test func allGamblingDomainsAllPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        let expected = ["draftkings.com", "fanduel.com", "bet365.com",
+                        "pokerstars.com", "betway.com", "bovada.lv", "betmgm.com"]
+        for site in expected {
+            #expect(domains.contains(site),
+                    "\(site) must be present in defaultBlockedDomains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterGamblingAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after gambling additions")
+    }
+
+    @Test func gamblingDomainsAreDistinctFromSportsScoresSites() {
+        let domains = Set(Session.defaultBlockedDomains)
+        // Sports-score sites (espn.com, nba.com) and sports-betting sites are separate
+        // distractions; both categories must coexist in the list.
+        #expect(domains.contains("espn.com"),
+                "espn.com must still be present after betting domain additions")
+        for site in ["draftkings.com", "fanduel.com", "bet365.com"] {
+            #expect(domains.contains(site),
+                    "\(site) must be independent from the sports-scores block entries")
+        }
+    }
+}
+
+// MARK: - Regional social networks (Asia-Pacific)
+
+@Suite("Session defaultBlockedDomains — regional social networks (Asia-Pacific)")
+struct AsianSocialNetworkBlockTests {
+
+    @Test func defaultBlockedDomainsIncludeWeibo() {
+        #expect(Session.defaultBlockedDomains.contains("weibo.com"),
+                "weibo.com (China microblogging, ~600M MAU) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeLineMe() {
+        #expect(Session.defaultBlockedDomains.contains("line.me"),
+                "line.me (LINE messaging/news, dominant in Japan/Taiwan/Thailand) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeKakaoTalk() {
+        #expect(Session.defaultBlockedDomains.contains("kakaotalk.com"),
+                "kakaotalk.com (South Korea dominant messaging) must be blocked by default")
+    }
+
+    @Test func allAsianSocialNetworksPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["weibo.com", "line.me", "kakaotalk.com"] {
+            #expect(domains.contains(site),
+                    "\(site) must be present in defaultBlockedDomains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterAsianSocialAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after Asian social network additions")
+    }
+
+    @Test func asianSocialNetworksAreDistinctFromVkCom() {
+        let domains = Set(Session.defaultBlockedDomains)
+        // vk.com was added in a prior run as the Eastern European regional network;
+        // the Asian platforms are separate entries with distinct TLDs.
+        #expect(domains.contains("vk.com"),
+                "vk.com must still be present after Asian social network additions")
+        for site in ["weibo.com", "line.me", "kakaotalk.com"] {
+            #expect(domains.contains(site),
+                    "\(site) must be independent from the vk.com block entry")
+        }
+    }
+}
+
+// MARK: - Additional e-commerce and short-form video
+
+@Suite("Session defaultBlockedDomains — wayfair, zalando, asos, clapper")
+struct AdditionalEcommerceAndVideoBlockTests {
+
+    @Test func defaultBlockedDomainsIncludeWayfair() {
+        #expect(Session.defaultBlockedDomains.contains("wayfair.com"),
+                "wayfair.com (home furniture e-commerce, high-dwell browse) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeZalando() {
+        #expect(Session.defaultBlockedDomains.contains("zalando.com"),
+                "zalando.com (European fashion e-commerce) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeAsos() {
+        #expect(Session.defaultBlockedDomains.contains("asos.com"),
+                "asos.com (global fast-fashion, New In / Sale feeds) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeClapper() {
+        #expect(Session.defaultBlockedDomains.contains("clapper.tv"),
+                "clapper.tv (TikTok alternative short-form video) must be blocked by default")
+    }
+
+    @Test func allNewDomainsAllPresentTogetherRun137() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["wayfair.com", "zalando.com", "asos.com", "clapper.tv"] {
+            #expect(domains.contains(site),
+                    "\(site) must be present in defaultBlockedDomains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterRun137Addition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after run-137 additions")
+    }
+
+    @Test func newEcommerceDomainsAreDistinctFromExistingShoppingEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        // The original shopping entries stay; new ones join them as independent entries.
+        for existing in ["amazon.com", "ebay.com", "etsy.com", "shein.com"] {
+            #expect(domains.contains(existing),
+                    "\(existing) must still be present after wayfair/zalando/asos additions")
+        }
+        for newSite in ["wayfair.com", "zalando.com", "asos.com"] {
+            #expect(domains.contains(newSite),
+                    "\(newSite) must be an independent block entry alongside the original shopping list")
+        }
+    }
+
+    @Test func clapperTvIsDistinctFromTikTokAndOtherShortVideo() {
+        let domains = Set(Session.defaultBlockedDomains)
+        #expect(domains.contains("tiktok.com"),
+                "tiktok.com must still be present after clapper.tv addition")
+        #expect(domains.contains("triller.co"),
+                "triller.co must still be present after clapper.tv addition")
+        #expect(domains.contains("clapper.tv"),
+                "clapper.tv must be an independent entry distinct from tiktok.com and triller.co")
+    }
+}

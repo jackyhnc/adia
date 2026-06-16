@@ -435,6 +435,74 @@ public struct Session: Sendable, Identifiable {
         //   session length; one of the most engagement-addictive shopping UX patterns among
         //   student demographics.
         "shein.com",
+        // Additional e-commerce (home, fashion, furniture — high-dwell browse sessions)
+        // wayfair.com — online home furniture and décor megastore. "Daily Sales" and trending
+        //   product feeds combined with room-inspiration galleries create very long dwell times.
+        //   Students with their own apartments particularly rationalise Wayfair browsing as
+        //   "necessary research" for furnishing decisions that are not urgent.
+        "wayfair.com",
+        // zalando.com — Europe's leading fashion e-commerce platform. Strong "New In" and "Trends"
+        //   discovery UX; widely used by European students; high infinite-scroll engagement.
+        "zalando.com",
+        // asos.com — UK-based global fast-fashion retailer with "New In" (hundreds of daily new
+        //   items), flash sales, and a "Trending" discovery surface. Among the most scroll-
+        //   optimised fashion browse experiences; commonly used by student demographics worldwide.
+        "asos.com",
+        // Short-form video (additional platform)
+        // clapper.tv — US-market short-form video app positioned as a TikTok alternative for
+        //   adult/creator demographics; gained traction during TikTok regulatory uncertainty.
+        //   Same autoplay-next infinite scroll format as TikTok; separate TLD.
+        "clapper.tv",
+        // Regional social networks (Asia-Pacific)
+        // weibo.com — China's dominant microblogging platform (~600 M MAU). Functionally combines
+        //   Twitter's trending/hashtag discovery with Instagram's image/video feed and fan community
+        //   groups. A significant distraction for Chinese international students who have the app
+        //   as their primary social network; the algorithmically ranked feed is highly engaging.
+        "weibo.com",
+        // line.me — LINE's web portal; LINE is the dominant messaging and social platform in Japan,
+        //   Taiwan, Thailand, and Indonesia. The web interface exposes chat, the NEWS feed (curated
+        //   trending articles and video clips), and OpenChat community rooms — all accessible via
+        //   browser without the native app. International students from these markets check LINE
+        //   frequently throughout the day; the news/video feed extends sessions far beyond messaging.
+        "line.me",
+        // kakaotalk.com — KakaoTalk's web interface; dominant messaging platform in South Korea with
+        //   ~47 M monthly active users domestically and a large diaspora abroad. The KakaoStory social
+        //   feed (photo posts, comments, reactions) is accessible through the web client alongside
+        //   messaging — a full social browsing session is possible without opening the native app.
+        "kakaotalk.com",
+        // Sports betting and gambling (high-impulse distraction, major for male student demographic)
+        // draftkings.com — leading US daily fantasy sports and sports betting platform. Push
+        //   notifications for line movements, in-play live betting UI, and contest lobbies with
+        //   countdown timers are designed for maximum re-engagement. The FOMO mechanics are
+        //   especially effective during live games (NFL Sundays, NBA nights).
+        "draftkings.com",
+        // fanduel.com — DraftKings' primary US competitor; full sportsbook + daily fantasy + online
+        //   casino. Same live-betting and contest-lobby engagement patterns. The two platforms
+        //   split the DFS market and have the highest US sports-betting ad spend per impression.
+        "fanduel.com",
+        // bet365.com — dominant global online sportsbook (UK/international). All major sports,
+        //   real-time in-play betting with sub-second odds updates, streaming of live events within
+        //   the platform. One of the highest-engagement betting UIs globally — the in-play section
+        //   alone is designed to hold attention for hours across concurrent matches.
+        "bet365.com",
+        // pokerstars.com — world's largest online poker platform by player traffic. Poker sessions
+        //   are among the longest deep-engagement time sinks in the gambling category: 30-90 minute
+        //   tournament structures make it extremely hard to stop mid-session. "Just one more hand"
+        //   is a well-documented cognitive trap. Particularly prevalent in computer science and
+        //   mathematics student communities where card-game strategy is intellectually rationalised.
+        "pokerstars.com",
+        // betway.com — major global sports betting operator (UK-licensed, European/African markets).
+        //   Prominent sponsorships (esports, Premier League) make it highly visible to young male
+        //   demographics; the in-play betting UI mirrors bet365 in engagement design.
+        "betway.com",
+        // bovada.lv — leading US-facing online sportsbook and casino operating under a .lv (Latvian)
+        //   TLD. Most well-known US-accessible book; combined sportsbook, casino, and poker lobby.
+        //   A .lv TLD is not covered by any existing block rule — must be listed explicitly.
+        "bovada.lv",
+        // betmgm.com — MGM Resorts' digital sportsbook and online casino. Major US market presence
+        //   with aggressive TV ad spend targeting sports viewers. The casino tab (slots, live tables)
+        //   adjacent to the sportsbook extends sessions well beyond the original sports-check intent.
+        "betmgm.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

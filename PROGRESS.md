@@ -1,5 +1,81 @@
 # Adia — Build Progress
 
+## Run 137 — 2026-06-16
+
+### Shipped
+
+**feat: sports betting/gambling, Asian social networks, wayfair/zalando/asos/clapper.tv (+24 tests)**
+
+#### `SessionState.swift` — 14 new domains in `defaultBlockedDomains`
+
+**Sports betting and gambling (7 domains):**
+- **`draftkings.com`** — leading US DFS/sports betting platform; live-betting FOMO mechanics and countdown-timer contest lobbies are designed for maximum re-engagement during live games.
+- **`fanduel.com`** — DraftKings' primary US competitor; full sportsbook + DFS + online casino.
+- **`bet365.com`** — dominant global sportsbook; sub-second in-play odds updates and live event streaming within platform; one of the highest-engagement betting UIs globally.
+- **`pokerstars.com`** — world's largest online poker platform; 30–90 min tournament structures make it one of the longest deep-engagement time sinks in the category.
+- **`betway.com`** — major global operator (esports sponsorships, Premier League); high visibility to young male demographics.
+- **`bovada.lv`** — leading US-facing sportsbook/casino on a `.lv` TLD not covered by any existing block rule.
+- **`betmgm.com`** — MGM digital sportsbook; adjacent casino tab (slots, live tables) extends sessions well beyond sports-check intent.
+
+**Regional social networks — Asia-Pacific (3 domains):**
+- **`weibo.com`** — China's dominant microblogging platform (~600 M MAU); combines Twitter-style trending discovery with Instagram-style image/video feed; algorithmically ranked, highly engaging for Chinese international students.
+- **`line.me`** — LINE web portal; dominant messaging + social in Japan, Taiwan, Thailand, Indonesia; NEWS feed (curated trending articles and video clips) and OpenChat community rooms extend sessions far beyond messaging intent.
+- **`kakaotalk.com`** — KakaoTalk web interface; dominant in South Korea; KakaoStory social feed (photo posts, comments, reactions) accessible without native app.
+
+**Additional e-commerce (3 domains):**
+- **`wayfair.com`** — online home furniture and décor megastore; "Daily Sales" + room-inspiration galleries create very long dwell times.
+- **`zalando.com`** — Europe's leading fashion e-commerce; strong "New In" and "Trends" discovery UX.
+- **`asos.com`** — UK-based global fast-fashion; "New In" (hundreds of daily new items), flash sales, "Trending" discovery surface.
+
+**Short-form video (1 domain):**
+- **`clapper.tv`** — US-market TikTok alternative; same autoplay-next infinite-scroll format; gained traction during TikTok regulatory uncertainty.
+
+#### Tests — 24 new `@Test` cases in 3 new `@Suite` groups
+
+**`SessionStateTests.swift`**:
+
+`"Session defaultBlockedDomains — sports betting and gambling"` (10 tests):
+- `defaultBlockedDomainsIncludeDraftKings`
+- `defaultBlockedDomainsIncludeFanDuel`
+- `defaultBlockedDomainsIncludeBet365`
+- `defaultBlockedDomainsIncludePokerStars`
+- `defaultBlockedDomainsIncludeBetway`
+- `defaultBlockedDomainsIncludeBovada`
+- `defaultBlockedDomainsIncludeBetMGM`
+- `allGamblingDomainsAllPresentTogether`
+- `defaultBlockedDomainsNoDuplicatesAfterGamblingAddition`
+- `gamblingDomainsAreDistinctFromSportsScoresSites`
+
+`"Session defaultBlockedDomains — regional social networks (Asia-Pacific)"` (6 tests):
+- `defaultBlockedDomainsIncludeWeibo`
+- `defaultBlockedDomainsIncludeLineMe`
+- `defaultBlockedDomainsIncludeKakaoTalk`
+- `allAsianSocialNetworksPresentTogether`
+- `defaultBlockedDomainsNoDuplicatesAfterAsianSocialAddition`
+- `asianSocialNetworksAreDistinctFromVkCom`
+
+`"Session defaultBlockedDomains — wayfair, zalando, asos, clapper"` (8 tests):
+- `defaultBlockedDomainsIncludeWayfair`
+- `defaultBlockedDomainsIncludeZalando`
+- `defaultBlockedDomainsIncludeAsos`
+- `defaultBlockedDomainsIncludeClapper`
+- `allNewDomainsAllPresentTogetherRun137`
+- `defaultBlockedDomainsNoDuplicatesAfterRun137Addition`
+- `newEcommerceDomainsAreDistinctFromExistingShoppingEntries`
+- `clapperTvIsDistinctFromTikTokAndOtherShortVideo`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **More regional social networks**: `band.us` (South Korean fan community platform — BAND app), `mixi.jp` (Japanese social network with active community groups), `taringa.net` (Latin American Reddit-like forum).
+  - **More gambling/poker**: `888casino.com`, `partypoker.com` (second largest online poker room), `unibet.com` (major European operator).
+  - **Browser-based gaming / Flash game replacement platforms**: `crazygames.com`, `poki.com`, `miniclip.com` — high-engagement browser game portals popular with students.
+  - **Productivity-adjacent procrastination tools**: `notion.so`/`trello.com` — if user is meant to be writing code/essay, spending a session "reorganizing my Notion" is genuine displacement activity.
+  - **Subdomain coverage for betting sites**: add `"live"` subdomain (already present) coverage for bet365 and DraftKings live betting subdomains — verify existing "live" prefix covers `live.bet365.com`.
+
 ## Run 136 — 2026-06-16
 
 ### Shipped
