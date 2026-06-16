@@ -700,6 +700,65 @@ public struct Session: Sendable, Identifiable {
         //   constantly — the feed is never the same twice, making it effectively infinite-scroll.
         //   Heavily used by students in Brazil, India, Poland, Pakistan, and Nigeria. Distinct domain.
         "olx.com",
+        // Additional gambling operators (closing major remaining brand gaps)
+        // betfair.com — Betfair Exchange (Flutter Entertainment); the world's largest peer-to-peer
+        //   betting exchange. Users set their own odds and bet against other users (not the house),
+        //   creating uniquely deep engagement: each bet requires active market-making decisions. The
+        //   Exchange UI is essentially a real-time financial-trading terminal for sports — the
+        //   cognitive load and "just one more order" pattern mirrors day-trading addiction. Distinctly
+        //   different engagement model from sportsbook operators (bet365, William Hill) in both UX
+        //   and domain; must be listed as a separate explicit entry.
+        "betfair.com",
+        // 888sport.com — 888 Holdings' dedicated sports-betting brand; same corporate parent as
+        //   888casino.com and 888poker.com but operates under a completely separate domain. Offers
+        //   in-play betting with live event streaming for many markets. Students who find 888casino
+        //   or 888poker blocked may pivot to 888sport.com without realising they share an owner —
+        //   the brand operates distinct web properties. Must be listed separately: resolves as an
+        //   independent DNS entry from the rest of the 888 Holdings domain portfolio.
+        "888sport.com",
+        // sportingbet.com — Entain Group's international sports-betting brand (same corporate parent
+        //   as Ladbrokes, Coral, and bwin, but operated under a completely separate domain). Strong
+        //   presence in Australia, Greece, Brazil, and global regulated markets. Students who find
+        //   the core Entain brands (Ladbrokes/Coral/bwin) blocked may recall Sportingbet, especially
+        //   in markets where it carries the highest brand recognition. Distinct domain — must be
+        //   listed explicitly alongside the other Entain properties.
+        "sportingbet.com",
+        // Additional browser gaming portals (high-recall fallback destinations)
+        // kizi.com — large browser game portal (30 M+ MAU) with particular strength in Turkey,
+        //   Eastern Europe, and globally among younger demographics. Strong "IO Games" and "2-Player"
+        //   category discovery; HTML5 titles require no installation and play on any device. A
+        //   well-known fallback destination for students whose CrazyGames/Poki/SilverGames blocks
+        //   are active — the portal is frequently recommended by community word-of-mouth. Separate
+        //   domain from all existing blocked entries.
+        "kizi.com",
+        // agame.com — established browser game portal with 1,000+ HTML5 titles and daily game
+        //   updates. "Popular", "New Games", and genre-category discovery feeds encourage habitual
+        //   daily-return patterns ("let me check what's new today"). A common secondary fallback
+        //   when AddictingGames or Miniclip are blocked. Separate domain and TLD from all existing
+        //   blocked portal entries.
+        "agame.com",
+        // coolmathgames.com — browser game portal with an "educational" brand disguise (legacy
+        //   subtitle: "Math and more"). This framing is uniquely insidious: students rationalise
+        //   time spent here as legitimate study activity ("it's practice problems" / "it's math").
+        //   The catalogue is overwhelmingly non-mathematical puzzle and strategy games; the "math"
+        //   label is legacy marketing from its Neopets-era origins. Among the highest-risk gaming
+        //   portal domains to leave unblocked precisely because it appears task-relevant — the
+        //   educational framing is the primary driver of rationalised procrastination here.
+        "coolmathgames.com",
+        // Free ad-supported streaming (additional AVOD coverage beyond Tubi and Pluto)
+        // crackle.com — Sony Pictures' free ad-supported streaming service (AVOD). Full-length
+        //   movies and TV shows from Sony's library including original productions. "It's free and
+        //   legal" lowers the self-interruption threshold identically to Tubi: a student who
+        //   pauses work for "just a short clip" can remain for a full feature without a subscription
+        //   renewal moment to snap them back to awareness. Separate domain from existing entries.
+        "crackle.com",
+        // fawesome.tv — free ad-supported streaming platform (AVOD) with a broad multi-genre
+        //   catalogue: action, comedy, drama, horror, documentary. The .tv TLD is completely
+        //   distinct from crackle.com and all existing blocked streaming entries; the web player
+        //   requires no registration, ensuring the same zero-friction "it's free" engagement
+        //   pattern as Tubi and Pluto. An underblocked AVOD destination that sits alongside the
+        //   more widely known services in the free-streaming tier.
+        "fawesome.tv",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

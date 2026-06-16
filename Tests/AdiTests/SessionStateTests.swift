@@ -2093,3 +2093,149 @@ struct ClassifiedsMarketplaceBlockTests {
         #expect(count == 1, "olx.com must appear exactly once in defaultBlockedDomains")
     }
 }
+
+// MARK: - Additional gambling operators (Betfair Exchange, 888sport, Sportingbet)
+
+@Suite("Session defaultBlockedDomains — additional gambling operators (betfair, 888sport, sportingbet)")
+struct AdditionalGamblingOperators3BlockTests {
+
+    @Test func defaultBlockedDomainsIncludeBetfair() {
+        #expect(Session.defaultBlockedDomains.contains("betfair.com"),
+                "betfair.com (Betfair Exchange — peer-to-peer betting market, Flutter Entertainment) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsInclude888sport() {
+        #expect(Session.defaultBlockedDomains.contains("888sport.com"),
+                "888sport.com (888 Holdings' sportsbook brand — separate domain from 888casino/888poker) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeSportingbet() {
+        #expect(Session.defaultBlockedDomains.contains("sportingbet.com"),
+                "sportingbet.com (Entain Group international sportsbook — same parent as Ladbrokes/Coral/bwin) must be blocked by default")
+    }
+
+    @Test func allAdditionalGamblingOperators3AllPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["betfair.com", "888sport.com", "sportingbet.com"] {
+            #expect(domains.contains(site),
+                    "\(site) (additional gambling operator) must be present")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterAdditionalGambling3Addition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after betfair/888sport/sportingbet addition")
+    }
+
+    @Test func additionalGamblingOperators3CoexistWithPriorGamblingEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for existing in ["bet365.com", "draftkings.com", "fanduel.com", "betway.com",
+                         "bovada.lv", "betmgm.com", "ladbrokes.com", "paddypower.com",
+                         "coral.co.uk", "unibet.com", "williamhill.com", "pokerstars.com",
+                         "888casino.com", "888poker.com", "partypoker.com",
+                         "betfred.com", "bwin.com", "sky.bet"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior gambling entry) must still be present")
+        }
+    }
+
+    @Test func betfairAppearsExactlyOnce() {
+        let count = Session.defaultBlockedDomains.filter { $0 == "betfair.com" }.count
+        #expect(count == 1, "betfair.com must appear exactly once in defaultBlockedDomains")
+    }
+
+    @Test func eightEightEightSportAppearsExactlyOnce() {
+        let count = Session.defaultBlockedDomains.filter { $0 == "888sport.com" }.count
+        #expect(count == 1, "888sport.com must appear exactly once in defaultBlockedDomains")
+    }
+}
+
+// MARK: - Additional browser gaming portals (kizi, agame, coolmathgames)
+
+@Suite("Session defaultBlockedDomains — additional browser gaming portals (kizi, agame, coolmathgames)")
+struct AdditionalBrowserGaming3BlockTests {
+
+    @Test func defaultBlockedDomainsIncludeKizi() {
+        #expect(Session.defaultBlockedDomains.contains("kizi.com"),
+                "kizi.com (30M+ MAU browser game portal, popular in Turkey and Eastern Europe) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeAgame() {
+        #expect(Session.defaultBlockedDomains.contains("agame.com"),
+                "agame.com (established browser game portal, 1000+ HTML5 titles) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeCoolMathGames() {
+        #expect(Session.defaultBlockedDomains.contains("coolmathgames.com"),
+                "coolmathgames.com (educational framing masks non-math game portal — uniquely insidious rationalisation target) must be blocked by default")
+    }
+
+    @Test func allAdditionalBrowserGaming3AllPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["kizi.com", "agame.com", "coolmathgames.com"] {
+            #expect(domains.contains(site),
+                    "\(site) (browser gaming portal) must be present")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterAdditionalBrowserGaming3Addition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after kizi/agame/coolmathgames addition")
+    }
+
+    @Test func additionalBrowserGaming3CoexistsWithPriorBrowserGamingEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for existing in ["crazygames.com", "poki.com", "miniclip.com", "kongregate.com",
+                         "addictinggames.com", "armorgames.com", "y8.com",
+                         "silvergames.com", "friv.com"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior browser gaming portal) must still be present")
+        }
+    }
+}
+
+// MARK: - Free ad-supported streaming (crackle, fawesome)
+
+@Suite("Session defaultBlockedDomains — free ad-supported streaming (crackle, fawesome)")
+struct FreeStreamingAVODBlockTests {
+
+    @Test func defaultBlockedDomainsIncludeCrackle() {
+        #expect(Session.defaultBlockedDomains.contains("crackle.com"),
+                "crackle.com (Sony Pictures' free AVOD streaming — same zero-friction trap as Tubi) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeFawesome() {
+        #expect(Session.defaultBlockedDomains.contains("fawesome.tv"),
+                "fawesome.tv (free AVOD streaming, .tv TLD distinct from existing entries) must be blocked by default")
+    }
+
+    @Test func allFreeAVODStreamingPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["crackle.com", "fawesome.tv"] {
+            #expect(domains.contains(site),
+                    "\(site) (free AVOD streaming service) must be present")
+        }
+    }
+
+    @Test func freeStreamingNoDuplicatesAfterAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after crackle/fawesome addition")
+    }
+
+    @Test func freeStreamingCoexistsWithExistingStreamingEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for existing in ["netflix.com", "hulu.com", "tubi.tv", "pluto.tv",
+                         "sling.com", "fubo.tv", "philo.com"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior streaming entry) must still be present")
+        }
+    }
+
+    @Test func crackleAppearsExactlyOnce() {
+        let count = Session.defaultBlockedDomains.filter { $0 == "crackle.com" }.count
+        #expect(count == 1, "crackle.com must appear exactly once in defaultBlockedDomains")
+    }
+}

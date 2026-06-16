@@ -217,8 +217,33 @@ public actor HostsFileManager {
         "video",  // video delivery / watch subdomains (video.twitch.tv, video.facebook.com etc.)
         "shop",   // merchandise store subdomains (shop.spotify.com, shop.twitch.tv etc.)
         "play",   // play.twitch.tv, play.spotify.com, play.hbo.com, play.kongregate.com etc.
-        "news",   // news.spotify.com, news.xbox.com, news.blizzard.com, news.google.com etc.
-        "social", // social.microsoft.com (Xbox Social), social.blizzard.com, etc.
+        "news",      // news.spotify.com, news.xbox.com, news.blizzard.com, news.google.com etc.
+        "social",    // social.microsoft.com (Xbox Social), social.blizzard.com, etc.
+        // "community" blocks community.spotify.com (fan/artist community forum), community.discord.com
+        //             (Discord's community/hub feature subdomain), community.twitch.tv (Twitch community
+        //             pages), and similar community-forum subdomains on already-blocked entertainment
+        //             and gaming platforms. Community forums surface engaging content — patch discussions,
+        //             fan theories, event co-ordination — that can consume as much time as the parent
+        //             platform itself. False-positive risk: no major productivity tool (GitHub, Notion,
+        //             Linear, Figma, Jira, Confluence) uses "community." as a primary product URL.
+        //             The only false-positive risk is for productivity tools NOT in the default blocked
+        //             list that happen to host a community. subdomain (e.g., community.atlassian.com
+        //             — Atlassian's developer community); since Atlassian's productivity domains are
+        //             not blocked by default, no community. rows are generated for them unless the
+        //             user manually blocks those root domains, which would be intentional.
+        "community", // community.spotify.com, community.discord.com, community.twitch.tv etc.
+        // "forums" blocks forums.steampowered.com (Steam game discussion forums), forums.blizzard.com
+        //          (Blizzard game discussion and patch-notes forums), forums.epicgames.com (Epic
+        //          developer/player discussion forums), and similar forum subdomains on already-blocked
+        //          gaming platforms. The "checking patch notes" justification for opening game forums
+        //          is among the most common student rationalisations — but once inside a forum, the
+        //          threaded discussion format, community drama, and opinion threads consistently
+        //          convert a 2-minute patch-notes check into a 45-minute browse. False-positive risk:
+        //          no major productivity tool (GitHub, Notion, Linear, Figma, Jira, Confluence)
+        //          exposes a "forums." subdomain as a primary product URL. Edge-case risk is tools
+        //          NOT in the default blocked list (e.g., forums.swift.org — Swift community forums);
+        //          since swift.org is not blocked by default, no forums. row is generated for it.
+        "forums",    // forums.steampowered.com, forums.blizzard.com, forums.epicgames.com etc.
     ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).
