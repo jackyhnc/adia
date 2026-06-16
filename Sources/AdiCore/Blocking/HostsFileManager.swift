@@ -244,6 +244,20 @@ public actor HostsFileManager {
         //          NOT in the default blocked list (e.g., forums.swift.org — Swift community forums);
         //          since swift.org is not blocked by default, no forums. row is generated for it.
         "forums",    // forums.steampowered.com, forums.blizzard.com, forums.epicgames.com etc.
+        // "blog" blocks blog.twitch.tv (Twitch's "official news" blog — surface-level content about
+        //         new features, creator announcements, and platform updates that pulls users into the
+        //         broader Twitch ecosystem even when twitch.tv itself is blocked; "I'm just checking
+        //         what's new on Twitch" is a common rationalisation), blog.discord.com (Discord's
+        //         product blog — feature announcements, changelog posts; low-distraction individually
+        //         but provides an on-ramp back to Discord engagement via embedded invite links and
+        //         login prompts at the bottom of every post), and blog.spotify.com (Spotify's editorial
+        //         blog — artist spotlights, playlist curation articles, and "what's trending" music
+        //         content; surfaces as a search result when students look up new music during a session).
+        //         False-positive risk: no major productivity tool (GitHub, Notion, Linear, Figma,
+        //         Jira, Confluence) uses "blog." as a primary product or dashboard URL. If a user
+        //         manually blocks a productivity tool that happens to publish at blog.X, that subdomain
+        //         would also be blocked — correct, since the whole tool is blocked.
+        "blog",      // blog.twitch.tv, blog.discord.com, blog.spotify.com etc.
     ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).

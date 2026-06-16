@@ -759,6 +759,75 @@ public struct Session: Sendable, Identifiable {
         //   pattern as Tubi and Pluto. An underblocked AVOD destination that sits alongside the
         //   more widely known services in the free-streaming tier.
         "fawesome.tv",
+        // Streaming — Plex and Peacock alias (escape hatches from the already-blocked peacocktv.com)
+        // peacock.com — NBCUniversal's streaming service is canonically known as "Peacock" and the
+        //   domain peacock.com is the redirect alias that surfaces in all NBCUniversal marketing, social
+        //   media links, and direct-navigation memory. peacocktv.com is already blocked; however
+        //   peacock.com resolves as a distinct DNS entry that redirects to peacocktv.com only after a
+        //   browser fetch — blocking peacocktv.com alone still allows the initial navigation to
+        //   peacock.com to resolve, meaning a cached or Service-Worker-backed page can serve content
+        //   before the redirect fires. Listing peacock.com closes this alias gap. The domains are
+        //   operated by the same organisation but must be listed as separate /etc/hosts entries.
+        "peacock.com",
+        // plex.tv — Plex's primary domain; Plex combines a personal media-server product with a
+        //   fully functional free ad-supported streaming tier (Plex Free, no account required for
+        //   many titles) and a curated live-channel lineup. The free tier includes full-length
+        //   films, TV series, and live channels — no subscription barrier means the same
+        //   zero-friction engagement pattern as Tubi or Pluto. A student who finds Netflix and Hulu
+        //   blocked may open plex.tv to browse free content without realising it is a streaming
+        //   service rather than just a media-server management page. The watch.plex.tv subdomain
+        //   is already covered by the "watch" prefix; plex.tv itself must be listed explicitly as
+        //   the root domain to block the browse, discovery, and free-streaming entry points.
+        "plex.tv",
+        // Additional gambling operators (international coverage — CIS, Africa, South Asia, Benelux)
+        // 1xbet.com — 1xBet; one of the largest online bookmakers globally by market presence (Curaçao-
+        //   licensed), with aggressive student-market targeting through sponsorships of major football
+        //   clubs (e.g., FC Barcelona shirt sponsor 2019-2021), esports tournaments, and social-media
+        //   influencer campaigns. Dominant in Russia, CIS countries, and Sub-Saharan Africa; a first-
+        //   recall operator for students in those regions when UK/EU brands (bet365, betway) are blocked.
+        //   Known for extremely broad sports-market coverage including obscure leagues and esports
+        //   betting, which makes it attractive to students who follow niche competitions. Distinct domain.
+        "1xbet.com",
+        // melbet.com — Melbet; another large internationally-facing bookmaker (also Curaçao-licensed)
+        //   with very broad geographical reach, particularly in Africa (Nigeria, Kenya, Ghana, South
+        //   Africa) and South Asia (India, Bangladesh, Pakistan). Aggressive social-media and influencer
+        //   marketing targets the 18-30 demographic; sponsorships of African Premier League clubs and
+        //   Indian entertainment properties drive brand visibility. Acts as the primary second-recall
+        //   operator for students in Africa/South Asia when 1xBet is unavailable or blocked. Operates a
+        //   fully separated domain from 1xbet.com; must be listed explicitly.
+        "melbet.com",
+        // betway.be — Betway's Belgium-licensed domain (.be TLD). Belgium enforces one of the strictest
+        //   online gambling regulatory frameworks in the EU (Belgian Gaming Commission) — Betway operates
+        //   a dedicated betway.be domain compliant with Belgian licensing requirements, completely
+        //   separate from betway.com. Students in Belgium, Luxembourg, and the Netherlands (where
+        //   betway.be is marketed as the regulated option) navigate here rather than betway.com when the
+        //   .com domain is blocked. The .be TLD is not covered by any existing blocking rule or TLD
+        //   pattern and must be listed as a distinct explicit entry.
+        "betway.be",
+        // Additional browser gaming portals (closing remaining major gaps)
+        // gameflare.com — large browser-based HTML5 game portal with a catalogue of 1,000+ titles
+        //   spanning action, puzzle, racing, sports, and IO game genres. Prominent "Trending Today"
+        //   and "New Games" discovery feeds drive habitual-return patterns. A first-recall fallback
+        //   for students in North America and Europe whose kizi.com, agame.com, or poki.com blocks
+        //   are active — Gameflare ranks consistently in the top browser game portal results for
+        //   most game-category search queries. No account required; pure HTML5 instant-play.
+        "gameflare.com",
+        // iogames.space — dedicated aggregator portal for the IO-games genre specifically: .io multiplayer
+        //   browser games (agar.io, slither.io, diep.io, krunker.io, etc.). The IO-game genre is among
+        //   the highest-engagement browser gaming categories because games are real-time multiplayer —
+        //   abandoning mid-game imposes a social cost and the "just finish this round" pattern is
+        //   extremely strong. iogames.space aggregates hundreds of IO titles with genre filtering and
+        //   a "Most Popular" discovery feed; students who want to play IO games but find kizi or poki
+        //   blocked navigate directly to iogames.space. The .space TLD is completely distinct from
+        //   every existing blocked entry.
+        "iogames.space",
+        // spele.lv — Baltic and Eastern European browser game portal (Latvia-based, operated by
+        //   Draugiem Group). Particularly prominent in Latvia, Lithuania, Estonia, and Poland; also
+        //   has significant reach in other Eastern European markets. Offers browser-playable HTML5
+        //   and Flash-converted games with localised category labels. A first-recall gaming portal
+        //   for students in the Baltic states and Eastern Europe who have other portals blocked. The
+        //   .lv TLD is completely distinct from all existing blocked entries — must be listed explicitly.
+        "spele.lv",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

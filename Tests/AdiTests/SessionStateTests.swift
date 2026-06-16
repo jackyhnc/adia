@@ -2239,3 +2239,170 @@ struct FreeStreamingAVODBlockTests {
         #expect(count == 1, "crackle.com must appear exactly once in defaultBlockedDomains")
     }
 }
+
+// MARK: - Streaming alias and Plex (peacock.com, plex.tv)
+
+@Suite("Session defaultBlockedDomains — streaming alias and Plex (peacock.com, plex.tv)")
+struct StreamingAliasAndPlexBlockTests {
+
+    @Test func defaultBlockedDomainsIncludePeacockCom() {
+        #expect(Session.defaultBlockedDomains.contains("peacock.com"),
+                "peacock.com (NBCUniversal's Peacock alias domain — distinct DNS entry from peacocktv.com) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludePlexTv() {
+        #expect(Session.defaultBlockedDomains.contains("plex.tv"),
+                "plex.tv (Plex — free ad-supported streaming tier alongside media-server product) must be blocked by default")
+    }
+
+    @Test func allStreamingAliasAndPlexPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["peacock.com", "plex.tv"] {
+            #expect(domains.contains(site),
+                    "\(site) (streaming alias/Plex) must be present")
+        }
+    }
+
+    @Test func streamingAliasNoDuplicatesAfterAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after peacock.com/plex.tv addition")
+    }
+
+    @Test func streamingAliasCoexistsWithExistingStreamingEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for existing in ["peacocktv.com", "netflix.com", "hulu.com", "tubi.tv", "pluto.tv",
+                         "crackle.com", "fawesome.tv"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior streaming entry) must still be present")
+        }
+    }
+
+    @Test func peacockComAppearsExactlyOnce() {
+        let count = Session.defaultBlockedDomains.filter { $0 == "peacock.com" }.count
+        #expect(count == 1, "peacock.com must appear exactly once in defaultBlockedDomains")
+    }
+
+    @Test func plexTvAppearsExactlyOnce() {
+        let count = Session.defaultBlockedDomains.filter { $0 == "plex.tv" }.count
+        #expect(count == 1, "plex.tv must appear exactly once in defaultBlockedDomains")
+    }
+}
+
+// MARK: - Additional international gambling operators (1xbet, melbet, betway.be)
+
+@Suite("Session defaultBlockedDomains — additional international gambling operators (1xbet, melbet, betway.be)")
+struct AdditionalInternationalGamblingBlockTests {
+
+    @Test func defaultBlockedDomainsInclude1xBet() {
+        #expect(Session.defaultBlockedDomains.contains("1xbet.com"),
+                "1xbet.com (major CIS/Africa bookmaker, aggressive student-market targeting) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeMelbet() {
+        #expect(Session.defaultBlockedDomains.contains("melbet.com"),
+                "melbet.com (major Africa/South Asia bookmaker, influencer-driven student targeting) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeBetwayBe() {
+        #expect(Session.defaultBlockedDomains.contains("betway.be"),
+                "betway.be (Betway's Belgium-licensed .be TLD domain — distinct from betway.com) must be blocked by default")
+    }
+
+    @Test func allInternationalGamblingPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["1xbet.com", "melbet.com", "betway.be"] {
+            #expect(domains.contains(site),
+                    "\(site) (international gambling operator) must be present")
+        }
+    }
+
+    @Test func internationalGamblingNoDuplicatesAfterAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after 1xbet/melbet/betway.be addition")
+    }
+
+    @Test func internationalGamblingCoexistsWithPriorGamblingEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for existing in ["bet365.com", "betway.com", "betfair.com", "888sport.com",
+                         "draftkings.com", "fanduel.com", "pokerstars.com",
+                         "ladbrokes.com", "paddypower.com", "coral.co.uk",
+                         "unibet.com", "williamhill.com", "betfred.com", "bwin.com",
+                         "sky.bet", "sportingbet.com"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior gambling entry) must still be present")
+        }
+    }
+
+    @Test func onexBetAppearsExactlyOnce() {
+        let count = Session.defaultBlockedDomains.filter { $0 == "1xbet.com" }.count
+        #expect(count == 1, "1xbet.com must appear exactly once in defaultBlockedDomains")
+    }
+
+    @Test func melbetAppearsExactlyOnce() {
+        let count = Session.defaultBlockedDomains.filter { $0 == "melbet.com" }.count
+        #expect(count == 1, "melbet.com must appear exactly once in defaultBlockedDomains")
+    }
+
+    @Test func betwayBeAppearsExactlyOnce() {
+        let count = Session.defaultBlockedDomains.filter { $0 == "betway.be" }.count
+        #expect(count == 1, "betway.be must appear exactly once in defaultBlockedDomains")
+    }
+}
+
+// MARK: - Additional browser gaming portals (gameflare, iogames.space, spele.lv)
+
+@Suite("Session defaultBlockedDomains — additional browser gaming portals (gameflare, iogames.space, spele.lv)")
+struct AdditionalGamingPortals4BlockTests {
+
+    @Test func defaultBlockedDomainsIncludeGameflare() {
+        #expect(Session.defaultBlockedDomains.contains("gameflare.com"),
+                "gameflare.com (large HTML5 game portal, Trending Today + New Games discovery feeds) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeIOGamesSpace() {
+        #expect(Session.defaultBlockedDomains.contains("iogames.space"),
+                "iogames.space (IO-games aggregator — real-time multiplayer; 'just one more round' social cost) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeSpeleLv() {
+        #expect(Session.defaultBlockedDomains.contains("spele.lv"),
+                "spele.lv (Baltic/Eastern European browser game portal, .lv TLD distinct from existing entries) must be blocked by default")
+    }
+
+    @Test func allGamingPortals4PresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["gameflare.com", "iogames.space", "spele.lv"] {
+            #expect(domains.contains(site),
+                    "\(site) (browser gaming portal) must be present")
+        }
+    }
+
+    @Test func gamingPortals4NoDuplicatesAfterAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after gameflare/iogames.space/spele.lv addition")
+    }
+
+    @Test func gamingPortals4CoexistsWithPriorPortalEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for existing in ["crazygames.com", "poki.com", "miniclip.com", "kongregate.com",
+                         "addictinggames.com", "armorgames.com", "y8.com",
+                         "silvergames.com", "friv.com",
+                         "kizi.com", "agame.com", "coolmathgames.com"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior browser gaming portal) must still be present")
+        }
+    }
+
+    @Test func gameflareAppearsExactlyOnce() {
+        let count = Session.defaultBlockedDomains.filter { $0 == "gameflare.com" }.count
+        #expect(count == 1, "gameflare.com must appear exactly once in defaultBlockedDomains")
+    }
+
+    @Test func ioGamesSpaceAppearsExactlyOnce() {
+        let count = Session.defaultBlockedDomains.filter { $0 == "iogames.space" }.count
+        #expect(count == 1, "iogames.space must appear exactly once in defaultBlockedDomains")
+    }
+}
