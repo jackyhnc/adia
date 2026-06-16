@@ -163,6 +163,23 @@ public actor HostsFileManager {
     //          an embeddable demo; however, no major productivity tool (Notion, Linear, Figma,
     //          Jira, Confluence, GitHub) exposes a "play." subdomain as its primary product
     //          URL — the risk is negligible across the default blocked-domain set.
+    // "news"   blocks news.spotify.com (Spotify's editorial/articles portal), news.xbox.com
+    //          (Xbox News hub — game announcements, patch notes, and Xbox Game Pass content
+    //          updates that pull users into the Xbox ecosystem during study time),
+    //          news.blizzard.com (Blizzard game news and patch notes — same pattern as Xbox),
+    //          news.ycombinator.com / news.hacker-news.firebaseapp.com (both already blocked
+    //          at root level, but news. prefix explicitly closes any subdomain bypass route),
+    //          news.reddit.com (Reddit's legacy news aggregation subdomain, distinct from
+    //          the old.reddit.com and www.reddit.com routes already covered by the "old" and
+    //          default www. entries). Also covers news.google.com (Google News — a fully
+    //          featured algorithmically curated news feed that is distinct from google.com and
+    //          a significant standalone distraction vector). False-positive risk: no major
+    //          productivity tool (Notion, Linear, Figma, Jira, Confluence, GitHub) exposes a
+    //          "news." subdomain as a primary product URL. The only common false-positive risk
+    //          is for tools that a user has NOT blocked (e.g., a student who whitelisted a
+    //          development blog hosted at news.example-productivity-tool.com) — but such tools
+    //          are not in the default blocked-domain list, so news. rows are never generated for
+    //          them unless the user manually blocks those tools' root domains, which is correct.
     internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = [
         "m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips",
         "web",    // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
@@ -185,6 +202,7 @@ public actor HostsFileManager {
         "video",  // video delivery / watch subdomains (video.twitch.tv, video.facebook.com etc.)
         "shop",   // merchandise store subdomains (shop.spotify.com, shop.twitch.tv etc.)
         "play",   // play.twitch.tv, play.spotify.com, play.hbo.com, play.kongregate.com etc.
+        "news",   // news.spotify.com, news.xbox.com, news.blizzard.com, news.google.com etc.
     ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).

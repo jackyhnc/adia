@@ -1730,3 +1730,172 @@ struct AdditionalRegionalSocialBlockTests {
         #expect(domains.contains("line.me"),       "line.me must still be present independently")
     }
 }
+
+// MARK: - Additional browser-based gaming portals
+
+@Suite("Session defaultBlockedDomains — additional browser gaming portals")
+struct AdditionalBrowserGamingBlockTests {
+
+    @Test func defaultBlockedDomainsIncludeAddictingGames() {
+        #expect(Session.defaultBlockedDomains.contains("addictinggames.com"),
+                "addictinggames.com (Addicting Games Inc., 100M+ users) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeArmorGames() {
+        #expect(Session.defaultBlockedDomains.contains("armorgames.com"),
+                "armorgames.com (indie browser game portal with community ratings) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeY8() {
+        #expect(Session.defaultBlockedDomains.contains("y8.com"),
+                "y8.com (300M+ user browser game portal, popular in Asia/LatAm/E. Europe) must be blocked by default")
+    }
+
+    @Test func allAdditionalBrowserGamingPortalsAllPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["addictinggames.com", "armorgames.com", "y8.com"] {
+            #expect(domains.contains(site),
+                    "\(site) must be present in defaultBlockedDomains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterAdditionalBrowserGamingAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after additional browser gaming additions")
+    }
+
+    @Test func additionalBrowserGamingCoexistsWithPriorBrowserGamingEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for existing in ["crazygames.com", "poki.com", "miniclip.com", "kongregate.com"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior browser gaming entry) must still be present")
+        }
+        for newSite in ["addictinggames.com", "armorgames.com", "y8.com"] {
+            #expect(domains.contains(newSite),
+                    "\(newSite) must be present as an independent new entry")
+        }
+    }
+
+    @Test func additionalBrowserGamingPortalsAreDistinctFromSteamAndEpic() {
+        let domains = Set(Session.defaultBlockedDomains)
+        #expect(domains.contains("steampowered.com"), "steampowered.com must still be present")
+        #expect(domains.contains("epicgames.com"),    "epicgames.com must still be present")
+        for portal in ["addictinggames.com", "armorgames.com", "y8.com"] {
+            #expect(domains.contains(portal), "\(portal) must be present independently of Steam/Epic")
+        }
+    }
+
+    @Test func y8IsDistinctFromOtherGamingTLDs() {
+        // y8.com uses a short .com TLD entry; verify it is separate from y8.net or similar hypothetical variants.
+        let domains = Session.defaultBlockedDomains
+        let y8ComCount = domains.filter { $0 == "y8.com" }.count
+        #expect(y8ComCount == 1, "y8.com must appear exactly once in defaultBlockedDomains")
+    }
+}
+
+// MARK: - Additional sports betting / gambling operators
+
+@Suite("Session defaultBlockedDomains — additional gambling operators")
+struct AdditionalGamblingOperatorsBlockTests {
+
+    @Test func defaultBlockedDomainsIncludeLadbrokes() {
+        #expect(Session.defaultBlockedDomains.contains("ladbrokes.com"),
+                "ladbrokes.com (Entain Group major UK bookmaker) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludePaddyPower() {
+        #expect(Session.defaultBlockedDomains.contains("paddypower.com"),
+                "paddypower.com (Flutter Entertainment, Irish/UK bookmaker) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeCoral() {
+        #expect(Session.defaultBlockedDomains.contains("coral.co.uk"),
+                "coral.co.uk (Entain Group UK bookmaker, distinct .co.uk TLD) must be blocked by default")
+    }
+
+    @Test func allAdditionalGamblingOperatorsAllPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["ladbrokes.com", "paddypower.com", "coral.co.uk"] {
+            #expect(domains.contains(site),
+                    "\(site) must be present in defaultBlockedDomains")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterAdditionalGamblingAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after additional gambling operator additions")
+    }
+
+    @Test func additionalGamblingOperatorsCoexistWithPriorGamblingEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for existing in ["draftkings.com", "fanduel.com", "bet365.com", "pokerstars.com",
+                         "betway.com", "bovada.lv", "betmgm.com",
+                         "888casino.com", "888poker.com", "partypoker.com", "unibet.com", "williamhill.com"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior gambling entry) must still be present after run-139 additions")
+        }
+        for newSite in ["ladbrokes.com", "paddypower.com", "coral.co.uk"] {
+            #expect(domains.contains(newSite),
+                    "\(newSite) must be present as an independent new entry")
+        }
+    }
+
+    @Test func coralUsesCoUkTLDNotComTLD() {
+        // coral.co.uk must be listed as coral.co.uk, not coral.com (a different entity).
+        let domains = Session.defaultBlockedDomains
+        let coralCoUkCount = domains.filter { $0 == "coral.co.uk" }.count
+        #expect(coralCoUkCount == 1, "coral.co.uk must appear exactly once with the .co.uk TLD")
+        let coralComCount = domains.filter { $0 == "coral.com" }.count
+        #expect(coralComCount == 0, "coral.com (a different entity) must NOT be in the list")
+    }
+
+    @Test func ladbrokesAndCoralAreSeparateEntitiesDespiteSameParent() {
+        // Ladbrokes and Coral share the Entain parent but resolve to completely separate domains.
+        let domains = Set(Session.defaultBlockedDomains)
+        #expect(domains.contains("ladbrokes.com"), "ladbrokes.com must be present independently")
+        #expect(domains.contains("coral.co.uk"),   "coral.co.uk must be present independently")
+    }
+}
+
+// MARK: - Latin American e-commerce
+
+@Suite("Session defaultBlockedDomains — Latin American e-commerce")
+struct LatAmEcommerceBlockTests {
+
+    @Test func defaultBlockedDomainsIncludeMercadoLibre() {
+        #expect(Session.defaultBlockedDomains.contains("mercadolibre.com"),
+                "mercadolibre.com (Latin America's dominant marketplace, 18-country presence) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterMercadoLibreAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after MercadoLibre addition")
+    }
+
+    @Test func mercadoLibreCoexistsWithExistingEcommerceEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for existing in ["amazon.com", "ebay.com", "etsy.com", "aliexpress.com",
+                         "walmart.com", "wayfair.com", "zalando.com", "asos.com"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior e-commerce entry) must still be present")
+        }
+        #expect(domains.contains("mercadolibre.com"),
+                "mercadolibre.com must be present alongside existing e-commerce entries")
+    }
+
+    @Test func mercadoLibreCoexistsWithLatAmRegionalEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        // taringa.net is the prior Latin American regional entry.
+        #expect(domains.contains("taringa.net"),     "taringa.net must still be present")
+        #expect(domains.contains("mercadolibre.com"), "mercadolibre.com must coexist with taringa.net")
+    }
+
+    @Test func mercadoLibreAppearExactlyOnce() {
+        let domains = Session.defaultBlockedDomains
+        let count = domains.filter { $0 == "mercadolibre.com" }.count
+        #expect(count == 1, "mercadolibre.com must appear exactly once in defaultBlockedDomains")
+    }
+}

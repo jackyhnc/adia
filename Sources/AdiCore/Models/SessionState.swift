@@ -580,6 +580,62 @@ public struct Session: Sendable, Identifiable {
         //   use the same algorithmically-ranked engagement mechanics as Reddit. The .net TLD is
         //   not shared with any existing block rule — must be listed explicitly.
         "taringa.net",
+        // Additional browser-based gaming portals (expanding coverage beyond the core four)
+        // addictinggames.com — one of the oldest and most-recognised browser game portals (est. 2001,
+        //   operated by Addicting Games Inc., Nickelodeon/Viacom spinoff). Over 100 M registered users.
+        //   "Genre" and "Most Popular" discovery feeds combined with "New Games" daily updates create
+        //   strong habitual-return patterns. Simple pick-up-play mechanics mean a student can start a
+        //   "5-minute break" and surface 45 minutes later without noticing the time pass. No download
+        //   or account required.
+        "addictinggames.com",
+        // armorgames.com — indie-focused browser game portal known for high editorial quality and a
+        //   community rating system that ranks titles by player score rather than algorithm alone.
+        //   The curated-but-infinite browse surface extends dwell time far beyond any single game:
+        //   students looking for "a really good game" compare community-ranked titles, read user
+        //   reviews, and follow recommendation chains. Popular with CS, math, and game-dev students
+        //   who rationalise playing as "quality-assurance research" or "genre study". Zero friction.
+        "armorgames.com",
+        // y8.com — large browser game portal (300 M+ registered users globally). Particularly popular
+        //   in Asia, Eastern Europe, and Latin America; multilingual interface provides a natural
+        //   fallback destination when students from those markets have other region-specific sites
+        //   blocked. "Most Played", "New", and "Girls/Boys" category feeds provide the same algorithmic
+        //   infinite-browse loop as other portals. Operated by Y8 Entertainment (Lithuania); separate
+        //   domain and TLD from all existing blocked entries.
+        "y8.com",
+        // More sports betting / gambling operators (closing major brand gaps in the block list)
+        // ladbrokes.com — one of the most recognisable UK bookmaker brands (Entain Group, LSE-listed);
+        //   physical retail shops on high streets for 150+ years. Heavy TV, stadium, and podcast
+        //   advertising ensures immediate brand recall across all male demographic segments in the UK
+        //   and Ireland. The sportsbook features live in-play betting with sub-second odds updates
+        //   alongside casino and virtual sports — a comprehensive time-sink covering multiple gambling
+        //   interests under one login. A student who finds bet365 or betway blocked navigates to
+        //   Ladbrokes from muscle memory.
+        "ladbrokes.com",
+        // paddypower.com — major Irish/UK bookmaker (Flutter Entertainment, FTSE 100). Extremely
+        //   high-visibility marketing via social media, radio, and sponsorships targeting young male
+        //   demographics; Paddy Power's irreverent brand voice is particularly resonant with
+        //   18-25 year-olds. "Price Boosts", "Power Price", and "Bet Builder" mechanics create
+        //   impulse re-engagement cues designed for mobile-first rapid interaction. In-play betting
+        //   with Cash Out pushes real-time decision-making into the forefront during live games,
+        //   making it nearly impossible to glance at a score without engaging further.
+        "paddypower.com",
+        // coral.co.uk — established UK bookmaker (Entain Group, alongside Ladbrokes); operates at
+        //   scale with both online and retail presence. A distinct .co.uk TLD not covered by any
+        //   domain or TLD rule: ladbrokes.com and coral.co.uk are separately operated online brands
+        //   despite belonging to the same corporate parent — both must be listed explicitly.
+        //   Significant sponsorship presence in UK football and horse racing. Students already
+        //   familiar with Ladbrokes often have Coral as their second-recall operator.
+        "coral.co.uk",
+        // Latin American e-commerce (high-dwell browse sessions, "just checking prices" rationalization)
+        // mercadolibre.com — Latin America's dominant e-commerce and marketplace platform (MercadoLibre
+        //   Inc., NASDAQ: MELI); functionally equivalent to Amazon in the US. Operations in 18
+        //   countries; largest e-commerce platform by GMV across the Latin American region.
+        //   The homepage and search-results page expose "Featured Deals", "Flash Sales", and
+        //   personalised recommendation carousels — the same infinite-scroll product-discovery
+        //   patterns as Amazon. A major distraction vector for students in Argentina, Brazil,
+        //   Mexico, Colombia, and Chile who visit to "check textbook prices" or "compare electronics"
+        //   and stay far beyond their intended window. Distinct domain from all existing blocked entries.
+        "mercadolibre.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [
