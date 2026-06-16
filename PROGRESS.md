@@ -1,5 +1,97 @@
 # Adia — Build Progress
 
+## Run 138 — 2026-06-16
+
+### Shipped
+
+**feat: browser gaming portals, extended gambling, regional social, play. prefix (+36 tests)**
+
+#### `SessionState.swift` — 11 new domains in `defaultBlockedDomains`
+
+**Browser-based gaming portals (4 domains):**
+- **`crazygames.com`** — largest browser game portal (~35M MAU); autoplay "recommended next game" after every session; zero-install, zero-account friction means "just one quick game" reliably becomes 30+ minutes.
+- **`poki.com`** — major browser game hub (Poki B.V., Amsterdam); in-session "You might also like" carousels and genre category feeds create the same infinite-scroll engagement loop as social media feeds; no login required.
+- **`miniclip.com`** — the original Flash-era browser game portal; large Gen-Z/Millennial base maintained through nostalgia; 1000+ HTML5-converted titles with algorithmically ranked "Popular" and "New Games" discovery feeds; nostalgia lowers self-interruption threshold before the student has made a conscious choice.
+- **`kongregate.com`** — browser game portal with an RPG-style achievement system (badges, XP, levels, daily challenges, leaderboards); the meta-game layer creates habitual return trips within a study session; especially hooks math/CS students who rationalise achievement optimisation as skill development.
+
+**Extended gambling and poker (5 domains):**
+- **`888casino.com`** — 888 Holdings flagship casino (est. 1997); combined poker, casino, and sportsbook under one login; one of the most globally-recognised online gambling brands; high first-recall among student gamblers.
+- **`888poker.com`** — 888 Holdings dedicated poker brand; shares the same player pool as 888casino.com but resolves as a completely distinct DNS entry — both must be listed explicitly.
+- **`partypoker.com`** — second largest global online poker room by player traffic; Mega Tournaments with late-registration windows create behavioural commitment once a student has registered; popular with European and math/CS demographics.
+- **`unibet.com`** — Kindred Group major European sportsbook (Malta-licensed); Premier League and Champions League sponsorships ensure high brand visibility among sports-watching student audiences; in-play betting UI mirrors bet365.
+- **`williamhill.com`** — global bookmaker (est. 1934 UK); first-recall destination for sports-betting students in both UK and US markets following Caesars 2022 acquisition; heavy TV and stadium advertising.
+
+**Additional regional social networks (2 domains):**
+- **`band.us`** — BAND, South Korean group community platform (Camp Mobile/Naver); K-pop fan community hub globally; notification-driven re-engagement converts "one notification check" into 20-minute scroll sessions; `.us` TLD not covered by any prior rule.
+- **`taringa.net`** — Latin America's largest Reddit-like forum (~75M registered users: Argentina, Mexico, Colombia, Chile); same algorithmic "Hot" and "Trending" engagement mechanics as Reddit; `.net` TLD not covered by any prior rule.
+
+#### `HostsFileManager.swift` — new `"play"` subdomain prefix (30th prefix)
+
+Covers:
+- **`play.twitch.tv`** — Twitch's inline-stream URL scheme used in share links and some embed contexts; separate from `player.twitch.tv` (already covered by the `"player"` prefix).
+- **`play.spotify.com`** — Spotify's legacy web-player fallback URL; browser extensions and older share widgets often resolve here instead of `open.spotify.com`, bypassing the `spotify.com` parent-domain block.
+- **`play.kongregate.com`** — Kongregate's legacy game-host subdomain for HTML5-converted titles (pre-dates the unified kongregate.com game pages).
+- **`play.hbo.com` / `play.max.com`** — HBO/Max's direct-play URL scheme for film and episode share links.
+- False-positive risk is low: no major productivity tool (Notion, Linear, Figma, Jira, Confluence, GitHub) uses `"play."` as a primary product URL.
+
+#### Tests — 36 new `@Test` cases in 4 new `@Suite` groups
+
+**`SessionStateTests.swift`**:
+
+`"Session defaultBlockedDomains — browser-based gaming portals"` (8 tests):
+- `defaultBlockedDomainsIncludeCrazyGames`
+- `defaultBlockedDomainsIncludePoki`
+- `defaultBlockedDomainsIncludeMiniclip`
+- `defaultBlockedDomainsIncludeKongregate`
+- `allBrowserGamingDomainsAllPresentTogether`
+- `defaultBlockedDomainsNoDuplicatesAfterBrowserGamingAddition`
+- `browserGamingPortalsAreDistinctFromSteamAndEpic`
+- `browserGamingPortalsAreDistinctFromItchAndGOG`
+
+`"Session defaultBlockedDomains — extended gambling and poker"` (9 tests):
+- `defaultBlockedDomainsInclude888Casino`
+- `defaultBlockedDomainsInclude888Poker`
+- `defaultBlockedDomainsIncludePartyPoker`
+- `defaultBlockedDomainsIncludeUnibet`
+- `defaultBlockedDomainsIncludeWilliamHill`
+- `allExtendedGamblingDomainsAllPresentTogether`
+- `defaultBlockedDomainsNoDuplicatesAfterExtendedGamblingAddition`
+- `extendedGamblingDomainsCoexistWithExistingGamblingEntries`
+- `eightEightEightCasinoAndPokerAreSeparateEntries`
+
+`"Session defaultBlockedDomains — additional regional social networks"` (7 tests):
+- `defaultBlockedDomainsIncludeBandUs`
+- `defaultBlockedDomainsIncludeTaringa`
+- `allAdditionalRegionalSocialDomainsAllPresentTogether`
+- `defaultBlockedDomainsNoDuplicatesAfterRegionalSocialAddition`
+- `additionalRegionalSocialCoexistWithPriorRegionalEntries`
+- `bandUsIsDistinctFromKakaoAndLine`
+
+**`HostsFileManagerTests.swift`**:
+
+`"HostsFileManager — play. subdomain prefix"` (8 tests):
+- `playPrefixIsInAdditionalPrefixesList`
+- `buildBlockIncludesPlaySubdomainForTwitch`
+- `buildBlockIncludesPlaySubdomainForSpotify`
+- `buildBlockIncludesPlaySubdomainForKongregate`
+- `parseBlockedFiltersPlaySubdomainVariant`
+- `buildThenParseRoundTripWithPlayPrefix`
+- `playPrefixIsDistinctFromPlayerPrefix`
+- `noDuplicatesInAdditionalPrefixesListAfterPlayAddition`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **`"news"` subdomain prefix**: `news.spotify.com`, `news.xbox.com`, `news.blizzard.com` — publisher-side news subdomains that function as content engagement portals on otherwise-blocked domains. Low false-positive risk for productivity tools. Would be the 31st prefix.
+  - **`"social"` subdomain prefix**: `social.microsoft.com` (Xbox Social), `social.blizzard.com` (Blizzard social features) — closes community/social subdomains on gaming platforms already blocked at their root. Very niche; evaluate against false-positive risk before adding.
+  - **More browser gaming**: `addictinggames.com` (major Shockwave-era portal), `armor games` → `armorgames.com` (indie game portal with high-quality selection and community ratings that extend browse time).
+  - **More gambling operators**: `ladbrokes.com` (major UK bookmaker), `paddypower.com` (Irish/UK bookmaker with high-visibility advertising), `coral.co.uk` (UK bookmaker part of Entain group).
+  - **More Latin American platforms**: `mercadolibre.com` (Latin America's dominant e-commerce/marketplace — "just checking prices" engagement similar to Amazon); `hispachan.org` (Latin American imageboard — niche but high-engagement for specific demographics).
+  - **Subdomain coverage audit**: verify that the new `"play"` prefix doesn't create false positives against any domains a student might legitimately need during a session (GitHub Pages demos, documentation interactive playgrounds).
+
 ## Run 137 — 2026-06-16
 
 ### Shipped
