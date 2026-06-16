@@ -180,6 +180,21 @@ public actor HostsFileManager {
     //          development blog hosted at news.example-productivity-tool.com) — but such tools
     //          are not in the default blocked-domain list, so news. rows are never generated for
     //          them unless the user manually blocks those tools' root domains, which is correct.
+    // "social" blocks social.microsoft.com (Xbox Social hub — gamer profiles, activity feeds,
+    //          friend lists, and "What's New" feeds exposed as a distinct subdomain from
+    //          microsoft.com), social.blizzard.com (Blizzard's community activity feed: friend
+    //          status, recent game activity, achievements — a re-entry point to gaming content
+    //          even when battle.net is blocked), and similar social/community subdomains on
+    //          already-blocked gaming and entertainment platforms. The "social." subdomain
+    //          pattern surfaces community feeds, profile pages, and friend-activity feeds —
+    //          each a high-engagement re-engagement hook. False-positive risk is low: no major
+    //          productivity tool (GitHub, Notion, Linear, Figma, Jira, Confluence) exposes
+    //          "social." as a primary product URL. The only false-positive risk is for tools
+    //          NOT in the default blocked list (e.g., social.salesforce.com — Salesforce's
+    //          community platform); since Salesforce is not blocked by default, no social.
+    //          row is generated for it. If a user manually adds a productivity tool that
+    //          happens to have a social. subdomain, that subdomain would also be blocked —
+    //          which is correct, since the whole tool is blocked.
     internal nonisolated static let additionalBlockedSubdomainPrefixes: [String] = [
         "m", "mobile", "old", "amp", "en", "music", "tv", "i", "api", "clips",
         "web",    // WhatsApp Web (web.whatsapp.com), Telegram Web (web.telegram.org)
@@ -203,6 +218,7 @@ public actor HostsFileManager {
         "shop",   // merchandise store subdomains (shop.spotify.com, shop.twitch.tv etc.)
         "play",   // play.twitch.tv, play.spotify.com, play.hbo.com, play.kongregate.com etc.
         "news",   // news.spotify.com, news.xbox.com, news.blizzard.com, news.google.com etc.
+        "social", // social.microsoft.com (Xbox Social), social.blizzard.com, etc.
     ]
 
     // Walks lines, discarding everything between the adia markers (inclusive).

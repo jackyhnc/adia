@@ -1899,3 +1899,197 @@ struct LatAmEcommerceBlockTests {
         #expect(count == 1, "mercadolibre.com must appear exactly once in defaultBlockedDomains")
     }
 }
+
+// MARK: - Live TV streaming (escape hatch blocking)
+
+@Suite("Session defaultBlockedDomains — live TV streaming services")
+struct LiveTVStreamingBlockTests {
+
+    @Test func defaultBlockedDomainsIncludeSling() {
+        #expect(Session.defaultBlockedDomains.contains("sling.com"),
+                "sling.com (Sling TV — live TV streaming, sports and entertainment channels) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeFubo() {
+        #expect(Session.defaultBlockedDomains.contains("fubo.tv"),
+                "fubo.tv (FuboTV — sports-first live TV streaming) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludePhilo() {
+        #expect(Session.defaultBlockedDomains.contains("philo.com"),
+                "philo.com (Philo — budget entertainment live TV streaming) must be blocked by default")
+    }
+
+    @Test func allLiveTVStreamingServicesAllPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["sling.com", "fubo.tv", "philo.com"] {
+            #expect(domains.contains(site),
+                    "\(site) (live TV streaming service) must be present")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterLiveTVAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after live TV streaming additions")
+    }
+
+    @Test func liveTVStreamingCoexistsWithExistingStreamingServices() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for existing in ["netflix.com", "hulu.com", "disneyplus.com", "peacocktv.com",
+                         "paramountplus.com", "discoveryplus.com", "tubi.tv", "pluto.tv"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior streaming entry) must still be present")
+        }
+    }
+
+    @Test func fuboUsedottvTLDNotDotCom() {
+        // fubo.tv is the correct domain; fubo.com resolves differently and is not FuboTV.
+        let domains = Session.defaultBlockedDomains
+        let fuboTvCount = domains.filter { $0 == "fubo.tv" }.count
+        #expect(fuboTvCount == 1, "fubo.tv must appear exactly once with the .tv TLD")
+        let fuboComCount = domains.filter { $0 == "fubo.com" }.count
+        #expect(fuboComCount == 0, "fubo.com (a different entity) must NOT be in the list")
+    }
+
+    @Test func slingAppearsExactlyOnce() {
+        let count = Session.defaultBlockedDomains.filter { $0 == "sling.com" }.count
+        #expect(count == 1, "sling.com must appear exactly once")
+    }
+}
+
+// MARK: - Additional gambling operators
+
+@Suite("Session defaultBlockedDomains — additional gambling operators (betfred, bwin, sky.bet)")
+struct AdditionalGamblingOperators2BlockTests {
+
+    @Test func defaultBlockedDomainsIncludeBetfred() {
+        #expect(Session.defaultBlockedDomains.contains("betfred.com"),
+                "betfred.com (major UK bookmaker, ~1,600 high-street shops) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeBwin() {
+        #expect(Session.defaultBlockedDomains.contains("bwin.com"),
+                "bwin.com (major European online betting operator, Entain Group) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeSkyBet() {
+        #expect(Session.defaultBlockedDomains.contains("sky.bet"),
+                "sky.bet (Sky Bet by Flutter Entertainment — dominant UK sports betting via Sky Sports integration) must be blocked by default")
+    }
+
+    @Test func allAdditionalGamblingOperators2AllPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["betfred.com", "bwin.com", "sky.bet"] {
+            #expect(domains.contains(site),
+                    "\(site) (gambling operator) must be present")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterAdditionalGambling2Addition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after betfred/bwin/sky.bet addition")
+    }
+
+    @Test func additionalGamblingOperators2CoexistWithPriorGamblingEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for existing in ["bet365.com", "draftkings.com", "fanduel.com", "pokerstars.com",
+                         "betway.com", "bovada.lv", "betmgm.com", "unibet.com",
+                         "williamhill.com", "ladbrokes.com", "paddypower.com", "coral.co.uk",
+                         "888casino.com", "888poker.com", "partypoker.com"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior gambling entry) must still be present")
+        }
+    }
+
+    @Test func skyBetUsesDotBetTLDNotDotCom() {
+        // sky.bet uses the .bet TLD; sky.com is Sky's media/broadband domain (not a gambling site).
+        let domains = Session.defaultBlockedDomains
+        let skyBetCount = domains.filter { $0 == "sky.bet" }.count
+        #expect(skyBetCount == 1, "sky.bet must appear exactly once with the .bet TLD")
+        // sky.com is NOT a gambling site — it must not be present.
+        let skyComCount = domains.filter { $0 == "sky.com" }.count
+        #expect(skyComCount == 0, "sky.com (Sky's media domain, not gambling) must NOT be blocked by default")
+    }
+
+    @Test func bwinAppearsExactlyOnce() {
+        let count = Session.defaultBlockedDomains.filter { $0 == "bwin.com" }.count
+        #expect(count == 1, "bwin.com must appear exactly once")
+    }
+}
+
+// MARK: - Additional browser gaming portals
+
+@Suite("Session defaultBlockedDomains — additional browser gaming portals (silvergames, friv)")
+struct AdditionalBrowserGaming2BlockTests {
+
+    @Test func defaultBlockedDomainsIncludeSilverGames() {
+        #expect(Session.defaultBlockedDomains.contains("silvergames.com"),
+                "silvergames.com (~15M MAU, strong in German-speaking markets) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsIncludeFriv() {
+        #expect(Session.defaultBlockedDomains.contains("friv.com"),
+                "friv.com (minimalist browser game portal, massive LatAm and Middle East presence) must be blocked by default")
+    }
+
+    @Test func allAdditionalBrowserGaming2AllPresentTogether() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for site in ["silvergames.com", "friv.com"] {
+            #expect(domains.contains(site),
+                    "\(site) (browser gaming portal) must be present")
+        }
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterAdditionalBrowserGaming2Addition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after silvergames/friv addition")
+    }
+
+    @Test func additionalBrowserGaming2CoexistsWithPriorBrowserGamingEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for existing in ["crazygames.com", "poki.com", "miniclip.com", "kongregate.com",
+                         "addictinggames.com", "armorgames.com", "y8.com"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior browser gaming portal) must still be present")
+        }
+    }
+
+    @Test func frivAppearsExactlyOnce() {
+        let count = Session.defaultBlockedDomains.filter { $0 == "friv.com" }.count
+        #expect(count == 1, "friv.com must appear exactly once")
+    }
+}
+
+// MARK: - Global classifieds marketplaces
+
+@Suite("Session defaultBlockedDomains — global classifieds (OLX)")
+struct ClassifiedsMarketplaceBlockTests {
+
+    @Test func defaultBlockedDomainsIncludeOlx() {
+        #expect(Session.defaultBlockedDomains.contains("olx.com"),
+                "olx.com (OLX Group — dominant classifieds platform across LatAm, Eastern Europe, South Asia, Africa) must be blocked by default")
+    }
+
+    @Test func defaultBlockedDomainsNoDuplicatesAfterOlxAddition() {
+        let domains = Session.defaultBlockedDomains
+        #expect(Set(domains).count == domains.count,
+                "no duplicate entries in defaultBlockedDomains after olx.com addition")
+    }
+
+    @Test func olxCoexistsWithExistingEcommerceAndLatAmEntries() {
+        let domains = Set(Session.defaultBlockedDomains)
+        for existing in ["amazon.com", "ebay.com", "mercadolibre.com", "taringa.net"] {
+            #expect(domains.contains(existing),
+                    "\(existing) (prior e-commerce/LatAm entry) must still be present")
+        }
+        #expect(domains.contains("olx.com"), "olx.com must coexist with existing entries")
+    }
+
+    @Test func olxAppearsExactlyOnce() {
+        let count = Session.defaultBlockedDomains.filter { $0 == "olx.com" }.count
+        #expect(count == 1, "olx.com must appear exactly once in defaultBlockedDomains")
+    }
+}

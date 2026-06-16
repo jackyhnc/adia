@@ -636,6 +636,70 @@ public struct Session: Sendable, Identifiable {
         //   Mexico, Colombia, and Chile who visit to "check textbook prices" or "compare electronics"
         //   and stay far beyond their intended window. Distinct domain from all existing blocked entries.
         "mercadolibre.com",
+        // Live TV streaming services (escape hatch when Netflix/Hulu/Disney+ are blocked)
+        // sling.com — Sling TV (Dish Network); the first major live-TV-over-internet service.
+        //   Offers 30-150+ live channels including sports, news, and entertainment. A student
+        //   whose Netflix, Hulu, and Disney+ are blocked may open Sling to watch a live game or
+        //   "background TV" — the live-channel model is especially hard to self-interrupt because
+        //   "the show is already on." Separate TLD from any existing blocked entry.
+        "sling.com",
+        // fubo.tv — FuboTV (Fubo Inc., NYSE: FUBO); sports-first live TV streaming platform.
+        //   Carries NFL, NBA, MLB, NHL, college sports, and soccer alongside general entertainment
+        //   channels. The sports focus makes it a particularly acute distraction during live events.
+        //   Users who find ESPN and sports-league sites blocked often pivot to FuboTV's live feed
+        //   for the same fix. The .tv TLD is not covered by any existing rule — must be listed.
+        "fubo.tv",
+        // philo.com — Philo; budget live TV and on-demand streaming ($25/month), focused on
+        //   entertainment and lifestyle channels (A&E, Discovery, Comedy Central, MTV, etc.).
+        //   No sports tier means it attracts students specifically as a "background TV" subscription.
+        //   The on-demand library and live-channel autoplay combine the worst patterns of both
+        //   Netflix-style browsing and live-broadcast passive consumption. Separate domain.
+        "philo.com",
+        // Gambling operators (closing major brand gaps after core list)
+        // betfred.com — major UK bookmaker (founded 1967 by Fred Done; privately held, ~1,600
+        //   UK shops). Very high street and TV visibility; "superfan" betting mechanics (acca
+        //   insurance, Bet & Watch streaming) drive deep engagement. Students from the UK who
+        //   find bet365 or Ladbrokes blocked navigate to Betfred from muscle memory.
+        "betfred.com",
+        // bwin.com — major European online betting operator (Entain Group / GVC Holdings;
+        //   partners with global sports leagues including UEFA, NBA, NFL). Operates in 20+
+        //   countries; particular strength in German-speaking markets, Southern Europe, and
+        //   globally through sports sponsorships. A student whose bet365 or unibet blocks are
+        //   active may pivot to bwin — it is the standard second-recall operator in continental
+        //   Europe and a primary option in regulated markets where DraftKings/FanDuel are absent.
+        "bwin.com",
+        // sky.bet — Sky Bet (Flutter Entertainment / Paddy Power Betfair Group); dominant UK
+        //   sports-betting brand carried by the Sky Sports media ecosystem. Sky Sports integration
+        //   means the betting platform is surfaced constantly alongside match coverage.
+        //   The `.bet` TLD is completely distinct from any existing blocked domain — must be
+        //   listed explicitly. Students who watch football via Sky Sports encounter Sky Bet
+        //   marketing saturating every broadcast; brand recall is near-total in the 18-35 male
+        //   UK demographic.
+        "sky.bet",
+        // Browser gaming portals (additional coverage closing gaps in current list)
+        // silvergames.com — large browser game portal (~15 M MAU) with a strong presence in
+        //   German-speaking markets and globally. Clean, ad-light UX and genre-based discovery
+        //   ("Action", "2-Player", "IO Games") mean sessions run long without the visible
+        //   friction of interstitial ads that remind the user to stop. A student whose
+        //   CrazyGames/Poki blocks are active often reaches for SilverGames as the first fallback.
+        //   Separate domain from all existing blocked entries.
+        "silvergames.com",
+        // friv.com — minimalist browser game portal (Lumo Developments); massive global user base
+        //   driven by an extremely low-friction "grid of game thumbnails" homepage UX. No accounts,
+        //   no downloads, no ads between games — click, play, click next. Particularly popular in
+        //   Latin America, the Middle East, and among younger demographics globally. Among the
+        //   cleanest "just one game" impulse-play surfaces on the web; the minimalist UX makes it
+        //   harder to notice time passing than portals with richer chrome. Separate domain.
+        "friv.com",
+        // Global classifieds and horizontal marketplaces
+        // olx.com — OLX Group (Prosus N.V. / Naspers); the dominant horizontal classifieds platform
+        //   across Latin America, Eastern Europe, South Asia, and Africa (50+ country presence).
+        //   Functionally equivalent to Craigslist + eBay in the US: buy/sell/rent listings for
+        //   electronics, vehicles, property, and consumer goods. The "just checking prices" pattern
+        //   is even more acute than on Amazon because listings are user-generated and change
+        //   constantly — the feed is never the same twice, making it effectively infinite-scroll.
+        //   Heavily used by students in Brazil, India, Poland, Pakistan, and Nigeria. Distinct domain.
+        "olx.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [
