@@ -1,5 +1,90 @@
 # Adia — Build Progress
 
+## Run 142 — 2026-06-16
+
+### Shipped
+
+**feat: streaming aliases (peacock.com, plex.tv), gambling (1xbet, melbet, betway.be), gaming (gameflare, iogames.space, spele.lv), blog. prefix (+38 tests)**
+
+#### `SessionState.swift` — 8 new domains in `defaultBlockedDomains`
+
+**Streaming alias + Plex (2 domains):**
+- **`peacock.com`** — redirect alias for peacocktv.com; resolves as a distinct DNS entry; blocking peacocktv.com alone leaves the canonical navigation URL open.
+- **`plex.tv`** — Plex; free ad-supported streaming tier with no subscription barrier. watch.plex.tv already covered by the "watch" prefix but the root domain must be listed to block browse/discovery.
+
+**International gambling operators (3 domains):**
+- **`1xbet.com`** — 1xBet; dominant in Russia/CIS and Sub-Saharan Africa; aggressive student marketing via football sponsorships. First-recall operator for those regions when bet365/betway are blocked.
+- **`melbet.com`** — Melbet; parallel reach in Africa (Nigeria, Kenya, Ghana) and South Asia (India, Bangladesh, Pakistan); influencer-driven targeting of the 18-30 demographic. Second-recall after 1xBet in those markets.
+- **`betway.be`** — Betway's Belgium-licensed .be TLD domain; completely separate DNS entry from betway.com; required for Belgian regulated-market users.
+
+**Browser gaming portals (3 domains):**
+- **`gameflare.com`** — large HTML5 portal, "Trending Today" + "New Games" feeds; first-recall fallback when kizi/agame/poki are blocked.
+- **`iogames.space`** — IO-games aggregator (.space TLD); real-time multiplayer imposes social cost making self-interruption very hard. Distinct genre portal not covered by existing portal blocks.
+- **`spele.lv`** — Baltic/Eastern European portal (Draugiem Group, Latvia); .lv TLD distinct from all existing entries.
+
+#### `HostsFileManager.swift` — 1 new subdomain prefix (35 total)
+
+**`"blog"`** — closes blog.twitch.tv (official news blog with embedded login/Watch-Live CTAs), blog.discord.com (changelog posts with invite links), blog.spotify.com (artist editorial surfaced in session searches). False-positive risk: no major productivity tool exposes "blog." as a primary product URL.
+
+#### Tests — 38 new `@Test` cases in 4 new `@Suite` groups
+
+**`SessionStateTests.swift`**:
+
+`"Session defaultBlockedDomains — streaming alias and Plex (peacock.com, plex.tv)"` (7 tests):
+- `defaultBlockedDomainsIncludePeacockCom`
+- `defaultBlockedDomainsIncludePlexTv`
+- `allStreamingAliasAndPlexPresentTogether`
+- `streamingAliasNoDuplicatesAfterAddition`
+- `streamingAliasCoexistsWithExistingStreamingEntries`
+- `peacockComAppearsExactlyOnce`
+- `plexTvAppearsExactlyOnce`
+
+`"Session defaultBlockedDomains — additional international gambling operators (1xbet, melbet, betway.be)"` (9 tests):
+- `defaultBlockedDomainsInclude1xBet`
+- `defaultBlockedDomainsIncludeMelbet`
+- `defaultBlockedDomainsIncludeBetwayBe`
+- `allInternationalGamblingPresentTogether`
+- `internationalGamblingNoDuplicatesAfterAddition`
+- `internationalGamblingCoexistsWithPriorGamblingEntries`
+- `onexBetAppearsExactlyOnce`
+- `melbetAppearsExactlyOnce`
+- `betwayBeAppearsExactlyOnce`
+
+`"Session defaultBlockedDomains — additional browser gaming portals (gameflare, iogames.space, spele.lv)"` (9 tests):
+- `defaultBlockedDomainsIncludeGameflare`
+- `defaultBlockedDomainsIncludeIOGamesSpace`
+- `defaultBlockedDomainsIncludeSpeleLv`
+- `allGamingPortals4PresentTogether`
+- `gamingPortals4NoDuplicatesAfterAddition`
+- `gamingPortals4CoexistsWithPriorPortalEntries`
+- `gameflareAppearsExactlyOnce`
+- `ioGamesSpaceAppearsExactlyOnce`
+
+**`HostsFileManagerTests.swift`**:
+
+`"HostsFileManager — blog. subdomain prefix"` (8 tests):
+- `blogPrefixIsInAdditionalPrefixesList`
+- `buildBlockIncludesBlogSubdomainForTwitch`
+- `buildBlockIncludesBlogSubdomainForDiscord`
+- `buildBlockIncludesBlogSubdomainForSpotify`
+- `parseBlockedFiltersBlogSubdomainVariant`
+- `buildThenParseRoundTripWithBlogPrefix`
+- `blogPrefixIsDistinctFromForumsPrefix`
+- `blogPrefixIsDistinctFromCommunityPrefix`
+- `noDuplicatesInAdditionalPrefixesListAfterBlogAddition`
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete. ~180 unique domains in block list; 35 subdomain prefixes.
+- Possible further improvements:
+  - **More gambling**: `betano.com` (Betano; Nova Entertainment's bookmaker brand, dominant in Portugal, Greece, Brazil — distinct from other listed operators), `superbet.ro` (Superbet; dominant in Romania and Eastern Europe), `betin.co.ke` (SportPesa's Kenyan brand — one of Africa's largest bookmakers, .co.ke TLD).
+  - **More gaming portals**: `onlinegames.io` (large HTML5 portal, .io TLD distinct from iogames.space), `gamedistribution.com` (B2B HTML5 game distribution platform; students sometimes navigate the public browse pages directly), `gamesfreak.net` (established browser game portal with .net TLD distinct from existing entries).
+  - **More streaming**: `showtime.com` (Paramount Global's premium cable brand; now merged with Paramount+ but still has a distinct web domain), `starz.com` (Starz / Lionsgate streaming — distinct domain not yet listed).
+  - **"download" subdomain prefix audit**: `download.steampowered.com`, `download.blizzard.com` — download portals that are often direct-linked and bypass the parent domain block when a user already has the installer URL.
+  - **"support" subdomain prefix audit**: `support.discord.com`, `support.twitch.tv` — generally low-distraction (help articles) but can be an on-ramp back into the platform via login prompts. Low priority.
+
 ## Run 141 — 2026-06-16
 
 ### Shipped
