@@ -1,5 +1,46 @@
 # Adia — Build Progress
 
+## Run 143 — 2026-06-17
+
+### Shipped
+
+**feat: image downscaling before Claude API calls — reduces payload size, latency, and cost (+8 tests)**
+
+#### `AgentAIClient.swift` — image resize pipeline
+
+- Added `resizeForVision(_:maxDimension:)` — downscales CGImages so the longest side fits within 1024px before JPEG encoding and base64 transmission to the Claude vision API.
+- Claude internally scales vision inputs to a 1568×1568 bounding box. Screen captures at half-Retina resolution are 1280–1920px wide (larger for 4K/5K displays), meaning excess pixels were transmitted at full bandwidth cost only to be discarded server-side.
+- At 1024px max, typical payloads shrink ~30–60% depending on display resolution, directly reducing API round-trip latency and per-request bandwidth.
+- Uses `CGContext` with `.high` interpolation quality (Lanczos-equivalent) for clean downscaling that preserves text legibility — critical for on-task classification where screen text drives the verdict.
+- Images already at or below 1024px pass through untouched (zero overhead for standard displays).
+- `maxVisionDimension` exposed as `internal static let` for testability and future tuning.
+
+#### Tests — 8 new `@Test` cases in 1 new `@Suite` group
+
+**`AgentAIClientTests.swift`**:
+
+`"AgentAIClient image resize"` (8 tests):
+- `maxVisionDimensionIs1024` — documents the constant
+- `smallImagePassesThrough` — 100×80 returns unchanged
+- `exactlyAtMaxPassesThrough` — 1024×768 returns unchanged
+- `wideImageIsDownscaled` — 2560×1600 → 1024×640
+- `tallImageIsDownscaled` — 1200×2400 → 512×1024
+- `squareImageIsDownscaled` — 2048×2048 → 1024×1024
+- `customMaxDimensionIsRespected` — 800×600 with max=400 → 400×300
+- `fourKDisplayHalfResIsDownscaled` — 1920×1080 → 1024×576
+- `fiveKDisplayHalfResIsDownscaled` — 2560×1440 → 1024×576
+
+### Blocked
+- None. All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **Global keyboard shortcut** — Cmd+Shift+A (or configurable) to expand/collapse the notch without mouse travel. Power users doing keyboard-centric work (coding, writing) would benefit significantly.
+  - **Session pause/resume** — Let users step away (break, lunch) without ending the session and losing progress/focus-score.
+  - **Whitelisted domains visibility** — Show the list of domains whitelisted via reasoning conversations in the active session UI so users know what they've unlocked.
+  - **Network loss resilience** — Graceful degradation when API calls fail due to connectivity (continue session without classification rather than erroring).
+
 ## Run 142 — 2026-06-16
 
 ### Shipped

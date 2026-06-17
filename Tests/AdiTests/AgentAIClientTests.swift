@@ -449,3 +449,79 @@ struct AgentAIClientParsingTests {
         #expect(AgentAIClient.parseSSELine(line) == nil)
     }
 }
+
+// MARK: - Image resize for vision API
+
+@Suite("AgentAIClient image resize")
+struct AgentAIClientResizeTests {
+
+    private func makeImage(width: Int, height: Int) -> CGImage? {
+        guard let ctx = CGContext(
+            data: nil, width: width, height: height,
+            bitsPerComponent: 8, bytesPerRow: 0,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else { return nil }
+        return ctx.makeImage()
+    }
+
+    @Test func maxVisionDimensionIs1024() {
+        #expect(AgentAIClient.maxVisionDimension == 1024)
+    }
+
+    @Test func smallImagePassesThrough() {
+        guard let img = makeImage(width: 100, height: 80) else { return }
+        let result = AgentAIClient.resizeForVision(img)
+        #expect(result.width == 100)
+        #expect(result.height == 80)
+    }
+
+    @Test func exactlyAtMaxPassesThrough() {
+        guard let img = makeImage(width: 1024, height: 768) else { return }
+        let result = AgentAIClient.resizeForVision(img)
+        #expect(result.width == 1024)
+        #expect(result.height == 768)
+    }
+
+    @Test func wideImageIsDownscaled() {
+        guard let img = makeImage(width: 2560, height: 1600) else { return }
+        let result = AgentAIClient.resizeForVision(img)
+        #expect(result.width == 1024)
+        #expect(result.height == 640)
+    }
+
+    @Test func tallImageIsDownscaled() {
+        guard let img = makeImage(width: 1200, height: 2400) else { return }
+        let result = AgentAIClient.resizeForVision(img)
+        #expect(result.width == 512)
+        #expect(result.height == 1024)
+    }
+
+    @Test func squareImageIsDownscaled() {
+        guard let img = makeImage(width: 2048, height: 2048) else { return }
+        let result = AgentAIClient.resizeForVision(img)
+        #expect(result.width == 1024)
+        #expect(result.height == 1024)
+    }
+
+    @Test func customMaxDimensionIsRespected() {
+        guard let img = makeImage(width: 800, height: 600) else { return }
+        let result = AgentAIClient.resizeForVision(img, maxDimension: 400)
+        #expect(result.width == 400)
+        #expect(result.height == 300)
+    }
+
+    @Test func fourKDisplayHalfResIsDownscaled() {
+        guard let img = makeImage(width: 1920, height: 1080) else { return }
+        let result = AgentAIClient.resizeForVision(img)
+        #expect(result.width == 1024)
+        #expect(result.height == 576)
+    }
+
+    @Test func fiveKDisplayHalfResIsDownscaled() {
+        guard let img = makeImage(width: 2560, height: 1440) else { return }
+        let result = AgentAIClient.resizeForVision(img)
+        #expect(result.width == 1024)
+        #expect(result.height == 576)
+    }
+}

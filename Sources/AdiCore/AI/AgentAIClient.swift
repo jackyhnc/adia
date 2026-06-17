@@ -354,6 +354,44 @@ public actor AgentAIClient {
 
     // MARK: - Image helpers
 
+    /// Maximum pixel dimension (width or height) for images sent to the Claude vision API.
+    /// Claude internally scales images to fit a 1568×1568 box, so sending larger frames
+    /// wastes bandwidth and increases latency without improving classification accuracy.
+    /// 1024 keeps payloads compact while preserving enough detail for text/UI recognition.
+    internal static let maxVisionDimension: Int = 1024
+
+    /// Downscales a CGImage so its longest side fits within `maxDimension`.
+    /// Returns the original image unchanged if it already fits.
+    internal static func resizeForVision(_ image: CGImage, maxDimension: Int = maxVisionDimension) -> CGImage {
+        let w = image.width
+        let h = image.height
+        guard max(w, h) > maxDimension else { return image }
+
+        let scale: Double
+        if w >= h {
+            scale = Double(maxDimension) / Double(w)
+        } else {
+            scale = Double(maxDimension) / Double(h)
+        }
+        let newW = max(1, Int(Double(w) * scale))
+        let newH = max(1, Int(Double(h) * scale))
+
+        guard let ctx = CGContext(
+            data: nil,
+            width: newW,
+            height: newH,
+            bitsPerComponent: 8,
+            bytesPerRow: 0,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else {
+            return image
+        }
+        ctx.interpolationQuality = .high
+        ctx.draw(image, in: CGRect(x: 0, y: 0, width: newW, height: newH))
+        return ctx.makeImage() ?? image
+    }
+
     /// Anthropic base64 image content block.
     private func imageContent(_ base64: String) -> [String: Any] {
         [
@@ -368,7 +406,8 @@ public actor AgentAIClient {
 
     private func encodeImageToBase64(_ image: CGImage) throws -> String {
         #if canImport(AppKit)
-        let nsImage = NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height))
+        let resized = Self.resizeForVision(image)
+        let nsImage = NSImage(cgImage: resized, size: NSSize(width: resized.width, height: resized.height))
         guard
             let tiff   = nsImage.tiffRepresentation,
             let bitmap = NSBitmapImageRep(data: tiff),
