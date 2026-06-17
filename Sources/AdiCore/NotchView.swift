@@ -317,7 +317,7 @@ private struct ExpandedView: View {
             // text, and a heavier icon as the user keeps drifting off task.
             // Tier-3 banners also shake horizontally on first appearance via keyframeAnimator.
             if let callout = state.calloutMessage {
-                CalloutBanner(message: callout, tier: state.calloutTier) {
+                CalloutBanner(message: callout, tier: state.calloutTier, reason: state.calloutReason) {
                     state.startConversation(.reasoning(domain: nil))
                 }
             } else if session.timerExpired {
@@ -598,6 +598,7 @@ private struct ExpandedView: View {
 private struct CalloutBanner: View {
     let message: String
     let tier: Int
+    let reason: String?
     let onChat: () -> Void
 
     // Toggled each time a tier-3 callout fires to trigger the keyframe animator.
@@ -612,6 +613,13 @@ private struct CalloutBanner: View {
                 Text(message)
                     .font(.system(size: tier >= 3 ? 19 : 17, weight: .heavy))
                     .foregroundStyle(.white)
+            }
+            if let reason, !reason.isEmpty {
+                Text(reason)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.7))
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
             Button(action: onChat) {
                 Text("actually, I need this →")

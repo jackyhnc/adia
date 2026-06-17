@@ -20,6 +20,9 @@ public final class NotchState: ObservableObject {
     /// Escalation tier for the current callout: 1 = mild, 2 = stronger, 3 = harshest.
     /// Resets to 1 when the callout is cleared.
     @Published public private(set) var calloutTier: Int = 1
+    /// The AI's classification reason shown as a subtitle under the callout message
+    /// (e.g. "Reddit is open", "YouTube video playing"). nil when not available.
+    @Published public private(set) var calloutReason: String? = nil
 
     // Blocker (escalated, full-screen intervention when a callout is ignored)
     @Published public private(set) var isBlocking: Bool = false
@@ -49,6 +52,7 @@ public final class NotchState: ObservableObject {
         showingConversation = false
         calloutMessage = nil
         calloutTier = 1
+        calloutReason = nil
         verificationResult = nil
         isVerifying = false
         isBlocking = false
@@ -73,15 +77,17 @@ public final class NotchState: ObservableObject {
 
     // MARK: - Callout
 
-    public func showCallout(_ message: String, tier: Int = 1) {
+    public func showCallout(_ message: String, tier: Int = 1, reason: String? = nil) {
         calloutMessage = message
         calloutTier = tier
+        calloutReason = reason
         isExpanded = true
     }
 
     public func clearCallout() {
         calloutMessage = nil
         calloutTier = 1
+        calloutReason = nil
     }
 
     // MARK: - Blocker

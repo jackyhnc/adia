@@ -165,9 +165,10 @@ public final class SessionManager: ObservableObject {
     // MARK: - Frame handling
 
     public func handleFrame(_ frame: CGImage) async {
-        let status = await detector.evaluate(frame: frame)
+        let classification = await detector.evaluate(frame: frame)
+        let status = classification.status
         onTaskStatus = status
-        callout.evaluate(status)
+        callout.evaluate(status, reason: classification.reason)
         totalCheckCount += 1
         if status == .onTask { onTaskCheckCount += 1 }
         // Sync live counters back to the persisted session so a crash/relaunch can resume

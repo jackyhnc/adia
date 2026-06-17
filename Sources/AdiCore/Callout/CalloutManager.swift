@@ -72,15 +72,19 @@ public final class CalloutManager {
     private var autoDismissTask: Task<Void, Never>?
     // Tracks the last fired callout so consecutive streaks never repeat the same message.
     private var lastFiredMessage: String?
+    // The AI's classification reason for the current off-task detection, shown as a subtitle.
+    private var currentReason: String?
 
     private init() {}
 
     // MARK: - Public interface
 
     /// Call this with each new on-task classification.
-    public func evaluate(_ status: OnTaskStatus) {
+    /// `reason` is the AI's explanation of what it sees on screen (e.g. "Reddit is open").
+    public func evaluate(_ status: OnTaskStatus, reason: String = "") {
         switch status {
         case .offTask:
+            if !reason.isEmpty { currentReason = reason }
             consecutiveOffTask += 1
             if consecutiveOffTask >= threshold && !hasFiredForStreak {
                 hasFiredForStreak = true
@@ -91,8 +95,6 @@ public final class CalloutManager {
                 escalate()
             }
         case .onTask:
-            // Only reset the per-streak counters; calloutCount is session-level
-            // and must survive recovery so tier escalation works across the session.
             resetStreak()
         case .ambiguous:
             break
@@ -624,6 +626,7 @@ public final class CalloutManager {
         consecutiveOffTask = 0
         hasFiredForStreak = false
         hasEscalatedForStreak = false
+        currentReason = nil
         NotchState.shared.clearCallout()
         NotchState.shared.clearBlocker()
         // lastFiredMessage intentionally preserved: dedup works across streaks within a session.
@@ -645,6 +648,7 @@ public final class CalloutManager {
         hasFiredForStreak = false
         hasEscalatedForStreak = false
         lastFiredMessage = nil
+        currentReason = nil
         calloutCount = 0
         taskKeyword = nil
         NotchState.shared.clearCallout()
@@ -675,7 +679,7 @@ public final class CalloutManager {
     private func display(_ message: String, tier: Int = 1) {
         calloutCount += 1
         lastFiredMessage = message
-        NotchState.shared.showCallout(message, tier: tier)
+        NotchState.shared.showCallout(message, tier: tier, reason: currentReason)
         // Cancel any pending auto-dismiss from a prior callout before starting a new one.
         autoDismissTask?.cancel()
         autoDismissTask = Task { @MainActor in

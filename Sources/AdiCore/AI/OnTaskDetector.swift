@@ -9,6 +9,7 @@ public actor OnTaskDetector {
     // delivers frames faster than the model can respond.
     private var lastEvaluatedAt: Date?
     private var lastStatus: OnTaskStatus = .onTask
+    private var lastReason: String = ""
 
     // Adaptive back-off: consecutive on-task frames let the interval grow so we
     // call the model less during deep focus, while any off-task result snaps it back.
@@ -34,6 +35,7 @@ public actor OnTaskDetector {
         currentSession = session
         lastEvaluatedAt = nil
         lastStatus = .onTask
+        lastReason = ""
         consecutiveOnTaskFrames = 0
     }
 
@@ -60,8 +62,10 @@ public actor OnTaskDetector {
         consecutiveOnTaskFrames
     }
 
-    public func evaluate(frame: CGImage) async -> OnTaskStatus {
-        guard let session = currentSession else { return .onTask }
+    public func evaluate(frame: CGImage) async -> OnTaskClassification {
+        guard let session = currentSession else {
+            return OnTaskClassification(status: .onTask, confidence: 0, reason: "")
+        }
 
         // Adaptive rate-limit: skips the isConfigured() MainActor hop on throttled frames.
         let now = Date()
@@ -72,13 +76,13 @@ public actor OnTaskDetector {
                 "intervalSeconds": String(format: "%.1f", interval),
                 "consecutiveOnTask": String(consecutiveOnTaskFrames),
             ])
-            return lastStatus
+            return OnTaskClassification(status: lastStatus, confidence: 0, reason: lastReason)
         }
 
         // Only hop to MainActor to read the API key when we're about to make a call.
         guard await client.isConfigured() else {
             AppLogger.warning("classification.skipped", ["reason": "missing_api_key"])
-            return .onTask
+            return OnTaskClassification(status: .onTask, confidence: 0, reason: "")
         }
         lastEvaluatedAt = now
 
@@ -104,13 +108,14 @@ public actor OnTaskDetector {
                 "nextIntervalSeconds": String(format: "%.1f", adaptiveMinInterval),
             ])
             lastStatus = result.status
-            return result.status
+            lastReason = result.reason
+            return result
         } catch {
             AppLogger.error("classification.failed", [
                 "error": String(describing: error),
                 "lastStatus": lastStatus.rawValue
             ])
-            return lastStatus
+            return OnTaskClassification(status: lastStatus, confidence: 0, reason: lastReason)
         }
     }
 }

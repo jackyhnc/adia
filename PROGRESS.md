@@ -6126,3 +6126,35 @@ The `additionalBlockedSubdomainPrefixes` array is now `["m", "mobile", "old", "a
   - Add `external-preview.redd.it` to `defaultBlockedDomains` — another Reddit preview CDN variant that serves thumbnails for external links.
   - Consider adding `clips.twitch.tv` to `defaultBlockedDomains` — Twitch clip URLs use a subdomain that the `"i"` prefix doesn't cover (the TLD is still `twitch.tv` so the `twitch.tv` entry + generated `m.twitch.tv` etc. entries don't generate a `clips.` row).
   - Consider a `"clips"` prefix in `additionalBlockedSubdomainPrefixes` for Twitch clips bypass prevention.
+
+---
+
+## Run 143 — Context-aware callouts: surface AI classification reason in callout UI
+
+### What changed
+Previously, when the AI classified a screen frame as off-task, it returned a `reason` string explaining what it saw (e.g. "Reddit is open", "YouTube video playing") — but this reason was only logged and discarded. The callout banner showed a generic message like "stop." or "get back to your essay." without telling the user *what* the AI actually detected.
+
+This run pipes the classification reason through the entire callout pipeline so it appears as a subtitle under the callout message, giving users immediate context about why they were flagged.
+
+### Changes
+1. **`OnTaskDetector.evaluate()`** — return type changed from `OnTaskStatus` to `OnTaskClassification`. Caches `lastReason` alongside `lastStatus` so throttled/error paths preserve the reason. Cleared on `attach()`.
+2. **`SessionManager.handleFrame()`** — extracts both `.status` and `.reason` from the full classification, passes reason to `CalloutManager.evaluate()`.
+3. **`CalloutManager.evaluate()`** — new `reason: String` parameter (default `""`). Stores `currentReason` on off-task frames; passes it to `NotchState.showCallout()`. Cleared in `resetStreak()` and `reset()`.
+4. **`NotchState`** — new `@Published calloutReason: String?` property. `showCallout()` accepts optional `reason` parameter. Cleared in `clearCallout()` and `collapse()`.
+5. **`NotchView.CalloutBanner`** — new `reason: String?` parameter. When non-empty, renders a subtitle line (12pt medium, white at 70% opacity, single line truncated) between the message and the "actually, I need this →" button.
+6. **Tests** — `OnTaskDetectorTests`: all `evaluate()` assertions updated to check `.status` on the returned `OnTaskClassification`. New assertion in `evaluateReturnsClassificationFromInjectedMockClient` verifies `.reason` propagation.
+
+### Files modified
+- `Sources/AdiCore/AI/OnTaskDetector.swift`
+- `Sources/AdiCore/SessionManager.swift`
+- `Sources/AdiCore/Callout/CalloutManager.swift`
+- `Sources/AdiCore/NotchState.swift`
+- `Sources/AdiCore/NotchView.swift`
+- `Tests/AdiTests/OnTaskDetectorTests.swift`
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 original goals remain complete. BUILD_COMPLETE is present.
+- The classification reason now flows end-to-end through the pipeline. Future improvements could include truncating very long reasons or styling them differently per tier.

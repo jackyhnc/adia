@@ -24,8 +24,8 @@ struct OnTaskDetectorTests {
     @Test func returnsOnTaskWhenNoSessionAttached() async {
         let detector = OnTaskDetector()
         await detector.detach()
-        let status = await detector.evaluate(frame: dummyFrame())
-        #expect(status == .onTask)
+        let result = await detector.evaluate(frame: dummyFrame())
+        #expect(result.status == .onTask)
     }
 
     @Test func returnsOnTaskWhenAPIKeyNotConfigured() async {
@@ -36,8 +36,8 @@ struct OnTaskDetectorTests {
         await AgentAIClient.shared._setIsConfiguredOverride(false)
         defer { Task { await AgentAIClient.shared._setIsConfiguredOverride(nil) } }
 
-        let status = await detector.evaluate(frame: dummyFrame())
-        #expect(status == .onTask)
+        let result = await detector.evaluate(frame: dummyFrame())
+        #expect(result.status == .onTask)
     }
 
     @Test func rateLimitReturnsCachedStatusWithinMinInterval() async {
@@ -50,8 +50,8 @@ struct OnTaskDetectorTests {
         await detector._setLastStatusForTesting(.offTask)
 
         // Within minInterval (1.0s at 0 on-task streak) → returns cached .offTask without any API call
-        let status = await detector.evaluate(frame: dummyFrame())
-        #expect(status == .offTask)
+        let result = await detector.evaluate(frame: dummyFrame())
+        #expect(result.status == .offTask)
     }
 
     @Test func rateLimitExpiredAllowsNewEvaluation() async {
@@ -68,8 +68,8 @@ struct OnTaskDetectorTests {
         await detector._setLastStatusForTesting(.offTask)
 
         // Rate limit expired + no API key → returns .onTask (from the isConfigured guard)
-        let status = await detector.evaluate(frame: dummyFrame())
-        #expect(status == .onTask)
+        let result = await detector.evaluate(frame: dummyFrame())
+        #expect(result.status == .onTask)
     }
 
     // MARK: - Adaptive polling rate
@@ -183,8 +183,9 @@ struct OnTaskDetectorTests {
         let session = Session(task: "Write essay", successCriteria: "Submitted to Canvas")
         await detector.attach(session: session)
 
-        let status = await detector.evaluate(frame: dummyFrame())
-        #expect(status == .offTask)
+        let result = await detector.evaluate(frame: dummyFrame())
+        #expect(result.status == .offTask)
+        #expect(result.reason == "Reddit is open")
         #expect(await mock.classifyCallCount == 1)
     }
 
@@ -200,8 +201,8 @@ struct OnTaskDetectorTests {
         // Force the rate-limit guard to allow this call through immediately.
         await detector._setLastEvaluatedAtForTesting(Date(timeIntervalSinceNow: -2.0))
 
-        let status = await detector.evaluate(frame: dummyFrame())
-        #expect(status == .offTask, "on failure, evaluate should return the cached lastStatus rather than resetting to onTask")
+        let result = await detector.evaluate(frame: dummyFrame())
+        #expect(result.status == .offTask, "on failure, evaluate should return the cached lastStatus rather than resetting to onTask")
         #expect(await mock.classifyCallCount == 1)
     }
 }
