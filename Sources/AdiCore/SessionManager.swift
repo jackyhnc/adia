@@ -446,6 +446,27 @@ public final class SessionManager: ObservableObject {
 
     // MARK: - Private helpers
 
+    // MARK: - Stream failure recovery
+
+    /// Called when ScreenCaptureManager exhausts all automatic recovery attempts.
+    /// Auto-pauses the session so focus score isn't corrupted by un-monitored time,
+    /// and alerts the user via the callout system.
+    private func handleCaptureStreamFailure(_ error: Error) {
+        guard session != nil, session?.phase == .active else { return }
+        let task = session?.task ?? ""
+        AppLogger.error("session.capture_stream_lost", [
+            "error": String(describing: error)
+        ])
+        Task {
+            await self.pauseSession()
+            NotchState.shared.showCallout("screen recording lost — check Adia in System Settings → Privacy → Screen Recording, then resume.")
+            #if canImport(AppKit)
+            NSSound(named: "Basso")?.play()
+            #endif
+            SessionNotifier.shared.sendCaptureStreamLost(task: task)
+        }
+    }
+
     /// Wires up the capture pipeline, blocking engine, and on-task detector for a session.
     /// Throws if screen capture cannot be started (e.g. permission denied).
     private func activate(_ s: Session) async throws {
@@ -461,6 +482,9 @@ public final class SessionManager: ObservableObject {
         await detector.attach(session: s)
         captureManager.onFrame = { [weak self] frame in
             await self?.handleFrame(frame)
+        }
+        captureManager.onStreamFailure = { [weak self] error in
+            self?.handleCaptureStreamFailure(error)
         }
 
         // Local block server (non-fatal). Callback is passed into start() so it is set

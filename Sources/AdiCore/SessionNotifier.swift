@@ -95,6 +95,19 @@ public final class SessionNotifier: NSObject {
         #endif
     }
 
+    /// Fires a banner when screen capture stops unexpectedly and automatic recovery fails.
+    public func sendCaptureStreamLost(task: String) {
+        #if canImport(UserNotifications)
+        let content = UNMutableNotificationContent()
+        content.title = "Screen recording lost"
+        content.body = task.isEmpty
+            ? "Session paused — check Screen Recording permission and resume."
+            : "Session paused — re-enable Screen Recording to continue: \(task)"
+        content.sound = .default
+        schedule(content, id: "adia.session.capture_lost")
+        #endif
+    }
+
     /// Expands the notch panel. Called when the user taps a notification banner.
     /// Exposed as `internal` (not private) so unit tests can invoke it directly
     /// without needing a real `UNNotificationResponse`.

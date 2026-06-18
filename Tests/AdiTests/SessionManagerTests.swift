@@ -724,4 +724,19 @@ struct SessionManagerTests {
         await injectSession(nil)
         await MainActor.run { SessionManager.shared._resetTimerForTesting() }
     }
+
+    // MARK: - Screen capture stream recovery constants
+
+    @Test func screenCaptureMaxRecoveryAttemptsIsThree() {
+        #expect(ScreenCaptureManager.maxRecoveryAttempts == 3)
+    }
+
+    @Test func screenCaptureRecoveryBaseDelayIsTwoSeconds() {
+        #expect(ScreenCaptureManager.recoveryBaseDelay == 2.0)
+    }
+
+    @Test func screenCaptureOnStreamFailureDefaultsToNil() async {
+        let callback = await MainActor.run { ScreenCaptureManager.shared.onStreamFailure }
+        #expect(callback == nil)
+    }
 }

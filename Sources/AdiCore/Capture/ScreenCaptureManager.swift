@@ -52,6 +52,21 @@ private final class StreamOutputBridge: NSObject, SCStreamOutput, @unchecked Sen
     }
 }
 
+/// Receives SCStream lifecycle errors (stream stopped by system, permission revoked, etc.)
+/// and triggers recovery via a callback to the owning ScreenCaptureManager.
+private final class StreamDelegate: NSObject, SCStreamDelegate, @unchecked Sendable {
+    var onStreamStopped: (@Sendable (_ error: Error) -> Void)?
+
+    func stream(_ stream: SCStream, didStopWithError error: Error) {
+        AppLogger.error("capture.stream_stopped", [
+            "error": String(describing: error),
+            "errorCode": String((error as NSError).code),
+            "errorDomain": (error as NSError).domain
+        ])
+        onStreamStopped?(error)
+    }
+}
+
 // @unchecked Sendable is safe here: start/stop are always called from
 // SessionManager which is @MainActor, and onFrame is set before start().
 public final class ScreenCaptureManager: @unchecked Sendable {
@@ -62,6 +77,10 @@ public final class ScreenCaptureManager: @unchecked Sendable {
         get { bridge.onFrame }
         set { bridge.onFrame = newValue }
     }
+
+    /// Called on the main actor when the stream fails and automatic recovery is exhausted.
+    /// SessionManager sets this to auto-pause the session and notify the user.
+    public var onStreamFailure: (@MainActor @Sendable (_ error: Error) -> Void)?
 
     // Most-recent captured frame. Written from the stream queue, read from @MainActor.
     // Protected by a lock for Swift 6 sendability.
@@ -74,8 +93,18 @@ public final class ScreenCaptureManager: @unchecked Sendable {
 
     private var stream: SCStream?
     private let bridge = StreamOutputBridge()
+    private let streamDelegate = StreamDelegate()
+    private var recoveryTask: Task<Void, Never>?
+
+    /// Maximum number of automatic restart attempts before giving up.
+    internal static let maxRecoveryAttempts = 3
+    /// Base delay (in seconds) for exponential backoff between restart attempts.
+    internal static let recoveryBaseDelay: TimeInterval = 2.0
 
     public func start() async throws {
+        recoveryTask?.cancel()
+        recoveryTask = nil
+
         // `CGPreflightScreenCaptureAccess()` can return stale false after local
         // rebuilds/re-signing even when System Settings shows the app enabled.
         // Request once if needed, then let ScreenCaptureKit be the source of
@@ -91,6 +120,26 @@ public final class ScreenCaptureManager: @unchecked Sendable {
             _ = CGRequestScreenCaptureAccess()
         }
 
+        try await startStream()
+
+        streamDelegate.onStreamStopped = { [weak self] error in
+            guard let self else { return }
+            self.attemptRecovery(originalError: error)
+        }
+    }
+
+    public func stop() {
+        recoveryTask?.cancel()
+        recoveryTask = nil
+        streamDelegate.onStreamStopped = nil
+        stream?.stopCapture { _ in }
+        stream = nil
+        lastFrame = nil
+        AppLogger.info("capture.stopped")
+    }
+
+    /// The inner start logic, shared between initial start and recovery restarts.
+    private func startStream() async throws {
         let content: SCShareableContent
         do {
             content = try await SCShareableContent.current
@@ -119,7 +168,7 @@ public final class ScreenCaptureManager: @unchecked Sendable {
             excludingApplications: [],
             exceptingWindows: []
         )
-        let s = SCStream(filter: filter, configuration: cfg, delegate: nil)
+        let s = SCStream(filter: filter, configuration: cfg, delegate: streamDelegate)
         try s.addStreamOutput(bridge, type: .screen, sampleHandlerQueue: .global(qos: .userInitiated))
         try await s.startCapture()
         stream = s
@@ -130,11 +179,44 @@ public final class ScreenCaptureManager: @unchecked Sendable {
         ])
     }
 
-    public func stop() {
-        stream?.stopCapture { _ in }
-        stream = nil
-        lastFrame = nil
-        AppLogger.info("capture.stopped")
+    /// Attempts to restart the stream with exponential backoff.
+    private func attemptRecovery(originalError: Error) {
+        recoveryTask?.cancel()
+        recoveryTask = Task { [weak self] in
+            guard let self else { return }
+            for attempt in 1...Self.maxRecoveryAttempts {
+                let delay = Self.recoveryBaseDelay * pow(2.0, Double(attempt - 1))
+                AppLogger.warning("capture.recovery_attempt", [
+                    "attempt": String(attempt),
+                    "maxAttempts": String(Self.maxRecoveryAttempts),
+                    "delaySeconds": String(delay)
+                ])
+                try? await Task.sleep(for: .seconds(delay))
+                guard !Task.isCancelled else { return }
+
+                do {
+                    try await self.startStream()
+                    AppLogger.info("capture.recovery_succeeded", ["attempt": String(attempt)])
+                    return
+                } catch {
+                    AppLogger.error("capture.recovery_failed", [
+                        "attempt": String(attempt),
+                        "error": String(describing: error)
+                    ])
+                }
+            }
+
+            guard !Task.isCancelled else { return }
+            AppLogger.error("capture.recovery_exhausted", [
+                "originalError": String(describing: originalError),
+                "attempts": String(Self.maxRecoveryAttempts)
+            ])
+            let failureCallback = self.onStreamFailure
+            let err = originalError
+            Task { @MainActor in
+                failureCallback?(err)
+            }
+        }
     }
 }
 
@@ -151,7 +233,11 @@ public final class ScreenCaptureManager: @unchecked Sendable {
     private init() {}
 
     public var onFrame: (@Sendable (CGImage) async -> Void)?
+    public var onStreamFailure: (@MainActor @Sendable (_ error: Error) -> Void)?
     public var lastFrame: CGImage? { nil }
+
+    internal static let maxRecoveryAttempts = 3
+    internal static let recoveryBaseDelay: TimeInterval = 2.0
 
     public func start() async throws { throw CaptureError.unavailable }
     public func stop() {}
