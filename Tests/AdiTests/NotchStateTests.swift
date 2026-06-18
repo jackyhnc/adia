@@ -503,4 +503,70 @@ struct NotchStateTests {
         let result = whitelistedDomainsLabel(["a.com", "b.com", "c.com"], maxVisible: 1)
         #expect(result == "a.com +2 more")
     }
+
+    // MARK: - idleHasHeatmap
+
+    @Test func idleHasHeatmapDefaultsToFalse() async {
+        await reset()
+        let v = await MainActor.run { NotchState.shared.idleHasHeatmap }
+        #expect(v == false)
+    }
+
+    @Test func settingIdleHasHeatmapTrueRaisesFlag() async {
+        await reset()
+        await MainActor.run { NotchState.shared.idleHasHeatmap = true }
+        let v = await MainActor.run { NotchState.shared.idleHasHeatmap }
+        #expect(v == true)
+    }
+
+    @Test func collapseDoesNotClearIdleHasHeatmap() async {
+        await reset()
+        await MainActor.run { NotchState.shared.idleHasHeatmap = true }
+        await MainActor.run { NotchState.shared.collapse() }
+        let v = await MainActor.run { NotchState.shared.idleHasHeatmap }
+        #expect(v == true)
+    }
+
+    // MARK: - notchHeatmapTooltip
+
+    @Test func notchHeatmapTooltipNoSessions() {
+        let day = DayActivity(date: Date(), sessionCount: 0, minutes: 0)
+        #expect(notchHeatmapTooltip(day) == "no sessions")
+    }
+
+    @Test func notchHeatmapTooltipOneSession() {
+        let day = DayActivity(date: Date(), sessionCount: 1, minutes: 45)
+        #expect(notchHeatmapTooltip(day) == "1 session · 45m")
+    }
+
+    @Test func notchHeatmapTooltipMultipleSessions() {
+        let day = DayActivity(date: Date(), sessionCount: 3, minutes: 90)
+        #expect(notchHeatmapTooltip(day) == "3 sessions · 1h 30m")
+    }
+
+    @Test func notchHeatmapTooltipHoursOnly() {
+        let day = DayActivity(date: Date(), sessionCount: 2, minutes: 120)
+        #expect(notchHeatmapTooltip(day) == "2 sessions · 2h")
+    }
+
+    @Test func notchHeatmapTooltipSubMinute() {
+        let day = DayActivity(date: Date(), sessionCount: 1, minutes: 0)
+        #expect(notchHeatmapTooltip(day) == "1 session · <1m")
+    }
+
+    // MARK: - notchHeatmapDayAbbrev
+
+    @Test func notchHeatmapDayAbbrevSunday() {
+        var cal = Calendar(identifier: .gregorian)
+        cal.firstWeekday = 1
+        let sunday = cal.date(from: DateComponents(year: 2026, month: 6, day: 14))!
+        #expect(notchHeatmapDayAbbrev(sunday) == "Su")
+    }
+
+    @Test func notchHeatmapDayAbbrevThursday() {
+        var cal = Calendar(identifier: .gregorian)
+        cal.firstWeekday = 1
+        let thursday = cal.date(from: DateComponents(year: 2026, month: 6, day: 18))!
+        #expect(notchHeatmapDayAbbrev(thursday) == "Th")
+    }
 }

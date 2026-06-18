@@ -1132,6 +1132,7 @@ private struct IdleBody: View {
     @State private var lastRecord: SessionRecord? = nil
     @State private var templates: [SessionTemplate] = []
     @State private var templateError: String? = nil
+    @State private var heatmapDays: [DayActivity] = []
 
     var body: some View {
         Group {
@@ -1154,8 +1155,10 @@ private struct IdleBody: View {
                 ? await SessionTemplateStore.shared.load()
                 : await SessionTemplateStore.shared.sorted()
             templates = Array(ordered.prefix(2))
+            heatmapDays = await SessionHistory.shared.weeklyHeatmap()
             NotchState.shared.idleTemplateCount = templates.count
             NotchState.shared.idleHasNote = lastRecord?.note != nil
+            NotchState.shared.idleHasHeatmap = heatmapDays.contains { $0.sessionCount > 0 }
         }
     }
 
@@ -1163,6 +1166,10 @@ private struct IdleBody: View {
         VStack(alignment: .leading, spacing: 10) {
             if let s = sessionStats, s.todayCount > 0 || s.weekCount > 0 {
                 statsLine(s)
+            }
+
+            if heatmapDays.contains(where: { $0.sessionCount > 0 }) {
+                NotchHeatmapView(days: heatmapDays)
             }
 
             if !templates.isEmpty {
@@ -1325,6 +1332,69 @@ private struct IdleBody: View {
     private func streakLabel(_ s: SessionStats) -> String {
         streakDisplayLabel(current: s.streak, best: s.bestStreak)
     }
+}
+
+// MARK: - Notch Heatmap
+
+/// Compact 7-day activity heatmap for the idle notch. Each day is a small rounded
+/// rectangle whose opacity reflects relative focus minutes. Days with no sessions
+/// are dim; today is white-highlighted.
+private struct NotchHeatmapView: View {
+    let days: [DayActivity]
+
+    private var maxMinutes: Int { max(1, days.map(\.minutes).max() ?? 1) }
+
+    var body: some View {
+        HStack(spacing: 4) {
+            ForEach(days.indices, id: \.self) { i in
+                notchHeatmapCell(days[i])
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func notchHeatmapCell(_ day: DayActivity) -> some View {
+        let isToday = Calendar.current.isDateInToday(day.date)
+        let fraction = day.minutes > 0
+            ? Double(day.minutes) / Double(maxMinutes)
+            : 0
+        let fillOpacity = day.minutes > 0 ? 0.15 + fraction * 0.55 : 0.04
+
+        return VStack(spacing: 3) {
+            RoundedRectangle(cornerRadius: 3, style: .continuous)
+                .fill(isToday ? Color.white.opacity(fillOpacity + 0.1) : Color.white.opacity(fillOpacity))
+                .frame(height: 18)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 3, style: .continuous)
+                        .stroke(isToday ? Color.white.opacity(0.25) : Color.clear, lineWidth: 0.5)
+                )
+            Text(notchHeatmapDayAbbrev(day.date))
+                .font(.system(size: 8, weight: isToday ? .bold : .regular))
+                .foregroundStyle(isToday ? .white.opacity(0.6) : .white.opacity(0.25))
+        }
+        .frame(maxWidth: .infinity)
+        .help(notchHeatmapTooltip(day))
+    }
+}
+
+/// Two-letter day abbreviation for the notch heatmap.
+internal func notchHeatmapDayAbbrev(_ date: Date) -> String {
+    let w = Calendar.current.component(.weekday, from: date)
+    return ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][(w - 1) % 7]
+}
+
+/// Tooltip text for a notch heatmap cell: "no sessions" or "2 sessions · 1h 30m".
+internal func notchHeatmapTooltip(_ day: DayActivity) -> String {
+    if day.sessionCount == 0 { return "no sessions" }
+    let sessions = day.sessionCount == 1 ? "1 session" : "\(day.sessionCount) sessions"
+    let h = day.minutes / 60
+    let m = day.minutes % 60
+    let time: String
+    if h > 0 && m > 0 { time = "\(h)h \(m)m" }
+    else if h > 0 { time = "\(h)h" }
+    else if m > 0 { time = "\(m)m" }
+    else { time = "<1m" }
+    return "\(sessions) · \(time)"
 }
 
 // MARK: - Idle stats formatting (internal for testing)

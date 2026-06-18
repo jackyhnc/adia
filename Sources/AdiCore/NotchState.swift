@@ -14,6 +14,9 @@ public final class NotchState: ObservableObject {
     /// True when the most recent session record has a note. Updated by IdleBody alongside idleTemplateCount.
     /// Used by NotchWindowController to add extra height for the note row.
     @Published public internal(set) var idleHasNote: Bool = false
+    /// True when the weekly heatmap has at least one day with sessions. Updated by IdleBody.
+    /// Used by NotchWindowController to add extra height for the heatmap row.
+    @Published public internal(set) var idleHasHeatmap: Bool = false
 
     // Callout
     @Published public private(set) var calloutMessage: String? = nil
