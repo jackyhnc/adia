@@ -17,6 +17,9 @@ public final class NotchState: ObservableObject {
     /// True when the weekly heatmap has at least one day with sessions. Updated by IdleBody.
     /// Used by NotchWindowController to add extra height for the heatmap row.
     @Published public internal(set) var idleHasHeatmap: Bool = false
+    /// True when a daily focus goal is set and there is progress to show. Updated by IdleBody.
+    /// Used by NotchWindowController to add extra height for the goal progress row.
+    @Published public internal(set) var idleHasDailyGoal: Bool = false
 
     // Callout
     @Published public private(set) var calloutMessage: String? = nil

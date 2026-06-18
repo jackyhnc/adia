@@ -12,7 +12,7 @@ public struct SettingsView: View {
     /// content density of that tab — avoiding wasted whitespace on compact tabs
     /// while giving scrollable tabs more breathing room.
     nonisolated static let tabHeights: [Int: CGFloat] = [
-        0: 400,   // Account  — 3 compact sections
+        0: 500,   // Account  — API key, license, shortcuts, reminders, daily goal
         1: 560,   // Blocking — many toggles, benefits from tall viewport
         2: 460,   // Templates — list + footer row
         3: 540,   // History  — heatmap + session list
@@ -110,6 +110,8 @@ private struct AccountSettingsTab: View {
                 Text("When your session's timer runs out, Adia re-opens the notch on this interval until you verify you're done or end the session.")
                     .foregroundStyle(.secondary)
             }
+
+            DailyGoalSection(settings: settings)
         }
         .formStyle(.grouped)
     }
@@ -227,6 +229,100 @@ private struct AccountSettingsTab: View {
         activateError = nil
         activateError = await license.activate(key: licenseKey, email: email)
         activating    = false
+    }
+}
+
+// MARK: - Daily Goal Section
+
+private struct DailyGoalSection: View {
+    @ObservedObject var settings: SettingsStore
+    @State private var customGoalText: String = ""
+
+    private var parsedCustomMinutes: Int? { parseCustomDuration(customGoalText) }
+    private var isPreset: Bool {
+        guard let goal = settings.dailyFocusGoalMinutes else { return false }
+        return SettingsStore.dailyGoalPresets.contains { $0.0 == goal }
+    }
+
+    var body: some View {
+        Section {
+            HStack(spacing: 4) {
+                ForEach(SettingsStore.dailyGoalPresets, id: \.0) { minutes, label in
+                    Button {
+                        if settings.dailyFocusGoalMinutes == minutes {
+                            settings.dailyFocusGoalMinutes = nil
+                        } else {
+                            settings.dailyFocusGoalMinutes = minutes
+                            customGoalText = ""
+                        }
+                    } label: {
+                        Text(label)
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(settings.dailyFocusGoalMinutes == minutes ? .white : .secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(
+                                settings.dailyFocusGoalMinutes == minutes
+                                    ? Color.accentColor
+                                    : Color.secondary.opacity(0.12),
+                                in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
+                if settings.dailyFocusGoalMinutes != nil {
+                    Button {
+                        settings.dailyFocusGoalMinutes = nil
+                        customGoalText = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.tertiary)
+                            .font(.system(size: 13))
+                    }
+                    .buttonStyle(.plain)
+                    .help("Clear daily goal")
+                }
+            }
+            HStack(spacing: 6) {
+                TextField("or type a custom goal (e.g. 2h, 90m, 1h30m)", text: $customGoalText)
+                    .font(.system(size: 12))
+                    .onSubmit {
+                        if let parsed = parsedCustomMinutes {
+                            settings.dailyFocusGoalMinutes = parsed
+                            customGoalText = ""
+                        }
+                    }
+                    .onChange(of: customGoalText) {
+                        if let parsed = parsedCustomMinutes {
+                            settings.dailyFocusGoalMinutes = parsed
+                        }
+                    }
+                if !customGoalText.isEmpty {
+                    Button { customGoalText = "" } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.tertiary)
+                            .font(.system(size: 13))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        } header: {
+            Text("Daily Focus Goal")
+        } footer: {
+            VStack(alignment: .leading, spacing: 4) {
+                if !isPreset, let parsed = parsedCustomMinutes {
+                    Text("= \(heatmapFormatMinutes(parsed))")
+                        .foregroundStyle(.green.opacity(0.9))
+                } else if !customGoalText.trimmingCharacters(in: .whitespaces).isEmpty, parsedCustomMinutes == nil {
+                    Text("Couldn't parse — try "2h", "90m", or "1h30m".")
+                        .foregroundStyle(.orange.opacity(0.8))
+                }
+                Text(settings.dailyFocusGoalMinutes != nil
+                     ? "The notch shows your progress toward this goal each day."
+                     : "Set a daily target to track your focus consistency.")
+                    .foregroundStyle(.secondary)
+            }
+        }
     }
 }
 

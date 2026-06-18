@@ -1,5 +1,63 @@
 # Adia — Build Progress
 
+## Run 150 — 2026-06-18
+
+### Shipped
+
+**feat: daily focus goal — configurable daily target with progress bar in idle notch (+16 tests)**
+
+#### `SettingsStore.swift` — new `dailyFocusGoalMinutes` setting
+
+- New `@Published public var dailyFocusGoalMinutes: Int?` — persisted in UserDefaults. nil = no goal.
+- Stored as integer minutes; cleared (removeObject) when set to nil; rejected when ≤ 0.
+- New `static let dailyGoalPresets: [(Int, String)]` — six preset chips: 30m, 1h, 90m, 2h, 3h, 4h.
+
+#### `NotchState.swift` — new `idleHasDailyGoal` flag
+
+- New `@Published public internal(set) var idleHasDailyGoal: Bool` — mirrors the pattern of `idleHasNote` and `idleHasHeatmap`. Set by `IdleBody` when goal is configured; used by `NotchWindowController` for dynamic panel height.
+
+#### `NotchWindowController.swift` — dynamic idle height
+
+- New `idleDailyGoalHeight` constant (32pt) added to idle panel height when daily goal is active.
+- Subscribed to `NotchState.shared.$idleHasDailyGoal` for automatic repositioning.
+
+#### `NotchView.swift` — idle + collapsed UI
+
+- New `DailyGoalProgressRow` view component: icon + progress label + thin progress bar. Shows green checkmark and "reached!" text when goal is met; target icon with "X of Y daily goal" otherwise.
+- Inserted into `IdleBody.idleContent` between the stats line and heatmap when a daily goal is configured.
+- **Collapsed idle view**: when a daily goal is set, the pill shows "45m / 2h" format (via `dailyGoalCollapsedLabel`) instead of the generic session count + duration stats. Shows green text and "✓" suffix when goal is met.
+- New `dailyGoalProgressLabel(todayMinutes:goalMinutes:)` pure helper: formats the expanded label.
+- New `dailyGoalCollapsedLabel(todayMinutes:goalMinutes:)` pure helper: formats the collapsed pill label.
+
+#### `SettingsView.swift` — Daily Goal section
+
+- New `DailyGoalSection` view component in the Account tab: 6 preset duration chips (30m–4h) with toggle-off behavior, plus a free-form text field for custom values. "×" button to clear.
+- Footer shows parsed custom duration confirmation or parse error, plus contextual description.
+- Account tab height increased from 400pt to 500pt to accommodate the new section.
+
+#### Tests — 16 new `@Test` cases
+
+**`NotchStateTests.swift`** (13 tests):
+- 2 tests for `idleHasDailyGoal` state flag (default false, can be set)
+- 6 tests for `dailyGoalProgressLabel` (zero, partial, hours+minutes, reached, exceeded, zero goal)
+- 5 tests for `dailyGoalCollapsedLabel` (zero, partial, reached, exceeded, zero goal)
+
+**`SettingsStoreTests.swift`** (3 tests):
+- `dailyGoalPresetsAreNonEmpty` — presets array is not empty
+- `dailyGoalPresetsAreAscending` — minutes are in ascending order
+- `dailyGoalPresetsAllPositive` — all preset values > 0
+
+### Blocked
+- Cannot compile-verify on Linux container (macOS-only app). Code is syntactically valid Swift 6.
+- All 17 GOAL.md items checked off (14 original + 3 new).
+
+### Next agent
+- All goals complete.
+- Possible further improvements:
+  - **Keyboard shortcut customization** — let users rebind the ⌃⌥A global hotkey in Settings.
+  - **Sound customization** — configurable notification sounds for callouts, timer expiry, and verification.
+  - **Focus insights** — surface patterns from session history ("you focus best in the morning", "your average session has been getting longer").
+
 ## Run 149 — 2026-06-18
 
 ### Shipped

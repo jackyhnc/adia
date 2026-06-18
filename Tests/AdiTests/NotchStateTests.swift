@@ -569,4 +569,67 @@ struct NotchStateTests {
         let thursday = cal.date(from: DateComponents(year: 2026, month: 6, day: 18))!
         #expect(notchHeatmapDayAbbrev(thursday) == "Th")
     }
+
+    // MARK: - idleHasDailyGoal
+
+    @Test func idleHasDailyGoalDefaultsFalse() async {
+        await reset()
+        let has = await MainActor.run { NotchState.shared.idleHasDailyGoal }
+        #expect(has == false)
+    }
+
+    @Test func idleHasDailyGoalCanBeSet() async {
+        await reset()
+        await MainActor.run { NotchState.shared.idleHasDailyGoal = true }
+        let has = await MainActor.run { NotchState.shared.idleHasDailyGoal }
+        #expect(has == true)
+    }
+
+    // MARK: - dailyGoalProgressLabel
+
+    @Test func dailyGoalProgressLabelZeroProgress() {
+        #expect(dailyGoalProgressLabel(todayMinutes: 0, goalMinutes: 120) == "0m of 2h daily goal")
+    }
+
+    @Test func dailyGoalProgressLabelPartialProgress() {
+        #expect(dailyGoalProgressLabel(todayMinutes: 45, goalMinutes: 120) == "45m of 2h daily goal")
+    }
+
+    @Test func dailyGoalProgressLabelHoursAndMinutes() {
+        #expect(dailyGoalProgressLabel(todayMinutes: 90, goalMinutes: 180) == "1h 30m of 3h daily goal")
+    }
+
+    @Test func dailyGoalProgressLabelGoalReached() {
+        #expect(dailyGoalProgressLabel(todayMinutes: 120, goalMinutes: 120) == "2h daily goal reached!")
+    }
+
+    @Test func dailyGoalProgressLabelGoalExceeded() {
+        #expect(dailyGoalProgressLabel(todayMinutes: 150, goalMinutes: 120) == "2h daily goal reached!")
+    }
+
+    @Test func dailyGoalProgressLabelZeroGoal() {
+        #expect(dailyGoalProgressLabel(todayMinutes: 30, goalMinutes: 0) == "")
+    }
+
+    // MARK: - dailyGoalCollapsedLabel
+
+    @Test func dailyGoalCollapsedLabelZeroProgress() {
+        #expect(dailyGoalCollapsedLabel(todayMinutes: 0, goalMinutes: 120) == "0m / 2h")
+    }
+
+    @Test func dailyGoalCollapsedLabelPartialProgress() {
+        #expect(dailyGoalCollapsedLabel(todayMinutes: 45, goalMinutes: 120) == "45m / 2h")
+    }
+
+    @Test func dailyGoalCollapsedLabelGoalReached() {
+        #expect(dailyGoalCollapsedLabel(todayMinutes: 120, goalMinutes: 120) == "2h / 2h ✓")
+    }
+
+    @Test func dailyGoalCollapsedLabelGoalExceeded() {
+        #expect(dailyGoalCollapsedLabel(todayMinutes: 150, goalMinutes: 120) == "2h 30m / 2h ✓")
+    }
+
+    @Test func dailyGoalCollapsedLabelZeroGoal() {
+        #expect(dailyGoalCollapsedLabel(todayMinutes: 30, goalMinutes: 0) == "")
+    }
 }

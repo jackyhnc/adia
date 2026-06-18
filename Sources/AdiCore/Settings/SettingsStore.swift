@@ -41,6 +41,23 @@ public final class SettingsStore: ObservableObject {
         didSet { defaults.set(timerExpiredRearmMinutes, forKey: "adia.timerExpiredRearmMinutes") }
     }
 
+    /// Daily focus goal in minutes. nil = no goal set. When set, the idle notch shows
+    /// a progress bar toward the target and the collapsed pill shows "45m / 2h" format.
+    @Published public var dailyFocusGoalMinutes: Int? {
+        didSet {
+            if let m = dailyFocusGoalMinutes {
+                defaults.set(m, forKey: "adia.dailyFocusGoalMinutes")
+            } else {
+                defaults.removeObject(forKey: "adia.dailyFocusGoalMinutes")
+            }
+        }
+    }
+
+    /// Allowed presets for the daily focus goal picker in Settings.
+    public nonisolated static let dailyGoalPresets: [(Int, String)] = [
+        (30, "30m"), (60, "1h"), (90, "90m"), (120, "2h"), (180, "3h"), (240, "4h")
+    ]
+
     /// Domains the user added on top of the default list.
     @Published public private(set) var customBlockedDomains: [String] {
         didSet { Self.saveDomainList(customBlockedDomains, key: Self.customDomainsKey, to: defaults) }
@@ -93,6 +110,8 @@ public final class SettingsStore: ObservableObject {
         idleTemplatesFollowManualOrder   = defaults.object(forKey: "adia.idleTemplatesFollowManualOrder")      as? Bool ?? false
         let storedRearmMinutes = defaults.object(forKey: "adia.timerExpiredRearmMinutes") as? Int ?? 10
         timerExpiredRearmMinutes = Self.timerExpiredRearmMinuteOptions.contains(storedRearmMinutes) ? storedRearmMinutes : 10
+        let storedGoal = defaults.object(forKey: "adia.dailyFocusGoalMinutes") as? Int
+        dailyFocusGoalMinutes = storedGoal.flatMap { $0 > 0 ? $0 : nil }
         // Resolve the agent AI key from the first source that yields a non-empty
         // value. Legacy names are still accepted so existing local installs keep
         // working after the user-facing naming moved away from provider branding.

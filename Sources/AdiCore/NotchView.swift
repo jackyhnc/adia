@@ -109,6 +109,7 @@ private struct CollapsedView: View {
     @ObservedObject var state: NotchState
     @ObservedObject var session: SessionManager
     @ObservedObject private var network: NetworkMonitor = .shared
+    @ObservedObject private var settings: SettingsStore = .shared
     @State private var idleStreak: Int = 0
     @State private var idleTodayCount: Int = 0
     @State private var idleTodayMinutes: Int = 0
@@ -151,6 +152,17 @@ private struct CollapsedView: View {
                         .font(.system(size: 10, weight: .semibold, design: .monospaced))
                         .foregroundStyle(focusScoreColor(score))
                         .transition(.opacity)
+                }
+            } else if let goal = settings.dailyFocusGoalMinutes {
+                HStack(spacing: 6) {
+                    Text(dailyGoalCollapsedLabel(todayMinutes: idleTodayMinutes, goalMinutes: goal))
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundStyle(idleTodayMinutes >= goal ? .green.opacity(0.8) : .white.opacity(0.5))
+                    if idleStreak > 1 {
+                        Text("🔥 \(idleStreak)d")
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .foregroundStyle(.orange.opacity(0.85))
+                    }
                 }
             } else if idleTodayCount > 0 || idleStreak > 1 {
                 HStack(spacing: 6) {
@@ -1159,6 +1171,7 @@ private struct IdleBody: View {
             NotchState.shared.idleTemplateCount = templates.count
             NotchState.shared.idleHasNote = lastRecord?.note != nil
             NotchState.shared.idleHasHeatmap = heatmapDays.contains { $0.sessionCount > 0 }
+            NotchState.shared.idleHasDailyGoal = settings.dailyFocusGoalMinutes != nil
         }
     }
 
@@ -1166,6 +1179,13 @@ private struct IdleBody: View {
         VStack(alignment: .leading, spacing: 10) {
             if let s = sessionStats, s.todayCount > 0 || s.weekCount > 0 {
                 statsLine(s)
+            }
+
+            if let goal = settings.dailyFocusGoalMinutes {
+                DailyGoalProgressRow(
+                    todayMinutes: sessionStats?.todayMinutes ?? 0,
+                    goalMinutes: goal
+                )
             }
 
             if heatmapDays.contains(where: { $0.sessionCount > 0 }) {
@@ -1397,6 +1417,43 @@ internal func notchHeatmapTooltip(_ day: DayActivity) -> String {
     return "\(sessions) · \(time)"
 }
 
+// MARK: - Daily Goal Progress Row
+
+private struct DailyGoalProgressRow: View {
+    let todayMinutes: Int
+    let goalMinutes: Int
+
+    private var fraction: CGFloat {
+        guard goalMinutes > 0 else { return 0 }
+        return min(1.0, CGFloat(todayMinutes) / CGFloat(goalMinutes))
+    }
+
+    private var isComplete: Bool { todayMinutes >= goalMinutes }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 6) {
+                Image(systemName: isComplete ? "checkmark.circle.fill" : "target")
+                    .font(.system(size: 9, weight: .semibold))
+                    .foregroundStyle(isComplete ? .green.opacity(0.8) : .white.opacity(0.35))
+                Text(dailyGoalProgressLabel(todayMinutes: todayMinutes, goalMinutes: goalMinutes))
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundStyle(isComplete ? .green.opacity(0.8) : .white.opacity(0.5))
+            }
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 2, style: .continuous)
+                        .fill(Color.white.opacity(0.08))
+                    RoundedRectangle(cornerRadius: 2, style: .continuous)
+                        .fill(isComplete ? Color.green.opacity(0.6) : Color.white.opacity(0.35))
+                        .frame(width: geo.size.width * fraction)
+                }
+            }
+            .frame(height: 3)
+        }
+    }
+}
+
 // MARK: - Idle stats formatting (internal for testing)
 
 /// Formats the streak+best-streak label shown in the idle notch stats row.
@@ -1487,6 +1544,37 @@ internal func sessionElapsedLabel(seconds: Int) -> String {
     if h > 0 { return "\(h)h" }
     if m > 0 { return "\(m)m" }
     return "<1m"
+}
+
+// MARK: - Daily focus goal formatting (internal for testing)
+
+/// Formats the daily goal progress label shown in the idle notch.
+/// Examples: "45m of 2h daily goal", "2h 15m of 3h daily goal", "2h daily goal reached!"
+internal func dailyGoalProgressLabel(todayMinutes: Int, goalMinutes: Int) -> String {
+    guard goalMinutes > 0 else { return "" }
+    let goalText = compactDuration(goalMinutes)
+    if todayMinutes >= goalMinutes { return "\(goalText) daily goal reached!" }
+    let progressText = todayMinutes > 0 ? compactDuration(todayMinutes) : "0m"
+    return "\(progressText) of \(goalText) daily goal"
+}
+
+/// Formats the compact collapsed-pill label when a daily goal is set.
+/// Examples: "45m / 2h", "0m / 1h", "2h / 2h ✓"
+internal func dailyGoalCollapsedLabel(todayMinutes: Int, goalMinutes: Int) -> String {
+    guard goalMinutes > 0 else { return "" }
+    let progress = todayMinutes > 0 ? compactDuration(todayMinutes) : "0m"
+    let goal = compactDuration(goalMinutes)
+    if todayMinutes >= goalMinutes { return "\(progress) / \(goal) ✓" }
+    return "\(progress) / \(goal)"
+}
+
+/// Compact duration: "45m", "1h", "1h 30m", "2h 15m"
+private func compactDuration(_ minutes: Int) -> String {
+    let h = minutes / 60
+    let m = minutes % 60
+    if h > 0 && m > 0 { return "\(h)h \(m)m" }
+    if h > 0 { return "\(h)h" }
+    return "\(m)m"
 }
 
 // MARK: - AdiButton

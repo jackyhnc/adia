@@ -603,4 +603,21 @@ struct SettingsStoreTests {
     @Test func parseCustomDurationTrailingGarbageReturnsNil() {
         #expect(parseCustomDuration("1h30m extra") == nil)
     }
+
+    // MARK: - Daily focus goal presets
+
+    @Test func dailyGoalPresetsAreNonEmpty() {
+        #expect(!SettingsStore.dailyGoalPresets.isEmpty)
+    }
+
+    @Test func dailyGoalPresetsAreAscending() {
+        let minutes = SettingsStore.dailyGoalPresets.map(\.0)
+        #expect(minutes == minutes.sorted())
+    }
+
+    @Test func dailyGoalPresetsAllPositive() {
+        for (m, _) in SettingsStore.dailyGoalPresets {
+            #expect(m > 0)
+        }
+    }
 }

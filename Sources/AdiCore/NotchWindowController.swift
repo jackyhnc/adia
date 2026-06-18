@@ -63,6 +63,8 @@ public final class NotchWindowController: NSWindowController {
     private static let idleNoteHeight: CGFloat          = 28
     // Extra height for the compact 7-day heatmap row in the idle panel.
     private static let idleHeatmapHeight: CGFloat       = 36
+    // Extra height for the daily focus goal progress row in the idle panel.
+    private static let idleDailyGoalHeight: CGFloat     = 32
     // Extra height when the active/paused session has whitelisted domains to display.
     private static let whitelistedRowHeight: CGFloat    = 22
 
@@ -129,6 +131,7 @@ public final class NotchWindowController: NSWindowController {
         NotchState.shared.$idleTemplateCount.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         NotchState.shared.$idleHasNote.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         NotchState.shared.$idleHasHeatmap.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        NotchState.shared.$idleHasDailyGoal.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
     }
 
     // MARK: Panel sizing / positioning
@@ -211,7 +214,7 @@ public final class NotchWindowController: NSWindowController {
             h = Self.calloutExpandedHeight + whitelistedExtra
         } else if SessionManager.shared.session == nil {
             let tc = CGFloat(min(state.idleTemplateCount, 2))
-            h = Self.idleExpandedHeight + tc * Self.perTemplateHeight + (state.idleHasNote ? Self.idleNoteHeight : 0) + (state.idleHasHeatmap ? Self.idleHeatmapHeight : 0)
+            h = Self.idleExpandedHeight + tc * Self.perTemplateHeight + (state.idleHasNote ? Self.idleNoteHeight : 0) + (state.idleHasHeatmap ? Self.idleHeatmapHeight : 0) + (state.idleHasDailyGoal ? Self.idleDailyGoalHeight : 0)
         } else {
             h = Self.expandedHeight + whitelistedExtra
         }
