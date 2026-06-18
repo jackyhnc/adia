@@ -400,6 +400,13 @@ private struct ExpandedView: View {
             .padding(.horizontal, 16)
             .padding(.top, (state.calloutMessage != nil || session.timerExpired) ? 8 : 12)
 
+            if !s.whitelistedDomains.isEmpty {
+                WhitelistedDomainsRow(domains: s.whitelistedDomains)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 4)
+                    .transition(.opacity)
+            }
+
             HStack(spacing: 8) {
                 AdiButton(label: "Done", style: .primary) {
                     Task { await SessionManager.shared.verifyAndEnd() }
@@ -454,6 +461,11 @@ private struct ExpandedView: View {
                         .font(.system(size: 10, weight: .semibold, design: .monospaced))
                         .foregroundStyle(focusScoreColor(score))
                 }
+            }
+
+            if !s.whitelistedDomains.isEmpty {
+                WhitelistedDomainsRow(domains: s.whitelistedDomains)
+                    .padding(.top, 4)
             }
 
             HStack(spacing: 8) {
@@ -808,6 +820,25 @@ private struct StatusBadge: View {
         case .onTask:    return "On Task"
         case .offTask:   return "Off Task"
         case .ambiguous: return "Check In"
+        }
+    }
+}
+
+// MARK: - Whitelisted domains row
+
+private struct WhitelistedDomainsRow: View {
+    let domains: [String]
+
+    var body: some View {
+        HStack(spacing: 5) {
+            Image(systemName: "lock.open.fill")
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(.green.opacity(0.7))
+            Text(whitelistedDomainsLabel(domains))
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(.white.opacity(0.45))
+                .lineLimit(1)
+                .truncationMode(.tail)
         }
     }
 }
@@ -1370,6 +1401,20 @@ internal func verificationRelativeTime(_ date: Date, now: Date = Date()) -> Stri
     if hours > 0 && minutes > 0 { return "\(hours)h \(minutes)m ago" }
     if hours > 0 { return "\(hours)h ago" }
     return "\(totalMinutes)m ago"
+}
+
+// MARK: - Whitelisted domains formatting (internal for testing)
+
+/// Formats a compact label for whitelisted domains shown in the active session notch.
+/// Shows up to `maxVisible` domains; if more exist, appends "+N more".
+/// Returns an empty string when the list is empty.
+internal func whitelistedDomainsLabel(_ domains: [String], maxVisible: Int = 3) -> String {
+    guard !domains.isEmpty else { return "" }
+    if domains.count <= maxVisible {
+        return domains.joined(separator: ", ")
+    }
+    let visible = domains.prefix(maxVisible).joined(separator: ", ")
+    return "\(visible) +\(domains.count - maxVisible) more"
 }
 
 // MARK: - Session completion helpers (internal for testing)

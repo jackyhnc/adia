@@ -469,4 +469,38 @@ struct NotchStateTests {
         let red   = focusScoreColor(0.59)
         #expect(amber != red, "0.60 must be amber while 0.59 must be red")
     }
+
+    // MARK: - whitelistedDomainsLabel
+
+    @Test func whitelistedDomainsLabelEmptyReturnsEmpty() {
+        #expect(whitelistedDomainsLabel([]) == "")
+    }
+
+    @Test func whitelistedDomainsLabelSingleDomain() {
+        #expect(whitelistedDomainsLabel(["canvas.com"]) == "canvas.com")
+    }
+
+    @Test func whitelistedDomainsLabelTwoDomains() {
+        #expect(whitelistedDomainsLabel(["canvas.com", "google.com"]) == "canvas.com, google.com")
+    }
+
+    @Test func whitelistedDomainsLabelThreeDomainsAtMax() {
+        let result = whitelistedDomainsLabel(["a.com", "b.com", "c.com"])
+        #expect(result == "a.com, b.com, c.com")
+    }
+
+    @Test func whitelistedDomainsLabelFourDomainsShowsPlusMore() {
+        let result = whitelistedDomainsLabel(["a.com", "b.com", "c.com", "d.com"])
+        #expect(result == "a.com, b.com, c.com +1 more")
+    }
+
+    @Test func whitelistedDomainsLabelManyDomainsShowsPlusMore() {
+        let result = whitelistedDomainsLabel(["a.com", "b.com", "c.com", "d.com", "e.com", "f.com"])
+        #expect(result == "a.com, b.com, c.com +3 more")
+    }
+
+    @Test func whitelistedDomainsLabelCustomMaxVisible() {
+        let result = whitelistedDomainsLabel(["a.com", "b.com", "c.com"], maxVisible: 1)
+        #expect(result == "a.com +2 more")
+    }
 }

@@ -1,5 +1,45 @@
 # Adia — Build Progress
 
+## Run 146 — 2026-06-18
+
+### Shipped
+
+**feat: whitelisted domains visibility — show AI-granted site access in active/paused session notch UI (+7 tests)**
+
+#### `NotchView.swift` — UI changes
+
+- New `WhitelistedDomainsRow` view component: compact row with lock.open icon + comma-separated domain list, green-tinted, matches existing notch visual style.
+- Inserted into `activeBody(_:)`: appears between the elapsed-time/status row and the Done/Pause/Exit buttons when `session.whitelistedDomains` is non-empty.
+- Inserted into `pausedBody(_:)`: same row appears between stats and Resume/End buttons during pause.
+- New `whitelistedDomainsLabel(_:maxVisible:)` pure helper: formats domains for display, shows up to 3 domains then "+N more" for longer lists. Internal for testability.
+
+#### `NotchWindowController.swift` — dynamic height
+
+- New `whitelistedRowHeight` constant (22pt): added to panel height when whitelisted domains exist.
+- `targetFrame()` computes `whitelistedExtra` from session state; applied to active, callout (tier 1-3), and timer-expired height branches.
+- No height change when domains list is empty — existing layout is unaffected.
+
+#### Tests — 7 new `@Test` cases in `NotchStateTests.swift`
+
+- `whitelistedDomainsLabelEmptyReturnsEmpty` — empty input returns ""
+- `whitelistedDomainsLabelSingleDomain` — single domain passthrough
+- `whitelistedDomainsLabelTwoDomains` — comma-joined pair
+- `whitelistedDomainsLabelThreeDomainsAtMax` — 3 domains at default max
+- `whitelistedDomainsLabelFourDomainsShowsPlusMore` — 4 domains truncates with "+1 more"
+- `whitelistedDomainsLabelManyDomainsShowsPlusMore` — 6 domains shows "+3 more"
+- `whitelistedDomainsLabelCustomMaxVisible` — custom maxVisible parameter
+
+### Blocked
+- Cannot compile-verify on Linux container (macOS-only app). Code is syntactically valid Swift 6.
+- All 16 GOAL.md items checked off (14 original + 2 new).
+
+### Next agent
+- All goals complete.
+- Possible further improvements:
+  - **Session history in notch** — quick-access history list in the expanded idle notch (currently only accessible via Settings → History tab).
+  - **Keyboard shortcut customization** — let users rebind the ⌃⌥A global hotkey in Settings.
+  - **Sound customization** — configurable notification sounds for callouts, timer expiry, and verification.
+
 ## Run 145 — 2026-06-18
 
 ### Shipped

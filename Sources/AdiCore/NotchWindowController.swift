@@ -61,6 +61,8 @@ public final class NotchWindowController: NSWindowController {
     private static let perTemplateHeight: CGFloat       = 34
     // Extra height reserved for the 2-line last-session note row in the idle panel.
     private static let idleNoteHeight: CGFloat          = 28
+    // Extra height when the active/paused session has whitelisted domains to display.
+    private static let whitelistedRowHeight: CGFloat    = 22
 
     // Small always-visible indicator tucked beside the notch (never behind it).
     private static let indicatorWidth: CGFloat          = 150
@@ -182,6 +184,9 @@ public final class NotchWindowController: NSWindowController {
             return NSRect(x: x, y: y, width: w, height: h)
         }
 
+        let hasWhitelisted = !(SessionManager.shared.session?.whitelistedDomains.isEmpty ?? true)
+        let whitelistedExtra: CGFloat = hasWhitelisted ? Self.whitelistedRowHeight : 0
+
         let h: CGFloat
         if state.showingConversation {
             h = Self.conversationHeight
@@ -197,15 +202,15 @@ public final class NotchWindowController: NSWindowController {
         } else if state.isCreating {
             h = Self.creationExpandedHeight
         } else if state.calloutMessage != nil {
-            h = state.calloutTier >= 3 ? Self.tier3CalloutExpandedHeight : Self.calloutExpandedHeight
+            h = (state.calloutTier >= 3 ? Self.tier3CalloutExpandedHeight : Self.calloutExpandedHeight) + whitelistedExtra
         } else if SessionManager.shared.timerExpired {
             // Amber "time's up" banner: same footprint as a tier-1 callout banner.
-            h = Self.calloutExpandedHeight
+            h = Self.calloutExpandedHeight + whitelistedExtra
         } else if SessionManager.shared.session == nil {
             let tc = CGFloat(min(state.idleTemplateCount, 2))
             h = Self.idleExpandedHeight + tc * Self.perTemplateHeight + (state.idleHasNote ? Self.idleNoteHeight : 0)
         } else {
-            h = Self.expandedHeight
+            h = Self.expandedHeight + whitelistedExtra
         }
 
         // Attach the expanded panel to the top edge so it visually grows out of
