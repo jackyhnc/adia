@@ -1,5 +1,49 @@
 # Adia — Build Progress
 
+## Run 151 — 2026-06-18
+
+### Shipped
+
+**refactor: replace all print() with structured AppLogger calls + add AppLogger tests**
+
+#### Logging cleanup — 10 print() calls → AppLogger (4 files)
+
+- `SessionManager.swift` — 5 `print()` calls replaced:
+  - `session.hosts_cleanup_after_failed_start` (error)
+  - `session.hosts_cleanup_failed` (error)
+  - `session.whitelist_hosts_rewrite_failed` (error)
+  - `session.restore_failed` (error)
+  - `session.hosts_blocking_unavailable` (warning — expected without root)
+- `LocalBlockServer.swift` — 3 `print()` calls replaced:
+  - `blockserver.port_failed` (error)
+  - `blockserver.listening` (info)
+  - `blockserver.bind_failed` (warning)
+- `SessionNotifier.swift` — 1 `print()` call replaced:
+  - `notifier.schedule_failed` (error)
+- `LicenseManager.swift` — 1 `print()` call replaced:
+  - `license.validation_failed` (warning — network failure, non-fatal)
+
+All errors now written as structured JSON to `~/Library/Application Support/Adia/adia.log` with timestamp, level, event name, and contextual fields.
+
+#### Tests — 6 new `@Test` cases in `AppLoggerTests.swift`
+
+- `logFileURLIsInsideAdiDirectory` — URL ends with `Adia/adia.log`
+- `infoWritesToLogFile` — file grows after `.info()`, last line contains correct level/event/fields
+- `warningWritesCorrectLevel` — `.warning()` produces `"level":"warning"`
+- `errorWritesCorrectLevel` — `.error()` produces `"level":"error"` with fields
+- `logEntryContainsISO8601Timestamp` — timestamp field present and ISO 8601
+- `emptyFieldsProducesValidJSON` — empty fields dict produces parseable JSON
+
+### Blocked
+- Cannot compile-verify on Linux container (macOS-only app). All edits are mechanical replacements using existing AppLogger API.
+
+### Next agent
+- All goals complete.
+- Possible further improvements:
+  - **ScreenCaptureManager tests** — the core capture pipeline has zero unit tests.
+  - **Keyboard shortcut customization** — let users rebind the ⌃⌥A global hotkey in Settings.
+  - **Focus insights** — surface patterns from session history.
+
 ## Run 150 — 2026-06-18
 
 ### Shipped

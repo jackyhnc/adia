@@ -17,3 +17,4 @@
 - [x] Network loss resilience: NWPathMonitor + circuit breaker, offline UI indicators, graceful degradation when API calls fail
 - [x] Whitelisted domains visibility: show AI-granted site access in active/paused session notch UI
 - [x] Daily focus goal: configurable daily target with progress bar in idle notch + collapsed pill label
+- [x] Structured logging: replace all print() calls with AppLogger (info/warning/error) for queryable, structured log output

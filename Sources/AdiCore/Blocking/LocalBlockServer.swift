@@ -57,15 +57,15 @@ public final class LocalBlockServer: @unchecked Sendable {
                 }
                 l.stateUpdateHandler = { state in
                     if case .failed(let err) = state {
-                        print("[LocalBlockServer] port \(port) failed: \(err)")
+                        AppLogger.error("blockserver.port_failed", ["port": "\(port)", "error": "\(err)"])
                     }
                 }
                 l.start(queue: serverQueue)
                 listener = l
-                print("[LocalBlockServer] listening on port \(port)")
+                AppLogger.info("blockserver.listening", ["port": "\(port)"])
                 return
             } catch {
-                print("[LocalBlockServer] could not bind port \(port): \(error)")
+                AppLogger.warning("blockserver.bind_failed", ["port": "\(port)", "error": "\(error)"])
             }
         }
     }

@@ -120,7 +120,7 @@ public final class SessionNotifier: NSObject {
         guard Self.canUseNotificationCenter else { return }
         let request = UNNotificationRequest(identifier: id, content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request) { error in
-            if let error { print("[SessionNotifier] notification error: \(error)") }
+            if let error { AppLogger.error("notifier.schedule_failed", ["error": "\(error)"]) }
         }
     }
     #endif

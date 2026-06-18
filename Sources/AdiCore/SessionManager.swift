@@ -93,7 +93,7 @@ public final class SessionManager: ObservableObject {
             LocalBlockServer.shared.stop()
             SleepBlocker.shared.stop()
             do { try await hosts.unblockAll() } catch {
-                print("[SessionManager] hosts cleanup after failed start: \(error)")
+                AppLogger.error("session.hosts_cleanup_after_failed_start", ["error": "\(error)"])
             }
             throw error
         }
@@ -155,7 +155,7 @@ public final class SessionManager: ObservableObject {
         LocalBlockServer.shared.stop()
         SleepBlocker.shared.stop()
         do { try await hosts.unblockAll() } catch {
-            print("[SessionManager] hosts cleanup failed: \(error)")
+            AppLogger.error("session.hosts_cleanup_failed", ["error": "\(error)"])
         }
         await detector.detach()
         persistence.clear()
@@ -331,7 +331,7 @@ public final class SessionManager: ObservableObject {
         do {
             try await hosts.block(domains: s.blockedDomains)
         } catch {
-            print("[SessionManager] whitelist hosts rewrite failed: \(error)")
+            AppLogger.error("session.whitelist_hosts_rewrite_failed", ["error": "\(error)"])
         }
     }
 
@@ -366,7 +366,7 @@ public final class SessionManager: ObservableObject {
             do {
                 try await activate(s)
             } catch {
-                print("[SessionManager] restore failed, session will be shown but capture is inactive: \(error)")
+                AppLogger.error("session.restore_failed", ["error": "\(error)"])
             }
         }
         // Restore verification attempt history so the notch shows the correct attempt number
@@ -508,7 +508,7 @@ public final class SessionManager: ObservableObject {
         do {
             try await hosts.block(domains: s.blockedDomains)
         } catch {
-            print("[SessionManager] hosts blocking unavailable (needs root): \(error)")
+            AppLogger.warning("session.hosts_blocking_unavailable", ["error": "\(error)"])
         }
 
         do {

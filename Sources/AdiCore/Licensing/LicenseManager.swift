@@ -171,7 +171,7 @@ public final class LicenseManager: ObservableObject {
             refreshLocalStatus()
         } catch {
             // Network failure: keep current status, fall through to offline grace.
-            print("[LicenseManager] validation failed: \(error)")
+            AppLogger.warning("license.validation_failed", ["error": "\(error)"])
         }
     }
 
