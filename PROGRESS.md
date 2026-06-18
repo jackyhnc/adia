@@ -1,5 +1,34 @@
 # Adia — Build Progress
 
+## Run 153 — 2026-06-18
+
+### Shipped
+
+**test: add 28 tests for SessionRecord, ScreenCaptureManager, and EmbeddedSecrets**
+
+#### `SessionRecordTests.swift` — 15 new `@Test` cases
+
+- **Computed properties (7 tests):** `durationComputed`, `durationZeroWhenSameTime`, `focusScoreNilWhenNoChecks`, `focusScorePerfect`, `focusScoreZero`, `focusScorePartial`, `focusScoreSingleCheck`
+- **Codable (6 tests):** `roundTripPreservesAllFields`, `encodedJSONContainsFocusScoreAndDuration`, `encodedJSONOmitsFocusScoreWhenNil`, `backwardCompatMissingOptionalFields`, `noteNilWhenNotPresent`, `notePreservedWhenSet`
+- **Identity (2 tests):** `defaultIdIsUnique`, `explicitIdPreserved`
+
+#### `ScreenCaptureManagerTests.swift` — 11 new `@Test` cases
+
+- **Constants (6 tests):** verify `maxRecoveryAttempts`, `recoveryBaseDelay`, `frameStalenessTimeout`, `watchdogCheckInterval`, watchdog-faster-than-staleness invariant, recovery backoff formula
+- **Singleton (2 tests):** `sharedIsSameInstance`, `stopIsIdempotent`
+- **Stub (3 tests, non-macOS only):** `lastFrameAlwaysNil`, `lastFrameReceivedAtAlwaysNil`, `startThrowsUnavailable`
+
+#### `SecretsTests.swift` — 2 new `@Test` cases
+
+- `resolvedKeyIsNilWhenEmpty`, `apiKeyIsEmptyInSource`
+
+### Blocked
+- Cannot compile-verify on Linux container (macOS-only app). Tests follow existing patterns and are syntactically verified.
+
+### Next agent
+- All goals complete (22/22 in GOAL.md).
+- Remaining untested areas are all UI (views, controllers) — not unit-testable without XCUITest.
+
 ## Run 152 — 2026-06-18
 
 ### Shipped
