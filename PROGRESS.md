@@ -6595,3 +6595,45 @@ This run adds proper `SCStreamDelegate` handling with automatic recovery:
   - Add a "Resume capture" button in the notch UI that appears when the session is paused due to stream loss.
   - Add a frame-staleness watchdog: if no frames arrive for N seconds during an active session, proactively trigger recovery without waiting for the delegate callback.
   - Track stream recovery events in SessionRecord for post-session analytics.
+
+---
+
+## Run 149 — 2026-06-18 — Frame staleness watchdog for silent stream hangs
+
+### What shipped
+
+Previously, `ScreenCaptureManager` only detected stream failures through the `SCStreamDelegate.didStopWithError` callback. If ScreenCaptureKit silently stopped delivering frames (e.g. display driver hang, GPU reset, undocumented OS behavior), the session would continue running without receiving any frames indefinitely — corrupting the focus score and leaving the user completely unmonitored.
+
+This run adds a proactive frame-staleness watchdog that catches silent hangs:
+
+1. **`lastFrameReceivedAt`** — new lock-protected `Date?` property on `ScreenCaptureManager`, updated on every frame received by `StreamOutputBridge`. Set to `Date()` on stream start and after successful recovery.
+
+2. **`frameStalenessTimeout`** (10s) — if no frames arrive within this window during an active stream, the watchdog triggers recovery.
+
+3. **`watchdogCheckInterval`** (5s) — how often the watchdog polls `lastFrameReceivedAt`. Chosen to be less than the staleness timeout so a hang is detected within one extra check cycle.
+
+4. **`startWatchdog()`** — private method that runs a background `Task` loop. On each tick, computes the gap since the last frame. If the gap exceeds `frameStalenessTimeout`, logs a warning with the gap duration, resets the timestamp to prevent re-triggering, synthesizes an `NSError` describing the watchdog trigger, and calls `attemptRecovery()` — the same exponential-backoff path used by the delegate callback.
+
+5. **Watchdog lifecycle** — `start()` starts the watchdog after `startStream()`. `stop()` cancels it and clears `lastFrameReceivedAt`. Successful recovery in `attemptRecovery()` restarts it. The watchdog self-terminates if the stream is nil (already stopped).
+
+6. **Linux stub** — exposes `lastFrameReceivedAt` (returns nil), `frameStalenessTimeout`, and `watchdogCheckInterval` for test compilation on non-macOS.
+
+### Files modified
+- `Sources/AdiCore/Capture/ScreenCaptureManager.swift`
+- `Tests/AdiTests/SessionManagerTests.swift`
+
+### Tests — 4 new `@Test` cases
+- `frameStalenessTimeoutIsTenSeconds` — guards the staleness threshold constant
+- `watchdogCheckIntervalIsFiveSeconds` — guards the check period constant
+- `lastFrameReceivedAtDefaultsToNil` — ensures no timestamp before stream starts
+- `watchdogCheckIntervalIsLessThanStalenessTimeout` — invariant: check period < timeout
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 original goals remain complete. BUILD_COMPLETE is present.
+- Possible further improvements:
+  - Add a "Resume capture" button in the notch UI that appears when the session is paused due to stream loss.
+  - Track stream recovery events in SessionRecord for post-session analytics.
+  - Add watchdog-triggered recovery count to SessionRecord for diagnostics.

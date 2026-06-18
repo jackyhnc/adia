@@ -23,9 +23,9 @@ private final class StreamOutputBridge: NSObject, SCStreamOutput, @unchecked Sen
         guard let cgImage = cgImage(from: pixelBuffer) else { return }
         let callback = onFrame
         Task { await callback?(cgImage) }
-        // Store for on-demand access (e.g. task verification).
-        // Assigned here on the stream queue; ScreenCaptureManager.lastFrame is lock-protected.
-        ScreenCaptureManager.shared.lastFrame = cgImage
+        let mgr = ScreenCaptureManager.shared
+        mgr.lastFrame = cgImage
+        mgr.lastFrameReceivedAt = Date()
     }
 
     private func cgImage(from pixelBuffer: CVPixelBuffer) -> CGImage? {
@@ -91,19 +91,35 @@ public final class ScreenCaptureManager: @unchecked Sendable {
         set { frameLock.withLock { _lastFrame = newValue } }
     }
 
+    private let frameTimeLock = NSLock()
+    private var _lastFrameReceivedAt: Date?
+    /// Timestamp of the most recently received frame. Updated on the stream queue.
+    public var lastFrameReceivedAt: Date? {
+        get { frameTimeLock.withLock { _lastFrameReceivedAt } }
+        set { frameTimeLock.withLock { _lastFrameReceivedAt = newValue } }
+    }
+
     private var stream: SCStream?
     private let bridge = StreamOutputBridge()
     private let streamDelegate = StreamDelegate()
     private var recoveryTask: Task<Void, Never>?
+    private var watchdogTask: Task<Void, Never>?
 
     /// Maximum number of automatic restart attempts before giving up.
     internal static let maxRecoveryAttempts = 3
     /// Base delay (in seconds) for exponential backoff between restart attempts.
     internal static let recoveryBaseDelay: TimeInterval = 2.0
+    /// If no frames arrive within this interval, the watchdog proactively triggers
+    /// stream recovery — catches silent hangs that never fire `didStopWithError`.
+    internal static let frameStalenessTimeout: TimeInterval = 10.0
+    /// How often the watchdog checks for frame staleness.
+    internal static let watchdogCheckInterval: TimeInterval = 5.0
 
     public func start() async throws {
         recoveryTask?.cancel()
         recoveryTask = nil
+        watchdogTask?.cancel()
+        watchdogTask = nil
 
         // `CGPreflightScreenCaptureAccess()` can return stale false after local
         // rebuilds/re-signing even when System Settings shows the app enabled.
@@ -121,6 +137,8 @@ public final class ScreenCaptureManager: @unchecked Sendable {
         }
 
         try await startStream()
+        lastFrameReceivedAt = Date()
+        startWatchdog()
 
         streamDelegate.onStreamStopped = { [weak self] error in
             guard let self else { return }
@@ -129,12 +147,15 @@ public final class ScreenCaptureManager: @unchecked Sendable {
     }
 
     public func stop() {
+        watchdogTask?.cancel()
+        watchdogTask = nil
         recoveryTask?.cancel()
         recoveryTask = nil
         streamDelegate.onStreamStopped = nil
         stream?.stopCapture { _ in }
         stream = nil
         lastFrame = nil
+        lastFrameReceivedAt = nil
         AppLogger.info("capture.stopped")
     }
 
@@ -179,6 +200,37 @@ public final class ScreenCaptureManager: @unchecked Sendable {
         ])
     }
 
+    /// Periodically checks whether frames are still arriving. If the gap exceeds
+    /// `frameStalenessTimeout`, triggers recovery proactively — catches silent
+    /// stream hangs where `SCStreamDelegate.didStopWithError` is never called.
+    private func startWatchdog() {
+        watchdogTask?.cancel()
+        watchdogTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(Self.watchdogCheckInterval))
+                guard !Task.isCancelled else { return }
+                guard let self else { return }
+                guard self.stream != nil else { return }
+                guard let lastTime = self.lastFrameReceivedAt else { continue }
+                let gap = Date().timeIntervalSince(lastTime)
+                if gap >= Self.frameStalenessTimeout {
+                    AppLogger.warning("capture.watchdog_stale", [
+                        "gapSeconds": String(format: "%.1f", gap),
+                        "timeout": String(Self.frameStalenessTimeout)
+                    ])
+                    self.lastFrameReceivedAt = Date()
+                    let error = NSError(
+                        domain: "com.adia.capture",
+                        code: -1,
+                        userInfo: [NSLocalizedDescriptionKey: "Frame staleness watchdog triggered after \(Int(gap))s"]
+                    )
+                    self.attemptRecovery(originalError: error)
+                    return
+                }
+            }
+        }
+    }
+
     /// Attempts to restart the stream with exponential backoff.
     private func attemptRecovery(originalError: Error) {
         recoveryTask?.cancel()
@@ -196,6 +248,8 @@ public final class ScreenCaptureManager: @unchecked Sendable {
 
                 do {
                     try await self.startStream()
+                    self.lastFrameReceivedAt = Date()
+                    self.startWatchdog()
                     AppLogger.info("capture.recovery_succeeded", ["attempt": String(attempt)])
                     return
                 } catch {
@@ -235,9 +289,12 @@ public final class ScreenCaptureManager: @unchecked Sendable {
     public var onFrame: (@Sendable (CGImage) async -> Void)?
     public var onStreamFailure: (@MainActor @Sendable (_ error: Error) -> Void)?
     public var lastFrame: CGImage? { nil }
+    public var lastFrameReceivedAt: Date? { nil }
 
     internal static let maxRecoveryAttempts = 3
     internal static let recoveryBaseDelay: TimeInterval = 2.0
+    internal static let frameStalenessTimeout: TimeInterval = 10.0
+    internal static let watchdogCheckInterval: TimeInterval = 5.0
 
     public func start() async throws { throw CaptureError.unavailable }
     public func stop() {}

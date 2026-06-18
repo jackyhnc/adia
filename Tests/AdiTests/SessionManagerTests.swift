@@ -739,4 +739,22 @@ struct SessionManagerTests {
         let callback = await MainActor.run { ScreenCaptureManager.shared.onStreamFailure }
         #expect(callback == nil)
     }
+
+    // MARK: - Frame staleness watchdog constants
+
+    @Test func frameStalenessTimeoutIsTenSeconds() {
+        #expect(ScreenCaptureManager.frameStalenessTimeout == 10.0)
+    }
+
+    @Test func watchdogCheckIntervalIsFiveSeconds() {
+        #expect(ScreenCaptureManager.watchdogCheckInterval == 5.0)
+    }
+
+    @Test func lastFrameReceivedAtDefaultsToNil() {
+        #expect(ScreenCaptureManager.shared.lastFrameReceivedAt == nil)
+    }
+
+    @Test func watchdogCheckIntervalIsLessThanStalenessTimeout() {
+        #expect(ScreenCaptureManager.watchdogCheckInterval < ScreenCaptureManager.frameStalenessTimeout)
+    }
 }
