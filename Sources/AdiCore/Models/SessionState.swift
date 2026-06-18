@@ -5,6 +5,7 @@ import Foundation
 public enum SessionPhase: String, Codable, Sendable {
     case idle
     case active
+    case paused
     case verifying
     case complete
     case earlyExitPending
@@ -90,6 +91,10 @@ public struct Session: Sendable, Identifiable {
     public var onTaskChecks: Int
     /// Total AI classification frames this session. Persisted so focus score survives a crash/relaunch.
     public var totalChecks: Int
+    /// Accumulated seconds spent in paused state across all pause/resume cycles.
+    public var pausedDuration: TimeInterval
+    /// When the current pause began. nil when the session is not paused.
+    public var pauseStartTime: Date?
 
     public init(
         id: UUID = UUID(),
@@ -105,7 +110,9 @@ public struct Session: Sendable, Identifiable {
         targetDuration: TimeInterval? = nil,
         reasoningHistory: [ReasoningAttempt] = [],
         onTaskChecks: Int = 0,
-        totalChecks: Int = 0
+        totalChecks: Int = 0,
+        pausedDuration: TimeInterval = 0,
+        pauseStartTime: Date? = nil
     ) {
         self.id = id
         self.task = task
@@ -121,9 +128,15 @@ public struct Session: Sendable, Identifiable {
         self.reasoningHistory = reasoningHistory
         self.onTaskChecks = onTaskChecks
         self.totalChecks = totalChecks
+        self.pausedDuration = pausedDuration
+        self.pauseStartTime = pauseStartTime
     }
 
-    public var elapsed: TimeInterval { Date().timeIntervalSince(startTime) }
+    public var elapsed: TimeInterval {
+        let wall = Date().timeIntervalSince(startTime)
+        let currentPause = pauseStartTime.map { Date().timeIntervalSince($0) } ?? 0
+        return max(0, wall - pausedDuration - currentPause)
+    }
 
     public static let defaultBlockedDomains: [String] = [
         // Social media
@@ -877,6 +890,7 @@ extension Session: Codable {
         case whitelistedDomains, blockedDomains, blockedApps, calloutCount
         case verificationHistory, targetDuration, reasoningHistory
         case onTaskChecks, totalChecks
+        case pausedDuration, pauseStartTime
     }
 
     public init(from decoder: Decoder) throws {
@@ -902,6 +916,8 @@ extension Session: Codable {
         // Gracefully decode missing key (old sessions pre-focus-score-persistence).
         onTaskChecks = (try? c.decode(Int.self, forKey: .onTaskChecks)) ?? 0
         totalChecks  = (try? c.decode(Int.self, forKey: .totalChecks))  ?? 0
+        pausedDuration = (try? c.decode(TimeInterval.self, forKey: .pausedDuration)) ?? 0
+        pauseStartTime = try? c.decode(Date.self, forKey: .pauseStartTime)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -920,5 +936,7 @@ extension Session: Codable {
         try c.encode(reasoningHistory,    forKey: .reasoningHistory)
         try c.encode(onTaskChecks,        forKey: .onTaskChecks)
         try c.encode(totalChecks,         forKey: .totalChecks)
+        try c.encode(pausedDuration,      forKey: .pausedDuration)
+        try c.encodeIfPresent(pauseStartTime, forKey: .pauseStartTime)
     }
 }

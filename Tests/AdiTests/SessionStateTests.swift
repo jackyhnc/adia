@@ -2406,3 +2406,88 @@ struct AdditionalGamingPortals4BlockTests {
         #expect(count == 1, "iogames.space must appear exactly once in defaultBlockedDomains")
     }
 }
+
+// MARK: - Session pause fields
+
+@Suite("Session pause/resume model")
+struct SessionPauseTests {
+
+    @Test func pausedDurationDefaultsToZero() {
+        let s = Session(task: "t", successCriteria: "c")
+        #expect(s.pausedDuration == 0)
+    }
+
+    @Test func pauseStartTimeDefaultsToNil() {
+        let s = Session(task: "t", successCriteria: "c")
+        #expect(s.pauseStartTime == nil)
+    }
+
+    @Test func pausedPhaseRoundTrips() throws {
+        let s = Session(task: "t", successCriteria: "c", phase: .paused)
+        let data = try JSONEncoder().encode(s)
+        let decoded = try JSONDecoder().decode(Session.self, from: data)
+        #expect(decoded.phase == .paused)
+    }
+
+    @Test func pausedDurationRoundTrips() throws {
+        let s = Session(task: "t", successCriteria: "c", pausedDuration: 300)
+        let data = try JSONEncoder().encode(s)
+        let decoded = try JSONDecoder().decode(Session.self, from: data)
+        #expect(decoded.pausedDuration == 300)
+    }
+
+    @Test func pauseStartTimeRoundTrips() throws {
+        let now = Date()
+        let s = Session(task: "t", successCriteria: "c", pauseStartTime: now)
+        let data = try JSONEncoder().encode(s)
+        let decoded = try JSONDecoder().decode(Session.self, from: data)
+        #expect(decoded.pauseStartTime != nil)
+    }
+
+    @Test func backwardCompatibleDecodeMissingPauseFields() throws {
+        let json = """
+        {
+            "id": "00000000-0000-0000-0000-000000000001",
+            "task": "Write essay",
+            "successCriteria": "Submit",
+            "startTime": 0,
+            "phase": "active",
+            "whitelistedDomains": [],
+            "blockedDomains": [],
+            "calloutCount": 0
+        }
+        """
+        let data = json.data(using: .utf8)!
+        let decoded = try JSONDecoder().decode(Session.self, from: data)
+        #expect(decoded.pausedDuration == 0)
+        #expect(decoded.pauseStartTime == nil)
+    }
+
+    @Test func elapsedAccountsForPausedDuration() {
+        let s = Session(
+            task: "t", successCriteria: "c",
+            startTime: Date(timeIntervalSinceNow: -1000),
+            pausedDuration: 400
+        )
+        #expect(s.elapsed >= 598 && s.elapsed <= 602)
+    }
+
+    @Test func elapsedAccountsForOngoingPause() {
+        let s = Session(
+            task: "t", successCriteria: "c",
+            startTime: Date(timeIntervalSinceNow: -1000),
+            pausedDuration: 0,
+            pauseStartTime: Date(timeIntervalSinceNow: -200)
+        )
+        #expect(s.elapsed >= 798 && s.elapsed <= 802)
+    }
+
+    @Test func elapsedNeverNegativeWithLargePausedDuration() {
+        let s = Session(
+            task: "t", successCriteria: "c",
+            startTime: Date(),
+            pausedDuration: 99999
+        )
+        #expect(s.elapsed >= 0)
+    }
+}

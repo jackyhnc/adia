@@ -593,6 +593,120 @@ struct SessionManagerTests {
                 "session elapsed == target must yield remaining near zero (within scheduling jitter)")
     }
 
+    // MARK: - Pause / Resume
+
+    @Test func pauseSessionSetsPhase() async {
+        var s = Session(task: "Study", successCriteria: "Done")
+        s.phase = .active
+        await injectSession(s)
+        await SessionManager.shared.pauseSession()
+        let phase = await MainActor.run { SessionManager.shared.session?.phase }
+        #expect(phase == .paused)
+        let pauseStart = await MainActor.run { SessionManager.shared.session?.pauseStartTime }
+        #expect(pauseStart != nil)
+        await injectSession(nil)
+    }
+
+    @Test func pauseSessionNoOpWhenAlreadyPaused() async {
+        var s = Session(task: "Study", successCriteria: "Done")
+        s.phase = .paused
+        s.pauseStartTime = Date(timeIntervalSinceNow: -60)
+        await injectSession(s)
+        let originalPauseStart = await MainActor.run { SessionManager.shared.session?.pauseStartTime }
+        await SessionManager.shared.pauseSession()
+        let afterPauseStart = await MainActor.run { SessionManager.shared.session?.pauseStartTime }
+        #expect(originalPauseStart == afterPauseStart, "pausing an already-paused session must be a no-op")
+        await injectSession(nil)
+    }
+
+    @Test func pauseSessionNoOpWithoutActiveSession() async {
+        await injectSession(nil)
+        await SessionManager.shared.pauseSession()
+        let session = await MainActor.run { SessionManager.shared.session }
+        #expect(session == nil)
+    }
+
+    @Test func resumeSessionSetsPhaseToActive() async {
+        var s = Session(task: "Study", successCriteria: "Done")
+        s.phase = .paused
+        s.pauseStartTime = Date(timeIntervalSinceNow: -60)
+        await injectSession(s)
+        await SessionManager.shared.resumeSession()
+        let phase = await MainActor.run { SessionManager.shared.session?.phase }
+        #expect(phase == .active)
+        let pauseStart = await MainActor.run { SessionManager.shared.session?.pauseStartTime }
+        #expect(pauseStart == nil)
+        await injectSession(nil)
+    }
+
+    @Test func resumeSessionAccumulatesPausedDuration() async {
+        var s = Session(task: "Study", successCriteria: "Done")
+        s.phase = .paused
+        s.pausedDuration = 120
+        s.pauseStartTime = Date(timeIntervalSinceNow: -60)
+        await injectSession(s)
+        await SessionManager.shared.resumeSession()
+        let pausedDuration = await MainActor.run { SessionManager.shared.session?.pausedDuration ?? 0 }
+        #expect(pausedDuration >= 179 && pausedDuration <= 182,
+                "paused duration should be ~180s (120 prior + ~60 current pause)")
+        await injectSession(nil)
+    }
+
+    @Test func resumeSessionNoOpWhenNotPaused() async {
+        var s = Session(task: "Study", successCriteria: "Done")
+        s.phase = .active
+        await injectSession(s)
+        await SessionManager.shared.resumeSession()
+        let phase = await MainActor.run { SessionManager.shared.session?.phase }
+        #expect(phase == .active)
+        await injectSession(nil)
+    }
+
+    @Test func endSessionFinalizesInProgressPause() async {
+        var s = Session(task: "Study", successCriteria: "Done")
+        s.phase = .paused
+        s.pausedDuration = 0
+        s.pauseStartTime = Date(timeIntervalSinceNow: -30)
+        await injectSession(s)
+        await SessionManager.shared.endSession()
+        let session = await MainActor.run { SessionManager.shared.session }
+        #expect(session == nil, "session should be cleared after endSession")
+    }
+
+    // MARK: - Session.elapsed with paused time
+
+    @Test func sessionElapsedSubtractsPausedDuration() {
+        let s = Session(
+            task: "Study", successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            pausedDuration: 600
+        )
+        let elapsed = s.elapsed
+        #expect(elapsed >= 2998 && elapsed <= 3002,
+                "elapsed should be ~3000s (3600 wall - 600 paused)")
+    }
+
+    @Test func sessionElapsedSubtractsOngoingPause() {
+        let s = Session(
+            task: "Study", successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            pausedDuration: 0,
+            pauseStartTime: Date(timeIntervalSinceNow: -300)
+        )
+        let elapsed = s.elapsed
+        #expect(elapsed >= 3298 && elapsed <= 3302,
+                "elapsed should be ~3300s (3600 wall - 300 ongoing pause)")
+    }
+
+    @Test func sessionElapsedNeverNegative() {
+        let s = Session(
+            task: "Study", successCriteria: "Done",
+            startTime: Date(),
+            pausedDuration: 9999
+        )
+        #expect(s.elapsed >= 0, "elapsed must never be negative")
+    }
+
     @Test func timerExpiredRestorePathProducesLiveRearmTask() async {
         // Simulate the restore path where remaining == 0 causes the durationTimerTask to call
         // handleDurationExpired() without sleeping. The resulting state must be identical to

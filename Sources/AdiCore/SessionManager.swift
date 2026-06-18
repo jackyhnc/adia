@@ -110,6 +110,13 @@ public final class SessionManager: ObservableObject {
     }
 
     public func endSession(note: String? = nil) async {
+        // Finalize any in-progress pause so elapsed/duration are accurate in the record.
+        if var s = session, s.phase == .paused, let pauseStart = s.pauseStartTime {
+            s.pausedDuration += Date().timeIntervalSince(pauseStart)
+            s.pauseStartTime = nil
+            s.phase = .active
+            session = s
+        }
         // Record the session before clearing it so we have all the data.
         if let s = session {
             AppLogger.info("session.ending", [
@@ -160,6 +167,47 @@ public final class SessionManager: ObservableObject {
         NotchState.shared.setVerificationResult(nil)
         NotchState.shared.exitConversation()
         NotchState.shared.collapse()
+    }
+
+    // MARK: - Pause / Resume
+
+    public func pauseSession() async {
+        guard var s = session, s.phase == .active else { return }
+        AppLogger.info("session.pausing", ["elapsedSeconds": String(Int(s.elapsed))])
+        s.phase = .paused
+        s.pauseStartTime = Date()
+        session = s
+        persistence.save(s)
+
+        captureManager.stop()
+        AppMonitor.shared.stop()
+        SleepBlocker.shared.stop()
+        await detector.detach()
+        durationTimerTask?.cancel()
+        durationTimerTask = nil
+        timerExpiredRearmTask?.cancel()
+        timerExpiredRearmTask = nil
+
+        NotchState.shared.clearCallout()
+        onTaskStatus = .onTask
+    }
+
+    public func resumeSession() async {
+        guard var s = session, s.phase == .paused else { return }
+        if let pauseStart = s.pauseStartTime {
+            s.pausedDuration += Date().timeIntervalSince(pauseStart)
+        }
+        s.pauseStartTime = nil
+        s.phase = .active
+        session = s
+        persistence.save(s)
+        AppLogger.info("session.resuming", ["pausedDurationTotal": String(Int(s.pausedDuration))])
+
+        do {
+            try await activate(s)
+        } catch {
+            AppLogger.error("session.resume_failed", ["error": String(describing: error)])
+        }
     }
 
     // MARK: - Frame handling
@@ -299,13 +347,19 @@ public final class SessionManager: ObservableObject {
     public func restoreIfNeeded() async {
         guard let saved = persistence.load() else { return }
         var s = saved
-        s.phase = .active
-        session = s
-        persistence.save(s)
-        do {
-            try await activate(s)
-        } catch {
-            print("[SessionManager] restore failed, session will be shown but capture is inactive: \(error)")
+        let wasPaused = s.phase == .paused
+        if wasPaused {
+            session = s
+            persistence.save(s)
+        } else {
+            s.phase = .active
+            session = s
+            persistence.save(s)
+            do {
+                try await activate(s)
+            } catch {
+                print("[SessionManager] restore failed, session will be shown but capture is inactive: \(error)")
+            }
         }
         // Restore verification attempt history so the notch shows the correct attempt number
         // if the user retries verification after a crash/relaunch.

@@ -117,8 +117,8 @@ private struct CollapsedView: View {
             // Dot — shows a progress arc when a target duration is set for the active session.
             if let s = session.session, s.targetDuration != nil {
                 TimelineView(.periodic(from: s.startTime, by: 1.0)) { ctx in
-                    let elapsed = max(0, ctx.date.timeIntervalSince(s.startTime))
-                    let progress = s.targetDuration.map { min(1.0, elapsed / $0) }
+                    let activeElapsed = max(0, ctx.date.timeIntervalSince(s.startTime) - s.pausedDuration - (s.pauseStartTime.map { ctx.date.timeIntervalSince($0) } ?? 0))
+                    let progress = s.targetDuration.map { min(1.0, activeElapsed / $0) }
                     ProgressDot(color: dotColor, progress: progress)
                 }
             } else {
@@ -128,10 +128,19 @@ private struct CollapsedView: View {
             }
 
             if let s = session.session {
-                TimelineView(.periodic(from: s.startTime, by: 60)) { ctx in
-                    Text(collapsedElapsed(from: s.startTime, to: ctx.date))
+                if s.phase == .paused {
+                    Text(collapsedElapsedSeconds(Int(s.elapsed)))
                         .font(.system(size: 11, weight: .medium, design: .rounded))
-                        .foregroundStyle(.white.opacity(0.85))
+                        .foregroundStyle(.white.opacity(0.5))
+                    Text("||")
+                        .font(.system(size: 9, weight: .heavy, design: .rounded))
+                        .foregroundStyle(.orange.opacity(0.8))
+                } else {
+                    TimelineView(.periodic(from: s.startTime, by: 60)) { ctx in
+                        Text(collapsedElapsed(from: s.startTime, to: ctx.date))
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .foregroundStyle(.white.opacity(0.85))
+                    }
                 }
                 // Focus score — fades in once enough frames give a meaningful average.
                 if let score = session.focusScore,
@@ -172,6 +181,14 @@ private struct CollapsedView: View {
         }
     }
 
+    private func collapsedElapsedSeconds(_ total: Int) -> String {
+        let h = total / 3600
+        let m = (total % 3600) / 60
+        if h > 0 { return "\(h)h \(m)m" }
+        if m > 0 { return "\(m)m" }
+        return "Focus"
+    }
+
     private func collapsedElapsed(from start: Date, to now: Date) -> String {
         let total = max(0, Int(now.timeIntervalSince(start)))
         let h = total / 3600
@@ -191,7 +208,8 @@ private struct CollapsedView: View {
     }
 
     private var dotColor: Color {
-        guard session.session != nil else { return .white.opacity(0.35) }
+        guard let s = session.session else { return .white.opacity(0.35) }
+        if s.phase == .paused { return .orange }
         switch session.onTaskStatus {
         case .onTask:    return .green
         case .offTask:   return .red
@@ -246,6 +264,8 @@ private struct ExpandedView: View {
             verifyingBody
         } else if let result = state.verificationResult {
             verificationResultBody(result)
+        } else if let s = session.session, s.phase == .paused {
+            pausedBody(s)
         } else if let s = session.session {
             activeBody(s)
         } else {
@@ -336,12 +356,13 @@ private struct ExpandedView: View {
 
                 HStack(alignment: .center) {
                     TimelineView(.periodic(from: s.startTime, by: 1.0)) { ctx in
+                        let activeElapsed = max(0, ctx.date.timeIntervalSince(s.startTime) - s.pausedDuration)
                         HStack(spacing: 8) {
-                            Text(elapsed(from: s.startTime, to: ctx.date))
+                            Text(elapsedFromSeconds(Int(activeElapsed)))
                                 .font(.system(size: 12, weight: .medium, design: .monospaced))
                                 .foregroundStyle(.white.opacity(0.6))
                             if let target = s.targetDuration {
-                                let remaining = max(0, target - ctx.date.timeIntervalSince(s.startTime))
+                                let remaining = max(0, target - activeElapsed)
                                 Text(durationRemaining(remaining))
                                     .font(.system(size: 10, weight: .medium))
                                     .foregroundStyle(.white.opacity(0.35))
@@ -363,8 +384,8 @@ private struct ExpandedView: View {
 
                 if let target = s.targetDuration {
                     TimelineView(.periodic(from: s.startTime, by: 1.0)) { ctx in
-                        let progress = min(1.0, ctx.date.timeIntervalSince(s.startTime) / target)
-                        ProgressBar(progress: CGFloat(progress))
+                        let activeElapsed = max(0, ctx.date.timeIntervalSince(s.startTime) - s.pausedDuration)
+                        ProgressBar(progress: CGFloat(min(1.0, activeElapsed / target)))
                     }
                     .frame(height: 3)
                 }
@@ -375,6 +396,9 @@ private struct ExpandedView: View {
             HStack(spacing: 8) {
                 AdiButton(label: "Done", style: .primary) {
                     Task { await SessionManager.shared.verifyAndEnd() }
+                }
+                AdiButton(label: "Pause", style: .secondary) {
+                    Task { await SessionManager.shared.pauseSession() }
                 }
                 Spacer()
                 AdiButton(label: "Exit", style: .destructive) {
@@ -387,6 +411,57 @@ private struct ExpandedView: View {
         }
         .animation(.easeOut(duration: 0.2), value: state.calloutMessage)
         .animation(.easeOut(duration: 0.2), value: session.timerExpired)
+    }
+
+    // MARK: Paused session body
+
+    @ViewBuilder
+    private func pausedBody(_ s: Session) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 6) {
+                Image(systemName: "pause.circle.fill")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.orange)
+                Text("Session Paused")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.orange)
+            }
+            .padding(.bottom, 2)
+
+            Text(s.task)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.5))
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+
+            HStack(spacing: 8) {
+                Text(sessionElapsedLabel(seconds: Int(s.elapsed)))
+                    .font(.system(size: 12, weight: .medium, design: .monospaced))
+                    .foregroundStyle(.white.opacity(0.4))
+                Text("paused")
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundStyle(.orange.opacity(0.6))
+                if let score = session.focusScore,
+                   session.totalCheckCount >= SessionManager.minChecksForFocusScore {
+                    Text("\(Int(score * 100))%")
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(focusScoreColor(score))
+                }
+            }
+
+            HStack(spacing: 8) {
+                AdiButton(label: "Resume", style: .primary) {
+                    Task { await SessionManager.shared.resumeSession() }
+                }
+                Spacer()
+                AdiButton(label: "End Session", style: .destructive) {
+                    Task { await SessionManager.shared.endSession() }
+                }
+            }
+            .padding(.top, 8)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
     }
 
     // MARK: Verifying body
@@ -567,14 +642,18 @@ private struct ExpandedView: View {
 
     // MARK: Helpers
 
-    private func elapsed(from start: Date, to now: Date) -> String {
-        let total = max(0, Int(now.timeIntervalSince(start)))
-        let h = total / 3600
-        let m = (total % 3600) / 60
-        let s = total % 60
+    private func elapsedFromSeconds(_ total: Int) -> String {
+        let t = max(0, total)
+        let h = t / 3600
+        let m = (t % 3600) / 60
+        let s = t % 60
         return h > 0
             ? String(format: "%d:%02d:%02d", h, m, s)
             : String(format: "%02d:%02d", m, s)
+    }
+
+    private func elapsed(from start: Date, to now: Date) -> String {
+        elapsedFromSeconds(Int(now.timeIntervalSince(start)))
     }
 
     private func durationRemaining(_ seconds: TimeInterval) -> String {

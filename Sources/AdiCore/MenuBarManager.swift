@@ -104,15 +104,27 @@ public final class MenuBarManager {
     private func showContextMenu() {
         let menu = NSMenu()
 
-        let headerTitle = SessionManager.shared.session != nil
-            ? "Adia — Session Active"
-            : "Adia — Focus App"
+        let headerTitle: String
+        if let s = SessionManager.shared.session {
+            headerTitle = s.phase == .paused ? "Adia — Session Paused" : "Adia — Session Active"
+        } else {
+            headerTitle = "Adia — Focus App"
+        }
         let header = NSMenuItem(title: headerTitle, action: nil, keyEquivalent: "")
         header.isEnabled = false
         menu.addItem(header)
         menu.addItem(.separator())
 
-        if SessionManager.shared.session != nil {
+        if let s = SessionManager.shared.session {
+            if s.phase == .paused {
+                let resume = NSMenuItem(title: "Resume Session", action: #selector(resumeSession), keyEquivalent: "")
+                resume.target = self
+                menu.addItem(resume)
+            } else {
+                let pause = NSMenuItem(title: "Pause Session", action: #selector(pauseSession), keyEquivalent: "")
+                pause.target = self
+                menu.addItem(pause)
+            }
             let item = NSMenuItem(title: "End Session", action: #selector(endSession), keyEquivalent: "")
             item.target = self
             menu.addItem(item)
@@ -146,6 +158,14 @@ public final class MenuBarManager {
 
     @objc private func startSession() {
         NotchState.shared.startCreating()
+    }
+
+    @objc private func pauseSession() {
+        Task { await SessionManager.shared.pauseSession() }
+    }
+
+    @objc private func resumeSession() {
+        Task { await SessionManager.shared.resumeSession() }
     }
 
     @objc private func endSession() {
