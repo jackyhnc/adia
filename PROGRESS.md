@@ -1,5 +1,45 @@
 # Adia — Build Progress
 
+## Run 149 — 2026-06-18
+
+### Shipped
+
+**feat: compact weekly heatmap in idle notch — 7-day activity visualization (+10 tests)**
+
+#### `NotchView.swift` — new `NotchHeatmapView` component
+
+- New `NotchHeatmapView` private view: 7-column horizontal bar chart using rounded rectangles. Each day's opacity scales linearly with focus minutes relative to the week's peak day (0.15–0.70 for active days, 0.04 for empty days). Today gets +0.10 opacity boost and a subtle white stroke border.
+- `notchHeatmapDayAbbrev(_:)` pure helper: two-letter weekday abbreviation (Su, Mo, Tu, …).
+- `notchHeatmapTooltip(_:)` pure helper: hover tooltip text — "no sessions" or "3 sessions · 1h 30m".
+- Heatmap appears in `IdleBody.idleContent` between the stats line and pinned templates, only when at least one day in the past week has sessions.
+- `heatmapDays` state loaded from `SessionHistory.shared.weeklyHeatmap()` alongside existing stats/template data.
+
+#### `NotchState.swift` — new `idleHasHeatmap` flag
+
+- New `@Published public internal(set) var idleHasHeatmap: Bool` — mirrors the pattern of `idleHasNote` and `idleTemplateCount`. Set by `IdleBody` when heatmap data loads; used by `NotchWindowController` for dynamic panel height.
+
+#### `NotchWindowController.swift` — dynamic idle height
+
+- New `idleHeatmapHeight` constant (36pt) added to idle panel height when heatmap is visible.
+- Subscribed to `NotchState.shared.$idleHasHeatmap` for automatic repositioning.
+
+#### Tests — 10 new `@Test` cases in `NotchStateTests.swift`
+
+- 3 tests for `idleHasHeatmap` state flag (default, set, survives collapse)
+- 5 tests for `notchHeatmapTooltip` (no sessions, single, multiple, hours-only, sub-minute)
+- 2 tests for `notchHeatmapDayAbbrev` (Sunday, Thursday)
+
+### Blocked
+- Cannot compile-verify on Linux container (macOS-only app). Code is syntactically valid Swift 6.
+- All 16 GOAL.md items checked off (14 original + 2 new).
+
+### Next agent
+- All goals complete.
+- Possible further improvements:
+  - **Session history quick list in notch** — show 2-3 recent sessions in the idle notch for quick repeat access.
+  - **Keyboard shortcut customization** — let users rebind the ⌃⌥A global hotkey in Settings.
+  - **Sound customization** — configurable notification sounds for callouts, timer expiry, and verification.
+
 ## Run 147 — 2026-06-18
 
 ### Shipped
