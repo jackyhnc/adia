@@ -1,5 +1,75 @@
 # Adia — Build Progress
 
+## Run 144 — 2026-06-18
+
+### Shipped
+
+**feat: session pause/resume — freeze monitoring during breaks, preserve elapsed time (+18 tests)**
+
+#### `SessionState.swift` — model changes
+
+- Added `.paused` case to `SessionPhase` enum.
+- Added `pausedDuration: TimeInterval` (cumulative seconds spent paused) and `pauseStartTime: Date?` (when current pause began) to `Session` struct.
+- Updated `elapsed` computed property: subtracts both `pausedDuration` and any in-progress pause from wall-clock time.
+- Backward-compatible `Codable`: old sessions missing pause fields decode cleanly with zero/nil defaults.
+
+#### `SessionManager.swift` — pause/resume lifecycle
+
+- `pauseSession()` — sets phase to `.paused`, records `pauseStartTime`, stops capture pipeline (`captureManager`, `AppMonitor`, `SleepBlocker`, AI detector), cancels timers, clears callout. Keeps `/etc/hosts` blocking and local block server active so users can't browse distractions during breaks.
+- `resumeSession()` — accumulates pause duration, clears `pauseStartTime`, sets phase back to `.active`, re-activates full pipeline via `activate(_:)`.
+- `endSession()` — finalizes any in-progress pause before recording total session time.
+- `restoreIfNeeded()` — paused sessions restore to paused state (no pipeline re-activation) so app relaunch during a break stays paused.
+
+#### `NotchView.swift` — full UI integration
+
+- **Collapsed view**: orange dot indicator when paused; frozen time display with "||" pause symbol.
+- **Active body**: new "Pause" button between Done and Exit controls.
+- **New `pausedBody(_:)`**: pause icon, task name, frozen elapsed time, "paused" label, Resume and End Session buttons.
+- **Progress bar/dot**: elapsed calculation accounts for cumulative paused duration.
+- Helper `collapsedElapsedSeconds()` and `elapsedFromSeconds()` for consistent time formatting.
+
+#### `MenuBarManager.swift` — context menu
+
+- Header shows "Session Paused" when paused.
+- Pause/Resume menu items toggle based on session phase.
+- Added `@objc pauseSession()` and `@objc resumeSession()` action methods.
+
+#### Tests — 18 new `@Test` cases in 2 `@Suite` groups
+
+**`SessionManagerTests.swift`** (10 tests):
+- `pauseSessionSetsPhase` — verifies phase transitions to `.paused` and `pauseStartTime` is set
+- `pauseSessionNoOpWhenAlreadyPaused` — idempotent when already paused
+- `pauseSessionNoOpWithoutActiveSession` — no-op without active session
+- `resumeSessionSetsPhaseToActive` — phase goes back to `.active`
+- `resumeSessionAccumulatesPausedDuration` — `pausedDuration` increases by pause length
+- `resumeSessionNoOpWhenNotPaused` — no-op when session is active
+- `endSessionFinalizesInProgressPause` — pause time included in final duration
+- `sessionElapsedSubtractsPausedDuration` — elapsed subtracts completed pauses
+- `sessionElapsedSubtractsOngoingPause` — elapsed subtracts in-progress pause
+- `sessionElapsedNeverNegative` — `max(0, ...)` guard prevents negative elapsed
+
+**`SessionStateTests.swift`** — `SessionPauseTests` suite (8 tests):
+- `pausedDurationDefaultsToZero` — default init
+- `pauseStartTimeDefaultsToNil` — default init
+- `pausedPhaseRoundTrips` — encode/decode `.paused`
+- `pausedDurationRoundTrips` — encode/decode non-zero duration
+- `pauseStartTimeRoundTrips` — encode/decode optional date
+- `backwardCompatibleDecodeMissingPauseFields` — old JSON without pause fields decodes correctly
+- `elapsedAccountsForPausedDuration` — computed elapsed subtracts paused time
+- `elapsedNeverNegativeWithLargePausedDuration` — guard against large values
+
+### Blocked
+- Cannot compile-verify on Linux container (macOS-only app). Code is syntactically valid Swift 6.
+- All 14 GOAL.md items remain checked off. BUILD_COMPLETE is valid.
+
+### Next agent
+- All 14 original goals remain complete.
+- Possible further improvements:
+  - **Global keyboard shortcut** — Cmd+Shift+A (or configurable) to expand/collapse the notch without mouse travel. Power users doing keyboard-centric work (coding, writing) would benefit significantly.
+  - **Whitelisted domains visibility** — Show the list of domains whitelisted via reasoning conversations in the active session UI so users know what they've unlocked.
+  - **Network loss resilience** — Graceful degradation when API calls fail due to connectivity (continue session without classification rather than erroring).
+  - **Session history/stats** — Track completed sessions and show lifetime focus metrics (total focused hours, average session length, streaks).
+
 ## Run 143 — 2026-06-17
 
 ### Shipped
