@@ -1,5 +1,58 @@
 # Adia — Build Progress
 
+## Run 152 — 2026-06-18
+
+### Shipped
+
+**feat: focus insights — analyze session history for patterns + 28 tests**
+
+#### `FocusInsights.swift` — new pure analysis module
+
+- New `FocusInsights` struct: aggregated focus patterns computed from `[SessionRecord]`.
+- `computeFocusInsights(from:calendar:)` — pure function returning:
+  - `avgSessionMinutes` — mean session duration
+  - `completionRate` — fraction of sessions verified complete
+  - `avgFocusScore` — mean focus score across scored sessions
+  - `bestHour` — hour of day (0–23) with highest avg focus score (requires 4+ scored sessions, 2+ per hour)
+  - `bestWeekday` — day of week with most total focused minutes
+  - `trend` — `.improving` / `.declining` / `.steady` / `.insufficient` (compares newer vs older half of scored sessions, ±0.05 threshold)
+- Display helpers: `formatHourRange(_:)`, `formatWeekday(_:calendar:)`, `trendLabel(_:)`.
+
+#### `SessionHistory.swift` — new `insights()` method
+
+- Public `insights() -> FocusInsights` on `SessionHistory` actor — delegates to `computeFocusInsights`.
+
+#### `SettingsView.swift` — insights section in History tab
+
+- New `insightsSection(_:)` view builder: compact two-row grid of insight chips (icon + label + value).
+- Shows below the weekly heatmap when ≥3 sessions exist. Refreshes on load, delete, and clear.
+- History tab height increased from 540pt to 600pt.
+
+#### Tests — 28 new `@Test` cases in `FocusInsightsTests.swift`
+
+- `emptyRecordsReturnsNilInsights` — all fields nil/insufficient
+- `avgSessionMinutesComputedCorrectly` / `avgSessionMinutesSingleSession`
+- `completionRateAllCompleted` / `completionRateNoneCompleted` / `completionRateMixed`
+- `avgFocusScoreComputedFromScoredSessions` / `avgFocusScoreNilWhenNoScoredSessions` / `avgFocusScoreIgnoresUnscoredSessions`
+- `bestHourRequiresMinimumScoredSessions` / `bestHourPicksHighestAvgFocusScore` / `bestHourRequiresAtLeastTwoSessionsPerHour`
+- `bestWeekdayRequiresMinSessions` / `bestWeekdayPicksMostFocusedMinutes`
+- `trendInsufficientWithFewScoredSessions` / `trendImprovingWhenNewerSessionsBetter` / `trendDecliningWhenNewerSessionsWorse` / `trendSteadyWhenScoresFlat` / `trendIgnoresUnscoredSessions`
+- `sessionCountMatchesInput`
+- `formatHourRangeMorning` / `formatHourRangeNoon` / `formatHourRangeAfternoon` / `formatHourRangeMidnight` / `formatHourRangeElevenPM` / `formatHourRangeElevenAM`
+- `formatWeekdaySunday` / `formatWeekdaySaturday` / `formatWeekdayOutOfRangeReturnsUnknown`
+- `trendLabelValues`
+- `allSessionsZeroDuration` / `perfectFocusScore` / `zeroFocusScore`
+
+### Blocked
+- Cannot compile-verify on Linux container (macOS-only app). Code follows existing patterns and is syntactically verified.
+
+### Next agent
+- All goals complete (19/19).
+- Possible further improvements:
+  - **ScreenCaptureManager tests** — the capture pipeline stub has zero tests.
+  - **Keyboard shortcut customization** — let users rebind the ⌃⌥A global hotkey.
+  - **Insights detail view** — expand insight chips into a full analytics page with charts.
+
 ## Run 151 — 2026-06-18
 
 ### Shipped

@@ -15,7 +15,7 @@ public struct SettingsView: View {
         0: 500,   // Account  — API key, license, shortcuts, reminders, daily goal
         1: 560,   // Blocking — many toggles, benefits from tall viewport
         2: 460,   // Templates — list + footer row
-        3: 540,   // History  — heatmap + session list
+        3: 600,   // History  — heatmap + insights + session list
     ]
 
     var currentHeight: CGFloat { Self.tabHeights[selectedTab] ?? 500 }
@@ -683,6 +683,7 @@ private struct HistoryTab: View {
     @State private var records: [SessionRecord] = []
     @State private var stats: SessionStats? = nil
     @State private var heatmapDays: [DayActivity] = []
+    @State private var insights: FocusInsights? = nil
     @State private var showingClearAlert: Bool = false
     @State private var expandedRecordID: UUID? = nil
     @State private var searchText: String = ""
@@ -724,6 +725,9 @@ private struct HistoryTab: View {
                 VStack(spacing: 0) {
                     if heatmapDays.count == 7 {
                         weeklySection(stats)
+                    }
+                    if let ins = insights, ins.sessionCount >= insightsMinSessions {
+                        insightsSection(ins)
                     }
                     searchFilterBar
                     if filteredRecords.isEmpty {
@@ -778,6 +782,7 @@ private struct HistoryTab: View {
                                                         }
                                                         stats = await SessionHistory.shared.stats()
                                                         heatmapDays = await SessionHistory.shared.weeklyHeatmap()
+                                                        insights = await SessionHistory.shared.insights()
                                                     }
                                                 }
                                             )
@@ -884,6 +889,7 @@ private struct HistoryTab: View {
                     records = []
                     stats = nil
                     heatmapDays = []
+                    insights = nil
                     expandedRecordID = nil
                     isSelectMode = false
                     selectedIDs = []
@@ -897,6 +903,7 @@ private struct HistoryTab: View {
             records = await SessionHistory.shared.load()
             stats = await SessionHistory.shared.stats()
             heatmapDays = await SessionHistory.shared.weeklyHeatmap()
+            insights = await SessionHistory.shared.insights()
         }
     }
 
@@ -947,6 +954,64 @@ private struct HistoryTab: View {
                 .padding(.bottom, 9)
         }
         .background(.background)
+    }
+
+    @ViewBuilder
+    private func insightsSection(_ ins: FocusInsights) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 6) {
+                Image(systemName: "lightbulb.fill")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(.yellow)
+                Text("Focus Insights")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                Spacer()
+            }
+            HStack(spacing: 16) {
+                if let avg = ins.avgSessionMinutes {
+                    insightChip(icon: "timer", label: "Avg session", value: heatmapFormatMinutes(avg))
+                }
+                if let rate = ins.completionRate {
+                    insightChip(icon: "checkmark.circle", label: "Completed", value: "\(Int(rate * 100))%")
+                }
+                if let score = ins.avgFocusScore {
+                    insightChip(icon: "eye", label: "Focus", value: "\(Int(score * 100))%")
+                }
+            }
+            HStack(spacing: 16) {
+                if let hour = ins.bestHour {
+                    insightChip(icon: "clock", label: "Peak hour", value: formatHourRange(hour))
+                }
+                if let wd = ins.bestWeekday {
+                    insightChip(icon: "calendar", label: "Best day", value: formatWeekday(wd))
+                }
+                if ins.trend != .insufficient {
+                    let t = trendLabel(ins.trend)
+                    insightChip(icon: t.symbol, label: "Trend", value: t.text)
+                }
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(.background)
+    }
+
+    @ViewBuilder
+    private func insightChip(icon: String, label: String, value: String) -> some View {
+        HStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.system(size: 10))
+                .foregroundStyle(.tertiary)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(label)
+                    .font(.system(size: 9, weight: .medium))
+                    .foregroundStyle(.tertiary)
+                Text(value)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.primary)
+            }
+        }
     }
 
     @ViewBuilder
@@ -1027,6 +1092,7 @@ private struct HistoryTab: View {
             if records.isEmpty { isSelectMode = false }
             stats = await SessionHistory.shared.stats()
             heatmapDays = await SessionHistory.shared.weeklyHeatmap()
+            insights = await SessionHistory.shared.insights()
         }
     }
 

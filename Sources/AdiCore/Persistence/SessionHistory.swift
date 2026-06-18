@@ -249,6 +249,11 @@ public actor SessionHistory {
         weeklyHeatmapData(_load())
     }
 
+    /// Computes focus pattern insights from the full session history.
+    public func insights() -> FocusInsights {
+        computeFocusInsights(from: _load())
+    }
+
     /// Computes a stats snapshot from the current history.
     public func stats() -> SessionStats {
         let records = _load()

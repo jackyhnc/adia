@@ -18,3 +18,4 @@
 - [x] Whitelisted domains visibility: show AI-granted site access in active/paused session notch UI
 - [x] Daily focus goal: configurable daily target with progress bar in idle notch + collapsed pill label
 - [x] Structured logging: replace all print() calls with AppLogger (info/warning/error) for queryable, structured log output
+- [x] Focus insights: analyze session history to surface patterns — avg duration, completion rate, avg focus score, best hour/day, trend detection
