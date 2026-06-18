@@ -6408,3 +6408,48 @@ This run pipes the classification reason through the entire callout pipeline so 
 ### Next agent
 - All 14 original goals remain complete. BUILD_COMPLETE is present.
 - The classification reason now flows end-to-end through the pipeline. Future improvements could include truncating very long reasons or styling them differently per tier.
+
+---
+
+## Run 148 — 2026-06-18 — Screen capture stream failure detection + automatic recovery
+
+### What shipped
+
+Previously, `ScreenCaptureManager` created its `SCStream` with `delegate: nil`, meaning any mid-session stream failure (macOS sleep, display disconnect, permission revocation, internal OS error) was completely silent. The session would continue running without receiving frames, corrupting the focus score and leaving the user unmonitored.
+
+This run adds proper `SCStreamDelegate` handling with automatic recovery:
+
+1. **`StreamDelegate`** (new private class in `ScreenCaptureManager.swift`) — implements `SCStreamDelegate.stream(_:didStopWithError:)`. Logs the error with code/domain and triggers recovery.
+
+2. **`ScreenCaptureManager.attemptRecovery()`** — retries `startStream()` up to 3 times with exponential backoff (2s, 4s, 8s). On each attempt, logs the retry. If recovery succeeds, frame delivery resumes transparently.
+
+3. **`ScreenCaptureManager.onStreamFailure`** — new public callback, invoked on `@MainActor` when all recovery attempts are exhausted. `SessionManager` wires this in `activate()`.
+
+4. **`SessionManager.handleCaptureStreamFailure()`** — auto-pauses the session (preserving elapsed time and focus score), shows a callout explaining what happened, plays the "Basso" alert sound, and fires a system notification via `SessionNotifier.sendCaptureStreamLost()`.
+
+5. **`SessionNotifier.sendCaptureStreamLost()`** — new system notification: "Screen recording lost / Session paused — re-enable Screen Recording to continue."
+
+6. **`ScreenCaptureManager.stop()`** — now cancels any in-flight recovery task and clears the delegate callback, preventing stale callbacks after manual stop.
+
+7. **Refactored `start()`** — extracted `startStream()` as a private method shared between initial start and recovery restarts. The permission-check logic stays in the public `start()`.
+
+### Files modified
+- `Sources/AdiCore/Capture/ScreenCaptureManager.swift`
+- `Sources/AdiCore/SessionManager.swift`
+- `Sources/AdiCore/SessionNotifier.swift`
+- `Tests/AdiTests/SessionManagerTests.swift`
+
+### Tests — 3 new `@Test` cases
+- `screenCaptureMaxRecoveryAttemptsIsThree` — guards the retry count constant
+- `screenCaptureRecoveryBaseDelayIsTwoSeconds` — guards the backoff base
+- `screenCaptureOnStreamFailureDefaultsToNil` — ensures no callback is set by default
+
+### Blocked
+- None.
+
+### Next agent
+- All 14 original goals remain complete. BUILD_COMPLETE is present.
+- Possible further improvements:
+  - Add a "Resume capture" button in the notch UI that appears when the session is paused due to stream loss.
+  - Add a frame-staleness watchdog: if no frames arrive for N seconds during an active session, proactively trigger recovery without waiting for the delegate callback.
+  - Track stream recovery events in SessionRecord for post-session analytics.
