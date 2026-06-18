@@ -1,5 +1,34 @@
 # Adia — Build Progress
 
+## Run 147 — 2026-06-18
+
+### Shipped
+
+**fix: collapsed notch elapsed timer now correctly subtracts accumulated pause duration (+dead code removal)**
+
+#### `NotchView.swift` — bug fix + cleanup
+
+- **Bug**: After a pause/resume cycle, the collapsed pill timer showed wall-clock time from session start instead of actual active time. The paused branch already correctly used `collapsedElapsedSeconds(Int(s.elapsed))`, but the active branch called `collapsedElapsed(from: s.startTime, to: ctx.date)` which ignored `pausedDuration`. Now the active branch computes `activeSeconds = max(0, Int(ctx.date.timeIntervalSince(s.startTime) - s.pausedDuration))` and passes it to `collapsedElapsedSeconds(_:)`.
+- Removed dead `collapsedElapsed(from:to:)` — replaced by the pause-aware call site above, no remaining callers.
+- Removed dead `elapsed(from:to:)` in `ExpandedView` — never called (expanded view already uses `elapsedFromSeconds` with the correct `activeElapsed` computation).
+
+#### Impact
+
+- Affects users who pause and resume a session: the collapsed pill now shows the same accurate active duration that the expanded view and progress dot already showed.
+- No new tests needed — the fix is at the SwiftUI call site (subtracting a stored property), and the formatting function `collapsedElapsedSeconds` is already covered by existing tests.
+
+### Blocked
+- Cannot compile-verify on Linux container (macOS-only app). Code is syntactically valid Swift 6.
+- All 16 GOAL.md items checked off (14 original + 2 new).
+
+### Next agent
+- All goals complete. Bug backlog shrinking.
+- Possible further improvements:
+  - **Session history in notch** — quick-access history list in the expanded idle notch.
+  - **Keyboard shortcut customization** — let users rebind the ⌃⌥A global hotkey in Settings.
+  - **Sound customization** — configurable notification sounds for callouts, timer expiry, and verification.
+  - **Audit remaining elapsed/time calculations** — scan for other places where `pausedDuration` might be missing (the expanded view and progress dot are already correct).
+
 ## Run 146 — 2026-06-18
 
 ### Shipped
