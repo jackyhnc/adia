@@ -108,6 +108,7 @@ private struct ProgressBar: View {
 private struct CollapsedView: View {
     @ObservedObject var state: NotchState
     @ObservedObject var session: SessionManager
+    @ObservedObject private var network: NetworkMonitor = .shared
     @State private var idleStreak: Int = 0
     @State private var idleTodayCount: Int = 0
     @State private var idleTodayMinutes: Int = 0
@@ -210,6 +211,7 @@ private struct CollapsedView: View {
     private var dotColor: Color {
         guard let s = session.session else { return .white.opacity(0.35) }
         if s.phase == .paused { return .orange }
+        if network.isCircuitOpen { return .gray }
         switch session.onTaskStatus {
         case .onTask:    return .green
         case .offTask:   return .red
@@ -224,6 +226,7 @@ private struct ExpandedView: View {
     @ObservedObject var state: NotchState
     @ObservedObject var session: SessionManager
     @ObservedObject private var conversation: ConversationManager = .shared
+    @ObservedObject private var network: NetworkMonitor = .shared
 
     @State private var completionNote: String = ""
     @FocusState private var noteFieldFocused: Bool
@@ -379,7 +382,11 @@ private struct ExpandedView: View {
                             .transition(.opacity)
                     }
                     Spacer()
-                    StatusBadge(status: session.onTaskStatus)
+                    if NetworkMonitor.shared.isCircuitOpen {
+                        OfflineBadge()
+                    } else {
+                        StatusBadge(status: session.onTaskStatus)
+                    }
                 }
 
                 if let target = s.targetDuration {
@@ -802,6 +809,24 @@ private struct StatusBadge: View {
         case .offTask:   return "Off Task"
         case .ambiguous: return "Check In"
         }
+    }
+}
+
+// MARK: - Offline badge
+
+private struct OfflineBadge: View {
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "wifi.slash")
+                .font(.system(size: 8, weight: .semibold))
+            Text("Offline")
+                .font(.system(size: 10, weight: .semibold))
+        }
+        .foregroundStyle(.gray)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(Color.gray.opacity(0.14))
+        .clipShape(Capsule())
     }
 }
 

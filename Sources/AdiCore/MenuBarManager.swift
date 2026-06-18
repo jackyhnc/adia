@@ -106,7 +106,9 @@ public final class MenuBarManager {
 
         let headerTitle: String
         if let s = SessionManager.shared.session {
-            headerTitle = s.phase == .paused ? "Adia — Session Paused" : "Adia — Session Active"
+            let phaseLabel = s.phase == .paused ? "Session Paused" : "Session Active"
+            let offlineLabel = NetworkMonitor.shared.isCircuitOpen ? " (Offline)" : ""
+            headerTitle = "Adia — \(phaseLabel)\(offlineLabel)"
         } else {
             headerTitle = "Adia — Focus App"
         }

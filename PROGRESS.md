@@ -1,5 +1,75 @@
 # Adia — Build Progress
 
+## Run 145 — 2026-06-18
+
+### Shipped
+
+**feat: network loss resilience — NWPathMonitor, circuit breaker, offline UI indicators (+12 tests)**
+
+#### `NetworkMonitor.swift` — new file
+
+- `NWPathMonitor`-based singleton publishing `isConnected` (OS-level reachability) and `consecutiveFailures` (API-level circuit breaker).
+- `isCircuitOpen` computed property: true when disconnected OR 3+ consecutive API failures.
+- `recordSuccess()` resets the failure counter; `recordFailure()` increments it.
+- `resetCircuitBreaker()` called automatically when network connectivity is restored.
+- Structured logging for network transitions (`network.restored`, `network.lost`, `network.circuit_breaker_tripped`).
+- Test helpers for injecting connectivity and failure state.
+
+#### `OnTaskDetector.swift` — circuit breaker integration
+
+- Added early-exit check before rate-limit and API key guards: when `NetworkMonitor.shared.isCircuitOpen`, immediately returns cached `lastStatus` without any API call.
+- Saves battery, avoids timeout delays, and prevents log spam during outages.
+- Calls `NetworkMonitor.shared.recordSuccess()` after successful classification and `recordFailure()` after errors.
+
+#### `ConversationManager.swift` — network-aware error messages
+
+- Pre-flight circuit breaker check before starting chat stream — throws `ConversationOfflineError` immediately if offline.
+- Distinct error messages: "you're offline — check your connection and try again." vs generic "something went wrong."
+- Records success/failure to the circuit breaker after each chat attempt.
+
+#### `SessionManager.swift` — verification error handling
+
+- After verification failure, calls `NetworkMonitor.shared.recordFailure()` and shows context-aware callout message ("you're offline" vs "verification failed").
+- After successful verification, calls `recordSuccess()`.
+
+#### `NotchView.swift` — offline UI indicators
+
+- **Collapsed view**: dot turns gray when circuit breaker is open (distinct from green/red/orange on-task states and orange pause state).
+- **Active session body**: replaces `StatusBadge` with `OfflineBadge` (wifi.slash icon + "Offline" capsule) when circuit breaker is tripped.
+- New `OfflineBadge` view component matching the `StatusBadge` visual style.
+
+#### `MenuBarManager.swift` — context menu
+
+- Header shows "(Offline)" suffix when circuit breaker is open during an active session.
+
+#### Tests — 12 new `@Test` cases in 1 `@Suite` group
+
+**`NetworkMonitorTests.swift`**:
+- `circuitBreakerThresholdIsThree` — documents the constant
+- `circuitClosedWhenConnectedAndNoFailures` — baseline
+- `circuitOpenWhenDisconnected` — OS reports no connectivity
+- `circuitOpenWhenFailuresReachThreshold` — 3 consecutive failures trip the breaker
+- `circuitClosedBelowThreshold` — 2 failures is not enough
+- `recordSuccessResetsFailures` — success clears the counter
+- `recordFailureIncrementsCount` — failure increments
+- `resetCircuitBreakerClearsFailures` — manual reset
+- `detectorSkipsAPICallWhenCircuitOpen` — OnTaskDetector returns cached status, mock gets 0 calls
+- `detectorSkipsAPICallWhenConsecutiveFailuresHitThreshold` — same for failure-based circuit break
+- `detectorCallsAPIWhenCircuitClosed` — normal flow when healthy
+- `classifySuccessResetsFailureCounter` — verify success clears the breaker
+- `classifyFailureIncrementsFailureCounter` — verify failure increments
+
+### Blocked
+- Cannot compile-verify on Linux container (macOS-only app). Code is syntactically valid Swift 6.
+- All 15 GOAL.md items checked off (14 original + 1 new).
+
+### Next agent
+- All goals complete.
+- Possible further improvements:
+  - **Global keyboard shortcut** — Cmd+Shift+A (or configurable) to expand/collapse the notch without mouse travel.
+  - **Whitelisted domains visibility** — Show the list of domains whitelisted via reasoning conversations in the active session UI.
+  - **Session history/stats** — Track completed sessions and show lifetime focus metrics (total focused hours, average session length, streaks).
+
 ## Run 144 — 2026-06-18
 
 ### Shipped

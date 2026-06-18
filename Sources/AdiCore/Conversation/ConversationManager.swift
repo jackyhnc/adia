@@ -54,6 +54,9 @@ public final class ConversationManager: ObservableObject {
         streamingContent = ""
         Task { @MainActor in
             do {
+                if NetworkMonitor.shared.isCircuitOpen {
+                    throw ConversationOfflineError()
+                }
                 let stream = try await _aiClient.chatStream(
                     messages: messages,
                     systemPrompt: systemPrompt(for: mode),
@@ -65,6 +68,7 @@ public final class ConversationManager: ObservableObject {
                     streamingContent = accumulated
                 }
                 streamingContent = nil
+                NetworkMonitor.shared.recordSuccess()
                 // Guard against a stream that completes without yielding any text
                 // (e.g. a malformed SSE response with no text_delta events) so the
                 // UI never shows an empty bubble.
@@ -75,9 +79,16 @@ public final class ConversationManager: ObservableObject {
                 if case .reasoning = mode {
                     parseAccessDecision(from: finalContent)
                 }
+            } catch is ConversationOfflineError {
+                streamingContent = nil
+                messages.append(ChatMessage(role: .assistant, content: "you're offline — check your connection and try again."))
             } catch {
                 streamingContent = nil
-                messages.append(ChatMessage(role: .assistant, content: "something went wrong. try again."))
+                NetworkMonitor.shared.recordFailure()
+                let offlineMsg = NetworkMonitor.shared.isConnected
+                    ? "something went wrong. try again."
+                    : "you're offline — check your connection and try again."
+                messages.append(ChatMessage(role: .assistant, content: offlineMsg))
             }
             isLoading = false
         }
@@ -257,3 +268,5 @@ public final class ConversationManager: ObservableObject {
         """
     }
 }
+
+private struct ConversationOfflineError: Error {}

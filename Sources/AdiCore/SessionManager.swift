@@ -274,6 +274,7 @@ public final class SessionManager: ObservableObject {
                 ])
                 return
             }
+            NetworkMonitor.shared.recordSuccess()
             NotchState.shared.setVerificationResult(result)
             AppLogger.info("verification.result", [
                 "verified": String(result.verified),
@@ -302,8 +303,15 @@ public final class SessionManager: ObservableObject {
             }
         } catch {
             NotchState.shared.setVerifying(false)
-            AppLogger.error("verification.failed", ["error": String(describing: error)])
-            print("[SessionManager] verification error: \(error)")
+            NetworkMonitor.shared.recordFailure()
+            let userMsg = NetworkMonitor.shared.isConnected
+                ? "verification failed — try again in a moment."
+                : "you're offline — check your connection and try again."
+            NotchState.shared.showCallout(userMsg)
+            AppLogger.error("verification.failed", [
+                "error": String(describing: error),
+                "isConnected": String(NetworkMonitor.shared.isConnected),
+            ])
         }
     }
 

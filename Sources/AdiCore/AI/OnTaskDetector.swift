@@ -67,6 +67,18 @@ public actor OnTaskDetector {
             return OnTaskClassification(status: .onTask, confidence: 0, reason: "")
         }
 
+        // Circuit breaker: skip the API call entirely when the network is known to be
+        // down or too many consecutive failures have occurred. Returns cached status
+        // immediately — saves battery, avoids timeout delays, and prevents log spam.
+        let circuitOpen = await MainActor.run { NetworkMonitor.shared.isCircuitOpen }
+        if circuitOpen {
+            AppLogger.info("classification.circuit_breaker", [
+                "lastStatus": lastStatus.rawValue,
+                "isConnected": String(await MainActor.run { NetworkMonitor.shared.isConnected }),
+            ])
+            return OnTaskClassification(status: lastStatus, confidence: 0, reason: lastReason)
+        }
+
         // Adaptive rate-limit: skips the isConfigured() MainActor hop on throttled frames.
         let now = Date()
         let interval = adaptiveMinInterval
@@ -99,6 +111,7 @@ public actor OnTaskDetector {
             } else {
                 consecutiveOnTaskFrames = 0
             }
+            await MainActor.run { NetworkMonitor.shared.recordSuccess() }
             AppLogger.info("classification.result", [
                 "status": result.status.rawValue,
                 "confidence": String(format: "%.2f", result.confidence),
@@ -111,6 +124,7 @@ public actor OnTaskDetector {
             lastReason = result.reason
             return result
         } catch {
+            await MainActor.run { NetworkMonitor.shared.recordFailure() }
             AppLogger.error("classification.failed", [
                 "error": String(describing: error),
                 "lastStatus": lastStatus.rawValue

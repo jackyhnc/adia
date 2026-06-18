@@ -14,3 +14,4 @@
 - [x] Task verification: send screen CGImage to claude-sonnet-4-6 with success criteria, returns verified/not-verified + explanation
 - [x] Early exit conversation: AI engages user in conversation before confirming exit; user can always override
 - [x] Session persistence: encode/decode SessionState to UserDefaults or local JSON file
+- [x] Network loss resilience: NWPathMonitor + circuit breaker, offline UI indicators, graceful degradation when API calls fail
