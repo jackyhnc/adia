@@ -90,6 +90,7 @@ private func computeBestHour(
     return hourSums
         .filter { (hourCounts[$0.key] ?? 0) >= 2 }
         .max(by: { a, b in
+            // Safe: filter above guarantees all keys exist in hourCounts with value >= 2
             let avgA = a.value / Double(hourCounts[a.key]!)
             let avgB = b.value / Double(hourCounts[b.key]!)
             return avgA < avgB
