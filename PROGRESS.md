@@ -6849,3 +6849,47 @@ Addressed the highest-impact safety and observability gaps identified by a codeb
   - Add a "Resume capture" button that appears specifically when paused due to stream loss.
   - Split NotchView.swift (66KB, largest file) into focused sub-view components.
   - Track per-pause timestamps in Session for detailed pause-timeline analytics.
+
+---
+
+## Run 152 — 2026-06-19 — NotchView decomposition: split 1621-line monolith into focused sub-views
+
+### What shipped
+
+Split `NotchView.swift` (1621 lines, second-largest file) into 7 focused files:
+
+1. **`NotchView.swift`** (22 lines) — Root `NotchRootView` only. Entry point that switches between collapsed/expanded states.
+
+2. **`Views/Notch/NotchComponents.swift`** (~400 lines) — All reusable UI primitives: `NotchIslandShape`, `ProgressDot`, `ProgressBar`, `AdiButton`/`AdiButtonStyle`, `StatusBadge`, `OfflineBadge`, `WhitelistedDomainsRow`, `VerificationAttemptRow`, `CalloutBanner`, `TimerExpiredBanner`, `DailyGoalProgressRow`, `NotchHeatmapView`.
+
+3. **`Views/Notch/CollapsedNotchView.swift`** (~110 lines) — Collapsed pill view with dot indicator, elapsed time, focus score, daily goal, streak.
+
+4. **`Views/Notch/ExpandedNotchView.swift`** (~420 lines) — Expanded card: header, active/paused/verifying/verification-result/idle body states.
+
+5. **`Views/Notch/SessionCreationFormView.swift`** (~190 lines) — Session creation form with task input, duration presets, AI goal parsing.
+
+6. **`Views/Notch/IdleNotchView.swift`** (~210 lines) — Idle state: stats, heatmap, pinned templates, last session, start button.
+
+7. **`Views/Notch/NotchFormatting.swift`** (~100 lines) — All `internal func` formatting helpers: `focusScoreColor`, `sessionElapsedLabel`, `verificationRelativeTime`, `whitelistedDomainsLabel`, `dailyGoalProgressLabel`, `dailyGoalCollapsedLabel`, `streakDisplayLabel`, `idleStatsSummary`, `notchHeatmapDayAbbrev`, `notchHeatmapTooltip`.
+
+All structs changed from `private` to `internal` (Swift default) since they now live in separate files within the same module. All `internal func` helpers remain accessible to tests via `@testable import AdiCore`.
+
+### Files modified
+- `Sources/AdiCore/NotchView.swift` (replaced 1621 lines with 22-line root)
+- `Sources/AdiCore/Views/Notch/NotchComponents.swift` (new)
+- `Sources/AdiCore/Views/Notch/CollapsedNotchView.swift` (new)
+- `Sources/AdiCore/Views/Notch/ExpandedNotchView.swift` (new)
+- `Sources/AdiCore/Views/Notch/SessionCreationFormView.swift` (new)
+- `Sources/AdiCore/Views/Notch/IdleNotchView.swift` (new)
+- `Sources/AdiCore/Views/Notch/NotchFormatting.swift` (new)
+- `GOAL.md`
+
+### Blocked
+- None. No Swift toolchain on Linux CI, so build verified by cross-reference audit only. All changes are mechanical — no logic changes, no API changes.
+
+### Next agent
+- All original goals remain complete. BUILD_COMPLETE is present.
+- Possible further improvements:
+  - Surface reliability metrics in the post-session summary view (not just Settings).
+  - Add a "Resume capture" button that appears specifically when paused due to stream loss.
+  - Similarly decompose SettingsView.swift (1795 lines, the largest file).
