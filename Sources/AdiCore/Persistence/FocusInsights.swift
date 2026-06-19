@@ -99,14 +99,12 @@ private func computeBestHour(
         hourCounts[h, default: 0] += 1
     }
     return hourSums
-        .filter { (hourCounts[$0.key] ?? 0) >= 2 }
-        .max(by: { a, b in
-            // Safe: filter above guarantees all keys exist in hourCounts with value >= 2
-            let avgA = a.value / Double(hourCounts[a.key]!)
-            let avgB = b.value / Double(hourCounts[b.key]!)
-            return avgA < avgB
-        })?
-        .key
+        .compactMap { key, sum -> (hour: Int, avg: Double)? in
+            guard let count = hourCounts[key], count >= 2 else { return nil }
+            return (hour: key, avg: sum / Double(count))
+        }
+        .max(by: { $0.avg < $1.avg })?
+        .hour
 }
 
 /// Returns the weekday (1=Sunday … 7=Saturday) with the most total focused minutes.

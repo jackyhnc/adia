@@ -309,14 +309,29 @@ public actor SessionHistory {
     // MARK: - Private helpers
 
     private func _load() -> [SessionRecord] {
-        guard let data = try? Data(contentsOf: fileURL),
-              let records = try? JSONDecoder().decode([SessionRecord].self, from: data)
-        else { return [] }
-        return records
+        let data: Data
+        do {
+            data = try Data(contentsOf: fileURL)
+        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError {
+            return []
+        } catch {
+            AppLogger.warning("history.load_read_failed", ["error": String(describing: error)])
+            return []
+        }
+        do {
+            return try JSONDecoder().decode([SessionRecord].self, from: data)
+        } catch {
+            AppLogger.error("history.load_decode_failed", ["error": String(describing: error)])
+            return []
+        }
     }
 
     private func _save(_ records: [SessionRecord]) {
-        guard let data = try? JSONEncoder().encode(records) else { return }
-        try? data.write(to: fileURL, options: .atomic)
+        do {
+            let data = try JSONEncoder().encode(records)
+            try data.write(to: fileURL, options: .atomic)
+        } catch {
+            AppLogger.error("history.save_failed", ["error": String(describing: error)])
+        }
     }
 }

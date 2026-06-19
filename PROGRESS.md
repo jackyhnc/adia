@@ -6812,4 +6812,40 @@ This run adds end-to-end session reliability tracking:
 - Possible further improvements:
   - Surface reliability metrics in the post-session summary view (not just Settings).
   - Add a "Resume capture" button that appears specifically when paused due to stream loss.
+
+---
+
+## Run 151 — 2026-06-19 — Safety hardening: force-unwrap elimination + persistence/AI logging
+
+### What shipped
+
+Addressed the highest-impact safety and observability gaps identified by a codebase audit:
+
+1. **FocusInsights `computeBestHour`** — Replaced a fragile force-unwrap pattern (`hourCounts[a.key]!`) with a safe `compactMap` approach that eliminates the crash risk entirely. The old pattern relied on a comment claiming filter-then-force-unwrap was safe, but could drift silently if the filter logic were ever refactored.
+
+2. **SessionHistory `_load()` / `_save()`** — Previously used `try?` which silently swallowed all errors. Now distinguishes "file not found" (expected on first run — no log) from read errors (warning) and decode errors (error). Save failures are now logged as errors. This makes it possible to diagnose lost session history from structured logs.
+
+3. **SessionTemplateStore `_load()` / `_save()`** — Same treatment: file-not-found is silent, other read/decode/save failures now log via AppLogger with error context.
+
+4. **SessionPersistence `save()` / `load()`** — Encode and decode failures now logged. Previously, a schema migration bug could silently lose the active session on relaunch with zero diagnostic trace.
+
+5. **AgentAIClient `parseClassification()` / `parseVerification()`** — When Claude returns non-JSON or unexpected response shapes, the fallback now logs a warning with the raw response length and a 200-char preview. This surfaces API response format changes that would otherwise manifest as mysterious "ambiguous" classifications or false "not verified" results.
+
+### Files modified
+- `Sources/AdiCore/Persistence/FocusInsights.swift`
+- `Sources/AdiCore/Persistence/SessionHistory.swift`
+- `Sources/AdiCore/Models/SessionTemplate.swift`
+- `Sources/AdiCore/Persistence/SessionPersistence.swift`
+- `Sources/AdiCore/AI/AgentAIClient.swift`
+- `GOAL.md`
+
+### Blocked
+- None. No Swift toolchain on Linux CI, so build verified by code review only. All changes are straightforward — no new types, no API changes, no behavioral changes to happy paths.
+
+### Next agent
+- All original goals remain complete. BUILD_COMPLETE is present.
+- Possible further improvements:
+  - Surface reliability metrics in the post-session summary view (not just Settings).
+  - Add a "Resume capture" button that appears specifically when paused due to stream loss.
+  - Split NotchView.swift (66KB, largest file) into focused sub-view components.
   - Track per-pause timestamps in Session for detailed pause-timeline analytics.

@@ -172,15 +172,29 @@ public actor SessionTemplateStore {
     }
 
     private func _load() -> [SessionTemplate] {
-        guard
-            let data = try? Data(contentsOf: fileURL),
-            let decoded = try? JSONDecoder().decode([SessionTemplate].self, from: data)
-        else { return [] }
-        return decoded
+        let data: Data
+        do {
+            data = try Data(contentsOf: fileURL)
+        } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError {
+            return []
+        } catch {
+            AppLogger.warning("templates.load_read_failed", ["error": String(describing: error)])
+            return []
+        }
+        do {
+            return try JSONDecoder().decode([SessionTemplate].self, from: data)
+        } catch {
+            AppLogger.error("templates.load_decode_failed", ["error": String(describing: error)])
+            return []
+        }
     }
 
     private func _save(_ templates: [SessionTemplate]) {
-        guard let data = try? JSONEncoder().encode(templates) else { return }
-        try? data.write(to: fileURL, options: .atomic)
+        do {
+            let data = try JSONEncoder().encode(templates)
+            try data.write(to: fileURL, options: .atomic)
+        } catch {
+            AppLogger.error("templates.save_failed", ["error": String(describing: error)])
+        }
     }
 }

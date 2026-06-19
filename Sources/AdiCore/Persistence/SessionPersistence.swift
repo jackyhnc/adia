@@ -7,14 +7,23 @@ public final class SessionPersistence: Sendable {
     private init() {}
 
     public func save(_ session: Session) {
-        guard let data = try? JSONEncoder().encode(session) else { return }
-        UserDefaults.standard.set(data, forKey: key)
+        do {
+            let data = try JSONEncoder().encode(session)
+            UserDefaults.standard.set(data, forKey: key)
+        } catch {
+            AppLogger.error("session_persistence.save_failed", ["error": String(describing: error)])
+        }
     }
 
     public func load() -> Session? {
-        guard let data = UserDefaults.standard.data(forKey: key),
-              let session = try? JSONDecoder().decode(Session.self, from: data)
-        else { return nil }
+        guard let data = UserDefaults.standard.data(forKey: key) else { return nil }
+        let session: Session
+        do {
+            session = try JSONDecoder().decode(Session.self, from: data)
+        } catch {
+            AppLogger.error("session_persistence.load_decode_failed", ["error": String(describing: error)])
+            return nil
+        }
         // Discard sessions older than 24 hours — they're stale.
         guard session.elapsed < 86_400 else {
             clear()

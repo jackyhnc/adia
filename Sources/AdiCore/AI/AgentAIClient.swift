@@ -430,6 +430,10 @@ public actor AgentAIClient {
             let json   = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
             let status = json["status"] as? String
         else {
+            AppLogger.warning("ai.classify_parse_failed", [
+                "rawLength": String(text.count),
+                "preview": String(text.prefix(200)),
+            ])
             return OnTaskClassification(status: .ambiguous, confidence: 0.5, reason: text)
         }
         let onTaskStatus: OnTaskStatus
@@ -518,6 +522,10 @@ public actor AgentAIClient {
             let verified    = json["verified"]    as? Bool,
             let explanation = json["explanation"] as? String
         else {
+            AppLogger.warning("ai.verify_parse_failed", [
+                "rawLength": String(text.count),
+                "preview": String(text.prefix(200)),
+            ])
             return VerificationResult(verified: false, explanation: text)
         }
         return VerificationResult(verified: verified, explanation: explanation)
