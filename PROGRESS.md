@@ -1,5 +1,28 @@
 # Adia — Build Progress
 
+## Run 157 — 2026-06-19
+
+### Shipped
+
+**refactor: decompose SettingsView.swift (1795 lines) into 6 focused sub-view files**
+
+Split `Sources/AdiCore/Views/SettingsView.swift` into `Views/Settings/`:
+- `SettingsView.swift` (38 lines) — root TabView with tab routing
+- `AccountSettingsTab.swift` (282 lines) — API key, license, shortcuts, reminders, daily goal
+- `BlockingSettingsTab.swift` (256 lines) — domain/app block lists, running apps picker
+- `HistoryTab.swift` (543 lines) — session history list, weekly stats, insights, search/filter, export
+- `HistoryComponents.swift` (354 lines) — WeekHeatmapView, SessionRecordRow, SelectableRecordRow, heatmap/duration helpers
+- `TemplatesSettingsTab.swift` (311 lines) — template list, template row, edit template sheet
+
+All internal helper functions (`filterRecords`, `dayLabel`, `groupedByDay`, `heatmapFormatMinutes`, `parseCustomDuration`, etc.) remain `internal` — tests and other module code unaffected.
+
+### Blocked
+- Cannot compile on Linux container (macOS-only app). Verified syntactically: no duplicate definitions, all cross-file references resolve within module scope.
+
+### Next agent
+- All 23/23 goals complete. No further automated work needed.
+- Remaining work is in USER_TODO.md (Apple Developer account, signing, deployment).
+
 ## Run 156 — 2026-06-19
 
 ### Shipped
