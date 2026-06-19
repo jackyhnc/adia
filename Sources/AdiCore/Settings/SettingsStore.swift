@@ -34,6 +34,29 @@ public final class SettingsStore: ObservableObject {
     @Published public var idleTemplatesFollowManualOrder: Bool {
         didSet { defaults.set(idleTemplatesFollowManualOrder, forKey: "adia.idleTemplatesFollowManualOrder") }
     }
+    /// How often (in minutes) the notch re-opens to remind the user to verify after
+    /// their session's target duration has elapsed. Clamped to `Self.timerExpiredRearmMinuteOptions`
+    /// so a corrupted default can't silently disable the reminder (e.g. by storing 0).
+    @Published public var timerExpiredRearmMinutes: Int {
+        didSet { defaults.set(timerExpiredRearmMinutes, forKey: "adia.timerExpiredRearmMinutes") }
+    }
+
+    /// Daily focus goal in minutes. nil = no goal set. When set, the idle notch shows
+    /// a progress bar toward the target and the collapsed pill shows "45m / 2h" format.
+    @Published public var dailyFocusGoalMinutes: Int? {
+        didSet {
+            if let m = dailyFocusGoalMinutes {
+                defaults.set(m, forKey: "adia.dailyFocusGoalMinutes")
+            } else {
+                defaults.removeObject(forKey: "adia.dailyFocusGoalMinutes")
+            }
+        }
+    }
+
+    /// Allowed presets for the daily focus goal picker in Settings.
+    public nonisolated static let dailyGoalPresets: [(Int, String)] = [
+        (30, "30m"), (60, "1h"), (90, "90m"), (120, "2h"), (180, "3h"), (240, "4h")
+    ]
 
     /// Domains the user added on top of the default list.
     @Published public private(set) var customBlockedDomains: [String] {
@@ -64,6 +87,15 @@ public final class SettingsStore: ObservableObject {
         didSet { Self.saveDomainList(Array(disabledDefaultApps), key: Self.disabledAppsKey, to: defaults) }
     }
 
+    /// Allowed values for `timerExpiredRearmMinutes`, shown as a picker in Settings.
+    /// 10 is the historical default — fast enough to keep nudging, slow enough not to nag.
+    public nonisolated static let timerExpiredRearmMinuteOptions: [Int] = [5, 10, 15, 30]
+
+    /// `timerExpiredRearmMinutes` converted to seconds for `Task.sleep`.
+    public var timerExpiredRearmInterval: TimeInterval {
+        TimeInterval(timerExpiredRearmMinutes * 60)
+    }
+
     /// Active app block list for new sessions: enabled defaults + custom additions.
     public var effectiveBlockedApps: [String] {
         let enabled = Session.defaultBlockedAppBundleIDs.filter { !disabledDefaultApps.contains($0) }
@@ -76,6 +108,10 @@ public final class SettingsStore: ObservableObject {
         usageAnalyticsEnabled            = defaults.object(forKey: "usageAnalyticsEnabled")                    as? Bool ?? true
         showMenuBarItem                  = defaults.object(forKey: "adia.showMenuBarItem")                     as? Bool ?? true
         idleTemplatesFollowManualOrder   = defaults.object(forKey: "adia.idleTemplatesFollowManualOrder")      as? Bool ?? false
+        let storedRearmMinutes = defaults.object(forKey: "adia.timerExpiredRearmMinutes") as? Int ?? 10
+        timerExpiredRearmMinutes = Self.timerExpiredRearmMinuteOptions.contains(storedRearmMinutes) ? storedRearmMinutes : 10
+        let storedGoal = defaults.object(forKey: "adia.dailyFocusGoalMinutes") as? Int
+        dailyFocusGoalMinutes = storedGoal.flatMap { $0 > 0 ? $0 : nil }
         // Resolve the agent AI key from the first source that yields a non-empty
         // value. Legacy names are still accepted so existing local installs keep
         // working after the user-facing naming moved away from provider branding.

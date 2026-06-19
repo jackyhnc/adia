@@ -4,6 +4,10 @@ import SwiftUI
 public struct ConversationView: View {
     @ObservedObject public var manager: ConversationManager
     @State private var inputText: String = ""
+    /// Guards against two .onAppear callbacks firing in the same render pass — the
+    /// messages.count == 1 check is not safe because a second callback can fire before
+    /// the first send() increments the message array.
+    @State private var didAutoSend = false
 
     public init(manager: ConversationManager = .shared) {
         self.manager = manager
@@ -18,6 +22,19 @@ public struct ConversationView: View {
         }
     }
 
+    /// When reasoning mode opens for a specific blocked domain, auto-send a user message
+    /// so the AI replies immediately without the user needing to type first.
+    /// Called from `.onAppear` on the first AI bubble. The `didAutoSend` flag prevents
+    /// a double-send if two .onAppear callbacks race in the same render pass.
+    private func autoSendOpeningIfNeeded() {
+        guard !didAutoSend,
+              case .reasoning(let domain) = manager.mode,
+              let d = domain, !d.isEmpty,
+              !manager.isLoading else { return }
+        didAutoSend = true
+        manager.send("I'm trying to access \(d)")
+    }
+
     // MARK: - Message list
 
     private var messageList: some View {
@@ -27,8 +44,17 @@ public struct ConversationView: View {
                     ForEach(manager.messages) { msg in
                         MessageBubble(message: msg)
                             .id(msg.id)
+                            .onAppear {
+                                if msg.id == manager.messages.first?.id {
+                                    autoSendOpeningIfNeeded()
+                                }
+                            }
                     }
-                    if manager.isLoading {
+                    if let streaming = manager.streamingContent {
+                        StreamingBubble(text: streaming)
+                            .id("streaming")
+                    } else if manager.isLoading {
+                        // Fallback for any non-streaming loading state.
                         TypingIndicator()
                             .id("typing")
                     }
@@ -41,11 +67,26 @@ public struct ConversationView: View {
             // (ExpandedView uses maxHeight: .infinity so this scroll view gets
             // all panel space minus the input row and action buttons).
             .frame(maxHeight: .infinity)
+            .onChange(of: manager.mode) {
+                // Reset the auto-send guard whenever the conversation mode changes so that
+                // reopening the view for a different domain fires the opening message again.
+                // Without this reset the flag persists across mode changes within the same
+                // view lifetime, silently skipping the auto-send for the second domain.
+                didAutoSend = false
+                // Clear any stale draft text so the user doesn't see leftover input from a
+                // previous mode's conversation when the view is reused for a new one.
+                inputText = ""
+            }
             .onChange(of: manager.messages.count) {
                 withAnimation(.easeOut(duration: 0.15)) {
                     if let last = manager.messages.last {
                         proxy.scrollTo(last.id, anchor: .bottom)
                     }
+                }
+            }
+            .onChange(of: manager.streamingContent) {
+                withAnimation(.easeOut(duration: 0.05)) {
+                    proxy.scrollTo("streaming", anchor: .bottom)
                 }
             }
             .onChange(of: manager.isLoading) {
@@ -194,6 +235,30 @@ private struct MessageBubble: View {
             if message.content.contains("[ACCESS DENIED]") { return "no." }
         }
         return stripped
+    }
+}
+
+// MARK: - StreamingBubble
+
+/// Shows an assistant message as it arrives token-by-token.
+/// Displays "…" when the buffer is still empty (first network RTT).
+private struct StreamingBubble: View {
+    let text: String
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 6) {
+            Text("adia")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundStyle(.white.opacity(0.3))
+                .tracking(1)
+                .padding(.top, 2)
+                .frame(width: 30, alignment: .trailing)
+            Text(text.isEmpty ? "…" : text)
+                .font(.system(size: 12))
+                .foregroundStyle(.white)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 }
 

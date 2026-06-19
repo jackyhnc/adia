@@ -2,16 +2,32 @@ import Foundation
 import CoreGraphics
 
 public actor OnTaskDetector {
-    private let client: AgentAIClient
+    private let client: any AgentAIService
     private var currentSession: Session?
 
-    // Rate-limit guard: fast enough to catch drift quickly without queueing
-    // overlapping model calls when ScreenCaptureKit delivers frames faster.
+    // Rate-limit guard: skips overlapping classify() calls when ScreenCaptureKit
+    // delivers frames faster than the model can respond.
     private var lastEvaluatedAt: Date?
     private var lastStatus: OnTaskStatus = .onTask
-    private let minInterval: TimeInterval = 0.6
+    private var lastReason: String = ""
 
-    public init(client: AgentAIClient = .shared) {
+    // Adaptive back-off: consecutive on-task frames let the interval grow so we
+    // call the model less during deep focus, while any off-task result snaps it back.
+    private var consecutiveOnTaskFrames: Int = 0
+
+    // Adaptive interval: tighter polling when uncertain, relaxed during focus streaks.
+    // 0–2 on-task frames: 1s  (catch drift fast)
+    // 3–9 on-task frames: 3s  (steady focus — back off)
+    // 10+ on-task frames: 8s  (deep focus — check infrequently)
+    var adaptiveMinInterval: TimeInterval {
+        switch consecutiveOnTaskFrames {
+        case 0..<3:  return 1.0
+        case 3..<10: return 3.0
+        default:     return 8.0
+        }
+    }
+
+    public init(client: any AgentAIService = AgentAIClient.shared) {
         self.client = client
     }
 
@@ -19,10 +35,13 @@ public actor OnTaskDetector {
         currentSession = session
         lastEvaluatedAt = nil
         lastStatus = .onTask
+        lastReason = ""
+        consecutiveOnTaskFrames = 0
     }
 
     public func detach() {
         currentSession = nil
+        consecutiveOnTaskFrames = 0
     }
 
     // MARK: - Test helpers (internal)
@@ -35,23 +54,47 @@ public actor OnTaskDetector {
         lastStatus = status
     }
 
-    public func evaluate(frame: CGImage) async -> OnTaskStatus {
-        guard let session = currentSession else { return .onTask }
+    internal func _setConsecutiveOnTaskFramesForTesting(_ count: Int) {
+        consecutiveOnTaskFrames = count
+    }
 
-        // Rate-limit check first — skips the isConfigured() MainActor hop on
-        // every throttled frame (all but 1 per second at 1 FPS capture).
-        let now = Date()
-        if let last = lastEvaluatedAt, now.timeIntervalSince(last) < minInterval {
-            AppLogger.info("classification.throttled", [
-                "lastStatus": lastStatus.rawValue
+    internal func _consecutiveOnTaskFrames() -> Int {
+        consecutiveOnTaskFrames
+    }
+
+    public func evaluate(frame: CGImage) async -> OnTaskClassification {
+        guard let session = currentSession else {
+            return OnTaskClassification(status: .onTask, confidence: 0, reason: "")
+        }
+
+        // Circuit breaker: skip the API call entirely when the network is known to be
+        // down or too many consecutive failures have occurred. Returns cached status
+        // immediately — saves battery, avoids timeout delays, and prevents log spam.
+        let circuitOpen = await MainActor.run { NetworkMonitor.shared.isCircuitOpen }
+        if circuitOpen {
+            AppLogger.info("classification.circuit_breaker", [
+                "lastStatus": lastStatus.rawValue,
+                "isConnected": String(await MainActor.run { NetworkMonitor.shared.isConnected }),
             ])
-            return lastStatus
+            return OnTaskClassification(status: lastStatus, confidence: 0, reason: lastReason)
+        }
+
+        // Adaptive rate-limit: skips the isConfigured() MainActor hop on throttled frames.
+        let now = Date()
+        let interval = adaptiveMinInterval
+        if let last = lastEvaluatedAt, now.timeIntervalSince(last) < interval {
+            AppLogger.info("classification.throttled", [
+                "lastStatus": lastStatus.rawValue,
+                "intervalSeconds": String(format: "%.1f", interval),
+                "consecutiveOnTask": String(consecutiveOnTaskFrames),
+            ])
+            return OnTaskClassification(status: lastStatus, confidence: 0, reason: lastReason)
         }
 
         // Only hop to MainActor to read the API key when we're about to make a call.
         guard await client.isConfigured() else {
             AppLogger.warning("classification.skipped", ["reason": "missing_api_key"])
-            return .onTask
+            return OnTaskClassification(status: .onTask, confidence: 0, reason: "")
         }
         lastEvaluatedAt = now
 
@@ -62,20 +105,31 @@ public actor OnTaskDetector {
                 taskDescription: session.task,
                 successCriteria: session.successCriteria
             )
+            // Update adaptive counter: grow streak on on-task, reset immediately otherwise.
+            if result.status == .onTask {
+                consecutiveOnTaskFrames += 1
+            } else {
+                consecutiveOnTaskFrames = 0
+            }
+            await MainActor.run { NetworkMonitor.shared.recordSuccess() }
             AppLogger.info("classification.result", [
                 "status": result.status.rawValue,
                 "confidence": String(format: "%.2f", result.confidence),
                 "durationMs": String(Int(Date().timeIntervalSince(startedAt) * 1000)),
-                "reason": result.reason
+                "reason": result.reason,
+                "consecutiveOnTask": String(consecutiveOnTaskFrames),
+                "nextIntervalSeconds": String(format: "%.1f", adaptiveMinInterval),
             ])
             lastStatus = result.status
-            return result.status
+            lastReason = result.reason
+            return result
         } catch {
+            await MainActor.run { NetworkMonitor.shared.recordFailure() }
             AppLogger.error("classification.failed", [
                 "error": String(describing: error),
                 "lastStatus": lastStatus.rawValue
             ])
-            return lastStatus
+            return OnTaskClassification(status: lastStatus, confidence: 0, reason: lastReason)
         }
     }
 }

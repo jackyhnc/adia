@@ -9,6 +9,7 @@ import AppKit
 public actor AgentAIClient {
     public static let shared = AgentAIClient()
 
+    // Force unwrap is safe: constant, well-formed URL string — `URL(string:)` cannot fail for it.
     private let baseURL = URL(string: "https://api.anthropic.com/v1/messages")!
     private let anthropicVersion = "2023-06-01"
     private let fastModel: String
@@ -160,19 +161,128 @@ public actor AgentAIClient {
 
     public func chat(
         messages: [ChatMessage],
-        systemPrompt: String
+        systemPrompt: String,
+        useStrongModel: Bool
     ) async throws -> String {
         guard let key = await currentKey() else { throw AgentAIError.missingAPIKey }
         let apiMessages: [[String: Any]] = messages.map { msg in
             ["role": msg.role.rawValue, "content": msg.content]
         }
-        return try await post(key: key, model: fastModel, system: systemPrompt,
+        let model = useStrongModel ? strongModel : fastModel
+        return try await post(key: key, model: model, system: systemPrompt,
                               messages: apiMessages, maxTokens: 900)
+    }
+
+    // MARK: - Streaming chat
+
+    /// Streams a chat response token-by-token via the Anthropic streaming Messages API.
+    /// Returns an AsyncThrowingStream that yields text chunks as they arrive from the server.
+    /// The caller accumulates chunks to produce the full response.
+    public func chatStream(
+        messages: [ChatMessage],
+        systemPrompt: String,
+        useStrongModel: Bool
+    ) async throws -> AsyncThrowingStream<String, Error> {
+        guard let key = await currentKey() else { throw AgentAIError.missingAPIKey }
+
+        // Capture actor-isolated state into local constants before escaping the actor.
+        let session  = urlSession
+        let model    = useStrongModel ? strongModel : fastModel
+        let apiURL   = baseURL
+        let version  = anthropicVersion
+
+        let apiMessages: [[String: Any]] = messages.map { msg in
+            ["role": msg.role.rawValue, "content": msg.content] as [String: Any]
+        }
+        var body: [String: Any] = [
+            "model":      model,
+            "max_tokens": 900,
+            "stream":     true,
+            "messages":   apiMessages,
+        ]
+        if !systemPrompt.isEmpty {
+            body["system"] = [
+                ["type": "text", "text": systemPrompt,
+                 "cache_control": ["type": "ephemeral"]] as [String: Any]
+            ]
+        }
+
+        var req = URLRequest(url: apiURL)
+        req.httpMethod = "POST"
+        req.setValue(key,         forHTTPHeaderField: "x-api-key")
+        req.setValue(version,     forHTTPHeaderField: "anthropic-version")
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+        return AsyncThrowingStream { continuation in
+            Task {
+                do {
+                    let (asyncBytes, response) = try await session.bytes(for: req)
+                    let http       = response as? HTTPURLResponse
+                    let statusCode = http?.statusCode ?? 0
+                    guard (200..<300).contains(statusCode) else {
+                        throw AgentAIError.httpError(statusCode,
+                            "streaming failed with HTTP \(statusCode)")
+                    }
+                    for try await line in asyncBytes.lines {
+                        if let chunk = AgentAIClient.parseSSELine(line) {
+                            continuation.yield(chunk)
+                        }
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+        }
+    }
+
+    /// Parses one Server-Sent Events line and returns the text delta it carries.
+    /// Returns nil for all non-text-delta events (message_start, ping, etc.).
+    internal static func parseSSELine(_ line: String) -> String? {
+        guard line.hasPrefix("data: ") else { return nil }
+        let json = String(line.dropFirst(6))
+        guard json != "[DONE]",
+              let data  = json.data(using: .utf8),
+              let obj   = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              (obj["type"] as? String) == "content_block_delta",
+              let delta = obj["delta"] as? [String: Any],
+              (delta["type"] as? String) == "text_delta",
+              let text  = delta["text"] as? String
+        else { return nil }
+        return text
     }
 
     // MARK: - HTTP
 
+    /// Max number of retries after the initial attempt. Retries only on 429 and 5xx.
+    internal static let maxRetries = 3
+
+    /// Returns true if the HTTP status code warrants a retry (rate-limit or server error).
+    /// 4xx errors other than 429 (bad request, auth failure, etc.) are not retried.
+    internal static func isRetryableStatusCode(_ code: Int) -> Bool {
+        code == 429 || (500...599).contains(code)
+    }
+
+    /// Exponential backoff with ±20% jitter: base 1 s, doubling each retry, capped at 30 s.
+    /// When `retryAfterSeconds` is present (parsed from the `Retry-After` header on a 429
+    /// response), it overrides the exponential calculation — still capped at 30 s so a
+    /// misbehaving server cannot stall the app indefinitely.
+    ///
+    /// - Parameters:
+    ///   - attempt: 1-based retry index (1 → 1 s base, 2 → 2 s, 3 → 4 s, …)
+    ///   - retryAfterSeconds: server-supplied delay hint; `nil` → use exponential formula.
+    internal static func retryDelay(attempt: Int, retryAfterSeconds: TimeInterval?) -> TimeInterval {
+        if let explicit = retryAfterSeconds {
+            return min(max(explicit, 0), 30.0)
+        }
+        let base = pow(2.0, Double(attempt - 1)) // 1s, 2s, 4s, 8s, …
+        let jitter = Double.random(in: 0.8...1.2)
+        return min(base * jitter, 30.0)
+    }
+
     /// Posts to the Anthropic Messages API and returns the first text block.
+    /// Retries up to `maxRetries` times on 429 and 5xx with exponential backoff.
     private func post(
         key: String,
         model: String,
@@ -186,7 +296,12 @@ public actor AgentAIClient {
             "messages": messages,
         ]
         if !system.isEmpty {
-            body["system"] = system
+            // Array format enables prompt caching (GA — no beta header needed).
+            // The system prompt is stable within a session; cache_control marks it as
+            // cacheable so repeated classify() calls reuse the cached prefix.
+            body["system"] = [
+                ["type": "text", "text": system, "cache_control": ["type": "ephemeral"]] as [String: Any]
+            ]
         }
 
         var req = URLRequest(url: baseURL)
@@ -196,24 +311,86 @@ public actor AgentAIClient {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (data, response) = try await urlSession.data(for: req)
-        let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
+        var retryAttempt = 0
+        while true {
+            let (data, response) = try await urlSession.data(for: req)
+            let http = response as? HTTPURLResponse
+            let statusCode = http?.statusCode ?? 0
 
-        guard (200..<300).contains(statusCode) else {
+            if (200..<300).contains(statusCode) {
+                guard
+                    let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                    let text = Self.extractOutputText(from: json)
+                else {
+                    throw AgentAIError.decodingError("unexpected response shape")
+                }
+                return text
+            }
+
             let bodyStr = String(data: data, encoding: .utf8) ?? "<unreadable>"
-            throw AgentAIError.httpError(statusCode, bodyStr)
-        }
+            let err = AgentAIError.httpError(statusCode, bodyStr)
 
-        guard
-            let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-            let text = Self.extractOutputText(from: json)
-        else {
-            throw AgentAIError.decodingError("unexpected response shape")
+            retryAttempt += 1
+            guard Self.isRetryableStatusCode(statusCode), retryAttempt <= Self.maxRetries else {
+                throw err
+            }
+
+            // For 429: honour the server's Retry-After hint when present.
+            let retryAfter: TimeInterval? = http.flatMap { resp in
+                guard let v = resp.value(forHTTPHeaderField: "Retry-After"),
+                      let secs = TimeInterval(v) else { return nil }
+                return secs
+            }
+            let delay = Self.retryDelay(attempt: retryAttempt, retryAfterSeconds: retryAfter)
+            AppLogger.warning("api.retry", [
+                "attempt":      String(retryAttempt),
+                "statusCode":   String(statusCode),
+                "delaySeconds": String(format: "%.1f", delay),
+                "model":        model,
+            ])
+            try await Task.sleep(for: Duration.seconds(delay))
         }
-        return text
     }
 
     // MARK: - Image helpers
+
+    /// Maximum pixel dimension (width or height) for images sent to the Claude vision API.
+    /// Claude internally scales images to fit a 1568×1568 box, so sending larger frames
+    /// wastes bandwidth and increases latency without improving classification accuracy.
+    /// 1024 keeps payloads compact while preserving enough detail for text/UI recognition.
+    internal static let maxVisionDimension: Int = 1024
+
+    /// Downscales a CGImage so its longest side fits within `maxDimension`.
+    /// Returns the original image unchanged if it already fits.
+    internal static func resizeForVision(_ image: CGImage, maxDimension: Int = maxVisionDimension) -> CGImage {
+        let w = image.width
+        let h = image.height
+        guard max(w, h) > maxDimension else { return image }
+
+        let scale: Double
+        if w >= h {
+            scale = Double(maxDimension) / Double(w)
+        } else {
+            scale = Double(maxDimension) / Double(h)
+        }
+        let newW = max(1, Int(Double(w) * scale))
+        let newH = max(1, Int(Double(h) * scale))
+
+        guard let ctx = CGContext(
+            data: nil,
+            width: newW,
+            height: newH,
+            bitsPerComponent: 8,
+            bytesPerRow: 0,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else {
+            return image
+        }
+        ctx.interpolationQuality = .high
+        ctx.draw(image, in: CGRect(x: 0, y: 0, width: newW, height: newH))
+        return ctx.makeImage() ?? image
+    }
 
     /// Anthropic base64 image content block.
     private func imageContent(_ base64: String) -> [String: Any] {
@@ -229,7 +406,8 @@ public actor AgentAIClient {
 
     private func encodeImageToBase64(_ image: CGImage) throws -> String {
         #if canImport(AppKit)
-        let nsImage = NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height))
+        let resized = Self.resizeForVision(image)
+        let nsImage = NSImage(cgImage: resized, size: NSSize(width: resized.width, height: resized.height))
         guard
             let tiff   = nsImage.tiffRepresentation,
             let bitmap = NSBitmapImageRep(data: tiff),
@@ -265,7 +443,7 @@ public actor AgentAIClient {
         return OnTaskClassification(status: onTaskStatus, confidence: confidence, reason: reason)
     }
 
-    private static func parseGoalResponse(_ text: String, original: String) -> GoalParse {
+    static func parseGoalResponse(_ text: String, original: String) -> GoalParse {
         guard
             let data = stripMarkdownFences(text).data(using: .utf8),
             let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
@@ -307,15 +485,26 @@ public actor AgentAIClient {
         if cleaned.isEmpty {
             return "Tell me what you're working on."
         }
+        // Single-word or short phrases that are unambiguously leisure when used as
+        // the entire input (exact match only — prevents false positives like
+        // "gaming the algorithm" or "chilling the dough").
         let leisureExact: Set<String> = [
             "stuff", "something", "anything", "whatever", "idk", "nothing",
-            "chill", "relax", "browse", "scroll", "scrolling", "doomscroll"
+            "chill", "relax", "browse", "scroll", "scrolling", "doomscroll",
+            "gaming", "vibing", "chilling", "chillin",
         ]
         if leisureExact.contains(lower) {
             return "That doesn't look like a focus session. What do you want to get done?"
         }
-        if lower.contains("youtube") || lower.contains("tiktok")
-            || lower.contains("instagram") || lower.contains("netflix") {
+        // Entertainment / social platforms: if the input contains one of these names
+        // it's almost certainly leisure (99%+ of the time). The rare edge case of
+        // "youtube API integration" or "netflix engineering blog" passes to the model
+        // which handles it correctly; local rejection is for obvious cases only.
+        let entertainmentPlatforms = [
+            "youtube", "tiktok", "instagram", "netflix",
+            "hulu", "twitch", "snapchat",
+        ]
+        if entertainmentPlatforms.contains(where: { lower.contains($0) }) {
             return "That doesn't look like a focus session. What do you want to get done?"
         }
         return nil
@@ -383,6 +572,36 @@ public struct GoalParse: Sendable {
         self.task = task
         self.successCriteria = successCriteria
         self.question = question
+    }
+}
+
+/// What `NotchView.SessionCreationFormView.submit()` should do with a `GoalParse`
+/// result: either start the session with the (trimmed, non-empty) task/criteria,
+/// or surface a clarifying question and let the user revise their input.
+public enum GoalSubmissionOutcome: Sendable, Equatable {
+    case accepted(task: String, successCriteria: String)
+    case needsClarification(question: String)
+}
+
+extension GoalParse {
+    /// Pure decision mirroring `submit()`'s branch logic — extracted so the
+    /// accept/reject/fallback paths can be tested without SwiftUI, `@MainActor`,
+    /// or a network round-trip. `ok == false`, a missing/blank `task`, or a
+    /// missing/blank `successCriteria` all fall through to `.needsClarification`,
+    /// using the model's own `question` when present and non-blank, else `defaultQuestion`.
+    public func resolveSubmission(
+        defaultQuestion: String = "What would I be able to see on screen when this is done?"
+    ) -> GoalSubmissionOutcome {
+        guard ok,
+              let task = task?.trimmingCharacters(in: .whitespacesAndNewlines),
+              let criteria = successCriteria?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !task.isEmpty,
+              !criteria.isEmpty
+        else {
+            let q = question?.trimmingCharacters(in: .whitespacesAndNewlines)
+            return .needsClarification(question: (q?.isEmpty == false ? q : nil) ?? defaultQuestion)
+        }
+        return .accepted(task: task, successCriteria: criteria)
     }
 }
 

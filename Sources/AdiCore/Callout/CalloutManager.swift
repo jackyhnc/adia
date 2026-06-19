@@ -21,12 +21,18 @@ public final class CalloutManager {
     /// not by on-task recovery — used for tier escalation across the session.
     public private(set) var calloutCount: Int = 0
 
+    /// Keyword extracted from the current session task (e.g. "essay", "code", "presentation").
+    /// When set, task-specific messages are blended into the tier-1–3 callout pools.
+    private var taskKeyword: String? = nil
+
+    /// Exposed for unit tests — production code mutates this via setTask().
+    internal var currentTaskKeyword: String? { taskKeyword }
+
     // MARK: - Tiered message pools
 
     // Tier 1 (callouts 1–2): friendly but direct
     private static let tier1Callouts: [String] = [
         "yo, what are you doing?",
-        "this isn't your essay.",
         "stop.",
         "back to work.",
         "that's not why you're here.",
@@ -66,15 +72,19 @@ public final class CalloutManager {
     private var autoDismissTask: Task<Void, Never>?
     // Tracks the last fired callout so consecutive streaks never repeat the same message.
     private var lastFiredMessage: String?
+    // The AI's classification reason for the current off-task detection, shown as a subtitle.
+    private var currentReason: String?
 
     private init() {}
 
     // MARK: - Public interface
 
     /// Call this with each new on-task classification.
-    public func evaluate(_ status: OnTaskStatus) {
+    /// `reason` is the AI's explanation of what it sees on screen (e.g. "Reddit is open").
+    public func evaluate(_ status: OnTaskStatus, reason: String = "") {
         switch status {
         case .offTask:
+            if !reason.isEmpty { currentReason = reason }
             consecutiveOffTask += 1
             if consecutiveOffTask >= threshold && !hasFiredForStreak {
                 hasFiredForStreak = true
@@ -85,8 +95,6 @@ public final class CalloutManager {
                 escalate()
             }
         case .onTask:
-            // Only reset the per-streak counters; calloutCount is session-level
-            // and must survive recovery so tier escalation works across the session.
             resetStreak()
         case .ambiguous:
             break
@@ -96,6 +104,481 @@ public final class CalloutManager {
     /// Fires an immediate callout for a blocked app becoming frontmost (no threshold needed).
     public func fireAppCallout(_ message: String) {
         display(message, tier: currentTier())
+    }
+
+    // MARK: - Task context
+
+    /// Extracts a focus keyword from the session task and stores it for message blending.
+    /// Call from SessionManager.activate() after reset() so tier escalation is already restored.
+    public func setTask(_ task: String) {
+        taskKeyword = Self.extractTaskKeyword(from: task)
+    }
+
+    /// Derives a one-word subject from a free-text task description.
+    /// Returns nil when no recognizable subject keyword is found — generic pool is used instead.
+    public nonisolated static func extractTaskKeyword(from task: String) -> String? {
+        let lower = task.lowercased()
+        // Match whole words only — prevents false positives like "threading" → "reading",
+        // "industry" → "study", "facebook" → "book", "contest" → "test".
+        func word(_ w: String) -> Bool {
+            lower.range(of: "\\b\(w)\\b", options: .regularExpression) != nil
+        }
+        if word("essay") || word("paper") || word("thesis") {
+            return "essay"
+        }
+        if word("presentation") || word("slides") || word("deck") || word("powerpoint") || word("keynote") {
+            return "presentation"
+        }
+        if word("code") || word("coding") || word("programming") || word("bug") || word("feature") || word("function") {
+            return "code"
+        }
+        if word("report") || word("document") || word("doc") {
+            return "report"
+        }
+        if word("study") || word("studying") || word("exam") || word("quiz") || word("test")
+            || word("midterm") || word("midterms") || word("finals") || word("notes")
+            || word("flashcard") || word("flashcards") || word("lecture") {
+            return "studying"
+        }
+        if word("reading") || word("book") || word("chapter") || word("article") {
+            return "reading"
+        }
+        if word("homework") || word("assignment") || lower.contains("problem set") || word("pset") {
+            return "homework"
+        }
+        if word("research") || word("lab") {
+            return "research"
+        }
+        if word("design") || word("designing") || word("mockup") || word("wireframe")
+            || word("prototype") || word("figma") || word("sketch") {
+            return "design"
+        }
+        if word("email") || word("emails") || word("inbox") {
+            return "email"
+        }
+        if word("project") || word("projects") {
+            return "project"
+        }
+        if word("proposal") || word("proposals") {
+            return "proposal"
+        }
+        if word("interview") || word("interviews") {
+            return "interview"
+        }
+        if word("video") || word("editing") || word("footage") || word("film") || word("filming") {
+            return "video"
+        }
+        if word("cv") || lower.contains("résumé") || lower.contains("resumé") {
+            return "resume"
+        }
+        // "application" check runs after resume/cv so "apply to update my CV" maps to resume.
+        // word("apply") excluded — too broad ("apply a fix to the code" etc.) and code/design run first anyway.
+        if word("application") || word("applications") || lower.contains("cover letter")
+            || word("applying") || lower.contains("job application")
+            || lower.contains("internship application") || lower.contains("college application") {
+            return "application"
+        }
+        if word("blog") || word("newsletter") {
+            return "writing"
+        }
+        // Urgency language without a more specific subject — e.g. "I have a deadline tonight",
+        // "assignment due by midnight", "this is due tomorrow". Runs last so "essay due tonight"
+        // maps to "essay", not "deadline".
+        // `\bdue at \d` catches "due at 5pm" / "due at 11:59" without false-positives like
+        // "residue at 3" (the \b word boundary rejects "residue").
+        if word("deadline") || lower.contains("due by") || lower.contains("due tonight")
+            || lower.contains("due tomorrow") || lower.contains("due at midnight")
+            || lower.contains("due at noon") || lower.contains("due at end of")
+            || lower.contains("due in") || lower.contains("due before")
+            || lower.range(of: #"\bdue at \d"#, options: .regularExpression) != nil {
+            return "deadline"
+        }
+        return nil
+    }
+
+    /// Returns task-specific callout strings for the given keyword and tier.
+    /// Exposed `internal` so unit tests can inspect message content directly.
+    internal func taskAwareCallouts(keyword: String, tier: Int) -> [String] {
+        // "studying" doesn't fit "your studying" grammatically — use natural gerund phrasing.
+        if keyword == "studying" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to studying.",
+                    "you're not studying right now.",
+                    "studying won't do itself.",
+                ]
+            case 2:
+                return [
+                    "stop putting off studying.",
+                    "you need to be studying, not doing this.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Start studying.",
+                    "your study session is ticking away.",
+                ]
+            }
+        }
+        // "reading" has the same possessive awkwardness as "studying".
+        if keyword == "reading" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to reading.",
+                    "you're not reading right now.",
+                    "that reading won't do itself.",
+                ]
+            case 2:
+                return [
+                    "stop putting off your reading.",
+                    "you need to be reading, not doing this.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Get back to reading.",
+                    "the reading deadline isn't moving.",
+                ]
+            }
+        }
+        // "email" — "this isn't your email" and "your email isn't going to finish itself"
+        // sound unnatural. Use inbox-centric phrasing instead.
+        if keyword == "email" {
+            switch tier {
+            case 1:
+                return [
+                    "those emails aren't going to write themselves.",
+                    "get back to your email.",
+                    "close this and go handle that email.",
+                ]
+            case 2:
+                return [
+                    "stop avoiding your inbox.",
+                    "you have emails waiting — not this.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Go handle your email.",
+                    "your inbox isn't going to clear itself.",
+                ]
+            }
+        }
+        // "writing" — covers blog posts, newsletters, content creation.
+        if keyword == "writing" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your writing.",
+                    "that post isn't going to write itself.",
+                    "close this and start writing.",
+                ]
+            case 2:
+                return [
+                    "stop putting off your writing.",
+                    "you need to write, not browse.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Open your draft.",
+                    "your writing isn't getting done.",
+                ]
+            }
+        }
+        // "code" — "CLOSE THIS. open your code." sounds unnatural; use action-oriented phrasing.
+        if keyword == "code" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your code.",
+                    "this isn't your code.",
+                    "that code isn't going to ship itself.",
+                ]
+            case 2:
+                return [
+                    "stop procrastinating on your code.",
+                    "you need to be writing code, not browsing.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Commit the code.",
+                    "your code won't write itself.",
+                ]
+            }
+        }
+        // "presentation" — "CLOSE THIS. open your presentation." sounds passive; use direct action.
+        if keyword == "presentation" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your presentation.",
+                    "this isn't your presentation.",
+                    "your presentation isn't going to build itself.",
+                ]
+            case 2:
+                return [
+                    "stop avoiding your presentation.",
+                    "you need to be working on your presentation, not this.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Finish the presentation.",
+                    "your presentation won't finish itself.",
+                ]
+            }
+        }
+        // "homework" — "CLOSE THIS. open your homework." sounds like opening a file, not doing work.
+        if keyword == "homework" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your homework.",
+                    "this isn't your homework.",
+                    "your homework isn't going to do itself.",
+                ]
+            case 2:
+                return [
+                    "stop putting off your homework.",
+                    "you need to do your homework, not this.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Go finish your homework.",
+                    "your homework deadline isn't moving.",
+                ]
+            }
+        }
+        // "research" — "CLOSE THIS. open your research." is passive; direct action framing works better.
+        if keyword == "research" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your research.",
+                    "this isn't your research.",
+                    "your research isn't going to do itself.",
+                ]
+            case 2:
+                return [
+                    "stop avoiding your research.",
+                    "you need to be doing your research, not this.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Get back to your research.",
+                    "your research deadline isn't moving.",
+                ]
+            }
+        }
+        // "project" — "CLOSE THIS. open your project." sounds like opening a file; use action phrasing.
+        if keyword == "project" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your project.",
+                    "this isn't your project.",
+                    "your project isn't going to finish itself.",
+                ]
+            case 2:
+                return [
+                    "stop avoiding your project.",
+                    "you need to work on your project, not this.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Go finish your project.",
+                    "your project deadline is real.",
+                ]
+            }
+        }
+        // "proposal" — "CLOSE THIS. open your proposal." sounds passive; use direct writing-focused phrasing.
+        if keyword == "proposal" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your proposal.",
+                    "this isn't your proposal.",
+                    "your proposal won't write itself.",
+                ]
+            case 2:
+                return [
+                    "stop putting off your proposal.",
+                    "you need to write your proposal, not browse.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Go finish your proposal.",
+                    "your proposal deadline isn't moving.",
+                ]
+            }
+        }
+        // "interview" — frame around preparation, not "your interview" (which sounds like it's happening now).
+        if keyword == "interview" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to interview prep.",
+                    "your interview isn't going to prep itself.",
+                    "close this and practice.",
+                ]
+            case 2:
+                return [
+                    "stop putting off interview prep.",
+                    "you need to be practicing, not browsing.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Go prep for that interview.",
+                    "your interview is coming — this isn't helping.",
+                ]
+            }
+        }
+        // "resume" — CV / résumé writing. Use "résumé" in messages for clarity.
+        if keyword == "resume" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your résumé.",
+                    "that résumé isn't going to write itself.",
+                    "close this and keep writing.",
+                ]
+            case 2:
+                return [
+                    "stop putting off your résumé.",
+                    "you need to be writing your résumé, not browsing.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Finish your résumé.",
+                    "your résumé deadline isn't moving.",
+                ]
+            }
+        }
+        // "application" — job, internship, college applications, cover letters.
+        // Avoid "this isn't your application" — sounds like a software app, not a form.
+        if keyword == "application" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your application.",
+                    "that application isn't going to submit itself.",
+                    "close this and keep writing.",
+                ]
+            case 2:
+                return [
+                    "stop putting off your application.",
+                    "you need to finish your application, not browse.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Submit the application.",
+                    "your application deadline isn't moving.",
+                ]
+            }
+        }
+        // "deadline" — urgency catch-all: due tonight, due by midnight, deadline incoming.
+        // Messages emphasize time pressure rather than task identity (which we don't know).
+        if keyword == "deadline" {
+            switch tier {
+            case 1:
+                return [
+                    "you have a deadline. act like it.",
+                    "the clock is ticking. get back to work.",
+                    "deadline incoming — stop.",
+                ]
+            case 2:
+                return [
+                    "you're burning deadline time.",
+                    "you set this deadline. honor it.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Your deadline is real.",
+                    "your deadline doesn't care that you're here.",
+                ]
+            }
+        }
+        // "video" — covers video editing, filming, post-production.
+        if keyword == "video" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your video.",
+                    "that video isn't going to edit itself.",
+                    "close this and keep editing.",
+                ]
+            case 2:
+                return [
+                    "stop putting off your video.",
+                    "you need to be editing, not watching.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Finish the video.",
+                    "your video deadline isn't moving.",
+                ]
+            }
+        }
+        // "design" — "CLOSE THIS. open your design." sounds like opening a Finder file.
+        // Use Figma/tool-oriented phrasing that makes the next action obvious.
+        if keyword == "design" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your design.",
+                    "that design isn't going to finish itself.",
+                    "close this and keep designing.",
+                ]
+            case 2:
+                return [
+                    "stop avoiding your design.",
+                    "you need to be designing, not browsing.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Go finish the design.",
+                    "your design won't complete itself.",
+                ]
+            }
+        }
+        // "report" — "CLOSE THIS. open your report." implies opening a file, not writing one.
+        // Use writing-action phrasing to make the expected behaviour obvious.
+        if keyword == "report" {
+            switch tier {
+            case 1:
+                return [
+                    "get back to your report.",
+                    "that report isn't going to write itself.",
+                    "this isn't your report.",
+                ]
+            case 2:
+                return [
+                    "stop avoiding your report.",
+                    "you need to be writing your report, not browsing.",
+                ]
+            default:
+                return [
+                    "CLOSE THIS. Go finish the report.",
+                    "your report deadline isn't moving.",
+                ]
+            }
+        }
+        switch tier {
+        case 1:
+            return [
+                "get back to your \(keyword).",
+                "this isn't your \(keyword).",
+                "your \(keyword) isn't going to finish itself.",
+            ]
+        case 2:
+            return [
+                "stop putting off your \(keyword).",
+                "you need to work on your \(keyword), not this.",
+            ]
+        default:
+            return [
+                "CLOSE THIS. open your \(keyword).",
+                "your \(keyword) deadline isn't moving.",
+            ]
+        }
     }
 
     // MARK: - Escalation logic
@@ -143,6 +626,7 @@ public final class CalloutManager {
         consecutiveOffTask = 0
         hasFiredForStreak = false
         hasEscalatedForStreak = false
+        currentReason = nil
         NotchState.shared.clearCallout()
         NotchState.shared.clearBlocker()
         // lastFiredMessage intentionally preserved: dedup works across streaks within a session.
@@ -155,7 +639,7 @@ public final class CalloutManager {
         calloutCount = count
     }
 
-    /// Full session reset — zeroes calloutCount and clears all state.
+    /// Full session reset — zeroes calloutCount and clears all state including task context.
     /// Called by SessionManager.activate() at session start and by tests between sessions.
     public func reset() {
         autoDismissTask?.cancel()
@@ -164,7 +648,9 @@ public final class CalloutManager {
         hasFiredForStreak = false
         hasEscalatedForStreak = false
         lastFiredMessage = nil
+        currentReason = nil
         calloutCount = 0
+        taskKeyword = nil
         NotchState.shared.clearCallout()
         NotchState.shared.clearBlocker()
     }
@@ -173,11 +659,17 @@ public final class CalloutManager {
 
     private func fire() {
         let tier = currentTier()
-        let pool: [String]
+        var pool: [String]
         switch tier {
         case 1: pool = Self.tier1Callouts
         case 2: pool = Self.tier2Callouts
         default: pool = Self.tier3Callouts
+        }
+        // Blend in task-specific messages when session context is available.
+        // They're added to — not replacing — the generic pool so generic messages
+        // still fire proportionally. Task-aware messages appear ~(k / n+k) of the time.
+        if let keyword = taskKeyword {
+            pool += taskAwareCallouts(keyword: keyword, tier: tier)
         }
         let candidates = pool.filter { $0 != lastFiredMessage }
         let message = (candidates.isEmpty ? pool : candidates).randomElement() ?? "focus."
@@ -187,7 +679,7 @@ public final class CalloutManager {
     private func display(_ message: String, tier: Int = 1) {
         calloutCount += 1
         lastFiredMessage = message
-        NotchState.shared.showCallout(message, tier: tier)
+        NotchState.shared.showCallout(message, tier: tier, reason: currentReason)
         // Cancel any pending auto-dismiss from a prior callout before starting a new one.
         autoDismissTask?.cancel()
         autoDismissTask = Task { @MainActor in

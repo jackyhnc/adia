@@ -407,7 +407,10 @@ struct SessionHistoryTests {
         let todayRecord = SessionRecord(
             task: "Today",
             successCriteria: "Done",
-            startTime: Date(timeIntervalSinceNow: -3600),
+            // Derive from `now` (not a fresh `Date(timeIntervalSinceNow:)`) so the
+            // duration is exactly 3600s — two independent `Date()` calls a few
+            // microseconds apart can yield 3599.99...s, which `Int(/60)` floors to 59.
+            startTime: now.addingTimeInterval(-3600),
             endTime: now,
             completedSuccessfully: true,
             calloutCount: 0
@@ -448,6 +451,162 @@ struct SessionHistoryTests {
         #expect(s.weekMinutes == 0)
     }
 
+    // MARK: - SessionRecord.focusScore
+
+    @Test func focusScoreNilWhenTotalChecksIsZero() {
+        let r = makeRecord()
+        #expect(r.totalChecks == 0)
+        #expect(r.focusScore == nil)
+    }
+
+    @Test func focusScoreWhenAllOnTask() {
+        let r = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0,
+            onTaskChecks: 60,
+            totalChecks: 60
+        )
+        #expect(r.focusScore == 1.0)
+    }
+
+    @Test func focusScoreWhenPartiallyOnTask() {
+        let r = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 2,
+            onTaskChecks: 45,
+            totalChecks: 60
+        )
+        #expect(abs((r.focusScore ?? 0) - 0.75) < 0.001)
+    }
+
+    @Test func focusScoreWhenNoneOnTask() {
+        let r = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: false,
+            calloutCount: 10,
+            onTaskChecks: 0,
+            totalChecks: 20
+        )
+        #expect(r.focusScore == 0.0)
+    }
+
+    @Test func focusScoreRoundTripsThroughJSON() throws {
+        let original = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0,
+            onTaskChecks: 80,
+            totalChecks: 100
+        )
+        let data = try JSONEncoder().encode(original)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: data)
+        #expect(decoded.onTaskChecks == 80)
+        #expect(decoded.totalChecks == 100)
+        #expect(abs((decoded.focusScore ?? 0) - 0.8) < 0.001)
+    }
+
+    @Test func legacyJSONWithoutCheckCountsDecodesWithZeroAndNilFocusScore() throws {
+        // Simulate a record saved before focus score tracking was added.
+        let original = SessionRecord(
+            task: "Old task",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 1
+        )
+        var json = (try JSONSerialization.jsonObject(with: JSONEncoder().encode(original))) as! [String: Any]
+        json.removeValue(forKey: "onTaskChecks")
+        json.removeValue(forKey: "totalChecks")
+        let strippedData = try JSONSerialization.data(withJSONObject: json)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: strippedData)
+        #expect(decoded.onTaskChecks == 0)
+        #expect(decoded.totalChecks == 0)
+        #expect(decoded.focusScore == nil)
+    }
+
+    @Test func reasoningStatsRoundTripThroughJSON() throws {
+        let original = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0,
+            reasoningAttempts: 3,
+            reasoningGranted: 1
+        )
+        let data = try JSONEncoder().encode(original)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: data)
+        #expect(decoded.reasoningAttempts == 3)
+        #expect(decoded.reasoningGranted == 1)
+    }
+
+    @Test func legacyJSONWithoutReasoningStatsDecodesWithZero() throws {
+        // Simulate a record saved before reasoning-history tracking was added.
+        let original = SessionRecord(
+            task: "Old task",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 1
+        )
+        var json = (try JSONSerialization.jsonObject(with: JSONEncoder().encode(original))) as! [String: Any]
+        json.removeValue(forKey: "reasoningAttempts")
+        json.removeValue(forKey: "reasoningGranted")
+        let strippedData = try JSONSerialization.data(withJSONObject: json)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: strippedData)
+        #expect(decoded.reasoningAttempts == 0)
+        #expect(decoded.reasoningGranted == 0)
+    }
+
+    @Test func legacyJSONWithoutBlockedAppsDecodesWithEmpty() throws {
+        // Simulate a record saved before blockedApps tracking was added.
+        let original = SessionRecord(
+            task: "Old task",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+        var json = (try JSONSerialization.jsonObject(with: JSONEncoder().encode(original))) as! [String: Any]
+        json.removeValue(forKey: "blockedApps")
+        let strippedData = try JSONSerialization.data(withJSONObject: json)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: strippedData)
+        #expect(decoded.blockedApps.isEmpty)
+    }
+
+    @Test func blockedAppsRoundTripsThroughJSON() throws {
+        let original = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0,
+            blockedApps: ["com.spotify.client", "com.hnc.Discord"]
+        )
+        let data = try JSONEncoder().encode(original)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: data)
+        #expect(decoded.blockedApps == ["com.spotify.client", "com.hnc.Discord"])
+    }
+
     @Test func statsStreakBrokenByGap() async throws {
         let history = try makeHistory()
         let cal = Calendar.current
@@ -477,6 +636,217 @@ struct SessionHistoryTests {
         ))
         let s = await history.stats()
         #expect(s.streak == 1)  // gap breaks the streak
+    }
+
+    // MARK: - allTimeCount / allTimeMinutes
+
+    @Test func statsAllTimeCountEmptyHistoryIsZero() async throws {
+        let history = try makeHistory()
+        let s = await history.stats()
+        #expect(s.allTimeCount == 0)
+        #expect(s.allTimeMinutes == 0)
+    }
+
+    @Test func statsAllTimeCountMatchesRecordCount() async throws {
+        let history = try makeHistory()
+        await history.record(makeRecord(task: "A"))
+        await history.record(makeRecord(task: "B"))
+        await history.record(makeRecord(task: "C"))
+        let s = await history.stats()
+        #expect(s.allTimeCount == 3)
+    }
+
+    @Test func statsAllTimeMinutesAccumulatesAcrossSessions() async throws {
+        let history = try makeHistory()
+        // 30-min session
+        let now = Date()
+        let r1 = SessionRecord(task: "A", successCriteria: "Done",
+                               startTime: now.addingTimeInterval(-1800), endTime: now,
+                               completedSuccessfully: true, calloutCount: 0)
+        // Another 30-min session
+        let r2 = SessionRecord(task: "B", successCriteria: "Done",
+                               startTime: now.addingTimeInterval(-3600),
+                               endTime: now.addingTimeInterval(-1800),
+                               completedSuccessfully: true, calloutCount: 0)
+        await history.record(r1)
+        await history.record(r2)
+        let s = await history.stats()
+        #expect(s.allTimeMinutes == 60)
+    }
+
+    // MARK: - bestStreak
+
+    @Test func statsBestStreakEmptyHistoryIsZero() async throws {
+        let history = try makeHistory()
+        let s = await history.stats()
+        #expect(s.bestStreak == 0)
+    }
+
+    @Test func statsBestStreakSingleDayIsOne() async throws {
+        let history = try makeHistory()
+        await history.record(makeRecord())
+        let s = await history.stats()
+        #expect(s.bestStreak == 1)
+    }
+
+    @Test func statsBestStreakEqualsCurrentWhenOnBest() async throws {
+        let history = try makeHistory()
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        guard let yesterday = cal.date(byAdding: .day, value: -1, to: today),
+              let todayNoon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: today),
+              let yNoon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: yesterday)
+        else { return }
+        await history.record(SessionRecord(task: "T", successCriteria: "Done",
+                                           startTime: todayNoon,
+                                           endTime: todayNoon.addingTimeInterval(1800),
+                                           completedSuccessfully: true, calloutCount: 0))
+        await history.record(SessionRecord(task: "Y", successCriteria: "Done",
+                                           startTime: yNoon,
+                                           endTime: yNoon.addingTimeInterval(1800),
+                                           completedSuccessfully: true, calloutCount: 0))
+        let s = await history.stats()
+        #expect(s.streak == 2)
+        #expect(s.bestStreak == 2)
+    }
+
+    @Test func statsBestStreakExceedsCurrentAfterGap() async throws {
+        // Three consecutive days from last week, then a gap, then today only.
+        // bestStreak = 3, current streak = 1.
+        let history = try makeHistory()
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        guard let todayNoon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: today)
+        else { return }
+        // Today
+        await history.record(SessionRecord(task: "Today", successCriteria: "Done",
+                                           startTime: todayNoon,
+                                           endTime: todayNoon.addingTimeInterval(1800),
+                                           completedSuccessfully: true, calloutCount: 0))
+        // 10, 11, 12 days ago (3 consecutive days, no gap among them, but gap to today)
+        for daysAgo in [10, 11, 12] {
+            guard let pastDay = cal.date(byAdding: .day, value: -daysAgo, to: today),
+                  let pastNoon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: pastDay)
+            else { continue }
+            await history.record(SessionRecord(task: "Past \(daysAgo)", successCriteria: "Done",
+                                               startTime: pastNoon,
+                                               endTime: pastNoon.addingTimeInterval(1800),
+                                               completedSuccessfully: true, calloutCount: 0))
+        }
+        let s = await history.stats()
+        #expect(s.streak == 1)
+        #expect(s.bestStreak == 3)
+    }
+}
+
+// MARK: - computeBestStreak unit tests
+
+@Suite("computeBestStreak")
+struct ComputeBestStreakTests {
+
+    private func record(daysAgo: Int) -> SessionRecord {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        let dayStart = cal.date(byAdding: .day, value: -daysAgo, to: today)!
+        let noon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: dayStart)!
+        return SessionRecord(task: "Study", successCriteria: "Done",
+                             startTime: noon,
+                             endTime: noon.addingTimeInterval(1800),
+                             completedSuccessfully: true, calloutCount: 0)
+    }
+
+    @Test func emptyRecordsReturnsZero() {
+        #expect(computeBestStreak(from: []) == 0)
+    }
+
+    @Test func singleDayReturnsOne() {
+        #expect(computeBestStreak(from: [record(daysAgo: 0)]) == 1)
+    }
+
+    @Test func twoDayGapReturnsBestOfOne() {
+        // Days 0 and 5 with a gap → best = 1
+        let records = [record(daysAgo: 0), record(daysAgo: 5)]
+        #expect(computeBestStreak(from: records) == 1)
+    }
+
+    @Test func twoConsecutiveDaysReturnsTwo() {
+        let records = [record(daysAgo: 0), record(daysAgo: 1)]
+        #expect(computeBestStreak(from: records) == 2)
+    }
+
+    @Test func threeConsecutiveDaysReturnsThree() {
+        let records = [record(daysAgo: 0), record(daysAgo: 1), record(daysAgo: 2)]
+        #expect(computeBestStreak(from: records) == 3)
+    }
+
+    @Test func twoRunsBestOfTwoIsReturned() {
+        // Days 0, 1 (streak=2) and days 5, 6, 7 (streak=3) → best = 3
+        let records = [
+            record(daysAgo: 0), record(daysAgo: 1),
+            record(daysAgo: 5), record(daysAgo: 6), record(daysAgo: 7),
+        ]
+        #expect(computeBestStreak(from: records) == 3)
+    }
+
+    @Test func multipleSessionsSameDayCountOnce() {
+        // Two sessions on the same day → streak = 1, not 2
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        let noon = cal.date(bySettingHour: 12, minute: 0, second: 0, of: today)!
+        let afternoon = cal.date(bySettingHour: 15, minute: 0, second: 0, of: today)!
+        let r1 = SessionRecord(task: "Morning", successCriteria: "Done",
+                               startTime: noon, endTime: noon.addingTimeInterval(1800),
+                               completedSuccessfully: true, calloutCount: 0)
+        let r2 = SessionRecord(task: "Afternoon", successCriteria: "Done",
+                               startTime: afternoon, endTime: afternoon.addingTimeInterval(1800),
+                               completedSuccessfully: true, calloutCount: 0)
+        #expect(computeBestStreak(from: [r1, r2]) == 1)
+    }
+
+    @Test func orderOfRecordsDoesNotMatter() {
+        // Same 3-day streak, records given in reverse order
+        let records = [record(daysAgo: 2), record(daysAgo: 0), record(daysAgo: 1)]
+        #expect(computeBestStreak(from: records) == 3)
+    }
+
+    @Test func longerOlderStreakBeatsCurrentStreak() {
+        // 4-day streak ending 10 days ago, 1-day streak today → best = 4
+        let records = [
+            record(daysAgo: 0),
+            record(daysAgo: 10), record(daysAgo: 11), record(daysAgo: 12), record(daysAgo: 13),
+        ]
+        #expect(computeBestStreak(from: records) == 4)
+    }
+}
+
+// MARK: - streakDisplayLabel tests
+
+@Suite("StreakDisplayLabel")
+struct StreakDisplayLabelTests {
+
+    @Test func currentEqualsBestShowsNoRecord() {
+        #expect(streakDisplayLabel(current: 3, best: 3) == "🔥 3d streak")
+    }
+
+    @Test func currentExceedsBestIsImpossibleButHandledGracefully() {
+        // Shouldn't happen in production (best >= current always), but guard it.
+        #expect(streakDisplayLabel(current: 5, best: 3) == "🔥 5d streak")
+    }
+
+    @Test func currentBelowBestShowsRecord() {
+        #expect(streakDisplayLabel(current: 2, best: 7) == "🔥 2d streak (best: 7d)")
+    }
+
+    @Test func streakOfOneDayIsShown() {
+        #expect(streakDisplayLabel(current: 1, best: 1) == "🔥 1d streak")
+    }
+
+    @Test func streakOfOneDayWithHigherBestShowsRecord() {
+        #expect(streakDisplayLabel(current: 1, best: 5) == "🔥 1d streak (best: 5d)")
+    }
+
+    @Test func largeBestStreakIsFormatted() {
+        #expect(streakDisplayLabel(current: 14, best: 30) == "🔥 14d streak (best: 30d)")
     }
 }
 
@@ -912,5 +1282,677 @@ struct HeatmapTooltipTests {
     @Test func tooltipOneSessionExactHour() {
         let text = heatmapTooltipText(for: day(sessionCount: 1, minutes: 120))
         #expect(text == "1 session · 2h")
+    }
+}
+
+// MARK: - sessionElapsedLabel tests
+
+@Suite("sessionElapsedLabel")
+struct SessionElapsedLabelTests {
+
+    @Test func zeroSecondsReturnsSubMinute() {
+        #expect(sessionElapsedLabel(seconds: 0) == "<1m")
+    }
+
+    @Test func thirtySecondsReturnsSubMinute() {
+        #expect(sessionElapsedLabel(seconds: 30) == "<1m")
+    }
+
+    @Test func fiftyNineSecondsReturnsSubMinute() {
+        #expect(sessionElapsedLabel(seconds: 59) == "<1m")
+    }
+
+    @Test func negativeSecondsClampedToSubMinute() {
+        #expect(sessionElapsedLabel(seconds: -120) == "<1m")
+    }
+
+    @Test func exactlyOneMinute() {
+        #expect(sessionElapsedLabel(seconds: 60) == "1m")
+    }
+
+    @Test func fortyFiveMinutes() {
+        #expect(sessionElapsedLabel(seconds: 45 * 60) == "45m")
+    }
+
+    @Test func fiftyNineMinutes() {
+        #expect(sessionElapsedLabel(seconds: 59 * 60) == "59m")
+    }
+
+    @Test func exactlyOneHour() {
+        #expect(sessionElapsedLabel(seconds: 3600) == "1h")
+    }
+
+    @Test func oneHourThirtyMinutes() {
+        #expect(sessionElapsedLabel(seconds: 5400) == "1h 30m")
+    }
+
+    @Test func twoHours() {
+        #expect(sessionElapsedLabel(seconds: 7200) == "2h")
+    }
+
+    @Test func twoHoursTwoMinutes() {
+        #expect(sessionElapsedLabel(seconds: 7320) == "2h 2m")
+    }
+}
+
+// MARK: - verificationRelativeTime tests
+
+@Suite("verificationRelativeTime")
+struct VerificationRelativeTimeTests {
+    private let anchor = Date(timeIntervalSinceReferenceDate: 1_000_000)
+
+    private func t(_ seconds: Int) -> Date {
+        Date(timeIntervalSince1970: anchor.timeIntervalSince1970 - TimeInterval(seconds))
+    }
+
+    @Test func justNow() {
+        #expect(verificationRelativeTime(t(0), now: anchor) == "just now")
+    }
+
+    @Test func fiftyNineSecondsAgo() {
+        #expect(verificationRelativeTime(t(59), now: anchor) == "just now")
+    }
+
+    @Test func oneMinuteAgo() {
+        #expect(verificationRelativeTime(t(60), now: anchor) == "1m ago")
+    }
+
+    @Test func fiveMinutesAgo() {
+        #expect(verificationRelativeTime(t(5 * 60), now: anchor) == "5m ago")
+    }
+
+    @Test func fiftyNineMinutesAgo() {
+        #expect(verificationRelativeTime(t(59 * 60), now: anchor) == "59m ago")
+    }
+
+    @Test func exactlyOneHourAgo() {
+        #expect(verificationRelativeTime(t(3600), now: anchor) == "1h ago")
+    }
+
+    @Test func oneHourFifteenMinutesAgo() {
+        #expect(verificationRelativeTime(t(75 * 60), now: anchor) == "1h 15m ago")
+    }
+
+    @Test func twoHoursAgo() {
+        #expect(verificationRelativeTime(t(7200), now: anchor) == "2h ago")
+    }
+
+    @Test func twoHoursTenMinutesAgo() {
+        #expect(verificationRelativeTime(t(2 * 3600 + 10 * 60), now: anchor) == "2h 10m ago")
+    }
+
+    @Test func futureTimestampClampsToJustNow() {
+        // date is 30s in the future — elapsed is negative, clamped to 0 → "just now"
+        let future = Date(timeIntervalSince1970: anchor.timeIntervalSince1970 + 30)
+        #expect(verificationRelativeTime(future, now: anchor) == "just now")
+    }
+}
+
+// MARK: - sessionRecordsToCSV tests
+
+@Suite("sessionRecordsToCSV")
+struct SessionRecordsToCSVTests {
+
+    private static let expectedHeader = "id,task,successCriteria,startTime,endTime,durationSeconds,completedSuccessfully,calloutCount,onTaskChecks,totalChecks,focusScore,reasoningAttempts,reasoningGranted,blockedSites,blockedApps,note"
+
+    private func record(
+        task: String = "Study",
+        successCriteria: String = "Done",
+        note: String? = nil,
+        completedSuccessfully: Bool = true,
+        calloutCount: Int = 0,
+        onTaskChecks: Int = 0,
+        totalChecks: Int = 0,
+        reasoningAttempts: Int = 0,
+        reasoningGranted: Int = 0,
+        blockedDomains: [String] = [],
+        blockedApps: [String] = []
+    ) -> SessionRecord {
+        let start = Date(timeIntervalSinceNow: -3600)
+        return SessionRecord(
+            task: task,
+            successCriteria: successCriteria,
+            startTime: start,
+            endTime: Date(),
+            completedSuccessfully: completedSuccessfully,
+            calloutCount: calloutCount,
+            note: note,
+            onTaskChecks: onTaskChecks,
+            totalChecks: totalChecks,
+            reasoningAttempts: reasoningAttempts,
+            reasoningGranted: reasoningGranted,
+            blockedDomains: blockedDomains,
+            blockedApps: blockedApps
+        )
+    }
+
+    /// Split a data row by comma. Safe only when no field contains a comma.
+    private func cols(_ row: Substring) -> [String] {
+        String(row).components(separatedBy: ",")
+    }
+
+    @Test func emptyInputReturnsHeaderOnly() {
+        let csv = sessionRecordsToCSV([])
+        #expect(csv == Self.expectedHeader)
+    }
+
+    @Test func headerHasSixteenColumns() {
+        let csv = sessionRecordsToCSV([])
+        let headerCols = csv.components(separatedBy: ",")
+        #expect(headerCols.count == 16)
+    }
+
+    @Test func headerColumnNamesAreCorrect() {
+        let csv = sessionRecordsToCSV([])
+        let c = csv.components(separatedBy: ",")
+        #expect(c[0]  == "id")
+        #expect(c[1]  == "task")
+        #expect(c[2]  == "successCriteria")
+        #expect(c[3]  == "startTime")
+        #expect(c[4]  == "endTime")
+        #expect(c[5]  == "durationSeconds")
+        #expect(c[6]  == "completedSuccessfully")
+        #expect(c[7]  == "calloutCount")
+        #expect(c[8]  == "onTaskChecks")
+        #expect(c[9]  == "totalChecks")
+        #expect(c[10] == "focusScore")
+        #expect(c[11] == "reasoningAttempts")
+        #expect(c[12] == "reasoningGranted")
+        #expect(c[13] == "blockedSites")
+        #expect(c[14] == "blockedApps")
+        #expect(c[15] == "note")
+    }
+
+    @Test func singleRecordProducesHeaderPlusOneDataRow() {
+        let csv = sessionRecordsToCSV([record()])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(rows.count == 2)
+        #expect(String(rows[0]) == Self.expectedHeader)
+    }
+
+    @Test func threeRecordsProduceFourRows() {
+        let csv = sessionRecordsToCSV([record(), record(), record()])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(rows.count == 4)
+    }
+
+    @Test func completedSuccessfullyTrueEncodesAsTrue() {
+        let csv = sessionRecordsToCSV([record(completedSuccessfully: true)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(cols(rows[1])[6] == "true")
+    }
+
+    @Test func completedSuccessfullyFalseEncodesAsFalse() {
+        let csv = sessionRecordsToCSV([record(completedSuccessfully: false)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(cols(rows[1])[6] == "false")
+    }
+
+    @Test func nilFocusScoreEncodesAsEmptyString() {
+        // totalChecks == 0 → focusScore is nil
+        let csv = sessionRecordsToCSV([record(onTaskChecks: 0, totalChecks: 0)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(cols(rows[1])[10] == "")
+    }
+
+    @Test func focusScoreFormattedToThreeDecimals() {
+        // 3/4 = 0.75 → "0.750"
+        let csv = sessionRecordsToCSV([record(onTaskChecks: 3, totalChecks: 4)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(cols(rows[1])[10] == "0.750")
+    }
+
+    @Test func perfectFocusScoreIsOnePointZeroZeroZero() {
+        let csv = sessionRecordsToCSV([record(onTaskChecks: 10, totalChecks: 10)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(cols(rows[1])[10] == "1.000")
+    }
+
+    @Test func nilNoteEncodesAsEmptyString() {
+        let csv = sessionRecordsToCSV([record(note: nil)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(cols(rows[1])[15] == "")
+    }
+
+    @Test func plainNoteIsUnquoted() {
+        let csv = sessionRecordsToCSV([record(note: "solid session")])
+        #expect(csv.hasSuffix("solid session"))
+    }
+
+    @Test func taskWithCommaIsWrappedInDoubleQuotes() {
+        let csv = sessionRecordsToCSV([record(task: "Chapter 1, Chapter 2")])
+        #expect(csv.contains("\"Chapter 1, Chapter 2\""))
+    }
+
+    @Test func taskWithDoubleQuoteHasEscapedInternalQuote() {
+        let csv = sessionRecordsToCSV([record(task: "Write \"draft\"")])
+        // RFC 4180: quote → double-quote inside a quoted field
+        #expect(csv.contains("\"Write \"\"draft\"\"\""))
+    }
+
+    @Test func noteWithCommaIsWrappedInDoubleQuotes() {
+        let csv = sessionRecordsToCSV([record(note: "focused, mostly")])
+        #expect(csv.contains("\"focused, mostly\""))
+    }
+
+    @Test func successCriteriaWithCommaIsWrappedInDoubleQuotes() {
+        let csv = sessionRecordsToCSV([record(successCriteria: "Open essay, click Submit")])
+        #expect(csv.contains("\"Open essay, click Submit\""))
+    }
+
+    @Test func plainFieldsAreNotWrappedInQuotes() {
+        let csv = sessionRecordsToCSV([record(task: "Study", successCriteria: "Done", note: "good")])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        let c = cols(rows[1])
+        // task and successCriteria contain no special chars — must not be quoted
+        #expect(c[1] == "Study")
+        #expect(c[2] == "Done")
+    }
+
+    @Test func reasoningStatsAreInCorrectColumns() {
+        let csv = sessionRecordsToCSV([record(reasoningAttempts: 5, reasoningGranted: 2)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        let c = cols(rows[1])
+        #expect(c[11] == "5")
+        #expect(c[12] == "2")
+    }
+
+    @Test func calloutCountIsInCorrectColumn() {
+        let csv = sessionRecordsToCSV([record(calloutCount: 7)])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(cols(rows[1])[7] == "7")
+    }
+
+    @Test func rowsAreInSameOrderAsInput() {
+        let a = record(task: "Alpha")
+        let b = record(task: "Beta")
+        let c = record(task: "Gamma")
+        let csv = sessionRecordsToCSV([a, b, c])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(String(rows[1]).contains("Alpha"))
+        #expect(String(rows[2]).contains("Beta"))
+        #expect(String(rows[3]).contains("Gamma"))
+    }
+
+    // MARK: - blockedSites column
+
+    @Test func emptyBlockedDomainsEncodesAsEmptyString() {
+        let csv = sessionRecordsToCSV([record(blockedDomains: [])])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        // Column 13 = blockedSites; no quoted value → empty
+        #expect(cols(rows[1])[13] == "")
+    }
+
+    @Test func blockedDomainsJoinedWithPipeSeparator() {
+        let csv = sessionRecordsToCSV([record(blockedDomains: ["reddit.com", "twitter.com"])])
+        #expect(csv.contains("reddit.com|twitter.com"))
+    }
+
+    @Test func singleBlockedDomainIsUnquoted() {
+        let csv = sessionRecordsToCSV([record(blockedDomains: ["reddit.com"])])
+        #expect(csv.contains("reddit.com"))
+        // Single domain has no pipe or comma so must not be quoted
+        #expect(!csv.contains("\"reddit.com\""))
+    }
+
+    @Test func blockedDomainsColumnIsAtIndex13() {
+        let csv = sessionRecordsToCSV([record(blockedDomains: ["reddit.com", "twitter.com"])])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        let header = csv.components(separatedBy: "\n")[0].components(separatedBy: ",")
+        #expect(header[13] == "blockedSites")
+        // Pipe separator contains no comma → field is unquoted, safe to check via contains
+        #expect(String(rows[1]).contains("reddit.com|twitter.com"))
+        #expect(cols(rows[1])[13] == "reddit.com|twitter.com")
+    }
+
+    // MARK: - blockedApps column
+
+    @Test func emptyBlockedAppsEncodesAsEmptyString() {
+        let csv = sessionRecordsToCSV([record(blockedApps: [])])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        // Column 14 = blockedApps
+        #expect(cols(rows[1])[14] == "")
+    }
+
+    @Test func blockedAppsJoinedWithPipeSeparator() {
+        let csv = sessionRecordsToCSV([record(blockedApps: ["com.spotify.client", "com.hnc.Discord"])])
+        #expect(csv.contains("com.spotify.client|com.hnc.Discord"))
+    }
+
+    @Test func singleBlockedAppIsUnquoted() {
+        let csv = sessionRecordsToCSV([record(blockedApps: ["com.spotify.client"])])
+        #expect(csv.contains("com.spotify.client"))
+        #expect(!csv.contains("\"com.spotify.client\""))
+    }
+
+    @Test func blockedAppsColumnIsAtIndex14() {
+        let csv = sessionRecordsToCSV([record(blockedApps: ["com.spotify.client", "com.hnc.Discord"])])
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        let header = csv.components(separatedBy: "\n")[0].components(separatedBy: ",")
+        #expect(header[14] == "blockedApps")
+        #expect(cols(rows[1])[14] == "com.spotify.client|com.hnc.Discord")
+    }
+
+    @Test func blockedAppsBundleIDsWithDotsAreUnquoted() {
+        // Bundle IDs contain dots but not commas — must not be quoted
+        let csv = sessionRecordsToCSV([record(blockedApps: ["com.apple.Music"])])
+        #expect(!csv.contains("\"com.apple.Music\""))
+        #expect(csv.contains("com.apple.Music"))
+    }
+}
+
+// MARK: - SessionHistory.exportCSV() integration
+
+@Suite("SessionHistory exportCSV")
+struct SessionHistoryExportCSVTests {
+
+    private func makeHistory() throws -> SessionHistory {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("AdiCSVTest-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        return SessionHistory(fileURL: dir.appendingPathComponent("history.json"))
+    }
+
+    @Test func emptyHistoryReturnsHeaderOnly() async throws {
+        let history = try makeHistory()
+        let csv = await history.exportCSV()
+        #expect(csv.hasPrefix("id,task,successCriteria"))
+        #expect(!csv.contains("\n"))  // no data rows → no newline
+    }
+
+    @Test func reflectsRecordedSessions() async throws {
+        let history = try makeHistory()
+        let r = SessionRecord(
+            task: "Write essay",
+            successCriteria: "Submitted to Canvas",
+            startTime: Date(timeIntervalSinceNow: -3600),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 2
+        )
+        await history.record(r)
+        let csv = await history.exportCSV()
+        let rows = csv.split(separator: "\n", omittingEmptySubsequences: false)
+        #expect(rows.count == 2)
+        #expect(String(rows[1]).contains("Write essay"))
+        #expect(String(rows[1]).contains("true"))
+    }
+
+    @Test func afterClearReturnsHeaderOnly() async throws {
+        let history = try makeHistory()
+        await history.record(SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -1800),
+            endTime: Date(),
+            completedSuccessfully: true,
+            calloutCount: 0
+        ))
+        await history.clear()
+        let csv = await history.exportCSV()
+        #expect(!csv.contains("\n"))  // header only
+        #expect(csv.hasPrefix("id,"))
+    }
+}
+
+// MARK: - sessionRecordsToJSON tests
+
+@Suite("sessionRecordsToJSON")
+struct SessionRecordsToJSONTests {
+
+    private func record(
+        task: String = "Study",
+        successCriteria: String = "Done",
+        completedSuccessfully: Bool = true,
+        calloutCount: Int = 0
+    ) -> SessionRecord {
+        let now = Date()
+        return SessionRecord(
+            task: task,
+            successCriteria: successCriteria,
+            startTime: now.addingTimeInterval(-3600),
+            endTime: now,
+            completedSuccessfully: completedSuccessfully,
+            calloutCount: calloutCount
+        )
+    }
+
+    @Test func emptyInputReturnsEmptyArray() {
+        let json = sessionRecordsToJSON([])
+        // .prettyPrinted may emit "[ ]" or "[\n\n]" — strip all whitespace to compare structure
+        #expect(json.filter { !$0.isWhitespace } == "[]")
+    }
+
+    @Test func singleRecordProducesValidJSON() throws {
+        let r = record(task: "Write essay", successCriteria: "Submitted")
+        let json = sessionRecordsToJSON([r])
+        let data = try #require(json.data(using: .utf8))
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decoded = try decoder.decode([SessionRecord].self, from: data)
+        #expect(decoded.count == 1)
+        #expect(decoded[0].task == "Write essay")
+        #expect(decoded[0].successCriteria == "Submitted")
+        #expect(decoded[0].completedSuccessfully == true)
+    }
+
+    @Test func multipleRecordsRoundTrip() throws {
+        let records = [
+            record(task: "Task A", completedSuccessfully: true),
+            record(task: "Task B", completedSuccessfully: false),
+            record(task: "Task C", calloutCount: 3)
+        ]
+        let json = sessionRecordsToJSON(records)
+        let data = try #require(json.data(using: .utf8))
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decoded = try decoder.decode([SessionRecord].self, from: data)
+        #expect(decoded.count == 3)
+        #expect(decoded[0].task == "Task A")
+        #expect(decoded[1].completedSuccessfully == false)
+        #expect(decoded[2].calloutCount == 3)
+    }
+
+    @Test func outputIsPrettyPrinted() {
+        let r = record()
+        let json = sessionRecordsToJSON([r])
+        // Pretty-printed JSON has newlines
+        #expect(json.contains("\n"))
+    }
+
+    @Test func outputIsValidUTF8String() {
+        let r = record(task: "Café résumé", successCriteria: "Filed")
+        let json = sessionRecordsToJSON([r])
+        #expect(!json.isEmpty)
+        #expect(json.data(using: .utf8) != nil)
+        #expect(json.contains("Café résumé"))
+    }
+
+    @Test func recordIDIsPreservedInJSON() throws {
+        let r = record()
+        let json = sessionRecordsToJSON([r])
+        #expect(json.contains(r.id.uuidString))
+    }
+
+    @Test func nilNoteIsAbsentFromJSON() throws {
+        let r = record()
+        #expect(r.note == nil)
+        // SessionRecord.encode uses encodeIfPresent for note — nil omits the key
+        let json = sessionRecordsToJSON([r])
+        let data = try #require(json.data(using: .utf8))
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decoded = try decoder.decode([SessionRecord].self, from: data)
+        #expect(decoded.first?.note == nil)
+    }
+
+    // focusScore and durationSeconds are computed — verify they appear in the JSON output.
+
+    @Test func focusScoreKeyIsPresentInJSONWhenChecksExist() throws {
+        let now = Date()
+        let r = SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: now.addingTimeInterval(-3600),
+            endTime: now,
+            completedSuccessfully: true,
+            calloutCount: 0,
+            onTaskChecks: 4,
+            totalChecks: 5
+        )
+        let json = sessionRecordsToJSON([r])
+        let data = try #require(json.data(using: .utf8))
+        let obj = try JSONSerialization.jsonObject(with: data) as! [[String: Any]]
+        #expect(obj.first?["focusScore"] != nil)
+        let score = try #require(obj.first?["focusScore"] as? Double)
+        #expect(abs(score - 0.8) < 0.001)
+    }
+
+    @Test func focusScoreKeyIsAbsentFromJSONWhenNoChecks() throws {
+        // totalChecks == 0 → focusScore is nil → encodeIfPresent omits the key
+        let r = record()
+        #expect(r.totalChecks == 0)
+        let json = sessionRecordsToJSON([r])
+        let data = try #require(json.data(using: .utf8))
+        let obj = try JSONSerialization.jsonObject(with: data) as! [[String: Any]]
+        #expect(obj.first?["focusScore"] == nil)
+    }
+
+    @Test func durationSecondsKeyIsPresentInJSON() throws {
+        let now = Date()
+        let start = now.addingTimeInterval(-7200)   // 2 hours ago
+        let r = SessionRecord(
+            task: "Deep work",
+            successCriteria: "Done",
+            startTime: start,
+            endTime: now,
+            completedSuccessfully: true,
+            calloutCount: 0
+        )
+        let json = sessionRecordsToJSON([r])
+        let data = try #require(json.data(using: .utf8))
+        let obj = try JSONSerialization.jsonObject(with: data) as! [[String: Any]]
+        let seconds = try #require(obj.first?["durationSeconds"] as? Int)
+        #expect(seconds == 7200)
+    }
+
+    @Test func computedFieldsDoNotBreakRoundTrip() throws {
+        // Encoding now adds focusScore + durationSeconds; decoding ignores them
+        // (derived from stored fields). Verify the decoded record is identical.
+        let now = Date()
+        let r = SessionRecord(
+            task: "Essay",
+            successCriteria: "Submitted",
+            startTime: now.addingTimeInterval(-1800),
+            endTime: now,
+            completedSuccessfully: true,
+            calloutCount: 2,
+            onTaskChecks: 3,
+            totalChecks: 4
+        )
+        let json = sessionRecordsToJSON([r])
+        let data = try #require(json.data(using: .utf8))
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decoded = try decoder.decode([SessionRecord].self, from: data)
+        let d = try #require(decoded.first)
+        #expect(d.id == r.id)
+        #expect(d.task == r.task)
+        #expect(d.onTaskChecks == r.onTaskChecks)
+        #expect(d.totalChecks == r.totalChecks)
+        // focusScore is re-derived from onTaskChecks/totalChecks after decode
+        #expect(abs((d.focusScore ?? 0) - 0.75) < 0.001)
+    }
+}
+
+// MARK: - SessionHistory.exportJSON() integration
+
+@Suite("SessionHistory exportJSON")
+struct SessionHistoryExportJSONTests {
+
+    private func makeHistory() throws -> SessionHistory {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("AdiJSONTest-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        return SessionHistory(fileURL: dir.appendingPathComponent("history.json"))
+    }
+
+    @Test func emptyHistoryReturnsEmptyArray() async throws {
+        let history = try makeHistory()
+        let json = await history.exportJSON()
+        // .prettyPrinted may emit "[ ]" or "[\n\n]" — strip all whitespace to compare structure
+        #expect(json.filter { !$0.isWhitespace } == "[]")
+    }
+
+    @Test func reflectsRecordedSessions() async throws {
+        let history = try makeHistory()
+        let now = Date()
+        let r = SessionRecord(
+            task: "Read chapter",
+            successCriteria: "Notes taken",
+            startTime: now.addingTimeInterval(-1800),
+            endTime: now,
+            completedSuccessfully: true,
+            calloutCount: 1
+        )
+        await history.record(r)
+        let json = await history.exportJSON()
+        #expect(json.contains("Read chapter"))
+        #expect(json.contains("Notes taken"))
+        let data = try #require(json.data(using: .utf8))
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decoded = try decoder.decode([SessionRecord].self, from: data)
+        #expect(decoded.count == 1)
+        #expect(decoded[0].id == r.id)
+    }
+
+    @Test func afterClearReturnsEmptyArray() async throws {
+        let history = try makeHistory()
+        let now = Date()
+        await history.record(SessionRecord(
+            task: "Study",
+            successCriteria: "Done",
+            startTime: now.addingTimeInterval(-900),
+            endTime: now,
+            completedSuccessfully: true,
+            calloutCount: 0
+        ))
+        await history.clear()
+        let json = await history.exportJSON()
+        // .prettyPrinted may emit "[ ]" or "[\n\n]" — strip all whitespace to compare structure
+        #expect(json.filter { !$0.isWhitespace } == "[]")
+    }
+}
+
+// MARK: - allTimeSummaryText tests
+
+@Suite("AllTimeSummaryText")
+struct AllTimeSummaryTextTests {
+
+    private func stats(allTimeCount: Int, allTimeMinutes: Int) -> SessionStats {
+        SessionStats(todayCount: 0, todayMinutes: 0, weekCount: 0, weekMinutes: 0, streak: 0,
+                     allTimeCount: allTimeCount, allTimeMinutes: allTimeMinutes)
+    }
+
+    @Test func zeroMinutesShowsTotalWithoutTime() {
+        #expect(allTimeSummaryText(stats(allTimeCount: 5, allTimeMinutes: 0)) == "5 sessions total")
+    }
+
+    @Test func minutesOnlyShowsMinutesSuffix() {
+        #expect(allTimeSummaryText(stats(allTimeCount: 3, allTimeMinutes: 45)) == "3 sessions · 45m total")
+    }
+
+    @Test func hoursOnlyShowsHoursSuffix() {
+        #expect(allTimeSummaryText(stats(allTimeCount: 10, allTimeMinutes: 120)) == "10 sessions · 2h total")
+    }
+
+    @Test func hoursAndMinutesAreBothShown() {
+        // 23h 3m = 1383 minutes
+        #expect(allTimeSummaryText(stats(allTimeCount: 47, allTimeMinutes: 1383)) == "47 sessions · 23h 3m total")
+    }
+
+    @Test func singularSessionLabel() {
+        #expect(allTimeSummaryText(stats(allTimeCount: 1, allTimeMinutes: 30)) == "1 session · 30m total")
     }
 }

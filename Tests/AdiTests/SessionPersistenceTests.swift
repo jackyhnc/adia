@@ -121,4 +121,40 @@ struct SessionPersistenceTests {
         #expect(loaded.verificationHistory.isEmpty)
         p.clear()
     }
+
+    @Test func saveLoadRoundTripPreservesTargetDuration() throws {
+        let p = SessionPersistence.shared
+        let original = Session(
+            task: "Write essay",
+            successCriteria: "Submit to Canvas",
+            phase: .active,
+            targetDuration: 5400
+        )
+        p.save(original)
+        let loaded = try #require(p.load())
+        #expect(loaded.targetDuration == 5400)
+        p.clear()
+    }
+
+    @Test func targetDurationDefaultsToNilForLegacySession() throws {
+        let p = SessionPersistence.shared
+        let original = Session(task: "old task", successCriteria: "c", phase: .active, targetDuration: 3600)
+        let encoded = try JSONEncoder().encode(original)
+        var dict = try #require((try JSONSerialization.jsonObject(with: encoded)) as? [String: Any])
+        dict.removeValue(forKey: "targetDuration")
+        let stripped = try JSONSerialization.data(withJSONObject: dict)
+        UserDefaults.standard.set(stripped, forKey: "adia.activeSession")
+        let loaded = try #require(p.load())
+        #expect(loaded.targetDuration == nil)
+        p.clear()
+    }
+
+    @Test func nilTargetDurationRoundTrips() throws {
+        let p = SessionPersistence.shared
+        let original = Session(task: "t", successCriteria: "c", phase: .active, targetDuration: nil)
+        p.save(original)
+        let loaded = try #require(p.load())
+        #expect(loaded.targetDuration == nil)
+        p.clear()
+    }
 }

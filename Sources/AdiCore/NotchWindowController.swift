@@ -48,8 +48,10 @@ public final class NotchWindowController: NSWindowController {
     private static let calloutExpandedHeight: CGFloat   = 302
     // Tier-3 callout uses larger font + more padding, needing 20pt more room.
     private static let tier3CalloutExpandedHeight: CGFloat = 322
-    private static let creationExpandedHeight: CGFloat  = 310
+    private static let creationExpandedHeight: CGFloat  = 348
     private static let conversationHeight: CGFloat      = 430
+    // Extra height accommodates the SESSION NOTE text field added in the verified card.
+    private static let verifiedCardHeight: CGFloat       = 265
     private static let verificationHeight: CGFloat      = 250
     /// Extra height when the verification panel shows a scrollable history of past attempts.
     private static let verificationHistoryHeight: CGFloat = 350
@@ -57,6 +59,14 @@ public final class NotchWindowController: NSWindowController {
     private static let idleExpandedHeight: CGFloat      = 220
     // Each pinned template button adds this much height to the idle panel.
     private static let perTemplateHeight: CGFloat       = 34
+    // Extra height reserved for the 2-line last-session note row in the idle panel.
+    private static let idleNoteHeight: CGFloat          = 28
+    // Extra height for the compact 7-day heatmap row in the idle panel.
+    private static let idleHeatmapHeight: CGFloat       = 36
+    // Extra height for the daily focus goal progress row in the idle panel.
+    private static let idleDailyGoalHeight: CGFloat     = 32
+    // Extra height when the active/paused session has whitelisted domains to display.
+    private static let whitelistedRowHeight: CGFloat    = 22
 
     // Small always-visible indicator tucked beside the notch (never behind it).
     private static let indicatorWidth: CGFloat          = 150
@@ -65,6 +75,9 @@ public final class NotchWindowController: NSWindowController {
     private static let indicatorSideGap: CGFloat        = 8
 
     // MARK: Private state
+    // Force cast is safe: `init()` below always constructs `window` as a `NotchPanel`
+    // before calling `super.init(window:)`, so this controller never observes any
+    // other window type.
     private var notchPanel: NotchPanel { window as! NotchPanel }
     private var cancellables = Set<AnyCancellable>()
 
@@ -106,10 +119,19 @@ public final class NotchWindowController: NSWindowController {
         NotchState.shared.$verificationResult.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         NotchState.shared.$verificationHistory.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         NotchState.shared.$calloutMessage.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        // calloutTier can change without the message string changing (same text, escalated tier),
+        // so subscribe to it explicitly so the panel resizes from calloutExpandedHeight to
+        // tier3CalloutExpandedHeight even if CalloutManager re-fires an identical message string.
+        NotchState.shared.$calloutTier.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         // Session start/end changes the height between idle (220pt) and active (190pt).
         SessionManager.shared.$session.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        // Timer expiry shows the amber banner at the same height as a tier-1 callout.
+        SessionManager.shared.$timerExpired.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
         // Template count changes idle height.
         NotchState.shared.$idleTemplateCount.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        NotchState.shared.$idleHasNote.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        NotchState.shared.$idleHasHeatmap.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
+        NotchState.shared.$idleHasDailyGoal.dropFirst().sink(receiveValue: reposition).store(in: &cancellables)
     }
 
     // MARK: Panel sizing / positioning
@@ -168,21 +190,33 @@ public final class NotchWindowController: NSWindowController {
             return NSRect(x: x, y: y, width: w, height: h)
         }
 
+        let hasWhitelisted = !(SessionManager.shared.session?.whitelistedDomains.isEmpty ?? true)
+        let whitelistedExtra: CGFloat = hasWhitelisted ? Self.whitelistedRowHeight : 0
+
         let h: CGFloat
         if state.showingConversation {
             h = Self.conversationHeight
         } else if state.isVerifying || state.verificationResult != nil {
-            // Grow the panel when there's a history of previous attempts to display.
-            h = state.verificationHistory.count > 1 ? Self.verificationHistoryHeight : Self.verificationHeight
+            // Verified card only shows stats + End Session — no history section, so it
+            // never needs the extra history height regardless of attempt count.
+            if let result = state.verificationResult, result.verified {
+                h = Self.verifiedCardHeight
+            } else {
+                // Not-verified card can show a scrollable previous-attempts section.
+                h = state.verificationHistory.count > 1 ? Self.verificationHistoryHeight : Self.verificationHeight
+            }
         } else if state.isCreating {
             h = Self.creationExpandedHeight
         } else if state.calloutMessage != nil {
-            h = state.calloutTier >= 3 ? Self.tier3CalloutExpandedHeight : Self.calloutExpandedHeight
+            h = (state.calloutTier >= 3 ? Self.tier3CalloutExpandedHeight : Self.calloutExpandedHeight) + whitelistedExtra
+        } else if SessionManager.shared.timerExpired {
+            // Amber "time's up" banner: same footprint as a tier-1 callout banner.
+            h = Self.calloutExpandedHeight + whitelistedExtra
         } else if SessionManager.shared.session == nil {
             let tc = CGFloat(min(state.idleTemplateCount, 2))
-            h = Self.idleExpandedHeight + tc * Self.perTemplateHeight
+            h = Self.idleExpandedHeight + tc * Self.perTemplateHeight + (state.idleHasNote ? Self.idleNoteHeight : 0) + (state.idleHasHeatmap ? Self.idleHeatmapHeight : 0) + (state.idleHasDailyGoal ? Self.idleDailyGoalHeight : 0)
         } else {
-            h = Self.expandedHeight
+            h = Self.expandedHeight + whitelistedExtra
         }
 
         // Attach the expanded panel to the top edge so it visually grows out of

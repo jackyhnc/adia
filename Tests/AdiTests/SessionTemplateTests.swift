@@ -194,6 +194,29 @@ struct SessionTemplateTests {
         #expect(templates.count == SessionTemplateStore.maxTemplates)
     }
 
+    /// Regression: before the _sorted fix, a new template (lastUsedAt == nil) sorted
+    /// AFTER all templates that had a prior lastUsedAt, so it was immediately evicted
+    /// when 10 used templates already existed — the user lost their just-created template.
+    @Test func newTemplateIsRetainedWhenAllExistingTemplatesHaveBeenUsed() async {
+        let store = makeStore()
+        // Create 10 templates and record use on each so all have lastUsedAt != nil.
+        for i in 1...10 {
+            await store.add(task: "Task \(i)", successCriteria: "Criteria \(i)")
+            let id = await store.load().first!.id
+            await store.recordUse(id: id)
+        }
+        // Add an 11th template that has never been used (lastUsedAt == nil, createdAt == now).
+        await store.add(task: "Task 11 (brand new)", successCriteria: "Criteria 11")
+        let templates = await store.load()
+        #expect(templates.count == SessionTemplateStore.maxTemplates)
+        // The newly created template must be kept — it was just created so its effective
+        // sort date (createdAt) is more recent than any prior lastUsedAt.
+        #expect(
+            templates.contains(where: { $0.task == "Task 11 (brand new)" }),
+            "newly created template must not be evicted in favour of older used templates"
+        )
+    }
+
     // MARK: - Codable round-trip
 
     @Test func templateSurvivesRoundTrip() async {
@@ -266,5 +289,103 @@ struct SessionTemplateTests {
         #expect(loaded[0].task == "Task A")
         #expect(loaded[0].id == idA)
         #expect(loaded[0].successCriteria == "Criteria A")
+    }
+
+    // MARK: - Preferred duration
+
+    @Test func addWithPreferredDurationStoresIt() async {
+        let store = makeStore()
+        await store.add(task: "Write essay", successCriteria: "Submitted", preferredDuration: 2700)
+        let templates = await store.load()
+        #expect(templates[0].preferredDuration == 2700)
+    }
+
+    @Test func addWithoutPreferredDurationDefaultsToNil() async {
+        let store = makeStore()
+        await store.add(task: "Quick task", successCriteria: "Done")
+        let templates = await store.load()
+        #expect(templates[0].preferredDuration == nil)
+    }
+
+    @Test func addDuplicateTaskUpdatesPreferredDuration() async {
+        let store = makeStore()
+        await store.add(task: "Essay", successCriteria: "Submitted", preferredDuration: 2700)
+        await store.add(task: "Essay", successCriteria: "Submitted", preferredDuration: 5400)
+        let templates = await store.load()
+        #expect(templates.count == 1)
+        #expect(templates[0].preferredDuration == 5400)
+    }
+
+    @Test func addDuplicateTaskClearsPreferredDurationWhenNil() async {
+        let store = makeStore()
+        await store.add(task: "Essay", successCriteria: "Submitted", preferredDuration: 2700)
+        await store.add(task: "Essay", successCriteria: "Submitted", preferredDuration: nil)
+        let templates = await store.load()
+        #expect(templates.count == 1)
+        #expect(templates[0].preferredDuration == nil)
+    }
+
+    @Test func updateWithPreferredDurationStoresIt() async {
+        let store = makeStore()
+        await store.add(task: "Task", successCriteria: "Criteria")
+        let id = await store.load()[0].id
+        await store.update(id: id, task: "Task", successCriteria: "Criteria", preferredDuration: 3600)
+        let templates = await store.load()
+        #expect(templates[0].preferredDuration == 3600)
+    }
+
+    @Test func preferredDurationSurvivesCodecRoundTrip() async {
+        let store = makeStore()
+        await store.add(task: "Study session", successCriteria: "Notes done", preferredDuration: 4500)
+        let loaded = await store.load()
+        #expect(loaded[0].preferredDuration == 4500)
+    }
+
+    @Test func legacyJSONWithoutPreferredDurationDecodesAsNil() throws {
+        // JSON that a previous agent wrote — no preferredDuration key.
+        let json = """
+        [{"id":"00000000-0000-0000-0000-000000000001","task":"Write paper","successCriteria":"Submitted","useCount":2,"lastUsedAt":null,"createdAt":700000000.0}]
+        """
+        let data = try #require(json.data(using: .utf8))
+        let templates = try JSONDecoder().decode([SessionTemplate].self, from: data)
+        #expect(templates.count == 1)
+        #expect(templates[0].preferredDuration == nil)
+    }
+
+    @Test func updateWithNilPreferredDurationClearsStoredValue() async {
+        // Regression: EditTemplateSheet previously called update without preferredDuration,
+        // which silently reset the stored duration to nil on every edit save.
+        // This test verifies the store correctly accepts nil and overwrites an existing value.
+        let store = makeStore()
+        await store.add(task: "Study", successCriteria: "Notes done", preferredDuration: 3600)
+        let id = await store.load()[0].id
+        await store.update(id: id, task: "Study", successCriteria: "Notes done", preferredDuration: nil)
+        let templates = await store.load()
+        #expect(templates[0].preferredDuration == nil)
+    }
+
+    @Test func updatePersistsAllThreeFieldsTogether() async {
+        // Full round-trip through the edit sheet code path: task + criteria + duration.
+        let store = makeStore()
+        await store.add(task: "Original", successCriteria: "Old", preferredDuration: nil)
+        let id = await store.load()[0].id
+        await store.update(id: id, task: "Revised task", successCriteria: "Revised criteria", preferredDuration: 2700)
+        let templates = await store.load()
+        #expect(templates[0].task == "Revised task")
+        #expect(templates[0].successCriteria == "Revised criteria")
+        #expect(templates[0].preferredDuration == 2700)
+    }
+
+    @Test func updatePreservesDurationWhenPassedThrough() async {
+        // Simulates the fixed EditTemplateSheet behavior: reading stored duration,
+        // keeping it as-is, and passing it back through update.
+        let store = makeStore()
+        await store.add(task: "Task", successCriteria: "Criteria", preferredDuration: 5400)
+        let template = await store.load()[0]
+        // EditTemplateSheet reads template.preferredDuration and passes it back unchanged.
+        await store.update(id: template.id, task: "Task (edited)", successCriteria: "Criteria",
+                           preferredDuration: template.preferredDuration)
+        let reloaded = await store.load()
+        #expect(reloaded[0].preferredDuration == 5400)
     }
 }

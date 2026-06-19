@@ -78,4 +78,197 @@ struct LocalBlockServerTests {
     @Test func htmlEscapeEmptyString() {
         #expect(LocalBlockServer.htmlEscape("") == "")
     }
+
+    // MARK: - shouldNotifyCallback (rate-limiting for auto-reasoning trigger)
+
+    @Test func shouldNotifyCallbackFirstCallReturnsTrue() {
+        #expect(LocalBlockServer.shouldNotifyCallback(
+            forDomain: "youtube.com",
+            lastDomain: nil,
+            lastNotifiedAt: nil,
+            now: Date()
+        ))
+    }
+
+    @Test func shouldNotifyCallbackSameDomainWithinIntervalReturnsFalse() {
+        let now = Date()
+        let recent = now.addingTimeInterval(-5)
+        #expect(!LocalBlockServer.shouldNotifyCallback(
+            forDomain: "youtube.com",
+            lastDomain: "youtube.com",
+            lastNotifiedAt: recent,
+            now: now,
+            minInterval: 10.0
+        ))
+    }
+
+    @Test func shouldNotifyCallbackSameDomainAfterIntervalReturnsTrue() {
+        let now = Date()
+        let old = now.addingTimeInterval(-15)
+        #expect(LocalBlockServer.shouldNotifyCallback(
+            forDomain: "youtube.com",
+            lastDomain: "youtube.com",
+            lastNotifiedAt: old,
+            now: now,
+            minInterval: 10.0
+        ))
+    }
+
+    @Test func shouldNotifyCallbackDifferentDomainIgnoresInterval() {
+        let now = Date()
+        let recent = now.addingTimeInterval(-2)
+        #expect(LocalBlockServer.shouldNotifyCallback(
+            forDomain: "reddit.com",
+            lastDomain: "youtube.com",
+            lastNotifiedAt: recent,
+            now: now,
+            minInterval: 10.0
+        ))
+    }
+
+    @Test func shouldNotifyCallbackExactlyAtIntervalBoundaryReturnsTrue() {
+        let now = Date()
+        let boundary = now.addingTimeInterval(-10)
+        #expect(LocalBlockServer.shouldNotifyCallback(
+            forDomain: "twitter.com",
+            lastDomain: "twitter.com",
+            lastNotifiedAt: boundary,
+            now: now,
+            minInterval: 10.0
+        ))
+    }
+
+    @Test func onBlockedDomainAccessedCallbackCanBeSetAndCleared() {
+        let server = LocalBlockServer(forTesting: ())
+        var fired = false
+        server.onBlockedDomainAccessed = { _ in fired = true }
+        #expect(server.onBlockedDomainAccessed != nil)
+        server.onBlockedDomainAccessed = nil
+        #expect(server.onBlockedDomainAccessed == nil)
+        _ = fired  // suppress unused warning
+    }
+
+    @Test func startWithCallbackParameterSetsCallbackBeforeListenerBegins() {
+        let server = LocalBlockServer(forTesting: ())
+        var callbackDomain: String?
+        server.start(
+            blockedDomains: [],
+            taskDescription: "Test task",
+            onBlockedDomainAccessed: { domain in callbackDomain = domain }
+        )
+        #expect(server.onBlockedDomainAccessed != nil)
+        server.stop()
+        _ = callbackDomain
+    }
+
+    @Test func stopClearsOnBlockedDomainAccessed() {
+        let server = LocalBlockServer(forTesting: ())
+        server.start(
+            blockedDomains: ["youtube.com"],
+            taskDescription: "Study",
+            onBlockedDomainAccessed: { _ in }
+        )
+        #expect(server.onBlockedDomainAccessed != nil)
+        server.stop()
+        #expect(server.onBlockedDomainAccessed == nil)
+    }
+
+    @Test func startWithNilCallbackLeavesCallbackNil() {
+        let server = LocalBlockServer(forTesting: ())
+        server.start(blockedDomains: [], taskDescription: "No callback")
+        #expect(server.onBlockedDomainAccessed == nil)
+        server.stop()
+    }
+
+    @Test func secondStartOverridesPreviousCallback() {
+        let server = LocalBlockServer(forTesting: ())
+        server.start(
+            blockedDomains: [],
+            taskDescription: "First",
+            onBlockedDomainAccessed: { _ in }
+        )
+        #expect(server.onBlockedDomainAccessed != nil)
+        // Second start without a callback: previous callback must be replaced with nil.
+        server.start(blockedDomains: [], taskDescription: "Second")
+        #expect(server.onBlockedDomainAccessed == nil)
+        server.stop()
+    }
+
+    // MARK: - isoFormat
+
+    @Test func isoFormatProducesISO8601String() {
+        // A known epoch value: 2024-01-15T10:30:00Z = 1705314600
+        let date = Date(timeIntervalSince1970: 1_705_314_600)
+        let iso = LocalBlockServer.isoFormat(date)
+        #expect(iso == "2024-01-15T10:30:00Z")
+    }
+
+    @Test func isoFormatRoundTrips() {
+        let original = Date(timeIntervalSince1970: 1_700_000_000)
+        let iso = LocalBlockServer.isoFormat(original)
+        let parsed = ISO8601DateFormatter().date(from: iso)
+        #expect(parsed != nil)
+        #expect(abs(parsed!.timeIntervalSince(original)) < 1.0)
+    }
+
+    // MARK: - elapsedScriptTag
+
+    @Test func elapsedScriptTagContainsProvidedISO() {
+        let iso = "2024-01-15T10:30:00Z"
+        let script = LocalBlockServer.elapsedScriptTag(startISO: iso)
+        #expect(script.contains(iso))
+    }
+
+    @Test func elapsedScriptTagContainsSetInterval() {
+        let script = LocalBlockServer.elapsedScriptTag(startISO: "2024-01-01T00:00:00Z")
+        #expect(script.contains("setInterval"))
+    }
+
+    @Test func elapsedScriptTagReferencesElapsedElementID() {
+        let script = LocalBlockServer.elapsedScriptTag(startISO: "2024-01-01T00:00:00Z")
+        #expect(script.contains("getElementById('elapsed')") || script.contains("getElementById(\"elapsed\")"))
+    }
+
+    @Test func elapsedScriptTagIsWrappedInScriptTags() {
+        let script = LocalBlockServer.elapsedScriptTag(startISO: "2024-01-01T00:00:00Z")
+        #expect(script.contains("<script>"))
+        #expect(script.contains("</script>"))
+    }
+
+    // MARK: - blockedHTML elapsed integration
+
+    @Test func blockedHTMLContainsElapsedDivAlways() {
+        let html = LocalBlockServer.blockedHTML(domain: "youtube.com", taskDescription: "write essay")
+        #expect(html.contains("id=\"elapsed\""))
+    }
+
+    @Test func blockedHTMLIncludesScriptWhenStartTimeGiven() {
+        let start = Date(timeIntervalSince1970: 1_705_314_600)
+        let html = LocalBlockServer.blockedHTML(
+            domain: "youtube.com",
+            taskDescription: "write essay",
+            sessionStartTime: start
+        )
+        #expect(html.contains("<script>"))
+        #expect(html.contains(LocalBlockServer.isoFormat(start)))
+    }
+
+    @Test func blockedHTMLOmitsScriptWhenNoStartTime() {
+        let html = LocalBlockServer.blockedHTML(
+            domain: "youtube.com",
+            taskDescription: "write essay",
+            sessionStartTime: nil
+        )
+        #expect(!html.contains("<script>"))
+    }
+
+    @Test func blockedHTMLStartDoesNotCrashWithStartTime() {
+        let start = Date()
+        LocalBlockServer.shared.start(
+            blockedDomains: ["youtube.com"],
+            taskDescription: "Study session",
+            sessionStartTime: start
+        )
+        LocalBlockServer.shared.stop()
+    }
 }

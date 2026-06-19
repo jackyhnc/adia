@@ -15,6 +15,34 @@ public struct SessionStats: Sendable {
     /// Consecutive calendar days with ≥1 session, ending at the most recent session day.
     /// 0 if there have been no sessions, or if the last session was more than 1 day ago.
     public let streak: Int
+    /// Total sessions across all time in the stored history window.
+    /// Defaults to 0 so call sites that don't need all-time stats compile without changes.
+    public let allTimeCount: Int
+    /// Total focused minutes across all time in the stored history window.
+    public let allTimeMinutes: Int
+    /// Longest consecutive-day streak ever recorded in the current history.
+    /// Equal to `streak` when the user is currently on their personal best.
+    public let bestStreak: Int
+
+    public init(
+        todayCount: Int,
+        todayMinutes: Int,
+        weekCount: Int,
+        weekMinutes: Int,
+        streak: Int,
+        allTimeCount: Int = 0,
+        allTimeMinutes: Int = 0,
+        bestStreak: Int = 0
+    ) {
+        self.todayCount    = todayCount
+        self.todayMinutes  = todayMinutes
+        self.weekCount     = weekCount
+        self.weekMinutes   = weekMinutes
+        self.streak        = streak
+        self.allTimeCount  = allTimeCount
+        self.allTimeMinutes = allTimeMinutes
+        self.bestStreak    = bestStreak
+    }
 }
 
 // MARK: - DayActivity
@@ -46,6 +74,92 @@ internal func weeklyHeatmapData(
     }
 }
 
+/// Computes the best (longest) consecutive-day streak across all sessions.
+/// Each calendar day that contains at least one session counts as one day in the streak.
+/// Multiple sessions on the same day count as a single day for streak purposes.
+/// Returns 0 for an empty record set. Pure function, directly testable.
+internal func computeBestStreak(
+    from records: [SessionRecord],
+    calendar: Calendar = .current
+) -> Int {
+    guard !records.isEmpty else { return 0 }
+    let daySet = Set(records.map { calendar.startOfDay(for: $0.startTime) })
+    let sorted = daySet.sorted()
+    guard sorted.count > 1 else { return 1 }
+    var best = 1
+    var current = 1
+    for i in 1..<sorted.count {
+        let prev = sorted[i - 1]
+        let curr = sorted[i]
+        let diff = calendar.dateComponents([.day], from: prev, to: curr).day ?? 0
+        if diff == 1 {
+            current += 1
+            if current > best { best = current }
+        } else {
+            current = 1
+        }
+    }
+    return best
+}
+
+// MARK: - CSV export
+
+/// Wraps `value` in double-quotes if it contains a comma, double-quote, CR, or LF.
+/// Embedded double-quotes are escaped by doubling them (RFC 4180).
+private func csvEscape(_ value: String) -> String {
+    let needsQuoting = value.contains(",") || value.contains("\"")
+        || value.contains("\n") || value.contains("\r")
+    guard needsQuoting else { return value }
+    return "\"\(value.replacingOccurrences(of: "\"", with: "\"\""))\""
+}
+
+/// Returns `records` formatted as RFC 4180 CSV with a header row.
+/// Columns: id, task, successCriteria, startTime, endTime, durationSeconds,
+/// completedSuccessfully, calloutCount, onTaskChecks, totalChecks, focusScore,
+/// reasoningAttempts, reasoningGranted, blockedSites, note.
+/// `focusScore` is empty when no frames were classified; `note` is empty when nil.
+/// `blockedSites` lists domains separated by `|` (pipe), quoted when non-empty.
+/// Empty input returns only the header row (no trailing newline).
+internal func sessionRecordsToCSV(_ records: [SessionRecord]) -> String {
+    let iso = ISO8601DateFormatter()
+    let header = "id,task,successCriteria,startTime,endTime,durationSeconds,completedSuccessfully,calloutCount,onTaskChecks,totalChecks,focusScore,reasoningAttempts,reasoningGranted,blockedSites,blockedApps,note"
+    let rows = records.map { r -> String in
+        let cols: [String] = [
+            r.id.uuidString,
+            csvEscape(r.task),
+            csvEscape(r.successCriteria),
+            iso.string(from: r.startTime),
+            iso.string(from: r.endTime),
+            String(Int(r.duration)),
+            r.completedSuccessfully ? "true" : "false",
+            String(r.calloutCount),
+            String(r.onTaskChecks),
+            String(r.totalChecks),
+            r.focusScore.map { String(format: "%.3f", $0) } ?? "",
+            String(r.reasoningAttempts),
+            String(r.reasoningGranted),
+            r.blockedDomains.isEmpty ? "" : csvEscape(r.blockedDomains.joined(separator: "|")),
+            r.blockedApps.isEmpty ? "" : csvEscape(r.blockedApps.joined(separator: "|")),
+            r.note.map { csvEscape($0) } ?? ""
+        ]
+        return cols.joined(separator: ",")
+    }
+    return ([header] + rows).joined(separator: "\n")
+}
+
+// MARK: - JSON export
+
+/// Returns `records` as a pretty-printed UTF-8 JSON string.
+/// Dates are ISO 8601 (fractional seconds). Empty input returns `"[]"`.
+internal func sessionRecordsToJSON(_ records: [SessionRecord]) -> String {
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+    encoder.dateEncodingStrategy = .iso8601
+    guard let data = try? encoder.encode(records),
+          let text = String(data: data, encoding: .utf8) else { return "[]" }
+    return text
+}
+
 // MARK: - SessionHistory
 
 public actor SessionHistory {
@@ -57,6 +171,9 @@ public actor SessionHistory {
 
     // Production init: writes to ~/Library/Application Support/Adia/history.json
     private init() {
+        // Force unwrap is safe: `.userDomainMask` always resolves to exactly one
+        // directory (~/Library/Application Support) on macOS — `urls(for:in:)`
+        // never returns an empty array for this combination.
         let support = FileManager.default.urls(
             for: .applicationSupportDirectory, in: .userDomainMask
         ).first!
@@ -115,16 +232,34 @@ public actor SessionHistory {
         try? FileManager.default.removeItem(at: fileURL)
     }
 
+    /// Returns all history records as RFC 4180 CSV (header row included).
+    /// Suitable for export via NSSavePanel or share sheet.
+    public func exportCSV() -> String {
+        sessionRecordsToCSV(_load())
+    }
+
+    /// Returns all history records as a pretty-printed JSON string.
+    /// Suitable for export via NSSavePanel or share sheet.
+    public func exportJSON() -> String {
+        sessionRecordsToJSON(_load())
+    }
+
     /// Returns the last 7 calendar days of activity as a heatmap dataset.
     public func weeklyHeatmap() -> [DayActivity] {
         weeklyHeatmapData(_load())
+    }
+
+    /// Computes focus pattern insights from the full session history.
+    public func insights() -> FocusInsights {
+        computeFocusInsights(from: _load())
     }
 
     /// Computes a stats snapshot from the current history.
     public func stats() -> SessionStats {
         let records = _load()
         guard !records.isEmpty else {
-            return SessionStats(todayCount: 0, todayMinutes: 0, weekCount: 0, weekMinutes: 0, streak: 0)
+            return SessionStats(todayCount: 0, todayMinutes: 0, weekCount: 0, weekMinutes: 0, streak: 0,
+                                allTimeCount: 0, allTimeMinutes: 0, bestStreak: 0)
         }
         let cal = Calendar.current
         let now = Date()
@@ -147,8 +282,12 @@ public actor SessionHistory {
                   daySet.contains(yesterday) {
             startDay = yesterday
         } else {
+            let allTimeMins = Int(records.reduce(0.0) { $0 + $1.duration } / 60)
+            let best = computeBestStreak(from: records, calendar: cal)
             return SessionStats(todayCount: todayRecords.count, todayMinutes: todayMinutes,
-                                weekCount: weekRecords.count, weekMinutes: weekMinutes, streak: 0)
+                                weekCount: weekRecords.count, weekMinutes: weekMinutes, streak: 0,
+                                allTimeCount: records.count, allTimeMinutes: allTimeMins,
+                                bestStreak: best)
         }
 
         var streak = 0
@@ -159,8 +298,12 @@ public actor SessionHistory {
             day = prev
         }
 
+        let allTimeMins = Int(records.reduce(0.0) { $0 + $1.duration } / 60)
+        let best = computeBestStreak(from: records, calendar: cal)
         return SessionStats(todayCount: todayRecords.count, todayMinutes: todayMinutes,
-                            weekCount: weekRecords.count, weekMinutes: weekMinutes, streak: streak)
+                            weekCount: weekRecords.count, weekMinutes: weekMinutes, streak: streak,
+                            allTimeCount: records.count, allTimeMinutes: allTimeMins,
+                            bestStreak: best)
     }
 
     // MARK: - Private helpers

@@ -14,3 +14,8 @@
 - [x] Task verification: send screen CGImage to claude-sonnet-4-6 with success criteria, returns verified/not-verified + explanation
 - [x] Early exit conversation: AI engages user in conversation before confirming exit; user can always override
 - [x] Session persistence: encode/decode SessionState to UserDefaults or local JSON file
+- [x] Network loss resilience: NWPathMonitor + circuit breaker, offline UI indicators, graceful degradation when API calls fail
+- [x] Whitelisted domains visibility: show AI-granted site access in active/paused session notch UI
+- [x] Daily focus goal: configurable daily target with progress bar in idle notch + collapsed pill label
+- [x] Structured logging: replace all print() calls with AppLogger (info/warning/error) for queryable, structured log output
+- [x] Focus insights: analyze session history to surface patterns — avg duration, completion rate, avg focus score, best hour/day, trend detection

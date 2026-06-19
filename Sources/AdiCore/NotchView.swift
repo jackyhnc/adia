@@ -51,28 +51,132 @@ private struct NotchIslandShape: Shape {
     }
 }
 
+// MARK: - Progress dot (collapsed notch indicator)
+
+/// Shows a plain colored dot when `progress` is nil, or a thin arc ring with a
+/// center dot when `progress` is set (0…1). Used in the collapsed notch to visualise
+/// progress toward a target duration.
+private struct ProgressDot: View {
+    let color: Color
+    let progress: Double?
+
+    var body: some View {
+        if let p = progress {
+            ZStack {
+                Circle()
+                    .stroke(color.opacity(0.2), lineWidth: 1.5)
+                Circle()
+                    .trim(from: 0, to: CGFloat(p))
+                    .stroke(color, style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                Circle()
+                    .fill(color)
+                    .frame(width: 5, height: 5)
+            }
+            .frame(width: 13, height: 13)
+        } else {
+            Circle()
+                .fill(color)
+                .frame(width: 7, height: 7)
+        }
+    }
+}
+
+// MARK: - Progress bar (expanded active session)
+
+/// Full-width horizontal progress bar — 3pt tall. Uses GeometryReader to fill the
+/// available width so the fill accurately reflects `progress` (0…1).
+private struct ProgressBar: View {
+    let progress: CGFloat
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 1.5, style: .continuous)
+                    .fill(Color.white.opacity(0.08))
+                RoundedRectangle(cornerRadius: 1.5, style: .continuous)
+                    .fill(Color.white.opacity(0.5))
+                    .frame(width: geo.size.width * max(0, min(1, progress)))
+            }
+        }
+        .frame(height: 3)
+    }
+}
+
 // MARK: - Collapsed pill
 
 private struct CollapsedView: View {
     @ObservedObject var state: NotchState
     @ObservedObject var session: SessionManager
+    @ObservedObject private var network: NetworkMonitor = .shared
+    @ObservedObject private var settings: SettingsStore = .shared
     @State private var idleStreak: Int = 0
+    @State private var idleTodayCount: Int = 0
+    @State private var idleTodayMinutes: Int = 0
 
     var body: some View {
         HStack(spacing: 5) {
-            Circle()
-                .fill(dotColor)
-                .frame(width: 7, height: 7)
-            if let s = session.session {
-                TimelineView(.periodic(from: s.startTime, by: 60)) { ctx in
-                    Text(collapsedElapsed(from: s.startTime, to: ctx.date))
-                        .font(.system(size: 11, weight: .medium, design: .rounded))
-                        .foregroundStyle(.white.opacity(0.85))
+            // Dot — shows a progress arc when a target duration is set for the active session.
+            if let s = session.session, s.targetDuration != nil {
+                TimelineView(.periodic(from: s.startTime, by: 1.0)) { ctx in
+                    let activeElapsed = max(0, ctx.date.timeIntervalSince(s.startTime) - s.pausedDuration - (s.pauseStartTime.map { ctx.date.timeIntervalSince($0) } ?? 0))
+                    let progress = s.targetDuration.map { min(1.0, activeElapsed / $0) }
+                    ProgressDot(color: dotColor, progress: progress)
                 }
-            } else if idleStreak > 1 {
-                Text("🔥 \(idleStreak)d")
-                    .font(.system(size: 11, weight: .medium, design: .rounded))
-                    .foregroundStyle(.orange.opacity(0.85))
+            } else {
+                Circle()
+                    .fill(dotColor)
+                    .frame(width: 7, height: 7)
+            }
+
+            if let s = session.session {
+                if s.phase == .paused {
+                    Text(collapsedElapsedSeconds(Int(s.elapsed)))
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.5))
+                    Text("||")
+                        .font(.system(size: 9, weight: .heavy, design: .rounded))
+                        .foregroundStyle(.orange.opacity(0.8))
+                } else {
+                    TimelineView(.periodic(from: s.startTime, by: 60)) { ctx in
+                        let activeSeconds = max(0, Int(ctx.date.timeIntervalSince(s.startTime) - s.pausedDuration))
+                        Text(collapsedElapsedSeconds(activeSeconds))
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .foregroundStyle(.white.opacity(0.85))
+                    }
+                }
+                // Focus score — fades in once enough frames give a meaningful average.
+                if let score = session.focusScore,
+                   session.totalCheckCount >= SessionManager.minChecksForFocusScore {
+                    Text("\(Int(score * 100))%")
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(focusScoreColor(score))
+                        .transition(.opacity)
+                }
+            } else if let goal = settings.dailyFocusGoalMinutes {
+                HStack(spacing: 6) {
+                    Text(dailyGoalCollapsedLabel(todayMinutes: idleTodayMinutes, goalMinutes: goal))
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundStyle(idleTodayMinutes >= goal ? .green.opacity(0.8) : .white.opacity(0.5))
+                    if idleStreak > 1 {
+                        Text("🔥 \(idleStreak)d")
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .foregroundStyle(.orange.opacity(0.85))
+                    }
+                }
+            } else if idleTodayCount > 0 || idleStreak > 1 {
+                HStack(spacing: 6) {
+                    if idleTodayCount > 0 {
+                        Text(collapsedIdleStats())
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .foregroundStyle(.white.opacity(0.5))
+                    }
+                    if idleStreak > 1 {
+                        Text("🔥 \(idleStreak)d")
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .foregroundStyle(.orange.opacity(0.85))
+                    }
+                }
             }
         }
         .padding(.horizontal, 14)
@@ -84,12 +188,14 @@ private struct CollapsedView: View {
         .onHover { if $0 { state.expand() } }
         .task(id: session.session?.id) {
             guard session.session == nil else { return }
-            idleStreak = await SessionHistory.shared.stats().streak
+            let s = await SessionHistory.shared.stats()
+            idleStreak = s.streak
+            idleTodayCount = s.todayCount
+            idleTodayMinutes = s.todayMinutes
         }
     }
 
-    private func collapsedElapsed(from start: Date, to now: Date) -> String {
-        let total = max(0, Int(now.timeIntervalSince(start)))
+    private func collapsedElapsedSeconds(_ total: Int) -> String {
         let h = total / 3600
         let m = (total % 3600) / 60
         if h > 0 { return "\(h)h \(m)m" }
@@ -97,8 +203,19 @@ private struct CollapsedView: View {
         return "Focus"
     }
 
+    private func collapsedIdleStats() -> String {
+        let h = idleTodayMinutes / 60
+        let m = idleTodayMinutes % 60
+        if h > 0 && m > 0 { return "\(idleTodayCount) · \(h)h \(m)m" }
+        if h > 0 { return "\(idleTodayCount) · \(h)h" }
+        if m > 0 { return "\(idleTodayCount) · \(m)m" }
+        return "\(idleTodayCount)"
+    }
+
     private var dotColor: Color {
-        guard session.session != nil else { return .white.opacity(0.35) }
+        guard let s = session.session else { return .white.opacity(0.35) }
+        if s.phase == .paused { return .orange }
+        if network.isCircuitOpen { return .gray }
         switch session.onTaskStatus {
         case .onTask:    return .green
         case .offTask:   return .red
@@ -113,6 +230,10 @@ private struct ExpandedView: View {
     @ObservedObject var state: NotchState
     @ObservedObject var session: SessionManager
     @ObservedObject private var conversation: ConversationManager = .shared
+    @ObservedObject private var network: NetworkMonitor = .shared
+
+    @State private var completionNote: String = ""
+    @FocusState private var noteFieldFocused: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -134,6 +255,10 @@ private struct ExpandedView: View {
         )
         .shadow(color: .black.opacity(0.35), radius: 18, x: 0, y: 8)
         .clipShape(NotchIslandShape(radius: 26))
+        .onChange(of: state.verificationResult?.verified) { _, _ in
+            // Reset the draft note whenever the verification card changes state.
+            completionNote = ""
+        }
     }
 
     // MARK: Content switcher
@@ -146,6 +271,8 @@ private struct ExpandedView: View {
             verifyingBody
         } else if let result = state.verificationResult {
             verificationResultBody(result)
+        } else if let s = session.session, s.phase == .paused {
+            pausedBody(s)
         } else if let s = session.session {
             activeBody(s)
         } else {
@@ -217,34 +344,79 @@ private struct ExpandedView: View {
             // text, and a heavier icon as the user keeps drifting off task.
             // Tier-3 banners also shake horizontally on first appearance via keyframeAnimator.
             if let callout = state.calloutMessage {
-                CalloutBanner(message: callout, tier: state.calloutTier) {
+                CalloutBanner(message: callout, tier: state.calloutTier, reason: state.calloutReason) {
                     state.startConversation(.reasoning(domain: nil))
+                }
+            } else if session.timerExpired {
+                // Timer-expiry banner: amber (not red) so it reads as a milestone, not a rebuke.
+                TimerExpiredBanner {
+                    Task { await SessionManager.shared.verifyAndEnd() }
                 }
             }
 
             VStack(alignment: .leading, spacing: 6) {
                 Text(s.task)
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(state.calloutMessage != nil ? .white.opacity(0.5) : .white)
+                    .foregroundStyle((state.calloutMessage != nil || session.timerExpired) ? .white.opacity(0.5) : .white)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
 
                 HStack(alignment: .center) {
                     TimelineView(.periodic(from: s.startTime, by: 1.0)) { ctx in
-                        Text(elapsed(from: s.startTime, to: ctx.date))
-                            .font(.system(size: 12, weight: .medium, design: .monospaced))
-                            .foregroundStyle(.white.opacity(0.6))
+                        let activeElapsed = max(0, ctx.date.timeIntervalSince(s.startTime) - s.pausedDuration)
+                        HStack(spacing: 8) {
+                            Text(elapsedFromSeconds(Int(activeElapsed)))
+                                .font(.system(size: 12, weight: .medium, design: .monospaced))
+                                .foregroundStyle(.white.opacity(0.6))
+                            if let target = s.targetDuration {
+                                let remaining = max(0, target - activeElapsed)
+                                Text(durationRemaining(remaining))
+                                    .font(.system(size: 10, weight: .medium))
+                                    .foregroundStyle(.white.opacity(0.35))
+                            }
+                        }
+                    }
+                    // Focus score — shown after enough frames for a statistically meaningful
+                    // average. Updates live as each classification frame comes in.
+                    if let score = session.focusScore,
+                       session.totalCheckCount >= SessionManager.minChecksForFocusScore {
+                        Text("\(Int(score * 100))%")
+                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .foregroundStyle(focusScoreColor(score))
+                            .transition(.opacity)
                     }
                     Spacer()
-                    StatusBadge(status: session.onTaskStatus)
+                    if NetworkMonitor.shared.isCircuitOpen {
+                        OfflineBadge()
+                    } else {
+                        StatusBadge(status: session.onTaskStatus)
+                    }
+                }
+
+                if let target = s.targetDuration {
+                    TimelineView(.periodic(from: s.startTime, by: 1.0)) { ctx in
+                        let activeElapsed = max(0, ctx.date.timeIntervalSince(s.startTime) - s.pausedDuration)
+                        ProgressBar(progress: CGFloat(min(1.0, activeElapsed / target)))
+                    }
+                    .frame(height: 3)
                 }
             }
             .padding(.horizontal, 16)
-            .padding(.top, state.calloutMessage != nil ? 8 : 12)
+            .padding(.top, (state.calloutMessage != nil || session.timerExpired) ? 8 : 12)
+
+            if !s.whitelistedDomains.isEmpty {
+                WhitelistedDomainsRow(domains: s.whitelistedDomains)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 4)
+                    .transition(.opacity)
+            }
 
             HStack(spacing: 8) {
                 AdiButton(label: "Done", style: .primary) {
                     Task { await SessionManager.shared.verifyAndEnd() }
+                }
+                AdiButton(label: "Pause", style: .secondary) {
+                    Task { await SessionManager.shared.pauseSession() }
                 }
                 Spacer()
                 AdiButton(label: "Exit", style: .destructive) {
@@ -256,6 +428,63 @@ private struct ExpandedView: View {
             .padding(.bottom, 14)
         }
         .animation(.easeOut(duration: 0.2), value: state.calloutMessage)
+        .animation(.easeOut(duration: 0.2), value: session.timerExpired)
+    }
+
+    // MARK: Paused session body
+
+    @ViewBuilder
+    private func pausedBody(_ s: Session) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 6) {
+                Image(systemName: "pause.circle.fill")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.orange)
+                Text("Session Paused")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.orange)
+            }
+            .padding(.bottom, 2)
+
+            Text(s.task)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.5))
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+
+            HStack(spacing: 8) {
+                Text(sessionElapsedLabel(seconds: Int(s.elapsed)))
+                    .font(.system(size: 12, weight: .medium, design: .monospaced))
+                    .foregroundStyle(.white.opacity(0.4))
+                Text("paused")
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundStyle(.orange.opacity(0.6))
+                if let score = session.focusScore,
+                   session.totalCheckCount >= SessionManager.minChecksForFocusScore {
+                    Text("\(Int(score * 100))%")
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(focusScoreColor(score))
+                }
+            }
+
+            if !s.whitelistedDomains.isEmpty {
+                WhitelistedDomainsRow(domains: s.whitelistedDomains)
+                    .padding(.top, 4)
+            }
+
+            HStack(spacing: 8) {
+                AdiButton(label: "Resume", style: .primary) {
+                    Task { await SessionManager.shared.resumeSession() }
+                }
+                Spacer()
+                AdiButton(label: "End Session", style: .destructive) {
+                    Task { await SessionManager.shared.endSession() }
+                }
+            }
+            .padding(.top, 8)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
     }
 
     // MARK: Verifying body
@@ -304,7 +533,93 @@ private struct ExpandedView: View {
                 .foregroundStyle(.white.opacity(0.55))
                 .fixedSize(horizontal: false, vertical: true)
 
-            if !result.verified {
+            if result.verified {
+                // Stats row while session is still active — endSession() will clear it.
+                if let s = session.session {
+                    HStack(spacing: 8) {
+                        Label(sessionElapsedLabel(seconds: Int(s.elapsed)), systemImage: "clock.fill")
+                        if s.calloutCount > 0 {
+                            Text("·")
+                                .foregroundStyle(.white.opacity(0.2))
+                            Label(
+                                "\(s.calloutCount) callout\(s.calloutCount == 1 ? "" : "s")",
+                                systemImage: "exclamationmark.bubble.fill"
+                            )
+                        }
+                        if let score = session.focusScore, session.totalCheckCount >= SessionManager.minChecksForFocusScore {
+                            Text("·")
+                                .foregroundStyle(.white.opacity(0.2))
+                            Label("\(Int(score * 100))% focused", systemImage: "target")
+                        }
+                        if !s.reasoningHistory.isEmpty {
+                            Text("·")
+                                .foregroundStyle(.white.opacity(0.2))
+                            let granted = s.reasoningHistory.filter(\.granted).count
+                            Label(
+                                "asked \(s.reasoningHistory.count)×, \(granted) granted",
+                                systemImage: "bubble.left.and.text.bubble.right.fill"
+                            )
+                        }
+                    }
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.45))
+                }
+                // Quick note field — lets the user annotate the session immediately
+                // at the moment of completion rather than hunting for it in History later.
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("SESSION NOTE")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.3))
+                        .tracking(1.2)
+                    ZStack(alignment: .leading) {
+                        if completionNote.isEmpty && !noteFieldFocused {
+                            Text("Add a note…")
+                                .font(.system(size: 11))
+                                .foregroundStyle(.white.opacity(0.22))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 5)
+                                .allowsHitTesting(false)
+                        }
+                        TextField("", text: $completionNote)
+                            .font(.system(size: 11))
+                            .foregroundStyle(.white)
+                            .textFieldStyle(.plain)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 5)
+                            .focused($noteFieldFocused)
+                            .onSubmit {
+                                let trimmed = completionNote.trimmingCharacters(in: .whitespaces)
+                                completionNote = ""
+                                Task { await SessionManager.shared.endSession(note: trimmed.isEmpty ? nil : trimmed) }
+                            }
+                    }
+                    .background(Color.white.opacity(0.06))
+                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                            .stroke(Color.white.opacity(noteFieldFocused ? 0.15 : 0.07), lineWidth: 0.5)
+                    )
+                }
+                .padding(.top, 6)
+                AdiButton(label: "End Session", style: .primary) {
+                    let trimmed = completionNote.trimmingCharacters(in: .whitespaces)
+                    completionNote = ""
+                    Task { await SessionManager.shared.endSession(note: trimmed.isEmpty ? nil : trimmed) }
+                }
+                .padding(.top, 6)
+            } else {
+                // Surface the most recently whitelisted domain as a hint — the user may
+                // need to visit it to complete the task (e.g. upload to Canvas, submit a form).
+                if let domain = session.session?.whitelistedDomains.last {
+                    HStack(spacing: 4) {
+                        Image(systemName: "link")
+                            .font(.system(size: 10))
+                        Text("\(domain) is whitelisted — go finish there")
+                            .font(.system(size: 11))
+                    }
+                    .foregroundStyle(.white.opacity(0.38))
+                    .padding(.top, 2)
+                }
                 HStack(spacing: 8) {
                     AdiButton(label: "Try again", style: .secondary) {
                         Task { await SessionManager.shared.verifyAndEnd() }
@@ -350,15 +665,27 @@ private struct ExpandedView: View {
 
     // MARK: Helpers
 
-    private func elapsed(from start: Date, to now: Date) -> String {
-        let total = max(0, Int(now.timeIntervalSince(start)))
-        let h = total / 3600
-        let m = (total % 3600) / 60
-        let s = total % 60
+    private func elapsedFromSeconds(_ total: Int) -> String {
+        let t = max(0, total)
+        let h = t / 3600
+        let m = (t % 3600) / 60
+        let s = t % 60
         return h > 0
             ? String(format: "%d:%02d:%02d", h, m, s)
             : String(format: "%02d:%02d", m, s)
     }
+
+    private func durationRemaining(_ seconds: TimeInterval) -> String {
+        guard seconds > 0 else { return "done" }
+        let total = Int(seconds)
+        let h = total / 3600
+        let m = (total % 3600) / 60
+        if h > 0 && m > 0 { return "\(h)h \(m)m left" }
+        if h > 0 { return "\(h)h left" }
+        if m > 0 { return "\(m)m left" }
+        return "< 1m left"
+    }
+
 }
 
 // MARK: - Callout Banner
@@ -369,6 +696,7 @@ private struct ExpandedView: View {
 private struct CalloutBanner: View {
     let message: String
     let tier: Int
+    let reason: String?
     let onChat: () -> Void
 
     // Toggled each time a tier-3 callout fires to trigger the keyframe animator.
@@ -383,6 +711,13 @@ private struct CalloutBanner: View {
                 Text(message)
                     .font(.system(size: tier >= 3 ? 19 : 17, weight: .heavy))
                     .foregroundStyle(.white)
+            }
+            if let reason, !reason.isEmpty {
+                Text(reason)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.7))
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
             Button(action: onChat) {
                 Text("actually, I need this →")
@@ -424,6 +759,36 @@ private struct CalloutBanner: View {
     }
 }
 
+// MARK: - TimerExpiredBanner
+
+private struct TimerExpiredBanner: View {
+    let onVerify: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                Image(systemName: "timer")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(.white)
+                Text("time's up — how'd it go?")
+                    .font(.system(size: 17, weight: .heavy))
+                    .foregroundStyle(.white)
+            }
+            Button(action: onVerify) {
+                Text("verify now →")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.85))
+            }
+            .buttonStyle(.plain)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(Color(red: 0.60, green: 0.42, blue: 0.0))
+        .transition(.move(edge: .top).combined(with: .opacity))
+    }
+}
+
 // MARK: - StatusBadge
 
 private struct StatusBadge: View {
@@ -456,6 +821,43 @@ private struct StatusBadge: View {
         case .offTask:   return "Off Task"
         case .ambiguous: return "Check In"
         }
+    }
+}
+
+// MARK: - Whitelisted domains row
+
+private struct WhitelistedDomainsRow: View {
+    let domains: [String]
+
+    var body: some View {
+        HStack(spacing: 5) {
+            Image(systemName: "lock.open.fill")
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(.green.opacity(0.7))
+            Text(whitelistedDomainsLabel(domains))
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(.white.opacity(0.45))
+                .lineLimit(1)
+                .truncationMode(.tail)
+        }
+    }
+}
+
+// MARK: - Offline badge
+
+private struct OfflineBadge: View {
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "wifi.slash")
+                .font(.system(size: 8, weight: .semibold))
+            Text("Offline")
+                .font(.system(size: 10, weight: .semibold))
+        }
+        .foregroundStyle(.gray)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(Color.gray.opacity(0.14))
+        .clipShape(Capsule())
     }
 }
 
@@ -495,10 +897,7 @@ private struct VerificationAttemptRow: View {
     }
 
     private func relativeTime(_ date: Date) -> String {
-        let elapsed = Int(Date().timeIntervalSince(date))
-        if elapsed < 60 { return "just now" }
-        let minutes = elapsed / 60
-        return "\(minutes)m ago"
+        verificationRelativeTime(date)
     }
 }
 
@@ -512,7 +911,12 @@ private struct SessionCreationFormView: View {
     @State private var clarifyingQuestion: String?
     @State private var isThinking: Bool = false
     @State private var pinAsTemplate: Bool = false
+    @State private var targetMinutes: Int? = nil
+    @State private var customDurationText: String = ""
     @FocusState private var inputFocused: Bool
+
+    private let durationPresets: [(Int, String)] = [(25, "25m"), (45, "45m"), (60, "1h"), (90, "90m")]
+    private var parsedCustomMinutes: Int? { parseCustomDuration(customDurationText) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -549,6 +953,71 @@ private struct SessionCreationFormView: View {
                             ? Color.orange.opacity(0.5)
                             : Color.white.opacity(0.10), lineWidth: 0.5)
             )
+
+            // Duration goal — preset chips or a free-form text field (mutually exclusive).
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 0) {
+                    Text("DURATION")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.3))
+                        .tracking(1.5)
+                    Spacer()
+                    HStack(spacing: 4) {
+                        ForEach(durationPresets, id: \.0) { minutes, label in
+                            Button {
+                                withAnimation(.easeOut(duration: 0.1)) {
+                                    targetMinutes = (targetMinutes == minutes) ? nil : minutes
+                                    customDurationText = ""
+                                }
+                            } label: {
+                                Text(label)
+                                    .font(.system(size: 10, weight: .semibold))
+                                    .foregroundStyle(targetMinutes == minutes ? .black : .white.opacity(0.5))
+                                    .padding(.horizontal, 7)
+                                    .padding(.vertical, 3)
+                                    .background(targetMinutes == minutes ? Color.white : Color.white.opacity(0.08))
+                                    .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+                HStack(spacing: 6) {
+                    ZStack(alignment: .leading) {
+                        if customDurationText.isEmpty {
+                            Text("or type \u{201C}2h\u{201D}, \u{201C}90m\u{201D}, \u{201C}1h30m\u{201D}…")
+                                .font(.system(size: 10))
+                                .foregroundStyle(.white.opacity(0.2))
+                                .allowsHitTesting(false)
+                        }
+                        TextField("", text: $customDurationText)
+                            .font(.system(size: 10))
+                            .foregroundStyle(.white)
+                            .textFieldStyle(.plain)
+                            .onChange(of: customDurationText) { _, _ in
+                                if !customDurationText.trimmingCharacters(in: .whitespaces).isEmpty {
+                                    withAnimation(.easeOut(duration: 0.1)) { targetMinutes = nil }
+                                }
+                            }
+                    }
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 3)
+                    .background(Color.white.opacity(0.06))
+                    .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+                    Group {
+                        if let parsed = parsedCustomMinutes {
+                            Text("= \(heatmapFormatMinutes(parsed))")
+                                .foregroundStyle(.green.opacity(0.8))
+                        } else if !customDurationText.trimmingCharacters(in: .whitespaces).isEmpty {
+                            Text("?")
+                                .foregroundStyle(.orange.opacity(0.7))
+                        }
+                    }
+                    .font(.system(size: 10))
+                    .animation(.easeOut(duration: 0.15), value: parsedCustomMinutes)
+                }
+            }
+            .padding(.top, 8)
 
             // Adia asks for more detail when the goal is too vague to verify.
             if let q = clarifyingQuestion {
@@ -621,30 +1090,27 @@ private struct SessionCreationFormView: View {
         isThinking = true
         clarifyingQuestion = nil
         let shouldPin = pinAsTemplate
+        let durationSeconds: TimeInterval? = targetMinutes.map { TimeInterval($0 * 60) }
+            ?? parsedCustomMinutes.map { TimeInterval($0 * 60) }
         Task { @MainActor in
             defer { isThinking = false }
             do {
                 let parsed = try await AgentAIClient.shared.parseGoal(text)
-                guard parsed.ok,
-                      let task = parsed.task?.trimmingCharacters(in: .whitespacesAndNewlines),
-                      let criteria = parsed.successCriteria?.trimmingCharacters(in: .whitespacesAndNewlines),
-                      !task.isEmpty,
-                      !criteria.isEmpty
-                else {
-                    let question = parsed.question ?? "What would I be able to see on screen when this is done?"
+                switch parsed.resolveSubmission() {
+                case .needsClarification(let question):
                     AppLogger.warning("goal.rejected_by_model", ["question": question])
                     withAnimation { clarifyingQuestion = question }
-                    return
+                case .accepted(let task, let criteria):
+                    AppLogger.info("goal.accepted", [
+                        "taskLength": String(task.count),
+                        "criteriaLength": String(criteria.count)
+                    ])
+                    try await session.start(task: task, successCriteria: criteria, targetDuration: durationSeconds)
+                    if shouldPin {
+                        Task { await SessionTemplateStore.shared.add(task: task, successCriteria: criteria, preferredDuration: durationSeconds) }
+                    }
+                    state.stopCreating()
                 }
-                AppLogger.info("goal.accepted", [
-                    "taskLength": String(task.count),
-                    "criteriaLength": String(criteria.count)
-                ])
-                try await session.start(task: task, successCriteria: criteria)
-                if shouldPin {
-                    Task { await SessionTemplateStore.shared.add(task: task, successCriteria: criteria) }
-                }
-                state.stopCreating()
             } catch CaptureError.permissionDenied {
                 withAnimation {
                     clarifyingQuestion = "Screen Recording permission required. Grant it in System Settings, then try again."
@@ -678,6 +1144,7 @@ private struct IdleBody: View {
     @State private var lastRecord: SessionRecord? = nil
     @State private var templates: [SessionTemplate] = []
     @State private var templateError: String? = nil
+    @State private var heatmapDays: [DayActivity] = []
 
     var body: some View {
         Group {
@@ -700,7 +1167,11 @@ private struct IdleBody: View {
                 ? await SessionTemplateStore.shared.load()
                 : await SessionTemplateStore.shared.sorted()
             templates = Array(ordered.prefix(2))
+            heatmapDays = await SessionHistory.shared.weeklyHeatmap()
             NotchState.shared.idleTemplateCount = templates.count
+            NotchState.shared.idleHasNote = lastRecord?.note != nil
+            NotchState.shared.idleHasHeatmap = heatmapDays.contains { $0.sessionCount > 0 }
+            NotchState.shared.idleHasDailyGoal = settings.dailyFocusGoalMinutes != nil
         }
     }
 
@@ -708,6 +1179,17 @@ private struct IdleBody: View {
         VStack(alignment: .leading, spacing: 10) {
             if let s = sessionStats, s.todayCount > 0 || s.weekCount > 0 {
                 statsLine(s)
+            }
+
+            if let goal = settings.dailyFocusGoalMinutes {
+                DailyGoalProgressRow(
+                    todayMinutes: sessionStats?.todayMinutes ?? 0,
+                    goalMinutes: goal
+                )
+            }
+
+            if heatmapDays.contains(where: { $0.sessionCount > 0 }) {
+                NotchHeatmapView(days: heatmapDays)
             }
 
             if !templates.isEmpty {
@@ -733,17 +1215,36 @@ private struct IdleBody: View {
             }
 
             if let record = lastRecord {
-                Button {
-                    withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
-                        state.startCreating(prefill: record.task)
-                    }
-                } label: {
-                    Label(record.task, systemImage: "arrow.clockwise")
-                        .font(.system(size: 11))
-                        .lineLimit(1)
+                VStack(alignment: .leading, spacing: 3) {
+                    Button {
+                        withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
+                            state.startCreating(prefill: record.task)
+                        }
+                    } label: {
+                        HStack(spacing: 5) {
+                            Image(systemName: "arrow.clockwise")
+                                .font(.system(size: 11))
+                            Text(record.task)
+                                .font(.system(size: 11))
+                                .lineLimit(1)
+                            Spacer(minLength: 0)
+                            if record.duration >= 60 {
+                                Text(sessionElapsedLabel(seconds: Int(record.duration)))
+                                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                            }
+                        }
                         .foregroundStyle(.white.opacity(0.35))
+                    }
+                    .buttonStyle(.plain)
+
+                    if let note = record.note {
+                        Text(note)
+                            .font(.system(size: 10).italic())
+                            .foregroundStyle(.white.opacity(0.28))
+                            .lineLimit(2)
+                            .padding(.leading, 17)
+                    }
                 }
-                .buttonStyle(.plain)
             }
         }
         .padding(.horizontal, 16)
@@ -778,6 +1279,11 @@ private struct IdleBody: View {
                     .foregroundStyle(.white.opacity(0.75))
                     .lineLimit(1)
                 Spacer()
+                if let dur = t.preferredDuration {
+                    Text(templateDurationLabel(dur))
+                        .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(.white.opacity(0.35))
+                }
                 Image(systemName: "play.fill")
                     .font(.system(size: 9, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.25))
@@ -790,11 +1296,25 @@ private struct IdleBody: View {
         .buttonStyle(.plain)
     }
 
+    private func templateDurationLabel(_ seconds: TimeInterval) -> String {
+        let mins = Int(seconds) / 60
+        if mins >= 60 {
+            let h = mins / 60
+            let m = mins % 60
+            return m == 0 ? "\(h)h" : "\(h)h\(m)m"
+        }
+        return "\(mins)m"
+    }
+
     private func launchTemplate(_ t: SessionTemplate) {
         templateError = nil
         Task { @MainActor in
             do {
-                try await SessionManager.shared.start(task: t.task, successCriteria: t.successCriteria)
+                try await SessionManager.shared.start(
+                    task: t.task,
+                    successCriteria: t.successCriteria,
+                    targetDuration: t.preferredDuration
+                )
                 Task { await SessionTemplateStore.shared.recordUse(id: t.id) }
                 NotchState.shared.collapse()
             } catch CaptureError.permissionDenied {
@@ -817,18 +1337,134 @@ private struct IdleBody: View {
             Text(idleStatsSummary(s))
                 .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(.white.opacity(0.5))
-            if s.streak > 1 {
+            if s.streak > 0 {
                 Text("·")
                     .foregroundStyle(.white.opacity(0.2))
-                Text("🔥 \(s.streak)d streak")
+                Text(streakLabel(s))
                     .font(.system(size: 11, weight: .medium))
                     .foregroundStyle(.orange.opacity(0.8))
             }
         }
     }
+
+    /// Builds the streak display label. Shows best streak in parens when the user
+    /// is below their personal best so they can see the record they're chasing.
+    private func streakLabel(_ s: SessionStats) -> String {
+        streakDisplayLabel(current: s.streak, best: s.bestStreak)
+    }
+}
+
+// MARK: - Notch Heatmap
+
+/// Compact 7-day activity heatmap for the idle notch. Each day is a small rounded
+/// rectangle whose opacity reflects relative focus minutes. Days with no sessions
+/// are dim; today is white-highlighted.
+private struct NotchHeatmapView: View {
+    let days: [DayActivity]
+
+    private var maxMinutes: Int { max(1, days.map(\.minutes).max() ?? 1) }
+
+    var body: some View {
+        HStack(spacing: 4) {
+            ForEach(days.indices, id: \.self) { i in
+                notchHeatmapCell(days[i])
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func notchHeatmapCell(_ day: DayActivity) -> some View {
+        let isToday = Calendar.current.isDateInToday(day.date)
+        let fraction = day.minutes > 0
+            ? Double(day.minutes) / Double(maxMinutes)
+            : 0
+        let fillOpacity = day.minutes > 0 ? 0.15 + fraction * 0.55 : 0.04
+
+        return VStack(spacing: 3) {
+            RoundedRectangle(cornerRadius: 3, style: .continuous)
+                .fill(isToday ? Color.white.opacity(fillOpacity + 0.1) : Color.white.opacity(fillOpacity))
+                .frame(height: 18)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 3, style: .continuous)
+                        .stroke(isToday ? Color.white.opacity(0.25) : Color.clear, lineWidth: 0.5)
+                )
+            Text(notchHeatmapDayAbbrev(day.date))
+                .font(.system(size: 8, weight: isToday ? .bold : .regular))
+                .foregroundStyle(isToday ? .white.opacity(0.6) : .white.opacity(0.25))
+        }
+        .frame(maxWidth: .infinity)
+        .help(notchHeatmapTooltip(day))
+    }
+}
+
+/// Two-letter day abbreviation for the notch heatmap.
+internal func notchHeatmapDayAbbrev(_ date: Date) -> String {
+    let w = Calendar.current.component(.weekday, from: date)
+    return ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"][(w - 1) % 7]
+}
+
+/// Tooltip text for a notch heatmap cell: "no sessions" or "2 sessions · 1h 30m".
+internal func notchHeatmapTooltip(_ day: DayActivity) -> String {
+    if day.sessionCount == 0 { return "no sessions" }
+    let sessions = day.sessionCount == 1 ? "1 session" : "\(day.sessionCount) sessions"
+    let h = day.minutes / 60
+    let m = day.minutes % 60
+    let time: String
+    if h > 0 && m > 0 { time = "\(h)h \(m)m" }
+    else if h > 0 { time = "\(h)h" }
+    else if m > 0 { time = "\(m)m" }
+    else { time = "<1m" }
+    return "\(sessions) · \(time)"
+}
+
+// MARK: - Daily Goal Progress Row
+
+private struct DailyGoalProgressRow: View {
+    let todayMinutes: Int
+    let goalMinutes: Int
+
+    private var fraction: CGFloat {
+        guard goalMinutes > 0 else { return 0 }
+        return min(1.0, CGFloat(todayMinutes) / CGFloat(goalMinutes))
+    }
+
+    private var isComplete: Bool { todayMinutes >= goalMinutes }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 6) {
+                Image(systemName: isComplete ? "checkmark.circle.fill" : "target")
+                    .font(.system(size: 9, weight: .semibold))
+                    .foregroundStyle(isComplete ? .green.opacity(0.8) : .white.opacity(0.35))
+                Text(dailyGoalProgressLabel(todayMinutes: todayMinutes, goalMinutes: goalMinutes))
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundStyle(isComplete ? .green.opacity(0.8) : .white.opacity(0.5))
+            }
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 2, style: .continuous)
+                        .fill(Color.white.opacity(0.08))
+                    RoundedRectangle(cornerRadius: 2, style: .continuous)
+                        .fill(isComplete ? Color.green.opacity(0.6) : Color.white.opacity(0.35))
+                        .frame(width: geo.size.width * fraction)
+                }
+            }
+            .frame(height: 3)
+        }
+    }
 }
 
 // MARK: - Idle stats formatting (internal for testing)
+
+/// Formats the streak+best-streak label shown in the idle notch stats row.
+/// Shows "🔥 3d streak" on its own when the user is at or above their best.
+/// Shows "🔥 3d streak (best: 7d)" when there's a personal best to chase.
+/// A streak of 1 is shown as "🔥 1d streak" (not hidden) — even a day-one streak matters.
+internal func streakDisplayLabel(current: Int, best: Int) -> String {
+    let base = "🔥 \(current)d streak"
+    guard best > current else { return base }
+    return "\(base) (best: \(best)d)"
+}
 
 // When today has no sessions but this week does, use weekly framing so the idle
 // screen shows meaningful context ("3 sessions this week · 2h") on a slow day.
@@ -854,6 +1490,91 @@ internal func idleStatsSummary(_ s: SessionStats) -> String {
     else if h > 0 { time = "\(h)h" }
     else { time = "\(m)m" }
     return "\(base) · \(time)"
+}
+
+// MARK: - Focus score color (internal for testing)
+
+/// Maps a focus score (0…1) to a display color.
+/// Green ≥80%, amber 60–79%, red <60% — mirrors the mental model users bring.
+internal func focusScoreColor(_ score: Double) -> Color {
+    if score >= 0.8 { return .green.opacity(0.75) }
+    if score >= 0.6 { return .yellow.opacity(0.75) }
+    return Color(red: 1, green: 0.3, blue: 0.3).opacity(0.75)
+}
+
+// MARK: - Verification attempt helpers (internal for testing)
+
+/// Returns a human-readable relative time label for a verification attempt timestamp.
+/// Examples: "just now", "5m ago", "1h ago", "2h 15m ago".
+/// `now` is injectable so the function is deterministically testable.
+internal func verificationRelativeTime(_ date: Date, now: Date = Date()) -> String {
+    let elapsed = max(0, Int(now.timeIntervalSince(date)))
+    if elapsed < 60 { return "just now" }
+    let totalMinutes = elapsed / 60
+    let hours = totalMinutes / 60
+    let minutes = totalMinutes % 60
+    if hours > 0 && minutes > 0 { return "\(hours)h \(minutes)m ago" }
+    if hours > 0 { return "\(hours)h ago" }
+    return "\(totalMinutes)m ago"
+}
+
+// MARK: - Whitelisted domains formatting (internal for testing)
+
+/// Formats a compact label for whitelisted domains shown in the active session notch.
+/// Shows up to `maxVisible` domains; if more exist, appends "+N more".
+/// Returns an empty string when the list is empty.
+internal func whitelistedDomainsLabel(_ domains: [String], maxVisible: Int = 3) -> String {
+    guard !domains.isEmpty else { return "" }
+    if domains.count <= maxVisible {
+        return domains.joined(separator: ", ")
+    }
+    let visible = domains.prefix(maxVisible).joined(separator: ", ")
+    return "\(visible) +\(domains.count - maxVisible) more"
+}
+
+// MARK: - Session completion helpers (internal for testing)
+
+/// Returns a compact elapsed-time label for the session completion card.
+/// Examples: "<1m", "45m", "1h", "1h 30m".
+internal func sessionElapsedLabel(seconds: Int) -> String {
+    let total = max(0, seconds)
+    let h = total / 3600
+    let m = (total % 3600) / 60
+    if h > 0 && m > 0 { return "\(h)h \(m)m" }
+    if h > 0 { return "\(h)h" }
+    if m > 0 { return "\(m)m" }
+    return "<1m"
+}
+
+// MARK: - Daily focus goal formatting (internal for testing)
+
+/// Formats the daily goal progress label shown in the idle notch.
+/// Examples: "45m of 2h daily goal", "2h 15m of 3h daily goal", "2h daily goal reached!"
+internal func dailyGoalProgressLabel(todayMinutes: Int, goalMinutes: Int) -> String {
+    guard goalMinutes > 0 else { return "" }
+    let goalText = compactDuration(goalMinutes)
+    if todayMinutes >= goalMinutes { return "\(goalText) daily goal reached!" }
+    let progressText = todayMinutes > 0 ? compactDuration(todayMinutes) : "0m"
+    return "\(progressText) of \(goalText) daily goal"
+}
+
+/// Formats the compact collapsed-pill label when a daily goal is set.
+/// Examples: "45m / 2h", "0m / 1h", "2h / 2h ✓"
+internal func dailyGoalCollapsedLabel(todayMinutes: Int, goalMinutes: Int) -> String {
+    guard goalMinutes > 0 else { return "" }
+    let progress = todayMinutes > 0 ? compactDuration(todayMinutes) : "0m"
+    let goal = compactDuration(goalMinutes)
+    if todayMinutes >= goalMinutes { return "\(progress) / \(goal) ✓" }
+    return "\(progress) / \(goal)"
+}
+
+/// Compact duration: "45m", "1h", "1h 30m", "2h 15m"
+private func compactDuration(_ minutes: Int) -> String {
+    let h = minutes / 60
+    let m = minutes % 60
+    if h > 0 && m > 0 { return "\(h)h \(m)m" }
+    if h > 0 { return "\(h)h" }
+    return "\(m)m"
 }
 
 // MARK: - AdiButton

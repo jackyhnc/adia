@@ -5,10 +5,25 @@ import UniformTypeIdentifiers
 // MARK: - Root Settings Window
 
 public struct SettingsView: View {
+    /// Persisted so the user lands on their last-used tab on re-open.
+    @AppStorage("settingsSelectedTab") private var selectedTab: Int = 0
+
+    /// Per-tab window heights (points). Each value is hand-tuned to the natural
+    /// content density of that tab — avoiding wasted whitespace on compact tabs
+    /// while giving scrollable tabs more breathing room.
+    nonisolated static let tabHeights: [Int: CGFloat] = [
+        0: 500,   // Account  — API key, license, shortcuts, reminders, daily goal
+        1: 560,   // Blocking — many toggles, benefits from tall viewport
+        2: 460,   // Templates — list + footer row
+        3: 600,   // History  — heatmap + insights + session list
+    ]
+
+    var currentHeight: CGFloat { Self.tabHeights[selectedTab] ?? 500 }
+
     public init() {}
 
     public var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             AccountSettingsTab()
                 .tabItem { Label("Account", systemImage: "person.circle") }
                 .tag(0)
@@ -23,7 +38,8 @@ public struct SettingsView: View {
                 .tag(3)
         }
         .padding(20)
-        .frame(width: 480, height: 500)
+        .frame(width: 480, height: currentHeight)
+        .animation(.easeOut(duration: 0.18), value: selectedTab)
     }
 }
 
@@ -81,6 +97,21 @@ private struct AccountSettingsTab: View {
                 Text("Works globally — press from any app to expand the notch. The menu bar icon provides the same controls on non-notch Macs.")
                     .foregroundStyle(.secondary)
             }
+
+            Section {
+                Picker("Remind me every", selection: $settings.timerExpiredRearmMinutes) {
+                    ForEach(SettingsStore.timerExpiredRearmMinuteOptions, id: \.self) { minutes in
+                        Text("\(minutes) min").tag(minutes)
+                    }
+                }
+            } header: {
+                Text("Reminders")
+            } footer: {
+                Text("When your session's timer runs out, Adia re-opens the notch on this interval until you verify you're done or end the session.")
+                    .foregroundStyle(.secondary)
+            }
+
+            DailyGoalSection(settings: settings)
         }
         .formStyle(.grouped)
     }
@@ -158,6 +189,7 @@ private struct AccountSettingsTab: View {
                         .foregroundStyle(.orange)
                 }
                 Link("Upgrade at adia.app →",
+                     // Force unwrap is safe: constant, well-formed URL string.
                      destination: URL(string: "https://adia.app/pricing")!)
                     .font(.callout)
             }
@@ -183,6 +215,7 @@ private struct AccountSettingsTab: View {
             .disabled(activating || licenseKey.isEmpty || email.isEmpty)
             Spacer()
             Link("Buy a license →",
+                 // Force unwrap is safe: constant, well-formed URL string.
                  destination: URL(string: "https://adia.app/pricing")!)
                 .font(.callout)
         }
@@ -196,6 +229,100 @@ private struct AccountSettingsTab: View {
         activateError = nil
         activateError = await license.activate(key: licenseKey, email: email)
         activating    = false
+    }
+}
+
+// MARK: - Daily Goal Section
+
+private struct DailyGoalSection: View {
+    @ObservedObject var settings: SettingsStore
+    @State private var customGoalText: String = ""
+
+    private var parsedCustomMinutes: Int? { parseCustomDuration(customGoalText) }
+    private var isPreset: Bool {
+        guard let goal = settings.dailyFocusGoalMinutes else { return false }
+        return SettingsStore.dailyGoalPresets.contains { $0.0 == goal }
+    }
+
+    var body: some View {
+        Section {
+            HStack(spacing: 4) {
+                ForEach(SettingsStore.dailyGoalPresets, id: \.0) { minutes, label in
+                    Button {
+                        if settings.dailyFocusGoalMinutes == minutes {
+                            settings.dailyFocusGoalMinutes = nil
+                        } else {
+                            settings.dailyFocusGoalMinutes = minutes
+                            customGoalText = ""
+                        }
+                    } label: {
+                        Text(label)
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(settings.dailyFocusGoalMinutes == minutes ? .white : .secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(
+                                settings.dailyFocusGoalMinutes == minutes
+                                    ? Color.accentColor
+                                    : Color.secondary.opacity(0.12),
+                                in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
+                if settings.dailyFocusGoalMinutes != nil {
+                    Button {
+                        settings.dailyFocusGoalMinutes = nil
+                        customGoalText = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.tertiary)
+                            .font(.system(size: 13))
+                    }
+                    .buttonStyle(.plain)
+                    .help("Clear daily goal")
+                }
+            }
+            HStack(spacing: 6) {
+                TextField("or type a custom goal (e.g. 2h, 90m, 1h30m)", text: $customGoalText)
+                    .font(.system(size: 12))
+                    .onSubmit {
+                        if let parsed = parsedCustomMinutes {
+                            settings.dailyFocusGoalMinutes = parsed
+                            customGoalText = ""
+                        }
+                    }
+                    .onChange(of: customGoalText) {
+                        if let parsed = parsedCustomMinutes {
+                            settings.dailyFocusGoalMinutes = parsed
+                        }
+                    }
+                if !customGoalText.isEmpty {
+                    Button { customGoalText = "" } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.tertiary)
+                            .font(.system(size: 13))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        } header: {
+            Text("Daily Focus Goal")
+        } footer: {
+            VStack(alignment: .leading, spacing: 4) {
+                if !isPreset, let parsed = parsedCustomMinutes {
+                    Text("= \(heatmapFormatMinutes(parsed))")
+                        .foregroundStyle(.green.opacity(0.9))
+                } else if !customGoalText.trimmingCharacters(in: .whitespaces).isEmpty, parsedCustomMinutes == nil {
+                    Text("Couldn't parse — try "2h", "90m", or "1h30m".")
+                        .foregroundStyle(.orange.opacity(0.8))
+                }
+                Text(settings.dailyFocusGoalMinutes != nil
+                     ? "The notch shows your progress toward this goal each day."
+                     : "Set a daily target to track your focus consistency.")
+                    .foregroundStyle(.secondary)
+            }
+        }
     }
 }
 
@@ -221,8 +348,11 @@ private struct BlockingSettingsTab: View {
             } header: {
                 Text("Default Block List")
             } footer: {
-                Text("Disabled domains are skipped in new sessions but not unblocked mid-session.")
-                    .foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Disabled domains are skipped in new sessions but not unblocked mid-session.")
+                    Text("Each blocked domain also automatically blocks its mobile (m.), AMP (amp.), image (i.), music (music.), TV (tv.), and older (old., en.) subdomains — so bypass tricks like m.reddit.com or music.youtube.com are covered without extra configuration.")
+                }
+                .foregroundStyle(.secondary)
             }
 
             Section {
@@ -494,6 +624,28 @@ internal func dayLabel(for date: Date, calendar: Calendar = .current, now: Date 
     return date.formatted(.dateTime.month(.wide).day().year())
 }
 
+/// Formats compact trailing stats for the selectable record row.
+/// Returns "45m", "45m · 3⚠", "45m · 87%", "45m · 3⚠ · 87%", or with
+/// "asked N×" and/or "N blocked" suffixes appended when applicable.
+/// `minChecks` is passed explicitly so tests can override without touching the singleton.
+internal func selectableRowStats(record: SessionRecord, minChecks: Int) -> String {
+    let total = max(0, Int(record.duration))
+    let h = total / 3600
+    let m = (total % 3600) / 60
+    let dur: String
+    if h > 0 { dur = "\(h)h \(m)m" }
+    else if m > 0 { dur = "\(m)m" }
+    else { dur = "<1m" }
+    var parts = [dur]
+    if record.calloutCount > 0 { parts.append("\(record.calloutCount)⚠") }
+    if let score = record.focusScore, record.totalChecks >= minChecks {
+        parts.append("\(Int(score * 100))%")
+    }
+    if record.reasoningAttempts > 0 { parts.append("asked \(record.reasoningAttempts)×") }
+    if record.blockedDomains.count > 0 { parts.append("\(record.blockedDomains.count) blocked") }
+    return parts.joined(separator: " · ")
+}
+
 /// Groups records (expected newest-first) into `DayGroup` buckets without reordering.
 internal func groupedByDay(
     _ records: [SessionRecord],
@@ -512,10 +664,26 @@ internal func groupedByDay(
     return result
 }
 
+/// Formats the all-time summary shown below the weekly stats line in the History tab header.
+/// Returns "X sessions · Yh Zm total" or "X sessions total" when no minutes are logged.
+internal func allTimeSummaryText(_ s: SessionStats) -> String {
+    let count = s.allTimeCount
+    let sessions = "\(count) session\(count == 1 ? "" : "s")"
+    guard s.allTimeMinutes > 0 else { return "\(sessions) total" }
+    let h = s.allTimeMinutes / 60
+    let m = s.allTimeMinutes % 60
+    let time: String
+    if h > 0 && m > 0 { time = "\(h)h \(m)m" }
+    else if h > 0 { time = "\(h)h" }
+    else { time = "\(m)m" }
+    return "\(sessions) · \(time) total"
+}
+
 private struct HistoryTab: View {
     @State private var records: [SessionRecord] = []
     @State private var stats: SessionStats? = nil
     @State private var heatmapDays: [DayActivity] = []
+    @State private var insights: FocusInsights? = nil
     @State private var showingClearAlert: Bool = false
     @State private var expandedRecordID: UUID? = nil
     @State private var searchText: String = ""
@@ -557,6 +725,9 @@ private struct HistoryTab: View {
                 VStack(spacing: 0) {
                     if heatmapDays.count == 7 {
                         weeklySection(stats)
+                    }
+                    if let ins = insights, ins.sessionCount >= insightsMinSessions {
+                        insightsSection(ins)
                     }
                     searchFilterBar
                     if filteredRecords.isEmpty {
@@ -611,6 +782,7 @@ private struct HistoryTab: View {
                                                         }
                                                         stats = await SessionHistory.shared.stats()
                                                         heatmapDays = await SessionHistory.shared.weeklyHeatmap()
+                                                        insights = await SessionHistory.shared.insights()
                                                     }
                                                 }
                                             )
@@ -638,6 +810,23 @@ private struct HistoryTab: View {
                                 .opacity(selectedIDs.isEmpty ? 0 : 1)
                                 .disabled(selectedIDs.isEmpty)
                             Spacer()
+                            Menu("Export \(selectedIDs.count)…") {
+                                Button("CSV…") {
+                                    let selected = records.filter { selectedIDs.contains($0.id) }
+                                    presentExportPanel(records: selected, filename: "adia-selected-sessions.csv")
+                                }
+                                Button("JSON…") {
+                                    let selected = records.filter { selectedIDs.contains($0.id) }
+                                    presentExportPanelJSON(records: selected, filename: "adia-selected-sessions.json")
+                                }
+                            }
+                            .menuStyle(.borderlessButton)
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 8)
+                            .opacity(selectedIDs.isEmpty ? 0 : 1)
+                            .disabled(selectedIDs.isEmpty)
                             Button(allFilteredSelected ? "Deselect All" : "Select All") {
                                 toggleSelectAll()
                             }
@@ -674,12 +863,19 @@ private struct HistoryTab: View {
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 8)
-                            Button("Export CSV…") { exportCSV(records) }
-                                .buttonStyle(.borderless)
-                                .font(.callout)
-                                .foregroundStyle(.secondary)
-                                .padding(.trailing, 12)
-                                .padding(.vertical, 8)
+                            Menu("Export…") {
+                                Button("CSV…") {
+                                    presentExportPanel(records: records, filename: "adia-history.csv")
+                                }
+                                Button("JSON…") {
+                                    presentExportPanelJSON(records: records, filename: "adia-history.json")
+                                }
+                            }
+                            .menuStyle(.borderlessButton)
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .padding(.trailing, 12)
+                            .padding(.vertical, 8)
                         }
                     }
                     .background(.background)
@@ -693,6 +889,7 @@ private struct HistoryTab: View {
                     records = []
                     stats = nil
                     heatmapDays = []
+                    insights = nil
                     expandedRecordID = nil
                     isSelectMode = false
                     selectedIDs = []
@@ -706,30 +903,46 @@ private struct HistoryTab: View {
             records = await SessionHistory.shared.load()
             stats = await SessionHistory.shared.stats()
             heatmapDays = await SessionHistory.shared.weeklyHeatmap()
+            insights = await SessionHistory.shared.insights()
         }
     }
 
     @ViewBuilder
     private func weeklySection(_ s: SessionStats?) -> some View {
         VStack(spacing: 0) {
-            if let s, s.weekCount > 0 {
-                HStack(spacing: 8) {
-                    Image(systemName: "bolt.fill")
-                        .font(.system(size: 11, weight: .bold))
-                        .foregroundStyle(.secondary)
-                    Text(weekSummaryText(s))
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(.secondary)
-                    if s.streak > 1 {
-                        Text("🔥 \(s.streak)d streak")
-                            .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(.orange)
-                            .padding(.horizontal, 7)
-                            .padding(.vertical, 2)
-                            .background(.orange.opacity(0.1))
-                            .clipShape(Capsule())
+            if let s, s.weekCount > 0 || s.allTimeCount > 0 {
+                VStack(alignment: .leading, spacing: 4) {
+                    if s.weekCount > 0 {
+                        HStack(spacing: 8) {
+                            Image(systemName: "bolt.fill")
+                                .font(.system(size: 11, weight: .bold))
+                                .foregroundStyle(.secondary)
+                            Text(weekSummaryText(s))
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundStyle(.secondary)
+                            if s.streak > 0 {
+                                Text(streakDisplayLabel(current: s.streak, best: s.bestStreak))
+                                    .font(.system(size: 11, weight: .semibold))
+                                    .foregroundStyle(.orange)
+                                    .padding(.horizontal, 7)
+                                    .padding(.vertical, 2)
+                                    .background(.orange.opacity(0.1))
+                                    .clipShape(Capsule())
+                            }
+                            Spacer()
+                        }
                     }
-                    Spacer()
+                    if s.allTimeCount > 0 {
+                        HStack(spacing: 6) {
+                            Image(systemName: "clock.arrow.circlepath")
+                                .font(.system(size: 10, weight: .regular))
+                                .foregroundStyle(.tertiary)
+                            Text(allTimeSummaryText(s))
+                                .font(.system(size: 11))
+                                .foregroundStyle(.tertiary)
+                            Spacer()
+                        }
+                    }
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 9)
@@ -737,10 +950,68 @@ private struct HistoryTab: View {
             }
             WeekHeatmapView(days: heatmapDays)
                 .padding(.horizontal, 16)
-                .padding(.top, s == nil || (s?.weekCount ?? 0) == 0 ? 9.0 : 0.0)
+                .padding(.top, (s == nil || ((s?.weekCount ?? 0) == 0 && (s?.allTimeCount ?? 0) == 0)) ? 9.0 : 0.0)
                 .padding(.bottom, 9)
         }
         .background(.background)
+    }
+
+    @ViewBuilder
+    private func insightsSection(_ ins: FocusInsights) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 6) {
+                Image(systemName: "lightbulb.fill")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(.yellow)
+                Text("Focus Insights")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                Spacer()
+            }
+            HStack(spacing: 16) {
+                if let avg = ins.avgSessionMinutes {
+                    insightChip(icon: "timer", label: "Avg session", value: heatmapFormatMinutes(avg))
+                }
+                if let rate = ins.completionRate {
+                    insightChip(icon: "checkmark.circle", label: "Completed", value: "\(Int(rate * 100))%")
+                }
+                if let score = ins.avgFocusScore {
+                    insightChip(icon: "eye", label: "Focus", value: "\(Int(score * 100))%")
+                }
+            }
+            HStack(spacing: 16) {
+                if let hour = ins.bestHour {
+                    insightChip(icon: "clock", label: "Peak hour", value: formatHourRange(hour))
+                }
+                if let wd = ins.bestWeekday {
+                    insightChip(icon: "calendar", label: "Best day", value: formatWeekday(wd))
+                }
+                if ins.trend != .insufficient {
+                    let t = trendLabel(ins.trend)
+                    insightChip(icon: t.symbol, label: "Trend", value: t.text)
+                }
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
+        .background(.background)
+    }
+
+    @ViewBuilder
+    private func insightChip(icon: String, label: String, value: String) -> some View {
+        HStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.system(size: 10))
+                .foregroundStyle(.tertiary)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(label)
+                    .font(.system(size: 9, weight: .medium))
+                    .foregroundStyle(.tertiary)
+                Text(value)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.primary)
+            }
+        }
     }
 
     @ViewBuilder
@@ -821,28 +1092,29 @@ private struct HistoryTab: View {
             if records.isEmpty { isSelectMode = false }
             stats = await SessionHistory.shared.stats()
             heatmapDays = await SessionHistory.shared.weeklyHeatmap()
+            insights = await SessionHistory.shared.insights()
         }
     }
 
-    private func exportCSV(_ records: [SessionRecord]) {
-        var csv = "Date,Task,Success Criteria,Duration (min),Completed,Callouts,Note\n"
-        let fmt = ISO8601DateFormatter()
-        for r in records {
-            let date = fmt.string(from: r.startTime)
-            let task = r.task.replacingOccurrences(of: "\"", with: "\"\"")
-            let criteria = r.successCriteria.replacingOccurrences(of: "\"", with: "\"\"")
-            let mins = Int(r.duration / 60)
-            let done = r.completedSuccessfully ? "Yes" : "No"
-            let note = (r.note ?? "").replacingOccurrences(of: "\"", with: "\"\"")
-            csv += "\"\(date)\",\"\(task)\",\"\(criteria)\",\(mins),\(done),\(r.calloutCount),\"\(note)\"\n"
-        }
-
+    private func presentExportPanel(records: [SessionRecord], filename: String) {
+        let csv = sessionRecordsToCSV(records)
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.commaSeparatedText]
-        panel.nameFieldStringValue = "adia-history.csv"
+        panel.nameFieldStringValue = filename
         panel.begin { response in
             guard response == .OK, let url = panel.url else { return }
             try? csv.write(to: url, atomically: true, encoding: .utf8)
+        }
+    }
+
+    private func presentExportPanelJSON(records: [SessionRecord], filename: String) {
+        let json = sessionRecordsToJSON(records)
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.json]
+        panel.nameFieldStringValue = filename
+        panel.begin { response in
+            guard response == .OK, let url = panel.url else { return }
+            try? json.write(to: url, atomically: true, encoding: .utf8)
         }
     }
 }
@@ -856,6 +1128,33 @@ internal func heatmapFormatMinutes(_ minutes: Int) -> String {
     if h > 0 && m > 0 { return "\(h)h \(m)m" }
     if h > 0 { return "\(h)h" }
     return "\(m)m"
+}
+
+/// Parses a human-typed duration string into a whole number of minutes.
+/// Accepts: "90", "90m", "90min", "2h", "1h30m", "1h 30m".
+/// Returns nil for empty input, zero result, or unrecognised patterns.
+internal func parseCustomDuration(_ raw: String) -> Int? {
+    let s = raw.trimmingCharacters(in: .whitespaces).lowercased()
+    guard !s.isEmpty else { return nil }
+    let scanner = Scanner(string: s)
+    scanner.charactersToBeSkipped = nil
+    guard let first = scanner.scanInt() else { return nil }
+    _ = scanner.scanCharacters(from: .whitespaces)
+    if scanner.scanString("h") != nil {
+        _ = scanner.scanCharacters(from: .whitespaces)
+        let extra = scanner.scanInt() ?? 0
+        for suffix in ["mins", "min", "m"] {
+            if scanner.scanString(suffix) != nil { break }
+        }
+        guard scanner.isAtEnd else { return nil }
+        let total = first * 60 + extra
+        return total > 0 ? total : nil
+    }
+    for suffix in ["mins", "min", "m"] {
+        if scanner.scanString(suffix) != nil { break }
+    }
+    guard scanner.isAtEnd else { return nil }
+    return first > 0 ? first : nil
 }
 
 /// Returns the tooltip label for a single heatmap column day.
@@ -970,6 +1269,21 @@ private struct SessionRecordRow: View {
                             Label("\(record.calloutCount) callout\(record.calloutCount == 1 ? "" : "s")",
                                   systemImage: "exclamationmark.bubble")
                         }
+                        if let score = record.focusScore, record.totalChecks >= SessionManager.minChecksForFocusScore {
+                            Label("\(Int(score * 100))% focused", systemImage: "target")
+                        }
+                        if record.reasoningAttempts > 0 {
+                            Label(
+                                "asked \(record.reasoningAttempts)×",
+                                systemImage: "bubble.left.and.text.bubble.right"
+                            )
+                        }
+                        if record.blockedDomains.count > 0 {
+                            Label(
+                                "\(record.blockedDomains.count) site\(record.blockedDomains.count == 1 ? "" : "s") blocked",
+                                systemImage: "hand.raised.fill"
+                            )
+                        }
                     }
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -1013,6 +1327,24 @@ private struct SessionRecordRow: View {
                         detailField("Duration", formattedDuration(record.duration))
                         detailField("Callouts",
                             record.calloutCount == 0 ? "None" : "\(record.calloutCount)")
+                        if let score = record.focusScore, record.totalChecks >= SessionManager.minChecksForFocusScore {
+                            detailField("Focus score", "\(Int(score * 100))%")
+                        }
+                    }
+
+                    if record.reasoningAttempts > 0 {
+                        detailField("Site access asks",
+                            "\(record.reasoningAttempts) asked, \(record.reasoningGranted) granted")
+                    }
+
+                    if !record.blockedDomains.isEmpty {
+                        detailField(
+                            "Blocked sites",
+                            record.blockedDomains.prefix(5).joined(separator: ", ") +
+                                (record.blockedDomains.count > 5
+                                    ? " +\(record.blockedDomains.count - 5) more"
+                                    : "")
+                        )
                     }
 
                     noteEditorField
@@ -1133,6 +1465,9 @@ private struct SelectableRecordRow: View {
                 }
             }
             Spacer()
+            Text(selectableRowStats(record: record, minChecks: SessionManager.minChecksForFocusScore))
+                .font(.system(size: 11, design: .monospaced))
+                .foregroundStyle(.tertiary)
         }
         .padding(.vertical, 2)
         .contentShape(Rectangle())
@@ -1288,13 +1623,29 @@ private struct EditTemplateSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var taskDraft: String
     @State private var criteriaDraft: String
+    @State private var selectedMinutes: Int?
+    /// Free-form duration text typed by the user (e.g. "2h", "90m", "1h30m").
+    /// Pre-populated when the template's stored duration doesn't match any preset chip.
+    @State private var customText: String
+
+    private static let durationPresets: [(Int, String)] = [(25, "25m"), (45, "45m"), (60, "1h"), (90, "90m")]
 
     init(template: SessionTemplate, onSave: @escaping () -> Void) {
         self.template = template
         self.onSave = onSave
         _taskDraft = State(initialValue: template.task)
         _criteriaDraft = State(initialValue: template.successCriteria)
+        // Snap stored seconds to the nearest preset; nil if no match or no stored duration.
+        let storedMinutes = template.preferredDuration.map { Int($0 / 60) }
+        let presetSet = Set(Self.durationPresets.map(\.0))
+        let snapped: Int? = storedMinutes.flatMap { presetSet.contains($0) ? $0 : nil }
+        _selectedMinutes = State(initialValue: snapped)
+        // Pre-fill custom text when stored duration doesn't match any preset.
+        let customMinutes = storedMinutes.flatMap { presetSet.contains($0) ? nil : $0 }
+        _customText = State(initialValue: customMinutes.map { heatmapFormatMinutes($0) } ?? "")
     }
+
+    private var parsedCustomMinutes: Int? { parseCustomDuration(customText) }
 
     private var canSave: Bool {
         !taskDraft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
@@ -1325,6 +1676,84 @@ private struct EditTemplateSheet: View {
                 } header: {
                     Text("Done when")
                 }
+
+                Section {
+                    HStack(spacing: 6) {
+                        ForEach(Self.durationPresets, id: \.0) { minutes, label in
+                            Button {
+                                withAnimation(.easeOut(duration: 0.1)) {
+                                    if selectedMinutes == minutes {
+                                        selectedMinutes = nil
+                                    } else {
+                                        selectedMinutes = minutes
+                                        customText = ""
+                                    }
+                                }
+                            } label: {
+                                Text(label)
+                                    .font(.system(size: 11, weight: .semibold))
+                                    .foregroundStyle(selectedMinutes == minutes ? .white : .secondary)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 4)
+                                    .background(
+                                        selectedMinutes == minutes
+                                            ? Color.accentColor
+                                            : Color.secondary.opacity(0.12),
+                                        in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                    )
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        if selectedMinutes != nil {
+                            Button {
+                                withAnimation(.easeOut(duration: 0.1)) { selectedMinutes = nil }
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(.tertiary)
+                                    .font(.system(size: 13))
+                            }
+                            .buttonStyle(.plain)
+                            .help("Clear duration goal")
+                        }
+                    }
+                    HStack(spacing: 6) {
+                        TextField("or type a custom duration (e.g. 2h, 90m, 1h30m)", text: $customText)
+                            .font(.system(size: 12))
+                            .onChange(of: customText) {
+                                if !customText.trimmingCharacters(in: .whitespaces).isEmpty {
+                                    selectedMinutes = nil
+                                }
+                            }
+                        if !customText.isEmpty {
+                            Button { customText = "" } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(.tertiary)
+                                    .font(.system(size: 13))
+                            }
+                            .buttonStyle(.plain)
+                            .help("Clear custom duration")
+                        }
+                    }
+                } header: {
+                    Text("Duration goal")
+                } footer: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        if selectedMinutes == nil {
+                            if let parsed = parsedCustomMinutes {
+                                Text("= \(heatmapFormatMinutes(parsed))")
+                                    .foregroundStyle(.green.opacity(0.9))
+                            } else if !customText.trimmingCharacters(in: .whitespaces).isEmpty {
+                                Text("Couldn't parse — try "2h", "90m", or "1h30m".")
+                                    .foregroundStyle(.orange.opacity(0.8))
+                            }
+                        }
+                        let hasGoal = selectedMinutes != nil || parsedCustomMinutes != nil
+                        Text(hasGoal
+                             ? "A progress arc will appear in the notch during this session."
+                             : "No time limit — session runs until you click Done.")
+                            .foregroundStyle(.secondary)
+                    }
+                }
             }
             .formStyle(.grouped)
 
@@ -1339,8 +1768,10 @@ private struct EditTemplateSheet: View {
                     let id = template.id
                     let t = taskDraft.trimmingCharacters(in: .whitespacesAndNewlines)
                     let c = criteriaDraft.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let dur: TimeInterval? = selectedMinutes.map { TimeInterval($0 * 60) }
+                        ?? parsedCustomMinutes.map { TimeInterval($0 * 60) }
                     Task {
-                        await SessionTemplateStore.shared.update(id: id, task: t, successCriteria: c)
+                        await SessionTemplateStore.shared.update(id: id, task: t, successCriteria: c, preferredDuration: dur)
                         onSave()
                     }
                     dismiss()
@@ -1351,6 +1782,6 @@ private struct EditTemplateSheet: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 14)
         }
-        .frame(width: 380, height: 280)
+        .frame(width: 380, height: 400)
     }
 }

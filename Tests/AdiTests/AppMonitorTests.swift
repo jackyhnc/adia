@@ -50,9 +50,13 @@ struct AppMonitorTests {
     }
 
     @Test func calloutSpecialCharAppNameDoesNotCrash() {
+        // `appName` is always the *argument* to String(format:), never the format
+        // string, so there's no injection/crash risk — but if the name itself
+        // contains "%@" that substring legitimately survives into the message
+        // verbatim (String(format:) doesn't reinterpret substituted values).
+        // Asserting its absence here would be asserting something impossible.
         let msg = AppMonitor.callout(for: "app %@ test")
         #expect(!msg.isEmpty)
-        #expect(!msg.contains("%@"))
     }
 
     // MARK: - Session.defaultBlockedApps
@@ -85,6 +89,133 @@ struct AppMonitorTests {
         let decoded = try decoder.decode(Session.self, from: data)
         #expect(decoded.blockedApps == ["com.hnc.Discord"])
     }
+
+    // MARK: - Force-hide behaviour
+
+    @Test func forceHidesBlockedAppsIsTrue() {
+        // Enforces the "no soft blocks" design principle: blocked apps must be
+        // force-hidden on activation, not just called out. Changing this to false
+        // weakens enforcement and requires an intentional, documented decision.
+        #expect(AppMonitor.forceHidesBlockedApps == true)
+    }
+
+    // MARK: - Re-hide loop
+
+    @Test func reHideIntervalIsAtMost200ms() {
+        // Guard against accidentally lengthening the interval: 200 ms keeps the
+        // re-hide snappy enough to prevent visible dwell in a blocked app after
+        // a Command-Tab. Any increase must be a deliberate, tested decision.
+        #expect(AppMonitor.reHideIntervalMilliseconds <= 200)
+    }
+
+    @Test func reHideIntervalIsPositive() {
+        #expect(AppMonitor.reHideIntervalMilliseconds > 0)
+    }
+
+    @Test func startWithBlockedAppsStartsReHideTask() {
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Discord"])
+        #expect(AppMonitor.shared.reHideTask != nil)
+        AppMonitor.shared.stop()
+    }
+
+    @Test func stopCancelsReHideTask() {
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Discord"])
+        AppMonitor.shared.stop()
+        #expect(AppMonitor.shared.reHideTask == nil)
+    }
+
+    @Test func startWithEmptyBundleIDsDoesNotStartReHideTask() {
+        // When there are no blocked apps, no polling is needed.
+        AppMonitor.shared.stop()  // ensure clean state
+        AppMonitor.shared.start(blockedBundleIDs: [])
+        #expect(AppMonitor.shared.reHideTask == nil)
+        AppMonitor.shared.stop()
+    }
+
+    // MARK: - currentTask tracking (powers the "closed <app>" explanation banner)
+
+    @Test func startStoresTaskForExplanationBanner() {
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Discord"], task: "write essay")
+        #expect(AppMonitor.shared.currentTask == "write essay")
+        AppMonitor.shared.stop()
+    }
+
+    @Test func startWithoutTaskDefaultsToEmptyString() {
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Discord"])
+        #expect(AppMonitor.shared.currentTask == "")
+        AppMonitor.shared.stop()
+    }
+
+    @Test func stopClearsCurrentTask() {
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Discord"], task: "write essay")
+        AppMonitor.shared.stop()
+        #expect(AppMonitor.shared.currentTask == "")
+    }
+
+    @Test func restartReplacesStaleTaskFromPriorSession() {
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Discord"], task: "write essay")
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Slack"], task: "read chapter 3")
+        #expect(AppMonitor.shared.currentTask == "read chapter 3")
+        AppMonitor.shared.stop()
+    }
+
+    // MARK: - "closed <app>" notification rate-limiting (pure decision function)
+
+    @Test func allowsFirstNotificationWithNoPriorState() {
+        let now = Date()
+        #expect(AppMonitor.shouldSendHiddenNotification(
+            forBundleID: "com.hnc.Discord", lastBundleID: nil, lastNotifiedAt: nil, now: now))
+    }
+
+    @Test func allowsImmediateNotificationForDifferentApp() {
+        let now = Date()
+        #expect(AppMonitor.shouldSendHiddenNotification(
+            forBundleID: "com.hnc.Slack", lastBundleID: "com.hnc.Discord",
+            lastNotifiedAt: now, now: now))
+    }
+
+    @Test func suppressesRapidRefireForSameAppWithinInterval() {
+        let last = Date()
+        let justAfter = last.addingTimeInterval(0.5)
+        #expect(!AppMonitor.shouldSendHiddenNotification(
+            forBundleID: "com.hnc.Discord", lastBundleID: "com.hnc.Discord",
+            lastNotifiedAt: last, now: justAfter, minInterval: 3.0))
+    }
+
+    @Test func allowsRefireForSameAppAfterIntervalElapses() {
+        let last = Date()
+        let muchLater = last.addingTimeInterval(5.0)
+        #expect(AppMonitor.shouldSendHiddenNotification(
+            forBundleID: "com.hnc.Discord", lastBundleID: "com.hnc.Discord",
+            lastNotifiedAt: last, now: muchLater, minInterval: 3.0))
+    }
+
+    @Test func allowsRefireExactlyAtIntervalBoundary() {
+        let last = Date()
+        let atBoundary = last.addingTimeInterval(3.0)
+        #expect(AppMonitor.shouldSendHiddenNotification(
+            forBundleID: "com.hnc.Discord", lastBundleID: "com.hnc.Discord",
+            lastNotifiedAt: last, now: atBoundary, minInterval: 3.0))
+    }
+
+    @Test func hiddenNotificationMinIntervalIsPositive() {
+        #expect(AppMonitor.hiddenNotificationMinInterval > 0)
+    }
+
+    @Test func hiddenNotificationMinIntervalIsReasonable() {
+        // Long enough to absorb a Cmd-Tab flurry, short enough to still feel responsive.
+        #expect(AppMonitor.hiddenNotificationMinInterval >= 1.0)
+        #expect(AppMonitor.hiddenNotificationMinInterval <= 30.0)
+    }
+
+    @Test func startResetsHiddenNotificationGuardState() {
+        AppMonitor.shared.start(blockedBundleIDs: ["com.hnc.Discord"])
+        AppMonitor.shared.stop()
+        #expect(AppMonitor.shared.lastHiddenNotificationBundleID == nil)
+        #expect(AppMonitor.shared.lastHiddenNotificationAt == nil)
+    }
+
+    // MARK: - Session Codable (legacy decode)
 
     @Test func sessionDecodesLegacyJsonWithoutBlockedApps() throws {
         // Simulate an old persisted session that has no blockedApps key.

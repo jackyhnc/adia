@@ -37,6 +37,9 @@ private final class BlockerPanel: NSPanel {
 @MainActor
 public final class FocusBlockerWindowController: NSWindowController {
 
+    // Force cast is safe: `init()` below always constructs `window` as an `NSPanel`
+    // before calling `super.init(window:)`, so this controller never observes any
+    // other window type.
     private var blockerPanel: NSPanel { window as! NSPanel }
     private var cancellables = Set<AnyCancellable>()
 

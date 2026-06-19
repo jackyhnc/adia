@@ -18,6 +18,7 @@ public struct PaywallView: View {
             Text("Adia Pro keeps you focused — $7/mo, $59/year, or $149 lifetime.")
                 .foregroundStyle(.secondary)
 
+            // Force unwraps below are safe: constant, well-formed URL strings.
             HStack(spacing: 10) {
                 Link(destination: URL(string: "https://adia.app/pricing")!) {
                     Label("See pricing", systemImage: "tag")
