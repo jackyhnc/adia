@@ -19,6 +19,10 @@ public struct FocusInsights: Sendable, Equatable {
     public let trend: FocusTrend
     /// Total number of sessions analyzed.
     public let sessionCount: Int
+    /// Fraction of sessions that had zero stream failures (0.0–1.0). nil when no sessions.
+    public let captureReliabilityRate: Double?
+    /// Average number of pauses per session. nil when no sessions.
+    public let avgPausesPerSession: Double?
 }
 
 /// Direction the user's focus score is moving.
@@ -46,7 +50,8 @@ internal func computeFocusInsights(
     guard !records.isEmpty else {
         return FocusInsights(
             avgSessionMinutes: nil, completionRate: nil, avgFocusScore: nil,
-            bestHour: nil, bestWeekday: nil, trend: .insufficient, sessionCount: 0
+            bestHour: nil, bestWeekday: nil, trend: .insufficient, sessionCount: 0,
+            captureReliabilityRate: nil, avgPausesPerSession: nil
         )
     }
 
@@ -61,6 +66,10 @@ internal func computeFocusInsights(
     let bestWeekday = computeBestWeekday(records, calendar: calendar)
     let trend = computeTrend(scored)
 
+    let reliableCount = records.filter { $0.streamFailureCount == 0 }.count
+    let captureReliability = Double(reliableCount) / Double(records.count)
+    let avgPauses = records.reduce(0.0) { $0 + Double($1.pauseCount) } / Double(records.count)
+
     return FocusInsights(
         avgSessionMinutes: avgMinutes,
         completionRate: completionRate,
@@ -68,7 +77,9 @@ internal func computeFocusInsights(
         bestHour: bestHour,
         bestWeekday: bestWeekday,
         trend: trend,
-        sessionCount: records.count
+        sessionCount: records.count,
+        captureReliabilityRate: captureReliability,
+        avgPausesPerSession: avgPauses
     )
 }
 

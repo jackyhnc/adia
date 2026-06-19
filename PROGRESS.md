@@ -6749,3 +6749,55 @@ This run adds a proactive frame-staleness watchdog that catches silent hangs:
   - Add a "Resume capture" button in the notch UI that appears when the session is paused due to stream loss.
   - Track stream recovery events in SessionRecord for post-session analytics.
   - Add watchdog-triggered recovery count to SessionRecord for diagnostics.
+
+---
+
+## Run 150 — 2026-06-19 — Session reliability tracking (pause count, paused duration, stream failure count)
+
+### What shipped
+
+Previously, stream failures and pause events were logged via AppLogger but never persisted in the session record. Post-session analytics could show focus score, callout count, and reasoning stats, but had no visibility into infrastructure reliability — how often capture failed, how many times the user paused, or how much time was lost to pauses.
+
+This run adds end-to-end session reliability tracking:
+
+1. **`Session` model** — two new fields: `pauseCount` (incremented on every pause) and `streamFailureCount` (incremented on every stream failure before auto-pause). Both default to 0, backward-compatible via `decodeIfPresent`.
+
+2. **`SessionRecord` model** — three new fields: `pauseCount`, `totalPausedSeconds` (integer seconds of total paused time), `streamFailureCount`. All default to 0, backward-compatible via `decodeIfPresent`.
+
+3. **`SessionManager.pauseSession()`** — now increments `session.pauseCount` before persisting.
+
+4. **`SessionManager.handleCaptureStreamFailure()`** — now increments `session.streamFailureCount` before calling `pauseSession()` (which then also increments `pauseCount`).
+
+5. **`SessionManager.endSession()`** — populates the new `SessionRecord` fields from the live session state.
+
+6. **`FocusInsights`** — two new computed metrics:
+   - `captureReliabilityRate: Double?` — fraction of sessions with zero stream failures (1.0 = perfect).
+   - `avgPausesPerSession: Double?` — mean pause count across all sessions.
+
+7. **SettingsView insights** — new insight chips shown only when relevant: "Capture reliability" (when < 100%) and "Avg pauses" (when > 0).
+
+8. **Tests** — 10 new `@Test` cases:
+   - `SessionStateTests`: `pauseCountDefaultsToZero`, `streamFailureCountDefaultsToZero`, `reliabilityFieldsRoundTripThroughCodable`, `legacySessionWithoutReliabilityFieldsDecodesWithZero`
+   - `SessionRecordReliabilityTests`: `reliabilityFieldsDefaultToZero`, `reliabilityFieldsRoundTripThroughJSON`, `legacyJSONWithoutReliabilityFieldsDecodesWithZero`
+   - `FocusInsightsTests`: `captureReliabilityRateNilWhenNoSessions`, `captureReliabilityRatePerfectWhenNoFailures`, `captureReliabilityRateReflectsStreamFailures`, `avgPausesPerSessionNilWhenNoSessions`, `avgPausesPerSessionZeroWhenNoPauses`, `avgPausesPerSessionComputedCorrectly`
+
+### Files modified
+- `Sources/AdiCore/Models/SessionState.swift`
+- `Sources/AdiCore/Models/SessionRecord.swift`
+- `Sources/AdiCore/SessionManager.swift`
+- `Sources/AdiCore/Persistence/FocusInsights.swift`
+- `Sources/AdiCore/Views/SettingsView.swift`
+- `Tests/AdiTests/SessionStateTests.swift`
+- `Tests/AdiTests/SessionHistoryTests.swift`
+- `Tests/AdiTests/FocusInsightsTests.swift`
+- `GOAL.md`
+
+### Blocked
+- None.
+
+### Next agent
+- All original goals remain complete. BUILD_COMPLETE is present.
+- Possible further improvements:
+  - Surface reliability metrics in the post-session summary view (not just Settings).
+  - Add a "Resume capture" button that appears specifically when paused due to stream loss.
+  - Track per-pause timestamps in Session for detailed pause-timeline analytics.

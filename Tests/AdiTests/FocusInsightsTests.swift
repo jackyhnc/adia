@@ -387,4 +387,56 @@ struct FocusInsightsTests {
         let result = computeFocusInsights(from: records, calendar: utcCalendar)
         #expect(result.avgFocusScore == 0.0)
     }
+
+    // MARK: - Capture reliability
+
+    @Test func captureReliabilityRateNilWhenNoSessions() {
+        let result = computeFocusInsights(from: [], calendar: utcCalendar)
+        #expect(result.captureReliabilityRate == nil)
+    }
+
+    @Test func captureReliabilityRatePerfectWhenNoFailures() {
+        let records = [record(), record(), record()]
+        let result = computeFocusInsights(from: records, calendar: utcCalendar)
+        #expect(result.captureReliabilityRate == 1.0)
+    }
+
+    @Test func captureReliabilityRateReflectsStreamFailures() {
+        let ok = record()
+        let failed = SessionRecord(
+            task: "Study", successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600), endTime: Date(),
+            completedSuccessfully: true, calloutCount: 0,
+            streamFailureCount: 2
+        )
+        let records = [ok, ok, failed]
+        let result = computeFocusInsights(from: records, calendar: utcCalendar)
+        #expect(abs((result.captureReliabilityRate ?? 0) - (2.0 / 3.0)) < 0.001)
+    }
+
+    // MARK: - Average pauses per session
+
+    @Test func avgPausesPerSessionNilWhenNoSessions() {
+        let result = computeFocusInsights(from: [], calendar: utcCalendar)
+        #expect(result.avgPausesPerSession == nil)
+    }
+
+    @Test func avgPausesPerSessionZeroWhenNoPauses() {
+        let records = [record(), record()]
+        let result = computeFocusInsights(from: records, calendar: utcCalendar)
+        #expect(result.avgPausesPerSession == 0.0)
+    }
+
+    @Test func avgPausesPerSessionComputedCorrectly() {
+        let noPause = record()
+        let paused = SessionRecord(
+            task: "Study", successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600), endTime: Date(),
+            completedSuccessfully: true, calloutCount: 0,
+            pauseCount: 3
+        )
+        let records = [noPause, paused]
+        let result = computeFocusInsights(from: records, calendar: utcCalendar)
+        #expect(result.avgPausesPerSession == 1.5)
+    }
 }

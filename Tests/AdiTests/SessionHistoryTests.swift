@@ -1956,3 +1956,51 @@ struct AllTimeSummaryTextTests {
         #expect(allTimeSummaryText(stats(allTimeCount: 1, allTimeMinutes: 30)) == "1 session · 30m total")
     }
 }
+
+// MARK: - SessionRecord reliability fields
+
+@Suite("SessionRecordReliability")
+struct SessionRecordReliabilityTests {
+
+    @Test func reliabilityFieldsDefaultToZero() {
+        let r = SessionRecord(
+            task: "Study", successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600), endTime: Date(),
+            completedSuccessfully: true, calloutCount: 0
+        )
+        #expect(r.pauseCount == 0)
+        #expect(r.totalPausedSeconds == 0)
+        #expect(r.streamFailureCount == 0)
+    }
+
+    @Test func reliabilityFieldsRoundTripThroughJSON() throws {
+        let original = SessionRecord(
+            task: "Study", successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600), endTime: Date(),
+            completedSuccessfully: true, calloutCount: 0,
+            pauseCount: 3, totalPausedSeconds: 120, streamFailureCount: 1
+        )
+        let data = try JSONEncoder().encode(original)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: data)
+        #expect(decoded.pauseCount == 3)
+        #expect(decoded.totalPausedSeconds == 120)
+        #expect(decoded.streamFailureCount == 1)
+    }
+
+    @Test func legacyJSONWithoutReliabilityFieldsDecodesWithZero() throws {
+        let original = SessionRecord(
+            task: "Old task", successCriteria: "Done",
+            startTime: Date(timeIntervalSinceNow: -3600), endTime: Date(),
+            completedSuccessfully: true, calloutCount: 1
+        )
+        var json = (try JSONSerialization.jsonObject(with: JSONEncoder().encode(original))) as! [String: Any]
+        json.removeValue(forKey: "pauseCount")
+        json.removeValue(forKey: "totalPausedSeconds")
+        json.removeValue(forKey: "streamFailureCount")
+        let strippedData = try JSONSerialization.data(withJSONObject: json)
+        let decoded = try JSONDecoder().decode(SessionRecord.self, from: strippedData)
+        #expect(decoded.pauseCount == 0)
+        #expect(decoded.totalPausedSeconds == 0)
+        #expect(decoded.streamFailureCount == 0)
+    }
+}

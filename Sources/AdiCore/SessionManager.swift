@@ -136,7 +136,10 @@ public final class SessionManager: ObservableObject {
                 reasoningAttempts: s.reasoningHistory.count,
                 reasoningGranted: s.reasoningHistory.filter(\.granted).count,
                 blockedDomains: s.blockedDomains,
-                blockedApps: s.blockedApps
+                blockedApps: s.blockedApps,
+                pauseCount: s.pauseCount,
+                totalPausedSeconds: Int(s.pausedDuration),
+                streamFailureCount: s.streamFailureCount
             )
             _lastEndedRecord = record
             Task { await SessionHistory.shared.record(record) }
@@ -176,6 +179,7 @@ public final class SessionManager: ObservableObject {
         AppLogger.info("session.pausing", ["elapsedSeconds": String(Int(s.elapsed))])
         s.phase = .paused
         s.pauseStartTime = Date()
+        s.pauseCount += 1
         session = s
         persistence.save(s)
 
@@ -453,6 +457,11 @@ public final class SessionManager: ObservableObject {
     /// and alerts the user via the callout system.
     private func handleCaptureStreamFailure(_ error: Error) {
         guard session != nil, session?.phase == .active else { return }
+        if var s = session {
+            s.streamFailureCount += 1
+            session = s
+            persistence.save(s)
+        }
         let task = session?.task ?? ""
         AppLogger.error("session.capture_stream_lost", [
             "error": String(describing: error)

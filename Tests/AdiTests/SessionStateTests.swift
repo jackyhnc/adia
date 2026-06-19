@@ -2490,4 +2490,35 @@ struct SessionPauseTests {
         )
         #expect(s.elapsed >= 0)
     }
+
+    // MARK: - Reliability fields
+
+    @Test func pauseCountDefaultsToZero() {
+        let s = Session(task: "t", successCriteria: "c")
+        #expect(s.pauseCount == 0)
+    }
+
+    @Test func streamFailureCountDefaultsToZero() {
+        let s = Session(task: "t", successCriteria: "c")
+        #expect(s.streamFailureCount == 0)
+    }
+
+    @Test func reliabilityFieldsRoundTripThroughCodable() throws {
+        var s = Session(task: "t", successCriteria: "c", pauseCount: 5, streamFailureCount: 2)
+        let data = try JSONEncoder().encode(s)
+        let decoded = try JSONDecoder().decode(Session.self, from: data)
+        #expect(decoded.pauseCount == 5)
+        #expect(decoded.streamFailureCount == 2)
+    }
+
+    @Test func legacySessionWithoutReliabilityFieldsDecodesWithZero() throws {
+        let s = Session(task: "t", successCriteria: "c")
+        var json = (try JSONSerialization.jsonObject(with: JSONEncoder().encode(s))) as! [String: Any]
+        json.removeValue(forKey: "pauseCount")
+        json.removeValue(forKey: "streamFailureCount")
+        let strippedData = try JSONSerialization.data(withJSONObject: json)
+        let decoded = try JSONDecoder().decode(Session.self, from: strippedData)
+        #expect(decoded.pauseCount == 0)
+        #expect(decoded.streamFailureCount == 0)
+    }
 }

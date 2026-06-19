@@ -30,6 +30,15 @@ public struct SessionRecord: Sendable, Identifiable {
     /// Bundle IDs of apps that were blocked during this session (snapshot at session end).
     /// Empty array for sessions recorded before this field was introduced.
     public let blockedApps: [String]
+    /// Number of times the session was paused (manual or stream-failure auto-pause).
+    /// Zero for sessions recorded before this field was introduced.
+    public let pauseCount: Int
+    /// Total seconds spent in paused state across all pause/resume cycles.
+    /// Zero for sessions recorded before this field was introduced.
+    public let totalPausedSeconds: Int
+    /// Number of screen-capture stream failures that triggered auto-pause.
+    /// Zero for sessions recorded before this field was introduced.
+    public let streamFailureCount: Int
 
     public init(
         id: UUID = UUID(),
@@ -45,7 +54,10 @@ public struct SessionRecord: Sendable, Identifiable {
         reasoningAttempts: Int = 0,
         reasoningGranted: Int = 0,
         blockedDomains: [String] = [],
-        blockedApps: [String] = []
+        blockedApps: [String] = [],
+        pauseCount: Int = 0,
+        totalPausedSeconds: Int = 0,
+        streamFailureCount: Int = 0
     ) {
         self.id = id
         self.task = task
@@ -61,6 +73,9 @@ public struct SessionRecord: Sendable, Identifiable {
         self.reasoningGranted = reasoningGranted
         self.blockedDomains = blockedDomains
         self.blockedApps = blockedApps
+        self.pauseCount = pauseCount
+        self.totalPausedSeconds = totalPausedSeconds
+        self.streamFailureCount = streamFailureCount
     }
 
     public var duration: TimeInterval { endTime.timeIntervalSince(startTime) }
@@ -82,6 +97,7 @@ extension SessionRecord: Codable {
         case onTaskChecks, totalChecks
         case reasoningAttempts, reasoningGranted
         case blockedDomains, blockedApps
+        case pauseCount, totalPausedSeconds, streamFailureCount
         // Computed convenience fields — encoded for external consumers, never decoded
         // (they are derived from stored fields above on decode).
         case focusScore, durationSeconds
@@ -103,6 +119,9 @@ extension SessionRecord: Codable {
         reasoningGranted     = try c.decodeIfPresent(Int.self,    forKey: .reasoningGranted)  ?? 0
         blockedDomains       = try c.decodeIfPresent([String].self, forKey: .blockedDomains)  ?? []
         blockedApps          = try c.decodeIfPresent([String].self, forKey: .blockedApps)     ?? []
+        pauseCount           = try c.decodeIfPresent(Int.self,      forKey: .pauseCount)          ?? 0
+        totalPausedSeconds   = try c.decodeIfPresent(Int.self,      forKey: .totalPausedSeconds)   ?? 0
+        streamFailureCount   = try c.decodeIfPresent(Int.self,      forKey: .streamFailureCount)   ?? 0
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -121,6 +140,9 @@ extension SessionRecord: Codable {
         try c.encode(reasoningGranted,      forKey: .reasoningGranted)
         try c.encode(blockedDomains,        forKey: .blockedDomains)
         try c.encode(blockedApps,           forKey: .blockedApps)
+        try c.encode(pauseCount,            forKey: .pauseCount)
+        try c.encode(totalPausedSeconds,    forKey: .totalPausedSeconds)
+        try c.encode(streamFailureCount,    forKey: .streamFailureCount)
         // Convenience computed fields for external consumers (e.g. JSON export tools).
         // Not decoded — derived from onTaskChecks/totalChecks and startTime/endTime above.
         try c.encodeIfPresent(focusScore,   forKey: .focusScore)

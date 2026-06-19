@@ -991,6 +991,14 @@ private struct HistoryTab: View {
                     insightChip(icon: t.symbol, label: "Trend", value: t.text)
                 }
             }
+            HStack(spacing: 16) {
+                if let reliability = ins.captureReliabilityRate, reliability < 1.0 {
+                    insightChip(icon: "antenna.radiowaves.left.and.right", label: "Capture reliability", value: "\(Int(reliability * 100))%")
+                }
+                if let pauses = ins.avgPausesPerSession, pauses > 0 {
+                    insightChip(icon: "pause.circle", label: "Avg pauses", value: String(format: "%.1f", pauses))
+                }
+            }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)

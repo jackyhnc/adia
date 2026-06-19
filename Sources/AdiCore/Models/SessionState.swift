@@ -95,6 +95,10 @@ public struct Session: Sendable, Identifiable {
     public var pausedDuration: TimeInterval
     /// When the current pause began. nil when the session is not paused.
     public var pauseStartTime: Date?
+    /// Number of times this session was paused (manual or stream-failure auto-pause).
+    public var pauseCount: Int
+    /// Number of screen-capture stream failures that triggered auto-pause.
+    public var streamFailureCount: Int
 
     public init(
         id: UUID = UUID(),
@@ -112,7 +116,9 @@ public struct Session: Sendable, Identifiable {
         onTaskChecks: Int = 0,
         totalChecks: Int = 0,
         pausedDuration: TimeInterval = 0,
-        pauseStartTime: Date? = nil
+        pauseStartTime: Date? = nil,
+        pauseCount: Int = 0,
+        streamFailureCount: Int = 0
     ) {
         self.id = id
         self.task = task
@@ -130,6 +136,8 @@ public struct Session: Sendable, Identifiable {
         self.totalChecks = totalChecks
         self.pausedDuration = pausedDuration
         self.pauseStartTime = pauseStartTime
+        self.pauseCount = pauseCount
+        self.streamFailureCount = streamFailureCount
     }
 
     public var elapsed: TimeInterval {
@@ -891,6 +899,7 @@ extension Session: Codable {
         case verificationHistory, targetDuration, reasoningHistory
         case onTaskChecks, totalChecks
         case pausedDuration, pauseStartTime
+        case pauseCount, streamFailureCount
     }
 
     public init(from decoder: Decoder) throws {
@@ -918,6 +927,8 @@ extension Session: Codable {
         totalChecks  = (try? c.decode(Int.self, forKey: .totalChecks))  ?? 0
         pausedDuration = (try? c.decode(TimeInterval.self, forKey: .pausedDuration)) ?? 0
         pauseStartTime = try? c.decode(Date.self, forKey: .pauseStartTime)
+        pauseCount = (try? c.decode(Int.self, forKey: .pauseCount)) ?? 0
+        streamFailureCount = (try? c.decode(Int.self, forKey: .streamFailureCount)) ?? 0
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -938,5 +949,7 @@ extension Session: Codable {
         try c.encode(totalChecks,         forKey: .totalChecks)
         try c.encode(pausedDuration,      forKey: .pausedDuration)
         try c.encodeIfPresent(pauseStartTime, forKey: .pauseStartTime)
+        try c.encode(pauseCount,          forKey: .pauseCount)
+        try c.encode(streamFailureCount,  forKey: .streamFailureCount)
     }
 }
