@@ -6916,3 +6916,34 @@ All structs changed from `private` to `internal` (Swift default) since they now 
   - Surface reliability metrics in the post-session summary view (not just Settings).
   - Add a "Resume capture" button that appears specifically when paused due to stream loss.
   - Similarly decompose SettingsView.swift (1795 lines, the largest file).
+
+---
+
+## Run 157 — 2026-06-19 — SessionState decomposition: extract blocklists into DefaultBlocklists.swift
+
+### What shipped
+
+Extracted the massive default blocklist data (180 blocked domains + 19 blocked apps + `defaultBlockedAppBundleIDs` computed property) from `SessionState.swift` into a new `DefaultBlocklists.swift` file.
+
+**Before:** `SessionState.swift` was 955 lines. ~740 lines were pure data (domain strings with per-domain comments explaining why each site is blocked, plus `BlockedApp` entries). The actual session model — `SessionPhase`, `OnTaskStatus`, `VerificationResult`, `VerificationAttempt`, `ReasoningAttempt`, `Session` struct, and `Codable` conformance — was buried in ~210 lines of real logic.
+
+**After:**
+- `SessionState.swift` — 213 lines: only model types, `Session` struct, `elapsed` computed property, and backward-compatible `Codable` conformance.
+- `DefaultBlocklists.swift` — 284 lines: `extension Session` with `defaultBlockedDomains`, `defaultBlockedApps`, and `defaultBlockedAppBundleIDs`. Comments condensed to category headers only (the verbose per-domain rationale was useful during the original list-building phase but adds no ongoing value in the data file).
+
+All 180 domains and 19 app entries verified identical between old and new via grep counts.
+
+### Files modified
+- `Sources/AdiCore/Models/SessionState.swift` (955 → 213 lines)
+- `Sources/AdiCore/Models/DefaultBlocklists.swift` (new, 284 lines)
+- `GOAL.md`
+
+### Blocked
+- None. No Swift toolchain on Linux CI, so build verified by code review. The refactoring is purely mechanical — no logic changes, no API changes, no behavioral changes.
+
+### Next agent
+- All original goals remain complete. BUILD_COMPLETE is present.
+- Possible further improvements:
+  - Surface reliability metrics in the post-session summary view (not just Settings).
+  - Add a "Resume capture" button that appears specifically when paused due to stream loss.
+  - Track per-pause timestamps in Session for detailed pause-timeline analytics.

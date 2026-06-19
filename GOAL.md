@@ -23,3 +23,4 @@
 - [x] Safety hardening: eliminate fragile force-unwrap in FocusInsights, add structured logging to all persistence and AI parsing fallback paths
 - [x] NotchView decomposition: split 1621-line NotchView.swift into focused sub-view files under Views/Notch/
 - [x] SettingsView decomposition: split 1795-line SettingsView.swift into 6 focused sub-view files under Views/Settings/
+- [x] SessionState decomposition: extract 700+ lines of blocklist data from SessionState.swift into DefaultBlocklists.swift
