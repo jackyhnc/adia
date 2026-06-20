@@ -7055,3 +7055,37 @@ Access levels changed from `private static` to `static` (internal) for `stripMar
   - Decompose SessionManager.swift (571 lines) — extract timer coordination logic.
   - Decompose HistoryTab.swift (534 lines) — extract CSV/JSON export formatting.
   - Surface reliability metrics in the post-session summary view.
+
+---
+
+## Run 162 — 2026-06-20 — SessionManager decomposition: extract activation pipeline + HapticPlayer
+
+### What shipped
+
+Split `SessionManager.swift` (571 lines, largest non-decomposed file) into three focused files:
+
+1. **`SessionManager.swift`** (289 lines) — Class definition with all stored properties, session lifecycle (`start`/`endSession`), pause/resume, frame handling, whitelist management, reasoning memory, restore on launch, test helpers.
+
+2. **`SessionManagerPipeline.swift`** (196 lines) — `extension SessionManager` with the activation and verification pipeline: `activate()` (capture/blocking/detection wiring), `verifyAndEnd()` (task completion verification flow), `handleDurationExpired()` + timer re-arm loop, `handleCaptureStreamFailure()` (stream loss → auto-pause), `openScreenRecordingSettings()`, and timer constants (`timerExpiredSoundName`, `timerExpiredRearmInterval`).
+
+3. **`HapticPlayer.swift`** (17 lines) — Standalone `@MainActor enum HapticPlayer` with Force Touch haptic feedback (`performSuccess()` double-pulse sequence).
+
+Access levels adjusted from `private`/`private(set)` to `internal`/`internal(set)` where cross-file access within the module is needed: `session`, `timerExpired`, `onTaskCheckCount`, `totalCheckCount`, `timerExpiredRearmTask`, `sessionEndedSuccessfully`, `durationTimerTask`, and the five dependency properties (`captureManager`, `detector`, `hosts`, `persistence`, `callout`). All existing tests (760 lines in `SessionManagerTests.swift`) continue to work unchanged.
+
+Also pushed 50 previously-unpushed commits from runs 52–161 that were stranded on a detached HEAD — fast-forwarded main to include all prior work.
+
+### Files modified
+- `Sources/AdiCore/SessionManager.swift` (571 → 289 lines)
+- `Sources/AdiCore/SessionManagerPipeline.swift` (new, 196 lines)
+- `Sources/AdiCore/HapticPlayer.swift` (new, 17 lines)
+- `GOAL.md`
+
+### Blocked
+- None.
+
+### Next agent
+- All original goals remain complete. BUILD_COMPLETE is present.
+- Possible further improvements:
+  - Decompose HistoryTab.swift (534 lines) — consolidate helper functions into HistoryComponents.swift.
+  - Decompose ExpandedNotchView.swift (446 lines) — extract active/paused/verification body views.
+  - Surface reliability metrics in the post-session summary view.
