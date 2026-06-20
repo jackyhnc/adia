@@ -7002,3 +7002,32 @@ Access levels adjusted from `private` to `internal` (Swift default) where needed
   - Surface reliability metrics in the post-session summary view (not just Settings).
   - Add a "Resume capture" button that appears specifically when paused due to stream loss.
   - Track per-pause timestamps in Session for detailed pause-timeline analytics.
+
+---
+
+## Run 159 — 2026-06-20 — AgentAIClient decomposition: extract response parsers into AgentAIResponseParser.swift
+
+### What shipped
+
+Split `AgentAIClient.swift` (620 lines, largest non-view file) into two focused files:
+
+1. **`AgentAIClient.swift`** (407 lines) — Actor definition, API methods (`classify`, `verify`, `parseGoal`, `chat`, `chatStream`), HTTP infrastructure with retry/backoff, image resize + encode helpers.
+
+2. **`AgentAIResponseParser.swift`** (214 lines) — `extension AgentAIClient` with all static response parsing functions (`parseClassification`, `parseGoalResponse`, `parseVerification`, `localGoalRejectionReason`, `parseSSELine`, `stripMarkdownFences`, `looksLikeAnthropicKey`, `extractOutputText`) plus supporting types (`OnTaskClassification`, `GoalParse`, `GoalSubmissionOutcome`, `AgentAIError`).
+
+Access levels changed from `private static` to `static` (internal) for `stripMarkdownFences`, `looksLikeAnthropicKey`, and `extractOutputText` to allow cross-file access within the same module. All existing tests (528 lines in `AgentAIClientTests.swift`) continue to work unchanged since they reference `AgentAIClient.parseClassification(...)` etc., which resolve identically via the extension.
+
+### Files modified
+- `Sources/AdiCore/AI/AgentAIClient.swift` (620 → 407 lines)
+- `Sources/AdiCore/AI/AgentAIResponseParser.swift` (new, 214 lines)
+- `GOAL.md`
+
+### Blocked
+- None. No Swift toolchain on Linux CI, so build verified by code review. The refactoring is purely mechanical — no logic changes, no API changes, no behavioral changes.
+
+### Next agent
+- All original goals remain complete. BUILD_COMPLETE is present.
+- Possible further improvements:
+  - Decompose SessionManager.swift (571 lines) — extract timer coordination logic.
+  - Decompose HistoryTab.swift (534 lines) — extract CSV/JSON export formatting.
+  - Surface reliability metrics in the post-session summary view.

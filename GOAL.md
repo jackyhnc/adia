@@ -25,3 +25,4 @@
 - [x] SettingsView decomposition: split 1795-line SettingsView.swift into 6 focused sub-view files under Views/Settings/
 - [x] SessionState decomposition: extract 700+ lines of blocklist data from SessionState.swift into DefaultBlocklists.swift
 - [x] CalloutManager decomposition: extract 400+ lines of callout message pools from CalloutManager.swift into CalloutMessages.swift
+- [x] AgentAIClient decomposition: extract 210+ lines of response parsers and types from AgentAIClient.swift into AgentAIResponseParser.swift
