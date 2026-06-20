@@ -6947,3 +6947,34 @@ All 180 domains and 19 app entries verified identical between old and new via gr
   - Surface reliability metrics in the post-session summary view (not just Settings).
   - Add a "Resume capture" button that appears specifically when paused due to stream loss.
   - Track per-pause timestamps in Session for detailed pause-timeline analytics.
+
+---
+
+## Run 158 — 2026-06-20 — CalloutManager decomposition: extract callout messages into CalloutMessages.swift
+
+### What shipped
+
+Split `CalloutManager.swift` (701 lines, largest remaining file) into two focused files:
+
+1. **`CalloutManager.swift`** (271 lines) — State machine logic only: streak tracking, tier escalation, evaluate/fire/display/reset lifecycle, `extractTaskKeyword()`.
+
+2. **`CalloutMessages.swift`** (396 lines) — All callout message content: generic tier 1/2/3 pools (`tier1Callouts`, `tier2Callouts`, `tier3Callouts`) and the `taskAwareCallouts(keyword:tier:)` method with 17 keyword-specific message pools (studying, reading, email, writing, code, presentation, homework, research, project, proposal, interview, resume, application, deadline, video, design, report) plus the generic-keyword fallback.
+
+The `taskAwareCallouts` method was refactored from a 380-line if/else chain into a clean switch dispatching to small private methods, one per keyword. All message strings are identical to the originals.
+
+Access levels adjusted from `private` to `internal` (Swift default) where needed for cross-file access within the same module. All existing tests continue to work via `@testable import AdiCore`.
+
+### Files modified
+- `Sources/AdiCore/Callout/CalloutManager.swift` (701 → 271 lines)
+- `Sources/AdiCore/Callout/CalloutMessages.swift` (new, 396 lines)
+- `GOAL.md`
+
+### Blocked
+- None.
+
+### Next agent
+- All original goals remain complete. BUILD_COMPLETE is present.
+- Possible further improvements:
+  - Surface reliability metrics in the post-session summary view (not just Settings).
+  - Add a "Resume capture" button that appears specifically when paused due to stream loss.
+  - Track per-pause timestamps in Session for detailed pause-timeline analytics.
