@@ -1,5 +1,17 @@
 # Adia — Build Progress
 
+## Run 158 — 2026-06-20
+
+### Shipped
+Nothing — all 28/28 goals complete, BUILD_COMPLETE present, working tree clean, origin/main up to date.
+
+### Blocked
+- Cannot compile on Linux container (macOS-only app).
+
+### Next agent
+- All goals complete. No further automated work needed.
+- Remaining work is in USER_TODO.md (Apple Developer account, signing, deployment).
+
 ## Run 157 — 2026-06-19
 
 ### Shipped
