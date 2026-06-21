@@ -7157,4 +7157,43 @@ All log entries include the Keychain service name and the raw OSStatus code for 
 - Possible further improvements:
   - Decompose HistoryTab.swift (534 lines) — extract weekly/insights sections.
   - Decompose ExpandedNotchView.swift (446 lines) — extract verification result body view.
+
+---
+
+## Run 167 — 2026-06-21 — Decompose ExpandedNotchView + HistoryTab
+
+### What shipped
+
+Decomposed the two largest remaining view files:
+
+**ExpandedNotchView.swift (446 → 125 lines)**
+Extracted three body views into `ExpandedNotchBodies.swift` (357 lines):
+1. `ActiveSessionBody` — active session content (task, timer, progress bar, callout banner, action buttons)
+2. `PausedSessionBody` — paused session content (status, elapsed, resume/end buttons)
+3. `VerificationResultBody` — verification result display (verified/not-verified, session stats, note field, previous attempts history)
+
+The parent `ExpandedView` now delegates to these subviews via the content switcher, keeping only the shell (header, verifying spinner, idle body delegation).
+
+**HistoryTab.swift (534 → 321 lines)**
+Extracted four components into `HistoryInsightsSection.swift` (274 lines):
+1. `HistoryWeeklySection` — weekly heatmap + streak + all-time summary
+2. `HistoryInsightsSection` — focus insights chips (avg session, completion rate, focus score, peak hour, best day, trend, reliability)
+3. `HistorySearchFilterBar` — search text field + completion filter picker
+4. `HistoryToolbar` — bottom toolbar with select/delete/export actions in both normal and select modes
+
+Moved `CompletionFilter` enum from private nested to module-internal `HistoryCompletionFilter` for cross-file access. All existing tests and references unchanged.
+
+### Files modified
+- `Sources/AdiCore/Views/Notch/ExpandedNotchView.swift` (446 → 125 lines)
+- `Sources/AdiCore/Views/Notch/ExpandedNotchBodies.swift` (new, 357 lines)
+- `Sources/AdiCore/Views/Settings/HistoryTab.swift` (534 → 321 lines)
+- `Sources/AdiCore/Views/Settings/HistoryInsightsSection.swift` (new, 274 lines)
+- `GOAL.md`
+
+### Blocked
+- None. No Swift toolchain on this Linux container — cannot run `swift build`. Code reviewed manually for correctness.
+
+### Next agent
+- All original goals remain complete. BUILD_COMPLETE is present.
+- No files over 410 lines remain (largest: `AgentAIClient.swift` at 407, `NotchComponents.swift` at 400).
   - Surface reliability metrics in the post-session summary view.

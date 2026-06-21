@@ -28,3 +28,5 @@
 - [x] AgentAIClient decomposition: extract 210+ lines of response parsers and types from AgentAIClient.swift into AgentAIResponseParser.swift
 - [x] SessionManager decomposition: extract activation pipeline, verification, timer, and HapticPlayer from SessionManager.swift (571 → 289 lines)
 - [x] Keychain error logging: add structured logging for all SecItemAdd/SecItemDelete failures in LicenseManager and SettingsStore
+- [x] ExpandedNotchView decomposition: extract active/paused/verification body views from ExpandedNotchView.swift into ExpandedNotchBodies.swift
+- [x] HistoryTab decomposition: extract weekly section, insights section, search bar, and toolbar from HistoryTab.swift into HistoryInsightsSection.swift
