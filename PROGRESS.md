@@ -7089,3 +7089,36 @@ Also pushed 50 previously-unpushed commits from runs 52–161 that were stranded
   - Decompose HistoryTab.swift (534 lines) — consolidate helper functions into HistoryComponents.swift.
   - Decompose ExpandedNotchView.swift (446 lines) — extract active/paused/verification body views.
   - Surface reliability metrics in the post-session summary view.
+
+---
+
+## Run 163 — 2026-06-21 — Keychain error logging: surface silent SecItem failures
+
+### What shipped
+
+Added structured error logging to all Keychain write/delete operations across both `LicenseManager.swift` and `SettingsStore.swift`. Previously, `SecItemAdd()` and `SecItemDelete()` return values (OSStatus codes) were silently discarded — if the Keychain was locked, full, or otherwise unavailable, license activation and API key storage would fail without any indication.
+
+Changes in **`Sources/AdiCore/Licensing/LicenseManager.swift`**:
+- `Keychain.write()`: logs `keychain.write_failed` (error) when `SecItemAdd` returns non-success; logs `keychain.delete_before_write_failed` (warning) when pre-write `SecItemDelete` fails unexpectedly (ignores `errSecItemNotFound` as expected).
+- `Keychain.delete()`: logs `keychain.delete_failed` (warning) when `SecItemDelete` returns non-success and non-`errSecItemNotFound`.
+
+Changes in **`Sources/AdiCore/Settings/SettingsStore.swift`**:
+- `writeKey()`: same pattern — logs error on `SecItemAdd` failure, warning on pre-write delete failure.
+- `deleteKey()`: logs warning on unexpected delete failure.
+
+All log entries include the Keychain service name and the raw OSStatus code for debugging. Both files are in the same `AdiCore` module as `AppLogger`, so no import changes needed.
+
+### Files modified
+- `Sources/AdiCore/Licensing/LicenseManager.swift`
+- `Sources/AdiCore/Settings/SettingsStore.swift`
+- `GOAL.md`
+
+### Blocked
+- None.
+
+### Next agent
+- All original goals remain complete. BUILD_COMPLETE is present.
+- Possible further improvements:
+  - Decompose HistoryTab.swift (534 lines) — extract weekly/insights sections.
+  - Decompose ExpandedNotchView.swift (446 lines) — extract verification result body view.
+  - Surface reliability metrics in the post-session summary view.

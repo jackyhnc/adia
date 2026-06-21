@@ -260,11 +260,21 @@ private enum Keychain {
             kSecAttrService as String: service,
             kSecAttrAccount as String: account,
         ]
-        SecItemDelete(q as CFDictionary)
+        let delStatus = SecItemDelete(q as CFDictionary)
+        if delStatus != errSecSuccess && delStatus != errSecItemNotFound {
+            AppLogger.warning("keychain.delete_before_write_failed", [
+                "service": service, "status": "\(delStatus)"
+            ])
+        }
         var attrs = q
         attrs[kSecValueData as String] = data
         attrs[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
-        SecItemAdd(attrs as CFDictionary, nil)
+        let addStatus = SecItemAdd(attrs as CFDictionary, nil)
+        if addStatus != errSecSuccess {
+            AppLogger.error("keychain.write_failed", [
+                "service": service, "status": "\(addStatus)"
+            ])
+        }
     }
     static func delete(service: String, account: String) {
         let q: [String: Any] = [
@@ -272,7 +282,12 @@ private enum Keychain {
             kSecAttrService as String: service,
             kSecAttrAccount as String: account,
         ]
-        SecItemDelete(q as CFDictionary)
+        let status = SecItemDelete(q as CFDictionary)
+        if status != errSecSuccess && status != errSecItemNotFound {
+            AppLogger.warning("keychain.delete_failed", [
+                "service": service, "status": "\(status)"
+            ])
+        }
     }
 }
 

@@ -302,11 +302,21 @@ public final class SettingsStore: ObservableObject {
             kSecAttrService as String: service,
             kSecAttrAccount as String: account,
         ]
-        SecItemDelete(query as CFDictionary)
+        let delStatus = SecItemDelete(query as CFDictionary)
+        if delStatus != errSecSuccess && delStatus != errSecItemNotFound {
+            AppLogger.warning("keychain.delete_before_write_failed", [
+                "service": service, "status": "\(delStatus)"
+            ])
+        }
         var attrs = query
         attrs[kSecValueData as String] = data
         attrs[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
-        SecItemAdd(attrs as CFDictionary, nil)
+        let addStatus = SecItemAdd(attrs as CFDictionary, nil)
+        if addStatus != errSecSuccess {
+            AppLogger.error("keychain.write_failed", [
+                "service": service, "status": "\(addStatus)"
+            ])
+        }
     }
 
     private static func deleteKey(service: String, account: String) {
@@ -315,6 +325,11 @@ public final class SettingsStore: ObservableObject {
             kSecAttrService as String: service,
             kSecAttrAccount as String: account,
         ]
-        SecItemDelete(query as CFDictionary)
+        let status = SecItemDelete(query as CFDictionary)
+        if status != errSecSuccess && status != errSecItemNotFound {
+            AppLogger.warning("keychain.delete_failed", [
+                "service": service, "status": "\(status)"
+            ])
+        }
     }
 }

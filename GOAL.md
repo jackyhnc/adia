@@ -27,3 +27,4 @@
 - [x] CalloutManager decomposition: extract 400+ lines of callout message pools from CalloutManager.swift into CalloutMessages.swift
 - [x] AgentAIClient decomposition: extract 210+ lines of response parsers and types from AgentAIClient.swift into AgentAIResponseParser.swift
 - [x] SessionManager decomposition: extract activation pipeline, verification, timer, and HapticPlayer from SessionManager.swift (571 → 289 lines)
+- [x] Keychain error logging: add structured logging for all SecItemAdd/SecItemDelete failures in LicenseManager and SettingsStore
