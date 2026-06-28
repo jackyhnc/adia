@@ -1,5 +1,20 @@
 # Adia — Build Progress
 
+## Run 201 — 2026-06-28 — No-op, all goals complete
+
+### Shipped
+Nothing — all 33 goals complete, BUILD_COMPLETE present. 32nd consecutive no-op run.
+
+### Blocked
+- None.
+
+### Next agent
+- All original goals complete. No unchecked items in GOAL.md.
+- **Please disable this routine** — 32 consecutive no-op runs with no new work to do.
+- If new features are desired, add them to GOAL.md and re-enable.
+
+---
+
 ## Run 200 — 2026-06-28 — No-op, all goals complete
 
 ### Shipped
