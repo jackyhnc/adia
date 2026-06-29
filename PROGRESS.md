@@ -1,5 +1,26 @@
 # Adia — Build Progress
 
+## Run 204 — 2026-06-29 — Web branding fix: OpenAI → Claude/Anthropic
+
+### Shipped
+- Fixed stale "OpenAI" branding across all 4 public web pages (home, download, changelog, pricing).
+  - `web/app/page.tsx`: "Claude vision", "Anthropic API key" in features and step-by-step sections.
+  - `web/app/download/page.tsx`: "Anthropic API key" in setup instructions.
+  - `web/app/changelog/page.tsx`: model descriptions updated to Claude Haiku + Sonnet.
+  - `web/app/pricing/page.tsx`: BYOK paragraph and two FAQ entries now cite Anthropic.
+- Commit: `fix(web): replace stale OpenAI branding with Claude/Anthropic throughout`
+
+### Blocked
+- None.
+
+### Next agent
+- All 33 GOAL.md items complete. BUILD_COMPLETE is present.
+- Web branding is now accurate (Anthropic/Claude, not OpenAI).
+- No open GitHub issues or PRs.
+- If new features are desired, add them to GOAL.md.
+
+---
+
 ## Run 203 — 2026-06-28 — No-op, all goals complete
 
 ### Shipped
