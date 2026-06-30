@@ -61,6 +61,8 @@ extension CalloutManager {
         case "interview": return interviewCallouts(tier: tier)
         case "resume":    return resumeCallouts(tier: tier)
         case "application": return applicationCallouts(tier: tier)
+        case "paper":     return paperCallouts(tier: tier)
+        case "thesis":    return thesisCallouts(tier: tier)
         case "deadline":  return deadlineCallouts(tier: tier)
         case "video":     return videoCallouts(tier: tier)
         case "design":    return designCallouts(tier: tier)
@@ -394,6 +396,47 @@ extension CalloutManager {
         default: return [
             "CLOSE THIS. Go finish the report.",
             "your report deadline isn't moving.",
+        ]
+        }
+    }
+
+    private func paperCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "get back to your paper.",
+            "that paper won't write itself.",
+            "close this. write the paper.",
+            "this isn't your paper.",
+        ]
+        case 2: return [
+            "stop avoiding your paper.",
+            "you need to be writing your paper, not browsing.",
+            "your paper won't finish itself.",
+        ]
+        default: return [
+            "CLOSE THIS. Your paper is waiting.",
+            "your paper deadline is real.",
+            "put it down. your paper needs you.",
+        ]
+        }
+    }
+
+    private func thesisCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "get back to your thesis.",
+            "your thesis won't write itself.",
+            "close this and work on your thesis.",
+        ]
+        case 2: return [
+            "stop avoiding your thesis.",
+            "you need to be writing your thesis, not this.",
+            "your thesis isn't going to write itself.",
+        ]
+        default: return [
+            "CLOSE THIS. Your thesis needs you.",
+            "your thesis deadline is not moving.",
+            "years on this thesis. don't blow it now.",
         ]
         }
     }

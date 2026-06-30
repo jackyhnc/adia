@@ -1,5 +1,37 @@
 # Adia — Build Progress
 
+## Run 211 — 2026-06-30 — Dedicated paper/thesis callout pools
+
+### Shipped
+- **`paperCallouts(tier:)`** (CalloutMessages.swift): dedicated 4/3/3-message pools for the `"paper"`
+  keyword across tiers 1–3. Replaces the generic interpolation (`"get back to your paper."` etc.)
+  with crisper phrasing: "that paper won't write itself.", "your paper deadline is real.",
+  "put it down. your paper needs you."
+- **`thesisCallouts(tier:)`** (CalloutMessages.swift): dedicated 3/3/3-message pools for the `"thesis"`
+  keyword. Tier 3 includes "years on this thesis. don't blow it now." — a high-stakes message only
+  a thesis warrants.
+- **Wired into `taskAwareCallouts`** switch: `"paper"` → `paperCallouts`, `"thesis"` → `thesisCallouts`.
+  Neither keyword falls to `genericKeywordCallouts` any longer.
+- **5 new / updated tests** in `CalloutManagerTests.swift`:
+  - Existing `taskAwareCalloutsPaperContainsPaper` and `taskAwareCalloutsThesisContainsThesis`:
+    comments updated (no longer "falls to generic"); behavior unchanged — still verify keyword presence.
+  - `taskAwareCalloutsPaperDedicatedPoolSize`: ≥3/≥2/≥2 messages per tier.
+  - `taskAwareCalloutsThesisDedicatedPoolSize`: ≥2 messages per tier.
+  - `taskAwareCalloutsThesisTier3HasUniqueMessage`: tier 3 must contain at least one of "years",
+    "deadline", or "CLOSE" — the high-urgency hallmark of the dedicated pool.
+
+### Blocked
+- None.
+
+### Next agent
+- All 34 GOAL.md tasks remain checked; BUILD_COMPLETE is in place.
+- Test count: 1521 + 3 = 1524.
+- Every keyword returned by `extractTaskKeyword` now has a dedicated callout pool (essay, paper,
+  thesis, report, studying, reading, email, writing, code, presentation, homework, research,
+  project, proposal, interview, resume, application, deadline, video, design, report).
+
+---
+
 ## Run 210 — 2026-06-30 — Programming language + academic subject keyword extraction
 
 ### Shipped

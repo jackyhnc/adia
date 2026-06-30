@@ -482,7 +482,7 @@ struct CalloutManagerTests {
         }
     }
 
-    // "paper" falls to genericKeywordCallouts — messages should say "paper", not "essay".
+    // "paper" now has a dedicated pool — each message must reference "paper" and not fall to generic.
     @Test func taskAwareCalloutsPaperContainsPaper() async {
         await MainActor.run {
             let manager = CalloutManager.shared
@@ -495,7 +495,17 @@ struct CalloutManagerTests {
         }
     }
 
-    // "thesis" falls to genericKeywordCallouts — messages should say "thesis", not "essay".
+    // "paper" dedicated pool has at least 3 messages per tier (richer than generic's 3/2/2).
+    @Test func taskAwareCalloutsPaperDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "paper", tier: 1).count >= 3, "tier 1 paper pool must have ≥3 messages")
+            #expect(manager.taskAwareCallouts(keyword: "paper", tier: 2).count >= 2, "tier 2 paper pool must have ≥2 messages")
+            #expect(manager.taskAwareCallouts(keyword: "paper", tier: 3).count >= 2, "tier 3 paper pool must have ≥2 messages")
+        }
+    }
+
+    // "thesis" now has a dedicated pool — each message must reference "thesis" and not fall to generic.
     @Test func taskAwareCalloutsThesisContainsThesis() async {
         await MainActor.run {
             let manager = CalloutManager.shared
@@ -505,6 +515,27 @@ struct CalloutManagerTests {
                 #expect(msgs.allSatisfy { $0.contains("thesis") },
                         "tier \(tier) thesis messages must say 'thesis', not 'essay'")
             }
+        }
+    }
+
+    // "thesis" dedicated pool has at least 2 messages per tier.
+    @Test func taskAwareCalloutsThesisDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "thesis", tier: 1).count >= 2, "tier 1 thesis pool must have ≥2 messages")
+            #expect(manager.taskAwareCallouts(keyword: "thesis", tier: 2).count >= 2, "tier 2 thesis pool must have ≥2 messages")
+            #expect(manager.taskAwareCallouts(keyword: "thesis", tier: 3).count >= 2, "tier 3 thesis pool must have ≥2 messages")
+        }
+    }
+
+    // Tier 3 thesis messages should not contain "your thesis" in a way that sounds generic.
+    // The dedicated pool has one unique "years of work" message that generic could never produce.
+    @Test func taskAwareCalloutsThesisTier3HasUniqueMessage() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            let msgs = manager.taskAwareCallouts(keyword: "thesis", tier: 3)
+            #expect(msgs.contains { $0.contains("years") || $0.contains("deadline") || $0.contains("CLOSE") },
+                    "tier 3 thesis pool must have at least one high-urgency message")
         }
     }
 
