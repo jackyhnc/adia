@@ -115,6 +115,14 @@ extension AgentAIClient {
             "video games", "videogames",
             "watch sports", "watch tv", "watch television",
             "watch a movie", "watch movies", "watch a show", "watch shows",
+            // specific game titles — bare input with no deliverable
+            "fortnite", "minecraft", "roblox", "valorant", "overwatch",
+            "apex legends", "apex", "call of duty", "cod",
+            "league of legends", "league", "lol",
+            // "play <game>" phrases
+            "play fortnite", "play minecraft", "play roblox", "play valorant",
+            "play overwatch", "play apex", "play call of duty", "play cod",
+            "play league of legends", "play league",
         ]
         if leisureExact.contains(lower) {
             return "That doesn't look like a focus session. What do you want to get done?"

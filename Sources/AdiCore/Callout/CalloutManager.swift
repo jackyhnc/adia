@@ -170,6 +170,16 @@ public final class CalloutManager {
             || word("taxes") || lower.contains("tax return") || word("invoice") || word("invoices") {
             return "budget"
         }
+        if word("tutor") || word("tutoring") || word("tutors")
+            || word("teach") || word("teaching")
+            || word("coach") || word("coaching")
+            || word("instructor") || word("instruction") || word("instructing") {
+            return "tutor"
+        }
+        if word("practice") || word("practicing") || word("practise") || word("practising")
+            || word("rehearse") || word("rehearsing") || word("rehearsal") {
+            return "practice"
+        }
         if word("plan") || word("planning") || word("planner") {
             return "planning"
         }

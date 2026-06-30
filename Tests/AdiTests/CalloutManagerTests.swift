@@ -1962,4 +1962,148 @@ struct CalloutManagerTests {
             #expect(hasUrgent, "tier 3 planning messages must contain an urgent directive")
         }
     }
+
+    // MARK: - extractTaskKeyword — tutor / teach / coach
+
+    @Test func extractTaskKeywordFromTutor() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tutor my students in algebra") == "tutor")
+        #expect(CalloutManager.extractTaskKeyword(from: "tutoring session prep") == "tutor")
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for my tutors") == "tutor")
+    }
+
+    @Test func extractTaskKeywordFromTeach() {
+        #expect(CalloutManager.extractTaskKeyword(from: "teach my class today") == "tutor")
+        #expect(CalloutManager.extractTaskKeyword(from: "teaching materials for tomorrow") == "tutor")
+    }
+
+    @Test func extractTaskKeywordFromCoach() {
+        #expect(CalloutManager.extractTaskKeyword(from: "coach my team for the debate") == "tutor")
+        #expect(CalloutManager.extractTaskKeyword(from: "coaching notes for the workshop") == "tutor")
+    }
+
+    @Test func extractTaskKeywordFromInstructor() {
+        #expect(CalloutManager.extractTaskKeyword(from: "instructor guide for the lab") == "tutor")
+        #expect(CalloutManager.extractTaskKeyword(from: "write the instruction manual") == "tutor")
+    }
+
+    @Test func extractTaskKeywordTutorDoesNotOverrideCode() {
+        // "teaching myself python" — "python" hits the code block before tutor
+        #expect(CalloutManager.extractTaskKeyword(from: "teaching myself python") == "code")
+    }
+
+    @Test func extractTaskKeywordTutorDoesNotOverrideInterview() {
+        // "coaching for my interview" — "interview" has higher priority
+        #expect(CalloutManager.extractTaskKeyword(from: "coaching for my interview") == "interview")
+    }
+
+    @Test func extractTaskKeywordTutorDoesNotOverrideEssay() {
+        #expect(CalloutManager.extractTaskKeyword(from: "teach me how to write my essay") == "essay")
+    }
+
+    @Test func taskAwareCalloutsTutorHasMessages() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "tutor", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) must have tutor messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsTutorDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "tutor", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "tutor", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "tutor", tier: 3).count >= 2)
+        }
+    }
+
+    @Test func taskAwareCalloutsTutorTier1ReferencesStudents() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "tutor", tier: 1)
+            let refsStudents = tier1.contains { $0.lowercased().contains("student") || $0.lowercased().contains("class") || $0.lowercased().contains("lesson") }
+            #expect(refsStudents, "tier 1 tutor messages should reference students, class, or lesson")
+        }
+    }
+
+    @Test func taskAwareCalloutsTutorTier3HasUrgentMessage() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "tutor", tier: 3)
+            let hasUrgent = tier3.contains { msg in
+                let upper = msg.uppercased()
+                return upper.contains("CLOSE") || upper.contains("STUDENT") || upper.contains("CLASS")
+            }
+            #expect(hasUrgent, "tier 3 tutor messages must contain an urgent directive")
+        }
+    }
+
+    // MARK: - extractTaskKeyword — practice / rehearse
+
+    @Test func extractTaskKeywordFromPractice() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice piano") == "practice")
+        #expect(CalloutManager.extractTaskKeyword(from: "practice my speech") == "practice")
+        #expect(CalloutManager.extractTaskKeyword(from: "practicing guitar") == "practice")
+    }
+
+    @Test func extractTaskKeywordFromRehearse() {
+        #expect(CalloutManager.extractTaskKeyword(from: "rehearse my lines for drama") == "practice")
+        #expect(CalloutManager.extractTaskKeyword(from: "rehearsal prep") == "practice")
+        #expect(CalloutManager.extractTaskKeyword(from: "rehearsing the opening") == "practice")
+    }
+
+    @Test func extractTaskKeywordPracticeDoesNotOverrideCode() {
+        // "practice coding" — "coding" hits the code block first
+        #expect(CalloutManager.extractTaskKeyword(from: "practice coding problems") == "code")
+    }
+
+    @Test func extractTaskKeywordPracticeDoesNotOverrideEssay() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice essay writing") == "essay")
+    }
+
+    @Test func extractTaskKeywordPracticeDoesNotOverrideInterview() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice for my interview") == "interview")
+    }
+
+    @Test func extractTaskKeywordPracticeDoesNotOverridePresentation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice my presentation slides") == "presentation")
+    }
+
+    @Test func taskAwareCalloutsPracticeHasMessages() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "practice", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) must have practice messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsPracticeDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "practice", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "practice", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "practice", tier: 3).count >= 2)
+        }
+    }
+
+    @Test func taskAwareCalloutsPracticeTier2HasRepsMessage() async {
+        await MainActor.run {
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "practice", tier: 2)
+            let hasReps = tier2.contains { $0.lowercased().contains("rep") || $0.lowercased().contains("doing") || $0.lowercased().contains("practice") }
+            #expect(hasReps, "tier 2 practice messages should reference reps or doing")
+        }
+    }
+
+    @Test func taskAwareCalloutsPracticeTier3HasUrgentMessage() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "practice", tier: 3)
+            let hasUrgent = tier3.contains { msg in
+                let upper = msg.uppercased()
+                return upper.contains("CLOSE") || upper.contains("PRACTICE") || upper.contains("IMPROVE")
+            }
+            #expect(hasUrgent, "tier 3 practice messages must contain an urgent directive")
+        }
+    }
 }

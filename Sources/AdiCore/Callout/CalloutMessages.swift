@@ -69,6 +69,8 @@ extension CalloutManager {
         case "design":    return designCallouts(tier: tier)
         case "report":    return reportCallouts(tier: tier)
         case "budget":    return budgetCallouts(tier: tier)
+        case "tutor":     return tutorCallouts(tier: tier)
+        case "practice":  return practiceCallouts(tier: tier)
         case "planning":  return planningCallouts(tier: tier)
         default:          return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
@@ -501,6 +503,48 @@ extension CalloutManager {
             "CLOSE THIS. Go finish your plan.",
             "your planning isn't done yet.",
             "put it down. the plan needs work.",
+        ]
+        }
+    }
+
+    private func tutorCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "get back to your students.",
+            "your lesson plan isn't going to write itself.",
+            "close this and prep for your class.",
+            "your students are counting on you to be ready.",
+        ]
+        case 2: return [
+            "stop browsing. your students need you prepared.",
+            "you're supposed to be planning a lesson, not this.",
+            "those students deserve your full attention.",
+        ]
+        default: return [
+            "CLOSE THIS. Your students need this prep.",
+            "your class starts and you're browsing. close it.",
+            "put it down. they're counting on you.",
+        ]
+        }
+    }
+
+    private func practiceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "get back to practicing.",
+            "the reps don't count themselves.",
+            "close this and keep practicing.",
+            "you don't improve by stopping.",
+        ]
+        case 2: return [
+            "you get better by doing, not browsing.",
+            "close this and put in the reps.",
+            "you need the practice, not this.",
+        ]
+        default: return [
+            "CLOSE THIS. Put in the practice.",
+            "you won't improve by being here.",
+            "close it. go practice.",
         ]
         }
     }

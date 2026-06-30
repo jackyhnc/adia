@@ -210,6 +210,64 @@ struct AgentAIClientParsingTests {
         #expect(AgentAIClient.localGoalRejectionReason("draft the tv show pilot script") == nil)
     }
 
+    // MARK: - Local rejection — specific game titles
+
+    @Test func localRejectionRejectsFortnite() {
+        #expect(AgentAIClient.localGoalRejectionReason("fortnite") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("play fortnite") != nil)
+    }
+
+    @Test func localRejectionRejectsMinecraft() {
+        #expect(AgentAIClient.localGoalRejectionReason("minecraft") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("play minecraft") != nil)
+    }
+
+    @Test func localRejectionRejectsRoblox() {
+        #expect(AgentAIClient.localGoalRejectionReason("roblox") != nil)
+    }
+
+    @Test func localRejectionRejectsValorant() {
+        #expect(AgentAIClient.localGoalRejectionReason("valorant") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("play valorant") != nil)
+    }
+
+    @Test func localRejectionRejectsCallOfDuty() {
+        #expect(AgentAIClient.localGoalRejectionReason("call of duty") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("cod") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("play call of duty") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("play cod") != nil)
+    }
+
+    @Test func localRejectionRejectsLeagueOfLegends() {
+        #expect(AgentAIClient.localGoalRejectionReason("league of legends") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("league") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("play league of legends") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("play league") != nil)
+    }
+
+    @Test func localRejectionRejectsOverwatch() {
+        #expect(AgentAIClient.localGoalRejectionReason("overwatch") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("play overwatch") != nil)
+    }
+
+    // Counter-cases: game names embedded in a real deliverable must pass through.
+    @Test func localRejectionAcceptsMinecraftMod() {
+        // "write a minecraft mod" has a deliverable — must reach the model
+        #expect(AgentAIClient.localGoalRejectionReason("write a minecraft mod") == nil)
+    }
+
+    @Test func localRejectionAcceptsRobloxGame() {
+        #expect(AgentAIClient.localGoalRejectionReason("build a roblox game for my cs class") == nil)
+    }
+
+    @Test func localRejectionAcceptsFortniteAnalysis() {
+        #expect(AgentAIClient.localGoalRejectionReason("write a marketing analysis for fortnite") == nil)
+    }
+
+    @Test func localRejectionAcceptsLeagueEssay() {
+        #expect(AgentAIClient.localGoalRejectionReason("write an essay about league of legends and esports") == nil)
+    }
+
     // MARK: - Local rejection — PRD-specified vague inputs (no subject / deliverable)
 
     // The PRD lists "work", "be productive", "do stuff", "get things done", "focus" as
