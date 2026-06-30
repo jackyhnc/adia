@@ -346,8 +346,9 @@ struct CalloutManagerTests {
 
     @Test func extractTaskKeywordFromEssayInput() {
         #expect(CalloutManager.extractTaskKeyword(from: "write my history essay") == "essay")
-        #expect(CalloutManager.extractTaskKeyword(from: "ENGL 101 paper") == "essay")
-        #expect(CalloutManager.extractTaskKeyword(from: "finish my thesis") == "essay")
+        #expect(CalloutManager.extractTaskKeyword(from: "ENGL 101 paper") == "paper")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my thesis") == "thesis")
+        #expect(CalloutManager.extractTaskKeyword(from: "write my dissertation") == "thesis")
     }
 
     @Test func extractTaskKeywordFromCodeInput() {
@@ -432,6 +433,32 @@ struct CalloutManagerTests {
                     #expect(msgs.allSatisfy { $0.contains(kw) },
                             "tier \(tier) messages for '\(kw)' must all contain the keyword")
                 }
+            }
+        }
+    }
+
+    // "paper" falls to genericKeywordCallouts — messages should say "paper", not "essay".
+    @Test func taskAwareCalloutsPaperContainsPaper() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "paper", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) paper messages must not be empty")
+                #expect(msgs.allSatisfy { $0.contains("paper") },
+                        "tier \(tier) paper messages must say 'paper', not 'essay'")
+            }
+        }
+    }
+
+    // "thesis" falls to genericKeywordCallouts — messages should say "thesis", not "essay".
+    @Test func taskAwareCalloutsThesisContainsThesis() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "thesis", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) thesis messages must not be empty")
+                #expect(msgs.allSatisfy { $0.contains("thesis") },
+                        "tier \(tier) thesis messages must say 'thesis', not 'essay'")
             }
         }
     }
@@ -798,9 +825,9 @@ struct CalloutManagerTests {
         #expect(CalloutManager.extractTaskKeyword(from: "finish my project proposal") == "project")
     }
 
-    @Test func extractTaskKeywordThesisProposalMapsToEssay() {
-        // "thesis" check runs before "proposal" — "thesis proposal" must map to essay, not proposal.
-        #expect(CalloutManager.extractTaskKeyword(from: "write my thesis proposal") == "essay")
+    @Test func extractTaskKeywordThesisProposalMapsToThesis() {
+        // "thesis" check runs before "proposal" — "thesis proposal" maps to thesis, not proposal.
+        #expect(CalloutManager.extractTaskKeyword(from: "write my thesis proposal") == "thesis")
     }
 
     @Test func extractTaskKeywordProjectProposalMapsToProject() {

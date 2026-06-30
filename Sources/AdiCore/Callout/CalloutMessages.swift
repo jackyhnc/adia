@@ -47,6 +47,7 @@ extension CalloutManager {
     /// Exposed `internal` so unit tests can inspect message content directly.
     internal func taskAwareCallouts(keyword: String, tier: Int) -> [String] {
         switch keyword {
+        case "essay":     return essayCallouts(tier: tier)
         case "studying":  return studyingCallouts(tier: tier)
         case "reading":   return readingCallouts(tier: tier)
         case "email":     return emailCallouts(tier: tier)
@@ -69,6 +70,27 @@ extension CalloutManager {
     }
 
     // MARK: - Per-keyword message pools
+
+    private func essayCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "this isn't your essay.",
+            "get back to your essay.",
+            "your essay won't write itself.",
+            "close this and write your essay.",
+        ]
+        case 2: return [
+            "stop avoiding your essay.",
+            "you need to write your essay, not browse.",
+            "your essay isn't going to write itself — get back to it.",
+        ]
+        default: return [
+            "CLOSE THIS. your essay won't write itself.",
+            "your essay deadline is real.",
+            "put the phone down. your essay is waiting.",
+        ]
+        }
+    }
 
     private func studyingCallouts(tier: Int) -> [String] {
         switch tier {

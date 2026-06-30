@@ -85,9 +85,9 @@ public final class CalloutManager {
         func word(_ w: String) -> Bool {
             lower.range(of: "\\b\(w)\\b", options: .regularExpression) != nil
         }
-        if word("essay") || word("paper") || word("thesis") {
-            return "essay"
-        }
+        if word("essay") { return "essay" }
+        if word("paper") { return "paper" }
+        if word("thesis") || word("dissertation") { return "thesis" }
         if word("presentation") || word("slides") || word("deck") || word("powerpoint") || word("keynote") {
             return "presentation"
         }
