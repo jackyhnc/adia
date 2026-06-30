@@ -85,16 +85,16 @@ public final class CalloutManager {
         func word(_ w: String) -> Bool {
             lower.range(of: "\\b\(w)\\b", options: .regularExpression) != nil
         }
-        if word("essay") { return "essay" }
-        if word("paper") { return "paper" }
-        if word("thesis") || word("dissertation") { return "thesis" }
-        if word("presentation") || word("slides") || word("deck") || word("powerpoint") || word("keynote") {
+        if word("essay") || word("essays") { return "essay" }
+        if word("paper") || word("papers") { return "paper" }
+        if word("thesis") || word("theses") || word("dissertation") || word("dissertations") { return "thesis" }
+        if word("presentation") || word("presentations") || word("slides") || word("deck") || word("powerpoint") || word("keynote") {
             return "presentation"
         }
         if word("code") || word("coding") || word("programming") || word("bug") || word("feature") || word("function") {
             return "code"
         }
-        if word("report") || word("document") || word("doc") {
+        if word("report") || word("reports") || word("document") || word("documents") || word("doc") || word("docs") {
             return "report"
         }
         if word("study") || word("studying") || word("exam") || word("quiz") || word("test")
@@ -141,7 +141,7 @@ public final class CalloutManager {
         if word("blog") || word("newsletter") {
             return "writing"
         }
-        if word("deadline") || lower.contains("due by") || lower.contains("due tonight")
+        if word("deadline") || word("deadlines") || lower.contains("due by") || lower.contains("due tonight")
             || lower.contains("due tomorrow") || lower.contains("due at midnight")
             || lower.contains("due at noon") || lower.contains("due at end of")
             || lower.contains("due in") || lower.contains("due before")

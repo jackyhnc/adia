@@ -351,6 +351,51 @@ struct CalloutManagerTests {
         #expect(CalloutManager.extractTaskKeyword(from: "write my dissertation") == "thesis")
     }
 
+    // MARK: - Plural keyword variants (consistency with project/proposal/interview)
+
+    @Test func extractTaskKeywordPluralEssays() {
+        #expect(CalloutManager.extractTaskKeyword(from: "I have two essays due this week") == "essay")
+        #expect(CalloutManager.extractTaskKeyword(from: "both essays need to be submitted") == "essay")
+    }
+
+    @Test func extractTaskKeywordPluralPapers() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my papers before Friday") == "paper")
+        #expect(CalloutManager.extractTaskKeyword(from: "three papers due this semester") == "paper")
+    }
+
+    @Test func extractTaskKeywordPluralTheses() {
+        #expect(CalloutManager.extractTaskKeyword(from: "grad students defending their theses") == "thesis")
+    }
+
+    @Test func extractTaskKeywordPluralDissertations() {
+        #expect(CalloutManager.extractTaskKeyword(from: "working on my dissertations chapter") == "thesis")
+    }
+
+    @Test func extractTaskKeywordPluralReports() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish two client reports by EOD") == "report")
+        #expect(CalloutManager.extractTaskKeyword(from: "quarterly reports are due Monday") == "report")
+    }
+
+    @Test func extractTaskKeywordPluralDocuments() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review all the onboarding documents") == "report")
+        #expect(CalloutManager.extractTaskKeyword(from: "edit the documents before sending") == "report")
+    }
+
+    @Test func extractTaskKeywordPluralDocs() {
+        #expect(CalloutManager.extractTaskKeyword(from: "update the API docs") == "report")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the docs for this module") == "report")
+    }
+
+    @Test func extractTaskKeywordPluralPresentations() {
+        #expect(CalloutManager.extractTaskKeyword(from: "two presentations due this week") == "presentation")
+        #expect(CalloutManager.extractTaskKeyword(from: "prep all three presentations") == "presentation")
+    }
+
+    @Test func extractTaskKeywordPluralDeadlines() {
+        #expect(CalloutManager.extractTaskKeyword(from: "so many deadlines this week") == "deadline")
+        #expect(CalloutManager.extractTaskKeyword(from: "multiple deadlines converging today") == "deadline")
+    }
+
     @Test func extractTaskKeywordFromCodeInput() {
         #expect(CalloutManager.extractTaskKeyword(from: "fix the login bug") == "code")
         #expect(CalloutManager.extractTaskKeyword(from: "finish coding the API") == "code")

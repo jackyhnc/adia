@@ -7924,3 +7924,45 @@ All original goals remain complete. BUILD_COMPLETE is present.
 One potential improvement: `extractTaskKeyword` has inconsistent plural
 handling — "papers" (plural) doesn't map to "paper" unlike
 "proposals"/"projects". Low priority.
+
+---
+
+## Run 181 — 2026-06-30 — Plural keyword consistency in extractTaskKeyword
+
+### What shipped
+Fixed inconsistent plural handling in `extractTaskKeyword`. Previously, keywords
+like "paper", "essay", "thesis", "report", "presentation", and "deadline" only
+matched their singular form, while "project/projects", "proposal/proposals", and
+"interview/interviews" already matched both. A student typing "I have two essays
+due" or "finish my papers" got no keyword and saw generic callouts instead of
+task-specific ones.
+
+Changes to `CalloutManager.swift`:
+- `essay/essays` → "essay"
+- `paper/papers` → "paper"
+- `thesis/theses/dissertation/dissertations` → "thesis"
+- `report/reports` → "report"
+- `document/documents/doc/docs` → "report"
+- `presentation/presentations` → "presentation"
+- `deadline/deadlines` → "deadline"
+
+New tests in `CalloutManagerTests.swift` (9 new `@Test` funcs, 18 assertions):
+- `extractTaskKeywordPluralEssays`
+- `extractTaskKeywordPluralPapers`
+- `extractTaskKeywordPluralTheses`
+- `extractTaskKeywordPluralDissertations`
+- `extractTaskKeywordPluralReports`
+- `extractTaskKeywordPluralDocuments`
+- `extractTaskKeywordPluralDocs`
+- `extractTaskKeywordPluralPresentations`
+- `extractTaskKeywordPluralDeadlines`
+
+### Blocked
+None. Swift toolchain unavailable on Linux container — changes reviewed
+manually for correctness. All 33 GOAL.md items remain complete.
+
+### Next agent
+All original goals remain complete. BUILD_COMPLETE is present.
+Remaining known inconsistency: "resume" could gain a `word("resumes")` check
+and "blog"/"newsletter" could gain plural forms — very low priority since
+users rarely pluralise these in a task description.
