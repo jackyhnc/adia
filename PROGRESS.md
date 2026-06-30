@@ -1,5 +1,72 @@
 # Adia — Build Progress
 
+## Run 214 — 2026-06-30 — Game-title rejection, tutor + practice keywords
+
+### Shipped
+- **Game title exact-match rejection** (AgentAIResponseParser.swift): added 23 new exact-match
+  entries to `leisureExact` in `localGoalRejectionReason` covering bare game titles
+  (`"fortnite"`, `"minecraft"`, `"roblox"`, `"valorant"`, `"overwatch"`, `"apex legends"`,
+  `"apex"`, `"call of duty"`, `"cod"`, `"league of legends"`, `"league"`, `"lol"`) and
+  "play \<game\>" phrases (`"play fortnite"`, `"play minecraft"`, `"play roblox"`,
+  `"play valorant"`, `"play overwatch"`, `"play apex"`, `"play call of duty"`, `"play cod"`,
+  `"play league of legends"`, `"play league"`). Uses exact-match so longer deliverable-bearing
+  inputs ("write a minecraft mod", "build a roblox game", "marketing analysis for fortnite")
+  still pass through to the model.
+- **`"tutor"` keyword extraction** (CalloutManager.swift): `word("tutor")`, `word("tutoring")`,
+  `word("tutors")`, `word("teach")`, `word("teaching")`, `word("coach")`, `word("coaching")`,
+  `word("instructor")`, `word("instruction")`, `word("instructing")` now extract the `"tutor"`
+  keyword. Priority placed after interview so "coaching for my interview" → interview. "teaching
+  myself python" → code because python hits the code block first.
+- **`tutorCallouts(tier:)`** (CalloutMessages.swift): 4/3/3-message pools across tiers 1–3.
+  Tier 1 references students/class/lesson. Tier 3 includes "CLOSE THIS. Your students need this prep."
+- **`"practice"` keyword extraction** (CalloutManager.swift): `word("practice")`, `word("practicing")`,
+  `word("practise")`, `word("practising")`, `word("rehearse")`, `word("rehearsing")`,
+  `word("rehearsal")` now extract the `"practice"` keyword. Placed after interview, presentation,
+  essay, and code, so legitimate compound tasks route to their primary keyword first.
+- **`practiceCallouts(tier:)`** (CalloutMessages.swift): 4/3/3-message pools across tiers 1–3.
+  Tier 2 references reps/doing for the "you get better by doing" tone. Tier 3 includes
+  "CLOSE THIS. Put in the practice."
+- **32 new tests** (1563 → 1595 estimated):
+  - AgentAIClientTests (+11): `localRejectionRejectsFortnite`, `localRejectionRejectsMinecraft`,
+    `localRejectionRejectsRoblox`, `localRejectionRejectsValorant`, `localRejectionRejectsCallOfDuty`,
+    `localRejectionRejectsLeagueOfLegends`, `localRejectionRejectsOverwatch`,
+    `localRejectionAcceptsMinecraftMod`, `localRejectionAcceptsRobloxGame`,
+    `localRejectionAcceptsFortniteAnalysis`, `localRejectionAcceptsLeagueEssay`
+  - CalloutManagerTests (+21): `extractTaskKeywordFromTutor`, `extractTaskKeywordFromTeach`,
+    `extractTaskKeywordFromCoach`, `extractTaskKeywordFromInstructor`,
+    `extractTaskKeywordTutorDoesNotOverrideCode`, `extractTaskKeywordTutorDoesNotOverrideInterview`,
+    `extractTaskKeywordTutorDoesNotOverrideEssay`, `taskAwareCalloutsTutorHasMessages`,
+    `taskAwareCalloutsTutorDedicatedPoolSize`, `taskAwareCalloutsTutorTier1ReferencesStudents`,
+    `taskAwareCalloutsTutorTier3HasUrgentMessage`,
+    `extractTaskKeywordFromPractice`, `extractTaskKeywordFromRehearse`,
+    `extractTaskKeywordPracticeDoesNotOverrideCode`, `extractTaskKeywordPracticeDoesNotOverrideEssay`,
+    `extractTaskKeywordPracticeDoesNotOverrideInterview`,
+    `extractTaskKeywordPracticeDoesNotOverridePresentation`,
+    `taskAwareCalloutsPracticeHasMessages`, `taskAwareCalloutsPracticeDedicatedPoolSize`,
+    `taskAwareCalloutsPracticeTier2HasRepsMessage`, `taskAwareCalloutsPracticeTier3HasUrgentMessage`
+
+### Blocked
+- None.
+
+### Next agent
+- All 34 GOAL.md tasks remain checked; BUILD_COMPLETE is in place.
+- Estimated test count: 1595.
+- Every keyword returned by `extractTaskKeyword` now has a dedicated callout pool.
+- `localGoalRejectionReason` now blocks: empty, vague motivation-speak, entertainment
+  platforms (substring), leisure exact phrases (gaming, sleeping, eating, gaming/sports,
+  specific game titles and "play <game>" phrases).
+- Potential next improvements:
+  - Add "music" keyword (compose, write music, produce, beat, track, album, song, lyrics)
+    for music production tasks with a dedicated `musicCallouts` pool.
+  - Add "language" keyword (spanish, french, japanese, mandarin, german, italian, portuguese,
+    korean, arabic, duolingo, grammar, vocabulary, conjugation, translation) for language
+    learning tasks.
+  - Expand `extractTaskKeyword` with "fitness" / "workout" for fitness-planning tasks (legitimate:
+    "plan my workout routine", "log my training", "write a fitness plan").
+  - Add "podcast" keyword (recording, script, episode, host, interview) for content creators.
+
+---
+
 ## Run 213 — 2026-06-30 — Gaming/sports rejection + planning keyword + callout pool
 
 ### Shipped
