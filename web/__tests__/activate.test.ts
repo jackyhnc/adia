@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
 import { NextRequest } from 'next/server';
-import { resetDbForTesting, insertLicense } from '@/lib/db';
+import { resetDbForTesting, insertLicense, countActivations, hasActivation } from '@/lib/db';
 import { planExpiry } from '@/lib/license';
 import { _resetForTesting as resetRateLimit } from '@/lib/ratelimit';
 
@@ -77,6 +77,38 @@ describe('POST /api/license/activate', () => {
     expect(res.status).toBe(403);
     const body = await res.json();
     expect(body.error).toMatch(/3 machines/i);
+  });
+
+  it('does not persist a rejected machine (no phantom DB rows)', async () => {
+    const key = 'ADIA-PHTM-ACTV-AAAA';
+    insertLicense({ key, email: 'phantom@example.com', plan: 'lifetime', expiresAt: null });
+
+    for (let i = 1; i <= 3; i++) {
+      await callPost({ key, email: 'phantom@example.com', machine: `machine-${i}` });
+    }
+    expect(countActivations(key)).toBe(3);
+
+    const res = await callPost({ key, email: 'phantom@example.com', machine: 'machine-4' });
+    expect(res.status).toBe(403);
+
+    // machine-4 must NOT be in the activations table
+    expect(countActivations(key)).toBe(3);
+    expect(hasActivation(key, 'machine-4')).toBe(false);
+  });
+
+  it('allows re-activation of a known machine even when seats are full', async () => {
+    const key = 'ADIA-REAC-ACTV-AAAA';
+    insertLicense({ key, email: 'reactivate@example.com', plan: 'lifetime', expiresAt: null });
+
+    for (let i = 1; i <= 3; i++) {
+      await callPost({ key, email: 'reactivate@example.com', machine: `machine-${i}` });
+    }
+    expect(countActivations(key)).toBe(3);
+
+    // machine-1 re-activating (e.g. app relaunch) must succeed without consuming a new seat
+    const res = await callPost({ key, email: 'reactivate@example.com', machine: 'machine-1' });
+    expect(res.status).toBe(200);
+    expect(countActivations(key)).toBe(3);
   });
 
   it('returns 200 on happy path', async () => {

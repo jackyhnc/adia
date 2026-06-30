@@ -1,5 +1,36 @@
 # Adia — Build Progress
 
+## Run 206 — 2026-06-30 — Bug fix: seat-limit check now happens before DB write
+
+### Shipped
+- Fixed silent data-corruption bug in `web/app/api/license/activate/route.ts`: the
+  seat-limit guard (`seatsUsed > MAX_SEATS`) ran **after** `recordActivation()`,
+  which unconditionally upserts into the `activations` table. A rejected 4th-machine
+  activation was permanently persisted — inflating the seat count and leaving a phantom
+  row that could confuse future audits or deactivation flows.
+- Added `hasActivation(key, machineHash)` and `countActivations(key)` to `lib/db.ts`,
+  `lib/db-pg.ts`, and `lib/store.ts` (Postgres + SQLite + async facade).
+- Route now calls `hasActivation` first; known machines (re-activation) bypass the
+  count check entirely (the UPSERT only updates `last_seen`, no new seat consumed).
+  Unknown machines get `countActivations` checked; only if `count < MAX_SEATS` does
+  `recordActivation` run.
+- Added 2 regression tests in `__tests__/activate.test.ts`:
+  - `does not persist a rejected machine (no phantom DB rows)` — asserts
+    `countActivations` stays at 3 and `hasActivation(machine-4)` is false after 403.
+  - `allows re-activation of a known machine even when seats are full` — asserts
+    machine-1 can re-activate after seats are full (seat count stays at 3).
+- All 48 web tests pass.
+
+### Blocked
+- None.
+
+### Next agent
+- All 34 GOAL.md items complete. BUILD_COMPLETE is present.
+- No open GitHub issues or PRs.
+- If new features are desired, add them to GOAL.md.
+
+---
+
 ## Run 205 — 2026-06-30 — Bug fix: webhook subscription cancellation now works
 
 ### Shipped

@@ -117,6 +117,24 @@ export async function recordActivationPg(key: string, machineHash: string): Prom
   return result.rows[0]?.c ?? 0;
 }
 
+export async function hasActivationPg(key: string, machineHash: string): Promise<boolean> {
+  await ensureSchema();
+  const result = await sql<{ exists: boolean }>`
+    SELECT EXISTS(
+      SELECT 1 FROM activations WHERE license_key = ${key} AND machine_hash = ${machineHash}
+    ) AS exists
+  `;
+  return result.rows[0]?.exists ?? false;
+}
+
+export async function countActivationsPg(key: string): Promise<number> {
+  await ensureSchema();
+  const result = await sql<{ c: number }>`
+    SELECT COUNT(*)::int AS c FROM activations WHERE license_key = ${key}
+  `;
+  return result.rows[0]?.c ?? 0;
+}
+
 export async function setStatusPg(key: string, status: License['status']): Promise<void> {
   await ensureSchema();
   await sql`UPDATE licenses SET status = ${status} WHERE key = ${key}`;

@@ -47,6 +47,22 @@ export async function recordActivation(key: string, machineHash: string): Promis
   return sqlite.recordActivation(key, machineHash);
 }
 
+export async function hasActivation(key: string, machineHash: string): Promise<boolean> {
+  if (usePg) {
+    const { hasActivationPg } = await import('./db-pg');
+    return hasActivationPg(key, machineHash);
+  }
+  return sqlite.hasActivation(key, machineHash);
+}
+
+export async function countActivations(key: string): Promise<number> {
+  if (usePg) {
+    const { countActivationsPg } = await import('./db-pg');
+    return countActivationsPg(key);
+  }
+  return sqlite.countActivations(key);
+}
+
 export async function setStatus(key: string, status: License['status']): Promise<void> {
   if (usePg) {
     const { setStatusPg } = await import('./db-pg');

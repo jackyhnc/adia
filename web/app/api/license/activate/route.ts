@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findLicense, recordActivation } from '@/lib/store';
+import { findLicense, hasActivation, countActivations, recordActivation } from '@/lib/store';
 import { rateLimit, clientIp } from '@/lib/ratelimit';
 
 export const runtime = 'nodejs';
@@ -29,13 +29,21 @@ export async function POST(req: NextRequest) {
   if (license.expiresAt && new Date(license.expiresAt) < new Date()) {
     return NextResponse.json({ error: 'License expired.' }, { status: 403 });
   }
-  const seatsUsed = await recordActivation(body.key, body.machine);
-  if (seatsUsed > MAX_SEATS) {
-    return NextResponse.json(
-      { error: `Already activated on ${MAX_SEATS} machines.` },
-      { status: 403 },
-    );
+  // Check seat limit BEFORE writing. Known machines (re-activation) bypass the
+  // count check — the upsert will only update last_seen, not add a seat.
+  // Unknown machines must not be persisted if the limit is already reached;
+  // the old code wrote first and checked after, leaving phantom DB rows.
+  const knownMachine = await hasActivation(body.key, body.machine);
+  if (!knownMachine) {
+    const seatsUsed = await countActivations(body.key);
+    if (seatsUsed >= MAX_SEATS) {
+      return NextResponse.json(
+        { error: `Already activated on ${MAX_SEATS} machines.` },
+        { status: 403 },
+      );
+    }
   }
+  await recordActivation(body.key, body.machine);
   return NextResponse.json({
     key: license.key,
     email: license.email,

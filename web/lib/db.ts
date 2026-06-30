@@ -126,6 +126,20 @@ export function recordActivation(key: string, machineHash: string): number {
   return row.c;
 }
 
+export function hasActivation(key: string, machineHash: string): boolean {
+  const row = db()
+    .prepare('SELECT 1 FROM activations WHERE license_key = ? AND machine_hash = ?')
+    .get(key, machineHash);
+  return !!row;
+}
+
+export function countActivations(key: string): number {
+  const row = db()
+    .prepare('SELECT COUNT(*) as c FROM activations WHERE license_key = ?')
+    .get(key) as { c: number };
+  return row.c;
+}
+
 export function setStatus(key: string, status: License['status']) {
   db().prepare('UPDATE licenses SET status = ? WHERE key = ?').run(status, key);
 }
