@@ -7816,3 +7816,40 @@ Moved `CompletionFilter` enum from private nested to module-internal `HistoryCom
 ### Next agent
 - All original goals remain complete. BUILD_COMPLETE is present.
 - No actionable tasks remain in the checklist.
+
+---
+
+## Run 180 — 2026-06-30 — Callout keyword fix: thesis/paper/essay split
+
+### What shipped
+Fixed a UX bug where users writing a thesis or a research paper heard
+"this isn't your essay." instead of "this isn't your thesis." / "this isn't
+your paper."
+
+`extractTaskKeyword` previously mapped all of "essay", "paper", and "thesis"
+to the single canonical keyword "essay". This caused `genericKeywordCallouts`
+to embed the word "essay" in every message regardless of what the user typed.
+A PhD student writing their dissertation got "your essay won't write itself."
+
+Changes:
+- `extractTaskKeyword`: "paper" now returns "paper"; "thesis"/"dissertation"
+  returns "thesis"; "essay" stays "essay".
+- Added `essayCallouts(tier:)` with PRD-aligned messages ("this isn't your
+  essay.", "close this and write your essay.", etc.) and wired it to
+  `case "essay":` in the switch — replaces the generic fallback for this path.
+- "paper" and "thesis" naturally fall to `genericKeywordCallouts` which
+  correctly interpolates the exact keyword into messages.
+- Updated `CalloutManagerTests`: `extractTaskKeywordFromEssayInput` now
+  expects "paper"/"thesis" (not "essay"), the thesis-proposal priority test
+  updated, added new `taskAwareCalloutsPaperContainsPaper` and
+  `taskAwareCalloutsThesisContainsThesis` quality assertions.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container — changes reviewed
+manually for correctness. All 33 GOAL.md items remain complete.
+
+### Next agent
+All original goals remain complete. BUILD_COMPLETE is present.
+One potential improvement: `extractTaskKeyword` has inconsistent plural
+handling — "papers" (plural) doesn't map to "paper" unlike
+"proposals"/"projects". Low priority.
