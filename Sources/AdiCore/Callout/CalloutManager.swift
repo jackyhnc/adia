@@ -170,6 +170,9 @@ public final class CalloutManager {
             || word("taxes") || lower.contains("tax return") || word("invoice") || word("invoices") {
             return "budget"
         }
+        if word("plan") || word("planning") || word("planner") {
+            return "planning"
+        }
         if word("deadline") || word("deadlines") || lower.contains("due by") || lower.contains("due tonight")
             || lower.contains("due tomorrow") || lower.contains("due at midnight")
             || lower.contains("due at noon") || lower.contains("due at end of")

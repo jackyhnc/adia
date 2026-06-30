@@ -1,5 +1,54 @@
 # Adia — Build Progress
 
+## Run 213 — 2026-06-30 — Gaming/sports rejection + planning keyword + callout pool
+
+### Shipped
+- **Gaming/sports rejection phrases** (AgentAIResponseParser.swift): added 13 new exact-match
+  strings to `leisureExact` in `localGoalRejectionReason` covering pure-leisure gaming and
+  sports inputs: `"sports"`, `"watching"`, `"play games"`, `"play video games"`,
+  `"play videogames"`, `"video games"`, `"videogames"`, `"watch sports"`, `"watch tv"`,
+  `"watch television"`, `"watch a movie"`, `"watch movies"`, `"watch a show"`, `"watch shows"`.
+  All use the existing exact-match guard so longer phrases like "write a movie script" or
+  "analyze sports data for econ class" still pass through to the model.
+- **`"planning"` keyword extraction** (CalloutManager.swift): `word("plan")`, `word("planning")`,
+  `word("planner")` now extract the `"planning"` keyword. Placed after `"budget"` and before
+  `"deadline"` so higher-priority keywords (essay, studying, project, research, budget, etc.)
+  are not overridden. Counter-cases verified: "plan my essay" → essay, "study plan for finals"
+  → studying, "project planning" → project, "research plan" → research.
+- **`planningCallouts(tier:)`** (CalloutMessages.swift): 3/3/3-message pools across tiers 1–3.
+  Tier 3 includes "CLOSE THIS. Go finish your plan." for maximum urgency. Wired into
+  `taskAwareCallouts` switch so no planning task falls to `genericKeywordCallouts`.
+- **21 new tests** (1542 → 1563 estimated):
+  - AgentAIClientTests: `localRejectionRejectsPlayGames`, `localRejectionRejectsVideoGames`,
+    `localRejectionRejectsPlayVideoGames`, `localRejectionRejectsSports`,
+    `localRejectionRejectsWatchSports`, `localRejectionRejectsWatchTV`,
+    `localRejectionRejectsWatchAMovie`, `localRejectionRejectsWatching`,
+    `localRejectionAcceptsSportsAnalysis`, `localRejectionAcceptsMovieScript`,
+    `localRejectionAcceptsGameDesign`, `localRejectionAcceptsTVProduction`
+  - CalloutManagerTests: `extractTaskKeywordFromPlanning` (8 inputs),
+    `extractTaskKeywordFromPlanner`, `extractTaskKeywordPlanningDoesNotOverrideEssay`,
+    `extractTaskKeywordPlanningDoesNotOverrideStudying`,
+    `extractTaskKeywordPlanningDoesNotOverrideProject`,
+    `extractTaskKeywordPlanningDoesNotOverrideResearch`,
+    `taskAwarePlanningHasMessages`, `taskAwarePlanningDedicatedPoolSize`,
+    `taskAwarePlanningTier3HasUrgentMessage`
+
+### Blocked
+- None.
+
+### Next agent
+- All 34 GOAL.md tasks remain checked; BUILD_COMPLETE is in place.
+- Estimated test count: 1563.
+- Every keyword returned by `extractTaskKeyword` now has a dedicated callout pool.
+- `localGoalRejectionReason` now blocks: empty, vague motivation-speak, entertainment
+  platforms (substring), leisure exact phrases (gaming, sleeping, eating, gaming/sports).
+- Potential next improvements: add "watching" / "playing" + specific game titles (fortnite,
+  minecraft, roblox) as platform substrings; or add coaching/tutoring keywords ("tutor",
+  "coach", "teach") to extractTaskKeyword for educators; or add "practice" keyword for
+  music/sports-practice tasks that are legitimate (e.g. "practice piano", "practice coding").
+
+---
+
 ## Run 212 — 2026-06-30 — Meeting + budget keyword pools, plain-resume fix
 
 ### Shipped

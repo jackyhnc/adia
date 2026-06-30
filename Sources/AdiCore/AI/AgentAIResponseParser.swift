@@ -109,6 +109,12 @@ extension AgentAIClient {
             // clearly non-work activities — no subject or deliverable whatsoever
             "sleep", "nap",
             "eat", "lunch", "dinner", "breakfast", "brunch",
+            // gaming / sports — pure leisure, no deliverable
+            "sports", "watching",
+            "play games", "play video games", "play videogames",
+            "video games", "videogames",
+            "watch sports", "watch tv", "watch television",
+            "watch a movie", "watch movies", "watch a show", "watch shows",
         ]
         if leisureExact.contains(lower) {
             return "That doesn't look like a focus session. What do you want to get done?"

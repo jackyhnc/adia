@@ -69,6 +69,7 @@ extension CalloutManager {
         case "design":    return designCallouts(tier: tier)
         case "report":    return reportCallouts(tier: tier)
         case "budget":    return budgetCallouts(tier: tier)
+        case "planning":  return planningCallouts(tier: tier)
         default:          return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -480,6 +481,26 @@ extension CalloutManager {
             "CLOSE THIS. Your finances need attention.",
             "your budget deadline isn't moving.",
             "the numbers won't add up while you're here.",
+        ]
+        }
+    }
+
+    private func planningCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "get back to your planning.",
+            "that plan isn't going to make itself.",
+            "close this and keep planning.",
+        ]
+        case 2: return [
+            "stop putting off your planning.",
+            "you need to be planning, not browsing.",
+            "your plans won't make themselves.",
+        ]
+        default: return [
+            "CLOSE THIS. Go finish your plan.",
+            "your planning isn't done yet.",
+            "put it down. the plan needs work.",
         ]
         }
     }

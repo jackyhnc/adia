@@ -152,6 +152,64 @@ struct AgentAIClientParsingTests {
         #expect(AgentAIClient.localGoalRejectionReason("finish game development feature") == nil)
     }
 
+    // MARK: - Local rejection — gaming / sports phrases
+
+    @Test func localRejectionRejectsPlayGames() {
+        #expect(AgentAIClient.localGoalRejectionReason("play games") != nil)
+    }
+
+    @Test func localRejectionRejectsVideoGames() {
+        #expect(AgentAIClient.localGoalRejectionReason("video games") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("videogames") != nil)
+    }
+
+    @Test func localRejectionRejectsPlayVideoGames() {
+        #expect(AgentAIClient.localGoalRejectionReason("play video games") != nil)
+    }
+
+    @Test func localRejectionRejectsSports() {
+        #expect(AgentAIClient.localGoalRejectionReason("sports") != nil)
+    }
+
+    @Test func localRejectionRejectsWatchSports() {
+        #expect(AgentAIClient.localGoalRejectionReason("watch sports") != nil)
+    }
+
+    @Test func localRejectionRejectsWatchTV() {
+        #expect(AgentAIClient.localGoalRejectionReason("watch tv") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("watch television") != nil)
+    }
+
+    @Test func localRejectionRejectsWatchAMovie() {
+        #expect(AgentAIClient.localGoalRejectionReason("watch a movie") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("watch movies") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("watch a show") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("watch shows") != nil)
+    }
+
+    @Test func localRejectionRejectsWatching() {
+        // Bare "watching" with no subject is pure leisure.
+        #expect(AgentAIClient.localGoalRejectionReason("watching") != nil)
+    }
+
+    // Counter-cases: gaming/sports words inside a real task description must pass through.
+    @Test func localRejectionAcceptsSportsAnalysis() {
+        // Exact-match only fires on the whole input — longer phrases always pass through.
+        #expect(AgentAIClient.localGoalRejectionReason("analyze sports statistics for econ class") == nil)
+    }
+
+    @Test func localRejectionAcceptsMovieScript() {
+        #expect(AgentAIClient.localGoalRejectionReason("write a movie script for film class") == nil)
+    }
+
+    @Test func localRejectionAcceptsGameDesign() {
+        #expect(AgentAIClient.localGoalRejectionReason("finish the game design document") == nil)
+    }
+
+    @Test func localRejectionAcceptsTVProduction() {
+        #expect(AgentAIClient.localGoalRejectionReason("draft the tv show pilot script") == nil)
+    }
+
     // MARK: - Local rejection — PRD-specified vague inputs (no subject / deliverable)
 
     // The PRD lists "work", "be productive", "do stuff", "get things done", "focus" as

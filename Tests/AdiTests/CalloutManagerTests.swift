@@ -1895,4 +1895,71 @@ struct CalloutManagerTests {
             #expect(containsMoneyRef, "tier 1 budget messages must reference budget or finances")
         }
     }
+
+    // MARK: - planning keyword extraction
+
+    @Test func extractTaskKeywordFromPlanning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "plan my trip") == "planning")
+        #expect(CalloutManager.extractTaskKeyword(from: "trip planning") == "planning")
+        #expect(CalloutManager.extractTaskKeyword(from: "event planning") == "planning")
+        #expect(CalloutManager.extractTaskKeyword(from: "plan my day") == "planning")
+        #expect(CalloutManager.extractTaskKeyword(from: "business plan") == "planning")
+        #expect(CalloutManager.extractTaskKeyword(from: "lesson plan for tomorrow") == "planning")
+        #expect(CalloutManager.extractTaskKeyword(from: "meal planning for the week") == "planning")
+        #expect(CalloutManager.extractTaskKeyword(from: "wedding planning") == "planning")
+    }
+
+    @Test func extractTaskKeywordFromPlanner() {
+        #expect(CalloutManager.extractTaskKeyword(from: "update my planner") == "planning")
+        #expect(CalloutManager.extractTaskKeyword(from: "fill in the weekly planner") == "planning")
+    }
+
+    @Test func extractTaskKeywordPlanningDoesNotOverrideEssay() {
+        // "plan" appears but "essay" has higher priority — must still return "essay"
+        #expect(CalloutManager.extractTaskKeyword(from: "plan my essay outline") == "essay")
+    }
+
+    @Test func extractTaskKeywordPlanningDoesNotOverrideStudying() {
+        // "study plan" contains "study" which matches the studying block before planning
+        #expect(CalloutManager.extractTaskKeyword(from: "study plan for finals") == "studying")
+    }
+
+    @Test func extractTaskKeywordPlanningDoesNotOverrideProject() {
+        // "project" is checked before "planning"
+        #expect(CalloutManager.extractTaskKeyword(from: "project planning") == "project")
+    }
+
+    @Test func extractTaskKeywordPlanningDoesNotOverrideResearch() {
+        #expect(CalloutManager.extractTaskKeyword(from: "research plan for my lab") == "research")
+    }
+
+    @Test func taskAwarePlanningHasMessages() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "planning", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) must have planning messages")
+            }
+        }
+    }
+
+    @Test func taskAwarePlanningDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "planning", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "planning", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "planning", tier: 3).count >= 2)
+        }
+    }
+
+    @Test func taskAwarePlanningTier3HasUrgentMessage() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "planning", tier: 3)
+            let hasUrgent = tier3.contains { msg in
+                let upper = msg.uppercased()
+                return upper.contains("CLOSE") || upper.contains("PLAN") || upper.contains("FINISH")
+            }
+            #expect(hasUrgent, "tier 3 planning messages must contain an urgent directive")
+        }
+    }
 }
