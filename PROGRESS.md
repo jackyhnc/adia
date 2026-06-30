@@ -1,5 +1,73 @@
 # Adia — Build Progress
 
+## Run 215 — 2026-06-30 — Music + language keyword extraction with dedicated callout pools
+
+### Shipped
+- **`"music"` keyword extraction** (CalloutManager.swift): `word("compose")`, `word("composing")`,
+  `word("composition")`, `word("compositions")`, `word("lyric")`, `word("lyrics")`,
+  `word("songwriter")`, `word("songwriting")`, `word("melody")`, `word("melodies")`,
+  `word("harmony")`, `word("harmonies")`, `word("chord")`, `word("chords")`,
+  `lower.contains("write a song")`, `lower.contains("write songs")`,
+  `lower.contains("write music")`, `lower.contains("music production")`,
+  `lower.contains("beat making")`, `lower.contains("beatmaking")`,
+  `word("beatmaker")`, `word("mixing")`, `word("mastering")`,
+  `lower.contains("record a song")`, `lower.contains("record music")`,
+  `lower.contains("music theory")`. Placed after "planning" and before "language";
+  code/essay/video/presentation blocks take priority so compound inputs route correctly.
+- **`musicCallouts(tier:)`** (CalloutMessages.swift): 4/3/3 message pools across tiers 1–3.
+  Tier 1: "those lyrics won't write themselves." / "the track isn't going to finish itself."
+  Tier 3: "CLOSE THIS. Go finish your track." / "the music won't make itself."
+- **`"language"` keyword extraction** (CalloutManager.swift): `word("spanish")`,
+  `word("french")`, `word("japanese")`, `word("mandarin")`, `word("german")`,
+  `word("italian")`, `word("portuguese")`, `word("korean")`, `word("arabic")`,
+  `word("hindi")`, `word("cantonese")`, `word("russian")`, `word("hebrew")`,
+  `word("duolingo")`, `word("vocabulary")`, `word("conjugation")`,
+  `word("translate")`, `word("translating")`, `word("translation")`,
+  `lower.contains("foreign language")`, `lower.contains("language learning")`,
+  `lower.contains("language exchange")`, `lower.contains("language class")`.
+  Placed after "music" so music production inputs (e.g. "composing lyrics in french")
+  route to "music". Code/essay/studying/practice/presentation blocks still take priority.
+- **`languageCallouts(tier:)`** (CalloutMessages.swift): 4/3/3 message pools across tiers 1–3.
+  Tier 1 references daily reps and fluency ("fluency takes daily reps — close this.").
+  Tier 3: "CLOSE THIS. Go practice your language." / "fluency is built rep by rep — go back."
+- **25 new tests** (1595 → 1620 estimated):
+  - CalloutManagerTests (+25): `extractTaskKeywordFromCompose`,
+    `extractTaskKeywordFromLyrics`, `extractTaskKeywordFromBeatmaking`,
+    `extractTaskKeywordMusicDoesNotOverrideCode`,
+    `extractTaskKeywordMusicDoesNotOverrideEssay`,
+    `extractTaskKeywordMusicDoesNotOverridePresentation`,
+    `taskAwareCalloutsMusicHasMessages`, `taskAwareCalloutsMusicDedicatedPoolSize`,
+    `taskAwareCalloutsMusicTier3HasUrgentMessage`,
+    `extractTaskKeywordFromLanguage`, `extractTaskKeywordFromTranslation`,
+    `extractTaskKeywordLanguageDoesNotOverrideEssay`,
+    `extractTaskKeywordLanguageDoesNotOverrideCode`,
+    `extractTaskKeywordLanguageDoesNotOverrideStudying`,
+    `taskAwareCalloutsLanguageHasMessages`, `taskAwareCalloutsLanguageDedicatedPoolSize`,
+    `taskAwareCalloutsLanguageTier1ReferencesReps`,
+    `taskAwareCalloutsLanguageTier3HasUrgentMessage`.
+
+### Blocked
+- None.
+
+### Next agent
+- All 34 GOAL.md tasks remain checked; BUILD_COMPLETE is in place.
+- Estimated test count: 1620.
+- Every keyword returned by `extractTaskKeyword` now has a dedicated callout pool.
+- `extractTaskKeyword` now covers 25 keywords: essay, paper, thesis, presentation, code,
+  report, studying, reading, homework, research, design, email, project, proposal, interview,
+  meeting, video, resume, application, writing, budget, tutor, practice, planning,
+  music, language, deadline (+ generic fallback via `genericKeywordCallouts`).
+- Potential next improvements:
+  - Add "fitness" keyword (workout, exercise, gym, training, lifting, cardio, run, running,
+    jogging, cycling, yoga, stretching, meal prep, nutrition plan) for fitness-planning tasks.
+  - Add "podcast" keyword (episode, script, host, recording studio, podcast) for content creators.
+  - Add "drawing" / "art" keyword (draw, drawing, sketch, sketching, paint, painting, illustrate,
+    illustration, digital art, procreate) for visual artists.
+  - Expand local rejection to cover more common distraction patterns (social media intent:
+    "scroll twitter", "browse reddit", "check instagram", "watch tiktok").
+
+---
+
 ## Run 214 — 2026-06-30 — Game-title rejection, tutor + practice keywords
 
 ### Shipped
