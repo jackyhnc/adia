@@ -1756,4 +1756,143 @@ struct CalloutManagerTests {
         // No subject keyword → worksheet in homework block fires.
         #expect(CalloutManager.extractTaskKeyword(from: "do my worksheet") == "homework")
     }
+
+    // MARK: - Resume (plain English, no accent)
+
+    @Test func extractTaskKeywordFromPlainResume() {
+        // Plain "resume" (no accent) must now be detected alongside "résumé" / "cv".
+        #expect(CalloutManager.extractTaskKeyword(from: "update my resume") == "resume")
+        #expect(CalloutManager.extractTaskKeyword(from: "write my resume for the internship") == "resume")
+        #expect(CalloutManager.extractTaskKeyword(from: "polish the resume before applying") == "resume")
+    }
+
+    @Test func extractTaskKeywordResumeDoesNotFalseMatchCodeTask() {
+        // "code" is checked before "resume" — "resume" as a verb in a coding task must not
+        // redirect to the résumé pool.
+        #expect(CalloutManager.extractTaskKeyword(from: "resume my coding on the side project") == "code")
+    }
+
+    @Test func extractTaskKeywordResumeDoesNotFalseMatchEssayTask() {
+        // "essay" fires before "resume" — phrasing like "resume writing my essay" must route
+        // to essay, not the résumé pool.
+        #expect(CalloutManager.extractTaskKeyword(from: "resume writing my essay") == "essay")
+    }
+
+    // MARK: - Meeting keyword
+
+    @Test func extractTaskKeywordFromMeeting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for team meeting") == "meeting")
+        #expect(CalloutManager.extractTaskKeyword(from: "write meeting agenda") == "meeting")
+        #expect(CalloutManager.extractTaskKeyword(from: "take meeting notes") == "meeting")
+        #expect(CalloutManager.extractTaskKeyword(from: "prepare for my one-on-one meeting") == "meeting")
+    }
+
+    @Test func extractTaskKeywordFromAgenda() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write the agenda for tomorrow") == "meeting")
+        #expect(CalloutManager.extractTaskKeyword(from: "finalize the agenda") == "meeting")
+    }
+
+    @Test func extractTaskKeywordMeetingPhrases() {
+        #expect(CalloutManager.extractTaskKeyword(from: "meeting prep before standup") == "meeting")
+        #expect(CalloutManager.extractTaskKeyword(from: "review meeting notes from yesterday") == "meeting")
+    }
+
+    @Test func extractTaskKeywordPresentationTakesPriorityOverMeeting() {
+        // "presentation" fires well before "meeting" — a meeting that involves slides
+        // routes to the presentation pool, not the meeting pool.
+        #expect(CalloutManager.extractTaskKeyword(from: "finish slides for the team meeting") == "presentation")
+    }
+
+    @Test func taskAwareCalloutsMeetingHasMessages() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "meeting", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) must have meeting messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsMeetingDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "meeting", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "meeting", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "meeting", tier: 3).count >= 2)
+        }
+    }
+
+    @Test func taskAwareCalloutsMeetingTier3HasUrgentMessage() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "meeting", tier: 3)
+            let containsUrgency = tier3.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("meeting") || lower.contains("prep") || lower.contains("unprepared")
+            }
+            #expect(containsUrgency, "tier 3 meeting messages must reference meeting urgency")
+        }
+    }
+
+    // MARK: - Budget / finance keyword
+
+    @Test func extractTaskKeywordFromBudget() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my monthly budget") == "budget")
+        #expect(CalloutManager.extractTaskKeyword(from: "budgeting for next month") == "budget")
+        #expect(CalloutManager.extractTaskKeyword(from: "update the household budget") == "budget")
+    }
+
+    @Test func extractTaskKeywordFromSpreadsheet() {
+        #expect(CalloutManager.extractTaskKeyword(from: "update the spreadsheet") == "budget")
+        #expect(CalloutManager.extractTaskKeyword(from: "fill in the expense spreadsheets") == "budget")
+    }
+
+    @Test func extractTaskKeywordFromFinances() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sort out my finances") == "budget")
+        #expect(CalloutManager.extractTaskKeyword(from: "review financial statements") == "budget")
+        #expect(CalloutManager.extractTaskKeyword(from: "do my accounting") == "budget")
+        #expect(CalloutManager.extractTaskKeyword(from: "catch up on bookkeeping") == "budget")
+    }
+
+    @Test func extractTaskKeywordFromTaxes() {
+        #expect(CalloutManager.extractTaskKeyword(from: "file my taxes") == "budget")
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my tax return") == "budget")
+        #expect(CalloutManager.extractTaskKeyword(from: "send the invoice to the client") == "budget")
+    }
+
+    @Test func extractTaskKeywordBudgetDoesNotFalseMatchUnrelated() {
+        // "spreadsheet" alone maps to budget; but tasks with higher-priority keywords should
+        // not be overridden.
+        #expect(CalloutManager.extractTaskKeyword(from: "code a spreadsheet parser") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "design the financial dashboard") == "design")
+    }
+
+    @Test func taskAwareCalloutsBudgetHasMessages() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "budget", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) must have budget messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsBudgetDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "budget", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "budget", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "budget", tier: 3).count >= 2)
+        }
+    }
+
+    @Test func taskAwareCalloutsBudgetTier1ReferencesMoney() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "budget", tier: 1)
+            let containsMoneyRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("budget") || lower.contains("financ") || lower.contains("number")
+            }
+            #expect(containsMoneyRef, "tier 1 budget messages must reference budget or finances")
+        }
+    }
 }

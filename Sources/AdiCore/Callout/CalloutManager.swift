@@ -143,10 +143,14 @@ public final class CalloutManager {
         if word("interview") || word("interviews") {
             return "interview"
         }
+        if word("meeting") || word("meetings") || word("agenda") || word("agendas")
+            || lower.contains("meeting notes") || lower.contains("meeting prep") {
+            return "meeting"
+        }
         if word("video") || word("editing") || word("footage") || word("film") || word("filming") {
             return "video"
         }
-        if word("cv") || lower.contains("résumé") || lower.contains("resumé") {
+        if word("cv") || lower.contains("résumé") || lower.contains("resumé") || word("resume") {
             return "resume"
         }
         if word("application") || word("applications") || lower.contains("cover letter")
@@ -159,6 +163,12 @@ public final class CalloutManager {
             || word("revision") || word("revisions") || word("revise")
             || word("proofread") || word("proofreading") {
             return "writing"
+        }
+        if word("budget") || word("budgeting") || word("budgets")
+            || word("spreadsheet") || word("spreadsheets")
+            || word("finances") || word("financial") || word("accounting") || word("bookkeeping")
+            || word("taxes") || lower.contains("tax return") || word("invoice") || word("invoices") {
+            return "budget"
         }
         if word("deadline") || word("deadlines") || lower.contains("due by") || lower.contains("due tonight")
             || lower.contains("due tomorrow") || lower.contains("due at midnight")

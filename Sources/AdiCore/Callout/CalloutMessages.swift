@@ -59,6 +59,7 @@ extension CalloutManager {
         case "project":   return projectCallouts(tier: tier)
         case "proposal":  return proposalCallouts(tier: tier)
         case "interview": return interviewCallouts(tier: tier)
+        case "meeting":   return meetingCallouts(tier: tier)
         case "resume":    return resumeCallouts(tier: tier)
         case "application": return applicationCallouts(tier: tier)
         case "paper":     return paperCallouts(tier: tier)
@@ -67,6 +68,7 @@ extension CalloutManager {
         case "video":     return videoCallouts(tier: tier)
         case "design":    return designCallouts(tier: tier)
         case "report":    return reportCallouts(tier: tier)
+        case "budget":    return budgetCallouts(tier: tier)
         default:          return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -437,6 +439,47 @@ extension CalloutManager {
             "CLOSE THIS. Your thesis needs you.",
             "your thesis deadline is not moving.",
             "years on this thesis. don't blow it now.",
+        ]
+        }
+    }
+
+    private func meetingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "you have a meeting to prep for.",
+            "your agenda isn't going to write itself.",
+            "get back to your meeting prep.",
+            "close this and prep for your meeting.",
+        ]
+        case 2: return [
+            "stop avoiding your meeting prep.",
+            "the meeting is coming — prep, not this.",
+            "your meeting won't go well if you're here.",
+        ]
+        default: return [
+            "CLOSE THIS. You have a meeting to prepare for.",
+            "you'll walk in unprepared. close it now.",
+            "your meeting doesn't care that you got distracted.",
+        ]
+        }
+    }
+
+    private func budgetCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "get back to your budget.",
+            "those numbers aren't going to enter themselves.",
+            "close this and work on your finances.",
+        ]
+        case 2: return [
+            "stop putting off your finances.",
+            "your budget won't balance itself.",
+            "you need to work on your finances, not browse.",
+        ]
+        default: return [
+            "CLOSE THIS. Your finances need attention.",
+            "your budget deadline isn't moving.",
+            "the numbers won't add up while you're here.",
         ]
         }
     }
