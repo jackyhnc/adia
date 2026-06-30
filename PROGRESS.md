@@ -1,5 +1,42 @@
 # Adia — Build Progress
 
+## Run 210 — 2026-06-30 — Programming language + academic subject keyword extraction
+
+### Shipped
+- **`extractTaskKeyword` additions** (CalloutManager.swift):
+  - Programming languages → "code": `python`, `javascript`, `typescript`, `java`, `kotlin`,
+    `rust`, `swift`, `cpp`, `react`, `vue`, `angular`, `html`, `css`, `sql`, `bash`, `shell`.
+    Checked before the studying block so "python homework" / "javascript assignment" / "sql exam"
+    correctly map to "code" (coding frame is more actionable than the generic homework/studying frame).
+  - Dev-workflow terms → "code": `debug`, `debugging`, `refactor`, `refactoring`, "pull request",
+    "unit test" (substring matches).
+  - Academic subjects → "studying": `calculus`, `statistics`/`stats`, `algebra`, `geometry`,
+    `probability`, `physics`, `chemistry`, `biology`, `economics`/`econ`, `psychology`/`psych`,
+    `sociology`. Document types (essay, paper, thesis, report) still take priority, so "chemistry
+    essay" → essay and "physics lab report" → report.
+- Fixed existing `extractTaskKeywordFromWorksheet` test: "finish the chemistry worksheet" now
+  correctly expects "studying" (chemistry subject fires in studying block before worksheet reaches
+  the homework block).
+- **30 new tests** in `CalloutManagerTests.swift`:
+  - Language group: python, javascript, typescript, java (+ no false-match on "javascript"),
+    kotlin, rust, swift, react, html/css, sql, bash/shell.
+  - Dev-workflow: debug, refactor, pull request, unit test.
+  - Priority: code beats studying/homework for language tasks.
+  - Subject group: calculus, statistics/stats, algebra, geometry, probability, physics,
+    chemistry, biology, economics/econ, psychology/psych, sociology.
+  - Priority: essay/paper/thesis/report beat subjects; subject beats worksheet.
+
+### Blocked
+- None.
+
+### Next agent
+- All 34 GOAL.md tasks remain checked; BUILD_COMPLETE is in place.
+- Test count: 1491 + 30 = 1521.
+- Potential next improvements: `paper` / `thesis` keywords fall through to `genericKeywordCallouts`
+  — could route them to `essayCallouts` since the messages are similar.
+
+---
+
 ## Run 209 — 2026-06-30 — Expanded keyword extraction + local rejection coverage
 
 ### Shipped
