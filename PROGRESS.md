@@ -1,5 +1,27 @@
 # Adia — Build Progress
 
+## Run 209 — 2026-06-30 — Expanded keyword extraction + local rejection coverage
+
+### Shipped
+- **`extractTaskKeyword` additions** (CalloutManager.swift):
+  - Coding competition platforms: `leetcode`, `hackerrank`, `codeforces`, `codewars` → `"code"`
+  - CS/algorithm terms: `algorithm`, `algorithms`, `data structure(s)` → `"code"`; "study the algorithm" maps to code callouts rather than generic since algorithms = coding work
+  - Writing-process words: `draft`/`drafts`, `outline`/`outlines`, `revision`/`revisions`, `revise`, `proofread`/`proofreading` → `"writing"` (merged into the existing blog/newsletter block; more-specific keywords like essay/report/email still fire first when they co-appear)
+  - `worksheet`/`worksheets` → `"homework"`
+- **`localGoalRejectionReason` additions** (AgentAIResponseParser.swift):
+  - `sleep`, `nap`, `eat`, `lunch`, `dinner`, `breakfast`, `brunch` added to the exact-match rejection set; longer phrases ("sleep research for psych class", "prepare for lunch presentation") are unaffected — the guard only fires when the full input matches exactly.
+- **25 new tests** across `CalloutManagerTests.swift` and `AgentAIClientTests.swift` covering every new keyword variant, keyword priority ordering, and counter-cases for the new local rejections.
+
+### Blocked
+- None.
+
+### Next agent
+- All 34 GOAL.md tasks remain checked; BUILD_COMPLETE is in place.
+- Web tests: 48/48 passing.
+- Look for remaining gaps in `extractTaskKeyword` (e.g. subject-specific academic terms) or improvements to callout message phrasing.
+
+---
+
 ## Run 208 — 2026-06-30 — Local goal rejection: PRD-specified vague inputs now caught without an API call
 
 ### Shipped
