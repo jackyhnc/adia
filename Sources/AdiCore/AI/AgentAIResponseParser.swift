@@ -106,6 +106,9 @@ extension AgentAIClient {
             // obvious motivation-speak with no concrete deliverable
             "hustle", "grind",
             "do nothing", "procrastinate",
+            // clearly non-work activities — no subject or deliverable whatsoever
+            "sleep", "nap",
+            "eat", "lunch", "dinner", "breakfast", "brunch",
         ]
         if leisureExact.contains(lower) {
             return "That doesn't look like a focus session. What do you want to get done?"

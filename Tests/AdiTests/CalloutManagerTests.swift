@@ -1460,4 +1460,86 @@ struct CalloutManagerTests {
         // Subject keyword always wins over the urgency catch-all
         #expect(CalloutManager.extractTaskKeyword(from: "essay due at noon") == "essay")
     }
+
+    // MARK: - Coding competition / algorithm keywords
+
+    @Test func extractTaskKeywordFromLeetCode() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on leetcode") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "do leetcode problems") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "grind leetcode") == "code")
+    }
+
+    @Test func extractTaskKeywordFromAlgorithm() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice algorithms") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "study the algorithm") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "review algorithm concepts") == "code")
+    }
+
+    @Test func extractTaskKeywordFromDataStructure() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on data structure problems") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "review data structures") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "implement a data structure") == "code")
+    }
+
+    @Test func extractTaskKeywordFromHackerRank() {
+        #expect(CalloutManager.extractTaskKeyword(from: "do hackerrank challenges") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish hackerrank problem set") == "code")
+    }
+
+    @Test func extractTaskKeywordAlgorithmTakesPriorityOverStudying() {
+        // "code" check runs before "studying" — algorithm review maps to code, not studying.
+        #expect(CalloutManager.extractTaskKeyword(from: "study the algorithm") == "code")
+    }
+
+    // MARK: - Writing / draft / outline / revision keywords
+
+    @Test func extractTaskKeywordFromDraft() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my draft") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "write a draft") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "clean up the drafts") == "writing")
+    }
+
+    @Test func extractTaskKeywordFromOutline() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write an outline") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the outline") == "writing")
+    }
+
+    @Test func extractTaskKeywordFromRevision() {
+        #expect(CalloutManager.extractTaskKeyword(from: "do my revisions") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "revise the introduction") == "writing")
+    }
+
+    @Test func extractTaskKeywordFromProofread() {
+        #expect(CalloutManager.extractTaskKeyword(from: "proofread this section") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish proofreading") == "writing")
+    }
+
+    @Test func extractTaskKeywordEssayTakesPriorityOverDraft() {
+        // "essay" check fires before draft/outline — more specific keyword wins.
+        #expect(CalloutManager.extractTaskKeyword(from: "revise my essay draft") == "essay")
+        #expect(CalloutManager.extractTaskKeyword(from: "write an outline for my essay") == "essay")
+    }
+
+    @Test func extractTaskKeywordReportTakesPriorityOverRevision() {
+        // "report" check fires before revision — revising a report maps to report.
+        #expect(CalloutManager.extractTaskKeyword(from: "do revisions on my report") == "report")
+    }
+
+    @Test func extractTaskKeywordEmailTakesPriorityOverDraft() {
+        // "email" check fires before draft — drafting an email maps to email.
+        #expect(CalloutManager.extractTaskKeyword(from: "draft the client email") == "email")
+    }
+
+    @Test func extractTaskKeywordOutlinePresentationMapsToPresentation() {
+        // "presentation" check fires before outline — outline for a presentation maps to presentation.
+        #expect(CalloutManager.extractTaskKeyword(from: "create an outline for the presentation") == "presentation")
+    }
+
+    // MARK: - Worksheet keyword (homework group)
+
+    @Test func extractTaskKeywordFromWorksheet() {
+        #expect(CalloutManager.extractTaskKeyword(from: "do my worksheet") == "homework")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the chemistry worksheet") == "homework")
+        #expect(CalloutManager.extractTaskKeyword(from: "complete the bio worksheets") == "homework")
+    }
 }

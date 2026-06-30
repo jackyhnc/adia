@@ -231,6 +231,57 @@ struct AgentAIClientParsingTests {
         #expect(AgentAIClient.localGoalRejectionReason("be focused while reading chapter 4") == nil)
     }
 
+    // MARK: - Local rejection — non-work activities (sleep, eat, etc.)
+    //
+    // Clearly non-work inputs with no subject or deliverable are rejected locally (no API call).
+    // Exact-match on the full lowercased input, so "sleep research for psych class" still passes.
+
+    @Test func localRejectionRejectsSleep() {
+        #expect(AgentAIClient.localGoalRejectionReason("sleep") != nil)
+    }
+
+    @Test func localRejectionRejectsNap() {
+        #expect(AgentAIClient.localGoalRejectionReason("nap") != nil)
+    }
+
+    @Test func localRejectionRejectsEat() {
+        #expect(AgentAIClient.localGoalRejectionReason("eat") != nil)
+    }
+
+    @Test func localRejectionRejectsLunch() {
+        #expect(AgentAIClient.localGoalRejectionReason("lunch") != nil)
+    }
+
+    @Test func localRejectionRejectsDinner() {
+        #expect(AgentAIClient.localGoalRejectionReason("dinner") != nil)
+    }
+
+    @Test func localRejectionRejectsBreakfast() {
+        #expect(AgentAIClient.localGoalRejectionReason("breakfast") != nil)
+    }
+
+    @Test func localRejectionRejectsBrunch() {
+        #expect(AgentAIClient.localGoalRejectionReason("brunch") != nil)
+    }
+
+    // Counter-cases: inputs that contain these words but have a real subject/deliverable
+    // must pass through to the model unchanged.
+
+    @Test func localRejectionAcceptsSleepResearch() {
+        // academic topic — sleep as a research subject, not an activity
+        #expect(AgentAIClient.localGoalRejectionReason("sleep research for psych class") == nil)
+    }
+
+    @Test func localRejectionAcceptsLunchPresentation() {
+        // presenting at a lunch meeting — real deliverable
+        #expect(AgentAIClient.localGoalRejectionReason("prepare for lunch presentation") == nil)
+    }
+
+    @Test func localRejectionAcceptsDinnerEvent() {
+        // planning a dinner event could be a real task
+        #expect(AgentAIClient.localGoalRejectionReason("plan the dinner event for Friday") == nil)
+    }
+
     // MARK: - Goal-response parsing (model round-trip → GoalParse)
     //
     // `parseGoal(_:)` is gated on a live `ANTHROPIC_API_KEY` (see

@@ -91,7 +91,9 @@ public final class CalloutManager {
         if word("presentation") || word("presentations") || word("slides") || word("deck") || word("powerpoint") || word("keynote") {
             return "presentation"
         }
-        if word("code") || word("coding") || word("programming") || word("bug") || word("feature") || word("function") {
+        if word("code") || word("coding") || word("programming") || word("bug") || word("feature") || word("function")
+            || word("leetcode") || word("hackerrank") || word("codeforces") || word("codewars")
+            || word("algorithm") || word("algorithms") || lower.contains("data structure") {
             return "code"
         }
         if word("report") || word("reports") || word("document") || word("documents") || word("doc") || word("docs") {
@@ -105,7 +107,8 @@ public final class CalloutManager {
         if word("reading") || word("book") || word("chapter") || word("article") {
             return "reading"
         }
-        if word("homework") || word("assignment") || lower.contains("problem set") || word("pset") {
+        if word("homework") || word("assignment") || lower.contains("problem set") || word("pset")
+            || word("worksheet") || word("worksheets") {
             return "homework"
         }
         if word("research") || word("lab") {
@@ -138,7 +141,10 @@ public final class CalloutManager {
             || lower.contains("internship application") || lower.contains("college application") {
             return "application"
         }
-        if word("blog") || word("newsletter") {
+        if word("blog") || word("newsletter")
+            || word("draft") || word("drafts") || word("outline") || word("outlines")
+            || word("revision") || word("revisions") || word("revise")
+            || word("proofread") || word("proofreading") {
             return "writing"
         }
         if word("deadline") || word("deadlines") || lower.contains("due by") || lower.contains("due tonight")
