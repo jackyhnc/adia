@@ -183,6 +183,27 @@ public final class CalloutManager {
         if word("plan") || word("planning") || word("planner") {
             return "planning"
         }
+        if word("compose") || word("composing") || word("composition") || word("compositions")
+            || word("lyric") || word("lyrics") || word("songwriter") || word("songwriting")
+            || word("melody") || word("melodies") || word("harmony") || word("harmonies")
+            || word("chord") || word("chords") || lower.contains("write a song") || lower.contains("write songs")
+            || lower.contains("write music") || lower.contains("music production")
+            || lower.contains("beat making") || lower.contains("beatmaking")
+            || word("beatmaker") || word("mixing") || word("mastering")
+            || lower.contains("record a song") || lower.contains("record music")
+            || lower.contains("music theory") {
+            return "music"
+        }
+        if word("spanish") || word("french") || word("japanese") || word("mandarin")
+            || word("german") || word("italian") || word("portuguese") || word("korean")
+            || word("arabic") || word("hindi") || word("cantonese") || word("russian")
+            || word("hebrew") || word("duolingo")
+            || word("vocabulary") || word("conjugation")
+            || word("translate") || word("translating") || word("translation")
+            || lower.contains("foreign language") || lower.contains("language learning")
+            || lower.contains("language exchange") || lower.contains("language class") {
+            return "language"
+        }
         if word("deadline") || word("deadlines") || lower.contains("due by") || lower.contains("due tonight")
             || lower.contains("due tomorrow") || lower.contains("due at midnight")
             || lower.contains("due at noon") || lower.contains("due at end of")

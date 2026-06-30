@@ -72,6 +72,8 @@ extension CalloutManager {
         case "tutor":     return tutorCallouts(tier: tier)
         case "practice":  return practiceCallouts(tier: tier)
         case "planning":  return planningCallouts(tier: tier)
+        case "music":     return musicCallouts(tier: tier)
+        case "language":  return languageCallouts(tier: tier)
         default:          return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -545,6 +547,48 @@ extension CalloutManager {
             "CLOSE THIS. Put in the practice.",
             "you won't improve by being here.",
             "close it. go practice.",
+        ]
+        }
+    }
+
+    private func musicCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "get back to your music.",
+            "those lyrics won't write themselves.",
+            "close this and keep creating.",
+            "the track isn't going to finish itself.",
+        ]
+        case 2: return [
+            "stop browsing. finish the song.",
+            "you can't produce if you're not in the DAW.",
+            "close this and get back to the beat.",
+        ]
+        default: return [
+            "CLOSE THIS. Go finish your track.",
+            "the music won't make itself.",
+            "put it down. the session needs you.",
+        ]
+        }
+    }
+
+    private func languageCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "get back to practicing.",
+            "fluency takes daily reps — close this.",
+            "your vocab won't grow by browsing.",
+            "close this and get back to your lesson.",
+        ]
+        case 2: return [
+            "stop avoiding the hard part. keep going.",
+            "you can't get fluent by being here.",
+            "close this and do the next exercise.",
+        ]
+        default: return [
+            "CLOSE THIS. Go practice your language.",
+            "consistency is the only thing that works. close it.",
+            "fluency is built rep by rep — go back.",
         ]
         }
     }

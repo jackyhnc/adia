@@ -2106,4 +2106,138 @@ struct CalloutManagerTests {
             #expect(hasUrgent, "tier 3 practice messages must contain an urgent directive")
         }
     }
+
+    // MARK: - Music keyword
+
+    @Test func extractTaskKeywordFromCompose() {
+        #expect(CalloutManager.extractTaskKeyword(from: "compose a piece for violin") == "music")
+        #expect(CalloutManager.extractTaskKeyword(from: "composing my EP") == "music")
+        #expect(CalloutManager.extractTaskKeyword(from: "write music for my album") == "music")
+    }
+
+    @Test func extractTaskKeywordFromLyrics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write lyrics for my song") == "music")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the lyric for verse 2") == "music")
+        #expect(CalloutManager.extractTaskKeyword(from: "songwriter challenge") == "music")
+    }
+
+    @Test func extractTaskKeywordFromBeatmaking() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the beatmaking session") == "music")
+        #expect(CalloutManager.extractTaskKeyword(from: "music production for my EP") == "music")
+        #expect(CalloutManager.extractTaskKeyword(from: "mixing the final master") == "music")
+    }
+
+    @Test func extractTaskKeywordMusicDoesNotOverrideCode() {
+        // "compose" an algorithm shouldn't trigger music when "code" keywords are present
+        #expect(CalloutManager.extractTaskKeyword(from: "compose a function in python") == "code")
+    }
+
+    @Test func extractTaskKeywordMusicDoesNotOverrideEssay() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write an essay about music theory") == "essay")
+    }
+
+    @Test func extractTaskKeywordMusicDoesNotOverridePresentation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "presentation on music history") == "presentation")
+    }
+
+    @Test func taskAwareCalloutsMusicHasMessages() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "music", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) must have music messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsMusicDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "music", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "music", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "music", tier: 3).count >= 2)
+        }
+    }
+
+    @Test func taskAwareCalloutsMusicTier3HasUrgentMessage() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "music", tier: 3)
+            let hasUrgent = tier3.contains { msg in
+                let upper = msg.uppercased()
+                return upper.contains("CLOSE") || upper.contains("TRACK") || upper.contains("MUSIC")
+            }
+            #expect(hasUrgent, "tier 3 music messages must contain an urgent directive")
+        }
+    }
+
+    // MARK: - Language keyword
+
+    @Test func extractTaskKeywordFromLanguage() {
+        #expect(CalloutManager.extractTaskKeyword(from: "learn spanish for my class") == "language")
+        #expect(CalloutManager.extractTaskKeyword(from: "duolingo japanese streak") == "language")
+        #expect(CalloutManager.extractTaskKeyword(from: "french vocabulary review") == "language")
+        #expect(CalloutManager.extractTaskKeyword(from: "mandarin conjugation drills") == "language")
+        #expect(CalloutManager.extractTaskKeyword(from: "translate this document to german") == "language")
+        #expect(CalloutManager.extractTaskKeyword(from: "language learning goals for korean") == "language")
+    }
+
+    @Test func extractTaskKeywordFromTranslation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish translating the manual") == "language")
+        #expect(CalloutManager.extractTaskKeyword(from: "translation for my arabic class") == "language")
+    }
+
+    @Test func extractTaskKeywordLanguageDoesNotOverrideEssay() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a spanish essay") == "essay")
+    }
+
+    @Test func extractTaskKeywordLanguageDoesNotOverrideCode() {
+        // "translate" in a code context — code keywords dominate
+        #expect(CalloutManager.extractTaskKeyword(from: "translate python code to javascript") == "code")
+    }
+
+    @Test func extractTaskKeywordLanguageDoesNotOverrideStudying() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my spanish exam") == "studying")
+    }
+
+    @Test func taskAwareCalloutsLanguageHasMessages() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "language", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) must have language messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsLanguageDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "language", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "language", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "language", tier: 3).count >= 2)
+        }
+    }
+
+    @Test func taskAwareCalloutsLanguageTier1ReferencesReps() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "language", tier: 1)
+            let hasReps = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("rep") || lower.contains("daily") || lower.contains("practice")
+                    || lower.contains("fluent") || lower.contains("lesson")
+            }
+            #expect(hasReps, "tier 1 language messages should reference reps, daily habit, or fluency")
+        }
+    }
+
+    @Test func taskAwareCalloutsLanguageTier3HasUrgentMessage() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "language", tier: 3)
+            let hasUrgent = tier3.contains { msg in
+                let upper = msg.uppercased()
+                return upper.contains("CLOSE") || upper.contains("FLUENT") || upper.contains("LANGUAGE")
+            }
+            #expect(hasUrgent, "tier 3 language messages must contain an urgent directive")
+        }
+    }
 }
