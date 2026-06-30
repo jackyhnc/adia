@@ -1,5 +1,29 @@
 # Adia — Build Progress
 
+## Run 205 — 2026-06-30 — Bug fix: webhook subscription cancellation now works
+
+### Shipped
+- Fixed silent bug in `web/app/api/stripe/webhook/route.ts`: the `customer.subscription.deleted`
+  handler was calling `setStatus(sub.id, 'canceled')` where `sub.id` is the Stripe subscription
+  ID (e.g. `sub_abc123`), but `setStatus` does `WHERE key = ?` against the license primary key
+  (e.g. `ADIA-XXXX-XXXX-XXXX`). The UPDATE matched nothing — every cancellation was silently dropped.
+- Added `setStatusBySub(stripeSub, status)` to `lib/db.ts` (SQLite), `lib/db-pg.ts` (Postgres),
+  and `lib/store.ts` (facade). The new function does `WHERE stripe_sub = ?` so it finds the right row.
+- Updated webhook handler to call `setStatusBySub(sub.id, 'canceled')`.
+- Added two new tests in `__tests__/db.test.ts` covering the happy path and the no-op unknown sub case.
+- All 46 web tests pass.
+
+### Blocked
+- None.
+
+### Next agent
+- All 34 GOAL.md items complete. BUILD_COMPLETE is present.
+- Web backend is now correct: subscription cancellations mark the license canceled.
+- No open GitHub issues or PRs.
+- If new features are desired, add them to GOAL.md.
+
+---
+
 ## Run 204 — 2026-06-29 — Web branding fix: OpenAI → Claude/Anthropic
 
 ### Shipped

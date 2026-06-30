@@ -130,6 +130,10 @@ export function setStatus(key: string, status: License['status']) {
   db().prepare('UPDATE licenses SET status = ? WHERE key = ?').run(status, key);
 }
 
+export function setStatusBySub(stripeSub: string, status: License['status']) {
+  db().prepare('UPDATE licenses SET status = ? WHERE stripe_sub = ?').run(status, stripeSub);
+}
+
 export function joinWaitlist(email: string) {
   db().prepare(`
     INSERT INTO waitlist (email, created_at) VALUES (?, ?)

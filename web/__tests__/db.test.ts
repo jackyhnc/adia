@@ -7,6 +7,7 @@ import {
   findLicense,
   recordActivation,
   setStatus,
+  setStatusBySub,
   joinWaitlist,
   resetDbForTesting,
 } from '@/lib/db';
@@ -104,6 +105,22 @@ describe('setStatus', () => {
     insertLicense({ key, email: 'status@example.com', plan: 'yearly', expiresAt: null });
     setStatus(key, 'canceled');
     expect(findLicense(key)!.status).toBe('canceled');
+  });
+});
+
+describe('setStatusBySub', () => {
+  it('cancels the license identified by stripe_sub', () => {
+    const key = 'ADIA-SBST-TEST-AAAA';
+    const sub = 'sub_test_abc123';
+    insertLicense({ key, email: 'sub@example.com', plan: 'monthly', stripeSub: sub, expiresAt: null });
+    expect(findLicense(key)!.status).toBe('active');
+    setStatusBySub(sub, 'canceled');
+    expect(findLicense(key)!.status).toBe('canceled');
+  });
+
+  it('is a no-op for an unknown stripe_sub', () => {
+    // should not throw
+    setStatusBySub('sub_nonexistent', 'canceled');
   });
 });
 

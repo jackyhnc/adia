@@ -122,6 +122,11 @@ export async function setStatusPg(key: string, status: License['status']): Promi
   await sql`UPDATE licenses SET status = ${status} WHERE key = ${key}`;
 }
 
+export async function setStatusBySubPg(stripeSub: string, status: License['status']): Promise<void> {
+  await ensureSchema();
+  await sql`UPDATE licenses SET status = ${status} WHERE stripe_sub = ${stripeSub}`;
+}
+
 export async function joinWaitlistPg(email: string): Promise<void> {
   await ensureSchema();
   await sql`

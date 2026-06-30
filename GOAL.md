@@ -30,3 +30,4 @@
 - [x] Keychain error logging: add structured logging for all SecItemAdd/SecItemDelete failures in LicenseManager and SettingsStore
 - [x] ExpandedNotchView decomposition: extract active/paused/verification body views from ExpandedNotchView.swift into ExpandedNotchBodies.swift
 - [x] HistoryTab decomposition: extract weekly section, insights section, search bar, and toolbar from HistoryTab.swift into HistoryInsightsSection.swift
+- [x] Webhook subscription cancellation bug: setStatusBySub looks up by stripe_sub instead of license key so cancellations actually land

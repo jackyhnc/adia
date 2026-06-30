@@ -55,6 +55,14 @@ export async function setStatus(key: string, status: License['status']): Promise
   sqlite.setStatus(key, status);
 }
 
+export async function setStatusBySub(stripeSub: string, status: License['status']): Promise<void> {
+  if (usePg) {
+    const { setStatusBySubPg } = await import('./db-pg');
+    return setStatusBySubPg(stripeSub, status);
+  }
+  sqlite.setStatusBySub(stripeSub, status);
+}
+
 export async function joinWaitlist(email: string): Promise<void> {
   if (usePg) {
     const { joinWaitlistPg } = await import('./db-pg');

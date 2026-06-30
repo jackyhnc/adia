@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe, isStripeConfigured } from '@/lib/stripe';
-import { insertLicense, setStatus } from '@/lib/store';
+import { insertLicense, setStatusBySub } from '@/lib/store';
 import { generateLicenseKey, planExpiry } from '@/lib/license';
 import { sendLicenseEmail } from '@/lib/email';
 
@@ -48,8 +48,8 @@ export async function POST(req: NextRequest) {
 
   if (event.type === 'customer.subscription.deleted') {
     const sub: any = event.data.object;
-    // mark license expired — assumes 1 sub per license
-    await setStatus(sub.id, 'canceled');
+    // Look up the license by stripe_sub, not by its own primary key.
+    await setStatusBySub(sub.id, 'canceled');
   }
 
   return NextResponse.json({ ok: true });
