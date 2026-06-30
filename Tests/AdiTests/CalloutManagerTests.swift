@@ -1539,7 +1539,190 @@ struct CalloutManagerTests {
 
     @Test func extractTaskKeywordFromWorksheet() {
         #expect(CalloutManager.extractTaskKeyword(from: "do my worksheet") == "homework")
-        #expect(CalloutManager.extractTaskKeyword(from: "finish the chemistry worksheet") == "homework")
+        // "chemistry" now fires in the studying block before "worksheet" reaches the homework
+        // block — chemistry subject wins over worksheet format when both are present.
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the chemistry worksheet") == "studying")
+        // "bio" is not matched by \bbiology\b, so no studying subject keyword fires;
+        // the homework block's \bworksheets\b catches it instead.
         #expect(CalloutManager.extractTaskKeyword(from: "complete the bio worksheets") == "homework")
+    }
+
+    // MARK: - Programming language keywords (code group)
+
+    @Test func extractTaskKeywordFromPython() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my python project") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the python script") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "Python homework") == "code")
+    }
+
+    @Test func extractTaskKeywordFromJavaScript() {
+        #expect(CalloutManager.extractTaskKeyword(from: "javascript assignment") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "build a javascript app") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "fix the javascript bug") == "code")
+    }
+
+    @Test func extractTaskKeywordFromTypeScript() {
+        #expect(CalloutManager.extractTaskKeyword(from: "typescript component") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "write typescript types") == "code")
+    }
+
+    @Test func extractTaskKeywordFromJava() {
+        #expect(CalloutManager.extractTaskKeyword(from: "java assignment") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my java project") == "code")
+    }
+
+    @Test func extractTaskKeywordJavaDoesNotMatchJavaScript() {
+        // \bjava\b should NOT fire on "javascript" — word boundary prevents the overlap.
+        // The `javascript` check fires instead.
+        #expect(CalloutManager.extractTaskKeyword(from: "javascript homework") == "code")
+    }
+
+    @Test func extractTaskKeywordFromKotlin() {
+        #expect(CalloutManager.extractTaskKeyword(from: "kotlin android app") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish kotlin homework") == "code")
+    }
+
+    @Test func extractTaskKeywordFromRust() {
+        #expect(CalloutManager.extractTaskKeyword(from: "rust systems project") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "write rust code") == "code")
+    }
+
+    @Test func extractTaskKeywordFromSwiftLanguage() {
+        #expect(CalloutManager.extractTaskKeyword(from: "swift ios app") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "write swift function") == "code")
+    }
+
+    @Test func extractTaskKeywordFromReact() {
+        #expect(CalloutManager.extractTaskKeyword(from: "react component") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "build a react app") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my react homework") == "code")
+    }
+
+    @Test func extractTaskKeywordFromHtmlCss() {
+        #expect(CalloutManager.extractTaskKeyword(from: "html assignment") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "css styling homework") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "build html page") == "code")
+    }
+
+    @Test func extractTaskKeywordFromSql() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sql homework") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "write sql queries") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the sql assignment") == "code")
+    }
+
+    @Test func extractTaskKeywordFromBashShell() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bash script") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "write shell script") == "code")
+    }
+
+    @Test func extractTaskKeywordFromDebug() {
+        #expect(CalloutManager.extractTaskKeyword(from: "debug this function") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "debugging the issue") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "need to debug my app") == "code")
+    }
+
+    @Test func extractTaskKeywordFromRefactor() {
+        #expect(CalloutManager.extractTaskKeyword(from: "refactor this module") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "refactoring the codebase") == "code")
+    }
+
+    @Test func extractTaskKeywordFromPullRequest() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write pull request") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the pull request") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "review pull request") == "code")
+    }
+
+    @Test func extractTaskKeywordFromUnitTest() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write unit tests") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish unit test coverage") == "code")
+    }
+
+    @Test func extractTaskKeywordCodeTakesPriorityOverStudyingForLanguages() {
+        // code check runs before studying — "python homework" should map to code, not homework.
+        #expect(CalloutManager.extractTaskKeyword(from: "python homework") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "javascript assignment") == "code")
+        #expect(CalloutManager.extractTaskKeyword(from: "sql exam") == "code")
+    }
+
+    // MARK: - Academic subject keywords (studying group)
+
+    @Test func extractTaskKeywordFromCalculus() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study calculus") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "calculus review") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "do my calculus homework") == "studying")
+    }
+
+    @Test func extractTaskKeywordFromStatistics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "statistics assignment") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "study statistics") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "stats review") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my stats") == "studying")
+    }
+
+    @Test func extractTaskKeywordFromAlgebra() {
+        #expect(CalloutManager.extractTaskKeyword(from: "algebra homework") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "linear algebra practice") == "studying")
+    }
+
+    @Test func extractTaskKeywordFromGeometry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geometry assignment") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "study geometry") == "studying")
+    }
+
+    @Test func extractTaskKeywordFromProbability() {
+        #expect(CalloutManager.extractTaskKeyword(from: "probability problem set") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "study probability") == "studying")
+    }
+
+    @Test func extractTaskKeywordFromPhysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "physics homework") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "study for physics exam") == "studying")
+        // "report" fires before "physics" in priority order — a physics lab report is a report.
+        #expect(CalloutManager.extractTaskKeyword(from: "physics lab report") == "report")
+    }
+
+    @Test func extractTaskKeywordFromChemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "chemistry assignment") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "study for chemistry exam") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "chemistry review") == "studying")
+    }
+
+    @Test func extractTaskKeywordFromBiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "biology homework") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "study for biology quiz") == "studying")
+    }
+
+    @Test func extractTaskKeywordFromEconomics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "economics assignment") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "study econ") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "econ review") == "studying")
+    }
+
+    @Test func extractTaskKeywordFromPsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "psychology notes") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "study psych") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "psych review") == "studying")
+    }
+
+    @Test func extractTaskKeywordFromSociology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sociology reading") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "study sociology") == "studying")
+    }
+
+    @Test func extractTaskKeywordEssayTakesPriorityOverSubject() {
+        // "essay" fires before "studying" — a chemistry essay maps to essay, not studying.
+        #expect(CalloutManager.extractTaskKeyword(from: "write my chemistry essay") == "essay")
+        #expect(CalloutManager.extractTaskKeyword(from: "biology paper") == "paper")
+        #expect(CalloutManager.extractTaskKeyword(from: "physics thesis") == "thesis")
+    }
+
+    @Test func extractTaskKeywordSubjectTakesPriorityOverWorksheet() {
+        // The studying block runs before the homework block — when a subject keyword (chemistry)
+        // is present, it fires first even if a worksheet term is also present.
+        // Only worksheet without a subject keyword reaches the homework block.
+        #expect(CalloutManager.extractTaskKeyword(from: "study chemistry") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "chemistry worksheet") == "studying")
+        // No subject keyword → worksheet in homework block fires.
+        #expect(CalloutManager.extractTaskKeyword(from: "do my worksheet") == "homework")
     }
 }

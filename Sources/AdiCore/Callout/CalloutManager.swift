@@ -93,7 +93,15 @@ public final class CalloutManager {
         }
         if word("code") || word("coding") || word("programming") || word("bug") || word("feature") || word("function")
             || word("leetcode") || word("hackerrank") || word("codeforces") || word("codewars")
-            || word("algorithm") || word("algorithms") || lower.contains("data structure") {
+            || word("algorithm") || word("algorithms") || lower.contains("data structure")
+            // Programming languages — matched before "studying" so "python homework" → code
+            || word("python") || word("javascript") || word("typescript") || word("java")
+            || word("kotlin") || word("rust") || word("swift") || word("cpp")
+            || word("react") || word("vue") || word("angular") || word("html") || word("css")
+            || word("sql") || word("bash") || word("shell")
+            // Dev-workflow terms
+            || word("debug") || word("debugging") || word("refactor") || word("refactoring")
+            || lower.contains("pull request") || lower.contains("unit test") {
             return "code"
         }
         if word("report") || word("reports") || word("document") || word("documents") || word("doc") || word("docs") {
@@ -101,7 +109,12 @@ public final class CalloutManager {
         }
         if word("study") || word("studying") || word("exam") || word("quiz") || word("test")
             || word("midterm") || word("midterms") || word("finals") || word("notes")
-            || word("flashcard") || word("flashcards") || word("lecture") {
+            || word("flashcard") || word("flashcards") || word("lecture")
+            // Academic subject names — "study calculus", "chemistry test", etc.
+            || word("calculus") || word("statistics") || word("stats") || word("algebra")
+            || word("geometry") || word("probability") || word("physics") || word("chemistry")
+            || word("biology") || word("economics") || word("econ") || word("psychology")
+            || word("psych") || word("sociology") {
             return "studying"
         }
         if word("reading") || word("book") || word("chapter") || word("article") {
