@@ -1,5 +1,50 @@
 # Adia — Build Progress
 
+## Run 212 — 2026-06-30 — Meeting + budget keyword pools, plain-resume fix
+
+### Shipped
+- **`word("meeting")` + `word("agenda")` detection** (CalloutManager.swift): tasks containing
+  "meeting", "meetings", "agenda", "agendas", or the phrases "meeting notes" / "meeting prep"
+  now extract the `"meeting"` keyword. Placed after `"interview"` in priority order so a meeting
+  that involves a presentation still routes to `"presentation"`.
+- **`meetingCallouts(tier:)`** (CalloutMessages.swift): 4/3/3-message pools across tiers 1–3.
+  Tier 3 calls out the consequence of being unprepared: "you'll walk in unprepared. close it now."
+- **Budget/finance detection** (CalloutManager.swift): `word("budget")`, `word("budgeting")`,
+  `word("spreadsheet")`, `word("finances")`, `word("financial")`, `word("accounting")`,
+  `word("bookkeeping")`, `word("taxes")`, `lower.contains("tax return")`, `word("invoice")` all
+  map to the `"budget"` keyword. Placed after `"writing"` and before `"deadline"`.
+- **`budgetCallouts(tier:)`** (CalloutMessages.swift): 3/3/3-message pools. Tier 1 uses
+  "those numbers aren't going to enter themselves." for sharp, direct tone.
+- **Plain "resume" detection fix** (CalloutManager.swift): added `word("resume")` to the existing
+  cv/résumé check so "update my resume" (no accent) routes to `resumeCallouts`. Priority ordering
+  ensures "resume my coding" → code and "resume writing my essay" → essay remain correct.
+- **18 new tests** (202 → 220 in CalloutManagerTests.swift):
+  - `extractTaskKeywordFromMeeting`, `extractTaskKeywordFromAgenda`, `extractTaskKeywordMeetingPhrases`
+  - `extractTaskKeywordPresentationTakesPriorityOverMeeting` (counter-case)
+  - `taskAwareCalloutsMeetingHasMessages`, `taskAwareCalloutsMeetingDedicatedPoolSize`,
+    `taskAwareCalloutsMeetingTier3HasUrgentMessage`
+  - `extractTaskKeywordFromBudget`, `extractTaskKeywordFromSpreadsheet`,
+    `extractTaskKeywordFromFinances`, `extractTaskKeywordFromTaxes`
+  - `extractTaskKeywordBudgetDoesNotFalseMatchUnrelated` (counter-cases)
+  - `taskAwareCalloutsBudgetHasMessages`, `taskAwareCalloutsBudgetDedicatedPoolSize`,
+    `taskAwareCalloutsBudgetTier1ReferencesMoney`
+  - `extractTaskKeywordFromPlainResume`, `extractTaskKeywordResumeDoesNotFalseMatchCodeTask`,
+    `extractTaskKeywordResumeDoesNotFalseMatchEssayTask`
+
+### Blocked
+- None.
+
+### Next agent
+- All 34 GOAL.md tasks remain checked; BUILD_COMPLETE is in place.
+- Test count: 1524 + 18 = 1542 (estimated; Swift tests not runnable without macOS toolchain).
+- Every keyword in `taskAwareCallouts` switch now has a dedicated pool; no keyword falls to
+  `genericKeywordCallouts` except truly unrecognised ones.
+- Potential next improvements: `localGoalRejectionReason` — consider adding gaming/sports inputs
+  ("play games", "watch sports") to the local rejection set. Or expand `extractTaskKeyword` with
+  "plan"/"planning" for project/trip planning tasks.
+
+---
+
 ## Run 211 — 2026-06-30 — Dedicated paper/thesis callout pools
 
 ### Shipped
