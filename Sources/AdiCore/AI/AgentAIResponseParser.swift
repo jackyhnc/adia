@@ -91,10 +91,21 @@ extension AgentAIClient {
         if cleaned.isEmpty {
             return "Tell me what you're working on."
         }
+        // PRD-specified vague inputs with no verifiable subject or deliverable:
+        // "work", "be productive", "do stuff", "get things done", "focus".
+        // Exact-match (whole input) so "work on my thesis" / "focus on chemistry"
+        // still pass through to the model — only the bare word is caught locally.
         let leisureExact: Set<String> = [
             "stuff", "something", "anything", "whatever", "idk", "nothing",
             "chill", "relax", "browse", "scroll", "scrolling", "doomscroll",
             "gaming", "vibing", "chilling", "chillin",
+            // PRD §REJECT: no subject or deliverable
+            "work", "focus",
+            "be productive", "do stuff", "do work", "get things done", "get stuff done",
+            "be focused", "stay focused",
+            // obvious motivation-speak with no concrete deliverable
+            "hustle", "grind",
+            "do nothing", "procrastinate",
         ]
         if leisureExact.contains(lower) {
             return "That doesn't look like a focus session. What do you want to get done?"

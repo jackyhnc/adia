@@ -152,6 +152,85 @@ struct AgentAIClientParsingTests {
         #expect(AgentAIClient.localGoalRejectionReason("finish game development feature") == nil)
     }
 
+    // MARK: - Local rejection — PRD-specified vague inputs (no subject / deliverable)
+
+    // The PRD lists "work", "be productive", "do stuff", "get things done", "focus" as
+    // inputs that must be rejected because there is nothing verifiable. These are caught
+    // locally (no API call) via exact-match on the full lowercased input, so longer
+    // phrasings like "work on my thesis" or "focus on chemistry" still pass through.
+
+    @Test func localRejectionRejectsWork() {
+        #expect(AgentAIClient.localGoalRejectionReason("work") != nil)
+    }
+
+    @Test func localRejectionAcceptsWorkWithSubject() {
+        // "work" inside a longer phrase has a subject — must reach the model
+        #expect(AgentAIClient.localGoalRejectionReason("work on my thesis") == nil)
+    }
+
+    @Test func localRejectionRejectsFocus() {
+        #expect(AgentAIClient.localGoalRejectionReason("focus") != nil)
+    }
+
+    @Test func localRejectionAcceptsFocusWithSubject() {
+        #expect(AgentAIClient.localGoalRejectionReason("focus on chemistry") == nil)
+    }
+
+    @Test func localRejectionRejectsBeProductive() {
+        #expect(AgentAIClient.localGoalRejectionReason("be productive") != nil)
+    }
+
+    @Test func localRejectionRejectsDoStuff() {
+        #expect(AgentAIClient.localGoalRejectionReason("do stuff") != nil)
+    }
+
+    @Test func localRejectionRejectsDoWork() {
+        #expect(AgentAIClient.localGoalRejectionReason("do work") != nil)
+    }
+
+    @Test func localRejectionRejectsGetThingsDone() {
+        #expect(AgentAIClient.localGoalRejectionReason("get things done") != nil)
+    }
+
+    @Test func localRejectionRejectsGetStuffDone() {
+        #expect(AgentAIClient.localGoalRejectionReason("get stuff done") != nil)
+    }
+
+    @Test func localRejectionRejectsBeFocused() {
+        #expect(AgentAIClient.localGoalRejectionReason("be focused") != nil)
+    }
+
+    @Test func localRejectionRejectsStayFocused() {
+        #expect(AgentAIClient.localGoalRejectionReason("stay focused") != nil)
+    }
+
+    @Test func localRejectionRejectsHustle() {
+        #expect(AgentAIClient.localGoalRejectionReason("hustle") != nil)
+    }
+
+    @Test func localRejectionRejectsGrind() {
+        // bare "grind" is motivation-speak with no deliverable
+        #expect(AgentAIClient.localGoalRejectionReason("grind") != nil)
+    }
+
+    @Test func localRejectionAcceptsGrindWithTarget() {
+        // "grind leetcode" is a real task (practicing interview problems)
+        #expect(AgentAIClient.localGoalRejectionReason("grind leetcode") == nil)
+    }
+
+    @Test func localRejectionRejectsDoNothing() {
+        #expect(AgentAIClient.localGoalRejectionReason("do nothing") != nil)
+    }
+
+    @Test func localRejectionRejectsProcrastinate() {
+        #expect(AgentAIClient.localGoalRejectionReason("procrastinate") != nil)
+    }
+
+    @Test func localRejectionAcceptsBeFocusedInLongerPhrase() {
+        // "be focused while reading chapter 4" is a real task — must reach the model
+        #expect(AgentAIClient.localGoalRejectionReason("be focused while reading chapter 4") == nil)
+    }
+
     // MARK: - Goal-response parsing (model round-trip → GoalParse)
     //
     // `parseGoal(_:)` is gated on a live `ANTHROPIC_API_KEY` (see

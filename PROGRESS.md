@@ -1,5 +1,29 @@
 # Adia — Build Progress
 
+## Run 208 — 2026-06-30 — Local goal rejection: PRD-specified vague inputs now caught without an API call
+
+### Shipped
+- Extended `AgentAIClient.localGoalRejectionReason` in `AgentAIResponseParser.swift` to locally
+  reject the PRD-specified "no subject / deliverable" inputs before burning an API token:
+  `"work"`, `"focus"`, `"be productive"`, `"do stuff"`, `"do work"`, `"get things done"`,
+  `"get stuff done"`, `"be focused"`, `"stay focused"`, `"hustle"`, `"grind"`, `"do nothing"`,
+  `"procrastinate"`.
+- All use exact-match on the full lowercased input, so `"work on my thesis"` / `"focus on
+  chemistry"` / `"grind leetcode"` still pass through to the model unimpeded.
+- Added 17 new tests in `AgentAIClientTests.swift` covering every new rejection and the key
+  "should NOT be locally rejected" counter-cases (`localRejectionAcceptsWorkWithSubject`,
+  `localRejectionAcceptsFocusWithSubject`, `localRejectionAcceptsGrindWithTarget`,
+  `localRejectionAcceptsBeFocusedInLongerPhrase`).
+
+### Blocked
+- None.
+
+### Next agent
+- All 34 GOAL.md items complete. BUILD_COMPLETE is present. No open GitHub issues or PRs.
+- If new features are desired, add them to GOAL.md.
+
+---
+
 ## Run 207 — 2026-06-30 — Health check: all 48 web tests pass, no open issues
 
 ### Shipped
