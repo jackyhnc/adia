@@ -124,7 +124,8 @@ public final class CalloutManager {
             || word("worksheet") || word("worksheets") {
             return "homework"
         }
-        if word("research") || word("lab") {
+        if word("research") || word("lab")
+            || lower.contains("case study") || lower.contains("case studies") {
             return "research"
         }
         if word("drawing") || word("painting") || word("sketching")
@@ -164,7 +165,9 @@ public final class CalloutManager {
             || word("applying") || word("apply")
             || lower.contains("job application")
             || lower.contains("internship application") || lower.contains("college application")
-            || word("internship") || word("internships") {
+            || word("internship") || word("internships")
+            || word("fellowship") || word("fellowships")
+            || word("scholarship") || word("scholarships") {
             return "application"
         }
         if word("blog") || word("blogs") || word("newsletter") || word("newsletters")
@@ -172,7 +175,8 @@ public final class CalloutManager {
             || word("revision") || word("revisions") || word("revise")
             || word("proofread") || word("proofreading")
             || word("grant") || word("grants")
-            || word("abstract") || word("abstracts") {
+            || word("abstract") || word("abstracts")
+            || lower.contains("literature review") || lower.contains("lit review") {
             return "writing"
         }
         if word("budget") || word("budgeting") || word("budgets")

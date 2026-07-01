@@ -104,6 +104,26 @@ export async function findLicensePg(key: string, email?: string): Promise<Licens
   };
 }
 
+export async function findLicensesByEmailPg(email: string): Promise<License[]> {
+  await ensureSchema();
+  const result = await sql<any>`
+    SELECT key, email, plan, status,
+           to_char(issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
+           to_char(expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt"
+    FROM licenses
+    WHERE email = ${email.trim().toLowerCase()}
+    ORDER BY issued_at DESC
+  `;
+  return result.rows.map((r: any) => ({
+    key: r.key,
+    email: r.email,
+    plan: r.plan,
+    status: r.status,
+    issuedAt: r.issuedAt,
+    expiresAt: r.expiresAt,
+  }));
+}
+
 export async function recordActivationPg(key: string, machineHash: string): Promise<number> {
   await ensureSchema();
   await sql`

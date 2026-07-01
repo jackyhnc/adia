@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import {
   insertLicense,
   findLicense,
+  findLicensesByEmail,
   recordActivation,
   setStatus,
   setStatusBySub,
@@ -133,5 +134,34 @@ describe('joinWaitlist', () => {
   it('normalises to lowercase', () => {
     joinWaitlist('Upper@Example.com');
     joinWaitlist('upper@example.com');
+  });
+});
+
+describe('findLicensesByEmail', () => {
+  it('returns all licenses for an email', () => {
+    insertLicense({ key: 'ADIA-FBE1-TEST-AAAA', email: 'multi@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-FBE2-TEST-BBBB', email: 'multi@example.com', plan: 'yearly',  expiresAt: null });
+    const results = findLicensesByEmail('multi@example.com');
+    expect(results).toHaveLength(2);
+    const keys = results.map(r => r.key);
+    expect(keys).toContain('ADIA-FBE1-TEST-AAAA');
+    expect(keys).toContain('ADIA-FBE2-TEST-BBBB');
+  });
+
+  it('returns empty array for unknown email', () => {
+    const results = findLicensesByEmail('nobody@example.com');
+    expect(results).toHaveLength(0);
+  });
+
+  it('is case-insensitive on email', () => {
+    insertLicense({ key: 'ADIA-FBEC-TEST-CCCC', email: 'Case@Example.COM', plan: 'lifetime', expiresAt: null });
+    expect(findLicensesByEmail('case@example.com')).toHaveLength(1);
+    expect(findLicensesByEmail('CASE@EXAMPLE.COM')).toHaveLength(1);
+  });
+
+  it('does not return licenses for other emails', () => {
+    insertLicense({ key: 'ADIA-FBED-TEST-DDDD', email: 'other@example.com', plan: 'monthly', expiresAt: null });
+    const results = findLicensesByEmail('nobody@example.com');
+    expect(results).toHaveLength(0);
   });
 });

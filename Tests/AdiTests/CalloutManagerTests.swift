@@ -2528,4 +2528,51 @@ struct CalloutManagerTests {
         #expect(CalloutManager.extractTaskKeyword(from: "finish my paper abstract") == "writing")
         #expect(CalloutManager.extractTaskKeyword(from: "revise abstracts for submission") == "writing")
     }
+
+    // MARK: - fellowship / scholarship → application
+
+    @Test func extractTaskKeywordFromFellowship() {
+        #expect(CalloutManager.extractTaskKeyword(from: "apply for a fellowship") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "NSF fellowship application") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "submit fellowships by Friday") == "application")
+    }
+
+    @Test func extractTaskKeywordFromScholarship() {
+        #expect(CalloutManager.extractTaskKeyword(from: "apply for a scholarship") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "scholarship essay due tonight") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "finishing my scholarships spreadsheet") == "application")
+    }
+
+    @Test func extractTaskKeywordScholarshipDoesNotTriggerOnUnrelated() {
+        // "apply for scholarships" already tested above; check lone keyword boundary
+        #expect(CalloutManager.extractTaskKeyword(from: "scholarship") == "application")
+    }
+
+    // MARK: - literature review / lit review → writing
+
+    @Test func extractTaskKeywordFromLiteratureReview() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my literature review") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "literature review for my thesis") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the literature review section") == "writing")
+    }
+
+    @Test func extractTaskKeywordFromLitReview() {
+        #expect(CalloutManager.extractTaskKeyword(from: "working on the lit review") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "lit review due Friday") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "polish lit review tonight") == "writing")
+    }
+
+    // MARK: - case study / case studies → research
+
+    @Test func extractTaskKeywordFromCaseStudy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a case study") == "research")
+        #expect(CalloutManager.extractTaskKeyword(from: "case study for my business class") == "research")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the case study tonight") == "research")
+    }
+
+    @Test func extractTaskKeywordFromCaseStudies() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyzing case studies") == "research")
+        #expect(CalloutManager.extractTaskKeyword(from: "case studies due tomorrow") == "research")
+        #expect(CalloutManager.extractTaskKeyword(from: "review the case studies") == "research")
+    }
 }

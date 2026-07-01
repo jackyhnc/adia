@@ -140,6 +140,20 @@ export function countActivations(key: string): number {
   return row.c;
 }
 
+export function findLicensesByEmail(email: string): License[] {
+  const rows = db()
+    .prepare('SELECT * FROM licenses WHERE email = ? ORDER BY issued_at DESC')
+    .all(email.trim().toLowerCase()) as any[];
+  return rows.map(r => ({
+    key: r.key,
+    email: r.email,
+    plan: r.plan,
+    status: r.status,
+    issuedAt: r.issued_at,
+    expiresAt: r.expires_at,
+  }));
+}
+
 export function setStatus(key: string, status: License['status']) {
   db().prepare('UPDATE licenses SET status = ? WHERE key = ?').run(status, key);
 }
