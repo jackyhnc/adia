@@ -1,0 +1,400 @@
+// Tests for admin routes that have no coverage:
+//   GET/DELETE /api/admin/activations
+//   POST       /api/admin/revoke
+//   GET        /api/admin/lookup
+//   GET        /api/admin/licenses-by-email
+//
+// All routes require ADMIN_TOKEN; SQLite DB is reset per test.
+
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import os from 'node:os';
+import path from 'node:path';
+import fs from 'node:fs';
+import { NextRequest } from 'next/server';
+import { resetDbForTesting, insertLicense, recordActivation, findLicense } from '@/lib/db';
+
+let dbPath: string;
+
+beforeEach(() => {
+  dbPath = path.join(
+    os.tmpdir(),
+    `adia-admin-routes-${Date.now()}-${Math.random().toString(36).slice(2)}.db`,
+  );
+  resetDbForTesting(dbPath);
+  process.env.ADMIN_TOKEN = 'test-admin-token';
+});
+
+afterEach(() => {
+  resetDbForTesting();
+  delete process.env.ADMIN_TOKEN;
+  if (fs.existsSync(dbPath)) fs.unlinkSync(dbPath);
+});
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function authHeader(token = 'test-admin-token') {
+  return { Authorization: `Bearer ${token}` };
+}
+
+async function callActivationsGet(key: string, token = 'test-admin-token') {
+  const { GET } = await import('@/app/api/admin/activations/route');
+  const req = new NextRequest(
+    `http://localhost/api/admin/activations?key=${encodeURIComponent(key)}`,
+    { method: 'GET', headers: authHeader(token) },
+  );
+  return GET(req);
+}
+
+async function callActivationsDelete(key: string, machine: string, token = 'test-admin-token') {
+  const { DELETE } = await import('@/app/api/admin/activations/route');
+  const req = new NextRequest(
+    `http://localhost/api/admin/activations?key=${encodeURIComponent(key)}&machine=${encodeURIComponent(machine)}`,
+    { method: 'DELETE', headers: authHeader(token) },
+  );
+  return DELETE(req);
+}
+
+async function callRevoke(body: unknown, token = 'test-admin-token') {
+  const { POST } = await import('@/app/api/admin/revoke/route');
+  const req = new NextRequest('http://localhost/api/admin/revoke', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json', ...authHeader(token) },
+  });
+  return POST(req);
+}
+
+async function callLookup(key: string, token = 'test-admin-token') {
+  const { GET } = await import('@/app/api/admin/lookup/route');
+  const req = new NextRequest(
+    `http://localhost/api/admin/lookup?key=${encodeURIComponent(key)}`,
+    { method: 'GET', headers: authHeader(token) },
+  );
+  return GET(req);
+}
+
+async function callLicensesByEmail(email: string, token = 'test-admin-token') {
+  const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+  const req = new NextRequest(
+    `http://localhost/api/admin/licenses-by-email?email=${encodeURIComponent(email)}`,
+    { method: 'GET', headers: authHeader(token) },
+  );
+  return GET(req);
+}
+
+// ─── /api/admin/activations GET ──────────────────────────────────────────────
+
+describe('GET /api/admin/activations', () => {
+  it('returns 401 with no token', async () => {
+    const { GET } = await import('@/app/api/admin/activations/route');
+    const req = new NextRequest('http://localhost/api/admin/activations?key=ADIA-XXXX-XXXX-XXXX', {
+      method: 'GET',
+    });
+    const res = await GET(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callActivationsGet('ADIA-XXXX-XXXX-XXXX', 'bad-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when key param is missing', async () => {
+    const { GET } = await import('@/app/api/admin/activations/route');
+    const req = new NextRequest('http://localhost/api/admin/activations', {
+      method: 'GET',
+      headers: authHeader(),
+    });
+    const res = await GET(req);
+    expect(res.status).toBe(400);
+  });
+
+  it('returns 404 for unknown key', async () => {
+    const res = await callActivationsGet('ADIA-UNKN-UNKN-UNKN');
+    expect(res.status).toBe(404);
+  });
+
+  it('returns empty activations list for a key with no activations', async () => {
+    insertLicense({ key: 'ADIA-NOAC-TVNS-AAAA', email: 'noact@example.com', plan: 'lifetime', expiresAt: null });
+    const res = await callActivationsGet('ADIA-NOAC-TVNS-AAAA');
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.key).toBe('ADIA-NOAC-TVNS-AAAA');
+    expect(body.seatCount).toBe(0);
+    expect(body.activations).toEqual([]);
+  });
+
+  it('returns activations with correct seat count', async () => {
+    insertLicense({ key: 'ADIA-ACNT-LIST-AAAA', email: 'listed@example.com', plan: 'lifetime', expiresAt: null });
+    recordActivation('ADIA-ACNT-LIST-AAAA', 'machine-alpha');
+    recordActivation('ADIA-ACNT-LIST-AAAA', 'machine-beta');
+
+    const res = await callActivationsGet('ADIA-ACNT-LIST-AAAA');
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.seatCount).toBe(2);
+    expect(body.activations).toHaveLength(2);
+    const hashes = body.activations.map((a: any) => a.machineHash);
+    expect(hashes).toContain('machine-alpha');
+    expect(hashes).toContain('machine-beta');
+  });
+
+  it('returns license metadata alongside activations', async () => {
+    insertLicense({ key: 'ADIA-META-CHCK-AAAA', email: 'meta@example.com', plan: 'yearly', expiresAt: '2027-01-01T00:00:00.000Z' });
+    const res = await callActivationsGet('ADIA-META-CHCK-AAAA');
+    const body = await res.json();
+    expect(body.email).toBe('meta@example.com');
+    expect(body.plan).toBe('yearly');
+    expect(body.status).toBe('active');
+  });
+});
+
+// ─── /api/admin/activations DELETE ───────────────────────────────────────────
+
+describe('DELETE /api/admin/activations', () => {
+  it('returns 401 with no token', async () => {
+    const { DELETE } = await import('@/app/api/admin/activations/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/activations?key=ADIA-XXXX-XXXX-XXXX&machine=m1',
+      { method: 'DELETE' },
+    );
+    const res = await DELETE(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when key is missing', async () => {
+    const { DELETE } = await import('@/app/api/admin/activations/route');
+    const req = new NextRequest('http://localhost/api/admin/activations?machine=m1', {
+      method: 'DELETE',
+      headers: authHeader(),
+    });
+    const res = await DELETE(req);
+    expect(res.status).toBe(400);
+  });
+
+  it('returns 400 when machine is missing', async () => {
+    const { DELETE } = await import('@/app/api/admin/activations/route');
+    const req = new NextRequest('http://localhost/api/admin/activations?key=ADIA-XXXX-XXXX-XXXX', {
+      method: 'DELETE',
+      headers: authHeader(),
+    });
+    const res = await DELETE(req);
+    expect(res.status).toBe(400);
+  });
+
+  it('returns 404 for unknown license key', async () => {
+    const res = await callActivationsDelete('ADIA-UNKN-UNKN-UNKN', 'machine-x');
+    expect(res.status).toBe(404);
+  });
+
+  it('removes a machine activation and returns updated seat count', async () => {
+    insertLicense({ key: 'ADIA-RMVD-MACH-AAAA', email: 'rm@example.com', plan: 'lifetime', expiresAt: null });
+    recordActivation('ADIA-RMVD-MACH-AAAA', 'machine-to-remove');
+    recordActivation('ADIA-RMVD-MACH-AAAA', 'machine-to-keep');
+
+    const res = await callActivationsDelete('ADIA-RMVD-MACH-AAAA', 'machine-to-remove');
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.seatsNow).toBe(1);
+  });
+
+  it('deleting a non-existent machine is a no-op (idempotent)', async () => {
+    insertLicense({ key: 'ADIA-NOOP-MACH-AAAA', email: 'noop@example.com', plan: 'lifetime', expiresAt: null });
+    recordActivation('ADIA-NOOP-MACH-AAAA', 'machine-existing');
+
+    const res = await callActivationsDelete('ADIA-NOOP-MACH-AAAA', 'machine-ghost');
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.seatsNow).toBe(1); // existing machine still there
+  });
+});
+
+// ─── /api/admin/revoke ────────────────────────────────────────────────────────
+
+describe('POST /api/admin/revoke', () => {
+  it('returns 401 with no token', async () => {
+    const { POST } = await import('@/app/api/admin/revoke/route');
+    const req = new NextRequest('http://localhost/api/admin/revoke', {
+      method: 'POST',
+      body: JSON.stringify({ key: 'ADIA-XXXX-XXXX-XXXX' }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callRevoke({ key: 'ADIA-XXXX-XXXX-XXXX' }, 'bad-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when key is missing from body', async () => {
+    const res = await callRevoke({});
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing key/i);
+  });
+
+  it('returns 404 for unknown key', async () => {
+    const res = await callRevoke({ key: 'ADIA-UNKN-UNKN-UNKN' });
+    expect(res.status).toBe(404);
+  });
+
+  it('revokes an active license and returns previousStatus', async () => {
+    insertLicense({ key: 'ADIA-RVKE-LIVE-AAAA', email: 'revoke@example.com', plan: 'lifetime', expiresAt: null });
+    const res = await callRevoke({ key: 'ADIA-RVKE-LIVE-AAAA' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.previousStatus).toBe('active');
+    expect(body.newStatus).toBe('canceled');
+  });
+
+  it('persists canceled status to the database', async () => {
+    insertLicense({ key: 'ADIA-RVKE-DBCK-AAAA', email: 'revokedb@example.com', plan: 'monthly', expiresAt: null });
+    await callRevoke({ key: 'ADIA-RVKE-DBCK-AAAA' });
+    const license = findLicense('ADIA-RVKE-DBCK-AAAA');
+    expect(license!.status).toBe('canceled');
+  });
+
+  it('normalizes key to uppercase before lookup', async () => {
+    insertLicense({ key: 'ADIA-CASE-NORM-AAAA', email: 'casetest@example.com', plan: 'lifetime', expiresAt: null });
+    const res = await callRevoke({ key: 'adia-case-norm-aaaa' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.key).toBe('ADIA-CASE-NORM-AAAA');
+  });
+
+  it('revoking an already-canceled license still returns 200', async () => {
+    insertLicense({ key: 'ADIA-DBLS-RVKE-AAAA', email: 'double@example.com', plan: 'lifetime', expiresAt: null });
+    await callRevoke({ key: 'ADIA-DBLS-RVKE-AAAA' });
+    const res2 = await callRevoke({ key: 'ADIA-DBLS-RVKE-AAAA' });
+    expect(res2.status).toBe(200);
+    const body = await res2.json();
+    expect(body.newStatus).toBe('canceled');
+  });
+});
+
+// ─── /api/admin/lookup ───────────────────────────────────────────────────────
+
+describe('GET /api/admin/lookup', () => {
+  it('returns 401 with no token', async () => {
+    const { GET } = await import('@/app/api/admin/lookup/route');
+    const req = new NextRequest('http://localhost/api/admin/lookup?key=ADIA-XXXX-XXXX-XXXX', {
+      method: 'GET',
+    });
+    const res = await GET(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callLookup('ADIA-XXXX-XXXX-XXXX', 'bad-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when key param is missing', async () => {
+    const { GET } = await import('@/app/api/admin/lookup/route');
+    const req = new NextRequest('http://localhost/api/admin/lookup', {
+      method: 'GET',
+      headers: authHeader(),
+    });
+    const res = await GET(req);
+    expect(res.status).toBe(400);
+  });
+
+  it('returns 404 for unknown key', async () => {
+    const res = await callLookup('ADIA-UNKN-UNKN-UNKN');
+    expect(res.status).toBe(404);
+  });
+
+  it('returns license data for a known key', async () => {
+    insertLicense({ key: 'ADIA-LKUP-HPPY-AAAA', email: 'lookup@example.com', plan: 'yearly', expiresAt: '2027-07-01T00:00:00.000Z' });
+    const res = await callLookup('ADIA-LKUP-HPPY-AAAA');
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.key).toBe('ADIA-LKUP-HPPY-AAAA');
+    expect(body.email).toBe('lookup@example.com');
+    expect(body.plan).toBe('yearly');
+    expect(body.status).toBe('active');
+  });
+
+  it('accepts ?token= query param as auth fallback', async () => {
+    insertLicense({ key: 'ADIA-LKUP-QPTN-AAAA', email: 'qtoken@example.com', plan: 'lifetime', expiresAt: null });
+    const { GET } = await import('@/app/api/admin/lookup/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/lookup?key=ADIA-LKUP-QPTN-AAAA&token=test-admin-token',
+      { method: 'GET' },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+  });
+});
+
+// ─── /api/admin/licenses-by-email ────────────────────────────────────────────
+
+describe('GET /api/admin/licenses-by-email', () => {
+  it('returns 401 with no token', async () => {
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=x@x.com',
+      { method: 'GET' },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callLicensesByEmail('x@x.com', 'bad-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when email param is missing', async () => {
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest('http://localhost/api/admin/licenses-by-email', {
+      method: 'GET',
+      headers: authHeader(),
+    });
+    const res = await GET(req);
+    expect(res.status).toBe(400);
+  });
+
+  it('returns empty list for unknown email', async () => {
+    const res = await callLicensesByEmail('nobody@example.com');
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.count).toBe(0);
+    expect(body.licenses).toEqual([]);
+  });
+
+  it('returns all licenses for a given email ordered newest-first', async () => {
+    insertLicense({ key: 'ADIA-BYEM-FRST-AAAA', email: 'multi@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-BYEM-SCND-BBBB', email: 'multi@example.com', plan: 'yearly', expiresAt: null });
+    const res = await callLicensesByEmail('multi@example.com');
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.count).toBe(2);
+    expect(body.licenses).toHaveLength(2);
+    const keys = body.licenses.map((l: any) => l.key);
+    expect(keys).toContain('ADIA-BYEM-FRST-AAAA');
+    expect(keys).toContain('ADIA-BYEM-SCND-BBBB');
+  });
+
+  it('normalizes email to lowercase in response', async () => {
+    insertLicense({ key: 'ADIA-BYEM-CASE-AAAA', email: 'cased@example.com', plan: 'lifetime', expiresAt: null });
+    const res = await callLicensesByEmail('CASED@EXAMPLE.COM');
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.email).toBe('cased@example.com');
+    expect(body.count).toBe(1);
+  });
+
+  it('does not cross-contaminate licenses across emails', async () => {
+    insertLicense({ key: 'ADIA-BYEM-USER-AAAA', email: 'user1@example.com', plan: 'lifetime', expiresAt: null });
+    insertLicense({ key: 'ADIA-BYEM-OTHR-BBBB', email: 'user2@example.com', plan: 'lifetime', expiresAt: null });
+    const res = await callLicensesByEmail('user1@example.com');
+    const body = await res.json();
+    expect(body.count).toBe(1);
+    expect(body.licenses[0].key).toBe('ADIA-BYEM-USER-AAAA');
+  });
+});
