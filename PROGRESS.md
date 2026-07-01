@@ -1,5 +1,30 @@
 # Adia — Build Progress
 
+## Run 227 — 2026-07-01T00:00:00Z — keyword expansions + blocklist additions
+
+### Shipped
+
+**`CalloutManager.swift` — `extractTaskKeyword` keyword expansions:**
+- **Reading block**: Added `annotate`, `annotating`, `annotation`, `annotations`, `annotated` — "annotate chapter 3" and "annotating the paper" now correctly route to `readingCallouts` instead of the generic pool.
+- **Writing block**: Added `peer review` and `peer-review` — "peer review a paper" and "write peer-review comments" now route to `writingCallouts`.
+- **Research block**: Added `data analysis`, `data collection`, `data science`, `data scientist`, `dataset`/`datasets`, `qualitative`, `quantitative` — common research task phrasings that previously fell through to generic.
+
+**`DefaultBlocklists.swift` — new blocked domains & apps:**
+- Domains: `goodreads.com`, `letterboxd.com` (book/film social-tracking rabbit holes), `genius.com` (lyrics time sink), `bsky.app` + `bluesky.social` (Bluesky — growing Twitter alternative with two distinct DNS names).
+- Apps: Signal Desktop (`org.whispersystems.signal-desktop`), Viber (`com.viber.osx`) — messaging apps are focus killers regardless of privacy tier.
+
+### Blocked
+Nothing blocked.
+
+### Next agent should
+- Consider upgrading Next.js from 14.2.18 → 15.x (known security CVEs, breaking change migration).
+- Add `stockx.com` and `hypebeast.com` to DefaultBlocklists domains (sneaker/streetwear culture time sinks).
+- Add `yelp.com` and `opentable.com` to DefaultBlocklists (restaurant browsing rabbit holes).
+- Add `AnyDesk` (`com.anydesk.AnyDesk`) / `TeamViewer` to blocked apps if they're commonly used for off-task remote sessions.
+- Review web test suite for any edge-cases not yet covered (e.g. `/api/license/transfer`, `/api/license/deactivate`).
+
+---
+
 ## Run 226 — 2026-07-01T22:07:00Z — rate-limit integration tests for /activate and /validate
 
 ### Shipped
