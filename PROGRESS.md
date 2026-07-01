@@ -1,5 +1,42 @@
 # Adia — Build Progress
 
+## Run 226 — 2026-07-01T22:07:00Z — rate-limit integration tests for /activate and /validate
+
+### Shipped
+
+**4 new integration tests across `activate.test.ts` and `validate.test.ts`:**
+
+- **`returns 429 after 20 requests from the same IP`** (activate): exhausts the
+  20 req/min token bucket with 20 empty-body calls (all return 400 before DB),
+  then asserts the 21st returns 429 with `error: "too many requests"` and a
+  `Retry-After` header.
+- **`rate limit is per-IP — a different IP is not blocked`** (activate): exhausts
+  `10.0.0.2`'s bucket, then confirms `10.0.0.3` still has capacity.
+- **`returns 429 after 60 requests from the same IP`** (validate): same pattern
+  against the 60 req/min validate bucket.
+- **`rate limit is per-IP — a different IP is not blocked`** (validate): exhausts
+  `10.0.1.2`'s bucket, confirms `10.0.1.3` is unaffected.
+
+Each pre-exhaustion call passes `{}` as body so the route returns 400 (missing
+fields) before any DB work — only the rate-limiter runs, making the loop fast.
+Client IP set via `x-forwarded-for` header to exercise the `clientIp()` path.
+
+**Web test count: 129 → 133 (all 11 files pass).**
+
+### Blocked
+Nothing blocked.
+
+### Next agent should
+- Consider upgrading Next.js from 14.2.18 → 15.x (known security CVEs, breaking change migration).
+- Add "annotate" / "annotation" keyword to the reading block in `CalloutManager.swift`.
+- Add "peer review" to the writing block in `CalloutManager.swift`.
+- Add "data analysis" / "data collection" to the research block in `CalloutManager.swift`.
+- Review `DefaultBlocklists.swift` for new apps worth adding to the block list.
+- Add "music" keyword (compose, produce, beat, track, album, song, lyrics) for music-production tasks.
+- Add "language" keyword (spanish, french, japanese, mandarin, etc.) for language-learning tasks.
+
+---
+
 ## Run 225 — 2026-07-01T21:06:00Z — admin resend-payment-failed endpoint
 
 ### Shipped
