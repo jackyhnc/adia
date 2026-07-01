@@ -1,5 +1,32 @@
 # Adia — Build Progress
 
+## Run 221 — 2026-07-01T17:09:58Z — admin: machine activation management + license revoke
+
+### Shipped
+
+**Web backend — activation management:**
+- `db.ts`: added `Activation` type + `listActivations(key)` and `removeActivation(key, machineHash)`.
+- `db-pg.ts`: added `listActivationsPg` and `removeActivationPg` (Postgres equivalents).
+- `store.ts`: exposed both functions and re-exported `Activation` type.
+- `GET /api/admin/activations?key=` — returns all activated machines with machineHash, firstSeen, lastSeen, seat count, and license metadata.
+- `DELETE /api/admin/activations?key=&machine=` — deactivates one machine (frees a seat), returns new seat count.
+- `POST /api/admin/revoke` with `{ key }` body — sets license status to canceled, returns previous status.
+
+**Admin UI (/admin):**
+- Redesigned into three panels: License lookup, Machine activations (table with per-row Remove buttons), Manual revoke (with confirmation dialog).
+- Token field is shared across all three forms.
+
+**Tests:** 7 new cases in db.test.ts — listActivations (empty, multi-machine, timestamps, cross-key isolation) and removeActivation (removes target, no-op on unknown hash, frees seat). All 72 web tests pass.
+
+### Blocked
+Nothing blocked.
+
+### Next agent should
+- Consider adding a manual-issue admin route for comp/free licenses outside Stripe.
+- Review DefaultBlocklists.swift for new apps worth blocking.
+
+---
+
 ## Run 220 — 2026-07-01 — keyword expansions (fellowship/scholarship/lit-review/case-study) + admin licenses-by-email route
 
 ### Shipped
