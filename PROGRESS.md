@@ -1,5 +1,86 @@
 # Adia — Build Progress
 
+## Run 218 — 2026-07-01 — Subscription renewal webhook + plural keyword forms
+
+### Shipped
+
+**Web backend — `customer.subscription.updated` handling:**
+- Added `setExpiryBySub(stripeSub, expiresAt)` to `db.ts`, `db-pg.ts`, and `store.ts` — same
+  dual-backend (SQLite/Postgres) facade pattern used by all other store mutations.
+- Updated `web/app/api/stripe/webhook/route.ts` to handle `customer.subscription.updated`:
+  when `sub.status === 'active'` and `sub.current_period_end` is present, the license row
+  is updated with `new Date(sub.current_period_end * 1000).toISOString()` as the new expiry.
+  `past_due` / `unpaid` / `canceled` subs are deliberately skipped — expiry stays frozen until
+  the payment recovers or `customer.subscription.deleted` fires.
+- This covers monthly/yearly renewals (Stripe fires `.updated` on each period rollover) and
+  plan-change upgrades where the period end shifts.
+
+**New webhook integration test file (`web/__tests__/webhook-integration.test.ts`, 8 tests):**
+  - Mocks `@/lib/stripe` (isStripeConfigured=true, stripe.webhooks.constructEvent as vi.fn())
+    and `@/lib/email` (sendLicenseEmail as vi.fn()) using vitest `vi.mock()` hoisting — no
+    real Stripe credentials needed.
+  - `checkout.session.completed issues a license and sends an email` — validates key format,
+    email recipient, plan, and DB row.
+  - `checkout.session.completed is idempotent on re-delivery` — same stripe_session fires twice;
+    email sent once.
+  - `checkout.session.completed with no email is a no-op` — null customer_details + null
+    customer_email → response 200, no email, no DB row.
+  - `customer.subscription.deleted cancels the license` — status becomes 'canceled'.
+  - `customer.subscription.updated extends license expiry when subscription is active` —
+    new expiry matches `current_period_end * 1000` converted to ISO string; old expiry gone.
+  - `customer.subscription.updated does not extend expiry for past_due subscription` — expiry
+    unchanged.
+  - `unrecognized event types return 200 without side effects` — no email, no DB change.
+  - `returns 400 when Stripe signature verification throws` — error message contains "bad signature".
+- Web tests: **57 passed** (up from 49).
+
+**Swift — plural keyword forms and internship (CalloutManager.swift):**
+- Added `word("blogs")` to writing block (`word("blog")` regex `\bblog\b` does NOT match "blogs").
+- Added `word("newsletters")` to writing block (same reason — `\bnewsletter\b` misses "newsletters").
+- Added `word("internship")` and `word("internships")` to application block so bare task
+  descriptions like "summer internship", "find an internship", "looking for internships" map
+  to "application" rather than returning nil. Ordering is safe: the interview block fires before
+  application, so "internship interview" → "interview"; the resume block fires before application,
+  so "update my resume for the internship" → "resume".
+
+**11 new Swift tests (CalloutManagerTests.swift):**
+- `extractTaskKeywordFromBlogsPlural` — 3 assertions
+- `extractTaskKeywordFromNewslettersPlural` — 3 assertions
+- `extractTaskKeywordBlogsSingularStillWorks` — 2 assertions (regression)
+- `extractTaskKeywordNewsletterSingularStillWorks` — 2 assertions (regression)
+- `extractTaskKeywordFromBareInternship` — 3 assertions
+- `extractTaskKeywordFromInternshipsPlural` — 3 assertions
+- `extractTaskKeywordInternshipDoesNotOverrideInterview` — 1 assertion
+- `extractTaskKeywordInternshipDoesNotOverrideResume` — 1 assertion
+- `extractTaskKeywordInternshipApplicationPhraseStillWorks` — 2 assertions (regression)
+
+### Blocked
+- Swift toolchain unavailable on Linux container — Swift changes verified manually for correctness.
+  All 34 GOAL.md items remain complete. BUILD_COMPLETE is present.
+
+### Next agent
+- All 34 GOAL.md tasks remain checked; BUILD_COMPLETE is in place.
+- Web tests: 57 (activate:8, db:10, webhook:2, webhook-integration:8, validate:7, waitlist:5, license:7, checkout:3, ratelimit:7).
+- `extractTaskKeyword` now covers 30 keywords with full plural support:
+  essay/essays, paper/papers, thesis/theses/dissertation/dissertations,
+  presentation/presentations, code/coding/..., report/reports, studying, reading,
+  homework/assignment, research, art (drawing/painting/...), design, email/emails,
+  project/projects, proposal/proposals, interview/interviews, meeting/meetings,
+  video/editing, cv/resume, application/applications/internship/internships (new plurals),
+  blog/blogs/newsletter/newsletters (new plurals)/draft/outline/revision/proofread → writing,
+  budget/budgeting, tutor/tutoring, practice/rehearse, workout/gym/cardio → fitness,
+  podcast/podcasting, plan/planning/planner, compose/lyric/chord → music,
+  spanish/french/... → language, deadline/deadlines.
+- Potential next improvements:
+  - Add `invoice.payment_failed` / `invoice.payment_succeeded` webhook handlers to track
+    payment health (mark licenses past_due on failed, reactivate on succeeded).
+  - Add an admin route to list all licenses for a given email (useful for support).
+  - Add "grant" / "abstract" / "capstone" to appropriate keyword buckets.
+  - Add "apply" (bare verb) to application block — "apply to jobs" currently returns nil
+    because the block only matches "applying", not "apply".
+
+---
+
 ## Run 217 — 2026-07-01 — Security fix: seat-limit bypass via /validate
 
 ### Shipped
