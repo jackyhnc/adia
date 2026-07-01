@@ -16,6 +16,19 @@ internal func parseCustomDuration(_ raw: String) -> Int? {
     let scanner = Scanner(string: s)
     scanner.charactersToBeSkipped = nil
     guard let first = scanner.scanInt() else { return nil }
+    // Decimal hours: "1.5h" → 90, "0.5h" → 30, "2.5h" → 150.
+    // Must appear before the whitespace-then-"h" branch so "1.5h" doesn't fall
+    // through to the non-decimal path and produce a wrong result.
+    if scanner.scanString(".") != nil {
+        guard let fracDigits = scanner.scanCharacters(from: .decimalDigits), !fracDigits.isEmpty else {
+            return nil  // "1." with no fractional digits — reject
+        }
+        _ = scanner.scanCharacters(from: .whitespaces)
+        guard scanner.scanString("h") != nil, scanner.isAtEnd else { return nil }
+        let frac = Double("0.\(fracDigits)") ?? 0.0
+        let total = Int((Double(first) + frac) * 60.0)
+        return total > 0 ? total : nil
+    }
     _ = scanner.scanCharacters(from: .whitespaces)
     if scanner.scanString("h") != nil {
         _ = scanner.scanCharacters(from: .whitespaces)

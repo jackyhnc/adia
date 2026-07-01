@@ -8439,3 +8439,69 @@ All original goals remain complete. BUILD_COMPLETE is present.
 Remaining known inconsistency: "resume" could gain a `word("resumes")` check
 and "blog"/"newsletter" could gain plural forms — very low priority since
 users rarely pluralise these in a task description.
+
+---
+
+## Run 218 — 2026-07-01 — Decimal hours + social rejection gap fixes
+
+### What shipped
+Two independent UX and correctness improvements:
+
+**1. `parseCustomDuration` — decimal hour support**
+
+Previously, typing "1.5h" in the session-creation duration field returned nil
+(no recognised format), so the "= 1h 30m" feedback chip never appeared and
+the value wasn't stored. A user would have to type "90m" or "1h30m" instead —
+neither of which is as natural as "1.5h".
+
+`parseCustomDuration` now handles decimal hours:
+- "1.5h" → 90 minutes
+- "0.5h" → 30 minutes
+- "2.5h" → 150 minutes
+- "1.25h" → 75 minutes
+- "1.5 H" (case-insensitive, optional space) → 90 minutes
+
+Invalid forms ("1." with no fractional digits, "1.5m" with a non-hour suffix)
+correctly return nil as before.
+
+8 new `@Test` functions in `SettingsStoreTests.swift`:
+`parseCustomDurationDecimalHalf`, `parseCustomDurationDecimalHalfHour`,
+`parseCustomDurationDecimalTwoAndHalf`, `parseCustomDurationDecimalOneQuarter`,
+`parseCustomDurationDecimalWithSpaceBeforeH`,
+`parseCustomDurationDecimalNoFractionalDigitsReturnsNil`,
+`parseCustomDurationDecimalWithMinutesSuffixReturnsNil`,
+`parseCustomDurationDecimalCaseInsensitiveH`.
+
+**2. Local rejection — "x" (Twitter) verb gap + "visit" verb coverage**
+
+The `leisureExact` set for Twitter/X had "scroll x" and "browse x" but was
+missing "open x", "check x", and "visit x". Because "x" is too short for the
+`entertainmentPlatforms.contains()` check (would cause false positives like
+"fix", "max"), these three verbs had to be added explicitly. A student typing
+"open x" fell through to the model instead of being rejected immediately.
+
+At the same time, the "visit" verb was absent for all platforms: "visit
+twitter", "visit reddit", "visit facebook" were not in the set. These are now
+added, along with "browse tiktok", "check tiktok", "visit tiktok",
+"browse snapchat", "visit snapchat", and "visit instagram" — completing
+the 5-verb (scroll / browse / check / open / visit) matrix for every
+platform that needs explicit entries.
+
+10 new `@Test` functions in `AgentAIClientTests.swift`:
+`localRejectionRejectsOpenX`, `localRejectionRejectsCheckX`,
+`localRejectionRejectsVisitX`, `localRejectionRejectsVisitTwitter`,
+`localRejectionRejectsVisitReddit`, `localRejectionRejectsVisitFacebook`,
+`localRejectionRejectsBrowseTikTok`, `localRejectionRejectsBrowseSnapchat`,
+`localRejectionRejectsVisitInstagram`.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container — changes reviewed
+manually for correctness. All 33 GOAL.md items remain complete.
+
+### Next agent
+All original goals remain complete. BUILD_COMPLETE is present.
+Potential follow-up: the `entertainmentPlatforms.contains()` check is overly
+broad — "build a youtube content calendar" would be incorrectly rejected
+because it contains "youtube". Fixing this would require moving bare platform
+names into `leisureExact` and replacing the contains check with a more
+targeted "verb + platform" pattern, but requires careful regression testing.

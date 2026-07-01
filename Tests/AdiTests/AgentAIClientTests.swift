@@ -803,6 +803,47 @@ struct AgentAIClientResizeTests {
         #expect(AgentAIClient.localGoalRejectionReason("open tiktok") != nil)
     }
 
+    // "open x" and "check x" — Twitter/X is too short for the entertainmentPlatforms
+    // contains check, so these must be explicit entries in leisureExact.
+    @Test func localRejectionRejectsOpenX() {
+        #expect(AgentAIClient.localGoalRejectionReason("open x") != nil)
+    }
+
+    @Test func localRejectionRejectsCheckX() {
+        #expect(AgentAIClient.localGoalRejectionReason("check x") != nil)
+    }
+
+    @Test func localRejectionRejectsVisitX() {
+        #expect(AgentAIClient.localGoalRejectionReason("visit x") != nil)
+    }
+
+    @Test func localRejectionRejectsVisitTwitter() {
+        #expect(AgentAIClient.localGoalRejectionReason("visit twitter") != nil)
+    }
+
+    @Test func localRejectionRejectsVisitReddit() {
+        #expect(AgentAIClient.localGoalRejectionReason("visit reddit") != nil)
+    }
+
+    @Test func localRejectionRejectsVisitFacebook() {
+        #expect(AgentAIClient.localGoalRejectionReason("visit facebook") != nil)
+    }
+
+    @Test func localRejectionRejectsBrowseTikTok() {
+        #expect(AgentAIClient.localGoalRejectionReason("browse tiktok") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("check tiktok") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("visit tiktok") != nil)
+    }
+
+    @Test func localRejectionRejectsBrowseSnapchat() {
+        #expect(AgentAIClient.localGoalRejectionReason("browse snapchat") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("visit snapchat") != nil)
+    }
+
+    @Test func localRejectionRejectsVisitInstagram() {
+        #expect(AgentAIClient.localGoalRejectionReason("visit instagram") != nil)
+    }
+
     // Counter-cases: social platform names embedded in real tasks must pass through.
     @Test func localRejectionAcceptsTwitterAnalysis() {
         #expect(AgentAIClient.localGoalRejectionReason("analyze twitter engagement data for my marketing thesis") == nil)

@@ -604,6 +604,48 @@ struct SettingsStoreTests {
         #expect(parseCustomDuration("1h30m extra") == nil)
     }
 
+    // MARK: - parseCustomDuration — decimal hours
+
+    @Test func parseCustomDurationDecimalHalf() {
+        // "1.5h" — one-and-a-half hours = 90 minutes
+        #expect(parseCustomDuration("1.5h") == 90)
+    }
+
+    @Test func parseCustomDurationDecimalHalfHour() {
+        // "0.5h" — half an hour = 30 minutes
+        #expect(parseCustomDuration("0.5h") == 30)
+    }
+
+    @Test func parseCustomDurationDecimalTwoAndHalf() {
+        // "2.5h" — two-and-a-half hours = 150 minutes
+        #expect(parseCustomDuration("2.5h") == 150)
+    }
+
+    @Test func parseCustomDurationDecimalOneQuarter() {
+        // "1.25h" — one-and-a-quarter hours = 75 minutes
+        #expect(parseCustomDuration("1.25h") == 75)
+    }
+
+    @Test func parseCustomDurationDecimalWithSpaceBeforeH() {
+        // "1.5 h" — same as "1.5h", optional whitespace before the unit
+        #expect(parseCustomDuration("1.5 h") == 90)
+    }
+
+    @Test func parseCustomDurationDecimalNoFractionalDigitsReturnsNil() {
+        // "1." — decimal point with no digits after it is invalid
+        #expect(parseCustomDuration("1.") == nil)
+    }
+
+    @Test func parseCustomDurationDecimalWithMinutesSuffixReturnsNil() {
+        // "1.5m" — decimal with a minutes suffix doesn't make sense
+        #expect(parseCustomDuration("1.5m") == nil)
+    }
+
+    @Test func parseCustomDurationDecimalCaseInsensitiveH() {
+        // "1.5H" — uppercase H should be handled by lowercased() pre-processing
+        #expect(parseCustomDuration("1.5H") == 90)
+    }
+
     // MARK: - Daily focus goal presets
 
     @Test func dailyGoalPresetsAreNonEmpty() {

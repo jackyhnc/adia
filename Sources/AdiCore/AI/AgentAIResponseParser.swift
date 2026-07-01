@@ -125,14 +125,15 @@ extension AgentAIClient {
             "play league of legends", "play league",
             // social media platforms with no deliverable (bare platform names)
             "twitter", "reddit", "facebook", "x",
-            // social-media scrolling intents — no deliverable
-            "scroll twitter", "browse twitter", "check twitter", "open twitter",
-            "scroll reddit", "browse reddit", "check reddit", "open reddit",
-            "scroll facebook", "browse facebook", "check facebook", "open facebook",
-            "scroll x", "browse x",
-            "scroll instagram", "check instagram", "open instagram",
-            "scroll tiktok", "open tiktok",
-            "scroll snapchat", "check snapchat", "open snapchat",
+            // social-media scrolling / visiting intents — no deliverable
+            "scroll twitter", "browse twitter", "check twitter", "open twitter", "visit twitter",
+            "scroll reddit", "browse reddit", "check reddit", "open reddit", "visit reddit",
+            "scroll facebook", "browse facebook", "check facebook", "open facebook", "visit facebook",
+            // "x" needs explicit entries — too short for the entertainmentPlatforms contains check
+            "scroll x", "browse x", "check x", "open x", "visit x",
+            "scroll instagram", "check instagram", "open instagram", "visit instagram",
+            "scroll tiktok", "open tiktok", "check tiktok", "browse tiktok", "visit tiktok",
+            "scroll snapchat", "check snapchat", "open snapchat", "browse snapchat", "visit snapchat",
         ]
         if leisureExact.contains(lower) {
             return "That doesn't look like a focus session. What do you want to get done?"
