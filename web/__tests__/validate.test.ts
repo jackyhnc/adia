@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
 import { NextRequest } from 'next/server';
-import { resetDbForTesting, insertLicense } from '@/lib/db';
+import { resetDbForTesting, insertLicense, recordActivation } from '@/lib/db';
 import { planExpiry } from '@/lib/license';
 import { _resetForTesting as resetRateLimit } from '@/lib/ratelimit';
 
@@ -58,9 +58,20 @@ describe('POST /api/license/validate', () => {
     expect(res.status).toBe(403);
   });
 
-  it('returns 200 on valid license', async () => {
+  it('returns 403 for machine that was never activated (seat-bypass prevention)', async () => {
+    const key = 'ADIA-NOVO-MACH-AAAA';
+    insertLicense({ key, email: 'noact@example.com', plan: 'lifetime', expiresAt: null });
+    // machine-new was never recorded via /activate — validate must reject it
+    const res = await callPost({ key, machine: 'machine-new' });
+    expect(res.status).toBe(403);
+    const body = await res.json();
+    expect(body.error).toMatch(/not activated/i);
+  });
+
+  it('returns 200 on valid license for a pre-activated machine', async () => {
     const key = 'ADIA-VALI-HPPY-AAAA';
     insertLicense({ key, email: 'valid@example.com', plan: 'lifetime', expiresAt: null });
+    recordActivation(key, 'machine-ok');
 
     const res = await callPost({ key, machine: 'machine-ok' });
     expect(res.status).toBe(200);
@@ -69,9 +80,10 @@ describe('POST /api/license/validate', () => {
     expect(body.lastValidatedAt).toBeTruthy();
   });
 
-  it('returns 200 for yearly license with future expiry', async () => {
+  it('returns 200 for yearly license with future expiry (pre-activated machine)', async () => {
     const key = 'ADIA-YRLY-VALI-AAAA';
     insertLicense({ key, email: 'yearly@example.com', plan: 'yearly', expiresAt: planExpiry('yearly') });
+    recordActivation(key, 'machine-yrly');
 
     const res = await callPost({ key, machine: 'machine-yrly' });
     expect(res.status).toBe(200);

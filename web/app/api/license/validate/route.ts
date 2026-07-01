@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findLicense, recordActivation } from '@/lib/store';
+import { findLicense, hasActivation, recordActivation } from '@/lib/store';
 import { rateLimit, clientIp } from '@/lib/ratelimit';
 
 export const runtime = 'nodejs';
@@ -24,6 +24,16 @@ export async function POST(req: NextRequest) {
   }
   if (license.expiresAt && new Date(license.expiresAt) < new Date()) {
     return NextResponse.json({ error: 'License expired.' }, { status: 403 });
+  }
+  // Only update last_seen for machines that already went through /activate.
+  // Allowing unknown machines here would let users bypass the seat limit by
+  // hitting /validate instead of /activate (which enforces MAX_SEATS).
+  const known = await hasActivation(body.key, body.machine);
+  if (!known) {
+    return NextResponse.json(
+      { error: 'Machine not activated. Use /activate first.' },
+      { status: 403 },
+    );
   }
   await recordActivation(body.key, body.machine);
   return NextResponse.json({
