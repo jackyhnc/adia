@@ -30,6 +30,16 @@ async function callPost(body: unknown) {
   return POST(req);
 }
 
+async function callPostFromIp(body: unknown, ip: string) {
+  const { POST } = await import('@/app/api/license/validate/route');
+  const req = new NextRequest('http://localhost/api/license/validate', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json', 'x-forwarded-for': ip },
+  });
+  return POST(req);
+}
+
 describe('POST /api/license/validate', () => {
   it('returns 400 when fields are missing', async () => {
     const res = await callPost({ key: 'ADIA-XXXX-XXXX-XXXX' });
@@ -87,5 +97,28 @@ describe('POST /api/license/validate', () => {
 
     const res = await callPost({ key, machine: 'machine-yrly' });
     expect(res.status).toBe(200);
+  });
+
+  // Rate-limit integration: 60 req/min per IP. Pass empty bodies so requests
+  // return 400 before any DB access — the rate limiter fires first.
+  it('returns 429 after 60 requests from the same IP', async () => {
+    for (let i = 0; i < 60; i++) {
+      const r = await callPostFromIp({}, '10.0.1.1');
+      expect(r.status).not.toBe(429);
+    }
+    const r = await callPostFromIp({}, '10.0.1.1');
+    expect(r.status).toBe(429);
+    const body = await r.json();
+    expect(body.error).toBe('too many requests');
+    expect(r.headers.get('Retry-After')).toBeTruthy();
+  });
+
+  it('rate limit is per-IP — a different IP is not blocked', async () => {
+    for (let i = 0; i < 60; i++) {
+      await callPostFromIp({}, '10.0.1.2');
+    }
+    // 10.0.1.2 bucket exhausted; 10.0.1.3 starts fresh
+    const r = await callPostFromIp({}, '10.0.1.3');
+    expect(r.status).not.toBe(429);
   });
 });

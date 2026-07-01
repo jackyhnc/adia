@@ -30,6 +30,16 @@ async function callPost(body: unknown) {
   return POST(req);
 }
 
+async function callPostFromIp(body: unknown, ip: string) {
+  const { POST } = await import('@/app/api/license/activate/route');
+  const req = new NextRequest('http://localhost/api/license/activate', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json', 'x-forwarded-for': ip },
+  });
+  return POST(req);
+}
+
 describe('POST /api/license/activate', () => {
   it('returns 400 when fields are missing', async () => {
     const res = await callPost({ key: 'ADIA-XXXX-XXXX-XXXX' });
@@ -121,5 +131,28 @@ describe('POST /api/license/activate', () => {
     expect(body.key).toBe(key);
     expect(body.email).toBe('happy@example.com');
     expect(body.lastValidatedAt).toBeTruthy();
+  });
+
+  // Rate-limit integration: 20 req/min per IP. Pass empty bodies so we return 400
+  // before any DB access — the rate limiter fires before body parsing.
+  it('returns 429 after 20 requests from the same IP', async () => {
+    for (let i = 0; i < 20; i++) {
+      const r = await callPostFromIp({}, '10.0.0.1');
+      expect(r.status).not.toBe(429);
+    }
+    const r = await callPostFromIp({}, '10.0.0.1');
+    expect(r.status).toBe(429);
+    const body = await r.json();
+    expect(body.error).toBe('too many requests');
+    expect(r.headers.get('Retry-After')).toBeTruthy();
+  });
+
+  it('rate limit is per-IP — a different IP is not blocked', async () => {
+    for (let i = 0; i < 20; i++) {
+      await callPostFromIp({}, '10.0.0.2');
+    }
+    // 10.0.0.2 bucket exhausted; 10.0.0.3 starts fresh
+    const r = await callPostFromIp({}, '10.0.0.3');
+    expect(r.status).not.toBe(429);
   });
 });
