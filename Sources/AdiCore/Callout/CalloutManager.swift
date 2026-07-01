@@ -162,10 +162,11 @@ public final class CalloutManager {
         }
         if word("application") || word("applications") || lower.contains("cover letter")
             || word("applying") || lower.contains("job application")
-            || lower.contains("internship application") || lower.contains("college application") {
+            || lower.contains("internship application") || lower.contains("college application")
+            || word("internship") || word("internships") {
             return "application"
         }
-        if word("blog") || word("newsletter")
+        if word("blog") || word("blogs") || word("newsletter") || word("newsletters")
             || word("draft") || word("drafts") || word("outline") || word("outlines")
             || word("revision") || word("revisions") || word("revise")
             || word("proofread") || word("proofreading") {

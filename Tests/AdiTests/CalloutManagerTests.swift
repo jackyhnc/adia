@@ -2424,4 +2424,61 @@ struct CalloutManagerTests {
             #expect(hasUrgent, "tier 3 art messages must contain an urgent directive")
         }
     }
+
+    // MARK: - Plural forms: blogs, newsletters
+
+    @Test func extractTaskKeywordFromBlogsPlural() {
+        #expect(CalloutManager.extractTaskKeyword(from: "I have two blogs to write") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "update both blogs before Monday") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "write three blogs this week") == "writing")
+    }
+
+    @Test func extractTaskKeywordFromNewslettersPlural() {
+        #expect(CalloutManager.extractTaskKeyword(from: "send the newsletters out today") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish editing both newsletters") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "draft newsletters for this month") == "writing")
+    }
+
+    @Test func extractTaskKeywordBlogsSingularStillWorks() {
+        // Regression: singular "blog" must still map to "writing" after adding "blogs"
+        #expect(CalloutManager.extractTaskKeyword(from: "write a blog post") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my blog") == "writing")
+    }
+
+    @Test func extractTaskKeywordNewsletterSingularStillWorks() {
+        // Regression: singular "newsletter" must still map to "writing"
+        #expect(CalloutManager.extractTaskKeyword(from: "write the weekly newsletter") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "draft the newsletter for Monday") == "writing")
+    }
+
+    // MARK: - Internship keyword
+
+    @Test func extractTaskKeywordFromBareInternship() {
+        // "internship" alone (no application/interview context) maps to application
+        #expect(CalloutManager.extractTaskKeyword(from: "summer internship") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "find an internship") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "get an internship") == "application")
+    }
+
+    @Test func extractTaskKeywordFromInternshipsPlural() {
+        #expect(CalloutManager.extractTaskKeyword(from: "apply to internships") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "looking for summer internships") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "browse internships on LinkedIn") == "application")
+    }
+
+    @Test func extractTaskKeywordInternshipDoesNotOverrideInterview() {
+        // "internship interview" → interview block fires first
+        #expect(CalloutManager.extractTaskKeyword(from: "internship interview tomorrow") == "interview")
+    }
+
+    @Test func extractTaskKeywordInternshipDoesNotOverrideResume() {
+        // "resume for internship" → resume block fires first
+        #expect(CalloutManager.extractTaskKeyword(from: "update my resume for the internship") == "resume")
+    }
+
+    @Test func extractTaskKeywordInternshipApplicationPhraseStillWorks() {
+        // Regression: compound phrase that was already handled must remain correct
+        #expect(CalloutManager.extractTaskKeyword(from: "fill out the internship application") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "applying to summer internships") == "application")
+    }
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe, isStripeConfigured } from '@/lib/stripe';
-import { insertLicense, setStatusBySub } from '@/lib/store';
+import { insertLicense, setStatusBySub, setExpiryBySub } from '@/lib/store';
 import { generateLicenseKey, planExpiry } from '@/lib/license';
 import { sendLicenseEmail } from '@/lib/email';
 
@@ -50,6 +50,17 @@ export async function POST(req: NextRequest) {
     const sub: any = event.data.object;
     // Look up the license by stripe_sub, not by its own primary key.
     await setStatusBySub(sub.id, 'canceled');
+  }
+
+  if (event.type === 'customer.subscription.updated') {
+    const sub: any = event.data.object;
+    // Extend license expiry when subscription renews or its period changes.
+    // Only update for active subscriptions — past_due/unpaid subs keep their
+    // current expiry until either the payment recovers or the sub is deleted.
+    if (sub.status === 'active' && sub.current_period_end) {
+      const expiresAt = new Date(sub.current_period_end * 1000).toISOString();
+      await setExpiryBySub(sub.id, expiresAt);
+    }
   }
 
   return NextResponse.json({ ok: true });

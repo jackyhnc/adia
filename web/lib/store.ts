@@ -79,6 +79,14 @@ export async function setStatusBySub(stripeSub: string, status: License['status'
   sqlite.setStatusBySub(stripeSub, status);
 }
 
+export async function setExpiryBySub(stripeSub: string, expiresAt: string | null): Promise<void> {
+  if (usePg) {
+    const { setExpiryBySubPg } = await import('./db-pg');
+    return setExpiryBySubPg(stripeSub, expiresAt);
+  }
+  sqlite.setExpiryBySub(stripeSub, expiresAt);
+}
+
 export async function joinWaitlist(email: string): Promise<void> {
   if (usePg) {
     const { joinWaitlistPg } = await import('./db-pg');

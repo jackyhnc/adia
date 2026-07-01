@@ -145,6 +145,11 @@ export async function setStatusBySubPg(stripeSub: string, status: License['statu
   await sql`UPDATE licenses SET status = ${status} WHERE stripe_sub = ${stripeSub}`;
 }
 
+export async function setExpiryBySubPg(stripeSub: string, expiresAt: string | null): Promise<void> {
+  await ensureSchema();
+  await sql`UPDATE licenses SET expires_at = ${expiresAt} WHERE stripe_sub = ${stripeSub}`;
+}
+
 export async function joinWaitlistPg(email: string): Promise<void> {
   await ensureSchema();
   await sql`
