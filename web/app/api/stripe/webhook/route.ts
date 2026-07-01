@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe, isStripeConfigured } from '@/lib/stripe';
-import { insertLicense, setStatusBySub, setExpiryBySub } from '@/lib/store';
+import { insertLicense, setStatusBySub, setExpiryBySub, findLicenseBySub } from '@/lib/store';
 import { generateLicenseKey, planExpiry } from '@/lib/license';
-import { sendLicenseEmail } from '@/lib/email';
+import { sendLicenseEmail, sendPaymentFailedEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -67,7 +67,11 @@ export async function POST(req: NextRequest) {
     const inv: any = event.data.object;
     // Subscription invoices only — ignore one-time charges.
     if (inv.subscription) {
+      const license = await findLicenseBySub(inv.subscription);
       await setStatusBySub(inv.subscription, 'past_due');
+      if (license) {
+        await sendPaymentFailedEmail(license.email, license.key, license.plan);
+      }
     }
   }
 

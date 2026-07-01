@@ -182,6 +182,27 @@ export async function setStatusPg(key: string, status: License['status']): Promi
   await sql`UPDATE licenses SET status = ${status} WHERE key = ${key}`;
 }
 
+export async function findLicenseBySubPg(stripeSub: string): Promise<License | null> {
+  await ensureSchema();
+  const result = await sql<any>`
+    SELECT key, email, plan, status,
+           to_char(issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
+           to_char(expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt"
+    FROM licenses
+    WHERE stripe_sub = ${stripeSub}
+  `;
+  const row = result.rows[0];
+  if (!row) return null;
+  return {
+    key: row.key,
+    email: row.email,
+    plan: row.plan,
+    status: row.status,
+    issuedAt: row.issuedAt,
+    expiresAt: row.expiresAt,
+  };
+}
+
 export async function setStatusBySubPg(stripeSub: string, status: License['status']): Promise<void> {
   await ensureSchema();
   await sql`UPDATE licenses SET status = ${status} WHERE stripe_sub = ${stripeSub}`;

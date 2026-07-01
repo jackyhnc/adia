@@ -20,16 +20,18 @@ vi.mock('@/lib/stripe', () => ({
 
 vi.mock('@/lib/email', () => ({
   sendLicenseEmail: vi.fn().mockResolvedValue(undefined),
+  sendPaymentFailedEmail: vi.fn().mockResolvedValue(undefined),
 }));
 
 // Static imports must come AFTER vi.mock() blocks (the hoisting order is:
 // vi.mock → static imports → module body).
 import { stripe } from '@/lib/stripe';
-import { sendLicenseEmail } from '@/lib/email';
+import { sendLicenseEmail, sendPaymentFailedEmail } from '@/lib/email';
 import { POST } from '@/app/api/stripe/webhook/route';
 
 const mockConstructEvent = vi.mocked(stripe!.webhooks.constructEvent);
 const mockSendLicenseEmail = vi.mocked(sendLicenseEmail);
+const mockSendPaymentFailedEmail = vi.mocked(sendPaymentFailedEmail);
 
 let dbPath: string;
 
@@ -40,6 +42,8 @@ beforeEach(() => {
   mockConstructEvent.mockReset();
   mockSendLicenseEmail.mockReset();
   mockSendLicenseEmail.mockResolvedValue(undefined);
+  mockSendPaymentFailedEmail.mockReset();
+  mockSendPaymentFailedEmail.mockResolvedValue(undefined);
   process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
 });
 
@@ -230,7 +234,7 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
     expect(body.error).toMatch(/bad signature/i);
   });
 
-  it('invoice.payment_failed marks subscription license as past_due', async () => {
+  it('invoice.payment_failed marks subscription license as past_due and emails the user', async () => {
     insertLicense({
       key: 'ADIA-PFLD-WBHK-001A',
       email: 'pfailed@example.com',
@@ -249,9 +253,15 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
 
     const license = findLicense('ADIA-PFLD-WBHK-001A');
     expect(license!.status).toBe('past_due');
+
+    expect(mockSendPaymentFailedEmail).toHaveBeenCalledOnce();
+    const [toEmail, issuedKey, plan] = mockSendPaymentFailedEmail.mock.calls[0] as [string, string, string];
+    expect(toEmail).toBe('pfailed@example.com');
+    expect(issuedKey).toBe('ADIA-PFLD-WBHK-001A');
+    expect(plan).toBe('monthly');
   });
 
-  it('invoice.payment_failed with no subscription is a no-op', async () => {
+  it('invoice.payment_failed with no subscription is a no-op (no email, no status change)', async () => {
     insertLicense({
       key: 'ADIA-PFNP-WBHK-001A',
       email: 'pfnoop@example.com',
@@ -267,9 +277,21 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
     const res = await callPost();
     expect(res.status).toBe(200);
 
-    // Lifetime license unaffected — no sub, no status change.
+    // Lifetime license unaffected — no sub, no status change, no email.
     const license = findLicense('ADIA-PFNP-WBHK-001A');
     expect(license!.status).toBe('active');
+    expect(mockSendPaymentFailedEmail).not.toHaveBeenCalled();
+  });
+
+  it('invoice.payment_failed with unknown sub does not crash and sends no email', async () => {
+    mockConstructEvent.mockReturnValue({
+      type: 'invoice.payment_failed',
+      data: { object: { subscription: 'sub_ghost_unknown' } },
+    });
+
+    const res = await callPost();
+    expect(res.status).toBe(200);
+    expect(mockSendPaymentFailedEmail).not.toHaveBeenCalled();
   });
 
   it('invoice.payment_succeeded reactivates a past_due license', async () => {

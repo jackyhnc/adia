@@ -1,5 +1,50 @@
 # Adia — Build Progress
 
+## Run 224 — 2026-07-01T20:10:00Z — invoice.payment_failed email notification
+
+### Shipped
+
+**`sendPaymentFailedEmail` in `web/lib/email.ts`:**
+- New function sends a plain email to the user when their payment fails.
+- Links directly to `https://adia.app/billing` (Stripe Customer Portal) to update payment.
+- No-ops gracefully when `RESEND_API_KEY` is absent (logs to console).
+
+**`findLicenseBySub` in `web/lib/db.ts`, `web/lib/db-pg.ts`, `web/lib/store.ts`:**
+- New function looks up a license row by `stripe_sub` column.
+- SQLite: synchronous `better-sqlite3` query.
+- Postgres: async `@vercel/postgres` query with `ensureSchema()` guard.
+- Store facade exports it through the same SQLite/Postgres switching logic as every other function.
+
+**Webhook handler (`web/app/api/stripe/webhook/route.ts`):**
+- `invoice.payment_failed` handler now:
+  1. Looks up the license by `inv.subscription` (to get email/key/plan).
+  2. Marks it `past_due` (existing behaviour).
+  3. Calls `sendPaymentFailedEmail` if a license was found.
+- Unknown `stripe_sub` values (ghost events) are handled gracefully — `findLicenseBySub` returns null and no email is sent.
+
+**3 updated / new tests in `web/__tests__/webhook-integration.test.ts`:**
+- Updated `invoice.payment_failed marks...` → now also asserts `sendPaymentFailedEmail` was called with correct email/key/plan.
+- Updated `invoice.payment_failed with no subscription` → now also asserts `sendPaymentFailedEmail` was NOT called.
+- New: `invoice.payment_failed with unknown sub does not crash and sends no email`.
+- `vi.mock('@/lib/email', ...)` updated to include `sendPaymentFailedEmail`.
+- `beforeEach` resets both email mocks.
+
+**All 120 web tests pass (11 test files).**
+
+### Blocked
+Nothing blocked.
+
+### Next agent should
+- Add `invoice.payment_failed` / payment-failed email to admin area so admins can manually trigger a re-send.
+- Next.js 14.2.18 has known security vulnerabilities — consider upgrading to 15.x (breaking changes, requires careful migration).
+- Activate/validate routes could use rate-limit integration tests (currently only unit-level coverage of the ratelimit module).
+- Add "annotate" / "annotation" keyword to the reading block in `CalloutMessages.swift`.
+- Add "peer review" to the writing block in `CalloutMessages.swift`.
+- Add "data analysis" / "data collection" to the research block in `CalloutMessages.swift`.
+- Review `DefaultBlocklists.swift` for new apps worth adding to the block list.
+
+---
+
 ## Run 222 — 2026-07-01T18:10:00Z — admin: POST /api/admin/issue for comp/free license generation
 
 ### Shipped

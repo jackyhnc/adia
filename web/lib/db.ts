@@ -164,6 +164,21 @@ export function setStatus(key: string, status: License['status']) {
   db().prepare('UPDATE licenses SET status = ? WHERE key = ?').run(status, key);
 }
 
+export function findLicenseBySub(stripeSub: string): License | null {
+  const row = db()
+    .prepare('SELECT * FROM licenses WHERE stripe_sub = ?')
+    .get(stripeSub) as any;
+  if (!row) return null;
+  return {
+    key: row.key,
+    email: row.email,
+    plan: row.plan,
+    status: row.status,
+    issuedAt: row.issued_at,
+    expiresAt: row.expires_at,
+  };
+}
+
 export function setStatusBySub(stripeSub: string, status: License['status']) {
   db().prepare('UPDATE licenses SET status = ? WHERE stripe_sub = ?').run(status, stripeSub);
 }
