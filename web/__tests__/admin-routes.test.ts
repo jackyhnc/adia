@@ -3,15 +3,24 @@
 //   POST       /api/admin/revoke
 //   GET        /api/admin/lookup
 //   GET        /api/admin/licenses-by-email
+//   POST       /api/admin/resend-payment-failed
 //
 // All routes require ADMIN_TOKEN; SQLite DB is reset per test.
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
 import { NextRequest } from 'next/server';
 import { resetDbForTesting, insertLicense, recordActivation, findLicense } from '@/lib/db';
+
+vi.mock('@/lib/email', () => ({
+  sendLicenseEmail: vi.fn().mockResolvedValue(undefined),
+  sendPaymentFailedEmail: vi.fn().mockResolvedValue(undefined),
+}));
+
+import { sendPaymentFailedEmail } from '@/lib/email';
+const mockSendPaymentFailedEmail = vi.mocked(sendPaymentFailedEmail);
 
 let dbPath: string;
 
@@ -22,6 +31,8 @@ beforeEach(() => {
   );
   resetDbForTesting(dbPath);
   process.env.ADMIN_TOKEN = 'test-admin-token';
+  mockSendPaymentFailedEmail.mockReset();
+  mockSendPaymentFailedEmail.mockResolvedValue(undefined);
 });
 
 afterEach(() => {
@@ -396,5 +407,114 @@ describe('GET /api/admin/licenses-by-email', () => {
     const body = await res.json();
     expect(body.count).toBe(1);
     expect(body.licenses[0].key).toBe('ADIA-BYEM-USER-AAAA');
+  });
+});
+
+// ─── POST /api/admin/resend-payment-failed ─────────────────────────────────
+
+async function callResendPaymentFailed(body: unknown, token = 'test-admin-token') {
+  const { POST } = await import('@/app/api/admin/resend-payment-failed/route');
+  const req = new NextRequest('http://localhost/api/admin/resend-payment-failed', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+  });
+  return POST(req);
+}
+
+describe('POST /api/admin/resend-payment-failed', () => {
+  it('returns 401 without a token', async () => {
+    const { POST } = await import('@/app/api/admin/resend-payment-failed/route');
+    const req = new NextRequest('http://localhost/api/admin/resend-payment-failed', {
+      method: 'POST',
+      body: JSON.stringify({ key: 'ADIA-RFPF-NOAU-AAAA' }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callResendPaymentFailed({ key: 'ADIA-RFPF-WRNG-AAAA' }, 'wrong-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when key is missing from body', async () => {
+    const res = await callResendPaymentFailed({});
+    expect(res.status).toBe(400);
+  });
+
+  it('returns 404 for unknown key', async () => {
+    const res = await callResendPaymentFailed({ key: 'ADIA-RFPF-UNKN-ZZZZ' });
+    expect(res.status).toBe(404);
+  });
+
+  it('returns 422 when license is not past_due', async () => {
+    insertLicense({ key: 'ADIA-RFPF-ACTV-AAAA', email: 'active@example.com', plan: 'monthly', expiresAt: null });
+    const res = await callResendPaymentFailed({ key: 'ADIA-RFPF-ACTV-AAAA' });
+    expect(res.status).toBe(422);
+    const body = await res.json();
+    expect(body.status).toBe('active');
+    expect(mockSendPaymentFailedEmail).not.toHaveBeenCalled();
+  });
+
+  it('sends email and returns 200 for a past_due license', async () => {
+    insertLicense({ key: 'ADIA-RFPF-PDUS-AAAA', email: 'pastdue@example.com', plan: 'yearly', expiresAt: null });
+    // Manually set status to past_due via the DB helper
+    const { setStatus } = await import('@/lib/db');
+    setStatus('ADIA-RFPF-PDUS-AAAA', 'past_due');
+
+    const res = await callResendPaymentFailed({ key: 'ADIA-RFPF-PDUS-AAAA' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.to).toBe('pastdue@example.com');
+    expect(body.key).toBe('ADIA-RFPF-PDUS-AAAA');
+    expect(body.plan).toBe('yearly');
+    expect(mockSendPaymentFailedEmail).toHaveBeenCalledOnce();
+    expect(mockSendPaymentFailedEmail).toHaveBeenCalledWith(
+      'pastdue@example.com',
+      'ADIA-RFPF-PDUS-AAAA',
+      'yearly',
+    );
+  });
+
+  it('sends email with force:true even when license is active', async () => {
+    insertLicense({ key: 'ADIA-RFPF-FORC-AAAA', email: 'force@example.com', plan: 'lifetime', expiresAt: null });
+    const res = await callResendPaymentFailed({ key: 'ADIA-RFPF-FORC-AAAA', force: true });
+    expect(res.status).toBe(200);
+    expect(mockSendPaymentFailedEmail).toHaveBeenCalledWith(
+      'force@example.com',
+      'ADIA-RFPF-FORC-AAAA',
+      'lifetime',
+    );
+  });
+
+  it('normalizes key to uppercase', async () => {
+    insertLicense({ key: 'ADIA-RFPF-CASE-AAAA', email: 'casekey@example.com', plan: 'monthly', expiresAt: null });
+    const { setStatus } = await import('@/lib/db');
+    setStatus('ADIA-RFPF-CASE-AAAA', 'past_due');
+    const res = await callResendPaymentFailed({ key: 'adia-rfpf-case-aaaa' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.key).toBe('ADIA-RFPF-CASE-AAAA');
+  });
+
+  it('accepts ?token= query param auth', async () => {
+    insertLicense({ key: 'ADIA-RFPF-TOKN-AAAA', email: 'qpauth@example.com', plan: 'monthly', expiresAt: null });
+    const { setStatus } = await import('@/lib/db');
+    setStatus('ADIA-RFPF-TOKN-AAAA', 'past_due');
+    const { POST } = await import('@/app/api/admin/resend-payment-failed/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/resend-payment-failed?token=test-admin-token',
+      {
+        method: 'POST',
+        body: JSON.stringify({ key: 'ADIA-RFPF-TOKN-AAAA' }),
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    expect(mockSendPaymentFailedEmail).toHaveBeenCalledOnce();
   });
 });
