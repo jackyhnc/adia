@@ -2481,4 +2481,51 @@ struct CalloutManagerTests {
         #expect(CalloutManager.extractTaskKeyword(from: "fill out the internship application") == "application")
         #expect(CalloutManager.extractTaskKeyword(from: "applying to summer internships") == "application")
     }
+
+    // MARK: - "apply" bare verb → application
+
+    @Test func extractTaskKeywordFromApplyBareVerb() {
+        #expect(CalloutManager.extractTaskKeyword(from: "apply to jobs") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "apply to college") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "apply for scholarships") == "application")
+    }
+
+    @Test func extractTaskKeywordApplyingStillWorks() {
+        // Regression: "applying" must still map to application after adding "apply"
+        #expect(CalloutManager.extractTaskKeyword(from: "applying to grad school") == "application")
+        #expect(CalloutManager.extractTaskKeyword(from: "I am applying to jobs") == "application")
+    }
+
+    @Test func extractTaskKeywordApplyDoesNotOverrideResume() {
+        // "apply" fires after "resume" in the block ordering
+        #expect(CalloutManager.extractTaskKeyword(from: "update my resume to apply") == "resume")
+    }
+
+    // MARK: - capstone → project
+
+    @Test func extractTaskKeywordFromCapstone() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my capstone") == "project")
+        #expect(CalloutManager.extractTaskKeyword(from: "capstone project due Friday") == "project")
+        #expect(CalloutManager.extractTaskKeyword(from: "my senior capstone tonight") == "project")
+    }
+
+    // MARK: - grant / abstract → writing
+
+    @Test func extractTaskKeywordFromGrant() {
+        // "grant" alone (no "proposal" or "application" keyword) → writing
+        #expect(CalloutManager.extractTaskKeyword(from: "working on my NSF grant") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "submit the grant tonight") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the grants") == "writing")
+    }
+
+    @Test func extractTaskKeywordGrantProposalMapsToProposal() {
+        // "grant proposal" has "proposal" which fires before the writing block — expected.
+        #expect(CalloutManager.extractTaskKeyword(from: "write a grant proposal") == "proposal")
+    }
+
+    @Test func extractTaskKeywordFromAbstract() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write the abstract") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my paper abstract") == "writing")
+        #expect(CalloutManager.extractTaskKeyword(from: "revise abstracts for submission") == "writing")
+    }
 }

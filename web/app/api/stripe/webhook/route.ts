@@ -63,5 +63,22 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  if (event.type === 'invoice.payment_failed') {
+    const inv: any = event.data.object;
+    // Subscription invoices only — ignore one-time charges.
+    if (inv.subscription) {
+      await setStatusBySub(inv.subscription, 'past_due');
+    }
+  }
+
+  if (event.type === 'invoice.payment_succeeded') {
+    const inv: any = event.data.object;
+    // Reactivate the license if payment recovers after a past_due period.
+    // For initial checkouts this is a harmless no-op (status already 'active').
+    if (inv.subscription) {
+      await setStatusBySub(inv.subscription, 'active');
+    }
+  }
+
   return NextResponse.json({ ok: true });
 }

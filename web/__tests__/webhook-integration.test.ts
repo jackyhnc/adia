@@ -229,4 +229,83 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
     const body = await res.json();
     expect(body.error).toMatch(/bad signature/i);
   });
+
+  it('invoice.payment_failed marks subscription license as past_due', async () => {
+    insertLicense({
+      key: 'ADIA-PFLD-WBHK-001A',
+      email: 'pfailed@example.com',
+      plan: 'monthly',
+      stripeSub: 'sub_pfailed_001',
+      expiresAt: new Date(Date.now() + 86400000).toISOString(),
+    });
+
+    mockConstructEvent.mockReturnValue({
+      type: 'invoice.payment_failed',
+      data: { object: { subscription: 'sub_pfailed_001' } },
+    });
+
+    const res = await callPost();
+    expect(res.status).toBe(200);
+
+    const license = findLicense('ADIA-PFLD-WBHK-001A');
+    expect(license!.status).toBe('past_due');
+  });
+
+  it('invoice.payment_failed with no subscription is a no-op', async () => {
+    insertLicense({
+      key: 'ADIA-PFNP-WBHK-001A',
+      email: 'pfnoop@example.com',
+      plan: 'lifetime',
+      expiresAt: null,
+    });
+
+    mockConstructEvent.mockReturnValue({
+      type: 'invoice.payment_failed',
+      data: { object: { subscription: null } },
+    });
+
+    const res = await callPost();
+    expect(res.status).toBe(200);
+
+    // Lifetime license unaffected — no sub, no status change.
+    const license = findLicense('ADIA-PFNP-WBHK-001A');
+    expect(license!.status).toBe('active');
+  });
+
+  it('invoice.payment_succeeded reactivates a past_due license', async () => {
+    insertLicense({
+      key: 'ADIA-PSUC-WBHK-001A',
+      email: 'psucceeded@example.com',
+      plan: 'monthly',
+      stripeSub: 'sub_psucceeded_001',
+      expiresAt: new Date(Date.now() + 86400000).toISOString(),
+    });
+    // Put the license in past_due state first.
+    const { setStatusBySub } = await import('@/lib/db');
+    setStatusBySub('sub_psucceeded_001', 'past_due');
+    expect(findLicense('ADIA-PSUC-WBHK-001A')!.status).toBe('past_due');
+
+    mockConstructEvent.mockReturnValue({
+      type: 'invoice.payment_succeeded',
+      data: { object: { subscription: 'sub_psucceeded_001' } },
+    });
+
+    const res = await callPost();
+    expect(res.status).toBe(200);
+
+    const license = findLicense('ADIA-PSUC-WBHK-001A');
+    expect(license!.status).toBe('active');
+  });
+
+  it('invoice.payment_succeeded with no subscription is a no-op', async () => {
+    mockConstructEvent.mockReturnValue({
+      type: 'invoice.payment_succeeded',
+      data: { object: { subscription: null } },
+    });
+
+    const res = await callPost();
+    expect(res.status).toBe(200);
+    // No assertions on DB — just ensure no crash on a one-time invoice.
+    expect(mockSendLicenseEmail).not.toHaveBeenCalled();
+  });
 });

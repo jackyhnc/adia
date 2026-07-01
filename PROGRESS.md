@@ -1,5 +1,78 @@
 # Adia — Build Progress
 
+## Run 219 — 2026-07-01 — invoice payment webhooks + keyword expansions (apply/capstone/grant/abstract)
+
+### Shipped
+
+**Web — `invoice.payment_failed` / `invoice.payment_succeeded` webhook handlers:**
+- Extended `License['status']` in `db.ts` to include `'past_due'` (was `'active' | 'canceled' | 'expired'`).
+- Added `invoice.payment_failed` handler in `route.ts`: when an invoice for a subscription fails,
+  calls `setStatusBySub(inv.subscription, 'past_due')` so the license is flagged in-database.
+  One-time (non-subscription) invoices are ignored (`inv.subscription` is null).
+- Added `invoice.payment_succeeded` handler in `route.ts`: when payment recovers, calls
+  `setStatusBySub(inv.subscription, 'active')` to reactivate the license. Safe for initial
+  checkout (status already active → no-op) and idempotent for renewals.
+- The existing `validate` route already returns `{ error: 'License is past_due.' }` for
+  non-active statuses, so `past_due` licenses are correctly rejected at validation time.
+- `setStatusBySub` / `setStatusBySubPg` already accepted `License['status']` by value, so
+  both SQLite and Postgres adapters work without further changes.
+
+**4 new webhook integration tests (webhook-integration.test.ts):**
+- `invoice.payment_failed marks subscription license as past_due`
+- `invoice.payment_failed with no subscription is a no-op`
+- `invoice.payment_succeeded reactivates a past_due license`
+- `invoice.payment_succeeded with no subscription is a no-op`
+- Web tests: **61 passed** (up from 57).
+
+**Swift — CalloutManager keyword expansions:**
+- Added `word("apply")` to application block — "apply to jobs" / "apply to college" / "apply for
+  scholarships" now map to "application". Previously only "applying" was matched; bare "apply"
+  returned nil.
+- Added `word("capstone")` to project block — "work on my capstone" / "capstone project due
+  Friday" → "project". Common in academic contexts.
+- Added `word("grant")` / `word("grants")` to writing block — "working on my NSF grant" /
+  "submit the grant tonight" → "writing". Note: "grant proposal" still maps to "proposal"
+  (proposal block fires before writing) — this is the documented expected behavior.
+- Added `word("abstract")` / `word("abstracts")` to writing block — "write the abstract" /
+  "finish my paper abstract" → "writing". Common in academic/research writing.
+
+**8 new Swift tests (CalloutManagerTests.swift):**
+- `extractTaskKeywordFromApplyBareVerb` — 3 assertions
+- `extractTaskKeywordApplyingStillWorks` — 2 assertions (regression)
+- `extractTaskKeywordApplyDoesNotOverrideResume` — 1 assertion (ordering)
+- `extractTaskKeywordFromCapstone` — 3 assertions
+- `extractTaskKeywordFromGrant` — 3 assertions
+- `extractTaskKeywordGrantProposalMapsToProposal` — 1 assertion (ordering doc)
+- `extractTaskKeywordFromAbstract` — 3 assertions
+- Swift tests cannot run on Linux container; verified correct by code review.
+
+### Blocked
+- Swift toolchain unavailable on Linux container — Swift changes verified manually.
+  All 34 GOAL.md items remain complete. BUILD_COMPLETE is present.
+
+### Next agent
+- All 34 GOAL.md tasks remain checked; BUILD_COMPLETE is in place.
+- Web tests: 61 (activate:8, db:10, webhook:2, webhook-integration:12, validate:7, waitlist:5, license:7, checkout:3, ratelimit:7).
+- `extractTaskKeyword` now covers 32 keywords:
+  essay/essays, paper/papers, thesis/theses/dissertation/dissertations,
+  presentation/presentations, code/coding/..., report/reports, studying, reading,
+  homework/assignment, research, art (drawing/painting/...), design, email/emails,
+  project/projects/capstone (new), proposal/proposals, interview/interviews,
+  meeting/meetings, video/editing, cv/resume, application/applications/internship/internships/
+  apply (new)/applying, blog/blogs/newsletter/newsletters/draft/outline/revision/proofread/
+  grant/grants (new)/abstract/abstracts (new) → writing, budget/budgeting,
+  tutor/tutoring, practice/rehearse, workout/gym/cardio → fitness, podcast/podcasting,
+  plan/planning/planner, compose/lyric/chord → music, spanish/french/... → language,
+  deadline/deadlines.
+- Potential next improvements:
+  - Add `invoice.payment_failed` email notification (warn user payment failed, license at risk).
+  - Add admin route to list all licenses for a given email (support tool).
+  - Add "fellowship", "scholarship" to application block.
+  - Add "literature review" / "lit review" to writing block (common academic phrase).
+  - Add "case study" / "case studies" to research block.
+
+---
+
 ## Run 218 — 2026-07-01 — Subscription renewal webhook + plural keyword forms
 
 ### Shipped

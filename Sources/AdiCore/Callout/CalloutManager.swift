@@ -141,7 +141,7 @@ public final class CalloutManager {
         if word("email") || word("emails") || word("inbox") {
             return "email"
         }
-        if word("project") || word("projects") {
+        if word("project") || word("projects") || word("capstone") {
             return "project"
         }
         if word("proposal") || word("proposals") {
@@ -161,7 +161,8 @@ public final class CalloutManager {
             return "resume"
         }
         if word("application") || word("applications") || lower.contains("cover letter")
-            || word("applying") || lower.contains("job application")
+            || word("applying") || word("apply")
+            || lower.contains("job application")
             || lower.contains("internship application") || lower.contains("college application")
             || word("internship") || word("internships") {
             return "application"
@@ -169,7 +170,9 @@ public final class CalloutManager {
         if word("blog") || word("blogs") || word("newsletter") || word("newsletters")
             || word("draft") || word("drafts") || word("outline") || word("outlines")
             || word("revision") || word("revisions") || word("revise")
-            || word("proofread") || word("proofreading") {
+            || word("proofread") || word("proofreading")
+            || word("grant") || word("grants")
+            || word("abstract") || word("abstracts") {
             return "writing"
         }
         if word("budget") || word("budgeting") || word("budgets")

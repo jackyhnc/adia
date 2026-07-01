@@ -57,7 +57,7 @@ export type License = {
   key: string;
   email: string;
   plan: 'monthly' | 'yearly' | 'lifetime';
-  status: 'active' | 'canceled' | 'expired';
+  status: 'active' | 'canceled' | 'expired' | 'past_due';
   issuedAt: string;
   expiresAt: string | null;
 };
