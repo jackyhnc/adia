@@ -100,6 +100,14 @@ extension Session {
         "wattpad.com",
         "archiveofourown.org",
         "mangadex.org",
+        // Book / film social tracking (rabbit holes disguised as productivity)
+        "goodreads.com",
+        "letterboxd.com",
+        // Lyrics / music knowledge (time sink for music fans)
+        "genius.com",
+        // Bluesky — growing Twitter alternative (separate domain from bsky.social)
+        "bsky.app",
+        "bluesky.social",
         // Professional procrastination
         "producthunt.com",
         // Music streaming — web player bypasses the app block (com.spotify.client)
@@ -275,7 +283,11 @@ extension Session {
         BlockedApp(id: "com.twitter.twitter-mac",        name: "Twitter (legacy)"),
         BlockedApp(id: "com.atebits.Tweetie2",           name: "X / Twitter"),
         BlockedApp(id: "com.epicgames.EpicGamesLauncher", name: "Epic Games Launcher"),
-        BlockedApp(id: "net.battle.net.client", name: "Battle.net"),
+        BlockedApp(id: "net.battle.net.client",                 name: "Battle.net"),
+        // Signal Desktop — messaging is a focus killer regardless of privacy tier
+        BlockedApp(id: "org.whispersystems.signal-desktop",     name: "Signal"),
+        // Viber Desktop — messaging app popular outside North America
+        BlockedApp(id: "com.viber.osx",                         name: "Viber"),
     ]
 
     public static var defaultBlockedAppBundleIDs: [String] {

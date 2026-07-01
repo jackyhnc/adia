@@ -117,7 +117,8 @@ public final class CalloutManager {
             || word("psych") || word("sociology") {
             return "studying"
         }
-        if word("reading") || word("book") || word("chapter") || word("article") {
+        if word("reading") || word("book") || word("chapter") || word("article")
+            || word("annotate") || word("annotating") || word("annotation") || word("annotations") || word("annotated") {
             return "reading"
         }
         if word("homework") || word("assignment") || lower.contains("problem set") || word("pset")
@@ -125,7 +126,10 @@ public final class CalloutManager {
             return "homework"
         }
         if word("research") || word("lab")
-            || lower.contains("case study") || lower.contains("case studies") {
+            || lower.contains("case study") || lower.contains("case studies")
+            || lower.contains("data analysis") || lower.contains("data collection")
+            || lower.contains("data science") || lower.contains("data scientist")
+            || word("dataset") || word("datasets") || lower.contains("qualitative") || lower.contains("quantitative") {
             return "research"
         }
         if word("drawing") || word("painting") || word("sketching")
@@ -176,7 +180,8 @@ public final class CalloutManager {
             || word("proofread") || word("proofreading")
             || word("grant") || word("grants")
             || word("abstract") || word("abstracts")
-            || lower.contains("literature review") || lower.contains("lit review") {
+            || lower.contains("literature review") || lower.contains("lit review")
+            || lower.contains("peer review") || lower.contains("peer-review") || word("peerreview") {
             return "writing"
         }
         if word("budget") || word("budgeting") || word("budgets")
