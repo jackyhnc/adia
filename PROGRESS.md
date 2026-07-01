@@ -1,5 +1,37 @@
 # Adia — Build Progress
 
+## Run 225 — 2026-07-01T21:06:00Z — admin resend-payment-failed endpoint
+
+### Shipped
+
+**`POST /api/admin/resend-payment-failed` in `web/app/api/admin/resend-payment-failed/route.ts`:**
+- New admin-only endpoint to manually trigger the payment-failed email for any license key.
+- Auth via `ADMIN_TOKEN` bearer header or `?token=` query param (same pattern as all other admin routes).
+- Body: `{ key: "ADIA-..." }` — normalizes key to uppercase before lookup.
+- By default only sends for `past_due` licenses; returns HTTP 422 if the status is anything else.
+- Pass `force: true` in the body to bypass the status check (useful for testing the email template).
+- Returns `{ ok: true, to, key, plan }` on success.
+
+**9 new `@test` cases in `web/__tests__/admin-routes.test.ts`:**
+- 401 with no token, 401 with wrong token, 400 missing key, 404 unknown key.
+- 422 when license is not `past_due` (asserts email NOT sent).
+- 200 for `past_due` license — asserts email called with correct `to/key/plan`.
+- 200 with `force:true` on active license.
+- Key normalization (lowercase input → uppercase in DB lookup and response).
+- `?token=` query-param auth.
+
+**All 129 web tests pass (11 test files).**
+
+### Blocked
+Nothing blocked.
+
+### Next agent should
+- Consider upgrading Next.js from 14.2.18 → 15.x (has known security CVEs, but is a breaking change migration).
+- Consider adding rate-limit integration tests for `/api/license/activate` and `/api/license/validate`.
+- Consider a GitHub Actions CI workflow that builds and tests Swift on macOS (Linux container can't run Swift).
+
+---
+
 ## Run 224 — 2026-07-01T20:10:00Z — invoice.payment_failed email notification
 
 ### Shipped
