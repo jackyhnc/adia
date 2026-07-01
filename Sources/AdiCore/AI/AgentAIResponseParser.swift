@@ -123,6 +123,16 @@ extension AgentAIClient {
             "play fortnite", "play minecraft", "play roblox", "play valorant",
             "play overwatch", "play apex", "play call of duty", "play cod",
             "play league of legends", "play league",
+            // social media platforms with no deliverable (bare platform names)
+            "twitter", "reddit", "facebook", "x",
+            // social-media scrolling intents — no deliverable
+            "scroll twitter", "browse twitter", "check twitter", "open twitter",
+            "scroll reddit", "browse reddit", "check reddit", "open reddit",
+            "scroll facebook", "browse facebook", "check facebook", "open facebook",
+            "scroll x", "browse x",
+            "scroll instagram", "check instagram", "open instagram",
+            "scroll tiktok", "open tiktok",
+            "scroll snapchat", "check snapchat", "open snapchat",
         ]
         if leisureExact.contains(lower) {
             return "That doesn't look like a focus session. What do you want to get done?"

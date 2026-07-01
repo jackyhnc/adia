@@ -2240,4 +2240,188 @@ struct CalloutManagerTests {
             #expect(hasUrgent, "tier 3 language messages must contain an urgent directive")
         }
     }
+
+    // MARK: - Fitness keyword extraction
+
+    @Test func extractTaskKeywordFromWorkout() {
+        #expect(CalloutManager.extractTaskKeyword(from: "plan my workout") == "fitness")
+    }
+
+    @Test func extractTaskKeywordFromGym() {
+        #expect(CalloutManager.extractTaskKeyword(from: "gym session plan") == "fitness")
+    }
+
+    @Test func extractTaskKeywordFromCardio() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cardio training schedule") == "fitness")
+    }
+
+    @Test func extractTaskKeywordFromYoga() {
+        #expect(CalloutManager.extractTaskKeyword(from: "yoga sequence for beginners") == "fitness")
+    }
+
+    @Test func extractTaskKeywordFromMealPrep() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my meal prep list for the week") == "fitness")
+    }
+
+    @Test func extractTaskKeywordFromNutritionPlan() {
+        #expect(CalloutManager.extractTaskKeyword(from: "build a nutrition plan") == "fitness")
+    }
+
+    @Test func extractTaskKeywordFitnessDoesNotOverrideCode() {
+        // "running" appears in description but "code" terms dominate earlier in the chain
+        #expect(CalloutManager.extractTaskKeyword(from: "debug the running tracker feature in swift") == "code")
+    }
+
+    @Test func extractTaskKeywordFitnessDoesNotOverrideStudying() {
+        // "calories" appears but "exam" is earlier
+        #expect(CalloutManager.extractTaskKeyword(from: "study calories and metabolism for biology exam") == "studying")
+    }
+
+    @Test func taskAwareCalloutsFitnessHasMessages() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "fitness", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) must have fitness messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsFitnessDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "fitness", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "fitness", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "fitness", tier: 3).count >= 2)
+        }
+    }
+
+    @Test func taskAwareCalloutsFitnessTier3HasUrgentMessage() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "fitness", tier: 3)
+            let hasUrgent = tier3.contains { msg in
+                let upper = msg.uppercased()
+                return upper.contains("CLOSE") || upper.contains("WORKOUT") || upper.contains("FINISH")
+            }
+            #expect(hasUrgent, "tier 3 fitness messages must contain an urgent directive")
+        }
+    }
+
+    // MARK: - Podcast keyword extraction
+
+    @Test func extractTaskKeywordFromPodcast() {
+        #expect(CalloutManager.extractTaskKeyword(from: "record my podcast") == "podcast")
+    }
+
+    @Test func extractTaskKeywordFromPodcastEpisode() {
+        #expect(CalloutManager.extractTaskKeyword(from: "edit podcast episode 12") == "podcast")
+    }
+
+    @Test func extractTaskKeywordFromShowNotes() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write show notes for this week") == "podcast")
+    }
+
+    @Test func extractTaskKeywordFromPodcasting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "podcasting session for my history show") == "podcast")
+    }
+
+    @Test func extractTaskKeywordPodcastDoesNotOverrideCode() {
+        #expect(CalloutManager.extractTaskKeyword(from: "build a podcast rss feed in swift") == "code")
+    }
+
+    @Test func taskAwareCalloutsPodcastHasMessages() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "podcast", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) must have podcast messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsPodcastDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "podcast", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "podcast", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "podcast", tier: 3).count >= 2)
+        }
+    }
+
+    @Test func taskAwareCalloutsPodcastTier3HasUrgentMessage() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "podcast", tier: 3)
+            let hasUrgent = tier3.contains { msg in
+                let upper = msg.uppercased()
+                return upper.contains("CLOSE") || upper.contains("EPISODE") || upper.contains("PODCAST")
+            }
+            #expect(hasUrgent, "tier 3 podcast messages must contain an urgent directive")
+        }
+    }
+
+    // MARK: - Art / Drawing keyword extraction
+
+    @Test func extractTaskKeywordFromDrawing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my drawing for art class") == "art")
+    }
+
+    @Test func extractTaskKeywordFromPainting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the painting I started") == "art")
+    }
+
+    @Test func extractTaskKeywordFromIllustration() {
+        #expect(CalloutManager.extractTaskKeyword(from: "create an illustration for the cover") == "art")
+    }
+
+    @Test func extractTaskKeywordFromProcreate() {
+        #expect(CalloutManager.extractTaskKeyword(from: "procreate character design") == "art")
+    }
+
+    @Test func extractTaskKeywordFromDigitalArt() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish digital art commission") == "art")
+    }
+
+    @Test func extractTaskKeywordFromSketching() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sketching practice for figure drawing") == "art")
+    }
+
+    @Test func extractTaskKeywordArtDoesNotOverrideCode() {
+        // "drawing" appears but "code" terms earlier in the chain dominate
+        #expect(CalloutManager.extractTaskKeyword(from: "draw a uml diagram for my code review") == "code")
+    }
+
+    @Test func extractTaskKeywordArtDoesNotOverrideDesign() {
+        // "sketch" (the app) → design; "sketching" (activity) → art — distinct checks
+        #expect(CalloutManager.extractTaskKeyword(from: "open sketch and create a wireframe") == "design")
+    }
+
+    @Test func taskAwareCalloutsArtHasMessages() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "art", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) must have art messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsArtDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "art", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "art", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "art", tier: 3).count >= 2)
+        }
+    }
+
+    @Test func taskAwareCalloutsArtTier3HasUrgentMessage() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "art", tier: 3)
+            let hasUrgent = tier3.contains { msg in
+                let upper = msg.uppercased()
+                return upper.contains("CLOSE") || upper.contains("FINISH") || upper.contains("CANVAS")
+            }
+            #expect(hasUrgent, "tier 3 art messages must contain an urgent directive")
+        }
+    }
 }

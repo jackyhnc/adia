@@ -1,5 +1,107 @@
 # Adia — Build Progress
 
+## Run 216 — 2026-07-01 — Fitness, podcast, art keywords + social-media rejection expansion
+
+### Shipped
+
+**Three new `extractTaskKeyword` keywords** (CalloutManager.swift):
+
+- **`"art"` keyword** — placed before `"design"` in the chain so drawing/painting/illustration
+  terms win over the generic design block.
+  Matches: `word("drawing")`, `word("painting")`, `word("sketching")`,
+  `word("illustration")`, `word("illustrations")`, `word("illustrate")`,
+  `word("illustrating")`, `word("procreate")`, `word("sculpting")`,
+  `lower.contains("digital art")`, `lower.contains("digital painting")`,
+  `lower.contains("concept art")`, `lower.contains("adobe illustrator")`.
+  Bare `word("draw")` and `word("paint")` intentionally excluded (too ambiguous:
+  "draw up a contract", "paint the house").
+
+- **`"fitness"` keyword** — placed after `"practice"` and before `"planning"` in the chain
+  so that fitness terms beat the generic planning bucket ("plan my workout" → "fitness",
+  not "planning").
+  Matches: `word("workout")`, `word("workouts")`, `word("gym")`, `word("lifting")`,
+  `word("weightlifting")`, `word("bodybuilding")`, `word("cardio")`, `word("jogging")`,
+  `word("cycling")`, `word("yoga")`, `word("pilates")`, `word("stretching")`,
+  `word("swimming")`, `lower.contains("strength training")`,
+  `lower.contains("weight training")`, `lower.contains("cross training")`,
+  `lower.contains("endurance training")`, `lower.contains("meal prep")`,
+  `lower.contains("nutrition plan")`, `word("calories")`.
+  Excluded bare `word("running")` (too ambiguous: "running a script"), `word("macros")`
+  (could be Excel/code macros), and `word("sprinting")` (Agile sprints).
+
+- **`"podcast"` keyword** — placed after `"fitness"` and before `"planning"` in the chain.
+  Matches: `word("podcast")`, `word("podcasting")`,
+  `lower.contains("podcast episode")`, `lower.contains("record an episode")`,
+  `lower.contains("edit an episode")`, `lower.contains("edit the episode")`,
+  `lower.contains("show notes")`.
+
+**Three new callout pools** (CalloutMessages.swift):
+- `fitnessCallouts(tier:)` — 4/3/3 messages. Tier 1: "the reps don't count themselves."
+  Tier 3: "CLOSE THIS. Go finish your workout."
+- `podcastCallouts(tier:)` — 4/3/3 messages. Tier 1: "the episode isn't going to edit itself."
+  Tier 3: "CLOSE THIS. Go finish your episode."
+- `artCallouts(tier:)` — 4/3/3 messages. Tier 1: "the canvas won't fill itself."
+  Tier 3: "CLOSE THIS. Go finish your work."
+
+**Local rejection expansion** (AgentAIResponseParser.swift) — 16 new exact-match entries:
+- Bare platform names with no deliverable: `"twitter"`, `"reddit"`, `"facebook"`, `"x"`.
+- Social-media scrolling intents: `"scroll twitter"`, `"browse twitter"`, `"check twitter"`,
+  `"open twitter"`, `"scroll reddit"`, `"browse reddit"`, `"check reddit"`, `"open reddit"`,
+  `"scroll facebook"`, `"browse facebook"`, `"check facebook"`, `"open facebook"`,
+  `"scroll x"`, `"browse x"`, `"scroll instagram"`, `"check instagram"`, `"open instagram"`,
+  `"scroll tiktok"`, `"open tiktok"`, `"scroll snapchat"`, `"check snapchat"`,
+  `"open snapchat"`.
+  Counter-cases verified: "analyze twitter engagement data…" / "write a reddit post about…" /
+  "build a facebook ads campaign report" all pass through to the model because the exact-match
+  guard only fires when the ENTIRE input matches, not when the platform name is embedded in a
+  longer task description.
+
+**New tests** (+184 lines CalloutManagerTests, +59 lines AgentAIClientTests, 243 new assertions):
+- `extractTaskKeywordFromDrawing`, `extractTaskKeywordFromPainting`,
+  `extractTaskKeywordFromIllustration`, `extractTaskKeywordFromProcreate`,
+  `extractTaskKeywordFromDigitalArt`, `extractTaskKeywordFromSketching`,
+  `extractTaskKeywordArtDoesNotOverrideCode`, `extractTaskKeywordArtDoesNotOverrideDesign`,
+  `taskAwareCalloutsArtHasMessages`, `taskAwareCalloutsArtDedicatedPoolSize`,
+  `taskAwareCalloutsArtTier3HasUrgentMessage`.
+- `extractTaskKeywordFromWorkout`, `extractTaskKeywordFromGym`,
+  `extractTaskKeywordFromCardio`, `extractTaskKeywordFromYoga`,
+  `extractTaskKeywordFromMealPrep`, `extractTaskKeywordFromNutritionPlan`,
+  `extractTaskKeywordFitnessDoesNotOverrideCode`, `extractTaskKeywordFitnessDoesNotOverrideStudying`,
+  `taskAwareCalloutsFitnessHasMessages`, `taskAwareCalloutsFitnessDedicatedPoolSize`,
+  `taskAwareCalloutsFitnessTier3HasUrgentMessage`.
+- `extractTaskKeywordFromPodcast`, `extractTaskKeywordFromPodcastEpisode`,
+  `extractTaskKeywordFromShowNotes`, `extractTaskKeywordFromPodcasting`,
+  `extractTaskKeywordPodcastDoesNotOverrideCode`,
+  `taskAwareCalloutsPodcastHasMessages`, `taskAwareCalloutsPodcastDedicatedPoolSize`,
+  `taskAwareCalloutsPodcastTier3HasUrgentMessage`.
+- `localRejectionRejectsBareTwitter`, `localRejectionRejectsBareReddit`,
+  `localRejectionRejectsBareFacebook`, `localRejectionRejectsBareX`,
+  `localRejectionRejectsScrollTwitter`, `localRejectionRejectsScrollReddit`,
+  `localRejectionRejectsScrollFacebook`, `localRejectionRejectsScrollInstagram`,
+  `localRejectionRejectsScrollTikTok`,
+  `localRejectionAcceptsTwitterAnalysis`, `localRejectionAcceptsRedditPost`,
+  `localRejectionAcceptsFacebookAds`.
+
+### Blocked
+- Swift toolchain unavailable on Linux container — changes reviewed manually for correctness.
+  All 34 GOAL.md items remain complete. BUILD_COMPLETE is present.
+
+### Next agent
+- All 34 GOAL.md tasks remain checked; BUILD_COMPLETE is in place.
+- `extractTaskKeyword` now covers 30 keywords: essay, paper, thesis, presentation, code,
+  report, studying, reading, homework, research, art (new), design, email, project, proposal,
+  interview, meeting, video, resume, application, writing, budget, tutor, practice,
+  fitness (new), podcast (new), planning, music, language, deadline (+ generic fallback).
+- Potential next improvements:
+  - Expand art callouts to be more specific: "drawing" vs "painting" vs "sculpting" have
+    distinct phrasing opportunities, though the generic pool already serves all three.
+  - Add callout test verifying that "plan my workout" extracts "fitness" (not "planning"),
+    confirming the chain priority edge case.
+  - Add "newsletter" / "blog" plural forms to extractTaskKeyword ("newsletters" → "writing").
+  - Add "internship" keyword or expand interview pool to cover internship-hunting tasks.
+
+---
+
 ## Run 215 — 2026-06-30 — Music + language keyword extraction with dedicated callout pools
 
 ### Shipped

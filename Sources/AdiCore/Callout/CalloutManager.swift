@@ -127,6 +127,13 @@ public final class CalloutManager {
         if word("research") || word("lab") {
             return "research"
         }
+        if word("drawing") || word("painting") || word("sketching")
+            || word("illustration") || word("illustrations") || word("illustrate") || word("illustrating")
+            || word("procreate") || word("sculpting")
+            || lower.contains("digital art") || lower.contains("digital painting")
+            || lower.contains("concept art") || lower.contains("adobe illustrator") {
+            return "art"
+        }
         if word("design") || word("designing") || word("mockup") || word("wireframe")
             || word("prototype") || word("figma") || word("sketch") {
             return "design"
@@ -179,6 +186,22 @@ public final class CalloutManager {
         if word("practice") || word("practicing") || word("practise") || word("practising")
             || word("rehearse") || word("rehearsing") || word("rehearsal") {
             return "practice"
+        }
+        if word("workout") || word("workouts") || word("gym")
+            || word("lifting") || word("weightlifting") || word("bodybuilding")
+            || word("cardio") || word("jogging") || word("cycling") || word("yoga") || word("pilates")
+            || word("stretching") || word("swimming")
+            || lower.contains("strength training") || lower.contains("weight training")
+            || lower.contains("cross training") || lower.contains("endurance training")
+            || lower.contains("meal prep") || lower.contains("nutrition plan")
+            || word("calories") {
+            return "fitness"
+        }
+        if word("podcast") || word("podcasting")
+            || lower.contains("podcast episode") || lower.contains("record an episode")
+            || lower.contains("edit an episode") || lower.contains("edit the episode")
+            || lower.contains("show notes") {
+            return "podcast"
         }
         if word("plan") || word("planning") || word("planner") {
             return "planning"

@@ -74,6 +74,9 @@ extension CalloutManager {
         case "planning":  return planningCallouts(tier: tier)
         case "music":     return musicCallouts(tier: tier)
         case "language":  return languageCallouts(tier: tier)
+        case "fitness":   return fitnessCallouts(tier: tier)
+        case "podcast":   return podcastCallouts(tier: tier)
+        case "art":       return artCallouts(tier: tier)
         default:          return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -589,6 +592,69 @@ extension CalloutManager {
             "CLOSE THIS. Go practice your language.",
             "consistency is the only thing that works. close it.",
             "fluency is built rep by rep — go back.",
+        ]
+        }
+    }
+
+    private func fitnessCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "get back to your workout.",
+            "the reps don't count themselves.",
+            "close this and get moving.",
+            "you won't make gains from here.",
+        ]
+        case 2: return [
+            "stop delaying. put in the work.",
+            "you're supposed to be working out, not browsing.",
+            "close this and finish your session.",
+        ]
+        default: return [
+            "CLOSE THIS. Go finish your workout.",
+            "progress is made in the gym, not here.",
+            "put it down. the work is waiting.",
+        ]
+        }
+    }
+
+    private func podcastCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "get back to your episode.",
+            "those show notes won't write themselves.",
+            "close this and keep recording.",
+            "the episode isn't going to edit itself.",
+        ]
+        case 2: return [
+            "stop browsing. finish the episode.",
+            "you can't produce a podcast from here.",
+            "close this and get back to the recording.",
+        ]
+        default: return [
+            "CLOSE THIS. Go finish your episode.",
+            "the podcast won't produce itself.",
+            "put it down. your listeners are waiting.",
+        ]
+        }
+    }
+
+    private func artCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "get back to your drawing.",
+            "the canvas won't fill itself.",
+            "close this and keep creating.",
+            "your work isn't going to make itself.",
+        ]
+        case 2: return [
+            "stop browsing. pick up the pen.",
+            "you can't make art from here.",
+            "close this and get back to your piece.",
+        ]
+        default: return [
+            "CLOSE THIS. Go finish your work.",
+            "the piece won't paint itself.",
+            "put it down. the canvas is waiting.",
         ]
         }
     }

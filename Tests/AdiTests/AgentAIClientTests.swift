@@ -757,6 +757,65 @@ struct AgentAIClientResizeTests {
         #expect(result.height == 300)
     }
 
+    // MARK: - Local rejection — social media scrolling intents
+
+    @Test func localRejectionRejectsBareTwitter() {
+        #expect(AgentAIClient.localGoalRejectionReason("twitter") != nil)
+    }
+
+    @Test func localRejectionRejectsBareReddit() {
+        #expect(AgentAIClient.localGoalRejectionReason("reddit") != nil)
+    }
+
+    @Test func localRejectionRejectsBareFacebook() {
+        #expect(AgentAIClient.localGoalRejectionReason("facebook") != nil)
+    }
+
+    @Test func localRejectionRejectsBareX() {
+        #expect(AgentAIClient.localGoalRejectionReason("x") != nil)
+    }
+
+    @Test func localRejectionRejectsScrollTwitter() {
+        #expect(AgentAIClient.localGoalRejectionReason("scroll twitter") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("browse twitter") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("check twitter") != nil)
+    }
+
+    @Test func localRejectionRejectsScrollReddit() {
+        #expect(AgentAIClient.localGoalRejectionReason("scroll reddit") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("browse reddit") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("check reddit") != nil)
+    }
+
+    @Test func localRejectionRejectsScrollFacebook() {
+        #expect(AgentAIClient.localGoalRejectionReason("scroll facebook") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("browse facebook") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("check facebook") != nil)
+    }
+
+    @Test func localRejectionRejectsScrollInstagram() {
+        #expect(AgentAIClient.localGoalRejectionReason("scroll instagram") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("check instagram") != nil)
+    }
+
+    @Test func localRejectionRejectsScrollTikTok() {
+        #expect(AgentAIClient.localGoalRejectionReason("scroll tiktok") != nil)
+        #expect(AgentAIClient.localGoalRejectionReason("open tiktok") != nil)
+    }
+
+    // Counter-cases: social platform names embedded in real tasks must pass through.
+    @Test func localRejectionAcceptsTwitterAnalysis() {
+        #expect(AgentAIClient.localGoalRejectionReason("analyze twitter engagement data for my marketing thesis") == nil)
+    }
+
+    @Test func localRejectionAcceptsRedditPost() {
+        #expect(AgentAIClient.localGoalRejectionReason("write a reddit post about my research findings") == nil)
+    }
+
+    @Test func localRejectionAcceptsFacebookAds() {
+        #expect(AgentAIClient.localGoalRejectionReason("build a facebook ads campaign report") == nil)
+    }
+
     @Test func fourKDisplayHalfResIsDownscaled() {
         guard let img = makeImage(width: 1920, height: 1080) else { return }
         let result = AgentAIClient.resizeForVision(img)
