@@ -8850,3 +8850,58 @@ manually for correctness. All 34 GOAL.md items remain complete.
 All original goals remain complete. BUILD_COMPLETE is present. No known bugs.
 The local rejection system is now fully based on exact-match, preventing any
 future false positives from substring collisions.
+
+---
+
+## Run 223 — 2026-07-01 — Admin route tests + better-sqlite3 binding fix
+
+### What shipped
+
+**1. Fixed better-sqlite3 native bindings (Node.js 22 compatibility)**
+
+All 85 DB-backed web tests were failing in CI because the pre-built
+`better-sqlite3` native binding for Node.js 22 was missing. The `^11.5.0`
+lockfile resolved to a build that didn't ship a pre-compiled `.node` binary
+for `node-v127-linux-x64`. Bumped to `^11.10.0` which includes the required
+binary; all 85 existing tests now pass without a native recompile.
+
+**2. 34 new tests for previously-uncovered admin routes**
+
+`web/__tests__/admin-routes.test.ts` covers four security-critical admin
+endpoints that had zero test coverage:
+
+- `GET /api/admin/activations` — auth (401 no token, 401 wrong token), missing
+  key param (400), unknown key (404), empty activation list, multi-machine list
+  with correct seat count, license metadata in response.
+- `DELETE /api/admin/activations` — auth, missing params, unknown key (404),
+  successful deactivation with updated seat count, idempotent delete of ghost machine.
+- `POST /api/admin/revoke` — auth, missing key (400), unknown key (404), revokes
+  active license + returns previousStatus, persists to DB, normalizes key to
+  uppercase, revoking already-canceled license returns 200.
+- `GET /api/admin/lookup` — auth, missing key (400), unknown key (404), happy path
+  with full license data, query-param `?token=` auth fallback.
+- `GET /api/admin/licenses-by-email` — auth, missing email (400), unknown email
+  returns empty list, multi-license result with correct count, email lowercase
+  normalization, cross-email isolation.
+
+Root cause of earlier flaky approach: using `vi.resetModules()` in `beforeEach`
+breaks module sharing — the route's dynamic import of `@/lib/db` gets a fresh
+instance with default `_resolvedPath`, not the test DB path set by
+`resetDbForTesting`. Fix: follow the `admin-issue.test.ts` pattern (no
+`vi.resetModules()`, dynamic imports, shared module cache).
+
+Final score: **119 tests passing (11 test files), 0 failures**.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container — Swift-side changes are
+reviewed manually. All 34 GOAL.md items remain complete.
+
+### Next agent
+All original goals complete. BUILD_COMPLETE is present. Web test suite at
+119/119. Possible follow-up areas:
+- Next.js 14.2.18 has known security vulnerabilities — consider upgrading to
+  15.x (breaking changes, requires careful migration).
+- Activate/validate routes could use rate-limit integration tests (currently only
+  unit-level coverage of the ratelimit module).
+- The Swift tests suite can't run on Linux — consider adding a GitHub Actions
+  CI workflow that builds on macOS when available.
