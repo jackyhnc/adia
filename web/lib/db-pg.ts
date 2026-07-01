@@ -5,7 +5,7 @@
 // Idempotent — IF NOT EXISTS everywhere.
 
 import { sql } from '@vercel/postgres';
-import type { License } from './db';
+import type { License, Activation } from './db';
 
 let _schemaReady = false;
 
@@ -153,6 +153,28 @@ export async function countActivationsPg(key: string): Promise<number> {
     SELECT COUNT(*)::int AS c FROM activations WHERE license_key = ${key}
   `;
   return result.rows[0]?.c ?? 0;
+}
+
+export async function listActivationsPg(key: string): Promise<Activation[]> {
+  await ensureSchema();
+  const result = await sql<any>`
+    SELECT machine_hash,
+           to_char(first_seen, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS first_seen,
+           to_char(last_seen,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS last_seen
+    FROM activations
+    WHERE license_key = ${key}
+    ORDER BY last_seen DESC
+  `;
+  return result.rows.map((r: any) => ({
+    machineHash: r.machine_hash,
+    firstSeen: r.first_seen,
+    lastSeen: r.last_seen,
+  }));
+}
+
+export async function removeActivationPg(key: string, machineHash: string): Promise<void> {
+  await ensureSchema();
+  await sql`DELETE FROM activations WHERE license_key = ${key} AND machine_hash = ${machineHash}`;
 }
 
 export async function setStatusPg(key: string, status: License['status']): Promise<void> {

@@ -7,14 +7,14 @@
 //   anything else                 → better-sqlite3 (lib/db.ts)
 
 import * as sqlite from './db';
-import type { License } from './db';
+import type { License, Activation } from './db';
 
 const usePg = (() => {
   const url = process.env.DATABASE_URL ?? '';
   return /^postgres(ql)?:\/\//.test(url);
 })();
 
-export type { License };
+export type { License, Activation };
 
 export async function insertLicense(row: {
   key: string;
@@ -93,6 +93,22 @@ export async function setExpiryBySub(stripeSub: string, expiresAt: string | null
     return setExpiryBySubPg(stripeSub, expiresAt);
   }
   sqlite.setExpiryBySub(stripeSub, expiresAt);
+}
+
+export async function listActivations(key: string): Promise<Activation[]> {
+  if (usePg) {
+    const { listActivationsPg } = await import('./db-pg');
+    return listActivationsPg(key);
+  }
+  return sqlite.listActivations(key);
+}
+
+export async function removeActivation(key: string, machineHash: string): Promise<void> {
+  if (usePg) {
+    const { removeActivationPg } = await import('./db-pg');
+    return removeActivationPg(key, machineHash);
+  }
+  sqlite.removeActivation(key, machineHash);
 }
 
 export async function joinWaitlist(email: string): Promise<void> {

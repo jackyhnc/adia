@@ -62,6 +62,12 @@ export type License = {
   expiresAt: string | null;
 };
 
+export type Activation = {
+  machineHash: string;
+  firstSeen: string;
+  lastSeen: string;
+};
+
 /// Returns the license key written, or the EXISTING key when a row with the same
 /// stripe_session already exists (idempotency: re-delivered webhooks must not
 /// double-issue licenses).
@@ -164,6 +170,25 @@ export function setStatusBySub(stripeSub: string, status: License['status']) {
 
 export function setExpiryBySub(stripeSub: string, expiresAt: string | null) {
   db().prepare('UPDATE licenses SET expires_at = ? WHERE stripe_sub = ?').run(expiresAt, stripeSub);
+}
+
+export function listActivations(key: string): Activation[] {
+  const rows = db()
+    .prepare(
+      'SELECT machine_hash, first_seen, last_seen FROM activations WHERE license_key = ? ORDER BY last_seen DESC',
+    )
+    .all(key) as any[];
+  return rows.map(r => ({
+    machineHash: r.machine_hash,
+    firstSeen: r.first_seen,
+    lastSeen: r.last_seen,
+  }));
+}
+
+export function removeActivation(key: string, machineHash: string): void {
+  db()
+    .prepare('DELETE FROM activations WHERE license_key = ? AND machine_hash = ?')
+    .run(key, machineHash);
 }
 
 export function joinWaitlist(email: string) {

@@ -7,6 +7,8 @@ import {
   findLicense,
   findLicensesByEmail,
   recordActivation,
+  listActivations,
+  removeActivation,
   setStatus,
   setStatusBySub,
   joinWaitlist,
@@ -163,5 +165,84 @@ describe('findLicensesByEmail', () => {
     insertLicense({ key: 'ADIA-FBED-TEST-DDDD', email: 'other@example.com', plan: 'monthly', expiresAt: null });
     const results = findLicensesByEmail('nobody@example.com');
     expect(results).toHaveLength(0);
+  });
+});
+
+describe('listActivations', () => {
+  it('returns empty array when no machines are activated', () => {
+    const key = 'ADIA-LSTA-TEST-AAAA';
+    insertLicense({ key, email: 'list@example.com', plan: 'lifetime', expiresAt: null });
+    expect(listActivations(key)).toHaveLength(0);
+  });
+
+  it('lists all activated machines ordered by last_seen descending', () => {
+    const key = 'ADIA-LSTB-TEST-BBBB';
+    insertLicense({ key, email: 'list2@example.com', plan: 'lifetime', expiresAt: null });
+    recordActivation(key, 'machine-alpha');
+    recordActivation(key, 'machine-beta');
+    const acts = listActivations(key);
+    expect(acts).toHaveLength(2);
+    const hashes = acts.map(a => a.machineHash);
+    expect(hashes).toContain('machine-alpha');
+    expect(hashes).toContain('machine-beta');
+  });
+
+  it('includes firstSeen and lastSeen timestamps', () => {
+    const key = 'ADIA-LSTC-TEST-CCCC';
+    insertLicense({ key, email: 'list3@example.com', plan: 'lifetime', expiresAt: null });
+    recordActivation(key, 'machine-ts');
+    const acts = listActivations(key);
+    expect(acts[0].firstSeen).toBeTruthy();
+    expect(acts[0].lastSeen).toBeTruthy();
+  });
+
+  it('does not include machines from other licenses', () => {
+    const key1 = 'ADIA-LSTD-TEST-DDDD';
+    const key2 = 'ADIA-LSTE-TEST-EEEE';
+    insertLicense({ key: key1, email: 'a@example.com', plan: 'lifetime', expiresAt: null });
+    insertLicense({ key: key2, email: 'b@example.com', plan: 'lifetime', expiresAt: null });
+    recordActivation(key1, 'machine-x');
+    recordActivation(key2, 'machine-y');
+    const acts = listActivations(key1);
+    expect(acts).toHaveLength(1);
+    expect(acts[0].machineHash).toBe('machine-x');
+  });
+});
+
+describe('removeActivation', () => {
+  it('removes the specified machine from the activations table', () => {
+    const key = 'ADIA-RMVA-TEST-AAAA';
+    insertLicense({ key, email: 'rm@example.com', plan: 'lifetime', expiresAt: null });
+    recordActivation(key, 'machine-gone');
+    recordActivation(key, 'machine-kept');
+    expect(listActivations(key)).toHaveLength(2);
+    removeActivation(key, 'machine-gone');
+    const remaining = listActivations(key);
+    expect(remaining).toHaveLength(1);
+    expect(remaining[0].machineHash).toBe('machine-kept');
+  });
+
+  it('is a no-op when the machine hash does not exist', () => {
+    const key = 'ADIA-RMVB-TEST-BBBB';
+    insertLicense({ key, email: 'rm2@example.com', plan: 'lifetime', expiresAt: null });
+    recordActivation(key, 'machine-real');
+    expect(() => removeActivation(key, 'machine-ghost')).not.toThrow();
+    expect(listActivations(key)).toHaveLength(1);
+  });
+
+  it('frees the seat so a new machine can be activated', () => {
+    const key = 'ADIA-RMVC-TEST-CCCC';
+    insertLicense({ key, email: 'rm3@example.com', plan: 'lifetime', expiresAt: null });
+    recordActivation(key, 'machine-1');
+    recordActivation(key, 'machine-2');
+    recordActivation(key, 'machine-3');
+    expect(listActivations(key)).toHaveLength(3);
+    removeActivation(key, 'machine-1');
+    // After removal the seat is freed; recordActivation should succeed
+    recordActivation(key, 'machine-4');
+    expect(listActivations(key)).toHaveLength(3);
+    const hashes = listActivations(key).map(a => a.machineHash);
+    expect(hashes).toContain('machine-4');
+    expect(hashes).not.toContain('machine-1');
   });
 });
