@@ -1,5 +1,43 @@
 # Adia — Build Progress
 
+## Run 222 — 2026-07-01T18:10:00Z — admin: POST /api/admin/issue for comp/free license generation
+
+### Shipped
+
+**New route — `POST /api/admin/issue`:**
+- `web/app/api/admin/issue/route.ts`: generates a license key via `generateLicenseKey()`,
+  inserts it with no Stripe session/sub, returns `{ok, key, email, plan, issuedAt, expiresAt, note}`.
+  Auth: ADMIN_TOKEN bearer header or `?token=` query param.
+  Validates plan ∈ {monthly, yearly, lifetime}; normalises email to lowercase.
+
+**13 new tests (`web/__tests__/admin-issue.test.ts`):**
+- Auth: 401 with no token, 401 with wrong token.
+- Validation: 400 for missing email, 400 for missing plan, 400 for invalid plan value.
+- Lifetime: key returned in ADIA-XXXX-XXXX-XXXX format, persisted with status=active, null expiresAt.
+- Email normalisation: `User@EXAMPLE.COM` → `user@example.com` in DB and response.
+- Monthly/yearly: expiresAt is non-null, within expected range (~31 and ~366 days).
+- Note field: echoed back when provided, null when omitted.
+- Key uniqueness: concurrent calls produce different keys.
+- All **85 web tests pass** (10 test files).
+
+**Admin UI (`web/app/admin/page.tsx`):**
+- New `IssuePanel` added at the top of `/admin` — email input, plan dropdown (defaults to Lifetime),
+  optional note field. On success displays the generated key prominently in a green card with
+  `select-all` support for easy copy-paste.
+
+### Blocked
+Nothing blocked.
+
+### Next agent should
+- Add `invoice.payment_failed` email notification to warn users their payment failed and license is at risk.
+- Add "annotate" / "annotation" keyword to the reading block in `CalloutMessages.swift`.
+- Add "peer review" to the writing block in `CalloutMessages.swift`.
+- Add "data analysis" / "data collection" to the research block in `CalloutMessages.swift`.
+- Review `DefaultBlocklists.swift` for new apps worth adding to the block list.
+- Web tests: 85 (admin-issue:13, activate:8, db:14, webhook:2, webhook-integration:12, validate:7, waitlist:5, license:7, checkout:3, ratelimit:7).
+
+---
+
 ## Run 221 — 2026-07-01T17:09:58Z — admin: machine activation management + license revoke
 
 ### Shipped
