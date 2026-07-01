@@ -1,5 +1,32 @@
 # Adia — Build Progress
 
+## Run 217 — 2026-07-01 — Security fix: seat-limit bypass via /validate
+
+### Shipped
+- **Bug fix: unactivated machines could bypass the seat limit via `/api/license/validate`.**
+  The validate route called `recordActivation` unconditionally, inserting any `machine` hash
+  it received. A user who already had 3 activated seats could call `/validate` (which only
+  needs `key + machine`, no email) with new machine IDs, silently adding rows and sidestepping
+  the `MAX_SEATS` guard that lives only in `/activate`.
+- Fix: added an `hasActivation` check before recording. Unknown machines now receive
+  `403 "Machine not activated. Use /activate first."` — the seat-limit gate stays exclusively
+  in `/activate` where it belongs.
+- Added a dedicated `"seat-bypass prevention"` test to `__tests__/validate.test.ts`.
+- Updated the two existing happy-path tests to pre-record the activation via `recordActivation`,
+  mirroring the real-world state (activate always runs before validate).
+- 49 web tests pass (up from 48).
+
+### Blocked
+- None.
+
+### Next agent
+- All 34 GOAL.md items remain checked. BUILD_COMPLETE is present.
+- Security fix shipped: `/validate` no longer adds new machines.
+- No open GitHub issues or PRs.
+- If new features are desired, add them to GOAL.md.
+
+---
+
 ## Run 216 — 2026-07-01 — Fitness, podcast, art keywords + social-media rejection expansion
 
 ### Shipped
