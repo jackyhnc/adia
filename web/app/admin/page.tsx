@@ -25,10 +25,106 @@ export default function Admin() {
         />
       </div>
 
+      <IssuePanel token={token} />
       <LookupPanel token={token} />
       <ActivationsPanel token={token} />
       <RevokePanel token={token} />
     </section>
+  );
+}
+
+// ─── Issue comp / free license ────────────────────────────────────────────────
+
+function IssuePanel({ token }: { token: string }) {
+  const [email, setEmail] = useState('');
+  const [plan, setPlan] = useState<'monthly' | 'yearly' | 'lifetime'>('lifetime');
+  const [note, setNote] = useState('');
+  const [result, setResult] = useState<{ key: string; email: string; plan: string; expiresAt: string | null } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function issue(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/issue', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, plan, note: note || undefined }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+        setEmail('');
+        setNote('');
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Issue comp license</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Manually generate a license key for a user — no Stripe required. Use for speaker comps,
+        beta testers, team members, or support resolutions.
+      </p>
+      <form onSubmit={issue} className="card space-y-3">
+        <Field label="Email">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="user@example.com"
+            className="input"
+            required
+          />
+        </Field>
+        <Field label="Plan">
+          <select
+            value={plan}
+            onChange={(e) => setPlan(e.target.value as typeof plan)}
+            className="input"
+          >
+            <option value="lifetime">Lifetime</option>
+            <option value="yearly">Yearly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </Field>
+        <Field label="Note (optional — not stored, just echoed back)">
+          <input
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="speaker comp, beta tester, …"
+            className="input"
+          />
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Issuing…' : 'Issue license'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {result && (
+        <div className="card mt-3 space-y-2 border border-green-500/30 bg-green-50/5">
+          <p className="text-sm font-semibold text-green-600">License issued ✓</p>
+          <p className="text-xs text-ink/60">Send this key to the recipient:</p>
+          <p className="font-mono text-base font-bold tracking-widest select-all">{result.key}</p>
+          <p className="text-xs text-ink/50">
+            {result.email} · {result.plan}
+            {result.expiresAt ? ` · expires ${result.expiresAt.slice(0, 10)}` : ' · no expiry'}
+          </p>
+        </div>
+      )}
+    </div>
   );
 }
 
