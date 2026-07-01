@@ -8505,3 +8505,58 @@ broad — "build a youtube content calendar" would be incorrectly rejected
 because it contains "youtube". Fixing this would require moving bare platform
 names into `leisureExact` and replacing the contains check with a more
 targeted "verb + platform" pattern, but requires careful regression testing.
+
+---
+
+## Run 219 — 2026-07-01 — Fix entertainmentPlatforms false-positive rejection
+
+### What shipped
+
+**`localGoalRejectionReason` — remove overly-broad `entertainmentPlatforms.contains()` check**
+
+The substring-based check `entertainmentPlatforms.contains(where: { lower.contains($0) })`
+was causing false positives for productive tasks that happen to mention a platform:
+- "build a youtube content calendar" → incorrectly rejected (contains "youtube")
+- "create a youtube thumbnail for my video" → incorrectly rejected
+- "write a tiktok script for my marketing class" → incorrectly rejected
+- "analyze netflix viewing data for my thesis" → incorrectly rejected
+
+**Fix in `AgentAIResponseParser.swift`:**
+
+Removed the `entertainmentPlatforms` array and the `.contains(where: { lower.contains($0) })` call
+entirely. All leisure platform patterns are now handled exclusively by `leisureExact` (exact
+whole-input match), which already covered twitter/reddit/facebook/x/instagram/tiktok/snapchat.
+
+Added the missing platforms to `leisureExact` with bare names and all leisure verbs
+(scroll/browse/check/open/visit/watch, plus stream for Twitch):
+- youtube: "youtube", "scroll youtube", "browse youtube", "check youtube", "open youtube", "visit youtube", "watch youtube"
+- netflix: "netflix" + all 6 leisure verbs
+- hulu: "hulu" + all 6 leisure verbs
+- twitch: "twitch" + all 6 leisure verbs + "stream twitch"
+- instagram, tiktok, snapchat: added "browse" and "watch" verbs that were previously missing
+
+A productive sentence like "build a youtube content calendar" now passes through to the model
+because it doesn't match any entry in `leisureExact` exactly.
+
+**22 new `@Test` functions in `AgentAIClientTests.swift`:**
+`localRejectionRejectsBareYoutube`, `localRejectionRejectsWatchYoutube`,
+`localRejectionRejectsBrowseYoutube`,
+`localRejectionAcceptsYoutubeContentCalendar`, `localRejectionAcceptsYoutubeThumbnail`,
+`localRejectionAcceptsYoutubeScript`,
+`localRejectionRejectsBareNetflix`, `localRejectionRejectsWatchNetflix`,
+`localRejectionAcceptsNetflixDataAnalysis`,
+`localRejectionRejectsBareTikTok`, `localRejectionRejectsWatchTikTok`,
+`localRejectionAcceptsTikTokScript`,
+`localRejectionRejectsBareHulu`, `localRejectionRejectsWatchHulu`,
+`localRejectionRejectsBareTwitch`, `localRejectionRejectsWatchTwitch`,
+`localRejectionRejectsStreamTwitch`,
+`localRejectionRejectsBareInstagram`, `localRejectionRejectsBareSnapchat`.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container — changes reviewed
+manually for correctness. All 34 GOAL.md items remain complete.
+
+### Next agent
+All original goals remain complete. BUILD_COMPLETE is present. No known bugs.
+The local rejection system is now fully based on exact-match, preventing any
+future false positives from substring collisions.

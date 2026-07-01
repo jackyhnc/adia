@@ -857,6 +857,77 @@ struct AgentAIClientResizeTests {
         #expect(AgentAIClient.localGoalRejectionReason("build a facebook ads campaign report") == nil)
     }
 
+    // youtube — bare name and watch verb should reject; productive use should pass
+    @Test func localRejectionRejectsBareYoutube() {
+        #expect(AgentAIClient.localGoalRejectionReason("youtube") != nil)
+    }
+    @Test func localRejectionRejectsWatchYoutube() {
+        #expect(AgentAIClient.localGoalRejectionReason("watch youtube") != nil)
+    }
+    @Test func localRejectionRejectsBrowseYoutube() {
+        #expect(AgentAIClient.localGoalRejectionReason("browse youtube") != nil)
+    }
+    @Test func localRejectionAcceptsYoutubeContentCalendar() {
+        #expect(AgentAIClient.localGoalRejectionReason("build a youtube content calendar for my channel") == nil)
+    }
+    @Test func localRejectionAcceptsYoutubeThumbnail() {
+        #expect(AgentAIClient.localGoalRejectionReason("create a youtube thumbnail for my video") == nil)
+    }
+    @Test func localRejectionAcceptsYoutubeScript() {
+        #expect(AgentAIClient.localGoalRejectionReason("write a youtube script for my channel") == nil)
+    }
+
+    // netflix — bare name and watch verb should reject; research use should pass
+    @Test func localRejectionRejectsBareNetflix() {
+        #expect(AgentAIClient.localGoalRejectionReason("netflix") != nil)
+    }
+    @Test func localRejectionRejectsWatchNetflix() {
+        #expect(AgentAIClient.localGoalRejectionReason("watch netflix") != nil)
+    }
+    @Test func localRejectionAcceptsNetflixDataAnalysis() {
+        #expect(AgentAIClient.localGoalRejectionReason("analyze netflix viewing data for my thesis") == nil)
+    }
+
+    // tiktok — bare name and watch verb should reject; productive use should pass
+    @Test func localRejectionRejectsBareTikTok() {
+        #expect(AgentAIClient.localGoalRejectionReason("tiktok") != nil)
+    }
+    @Test func localRejectionRejectsWatchTikTok() {
+        #expect(AgentAIClient.localGoalRejectionReason("watch tiktok") != nil)
+    }
+    @Test func localRejectionAcceptsTikTokScript() {
+        #expect(AgentAIClient.localGoalRejectionReason("write a tiktok script for my marketing class") == nil)
+    }
+
+    // hulu — bare name and watch verb should reject
+    @Test func localRejectionRejectsBareHulu() {
+        #expect(AgentAIClient.localGoalRejectionReason("hulu") != nil)
+    }
+    @Test func localRejectionRejectsWatchHulu() {
+        #expect(AgentAIClient.localGoalRejectionReason("watch hulu") != nil)
+    }
+
+    // twitch — bare name, watch, and stream verbs should reject
+    @Test func localRejectionRejectsBareTwitch() {
+        #expect(AgentAIClient.localGoalRejectionReason("twitch") != nil)
+    }
+    @Test func localRejectionRejectsWatchTwitch() {
+        #expect(AgentAIClient.localGoalRejectionReason("watch twitch") != nil)
+    }
+    @Test func localRejectionRejectsStreamTwitch() {
+        #expect(AgentAIClient.localGoalRejectionReason("stream twitch") != nil)
+    }
+
+    // instagram bare name now explicitly in leisureExact
+    @Test func localRejectionRejectsBareInstagram() {
+        #expect(AgentAIClient.localGoalRejectionReason("instagram") != nil)
+    }
+
+    // snapchat bare name now explicitly in leisureExact
+    @Test func localRejectionRejectsBareSnapchat() {
+        #expect(AgentAIClient.localGoalRejectionReason("snapchat") != nil)
+    }
+
     @Test func fourKDisplayHalfResIsDownscaled() {
         guard let img = makeImage(width: 1920, height: 1080) else { return }
         let result = AgentAIClient.resizeForVision(img)

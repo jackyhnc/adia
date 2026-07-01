@@ -129,20 +129,31 @@ extension AgentAIClient {
             "scroll twitter", "browse twitter", "check twitter", "open twitter", "visit twitter",
             "scroll reddit", "browse reddit", "check reddit", "open reddit", "visit reddit",
             "scroll facebook", "browse facebook", "check facebook", "open facebook", "visit facebook",
-            // "x" needs explicit entries — too short for the entertainmentPlatforms contains check
+            // "x" needs explicit entries — too short to word-boundary match safely
             "scroll x", "browse x", "check x", "open x", "visit x",
-            "scroll instagram", "check instagram", "open instagram", "visit instagram",
-            "scroll tiktok", "open tiktok", "check tiktok", "browse tiktok", "visit tiktok",
-            "scroll snapchat", "check snapchat", "open snapchat", "browse snapchat", "visit snapchat",
+            // instagram (bare + all leisure verbs)
+            "instagram",
+            "scroll instagram", "browse instagram", "check instagram", "open instagram", "visit instagram", "watch instagram",
+            // tiktok (bare + all leisure verbs)
+            "tiktok",
+            "scroll tiktok", "browse tiktok", "check tiktok", "open tiktok", "visit tiktok", "watch tiktok",
+            // snapchat (bare + all leisure verbs)
+            "snapchat",
+            "scroll snapchat", "browse snapchat", "check snapchat", "open snapchat", "visit snapchat", "watch snapchat",
+            // youtube — exact matches only so "build a youtube content calendar" passes through
+            "youtube",
+            "scroll youtube", "browse youtube", "check youtube", "open youtube", "visit youtube", "watch youtube",
+            // netflix (bare + all leisure verbs)
+            "netflix",
+            "scroll netflix", "browse netflix", "check netflix", "open netflix", "visit netflix", "watch netflix",
+            // hulu (bare + all leisure verbs)
+            "hulu",
+            "scroll hulu", "browse hulu", "check hulu", "open hulu", "visit hulu", "watch hulu",
+            // twitch (bare + all leisure verbs)
+            "twitch",
+            "scroll twitch", "browse twitch", "check twitch", "open twitch", "visit twitch", "watch twitch", "stream twitch",
         ]
         if leisureExact.contains(lower) {
-            return "That doesn't look like a focus session. What do you want to get done?"
-        }
-        let entertainmentPlatforms = [
-            "youtube", "tiktok", "instagram", "netflix",
-            "hulu", "twitch", "snapchat",
-        ]
-        if entertainmentPlatforms.contains(where: { lower.contains($0) }) {
             return "That doesn't look like a focus session. What do you want to get done?"
         }
         return nil
