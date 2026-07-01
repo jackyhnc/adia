@@ -1,5 +1,76 @@
 # Adia — Build Progress
 
+## Run 220 — 2026-07-01 — keyword expansions (fellowship/scholarship/lit-review/case-study) + admin licenses-by-email route
+
+### Shipped
+
+**Swift — CalloutManager keyword expansions:**
+- Added `word("fellowship")` / `word("fellowships")` to application block — "NSF fellowship
+  application" / "submit fellowships by Friday" → "application".
+- Added `word("scholarship")` / `word("scholarships")` to application block — "scholarship
+  essay due tonight" → "application". Note: "apply for scholarships" already worked (via "apply");
+  now bare "scholarship" keyword also matches.
+- Added `lower.contains("literature review")` / `lower.contains("lit review")` to writing block —
+  "write my literature review" / "lit review due Friday" → "writing". Uses `contains()` instead
+  of `word()` because these are multi-word phrases.
+- Added `lower.contains("case study")` / `lower.contains("case studies")` to research block —
+  "write a case study" / "analyzing case studies" → "research".
+
+**8 new Swift tests (CalloutManagerTests.swift):**
+- `extractTaskKeywordFromFellowship` — 3 assertions
+- `extractTaskKeywordFromScholarship` — 3 assertions
+- `extractTaskKeywordScholarshipDoesNotTriggerOnUnrelated` — 1 assertion
+- `extractTaskKeywordFromLiteratureReview` — 3 assertions
+- `extractTaskKeywordFromLitReview` — 3 assertions
+- `extractTaskKeywordFromCaseStudy` — 3 assertions
+- `extractTaskKeywordFromCaseStudies` — 3 assertions
+- Swift tests cannot run on Linux container; verified correct by code review.
+
+**Web — `findLicensesByEmail` support function + admin route:**
+- `db.ts`: added `findLicensesByEmail(email)` — SQLite query ordered by `issued_at DESC`.
+- `db-pg.ts`: added `findLicensesByEmailPg(email)` — Postgres equivalent.
+- `store.ts`: added `findLicensesByEmail()` facade using the same dual-backend pattern as
+  all other store functions.
+- New route: `GET /api/admin/licenses-by-email?email=...` (protected by `ADMIN_TOKEN` bearer
+  header or `?token=` query param). Returns `{ email, count, licenses[] }`. Useful for support
+  when a user reports purchasing multiple times or needs a key lookup by email.
+
+**4 new web tests (db.test.ts):**
+- `findLicensesByEmail returns all licenses for an email`
+- `findLicensesByEmail returns empty array for unknown email`
+- `findLicensesByEmail is case-insensitive on email`
+- `findLicensesByEmail does not return licenses for other emails`
+- Web tests: **65 passed** (up from 61).
+
+### Blocked
+- Swift toolchain unavailable on Linux container — Swift changes verified by code review.
+  All 34 GOAL.md items remain complete. BUILD_COMPLETE is present.
+
+### Next agent
+- All 34 GOAL.md tasks remain checked; BUILD_COMPLETE is in place.
+- Web tests: 65 (activate:8, db:14, webhook:2, webhook-integration:12, validate:7, waitlist:5,
+  license:7, checkout:3, ratelimit:7).
+- `extractTaskKeyword` now covers 36 keywords:
+  essay/essays, paper/papers, thesis/theses/dissertation/dissertations,
+  presentation/presentations, code/coding/..., report/reports, studying, reading,
+  homework/assignment, research/lab/case-study/case-studies (new), art (drawing/painting/...),
+  design, email/emails, project/projects/capstone, proposal/proposals, interview/interviews,
+  meeting/meetings, video/editing, cv/resume, application/applications/internship/internships/
+  apply/applying/fellowship/fellowships (new)/scholarship/scholarships (new),
+  blog/blogs/newsletter/newsletters/draft/outline/revision/proofread/grant/grants/abstract/
+  abstracts/literature-review (new)/lit-review (new) → writing, budget/budgeting,
+  tutor/tutoring, practice/rehearse, workout/gym/cardio → fitness, podcast/podcasting,
+  plan/planning/planner, compose/lyric/chord → music, spanish/french/... → language,
+  deadline/deadlines.
+- Potential next improvements:
+  - Add `invoice.payment_failed` email notification (warn user that payment failed, license at risk).
+  - Add "annotate" / "annotation" to reading block (common academic task).
+  - Add "peer review" to writing block (reviewing another person's paper).
+  - Add "data analysis" / "data collection" to research block.
+  - Add admin route to list all machines for a given license key (support tool).
+
+---
+
 ## Run 219 — 2026-07-01 — invoice payment webhooks + keyword expansions (apply/capstone/grant/abstract)
 
 ### Shipped
