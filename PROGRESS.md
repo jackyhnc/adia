@@ -9129,3 +9129,47 @@ Possible follow-up areas:
   (breaking changes in App Router and middleware, requires careful migration).
 - Billing portal route `/api/billing/portal` has no tests (requires Stripe API
   mock to exercise the happy path; only the 503-when-unconfigured path is easy).
+
+---
+
+## Run 228 — 2026-07-02
+
+### Shipped
+**Admin dashboard: LicensesByEmail + ResendPaymentFailed panels**
+
+`web/app/admin/page.tsx` added two panels that expose existing API routes
+which previously had no UI surface:
+
+1. **LicensesByEmailPanel** — calls `GET /api/admin/licenses-by-email?email=`
+   and renders a table of all licenses for an email address with key, plan,
+   status, issued date, and expiry. Useful for support lookups where a customer
+   may have multiple keys.
+
+2. **ResendPaymentFailedPanel** — calls `POST /api/admin/resend-payment-failed`
+   with a license key and optional `force` flag. Lets admins manually trigger
+   the payment-failed email for testing templates or support escalations.
+
+Order in the dashboard: Issue → **LicensesByEmail** → Lookup → Activations →
+**ResendPaymentFailed** → Revoke (logical support workflow order).
+
+**TypeScript type fixes in webhook integration tests**
+
+`web/__tests__/webhook-integration.test.ts` had 12 pre-existing TypeScript
+errors where partial mock objects were being passed to `mockReturnValue` without
+matching the Stripe SDK's strict union types. Added `as any` casts on the
+partial `object` fields and the outer event literal. `tsc --noEmit` now clean.
+
+### Tests
+157/157 passing. TypeScript clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent
+All GOAL.md items complete. BUILD_COMPLETE present. Web tests at 157/157.
+Possible follow-up areas:
+- Billing portal route `/api/billing/portal` still has no test coverage
+  (requires a Stripe customer mock; the 503-when-unconfigured path is easy).
+- Next.js 14.2.18 has known security vulnerabilities — consider upgrading to 15.x.
+- The admin dashboard grows one panel per new API route — consider adding a
+  `TransferPanel` to expose `POST /api/license/transfer` from the UI.
