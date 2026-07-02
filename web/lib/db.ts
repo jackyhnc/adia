@@ -164,6 +164,10 @@ export function setStatus(key: string, status: License['status']) {
   db().prepare('UPDATE licenses SET status = ? WHERE key = ?').run(status, key);
 }
 
+export function setPlan(key: string, plan: License['plan']) {
+  db().prepare('UPDATE licenses SET plan = ? WHERE key = ?').run(plan, key);
+}
+
 export function findLicenseBySub(stripeSub: string): License | null {
   const row = db()
     .prepare('SELECT * FROM licenses WHERE stripe_sub = ?')

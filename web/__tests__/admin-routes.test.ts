@@ -1130,3 +1130,147 @@ describe('POST /api/admin/extend', () => {
     expect(body.ok).toBe(true);
   });
 });
+
+// ─── POST /api/admin/change-plan ─────────────────────────────────────────────
+
+async function callChangePlan(body: unknown, token = 'test-admin-token') {
+  const { POST } = await import('@/app/api/admin/change-plan/route');
+  const req = new NextRequest('http://localhost/api/admin/change-plan', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json', ...authHeader(token) },
+  });
+  return POST(req);
+}
+
+describe('POST /api/admin/change-plan', () => {
+  it('returns 401 without a token', async () => {
+    const { POST } = await import('@/app/api/admin/change-plan/route');
+    const req = new NextRequest('http://localhost/api/admin/change-plan', {
+      method: 'POST',
+      body: JSON.stringify({ key: 'ADIA-XXXX-XXXX-XXXX', plan: 'lifetime' }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callChangePlan({ key: 'ADIA-XXXX-XXXX-XXXX', plan: 'lifetime' }, 'bad-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when key is missing from body', async () => {
+    const res = await callChangePlan({ plan: 'lifetime' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing key/i);
+  });
+
+  it('returns 400 when plan is missing from body', async () => {
+    const res = await callChangePlan({ key: 'ADIA-CHPL-NOPL-AAAA' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing plan/i);
+  });
+
+  it('returns 400 when plan is not a valid value', async () => {
+    const res = await callChangePlan({ key: 'ADIA-CHPL-BADP-AAAA', plan: 'enterprise' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/invalid plan/i);
+  });
+
+  it('returns 404 for unknown key', async () => {
+    const res = await callChangePlan({ key: 'ADIA-CHPL-UNKN-XXXX', plan: 'yearly' });
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.error).toMatch(/unknown key/i);
+  });
+
+  it('returns 422 when plan is already the same', async () => {
+    insertLicense({ key: 'ADIA-CHPL-SAME-AAAA', email: 'same@example.com', plan: 'monthly', expiresAt: null });
+    const res = await callChangePlan({ key: 'ADIA-CHPL-SAME-AAAA', plan: 'monthly' });
+    expect(res.status).toBe(422);
+    const body = await res.json();
+    expect(body.error).toMatch(/already on the monthly plan/i);
+  });
+
+  it('changes plan from monthly to yearly and returns previousPlan', async () => {
+    insertLicense({ key: 'ADIA-CHPL-M2Y-AAAA', email: 'm2y@example.com', plan: 'monthly', expiresAt: null });
+
+    const res = await callChangePlan({ key: 'ADIA-CHPL-M2Y-AAAA', plan: 'yearly' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.key).toBe('ADIA-CHPL-M2Y-AAAA');
+    expect(body.previousPlan).toBe('monthly');
+    expect(body.newPlan).toBe('yearly');
+  });
+
+  it('changes plan from yearly to lifetime', async () => {
+    insertLicense({ key: 'ADIA-CHPL-Y2L-AAAA', email: 'y2l@example.com', plan: 'yearly', expiresAt: '2027-01-01T00:00:00.000Z' });
+
+    const res = await callChangePlan({ key: 'ADIA-CHPL-Y2L-AAAA', plan: 'lifetime' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.previousPlan).toBe('yearly');
+    expect(body.newPlan).toBe('lifetime');
+  });
+
+  it('changes plan from lifetime to monthly', async () => {
+    insertLicense({ key: 'ADIA-CHPL-L2M-AAAA', email: 'l2m@example.com', plan: 'lifetime', expiresAt: null });
+
+    const res = await callChangePlan({ key: 'ADIA-CHPL-L2M-AAAA', plan: 'monthly' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.previousPlan).toBe('lifetime');
+    expect(body.newPlan).toBe('monthly');
+  });
+
+  it('persists the new plan to the database', async () => {
+    insertLicense({ key: 'ADIA-CHPL-PERS-AAAA', email: 'persist@example.com', plan: 'monthly', expiresAt: null });
+
+    await callChangePlan({ key: 'ADIA-CHPL-PERS-AAAA', plan: 'lifetime' });
+
+    const updated = findLicense('ADIA-CHPL-PERS-AAAA');
+    expect(updated?.plan).toBe('lifetime');
+  });
+
+  it('normalizes key to uppercase before lookup', async () => {
+    insertLicense({ key: 'ADIA-CHPL-NORM-AAAA', email: 'norm@example.com', plan: 'monthly', expiresAt: null });
+
+    const res = await callChangePlan({ key: 'adia-chpl-norm-aaaa', plan: 'yearly' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.key).toBe('ADIA-CHPL-NORM-AAAA');
+  });
+
+  it('accepts ?token= query param auth', async () => {
+    insertLicense({ key: 'ADIA-CHPL-TOKN-AAAA', email: 'tokn@example.com', plan: 'monthly', expiresAt: null });
+
+    const { POST } = await import('@/app/api/admin/change-plan/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/change-plan?token=test-admin-token',
+      {
+        method: 'POST',
+        body: JSON.stringify({ key: 'ADIA-CHPL-TOKN-AAAA', plan: 'yearly' }),
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+  });
+
+  it('allows changing plan of a canceled license — no status gate', async () => {
+    insertLicense({ key: 'ADIA-CHPL-CNCL-AAAA', email: 'cncl@example.com', plan: 'monthly', expiresAt: null });
+    const { setStatus } = await import('@/lib/db');
+    setStatus('ADIA-CHPL-CNCL-AAAA', 'canceled');
+
+    const res = await callChangePlan({ key: 'ADIA-CHPL-CNCL-AAAA', plan: 'lifetime' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.newPlan).toBe('lifetime');
+  });
+});

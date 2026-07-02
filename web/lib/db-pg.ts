@@ -182,6 +182,11 @@ export async function setStatusPg(key: string, status: License['status']): Promi
   await sql`UPDATE licenses SET status = ${status} WHERE key = ${key}`;
 }
 
+export async function setPlanPg(key: string, plan: License['plan']): Promise<void> {
+  await ensureSchema();
+  await sql`UPDATE licenses SET plan = ${plan} WHERE key = ${key}`;
+}
+
 export async function findLicenseBySubPg(stripeSub: string): Promise<License | null> {
   await ensureSchema();
   const result = await sql<any>`

@@ -79,6 +79,14 @@ export async function setStatus(key: string, status: License['status']): Promise
   sqlite.setStatus(key, status);
 }
 
+export async function setPlan(key: string, plan: License['plan']): Promise<void> {
+  if (usePg) {
+    const { setPlanPg } = await import('./db-pg');
+    return setPlanPg(key, plan);
+  }
+  sqlite.setPlan(key, plan);
+}
+
 export async function findLicenseBySub(stripeSub: string): Promise<License | null> {
   if (usePg) {
     const { findLicenseBySubPg } = await import('./db-pg');

@@ -37,6 +37,7 @@ export default function Admin() {
       <RevokePanel token={token} />
       <ReactivatePanel token={token} />
       <ExtendPanel token={token} />
+      <ChangePlanPanel token={token} />
     </section>
   );
 }
@@ -732,6 +733,101 @@ function ExtendPanel({ token }: { token: string }) {
           <p>
             New expiry:{' '}
             <span className="font-semibold text-blue-700">{result.newExpiresAt}</span>
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Change license plan ─────────────────────────────────────────────────────
+
+function ChangePlanPanel({ token }: { token: string }) {
+  const [key, setKey] = useState('');
+  const [plan, setPlan] = useState<'monthly' | 'yearly' | 'lifetime'>('lifetime');
+  const [result, setResult] = useState<{
+    ok: boolean;
+    key: string;
+    previousPlan: string;
+    newPlan: string;
+  } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function changePlan(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/change-plan', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, plan }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(body);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Change license plan</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Switch a license between <code className="font-mono">monthly</code>,{' '}
+        <code className="font-mono">yearly</code>, and{' '}
+        <code className="font-mono">lifetime</code>. Use for manual upgrades, support
+        resolutions, or correcting an incorrect plan at issue time.
+      </p>
+      <form onSubmit={changePlan} className="card space-y-3">
+        <Field label="License key">
+          <input
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            placeholder="ADIA-XXXX-XXXX-XXXX"
+            className="input font-mono"
+            required
+          />
+        </Field>
+        <Field label="New plan">
+          <select
+            value={plan}
+            onChange={(e) => setPlan(e.target.value as typeof plan)}
+            className="input"
+          >
+            <option value="lifetime">Lifetime</option>
+            <option value="yearly">Yearly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </Field>
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 disabled:opacity-40"
+          disabled={loading}
+        >
+          {loading ? 'Changing…' : 'Change plan'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {result && (
+        <div className="card mt-3 text-sm space-y-1">
+          <p className="font-medium text-violet-700">Plan changed</p>
+          <p>
+            Key: <code className="font-mono">{result.key}</code>
+          </p>
+          <p>
+            Plan:{' '}
+            <span className="line-through text-ink/40">{result.previousPlan}</span>
+            {' → '}
+            <span className="font-semibold text-violet-700">{result.newPlan}</span>
           </p>
         </div>
       )}
