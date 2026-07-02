@@ -1,5 +1,59 @@
 # Adia — Build Progress
 
+## Run 236 — 2026-07-02T14:10:00Z — admin resend-license endpoint + panel + 12 tests
+
+### Shipped
+
+**`web/app/api/admin/resend-license/route.ts` — new admin endpoint:**
+- `POST /api/admin/resend-license` — re-sends the license welcome email to a customer
+  who lost their key ("I never received it" / "I can't find my key").
+- Auth: same `ADMIN_TOKEN` bearer / `?token=` query pattern as all other admin routes.
+- Body: `{ key?: string, email?: string }` — at least one required; key takes precedence
+  when both are supplied.
+- Email-only path: calls `findLicensesByEmail()`, picks the most recently issued *active*
+  license (falls back to newest of any status if none are active).
+- Sends `sendLicenseEmail()` regardless of license status — admin knows their intent;
+  no `force` flag needed unlike `resend-payment-failed`.
+- Returns `{ ok, to, key, plan }` on success; 400/401/404 on validation/auth/not-found.
+
+**`web/app/admin/page.tsx` — `ResendLicensePanel` component:**
+- New panel inserted between IssuePanel and LicensesByEmailPanel (natural support workflow:
+  issue comp → resend to customer → look up by email).
+- Two optional fields: license key (takes precedence) and customer email.
+- Client-side guard: disables submit and sets local error if neither field is filled.
+- Green success card shows `to`, `key`, and `plan` on success.
+
+**`web/__tests__/admin-routes.test.ts` — 12 new tests:**
+- Added `mockSendLicenseEmail` mock variable + reset in `beforeEach`.
+- `callResendLicense` helper follows the same pattern as `callResendPaymentFailed`.
+- Tests: 401 no-token, 401 wrong-token, 400 neither key/email, 404 unknown key,
+  404 no licenses for email, happy path by key, happy path by email, key-over-email
+  precedence, newest-active selection across multiple licenses, key case normalization,
+  `?token=` query-param auth, email sent for a canceled license (no gate on status).
+- Web tests: **199 passed** (up from 187). `tsc --noEmit` clean.
+
+### Blocked
+Nothing blocked. Swift toolchain unavailable on Linux container.
+
+### Next agent
+All GOAL.md items complete. BUILD_COMPLETE present.
+Possible follow-up areas:
+- Add rate-limiting to `POST /api/admin/resend-license` (currently unthrottled; all other
+  user-facing license endpoints have rate limits — admin routes are bearer-auth-gated so
+  risk is low, but adding a generous limit e.g. 20/min per IP would be consistent)
+- Add `findLicensesByEmail` to Postgres backend (`db-pg.ts`) — currently the SQLite impl
+  is called even in Postgres mode because the store.ts facade imports it via SQLite;
+  `findLicensesByEmail` is SQLite-only (used by admin routes). Add `findLicensesByEmailPg`
+  to `db-pg.ts` and wire it through `store.ts` for production correctness.
+- Add a `POST /api/admin/change-email` endpoint (admin-only, no old-email auth required) —
+  useful when a customer changed their email and can no longer authenticate with the old one
+  to use the self-service `/api/license/transfer` route.
+- Add `@MainActor` consistency pass: `SessionStateTests`, `SessionPersistenceTests`,
+  `FocusInsightsTests` do not access @MainActor-isolated singletons so no annotation needed;
+  skip unless Swift strict concurrency warnings appear in a real Xcode build.
+
+---
+
 ## Run 235 — 2026-07-02T13:00:00Z — @MainActor on SettingsStoreTests + 27 new blocked domains
 
 ### Shipped
