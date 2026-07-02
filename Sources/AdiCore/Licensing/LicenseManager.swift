@@ -320,9 +320,9 @@ public final class LicenseManager: ObservableObject {
     // MARK: - Machine fingerprint (hashed)
 
     /// Public accessor used by SeatInfo to identify the current machine.
-    public static func currentMachineFingerprint() -> String { machineFingerprint() }
+    public nonisolated static func currentMachineFingerprint() -> String { machineFingerprint() }
 
-    private static func machineFingerprint() -> String {
+    private nonisolated static func machineFingerprint() -> String {
         let platformExpert = IOServiceGetMatchingService(
             kIOMainPortDefault,
             IOServiceMatching("IOPlatformExpertDevice"))

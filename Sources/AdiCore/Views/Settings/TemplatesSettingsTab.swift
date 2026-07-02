@@ -262,7 +262,7 @@ private struct EditTemplateSheet: View {
                                 Text("= \(heatmapFormatMinutes(parsed))")
                                     .foregroundStyle(.green.opacity(0.9))
                             } else if !customText.trimmingCharacters(in: .whitespaces).isEmpty {
-                                Text("Couldn't parse — try "2h", "90m", or "1h30m".")
+                                Text("Couldn't parse — try \"2h\", \"90m\", or \"1h30m\".")
                                     .foregroundStyle(.orange.opacity(0.8))
                             }
                         }

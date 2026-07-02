@@ -351,7 +351,7 @@ struct DailyGoalSection: View {
                     Text("= \(heatmapFormatMinutes(parsed))")
                         .foregroundStyle(.green.opacity(0.9))
                 } else if !customGoalText.trimmingCharacters(in: .whitespaces).isEmpty, parsedCustomMinutes == nil {
-                    Text("Couldn't parse — try "2h", "90m", or "1h30m".")
+                    Text("Couldn't parse — try \"2h\", \"90m\", or \"1h30m\".")
                         .foregroundStyle(.orange.opacity(0.8))
                 }
                 Text(settings.dailyFocusGoalMinutes != nil
