@@ -39,6 +39,7 @@ private func makeISO() -> ISO8601DateFormatter { ISO8601DateFormatter() }
 
 // MARK: - Suite
 
+@MainActor
 @Suite("LicenseManager — state machine")
 struct LicenseManagerTests {
 
@@ -455,5 +456,82 @@ struct LicenseManagerTests {
         // Supply same email in different case — still same after normalization
         let err = await LicenseManager.shared.changeEmail(newEmail: "SAME@Example.COM")
         #expect(err == "New email is the same as your current email.")
+    }
+
+    // MARK: - deactivateThisMac tests
+
+    @Test func deactivateThisMacSuccessClearsLocalLicense() async {
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting()
+            LicenseManager.shared._injectLicenseForTesting(LicenseInfo(
+                key: "ADIA-DTMC-TEST-0001",
+                email: "dtmc@example.com",
+                plan: "lifetime",
+                issuedAt: Date(timeIntervalSinceNow: -86400),
+                expiresAt: nil,
+                lastValidatedAt: Date()
+            ))
+            LicenseManager.shared.urlSession = makeMockSession()
+        }
+
+        MockURLProtocol.requestHandler = { req in
+            let data = try JSONSerialization.data(withJSONObject: ["ok": true, "key": "ADIA-DTMC-TEST-0001", "seatsNow": 0])
+            let resp = HTTPURLResponse(url: req.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (resp, data)
+        }
+
+        let err = await LicenseManager.shared.deactivateThisMac()
+
+        #expect(err == nil)
+        await MainActor.run {
+            // Local license cleared — status drops back to unknown/trial
+            #expect(LicenseManager.shared.currentLicense() == nil)
+            if case .licensed = LicenseManager.shared.status {
+                Issue.record("expected non-licensed status after deactivateThisMac, got .licensed")
+            }
+        }
+    }
+
+    @Test func deactivateThisMacReturnsErrorWhenNotLicensed() async {
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting() // status == .unknown
+            LicenseManager.shared.urlSession = makeMockSession()
+        }
+        MockURLProtocol.requestHandler = nil // must not be called
+
+        let err = await LicenseManager.shared.deactivateThisMac()
+        #expect(err == "Not licensed.")
+    }
+
+    @Test func deactivateThisMacKeepsLocalLicenseOnServerFailure() async {
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting()
+            LicenseManager.shared._injectLicenseForTesting(LicenseInfo(
+                key: "ADIA-DTMC-FAIL-0001",
+                email: "fail@example.com",
+                plan: "monthly",
+                issuedAt: Date(),
+                expiresAt: nil,
+                lastValidatedAt: Date()
+            ))
+            LicenseManager.shared.urlSession = makeMockSession()
+        }
+
+        MockURLProtocol.requestHandler = { req in
+            let data = try JSONSerialization.data(withJSONObject: ["error": "server error"])
+            let resp = HTTPURLResponse(url: req.url!, statusCode: 500, httpVersion: nil, headerFields: nil)!
+            return (resp, data)
+        }
+
+        let err = await LicenseManager.shared.deactivateThisMac()
+
+        #expect(err != nil)
+        if let msg = err { #expect(msg.hasPrefix("Could not deactivate:")) }
+        // Local license must be preserved — do not clear on server failure
+        await MainActor.run {
+            if case .licensed = LicenseManager.shared.status { } else {
+                Issue.record("expected .licensed to be retained after server failure, got \(LicenseManager.shared.status)")
+            }
+        }
     }
 }

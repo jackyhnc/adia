@@ -292,6 +292,23 @@ public final class LicenseManager: ObservableObject {
         }
     }
 
+    /// Deactivates the current machine on the server and clears the local Keychain license.
+    /// After success the app returns to `.unknown` status. Use this when transferring the
+    /// license to a new Mac — the freed seat can be reactivated on another machine immediately.
+    /// Returns nil on success, or an error string on failure (local state unchanged on error).
+    public func deactivateThisMac() async -> String? {
+        guard case .licensed(let em, _) = status,
+              let info = currentLicense()
+        else { return "Not licensed." }
+        do {
+            try await serverDeactivateMachine(key: info.key, email: em, machine: Self.machineFingerprint())
+        } catch {
+            return "Could not deactivate: \(error.localizedDescription)"
+        }
+        deactivate()
+        return nil
+    }
+
     /// Deactivates a specific machine hash from this license (frees one seat).
     /// Returns nil on success, or an error string.
     public func deactivateMachine(_ machineHash: String) async -> String? {

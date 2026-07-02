@@ -18,6 +18,9 @@ struct AccountSettingsTab: View {
     @State private var changingEmail: Bool = false
     @State private var emailChangeError: String?
     @State private var emailChangeSuccess: Bool = false
+    @State private var showDeactivateThisMacAlert: Bool = false
+    @State private var deactivatingThisMac: Bool = false
+    @State private var deactivateThisMacError: String?
 
     var body: some View {
         Form {
@@ -81,6 +84,14 @@ struct AccountSettingsTab: View {
             DailyGoalSection(settings: settings)
         }
         .formStyle(.grouped)
+        .alert("Deactivate This Mac?", isPresented: $showDeactivateThisMacAlert) {
+            Button("Deactivate", role: .destructive) {
+                Task { await doDeactivateThisMac() }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This removes Adia from this Mac and frees your license seat. You can reactivate anytime.")
+        }
     }
 
     @ViewBuilder
@@ -143,6 +154,21 @@ struct AccountSettingsTab: View {
             LabeledContent("Status") {
                 Label("\(plan) — \(em)", systemImage: "checkmark.seal.fill")
                     .foregroundStyle(.green)
+            }
+            HStack {
+                Spacer()
+                if deactivatingThisMac {
+                    ProgressView().scaleEffect(0.8)
+                } else {
+                    Button("Deactivate This Mac") {
+                        showDeactivateThisMacAlert = true
+                    }
+                    .foregroundStyle(.red)
+                    .buttonStyle(.borderless)
+                }
+            }
+            if let err = deactivateThisMacError {
+                Text(err).foregroundStyle(.red).font(.callout)
             }
         case .trial(let days):
             VStack(alignment: .leading, spacing: 8) {
@@ -316,6 +342,13 @@ struct AccountSettingsTab: View {
             Text("The email address associated with your license. Used to log in to adia.app.")
                 .foregroundStyle(.secondary)
         }
+    }
+
+    private func doDeactivateThisMac() async {
+        deactivatingThisMac = true
+        deactivateThisMacError = nil
+        deactivateThisMacError = await license.deactivateThisMac()
+        deactivatingThisMac = false
     }
 
     private func doChangeEmail() async {

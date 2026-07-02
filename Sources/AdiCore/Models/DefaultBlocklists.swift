@@ -280,6 +280,8 @@ extension Session {
         // North American / global classifieds — browsed "quickly" and never quickly
         "kijiji.ca",        // Canadian classifieds (Craigslist equivalent)
         "gumtree.com",      // UK/AU secondhand marketplace
+        "craigslist.org",   // US/CA classifieds — same rabbit-hole pattern as kijiji
+        "vinted.com",       // EU/NA secondhand clothing marketplace
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [
