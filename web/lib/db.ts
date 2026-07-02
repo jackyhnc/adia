@@ -148,7 +148,7 @@ export function countActivations(key: string): number {
 
 export function findLicensesByEmail(email: string): License[] {
   const rows = db()
-    .prepare('SELECT * FROM licenses WHERE email = ? ORDER BY issued_at DESC')
+    .prepare('SELECT * FROM licenses WHERE email = ? ORDER BY issued_at ASC, rowid ASC')
     .all(email.trim().toLowerCase()) as any[];
   return rows.map(r => ({
     key: r.key,

@@ -27,6 +27,7 @@ export default function Admin() {
 
       <IssuePanel token={token} />
       <ResendLicensePanel token={token} />
+      <ChangeEmailPanel token={token} />
       <LicensesByEmailPanel token={token} />
       <LookupPanel token={token} />
       <ActivationsPanel token={token} />
@@ -214,6 +215,97 @@ function ResendLicensePanel({ token }: { token: string }) {
           <p className="text-xs text-ink/60 mt-1">
             Sent to <strong>{result.to}</strong> — key{' '}
             <span className="font-mono select-all">{result.key}</span> ({result.plan})
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Admin email change ───────────────────────────────────────────────────────
+
+function ChangeEmailPanel({ token }: { token: string }) {
+  const [key, setKey] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [result, setResult] = useState<{ ok: true; key: string; oldEmail: string; newEmail: string; plan: string } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function changeEmail(e: React.FormEvent) {
+    e.preventDefault();
+    const k = key.trim().toUpperCase();
+    if (!confirm(`Change email on ${k} to ${newEmail.trim()}? This takes effect immediately.`)) return;
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/change-email', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: k, newEmail: newEmail.trim() }),
+      });
+      if (!res.ok) {
+        const b = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${b.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+        setKey('');
+        setNewEmail('');
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Change license email (admin)</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Update the email address on a license without requiring the customer&apos;s old email for
+        auth. Use when a customer changed their primary email and can no longer use the self-service
+        transfer flow. Verify identity out-of-band before using.
+      </p>
+      <form onSubmit={changeEmail} className="card space-y-3">
+        <Field label="License key">
+          <input
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            placeholder="ADIA-XXXX-XXXX-XXXX"
+            className="input font-mono"
+            required
+          />
+        </Field>
+        <Field label="New email address">
+          <input
+            type="email"
+            value={newEmail}
+            onChange={(e) => setNewEmail(e.target.value)}
+            placeholder="new@example.com"
+            className="input"
+            required
+          />
+        </Field>
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-lg bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 disabled:opacity-40"
+          disabled={loading}
+        >
+          {loading ? 'Updating…' : 'Change email'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {result && (
+        <div className="card mt-3 border border-green-500/30 bg-green-50/5">
+          <p className="text-sm font-semibold text-green-600">Email updated ✓</p>
+          <p className="text-xs text-ink/60 mt-1">
+            <span className="font-mono">{result.key}</span> ({result.plan}){' '}
+            <span className="line-through text-ink/40">{result.oldEmail}</span>
+            {' → '}
+            <strong>{result.newEmail}</strong>
           </p>
         </div>
       )}

@@ -5,6 +5,7 @@
 //   GET        /api/admin/licenses-by-email
 //   POST       /api/admin/resend-payment-failed
 //   POST       /api/admin/resend-license
+//   POST       /api/admin/change-email
 //
 // All routes require ADMIN_TOKEN; SQLite DB is reset per test.
 
@@ -659,5 +660,148 @@ describe('POST /api/admin/resend-license', () => {
     const res = await callResendLicense({ key: 'ADIA-RLSE-CNCL-AAAA' });
     expect(res.status).toBe(200);
     expect(mockSendLicenseEmail).toHaveBeenCalledOnce();
+  });
+});
+
+// ─── POST /api/admin/change-email ─────────────────────────────────────────────
+
+async function callChangeEmail(body: unknown, token = 'test-admin-token') {
+  const { POST } = await import('@/app/api/admin/change-email/route');
+  const req = new NextRequest('http://localhost/api/admin/change-email', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+  });
+  return POST(req);
+}
+
+describe('POST /api/admin/change-email', () => {
+  it('returns 401 without a token', async () => {
+    const { POST } = await import('@/app/api/admin/change-email/route');
+    const req = new NextRequest('http://localhost/api/admin/change-email', {
+      method: 'POST',
+      body: JSON.stringify({ key: 'ADIA-CHGE-NOAU-AAAA', newEmail: 'new@example.com' }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callChangeEmail(
+      { key: 'ADIA-CHGE-WRNG-AAAA', newEmail: 'new@example.com' },
+      'wrong-token',
+    );
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when key is missing', async () => {
+    const res = await callChangeEmail({ newEmail: 'new@example.com' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing key/i);
+  });
+
+  it('returns 400 when newEmail is missing', async () => {
+    const res = await callChangeEmail({ key: 'ADIA-CHGE-NOME-AAAA' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing newEmail/i);
+  });
+
+  it('returns 400 when newEmail is not a valid email', async () => {
+    const res = await callChangeEmail({ key: 'ADIA-CHGE-BDEM-AAAA', newEmail: 'notanemail' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/not a valid email/i);
+  });
+
+  it('returns 404 for unknown license key', async () => {
+    const res = await callChangeEmail({ key: 'ADIA-CHGE-UNKN-ZZZZ', newEmail: 'new@example.com' });
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.error).toMatch(/unknown license key/i);
+  });
+
+  it('returns 422 when newEmail is the same as the current email', async () => {
+    insertLicense({ key: 'ADIA-CHGE-SAME-AAAA', email: 'same@example.com', plan: 'lifetime', expiresAt: null });
+    const res = await callChangeEmail({ key: 'ADIA-CHGE-SAME-AAAA', newEmail: 'same@example.com' });
+    expect(res.status).toBe(422);
+    const body = await res.json();
+    expect(body.error).toMatch(/same as the current email/i);
+  });
+
+  it('changes email and returns ok with old and new email', async () => {
+    insertLicense({ key: 'ADIA-CHGE-GOOD-AAAA', email: 'old@example.com', plan: 'yearly', expiresAt: null });
+
+    const res = await callChangeEmail({ key: 'ADIA-CHGE-GOOD-AAAA', newEmail: 'new@example.com' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.key).toBe('ADIA-CHGE-GOOD-AAAA');
+    expect(body.oldEmail).toBe('old@example.com');
+    expect(body.newEmail).toBe('new@example.com');
+    expect(body.plan).toBe('yearly');
+  });
+
+  it('persists the new email in the database', async () => {
+    insertLicense({ key: 'ADIA-CHGE-PRST-AAAA', email: 'before@example.com', plan: 'monthly', expiresAt: null });
+
+    await callChangeEmail({ key: 'ADIA-CHGE-PRST-AAAA', newEmail: 'after@example.com' });
+
+    const { findLicense: findLicenseDb } = await import('@/lib/db');
+    const lic = findLicenseDb('ADIA-CHGE-PRST-AAAA');
+    expect(lic?.email).toBe('after@example.com');
+  });
+
+  it('normalizes key to uppercase before lookup', async () => {
+    insertLicense({ key: 'ADIA-CHGE-CASE-AAAA', email: 'caseold@example.com', plan: 'lifetime', expiresAt: null });
+
+    const res = await callChangeEmail({ key: 'adia-chge-case-aaaa', newEmail: 'casenew@example.com' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.key).toBe('ADIA-CHGE-CASE-AAAA');
+  });
+
+  it('normalizes newEmail to lowercase', async () => {
+    insertLicense({ key: 'ADIA-CHGE-LCAS-AAAA', email: 'lcold@example.com', plan: 'lifetime', expiresAt: null });
+
+    const res = await callChangeEmail({ key: 'ADIA-CHGE-LCAS-AAAA', newEmail: 'LCNEW@EXAMPLE.COM' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.newEmail).toBe('lcnew@example.com');
+
+    const { findLicense: findLicenseDb } = await import('@/lib/db');
+    const lic = findLicenseDb('ADIA-CHGE-LCAS-AAAA');
+    expect(lic?.email).toBe('lcnew@example.com');
+  });
+
+  it('accepts ?token= query param auth', async () => {
+    insertLicense({ key: 'ADIA-CHGE-TOKN-AAAA', email: 'tokold@example.com', plan: 'lifetime', expiresAt: null });
+    const { POST } = await import('@/app/api/admin/change-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/change-email?token=test-admin-token',
+      {
+        method: 'POST',
+        body: JSON.stringify({ key: 'ADIA-CHGE-TOKN-AAAA', newEmail: 'toknew@example.com' }),
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+  });
+
+  it('works for a canceled license — admin can update email regardless of status', async () => {
+    insertLicense({ key: 'ADIA-CHGE-CNCL-AAAA', email: 'cncold@example.com', plan: 'monthly', expiresAt: null });
+    const { setStatus } = await import('@/lib/db');
+    setStatus('ADIA-CHGE-CNCL-AAAA', 'canceled');
+
+    const res = await callChangeEmail({ key: 'ADIA-CHGE-CNCL-AAAA', newEmail: 'cncnew@example.com' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.newEmail).toBe('cncnew@example.com');
   });
 });
