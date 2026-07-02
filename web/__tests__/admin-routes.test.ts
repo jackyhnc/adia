@@ -934,3 +934,199 @@ describe('POST /api/admin/reactivate', () => {
     expect(res.status).toBe(200);
   });
 });
+
+// ─── POST /api/admin/extend ───────────────────────────────────────────────────
+
+async function callExtend(body: unknown, token = 'test-admin-token') {
+  const { POST } = await import('@/app/api/admin/extend/route');
+  const req = new NextRequest('http://localhost/api/admin/extend', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json', ...authHeader(token) },
+  });
+  return POST(req);
+}
+
+describe('POST /api/admin/extend', () => {
+  it('returns 401 without a token', async () => {
+    const { POST } = await import('@/app/api/admin/extend/route');
+    const req = new NextRequest('http://localhost/api/admin/extend', {
+      method: 'POST',
+      body: JSON.stringify({ key: 'ADIA-XXXX-XXXX-XXXX', days: 30 }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callExtend({ key: 'ADIA-XXXX-XXXX-XXXX', days: 30 }, 'bad-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when key is missing', async () => {
+    const res = await callExtend({ days: 30 });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing key/i);
+  });
+
+  it('returns 400 when days is missing', async () => {
+    const res = await callExtend({ key: 'ADIA-EXTN-NODY-AAAA' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing days/i);
+  });
+
+  it('returns 400 when days is zero', async () => {
+    const res = await callExtend({ key: 'ADIA-EXTN-ZERO-AAAA', days: 0 });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/positive integer/i);
+  });
+
+  it('returns 400 when days is negative', async () => {
+    const res = await callExtend({ key: 'ADIA-EXTN-NEGV-AAAA', days: -7 });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/positive integer/i);
+  });
+
+  it('returns 400 when days is fractional', async () => {
+    const res = await callExtend({ key: 'ADIA-EXTN-FRAC-AAAA', days: 1.5 });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/positive integer/i);
+  });
+
+  it('returns 400 when days exceeds 3650', async () => {
+    const res = await callExtend({ key: 'ADIA-EXTN-MXDY-AAAA', days: 3651 });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/3650/);
+  });
+
+  it('returns 404 for unknown key', async () => {
+    const res = await callExtend({ key: 'ADIA-EXTN-UNKN-XXXX', days: 30 });
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.error).toMatch(/unknown key/i);
+  });
+
+  it('extends a license with an existing future expiresAt', async () => {
+    const futureExpiry = new Date(Date.now() + 30 * 86400 * 1000).toISOString();
+    insertLicense({ key: 'ADIA-EXTN-FUTR-AAAA', email: 'future@example.com', plan: 'monthly', expiresAt: futureExpiry });
+
+    const res = await callExtend({ key: 'ADIA-EXTN-FUTR-AAAA', days: 14 });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.key).toBe('ADIA-EXTN-FUTR-AAAA');
+    expect(body.previousExpiresAt).toBe(futureExpiry);
+    expect(body.days).toBe(14);
+
+    // New expiry is ~44 days from now (30 future + 14 added).
+    const newExpiry = new Date(body.newExpiresAt);
+    const expected = new Date(futureExpiry);
+    expected.setDate(expected.getDate() + 14);
+    // Allow 5s clock drift in the test environment.
+    expect(Math.abs(newExpiry.getTime() - expected.getTime())).toBeLessThan(5000);
+  });
+
+  it('extends a license with a past expiresAt from now (not from the expired date)', async () => {
+    const pastExpiry = '2024-01-01T00:00:00.000Z';
+    insertLicense({ key: 'ADIA-EXTN-PAST-AAAA', email: 'past@example.com', plan: 'yearly', expiresAt: pastExpiry });
+
+    const before = Date.now();
+    const res = await callExtend({ key: 'ADIA-EXTN-PAST-AAAA', days: 30 });
+    const after = Date.now();
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.previousExpiresAt).toBe(pastExpiry);
+    // New expiry must be in the future, approximately now + 30 days.
+    const newExpiry = new Date(body.newExpiresAt).getTime();
+    const expectedMin = before + 30 * 86400 * 1000 - 5000;
+    const expectedMax = after + 30 * 86400 * 1000 + 5000;
+    expect(newExpiry).toBeGreaterThanOrEqual(expectedMin);
+    expect(newExpiry).toBeLessThanOrEqual(expectedMax);
+  });
+
+  it('extends a lifetime license (null expiresAt) from now', async () => {
+    insertLicense({ key: 'ADIA-EXTN-LIFE-AAAA', email: 'lifetime@example.com', plan: 'lifetime', expiresAt: null });
+
+    const before = Date.now();
+    const res = await callExtend({ key: 'ADIA-EXTN-LIFE-AAAA', days: 7 });
+    const after = Date.now();
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.previousExpiresAt).toBeNull();
+    const newExpiry = new Date(body.newExpiresAt).getTime();
+    const expectedMin = before + 7 * 86400 * 1000 - 5000;
+    const expectedMax = after + 7 * 86400 * 1000 + 5000;
+    expect(newExpiry).toBeGreaterThanOrEqual(expectedMin);
+    expect(newExpiry).toBeLessThanOrEqual(expectedMax);
+  });
+
+  it('persists the new expiresAt to the database', async () => {
+    const futureExpiry = new Date(Date.now() + 60 * 86400 * 1000).toISOString();
+    insertLicense({ key: 'ADIA-EXTN-PERS-AAAA', email: 'persist@example.com', plan: 'monthly', expiresAt: futureExpiry });
+
+    const res = await callExtend({ key: 'ADIA-EXTN-PERS-AAAA', days: 30 });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+
+    const updated = findLicense('ADIA-EXTN-PERS-AAAA');
+    expect(updated?.expiresAt).toBe(body.newExpiresAt);
+  });
+
+  it('normalizes key to uppercase before lookup', async () => {
+    const futureExpiry = new Date(Date.now() + 30 * 86400 * 1000).toISOString();
+    insertLicense({ key: 'ADIA-EXTN-NORM-AAAA', email: 'norm@example.com', plan: 'yearly', expiresAt: futureExpiry });
+
+    const res = await callExtend({ key: 'adia-extn-norm-aaaa', days: 5 });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.key).toBe('ADIA-EXTN-NORM-AAAA');
+  });
+
+  it('accepts ?token= query param auth', async () => {
+    const futureExpiry = new Date(Date.now() + 30 * 86400 * 1000).toISOString();
+    insertLicense({ key: 'ADIA-EXTN-TOKN-AAAA', email: 'tokn@example.com', plan: 'monthly', expiresAt: futureExpiry });
+
+    const { POST } = await import('@/app/api/admin/extend/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/extend?token=test-admin-token',
+      {
+        method: 'POST',
+        body: JSON.stringify({ key: 'ADIA-EXTN-TOKN-AAAA', days: 10 }),
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+  });
+
+  it('returns days in the response body', async () => {
+    const futureExpiry = new Date(Date.now() + 30 * 86400 * 1000).toISOString();
+    insertLicense({ key: 'ADIA-EXTN-DAYS-AAAA', email: 'days@example.com', plan: 'yearly', expiresAt: futureExpiry });
+
+    const res = await callExtend({ key: 'ADIA-EXTN-DAYS-AAAA', days: 90 });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.days).toBe(90);
+  });
+
+  it('allows extending a canceled license (no status gate)', async () => {
+    const futureExpiry = new Date(Date.now() + 30 * 86400 * 1000).toISOString();
+    insertLicense({ key: 'ADIA-EXTN-CNCL-AAAA', email: 'canceled@example.com', plan: 'monthly', expiresAt: futureExpiry });
+    const { setStatus } = await import('@/lib/db');
+    setStatus('ADIA-EXTN-CNCL-AAAA', 'canceled');
+
+    const res = await callExtend({ key: 'ADIA-EXTN-CNCL-AAAA', days: 30 });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+  });
+});

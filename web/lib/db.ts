@@ -187,6 +187,10 @@ export function setExpiryBySub(stripeSub: string, expiresAt: string | null) {
   db().prepare('UPDATE licenses SET expires_at = ? WHERE stripe_sub = ?').run(expiresAt, stripeSub);
 }
 
+export function setExpiry(key: string, expiresAt: string | null) {
+  db().prepare('UPDATE licenses SET expires_at = ? WHERE key = ?').run(expiresAt, key);
+}
+
 export function listActivations(key: string): Activation[] {
   const rows = db()
     .prepare(

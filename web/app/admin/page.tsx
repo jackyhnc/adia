@@ -36,6 +36,7 @@ export default function Admin() {
       <ResendPaymentFailedPanel token={token} />
       <RevokePanel token={token} />
       <ReactivatePanel token={token} />
+      <ExtendPanel token={token} />
     </section>
   );
 }
@@ -633,6 +634,104 @@ function ReactivatePanel({ token }: { token: string }) {
             <span className="line-through text-ink/40">{result.previousStatus}</span>
             {' → '}
             <span className="font-semibold text-green-700">{result.newStatus}</span>
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Extend license expiry ───────────────────────────────────────────────────
+
+function ExtendPanel({ token }: { token: string }) {
+  const [key, setKey] = useState('');
+  const [days, setDays] = useState('30');
+  const [result, setResult] = useState<{
+    ok: boolean;
+    key: string;
+    previousExpiresAt: string | null;
+    newExpiresAt: string;
+    days: number;
+  } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function extend(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/extend', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, days: Number(days) }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(body);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Extend license expiry</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Adds N days to a license's <code className="font-mono">expiresAt</code>. If the license has
+        no expiry (lifetime) or is already expired, extends from today. Max 3650 days (10 years).
+      </p>
+      <form onSubmit={extend} className="card space-y-3">
+        <Field label="License key">
+          <input
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            placeholder="ADIA-XXXX-XXXX-XXXX"
+            className="input font-mono"
+            required
+          />
+        </Field>
+        <Field label="Days to add">
+          <input
+            type="number"
+            min={1}
+            max={3650}
+            value={days}
+            onChange={(e) => setDays(e.target.value)}
+            className="input"
+            required
+          />
+        </Field>
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-40"
+          disabled={loading}
+        >
+          {loading ? 'Extending…' : 'Extend expiry'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {result && (
+        <div className="card mt-3 text-sm space-y-1">
+          <p className="font-medium text-blue-700">Expiry extended by {result.days} days</p>
+          <p>
+            Key: <code className="font-mono">{result.key}</code>
+          </p>
+          <p>
+            Previous:{' '}
+            <span className="line-through text-ink/40">
+              {result.previousExpiresAt ?? 'none (lifetime)'}
+            </span>
+          </p>
+          <p>
+            New expiry:{' '}
+            <span className="font-semibold text-blue-700">{result.newExpiresAt}</span>
           </p>
         </div>
       )}

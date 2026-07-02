@@ -103,6 +103,14 @@ export async function setExpiryBySub(stripeSub: string, expiresAt: string | null
   sqlite.setExpiryBySub(stripeSub, expiresAt);
 }
 
+export async function setExpiry(key: string, expiresAt: string | null): Promise<void> {
+  if (usePg) {
+    const { setExpiryPg } = await import('./db-pg');
+    return setExpiryPg(key, expiresAt);
+  }
+  sqlite.setExpiry(key, expiresAt);
+}
+
 export async function listActivations(key: string): Promise<Activation[]> {
   if (usePg) {
     const { listActivationsPg } = await import('./db-pg');
