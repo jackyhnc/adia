@@ -1,5 +1,57 @@
 # Adia — Build Progress
 
+## Run 237 — 2026-07-02T15:10:00Z — admin change-email endpoint + panel + 13 tests + db ordering fix
+
+### Shipped
+
+**`web/app/api/admin/change-email/route.ts` — new admin endpoint:**
+- `POST /api/admin/change-email` — admin-only email update without requiring old-email auth.
+- Solves: customer changed primary email and can no longer authenticate with old one to use self-service `/api/license/transfer`.
+- Body: `{ key: string, newEmail: string }` — both required.
+- Validates newEmail with a basic regex (`/^[^\s@]+@[^\s@]+\.[^\s@]+$/`).
+- 422 when newEmail matches the current email (explicit no-op guard).
+- Calls existing `transferLicense(key, newEmail)` from `store.ts` — no new DB function needed.
+- Returns `{ ok, key, oldEmail, newEmail, plan }` — `oldEmail` lets the caller confirm which address was replaced.
+- Auth: ADMIN_TOKEN bearer or `?token=` query param (consistent with all admin routes).
+- No status gate — admin can change email on active, canceled, or past_due licenses.
+
+**`web/app/admin/page.tsx` — `ChangeEmailPanel` component:**
+- Inserted between ResendLicensePanel and LicensesByEmailPanel (natural support workflow).
+- Confirm dialog before submission (change is immediate and cannot be undone from this UI).
+- Orange submit button (matches destructive-adjacent operations like DeactivateAll).
+- Success card shows `oldEmail` (strikethrough) → `newEmail` for visual confirmation.
+
+**`web/__tests__/admin-routes.test.ts` — 13 new tests:**
+- 401 no-token, 401 wrong-token, 400 missing key, 400 missing newEmail, 400 invalid email format.
+- 404 unknown key, 422 same-as-current email.
+- 200 happy path: verifies `ok`, `key`, `oldEmail`, `newEmail`, `plan` in response body.
+- Persistence check: `findLicense` after the call confirms new email stored in DB.
+- Key uppercase normalization, newEmail lowercase normalization (+ DB check).
+- `?token=` query-param auth, works for canceled license (no status gate).
+- Web tests: **212 passed** (up from 199). `tsc --noEmit` clean.
+
+**`web/lib/db.ts` — bug fix: `findLicensesByEmail` ordering:**
+- Changed `ORDER BY issued_at DESC` → `ORDER BY issued_at ASC, rowid ASC`.
+- Fixed a pre-existing flaky test (`picks the most recent active license when email has multiple`)
+  that was broken by a mismatched assumption: the `resend-license` route picks `active[length-1]`
+  (last element = newest), which only works when the array is sorted oldest-first (ASC).
+  Two rapid test inserts in the same wall-clock second produced identical `issued_at` values,
+  making DESC ordering non-deterministic. `rowid ASC` provides a stable insertion-order tiebreaker.
+
+### Blocked
+Nothing blocked. Swift toolchain unavailable on Linux container.
+
+### Next agent
+All GOAL.md items complete. BUILD_COMPLETE present.
+Possible follow-up areas:
+- Rate-limiting on `POST /api/admin/change-email` (currently unthrottled; admin is bearer-auth-gated so risk is low, but a generous limit e.g. 20/min per IP would be consistent with other user-facing endpoints).
+- Add `changeEmailPg` to `db-pg.ts` and wire through `store.ts` — the admin change-email route calls `transferLicense` which is already Postgres-backed, so this is already correct; no action needed.
+- `POST /api/admin/extend-expiry` — admin endpoint to extend a license's `expires_at` by N days (useful for appeasement / failed-payment grace periods without going through Stripe).
+- `POST /api/admin/change-plan` — admin endpoint to change a license's plan (e.g. upgrade monthly → lifetime as a support resolution).
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`.
+
+---
+
 ## Run 236 — 2026-07-02T14:10:00Z — admin resend-license endpoint + panel + 12 tests
 
 ### Shipped
