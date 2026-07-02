@@ -33,3 +33,4 @@
 - [x] Webhook subscription cancellation bug: setStatusBySub looks up by stripe_sub instead of license key so cancellations actually land
 - [x] Seat visibility in app: LicenseManager.fetchSeats() + deactivateMachine(), AccountSettingsTab "Activated Machines" section with per-seat remove button and current-machine badge
 - [x] Additional SE Asian blocklist domains: grab.com (food/ride delivery), shopback.com (cashback rabbit hole), carousell.com (secondhand marketplace)
+- [x] LicenseManager network tests: MockURLProtocol + LockedBox, tests for fetchSeats (success, 401 error, not-licensed no-op, bad date rows) and deactivateMachine (success refreshes seats, 404 error, not-licensed no-op); urlSession injection seam added to LicenseManager

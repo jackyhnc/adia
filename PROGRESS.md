@@ -1,5 +1,39 @@
 # Adia — Build Progress
 
+## Run 231 — 2026-07-02T07:00:00Z — LicenseManager network tests (MockURLProtocol)
+
+### Shipped
+
+**`Sources/AdiCore/Licensing/LicenseManager.swift` — URLSession injection seam:**
+- Added `internal var urlSession: URLSession = .shared` property.
+- All four `URLSession.shared.data(...)` calls replaced with `urlSession.data(...)`.
+- Tests can point `LicenseManager.shared.urlSession` at a session backed by `MockURLProtocol` without real network access.
+
+**`Tests/AdiTests/LicenseManagerTests.swift` — 8 new network-layer tests:**
+- `LockedBox<T>` — `@unchecked Sendable` wrapper for Swift 6-safe mutable captures in `@Sendable` closures.
+- `MockURLProtocol` — `URLProtocol` subclass; registered in `ephemeral` `URLSessionConfiguration.protocolClasses` per test.
+- `LicenseManagerSeatsTests` suite (8 tests):
+  - `fetchSeatsPopulatesSeats` — 200 JSON with 2 seats → `seats` populated, `seatsLoading == false`.
+  - `fetchSeatsHandlesServerError` — 401 → `seats` stays empty, no crash.
+  - `fetchSeatsNoOpsWhenNotLicensed` — no license → zero network requests.
+  - `fetchSeatsIgnoresRowsWithBadDates` — bad ISO date row silently dropped by `compactMap`.
+  - `deactivateMachineSuccessRefreshesSeats` — POST /deactivate 200 → follow-up GET /seats clears seats (2 requests total).
+  - `deactivateMachineReturnsErrorOnServerFailure` — 404 → error string starts "Could not deactivate".
+  - `deactivateMachineNoOpsWhenNotLicensed` — no license → returns "Not licensed.", zero requests.
+
+**Note:** This run pushed to `origin/dev` (not `origin/main`) because the repository has diverged histories — previous builds live on a detached chain that was never merged to origin/main. The `dev` branch carries all runs 224-231. The next agent should investigate reconciling `dev` → `main` (likely a PR or force-push after owner review).
+
+### Blocked
+Nothing blocked — but see note above about `origin/dev` vs `origin/main`.
+
+### Next agent should
+- Reconcile `dev` → `main` (all real work is on `dev`; `main` has only no-op run logs).
+- Consider upgrading Next.js from 14.2.18 → 15.x.
+- Consider a `PATCH /api/license/email` self-service endpoint.
+- Add more distracting domains: `daraz.pk`, `11street.my`.
+
+---
+
 ## Run 230 — 2026-07-02T05:10:00Z — seat visibility in app + SE Asian blocklist additions
 
 ### Shipped
