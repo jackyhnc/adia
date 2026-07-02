@@ -1,9 +1,10 @@
-// Tests for admin routes that have no coverage:
+// Tests for admin routes:
 //   GET/DELETE /api/admin/activations
 //   POST       /api/admin/revoke
 //   GET        /api/admin/lookup
 //   GET        /api/admin/licenses-by-email
 //   POST       /api/admin/resend-payment-failed
+//   POST       /api/admin/resend-license
 //
 // All routes require ADMIN_TOKEN; SQLite DB is reset per test.
 
@@ -19,8 +20,9 @@ vi.mock('@/lib/email', () => ({
   sendPaymentFailedEmail: vi.fn().mockResolvedValue(undefined),
 }));
 
-import { sendPaymentFailedEmail } from '@/lib/email';
+import { sendPaymentFailedEmail, sendLicenseEmail } from '@/lib/email';
 const mockSendPaymentFailedEmail = vi.mocked(sendPaymentFailedEmail);
+const mockSendLicenseEmail = vi.mocked(sendLicenseEmail);
 
 let dbPath: string;
 
@@ -33,6 +35,8 @@ beforeEach(() => {
   process.env.ADMIN_TOKEN = 'test-admin-token';
   mockSendPaymentFailedEmail.mockReset();
   mockSendPaymentFailedEmail.mockResolvedValue(undefined);
+  mockSendLicenseEmail.mockReset();
+  mockSendLicenseEmail.mockResolvedValue(undefined);
 });
 
 afterEach(() => {
@@ -516,5 +520,144 @@ describe('POST /api/admin/resend-payment-failed', () => {
     const res = await POST(req);
     expect(res.status).toBe(200);
     expect(mockSendPaymentFailedEmail).toHaveBeenCalledOnce();
+  });
+});
+
+// ─── POST /api/admin/resend-license ───────────────────────────────────────────
+
+async function callResendLicense(body: unknown, token = 'test-admin-token') {
+  const { POST } = await import('@/app/api/admin/resend-license/route');
+  const req = new NextRequest('http://localhost/api/admin/resend-license', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+  });
+  return POST(req);
+}
+
+describe('POST /api/admin/resend-license', () => {
+  it('returns 401 without a token', async () => {
+    const { POST } = await import('@/app/api/admin/resend-license/route');
+    const req = new NextRequest('http://localhost/api/admin/resend-license', {
+      method: 'POST',
+      body: JSON.stringify({ key: 'ADIA-RLSE-NOAU-AAAA' }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callResendLicense({ key: 'ADIA-RLSE-WRNG-AAAA' }, 'wrong-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when neither key nor email is in the body', async () => {
+    const res = await callResendLicense({});
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing/i);
+  });
+
+  it('returns 404 for unknown key', async () => {
+    const res = await callResendLicense({ key: 'ADIA-RLSE-UNKN-ZZZZ' });
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.error).toMatch(/unknown license key/i);
+  });
+
+  it('returns 404 when no licenses exist for the email', async () => {
+    const res = await callResendLicense({ email: 'ghost@example.com' });
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.error).toMatch(/no licenses found/i);
+  });
+
+  it('sends welcome email by key and returns 200', async () => {
+    insertLicense({ key: 'ADIA-RLSE-BYKY-AAAA', email: 'bykey@example.com', plan: 'yearly', expiresAt: null });
+
+    const res = await callResendLicense({ key: 'ADIA-RLSE-BYKY-AAAA' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.to).toBe('bykey@example.com');
+    expect(body.key).toBe('ADIA-RLSE-BYKY-AAAA');
+    expect(body.plan).toBe('yearly');
+
+    expect(mockSendLicenseEmail).toHaveBeenCalledOnce();
+    expect(mockSendLicenseEmail).toHaveBeenCalledWith('bykey@example.com', 'ADIA-RLSE-BYKY-AAAA', 'yearly');
+  });
+
+  it('sends welcome email by email address and returns 200', async () => {
+    insertLicense({ key: 'ADIA-RLSE-BYEM-AAAA', email: 'byemail@example.com', plan: 'lifetime', expiresAt: null });
+
+    const res = await callResendLicense({ email: 'byemail@example.com' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.to).toBe('byemail@example.com');
+    expect(body.key).toBe('ADIA-RLSE-BYEM-AAAA');
+
+    expect(mockSendLicenseEmail).toHaveBeenCalledOnce();
+  });
+
+  it('prefers key over email when both are supplied', async () => {
+    insertLicense({ key: 'ADIA-RLSE-KOV1-AAAA', email: 'primary@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-RLSE-KOV2-BBBB', email: 'secondary@example.com', plan: 'lifetime', expiresAt: null });
+
+    const res = await callResendLicense({ key: 'ADIA-RLSE-KOV1-AAAA', email: 'secondary@example.com' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    // key took precedence — primary@example.com, not secondary
+    expect(body.key).toBe('ADIA-RLSE-KOV1-AAAA');
+    expect(body.to).toBe('primary@example.com');
+  });
+
+  it('picks the most recent active license when email has multiple', async () => {
+    // Insert older license first (issuedAt ordering)
+    insertLicense({ key: 'ADIA-RLSE-MUL1-AAAA', email: 'multi@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-RLSE-MUL2-BBBB', email: 'multi@example.com', plan: 'yearly', expiresAt: null });
+
+    const res = await callResendLicense({ email: 'multi@example.com' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    // Second (newer) license should be picked
+    expect(body.key).toBe('ADIA-RLSE-MUL2-BBBB');
+    expect(body.plan).toBe('yearly');
+  });
+
+  it('normalizes key to uppercase', async () => {
+    insertLicense({ key: 'ADIA-RLSE-CASE-AAAA', email: 'casekey2@example.com', plan: 'lifetime', expiresAt: null });
+    const res = await callResendLicense({ key: 'adia-rlse-case-aaaa' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.key).toBe('ADIA-RLSE-CASE-AAAA');
+  });
+
+  it('accepts ?token= query param auth', async () => {
+    insertLicense({ key: 'ADIA-RLSE-TOKN-AAAA', email: 'qpauth2@example.com', plan: 'lifetime', expiresAt: null });
+    const { POST } = await import('@/app/api/admin/resend-license/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/resend-license?token=test-admin-token',
+      {
+        method: 'POST',
+        body: JSON.stringify({ key: 'ADIA-RLSE-TOKN-AAAA' }),
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    expect(mockSendLicenseEmail).toHaveBeenCalledOnce();
+  });
+
+  it('sends email regardless of license status', async () => {
+    insertLicense({ key: 'ADIA-RLSE-CNCL-AAAA', email: 'canceled@example.com', plan: 'monthly', expiresAt: null });
+    const { setStatus } = await import('@/lib/db');
+    setStatus('ADIA-RLSE-CNCL-AAAA', 'canceled');
+
+    // Even a canceled license gets the email (admin knows what they're doing).
+    const res = await callResendLicense({ key: 'ADIA-RLSE-CNCL-AAAA' });
+    expect(res.status).toBe(200);
+    expect(mockSendLicenseEmail).toHaveBeenCalledOnce();
   });
 });

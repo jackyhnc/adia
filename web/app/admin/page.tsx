@@ -26,6 +26,7 @@ export default function Admin() {
       </div>
 
       <IssuePanel token={token} />
+      <ResendLicensePanel token={token} />
       <LicensesByEmailPanel token={token} />
       <LookupPanel token={token} />
       <ActivationsPanel token={token} />
@@ -125,6 +126,94 @@ function IssuePanel({ token }: { token: string }) {
           <p className="text-xs text-ink/50">
             {result.email} · {result.plan}
             {result.expiresAt ? ` · expires ${result.expiresAt.slice(0, 10)}` : ' · no expiry'}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Resend license email ─────────────────────────────────────────────────────
+
+function ResendLicensePanel({ token }: { token: string }) {
+  const [key, setKey] = useState('');
+  const [email, setEmail] = useState('');
+  const [result, setResult] = useState<{ ok: true; to: string; key: string; plan: string } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function resend(e: React.FormEvent) {
+    e.preventDefault();
+    if (!key && !email) {
+      setError('Enter a license key or an email address.');
+      return;
+    }
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const body: Record<string, string> = {};
+      if (key) body.key = key.trim().toUpperCase();
+      if (email) body.email = email.trim();
+      const res = await fetch('/api/admin/resend-license', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const b = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${b.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+        setKey('');
+        setEmail('');
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Resend license email</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Re-send the license welcome email to a customer who lost their key. Provide a key{' '}
+        <em>or</em> an email address. If only an email is given, the most recently issued active
+        license for that address is used.
+      </p>
+      <form onSubmit={resend} className="card space-y-3">
+        <Field label="License key (takes precedence if both are filled)">
+          <input
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            placeholder="ADIA-XXXX-XXXX-XXXX  (optional if email is set)"
+            className="input font-mono"
+          />
+        </Field>
+        <Field label="Customer email (used if no key is given)">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="user@example.com  (optional if key is set)"
+            className="input"
+          />
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Sending…' : 'Resend license email'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {result && (
+        <div className="card mt-3 border border-green-500/30 bg-green-50/5">
+          <p className="text-sm font-semibold text-green-600">Email sent ✓</p>
+          <p className="text-xs text-ink/60 mt-1">
+            Sent to <strong>{result.to}</strong> — key{' '}
+            <span className="font-mono select-all">{result.key}</span> ({result.plan})
           </p>
         </div>
       )}
