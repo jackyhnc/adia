@@ -31,6 +31,7 @@ export default function Admin() {
       <ChangeEmailPanel token={token} />
       <LicensesByEmailPanel token={token} />
       <LookupPanel token={token} />
+      <NotePanel token={token} />
       <ActivationsPanel token={token} />
       <DeactivateAllPanel token={token} />
       <TransferPanel />
@@ -207,7 +208,7 @@ function IssuePanel({ token }: { token: string }) {
             <option value="monthly">Monthly</option>
           </select>
         </Field>
-        <Field label="Note (optional — not stored, just echoed back)">
+        <Field label="Note (optional — stored on the license, visible in Admin note panel)">
           <input
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -469,6 +470,130 @@ function LookupPanel({ token }: { token: string }) {
         </button>
       </form>
       {result && <pre className="card mt-3 font-mono text-xs whitespace-pre-wrap">{result}</pre>}
+    </div>
+  );
+}
+
+// ─── Admin note ──────────────────────────────────────────────────────────────
+
+function NotePanel({ token }: { token: string }) {
+  const [key, setKey] = useState('');
+  const [note, setNote] = useState('');
+  const [fetched, setFetched] = useState<string | null | undefined>(undefined);
+  const [result, setResult] = useState<{ ok: true; key: string; note: string | null } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function fetchNote(e: React.FormEvent) {
+    e.preventDefault();
+    if (!token) { setError('Paste admin token above first.'); return; }
+    setLoading(true);
+    setError('');
+    setFetched(undefined);
+    setResult(null);
+    try {
+      const res = await fetch(
+        `/api/admin/note?key=${encodeURIComponent(key.trim().toUpperCase())}`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        const body = await res.json();
+        setFetched(body.note);
+        setNote(body.note ?? '');
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function saveNote(e: React.FormEvent) {
+    e.preventDefault();
+    if (!token) { setError('Paste admin token above first.'); return; }
+    setLoading(true);
+    setError('');
+    setResult(null);
+    try {
+      const res = await fetch('/api/admin/note', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: key.trim().toUpperCase(), note: note || null }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        const body = await res.json();
+        setResult(body);
+        setFetched(body.note);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Admin note</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Attach a freeform note to any license — speaker comp reason, support resolution context, etc.
+        Notes are visible only to admins. Clear by saving an empty field.
+      </p>
+
+      <form onSubmit={fetchNote} className="card space-y-3">
+        <Field label="License key">
+          <input
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            placeholder="ADIA-XXXX-XXXX-XXXX"
+            className="input font-mono"
+            required
+          />
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Loading…' : 'Fetch note'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {fetched !== undefined && (
+        <form onSubmit={saveNote} className="card mt-3 space-y-3">
+          <Field label={`Current note for ${key.trim().toUpperCase()}`}>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="Leave blank to clear…"
+              rows={3}
+              className="input w-full resize-y"
+            />
+          </Field>
+          <button
+            type="submit"
+            className="px-4 py-2 rounded-lg bg-teal-600 text-white text-sm font-medium hover:bg-teal-700 disabled:opacity-40"
+            disabled={loading}
+          >
+            {loading ? 'Saving…' : note ? 'Save note' : 'Clear note'}
+          </button>
+        </form>
+      )}
+
+      {result && (
+        <div className="card mt-3 border border-green-500/30 bg-green-50/5">
+          <p className="text-sm font-semibold text-green-600">Note saved ✓</p>
+          <p className="text-xs text-ink/60 mt-1">
+            {result.note
+              ? <>Note on <span className="font-mono">{result.key}</span>: <em>{result.note}</em></>
+              : <>Note cleared for <span className="font-mono">{result.key}</span>.</>}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

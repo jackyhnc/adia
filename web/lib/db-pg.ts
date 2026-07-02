@@ -40,6 +40,8 @@ async function ensureSchema(): Promise<void> {
       created_at TIMESTAMPTZ NOT NULL
     )
   `;
+  // Migration: add note column to existing deployments.
+  await sql`ALTER TABLE licenses ADD COLUMN IF NOT EXISTS note TEXT`;
   _schemaReady = true;
 }
 
@@ -241,6 +243,19 @@ export async function joinWaitlistPg(email: string): Promise<void> {
     VALUES (${email.toLowerCase()}, NOW())
     ON CONFLICT (email) DO NOTHING
   `;
+}
+
+export async function setNotePg(key: string, note: string | null): Promise<void> {
+  await ensureSchema();
+  await sql`UPDATE licenses SET note = ${note} WHERE key = ${key.trim().toUpperCase()}`;
+}
+
+export async function getNotePg(key: string): Promise<string | null> {
+  await ensureSchema();
+  const result = await sql<{ note: string | null }>`
+    SELECT note FROM licenses WHERE key = ${key.trim().toUpperCase()}
+  `;
+  return result.rows[0]?.note ?? null;
 }
 
 import type { LicenseStats } from './db';

@@ -159,6 +159,22 @@ export async function joinWaitlist(email: string): Promise<void> {
   sqlite.joinWaitlist(email);
 }
 
+export async function setNote(key: string, note: string | null): Promise<void> {
+  if (usePg) {
+    const { setNotePg } = await import('./db-pg');
+    return setNotePg(key, note);
+  }
+  sqlite.setNote(key, note);
+}
+
+export async function getNote(key: string): Promise<string | null> {
+  if (usePg) {
+    const { getNotePg } = await import('./db-pg');
+    return getNotePg(key);
+  }
+  return sqlite.getNote(key);
+}
+
 export async function getStats(): Promise<LicenseStats> {
   if (usePg) {
     const { getStatsPg } = await import('./db-pg');

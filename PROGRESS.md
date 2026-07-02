@@ -1,5 +1,55 @@
 # Adia — Build Progress
 
+## Run 242 — 2026-07-02T23:10:00Z — POST /api/admin/note — persist admin notes on licenses
+
+### Shipped
+
+**`note TEXT` column added to the `licenses` table (both adapters):**
+- `web/lib/db.ts`: added `note TEXT` to the `CREATE TABLE IF NOT EXISTS` DDL + inline migration `ALTER TABLE licenses ADD COLUMN note TEXT` (try-catch ignores "duplicate column name" for existing DBs, so the migration is idempotent).
+- `web/lib/db-pg.ts`: `ensureSchema()` now runs `ALTER TABLE licenses ADD COLUMN IF NOT EXISTS note TEXT` — idempotent on Postgres.
+
+**`setNote(key, note)` + `getNote(key)` in both adapters and `store.ts`:**
+- SQLite: two new exported functions using `UPDATE … SET note = ?` and `SELECT note FROM licenses WHERE key = ?`.
+- Postgres: `setNotePg` / `getNotePg` with the same semantics.
+- `store.ts`: two new facade functions wiring up the correct adapter at runtime.
+
+**`web/app/api/admin/note/route.ts` — new admin endpoint:**
+- `GET ?key=ADIA-...` → `{ key, note: string | null }` — returns current note (null when unset).
+- `POST { key, note }` → `{ ok, key, note }` — sets or clears note.
+  - Empty string and omitted `note` both clear to `null`.
+  - Note is trimmed before storage; whitespace-only becomes `null`.
+- Auth: `ADMIN_TOKEN` bearer header or `?token=` query param (matches all other admin routes).
+- 400 on missing key, 404 on unknown key.
+
+**`web/app/api/admin/issue/route.ts` — note is now stored, not just echoed:**
+- Imports `setNote` from `@/lib/store`.
+- After `insertLicense`, if `body.note` is present and non-empty, calls `setNote(key, noteText)`.
+- Response `note` field now reflects the persisted value (null if blank/absent).
+
+**`web/app/admin/page.tsx` — `NotePanel` component:**
+- Two-step UX: "Fetch note" loads the current note into a textarea; "Save note" / "Clear note" posts the update.
+- Added between `LookupPanel` and `ActivationsPanel`.
+- IssuePanel's note field label updated from "not stored, just echoed back" to "stored on the license, visible in Admin note panel".
+- Teal submit button (visually distinct from all other admin panels).
+
+**`web/__tests__/admin-note.test.ts` — 21 new tests:**
+- GET: 401 no-token, 401 wrong-token, 400 missing key, 404 unknown key, 200 null when unset, 200 returns stored note, `?token=` auth.
+- POST: 401 no-token, 401 wrong-token, 400 missing key, 400 invalid JSON, 404 unknown key, 200 set note, 200 overwrite note, 200 clear via empty string, 200 clear via null, 200 clear via omitted field, key normalization, whitespace trimming, `?token=` auth.
+
+### Tests
+284 passed (up from 263). 17 test files green.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider surfacing `note` in the `LookupPanel` response (add it to the `License` type and `findLicense` return value).
+- Consider adding `note` to the `/api/admin/licenses-by-email` response so admins can see notes when searching by email.
+- Consider adding new blocklist domains or keyword expansions on the Swift side.
+- Consider an admin audit log table recording which admin action was taken on each license and when (POST /api/admin/note, changePlan, reactivate, extend, revoke, issue, etc.).
+
+---
+
 ## Run 241 — 2026-07-02T21:09:00Z — GET /api/admin/stats + ordering bug fix + 8 tests
 
 ### Shipped

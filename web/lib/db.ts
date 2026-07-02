@@ -34,7 +34,8 @@ function db(): Database.Database {
       status         TEXT NOT NULL DEFAULT 'active',
       issued_at      TEXT NOT NULL,
       expires_at     TEXT,
-      machine_count  INTEGER NOT NULL DEFAULT 0
+      machine_count  INTEGER NOT NULL DEFAULT 0,
+      note           TEXT
     );
     CREATE INDEX IF NOT EXISTS idx_licenses_email ON licenses(email);
     CREATE TABLE IF NOT EXISTS activations (
@@ -50,6 +51,9 @@ function db(): Database.Database {
       created_at TEXT NOT NULL
     );
   `);
+  // Migration: add note column to existing DBs that predate this column.
+  try { _db.exec('ALTER TABLE licenses ADD COLUMN note TEXT'); }
+  catch (e: any) { if (!e.message?.includes('duplicate column name')) throw e; }
   return _db;
 }
 
@@ -242,6 +246,17 @@ export type LicenseStats = {
   newLast30Days: number;
   activatedMachines: number;
 };
+
+export function setNote(key: string, note: string | null): void {
+  db().prepare('UPDATE licenses SET note = ? WHERE key = ?').run(note, key.trim().toUpperCase());
+}
+
+export function getNote(key: string): string | null {
+  const row = db()
+    .prepare('SELECT note FROM licenses WHERE key = ?')
+    .get(key.trim().toUpperCase()) as { note: string | null } | undefined;
+  return row?.note ?? null;
+}
 
 export function getStats(): LicenseStats {
   const now = new Date();
