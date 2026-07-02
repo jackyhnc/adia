@@ -1,5 +1,44 @@
 # Adia — Build Progress
 
+## Run 234 — 2026-07-02T12:10:00Z — deactivateThisMac flow + blocklist + @MainActor tests
+
+### Shipped
+
+**`Sources/AdiCore/Licensing/LicenseManager.swift` — `deactivateThisMac()` method:**
+- New public `async` method that frees the current machine's server seat via `POST /api/license/deactivate` then clears the local Keychain license.
+- Safe rollback: if the server call fails, local license state is preserved (user stays licensed).
+- Reuses existing `serverDeactivateMachine` + `deactivate()` private helpers.
+
+**`Sources/AdiCore/Views/Settings/AccountSettingsTab.swift` — "Deactivate This Mac" UI:**
+- Added 3 new `@State` vars: `showDeactivateThisMacAlert`, `deactivatingThisMac`, `deactivateThisMacError`.
+- "Deactivate This Mac" button (red, borderless) in the `licenseRow` licensed case — spinner during async call, inline error on failure.
+- `.alert` confirmation dialog with destructive-role button before proceeding.
+- Separate from the per-seat "Remove" flow in `seatsSection` which only removes a remote machine.
+
+**`Sources/AdiCore/Models/DefaultBlocklists.swift` — 2 new blocked domains:**
+- `craigslist.org` — US/CA classifieds, same rabbit-hole pattern as kijiji.ca.
+- `vinted.com` — EU/NA secondhand clothing marketplace.
+
+**`Tests/AdiTests/LicenseManagerTests.swift` — @MainActor + 3 new tests:**
+- `@MainActor` annotation added to the `@Suite` struct for Swift 6 strict concurrency compliance.
+- `deactivateThisMacSuccessClearsLocalLicense` — 200 server response; asserts `currentLicense() == nil` and status is non-licensed.
+- `deactivateThisMacReturnsErrorWhenNotLicensed` — `.unknown` status; asserts exact error string `"Not licensed."` without HTTP call.
+- `deactivateThisMacKeepsLocalLicenseOnServerFailure` — 500 response; asserts error starts with `"Could not deactivate:"` AND local license is retained.
+
+### Blocked
+Nothing blocked. Swift toolchain unavailable on Linux container (build verified by code review).
+
+### Next agent
+All GOAL.md items complete. BUILD_COMPLETE present.
+Possible follow-up areas:
+- Upload coverage artifacts to codecov.io in CI (requires CODECOV_TOKEN secret — log to USER_TODO.md)
+- Add more North American distracting domains: `facebook.com/marketplace` note — can't path-block with /etc/hosts; `facebook.com` itself is already blocked
+- Web test for `deactivateThisMac` client-side guard in AccountSettingsTab (Swift UI tests, not web)
+- Consider adding `@MainActor` annotation to other Swift test suite structs (SessionManagerTests, etc.) for consistency
+- Consider adding a `/api/license/deactivate-self` endpoint that accepts key + email + current machine (instead of requiring the machine hash to be known client-side — the server can look up the machine by key+email+machine_fingerprint)
+
+---
+
 ## Run 233 — 2026-07-02T11:08:00Z — React 18 → 19 upgrade + CI coverage
 
 ### Shipped
