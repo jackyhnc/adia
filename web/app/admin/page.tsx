@@ -29,6 +29,8 @@ export default function Admin() {
       <LicensesByEmailPanel token={token} />
       <LookupPanel token={token} />
       <ActivationsPanel token={token} />
+      <DeactivateAllPanel token={token} />
+      <TransferPanel />
       <ResendPaymentFailedPanel token={token} />
       <RevokePanel token={token} />
     </section>
@@ -558,6 +560,178 @@ function ResendPaymentFailedPanel({ token }: { token: string }) {
           <p className="text-xs text-ink/60 mt-1">
             Sent to <strong>{result.to}</strong> for key{' '}
             <span className="font-mono">{result.key}</span> ({result.plan})
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Deactivate all machines ──────────────────────────────────────────────────
+
+function DeactivateAllPanel({ token }: { token: string }) {
+  const [key, setKey] = useState('');
+  const [result, setResult] = useState<{ ok: true; key: string; removedCount: number } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function deactivateAll(e: React.FormEvent) {
+    e.preventDefault();
+    const k = key.trim().toUpperCase();
+    if (!confirm(`Remove ALL activations for ${k}? The user will need to re-activate on each machine.`)) return;
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/deactivate-all', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: k }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+        setKey('');
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Deactivate all machines</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Wipes every machine activation for a license in one shot. Use when a customer has lost
+        access to all their machines and can&apos;t deactivate them individually.
+      </p>
+      <form onSubmit={deactivateAll} className="card space-y-3">
+        <Field label="License key">
+          <input
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            placeholder="ADIA-XXXX-XXXX-XXXX"
+            className="input font-mono"
+            required
+          />
+        </Field>
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-lg bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 disabled:opacity-40"
+          disabled={loading}
+        >
+          {loading ? 'Deactivating…' : 'Deactivate all'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {result && (
+        <div className="card mt-3 border border-green-500/30 bg-green-50/5">
+          <p className="text-sm font-semibold text-green-600">Done ✓</p>
+          <p className="text-xs text-ink/60 mt-1">
+            Removed <strong>{result.removedCount}</strong> activation
+            {result.removedCount === 1 ? '' : 's'} for{' '}
+            <span className="font-mono">{result.key}</span>
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── License transfer (support) ───────────────────────────────────────────────
+
+function TransferPanel() {
+  const [key, setKey] = useState('');
+  const [email, setEmail] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [result, setResult] = useState<{ ok: true; key: string; email: string; plan: string } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function transfer(e: React.FormEvent) {
+    e.preventDefault();
+    if (!confirm(`Transfer ${key} from ${email} → ${newEmail}?`)) return;
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const res = await fetch('/api/license/transfer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: key.trim().toUpperCase(), email: email.trim(), newEmail: newEmail.trim() }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+        setKey('');
+        setEmail('');
+        setNewEmail('');
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Transfer license</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Move a license to a different email address. Requires the current key + email for auth
+        (collect from the customer). Use for email changes or account consolidation.
+      </p>
+      <form onSubmit={transfer} className="card space-y-3">
+        <Field label="License key">
+          <input
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            placeholder="ADIA-XXXX-XXXX-XXXX"
+            className="input font-mono"
+            required
+          />
+        </Field>
+        <Field label="Current email (for verification)">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="current@example.com"
+            className="input"
+            required
+          />
+        </Field>
+        <Field label="New email">
+          <input
+            type="email"
+            value={newEmail}
+            onChange={(e) => setNewEmail(e.target.value)}
+            placeholder="new@example.com"
+            className="input"
+            required
+          />
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Transferring…' : 'Transfer license'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {result && (
+        <div className="card mt-3 border border-green-500/30 bg-green-50/5">
+          <p className="text-sm font-semibold text-green-600">Transferred ✓</p>
+          <p className="text-xs text-ink/60 mt-1">
+            <span className="font-mono">{result.key}</span> ({result.plan}) is now registered to{' '}
+            <strong>{result.email}</strong>
           </p>
         </div>
       )}
