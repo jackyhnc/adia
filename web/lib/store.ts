@@ -111,6 +111,14 @@ export async function listActivations(key: string): Promise<Activation[]> {
   return sqlite.listActivations(key);
 }
 
+export async function removeAllActivations(key: string): Promise<number> {
+  if (usePg) {
+    const { removeAllActivationsPg } = await import('./db-pg');
+    return removeAllActivationsPg(key);
+  }
+  return sqlite.removeAllActivations(key);
+}
+
 export async function removeActivation(key: string, machineHash: string): Promise<void> {
   if (usePg) {
     const { removeActivationPg } = await import('./db-pg');

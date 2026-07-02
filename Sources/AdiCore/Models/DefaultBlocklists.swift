@@ -265,6 +265,11 @@ extension Session {
         // Restaurant browsing rabbit holes
         "yelp.com",
         "opentable.com",
+        // Southeast Asian e-commerce time sinks
+        "lazada.com",
+        "shopee.com",
+        "tokopedia.com",
+        "bukalapak.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

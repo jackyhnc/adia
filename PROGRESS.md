@@ -1,5 +1,48 @@
 # Adia — Build Progress
 
+## Run 229 — 2026-07-02T03:10:00Z — seats endpoint + deactivate-all admin + SE Asian blocklist
+
+### Shipped
+
+**`web/app/api/license/seats/route.ts` — new user-facing seats endpoint:**
+- `GET ?key=ADIA-...&email=user@example.com` — returns the list of activated machines for a license.
+- Auth by key + email (same credentials as `/activate` and `/deactivate`).
+- Returns `{ key, plan, status, seatCount, seats: [{ machineHash, firstSeen, lastSeen }] }`.
+- Rate-limited: 20 req/min per IP.
+- Completes the deactivate workflow — users can now identify which machine to pass to `/deactivate` before calling it.
+
+**`web/app/api/admin/deactivate-all/route.ts` — new admin endpoint:**
+- `POST { key }` — removes ALL machine activations for a license key in one call.
+- Auth: ADMIN_TOKEN bearer header or `?token=` query param (consistent with other admin routes).
+- Returns `{ ok, key, removedCount }`. Idempotent — second call returns `removedCount: 0`.
+- Only removes activations for the specified key; other keys are unaffected.
+- Useful for lost/stolen machine scenarios where the user can't identify individual machines.
+
+**`web/lib/db.ts` + `web/lib/db-pg.ts` + `web/lib/store.ts` — `removeAllActivations` primitive:**
+- SQLite: `DELETE FROM activations WHERE license_key = ?`, returns `changes` count.
+- Postgres: same via `@vercel/postgres` tagged template, returns `rowCount`.
+- Store facade follows the existing `usePg` pattern.
+
+**`web/__tests__/seats.test.ts` — 11 new tests (400/404/200/metadata/timestamps/case-norm/rate-limit)**
+**`web/__tests__/deactivate-all.test.ts` — 11 new tests (401/400/404/200/idempotent/isolation/token-auth)**
+
+**`Sources/AdiCore/Models/DefaultBlocklists.swift` — 4 new blocked domains:**
+- `lazada.com`, `shopee.com` (major Southeast Asian e-commerce platforms)
+- `tokopedia.com`, `bukalapak.com` (Indonesian e-commerce time sinks)
+
+**Web test count: 155 → 179 (15 test files, all pass).**
+
+### Blocked
+Nothing blocked.
+
+### Next agent should
+- Consider upgrading Next.js from 14.2.18 → 15.x (known security CVEs, breaking change migration).
+- Consider adding a `PATCH /api/license/email` user-facing endpoint to update email with key+email auth (complement to the admin `/transfer` endpoint).
+- Add more Southeast Asian distracting sites: `grab.com` (food delivery browsing), `shopback.com`, `carousell.com` (secondhand marketplace rabbit hole).
+- Consider surfacing `seats` data in the macOS app's LicenseManager so users can see their seat usage in-app without going to the web.
+
+---
+
 ## Run 228 — 2026-07-02T00:00:00Z — license deactivate/transfer endpoints + blocklist additions
 
 ### Shipped

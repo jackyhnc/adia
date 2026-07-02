@@ -213,6 +213,12 @@ export async function setExpiryBySubPg(stripeSub: string, expiresAt: string | nu
   await sql`UPDATE licenses SET expires_at = ${expiresAt} WHERE stripe_sub = ${stripeSub}`;
 }
 
+export async function removeAllActivationsPg(key: string): Promise<number> {
+  await ensureSchema();
+  const result = await sql`DELETE FROM activations WHERE license_key = ${key}`;
+  return result.rowCount ?? 0;
+}
+
 export async function transferLicensePg(key: string, newEmail: string): Promise<void> {
   await ensureSchema();
   await sql`UPDATE licenses SET email = ${newEmail.toLowerCase().trim()} WHERE key = ${key}`;

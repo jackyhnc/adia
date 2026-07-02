@@ -206,6 +206,13 @@ export function removeActivation(key: string, machineHash: string): void {
     .run(key, machineHash);
 }
 
+export function removeAllActivations(key: string): number {
+  const result = db()
+    .prepare('DELETE FROM activations WHERE license_key = ?')
+    .run(key);
+  return result.changes;
+}
+
 export function transferLicense(key: string, newEmail: string): void {
   db()
     .prepare('UPDATE licenses SET email = ? WHERE key = ?')
