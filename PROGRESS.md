@@ -9910,3 +9910,43 @@ All goals complete. CI expected green at `a69c814`. Possible follow-on:
   (prompt-tuning to not penalize legitimate first-time asks).
 - (c) React 18 → 19 upgrade (Next.js 15 supports both).
 - (d) Add `--coverage` to CI `web-test` job for coverage reporting.
+
+---
+
+## Run 242 — 2026-07-02T22:07:00Z — /account self-service license page
+
+### Shipped
+
+**`web/app/account/page.tsx` — new user-facing license management page:**
+- Multi-step UI: lookup form (key + email) → license dashboard.
+- Dashboard shows: license key (copyable), plan label, status badge (active/canceled/expired/past_due), seat count.
+- "Activated machines" section lists all seats with firstSeen/lastSeen dates and a per-row "Remove" button.
+  - Remove calls `POST /api/license/deactivate`, then refreshes the seat list — seat count updates live.
+  - Displays an error row if deactivation fails without crashing.
+- "Transfer to a new email" section (collapsed by default) — form calls `POST /api/license/transfer`, shows success state with the new email.
+- "Look up a different license" and "Back to lookup" escape hatches.
+- No new backend code — all actions use the existing `/api/license/seats`, `/api/license/deactivate`, and `/api/license/transfer` endpoints.
+- TypeScript clean (tsc --noEmit passes).
+
+**`web/app/layout.tsx` — added "Account" link:**
+- Nav header: Pricing / Download / Changelog / **Account** / GitHub.
+- Footer: **Account** / Billing / Privacy / Terms / Support.
+
+**`web/app/sitemap.ts` — added `/account` route:**
+- `priority: 0.4`, changeFrequency: 'yearly'.
+
+**`web/app/success/page.tsx` — post-purchase CTA update:**
+- "Back to home" button replaced with "View your license →" linking to `/account`.
+
+**`web/__tests__/seats.test.ts` — 1 new integration test:**
+- `seat count reflects machine removal after deactivate` — inserts 2 seats, GET /seats confirms count=2, POST /deactivate removes one, GET /seats confirms count=1 and the removed machine is absent.
+- Web test count: 264 (108 pass, 156 skip — sqlite native binding absent in this CI environment, same as all prior runs).
+
+### Blocked
+Nothing blocked.
+
+### Next agent should
+- Consider adding more distracting domains: `kijiji.ca` (Canadian classifieds), `gumtree.com` (UK/AU classifieds), `grab.food` variants if they use separate DNS names.
+- Review `serverFetchSeats` URLComponents init force-unwrap in `LicenseManager.swift:331` — document why it can't fail (well-formed base URL + static path fragment) or add a `guard let` for defensive correctness.
+- Consider adding `@MainActor` isolation annotation to the `MockURLProtocol` tests for Swift 6 strict concurrency (`-strict-concurrency=complete`) — currently silenced with `@unchecked Sendable`.
+- Consider a changelog entry for the `/account` page (the existing `/changelog` page could surface this as a user-visible improvement).
