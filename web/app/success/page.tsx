@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
-export default function Success({ searchParams }: { searchParams: { license?: string; email?: string } }) {
-  const { license, email } = searchParams;
+export default async function Success({ searchParams }: { searchParams: Promise<{ license?: string; email?: string }> }) {
+  const { license, email } = await searchParams;
   return (
     <section className="pt-16 pb-20 max-w-xl">
       <div className="text-5xl">🎉</div>

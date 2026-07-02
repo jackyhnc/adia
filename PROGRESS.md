@@ -9292,3 +9292,48 @@ Possible follow-up areas:
 - Billing portal: the `/api/billing/portal` page itself (user-facing `/billing` page) could
   use a UI form so end-users can reach the Stripe billing portal without calling the API directly.
 - CI: no GitHub Actions workflow for the web test suite — adding one would catch regressions on PRs.
+
+---
+
+## Run 231 — 2026-07-02
+
+### Shipped
+
+**Next.js 14 → 15 upgrade + vitest 2 → 4 upgrade**
+
+Eliminated all critical and high-severity vulnerabilities from `npm audit`:
+
+**Next.js 14.2.18 → 15.5.20** (14 critical CVEs removed):
+- DoS via Server Actions, Server Components, Image Optimizer, cache poisoning
+- Authorization bypass in Middleware (GHSA-f82v-jwr5-mffw)
+- HTTP request smuggling via rewrites
+- SSRF via Middleware redirect handling
+- CSP nonce XSS, cross-site scripting in beforeInteractive scripts
+- Cache poisoning via RSC cache-busting, WebSocket SSRF, i18n bypass
+
+Two required code fixes for Next.js 15 breaking changes:
+1. `web/next.config.js` — `experimental.serverComponentsExternalPackages` renamed to top-level `serverExternalPackages`
+2. `web/app/success/page.tsx` — `searchParams` prop is now a `Promise`; component made `async` and awaits it
+
+**vitest 2.1.9 → 4.1.9** (fixes moderate esbuild dev-server CVE GHSA-67mh-4wv8-2f99):
+- Updated `vitest` and `@vitest/coverage-v8` to `^4.1.9`
+- No test config changes needed — API fully compatible
+
+**ws DoS** (high, GHSA-96hv-2xvq-fx4p) fixed via `npm audit fix`
+
+Remaining: one moderate postcss XSS inside Next.js's own bundled copy — npm's
+suggested fix (downgrade to next@9.3.3) is a false positive; cannot be fixed
+without a Next.js upstream patch.
+
+### Tests
+187/187 passing. Build clean (`next build` ✓).
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent
+All GOAL.md items complete. BUILD_COMPLETE present. Web at Next.js 15.5.20 + vitest 4.1.9.
+Possible follow-up areas:
+- React 18 → 19 upgrade (Next.js 15 supports both; no breaking changes for this codebase).
+- The remaining moderate postcss CVE is inside Next.js's bundled copy — cannot fix without an upstream patch.
+- Add `--coverage` to CI `web-test` job for coverage reporting.
