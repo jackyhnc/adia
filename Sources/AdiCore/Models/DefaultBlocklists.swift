@@ -282,6 +282,37 @@ extension Session {
         "gumtree.com",      // UK/AU secondhand marketplace
         "craigslist.org",   // US/CA classifieds — same rabbit-hole pattern as kijiji
         "vinted.com",       // EU/NA secondhand clothing marketplace
+        // Dating apps — habitual loop-openers that pull students/workers out of deep work
+        "tinder.com",
+        "bumble.com",
+        "hinge.co",
+        "match.com",
+        "okcupid.com",
+        "plentyoffish.com",
+        "eharmony.com",
+        // Travel daydreaming — research for trips that aren't happening yet
+        "booking.com",
+        "tripadvisor.com",
+        "airbnb.com",
+        "expedia.com",
+        "hotels.com",
+        "kayak.com",
+        // Food delivery browsing — menu-scrolling instead of working
+        "doordash.com",
+        "ubereats.com",
+        "grubhub.com",
+        "deliveroo.com",
+        "just-eat.com",
+        "just-eat.co.uk",
+        // Crypto / finance rabbit holes — charts and portfolios during deep work
+        "robinhood.com",
+        "coinbase.com",
+        "binance.com",
+        "etoro.com",
+        "coinmarketcap.com",
+        "coingecko.com",
+        "kraken.com",
+        "crypto.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

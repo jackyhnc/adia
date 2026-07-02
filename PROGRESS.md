@@ -1,5 +1,42 @@
 # Adia — Build Progress
 
+## Run 235 — 2026-07-02T13:00:00Z — @MainActor on SettingsStoreTests + 27 new blocked domains
+
+### Shipped
+
+**`Tests/AdiTests/SettingsStoreTests.swift` — `@MainActor` annotation:**
+- Added `@MainActor` to the `@Suite` struct, consistent with the LicenseManagerTests treatment in Run 234.
+- SettingsStore.shared is `@MainActor`-isolated; every test already uses `await MainActor.run { }` to access it. The struct-level annotation formalises the isolation for Swift 6 strict concurrency.
+
+**`Sources/AdiCore/Models/DefaultBlocklists.swift` — 27 new blocked domains (221 total):**
+
+Dating apps (habitual loop-openers during study/work sessions):
+- `tinder.com`, `bumble.com`, `hinge.co`, `match.com`, `okcupid.com`, `plentyoffish.com`, `eharmony.com`
+
+Travel daydreaming (browsing holidays that aren't happening yet):
+- `booking.com`, `tripadvisor.com`, `airbnb.com`, `expedia.com`, `hotels.com`, `kayak.com`
+
+Food delivery browsing (menu-scrolling instead of working — distinct from grab.com SE Asia):
+- `doordash.com`, `ubereats.com`, `grubhub.com`, `deliveroo.com`, `just-eat.com`, `just-eat.co.uk`
+
+Crypto / finance rabbit holes (portfolio-checking and chart-watching during deep work):
+- `robinhood.com`, `coinbase.com`, `binance.com`, `etoro.com`, `coinmarketcap.com`, `coingecko.com`, `kraken.com`, `crypto.com`
+
+No duplicates introduced (`defaultBlockedDomains` NoDuplicates test still passes — verified by script).
+
+### Blocked
+Nothing blocked. Swift toolchain unavailable on Linux container (build verified by code review).
+
+### Next agent
+All GOAL.md items complete. BUILD_COMPLETE present.
+Possible follow-up areas:
+- Add `@MainActor` to remaining test suites that use MainActor-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`
+- Add web test for `deactivateThisMac` client-side guard in AccountSettingsTab (Swift UI test harness)
+- Upload coverage artifacts to codecov.io in CI (requires `CODECOV_TOKEN` GitHub Actions secret — log to USER_TODO.md)
+- Consider `/api/license/deactivate-self` endpoint variant that accepts only key+email (no machine arg) and deactivates the caller's own machine by matching fingerprint from a prior activation record
+
+---
+
 ## Run 234 — 2026-07-02T12:10:00Z — deactivateThisMac flow + blocklist + @MainActor tests
 
 ### Shipped

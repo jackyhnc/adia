@@ -3,6 +3,7 @@ import Foundation
 import SwiftUI
 @testable import AdiCore
 
+@MainActor
 @Suite("SettingsStore")
 struct SettingsStoreTests {
 
