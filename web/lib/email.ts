@@ -24,6 +24,34 @@ export async function sendPaymentFailedEmail(to: string, key: string, plan: stri
   });
 }
 
+export async function sendLicenseResendEmail(to: string, licenses: Array<{ key: string; plan: string; status: string }>) {
+  if (!apiKey) {
+    console.log('[email] RESEND_API_KEY not set; would have sent resend:', { to, count: licenses.length });
+    return;
+  }
+  const resend = new Resend(apiKey);
+  const rows = licenses
+    .map((l) => `<tr><td style="font-family:monospace;padding:4px 12px 4px 0">${l.key}</td><td style="padding:4px 12px 4px 0">${l.plan}</td><td style="padding:4px 0">${l.status}</td></tr>`)
+    .join('');
+  const text = licenses.map((l) => `${l.key} (${l.plan}, ${l.status})`).join('\n');
+  await resend.emails.send({
+    from,
+    to,
+    subject: 'Adia — your license key(s)',
+    html: `
+      <p>Here are the Adia license keys registered to <b>${to}</b>:</p>
+      <table style="border-collapse:collapse;margin:12px 0">
+        <thead><tr><th style="text-align:left;padding:4px 12px 4px 0">Key</th><th style="text-align:left;padding:4px 12px 4px 0">Plan</th><th style="text-align:left">Status</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <p>Open Adia → notch → Settings → paste your key with this email (<b>${to}</b>).</p>
+      <p>If you didn't request this email, ignore it — your account is safe.</p>
+      <p>— The Adia team</p>
+    `,
+    text: `Your Adia license key(s) for ${to}:\n${text}\n\nIf you didn't request this, ignore it.`,
+  });
+}
+
 export async function sendLicenseEmail(to: string, key: string, plan: string) {
   if (!apiKey) {
     console.log('[email] RESEND_API_KEY not set; would have sent:', { to, key, plan });

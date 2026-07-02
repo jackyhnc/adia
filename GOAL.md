@@ -35,3 +35,4 @@
 - [x] Additional SE Asian blocklist domains: grab.com (food/ride delivery), shopback.com (cashback rabbit hole), carousell.com (secondhand marketplace)
 - [x] LicenseManager network tests: MockURLProtocol + urlSession injection; tests for fetchSeats (success/no-op/server-error) and deactivateMachine (success/not-licensed/server-error); daraz.pk + 11street.my blocklist additions
 - [x] Admin reactivate endpoint: POST /api/admin/reactivate sets canceled/expired/past_due license back to active; ReactivatePanel in admin UI; 11 tests
+- [x] Self-service license resend: POST /api/license/resend sends key summary email; anti-enumeration (always ok=true); rate-limited 3/15min; /account page; 8 tests

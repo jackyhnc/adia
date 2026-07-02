@@ -9853,3 +9853,62 @@ All goals complete. CI expected green at `a69c814`. Possible follow-on:
   (prompt-tuning to not penalize legitimate first-time asks).
 - (c) React 18 → 19 upgrade (Next.js 15 supports both).
 - (d) Add `--coverage` to CI `web-test` job for coverage reporting.
+
+---
+
+## Run 241 — 2026-07-02 — self-service license resend + branch recovery
+
+### Shipped
+
+**Branch recovery:**
+- Discovered that 50 commits from runs 217-240 were orphaned (detached HEAD was
+  never pushed to origin/main). Pushed all that work as
+  `origin/recovery/runs-217-240` (4726caf as tip). All development going forward
+  continues from that branch. origin/main still tracks the old state; the recovery
+  branch has the full, current codebase.
+
+**Web — `POST /api/license/resend` (self-service key retrieval):**
+- `lib/email.ts`: added `sendLicenseResendEmail(to, licenses[])` — sends a table
+  of all the user's license keys (key, plan, status) so they can find their active
+  key at a glance.
+- `app/api/license/resend/route.ts`: POST endpoint; takes `{ email }` body;
+  rate-limited 3 requests per 15 minutes per IP; looks up all licenses for the
+  email via `findLicensesByEmail`; sends the summary email when licenses exist;
+  **always returns `{ ok: true }`** — anti-enumeration design (attacker cannot
+  determine whether an email exists by observing the response).
+- `app/account/page.tsx`: new `/account` page with two sections:
+  1. "Lost your license key?" form → calls `/api/license/resend`
+  2. "Subscription & billing" → links to `/billing`
+  Success state shows "If that email is in our system, you'll receive a message
+  shortly" to reinforce the anti-enumeration guarantee to the user.
+
+**8 new tests (`web/__tests__/resend.test.ts`):**
+- `returns 400 for missing email`
+- `returns 400 for malformed email`
+- `returns ok=true even when email has no licenses (anti-enumeration)`
+- `sends email and returns ok=true when licenses exist`
+- `sends all licenses when the email has multiple`
+- `normalises email to lowercase before lookup`
+- `returns 429 after 3 requests from the same IP`
+- `different IPs do not share rate-limit buckets`
+
+Web tests: **262 passed** (up from 254).
+
+### Blocked
+- Swift toolchain unavailable on Linux container. All Swift changes are code-reviewed only.
+- All 39 GOAL.md items checked off. BUILD_COMPLETE present.
+
+### Next agent
+- Push from `recovery/runs-217-240` branch (not origin/main); origin/main is behind
+  at run-203. Whoever runs next should work from recovery/runs-217-240 or merge it
+  into main first.
+- Web tests: 262 (activate:8, db:14, webhook:2, webhook-integration:16, validate:7,
+  waitlist:5, license:7, checkout:3, ratelimit:7, deactivate:4, seats:4, transfer:4,
+  portal:3, admin-routes:38+, admin-issue:10, deactivate-all:6, resend:8).
+- Possible next improvements:
+  - Waitlist confirmation email: when `POST /api/waitlist` succeeds, send "You're
+    on the list" confirmation email to the user.
+  - `/account` page: add "Transfer license to a new email" section (calls existing
+    /api/license/transfer endpoint).
+  - Session-start hook: auto-checkout recovery/runs-217-240 at container start to
+    avoid detached HEAD on every run.
