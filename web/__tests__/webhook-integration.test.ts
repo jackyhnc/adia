@@ -72,9 +72,9 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
           customer_details: { email: 'buyer@example.com' },
           metadata: { plan: 'yearly' },
           subscription: 'sub_test_001',
-        },
+        } as any,
       },
-    });
+    } as any);
 
     const res = await callPost();
     expect(res.status).toBe(200);
@@ -100,9 +100,9 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
           customer_details: { email: 'idem@example.com' },
           metadata: { plan: 'monthly' },
           subscription: null,
-        },
+        } as any,
       },
-    });
+    } as any);
 
     await callPost();
     await callPost(); // re-delivery — same session ID
@@ -121,9 +121,9 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
           customer_email: null,
           metadata: { plan: 'monthly' },
           subscription: null,
-        },
+        } as any,
       },
-    });
+    } as any);
 
     const res = await callPost();
     expect(res.status).toBe(200);
@@ -141,8 +141,8 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
 
     mockConstructEvent.mockReturnValue({
       type: 'customer.subscription.deleted',
-      data: { object: { id: 'sub_cancel_001' } },
-    });
+      data: { object: { id: 'sub_cancel_001' } as any },
+    } as any);
 
     const res = await callPost();
     expect(res.status).toBe(200);
@@ -170,9 +170,9 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
           id: 'sub_renew_001',
           status: 'active',
           current_period_end: newPeriodEnd,
-        },
+        } as any,
       },
-    });
+    } as any);
 
     const res = await callPost();
     expect(res.status).toBe(200);
@@ -200,9 +200,9 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
           id: 'sub_pastdue_001',
           status: 'past_due',
           current_period_end: Math.floor(Date.now() / 1000) + 60 * 86400,
-        },
+        } as any,
       },
-    });
+    } as any);
 
     const res = await callPost();
     expect(res.status).toBe(200);
@@ -215,8 +215,8 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
   it('unrecognized event types return 200 without side effects', async () => {
     mockConstructEvent.mockReturnValue({
       type: 'customer.created',
-      data: { object: { id: 'cus_001' } },
-    });
+      data: { object: { id: 'cus_001' } as any },
+    } as any);
 
     const res = await callPost();
     expect(res.status).toBe(200);
@@ -245,8 +245,8 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
 
     mockConstructEvent.mockReturnValue({
       type: 'invoice.payment_failed',
-      data: { object: { subscription: 'sub_pfailed_001' } },
-    });
+      data: { object: { subscription: 'sub_pfailed_001' } as any },
+    } as any);
 
     const res = await callPost();
     expect(res.status).toBe(200);
@@ -271,8 +271,8 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
 
     mockConstructEvent.mockReturnValue({
       type: 'invoice.payment_failed',
-      data: { object: { subscription: null } },
-    });
+      data: { object: { subscription: null } as any },
+    } as any);
 
     const res = await callPost();
     expect(res.status).toBe(200);
@@ -286,8 +286,8 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
   it('invoice.payment_failed with unknown sub does not crash and sends no email', async () => {
     mockConstructEvent.mockReturnValue({
       type: 'invoice.payment_failed',
-      data: { object: { subscription: 'sub_ghost_unknown' } },
-    });
+      data: { object: { subscription: 'sub_ghost_unknown' } as any },
+    } as any);
 
     const res = await callPost();
     expect(res.status).toBe(200);
@@ -309,8 +309,8 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
 
     mockConstructEvent.mockReturnValue({
       type: 'invoice.payment_succeeded',
-      data: { object: { subscription: 'sub_psucceeded_001' } },
-    });
+      data: { object: { subscription: 'sub_psucceeded_001' } as any },
+    } as any);
 
     const res = await callPost();
     expect(res.status).toBe(200);
@@ -322,8 +322,8 @@ describe('POST /api/stripe/webhook — integration (mocked Stripe)', () => {
   it('invoice.payment_succeeded with no subscription is a no-op', async () => {
     mockConstructEvent.mockReturnValue({
       type: 'invoice.payment_succeeded',
-      data: { object: { subscription: null } },
-    });
+      data: { object: { subscription: null } as any },
+    } as any);
 
     const res = await callPost();
     expect(res.status).toBe(200);

@@ -26,8 +26,10 @@ export default function Admin() {
       </div>
 
       <IssuePanel token={token} />
+      <LicensesByEmailPanel token={token} />
       <LookupPanel token={token} />
       <ActivationsPanel token={token} />
+      <ResendPaymentFailedPanel token={token} />
       <RevokePanel token={token} />
     </section>
   );
@@ -373,6 +375,192 @@ function RevokePanel({ token }: { token: string }) {
         </button>
       </form>
       {result && <pre className="card mt-3 font-mono text-xs whitespace-pre-wrap">{result}</pre>}
+    </div>
+  );
+}
+
+// ─── Licenses by email ────────────────────────────────────────────────────────
+
+type LicenseRow = {
+  key: string;
+  email: string;
+  plan: string;
+  status: string;
+  issuedAt: string;
+  expiresAt: string | null;
+  machineCount: number;
+};
+
+function LicensesByEmailPanel({ token }: { token: string }) {
+  const [email, setEmail] = useState('');
+  const [result, setResult] = useState<{ email: string; count: number; licenses: LicenseRow[] } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function lookup(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const res = await fetch(`/api/admin/licenses-by-email?email=${encodeURIComponent(email)}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Licenses by email</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Find all license keys associated with an email address. Useful for support — returns every
+        license ever issued to that address, regardless of status.
+      </p>
+      <form onSubmit={lookup} className="card space-y-3">
+        <Field label="Customer email">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="user@example.com"
+            className="input"
+            required
+          />
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Searching…' : 'Find licenses'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {result && (
+        <div className="card mt-3 space-y-3">
+          <p className="text-sm text-ink/60">
+            {result.count === 0
+              ? `No licenses found for ${result.email}.`
+              : `${result.count} license${result.count === 1 ? '' : 's'} for ${result.email}`}
+          </p>
+          {result.licenses.length > 0 && (
+            <table className="w-full text-xs font-mono">
+              <thead>
+                <tr className="text-left text-ink/50">
+                  <th className="pb-1 pr-3">Key</th>
+                  <th className="pb-1 pr-3">Plan</th>
+                  <th className="pb-1 pr-3">Status</th>
+                  <th className="pb-1 pr-3">Issued</th>
+                  <th className="pb-1">Expires</th>
+                </tr>
+              </thead>
+              <tbody>
+                {result.licenses.map((lic) => (
+                  <tr key={lic.key} className="border-t border-ink/10">
+                    <td className="py-1 pr-3 select-all">{lic.key}</td>
+                    <td className="py-1 pr-3 text-ink/70">{lic.plan}</td>
+                    <td className={`py-1 pr-3 ${lic.status === 'active' ? 'text-green-600' : 'text-red-500'}`}>
+                      {lic.status}
+                    </td>
+                    <td className="py-1 pr-3 text-ink/50">{lic.issuedAt.slice(0, 10)}</td>
+                    <td className="py-1 text-ink/50">{lic.expiresAt ? lic.expiresAt.slice(0, 10) : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Resend payment-failed email ──────────────────────────────────────────────
+
+function ResendPaymentFailedPanel({ token }: { token: string }) {
+  const [key, setKey] = useState('');
+  const [force, setForce] = useState(false);
+  const [result, setResult] = useState<{ ok: true; to: string; key: string; plan: string } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function resend(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/resend-payment-failed', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: key.trim().toUpperCase(), force }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+        setKey('');
+        setForce(false);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Resend payment-failed email</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Manually trigger the payment-failed email for a license key. By default only sends if the
+        license is <code className="font-mono">past_due</code>; check <em>force</em> to override
+        (useful for testing the email template).
+      </p>
+      <form onSubmit={resend} className="card space-y-3">
+        <Field label="License key">
+          <input
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            placeholder="ADIA-XXXX-XXXX-XXXX"
+            className="input font-mono"
+            required
+          />
+        </Field>
+        <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={force}
+            onChange={(e) => setForce(e.target.checked)}
+            className="rounded"
+          />
+          Force — send even if license is not <span className="font-mono ml-1">past_due</span>
+        </label>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Sending…' : 'Resend email'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {result && (
+        <div className="card mt-3 border border-green-500/30 bg-green-50/5">
+          <p className="text-sm font-semibold text-green-600">Email sent ✓</p>
+          <p className="text-xs text-ink/60 mt-1">
+            Sent to <strong>{result.to}</strong> for key{' '}
+            <span className="font-mono">{result.key}</span> ({result.plan})
+          </p>
+        </div>
+      )}
     </div>
   );
 }
