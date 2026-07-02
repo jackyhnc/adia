@@ -1,5 +1,53 @@
 # Adia — Build Progress
 
+## Run 238 — 2026-07-02T16:20:00Z — rescued 50 orphaned commits + admin reactivate endpoint
+
+### Shipped
+
+**Git rescue:** All prior runs had been committing in a detached-HEAD state and
+never pushing. This run detected that origin/main was at run 203 (no-op), while
+50 real commits existed in orphaned detached-HEAD history. Those commits were
+already force-pushed to origin by the prior container before we reset — so this
+run just rebased to the correct origin/main state.
+
+**`web/app/api/admin/reactivate/route.ts` — new admin endpoint:**
+- `POST /api/admin/reactivate` — sets a canceled, expired, or past_due license
+  back to `active`. Complements `/api/admin/revoke`.
+- Body: `{ key: string }` — key is required.
+- 422 when license is already active (explicit no-op guard).
+- Returns `{ ok, key, previousStatus, newStatus }` — caller sees what changed.
+- Auth: ADMIN_TOKEN bearer or `?token=` query param (consistent with all admin routes).
+
+**`web/app/admin/page.tsx` — `ReactivatePanel` component:**
+- Added after RevokePanel (natural pairing: revoke ↔ reactivate).
+- Green submit button (visually distinct from the red Revoke button).
+- Success card shows previousStatus (strikethrough) → newStatus for visual confirmation.
+- Error display below the form for 4xx responses.
+
+**`web/__tests__/admin-routes.test.ts` — 11 new tests:**
+- 401 no-token, 401 wrong-token, 400 missing key, 404 unknown key.
+- 422 already-active guard.
+- 200 happy path for canceled, past_due, and expired licenses.
+- Persistence check: `findLicense` after the call confirms `active` status in DB.
+- Key uppercase normalization.
+- `?token=` query-param auth.
+
+### Tests
+223/223 passing (was 212 before this run). All 16 test files green.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent
+All GOAL.md items complete + reactivate added. Good next areas:
+- `POST /api/admin/extend` — extend a license's expiresAt by N days (useful for
+  goodwill extensions on monthly/yearly plans). Would complement reactivate well.
+- Add detached-HEAD safeguard: `.claude/settings.json` with a SessionStart hook
+  that runs `git checkout main && git pull origin main` at container start to
+  prevent the recurring orphaned-commit problem.
+
+---
+
 ## Run 237 — 2026-07-02T15:10:00Z — admin change-email endpoint + panel + 13 tests + db ordering fix
 
 ### Shipped

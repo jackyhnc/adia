@@ -35,6 +35,7 @@ export default function Admin() {
       <TransferPanel />
       <ResendPaymentFailedPanel token={token} />
       <RevokePanel token={token} />
+      <ReactivatePanel token={token} />
     </section>
   );
 }
@@ -558,6 +559,83 @@ function RevokePanel({ token }: { token: string }) {
         </button>
       </form>
       {result && <pre className="card mt-3 font-mono text-xs whitespace-pre-wrap">{result}</pre>}
+    </div>
+  );
+}
+
+// ─── Reactivate license ───────────────────────────────────────────────────────
+
+function ReactivatePanel({ token }: { token: string }) {
+  const [key, setKey] = useState('');
+  const [result, setResult] = useState<{ ok: boolean; key: string; previousStatus: string; newStatus: string } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function reactivate(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/reactivate', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(body);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Reactivate license</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Sets a canceled, expired, or past-due license back to{' '}
+        <code className="font-mono">active</code>. Use for wrongly revoked licenses or
+        manually resolved billing failures.
+      </p>
+      <form onSubmit={reactivate} className="card space-y-3">
+        <Field label="License key">
+          <input
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            placeholder="ADIA-XXXX-XXXX-XXXX"
+            className="input font-mono"
+            required
+          />
+        </Field>
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 disabled:opacity-40"
+          disabled={loading}
+        >
+          {loading ? 'Reactivating…' : 'Reactivate license'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {result && (
+        <div className="card mt-3 text-sm space-y-1">
+          <p className="font-medium text-green-700">License reactivated</p>
+          <p>
+            Key: <code className="font-mono">{result.key}</code>
+          </p>
+          <p>
+            Status:{' '}
+            <span className="line-through text-ink/40">{result.previousStatus}</span>
+            {' → '}
+            <span className="font-semibold text-green-700">{result.newStatus}</span>
+          </p>
+        </div>
+      )}
     </div>
   );
 }

@@ -805,3 +805,132 @@ describe('POST /api/admin/change-email', () => {
     expect(body.newEmail).toBe('cncnew@example.com');
   });
 });
+
+// ─── POST /api/admin/reactivate ───────────────────────────────────────────────
+
+async function callReactivate(body: unknown, token = 'test-admin-token') {
+  const { POST } = await import('@/app/api/admin/reactivate/route');
+  const req = new NextRequest('http://localhost/api/admin/reactivate', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json', ...authHeader(token) },
+  });
+  return POST(req);
+}
+
+describe('POST /api/admin/reactivate', () => {
+  it('returns 401 without a token', async () => {
+    const { POST } = await import('@/app/api/admin/reactivate/route');
+    const req = new NextRequest('http://localhost/api/admin/reactivate', {
+      method: 'POST',
+      body: JSON.stringify({ key: 'ADIA-XXXX-XXXX-XXXX' }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callReactivate({ key: 'ADIA-XXXX-XXXX-XXXX' }, 'bad-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when key is missing from body', async () => {
+    const res = await callReactivate({});
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing key/i);
+  });
+
+  it('returns 404 for unknown key', async () => {
+    const res = await callReactivate({ key: 'ADIA-UNKN-UNKN-UNKN' });
+    expect(res.status).toBe(404);
+    const body = await res.json();
+    expect(body.error).toMatch(/unknown key/i);
+  });
+
+  it('returns 422 when license is already active', async () => {
+    insertLicense({ key: 'ADIA-REAC-ALRD-AAAA', email: 'alreadyactive@example.com', plan: 'lifetime', expiresAt: null });
+    const res = await callReactivate({ key: 'ADIA-REAC-ALRD-AAAA' });
+    expect(res.status).toBe(422);
+    const body = await res.json();
+    expect(body.error).toMatch(/already active/i);
+  });
+
+  it('reactivates a canceled license and returns previousStatus', async () => {
+    insertLicense({ key: 'ADIA-REAC-CNCL-AAAA', email: 'canceled@example.com', plan: 'monthly', expiresAt: null });
+    const { setStatus } = await import('@/lib/db');
+    setStatus('ADIA-REAC-CNCL-AAAA', 'canceled');
+
+    const res = await callReactivate({ key: 'ADIA-REAC-CNCL-AAAA' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.key).toBe('ADIA-REAC-CNCL-AAAA');
+    expect(body.previousStatus).toBe('canceled');
+    expect(body.newStatus).toBe('active');
+  });
+
+  it('reactivates a past_due license', async () => {
+    insertLicense({ key: 'ADIA-REAC-PDUE-AAAA', email: 'pastdue@example.com', plan: 'yearly', expiresAt: null });
+    const { setStatus } = await import('@/lib/db');
+    setStatus('ADIA-REAC-PDUE-AAAA', 'past_due');
+
+    const res = await callReactivate({ key: 'ADIA-REAC-PDUE-AAAA' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.previousStatus).toBe('past_due');
+    expect(body.newStatus).toBe('active');
+  });
+
+  it('reactivates an expired license', async () => {
+    insertLicense({ key: 'ADIA-REAC-XPRD-AAAA', email: 'expired@example.com', plan: 'monthly', expiresAt: '2024-01-01T00:00:00.000Z' });
+    const { setStatus } = await import('@/lib/db');
+    setStatus('ADIA-REAC-XPRD-AAAA', 'expired');
+
+    const res = await callReactivate({ key: 'ADIA-REAC-XPRD-AAAA' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.previousStatus).toBe('expired');
+    expect(body.newStatus).toBe('active');
+  });
+
+  it('persists the active status to the database', async () => {
+    insertLicense({ key: 'ADIA-REAC-PERS-AAAA', email: 'persist@example.com', plan: 'lifetime', expiresAt: null });
+    const { setStatus } = await import('@/lib/db');
+    setStatus('ADIA-REAC-PERS-AAAA', 'canceled');
+
+    await callReactivate({ key: 'ADIA-REAC-PERS-AAAA' });
+    const updated = findLicense('ADIA-REAC-PERS-AAAA');
+    expect(updated?.status).toBe('active');
+  });
+
+  it('normalizes key to uppercase before lookup', async () => {
+    insertLicense({ key: 'ADIA-REAC-NORM-AAAA', email: 'norm@example.com', plan: 'lifetime', expiresAt: null });
+    const { setStatus } = await import('@/lib/db');
+    setStatus('ADIA-REAC-NORM-AAAA', 'canceled');
+
+    const res = await callReactivate({ key: 'adia-reac-norm-aaaa' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.key).toBe('ADIA-REAC-NORM-AAAA');
+  });
+
+  it('accepts ?token= query param auth', async () => {
+    insertLicense({ key: 'ADIA-REAC-TOKN-AAAA', email: 'tokn@example.com', plan: 'lifetime', expiresAt: null });
+    const { setStatus } = await import('@/lib/db');
+    setStatus('ADIA-REAC-TOKN-AAAA', 'canceled');
+
+    const { POST } = await import('@/app/api/admin/reactivate/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/reactivate?token=test-admin-token',
+      {
+        method: 'POST',
+        body: JSON.stringify({ key: 'ADIA-REAC-TOKN-AAAA' }),
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+  });
+});
