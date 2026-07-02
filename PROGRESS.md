@@ -1,5 +1,67 @@
 # Adia — Build Progress
 
+## Run 240 — 2026-07-02T18:08:00Z — POST /api/admin/change-plan + ChangePlanPanel + 14 tests
+
+### Shipped
+
+**`web/lib/db.ts` — `setPlan(key, plan)`:**
+- SQLite: `UPDATE licenses SET plan = ? WHERE key = ?`
+- Mirrors the existing `setStatus` pattern.
+
+**`web/lib/db-pg.ts` — `setPlanPg(key, plan)`:**
+- Postgres equivalent of `setPlan`.
+
+**`web/lib/store.ts` — `setPlan()` facade:**
+- Routes to `setPlanPg` in Postgres mode, `sqlite.setPlan` in SQLite mode.
+
+**`web/app/api/admin/change-plan/route.ts` — new admin endpoint:**
+- `POST /api/admin/change-plan` — switches a license between monthly / yearly / lifetime.
+- Body: `{ key: string, plan: "monthly" | "yearly" | "lifetime" }` — both required.
+- 400 on missing key; 400 on missing plan; 400 on invalid plan value (lists valid options in error).
+- 404 on unknown key.
+- 422 if license is already on the requested plan (explicit no-op guard).
+- No status gate — admin can change plan regardless of active/canceled/expired.
+- Returns `{ ok, key, previousPlan, newPlan }`.
+
+**`web/app/admin/page.tsx` — `ChangePlanPanel` component:**
+- Added after ExtendPanel (completes the support-resolution toolkit: reactivate → extend → change-plan).
+- Violet submit button (visually distinct from green Reactivate / blue Extend / red Revoke).
+- Plan select: Lifetime / Yearly / Monthly.
+- Success card shows previousPlan (strikethrough) → newPlan.
+
+**`web/__tests__/admin-routes.test.ts` — 14 new tests:**
+- 401 no-token, 401 wrong-token.
+- 400 missing key, 400 missing plan, 400 invalid plan value.
+- 404 unknown key.
+- 422 same-plan guard (error message names the plan).
+- 200 monthly → yearly (returns previousPlan + newPlan).
+- 200 yearly → lifetime.
+- 200 lifetime → monthly.
+- DB persistence check: `findLicense` after the call confirms `plan` stored.
+- Key uppercase normalization.
+- `?token=` query-param auth.
+- Canceled-license works (no status gate).
+
+### Tests
+254 passed (up from 240). 16 test files green. `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent
+All GOAL.md items complete + full admin toolkit (revoke / reactivate / extend / change-plan) added.
+Good next areas:
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated
+  singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`.
+  This prevents latent race-condition test failures in future Xcode builds.
+- Rate-limiting on admin endpoints: all admin routes are bearer-auth-gated so risk is low,
+  but a generous limit (e.g. 20/min per IP) would be consistent with user-facing endpoints.
+  `web/lib/ratelimit.ts` already has the ratelimit helper — just need to wire it in.
+- `POST /api/admin/set-expiry` — set an absolute expiry date (complement to extend's
+  relative +N-days approach); useful when admin needs to set a specific renewal date.
+
+---
+
 ## Run 239 — 2026-07-02T17:10:00Z — POST /api/admin/extend + ExtendPanel + 17 tests
 
 ### Shipped
