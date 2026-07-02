@@ -19,13 +19,14 @@ afterEach(() => {
   if (fs.existsSync(dbPath)) fs.unlinkSync(dbPath);
 });
 
-async function callPost(email: string) {
+async function callPost(email: string, ip = '127.0.0.1') {
   const { POST } = await import('@/app/api/waitlist/route');
   const formData = new FormData();
   formData.set('email', email);
   const req = new NextRequest('http://localhost/api/waitlist', {
     method: 'POST',
     body: formData,
+    headers: { 'x-forwarded-for': ip },
   });
   return POST(req);
 }
@@ -60,5 +61,24 @@ describe('POST /api/waitlist', () => {
     const res2 = await callPost('repeat@example.com');
     expect(res2.status).toBe(307);
     expect(res2.headers.get('location')).toContain('waitlist=ok');
+  });
+
+  it('returns ratelimit redirect after 5 requests from the same IP', async () => {
+    for (let i = 0; i < 5; i++) {
+      const r = await callPost(`user${i}@example.com`, '10.3.0.1');
+      expect(r.headers.get('location')).not.toContain('ratelimit');
+    }
+    const r = await callPost('extra@example.com', '10.3.0.1');
+    expect(r.status).toBe(307);
+    expect(r.headers.get('location')).toContain('waitlist=ratelimit');
+  });
+
+  it('rate limit is per-IP — a different IP is not blocked', async () => {
+    for (let i = 0; i < 5; i++) {
+      await callPost(`user${i}@example.com`, '10.3.0.2');
+    }
+    const r = await callPost('other@example.com', '10.3.0.3');
+    expect(r.status).toBe(307);
+    expect(r.headers.get('location')).toContain('waitlist=ok');
   });
 });
