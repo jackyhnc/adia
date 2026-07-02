@@ -9089,3 +9089,43 @@ All original goals complete. BUILD_COMPLETE is present. Web test suite at
   unit-level coverage of the ratelimit module).
 - The Swift tests suite can't run on Linux — consider adding a GitHub Actions
   CI workflow that builds on macOS when available.
+
+---
+
+## Run 224 — 2026-07-02 — Waitlist rate-limit tests + CI Node 22 upgrade
+
+### What shipped
+
+**1. Waitlist rate-limit integration tests**
+
+`web/__tests__/waitlist.test.ts` previously had 5 tests covering valid/invalid
+email paths but no coverage for the rate-limit redirect. Added:
+
+- `callPost` now accepts an optional `ip` param (passed via `x-forwarded-for`)
+  so IP-based rate limiting can be exercised in tests.
+- `returns ratelimit redirect after 5 requests from the same IP` — exhausts the
+  5 req/60s bucket and verifies the 6th redirects to `/download?waitlist=ratelimit`.
+- `rate limit is per-IP — a different IP is not blocked` — confirms bucket
+  isolation across IPs.
+
+Test count: 155 → 157.
+
+**2. CI Node.js 20 → 22 upgrade**
+
+`.github/workflows/ci.yml` `web` and `web-test` jobs bumped from
+`node-version: '20'` to `node-version: '22'`. The `package-lock.json` was
+generated on Node 22 (confirmed via `node --version` in this environment), and
+the previous Node.js 22 native-binding fix for `better-sqlite3 ^11.10.0` was
+motivated by CI running on a different version than dev. Aligning CI to Node 22
+removes that mismatch permanently.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container. All 34 GOAL.md items remain complete.
+
+### Next agent
+All original goals complete. BUILD_COMPLETE is present. Web test suite at 157/157.
+Possible follow-up areas:
+- Next.js 14.2.18 has known security vulnerabilities — consider upgrading to 15.x
+  (breaking changes in App Router and middleware, requires careful migration).
+- Billing portal route `/api/billing/portal` has no tests (requires Stripe API
+  mock to exercise the happy path; only the 503-when-unconfigured path is easy).
