@@ -9337,3 +9337,59 @@ Possible follow-up areas:
 - React 18 → 19 upgrade (Next.js 15 supports both; no breaking changes for this codebase).
 - The remaining moderate postcss CVE is inside Next.js's bundled copy — cannot fix without an upstream patch.
 - Add `--coverage` to CI `web-test` job for coverage reporting.
+
+---
+
+## Run 83 — 2026-07-02
+
+### Shipped
+- **fix: unbreak CI — 3 compile errors introduced since Run 82 (seat-visibility run)**
+  CI had been failing on all three Swift jobs (`swift`, `swift-test`, `pipeline-smoke`)
+  since the seat-visibility + SE Asian blocklist run (`63ec8a3`), while the two
+  web jobs continued to pass. Root causes:
+
+  1. **`AccountSettingsTab.swift:354` and `TemplatesSettingsTab.swift:265`** — both
+     contained `Text("Couldn't parse — try "2h", "90m", or "1h30m".")` where the
+     inner quotes are bare ASCII `"` (U+0022), not escaped. Swift terminates the
+     string at the first inner quote; `2h` is then parsed as a number literal
+     (`'h' is not a valid digit in integer literal`). The subsequent
+     `.foregroundStyle(...)` modifier then loses its view receiver, generating a
+     second cascade error. Fixed by escaping: `\"2h\"`, `\"90m\"`, `\"1h30m\"`.
+
+  2. **`LicenseManager.swift:28`** — `SeatInfo.isCurrentMachine` (a nonisolated
+     computed property on a struct) called
+     `LicenseManager.currentMachineFingerprint()`, which is a `static` method
+     inheriting `@MainActor` isolation from the enclosing class. The function
+     only reads IOKit hardware (`IOPlatformUUIDKey`) — no actor state. Marked
+     both `currentMachineFingerprint()` and its private `machineFingerprint()`
+     helper as `nonisolated`.
+
+  Commit: `a69c814`. CI running now; expected green on all 5 jobs.
+
+### Verification
+No Swift toolchain in this container (Linux). Verified by:
+- Hex-inspecting the bytes at AccountSettingsTab.swift:354 and
+  TemplatesSettingsTab.swift:265 to confirm inner quotes are U+0022 (ASCII),
+  not U+201C/U+201D (curly quotes).
+- Confirming that escaping `\"2h\"` etc. is the correct Swift fix.
+- Grepping the full Sources tree for other lines with more than 2 unescaped
+  `"` on a single line — no other instances of the same bug found.
+- Confirming `machineFingerprint()` has no access to actor-isolated state
+  (pure IOKit read, private static helper).
+
+### Branch hygiene
+- HEAD was detached at `8412604`; fixed with
+  `git checkout main && git reset --hard origin/main` before committing.
+
+### Blocked
+Nothing. All GOAL.md items checked off. BUILD_COMPLETE accurate.
+
+### Next agent
+All goals complete. CI expected green at `a69c814`. Possible follow-on:
+- (a) Session-start hook to auto-reset detached HEAD (this has been the
+  recurring fix every run — worth wiring into `.claude/settings.json`
+  or a session hook so it runs automatically at start of each container).
+- (b) Run 80's cross-domain memory signal for reasoning conversations
+  (prompt-tuning to not penalize legitimate first-time asks).
+- (c) React 18 → 19 upgrade (Next.js 15 supports both).
+- (d) Add `--coverage` to CI `web-test` job for coverage reporting.
