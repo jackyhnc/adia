@@ -50,10 +50,10 @@ export async function POST(req: NextRequest) {
     if (licenses.length === 0) {
       return NextResponse.json({ error: 'no licenses found for that email' }, { status: 404 });
     }
-    // Prefer active licenses over non-active ones. Within each group, take the
-    // last in the array (findLicensesByEmail returns by issuedAt ASC, so last = newest).
+    // Prefer active licenses over non-active ones. Take the first element —
+    // findLicensesByEmail returns newest-first (issuedAt DESC), so index 0 = newest.
     const active = licenses.filter((l) => l.status === 'active');
-    license = active.length > 0 ? active[active.length - 1] : licenses[licenses.length - 1];
+    license = active.length > 0 ? active[0] : licenses[0];
   }
 
   await sendLicenseEmail(license.email, license.key, license.plan);

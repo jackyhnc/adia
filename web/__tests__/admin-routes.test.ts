@@ -391,9 +391,9 @@ describe('GET /api/admin/licenses-by-email', () => {
     const body = await res.json();
     expect(body.count).toBe(2);
     expect(body.licenses).toHaveLength(2);
-    const keys = body.licenses.map((l: any) => l.key);
-    expect(keys).toContain('ADIA-BYEM-FRST-AAAA');
-    expect(keys).toContain('ADIA-BYEM-SCND-BBBB');
+    // BBBB was inserted second (higher rowid) so it should appear first
+    expect(body.licenses[0].key).toBe('ADIA-BYEM-SCND-BBBB');
+    expect(body.licenses[1].key).toBe('ADIA-BYEM-FRST-AAAA');
   });
 
   it('normalizes email to lowercase in response', async () => {
@@ -1272,5 +1272,99 @@ describe('POST /api/admin/change-plan', () => {
     const body = await res.json();
     expect(body.ok).toBe(true);
     expect(body.newPlan).toBe('lifetime');
+  });
+});
+
+// ─── GET /api/admin/stats ─────────────────────────────────────────────────────
+
+async function callStats(token = 'test-admin-token') {
+  const { GET } = await import('@/app/api/admin/stats/route');
+  const req = new NextRequest('http://localhost/api/admin/stats', {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return GET(req);
+}
+
+describe('GET /api/admin/stats', () => {
+  it('returns 401 without a token', async () => {
+    delete process.env.ADMIN_TOKEN;
+    const { GET } = await import('@/app/api/admin/stats/route');
+    const req = new NextRequest('http://localhost/api/admin/stats', { method: 'GET' });
+    const res = await GET(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callStats('bad-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns zeroed stats for an empty database', async () => {
+    const res = await callStats();
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.total).toBe(0);
+    expect(body.byStatus).toEqual({});
+    expect(body.byPlan).toEqual({});
+    expect(body.newLast7Days).toBe(0);
+    expect(body.newLast30Days).toBe(0);
+    expect(body.activatedMachines).toBe(0);
+  });
+
+  it('counts total licenses correctly', async () => {
+    insertLicense({ key: 'ADIA-STAT-TOT1-AAAA', email: 'a@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-STAT-TOT2-BBBB', email: 'b@example.com', plan: 'yearly', expiresAt: null });
+    const res = await callStats();
+    const body = await res.json();
+    expect(body.total).toBe(2);
+  });
+
+  it('breaks down counts by plan', async () => {
+    insertLicense({ key: 'ADIA-STAT-PLN1-AAAA', email: 'p1@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-STAT-PLN2-BBBB', email: 'p2@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-STAT-PLN3-CCCC', email: 'p3@example.com', plan: 'lifetime', expiresAt: null });
+    const res = await callStats();
+    const body = await res.json();
+    expect(body.byPlan).toMatchObject({ monthly: 2, lifetime: 1 });
+    expect(body.byPlan.yearly).toBeUndefined();
+  });
+
+  it('breaks down counts by status', async () => {
+    insertLicense({ key: 'ADIA-STAT-ST1A-AAAA', email: 's1@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-STAT-ST2B-BBBB', email: 's2@example.com', plan: 'yearly', expiresAt: null });
+    const { setStatus } = await import('@/lib/db');
+    setStatus('ADIA-STAT-ST2B-BBBB', 'canceled');
+    const res = await callStats();
+    const body = await res.json();
+    expect(body.byStatus).toMatchObject({ active: 1, canceled: 1 });
+  });
+
+  it('counts new licenses in the last 7 and 30 days', async () => {
+    insertLicense({ key: 'ADIA-STAT-NEW1-AAAA', email: 'n1@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-STAT-NEW2-BBBB', email: 'n2@example.com', plan: 'yearly', expiresAt: null });
+    const res = await callStats();
+    const body = await res.json();
+    expect(body.newLast7Days).toBe(2);
+    expect(body.newLast30Days).toBe(2);
+  });
+
+  it('counts activated machines across all licenses', async () => {
+    insertLicense({ key: 'ADIA-STAT-MCH1-AAAA', email: 'm1@example.com', plan: 'monthly', expiresAt: null });
+    recordActivation('ADIA-STAT-MCH1-AAAA', 'machine-hash-one');
+    recordActivation('ADIA-STAT-MCH1-AAAA', 'machine-hash-two');
+    const res = await callStats();
+    const body = await res.json();
+    expect(body.activatedMachines).toBe(2);
+  });
+
+  it('accepts ?token= query param auth', async () => {
+    const { GET } = await import('@/app/api/admin/stats/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/stats?token=test-admin-token',
+      { method: 'GET' },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
   });
 });

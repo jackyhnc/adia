@@ -148,7 +148,7 @@ export function countActivations(key: string): number {
 
 export function findLicensesByEmail(email: string): License[] {
   const rows = db()
-    .prepare('SELECT * FROM licenses WHERE email = ? ORDER BY issued_at ASC, rowid ASC')
+    .prepare('SELECT * FROM licenses WHERE email = ? ORDER BY issued_at DESC, rowid DESC')
     .all(email.trim().toLowerCase()) as any[];
   return rows.map(r => ({
     key: r.key,
@@ -232,4 +232,45 @@ export function joinWaitlist(email: string) {
     INSERT INTO waitlist (email, created_at) VALUES (?, ?)
     ON CONFLICT(email) DO NOTHING
   `).run(email.toLowerCase(), new Date().toISOString());
+}
+
+export type LicenseStats = {
+  total: number;
+  byStatus: Record<string, number>;
+  byPlan: Record<string, number>;
+  newLast7Days: number;
+  newLast30Days: number;
+  activatedMachines: number;
+};
+
+export function getStats(): LicenseStats {
+  const now = new Date();
+  const day7 = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const day30 = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+  const total = (db().prepare('SELECT COUNT(*) as c FROM licenses').get() as { c: number }).c;
+
+  const statusRows = db()
+    .prepare('SELECT status, COUNT(*) as c FROM licenses GROUP BY status')
+    .all() as { status: string; c: number }[];
+  const byStatus: Record<string, number> = {};
+  for (const r of statusRows) byStatus[r.status] = r.c;
+
+  const planRows = db()
+    .prepare('SELECT plan, COUNT(*) as c FROM licenses GROUP BY plan')
+    .all() as { plan: string; c: number }[];
+  const byPlan: Record<string, number> = {};
+  for (const r of planRows) byPlan[r.plan] = r.c;
+
+  const newLast7Days = (
+    db().prepare('SELECT COUNT(*) as c FROM licenses WHERE issued_at >= ?').get(day7) as { c: number }
+  ).c;
+  const newLast30Days = (
+    db().prepare('SELECT COUNT(*) as c FROM licenses WHERE issued_at >= ?').get(day30) as { c: number }
+  ).c;
+  const activatedMachines = (
+    db().prepare('SELECT COUNT(*) as c FROM activations').get() as { c: number }
+  ).c;
+
+  return { total, byStatus, byPlan, newLast7Days, newLast30Days, activatedMachines };
 }

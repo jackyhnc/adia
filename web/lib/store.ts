@@ -7,14 +7,14 @@
 //   anything else                 → better-sqlite3 (lib/db.ts)
 
 import * as sqlite from './db';
-import type { License, Activation } from './db';
+import type { License, Activation, LicenseStats } from './db';
 
 const usePg = (() => {
   const url = process.env.DATABASE_URL ?? '';
   return /^postgres(ql)?:\/\//.test(url);
 })();
 
-export type { License, Activation };
+export type { License, Activation, LicenseStats };
 
 export async function insertLicense(row: {
   key: string;
@@ -157,4 +157,12 @@ export async function joinWaitlist(email: string): Promise<void> {
     return joinWaitlistPg(email);
   }
   sqlite.joinWaitlist(email);
+}
+
+export async function getStats(): Promise<LicenseStats> {
+  if (usePg) {
+    const { getStatsPg } = await import('./db-pg');
+    return getStatsPg();
+  }
+  return sqlite.getStats();
 }

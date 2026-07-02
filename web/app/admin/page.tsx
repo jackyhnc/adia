@@ -25,6 +25,7 @@ export default function Admin() {
         />
       </div>
 
+      <StatsPanel token={token} />
       <IssuePanel token={token} />
       <ResendLicensePanel token={token} />
       <ChangeEmailPanel token={token} />
@@ -39,6 +40,105 @@ export default function Admin() {
       <ExtendPanel token={token} />
       <ChangePlanPanel token={token} />
     </section>
+  );
+}
+
+// ─── Stats overview ───────────────────────────────────────────────────────────
+
+type Stats = {
+  total: number;
+  byStatus: Record<string, number>;
+  byPlan: Record<string, number>;
+  newLast7Days: number;
+  newLast30Days: number;
+  activatedMachines: number;
+};
+
+function StatsPanel({ token }: { token: string }) {
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function load() {
+    if (!token) { setError('Paste admin token above first.'); return; }
+    setLoading(true);
+    setError('');
+    setStats(null);
+    try {
+      const res = await fetch('/api/admin/stats', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setStats(await res.json());
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-lg font-semibold">License overview</h2>
+        <button onClick={load} disabled={loading} className="btn-primary text-xs px-3 py-1">
+          {loading ? 'Loading…' : 'Refresh'}
+        </button>
+      </div>
+      {error && <p className="text-sm text-red-500 mb-2">{error}</p>}
+      {stats && (
+        <div className="card space-y-4">
+          <div className="grid grid-cols-3 gap-3">
+            <Stat label="Total licenses" value={stats.total} />
+            <Stat label="New (7d)" value={stats.newLast7Days} />
+            <Stat label="New (30d)" value={stats.newLast30Days} />
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <Stat label="Active machines" value={stats.activatedMachines} />
+            {Object.entries(stats.byStatus).map(([s, c]) => (
+              <Stat key={s} label={`Status: ${s}`} value={c}
+                accent={s === 'active' ? 'green' : s === 'canceled' ? 'red' : 'yellow'} />
+            ))}
+          </div>
+          {Object.keys(stats.byPlan).length > 0 && (
+            <div className="grid grid-cols-3 gap-3">
+              {Object.entries(stats.byPlan).map(([p, c]) => (
+                <Stat key={p} label={`Plan: ${p}`} value={c} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Stat({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: number;
+  accent?: 'green' | 'red' | 'yellow';
+}) {
+  const color =
+    accent === 'green'
+      ? 'text-green-600'
+      : accent === 'red'
+        ? 'text-red-500'
+        : accent === 'yellow'
+          ? 'text-yellow-600'
+          : 'text-ink';
+  return (
+    <div className="rounded-lg border border-ink/10 bg-ink/5 p-3">
+      <p className="text-xs uppercase tracking-wide text-ink/50 mb-1">{label}</p>
+      <p className={`text-2xl font-semibold tabular-nums ${color}`}>{value}</p>
+    </div>
   );
 }
 

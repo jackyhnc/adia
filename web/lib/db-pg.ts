@@ -242,3 +242,33 @@ export async function joinWaitlistPg(email: string): Promise<void> {
     ON CONFLICT (email) DO NOTHING
   `;
 }
+
+import type { LicenseStats } from './db';
+
+export async function getStatsPg(): Promise<LicenseStats> {
+  await ensureSchema();
+
+  const [totalRes, statusRes, planRes, week7Res, week30Res, activationRes] = await Promise.all([
+    sql<{ total: number }>`SELECT COUNT(*)::int AS total FROM licenses`,
+    sql<{ status: string; c: number }>`SELECT status, COUNT(*)::int AS c FROM licenses GROUP BY status`,
+    sql<{ plan: string; c: number }>`SELECT plan, COUNT(*)::int AS c FROM licenses GROUP BY plan`,
+    sql<{ c: number }>`SELECT COUNT(*)::int AS c FROM licenses WHERE issued_at >= NOW() - INTERVAL '7 days'`,
+    sql<{ c: number }>`SELECT COUNT(*)::int AS c FROM licenses WHERE issued_at >= NOW() - INTERVAL '30 days'`,
+    sql<{ c: number }>`SELECT COUNT(*)::int AS c FROM activations`,
+  ]);
+
+  const byStatus: Record<string, number> = {};
+  for (const r of statusRes.rows) byStatus[r.status] = r.c;
+
+  const byPlan: Record<string, number> = {};
+  for (const r of planRes.rows) byPlan[r.plan] = r.c;
+
+  return {
+    total: totalRes.rows[0]?.total ?? 0,
+    byStatus,
+    byPlan,
+    newLast7Days: week7Res.rows[0]?.c ?? 0,
+    newLast30Days: week30Res.rows[0]?.c ?? 0,
+    activatedMachines: activationRes.rows[0]?.c ?? 0,
+  };
+}
