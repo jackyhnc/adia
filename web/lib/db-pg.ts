@@ -213,6 +213,11 @@ export async function setExpiryBySubPg(stripeSub: string, expiresAt: string | nu
   await sql`UPDATE licenses SET expires_at = ${expiresAt} WHERE stripe_sub = ${stripeSub}`;
 }
 
+export async function transferLicensePg(key: string, newEmail: string): Promise<void> {
+  await ensureSchema();
+  await sql`UPDATE licenses SET email = ${newEmail.toLowerCase().trim()} WHERE key = ${key}`;
+}
+
 export async function joinWaitlistPg(email: string): Promise<void> {
   await ensureSchema();
   await sql`

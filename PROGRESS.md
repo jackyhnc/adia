@@ -1,5 +1,50 @@
 # Adia — Build Progress
 
+## Run 228 — 2026-07-02T00:00:00Z — license deactivate/transfer endpoints + blocklist additions
+
+### Shipped
+
+**`web/app/api/license/deactivate/route.ts` — new user-facing deactivate endpoint:**
+- `POST { key, email, machine }` — removes a specific machine activation, freeing a seat.
+- Auth by key + email (same credentials as `/activate`).
+- Returns `{ ok, key, seatsNow }` on success.
+- Returns 404 when the machine was never activated (idempotent-safe for the caller to check before calling).
+- Rate-limited: 10 req/min per IP.
+
+**`web/app/api/license/transfer/route.ts` — new user-facing transfer endpoint:**
+- `POST { key, email, newEmail }` — transfers license ownership to a new email address.
+- Auth by key + current email; 422 when `newEmail` equals current email (case-insensitive).
+- `newEmail` is normalized to lowercase in both the response and the DB write.
+- All existing machine activations remain on the key (they follow the license, not the email).
+- Returns `{ ok, key, email, plan }` with the updated email.
+- Rate-limited: 5 req/min per IP (strict — guessing emails is an abuse vector).
+
+**`web/lib/db.ts` + `web/lib/db-pg.ts` + `web/lib/store.ts` — `transferLicense` primitive:**
+- SQLite: `UPDATE licenses SET email = ? WHERE key = ?`
+- Postgres: same via `@vercel/postgres` tagged template
+- Store facade follows the existing `usePg` pattern
+
+**`web/__tests__/deactivate.test.ts` — 9 new tests (400/404/200/seat-freed/rate-limit)**
+**`web/__tests__/transfer.test.ts` — 13 new tests (400/404/422/200/DB/auth/normalize/rate-limit)**
+
+**Web test count: 133 → 155 (13 test files, all pass).**
+
+**`DefaultBlocklists.swift` — 4 new blocked domains + 2 blocked apps:**
+- Domains: `stockx.com`, `hypebeast.com` (sneaker/streetwear culture time sinks), `yelp.com`, `opentable.com` (restaurant browsing rabbit holes).
+- Apps: `com.anydesk.AnyDesk` (AnyDesk), `com.teamviewer.TeamViewer` (TeamViewer) — remote-desktop apps commonly used to browse a second machine during focus sessions.
+
+### Blocked
+Nothing blocked.
+
+### Next agent should
+- Consider upgrading Next.js from 14.2.18 → 15.x (known security CVEs, breaking change migration).
+- Consider adding a `POST /api/license/deactivate-all` admin endpoint to wipe all activations for a key in one call (useful for lost/stolen machine scenarios).
+- Add `lazada.com` and `shopee.com` to DefaultBlocklists (major Southeast Asian e-commerce platforms).
+- Add `tokopedia.com` and `bukalapak.com` to DefaultBlocklists (Indonesian e-commerce time sinks).
+- Consider a `GET /api/license/seats` endpoint (key + email) returning the list of activated machines so the user can see which machines hold their seats before deactivating one.
+
+---
+
 ## Run 227 — 2026-07-01T00:00:00Z — keyword expansions + blocklist additions
 
 ### Shipped

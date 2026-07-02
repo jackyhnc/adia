@@ -119,6 +119,14 @@ export async function removeActivation(key: string, machineHash: string): Promis
   sqlite.removeActivation(key, machineHash);
 }
 
+export async function transferLicense(key: string, newEmail: string): Promise<void> {
+  if (usePg) {
+    const { transferLicensePg } = await import('./db-pg');
+    return transferLicensePg(key, newEmail);
+  }
+  sqlite.transferLicense(key, newEmail);
+}
+
 export async function joinWaitlist(email: string): Promise<void> {
   if (usePg) {
     const { joinWaitlistPg } = await import('./db-pg');

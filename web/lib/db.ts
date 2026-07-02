@@ -206,6 +206,12 @@ export function removeActivation(key: string, machineHash: string): void {
     .run(key, machineHash);
 }
 
+export function transferLicense(key: string, newEmail: string): void {
+  db()
+    .prepare('UPDATE licenses SET email = ? WHERE key = ?')
+    .run(newEmail.toLowerCase().trim(), key);
+}
+
 export function joinWaitlist(email: string) {
   db().prepare(`
     INSERT INTO waitlist (email, created_at) VALUES (?, ?)

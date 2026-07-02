@@ -259,6 +259,12 @@ extension Session {
         "gameflare.com",
         "iogames.space",
         "spele.lv",
+        // Sneaker / streetwear culture time sinks
+        "stockx.com",
+        "hypebeast.com",
+        // Restaurant browsing rabbit holes
+        "yelp.com",
+        "opentable.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [
@@ -288,6 +294,9 @@ extension Session {
         BlockedApp(id: "org.whispersystems.signal-desktop",     name: "Signal"),
         // Viber Desktop — messaging app popular outside North America
         BlockedApp(id: "com.viber.osx",                         name: "Viber"),
+        // Remote-desktop apps — commonly used for off-task browsing on a second machine
+        BlockedApp(id: "com.anydesk.AnyDesk",                   name: "AnyDesk"),
+        BlockedApp(id: "com.teamviewer.TeamViewer",              name: "TeamViewer"),
     ]
 
     public static var defaultBlockedAppBundleIDs: [String] {
