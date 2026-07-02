@@ -72,6 +72,9 @@ public final class LicenseManager: ObservableObject {
     // Force unwrap is safe: constant, well-formed URL string — `URL(string:)` cannot fail for it.
     public var serverBaseURL: URL = URL(string: "https://adia.app")!
 
+    /// Injectable URLSession — defaults to `.shared`; swap in tests to intercept HTTP calls.
+    internal var urlSession: URLSession = .shared
+
     private init() {
         refreshLocalStatus()
     }
@@ -211,7 +214,7 @@ public final class LicenseManager: ObservableObject {
             "machine": Self.machineFingerprint(),
         ]
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
-        let (data, resp) = try await URLSession.shared.data(for: req)
+        let (data, resp) = try await urlSession.data(for: req)
         guard let http = resp as? HTTPURLResponse, http.statusCode == 200 else {
             let msg = (try? JSONDecoder().decode(ServerError.self, from: data))?.error
                 ?? "Server error"
@@ -229,7 +232,7 @@ public final class LicenseManager: ObservableObject {
             "key": key,
             "machine": Self.machineFingerprint(),
         ])
-        let (data, resp) = try await URLSession.shared.data(for: req)
+        let (data, resp) = try await urlSession.data(for: req)
         guard let http = resp as? HTTPURLResponse, http.statusCode == 200 else {
             throw NSError(domain: "Adia.License", code: 2,
                           userInfo: [NSLocalizedDescriptionKey: "Validation failed"])
@@ -284,7 +287,7 @@ public final class LicenseManager: ObservableObject {
             URLQueryItem(name: "email", value: email),
         ]
         guard let url = comps.url else { throw URLError(.badURL) }
-        let (data, resp) = try await URLSession.shared.data(from: url)
+        let (data, resp) = try await urlSession.data(from: url)
         guard let http = resp as? HTTPURLResponse, http.statusCode == 200 else {
             let msg = (try? JSONDecoder().decode(ServerError.self, from: data))?.error
                 ?? "Server error"
@@ -308,7 +311,7 @@ public final class LicenseManager: ObservableObject {
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let body: [String: Any] = ["key": key, "email": email, "machine": machine]
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
-        let (data, resp) = try await URLSession.shared.data(for: req)
+        let (data, resp) = try await urlSession.data(for: req)
         guard let http = resp as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
             let msg = (try? JSONDecoder().decode(ServerError.self, from: data))?.error
                 ?? "Server error"

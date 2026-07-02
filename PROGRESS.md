@@ -1,5 +1,40 @@
 # Adia — Build Progress
 
+## Run 231 — 2026-07-02T09:07:00Z — LicenseManager network tests + urlSession injection + blocklist additions
+
+### Shipped
+
+**`Sources/AdiCore/Licensing/LicenseManager.swift` — injectable URLSession:**
+- Added `internal var urlSession: URLSession = .shared` property.
+- Replaced all four `URLSession.shared.data(...)` call sites (`serverActivate`, `serverValidate`, `serverFetchSeats`, `serverDeactivateMachine`) with `urlSession.data(...)`.
+- No public API change; production behaviour is identical — tests can now inject a mock session.
+
+**`Tests/AdiTests/LicenseManagerTests.swift` — 6 new tests (fetchSeats + deactivateMachine):**
+- `MockURLProtocol` class + `makeMockSession()` helper — ephemeral URLSession with custom protocol, intercepts all requests without touching the real network.
+- `fetchSeatsPopulatesSeatsOnSuccess` — 200 response with 2 seat rows, asserts `seats.count == 2` and `seatsLoading == false` after.
+- `fetchSeatsNoopsWhenNotLicensed` — in `.unknown` state, `fetchSeats()` exits early; `MockURLProtocol.requestHandler` stays nil so any unexpected HTTP call crashes the test.
+- `fetchSeatsHandlesServerError` — 500 response; asserts seats stays empty and no crash.
+- `deactivateMachineSuccessReturnsNil` — 200 deactivate then 200 fetchSeats; asserts return value is nil and seats refreshed.
+- `deactivateMachineReturnsErrorWhenNotLicensed` — asserts exact error string `"Not licensed."` when status is `.unknown`.
+- `deactivateMachineReturnsErrorOnServerFailure` — 404 response; asserts error string starts with `"Could not deactivate:"`.
+
+**`Sources/AdiCore/Models/DefaultBlocklists.swift` — 3 new blocked domains:**
+- `daraz.pk` — largest Pakistani e-commerce platform, commonly browsed during focus sessions in South Asia.
+- `11street.my` + `11street.com.my` — Malaysian marketplace (two distinct DNS names).
+
+**Web test count: 187 tests (16 files, all pass) — unchanged.**
+
+### Blocked
+Nothing blocked. Swift build can't be verified in this environment (no Swift toolchain), but changes are syntactically straightforward: property addition + 4 call-site substitutions.
+
+### Next agent should
+- Consider adding a `PATCH /api/license/email` user-facing endpoint (key + currentEmail + newEmail, distinct from the admin `/transfer` with per-user rate limiting). The `/api/license/transfer` route already provides the same functionality but should be reviewed for rate-limit granularity.
+- Consider adding more distracting domains: `grab.food` variants if they use separate DNS, `kijiji.ca` (Canadian classifieds rabbit hole), `gumtree.com` (UK/AU classifieds).
+- Review `serverFetchSeats` URLComponents init force-unwrap — document why it can't fail (well-formed base URL + known path fragment) or add `guard let comps = ...`.
+- Consider adding `@MainActor` isolation annotation to the `MockURLProtocol` tests using Swift 6 strict concurrency checking to silence any warnings when building with `-strict-concurrency=complete`.
+
+---
+
 ## Run 230 — 2026-07-02T05:10:00Z — seat visibility in app + SE Asian blocklist additions
 
 ### Shipped

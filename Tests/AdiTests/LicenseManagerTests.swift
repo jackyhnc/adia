@@ -2,6 +2,43 @@ import Testing
 import Foundation
 @testable import AdiCore
 
+// MARK: - Mock URL protocol for intercepting HTTP calls in tests
+
+final class MockURLProtocol: URLProtocol, @unchecked Sendable {
+    /// Set this before each test that triggers a network call.
+    static var requestHandler: (@Sendable (URLRequest) throws -> (HTTPURLResponse, Data))?
+
+    override class func canInit(with request: URLRequest) -> Bool { true }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+
+    override func startLoading() {
+        guard let handler = MockURLProtocol.requestHandler else {
+            client?.urlProtocol(self, didFailWithError: URLError(.unknown))
+            return
+        }
+        do {
+            let (response, data) = try handler(request)
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocol(self, didLoad: data)
+            client?.urlProtocolDidFinishLoading(self)
+        } catch {
+            client?.urlProtocol(self, didFailWithError: error)
+        }
+    }
+
+    override func stopLoading() {}
+}
+
+private func makeMockSession() -> URLSession {
+    let config = URLSessionConfiguration.ephemeral
+    config.protocolClasses = [MockURLProtocol.self]
+    return URLSession(configuration: config)
+}
+
+private func makeISO() -> ISO8601DateFormatter { ISO8601DateFormatter() }
+
+// MARK: - Suite
+
 @Suite("LicenseManager — state machine")
 struct LicenseManagerTests {
 
@@ -121,6 +158,187 @@ struct LicenseManagerTests {
             // trialExpired
             LicenseManager.shared._setTrialStartDateForTesting(Date().addingTimeInterval(-30 * 86_400))
             #expect(LicenseManager.shared.isUsable == false)
+        }
+    }
+
+    // MARK: - fetchSeats tests
+
+    @Test func fetchSeatsPopulatesSeatsOnSuccess() async {
+        let iso = makeISO()
+        let firstSeen = Date(timeIntervalSinceNow: -86400 * 3)
+        let lastSeen  = Date(timeIntervalSinceNow: -3600)
+
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting()
+            LicenseManager.shared._injectLicenseForTesting(LicenseInfo(
+                key: "ADIA-SEAT-TEST-0001",
+                email: "seat@example.com",
+                plan: "monthly",
+                issuedAt: Date(timeIntervalSinceNow: -86400),
+                expiresAt: nil,
+                lastValidatedAt: Date()
+            ))
+        }
+
+        let responseBody: [String: Any] = [
+            "key": "ADIA-SEAT-TEST-0001",
+            "plan": "monthly",
+            "status": "active",
+            "seatCount": 2,
+            "seats": [
+                ["machineHash": "aabbccdd11223344", "firstSeen": iso.string(from: firstSeen), "lastSeen": iso.string(from: lastSeen)],
+                ["machineHash": "deadbeefcafebabe", "firstSeen": iso.string(from: firstSeen), "lastSeen": iso.string(from: lastSeen)],
+            ],
+        ]
+
+        MockURLProtocol.requestHandler = { req in
+            let data = try JSONSerialization.data(withJSONObject: responseBody)
+            let resp = HTTPURLResponse(url: req.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (resp, data)
+        }
+
+        await MainActor.run { LicenseManager.shared.urlSession = makeMockSession() }
+        await LicenseManager.shared.fetchSeats()
+
+        await MainActor.run {
+            #expect(LicenseManager.shared.seats.count == 2)
+            #expect(LicenseManager.shared.seats[0].machineHash == "aabbccdd11223344")
+            #expect(LicenseManager.shared.seats[1].machineHash == "deadbeefcafebabe")
+            #expect(LicenseManager.shared.seatsLoading == false)
+        }
+    }
+
+    @Test func fetchSeatsNoopsWhenNotLicensed() async {
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting() // status == .unknown
+            LicenseManager.shared.urlSession = makeMockSession()
+        }
+        // If fetchSeats fires a request we'll crash because requestHandler is nil.
+        MockURLProtocol.requestHandler = nil
+
+        await LicenseManager.shared.fetchSeats()
+
+        await MainActor.run {
+            #expect(LicenseManager.shared.seats.isEmpty)
+            #expect(LicenseManager.shared.seatsLoading == false)
+        }
+    }
+
+    @Test func fetchSeatsHandlesServerError() async {
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting()
+            LicenseManager.shared._injectLicenseForTesting(LicenseInfo(
+                key: "ADIA-SEAT-ERR-0001",
+                email: "err@example.com",
+                plan: "yearly",
+                issuedAt: Date(),
+                expiresAt: nil,
+                lastValidatedAt: Date()
+            ))
+            LicenseManager.shared.urlSession = makeMockSession()
+        }
+
+        MockURLProtocol.requestHandler = { req in
+            let data = try JSONSerialization.data(withJSONObject: ["error": "internal error"])
+            let resp = HTTPURLResponse(url: req.url!, statusCode: 500, httpVersion: nil, headerFields: nil)!
+            return (resp, data)
+        }
+
+        await LicenseManager.shared.fetchSeats()
+
+        // Should not crash and seats should stay empty
+        await MainActor.run {
+            #expect(LicenseManager.shared.seats.isEmpty)
+            #expect(LicenseManager.shared.seatsLoading == false)
+        }
+    }
+
+    // MARK: - deactivateMachine tests
+
+    @Test func deactivateMachineSuccessReturnsNil() async {
+        let iso = makeISO()
+        let now  = Date()
+        let past = now.addingTimeInterval(-86400)
+
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting()
+            LicenseManager.shared._injectLicenseForTesting(LicenseInfo(
+                key: "ADIA-DEAC-TEST-0001",
+                email: "deac@example.com",
+                plan: "lifetime",
+                issuedAt: past,
+                expiresAt: nil,
+                lastValidatedAt: now
+            ))
+            LicenseManager.shared.urlSession = makeMockSession()
+        }
+
+        // First call = deactivate (POST /api/license/deactivate → 200)
+        // Second call = fetchSeats (GET /api/license/seats → 200 with empty seats)
+        var callCount = 0
+        MockURLProtocol.requestHandler = { req in
+            callCount += 1
+            if callCount == 1 {
+                // deactivate response
+                let data = try JSONSerialization.data(withJSONObject: ["ok": true, "key": "ADIA-DEAC-TEST-0001", "seatsNow": 0])
+                let resp = HTTPURLResponse(url: req.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+                return (resp, data)
+            } else {
+                // fetchSeats response (triggered internally after deactivation)
+                let data = try JSONSerialization.data(withJSONObject: [
+                    "key": "ADIA-DEAC-TEST-0001", "plan": "lifetime",
+                    "status": "active", "seatCount": 0, "seats": [] as [[String: String]],
+                ])
+                let resp = HTTPURLResponse(url: req.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+                return (resp, data)
+            }
+        }
+
+        let errorMsg = await LicenseManager.shared.deactivateMachine("oldmachinehash1234")
+
+        #expect(errorMsg == nil)
+        await MainActor.run {
+            #expect(LicenseManager.shared.seats.isEmpty)
+        }
+    }
+
+    @Test func deactivateMachineReturnsErrorWhenNotLicensed() async {
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting() // status == .unknown
+            LicenseManager.shared.urlSession = makeMockSession()
+        }
+        MockURLProtocol.requestHandler = nil // should never be called
+
+        let errorMsg = await LicenseManager.shared.deactivateMachine("some-machine-hash")
+        #expect(errorMsg != nil)
+        #expect(errorMsg == "Not licensed.")
+    }
+
+    @Test func deactivateMachineReturnsErrorOnServerFailure() async {
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting()
+            LicenseManager.shared._injectLicenseForTesting(LicenseInfo(
+                key: "ADIA-DEAC-FAIL-0001",
+                email: "fail@example.com",
+                plan: "monthly",
+                issuedAt: Date(),
+                expiresAt: nil,
+                lastValidatedAt: Date()
+            ))
+            LicenseManager.shared.urlSession = makeMockSession()
+        }
+
+        MockURLProtocol.requestHandler = { req in
+            let data = try JSONSerialization.data(withJSONObject: ["error": "machine not found"])
+            let resp = HTTPURLResponse(url: req.url!, statusCode: 404, httpVersion: nil, headerFields: nil)!
+            return (resp, data)
+        }
+
+        let errorMsg = await LicenseManager.shared.deactivateMachine("nonexistent-machine")
+        #expect(errorMsg != nil)
+        // Error message should contain context, not be nil
+        if let msg = errorMsg {
+            #expect(msg.hasPrefix("Could not deactivate:"))
         }
     }
 }

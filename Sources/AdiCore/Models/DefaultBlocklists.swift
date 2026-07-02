@@ -274,6 +274,9 @@ extension Session {
         "grab.com",
         "shopback.com",
         "carousell.com",
+        "daraz.pk",         // Pakistani e-commerce — major time sink in South Asia
+        "11street.my",      // Malaysian marketplace
+        "11street.com.my",  // alternate domain for 11street Malaysia
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [
