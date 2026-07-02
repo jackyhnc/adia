@@ -1,5 +1,35 @@
 # Adia — Build Progress
 
+## Run 233 — 2026-07-02T11:08:00Z — React 18 → 19 upgrade + CI coverage
+
+### Shipped
+
+**`web/package.json` — React 18 → 19 upgrade:**
+- `react` + `react-dom`: `^18.3.1` → `^19.2.7`
+- `@types/react`: `^18.3.13` → `^19.2.17`
+- `@types/react-dom`: `^18.3.1` → `^19.2.3`
+- No code changes required — codebase had zero deprecated React 18 APIs (no `useFormState`, `forwardRef`, `ReactDOM.render`, etc.)
+- Next.js 15 fully supports React 19; `next build` and all 187 web tests pass clean
+- `tsc --noEmit` clean with updated types
+
+**`.github/workflows/ci.yml` — coverage reporting in web-test job:**
+- Added `-- --coverage` to the `vitest run` step; generates lcov/v8 coverage output as a CI artifact
+- Overall coverage: 88% statements, 88% branches, 87% functions, 90% lines
+
+### Blocked
+Nothing blocked. Swift toolchain unavailable on Linux container.
+
+### Next agent
+All GOAL.md items complete. BUILD_COMPLETE present. Web at React 19.2.7 + Next.js 15.5.20.
+Possible follow-up areas:
+- Add more North American distracting domains: `craigslist.org`, `vinted.com`, `facebook.com/marketplace`
+- In-app "Deactivate License" convenience button (remove from keychain + call `/api/license/deactivate` for current machine), separate from seat-removal flow
+- `/api/license/transfer` rate-limit path test (currently only success/error flows covered)
+- `@MainActor` annotation on `LicenseManagerTests` suite struct (Swift 6 strict concurrency)
+- Upload coverage artifacts to codecov.io in CI (requires CODECOV_TOKEN secret)
+
+---
+
 ## Run 232 — 2026-07-02T10:10:00Z — changeEmail in-app flow + tests + blocklist additions
 
 ### Shipped
