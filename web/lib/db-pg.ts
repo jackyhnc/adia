@@ -5,7 +5,7 @@
 // Idempotent — IF NOT EXISTS everywhere.
 
 import { sql } from '@vercel/postgres';
-import type { License, Activation } from './db';
+import type { License, Activation, AuditLogEntry } from './db';
 
 let _schemaReady = false;
 
@@ -40,6 +40,17 @@ async function ensureSchema(): Promise<void> {
       created_at TIMESTAMPTZ NOT NULL
     )
   `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS admin_audit_log (
+      id           SERIAL PRIMARY KEY,
+      action       TEXT NOT NULL,
+      license_key  TEXT NOT NULL,
+      performed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      details      JSONB NOT NULL DEFAULT '{}'
+    )
+  `;
+  await sql`CREATE INDEX IF NOT EXISTS idx_audit_log_key ON admin_audit_log(license_key)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_audit_log_at  ON admin_audit_log(performed_at DESC)`;
   _schemaReady = true;
 }
 
@@ -241,4 +252,44 @@ export async function joinWaitlistPg(email: string): Promise<void> {
     VALUES (${email.toLowerCase()}, NOW())
     ON CONFLICT (email) DO NOTHING
   `;
+}
+
+export async function logAdminActionPg(
+  action: string,
+  licenseKey: string,
+  details: Record<string, unknown> = {},
+): Promise<void> {
+  await ensureSchema();
+  await sql`
+    INSERT INTO admin_audit_log (action, license_key, performed_at, details)
+    VALUES (${action}, ${licenseKey}, NOW(), ${JSON.stringify(details)})
+  `;
+}
+
+export async function listAdminAuditLogPg(
+  opts: { key?: string; limit?: number } = {},
+): Promise<AuditLogEntry[]> {
+  await ensureSchema();
+  const limit = Math.min(opts.limit ?? 100, 500);
+  const rows = opts.key
+    ? (await sql`
+        SELECT id, action, license_key, performed_at, details
+        FROM admin_audit_log
+        WHERE license_key = ${opts.key.trim().toUpperCase()}
+        ORDER BY performed_at DESC
+        LIMIT ${limit}
+      `).rows
+    : (await sql`
+        SELECT id, action, license_key, performed_at, details
+        FROM admin_audit_log
+        ORDER BY performed_at DESC
+        LIMIT ${limit}
+      `).rows;
+  return rows.map(r => ({
+    id: r.id,
+    action: r.action,
+    licenseKey: r.license_key,
+    performedAt: r.performed_at instanceof Date ? r.performed_at.toISOString() : String(r.performed_at),
+    details: typeof r.details === 'object' && r.details !== null ? r.details as Record<string, unknown> : {},
+  }));
 }

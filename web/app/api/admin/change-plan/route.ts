@@ -11,7 +11,7 @@
 // caller is responsible for updating those separately if needed.
 
 import { NextRequest, NextResponse } from 'next/server';
-import { findLicense, setPlan } from '@/lib/store';
+import { findLicense, setPlan, logAdminAction } from '@/lib/store';
 import type { License } from '@/lib/store';
 
 export const runtime = 'nodejs';
@@ -54,5 +54,6 @@ export async function POST(req: NextRequest) {
   }
   const previousPlan = license.plan;
   await setPlan(key, plan);
+  await logAdminAction('change-plan', key, { previousPlan, newPlan: plan });
   return NextResponse.json({ ok: true, key, previousPlan, newPlan: plan });
 }

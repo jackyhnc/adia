@@ -49,6 +49,15 @@ function db(): Database.Database {
       email      TEXT PRIMARY KEY,
       created_at TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS admin_audit_log (
+      id           INTEGER PRIMARY KEY AUTOINCREMENT,
+      action       TEXT NOT NULL,
+      license_key  TEXT NOT NULL,
+      performed_at TEXT NOT NULL,
+      details      TEXT NOT NULL DEFAULT '{}'
+    );
+    CREATE INDEX IF NOT EXISTS idx_audit_log_key ON admin_audit_log(license_key);
+    CREATE INDEX IF NOT EXISTS idx_audit_log_at  ON admin_audit_log(performed_at DESC);
   `);
   return _db;
 }
@@ -232,4 +241,46 @@ export function joinWaitlist(email: string) {
     INSERT INTO waitlist (email, created_at) VALUES (?, ?)
     ON CONFLICT(email) DO NOTHING
   `).run(email.toLowerCase(), new Date().toISOString());
+}
+
+export type AuditLogEntry = {
+  id: number;
+  action: string;
+  licenseKey: string;
+  performedAt: string;
+  details: Record<string, unknown>;
+};
+
+export function logAdminAction(
+  action: string,
+  licenseKey: string,
+  details: Record<string, unknown> = {},
+): void {
+  db()
+    .prepare(
+      'INSERT INTO admin_audit_log (action, license_key, performed_at, details) VALUES (?, ?, ?, ?)',
+    )
+    .run(action, licenseKey, new Date().toISOString(), JSON.stringify(details));
+}
+
+// Returns the most recent `limit` entries, newest first. Pass `key` to filter
+// to a single license.
+export function listAdminAuditLog(opts: { key?: string; limit?: number } = {}): AuditLogEntry[] {
+  const limit = Math.min(opts.limit ?? 100, 500);
+  const rows = opts.key
+    ? (db()
+        .prepare(
+          'SELECT * FROM admin_audit_log WHERE license_key = ? ORDER BY performed_at DESC, id DESC LIMIT ?',
+        )
+        .all(opts.key.trim().toUpperCase(), limit) as any[])
+    : (db()
+        .prepare('SELECT * FROM admin_audit_log ORDER BY performed_at DESC, id DESC LIMIT ?')
+        .all(limit) as any[]);
+  return rows.map(r => ({
+    id: r.id,
+    action: r.action,
+    licenseKey: r.license_key,
+    performedAt: r.performed_at,
+    details: JSON.parse(r.details ?? '{}'),
+  }));
 }

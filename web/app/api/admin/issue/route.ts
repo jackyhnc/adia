@@ -3,7 +3,7 @@
 // Auth: ADMIN_TOKEN bearer header or ?token= query param.
 
 import { NextRequest, NextResponse } from 'next/server';
-import { insertLicense } from '@/lib/store';
+import { insertLicense, logAdminAction } from '@/lib/store';
 import { generateLicenseKey, planExpiry } from '@/lib/license';
 
 export const runtime = 'nodejs';
@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
   const issuedAt = new Date().toISOString();
 
   await insertLicense({ key, email, plan, expiresAt });
+  await logAdminAction('issue', key, { email, plan, expiresAt, note: body?.note ?? null });
 
   return NextResponse.json({
     ok: true,

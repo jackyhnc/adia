@@ -38,6 +38,7 @@ export default function Admin() {
       <ReactivatePanel token={token} />
       <ExtendPanel token={token} />
       <ChangePlanPanel token={token} />
+      <AuditLogPanel token={token} />
     </section>
   );
 }
@@ -1187,6 +1188,133 @@ function TransferPanel() {
             <span className="font-mono">{result.key}</span> ({result.plan}) is now registered to{' '}
             <strong>{result.email}</strong>
           </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Audit log ────────────────────────────────────────────────────────────────
+
+type AuditEntry = {
+  id: number;
+  action: string;
+  licenseKey: string;
+  performedAt: string;
+  details: Record<string, unknown>;
+};
+
+function AuditLogPanel({ token }: { token: string }) {
+  const [key, setKey] = useState('');
+  const [limit, setLimit] = useState('50');
+  const [entries, setEntries] = useState<AuditEntry[] | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function load(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setEntries(null);
+    setError('');
+    try {
+      const params = new URLSearchParams({ limit });
+      if (key.trim()) params.set('key', key.trim().toUpperCase());
+      const res = await fetch(`/api/admin/audit-log?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        const data = await res.json();
+        setEntries(data.entries);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function actionBadge(action: string) {
+    const colors: Record<string, string> = {
+      issue: 'bg-green-500/10 text-green-600',
+      revoke: 'bg-red-500/10 text-red-500',
+      reactivate: 'bg-blue-500/10 text-blue-500',
+      extend: 'bg-yellow-500/10 text-yellow-600',
+      'change-plan': 'bg-purple-500/10 text-purple-500',
+    };
+    const cls = colors[action] ?? 'bg-ink/10 text-ink/60';
+    return (
+      <span className={`inline-block rounded px-1.5 py-0.5 text-xs font-semibold font-mono ${cls}`}>
+        {action}
+      </span>
+    );
+  }
+
+  return (
+    <div className="card space-y-4">
+      <h2 className="text-base font-semibold">Audit log</h2>
+      <p className="text-xs text-ink/50">
+        Shows admin mutations (issue, revoke, extend, change-plan, reactivate). Newest first.
+      </p>
+      <form onSubmit={load} className="space-y-3">
+        <Field label="License key (optional — leave blank for global log)">
+          <input
+            type="text"
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            placeholder="ADIA-XXXX-XXXX-XXXX"
+            className="input font-mono"
+          />
+        </Field>
+        <Field label="Limit (1–500)">
+          <input
+            type="number"
+            value={limit}
+            onChange={(e) => setLimit(e.target.value)}
+            min={1}
+            max={500}
+            className="input w-28"
+          />
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Loading…' : 'Load log'}
+        </button>
+      </form>
+
+      {error && <p className="text-sm text-red-500">{error}</p>}
+
+      {entries !== null && entries.length === 0 && (
+        <p className="text-sm text-ink/50">No entries found.</p>
+      )}
+
+      {entries && entries.length > 0 && (
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs border-collapse">
+            <thead>
+              <tr className="text-left text-ink/40 uppercase tracking-wide">
+                <th className="pb-2 pr-4 whitespace-nowrap">Time</th>
+                <th className="pb-2 pr-4">Action</th>
+                <th className="pb-2 pr-4 font-mono">Key</th>
+                <th className="pb-2">Details</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-ink/10">
+              {entries.map((e) => (
+                <tr key={e.id} className="align-top">
+                  <td className="py-1.5 pr-4 text-ink/50 whitespace-nowrap">
+                    {new Date(e.performedAt).toLocaleString()}
+                  </td>
+                  <td className="py-1.5 pr-4">{actionBadge(e.action)}</td>
+                  <td className="py-1.5 pr-4 font-mono text-ink/80">{e.licenseKey}</td>
+                  <td className="py-1.5 text-ink/60 max-w-xs break-words">
+                    {JSON.stringify(e.details)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

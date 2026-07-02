@@ -1,5 +1,29 @@
 # Adia — Build Progress
 
+## Run 241 — 2026-07-02T19:09:00Z — Admin audit log
+
+### Shipped
+- `admin_audit_log` SQLite table (id, action, license_key, performed_at, details JSON) with two indexes; auto-created alongside existing tables in `db()` schema init
+- `logAdminAction()` / `listAdminAuditLog()` in `lib/db.ts` (ORDER BY performed_at DESC, id DESC)
+- Postgres equivalents `logAdminActionPg` / `listAdminAuditLogPg` in `lib/db-pg.ts`; schema extended to include the new table with SERIAL PK and JSONB details
+- `logAdminAction` / `listAdminAuditLog` added to store facade (`lib/store.ts`)
+- `GET /api/admin/audit-log` endpoint — auth via ADMIN_TOKEN bearer or ?token=; accepts optional `?key=` and `?limit=` (1–500); returns `{ entries, count }`
+- 5 admin routes instrumented: **issue**, **revoke**, **extend**, **change-plan**, **reactivate** — each logs action + before/after state after successful mutation
+- `AuditLogPanel` React component added to `web/app/admin/page.tsx` — form with optional key filter and limit, table showing time / action badge / key / JSON details
+- 15 new tests in `web/__tests__/admin-audit.test.ts` (DB layer + endpoint: auth, empty, filtering, limit, ordering, query-param fallback)
+- All 269 web tests pass (17 test files)
+
+### Blocked
+Nothing.
+
+### Next agent should
+Pick any new GOAL.md item or add one. Candidates:
+- Instrument remaining admin write routes (change-email, deactivate-all, transfer) with logAdminAction
+- Add "note" field to audit log for freeform admin context
+- Add a waitlist view endpoint to the admin panel
+
+---
+
 ## Run 240 — 2026-07-02T18:08:00Z — POST /api/admin/change-plan + ChangePlanPanel + 14 tests
 
 ### Shipped

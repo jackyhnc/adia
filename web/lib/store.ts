@@ -7,14 +7,14 @@
 //   anything else                 → better-sqlite3 (lib/db.ts)
 
 import * as sqlite from './db';
-import type { License, Activation } from './db';
+import type { License, Activation, AuditLogEntry } from './db';
 
 const usePg = (() => {
   const url = process.env.DATABASE_URL ?? '';
   return /^postgres(ql)?:\/\//.test(url);
 })();
 
-export type { License, Activation };
+export type { License, Activation, AuditLogEntry };
 
 export async function insertLicense(row: {
   key: string;
@@ -157,4 +157,26 @@ export async function joinWaitlist(email: string): Promise<void> {
     return joinWaitlistPg(email);
   }
   sqlite.joinWaitlist(email);
+}
+
+export async function logAdminAction(
+  action: string,
+  licenseKey: string,
+  details: Record<string, unknown> = {},
+): Promise<void> {
+  if (usePg) {
+    const { logAdminActionPg } = await import('./db-pg');
+    return logAdminActionPg(action, licenseKey, details);
+  }
+  sqlite.logAdminAction(action, licenseKey, details);
+}
+
+export async function listAdminAuditLog(
+  opts: { key?: string; limit?: number } = {},
+): Promise<AuditLogEntry[]> {
+  if (usePg) {
+    const { listAdminAuditLogPg } = await import('./db-pg');
+    return listAdminAuditLogPg(opts);
+  }
+  return sqlite.listAdminAuditLog(opts);
 }

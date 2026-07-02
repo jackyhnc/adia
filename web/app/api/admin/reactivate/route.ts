@@ -11,7 +11,7 @@
 // responsible for updating those separately if needed.
 
 import { NextRequest, NextResponse } from 'next/server';
-import { findLicense, setStatus } from '@/lib/store';
+import { findLicense, setStatus, logAdminAction } from '@/lib/store';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -42,5 +42,6 @@ export async function POST(req: NextRequest) {
   }
   const previousStatus = license.status;
   await setStatus(key, 'active');
+  await logAdminAction('reactivate', key, { previousStatus, newStatus: 'active', note: body?.note ?? null });
   return NextResponse.json({ ok: true, key, previousStatus, newStatus: 'active' });
 }
