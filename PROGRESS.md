@@ -1,5 +1,62 @@
 # Adia — Build Progress
 
+## Run 241 — 2026-07-02T21:09:00Z — GET /api/admin/stats + ordering bug fix + 8 tests
+
+### Shipped
+
+**Bug fix — `findLicensesByEmail` ordering (`web/lib/db.ts`):**
+- Was: `ORDER BY issued_at ASC, rowid ASC` (oldest-first).
+- Now: `ORDER BY issued_at DESC, rowid DESC` (newest-first), matching `db-pg.ts`.
+- Production (Postgres) already returned newest-first; SQLite dev/test was wrong.
+
+**Bug fix — `resend-license` route (`web/app/api/admin/resend-license/route.ts`):**
+- Previously took `active[active.length - 1]` (last = newest under old ASC ordering).
+- Now takes `active[0]` (first = newest under new DESC ordering).
+- Pre-existing test "picks the most recent active license when email has multiple" was asserting the correct behaviour but was silently returning the wrong key; the ordering fix surfaced the mismatch.
+
+**`web/lib/db.ts` — `getStats(): LicenseStats`:**
+- Runs five SQLite aggregate queries: total count, GROUP BY status, GROUP BY plan,
+  count where issued_at ≥ 7 days ago, count where issued_at ≥ 30 days ago, activation count.
+
+**`web/lib/db-pg.ts` — `getStatsPg(): Promise<LicenseStats>`:**
+- Parallel `Promise.all` of six Postgres queries (same aggregations via SQL intervals).
+
+**`web/lib/store.ts` — `getStats()` facade:**
+- Routes to `getStatsPg` (Postgres) or `sqlite.getStats` (SQLite). Exports `LicenseStats` type.
+
+**`web/app/api/admin/stats/route.ts` — new endpoint:**
+- `GET /api/admin/stats` — returns `{ total, byStatus, byPlan, newLast7Days, newLast30Days, activatedMachines }`.
+- Auth: ADMIN_TOKEN bearer or `?token=` query param (matches all other admin routes).
+
+**`web/app/admin/page.tsx` — `StatsPanel` + `Stat` components:**
+- Placed first in the admin page (above IssuePanel) for at-a-glance monitoring.
+- Grid of stat tiles: total, new-7d, new-30d, active machines, per-status (green/red/yellow accent), per-plan.
+- Single "Refresh" button — loads on demand, not on page mount, to avoid token-before-paste timing issues.
+
+**`web/__tests__/admin-routes.test.ts` — 8 new tests + 1 tightened:**
+- 401 no-token, 401 wrong-token.
+- Zero stats for empty DB.
+- Correct total count.
+- Breakdown by plan.
+- Breakdown by status.
+- newLast7Days / newLast30Days counts recently inserted rows.
+- activatedMachines counts across all activation records.
+- `?token=` auth.
+- Ordering test upgraded: was `toContain` (didn't verify order); now checks `licenses[0].key === BBBB` (newest first).
+
+### Tests
+263 passed (up from 254). 16 test files green.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding `POST /api/admin/note` to store freeform admin notes on a license (the IssuePanel already has a "note" field that's currently not stored).
+- Or add an admin audit log table that records which admin action was taken on each license and when.
+- Or add new blocklist domains to the Swift side.
+
+---
+
 ## Run 240 — 2026-07-02T18:08:00Z — POST /api/admin/change-plan + ChangePlanPanel + 14 tests
 
 ### Shipped
