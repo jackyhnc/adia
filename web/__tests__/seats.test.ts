@@ -142,4 +142,35 @@ describe('GET /api/license/seats', () => {
     const r = await callGet({}, '10.2.0.3');
     expect(r.status).not.toBe(429);
   });
+
+  it('seat count reflects machine removal after deactivate', async () => {
+    const key = 'ADIA-SEAT-RFRSH-AAAA';
+    insertLicense({ key, email: 'refresh@example.com', plan: 'lifetime', expiresAt: null });
+    recordActivation(key, 'machine-a');
+    recordActivation(key, 'machine-b');
+
+    // Confirm initial state: 2 seats.
+    const r1 = await callGet({ key, email: 'refresh@example.com' });
+    expect(r1.status).toBe(200);
+    const b1 = await r1.json();
+    expect(b1.seatCount).toBe(2);
+
+    // Remove one machine via /deactivate.
+    const { POST: deactivatePost } = await import('@/app/api/license/deactivate/route');
+    const deacReq = new NextRequest('http://localhost/api/license/deactivate', {
+      method: 'POST',
+      body: JSON.stringify({ key, email: 'refresh@example.com', machine: 'machine-a' }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const deacRes = await deactivatePost(deacReq);
+    expect(deacRes.status).toBe(200);
+
+    // Seat list now reflects the removal.
+    const r2 = await callGet({ key, email: 'refresh@example.com' });
+    expect(r2.status).toBe(200);
+    const b2 = await r2.json();
+    expect(b2.seatCount).toBe(1);
+    expect(b2.seats).toHaveLength(1);
+    expect(b2.seats[0].machineHash).toBe('machine-b');
+  });
 });

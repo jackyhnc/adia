@@ -20,7 +20,7 @@ export default async function Success({ searchParams }: { searchParams: Promise<
       )}
       <div className="mt-8 flex gap-3">
         <Link href="/download" className="btn-primary">Download Adia</Link>
-        <Link href="/" className="btn-secondary">Back to home</Link>
+        <Link href="/account" className="btn-secondary">View your license</Link>
       </div>
     </section>
   );
