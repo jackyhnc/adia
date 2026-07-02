@@ -341,4 +341,119 @@ struct LicenseManagerTests {
             #expect(msg.hasPrefix("Could not deactivate:"))
         }
     }
+
+    // MARK: - changeEmail tests
+
+    @Test func changeEmailSuccessUpdatesStatusEmail() async {
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting()
+            LicenseManager.shared._injectLicenseForTesting(LicenseInfo(
+                key: "ADIA-CHNG-TEST-0001",
+                email: "old@example.com",
+                plan: "lifetime",
+                issuedAt: Date(timeIntervalSinceNow: -86400),
+                expiresAt: nil,
+                lastValidatedAt: Date()
+            ))
+            LicenseManager.shared.urlSession = makeMockSession()
+        }
+
+        MockURLProtocol.requestHandler = { req in
+            let data = try JSONSerialization.data(withJSONObject: [
+                "ok": true,
+                "key": "ADIA-CHNG-TEST-0001",
+                "email": "new@example.com",
+                "plan": "lifetime",
+            ])
+            let resp = HTTPURLResponse(url: req.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (resp, data)
+        }
+
+        let err = await LicenseManager.shared.changeEmail(newEmail: "New@Example.com")
+        #expect(err == nil)
+        await MainActor.run {
+            if case .licensed(let em, _) = LicenseManager.shared.status {
+                #expect(em == "new@example.com")
+            } else {
+                Issue.record("expected .licensed after changeEmail, got \(LicenseManager.shared.status)")
+            }
+        }
+    }
+
+    @Test func changeEmailReturnsErrorWhenNotLicensed() async {
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting() // status == .unknown
+            LicenseManager.shared.urlSession = makeMockSession()
+        }
+        MockURLProtocol.requestHandler = nil // must not be called
+
+        let err = await LicenseManager.shared.changeEmail(newEmail: "any@example.com")
+        #expect(err == "Not licensed.")
+    }
+
+    @Test func changeEmailReturnsErrorOnServerFailure() async {
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting()
+            LicenseManager.shared._injectLicenseForTesting(LicenseInfo(
+                key: "ADIA-CHNG-FAIL-0001",
+                email: "current@example.com",
+                plan: "monthly",
+                issuedAt: Date(),
+                expiresAt: nil,
+                lastValidatedAt: Date()
+            ))
+            LicenseManager.shared.urlSession = makeMockSession()
+        }
+
+        MockURLProtocol.requestHandler = { req in
+            let data = try JSONSerialization.data(withJSONObject: ["error": "email already in use"])
+            let resp = HTTPURLResponse(url: req.url!, statusCode: 422, httpVersion: nil, headerFields: nil)!
+            return (resp, data)
+        }
+
+        let err = await LicenseManager.shared.changeEmail(newEmail: "taken@example.com")
+        #expect(err != nil)
+        if let msg = err {
+            #expect(msg.hasPrefix("Could not update email:"))
+        }
+    }
+
+    @Test func changeEmailRejectsEmptyNewEmail() async {
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting()
+            LicenseManager.shared._injectLicenseForTesting(LicenseInfo(
+                key: "ADIA-CHNG-EMTY-0001",
+                email: "user@example.com",
+                plan: "yearly",
+                issuedAt: Date(),
+                expiresAt: nil,
+                lastValidatedAt: Date()
+            ))
+            LicenseManager.shared.urlSession = makeMockSession()
+        }
+        MockURLProtocol.requestHandler = nil // must not be called
+
+        let err = await LicenseManager.shared.changeEmail(newEmail: "   ")
+        #expect(err == "New email is empty.")
+    }
+
+    @Test func changeEmailRejectsSameEmailAsCurrentEmail() async {
+        await MainActor.run {
+            LicenseManager.shared.resetForTesting()
+            LicenseManager.shared._injectLicenseForTesting(LicenseInfo(
+                key: "ADIA-CHNG-SAME-0001",
+                email: "same@example.com",
+                plan: "lifetime",
+                issuedAt: Date(),
+                expiresAt: nil,
+                lastValidatedAt: Date()
+            ))
+            LicenseManager.shared.urlSession = makeMockSession()
+        }
+        MockURLProtocol.requestHandler = nil // must not be called
+
+        // Supply same email in different case — still same after normalization
+        let err = await LicenseManager.shared.changeEmail(newEmail: "SAME@Example.COM")
+        #expect(err == "New email is the same as your current email.")
+    }
 }

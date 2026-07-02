@@ -277,6 +277,9 @@ extension Session {
         "daraz.pk",         // Pakistani e-commerce — major time sink in South Asia
         "11street.my",      // Malaysian marketplace
         "11street.com.my",  // alternate domain for 11street Malaysia
+        // North American / global classifieds — browsed "quickly" and never quickly
+        "kijiji.ca",        // Canadian classifieds (Craigslist equivalent)
+        "gumtree.com",      // UK/AU secondhand marketplace
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

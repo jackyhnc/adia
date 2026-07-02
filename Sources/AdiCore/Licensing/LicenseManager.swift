@@ -264,6 +264,34 @@ public final class LicenseManager: ObservableObject {
         }
     }
 
+    /// Updates the email address on record for the current license.
+    /// Calls POST /api/license/transfer, then updates the locally stored LicenseInfo.
+    /// Returns nil on success, or an error string.
+    public func changeEmail(newEmail: String) async -> String? {
+        guard case .licensed(let currentEmail, _) = status,
+              let info = currentLicense()
+        else { return "Not licensed." }
+        let cleanNew = newEmail.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !cleanNew.isEmpty else { return "New email is empty." }
+        guard cleanNew != currentEmail else { return "New email is the same as your current email." }
+        do {
+            try await serverTransferEmail(key: info.key, currentEmail: currentEmail, newEmail: cleanNew)
+            let updated = LicenseInfo(
+                key: info.key,
+                email: cleanNew,
+                plan: info.plan,
+                issuedAt: info.issuedAt,
+                expiresAt: info.expiresAt,
+                lastValidatedAt: info.lastValidatedAt
+            )
+            store(updated)
+            refreshLocalStatus()
+            return nil
+        } catch {
+            return "Could not update email: \(error.localizedDescription)"
+        }
+    }
+
     /// Deactivates a specific machine hash from this license (frees one seat).
     /// Returns nil on success, or an error string.
     public func deactivateMachine(_ machineHash: String) async -> String? {
@@ -280,6 +308,9 @@ public final class LicenseManager: ObservableObject {
     }
 
     private func serverFetchSeats(key: String, email: String) async throws -> [SeatInfo] {
+        // URLComponents(url:resolvingAgainstBaseURL:) returns nil only for schemes that can't be
+        // decomposed (e.g. opaque URIs). serverBaseURL is always a valid https URL, so this
+        // can't fail.
         var comps = URLComponents(url: serverBaseURL.appendingPathComponent("api/license/seats"),
                                   resolvingAgainstBaseURL: false)!
         comps.queryItems = [
@@ -301,6 +332,21 @@ public final class LicenseManager: ObservableObject {
                   let last  = iso.date(from: row.lastSeen)
             else { return nil }
             return SeatInfo(machineHash: row.machineHash, firstSeen: first, lastSeen: last)
+        }
+    }
+
+    private func serverTransferEmail(key: String, currentEmail: String, newEmail: String) async throws {
+        let url = serverBaseURL.appendingPathComponent("api/license/transfer")
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let body: [String: Any] = ["key": key, "email": currentEmail, "newEmail": newEmail]
+        req.httpBody = try JSONSerialization.data(withJSONObject: body)
+        let (data, resp) = try await urlSession.data(for: req)
+        guard let http = resp as? HTTPURLResponse, http.statusCode == 200 else {
+            let msg = (try? JSONDecoder().decode(ServerError.self, from: data))?.error ?? "Server error"
+            throw NSError(domain: "Adia.License", code: 5,
+                          userInfo: [NSLocalizedDescriptionKey: msg])
         }
     }
 

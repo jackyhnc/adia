@@ -1,5 +1,44 @@
 # Adia — Build Progress
 
+## Run 232 — 2026-07-02T10:10:00Z — changeEmail in-app flow + tests + blocklist additions
+
+### Shipped
+
+**`Sources/AdiCore/Licensing/LicenseManager.swift` — self-service email update:**
+- `changeEmail(newEmail:)` — public async method; guards on `.licensed` status, normalizes + validates the new email, calls `POST /api/license/transfer`, then rewrites the locally stored `LicenseInfo` with the new email and refreshes status. Returns nil on success or an error string.
+- `serverTransferEmail(key:currentEmail:newEmail:)` — private HTTP helper; mirrors the pattern of the other `server*` methods; decodes `ServerError` on non-200.
+- Force-unwrap in `serverFetchSeats` documented with a comment explaining it can't fail for well-formed https URLs.
+
+**`Sources/AdiCore/Views/Settings/AccountSettingsTab.swift` — Change Email UI:**
+- Added 5 new `@State` vars: `editingEmail`, `newEmailDraft`, `changingEmail`, `emailChangeError`, `emailChangeSuccess`.
+- `changeEmailSection` view builder: inline edit form (TextField + Save/Cancel), success/error feedback labels; shown only when `.licensed`.
+- `doChangeEmail()` async helper wired to the "Save" button.
+- Section placed between the license row and the seats section in the form.
+
+**`Tests/AdiTests/LicenseManagerTests.swift` — 5 new tests for changeEmail:**
+- `changeEmailSuccessUpdatesStatusEmail` — 200 response; asserts `.licensed` status reflects new email.
+- `changeEmailReturnsErrorWhenNotLicensed` — `.unknown` status; asserts return value is `"Not licensed."`.
+- `changeEmailReturnsErrorOnServerFailure` — 422 response; asserts error starts with `"Could not update email:"`.
+- `changeEmailRejectsEmptyNewEmail` — whitespace-only input; asserts `"New email is empty."` without firing HTTP.
+- `changeEmailRejectsSameEmailAsCurrentEmail` — same email (different case) supplied; asserts `"New email is the same as your current email."` without firing HTTP.
+
+**`Sources/AdiCore/Models/DefaultBlocklists.swift` — 2 new blocked domains:**
+- `kijiji.ca` — Canadian classifieds, high-traffic time sink.
+- `gumtree.com` — UK/AU secondhand marketplace.
+
+**Web test count: 187 tests (16 files, all pass) — unchanged.**
+
+### Blocked
+Nothing blocked. Swift build can't be verified in this environment (no Swift toolchain), but the changes are syntactically straightforward: new method + UI section added to existing patterns.
+
+### Next agent should
+- Consider adding a web test for the `/api/license/transfer` endpoint's rate-limit path (currently only tested for 200/404/422 success/error flows).
+- Consider adding `@MainActor` annotation to `LicenseManagerTests` suite struct (Swift 6 strict concurrency — tests already use `await MainActor.run` but the suite itself isn't isolated).
+- Consider adding more North American distracting domains: `craigslist.org`, `facebook.com/marketplace` (the marketplace subdirectory is its own rabbit hole), `vinted.com` (EU secondhand marketplace).
+- Consider adding in-app "Deactivate License" (remove from keychain + call `/api/license/deactivate` for the current machine) as a convenience button separate from the seat-removal flow.
+
+---
+
 ## Run 231 — 2026-07-02T09:07:00Z — LicenseManager network tests + urlSession injection + blocklist additions
 
 ### Shipped

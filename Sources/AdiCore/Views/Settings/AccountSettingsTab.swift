@@ -13,6 +13,11 @@ struct AccountSettingsTab: View {
     @State private var activateError: String?
     @State private var deactivatingMachine: String? = nil
     @State private var deactivateError: String?
+    @State private var editingEmail: Bool = false
+    @State private var newEmailDraft: String = ""
+    @State private var changingEmail: Bool = false
+    @State private var emailChangeError: String?
+    @State private var emailChangeSuccess: Bool = false
 
     var body: some View {
         Form {
@@ -32,6 +37,7 @@ struct AccountSettingsTab: View {
             }
 
             if case .licensed = license.status {
+                changeEmailSection
                 seatsSection
             }
 
@@ -266,6 +272,65 @@ struct AccountSettingsTab: View {
         activateError = nil
         activateError = await license.activate(key: licenseKey, email: email)
         activating    = false
+    }
+
+    @ViewBuilder
+    private var changeEmailSection: some View {
+        Section {
+            if editingEmail {
+                HStack {
+                    TextField("New email address", text: $newEmailDraft)
+                        .textContentType(.emailAddress)
+                    Button(changingEmail ? "Saving…" : "Save") {
+                        Task { await doChangeEmail() }
+                    }
+                    .disabled(changingEmail || newEmailDraft.trimmingCharacters(in: .whitespaces).isEmpty)
+                    Button("Cancel") {
+                        newEmailDraft      = ""
+                        emailChangeError   = nil
+                        emailChangeSuccess = false
+                        editingEmail       = false
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.secondary)
+                }
+                if let err = emailChangeError {
+                    Text(err).foregroundStyle(.red).font(.callout)
+                }
+                if emailChangeSuccess {
+                    Text("Email updated.").foregroundStyle(.green).font(.callout)
+                }
+            } else {
+                HStack {
+                    if case .licensed(let em, _) = license.status {
+                        Text(em).foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Button("Change") { editingEmail = true }
+                        .buttonStyle(.borderless)
+                }
+            }
+        } header: {
+            Text("Email Address")
+        } footer: {
+            Text("The email address associated with your license. Used to log in to adia.app.")
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func doChangeEmail() async {
+        changingEmail      = true
+        emailChangeError   = nil
+        emailChangeSuccess = false
+        let err = await license.changeEmail(newEmail: newEmailDraft)
+        if err == nil {
+            emailChangeSuccess = true
+            newEmailDraft      = ""
+            editingEmail       = false
+        } else {
+            emailChangeError = err
+        }
+        changingEmail = false
     }
 }
 
