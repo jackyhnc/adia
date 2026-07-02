@@ -1,5 +1,42 @@
 # Adia — Build Progress
 
+## Run 230 — 2026-07-02T05:10:00Z — seat visibility in app + SE Asian blocklist additions
+
+### Shipped
+
+**`Sources/AdiCore/Licensing/LicenseManager.swift` — seat management:**
+- `SeatInfo` struct: `machineHash`, `firstSeen`, `lastSeen`, `isCurrentMachine`, `shortHash`.
+- `@Published var seats: [SeatInfo]` and `@Published var seatsLoading: Bool` on `LicenseManager`.
+- `fetchSeats()` — async, calls `GET /api/license/seats?key=…&email=…`, populates `seats`.
+- `deactivateMachine(_ machineHash:)` — async, calls `POST /api/license/deactivate`, then refreshes seats; returns nil on success or an error string.
+- `currentMachineFingerprint()` — public static accessor (wraps the existing private `machineFingerprint()`), so `SeatInfo.isCurrentMachine` can identify the local machine.
+- Private helpers: `serverFetchSeats`, `serverDeactivateMachine`, `SeatsResponse` codable types.
+
+**`Sources/AdiCore/Views/Settings/AccountSettingsTab.swift` — "Activated Machines" section:**
+- Conditionally shown only when `license.status == .licensed`.
+- Lists each `SeatInfo` with: truncated hash (first 8 chars), "this Mac" badge for the current machine, "Last seen" date.
+- Non-current-machine rows get a "Remove" button that calls `deactivateMachine` and shows a spinner during the request.
+- Section header has an inline refresh button (↺). Seat list is loaded with `.task { await license.fetchSeats() }` on first appearance.
+- Error row displayed if deactivation fails.
+
+**`Sources/AdiCore/Models/DefaultBlocklists.swift` — 3 new blocked domains:**
+- `grab.com` (food/ride-hailing rabbit hole during sessions)
+- `shopback.com` (cashback/deals browsing time sink)
+- `carousell.com` (secondhand marketplace)
+
+**Web test count: 187 tests (16 files, all pass) — unchanged.**
+
+### Blocked
+Nothing blocked.
+
+### Next agent should
+- Consider upgrading Next.js from 14.2.18 → 15.x (security CVEs; breaking change migration — read the Next.js 15 migration guide first).
+- Consider a `PATCH /api/license/email` self-service endpoint (key + currentEmail + newEmail) — distinct from admin `/transfer` in that it goes through user-facing rate limiting; the admin `/transfer` endpoint already handles this but has no per-user rate limit separate from the admin token path.
+- Add more distracting domains: `grab.com` variants (grab.food etc.), `daraz.pk` (Pakistan e-commerce), `11street.my` (Malaysian marketplace).
+- Add tests for `LicenseManager.fetchSeats` and `LicenseManager.deactivateMachine` using a mock server URL (inject `serverBaseURL` in tests to point at a mock `URLProtocol` or a local `NWListener`).
+
+---
+
 ## Run 229 — 2026-07-02T03:10:00Z — seats endpoint + deactivate-all admin + SE Asian blocklist
 
 ### Shipped

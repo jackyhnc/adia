@@ -11,6 +11,8 @@ struct AccountSettingsTab: View {
     @State private var email:        String = ""
     @State private var activating:   Bool   = false
     @State private var activateError: String?
+    @State private var deactivatingMachine: String? = nil
+    @State private var deactivateError: String?
 
     var body: some View {
         Form {
@@ -27,6 +29,10 @@ struct AccountSettingsTab: View {
                 licenseRow
             } header: {
                 Text("License")
+            }
+
+            if case .licensed = license.status {
+                seatsSection
             }
 
             Section {
@@ -153,6 +159,86 @@ struct AccountSettingsTab: View {
         default:
             activateSection
         }
+    }
+
+    @ViewBuilder
+    private var seatsSection: some View {
+        Section {
+            if license.seatsLoading && license.seats.isEmpty {
+                HStack {
+                    ProgressView().scaleEffect(0.8)
+                    Text("Loading seats…").foregroundStyle(.secondary)
+                }
+            } else if license.seats.isEmpty {
+                Text("No seat data available.")
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(license.seats) { seat in
+                    HStack(spacing: 0) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            HStack(spacing: 4) {
+                                Text(seat.shortHash)
+                                    .font(.system(.body, design: .monospaced))
+                                if seat.isCurrentMachine {
+                                    Text("this Mac")
+                                        .font(.caption2)
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 5)
+                                        .padding(.vertical, 2)
+                                        .background(Color.accentColor, in: Capsule())
+                                }
+                            }
+                            Text("Last seen \(seat.lastSeen.formatted(date: .abbreviated, time: .omitted))")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        if !seat.isCurrentMachine {
+                            Button {
+                                Task { await deactivateSeat(seat) }
+                            } label: {
+                                if deactivatingMachine == seat.machineHash {
+                                    ProgressView().scaleEffect(0.7)
+                                } else {
+                                    Text("Remove")
+                                        .foregroundStyle(.red)
+                                        .font(.callout)
+                                }
+                            }
+                            .buttonStyle(.borderless)
+                            .disabled(deactivatingMachine != nil)
+                        }
+                    }
+                }
+                if let err = deactivateError {
+                    Text(err).foregroundStyle(.red).font(.callout)
+                }
+            }
+        } header: {
+            HStack {
+                Text("Activated Machines")
+                Spacer()
+                Button {
+                    Task { await license.fetchSeats() }
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                        .font(.caption)
+                }
+                .buttonStyle(.borderless)
+                .disabled(license.seatsLoading)
+            }
+        } footer: {
+            Text("Each license allows up to 2 simultaneous machines. Remove a machine to free a seat.")
+                .foregroundStyle(.secondary)
+        }
+        .task { await license.fetchSeats() }
+    }
+
+    private func deactivateSeat(_ seat: SeatInfo) async {
+        deactivatingMachine = seat.machineHash
+        deactivateError = nil
+        deactivateError = await license.deactivateMachine(seat.machineHash)
+        deactivatingMachine = nil
     }
 
     @ViewBuilder

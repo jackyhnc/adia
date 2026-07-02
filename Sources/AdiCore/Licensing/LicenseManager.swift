@@ -18,6 +18,29 @@ public struct LicenseInfo: Codable, Equatable, Sendable {
     public let lastValidatedAt: Date
 }
 
+public struct SeatInfo: Identifiable, Equatable, Sendable {
+    public var id: String { machineHash }
+    public let machineHash: String
+    public let firstSeen: Date
+    public let lastSeen: Date
+
+    public var isCurrentMachine: Bool {
+        machineHash == LicenseManager.currentMachineFingerprint()
+    }
+
+    public var shortHash: String { String(machineHash.prefix(8)) }
+}
+
+private struct SeatsResponse: Decodable {
+    let seatCount: Int
+    let seats: [SeatRow]
+    struct SeatRow: Decodable {
+        let machineHash: String
+        let firstSeen: String
+        let lastSeen: String
+    }
+}
+
 /// Owns license + trial state. Stores license in Keychain, trial start in UserDefaults.
 /// Validates with the Adia license server (`https://adia.app/api/license/validate`) on
 /// app launch and once per 24h. Allows 14 days offline grace.
@@ -26,6 +49,8 @@ public final class LicenseManager: ObservableObject {
     public static let shared = LicenseManager()
 
     @Published public private(set) var status: LicenseStatus = .unknown
+    @Published public private(set) var seats: [SeatInfo] = []
+    @Published public private(set) var seatsLoading: Bool = false
 
     private let defaults = UserDefaults.standard
     private let trialStartKey = "trial.startedAt"
@@ -218,7 +243,84 @@ public final class LicenseManager: ObservableObject {
         Keychain.write(data, service: keychainService, account: keychainAccount)
     }
 
+    // MARK: - Seat management
+
+    /// Fetches the list of activated machines for the current license from the Adia server.
+    /// Populates `seats`; no-ops if not licensed.
+    public func fetchSeats() async {
+        guard case .licensed(let em, _) = status,
+              let info = currentLicense()
+        else { return }
+        seatsLoading = true
+        defer { seatsLoading = false }
+        do {
+            let fetched = try await serverFetchSeats(key: info.key, email: em)
+            seats = fetched
+        } catch {
+            AppLogger.warning("license.seats_fetch_failed", ["error": "\(error)"])
+        }
+    }
+
+    /// Deactivates a specific machine hash from this license (frees one seat).
+    /// Returns nil on success, or an error string.
+    public func deactivateMachine(_ machineHash: String) async -> String? {
+        guard case .licensed(let em, _) = status,
+              let info = currentLicense()
+        else { return "Not licensed." }
+        do {
+            try await serverDeactivateMachine(key: info.key, email: em, machine: machineHash)
+            await fetchSeats()
+            return nil
+        } catch {
+            return "Could not deactivate: \(error.localizedDescription)"
+        }
+    }
+
+    private func serverFetchSeats(key: String, email: String) async throws -> [SeatInfo] {
+        var comps = URLComponents(url: serverBaseURL.appendingPathComponent("api/license/seats"),
+                                  resolvingAgainstBaseURL: false)!
+        comps.queryItems = [
+            URLQueryItem(name: "key",   value: key),
+            URLQueryItem(name: "email", value: email),
+        ]
+        guard let url = comps.url else { throw URLError(.badURL) }
+        let (data, resp) = try await URLSession.shared.data(from: url)
+        guard let http = resp as? HTTPURLResponse, http.statusCode == 200 else {
+            let msg = (try? JSONDecoder().decode(ServerError.self, from: data))?.error
+                ?? "Server error"
+            throw NSError(domain: "Adia.License", code: 3,
+                          userInfo: [NSLocalizedDescriptionKey: msg])
+        }
+        let parsed = try JSONDecoder().decode(SeatsResponse.self, from: data)
+        let iso = ISO8601DateFormatter()
+        return parsed.seats.compactMap { row in
+            guard let first = iso.date(from: row.firstSeen),
+                  let last  = iso.date(from: row.lastSeen)
+            else { return nil }
+            return SeatInfo(machineHash: row.machineHash, firstSeen: first, lastSeen: last)
+        }
+    }
+
+    private func serverDeactivateMachine(key: String, email: String, machine: String) async throws {
+        let url = serverBaseURL.appendingPathComponent("api/license/deactivate")
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let body: [String: Any] = ["key": key, "email": email, "machine": machine]
+        req.httpBody = try JSONSerialization.data(withJSONObject: body)
+        let (data, resp) = try await URLSession.shared.data(for: req)
+        guard let http = resp as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
+            let msg = (try? JSONDecoder().decode(ServerError.self, from: data))?.error
+                ?? "Server error"
+            throw NSError(domain: "Adia.License", code: 4,
+                          userInfo: [NSLocalizedDescriptionKey: msg])
+        }
+    }
+
     // MARK: - Machine fingerprint (hashed)
+
+    /// Public accessor used by SeatInfo to identify the current machine.
+    public static func currentMachineFingerprint() -> String { machineFingerprint() }
 
     private static func machineFingerprint() -> String {
         let platformExpert = IOServiceGetMatchingService(

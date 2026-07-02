@@ -270,6 +270,10 @@ extension Session {
         "shopee.com",
         "tokopedia.com",
         "bukalapak.com",
+        // Southeast Asian food/lifestyle rabbit holes
+        "grab.com",
+        "shopback.com",
+        "carousell.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [
