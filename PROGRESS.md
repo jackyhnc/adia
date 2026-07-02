@@ -9216,3 +9216,42 @@ Possible follow-up areas:
 - Next.js 14.2.18 has known security vulnerabilities — consider upgrading to 15.x.
 - The admin dashboard grows one panel per new API route — consider adding a
   `TransferPanel` to expose `POST /api/license/transfer` from the UI.
+
+---
+
+## Run 230 — 2026-07-02
+
+### Shipped
+
+**1. Billing portal tests (`web/__tests__/portal.test.ts`)**
+
+The last API route without test coverage now has 8 tests:
+- `503` when Stripe is not configured (`isStripeConfigured = false`)
+- `400` for missing or malformed email
+- `404` when `stripe.customers.list` returns an empty array
+- `200` happy path — verifies the `url` field and checks that `customers.list` / `billingPortal.sessions.create` are called with correct args
+- Email normalisation to lowercase before Stripe lookup
+- `429` rate-limit after 10 requests from the same IP
+- Rate-limit IP isolation (different IP not blocked)
+
+**2. Admin dashboard: `DeactivateAllPanel` + `TransferPanel`**
+
+`web/app/admin/page.tsx` gains two new panels inserted between `ActivationsPanel` and `ResendPaymentFailedPanel`:
+
+- **DeactivateAllPanel** — calls `POST /api/admin/deactivate-all` with admin token. Confirms before firing, shows `removedCount` on success. Useful when a user has lost all their machines and can't deactivate individually.
+- **TransferPanel** — calls `POST /api/license/transfer` (user-facing auth: key + current email). Support agent collects credentials from the customer and performs the email transfer. Confirms before submitting.
+
+### Tests
+179 → 187 passing (16 test files). TypeScript clean (`tsc --noEmit` no errors).
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent
+All GOAL.md items complete. BUILD_COMPLETE present. Web tests at 187/187.
+Possible follow-up areas:
+- Next.js 14.2.18 has known security vulnerabilities — consider upgrading to 15.x
+  (breaking changes in App Router and middleware, requires careful migration).
+- Billing portal: the `/api/billing/portal` page itself (user-facing `/billing` page) could
+  use a UI form so end-users can reach the Stripe billing portal without calling the API directly.
+- CI: no GitHub Actions workflow for the web test suite — adding one would catch regressions on PRs.
