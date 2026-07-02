@@ -1,5 +1,69 @@
 # Adia — Build Progress
 
+## Run 239 — 2026-07-02T17:10:00Z — POST /api/admin/extend + ExtendPanel + 17 tests
+
+### Shipped
+
+**`web/app/api/admin/extend/route.ts` — new admin endpoint:**
+- `POST /api/admin/extend` — extends a license's `expiresAt` by N days.
+- Body: `{ key: string, days: number }` — both required.
+- `days` must be a positive integer in range 1–3650 (10 years max); 400 otherwise.
+- 401 on missing/wrong token; 404 on unknown key.
+- Base date logic: if current `expiresAt` is in the future, extends from there;
+  if null (lifetime) or in the past (expired), extends from `now`. This ensures
+  past-expired licenses always receive a future expiry date.
+- No status gate — admin can extend regardless of license status (active/canceled/expired).
+- Returns `{ ok, key, previousExpiresAt, newExpiresAt, days }`.
+
+**`web/lib/db.ts` — `setExpiry(key, expiresAt)`:**
+- SQLite: `UPDATE licenses SET expires_at = ? WHERE key = ?`
+- Complements existing `setExpiryBySub` (which targets stripe_sub, not key).
+
+**`web/lib/db-pg.ts` — `setExpiryPg(key, expiresAt)`:**
+- Postgres equivalent of `setExpiry`.
+
+**`web/lib/store.ts` — `setExpiry()` facade:**
+- Routes to `setExpiryPg` in Postgres mode, `sqlite.setExpiry` in SQLite mode.
+
+**`web/app/admin/page.tsx` — `ExtendPanel` component:**
+- Added after ReactivatePanel (natural pairing: reactivate ↔ extend).
+- Blue submit button (visually distinct from green Reactivate / red Revoke).
+- `days` input (number, min=1, max=3650, default=30).
+- Success card shows `previousExpiresAt` (strikethrough, "none (lifetime)" if null) → `newExpiresAt`.
+
+**`web/__tests__/admin-routes.test.ts` — 17 new tests:**
+- 401 no-token, 401 wrong-token.
+- 400 missing key, 400 missing days, 400 days=0, 400 days negative, 400 days fractional.
+- 400 days > 3650 (shows the limit in the error message).
+- 404 unknown key.
+- 200 happy path: license with future expiresAt — new expiry is futureDate + N days.
+- 200 past expiresAt — new expiry is now + N days (not pastDate + N days).
+- 200 null expiresAt (lifetime) — new expiry is now + N days.
+- DB persistence check: `findLicense` after the call confirms `expiresAt` stored.
+- Key uppercase normalization.
+- `?token=` query-param auth.
+- `days` field present in response body.
+- Canceled-license works (no status gate).
+
+### Tests
+240 passed (up from 223). 16 test files green. `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent
+All GOAL.md items complete + extend endpoint added. Good next areas:
+- `POST /api/admin/change-plan` — change a license's plan (e.g. monthly → lifetime as
+  support resolution); needs a `setPlan(key, plan)` in db.ts/db-pg.ts/store.ts +
+  route + ChangePlanPanel + tests. Completes the "support resolution" admin toolkit.
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated
+  singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`.
+  This prevents latent race-condition test failures in future Xcode builds.
+- Rate-limiting on admin endpoints: all admin routes are bearer-auth-gated so risk is low,
+  but a generous limit (e.g. 20/min per IP) would be consistent with user-facing endpoints.
+
+---
+
 ## Run 238 — 2026-07-02T16:20:00Z — rescued 50 orphaned commits + admin reactivate endpoint
 
 ### Shipped
