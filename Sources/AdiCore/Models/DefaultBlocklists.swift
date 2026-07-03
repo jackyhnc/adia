@@ -340,6 +340,7 @@ extension Session {
         // Remaining browser gaming portals
         "newgrounds.com",    // large flash/game/animation archive
         "gamejolt.com",      // indie game portal (separate from itch.io)
+        "itch.io",           // indie game hosting / storefront
         "lagged.com",        // browser games portal
         // Short video clip sharing (fragments of longer YouTube content)
         "streamable.com",

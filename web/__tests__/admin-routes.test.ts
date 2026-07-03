@@ -2457,4 +2457,191 @@ describe('POST /api/admin/bulk-reactivate', () => {
     const res = await POST(req);
     expect(res.status).toBe(200);
   });
+}); // end bulk-reactivate
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /api/admin/bulk-set-status
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe('POST /api/admin/bulk-set-status', () => {
+  async function callBulkSetStatus(body: unknown, token = 'test-admin-token') {
+    const { POST } = await import('@/app/api/admin/bulk-set-status/route');
+    const req = new NextRequest('http://localhost/api/admin/bulk-set-status', {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    });
+    return POST(req);
+  }
+
+  it('returns 401 with no token', async () => {
+    const res = await callBulkSetStatus({ keys: ['ADIA-BKSS-AUTH-AAAA'], status: 'canceled' }, '');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callBulkSetStatus({ keys: ['ADIA-BKSS-AUTH-BBBB'], status: 'canceled' }, 'wrong');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when keys is missing', async () => {
+    const res = await callBulkSetStatus({ status: 'canceled' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing or empty/);
+  });
+
+  it('returns 400 when keys is empty array', async () => {
+    const res = await callBulkSetStatus({ keys: [], status: 'canceled' });
+    expect(res.status).toBe(400);
+  });
+
+  it('returns 400 when more than 100 keys are provided', async () => {
+    const keys = Array.from({ length: 101 }, (_, i) => `ADIA-BKSS-MANY-${String(i).padStart(4, '0')}`);
+    const res = await callBulkSetStatus({ keys, status: 'canceled' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/100/);
+  });
+
+  it('returns 400 when status is invalid', async () => {
+    insertLicense({ key: 'ADIA-BKSS-INVS-AAAA', email: 'bkssInvs@example.com', plan: 'monthly', expiresAt: null });
+    const res = await callBulkSetStatus({ keys: ['ADIA-BKSS-INVS-AAAA'], status: 'banned' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/invalid status/);
+  });
+
+  it('returns 400 when status is missing', async () => {
+    insertLicense({ key: 'ADIA-BKSS-NSTS-AAAA', email: 'bkssNsts@example.com', plan: 'monthly', expiresAt: null });
+    const res = await callBulkSetStatus({ keys: ['ADIA-BKSS-NSTS-AAAA'] });
+    expect(res.status).toBe(400);
+  });
+
+  it('sets a single active license to canceled', async () => {
+    insertLicense({ key: 'ADIA-BKSS-SNGL-AAAA', email: 'bkssSingle@example.com', plan: 'monthly', expiresAt: null });
+    const res = await callBulkSetStatus({ keys: ['ADIA-BKSS-SNGL-AAAA'], status: 'canceled' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.changed).toHaveLength(1);
+    expect(body.changed[0].key).toBe('ADIA-BKSS-SNGL-AAAA');
+    expect(body.changed[0].previousStatus).toBe('active');
+    expect(body.skipped).toHaveLength(0);
+  });
+
+  it('sets a canceled license to expired', async () => {
+    insertLicense({ key: 'ADIA-BKSS-C2E-AAAA', email: 'bkssC2e@example.com', plan: 'monthly', expiresAt: null });
+    setStatus('ADIA-BKSS-C2E-AAAA', 'canceled');
+    const res = await callBulkSetStatus({ keys: ['ADIA-BKSS-C2E-AAAA'], status: 'expired' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed[0].previousStatus).toBe('canceled');
+  });
+
+  it('sets a batch of 3 licenses to past_due', async () => {
+    insertLicense({ key: 'ADIA-BKSS-BAT-AAAA', email: 'bkssA@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-BKSS-BAT-BBBB', email: 'bkssB@example.com', plan: 'yearly', expiresAt: null });
+    insertLicense({ key: 'ADIA-BKSS-BAT-CCCC', email: 'bkssC@example.com', plan: 'lifetime', expiresAt: null });
+    const res = await callBulkSetStatus({
+      keys: ['ADIA-BKSS-BAT-AAAA', 'ADIA-BKSS-BAT-BBBB', 'ADIA-BKSS-BAT-CCCC'],
+      status: 'past_due',
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(3);
+    expect(body.skipped).toHaveLength(0);
+  });
+
+  it('skips licenses already at the target status with reason already_set', async () => {
+    insertLicense({ key: 'ADIA-BKSS-ALRD-AAAA', email: 'bkssAlrd@example.com', plan: 'monthly', expiresAt: null });
+    const res = await callBulkSetStatus({ keys: ['ADIA-BKSS-ALRD-AAAA'], status: 'active' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(0);
+    expect(body.skipped).toHaveLength(1);
+    expect(body.skipped[0].reason).toBe('already_set');
+  });
+
+  it('skips unknown keys with reason not_found', async () => {
+    const res = await callBulkSetStatus({ keys: ['ADIA-BKSS-UNKN-ZZZZ'], status: 'canceled' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(0);
+    expect(body.skipped).toHaveLength(1);
+    expect(body.skipped[0].reason).toBe('not_found');
+  });
+
+  it('handles mixed batch: 1 changed, 1 already_set, 1 not_found', async () => {
+    insertLicense({ key: 'ADIA-BKSS-MIX-AAAA', email: 'bkssMixA@example.com', plan: 'monthly', expiresAt: null });
+    setStatus('ADIA-BKSS-MIX-AAAA', 'expired');
+    insertLicense({ key: 'ADIA-BKSS-MIX-BBBB', email: 'bkssMixB@example.com', plan: 'monthly', expiresAt: null });
+    const res = await callBulkSetStatus({
+      keys: ['ADIA-BKSS-MIX-AAAA', 'ADIA-BKSS-MIX-BBBB', 'ADIA-BKSS-UNKN-MXZZ'],
+      status: 'active',
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(1);
+    expect(body.changed[0].key).toBe('ADIA-BKSS-MIX-AAAA');
+    expect(body.skipped).toHaveLength(2);
+    const reasons = body.skipped.map((s: { reason: string }) => s.reason);
+    expect(reasons).toContain('already_set');
+    expect(reasons).toContain('not_found');
+  });
+
+  it('normalizes keys to uppercase', async () => {
+    insertLicense({ key: 'ADIA-BKSS-CASE-AAAA', email: 'bkssCase@example.com', plan: 'monthly', expiresAt: null });
+    setStatus('ADIA-BKSS-CASE-AAAA', 'canceled');
+    const res = await callBulkSetStatus({ keys: ['adia-bkss-case-aaaa'], status: 'active' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(1);
+    expect(body.changed[0].key).toBe('ADIA-BKSS-CASE-AAAA');
+  });
+
+  it('persists the new status to the database', async () => {
+    insertLicense({ key: 'ADIA-BKSS-PRST-AAAA', email: 'bkssPrst@example.com', plan: 'monthly', expiresAt: null });
+    await callBulkSetStatus({ keys: ['ADIA-BKSS-PRST-AAAA'], status: 'expired' });
+    const { findLicense: fl } = await import('@/lib/db');
+    const license = fl('ADIA-BKSS-PRST-AAAA');
+    expect(license?.status).toBe('expired');
+  });
+
+  it('writes an audit log entry with bulk:true for each changed key', async () => {
+    insertLicense({ key: 'ADIA-BKSS-AUDT-AAAA', email: 'bkssAudt@example.com', plan: 'monthly', expiresAt: null });
+    await callBulkSetStatus({ keys: ['ADIA-BKSS-AUDT-AAAA'], status: 'past_due' });
+    const { listAuditLog } = await import('@/lib/db');
+    const logs = listAuditLog({ licenseKey: 'ADIA-BKSS-AUDT-AAAA' });
+    const setLog = logs.find((l) => l.action === 'set_status');
+    expect(setLog).toBeDefined();
+    const detail = JSON.parse(setLog!.detail ?? '{}');
+    expect(detail.bulk).toBe(true);
+    expect(detail.previousStatus).toBe('active');
+    expect(detail.newStatus).toBe('past_due');
+  });
+
+  it('does not write an audit log for skipped keys', async () => {
+    insertLicense({ key: 'ADIA-BKSS-NSKP-AAAA', email: 'bkssNskp@example.com', plan: 'monthly', expiresAt: null });
+    await callBulkSetStatus({ keys: ['ADIA-BKSS-NSKP-AAAA'], status: 'active' });
+    const { listAuditLog } = await import('@/lib/db');
+    const logs = listAuditLog({ licenseKey: 'ADIA-BKSS-NSKP-AAAA' });
+    expect(logs.find((l) => l.action === 'set_status')).toBeUndefined();
+  });
+
+  it('accepts ?token= query param auth', async () => {
+    insertLicense({ key: 'ADIA-BKSS-TOKN-AAAA', email: 'bkssTokn@example.com', plan: 'monthly', expiresAt: null });
+    setStatus('ADIA-BKSS-TOKN-AAAA', 'canceled');
+    const { POST } = await import('@/app/api/admin/bulk-set-status/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/bulk-set-status?token=test-admin-token',
+      {
+        method: 'POST',
+        body: JSON.stringify({ keys: ['ADIA-BKSS-TOKN-AAAA'], status: 'active' }),
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+  });
 });

@@ -7,7 +7,7 @@ export default function Admin() {
   const [autoLookupKey, setAutoLookupKey] = useState('');
 
   return (
-    <section className="pt-12 pb-20 max-w-xl space-y-10">
+    <section className="pt-12 pb-20 max-w-xl space-y-4">
       <div>
         <h1 className="text-3xl font-semibold tracking-tight">Admin dashboard</h1>
         <p className="mt-2 text-sm text-ink/60">
@@ -26,27 +26,72 @@ export default function Admin() {
         />
       </div>
 
-      <StatsPanel token={token} />
-      <IssuePanel token={token} />
-      <ResendLicensePanel token={token} />
-      <ChangeEmailPanel token={token} />
-      <LicensesByEmailPanel token={token} onSelectKey={setAutoLookupKey} />
-      <SearchLicensesPanel token={token} onSelectKey={setAutoLookupKey} />
-      <LookupPanel token={token} autoKey={autoLookupKey} onAutoKeyConsumed={() => setAutoLookupKey('')} />
-      <NotePanel token={token} />
-      <AuditPanel token={token} />
-      <ActivationsPanel token={token} />
-      <DeactivateAllPanel token={token} />
-      <TransferPanel />
-      <ResendPaymentFailedPanel token={token} />
-      <RevokePanel token={token} />
-      <ReactivatePanel token={token} />
-      <ExtendPanel token={token} />
-      <ChangePlanPanel token={token} />
-      <BulkChangePlanPanel token={token} />
-      <BulkRevokePanel token={token} />
-      <BulkReactivatePanel token={token} />
-      <SetExpiryPanel token={token} />
+      <CollapsibleSection title="License overview" defaultOpen>
+        <StatsPanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Issue comp license">
+        <IssuePanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Resend license email">
+        <ResendLicensePanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Change license email">
+        <ChangeEmailPanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Licenses by email">
+        <LicensesByEmailPanel token={token} onSelectKey={setAutoLookupKey} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Search licenses">
+        <SearchLicensesPanel token={token} onSelectKey={setAutoLookupKey} />
+      </CollapsibleSection>
+      <CollapsibleSection title="License lookup">
+        <LookupPanel token={token} autoKey={autoLookupKey} onAutoKeyConsumed={() => setAutoLookupKey('')} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Admin note">
+        <NotePanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Admin audit log">
+        <AuditPanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Machine activations">
+        <ActivationsPanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Deactivate all machines">
+        <DeactivateAllPanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Transfer license">
+        <TransferPanel />
+      </CollapsibleSection>
+      <CollapsibleSection title="Resend payment-failed email">
+        <ResendPaymentFailedPanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Revoke license">
+        <RevokePanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Reactivate license">
+        <ReactivatePanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Extend license expiry">
+        <ExtendPanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Change license plan">
+        <ChangePlanPanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Bulk change plan">
+        <BulkChangePlanPanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Bulk revoke">
+        <BulkRevokePanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Bulk reactivate">
+        <BulkReactivatePanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Bulk set status">
+        <BulkSetStatusPanel token={token} />
+      </CollapsibleSection>
+      <CollapsibleSection title="Set expiry date">
+        <SetExpiryPanel token={token} />
+      </CollapsibleSection>
     </section>
   );
 }
@@ -91,8 +136,7 @@ function StatsPanel({ token }: { token: string }) {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-semibold">License overview</h2>
+      <div className="flex justify-end mb-3">
         <button onClick={load} disabled={loading} className="btn-primary text-xs px-3 py-1">
           {loading ? 'Loading…' : 'Refresh'}
         </button>
@@ -188,7 +232,7 @@ function IssuePanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Issue comp license</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Manually generate a license key for a user — no Stripe required. Use for speaker comps,
         beta testers, team members, or support resolutions.
@@ -289,7 +333,7 @@ function ResendLicensePanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Resend license email</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Re-send the license welcome email to a customer who lost their key. Provide a key{' '}
         <em>or</em> an email address. If only an email is given, the most recently issued active
@@ -372,7 +416,7 @@ function ChangeEmailPanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Change license email (admin)</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Update the email address on a license without requiring the customer&apos;s old email for
         auth. Use when a customer changed their primary email and can no longer use the self-service
@@ -545,7 +589,7 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Search licenses</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Full-text search across license key, email, and note — results appear as you type. Click a key to auto-fill the lookup panel below.
       </p>
@@ -728,7 +772,7 @@ function LookupPanel({
 
   return (
     <div ref={panelRef}>
-      <h2 className="text-lg font-semibold mb-3">License lookup</h2>
+
       <form onSubmit={lookup} className="card space-y-3">
         <Field label="License key">
           <input
@@ -891,7 +935,7 @@ function NotePanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Admin note</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Attach a freeform note to any license — speaker comp reason, support resolution context, etc.
         Notes are visible only to admins. Clear by saving an empty field.
@@ -995,7 +1039,7 @@ function AuditPanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Admin audit log</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         All admin actions on licenses — issue, revoke, change_plan, extend, reactivate, set_note,
         change_email, resend_license, deactivate_all, resend_payment_failed. Most recent first. Filter by license key to
@@ -1145,7 +1189,7 @@ function ActivationsPanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Machine activations</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         List activated machines for a license, and free seats by deactivating old machines.
       </p>
@@ -1248,7 +1292,7 @@ function RevokePanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Revoke license</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Sets license status to <code className="font-mono">canceled</code>. The next time the app
         validates, it will be rejected. Use for refunds or abuse cases.
@@ -1310,7 +1354,7 @@ function ReactivatePanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Reactivate license</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Sets a canceled, expired, or past-due license back to{' '}
         <code className="font-mono">active</code>. Use for wrongly revoked licenses or
@@ -1394,7 +1438,7 @@ function ExtendPanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Extend license expiry</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Adds N days to a license's <code className="font-mono">expiresAt</code>. If the license has
         no expiry (lifetime) or is already expired, extends from today. Max 3650 days (10 years).
@@ -1491,7 +1535,7 @@ function ChangePlanPanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Change license plan</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Switch a license between <code className="font-mono">monthly</code>,{' '}
         <code className="font-mono">yearly</code>, and{' '}
@@ -1598,7 +1642,7 @@ function BulkChangePlanPanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Bulk change plan</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Change the plan for multiple license keys in one operation — for example, upgrading a cohort
         of users as compensation after a service outage. Paste keys one per line or comma-separated.
@@ -1723,7 +1767,7 @@ function BulkRevokePanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Bulk revoke</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Cancel multiple license keys in one operation — for example, disabling a cohort of keys
         from a stolen credit card or cleaning up fraudulent accounts. Paste keys one per line or
@@ -1837,7 +1881,7 @@ function BulkReactivatePanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Bulk reactivate</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Restore multiple license keys to active in one operation — for example, fixing a batch of
         wrongly revoked accounts or reinstating a cohort whose payment issues were resolved manually.
@@ -1943,7 +1987,7 @@ function SetExpiryPanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Set expiry date</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Set an absolute <code className="font-mono">expiresAt</code> on a license. Complements
         &ldquo;Extend&rdquo; (relative days): use this when you need a specific renewal date, want
@@ -2154,7 +2198,7 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Licenses by email</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Find all license keys associated with an email address. Click a row to see recent audit entries inline;
         click a key to open the full lookup panel.
@@ -2362,7 +2406,7 @@ function ResendPaymentFailedPanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Resend payment-failed email</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Manually trigger the payment-failed email for a license key. By default only sends if the
         license is <code className="font-mono">past_due</code>; check <em>force</em> to override
@@ -2444,7 +2488,7 @@ function DeactivateAllPanel({ token }: { token: string }) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Deactivate all machines</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Wipes every machine activation for a license in one shot. Use when a customer has lost
         access to all their machines and can&apos;t deactivate them individually.
@@ -2524,7 +2568,7 @@ function TransferPanel() {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-3">Transfer license</h2>
+
       <p className="text-sm text-ink/60 mb-3">
         Move a license to a different email address. Requires the current key + email for auth
         (collect from the customer). Use for email changes or account consolidation.
@@ -2579,7 +2623,151 @@ function TransferPanel() {
   );
 }
 
+// ─── Bulk set status ──────────────────────────────────────────────────────────
+
+type BulkSetStatusResult = {
+  ok: boolean;
+  changed: { key: string; previousStatus: string }[];
+  skipped: { key: string; reason: string }[];
+};
+
+function BulkSetStatusPanel({ token }: { token: string }) {
+  const [keys, setKeys] = useState('');
+  const [status, setStatus] = useState<'active' | 'canceled' | 'expired' | 'past_due'>('canceled');
+  const [result, setResult] = useState<BulkSetStatusResult | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const parsedKeys = keys.split(/[\n,]+/).map((k) => k.trim()).filter(Boolean);
+    if (!parsedKeys.length) { setError('Enter at least one key.'); return; }
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/bulk-set-status', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keys: parsedKeys, status }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(body);
+        setKeys('');
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Set any status on multiple licenses in one request. Replaces the need for separate
+        bulk-revoke / bulk-reactivate when targeting other statuses.
+      </p>
+      <form onSubmit={submit} className="card space-y-3">
+        <Field label="License keys (one per line or comma-separated)">
+          <textarea
+            value={keys}
+            onChange={(e) => setKeys(e.target.value)}
+            rows={4}
+            placeholder={'ADIA-XXXX-XXXX-XXXX\nADIA-YYYY-YYYY-YYYY'}
+            className="input font-mono w-full"
+            required
+          />
+        </Field>
+        <Field label="Target status">
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value as typeof status)}
+            className="input"
+          >
+            <option value="active">active</option>
+            <option value="canceled">canceled</option>
+            <option value="expired">expired</option>
+            <option value="past_due">past_due</option>
+          </select>
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Setting…' : 'Set status'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+      {result && (
+        <div className="card mt-3 space-y-2 border border-green-500/30 bg-green-50/5">
+          <p className="text-sm font-semibold text-green-600">
+            {result.changed.length} set to &ldquo;{status}&rdquo;
+            {result.skipped.length > 0 && `, ${result.skipped.length} skipped`}
+          </p>
+          {result.changed.length > 0 && (
+            <ul className="text-xs space-y-1">
+              {result.changed.map(({ key, previousStatus }) => (
+                <li key={key} className="font-mono">
+                  {key}{' '}
+                  <span className="text-ink/50 line-through">{previousStatus}</span>
+                  {' → '}
+                  <span className="text-green-600">{status}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {result.skipped.length > 0 && (
+            <ul className="text-xs space-y-1">
+              {result.skipped.map(({ key, reason }) => (
+                <li key={key} className="font-mono text-ink/50">
+                  {key} — <span className="italic">{reason}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Shared ────────────────────────────────────────────────────────────────────
+
+function CollapsibleSection({
+  title,
+  defaultOpen = false,
+  children,
+}: {
+  title: string;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="border border-ink/10 rounded-xl overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-ink/5 transition-colors"
+      >
+        <span className="font-semibold text-sm">{title}</span>
+        <svg
+          className={`w-4 h-4 text-ink/40 transition-transform ${open ? 'rotate-180' : ''}`}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+      {open && <div className="px-5 pb-5 pt-3 border-t border-ink/10">{children}</div>}
+    </div>
+  );
+}
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
