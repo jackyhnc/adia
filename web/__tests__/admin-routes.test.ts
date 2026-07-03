@@ -14,7 +14,7 @@ import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
 import { NextRequest } from 'next/server';
-import { resetDbForTesting, insertLicense, recordActivation, findLicense, insertAuditLog } from '@/lib/db';
+import { resetDbForTesting, insertLicense, recordActivation, findLicense, insertAuditLog, setIssuedAt, setStatus } from '@/lib/db';
 
 vi.mock('@/lib/email', () => ({
   sendLicenseEmail: vi.fn().mockResolvedValue(undefined),
@@ -687,6 +687,150 @@ describe('GET /api/admin/licenses-by-email', () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.licenses).toHaveLength(1);
+  });
+
+  // ── ?since= filter ────────────────────────────────────────────────────────
+
+  it('returns 400 for invalid ?since= format', async () => {
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=x%40x.com&since=not-a-date',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/since/i);
+  });
+
+  it('since=far-past returns all licenses', async () => {
+    insertLicense({ key: 'ADIA-SNC-OLD-AAAA', email: 'snc@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-SNC-NEW-BBBB', email: 'snc@example.com', plan: 'yearly', expiresAt: null });
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=snc%40example.com&since=2000-01-01',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.count).toBe(2);
+    expect(body.since).toBe('2000-01-01');
+  });
+
+  it('since=far-future returns zero licenses', async () => {
+    insertLicense({ key: 'ADIA-SNC-ZRO-AAAA', email: 'snczero@example.com', plan: 'monthly', expiresAt: null });
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=snczero%40example.com&since=2099-01-01',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.count).toBe(0);
+    expect(body.licenses).toHaveLength(0);
+  });
+
+  it('since filter excludes licenses issued before the cutoff date', async () => {
+    insertLicense({ key: 'ADIA-SNC-PRE-AAAA', email: 'snccut@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-SNC-PST-BBBB', email: 'snccut@example.com', plan: 'yearly', expiresAt: null });
+    setIssuedAt('ADIA-SNC-PRE-AAAA', '2022-06-01T00:00:00.000Z');
+    setIssuedAt('ADIA-SNC-PST-BBBB', '2024-01-15T00:00:00.000Z');
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=snccut%40example.com&since=2023-01-01',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.count).toBe(1);
+    expect(body.licenses[0].key).toBe('ADIA-SNC-PST-BBBB');
+  });
+
+  // ── ?status= filter ───────────────────────────────────────────────────────
+
+  it('returns 400 for unknown ?status= value', async () => {
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=x%40x.com&status=bogus',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/status/i);
+  });
+
+  it('status=active returns only active licenses', async () => {
+    insertLicense({ key: 'ADIA-STS-ACT-AAAA', email: 'sts@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-STS-CAN-BBBB', email: 'sts@example.com', plan: 'yearly', expiresAt: null });
+    setStatus('ADIA-STS-CAN-BBBB', 'canceled');
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=sts%40example.com&status=active',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.count).toBe(1);
+    expect(body.licenses[0].key).toBe('ADIA-STS-ACT-AAAA');
+    expect(body.status).toBe('active');
+  });
+
+  it('status=canceled returns only canceled licenses', async () => {
+    insertLicense({ key: 'ADIA-STS-CA2-AAAA', email: 'stsc@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-STS-CA3-BBBB', email: 'stsc@example.com', plan: 'yearly', expiresAt: null });
+    setStatus('ADIA-STS-CA2-AAAA', 'canceled');
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=stsc%40example.com&status=canceled',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.count).toBe(1);
+    expect(body.licenses[0].key).toBe('ADIA-STS-CA2-AAAA');
+  });
+
+  it('status filter returns empty list when no licenses match', async () => {
+    insertLicense({ key: 'ADIA-STS-EMP-AAAA', email: 'stse@example.com', plan: 'monthly', expiresAt: null });
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=stse%40example.com&status=expired',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.count).toBe(0);
+    expect(body.licenses).toHaveLength(0);
+  });
+
+  // ── combined since + status ───────────────────────────────────────────────
+
+  it('since and status filters can be combined', async () => {
+    insertLicense({ key: 'ADIA-CMB-OLD-AAAA', email: 'cmb@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-CMB-NEW-BBBB', email: 'cmb@example.com', plan: 'yearly', expiresAt: null });
+    insertLicense({ key: 'ADIA-CMB-CAN-CCCC', email: 'cmb@example.com', plan: 'lifetime', expiresAt: null });
+    setIssuedAt('ADIA-CMB-OLD-AAAA', '2021-01-01T00:00:00.000Z');
+    setIssuedAt('ADIA-CMB-NEW-BBBB', '2024-06-01T00:00:00.000Z');
+    setIssuedAt('ADIA-CMB-CAN-CCCC', '2024-09-01T00:00:00.000Z');
+    setStatus('ADIA-CMB-CAN-CCCC', 'canceled');
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    // since=2023-01-01 + status=active → should match only BBBB (new, active)
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=cmb%40example.com&since=2023-01-01&status=active',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.count).toBe(1);
+    expect(body.licenses[0].key).toBe('ADIA-CMB-NEW-BBBB');
   });
 });
 

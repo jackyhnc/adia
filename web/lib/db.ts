@@ -171,16 +171,26 @@ export function countActivations(key: string): number {
   return row.c;
 }
 
-export function countLicensesByEmail(email: string): number {
-  const row = db()
-    .prepare('SELECT COUNT(*) AS c FROM licenses WHERE email = ?')
-    .get(email.trim().toLowerCase()) as { c: number };
+export function countLicensesByEmail(email: string, since?: string, status?: string): number {
+  const norm = email.trim().toLowerCase();
+  const conditions: string[] = ['l.email = ?'];
+  const params: unknown[] = [norm];
+  if (since) { conditions.push('l.issued_at >= ?'); params.push(since); }
+  if (status) { conditions.push('l.status = ?'); params.push(status); }
+  const row = (db()
+    .prepare(`SELECT COUNT(*) AS c FROM licenses l WHERE ${conditions.join(' AND ')}`)
+    .get as (...a: unknown[]) => { c: number })(...params);
   return row.c;
 }
 
-export function findLicensesByEmail(email: string, limit?: number, offset?: number): License[] {
+export function findLicensesByEmail(email: string, limit?: number, offset?: number, since?: string, status?: string): License[] {
+  const norm = email.trim().toLowerCase();
+  const conditions: string[] = ['l.email = ?'];
+  const params: unknown[] = [norm];
+  if (since) { conditions.push('l.issued_at >= ?'); params.push(since); }
+  if (status) { conditions.push('l.status = ?'); params.push(status); }
   const pagination = limit != null ? ` LIMIT ${limit} OFFSET ${offset ?? 0}` : '';
-  const rows = db()
+  const rows = (db()
     .prepare(`
       SELECT l.*,
              COUNT(a.machine_hash) AS machine_count_live,
@@ -188,11 +198,11 @@ export function findLicensesByEmail(email: string, limit?: number, offset?: numb
              (SELECT created_at FROM audit_log WHERE license_key = l.key ORDER BY id DESC LIMIT 1) AS last_action_at
       FROM licenses l
       LEFT JOIN activations a ON a.license_key = l.key
-      WHERE l.email = ?
+      WHERE ${conditions.join(' AND ')}
       GROUP BY l.key
       ORDER BY l.issued_at DESC, l.rowid DESC${pagination}
     `)
-    .all(email.trim().toLowerCase()) as any[];
+    .all as (...a: unknown[]) => any[])(...params);
   return rows.map(r => ({
     key: r.key,
     email: r.email,
@@ -292,6 +302,10 @@ export type LicenseStats = {
 
 export function setNote(key: string, note: string | null): void {
   db().prepare('UPDATE licenses SET note = ? WHERE key = ?').run(note, key.trim().toUpperCase());
+}
+
+export function setIssuedAt(key: string, issuedAt: string): void {
+  db().prepare('UPDATE licenses SET issued_at = ? WHERE key = ?').run(issuedAt, key.trim().toUpperCase());
 }
 
 export function getNote(key: string): string | null {

@@ -1,9 +1,11 @@
 // Admin: list all licenses issued to an email address.
 // Auth: ADMIN_TOKEN bearer header. Never expose without it.
 //
-// ?limit=N     — page size (default 20, max 100). Ignored for CSV export.
-// ?offset=N    — skip first N records (default 0). Ignored for CSV export.
-// ?format=csv  — returns a CSV file download instead of JSON (all records, no pagination).
+// ?limit=N          — page size (default 20, max 100). Ignored for CSV export.
+// ?offset=N         — skip first N records (default 0). Ignored for CSV export.
+// ?since=YYYY-MM-DD — only licenses issued on or after this date.
+// ?status=active|canceled|expired|past_due — only licenses with this status.
+// ?format=csv       — returns a CSV file download instead of JSON (all records, no pagination).
 //   Columns: key, plan, status, machineCount, issuedAt, expiresAt, note, lastAction, lastActionAt
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -11,6 +13,8 @@ import { findLicensesByEmail, countLicensesByEmail } from '@/lib/store';
 
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
+const VALID_STATUSES = new Set(['active', 'canceled', 'expired', 'past_due']);
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -40,11 +44,24 @@ export async function GET(req: NextRequest) {
   }
   const email = req.nextUrl.searchParams.get('email');
   if (!email) return NextResponse.json({ error: 'missing ?email=' }, { status: 400 });
+
+  const rawSince = req.nextUrl.searchParams.get('since');
+  if (rawSince !== null && !DATE_RE.test(rawSince)) {
+    return NextResponse.json({ error: 'invalid ?since= — expected YYYY-MM-DD' }, { status: 400 });
+  }
+  const since = rawSince ?? undefined;
+
+  const rawStatus = req.nextUrl.searchParams.get('status');
+  if (rawStatus !== null && !VALID_STATUSES.has(rawStatus)) {
+    return NextResponse.json({ error: `invalid ?status= — must be one of: ${[...VALID_STATUSES].join(', ')}` }, { status: 400 });
+  }
+  const statusFilter = rawStatus ?? undefined;
+
   const format = req.nextUrl.searchParams.get('format');
 
   if (format === 'csv') {
-    // CSV exports all records — no pagination
-    const licenses = await findLicensesByEmail(email);
+    // CSV exports all records — no pagination but respects filters
+    const licenses = await findLicensesByEmail(email, undefined, undefined, since, statusFilter);
     const normalized = email.trim().toLowerCase();
     const rows = licenses.map(l =>
       [
@@ -76,8 +93,8 @@ export async function GET(req: NextRequest) {
   const offset = Number.isFinite(rawOffset) && rawOffset >= 0 ? rawOffset : 0;
 
   const [total, licenses] = await Promise.all([
-    countLicensesByEmail(email),
-    findLicensesByEmail(email, limit, offset),
+    countLicensesByEmail(email, since, statusFilter),
+    findLicensesByEmail(email, limit, offset, since, statusFilter),
   ]);
 
   return NextResponse.json({
@@ -86,5 +103,7 @@ export async function GET(req: NextRequest) {
     licenses,
     hasMore: offset + licenses.length < total,
     offset,
+    ...(since ? { since } : {}),
+    ...(statusFilter ? { status: statusFilter } : {}),
   });
 }

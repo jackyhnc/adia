@@ -1516,8 +1516,12 @@ type LicenseRow = {
 
 const EMAIL_PAGE_SIZE = 20;
 
+const STATUS_OPTIONS = ['', 'active', 'canceled', 'expired', 'past_due'] as const;
+
 function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectKey: (key: string) => void }) {
   const [email, setEmail] = useState('');
+  const [since, setSince] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [result, setResult] = useState<{
     email: string;
     count: number;
@@ -1541,6 +1545,8 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
     setAuditMap({});
     try {
       const params = new URLSearchParams({ email, limit: String(EMAIL_PAGE_SIZE), offset: '0' });
+      if (since) params.set('since', since);
+      if (statusFilter) params.set('status', statusFilter);
       const res = await fetch(`/api/admin/licenses-by-email?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -1567,6 +1573,8 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
         limit: String(EMAIL_PAGE_SIZE),
         offset: String(nextOffset),
       });
+      if (since) params.set('since', since);
+      if (statusFilter) params.set('status', statusFilter);
       const res = await fetch(`/api/admin/licenses-by-email?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -1617,6 +1625,8 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
   function exportCsv() {
     if (!result) return;
     const params = new URLSearchParams({ email: result.email, format: 'csv' });
+    if (since) params.set('since', since);
+    if (statusFilter) params.set('status', statusFilter);
     const url = `/api/admin/licenses-by-email?${params}&token=${encodeURIComponent(token)}`;
     const a = document.createElement('a');
     a.href = url;
@@ -1642,6 +1652,27 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
             required
           />
         </Field>
+        <div className="flex gap-3">
+          <Field label="Issued since">
+            <input
+              type="date"
+              value={since}
+              onChange={(e) => setSince(e.target.value)}
+              className="input"
+            />
+          </Field>
+          <Field label="Status">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="input"
+            >
+              {STATUS_OPTIONS.map(s => (
+                <option key={s} value={s}>{s === '' ? 'Any' : s}</option>
+              ))}
+            </select>
+          </Field>
+        </div>
         <button type="submit" className="btn-primary" disabled={loading}>
           {loading ? 'Searching…' : 'Find licenses'}
         </button>
