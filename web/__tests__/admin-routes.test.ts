@@ -98,6 +98,15 @@ async function callLicensesByEmail(email: string, token = 'test-admin-token') {
   return GET(req);
 }
 
+async function callLicensesByEmailCsv(email: string, token = 'test-admin-token') {
+  const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+  const req = new NextRequest(
+    `http://localhost/api/admin/licenses-by-email?email=${encodeURIComponent(email)}&format=csv`,
+    { method: 'GET', headers: authHeader(token) },
+  );
+  return GET(req);
+}
+
 // ─── /api/admin/activations GET ──────────────────────────────────────────────
 
 describe('GET /api/admin/activations', () => {
@@ -475,6 +484,103 @@ describe('GET /api/admin/licenses-by-email', () => {
     const b = body.licenses.find((l: any) => l.key === 'ADIA-BYEM-LBB-BBBB');
     expect(a.lastAction).toBe('revoke');
     expect(b.lastAction).toBeNull();
+  });
+
+  // ── CSV export ────────────────────────────────────────────────────────────
+
+  it('format=csv returns 401 without a token', async () => {
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=x@x.com&format=csv',
+      { method: 'GET' },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('format=csv returns 400 when email param is missing', async () => {
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?format=csv',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(400);
+  });
+
+  it('format=csv responds with text/csv content-type', async () => {
+    insertLicense({ key: 'ADIA-CSV-CT1-AAAA', email: 'csvct@example.com', plan: 'monthly', expiresAt: null });
+    const res = await callLicensesByEmailCsv('csvct@example.com');
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type')).toContain('text/csv');
+  });
+
+  it('format=csv includes a Content-Disposition attachment header', async () => {
+    insertLicense({ key: 'ADIA-CSV-CD1-AAAA', email: 'csvcd@example.com', plan: 'monthly', expiresAt: null });
+    const res = await callLicensesByEmailCsv('csvcd@example.com');
+    const cd = res.headers.get('content-disposition') ?? '';
+    expect(cd).toContain('attachment');
+    expect(cd).toContain('csvcd@example.com');
+    expect(cd).toContain('.csv');
+  });
+
+  it('format=csv body starts with the expected header row', async () => {
+    insertLicense({ key: 'ADIA-CSV-HD1-AAAA', email: 'csvhd@example.com', plan: 'yearly', expiresAt: null });
+    const res = await callLicensesByEmailCsv('csvhd@example.com');
+    const text = await res.text();
+    const firstLine = text.split('\r\n')[0];
+    expect(firstLine).toBe('key,plan,status,machineCount,issuedAt,expiresAt,note,lastAction,lastActionAt');
+  });
+
+  it('format=csv includes one data row per license', async () => {
+    insertLicense({ key: 'ADIA-CSV-R1A-AAAA', email: 'csvrows@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-CSV-R1B-BBBB', email: 'csvrows@example.com', plan: 'yearly', expiresAt: null });
+    const res = await callLicensesByEmailCsv('csvrows@example.com');
+    const text = await res.text();
+    const lines = text.split('\r\n').filter(Boolean);
+    expect(lines).toHaveLength(3);
+    expect(lines.some(l => l.includes('ADIA-CSV-R1A-AAAA'))).toBe(true);
+    expect(lines.some(l => l.includes('ADIA-CSV-R1B-BBBB'))).toBe(true);
+  });
+
+  it('format=csv data row contains correct key, plan, and status fields', async () => {
+    insertLicense({ key: 'ADIA-CSV-F1A-AAAA', email: 'csvfields@example.com', plan: 'lifetime', expiresAt: null });
+    const res = await callLicensesByEmailCsv('csvfields@example.com');
+    const text = await res.text();
+    const dataRow = text.split('\r\n')[1];
+    expect(dataRow).toContain('ADIA-CSV-F1A-AAAA');
+    expect(dataRow).toContain('lifetime');
+    expect(dataRow).toContain('active');
+  });
+
+  it('format=csv returns header-only body for unknown email', async () => {
+    const res = await callLicensesByEmailCsv('nobody-csv@example.com');
+    expect(res.status).toBe(200);
+    const text = await res.text();
+    const lines = text.split('\r\n').filter(Boolean);
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toBe('key,plan,status,machineCount,issuedAt,expiresAt,note,lastAction,lastActionAt');
+  });
+
+  it('format=csv cells with commas are quoted per RFC 4180', async () => {
+    insertLicense({ key: 'ADIA-CSV-QU1-AAAA', email: 'csvquote@example.com', plan: 'monthly', expiresAt: null });
+    const { setNote } = await import('@/lib/db');
+    setNote('ADIA-CSV-QU1-AAAA', 'a note, with comma');
+    const res = await callLicensesByEmailCsv('csvquote@example.com');
+    const text = await res.text();
+    expect(text).toContain('"a note, with comma"');
+  });
+
+  it('format=csv ?token= query-param auth works', async () => {
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    insertLicense({ key: 'ADIA-CSV-TK1-AAAA', email: 'csvtk@example.com', plan: 'monthly', expiresAt: null });
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=csvtk%40example.com&format=csv&token=test-admin-token',
+      { method: 'GET' },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type')).toContain('text/csv');
   });
 });
 

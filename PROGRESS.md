@@ -1,5 +1,51 @@
 # Adia — Build Progress
 
+## Run 249 — 2026-07-03T08:15:00Z — CSV export for licenses-by-email + machineCount on License type
+
+### Shipped
+
+**`GET /api/admin/licenses-by-email?format=csv` — CSV export:**
+- `web/app/api/admin/licenses-by-email/route.ts`: added `?format=csv` support.
+  - Returns `Content-Type: text/csv; charset=utf-8` + `Content-Disposition: attachment; filename=licenses-{email}-{date}.csv`.
+  - Columns: `key,plan,status,machineCount,issuedAt,expiresAt,note,lastAction,lastActionAt`.
+  - RFC 4180 compliant: cells containing commas, quotes, or newlines are double-quoted.
+  - Empty result set returns header-only CSV (no rows).
+  - Auth and email-validation still apply for the CSV path (same 401/400 guards).
+
+**`web/app/admin/page.tsx` — `LicensesByEmailPanel` Export CSV button:**
+- Shows an "Export CSV" link-button next to the result count header when `count > 0`.
+- Uses `?token=` query-param auth so the download is a direct browser navigation (no XHR needed).
+- Client-side `<a>` click initiates the download with a pre-filled filename matching the server filename.
+
+**`web/app/admin/page.tsx` — `License` type: added `machineCount?: number`:**
+- Was missing from the shared `License` type used by `SearchLicensesPanel`, causing a latent TypeScript error.
+
+**Tests (10 new):**
+- `web/__tests__/admin-routes.test.ts`: `callLicensesByEmailCsv` helper added.
+- `format=csv returns 401 without a token` — auth guard still applied.
+- `format=csv returns 400 when email param is missing` — validation still applied.
+- `format=csv responds with text/csv content-type`.
+- `format=csv includes a Content-Disposition attachment header` (filename contains email + .csv).
+- `format=csv body starts with the expected header row`.
+- `format=csv includes one data row per license`.
+- `format=csv data row contains correct key, plan, and status fields`.
+- `format=csv returns header-only body for unknown email`.
+- `format=csv cells with commas are quoted per RFC 4180`.
+- `format=csv ?token= query-param auth works`.
+
+**Web test count: 344 → 354 (19 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider debounce/live-search (on-change) for `SearchLicensesPanel` instead of form submit (auto-fire with 300ms debounce after typing stops).
+- Consider pagination for `LicensesByEmailPanel` (currently returns all licenses for an email with no cap).
+- Consider adding a `?format=csv` export to `search-licenses` endpoint (mirrors the pattern just added to `licenses-by-email`).
+- Consider adding a "Recent audit" inline expand to `LicensesByEmailPanel` rows (clicking a row could show last 3 audit entries inline before opening LookupPanel).
+
+---
+
 ## Run 248 — 2026-07-03T07:15:00Z — search-licenses pagination + LicensesByEmailPanel lastAction column
 
 ### Shipped

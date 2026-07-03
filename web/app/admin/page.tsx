@@ -430,6 +430,7 @@ type License = {
   issuedAt: string | null;
   expiresAt: string | null;
   note?: string | null;
+  machineCount?: number;
 };
 
 // ─── License search ───────────────────────────────────────────────────────────
@@ -1493,6 +1494,16 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
     }
   }
 
+  function exportCsv() {
+    if (!result) return;
+    const params = new URLSearchParams({ email: result.email, format: 'csv' });
+    const url = `/api/admin/licenses-by-email?${params}&token=${encodeURIComponent(token)}`;
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `licenses-${result.email}-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+  }
+
   return (
     <div>
       <h2 className="text-lg font-semibold mb-3">Licenses by email</h2>
@@ -1520,11 +1531,21 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
 
       {result && (
         <div className="card mt-3 space-y-3">
-          <p className="text-sm text-ink/60">
-            {result.count === 0
-              ? `No licenses found for ${result.email}.`
-              : `${result.count} license${result.count === 1 ? '' : 's'} for ${result.email}`}
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-ink/60">
+              {result.count === 0
+                ? `No licenses found for ${result.email}.`
+                : `${result.count} license${result.count === 1 ? '' : 's'} for ${result.email}`}
+            </p>
+            {result.count > 0 && (
+              <button
+                onClick={exportCsv}
+                className="text-xs text-sky-600 hover:underline"
+              >
+                Export CSV
+              </button>
+            )}
+          </div>
           {result.licenses.length > 0 && (
             <table className="w-full text-xs font-mono">
               <thead>
