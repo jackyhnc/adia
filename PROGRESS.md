@@ -1,5 +1,46 @@
 # Adia — Build Progress
 
+## Run 251 — 2026-07-03T14:10:00Z — Live search debounce + inline audit expand
+
+### Shipped
+
+**`web/app/admin/page.tsx` — `SearchLicensesPanel`: debounce live-search**
+- Replaced form-submit search with 300ms debounce on input change using `useEffect`.
+- Results update automatically as the user types — no need to press Search.
+- Uses `AbortController` to cancel stale in-flight fetches when query changes rapidly.
+- Empty query clears results immediately; no request fired for blank input.
+- Token-not-set case: live search silently waits until token is filled; no error surfaced on keystroke.
+- Inline spinner `…` in the input right-edge while fetching.
+- `loadMore` retains its own fetch (no abort controller) so pagination doesn't race with live search.
+- Updated description text to say "results appear as you type".
+- Added `Fragment` to React import (was `useRef`-only); replaced two `React.Fragment` keyed JSX uses.
+
+**`web/app/admin/page.tsx` — `LicensesByEmailPanel`: inline audit expand**
+- Added `expandedKey`, `auditMap`, `auditLoading` states.
+- Row click now toggles inline expand (second click collapses); `▲`/`▼` chevron in key cell indicates state.
+- Key button click (separate from row click, `stopPropagation`) still calls `onSelectKey` for full lookup.
+- On first expand, fetches `GET /api/admin/lookup?key=...` and caches up to 3 recent audit entries in `auditMap`.
+- Expanded row spans all 8 columns, shows:
+  - Loading spinner while fetching.
+  - "No audit entries." if empty.
+  - List of up to 3 entries: `YYYY-MM-DD HH:MM  action  detail (truncated)`.
+  - "→ Open in lookup panel" button (also calls `onSelectKey`).
+- Cached per-key — re-expanding the same row does not re-fetch.
+- Reset on new email lookup (`setExpandedKey(null); setAuditMap({})`).
+
+**`tsc --noEmit` clean. 365/365 tests pass (no new tests — behavior is pure frontend state).**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add rate-limiting to `POST /api/admin/resend-license` (currently unthrottled; all other user-facing license endpoints have rate limits — admin routes are bearer-auth-gated so risk is low, but adding a generous limit e.g. 20/min per IP would be consistent).
+- Add `findLicensesByEmail` to Postgres backend (`db-pg.ts`) — currently the SQLite impl is called even in Postgres mode because the store.ts facade imports it via SQLite; `findLicensesByEmail` is SQLite-only (used by admin routes). Add `findLicensesByEmailPg` to `db-pg.ts` and wire it through `store.ts` for production correctness.
+- Add a `POST /api/admin/change-email` endpoint (admin-only, no old-email auth required) — useful when a customer changed their email and can no longer authenticate with the old one to use the self-service `/api/license/transfer` route.
+- Pagination for `LicensesByEmailPanel` (currently returns all licenses for an email with no cap) — add `?limit=` + `?offset=` params to `GET /api/admin/licenses-by-email` and a "Load more" button in the panel.
+
+---
+
 ## Run 250 — 2026-07-03T09:10:00Z — CSV export for search-licenses endpoint
 
 ### Shipped

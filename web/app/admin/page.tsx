@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 
 export default function Admin() {
   const [token, setToken] = useState('');
@@ -443,39 +443,56 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const searchAbortRef = useRef<AbortController | null>(null);
   const PAGE_SIZE = 20;
 
-  async function fetchPage(query: string, offset: number, append: boolean) {
-    const params = new URLSearchParams({ q: query.trim(), limit: String(PAGE_SIZE), offset: String(offset) });
-    const res = await fetch(`/api/admin/search-licenses?${params}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      throw new Error(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
-    }
-    const body = await res.json();
-    setTotal(body.total);
-    setHasMore(body.hasMore);
-    setResults(prev => append && prev ? [...prev, ...body.results] : body.results);
-  }
-
-  async function search(e: React.FormEvent) {
-    e.preventDefault();
-    if (!token) { setError('Paste admin token above first.'); return; }
+  async function runSearch(query: string) {
+    searchAbortRef.current?.abort();
+    searchAbortRef.current = new AbortController();
+    const { signal } = searchAbortRef.current;
     setLoading(true);
     setError('');
     setResults(null);
     setHasMore(false);
     setTotal(0);
     try {
-      await fetchPage(q, 0, false);
+      const params = new URLSearchParams({ q: query, limit: String(PAGE_SIZE), offset: '0' });
+      const res = await fetch(`/api/admin/search-licenses?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        signal,
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      }
+      const body = await res.json();
+      setTotal(body.total);
+      setHasMore(body.hasMore);
+      setResults(body.results);
     } catch (err: any) {
-      setError(err.message);
+      if (err.name !== 'AbortError') setError(err.message);
     } finally {
-      setLoading(false);
+      if (!signal.aborted) setLoading(false);
     }
   }
+
+  useEffect(() => {
+    const trimmed = q.trim();
+    if (!trimmed) {
+      setResults(null);
+      setTotal(0);
+      setHasMore(false);
+      setError('');
+      searchAbortRef.current?.abort();
+      return;
+    }
+    if (!token) return;
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => { runSearch(trimmed); }, 300);
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q, token]);
 
   function exportCsv() {
     const safeQ = q.trim().replace(/[^a-zA-Z0-9@._-]/g, '_').slice(0, 40);
@@ -492,7 +509,18 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
     if (!results) return;
     setLoadingMore(true);
     try {
-      await fetchPage(q, results.length, true);
+      const params = new URLSearchParams({ q: q.trim(), limit: String(PAGE_SIZE), offset: String(results.length) });
+      const res = await fetch(`/api/admin/search-licenses?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      }
+      const body = await res.json();
+      setTotal(body.total);
+      setHasMore(body.hasMore);
+      setResults(prev => prev ? [...prev, ...body.results] : body.results);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -504,22 +532,23 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
     <div>
       <h2 className="text-lg font-semibold mb-3">Search licenses</h2>
       <p className="text-sm text-ink/60 mb-3">
-        Full-text search across license key, email, and note. Click a key to auto-fill the lookup panel below.
+        Full-text search across license key, email, and note — results appear as you type. Click a key to auto-fill the lookup panel below.
       </p>
-      <form onSubmit={search} className="card space-y-3">
+      <div className="card space-y-3">
         <Field label="Search query (key, email, or note fragment)">
-          <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="jane@example.com or ADIA-1234 or enterprise"
-            className="input"
-            required
-          />
+          <div className="relative">
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="jane@example.com or ADIA-1234 or enterprise"
+              className="input pr-8"
+            />
+            {loading && (
+              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-ink/40 select-none">…</span>
+            )}
+          </div>
         </Field>
-        <button type="submit" className="btn-primary" disabled={loading}>
-          {loading ? 'Searching…' : 'Search'}
-        </button>
-      </form>
+      </div>
       {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
       {results !== null && (
         <div className="card mt-3">
@@ -1490,12 +1519,17 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
   const [result, setResult] = useState<{ email: string; count: number; licenses: LicenseRow[] } | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [expandedKey, setExpandedKey] = useState<string | null>(null);
+  const [auditMap, setAuditMap] = useState<Record<string, AuditEntry[]>>({});
+  const [auditLoading, setAuditLoading] = useState<Record<string, boolean>>({});
 
   async function lookup(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setResult(null);
     setError('');
+    setExpandedKey(null);
+    setAuditMap({});
     try {
       const res = await fetch(`/api/admin/licenses-by-email?email=${encodeURIComponent(email)}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -1513,6 +1547,31 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
     }
   }
 
+  async function toggleExpand(key: string) {
+    if (expandedKey === key) {
+      setExpandedKey(null);
+      return;
+    }
+    setExpandedKey(key);
+    if (auditMap[key] !== undefined) return;
+    setAuditLoading(prev => ({ ...prev, [key]: true }));
+    try {
+      const res = await fetch(`/api/admin/lookup?key=${encodeURIComponent(key)}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const body = await res.json();
+        setAuditMap(prev => ({ ...prev, [key]: (body.recentAudit ?? []).slice(0, 3) }));
+      } else {
+        setAuditMap(prev => ({ ...prev, [key]: [] }));
+      }
+    } catch {
+      setAuditMap(prev => ({ ...prev, [key]: [] }));
+    } finally {
+      setAuditLoading(prev => ({ ...prev, [key]: false }));
+    }
+  }
+
   function exportCsv() {
     if (!result) return;
     const params = new URLSearchParams({ email: result.email, format: 'csv' });
@@ -1527,8 +1586,8 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
     <div>
       <h2 className="text-lg font-semibold mb-3">Licenses by email</h2>
       <p className="text-sm text-ink/60 mb-3">
-        Find all license keys associated with an email address. Useful for support — returns every
-        license ever issued to that address, regardless of status.
+        Find all license keys associated with an email address. Click a row to see recent audit entries inline;
+        click a key to open the full lookup panel.
       </p>
       <form onSubmit={lookup} className="card space-y-3">
         <Field label="Customer email">
@@ -1581,26 +1640,68 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
               </thead>
               <tbody>
                 {result.licenses.map((lic) => (
-                  <tr
-                    key={lic.key}
-                    className="border-t border-ink/10 cursor-pointer hover:bg-ink/5"
-                    onClick={() => onSelectKey(lic.key)}
-                  >
-                    <td className="py-1 pr-3 text-sky-600 hover:underline">{lic.key}</td>
-                    <td className="py-1 pr-3 text-ink/70">{lic.plan}</td>
-                    <td className={`py-1 pr-3 ${lic.status === 'active' ? 'text-green-600' : 'text-red-500'}`}>
-                      {lic.status}
-                    </td>
-                    <td className="py-1 pr-3 tabular-nums text-ink/60">{lic.machineCount ?? 0}/3</td>
-                    <td className="py-1 pr-3 text-ink/50">{lic.issuedAt.slice(0, 10)}</td>
-                    <td className="py-1 pr-3 text-ink/50">{lic.expiresAt ? lic.expiresAt.slice(0, 10) : '—'}</td>
-                    <td className="py-1 pr-3 text-ink/50 truncate max-w-[10rem]" title={lic.lastAction ?? undefined}>
-                      {lic.lastAction
-                        ? <><span>{lic.lastAction}</span>{lic.lastActionAt && <span className="ml-1 text-ink/30">({lic.lastActionAt.slice(0, 10)})</span>}</>
-                        : '—'}
-                    </td>
-                    <td className="py-1 text-ink/50 italic">{lic.note ?? '—'}</td>
-                  </tr>
+                  <Fragment key={lic.key}>
+                    <tr
+                      className="border-t border-ink/10 cursor-pointer hover:bg-ink/5"
+                      onClick={() => toggleExpand(lic.key)}
+                    >
+                      <td className="py-1 pr-3">
+                        <button
+                          className="text-sky-600 hover:underline text-left"
+                          onClick={(e) => { e.stopPropagation(); onSelectKey(lic.key); }}
+                        >
+                          {lic.key}
+                        </button>
+                        <span className="ml-1 text-ink/25 select-none">
+                          {expandedKey === lic.key ? '▲' : '▼'}
+                        </span>
+                      </td>
+                      <td className="py-1 pr-3 text-ink/70">{lic.plan}</td>
+                      <td className={`py-1 pr-3 ${lic.status === 'active' ? 'text-green-600' : 'text-red-500'}`}>
+                        {lic.status}
+                      </td>
+                      <td className="py-1 pr-3 tabular-nums text-ink/60">{lic.machineCount ?? 0}/3</td>
+                      <td className="py-1 pr-3 text-ink/50">{lic.issuedAt.slice(0, 10)}</td>
+                      <td className="py-1 pr-3 text-ink/50">{lic.expiresAt ? lic.expiresAt.slice(0, 10) : '—'}</td>
+                      <td className="py-1 pr-3 text-ink/50 truncate max-w-[10rem]" title={lic.lastAction ?? undefined}>
+                        {lic.lastAction
+                          ? <><span>{lic.lastAction}</span>{lic.lastActionAt && <span className="ml-1 text-ink/30">({lic.lastActionAt.slice(0, 10)})</span>}</>
+                          : '—'}
+                      </td>
+                      <td className="py-1 text-ink/50 italic">{lic.note ?? '—'}</td>
+                    </tr>
+                    {expandedKey === lic.key && (
+                      <tr className="bg-ink/[0.02]">
+                        <td colSpan={8} className="pt-1 pb-3 px-3">
+                          {auditLoading[lic.key] ? (
+                            <p className="text-xs text-ink/40">Loading audit…</p>
+                          ) : (auditMap[lic.key]?.length ?? 0) === 0 ? (
+                            <p className="text-xs text-ink/40">No audit entries.</p>
+                          ) : (
+                            <div className="space-y-1 mb-2">
+                              {auditMap[lic.key].map(entry => (
+                                <div key={entry.id} className="text-xs text-ink/60 flex gap-3">
+                                  <span className="text-ink/30 shrink-0">
+                                    {entry.createdAt.slice(0, 16).replace('T', ' ')}
+                                  </span>
+                                  <span className="text-ink/80">{entry.action}</span>
+                                  {entry.detail && (
+                                    <span className="text-ink/40 truncate">{entry.detail}</span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          <button
+                            className="text-xs text-sky-600 hover:underline mt-1"
+                            onClick={(e) => { e.stopPropagation(); onSelectKey(lic.key); }}
+                          >
+                            → Open in lookup panel
+                          </button>
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
                 ))}
               </tbody>
             </table>
