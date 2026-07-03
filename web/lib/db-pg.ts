@@ -117,21 +117,48 @@ export async function findLicensePg(key: string, email?: string): Promise<Licens
   };
 }
 
-export async function findLicensesByEmailPg(email: string): Promise<License[]> {
+export async function countLicensesByEmailPg(email: string): Promise<number> {
   await ensureSchema();
-  const result = await sql<any>`
-    SELECT l.key, l.email, l.plan, l.status, l.note,
-           to_char(l.issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
-           to_char(l.expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt",
-           COUNT(a.machine_hash)::int AS "machineCount",
-           (SELECT action FROM audit_log WHERE license_key = l.key ORDER BY id DESC LIMIT 1) AS "lastAction",
-           to_char((SELECT created_at FROM audit_log WHERE license_key = l.key ORDER BY id DESC LIMIT 1), 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "lastActionAt"
-    FROM licenses l
-    LEFT JOIN activations a ON a.license_key = l.key
-    WHERE l.email = ${email.trim().toLowerCase()}
-    GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at
-    ORDER BY l.issued_at DESC
+  const result = await sql<{ c: number }>`
+    SELECT COUNT(*)::int AS c FROM licenses WHERE email = ${email.trim().toLowerCase()}
   `;
+  return result.rows[0]?.c ?? 0;
+}
+
+export async function findLicensesByEmailPg(email: string, limit?: number, offset?: number): Promise<License[]> {
+  await ensureSchema();
+  const norm = email.trim().toLowerCase();
+  const pgOffset = offset ?? 0;
+
+  const result = limit != null
+    ? await sql<any>`
+        SELECT l.key, l.email, l.plan, l.status, l.note,
+               to_char(l.issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
+               to_char(l.expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt",
+               COUNT(a.machine_hash)::int AS "machineCount",
+               (SELECT action FROM audit_log WHERE license_key = l.key ORDER BY id DESC LIMIT 1) AS "lastAction",
+               to_char((SELECT created_at FROM audit_log WHERE license_key = l.key ORDER BY id DESC LIMIT 1), 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "lastActionAt"
+        FROM licenses l
+        LEFT JOIN activations a ON a.license_key = l.key
+        WHERE l.email = ${norm}
+        GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at
+        ORDER BY l.issued_at DESC
+        LIMIT ${limit} OFFSET ${pgOffset}
+      `
+    : await sql<any>`
+        SELECT l.key, l.email, l.plan, l.status, l.note,
+               to_char(l.issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
+               to_char(l.expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt",
+               COUNT(a.machine_hash)::int AS "machineCount",
+               (SELECT action FROM audit_log WHERE license_key = l.key ORDER BY id DESC LIMIT 1) AS "lastAction",
+               to_char((SELECT created_at FROM audit_log WHERE license_key = l.key ORDER BY id DESC LIMIT 1), 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "lastActionAt"
+        FROM licenses l
+        LEFT JOIN activations a ON a.license_key = l.key
+        WHERE l.email = ${norm}
+        GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at
+        ORDER BY l.issued_at DESC
+      `;
+
   return result.rows.map((r: any) => ({
     key: r.key,
     email: r.email,

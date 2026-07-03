@@ -582,6 +582,112 @@ describe('GET /api/admin/licenses-by-email', () => {
     expect(res.status).toBe(200);
     expect(res.headers.get('content-type')).toContain('text/csv');
   });
+
+  // ── Pagination ───────────────────────────────────────────────────────────
+
+  it('returns hasMore=false and offset=0 when all results fit on one page', async () => {
+    insertLicense({ key: 'ADIA-PG1-ONE-AAAA', email: 'pg1@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-PG1-TWO-BBBB', email: 'pg1@example.com', plan: 'yearly', expiresAt: null });
+    const res = await callLicensesByEmail('pg1@example.com');
+    const body = await res.json();
+    expect(body.hasMore).toBe(false);
+    expect(body.offset).toBe(0);
+    expect(body.licenses).toHaveLength(2);
+  });
+
+  it('count reflects total records even when limit caps the page', async () => {
+    for (let i = 0; i < 5; i++) {
+      insertLicense({ key: `ADIA-PG2-K${i}${i}${i}-AAAA`, email: 'pg2@example.com', plan: 'monthly', expiresAt: null });
+    }
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=pg2%40example.com&limit=2&offset=0',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    const body = await res.json();
+    expect(body.count).toBe(5);
+    expect(body.licenses).toHaveLength(2);
+    expect(body.hasMore).toBe(true);
+    expect(body.offset).toBe(0);
+  });
+
+  it('limit=2 returns the first two records ordered newest-first', async () => {
+    for (let i = 0; i < 4; i++) {
+      insertLicense({ key: `ADIA-PG3-K${i}${i}${i}-AAAA`, email: 'pg3@example.com', plan: 'monthly', expiresAt: null });
+    }
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=pg3%40example.com&limit=2&offset=0',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    const body = await res.json();
+    // Newest-first: rowid 3, then 2 (0-indexed inserts)
+    expect(body.licenses[0].key).toBe('ADIA-PG3-K333-AAAA');
+    expect(body.licenses[1].key).toBe('ADIA-PG3-K222-AAAA');
+  });
+
+  it('offset skips earlier records and returns the next page', async () => {
+    for (let i = 0; i < 4; i++) {
+      insertLicense({ key: `ADIA-PG4-K${i}${i}${i}-AAAA`, email: 'pg4@example.com', plan: 'monthly', expiresAt: null });
+    }
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=pg4%40example.com&limit=2&offset=2',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    const body = await res.json();
+    expect(body.count).toBe(4);
+    expect(body.licenses).toHaveLength(2);
+    expect(body.hasMore).toBe(false);
+    expect(body.licenses[0].key).toBe('ADIA-PG4-K111-AAAA');
+    expect(body.licenses[1].key).toBe('ADIA-PG4-K000-AAAA');
+  });
+
+  it('hasMore is true when there are more records beyond the current page', async () => {
+    for (let i = 0; i < 3; i++) {
+      insertLicense({ key: `ADIA-PG5-K${i}${i}${i}-AAAA`, email: 'pg5@example.com', plan: 'monthly', expiresAt: null });
+    }
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=pg5%40example.com&limit=2&offset=0',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    const body = await res.json();
+    expect(body.hasMore).toBe(true);
+    expect(body.licenses).toHaveLength(2);
+  });
+
+  it('limit exceeding MAX_LIMIT (100) is capped to 100', async () => {
+    insertLicense({ key: 'ADIA-PG6-CAP-AAAA', email: 'pg6@example.com', plan: 'monthly', expiresAt: null });
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=pg6%40example.com&limit=999',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    // Only 1 record — important check is the server didn't crash with limit=999
+    expect(body.licenses).toHaveLength(1);
+    expect(body.hasMore).toBe(false);
+  });
+
+  it('invalid limit falls back to default (20) and returns successfully', async () => {
+    insertLicense({ key: 'ADIA-PG7-INV-AAAA', email: 'pg7@example.com', plan: 'monthly', expiresAt: null });
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=pg7%40example.com&limit=abc',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.licenses).toHaveLength(1);
+  });
 });
 
 // ─── POST /api/admin/resend-payment-failed ─────────────────────────────────

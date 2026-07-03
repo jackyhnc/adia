@@ -1514,11 +1514,20 @@ type LicenseRow = {
   lastActionAt?: string | null;
 };
 
+const EMAIL_PAGE_SIZE = 20;
+
 function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectKey: (key: string) => void }) {
   const [email, setEmail] = useState('');
-  const [result, setResult] = useState<{ email: string; count: number; licenses: LicenseRow[] } | null>(null);
+  const [result, setResult] = useState<{
+    email: string;
+    count: number;
+    licenses: LicenseRow[];
+    hasMore: boolean;
+    offset: number;
+  } | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
   const [auditMap, setAuditMap] = useState<Record<string, AuditEntry[]>>({});
   const [auditLoading, setAuditLoading] = useState<Record<string, boolean>>({});
@@ -1531,7 +1540,8 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
     setExpandedKey(null);
     setAuditMap({});
     try {
-      const res = await fetch(`/api/admin/licenses-by-email?email=${encodeURIComponent(email)}`, {
+      const params = new URLSearchParams({ email, limit: String(EMAIL_PAGE_SIZE), offset: '0' });
+      const res = await fetch(`/api/admin/licenses-by-email?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) {
@@ -1544,6 +1554,38 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
       setError(`Error: ${err.message}`);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function loadMore() {
+    if (!result || loadingMore) return;
+    const nextOffset = result.offset + result.licenses.length;
+    setLoadingMore(true);
+    try {
+      const params = new URLSearchParams({
+        email: result.email,
+        limit: String(EMAIL_PAGE_SIZE),
+        offset: String(nextOffset),
+      });
+      const res = await fetch(`/api/admin/licenses-by-email?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const body = await res.json();
+        setResult(prev => prev
+          ? {
+              ...prev,
+              licenses: [...prev.licenses, ...body.licenses],
+              hasMore: body.hasMore,
+              offset: body.offset,
+            }
+          : body,
+        );
+      }
+    } catch {
+      // ignore — button stays available for retry
+    } finally {
+      setLoadingMore(false);
     }
   }
 
@@ -1613,7 +1655,7 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
             <p className="text-sm text-ink/60">
               {result.count === 0
                 ? `No licenses found for ${result.email}.`
-                : `${result.count} license${result.count === 1 ? '' : 's'} for ${result.email}`}
+                : `Showing ${result.licenses.length} of ${result.count} license${result.count === 1 ? '' : 's'} for ${result.email}`}
             </p>
             {result.count > 0 && (
               <button
@@ -1705,6 +1747,17 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
                 ))}
               </tbody>
             </table>
+          )}
+          {result.hasMore && (
+            <div className="flex justify-center pt-1">
+              <button
+                className="text-xs text-sky-600 hover:underline disabled:opacity-40"
+                onClick={loadMore}
+                disabled={loadingMore}
+              >
+                {loadingMore ? 'Loading…' : 'Load more'}
+              </button>
+            </div>
           )}
         </div>
       )}

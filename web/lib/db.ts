@@ -171,7 +171,15 @@ export function countActivations(key: string): number {
   return row.c;
 }
 
-export function findLicensesByEmail(email: string): License[] {
+export function countLicensesByEmail(email: string): number {
+  const row = db()
+    .prepare('SELECT COUNT(*) AS c FROM licenses WHERE email = ?')
+    .get(email.trim().toLowerCase()) as { c: number };
+  return row.c;
+}
+
+export function findLicensesByEmail(email: string, limit?: number, offset?: number): License[] {
+  const pagination = limit != null ? ` LIMIT ${limit} OFFSET ${offset ?? 0}` : '';
   const rows = db()
     .prepare(`
       SELECT l.*,
@@ -182,7 +190,7 @@ export function findLicensesByEmail(email: string): License[] {
       LEFT JOIN activations a ON a.license_key = l.key
       WHERE l.email = ?
       GROUP BY l.key
-      ORDER BY l.issued_at DESC, l.rowid DESC
+      ORDER BY l.issued_at DESC, l.rowid DESC${pagination}
     `)
     .all(email.trim().toLowerCase()) as any[];
   return rows.map(r => ({

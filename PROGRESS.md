@@ -1,5 +1,60 @@
 # Adia — Build Progress
 
+## Run 252 — 2026-07-03T15:12:00Z — Pagination for LicensesByEmailPanel
+
+### Shipped
+
+**`web/lib/db.ts` — `countLicensesByEmail` + optional pagination on `findLicensesByEmail`:**
+- Added `countLicensesByEmail(email: string): number` — `SELECT COUNT(*) FROM licenses WHERE email = ?`.
+- Added optional `limit?: number` and `offset?: number` params to `findLicensesByEmail`; when set, appends `LIMIT N OFFSET M` to the query.
+- No limit/offset → returns all records (CSV export path unchanged).
+
+**`web/lib/db-pg.ts` — Postgres equivalents:**
+- Added `countLicensesByEmailPg(email: string): Promise<number>`.
+- Updated `findLicensesByEmailPg` with optional `limit/offset`; uses two separate `sql` template queries (with/without LIMIT) since `@vercel/postgres` tagged templates don't support fragment composition.
+
+**`web/lib/store.ts` — facade:**
+- Added `countLicensesByEmail` facade routing to SQLite or Postgres.
+- Updated `findLicensesByEmail` to plumb `limit` and `offset` through to both backends.
+
+**`web/app/api/admin/licenses-by-email/route.ts` — pagination params:**
+- Parses `?limit=` (default 20, capped at 100) and `?offset=` (default 0).
+- CSV path unchanged: still calls `findLicensesByEmail(email)` with no limit (exports all records).
+- JSON path: calls `countLicensesByEmail` and `findLicensesByEmail(email, limit, offset)` in parallel.
+- Returns `{ email, count: total, licenses, hasMore, offset }` — `count` is now the total record count, `hasMore` indicates if more pages exist, `offset` echoes the current page start.
+- Existing `count` field semantics preserved (tests that checked `body.count === N` still pass since page size 20 > all test record counts).
+
+**`web/app/admin/page.tsx` — `LicensesByEmailPanel` load-more:**
+- Added `EMAIL_PAGE_SIZE = 20` constant.
+- Extended `result` state type to include `hasMore` and `offset`.
+- `lookup()` now fetches with `limit=20&offset=0`.
+- New `loadMore()` function fetches the next page and appends `body.licenses` to the existing list; updates `hasMore` and `offset`.
+- Added `loadingMore` state; "Load more" button disabled while fetching, text switches to "Loading…".
+- Header text updated to "Showing N of M licenses" (vs. previous "N licenses").
+- "Load more" button appears only when `result.hasMore === true`.
+
+**Tests (7 new, 365 → 372):**
+- `hasMore=false and offset=0 when all results fit on one page` — 2 records, no limit set.
+- `count reflects total records even when limit caps the page` — 5 records, limit=2: count=5, licenses.length=2, hasMore=true.
+- `limit=2 returns the first two records ordered newest-first` — 4 records, verifies key ordering.
+- `offset skips earlier records and returns the next page` — 4 records, offset=2: gets rows 3+4, hasMore=false.
+- `hasMore is true when there are more records beyond the current page` — 3 records, limit=2.
+- `limit exceeding MAX_LIMIT (100) is capped to 100` — limit=999, server succeeds without crash.
+- `invalid limit falls back to default (20) and returns successfully` — limit=abc, 200 OK.
+
+**Web test count: 365 → 372 (19 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add rate-limiting to `POST /api/admin/resend-license` (currently unthrottled; all other user-facing license endpoints have rate limits — admin routes are bearer-auth-gated so risk is low, but adding a generous limit e.g. 20/min per IP would be consistent).
+- Add `@MainActor` to remaining test suites if Swift strict-concurrency warnings appear in a real Xcode build.
+- Add a `?since=YYYY-MM-DD` filter to `GET /api/admin/licenses-by-email` (useful for admins who need "all licenses issued to this email after a specific date").
+- Consider adding `?status=active|canceled|...` filter to licenses-by-email for quick active-only views.
+
+---
+
 ## Run 251 — 2026-07-03T14:10:00Z — Live search debounce + inline audit expand
 
 ### Shipped
