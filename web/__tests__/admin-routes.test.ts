@@ -416,6 +416,36 @@ describe('GET /api/admin/licenses-by-email', () => {
     expect(body.count).toBe(1);
     expect(body.licenses[0].key).toBe('ADIA-BYEM-USER-AAAA');
   });
+
+  it('machineCount is 0 when no activations', async () => {
+    insertLicense({ key: 'ADIA-BYEM-MC0-AAAA', email: 'mc0@example.com', plan: 'monthly', expiresAt: null });
+    const res = await callLicensesByEmail('mc0@example.com');
+    const body = await res.json();
+    expect(body.licenses[0].machineCount).toBe(0);
+  });
+
+  it('machineCount equals number of distinct activated machines', async () => {
+    insertLicense({ key: 'ADIA-BYEM-MC2-AAAA', email: 'mc2@example.com', plan: 'monthly', expiresAt: null });
+    recordActivation('ADIA-BYEM-MC2-AAAA', 'hash-m1');
+    recordActivation('ADIA-BYEM-MC2-AAAA', 'hash-m2');
+    const res = await callLicensesByEmail('mc2@example.com');
+    const body = await res.json();
+    expect(body.licenses[0].machineCount).toBe(2);
+  });
+
+  it('machineCount does not bleed across licenses for same email', async () => {
+    insertLicense({ key: 'ADIA-BYEM-BLA-AAAA', email: 'bleed@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-BYEM-BLB-BBBB', email: 'bleed@example.com', plan: 'yearly', expiresAt: null });
+    recordActivation('ADIA-BYEM-BLA-AAAA', 'hash-bleed-1');
+    recordActivation('ADIA-BYEM-BLA-AAAA', 'hash-bleed-2');
+    recordActivation('ADIA-BYEM-BLA-AAAA', 'hash-bleed-3');
+    const res = await callLicensesByEmail('bleed@example.com');
+    const body = await res.json();
+    const a = body.licenses.find((l: any) => l.key === 'ADIA-BYEM-BLA-AAAA');
+    const b = body.licenses.find((l: any) => l.key === 'ADIA-BYEM-BLB-BBBB');
+    expect(a.machineCount).toBe(3);
+    expect(b.machineCount).toBe(0);
+  });
 });
 
 // ─── POST /api/admin/resend-payment-failed ─────────────────────────────────

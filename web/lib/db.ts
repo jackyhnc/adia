@@ -171,7 +171,14 @@ export function countActivations(key: string): number {
 
 export function findLicensesByEmail(email: string): License[] {
   const rows = db()
-    .prepare('SELECT * FROM licenses WHERE email = ? ORDER BY issued_at DESC, rowid DESC')
+    .prepare(`
+      SELECT l.*, COUNT(a.machine_hash) AS machine_count_live
+      FROM licenses l
+      LEFT JOIN activations a ON a.license_key = l.key
+      WHERE l.email = ?
+      GROUP BY l.key
+      ORDER BY l.issued_at DESC, l.rowid DESC
+    `)
     .all(email.trim().toLowerCase()) as any[];
   return rows.map(r => ({
     key: r.key,
@@ -181,6 +188,7 @@ export function findLicensesByEmail(email: string): License[] {
     issuedAt: r.issued_at,
     expiresAt: r.expires_at,
     note: r.note ?? null,
+    machineCount: r.machine_count_live as number,
   }));
 }
 

@@ -30,7 +30,7 @@ export default function Admin() {
       <IssuePanel token={token} />
       <ResendLicensePanel token={token} />
       <ChangeEmailPanel token={token} />
-      <LicensesByEmailPanel token={token} />
+      <LicensesByEmailPanel token={token} onSelectKey={setAutoLookupKey} />
       <SearchLicensesPanel token={token} onSelectKey={setAutoLookupKey} />
       <LookupPanel token={token} autoKey={autoLookupKey} onAutoKeyConsumed={() => setAutoLookupKey('')} />
       <NotePanel token={token} />
@@ -1430,7 +1430,7 @@ type LicenseRow = {
   note?: string | null;
 };
 
-function LicensesByEmailPanel({ token }: { token: string }) {
+function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectKey: (key: string) => void }) {
   const [email, setEmail] = useState('');
   const [result, setResult] = useState<{ email: string; count: number; licenses: LicenseRow[] } | null>(null);
   const [error, setError] = useState('');
@@ -1497,6 +1497,7 @@ function LicensesByEmailPanel({ token }: { token: string }) {
                   <th className="pb-1 pr-3">Key</th>
                   <th className="pb-1 pr-3">Plan</th>
                   <th className="pb-1 pr-3">Status</th>
+                  <th className="pb-1 pr-3">Seats</th>
                   <th className="pb-1 pr-3">Issued</th>
                   <th className="pb-1 pr-3">Expires</th>
                   <th className="pb-1">Note</th>
@@ -1504,12 +1505,17 @@ function LicensesByEmailPanel({ token }: { token: string }) {
               </thead>
               <tbody>
                 {result.licenses.map((lic) => (
-                  <tr key={lic.key} className="border-t border-ink/10">
-                    <td className="py-1 pr-3 select-all">{lic.key}</td>
+                  <tr
+                    key={lic.key}
+                    className="border-t border-ink/10 cursor-pointer hover:bg-ink/5"
+                    onClick={() => onSelectKey(lic.key)}
+                  >
+                    <td className="py-1 pr-3 text-sky-600 hover:underline">{lic.key}</td>
                     <td className="py-1 pr-3 text-ink/70">{lic.plan}</td>
                     <td className={`py-1 pr-3 ${lic.status === 'active' ? 'text-green-600' : 'text-red-500'}`}>
                       {lic.status}
                     </td>
+                    <td className="py-1 pr-3 tabular-nums text-ink/60">{lic.machineCount ?? 0}/3</td>
                     <td className="py-1 pr-3 text-ink/50">{lic.issuedAt.slice(0, 10)}</td>
                     <td className="py-1 pr-3 text-ink/50">{lic.expiresAt ? lic.expiresAt.slice(0, 10) : '—'}</td>
                     <td className="py-1 text-ink/50 italic">{lic.note ?? '—'}</td>

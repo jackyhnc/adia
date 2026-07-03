@@ -120,12 +120,15 @@ export async function findLicensePg(key: string, email?: string): Promise<Licens
 export async function findLicensesByEmailPg(email: string): Promise<License[]> {
   await ensureSchema();
   const result = await sql<any>`
-    SELECT key, email, plan, status, note,
-           to_char(issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
-           to_char(expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt"
-    FROM licenses
-    WHERE email = ${email.trim().toLowerCase()}
-    ORDER BY issued_at DESC
+    SELECT l.key, l.email, l.plan, l.status, l.note,
+           to_char(l.issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
+           to_char(l.expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt",
+           COUNT(a.machine_hash)::int AS "machineCount"
+    FROM licenses l
+    LEFT JOIN activations a ON a.license_key = l.key
+    WHERE l.email = ${email.trim().toLowerCase()}
+    GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at
+    ORDER BY l.issued_at DESC
   `;
   return result.rows.map((r: any) => ({
     key: r.key,
@@ -135,6 +138,7 @@ export async function findLicensesByEmailPg(email: string): Promise<License[]> {
     issuedAt: r.issuedAt,
     expiresAt: r.expiresAt,
     note: r.note ?? null,
+    machineCount: r.machineCount,
   }));
 }
 
