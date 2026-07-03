@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
 import { NextRequest } from 'next/server';
-import { resetDbForTesting, insertLicense, listAuditLog, recordActivation } from '@/lib/db';
+import { resetDbForTesting, insertLicense, listAuditLog, recordActivation, setStatus, setIssuedAt } from '@/lib/db';
 
 vi.mock('@/lib/email', () => ({
   sendLicenseEmail: vi.fn().mockResolvedValue(undefined),
@@ -260,6 +260,111 @@ describe('GET /api/admin/search-licenses', () => {
     expect(body.offset).toBe(0);
   });
 
+  // ─── ?since= filter ──────────────────────────────────────────────────────────
+
+  it('?since= returns 400 for invalid status value', async () => {
+    const res = await callSearch({ q: 'x', status: 'invalid_status' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/invalid.*status/i);
+  });
+
+  it('?plan= returns 400 for invalid plan value', async () => {
+    const res = await callSearch({ q: 'x', plan: 'enterprise' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/invalid.*plan/i);
+  });
+
+  it('?since= filters out licenses issued before the date', async () => {
+    insertLicense({ key: 'ADIA-SRCH-SNC-AAAA', email: 'snc@filter.dev', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-SRCH-SNC-BBBB', email: 'snc@filter.dev', plan: 'yearly', expiresAt: null });
+    setIssuedAt('ADIA-SRCH-SNC-AAAA', '2023-01-01T00:00:00Z');
+    setIssuedAt('ADIA-SRCH-SNC-BBBB', '2025-06-01T00:00:00Z');
+    const res = await callSearch({ q: 'snc@filter.dev', since: '2025-01-01' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.total).toBe(1);
+    expect(body.results[0].key).toBe('ADIA-SRCH-SNC-BBBB');
+  });
+
+  it('?status= filters to only matching status', async () => {
+    insertLicense({ key: 'ADIA-SRCH-STA-AAAA', email: 'sta@filter.dev', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-SRCH-STA-BBBB', email: 'sta@filter.dev', plan: 'yearly', expiresAt: null });
+    setStatus('ADIA-SRCH-STA-BBBB', 'canceled');
+    const res = await callSearch({ q: 'sta@filter.dev', status: 'active' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.total).toBe(1);
+    expect(body.results[0].key).toBe('ADIA-SRCH-STA-AAAA');
+  });
+
+  it('?plan= filters to only matching plan', async () => {
+    insertLicense({ key: 'ADIA-SRCH-PLN-AAAA', email: 'pln@filter.dev', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-SRCH-PLN-BBBB', email: 'pln@filter.dev', plan: 'lifetime', expiresAt: null });
+    const res = await callSearch({ q: 'pln@filter.dev', plan: 'lifetime' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.total).toBe(1);
+    expect(body.results[0].key).toBe('ADIA-SRCH-PLN-BBBB');
+  });
+
+  it('?plan=yearly returns empty when no yearly licenses match query', async () => {
+    insertLicense({ key: 'ADIA-SRCH-PLN-CCCC', email: 'pln@noyearly.dev', plan: 'monthly', expiresAt: null });
+    const res = await callSearch({ q: 'noyearly.dev', plan: 'yearly' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.total).toBe(0);
+    expect(body.results).toEqual([]);
+  });
+
+  it('combined ?status= + ?plan= filters both dimensions', async () => {
+    insertLicense({ key: 'ADIA-SRCH-CMB-AAAA', email: 'cmb@filter.dev', plan: 'yearly', expiresAt: null });
+    insertLicense({ key: 'ADIA-SRCH-CMB-BBBB', email: 'cmb@filter.dev', plan: 'yearly', expiresAt: null });
+    insertLicense({ key: 'ADIA-SRCH-CMB-CCCC', email: 'cmb@filter.dev', plan: 'monthly', expiresAt: null });
+    setStatus('ADIA-SRCH-CMB-BBBB', 'canceled');
+    const res = await callSearch({ q: 'cmb@filter.dev', status: 'active', plan: 'yearly' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.total).toBe(1);
+    expect(body.results[0].key).toBe('ADIA-SRCH-CMB-AAAA');
+  });
+
+  it('combined ?since= + ?status= + ?plan= narrows results correctly', async () => {
+    insertLicense({ key: 'ADIA-SRCH-ALL-AAAA', email: 'all@filter.dev', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-SRCH-ALL-BBBB', email: 'all@filter.dev', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-SRCH-ALL-CCCC', email: 'all@filter.dev', plan: 'yearly', expiresAt: null });
+    setIssuedAt('ADIA-SRCH-ALL-AAAA', '2023-06-01T00:00:00Z'); // old
+    setIssuedAt('ADIA-SRCH-ALL-BBBB', '2025-06-01T00:00:00Z'); // new monthly active
+    setIssuedAt('ADIA-SRCH-ALL-CCCC', '2025-06-01T00:00:00Z'); // new yearly active
+    const res = await callSearch({ q: 'all@filter.dev', since: '2025-01-01', status: 'active', plan: 'monthly' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.total).toBe(1);
+    expect(body.results[0].key).toBe('ADIA-SRCH-ALL-BBBB');
+  });
+
+  it('response echoes since/status/plan in body when set', async () => {
+    insertLicense({ key: 'ADIA-SRCH-ECH-AAAA', email: 'ech@filter.dev', plan: 'monthly', expiresAt: null });
+    const res = await callSearch({ q: 'ech@filter.dev', since: '2020-01-01', status: 'active', plan: 'monthly' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.since).toBe('2020-01-01');
+    expect(body.status).toBe('active');
+    expect(body.plan).toBe('monthly');
+  });
+
+  it('filter does not bleed across emails in same search result', async () => {
+    insertLicense({ key: 'ADIA-SRCH-BLD-AAAA', email: 'user1@bleed.io', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-SRCH-BLD-BBBB', email: 'user2@bleed.io', plan: 'yearly', expiresAt: null });
+    setStatus('ADIA-SRCH-BLD-BBBB', 'canceled');
+    const res = await callSearch({ q: 'bleed.io', status: 'active' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.total).toBe(1);
+    expect(body.results[0].key).toBe('ADIA-SRCH-BLD-AAAA');
+  });
+
   // ─── CSV export ─────────────────────────────────────────────────────────────
 
   it('format=csv returns 401 without a valid token', async () => {
@@ -345,6 +450,22 @@ describe('GET /api/admin/search-licenses', () => {
     expect(dataRow).toMatch(/fields@csvexport\.io/);
     expect(dataRow).toMatch(/monthly/);
     expect(dataRow).toMatch(/active/);
+  });
+
+  it('format=csv respects ?plan= filter', async () => {
+    insertLicense({ key: 'ADIA-CSV-PLN-AAAA', email: 'csvpln@test.dev', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-CSV-PLN-BBBB', email: 'csvpln@test.dev', plan: 'lifetime', expiresAt: null });
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const req = new NextRequest('http://localhost/api/admin/search-licenses?q=csvpln%40test.dev&format=csv&plan=lifetime', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer test-admin-token' },
+    });
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const text = await res.text();
+    const dataRows = text.split('\r\n').filter(Boolean).slice(1);
+    expect(dataRows.length).toBe(1);
+    expect(dataRows[0]).toContain('ADIA-CSV-PLN-BBBB');
   });
 
   it('format=csv returns header-only body when no licenses match', async () => {

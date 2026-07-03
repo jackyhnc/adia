@@ -1,6 +1,9 @@
 // Admin: full-text search across license key, email, and note.
-// GET ?q=...&limit=20&offset=0          → { count, total, hasMore, offset, limit, results: License[] }
-// GET ?q=...&format=csv                 → CSV download of all matching licenses
+// GET ?q=...&limit=20&offset=0              → { count, total, hasMore, offset, limit, results: License[] }
+// GET ?q=...&since=2024-01-01               → restrict to licenses issued on or after the date
+// GET ?q=...&status=active|canceled|...     → restrict to a specific status
+// GET ?q=...&plan=monthly|yearly|lifetime   → restrict to a specific plan
+// GET ?q=...&format=csv                     → CSV download of all matching licenses (filters respected)
 // Auth: ADMIN_TOKEN bearer header or ?token= query param.
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -8,6 +11,9 @@ import { searchLicenses, countSearchLicenses, searchLicensesAll } from '@/lib/st
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+const VALID_STATUSES = new Set(['active', 'canceled', 'expired', 'past_due']);
+const VALID_PLANS = new Set(['monthly', 'yearly', 'lifetime']);
 
 function authorized(req: NextRequest): boolean {
   const token = process.env.ADMIN_TOKEN;
@@ -35,10 +41,30 @@ export async function GET(req: NextRequest) {
   if (!q || !q.trim()) {
     return NextResponse.json({ error: 'missing ?q= search query' }, { status: 400 });
   }
+
+  const rawStatus = req.nextUrl.searchParams.get('status');
+  if (rawStatus && !VALID_STATUSES.has(rawStatus)) {
+    return NextResponse.json(
+      { error: `invalid ?status= — must be one of: ${[...VALID_STATUSES].join(', ')}` },
+      { status: 400 },
+    );
+  }
+
+  const rawPlan = req.nextUrl.searchParams.get('plan');
+  if (rawPlan && !VALID_PLANS.has(rawPlan)) {
+    return NextResponse.json(
+      { error: `invalid ?plan= — must be one of: ${[...VALID_PLANS].join(', ')}` },
+      { status: 400 },
+    );
+  }
+
+  const since = req.nextUrl.searchParams.get('since') ?? undefined;
+  const status = rawStatus ?? undefined;
+  const plan = rawPlan ?? undefined;
   const format = req.nextUrl.searchParams.get('format');
 
   if (format === 'csv') {
-    const licenses = await searchLicensesAll(q.trim());
+    const licenses = await searchLicensesAll(q.trim(), since, status, plan);
     const rows = licenses.map(l =>
       [
         csvCell(l.key),
@@ -69,8 +95,8 @@ export async function GET(req: NextRequest) {
   const rawOffset = req.nextUrl.searchParams.get('offset');
   const offset = rawOffset ? Math.max(0, Number(rawOffset) || 0) : 0;
   const [results, total] = await Promise.all([
-    searchLicenses(q.trim(), limit, offset),
-    countSearchLicenses(q.trim()),
+    searchLicenses(q.trim(), limit, offset, since, status, plan),
+    countSearchLicenses(q.trim(), since, status, plan),
   ]);
   return NextResponse.json({
     count: results.length,
@@ -78,6 +104,9 @@ export async function GET(req: NextRequest) {
     hasMore: offset + results.length < total,
     offset,
     limit,
+    ...(since ? { since } : {}),
+    ...(status ? { status } : {}),
+    ...(plan ? { plan } : {}),
     results,
   });
 }

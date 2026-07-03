@@ -203,28 +203,28 @@ export async function insertAuditLog(entry: {
   sqlite.insertAuditLog(entry);
 }
 
-export async function searchLicenses(query: string, limit?: number, offset?: number): Promise<License[]> {
+export async function searchLicenses(query: string, limit?: number, offset?: number, since?: string, status?: string, plan?: string): Promise<License[]> {
   if (usePg) {
     const { searchLicensesPg } = await import('./db-pg');
-    return searchLicensesPg(query, limit, offset);
+    return searchLicensesPg(query, limit, offset, since, status, plan);
   }
-  return sqlite.searchLicenses(query, limit, offset);
+  return sqlite.searchLicenses(query, limit, offset, since, status, plan);
 }
 
-export async function countSearchLicenses(query: string): Promise<number> {
+export async function countSearchLicenses(query: string, since?: string, status?: string, plan?: string): Promise<number> {
   if (usePg) {
     const { countSearchLicensesPg } = await import('./db-pg');
-    return countSearchLicensesPg(query);
+    return countSearchLicensesPg(query, since, status, plan);
   }
-  return sqlite.countSearchLicenses(query);
+  return sqlite.countSearchLicenses(query, since, status, plan);
 }
 
-export async function searchLicensesAll(query: string): Promise<License[]> {
+export async function searchLicensesAll(query: string, since?: string, status?: string, plan?: string): Promise<License[]> {
   if (usePg) {
     const { searchLicensesAllPg } = await import('./db-pg');
-    return searchLicensesAllPg(query);
+    return searchLicensesAllPg(query, since, status, plan);
   }
-  return sqlite.searchLicensesAll(query);
+  return sqlite.searchLicensesAll(query, since, status, plan);
 }
 
 export async function listAuditLog(opts?: {

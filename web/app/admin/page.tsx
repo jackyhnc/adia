@@ -439,6 +439,9 @@ type License = {
 
 function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKey: (key: string) => void }) {
   const [q, setQ] = useState('');
+  const [sinceFilter, setSinceFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [planFilter, setPlanFilter] = useState('');
   const [results, setResults] = useState<License[] | null>(null);
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(false);
@@ -448,6 +451,14 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchAbortRef = useRef<AbortController | null>(null);
   const PAGE_SIZE = 20;
+
+  function buildParams(query: string, extra: Record<string, string> = {}): URLSearchParams {
+    const params = new URLSearchParams({ q: query, ...extra });
+    if (sinceFilter) params.set('since', sinceFilter);
+    if (statusFilter) params.set('status', statusFilter);
+    if (planFilter) params.set('plan', planFilter);
+    return params;
+  }
 
   async function runSearch(query: string) {
     searchAbortRef.current?.abort();
@@ -459,7 +470,7 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
     setHasMore(false);
     setTotal(0);
     try {
-      const params = new URLSearchParams({ q: query, limit: String(PAGE_SIZE), offset: '0' });
+      const params = buildParams(query, { limit: String(PAGE_SIZE), offset: '0' });
       const res = await fetch(`/api/admin/search-licenses?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
         signal,
@@ -494,12 +505,12 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
     debounceRef.current = setTimeout(() => { runSearch(trimmed); }, 300);
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [q, token]);
+  }, [q, sinceFilter, statusFilter, planFilter, token]);
 
   function exportCsv() {
     const safeQ = q.trim().replace(/[^a-zA-Z0-9@._-]/g, '_').slice(0, 40);
     const date = new Date().toISOString().slice(0, 10);
-    const params = new URLSearchParams({ q: q.trim(), format: 'csv' });
+    const params = buildParams(q.trim(), { format: 'csv' });
     const url = `/api/admin/search-licenses?${params}&token=${encodeURIComponent(token)}`;
     const a = document.createElement('a');
     a.href = url;
@@ -511,7 +522,7 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
     if (!results) return;
     setLoadingMore(true);
     try {
-      const params = new URLSearchParams({ q: q.trim(), limit: String(PAGE_SIZE), offset: String(results.length) });
+      const params = buildParams(q.trim(), { limit: String(PAGE_SIZE), offset: String(results.length) });
       const res = await fetch(`/api/admin/search-licenses?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -550,6 +561,38 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
             )}
           </div>
         </Field>
+        <div className="flex gap-3">
+          <Field label="Issued since">
+            <input
+              type="date"
+              value={sinceFilter}
+              onChange={(e) => setSinceFilter(e.target.value)}
+              className="input"
+            />
+          </Field>
+          <Field label="Status">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="input"
+            >
+              {STATUS_OPTIONS.map(s => (
+                <option key={s} value={s}>{s === '' ? 'Any' : s}</option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Plan">
+            <select
+              value={planFilter}
+              onChange={(e) => setPlanFilter(e.target.value)}
+              className="input"
+            >
+              {PLAN_OPTIONS.map(p => (
+                <option key={p} value={p}>{p === '' ? 'Any' : p}</option>
+              ))}
+            </select>
+          </Field>
+        </div>
       </div>
       {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
       {results !== null && (

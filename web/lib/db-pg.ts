@@ -369,11 +369,14 @@ export async function listAuditLogPg(opts?: {
   }));
 }
 
-export async function searchLicensesPg(query: string, limit = 20, offset = 0): Promise<License[]> {
+export async function searchLicensesPg(query: string, limit = 20, offset = 0, since?: string, status?: string, plan?: string): Promise<License[]> {
   await ensureSchema();
   const q = `%${query.trim()}%`;
   const lq = `%${query.trim().toLowerCase()}%`;
   const cap = Math.min(limit, 100);
+  const sinceVal = since ?? null;
+  const statusVal = status ?? null;
+  const planVal = plan ?? null;
   const result = await sql<any>`
     SELECT l.key, l.email, l.plan, l.status, l.note,
            to_char(l.issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
@@ -381,7 +384,10 @@ export async function searchLicensesPg(query: string, limit = 20, offset = 0): P
            COUNT(a.machine_hash)::int AS "machineCount"
     FROM licenses l
     LEFT JOIN activations a ON a.license_key = l.key
-    WHERE l.key ILIKE ${q} OR l.email ILIKE ${lq} OR l.note ILIKE ${q}
+    WHERE (l.key ILIKE ${q} OR l.email ILIKE ${lq} OR l.note ILIKE ${q})
+      AND (${sinceVal}::text IS NULL OR l.issued_at >= ${sinceVal}::text)
+      AND (${statusVal}::text IS NULL OR l.status = ${statusVal}::text)
+      AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
     GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at
     ORDER BY l.issued_at DESC
     LIMIT ${cap} OFFSET ${offset}
@@ -398,22 +404,31 @@ export async function searchLicensesPg(query: string, limit = 20, offset = 0): P
   }));
 }
 
-export async function countSearchLicensesPg(query: string): Promise<number> {
+export async function countSearchLicensesPg(query: string, since?: string, status?: string, plan?: string): Promise<number> {
   await ensureSchema();
   const q = `%${query.trim()}%`;
   const lq = `%${query.trim().toLowerCase()}%`;
+  const sinceVal = since ?? null;
+  const statusVal = status ?? null;
+  const planVal = plan ?? null;
   const result = await sql<any>`
     SELECT COUNT(DISTINCT l.key)::int AS total
     FROM licenses l
-    WHERE l.key ILIKE ${q} OR l.email ILIKE ${lq} OR l.note ILIKE ${q}
+    WHERE (l.key ILIKE ${q} OR l.email ILIKE ${lq} OR l.note ILIKE ${q})
+      AND (${sinceVal}::text IS NULL OR l.issued_at >= ${sinceVal}::text)
+      AND (${statusVal}::text IS NULL OR l.status = ${statusVal}::text)
+      AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
   `;
   return result.rows[0]?.total ?? 0;
 }
 
-export async function searchLicensesAllPg(query: string): Promise<License[]> {
+export async function searchLicensesAllPg(query: string, since?: string, status?: string, plan?: string): Promise<License[]> {
   await ensureSchema();
   const q = `%${query.trim()}%`;
   const lq = `%${query.trim().toLowerCase()}%`;
+  const sinceVal = since ?? null;
+  const statusVal = status ?? null;
+  const planVal = plan ?? null;
   const result = await sql<any>`
     SELECT l.key, l.email, l.plan, l.status, l.note,
            to_char(l.issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
@@ -421,7 +436,10 @@ export async function searchLicensesAllPg(query: string): Promise<License[]> {
            COUNT(a.machine_hash)::int AS "machineCount"
     FROM licenses l
     LEFT JOIN activations a ON a.license_key = l.key
-    WHERE l.key ILIKE ${q} OR l.email ILIKE ${lq} OR l.note ILIKE ${q}
+    WHERE (l.key ILIKE ${q} OR l.email ILIKE ${lq} OR l.note ILIKE ${q})
+      AND (${sinceVal}::text IS NULL OR l.issued_at >= ${sinceVal}::text)
+      AND (${statusVal}::text IS NULL OR l.status = ${statusVal}::text)
+      AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
     GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at
     ORDER BY l.issued_at DESC
   `;

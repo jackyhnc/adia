@@ -351,20 +351,28 @@ export function listAuditLog(opts?: { licenseKey?: string; limit?: number }): Au
   }));
 }
 
-export function searchLicenses(query: string, limit = 20, offset = 0): License[] {
+export function searchLicenses(query: string, limit = 20, offset = 0, since?: string, status?: string, plan?: string): License[] {
   const q = `%${query.trim()}%`;
   const lq = `%${query.trim().toLowerCase()}%`;
-  const rows = db()
+  const extraConditions: string[] = [];
+  const extraParams: unknown[] = [];
+  if (since) { extraConditions.push('l.issued_at >= ?'); extraParams.push(since); }
+  if (status) { extraConditions.push('l.status = ?'); extraParams.push(status); }
+  if (plan) { extraConditions.push('l.plan = ?'); extraParams.push(plan); }
+  const where = extraConditions.length
+    ? `(l.key LIKE ? OR l.email LIKE ? OR l.note LIKE ?) AND ${extraConditions.join(' AND ')}`
+    : 'l.key LIKE ? OR l.email LIKE ? OR l.note LIKE ?';
+  const rows = (db()
     .prepare(`
       SELECT l.*, COUNT(a.machine_hash) AS machine_count_live
       FROM licenses l
       LEFT JOIN activations a ON a.license_key = l.key
-      WHERE l.key LIKE ? OR l.email LIKE ? OR l.note LIKE ?
+      WHERE ${where}
       GROUP BY l.key
       ORDER BY l.issued_at DESC
       LIMIT ? OFFSET ?
     `)
-    .all(q.toUpperCase(), lq, q, Math.min(limit, 100), offset) as any[];
+    .all as (...a: unknown[]) => any[])(q.toUpperCase(), lq, q, ...extraParams, Math.min(limit, 100), offset);
   return rows.map(r => ({
     key: r.key,
     email: r.email,
@@ -377,32 +385,48 @@ export function searchLicenses(query: string, limit = 20, offset = 0): License[]
   }));
 }
 
-export function countSearchLicenses(query: string): number {
+export function countSearchLicenses(query: string, since?: string, status?: string, plan?: string): number {
   const q = `%${query.trim()}%`;
   const lq = `%${query.trim().toLowerCase()}%`;
-  const row = db()
+  const extraConditions: string[] = [];
+  const extraParams: unknown[] = [];
+  if (since) { extraConditions.push('l.issued_at >= ?'); extraParams.push(since); }
+  if (status) { extraConditions.push('l.status = ?'); extraParams.push(status); }
+  if (plan) { extraConditions.push('l.plan = ?'); extraParams.push(plan); }
+  const where = extraConditions.length
+    ? `(l.key LIKE ? OR l.email LIKE ? OR l.note LIKE ?) AND ${extraConditions.join(' AND ')}`
+    : 'l.key LIKE ? OR l.email LIKE ? OR l.note LIKE ?';
+  const row = (db()
     .prepare(`
       SELECT COUNT(DISTINCT l.key) AS total
       FROM licenses l
-      WHERE l.key LIKE ? OR l.email LIKE ? OR l.note LIKE ?
+      WHERE ${where}
     `)
-    .get(q.toUpperCase(), lq, q) as { total: number };
+    .get as (...a: unknown[]) => { total: number })(q.toUpperCase(), lq, q, ...extraParams);
   return row.total;
 }
 
-export function searchLicensesAll(query: string): License[] {
+export function searchLicensesAll(query: string, since?: string, status?: string, plan?: string): License[] {
   const q = `%${query.trim()}%`;
   const lq = `%${query.trim().toLowerCase()}%`;
-  const rows = db()
+  const extraConditions: string[] = [];
+  const extraParams: unknown[] = [];
+  if (since) { extraConditions.push('l.issued_at >= ?'); extraParams.push(since); }
+  if (status) { extraConditions.push('l.status = ?'); extraParams.push(status); }
+  if (plan) { extraConditions.push('l.plan = ?'); extraParams.push(plan); }
+  const where = extraConditions.length
+    ? `(l.key LIKE ? OR l.email LIKE ? OR l.note LIKE ?) AND ${extraConditions.join(' AND ')}`
+    : 'l.key LIKE ? OR l.email LIKE ? OR l.note LIKE ?';
+  const rows = (db()
     .prepare(`
       SELECT l.*, COUNT(a.machine_hash) AS machine_count_live
       FROM licenses l
       LEFT JOIN activations a ON a.license_key = l.key
-      WHERE l.key LIKE ? OR l.email LIKE ? OR l.note LIKE ?
+      WHERE ${where}
       GROUP BY l.key
       ORDER BY l.issued_at DESC
     `)
-    .all(q.toUpperCase(), lq, q) as any[];
+    .all as (...a: unknown[]) => any[])(q.toUpperCase(), lq, q, ...extraParams);
   return rows.map(r => ({
     key: r.key,
     email: r.email,
