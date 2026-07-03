@@ -10480,3 +10480,44 @@ Nothing blocked.
 - Consider adding a "streak broken" notification when the user misses a day after a ≥7-day streak (motivational re-engagement)
 - Add `itch.io` to the blocklist (indie game hosting platform — distinct from `gamejolt.com` already blocked)
 - Wire `SessionTemplate.preferredDuration` into the pinned-template "prefill and edit" flow (right-click context menu on the notch pin button to open the form pre-filled instead of launching immediately)
+
+---
+
+## Run 251 — 2026-07-03
+
+### Shipped
+
+**`Sources/AdiCore/SessionNotifier.swift` — streak-broken re-engagement:**
+- `nonisolated static func streakBrokenBody(previousStreak: Int) -> String` — friend-like copy for broken streaks; direct-but-not-punishing tone. Custom text for 7/14/21/30-day milestones; generic fallback for arbitrary counts (e.g. "you had a 8-day streak going. start the next one today.")
+- `func sendStreakBroken(previousStreak: Int)` — fires a `UNUserNotificationContent` banner titled `"streak ended at N days"` with the body above; stable id `"adia.streak.broken"` prevents notification stacking on repeated launches.
+
+**`Sources/AdiCore/SessionManager.swift` — three changes:**
+- `endSession()` Task block: persists `stats.streak` to `adia.lastActiveStreak` after every successful session; used as the baseline for broken-streak detection.
+- `checkStreakBreak()` (new `internal` method): on launch, reads `adia.lastActiveStreak`; if it is >0 and `SessionHistory.shared.stats().streak == 0`, resets both `adia.lastActiveStreak` and `adia.lastNotifiedStreakMilestone` to 0 (so milestones can be re-earned), and fires `sendStreakBroken` when `lastActive >= 7`.
+- `restoreIfNeeded()`: calls `await checkStreakBreak()` before the saved-session guard so the check runs on every app launch, even when there is no active session to restore.
+
+**`Tests/AdiTests/SessionNotifierTests.swift` — 6 new tests in `SessionNotifierStreakBrokenTests` suite:**
+- Pure `nonisolated static` function tests; no `.enabled(if: runningInAppBundle)` restriction; run unconditionally in CI.
+- `streakBrokenBody_isNonEmptyForAllMilestoneStreaks` — [7, 14, 21, 30]
+- `streakBrokenBody_mentionsDayCountForMilestones` — body contains day count for each milestone
+- `streakBrokenBody_fallbackForNonMilestoneStreak` — day=8 is non-empty and contains "8"
+- `streakBrokenBody_fallbackForLongStreak` — day=100 is non-empty and contains "100"
+- `streakBrokenBody_toneIsNotPunishing` — no "failed"/"loser"/"disappointed"/"shame"/"bad"/"terrible" for any day value
+- `streakBrokenBody_toneIsNotCorporate` — no "congratulations"/"achievement"/"great job"/"well done" for milestones
+
+### Verification
+- No Swift toolchain in this container. Verified by code review:
+  - `streakBrokenBody` is `nonisolated static` — consistent with `streakMilestoneBody` and `blockedAppHiddenBody` patterns
+  - `sendStreakBroken` id `"adia.streak.broken"` is stable (no interpolation) — won't accumulate with repeated launches
+  - `checkStreakBreak()` returns early on `lastActive == 0` (no history) to avoid an unnecessary `SessionHistory` actor hop on first-run
+  - Notification only fires for `lastActive >= 7` — avoids banner fatigue for sub-week streaks
+  - `adia.lastActiveStreak` updated in `endSession()` only on `wasSuccessful` — early-exit sessions don't inflate the baseline
+
+### Blocked
+Nothing blocked. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Wire `SessionTemplate.preferredDuration` into the pinned-template "prefill and edit" flow (right-click context menu on the pin button opens the form pre-filled instead of launching immediately)
+- Consider a "streak broken for N-th time" variant: after the user breaks and re-builds the same milestone twice, shift the tone to encouraging persistence rather than surprise
+- Consider resetting `adia.lastActiveStreak` when the user manually clears session history (HistoryTab "Delete All" action)
+- `@MainActor` annotation audit for remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`
