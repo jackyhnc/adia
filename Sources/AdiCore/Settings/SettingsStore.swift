@@ -34,6 +34,11 @@ public final class SettingsStore: ObservableObject {
     @Published public var idleTemplatesFollowManualOrder: Bool {
         didSet { defaults.set(idleTemplatesFollowManualOrder, forKey: "adia.idleTemplatesFollowManualOrder") }
     }
+    /// When true (default), show the SUGGESTIONS section in the idle notch for users
+    /// with no pinned templates. Set to false permanently via the "hide" button in the notch.
+    @Published public var showSuggestedTemplates: Bool {
+        didSet { defaults.set(showSuggestedTemplates, forKey: "adia.showSuggestedTemplates") }
+    }
     /// How often (in minutes) the notch re-opens to remind the user to verify after
     /// their session's target duration has elapsed. Clamped to `Self.timerExpiredRearmMinuteOptions`
     /// so a corrupted default can't silently disable the reminder (e.g. by storing 0).
@@ -108,6 +113,7 @@ public final class SettingsStore: ObservableObject {
         usageAnalyticsEnabled            = defaults.object(forKey: "usageAnalyticsEnabled")                    as? Bool ?? true
         showMenuBarItem                  = defaults.object(forKey: "adia.showMenuBarItem")                     as? Bool ?? true
         idleTemplatesFollowManualOrder   = defaults.object(forKey: "adia.idleTemplatesFollowManualOrder")      as? Bool ?? false
+        showSuggestedTemplates           = defaults.object(forKey: "adia.showSuggestedTemplates")              as? Bool ?? true
         let storedRearmMinutes = defaults.object(forKey: "adia.timerExpiredRearmMinutes") as? Int ?? 10
         timerExpiredRearmMinutes = Self.timerExpiredRearmMinuteOptions.contains(storedRearmMinutes) ? storedRearmMinutes : 10
         let storedGoal = defaults.object(forKey: "adia.dailyFocusGoalMinutes") as? Int

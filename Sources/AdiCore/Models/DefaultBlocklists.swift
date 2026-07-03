@@ -352,6 +352,15 @@ extension Session {
         "9anime.to",
         "zoro.to",
         "aniwatch.to",
+        // Campus recruiting / homework-help — popular student procrastination sinks
+        "handshake.com",     // campus recruiting platform
+        "wayup.com",         // entry-level & internship job board
+        "internships.com",   // internship aggregator
+        "chegg.com",         // homework help / tutoring (often used to cheat rather than learn)
+        "coursehero.com",    // uploaded homework solutions — major academic integrity risk
+        // Additional sports scores — passive distraction during study sessions
+        "theScore.com",
+        "cricbuzz.com",      // cricket live scores (popular in South Asia / global)
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [

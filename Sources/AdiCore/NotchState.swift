@@ -6,8 +6,10 @@ public final class NotchState: ObservableObject {
 
     @Published public private(set) var isExpanded: Bool = false
     @Published public private(set) var isCreating: Bool = false
-    /// Task text to pre-populate the session creation form. Set by startCreating(prefill:), cleared by stopCreating() and collapse().
+    /// Task text to pre-populate the session creation form. Set by startCreating(prefill:duration:), cleared by stopCreating() and collapse().
     @Published public private(set) var sessionCreationPrefill: String? = nil
+    /// Duration (seconds) to pre-select in the creation form. Matches the nearest preset chip or sets the custom field.
+    @Published public private(set) var sessionCreationPrefillDuration: TimeInterval? = nil
     /// Number of pinned templates currently shown in the idle notch. Updated by IdleBody when it loads templates.
     /// Used by NotchWindowController to pick the correct idle panel height.
     @Published public internal(set) var idleTemplateCount: Int = 0
@@ -55,6 +57,7 @@ public final class NotchState: ObservableObject {
         isExpanded = false
         isCreating = false
         sessionCreationPrefill = nil
+        sessionCreationPrefillDuration = nil
         showingConversation = false
         calloutMessage = nil
         calloutTier = 1
@@ -70,15 +73,17 @@ public final class NotchState: ObservableObject {
 
     // MARK: - Session creation
 
-    public func startCreating(prefill: String? = nil) {
+    public func startCreating(prefill: String? = nil, duration: TimeInterval? = nil) {
         if !isExpanded { isExpanded = true }
         sessionCreationPrefill = prefill
+        sessionCreationPrefillDuration = duration
         isCreating = true
     }
 
     public func stopCreating() {
         isCreating = false
         sessionCreationPrefill = nil
+        sessionCreationPrefillDuration = nil
     }
 
     // MARK: - Callout

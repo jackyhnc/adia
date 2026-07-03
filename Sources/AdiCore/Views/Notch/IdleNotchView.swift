@@ -62,7 +62,7 @@ struct IdleBody: View {
 
             if !templates.isEmpty {
                 templateSection
-            } else {
+            } else if settings.showSuggestedTemplates {
                 suggestedSection
             }
 
@@ -140,10 +140,24 @@ struct IdleBody: View {
     private var suggestedSection: some View {
         let suggestions = Array(SuggestedSessionTemplates.all.prefix(SuggestedSessionTemplates.displayCount))
         VStack(alignment: .leading, spacing: 5) {
-            Text("SUGGESTIONS")
-                .font(.system(size: 9, weight: .bold))
-                .foregroundStyle(.white.opacity(0.3))
-                .tracking(1.5)
+            HStack {
+                Text("SUGGESTIONS")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.3))
+                    .tracking(1.5)
+                Spacer()
+                Button {
+                    withAnimation(.easeOut(duration: 0.15)) {
+                        settings.showSuggestedTemplates = false
+                    }
+                } label: {
+                    Text("hide")
+                        .font(.system(size: 9))
+                        .foregroundStyle(.white.opacity(0.2))
+                }
+                .buttonStyle(.plain)
+                .help("Hide suggestions. Re-enable in Settings → Templates.")
+            }
 
             ForEach(suggestions, id: \.task) { s in
                 suggestedButton(s)
@@ -184,7 +198,7 @@ struct IdleBody: View {
     private func suggestedButton(_ s: SuggestedTemplate) -> some View {
         Button {
             withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
-                state.startCreating(prefill: s.task)
+                state.startCreating(prefill: s.task, duration: s.preferredDuration)
             }
         } label: {
             HStack(spacing: 7) {

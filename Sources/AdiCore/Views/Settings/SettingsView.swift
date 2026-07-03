@@ -6,7 +6,7 @@ public struct SettingsView: View {
     nonisolated static let tabHeights: [Int: CGFloat] = [
         0: 500,   // Account  — API key, license, shortcuts, reminders, daily goal
         1: 560,   // Blocking — many toggles, benefits from tall viewport
-        2: 460,   // Templates — list + footer row
+        2: 490,   // Templates — list + footer row (two toggles)
         3: 600,   // History  — heatmap + insights + session list
     ]
 

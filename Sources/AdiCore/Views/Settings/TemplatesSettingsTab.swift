@@ -52,11 +52,17 @@ struct TemplatesSettingsTab: View {
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                 Spacer()
-                Toggle("Notch: use reorder", isOn: $settings.idleTemplatesFollowManualOrder)
-                    .toggleStyle(.switch)
-                    .controlSize(.mini)
-                    .help("When on, the notch quick-launch row shows templates in your drag order. When off, it shows the two most-recently used.")
-                    .padding(.horizontal, 12)
+                VStack(alignment: .trailing, spacing: 6) {
+                    Toggle("Notch: use reorder", isOn: $settings.idleTemplatesFollowManualOrder)
+                        .toggleStyle(.switch)
+                        .controlSize(.mini)
+                        .help("When on, the notch quick-launch row shows templates in your drag order. When off, it shows the two most-recently used.")
+                    Toggle("Show starter suggestions", isOn: $settings.showSuggestedTemplates)
+                        .toggleStyle(.switch)
+                        .controlSize(.mini)
+                        .help("Show built-in session suggestions in the notch when you have no pinned templates yet.")
+                }
+                .padding(.horizontal, 12)
             }
             .background(.background)
         }

@@ -163,6 +163,21 @@ struct SessionCreationFormView: View {
             if let prefill = state.sessionCreationPrefill, !prefill.isEmpty {
                 inputText = prefill
             }
+            if let prefillSecs = state.sessionCreationPrefillDuration {
+                let mins = Int(prefillSecs / 60)
+                if durationPresets.contains(where: { $0.0 == mins }) {
+                    targetMinutes = mins
+                } else {
+                    let h = mins / 60, m = mins % 60
+                    if h > 0 && m > 0 {
+                        customDurationText = "\(h)h\(m)m"
+                    } else if h > 0 {
+                        customDurationText = "\(h)h"
+                    } else {
+                        customDurationText = "\(mins)m"
+                    }
+                }
+            }
             Task { @MainActor in
                 try? await Task.sleep(for: .milliseconds(300))
                 inputFocused = true
