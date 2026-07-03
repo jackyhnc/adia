@@ -437,8 +437,27 @@ type License = {
 function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKey: (key: string) => void }) {
   const [q, setQ] = useState('');
   const [results, setResults] = useState<License[] | null>(null);
+  const [total, setTotal] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const PAGE_SIZE = 20;
+
+  async function fetchPage(query: string, offset: number, append: boolean) {
+    const params = new URLSearchParams({ q: query.trim(), limit: String(PAGE_SIZE), offset: String(offset) });
+    const res = await fetch(`/api/admin/search-licenses?${params}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+    }
+    const body = await res.json();
+    setTotal(body.total);
+    setHasMore(body.hasMore);
+    setResults(prev => append && prev ? [...prev, ...body.results] : body.results);
+  }
 
   async function search(e: React.FormEvent) {
     e.preventDefault();
@@ -446,22 +465,26 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
     setLoading(true);
     setError('');
     setResults(null);
+    setHasMore(false);
+    setTotal(0);
     try {
-      const params = new URLSearchParams({ q: q.trim(), limit: '20' });
-      const res = await fetch(`/api/admin/search-licenses?${params}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
-      } else {
-        const body = await res.json();
-        setResults(body.results);
-      }
+      await fetchPage(q, 0, false);
     } catch (err: any) {
-      setError(`Error: ${err.message}`);
+      setError(err.message);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function loadMore() {
+    if (!results) return;
+    setLoadingMore(true);
+    try {
+      await fetchPage(q, results.length, true);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoadingMore(false);
     }
   }
 
@@ -469,8 +492,7 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
     <div>
       <h2 className="text-lg font-semibold mb-3">Search licenses</h2>
       <p className="text-sm text-ink/60 mb-3">
-        Full-text search across license key, email, and note. Returns up to 20 matches, newest first.
-        Click a key to auto-fill the lookup panel below.
+        Full-text search across license key, email, and note. Click a key to auto-fill the lookup panel below.
       </p>
       <form onSubmit={search} className="card space-y-3">
         <Field label="Search query (key, email, or note fragment)">
@@ -493,7 +515,9 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
             <p className="text-sm text-ink/50">No licenses matched &quot;{q}&quot;.</p>
           ) : (
             <>
-              <p className="text-xs text-ink/50 mb-2">{results.length} result{results.length !== 1 ? 's' : ''} — click a key for full detail</p>
+              <p className="text-xs text-ink/50 mb-2">
+                Showing {results.length} of {total} result{total !== 1 ? 's' : ''} — click a key for full detail
+              </p>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
                   <thead>
@@ -526,6 +550,15 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
                   </tbody>
                 </table>
               </div>
+              {hasMore && (
+                <button
+                  onClick={loadMore}
+                  disabled={loadingMore}
+                  className="mt-3 text-xs text-sky-600 hover:underline disabled:opacity-50"
+                >
+                  {loadingMore ? 'Loading…' : `Load more (${total - results.length} remaining)`}
+                </button>
+              )}
             </>
           )}
         </div>
@@ -1428,6 +1461,8 @@ type LicenseRow = {
   expiresAt: string | null;
   machineCount: number;
   note?: string | null;
+  lastAction?: string | null;
+  lastActionAt?: string | null;
 };
 
 function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectKey: (key: string) => void }) {
@@ -1500,6 +1535,7 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
                   <th className="pb-1 pr-3">Seats</th>
                   <th className="pb-1 pr-3">Issued</th>
                   <th className="pb-1 pr-3">Expires</th>
+                  <th className="pb-1 pr-3">Last action</th>
                   <th className="pb-1">Note</th>
                 </tr>
               </thead>
@@ -1518,6 +1554,11 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
                     <td className="py-1 pr-3 tabular-nums text-ink/60">{lic.machineCount ?? 0}/3</td>
                     <td className="py-1 pr-3 text-ink/50">{lic.issuedAt.slice(0, 10)}</td>
                     <td className="py-1 pr-3 text-ink/50">{lic.expiresAt ? lic.expiresAt.slice(0, 10) : '—'}</td>
+                    <td className="py-1 pr-3 text-ink/50 truncate max-w-[10rem]" title={lic.lastAction ?? undefined}>
+                      {lic.lastAction
+                        ? <><span>{lic.lastAction}</span>{lic.lastActionAt && <span className="ml-1 text-ink/30">({lic.lastActionAt.slice(0, 10)})</span>}</>
+                        : '—'}
+                    </td>
                     <td className="py-1 text-ink/50 italic">{lic.note ?? '—'}</td>
                   </tr>
                 ))}

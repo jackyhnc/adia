@@ -123,7 +123,9 @@ export async function findLicensesByEmailPg(email: string): Promise<License[]> {
     SELECT l.key, l.email, l.plan, l.status, l.note,
            to_char(l.issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
            to_char(l.expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt",
-           COUNT(a.machine_hash)::int AS "machineCount"
+           COUNT(a.machine_hash)::int AS "machineCount",
+           (SELECT action FROM audit_log WHERE license_key = l.key ORDER BY id DESC LIMIT 1) AS "lastAction",
+           to_char((SELECT created_at FROM audit_log WHERE license_key = l.key ORDER BY id DESC LIMIT 1), 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "lastActionAt"
     FROM licenses l
     LEFT JOIN activations a ON a.license_key = l.key
     WHERE l.email = ${email.trim().toLowerCase()}
@@ -139,6 +141,8 @@ export async function findLicensesByEmailPg(email: string): Promise<License[]> {
     expiresAt: r.expiresAt,
     note: r.note ?? null,
     machineCount: r.machineCount,
+    lastAction: r.lastAction ?? null,
+    lastActionAt: r.lastActionAt ?? null,
   }));
 }
 
@@ -322,7 +326,7 @@ export async function listAuditLogPg(opts?: {
   }));
 }
 
-export async function searchLicensesPg(query: string, limit = 20): Promise<License[]> {
+export async function searchLicensesPg(query: string, limit = 20, offset = 0): Promise<License[]> {
   await ensureSchema();
   const q = `%${query.trim()}%`;
   const lq = `%${query.trim().toLowerCase()}%`;
@@ -337,7 +341,7 @@ export async function searchLicensesPg(query: string, limit = 20): Promise<Licen
     WHERE l.key ILIKE ${q} OR l.email ILIKE ${lq} OR l.note ILIKE ${q}
     GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at
     ORDER BY l.issued_at DESC
-    LIMIT ${cap}
+    LIMIT ${cap} OFFSET ${offset}
   `;
   return result.rows.map((r: any) => ({
     key: r.key,
@@ -349,6 +353,18 @@ export async function searchLicensesPg(query: string, limit = 20): Promise<Licen
     note: r.note ?? null,
     machineCount: r.machineCount,
   }));
+}
+
+export async function countSearchLicensesPg(query: string): Promise<number> {
+  await ensureSchema();
+  const q = `%${query.trim()}%`;
+  const lq = `%${query.trim().toLowerCase()}%`;
+  const result = await sql<any>`
+    SELECT COUNT(DISTINCT l.key)::int AS total
+    FROM licenses l
+    WHERE l.key ILIKE ${q} OR l.email ILIKE ${lq} OR l.note ILIKE ${q}
+  `;
+  return result.rows[0]?.total ?? 0;
 }
 
 export async function getStatsPg(): Promise<LicenseStats> {

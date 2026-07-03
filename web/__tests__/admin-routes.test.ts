@@ -14,7 +14,7 @@ import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
 import { NextRequest } from 'next/server';
-import { resetDbForTesting, insertLicense, recordActivation, findLicense } from '@/lib/db';
+import { resetDbForTesting, insertLicense, recordActivation, findLicense, insertAuditLog } from '@/lib/db';
 
 vi.mock('@/lib/email', () => ({
   sendLicenseEmail: vi.fn().mockResolvedValue(undefined),
@@ -445,6 +445,36 @@ describe('GET /api/admin/licenses-by-email', () => {
     const b = body.licenses.find((l: any) => l.key === 'ADIA-BYEM-BLB-BBBB');
     expect(a.machineCount).toBe(3);
     expect(b.machineCount).toBe(0);
+  });
+
+  it('returns lastAction null when no audit entries exist', async () => {
+    insertLicense({ key: 'ADIA-BYEM-LAX-AAAA', email: 'lax@auditless.dev', plan: 'monthly', expiresAt: null });
+    const res = await callLicensesByEmail('lax@auditless.dev');
+    const body = await res.json();
+    expect(body.licenses[0].lastAction).toBeNull();
+    expect(body.licenses[0].lastActionAt).toBeNull();
+  });
+
+  it('returns lastAction with the most recent audit action', async () => {
+    insertLicense({ key: 'ADIA-BYEM-LAY-AAAA', email: 'lay@audited.dev', plan: 'yearly', expiresAt: null });
+    insertAuditLog({ licenseKey: 'ADIA-BYEM-LAY-AAAA', action: 'activate' });
+    insertAuditLog({ licenseKey: 'ADIA-BYEM-LAY-AAAA', action: 'validate' });
+    const res = await callLicensesByEmail('lay@audited.dev');
+    const body = await res.json();
+    expect(body.licenses[0].lastAction).toBe('validate');
+    expect(body.licenses[0].lastActionAt).toBeTruthy();
+  });
+
+  it('lastAction does not bleed across licenses for the same email', async () => {
+    insertLicense({ key: 'ADIA-BYEM-LBA-AAAA', email: 'lbleed@test.dev', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-BYEM-LBB-BBBB', email: 'lbleed@test.dev', plan: 'yearly', expiresAt: null });
+    insertAuditLog({ licenseKey: 'ADIA-BYEM-LBA-AAAA', action: 'revoke' });
+    const res = await callLicensesByEmail('lbleed@test.dev');
+    const body = await res.json();
+    const a = body.licenses.find((l: any) => l.key === 'ADIA-BYEM-LBA-AAAA');
+    const b = body.licenses.find((l: any) => l.key === 'ADIA-BYEM-LBB-BBBB');
+    expect(a.lastAction).toBe('revoke');
+    expect(b.lastAction).toBeNull();
   });
 });
 

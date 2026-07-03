@@ -74,6 +74,8 @@ export type License = {
   expiresAt: string | null;
   note?: string | null;
   machineCount?: number;
+  lastAction?: string | null;
+  lastActionAt?: string | null;
 };
 
 export type AuditEntry = {
@@ -172,7 +174,10 @@ export function countActivations(key: string): number {
 export function findLicensesByEmail(email: string): License[] {
   const rows = db()
     .prepare(`
-      SELECT l.*, COUNT(a.machine_hash) AS machine_count_live
+      SELECT l.*,
+             COUNT(a.machine_hash) AS machine_count_live,
+             (SELECT action FROM audit_log WHERE license_key = l.key ORDER BY id DESC LIMIT 1) AS last_action,
+             (SELECT created_at FROM audit_log WHERE license_key = l.key ORDER BY id DESC LIMIT 1) AS last_action_at
       FROM licenses l
       LEFT JOIN activations a ON a.license_key = l.key
       WHERE l.email = ?
@@ -189,6 +194,8 @@ export function findLicensesByEmail(email: string): License[] {
     expiresAt: r.expires_at,
     note: r.note ?? null,
     machineCount: r.machine_count_live as number,
+    lastAction: r.last_action ?? null,
+    lastActionAt: r.last_action_at ?? null,
   }));
 }
 
@@ -320,7 +327,7 @@ export function listAuditLog(opts?: { licenseKey?: string; limit?: number }): Au
   }));
 }
 
-export function searchLicenses(query: string, limit = 20): License[] {
+export function searchLicenses(query: string, limit = 20, offset = 0): License[] {
   const q = `%${query.trim()}%`;
   const lq = `%${query.trim().toLowerCase()}%`;
   const rows = db()
@@ -331,9 +338,9 @@ export function searchLicenses(query: string, limit = 20): License[] {
       WHERE l.key LIKE ? OR l.email LIKE ? OR l.note LIKE ?
       GROUP BY l.key
       ORDER BY l.issued_at DESC
-      LIMIT ?
+      LIMIT ? OFFSET ?
     `)
-    .all(q.toUpperCase(), lq, q, Math.min(limit, 100)) as any[];
+    .all(q.toUpperCase(), lq, q, Math.min(limit, 100), offset) as any[];
   return rows.map(r => ({
     key: r.key,
     email: r.email,
@@ -344,6 +351,19 @@ export function searchLicenses(query: string, limit = 20): License[] {
     note: r.note ?? null,
     machineCount: r.machine_count_live as number,
   }));
+}
+
+export function countSearchLicenses(query: string): number {
+  const q = `%${query.trim()}%`;
+  const lq = `%${query.trim().toLowerCase()}%`;
+  const row = db()
+    .prepare(`
+      SELECT COUNT(DISTINCT l.key) AS total
+      FROM licenses l
+      WHERE l.key LIKE ? OR l.email LIKE ? OR l.note LIKE ?
+    `)
+    .get(q.toUpperCase(), lq, q) as { total: number };
+  return row.total;
 }
 
 export function getStats(): LicenseStats {

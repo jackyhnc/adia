@@ -190,6 +190,75 @@ describe('GET /api/admin/search-licenses', () => {
     const res = await GET(req);
     expect(res.status).toBe(200);
   });
+
+  // ─── pagination ─────────────────────────────────────────────────────────────
+
+  it('response includes total, hasMore, offset, limit fields', async () => {
+    insertLicense({ key: 'ADIA-SRCH-PAG0-AAAA', email: 'pag@page.io', plan: 'monthly', expiresAt: null });
+    const res = await callSearch({ q: 'pag@page.io' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toHaveProperty('total');
+    expect(body).toHaveProperty('hasMore');
+    expect(body).toHaveProperty('offset');
+    expect(body).toHaveProperty('limit');
+    expect(body.offset).toBe(0);
+    expect(body.limit).toBe(20);
+  });
+
+  it('total reflects all matching records regardless of limit', async () => {
+    for (let i = 1; i <= 5; i++) {
+      insertLicense({ key: `ADIA-SRCH-TOT-${String(i).padStart(4, '0')}`, email: `tot${i}@total.dev`, plan: 'monthly', expiresAt: null });
+    }
+    const res = await callSearch({ q: 'total.dev', limit: '2' });
+    const body = await res.json();
+    expect(body.total).toBe(5);
+    expect(body.count).toBe(2);
+    expect(body.hasMore).toBe(true);
+  });
+
+  it('offset skips earlier results and returns the next page', async () => {
+    for (let i = 1; i <= 6; i++) {
+      insertLicense({ key: `ADIA-SRCH-OFF-${String(i).padStart(4, '0')}`, email: `off${i}@offset.dev`, plan: 'monthly', expiresAt: null });
+    }
+    const page1 = await (await callSearch({ q: 'offset.dev', limit: '4' })).json();
+    const page2 = await (await callSearch({ q: 'offset.dev', limit: '4', offset: '4' })).json();
+    expect(page1.results.length).toBe(4);
+    expect(page2.results.length).toBe(2);
+    expect(page2.hasMore).toBe(false);
+    // No key overlap between pages
+    const keys1 = new Set(page1.results.map((r: any) => r.key));
+    const keys2 = new Set(page2.results.map((r: any) => r.key));
+    for (const k of keys2) expect(keys1.has(k)).toBe(false);
+  });
+
+  it('hasMore is false on the last page', async () => {
+    for (let i = 1; i <= 3; i++) {
+      insertLicense({ key: `ADIA-SRCH-LAST-${String(i).padStart(4, '0')}`, email: `last${i}@lastpage.dev`, plan: 'yearly', expiresAt: null });
+    }
+    const res = await callSearch({ q: 'lastpage.dev', limit: '3', offset: '0' });
+    const body = await res.json();
+    expect(body.hasMore).toBe(false);
+    expect(body.total).toBe(3);
+    expect(body.count).toBe(3);
+  });
+
+  it('offset beyond total returns empty results with hasMore false', async () => {
+    insertLicense({ key: 'ADIA-SRCH-OVFL-AAAA', email: 'ovfl@overflow.dev', plan: 'lifetime', expiresAt: null });
+    const res = await callSearch({ q: 'overflow.dev', limit: '20', offset: '999' });
+    const body = await res.json();
+    expect(body.results).toEqual([]);
+    expect(body.count).toBe(0);
+    expect(body.total).toBe(1);
+    expect(body.hasMore).toBe(false);
+  });
+
+  it('offset defaults to 0 when not provided', async () => {
+    insertLicense({ key: 'ADIA-SRCH-DEF0-AAAA', email: 'def@default0.dev', plan: 'monthly', expiresAt: null });
+    const res = await callSearch({ q: 'default0.dev' });
+    const body = await res.json();
+    expect(body.offset).toBe(0);
+  });
 });
 
 // ─── resend_payment_failed audit log ─────────────────────────────────────────

@@ -195,12 +195,20 @@ export async function insertAuditLog(entry: {
   sqlite.insertAuditLog(entry);
 }
 
-export async function searchLicenses(query: string, limit?: number): Promise<License[]> {
+export async function searchLicenses(query: string, limit?: number, offset?: number): Promise<License[]> {
   if (usePg) {
     const { searchLicensesPg } = await import('./db-pg');
-    return searchLicensesPg(query, limit);
+    return searchLicensesPg(query, limit, offset);
   }
-  return sqlite.searchLicenses(query, limit);
+  return sqlite.searchLicenses(query, limit, offset);
+}
+
+export async function countSearchLicenses(query: string): Promise<number> {
+  if (usePg) {
+    const { countSearchLicensesPg } = await import('./db-pg');
+    return countSearchLicensesPg(query);
+  }
+  return sqlite.countSearchLicenses(query);
 }
 
 export async function listAuditLog(opts?: {

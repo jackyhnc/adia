@@ -1,9 +1,9 @@
 // Admin: full-text search across license key, email, and note.
-// GET ?q=...&limit=20 → { count, results: License[] }
+// GET ?q=...&limit=20&offset=0 → { count, total, hasMore, offset, limit, results: License[] }
 // Auth: ADMIN_TOKEN bearer header or ?token= query param.
 
 import { NextRequest, NextResponse } from 'next/server';
-import { searchLicenses } from '@/lib/store';
+import { searchLicenses, countSearchLicenses } from '@/lib/store';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -26,6 +26,18 @@ export async function GET(req: NextRequest) {
   }
   const rawLimit = req.nextUrl.searchParams.get('limit');
   const limit = rawLimit ? Math.min(Math.max(1, Number(rawLimit) || 20), 100) : 20;
-  const results = await searchLicenses(q.trim(), limit);
-  return NextResponse.json({ count: results.length, results });
+  const rawOffset = req.nextUrl.searchParams.get('offset');
+  const offset = rawOffset ? Math.max(0, Number(rawOffset) || 0) : 0;
+  const [results, total] = await Promise.all([
+    searchLicenses(q.trim(), limit, offset),
+    countSearchLicenses(q.trim()),
+  ]);
+  return NextResponse.json({
+    count: results.length,
+    total,
+    hasMore: offset + results.length < total,
+    offset,
+    limit,
+    results,
+  });
 }
