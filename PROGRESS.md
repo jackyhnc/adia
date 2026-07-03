@@ -1,5 +1,59 @@
 # Adia — Build Progress
 
+## Run 253 — 2026-07-03T16:10:00Z — ?since= and ?status= filters for licenses-by-email
+
+### Shipped
+
+**`web/lib/db.ts` — filter params on `countLicensesByEmail` and `findLicensesByEmail`:**
+- Both functions now accept optional `since?: string` (ISO date string) and `status?: string`.
+- Dynamic `WHERE` clause built with positional `?` params; spread to better-sqlite3 via variadic call.
+- Added `setIssuedAt(key, issuedAt)` export for test-time `issued_at` manipulation.
+
+**`web/lib/db-pg.ts` — Postgres equivalents:**
+- `countLicensesByEmailPg` and `findLicensesByEmailPg` updated with optional `since?` / `status?`.
+- Uses `($sinceVal::text IS NULL OR l.issued_at >= $sinceVal::text)` pattern — single query for
+  all combinations without template-literal composition hacks.
+- Both paginated and unpaginated branches updated.
+
+**`web/lib/store.ts` — facade signatures updated:**
+- `countLicensesByEmail(email, since?, status?)` and `findLicensesByEmail(email, limit?, offset?, since?, status?)`.
+
+**`web/app/api/admin/licenses-by-email/route.ts` — new query params:**
+- `?since=YYYY-MM-DD` — validated against `/^\d{4}-\d{2}-\d{2}$/`; 400 on mismatch.
+- `?status=active|canceled|expired|past_due` — validated against an allowlist; 400 on unknown value.
+- CSV export path also respects both filters.
+- `since` and `status` echoed in JSON response body when set.
+
+**`web/app/admin/page.tsx` — `LicensesByEmailPanel` filter UI:**
+- Date input ("Issued since") and status select ("Any" / active / canceled / expired / past_due)
+  added below the email field.
+- Both forwarded as query params in `lookup()`, `loadMore()`, and `exportCsv()`.
+- `STATUS_OPTIONS` constant at module scope.
+
+**Tests (9 new, 372 → 381):**
+- 400 for invalid `?since=` format (non-date string).
+- 400 for unknown `?status=` value.
+- `since=2000-01-01` returns all records + echoes `since` in body.
+- `since=2099-01-01` returns zero records.
+- Cutoff exclusion: two licenses with different `issued_at` (via `setIssuedAt`); `since=2023-01-01` returns only the newer one.
+- `status=active` returns only active; canceled one excluded.
+- `status=canceled` returns only the canceled license.
+- `status=expired` returns empty when no expired licenses.
+- Combined `since + status` filters correctly intersect.
+
+**Web test count: 372 → 381 (19 test files, all pass). `tsc --noEmit` clean (pre-existing test-file errors unchanged).**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add rate-limiting to `POST /api/admin/resend-license` (admin routes are bearer-auth-gated; a generous 20/min per IP limit would be consistent with user-facing endpoints).
+- Add `@MainActor` to remaining Swift test suites if strict-concurrency warnings appear in a real Xcode build.
+- Add `?plan=monthly|yearly|lifetime` filter to `GET /api/admin/licenses-by-email` following the same pattern just established.
+- Consider `POST /api/admin/change-plan` — change a license's plan (e.g. monthly → lifetime as a support resolution).
+
+---
+
 ## Run 252 — 2026-07-03T15:12:00Z — Pagination for LicensesByEmailPanel
 
 ### Shipped
