@@ -832,6 +832,100 @@ describe('GET /api/admin/licenses-by-email', () => {
     expect(body.count).toBe(1);
     expect(body.licenses[0].key).toBe('ADIA-CMB-NEW-BBBB');
   });
+
+  // ── ?plan= filter ─────────────────────────────────────────────────────────
+
+  it('returns 400 for unknown ?plan= value', async () => {
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=x%40x.com&plan=enterprise',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/plan/i);
+  });
+
+  it('plan=monthly returns only monthly licenses', async () => {
+    insertLicense({ key: 'ADIA-PLN-M-AAAA', email: 'pln@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-PLN-Y-BBBB', email: 'pln@example.com', plan: 'yearly', expiresAt: null });
+    insertLicense({ key: 'ADIA-PLN-L-CCCC', email: 'pln@example.com', plan: 'lifetime', expiresAt: null });
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=pln%40example.com&plan=monthly',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.count).toBe(1);
+    expect(body.licenses[0].key).toBe('ADIA-PLN-M-AAAA');
+    expect(body.plan).toBe('monthly');
+  });
+
+  it('plan=yearly returns only yearly licenses', async () => {
+    insertLicense({ key: 'ADIA-PLN2-M-AAAA', email: 'pln2@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-PLN2-Y-BBBB', email: 'pln2@example.com', plan: 'yearly', expiresAt: null });
+    insertLicense({ key: 'ADIA-PLN2-L-CCCC', email: 'pln2@example.com', plan: 'lifetime', expiresAt: null });
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=pln2%40example.com&plan=yearly',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.count).toBe(1);
+    expect(body.licenses[0].key).toBe('ADIA-PLN2-Y-BBBB');
+  });
+
+  it('plan filter returns empty list when no licenses match that plan', async () => {
+    insertLicense({ key: 'ADIA-PLNE-M-AAAA', email: 'plne@example.com', plan: 'monthly', expiresAt: null });
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=plne%40example.com&plan=lifetime',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.count).toBe(0);
+    expect(body.licenses).toHaveLength(0);
+  });
+
+  it('plan filter does not bleed across emails', async () => {
+    insertLicense({ key: 'ADIA-PLNB-A-1111', email: 'plnbleed-a@example.com', plan: 'lifetime', expiresAt: null });
+    insertLicense({ key: 'ADIA-PLNB-B-2222', email: 'plnbleed-b@example.com', plan: 'monthly', expiresAt: null });
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=plnbleed-a%40example.com&plan=lifetime',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.count).toBe(1);
+    expect(body.licenses[0].key).toBe('ADIA-PLNB-A-1111');
+  });
+
+  it('plan and status filters can be combined', async () => {
+    insertLicense({ key: 'ADIA-PSC-MY-AAAA', email: 'psc@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-PSC-YA-BBBB', email: 'psc@example.com', plan: 'yearly', expiresAt: null });
+    insertLicense({ key: 'ADIA-PSC-YC-CCCC', email: 'psc@example.com', plan: 'yearly', expiresAt: null });
+    setStatus('ADIA-PSC-YC-CCCC', 'canceled');
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    // plan=yearly + status=active → only BBBB
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=psc%40example.com&plan=yearly&status=active',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.count).toBe(1);
+    expect(body.licenses[0].key).toBe('ADIA-PSC-YA-BBBB');
+  });
 });
 
 // ─── POST /api/admin/resend-payment-failed ─────────────────────────────────

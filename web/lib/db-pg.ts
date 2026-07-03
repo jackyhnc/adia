@@ -117,25 +117,28 @@ export async function findLicensePg(key: string, email?: string): Promise<Licens
   };
 }
 
-export async function countLicensesByEmailPg(email: string, since?: string, status?: string): Promise<number> {
+export async function countLicensesByEmailPg(email: string, since?: string, status?: string, plan?: string): Promise<number> {
   await ensureSchema();
   const sinceVal = since ?? null;
   const statusVal = status ?? null;
+  const planVal = plan ?? null;
   const result = await sql<{ c: number }>`
     SELECT COUNT(*)::int AS c FROM licenses l
     WHERE l.email = ${email.trim().toLowerCase()}
       AND (${sinceVal}::text IS NULL OR l.issued_at >= ${sinceVal}::text)
       AND (${statusVal}::text IS NULL OR l.status = ${statusVal}::text)
+      AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
   `;
   return result.rows[0]?.c ?? 0;
 }
 
-export async function findLicensesByEmailPg(email: string, limit?: number, offset?: number, since?: string, status?: string): Promise<License[]> {
+export async function findLicensesByEmailPg(email: string, limit?: number, offset?: number, since?: string, status?: string, plan?: string): Promise<License[]> {
   await ensureSchema();
   const norm = email.trim().toLowerCase();
   const pgOffset = offset ?? 0;
   const sinceVal = since ?? null;
   const statusVal = status ?? null;
+  const planVal = plan ?? null;
 
   const result = limit != null
     ? await sql<any>`
@@ -150,6 +153,7 @@ export async function findLicensesByEmailPg(email: string, limit?: number, offse
         WHERE l.email = ${norm}
           AND (${sinceVal}::text IS NULL OR l.issued_at >= ${sinceVal}::text)
           AND (${statusVal}::text IS NULL OR l.status = ${statusVal}::text)
+          AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
         GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at
         ORDER BY l.issued_at DESC
         LIMIT ${limit} OFFSET ${pgOffset}
@@ -166,6 +170,7 @@ export async function findLicensesByEmailPg(email: string, limit?: number, offse
         WHERE l.email = ${norm}
           AND (${sinceVal}::text IS NULL OR l.issued_at >= ${sinceVal}::text)
           AND (${statusVal}::text IS NULL OR l.status = ${statusVal}::text)
+          AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
         GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at
         ORDER BY l.issued_at DESC
       `;

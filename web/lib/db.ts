@@ -171,24 +171,26 @@ export function countActivations(key: string): number {
   return row.c;
 }
 
-export function countLicensesByEmail(email: string, since?: string, status?: string): number {
+export function countLicensesByEmail(email: string, since?: string, status?: string, plan?: string): number {
   const norm = email.trim().toLowerCase();
   const conditions: string[] = ['l.email = ?'];
   const params: unknown[] = [norm];
   if (since) { conditions.push('l.issued_at >= ?'); params.push(since); }
   if (status) { conditions.push('l.status = ?'); params.push(status); }
+  if (plan) { conditions.push('l.plan = ?'); params.push(plan); }
   const row = (db()
     .prepare(`SELECT COUNT(*) AS c FROM licenses l WHERE ${conditions.join(' AND ')}`)
     .get as (...a: unknown[]) => { c: number })(...params);
   return row.c;
 }
 
-export function findLicensesByEmail(email: string, limit?: number, offset?: number, since?: string, status?: string): License[] {
+export function findLicensesByEmail(email: string, limit?: number, offset?: number, since?: string, status?: string, plan?: string): License[] {
   const norm = email.trim().toLowerCase();
   const conditions: string[] = ['l.email = ?'];
   const params: unknown[] = [norm];
   if (since) { conditions.push('l.issued_at >= ?'); params.push(since); }
   if (status) { conditions.push('l.status = ?'); params.push(status); }
+  if (plan) { conditions.push('l.plan = ?'); params.push(plan); }
   const pagination = limit != null ? ` LIMIT ${limit} OFFSET ${offset ?? 0}` : '';
   const rows = (db()
     .prepare(`

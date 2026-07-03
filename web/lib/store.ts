@@ -63,20 +63,20 @@ export async function countActivations(key: string): Promise<number> {
   return sqlite.countActivations(key);
 }
 
-export async function countLicensesByEmail(email: string, since?: string, status?: string): Promise<number> {
+export async function countLicensesByEmail(email: string, since?: string, status?: string, plan?: string): Promise<number> {
   if (usePg) {
     const { countLicensesByEmailPg } = await import('./db-pg');
-    return countLicensesByEmailPg(email, since, status);
+    return countLicensesByEmailPg(email, since, status, plan);
   }
-  return sqlite.countLicensesByEmail(email, since, status);
+  return sqlite.countLicensesByEmail(email, since, status, plan);
 }
 
-export async function findLicensesByEmail(email: string, limit?: number, offset?: number, since?: string, status?: string): Promise<License[]> {
+export async function findLicensesByEmail(email: string, limit?: number, offset?: number, since?: string, status?: string, plan?: string): Promise<License[]> {
   if (usePg) {
     const { findLicensesByEmailPg } = await import('./db-pg');
-    return findLicensesByEmailPg(email, limit, offset, since, status);
+    return findLicensesByEmailPg(email, limit, offset, since, status, plan);
   }
-  return sqlite.findLicensesByEmail(email, limit, offset, since, status);
+  return sqlite.findLicensesByEmail(email, limit, offset, since, status, plan);
 }
 
 export async function setStatus(key: string, status: License['status']): Promise<void> {

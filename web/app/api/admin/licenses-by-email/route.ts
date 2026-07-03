@@ -5,6 +5,7 @@
 // ?offset=N         — skip first N records (default 0). Ignored for CSV export.
 // ?since=YYYY-MM-DD — only licenses issued on or after this date.
 // ?status=active|canceled|expired|past_due — only licenses with this status.
+// ?plan=monthly|yearly|lifetime — only licenses with this plan.
 // ?format=csv       — returns a CSV file download instead of JSON (all records, no pagination).
 //   Columns: key, plan, status, machineCount, issuedAt, expiresAt, note, lastAction, lastActionAt
 
@@ -14,6 +15,7 @@ import { findLicensesByEmail, countLicensesByEmail } from '@/lib/store';
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
 const VALID_STATUSES = new Set(['active', 'canceled', 'expired', 'past_due']);
+const VALID_PLANS = new Set(['monthly', 'yearly', 'lifetime']);
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 export const runtime = 'nodejs';
@@ -57,11 +59,17 @@ export async function GET(req: NextRequest) {
   }
   const statusFilter = rawStatus ?? undefined;
 
+  const rawPlan = req.nextUrl.searchParams.get('plan');
+  if (rawPlan !== null && !VALID_PLANS.has(rawPlan)) {
+    return NextResponse.json({ error: `invalid ?plan= — must be one of: ${[...VALID_PLANS].join(', ')}` }, { status: 400 });
+  }
+  const planFilter = rawPlan ?? undefined;
+
   const format = req.nextUrl.searchParams.get('format');
 
   if (format === 'csv') {
     // CSV exports all records — no pagination but respects filters
-    const licenses = await findLicensesByEmail(email, undefined, undefined, since, statusFilter);
+    const licenses = await findLicensesByEmail(email, undefined, undefined, since, statusFilter, planFilter);
     const normalized = email.trim().toLowerCase();
     const rows = licenses.map(l =>
       [
@@ -93,8 +101,8 @@ export async function GET(req: NextRequest) {
   const offset = Number.isFinite(rawOffset) && rawOffset >= 0 ? rawOffset : 0;
 
   const [total, licenses] = await Promise.all([
-    countLicensesByEmail(email, since, statusFilter),
-    findLicensesByEmail(email, limit, offset, since, statusFilter),
+    countLicensesByEmail(email, since, statusFilter, planFilter),
+    findLicensesByEmail(email, limit, offset, since, statusFilter, planFilter),
   ]);
 
   return NextResponse.json({
@@ -105,5 +113,6 @@ export async function GET(req: NextRequest) {
     offset,
     ...(since ? { since } : {}),
     ...(statusFilter ? { status: statusFilter } : {}),
+    ...(planFilter ? { plan: planFilter } : {}),
   });
 }

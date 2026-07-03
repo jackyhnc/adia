@@ -1517,11 +1517,13 @@ type LicenseRow = {
 const EMAIL_PAGE_SIZE = 20;
 
 const STATUS_OPTIONS = ['', 'active', 'canceled', 'expired', 'past_due'] as const;
+const PLAN_OPTIONS = ['', 'monthly', 'yearly', 'lifetime'] as const;
 
 function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectKey: (key: string) => void }) {
   const [email, setEmail] = useState('');
   const [since, setSince] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [planFilter, setPlanFilter] = useState('');
   const [result, setResult] = useState<{
     email: string;
     count: number;
@@ -1547,6 +1549,7 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
       const params = new URLSearchParams({ email, limit: String(EMAIL_PAGE_SIZE), offset: '0' });
       if (since) params.set('since', since);
       if (statusFilter) params.set('status', statusFilter);
+      if (planFilter) params.set('plan', planFilter);
       const res = await fetch(`/api/admin/licenses-by-email?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -1575,6 +1578,7 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
       });
       if (since) params.set('since', since);
       if (statusFilter) params.set('status', statusFilter);
+      if (planFilter) params.set('plan', planFilter);
       const res = await fetch(`/api/admin/licenses-by-email?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -1627,6 +1631,7 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
     const params = new URLSearchParams({ email: result.email, format: 'csv' });
     if (since) params.set('since', since);
     if (statusFilter) params.set('status', statusFilter);
+    if (planFilter) params.set('plan', planFilter);
     const url = `/api/admin/licenses-by-email?${params}&token=${encodeURIComponent(token)}`;
     const a = document.createElement('a');
     a.href = url;
@@ -1669,6 +1674,17 @@ function LicensesByEmailPanel({ token, onSelectKey }: { token: string; onSelectK
             >
               {STATUS_OPTIONS.map(s => (
                 <option key={s} value={s}>{s === '' ? 'Any' : s}</option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Plan">
+            <select
+              value={planFilter}
+              onChange={(e) => setPlanFilter(e.target.value)}
+              className="input"
+            >
+              {PLAN_OPTIONS.map(p => (
+                <option key={p} value={p}>{p === '' ? 'Any' : p}</option>
               ))}
             </select>
           </Field>
