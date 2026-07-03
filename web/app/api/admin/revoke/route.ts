@@ -3,7 +3,7 @@
 // Auth: ADMIN_TOKEN bearer header or ?token= query param.
 
 import { NextRequest, NextResponse } from 'next/server';
-import { findLicense, setStatus } from '@/lib/store';
+import { findLicense, setStatus, insertAuditLog } from '@/lib/store';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -28,5 +28,6 @@ export async function POST(req: NextRequest) {
   if (!license) return NextResponse.json({ error: 'unknown key' }, { status: 404 });
   const previousStatus = license.status;
   await setStatus(key, 'canceled');
+  await insertAuditLog({ licenseKey: key, action: 'revoke', detail: { previousStatus, newStatus: 'canceled' } });
   return NextResponse.json({ ok: true, key, previousStatus, newStatus: 'canceled' });
 }

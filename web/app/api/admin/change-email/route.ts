@@ -8,7 +8,7 @@
 // asserting the identity change has been verified out-of-band.
 
 import { NextRequest, NextResponse } from 'next/server';
-import { findLicense, transferLicense } from '@/lib/store';
+import { findLicense, transferLicense, insertAuditLog } from '@/lib/store';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
   }
 
   await transferLicense(rawKey, rawEmail);
+  await insertAuditLog({ licenseKey: rawKey, action: 'change_email', detail: { oldEmail, newEmail: rawEmail } });
 
   return NextResponse.json({
     ok: true,

@@ -50,6 +50,14 @@ function db(): Database.Database {
       email      TEXT PRIMARY KEY,
       created_at TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS audit_log (
+      id           INTEGER PRIMARY KEY AUTOINCREMENT,
+      license_key  TEXT,
+      action       TEXT NOT NULL,
+      detail       TEXT,
+      created_at   TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_audit_log_license_key ON audit_log(license_key);
   `);
   // Migration: add note column to existing DBs that predate this column.
   try { _db.exec('ALTER TABLE licenses ADD COLUMN note TEXT'); }
@@ -64,6 +72,15 @@ export type License = {
   status: 'active' | 'canceled' | 'expired' | 'past_due';
   issuedAt: string;
   expiresAt: string | null;
+  note?: string | null;
+};
+
+export type AuditEntry = {
+  id: number;
+  licenseKey: string | null;
+  action: string;
+  detail: string | null;
+  createdAt: string;
 };
 
 export type Activation = {
@@ -120,6 +137,7 @@ export function findLicense(key: string, email?: string): License | null {
     status: r.status,
     issuedAt: r.issued_at,
     expiresAt: r.expires_at,
+    note: r.note ?? null,
   };
 }
 
@@ -161,6 +179,7 @@ export function findLicensesByEmail(email: string): License[] {
     status: r.status,
     issuedAt: r.issued_at,
     expiresAt: r.expires_at,
+    note: r.note ?? null,
   }));
 }
 
@@ -256,6 +275,40 @@ export function getNote(key: string): string | null {
     .prepare('SELECT note FROM licenses WHERE key = ?')
     .get(key.trim().toUpperCase()) as { note: string | null } | undefined;
   return row?.note ?? null;
+}
+
+export function insertAuditLog(entry: {
+  licenseKey: string | null;
+  action: string;
+  detail?: Record<string, unknown>;
+}): void {
+  const now = new Date().toISOString();
+  db().prepare(
+    'INSERT INTO audit_log (license_key, action, detail, created_at) VALUES (?, ?, ?, ?)',
+  ).run(
+    entry.licenseKey,
+    entry.action,
+    entry.detail ? JSON.stringify(entry.detail) : null,
+    now,
+  );
+}
+
+export function listAuditLog(opts?: { licenseKey?: string; limit?: number }): AuditEntry[] {
+  const limit = Math.min(opts?.limit ?? 100, 500);
+  const rows = opts?.licenseKey
+    ? db()
+        .prepare('SELECT * FROM audit_log WHERE license_key = ? ORDER BY id DESC LIMIT ?')
+        .all(opts.licenseKey.trim().toUpperCase(), limit)
+    : db()
+        .prepare('SELECT * FROM audit_log ORDER BY id DESC LIMIT ?')
+        .all(limit);
+  return (rows as any[]).map(r => ({
+    id: r.id,
+    licenseKey: r.license_key,
+    action: r.action,
+    detail: r.detail,
+    createdAt: r.created_at,
+  }));
 }
 
 export function getStats(): LicenseStats {

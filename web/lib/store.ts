@@ -7,14 +7,14 @@
 //   anything else                 → better-sqlite3 (lib/db.ts)
 
 import * as sqlite from './db';
-import type { License, Activation, LicenseStats } from './db';
+import type { License, Activation, LicenseStats, AuditEntry } from './db';
 
 const usePg = (() => {
   const url = process.env.DATABASE_URL ?? '';
   return /^postgres(ql)?:\/\//.test(url);
 })();
 
-export type { License, Activation, LicenseStats };
+export type { License, Activation, LicenseStats, AuditEntry };
 
 export async function insertLicense(row: {
   key: string;
@@ -181,4 +181,27 @@ export async function getStats(): Promise<LicenseStats> {
     return getStatsPg();
   }
   return sqlite.getStats();
+}
+
+export async function insertAuditLog(entry: {
+  licenseKey: string | null;
+  action: string;
+  detail?: Record<string, unknown>;
+}): Promise<void> {
+  if (usePg) {
+    const { insertAuditLogPg } = await import('./db-pg');
+    return insertAuditLogPg(entry);
+  }
+  sqlite.insertAuditLog(entry);
+}
+
+export async function listAuditLog(opts?: {
+  licenseKey?: string;
+  limit?: number;
+}): Promise<AuditEntry[]> {
+  if (usePg) {
+    const { listAuditLogPg } = await import('./db-pg');
+    return listAuditLogPg(opts);
+  }
+  return sqlite.listAuditLog(opts);
 }

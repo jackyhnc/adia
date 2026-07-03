@@ -32,6 +32,7 @@ export default function Admin() {
       <LicensesByEmailPanel token={token} />
       <LookupPanel token={token} />
       <NotePanel token={token} />
+      <AuditPanel token={token} />
       <ActivationsPanel token={token} />
       <DeactivateAllPanel token={token} />
       <TransferPanel />
@@ -592,6 +593,131 @@ function NotePanel({ token }: { token: string }) {
               ? <>Note on <span className="font-mono">{result.key}</span>: <em>{result.note}</em></>
               : <>Note cleared for <span className="font-mono">{result.key}</span>.</>}
           </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Admin audit log ─────────────────────────────────────────────────────────
+
+type AuditEntry = {
+  id: number;
+  licenseKey: string | null;
+  action: string;
+  detail: string | null;
+  createdAt: string;
+};
+
+function AuditPanel({ token }: { token: string }) {
+  const [keyFilter, setKeyFilter] = useState('');
+  const [entries, setEntries] = useState<AuditEntry[] | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function load(e: React.FormEvent) {
+    e.preventDefault();
+    if (!token) { setError('Paste admin token above first.'); return; }
+    setLoading(true);
+    setError('');
+    setEntries(null);
+    try {
+      const params = new URLSearchParams({ limit: '100' });
+      if (keyFilter.trim()) params.set('key', keyFilter.trim().toUpperCase());
+      const res = await fetch(`/api/admin/audit-log?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        const body = await res.json();
+        setEntries(body.entries);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function actionColor(action: string): string {
+    if (action === 'issue') return 'text-green-600';
+    if (action === 'revoke') return 'text-red-500';
+    if (action === 'reactivate') return 'text-green-700';
+    if (action === 'change_plan') return 'text-violet-600';
+    if (action === 'extend') return 'text-blue-600';
+    if (action === 'set_note') return 'text-teal-600';
+    if (action === 'change_email') return 'text-orange-600';
+    return 'text-ink/70';
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Admin audit log</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        All admin actions on licenses — issue, revoke, change_plan, extend, reactivate, set_note,
+        change_email. Most recent first. Filter by license key to see history for one license.
+      </p>
+      <form onSubmit={load} className="card space-y-3">
+        <Field label="License key (optional — leave blank for all recent actions)">
+          <input
+            value={keyFilter}
+            onChange={(e) => setKeyFilter(e.target.value)}
+            placeholder="ADIA-XXXX-XXXX-XXXX or blank"
+            className="input font-mono"
+          />
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Loading…' : 'Load audit log'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {entries !== null && (
+        <div className="card mt-3 space-y-2">
+          {entries.length === 0 ? (
+            <p className="text-sm text-ink/50">No audit log entries found.</p>
+          ) : (
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-left text-ink/50 border-b border-ink/10">
+                  <th className="pb-1 pr-3">When</th>
+                  <th className="pb-1 pr-3">Action</th>
+                  <th className="pb-1 pr-3">License key</th>
+                  <th className="pb-1">Detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                {entries.map((e) => {
+                  let detailObj: Record<string, unknown> | null = null;
+                  try { detailObj = e.detail ? JSON.parse(e.detail) : null; } catch {}
+                  return (
+                    <tr key={e.id} className="border-t border-ink/5">
+                      <td className="py-1 pr-3 font-mono text-ink/40 whitespace-nowrap">
+                        {e.createdAt.slice(0, 16).replace('T', ' ')}
+                      </td>
+                      <td className={`py-1 pr-3 font-semibold ${actionColor(e.action)}`}>
+                        {e.action}
+                      </td>
+                      <td className="py-1 pr-3 font-mono text-ink/60">
+                        {e.licenseKey ?? <span className="italic text-ink/30">—</span>}
+                      </td>
+                      <td className="py-1 font-mono text-ink/50 break-all">
+                        {detailObj
+                          ? Object.entries(detailObj)
+                              .map(([k, v]) => `${k}: ${v ?? 'null'}`)
+                              .join(' · ')
+                          : (e.detail ?? '—')}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
+          <p className="text-xs text-ink/30 pt-1">Showing {entries.length} entries (max 100).</p>
         </div>
       )}
     </div>

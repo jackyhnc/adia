@@ -5,7 +5,7 @@
 // Auth: ADMIN_TOKEN bearer header or ?token= query param.
 
 import { NextRequest, NextResponse } from 'next/server';
-import { findLicense, getNote, setNote } from '@/lib/store';
+import { findLicense, getNote, setNote, insertAuditLog } from '@/lib/store';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -52,5 +52,6 @@ export async function POST(req: NextRequest) {
   const rawNote = body.note != null ? String(body.note).trim() : null;
   const note = rawNote || null;
   await setNote(key, note);
+  await insertAuditLog({ licenseKey: key, action: 'set_note', detail: { note } });
   return NextResponse.json({ ok: true, key, note });
 }

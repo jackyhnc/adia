@@ -13,7 +13,7 @@
 // days must be a positive integer; max 3650 (10 years) to prevent typos.
 
 import { NextRequest, NextResponse } from 'next/server';
-import { findLicense, setExpiry } from '@/lib/store';
+import { findLicense, setExpiry, insertAuditLog } from '@/lib/store';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
   const newExpiresAt = baseDate.toISOString();
 
   await setExpiry(key, newExpiresAt);
+  await insertAuditLog({ licenseKey: key, action: 'extend', detail: { previousExpiresAt, newExpiresAt, days } });
 
   return NextResponse.json({ ok: true, key, previousExpiresAt, newExpiresAt, days });
 }

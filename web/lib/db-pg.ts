@@ -42,6 +42,16 @@ async function ensureSchema(): Promise<void> {
   `;
   // Migration: add note column to existing deployments.
   await sql`ALTER TABLE licenses ADD COLUMN IF NOT EXISTS note TEXT`;
+  await sql`
+    CREATE TABLE IF NOT EXISTS audit_log (
+      id           SERIAL PRIMARY KEY,
+      license_key  TEXT,
+      action       TEXT NOT NULL,
+      detail       TEXT,
+      created_at   TIMESTAMPTZ NOT NULL
+    )
+  `;
+  await sql`CREATE INDEX IF NOT EXISTS idx_audit_log_license_key ON audit_log(license_key)`;
   _schemaReady = true;
 }
 
@@ -81,14 +91,14 @@ export async function findLicensePg(key: string, email?: string): Promise<Licens
   const cleanKey = key.trim().toUpperCase();
   const result = email
     ? await sql<License & { issued_at: string; expires_at: string | null }>`
-        SELECT key, email, plan, status,
+        SELECT key, email, plan, status, note,
                to_char(issued_at, 'YYYY-MM-DD"T"HH24:MI:SSZ')  AS "issuedAt",
                to_char(expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt"
         FROM licenses
         WHERE key = ${cleanKey} AND email = ${email.trim().toLowerCase()}
       `
     : await sql<License & { issued_at: string; expires_at: string | null }>`
-        SELECT key, email, plan, status,
+        SELECT key, email, plan, status, note,
                to_char(issued_at, 'YYYY-MM-DD"T"HH24:MI:SSZ')  AS "issuedAt",
                to_char(expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt"
         FROM licenses
@@ -103,13 +113,14 @@ export async function findLicensePg(key: string, email?: string): Promise<Licens
     status: row.status,
     issuedAt: (row as any).issuedAt,
     expiresAt: (row as any).expiresAt,
+    note: (row as any).note ?? null,
   };
 }
 
 export async function findLicensesByEmailPg(email: string): Promise<License[]> {
   await ensureSchema();
   const result = await sql<any>`
-    SELECT key, email, plan, status,
+    SELECT key, email, plan, status, note,
            to_char(issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
            to_char(expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt"
     FROM licenses
@@ -123,6 +134,7 @@ export async function findLicensesByEmailPg(email: string): Promise<License[]> {
     status: r.status,
     issuedAt: r.issuedAt,
     expiresAt: r.expiresAt,
+    note: r.note ?? null,
   }));
 }
 
@@ -258,7 +270,53 @@ export async function getNotePg(key: string): Promise<string | null> {
   return result.rows[0]?.note ?? null;
 }
 
-import type { LicenseStats } from './db';
+import type { LicenseStats, AuditEntry } from './db';
+
+export async function insertAuditLogPg(entry: {
+  licenseKey: string | null;
+  action: string;
+  detail?: Record<string, unknown>;
+}): Promise<void> {
+  await ensureSchema();
+  const detail = entry.detail ? JSON.stringify(entry.detail) : null;
+  await sql`
+    INSERT INTO audit_log (license_key, action, detail, created_at)
+    VALUES (${entry.licenseKey}, ${entry.action}, ${detail}, NOW())
+  `;
+}
+
+export async function listAuditLogPg(opts?: {
+  licenseKey?: string;
+  limit?: number;
+}): Promise<AuditEntry[]> {
+  await ensureSchema();
+  const limit = Math.min(opts?.limit ?? 100, 500);
+  const result = opts?.licenseKey
+    ? await sql<any>`
+        SELECT id, license_key,
+               action, detail,
+               to_char(created_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS created_at
+        FROM audit_log
+        WHERE license_key = ${opts.licenseKey.trim().toUpperCase()}
+        ORDER BY id DESC
+        LIMIT ${limit}
+      `
+    : await sql<any>`
+        SELECT id, license_key,
+               action, detail,
+               to_char(created_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS created_at
+        FROM audit_log
+        ORDER BY id DESC
+        LIMIT ${limit}
+      `;
+  return result.rows.map((r: any) => ({
+    id: r.id,
+    licenseKey: r.license_key,
+    action: r.action,
+    detail: r.detail,
+    createdAt: r.created_at,
+  }));
+}
 
 export async function getStatsPg(): Promise<LicenseStats> {
   await ensureSchema();
