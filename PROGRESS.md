@@ -10383,3 +10383,59 @@ Nothing blocked.
 - Consider showing suggestions after PINNED as "EXPLORE MORE" for users with 1-2 saved templates
 - `handshake.com` (campus recruiting) is widely used by students — consider adding to blocklist
 - Wire `SuggestedTemplate.preferredDuration` into the creation form's duration picker when prefilling
+
+---
+
+## Run 249 — 2026-07-03
+
+### Shipped
+
+**`Sources/AdiCore/NotchState.swift` — duration prefill support:**
+- New `sessionCreationPrefillDuration: TimeInterval?` published property
+- `startCreating(prefill:duration:)` now accepts an optional duration parameter
+- `stopCreating()` and `collapse()` both clear the new property
+
+**`Sources/AdiCore/Views/Notch/SessionCreationFormView.swift` — prefill duration into picker:**
+- On `.onAppear`, reads `state.sessionCreationPrefillDuration`
+- If it matches a preset chip (25/45/60/90 min), selects that chip
+- Otherwise formats as "2h", "1h30m", "45m" etc. and sets `customDurationText`
+- Result: tapping "Write my essay" now pre-fills the task field AND selects the 90m chip automatically
+
+**`Sources/AdiCore/Views/Notch/IdleNotchView.swift` — three targeted changes:**
+- `suggestedButton` now calls `startCreating(prefill: s.task, duration: s.preferredDuration)` to pass the template's duration
+- `suggestedSection` header now has an HStack with "SUGGESTIONS" label + small "hide" button that sets `settings.showSuggestedTemplates = false`; the section itself is now gated on `settings.showSuggestedTemplates`
+
+**`Sources/AdiCore/Settings/SettingsStore.swift` — new setting:**
+- `showSuggestedTemplates: Bool` (default `true`, persisted to UserDefaults `adia.showSuggestedTemplates`)
+- Power users can permanently hide starter suggestions via the notch "hide" button
+
+**`Sources/AdiCore/Views/Settings/TemplatesSettingsTab.swift` — re-enable toggle:**
+- Added "Show starter suggestions" toggle in the Templates footer row so hidden suggestions can be re-enabled without clearing UserDefaults
+- Both toggles wrapped in a `VStack(alignment: .trailing, spacing: 6)` inside the existing `HStack`
+
+**`Sources/AdiCore/Views/Settings/SettingsView.swift` — height bump:**
+- Templates tab height: 460 → 490 to accommodate the second toggle row
+
+**`Sources/AdiCore/Models/DefaultBlocklists.swift` — 7 new blocked domains:**
+- Campus recruiting: `handshake.com`, `wayup.com`, `internships.com`
+- Homework-help / cheating shortcuts: `chegg.com`, `coursehero.com`
+- Additional sports scores: `theScore.com`, `cricbuzz.com`
+
+### Verification
+- No Swift toolchain in this container (Linux). Verified by:
+  - Code review: all call sites of `startCreating` use the default `duration: nil` (unchanged callers unaffected)
+  - `sessionCreationPrefillDuration` cleared in both `stopCreating()` and `collapse()` — no leakage
+  - `showSuggestedTemplates` stored to its own UserDefaults key, independent of all other settings
+  - No duplicate domains added (espn.com/nba.com/nfl.com already present earlier in the array)
+  - No conflict markers remain in any Swift file
+  - Pushed cleanly to origin/main (fast-forward from cb6a209 → 515886e)
+
+### Blocked
+Nothing blocked.
+
+### Next agent should
+- Consider wiring `SessionTemplate.preferredDuration` into the creation form similarly — pinned templates already launch directly with their duration, but a "prefill from template" flow (open form with template pre-filled, let user edit before starting) would benefit from the same duration plumbing
+- Consider a "dismiss suggestions" indicator in the Settings UI showing whether suggestions are currently visible (toggle state synced with the notch dismiss)
+- Wire `SuggestedTemplate.preferredDuration` into the `SessionCreationFormView` directly (currently handled via `NotchState.sessionCreationPrefillDuration`; consider if there's a more direct path for the pinned template flow)
+- Add `itch.io/gamejolt`-style browser gaming sites per-region for completeness
+- CI on this branch is based on the web/* jobs; the Swift jobs rely on the macOS runner which isn't available in this container
