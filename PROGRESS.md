@@ -1,5 +1,39 @@
 # Adia — Build Progress
 
+## Run 244 — 2026-07-03T02:11:00Z — Audit log for resend_license + deactivate_all, Note column in licenses-by-email, CSV export
+
+### Shipped
+
+**Audit log coverage for 2 missing admin routes:**
+- `web/app/api/admin/resend-license/route.ts`: `insertAuditLog({ action: 'resend_license', detail: { to, resolvedBy } })` — `resolvedBy` is `'key'` when a key was passed in the request body, `'email'` when resolved via email lookup.
+- `web/app/api/admin/deactivate-all/route.ts`: `insertAuditLog({ action: 'deactivate_all', detail: { removedCount } })` — records how many seats were cleared.
+- All 9 admin mutating routes now write to the audit log (issue, revoke, change_plan, extend, reactivate, set_note, change_email, resend_license, deactivate_all).
+
+**Note column in `LicensesByEmailPanel`:**
+- `LicenseRow` type gains `note?: string | null`.
+- Table adds a `Note` column header and `<td>` rendering `lic.note ?? '—'` in italic — visible when searching licenses by email.
+
+**CSV export for audit log:**
+- `web/app/api/admin/audit-log/route.ts`: `?format=csv` returns RFC 4180 CSV — `Content-Type: text/csv`, `Content-Disposition: attachment; filename="audit-log.csv"`, header row `id,createdAt,licenseKey,action,detail`, all `"` in field values doubled.
+- `web/app/admin/page.tsx`: `AuditPanel` gets an "Export CSV" button that builds a URL with the current `keyFilter` and `?token=` auth (avoids a JS fetch for file downloads), sets `a.download` and clicks it.
+- `AuditPanel` action color table extended: `resend_license → text-sky-600`, `deactivate_all → text-rose-600`.
+
+**Tests:**
+- `web/__tests__/admin-audit.test.ts`: 8 new tests — `resend_license` audit by-key and by-email, `deactivate_all` audit with 0 and 2 activations, CSV: auth 401, Content-Type text/csv, data rows present, RFC 4180 quoting.
+- `vi.mock('@/lib/email', ...)` added to the audit test file so `callResendLicense` works without a real email service.
+- 311 tests passed (up from 303). 18 test files green.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding `note` column to the `LookupPanel` result card (currently shows as raw JSON — a dedicated field display would be cleaner).
+- Consider adding audit log entries for the `resend_payment_failed` route (it currently isn't instrumented).
+- Consider surfacing recent audit log entries inline in `LookupPanel` (last 5 actions for a key) so admins get instant history when looking up a license.
+- Consider an admin `search-licenses` endpoint (full-text search across email + key + note).
+
+---
+
 ## Run 243 — 2026-07-03T01:15:00Z — Admin audit log + note field in License type
 
 ### Shipped
