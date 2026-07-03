@@ -367,6 +367,33 @@ export async function countSearchLicensesPg(query: string): Promise<number> {
   return result.rows[0]?.total ?? 0;
 }
 
+export async function searchLicensesAllPg(query: string): Promise<License[]> {
+  await ensureSchema();
+  const q = `%${query.trim()}%`;
+  const lq = `%${query.trim().toLowerCase()}%`;
+  const result = await sql<any>`
+    SELECT l.key, l.email, l.plan, l.status, l.note,
+           to_char(l.issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
+           to_char(l.expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt",
+           COUNT(a.machine_hash)::int AS "machineCount"
+    FROM licenses l
+    LEFT JOIN activations a ON a.license_key = l.key
+    WHERE l.key ILIKE ${q} OR l.email ILIKE ${lq} OR l.note ILIKE ${q}
+    GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at
+    ORDER BY l.issued_at DESC
+  `;
+  return result.rows.map((r: any) => ({
+    key: r.key,
+    email: r.email,
+    plan: r.plan,
+    status: r.status,
+    issuedAt: r.issuedAt,
+    expiresAt: r.expiresAt,
+    note: r.note ?? null,
+    machineCount: r.machineCount,
+  }));
+}
+
 export async function getStatsPg(): Promise<LicenseStats> {
   await ensureSchema();
 

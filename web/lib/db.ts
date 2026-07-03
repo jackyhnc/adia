@@ -366,6 +366,31 @@ export function countSearchLicenses(query: string): number {
   return row.total;
 }
 
+export function searchLicensesAll(query: string): License[] {
+  const q = `%${query.trim()}%`;
+  const lq = `%${query.trim().toLowerCase()}%`;
+  const rows = db()
+    .prepare(`
+      SELECT l.*, COUNT(a.machine_hash) AS machine_count_live
+      FROM licenses l
+      LEFT JOIN activations a ON a.license_key = l.key
+      WHERE l.key LIKE ? OR l.email LIKE ? OR l.note LIKE ?
+      GROUP BY l.key
+      ORDER BY l.issued_at DESC
+    `)
+    .all(q.toUpperCase(), lq, q) as any[];
+  return rows.map(r => ({
+    key: r.key,
+    email: r.email,
+    plan: r.plan,
+    status: r.status,
+    issuedAt: r.issued_at,
+    expiresAt: r.expires_at,
+    note: r.note ?? null,
+    machineCount: r.machine_count_live as number,
+  }));
+}
+
 export function getStats(): LicenseStats {
   const now = new Date();
   const day7 = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();

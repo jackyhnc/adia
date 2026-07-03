@@ -1,5 +1,54 @@
 # Adia — Build Progress
 
+## Run 250 — 2026-07-03T09:10:00Z — CSV export for search-licenses endpoint
+
+### Shipped
+
+**`GET /api/admin/search-licenses?q=...&format=csv` — CSV export:**
+- `web/lib/db.ts`: added `searchLicensesAll(query)` — same SQL as `searchLicenses` but with no LIMIT, returns all matching rows.
+- `web/lib/db-pg.ts`: added `searchLicensesAllPg(query)` — Postgres equivalent, no LIMIT.
+- `web/lib/store.ts`: added `searchLicensesAll` facade wiring SQLite and Postgres paths.
+- `web/app/api/admin/search-licenses/route.ts`: added `?format=csv` branch.
+  - Returns `Content-Type: text/csv; charset=utf-8` + `Content-Disposition: attachment; filename="search-{q}-{date}.csv"`.
+  - Columns: `key,email,plan,status,machineCount,issuedAt,expiresAt,note`.
+  - RFC 4180 compliant cell quoting (commas, quotes, newlines).
+  - Empty match set returns header-only CSV.
+  - Auth and `?q=` validation still apply for CSV path (same 401/400 guards).
+  - `?token=` query-param auth works for direct browser download.
+  - Exports ALL matching records — not capped by the 20/100 pagination limit.
+
+**`web/app/admin/page.tsx` — `SearchLicensesPanel` Export CSV button:**
+- Shows an "Export CSV" button next to the "Showing N of M results" header when results are present.
+- Uses `?token=` query-param auth + `document.createElement('a')` click for direct browser download.
+- Client-side filename uses the sanitized query string and today's date.
+
+**Tests (11 new, 354 → 365):**
+- `web/__tests__/admin-search.test.ts`:
+  - `format=csv returns 401 without a valid token` — auth guard still applied.
+  - `format=csv returns 400 when q is missing` — validation still applied.
+  - `format=csv responds with text/csv content-type`.
+  - `format=csv includes a Content-Disposition attachment header` (filename contains .csv).
+  - `format=csv body starts with the expected header row`.
+  - `format=csv includes one data row per matching license`.
+  - `format=csv data row contains correct key, email, plan, and status fields`.
+  - `format=csv returns header-only body when no licenses match`.
+  - `format=csv cells with commas are quoted per RFC 4180`.
+  - `format=csv ?token= query-param auth works`.
+  - `format=csv exports all results beyond the 100-item pagination cap`.
+
+**Web test count: 354 → 365 (19 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider debounce/live-search (on-change) for `SearchLicensesPanel` instead of form submit (auto-fire with 300ms debounce after typing stops).
+- Consider pagination for `LicensesByEmailPanel` (currently returns all licenses for an email with no cap).
+- Consider adding a "Recent audit" inline expand to `LicensesByEmailPanel` rows (clicking a row could show last 3 audit entries inline before opening LookupPanel).
+- Consider adding a `?format=csv` export to `licenses-by-email` filtered by date range (e.g. `?since=YYYY-MM-DD`).
+
+---
+
 ## Run 249 — 2026-07-03T08:15:00Z — CSV export for licenses-by-email + machineCount on License type
 
 ### Shipped

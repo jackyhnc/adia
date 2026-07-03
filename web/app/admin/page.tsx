@@ -477,6 +477,17 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
     }
   }
 
+  function exportCsv() {
+    const safeQ = q.trim().replace(/[^a-zA-Z0-9@._-]/g, '_').slice(0, 40);
+    const date = new Date().toISOString().slice(0, 10);
+    const params = new URLSearchParams({ q: q.trim(), format: 'csv' });
+    const url = `/api/admin/search-licenses?${params}&token=${encodeURIComponent(token)}`;
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `search-${safeQ}-${date}.csv`;
+    a.click();
+  }
+
   async function loadMore() {
     if (!results) return;
     setLoadingMore(true);
@@ -516,9 +527,17 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
             <p className="text-sm text-ink/50">No licenses matched &quot;{q}&quot;.</p>
           ) : (
             <>
-              <p className="text-xs text-ink/50 mb-2">
-                Showing {results.length} of {total} result{total !== 1 ? 's' : ''} — click a key for full detail
-              </p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs text-ink/50">
+                  Showing {results.length} of {total} result{total !== 1 ? 's' : ''} — click a key for full detail
+                </p>
+                <button
+                  onClick={exportCsv}
+                  className="text-xs text-sky-600 hover:underline"
+                >
+                  Export CSV
+                </button>
+              </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
                   <thead>

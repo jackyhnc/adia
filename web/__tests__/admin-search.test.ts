@@ -259,6 +259,153 @@ describe('GET /api/admin/search-licenses', () => {
     const body = await res.json();
     expect(body.offset).toBe(0);
   });
+
+  // ─── CSV export ─────────────────────────────────────────────────────────────
+
+  it('format=csv returns 401 without a valid token', async () => {
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const req = new NextRequest('http://localhost/api/admin/search-licenses?q=test&format=csv', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer wrong-token' },
+    });
+    const res = await GET(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('format=csv returns 400 when q is missing', async () => {
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const req = new NextRequest('http://localhost/api/admin/search-licenses?format=csv', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer test-admin-token' },
+    });
+    const res = await GET(req);
+    expect(res.status).toBe(400);
+  });
+
+  it('format=csv responds with text/csv content-type', async () => {
+    insertLicense({ key: 'ADIA-CSV-CT-AAAA', email: 'csv@content.io', plan: 'monthly', expiresAt: null });
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const req = new NextRequest('http://localhost/api/admin/search-licenses?q=csv%40content.io&format=csv', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer test-admin-token' },
+    });
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type')).toMatch(/text\/csv/);
+  });
+
+  it('format=csv includes a Content-Disposition attachment header', async () => {
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const req = new NextRequest('http://localhost/api/admin/search-licenses?q=nobody&format=csv', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer test-admin-token' },
+    });
+    const res = await GET(req);
+    const cd = res.headers.get('content-disposition') ?? '';
+    expect(cd).toMatch(/attachment/);
+    expect(cd).toMatch(/\.csv/);
+  });
+
+  it('format=csv body starts with the expected header row', async () => {
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const req = new NextRequest('http://localhost/api/admin/search-licenses?q=nobody&format=csv', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer test-admin-token' },
+    });
+    const res = await GET(req);
+    const text = await res.text();
+    expect(text.split('\r\n')[0]).toBe('key,email,plan,status,machineCount,issuedAt,expiresAt,note');
+  });
+
+  it('format=csv includes one data row per matching license', async () => {
+    insertLicense({ key: 'ADIA-CSV-ROW-AAAA', email: 'rows@csvtest.io', plan: 'yearly', expiresAt: null });
+    insertLicense({ key: 'ADIA-CSV-ROW-BBBB', email: 'rows@csvtest.io', plan: 'lifetime', expiresAt: null });
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const req = new NextRequest('http://localhost/api/admin/search-licenses?q=rows%40csvtest.io&format=csv', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer test-admin-token' },
+    });
+    const res = await GET(req);
+    const text = await res.text();
+    const lines = text.split('\r\n').filter(Boolean);
+    expect(lines.length).toBe(3); // header + 2 rows
+  });
+
+  it('format=csv data row contains correct key, email, plan, and status fields', async () => {
+    insertLicense({ key: 'ADIA-CSV-FLD-AAAA', email: 'fields@csvexport.io', plan: 'monthly', expiresAt: null });
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const req = new NextRequest('http://localhost/api/admin/search-licenses?q=fields%40csvexport.io&format=csv', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer test-admin-token' },
+    });
+    const res = await GET(req);
+    const text = await res.text();
+    const dataRow = text.split('\r\n')[1];
+    expect(dataRow).toMatch(/ADIA-CSV-FLD-AAAA/);
+    expect(dataRow).toMatch(/fields@csvexport\.io/);
+    expect(dataRow).toMatch(/monthly/);
+    expect(dataRow).toMatch(/active/);
+  });
+
+  it('format=csv returns header-only body when no licenses match', async () => {
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const req = new NextRequest('http://localhost/api/admin/search-licenses?q=nobody%40noone.io&format=csv', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer test-admin-token' },
+    });
+    const res = await GET(req);
+    const text = await res.text();
+    const lines = text.split('\r\n').filter(Boolean);
+    expect(lines.length).toBe(1);
+    expect(lines[0]).toBe('key,email,plan,status,machineCount,issuedAt,expiresAt,note');
+  });
+
+  it('format=csv cells with commas are quoted per RFC 4180', async () => {
+    insertLicense({ key: 'ADIA-CSV-CMM-AAAA', email: 'comma@csv.io', plan: 'monthly', expiresAt: null });
+    const { setNote } = await import('@/lib/db');
+    setNote('ADIA-CSV-CMM-AAAA', 'a note, with commas');
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const req = new NextRequest('http://localhost/api/admin/search-licenses?q=comma%40csv.io&format=csv', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer test-admin-token' },
+    });
+    const res = await GET(req);
+    const text = await res.text();
+    expect(text).toContain('"a note, with commas"');
+  });
+
+  it('format=csv ?token= query-param auth works', async () => {
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/search-licenses?q=x&format=csv&token=test-admin-token',
+      { method: 'GET' },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type')).toMatch(/text\/csv/);
+  });
+
+  it('format=csv exports all results beyond the 100-item pagination cap', async () => {
+    // Insert 5 licenses under a unique domain; the pagination limit is 20 by default.
+    // CSV must include all 5 (not capped at page size).
+    for (let i = 1; i <= 5; i++) {
+      insertLicense({
+        key: `ADIA-CSV-ALL-${String(i).padStart(4, '0')}`,
+        email: `all${i}@csvall.dev`,
+        plan: 'monthly',
+        expiresAt: null,
+      });
+    }
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const req = new NextRequest('http://localhost/api/admin/search-licenses?q=csvall.dev&format=csv', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer test-admin-token' },
+    });
+    const res = await GET(req);
+    const text = await res.text();
+    const dataRows = text.split('\r\n').filter(Boolean).slice(1);
+    expect(dataRows.length).toBe(5);
+  });
 });
 
 // ─── resend_payment_failed audit log ─────────────────────────────────────────
