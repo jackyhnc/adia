@@ -111,11 +111,13 @@ public final class SessionManager: ObservableObject {
                 await SessionHistory.shared.record(record)
                 guard wasSuccessful else { return }
                 let stats = await SessionHistory.shared.stats()
+                // Persist streak so broken-streak detection on next launch has a baseline.
+                UserDefaults.standard.set(stats.streak, forKey: "adia.lastActiveStreak")
                 if let milestone = SessionNotifier.streakMilestoneValue(stats.streak) {
-                    let key = "adia.lastNotifiedStreakMilestone"
-                    let last = UserDefaults.standard.integer(forKey: key)
+                    let milestoneKey = "adia.lastNotifiedStreakMilestone"
+                    let last = UserDefaults.standard.integer(forKey: milestoneKey)
                     if last < milestone {
-                        UserDefaults.standard.set(milestone, forKey: key)
+                        UserDefaults.standard.set(milestone, forKey: milestoneKey)
                         SessionNotifier.shared.sendStreakMilestone(days: milestone)
                     }
                 }
@@ -254,6 +256,7 @@ public final class SessionManager: ObservableObject {
     // MARK: - Restore on launch
 
     public func restoreIfNeeded() async {
+        await checkStreakBreak()
         guard let saved = persistence.load() else { return }
         var s = saved
         let wasPaused = s.phase == .paused
@@ -274,6 +277,28 @@ public final class SessionManager: ObservableObject {
             NotchState.shared.restoreVerificationHistory(s.verificationHistory)
         }
         SessionNotifier.shared.sendSessionRestored(task: s.task)
+    }
+
+    // MARK: - Streak break detection
+
+    /// Checks whether the user's active streak has dropped to 0 since the last successful session.
+    /// - Resets `adia.lastNotifiedStreakMilestone` to 0 whenever the streak hits 0, so milestones
+    ///   can be re-earned on the next streak run.
+    /// - Fires a re-engagement notification when the broken streak was ≥7 days.
+    /// Called once per app launch from `restoreIfNeeded()`.
+    internal func checkStreakBreak() async {
+        let activeKey = "adia.lastActiveStreak"
+        let milestoneKey = "adia.lastNotifiedStreakMilestone"
+        let lastActive = UserDefaults.standard.integer(forKey: activeKey)
+        guard lastActive > 0 else { return }
+        let stats = await SessionHistory.shared.stats()
+        guard stats.streak == 0 else { return }
+        // Streak has broken. Reset both keys so milestones can be re-earned.
+        UserDefaults.standard.set(0, forKey: activeKey)
+        UserDefaults.standard.set(0, forKey: milestoneKey)
+        // Only notify for meaningful streaks (≥7 days) to avoid banner fatigue.
+        guard lastActive >= 7 else { return }
+        SessionNotifier.shared.sendStreakBroken(previousStreak: lastActive)
     }
 
     // MARK: - Test helpers

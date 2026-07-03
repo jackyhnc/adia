@@ -142,6 +142,32 @@ public final class SessionNotifier: NSObject {
         #endif
     }
 
+    // MARK: - Streak broken notifications
+
+    /// Friend-like re-engagement copy when a streak is broken.
+    /// Direct but not punishing — treats the user as an adult who can pick it back up.
+    nonisolated public static func streakBrokenBody(previousStreak: Int) -> String {
+        switch previousStreak {
+        case 7:  return "you had a week going. don't let one miss end it."
+        case 14: return "14 days down. pick it back up — today counts."
+        case 21: return "21-day streak, gone. you know how to build one. do it again."
+        case 30: return "30 days. one break doesn't erase that. start fresh today."
+        default: return "you had a \(previousStreak)-day streak going. start the next one today."
+        }
+    }
+
+    /// Fires a re-engagement banner when the user misses a day after a ≥7-day streak.
+    /// Uses a stable identifier so rapid launches don't stack banners.
+    public func sendStreakBroken(previousStreak: Int) {
+        #if canImport(UserNotifications)
+        let content = UNMutableNotificationContent()
+        content.title = "streak ended at \(previousStreak) days"
+        content.body = Self.streakBrokenBody(previousStreak: previousStreak)
+        content.sound = .default
+        schedule(content, id: "adia.streak.broken")
+        #endif
+    }
+
     /// Expands the notch panel. Called when the user taps a notification banner.
     /// Exposed as `internal` (not private) so unit tests can invoke it directly
     /// without needing a real `UNNotificationResponse`.

@@ -174,3 +174,63 @@ struct SessionNotifierStreakTests {
         #expect(body.contains("100"))
     }
 }
+
+// MARK: - Streak broken pure-function tests (no app bundle required)
+
+/// Tests for `SessionNotifier.streakBrokenBody` — exercises only a `nonisolated static`
+/// function so no `UNUserNotificationCenter` call occurs; runs unconditionally in CI.
+@Suite("SessionNotifier streak broken")
+struct SessionNotifierStreakBrokenTests {
+
+    @Test func streakBrokenBody_isNonEmptyForAllMilestoneStreaks() {
+        for days in [7, 14, 21, 30] {
+            #expect(!SessionNotifier.streakBrokenBody(previousStreak: days).isEmpty,
+                    "broken-streak body for \(days) days should not be empty")
+        }
+    }
+
+    @Test func streakBrokenBody_mentionsDayCountForMilestones() {
+        for days in [7, 14, 21, 30] {
+            let body = SessionNotifier.streakBrokenBody(previousStreak: days)
+            #expect(body.contains("\(days)"),
+                    "broken-streak body for \(days)-day streak should mention the count")
+        }
+    }
+
+    @Test func streakBrokenBody_fallbackForNonMilestoneStreak() {
+        // Arbitrary non-milestone streak should get a generic but non-empty body.
+        let body = SessionNotifier.streakBrokenBody(previousStreak: 8)
+        #expect(!body.isEmpty)
+        #expect(body.contains("8"))
+    }
+
+    @Test func streakBrokenBody_fallbackForLongStreak() {
+        let body = SessionNotifier.streakBrokenBody(previousStreak: 100)
+        #expect(!body.isEmpty)
+        #expect(body.contains("100"))
+    }
+
+    @Test func streakBrokenBody_toneIsNotPunishing() {
+        // Adia's voice is supportive and direct — not shame-based.
+        let shamePhrases = ["failed", "loser", "disappointed", "shame", "bad", "terrible"]
+        for days in [7, 8, 14, 21, 30, 100] {
+            let body = SessionNotifier.streakBrokenBody(previousStreak: days).lowercased()
+            for phrase in shamePhrases {
+                #expect(!body.contains(phrase),
+                        "body for \(days)-day broken streak should not contain \"\(phrase)\"")
+            }
+        }
+    }
+
+    @Test func streakBrokenBody_toneIsNotCorporate() {
+        // No notification-center boilerplate language.
+        let corporatePhrases = ["congratulations", "achievement", "great job", "well done"]
+        for days in [7, 14, 21, 30] {
+            let body = SessionNotifier.streakBrokenBody(previousStreak: days).lowercased()
+            for phrase in corporatePhrases {
+                #expect(!body.contains(phrase),
+                        "broken-streak body should not use corporate phrase \"\(phrase)\"")
+            }
+        }
+    }
+}
