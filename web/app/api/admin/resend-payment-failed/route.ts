@@ -5,7 +5,7 @@
 // regardless of status (useful for testing the email template).
 
 import { NextRequest, NextResponse } from 'next/server';
-import { findLicense } from '@/lib/store';
+import { findLicense, insertAuditLog } from '@/lib/store';
 import { sendPaymentFailedEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
@@ -40,5 +40,6 @@ export async function POST(req: NextRequest) {
   }
 
   await sendPaymentFailedEmail(license.email, key, license.plan);
+  await insertAuditLog({ licenseKey: key, action: 'resend_payment_failed', detail: { to: license.email, force } });
   return NextResponse.json({ ok: true, to: license.email, key, plan: license.plan });
 }

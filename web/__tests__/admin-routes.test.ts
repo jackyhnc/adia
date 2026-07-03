@@ -329,10 +329,13 @@ describe('GET /api/admin/lookup', () => {
     const res = await callLookup('ADIA-LKUP-HPPY-AAAA');
     expect(res.status).toBe(200);
     const body = await res.json();
-    expect(body.key).toBe('ADIA-LKUP-HPPY-AAAA');
-    expect(body.email).toBe('lookup@example.com');
-    expect(body.plan).toBe('yearly');
-    expect(body.status).toBe('active');
+    // Response is now { license, recentAudit } — check top-level shape
+    expect(body.license).toBeDefined();
+    expect(body.recentAudit).toBeInstanceOf(Array);
+    expect(body.license.key).toBe('ADIA-LKUP-HPPY-AAAA');
+    expect(body.license.email).toBe('lookup@example.com');
+    expect(body.license.plan).toBe('yearly');
+    expect(body.license.status).toBe('active');
   });
 
   it('accepts ?token= query param as auth fallback', async () => {

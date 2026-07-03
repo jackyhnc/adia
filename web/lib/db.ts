@@ -311,6 +311,28 @@ export function listAuditLog(opts?: { licenseKey?: string; limit?: number }): Au
   }));
 }
 
+export function searchLicenses(query: string, limit = 20): License[] {
+  const q = `%${query.trim()}%`;
+  const lq = `%${query.trim().toLowerCase()}%`;
+  const rows = db()
+    .prepare(`
+      SELECT * FROM licenses
+      WHERE key LIKE ? OR email LIKE ? OR note LIKE ?
+      ORDER BY issued_at DESC
+      LIMIT ?
+    `)
+    .all(q.toUpperCase(), lq, q, Math.min(limit, 100)) as any[];
+  return rows.map(r => ({
+    key: r.key,
+    email: r.email,
+    plan: r.plan,
+    status: r.status,
+    issuedAt: r.issued_at,
+    expiresAt: r.expires_at,
+    note: r.note ?? null,
+  }));
+}
+
 export function getStats(): LicenseStats {
   const now = new Date();
   const day7 = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();

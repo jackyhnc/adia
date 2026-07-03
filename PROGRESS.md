@@ -1,5 +1,42 @@
 # Adia — Build Progress
 
+## Run 245 — 2026-07-03T03:12:00Z — search-licenses endpoint, enhanced LookupPanel, resend_payment_failed audit log
+
+### Shipped
+
+**`GET /api/admin/search-licenses` — new admin endpoint:**
+- `web/lib/db.ts`: `searchLicenses(query, limit)` — SQLite LIKE search across key, email, note; max 100 results.
+- `web/lib/db-pg.ts`: `searchLicensesPg` — Postgres ILIKE equivalent.
+- `web/lib/store.ts`: `searchLicenses` facade.
+- `web/app/api/admin/search-licenses/route.ts`: `GET ?q=...&limit=20` — returns `{ count, results: License[] }`. Auth: ADMIN_TOKEN bearer or `?token=`. 400 on blank/missing `q`.
+- `web/app/admin/page.tsx`: `SearchLicensesPanel` added above `LookupPanel` — search input, results table with key/email/plan/status/issued/note columns.
+
+**Enhanced `LookupPanel` (structured display + recent audit history):**
+- `web/app/api/admin/lookup/route.ts`: response changed from raw `License` to `{ license, recentAudit: AuditEntry[] }` (last 5 entries for the key).
+- `web/app/admin/page.tsx`: `LookupPanel` now renders `LicenseCard` (key, email, plan, status, issuedAt, expiresAt, note) + "Recent actions" section showing the 5 most recent audit entries with timestamp and detail inline.
+- Helper components `LicenseCard`, `auditActionColor`, `renderDetailInline` extracted as top-level reusable functions; AuditPanel's local `actionColor` replaced with a reference to `auditActionColor`.
+
+**`resend_payment_failed` audit logging:**
+- `web/app/api/admin/resend-payment-failed/route.ts`: now calls `insertAuditLog({ action: 'resend_payment_failed', detail: { to, force } })` after a successful send.
+- Completes audit coverage: all 10 admin mutating routes now write to the audit log.
+- AuditPanel description updated to list `resend_payment_failed`; `auditActionColor` maps it to `text-amber-600`.
+
+**Tests:**
+- `web/__tests__/admin-search.test.ts`: 18 new tests — search: 401, 400 missing/blank q, empty results, match by email/key/note, multiple matches, limit clamping, result fields, ?token= auth; resend_payment_failed audit: written on force=true, written for past_due, NOT written on 422, NOT written on 404; lookup recentAudit: empty array when no entries, returns newest 5 of 7.
+- `web/__tests__/admin-routes.test.ts`: updated existing lookup test to assert `body.license.key` (new response shape).
+- 329 tests passed (up from 311). 19 test files green.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding `machineCount` to `searchLicenses` results (currently not included since `findLicenses` doesn't join activations count).
+- Consider adding a `SearchLicensesPanel` shortcut: clicking a key in search results auto-fills and triggers `LookupPanel`.
+- Consider surfacing recent audit log entries inline in `LicensesByEmailPanel` table (per-row "last action" column).
+- Consider pagination for `search-licenses` (offset parameter) for large result sets.
+
+---
+
 ## Run 244 — 2026-07-03T02:11:00Z — Audit log for resend_license + deactivate_all, Note column in licenses-by-email, CSV export
 
 ### Shipped

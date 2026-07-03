@@ -30,6 +30,7 @@ export default function Admin() {
       <ResendLicensePanel token={token} />
       <ChangeEmailPanel token={token} />
       <LicensesByEmailPanel token={token} />
+      <SearchLicensesPanel token={token} />
       <LookupPanel token={token} />
       <NotePanel token={token} />
       <AuditPanel token={token} />
@@ -418,27 +419,151 @@ function ChangeEmailPanel({ token }: { token: string }) {
   );
 }
 
+// ─── Shared types ────────────────────────────────────────────────────────────
+
+type License = {
+  key: string;
+  email: string;
+  plan: string;
+  status: string;
+  issuedAt: string | null;
+  expiresAt: string | null;
+  note?: string | null;
+};
+
+// ─── License search ───────────────────────────────────────────────────────────
+
+function SearchLicensesPanel({ token }: { token: string }) {
+  const [q, setQ] = useState('');
+  const [results, setResults] = useState<License[] | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function search(e: React.FormEvent) {
+    e.preventDefault();
+    if (!token) { setError('Paste admin token above first.'); return; }
+    setLoading(true);
+    setError('');
+    setResults(null);
+    try {
+      const params = new URLSearchParams({ q: q.trim(), limit: '20' });
+      const res = await fetch(`/api/admin/search-licenses?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        const body = await res.json();
+        setResults(body.results);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Search licenses</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Full-text search across license key, email, and note. Returns up to 20 matches, newest first.
+      </p>
+      <form onSubmit={search} className="card space-y-3">
+        <Field label="Search query (key, email, or note fragment)">
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="jane@example.com or ADIA-1234 or enterprise"
+            className="input"
+            required
+          />
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Searching…' : 'Search'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+      {results !== null && (
+        <div className="card mt-3">
+          {results.length === 0 ? (
+            <p className="text-sm text-ink/50">No licenses matched "{q}".</p>
+          ) : (
+            <>
+              <p className="text-xs text-ink/50 mb-2">{results.length} result{results.length !== 1 ? 's' : ''}</p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="text-left text-ink/50 border-b border-ink/10">
+                      <th className="pb-1 pr-3">Key</th>
+                      <th className="pb-1 pr-3">Email</th>
+                      <th className="pb-1 pr-3">Plan</th>
+                      <th className="pb-1 pr-3">Status</th>
+                      <th className="pb-1 pr-3">Issued</th>
+                      <th className="pb-1">Note</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {results.map((lic) => (
+                      <tr key={lic.key} className="border-t border-ink/5">
+                        <td className="py-1 pr-3 font-mono">{lic.key}</td>
+                        <td className="py-1 pr-3">{lic.email}</td>
+                        <td className="py-1 pr-3">{lic.plan}</td>
+                        <td className="py-1 pr-3">
+                          <span className={lic.status === 'active' ? 'text-green-600' : lic.status === 'past_due' ? 'text-yellow-600' : 'text-red-500'}>
+                            {lic.status}
+                          </span>
+                        </td>
+                        <td className="py-1 pr-3 text-ink/50">{lic.issuedAt?.slice(0, 10) ?? '—'}</td>
+                        <td className="py-1 text-ink/60 italic">{lic.note ?? '—'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── License lookup ────────────────────────────────────────────────────────────
+
+type LookupResult = {
+  license: License;
+  recentAudit: AuditEntry[];
+};
 
 function LookupPanel({ token }: { token: string }) {
   const [key, setKey] = useState('');
   const [email, setEmail] = useState('');
-  const [result, setResult] = useState('');
+  const [result, setResult] = useState<LookupResult | null>(null);
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function lookup(e: React.FormEvent) {
     e.preventDefault();
+    if (!token) { setError('Paste admin token above first.'); return; }
     setLoading(true);
-    setResult('');
+    setError('');
+    setResult(null);
     try {
       const params = new URLSearchParams({ key });
       if (email) params.set('email', email);
       const res = await fetch(`/api/admin/lookup?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setResult(`HTTP ${res.status}\n\n${await res.text()}`);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+      }
     } catch (err: any) {
-      setResult(`Error: ${err.message}`);
+      setError(`Error: ${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -470,9 +595,77 @@ function LookupPanel({ token }: { token: string }) {
           {loading ? 'Looking up…' : 'Look up'}
         </button>
       </form>
-      {result && <pre className="card mt-3 font-mono text-xs whitespace-pre-wrap">{result}</pre>}
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+      {result && (
+        <div className="card mt-3 space-y-4">
+          <LicenseCard lic={result.license} />
+          {result.recentAudit.length > 0 && (
+            <div>
+              <p className="text-xs font-semibold text-ink/50 uppercase tracking-wide mb-2">Recent actions</p>
+              <div className="space-y-1">
+                {result.recentAudit.map((entry) => (
+                  <div key={entry.id} className="flex items-start gap-2 text-xs">
+                    <span className={`font-medium ${auditActionColor(entry.action)}`}>{entry.action}</span>
+                    <span className="text-ink/40">{entry.createdAt?.slice(0, 19).replace('T', ' ')}</span>
+                    {entry.detail && (
+                      <span className="text-ink/50 truncate max-w-xs">{renderDetailInline(entry.detail)}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
+}
+
+function LicenseCard({ lic }: { lic: License }) {
+  const statusColor = lic.status === 'active'
+    ? 'text-green-600'
+    : lic.status === 'past_due'
+    ? 'text-yellow-600'
+    : 'text-red-500';
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-3">
+        <span className="font-mono text-sm font-semibold">{lic.key}</span>
+        <span className={`text-xs font-medium ${statusColor}`}>{lic.status}</span>
+        <span className="text-xs text-ink/50">{lic.plan}</span>
+      </div>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-ink/70">
+        <span><span className="text-ink/40">Email</span> {lic.email}</span>
+        <span><span className="text-ink/40">Issued</span> {lic.issuedAt?.slice(0, 10) ?? '—'}</span>
+        <span><span className="text-ink/40">Expires</span> {lic.expiresAt?.slice(0, 10) ?? 'never'}</span>
+        <span><span className="text-ink/40">Note</span> <em>{lic.note ?? 'none'}</em></span>
+      </div>
+    </div>
+  );
+}
+
+function auditActionColor(action: string): string {
+  if (action === 'issue') return 'text-green-600';
+  if (action === 'revoke') return 'text-red-500';
+  if (action === 'reactivate') return 'text-green-700';
+  if (action === 'change_plan') return 'text-violet-600';
+  if (action === 'extend') return 'text-blue-600';
+  if (action === 'set_note') return 'text-teal-600';
+  if (action === 'change_email') return 'text-orange-600';
+  if (action === 'resend_license') return 'text-sky-600';
+  if (action === 'deactivate_all') return 'text-rose-600';
+  if (action === 'resend_payment_failed') return 'text-amber-600';
+  return 'text-ink/70';
+}
+
+function renderDetailInline(detail: string | null): string {
+  if (!detail) return '';
+  try {
+    const obj = JSON.parse(detail);
+    return Object.entries(obj).map(([k, v]) => `${k}: ${v}`).join(' · ');
+  } catch {
+    return detail;
+  }
 }
 
 // ─── Admin note ──────────────────────────────────────────────────────────────
@@ -641,25 +834,14 @@ function AuditPanel({ token }: { token: string }) {
     }
   }
 
-  function actionColor(action: string): string {
-    if (action === 'issue') return 'text-green-600';
-    if (action === 'revoke') return 'text-red-500';
-    if (action === 'reactivate') return 'text-green-700';
-    if (action === 'change_plan') return 'text-violet-600';
-    if (action === 'extend') return 'text-blue-600';
-    if (action === 'set_note') return 'text-teal-600';
-    if (action === 'change_email') return 'text-orange-600';
-    if (action === 'resend_license') return 'text-sky-600';
-    if (action === 'deactivate_all') return 'text-rose-600';
-    return 'text-ink/70';
-  }
+  const actionColor = auditActionColor;
 
   return (
     <div>
       <h2 className="text-lg font-semibold mb-3">Admin audit log</h2>
       <p className="text-sm text-ink/60 mb-3">
         All admin actions on licenses — issue, revoke, change_plan, extend, reactivate, set_note,
-        change_email, resend_license, deactivate_all. Most recent first. Filter by license key to
+        change_email, resend_license, deactivate_all, resend_payment_failed. Most recent first. Filter by license key to
         see history for one license.
       </p>
       <form onSubmit={load} className="card space-y-3">

@@ -2,7 +2,7 @@
 // Auth: ADMIN_TOKEN bearer header. Never expose without it.
 
 import { NextRequest, NextResponse } from 'next/server';
-import { findLicense } from '@/lib/store';
+import { findLicense, listAuditLog } from '@/lib/store';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -25,5 +25,6 @@ export async function GET(req: NextRequest) {
   if (!key) return NextResponse.json({ error: 'missing ?key=' }, { status: 400 });
   const license = await findLicense(key, email);
   if (!license) return NextResponse.json({ error: 'not found' }, { status: 404 });
-  return NextResponse.json(license);
+  const recentAudit = await listAuditLog({ licenseKey: license.key, limit: 5 });
+  return NextResponse.json({ license, recentAudit });
 }

@@ -318,6 +318,31 @@ export async function listAuditLogPg(opts?: {
   }));
 }
 
+export async function searchLicensesPg(query: string, limit = 20): Promise<License[]> {
+  await ensureSchema();
+  const q = `%${query.trim()}%`;
+  const lq = `%${query.trim().toLowerCase()}%`;
+  const cap = Math.min(limit, 100);
+  const result = await sql<any>`
+    SELECT key, email, plan, status, note,
+           to_char(issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
+           to_char(expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt"
+    FROM licenses
+    WHERE key ILIKE ${q} OR email ILIKE ${lq} OR note ILIKE ${q}
+    ORDER BY issued_at DESC
+    LIMIT ${cap}
+  `;
+  return result.rows.map((r: any) => ({
+    key: r.key,
+    email: r.email,
+    plan: r.plan,
+    status: r.status,
+    issuedAt: r.issuedAt,
+    expiresAt: r.expiresAt,
+    note: r.note ?? null,
+  }));
+}
+
 export async function getStatsPg(): Promise<LicenseStats> {
   await ensureSchema();
 

@@ -195,6 +195,14 @@ export async function insertAuditLog(entry: {
   sqlite.insertAuditLog(entry);
 }
 
+export async function searchLicenses(query: string, limit?: number): Promise<License[]> {
+  if (usePg) {
+    const { searchLicensesPg } = await import('./db-pg');
+    return searchLicensesPg(query, limit);
+  }
+  return sqlite.searchLicenses(query, limit);
+}
+
 export async function listAuditLog(opts?: {
   licenseKey?: string;
   limit?: number;
