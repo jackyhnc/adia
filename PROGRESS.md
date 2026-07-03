@@ -1,5 +1,34 @@
 # Adia — Build Progress
 
+## Run 247 — 2026-07-03T05:15:00Z — machineCount in licenses-by-email + Seats column + click-to-lookup
+
+### Shipped
+
+**`machineCount` in `findLicensesByEmail` (SQLite + Postgres):**
+- `web/lib/db.ts`: `findLicensesByEmail` now does `LEFT JOIN activations … GROUP BY l.key` and returns `machineCount` (live count from activations, not stale `machine_count` column). Mirrors the approach used in `searchLicenses`.
+- `web/lib/db-pg.ts`: `findLicensesByEmailPg` gains the same JOIN with `COUNT(a.machine_hash)::int AS "machineCount"` and groups by all non-aggregate columns.
+
+**`LicensesByEmailPanel` improvements:**
+- Accepts `onSelectKey: (key: string) => void` prop (wired up in `Admin` component alongside `SearchLicensesPanel`).
+- Table gains a **Seats** column showing `N/3` per row (`tabular-nums text-ink/60`).
+- Rows are now `cursor-pointer hover:bg-ink/5`; clicking calls `onSelectKey(lic.key)` which pre-fills and triggers `LookupPanel` (same click-to-lookup pattern as search results).
+- Key cell styled `text-sky-600 hover:underline` for visual affordance.
+
+**Tests (3 new):**
+- `web/__tests__/admin-routes.test.ts`: `machineCount is 0 when no activations`, `machineCount equals number of distinct activated machines`, `machineCount does not bleed across licenses for same email`.
+- 335 tests passed (up from 332). 19 test files green.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider pagination (`?offset=N`) for `search-licenses` endpoint for large result sets (currently capped at 100).
+- Consider debounce/live-search (on-change) for `SearchLicensesPanel` instead of form submit.
+- Consider surfacing recent audit entries inline in `LicensesByEmailPanel` (last action per key in a "Last action" column).
+- Consider adding `?format=csv` export to `licenses-by-email` (similar to the audit-log CSV export pattern).
+
+---
+
 ## Run 246 — 2026-07-03T04:10:00Z — machineCount in search results + click-to-lookup UX
 
 ### Shipped
