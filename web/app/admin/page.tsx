@@ -45,6 +45,7 @@ export default function Admin() {
       <ChangePlanPanel token={token} />
       <BulkChangePlanPanel token={token} />
       <BulkRevokePanel token={token} />
+      <BulkReactivatePanel token={token} />
       <SetExpiryPanel token={token} />
     </section>
   );
@@ -1763,6 +1764,120 @@ function BulkRevokePanel({ token }: { token: string }) {
                     <span className="text-ink/40 line-through">{c.previousStatus}</span>
                     {' → '}
                     <span className="text-red-700">canceled</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {result.skipped.length > 0 && (
+            <div>
+              <p className="font-medium mb-1">Skipped:</p>
+              <ul className="space-y-0.5">
+                {result.skipped.map((s) => (
+                  <li key={s.key} className="font-mono text-xs text-ink/60">
+                    {s.key} — {s.reason.replace(/_/g, ' ')}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Bulk reactivate ──────────────────────────────────────────────────────────
+
+type BulkReactivateReactivatedEntry = { key: string; previousStatus: string };
+type BulkReactivateSkippedEntry = { key: string; reason: string };
+
+function BulkReactivatePanel({ token }: { token: string }) {
+  const [keysText, setKeysText] = useState('');
+  const [result, setResult] = useState<{
+    ok: boolean;
+    changed: BulkReactivateReactivatedEntry[];
+    skipped: BulkReactivateSkippedEntry[];
+  } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function bulkReactivate(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setResult(null);
+    setError('');
+    const keys = keysText
+      .split(/[\n,]+/)
+      .map((k) => k.trim().toUpperCase())
+      .filter(Boolean);
+    if (keys.length === 0) {
+      setError('Enter at least one key.');
+      setLoading(false);
+      return;
+    }
+    try {
+      const res = await fetch('/api/admin/bulk-reactivate', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keys }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(body);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Bulk reactivate</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Restore multiple license keys to active in one operation — for example, fixing a batch of
+        wrongly revoked accounts or reinstating a cohort whose payment issues were resolved manually.
+        Paste keys one per line or comma-separated. Keys already active or not found are silently
+        skipped and listed in the result.
+      </p>
+      <form onSubmit={bulkReactivate} className="card space-y-3">
+        <Field label="License keys (one per line or comma-separated)">
+          <textarea
+            value={keysText}
+            onChange={(e) => setKeysText(e.target.value)}
+            placeholder={'ADIA-XXXX-XXXX-XXXX\nADIA-YYYY-YYYY-YYYY'}
+            className="input font-mono h-28 resize-y"
+            required
+          />
+        </Field>
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 disabled:opacity-40"
+          disabled={loading}
+        >
+          {loading ? 'Reactivating…' : 'Bulk reactivate'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {result && (
+        <div className="card mt-3 text-sm space-y-2">
+          <p className="font-medium text-green-700">
+            {result.changed.length} reactivated, {result.skipped.length} skipped
+          </p>
+          {result.changed.length > 0 && (
+            <div>
+              <p className="font-medium mb-1">Reactivated:</p>
+              <ul className="space-y-0.5">
+                {result.changed.map((c) => (
+                  <li key={c.key} className="font-mono text-xs">
+                    {c.key}{' '}
+                    <span className="text-ink/40 line-through">{c.previousStatus}</span>
+                    {' → '}
+                    <span className="text-green-700">active</span>
                   </li>
                 ))}
               </ul>

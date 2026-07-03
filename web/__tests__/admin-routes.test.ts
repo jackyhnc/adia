@@ -2270,3 +2270,191 @@ describe('GET /api/admin/stats', () => {
     expect(res.status).toBe(200);
   });
 });
+
+// ─── POST /api/admin/bulk-reactivate ─────────────────────────────────────────
+
+async function callBulkReactivate(body: unknown, token = 'test-admin-token') {
+  const { POST } = await import('@/app/api/admin/bulk-reactivate/route');
+  const req = new NextRequest('http://localhost/api/admin/bulk-reactivate', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+  });
+  return POST(req);
+}
+
+describe('POST /api/admin/bulk-reactivate', () => {
+  it('returns 401 without a token', async () => {
+    delete process.env.ADMIN_TOKEN;
+    const { POST } = await import('@/app/api/admin/bulk-reactivate/route');
+    const req = new NextRequest('http://localhost/api/admin/bulk-reactivate', {
+      method: 'POST',
+      body: JSON.stringify({ keys: ['ADIA-BKRA-NTKN-AAAA'] }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callBulkReactivate({ keys: ['ADIA-BKRA-WTKN-AAAA'] }, 'bad-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when keys is missing', async () => {
+    const res = await callBulkReactivate({});
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing or empty keys/i);
+  });
+
+  it('returns 400 when keys is an empty array', async () => {
+    const res = await callBulkReactivate({ keys: [] });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing or empty keys/i);
+  });
+
+  it('returns 400 when keys array exceeds 100', async () => {
+    const keys = Array.from({ length: 101 }, (_, i) => `ADIA-BKRA-TOO${i}-AAAA`);
+    const res = await callBulkReactivate({ keys });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/too many keys/i);
+    expect(body.error).toMatch(/100/);
+  });
+
+  it('reactivates a single canceled license', async () => {
+    insertLicense({ key: 'ADIA-BKRA-SING-AAAA', email: 'bkrasing@example.com', plan: 'monthly', expiresAt: null });
+    setStatus('ADIA-BKRA-SING-AAAA', 'canceled');
+
+    const res = await callBulkReactivate({ keys: ['ADIA-BKRA-SING-AAAA'] });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.changed).toHaveLength(1);
+    expect(body.changed[0].key).toBe('ADIA-BKRA-SING-AAAA');
+    expect(body.changed[0].previousStatus).toBe('canceled');
+    expect(body.skipped).toHaveLength(0);
+  });
+
+  it('reactivates multiple canceled licenses in one call', async () => {
+    insertLicense({ key: 'ADIA-BKRA-MUL1-AAAA', email: 'bkramul1@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-BKRA-MUL2-BBBB', email: 'bkramul2@example.com', plan: 'yearly', expiresAt: null });
+    insertLicense({ key: 'ADIA-BKRA-MUL3-CCCC', email: 'bkramul3@example.com', plan: 'lifetime', expiresAt: null });
+    setStatus('ADIA-BKRA-MUL1-AAAA', 'canceled');
+    setStatus('ADIA-BKRA-MUL2-BBBB', 'expired');
+    setStatus('ADIA-BKRA-MUL3-CCCC', 'past_due');
+
+    const res = await callBulkReactivate({ keys: ['ADIA-BKRA-MUL1-AAAA', 'ADIA-BKRA-MUL2-BBBB', 'ADIA-BKRA-MUL3-CCCC'] });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(3);
+    expect(body.skipped).toHaveLength(0);
+  });
+
+  it('skips already-active licenses with reason "already_active"', async () => {
+    insertLicense({ key: 'ADIA-BKRA-SKIP-AAAA', email: 'bkraskip@example.com', plan: 'monthly', expiresAt: null });
+
+    const res = await callBulkReactivate({ keys: ['ADIA-BKRA-SKIP-AAAA'] });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(0);
+    expect(body.skipped).toHaveLength(1);
+    expect(body.skipped[0].key).toBe('ADIA-BKRA-SKIP-AAAA');
+    expect(body.skipped[0].reason).toBe('already_active');
+  });
+
+  it('skips unknown keys with reason "not_found"', async () => {
+    const res = await callBulkReactivate({ keys: ['ADIA-BKRA-UNKN-ZZZZ'] });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(0);
+    expect(body.skipped).toHaveLength(1);
+    expect(body.skipped[0].key).toBe('ADIA-BKRA-UNKN-ZZZZ');
+    expect(body.skipped[0].reason).toBe('not_found');
+  });
+
+  it('handles a mixed batch of canceled, already-active, and not-found keys', async () => {
+    insertLicense({ key: 'ADIA-BKRA-MIX1-AAAA', email: 'bkramix1@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-BKRA-MIX2-BBBB', email: 'bkramix2@example.com', plan: 'yearly', expiresAt: null });
+    setStatus('ADIA-BKRA-MIX1-AAAA', 'canceled');
+
+    const res = await callBulkReactivate({
+      keys: ['ADIA-BKRA-MIX1-AAAA', 'ADIA-BKRA-MIX2-BBBB', 'ADIA-BKRA-NOPE-ZZZZ'],
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(1);
+    expect(body.changed[0].key).toBe('ADIA-BKRA-MIX1-AAAA');
+    expect(body.skipped).toHaveLength(2);
+    const reasons = body.skipped.map((s: any) => s.reason);
+    expect(reasons).toContain('already_active');
+    expect(reasons).toContain('not_found');
+  });
+
+  it('normalizes keys to uppercase', async () => {
+    insertLicense({ key: 'ADIA-BKRA-CASE-AAAA', email: 'bkracase@example.com', plan: 'monthly', expiresAt: null });
+    setStatus('ADIA-BKRA-CASE-AAAA', 'canceled');
+
+    const res = await callBulkReactivate({ keys: ['adia-bkra-case-aaaa'] });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(1);
+    expect(body.changed[0].key).toBe('ADIA-BKRA-CASE-AAAA');
+  });
+
+  it('persists the active status to the database', async () => {
+    insertLicense({ key: 'ADIA-BKRA-PRST-AAAA', email: 'bkraprst@example.com', plan: 'monthly', expiresAt: null });
+    setStatus('ADIA-BKRA-PRST-AAAA', 'canceled');
+
+    await callBulkReactivate({ keys: ['ADIA-BKRA-PRST-AAAA'] });
+
+    const { findLicense: fl } = await import('@/lib/db');
+    const license = fl('ADIA-BKRA-PRST-AAAA');
+    expect(license?.status).toBe('active');
+  });
+
+  it('writes an audit log entry for each reactivated key', async () => {
+    insertLicense({ key: 'ADIA-BKRA-AUDT-AAAA', email: 'bkraaudt@example.com', plan: 'monthly', expiresAt: null });
+    setStatus('ADIA-BKRA-AUDT-AAAA', 'expired');
+
+    await callBulkReactivate({ keys: ['ADIA-BKRA-AUDT-AAAA'] });
+
+    const { listAuditLog } = await import('@/lib/db');
+    const logs = listAuditLog({ licenseKey: 'ADIA-BKRA-AUDT-AAAA' });
+    const reactivateLog = logs.find((l) => l.action === 'reactivate');
+    expect(reactivateLog).toBeDefined();
+    const detail = JSON.parse(reactivateLog!.detail ?? '{}');
+    expect(detail.bulk).toBe(true);
+    expect(detail.previousStatus).toBe('expired');
+    expect(detail.newStatus).toBe('active');
+  });
+
+  it('does not write an audit log for skipped keys', async () => {
+    insertLicense({ key: 'ADIA-BKRA-NSKP-AAAA', email: 'bkranskp@example.com', plan: 'monthly', expiresAt: null });
+
+    await callBulkReactivate({ keys: ['ADIA-BKRA-NSKP-AAAA'] });
+
+    const { listAuditLog } = await import('@/lib/db');
+    const logs = listAuditLog({ licenseKey: 'ADIA-BKRA-NSKP-AAAA' });
+    const reactivateLog = logs.find((l) => l.action === 'reactivate');
+    expect(reactivateLog).toBeUndefined();
+  });
+
+  it('accepts ?token= query param auth', async () => {
+    insertLicense({ key: 'ADIA-BKRA-TOKN-AAAA', email: 'bkratokn@example.com', plan: 'monthly', expiresAt: null });
+    setStatus('ADIA-BKRA-TOKN-AAAA', 'canceled');
+    const { POST } = await import('@/app/api/admin/bulk-reactivate/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/bulk-reactivate?token=test-admin-token',
+      {
+        method: 'POST',
+        body: JSON.stringify({ keys: ['ADIA-BKRA-TOKN-AAAA'] }),
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+  });
+});
