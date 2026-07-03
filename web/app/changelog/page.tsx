@@ -13,6 +13,21 @@ type Entry = {
 
 const entries: Entry[] = [
   {
+    version: '0.2.0',
+    date: '2026-07',
+    bullets: [
+      'Focus insights dashboard — avg session length, completion rate, avg focus score, best hour/day, week-over-week trend.',
+      'Daily focus goal — set a daily target (e.g. 4 h), track progress in the notch pill and idle state.',
+      'Whitelisted domains panel — see which sites you argued your way into, visible in the active/paused notch card.',
+      'Network loss resilience — NWPathMonitor + circuit breaker; offline indicator in the notch; API calls degrade gracefully.',
+      'Session reliability tracking — pause count, paused duration, and stream failure count logged per session for analytics.',
+      'Self-service license management at /account — look up your license, view activated machines, remove seats, transfer email.',
+      'Structured logging — all print() calls replaced with AppLogger (info/warning/error) with queryable output.',
+      'Sleep blocker — prevents display sleep during active sessions.',
+      'Expanded blocklist — classifieds (Kijiji, Gumtree, Craigslist), SE Asian marketplaces (Grab, Shopback, Carousell, Daraz, 11street), and 27+ additional time-sink domains.',
+    ],
+  },
+  {
     version: '0.1.0',
     date: '2026-05',
     bullets: [

@@ -96,7 +96,7 @@ function FAQ() {
     },
     {
       q: 'Can I share a license across my Mac and my laptop?',
-      a: 'Yes. Each license activates on up to 3 of your personal machines. If you switch hardware, email support@adia.app and we\'ll reset a seat.',
+      a: 'Yes. Each license activates on up to 3 of your personal machines. If you switch hardware, remove an old seat yourself at adia.app/account — no email needed.',
     },
     {
       q: 'What happens at the end of the 7-day trial?',

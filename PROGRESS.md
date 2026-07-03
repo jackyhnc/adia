@@ -10000,3 +10000,48 @@ Nothing blocked.
 - Review `serverFetchSeats` URLComponents init force-unwrap in `LicenseManager.swift:331` — document why it can't fail (well-formed base URL + static path fragment) or add a `guard let` for defensive correctness.
 - Consider adding `@MainActor` isolation annotation to the `MockURLProtocol` tests for Swift 6 strict concurrency (`-strict-concurrency=complete`) — currently silenced with `@unchecked Sendable`.
 - Consider a changelog entry for the `/account` page (the existing `/changelog` page could surface this as a user-visible improvement).
+
+---
+
+## Run 243 — 2026-07-03
+
+### Shipped
+
+**`web/app/changelog/page.tsx` — v0.2.0 changelog entry:**
+- New `v0.2.0` entry (2026-07) added above v0.1.0 with 9 bullets covering all major features shipped since launch:
+  - Focus insights dashboard (avg session length, completion rate, focus score, trend detection)
+  - Daily focus goal (target + progress tracking in notch)
+  - Whitelisted domains panel in active/paused session card
+  - Network loss resilience (NWPathMonitor + circuit breaker + offline UI)
+  - Session reliability tracking (pause count, paused duration, stream failures)
+  - Self-service license management at /account (seat visibility, seat removal, email transfer)
+  - Structured logging replacing all print() calls
+  - Sleep blocker during active sessions
+  - Expanded blocklist (classifieds, SE Asian marketplaces, 27+ additional domains)
+
+**`Sources/AdiCore/Models/DefaultBlocklists.swift` — 11 new blocked domains:**
+- Job boards — genuine procrastination sinks for students and knowledge workers:
+  - `glassdoor.com`, `indeed.com`, `seek.com.au`, `monster.com`, `simplyhired.com`
+  - `levels.fyi` — TC/comp browsing, extremely popular with CS students and engineers
+- Property browsing — house/apartment daydreaming that kills deep work:
+  - `zillow.com`, `redfin.com`, `realtor.com`, `rightmove.co.uk`, `zoopla.co.uk`, `domain.com.au`
+- Newer social platforms: `bereal.com`, `lemon8-app.com`
+- News aggregators: `flipboard.com`
+
+**`web/app/pricing/page.tsx` — FAQ self-service update:**
+- "Can I share a license?" answer updated: instead of "email support@adia.app to reset a seat," now directs users to `adia.app/account` for self-service seat removal.
+
+### Verification
+- TypeScript type check: clean (tsc --noEmit, no errors)
+- Web tests: 284 pass, 0 skip (all tests now pass in this environment — up from 264 in Run 242)
+- `LicenseManager.swift:331` force-unwrap already had an explanatory comment (lines 328–330); no change needed.
+- `MockURLProtocol` `@unchecked Sendable` is the correct approach for `URLProtocol` subclasses — cannot use `@MainActor` on a class that may be called from arbitrary URL loading queues.
+
+### Blocked
+Nothing blocked.
+
+### Next agent should
+- Consider a `Session` keyword set for common academic tasks (essay writing, problem sets, lab reports) so the on-task classifier has better context without the user typing a detailed description.
+- Consider adding a "Copy API key" shortcut / link within the app's onboarding flow (currently requires the user to go to platform.anthropic.com separately).
+- Consider a `PATCH /api/user/email` self-service email update endpoint with key+current-email verification (no admin required).
+- Add `spele.lv` variants and other regional browser gaming portals that appear in student cohorts.

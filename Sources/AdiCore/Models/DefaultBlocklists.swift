@@ -313,6 +313,26 @@ extension Session {
         "coingecko.com",
         "kraken.com",
         "crypto.com",
+        // Job boards — popular procrastination sink for students and knowledge workers
+        // ("I'll just check salaries for five minutes" → 40 minutes later)
+        "glassdoor.com",
+        "indeed.com",
+        "seek.com.au",     // Australian job board
+        "monster.com",
+        "levels.fyi",      // TC/comp browsing, extremely popular with CS students & engineers
+        "simplyhired.com",
+        // Property browsing — house/apartment daydreaming kills deep work sessions
+        "zillow.com",
+        "redfin.com",
+        "realtor.com",
+        "rightmove.co.uk",
+        "zoopla.co.uk",
+        "domain.com.au",   // Australian property listings
+        // Newer short-form social platforms
+        "bereal.com",            // BeReal — habit-openers that pull users out of deep work
+        "lemon8-app.com",        // ByteDance Lemon8
+        // News aggregators — procrastination disguised as staying informed
+        "flipboard.com",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [
