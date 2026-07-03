@@ -1,5 +1,57 @@
 # Adia — Build Progress
 
+## Run 257 — 2026-07-03T21:06:00Z — POST /api/admin/bulk-revoke + BulkRevokePanel + 13 tests
+
+### Shipped
+
+**`web/app/api/admin/bulk-revoke/route.ts` — new admin endpoint:**
+- `POST /api/admin/bulk-revoke` — revokes (cancels) multiple license keys in one batch.
+- Body: `{ keys: string[] }` — non-empty array, max 100 keys.
+- 400 on missing/empty keys array; 400 when `keys.length > 100` (error mentions the limit).
+- Keys already canceled are silently skipped with `reason: "already_revoked"`.
+- Unknown keys are silently skipped with `reason: "not_found"`.
+- Each successfully revoked key writes a `revoke` audit log entry with `{ bulk: true }` flag.
+- Returns `{ ok, changed: [{key, previousStatus}], skipped: [{key, reason}] }`.
+- Auth: ADMIN_TOKEN bearer header or `?token=` query param (consistent with all admin routes).
+- No status gate beyond the already-canceled check — can revoke active, past_due, expired.
+
+**`web/app/admin/page.tsx` — BulkRevokePanel:**
+- Added after `BulkChangePlanPanel` (natural pairing: bulk change plan ↔ bulk revoke).
+- Red submit button (matches single-key RevokePanel; visually distinct from violet BulkChangePlan).
+- Textarea for keys (one per line or comma-separated).
+- Result shows "N revoked, M skipped" summary with per-key lists (revoked with previousStatus
+  strikethrough → "canceled"; skipped with reason label).
+
+**`web/__tests__/admin-routes.test.ts` — 13 new tests:**
+- 401 no-token, 401 wrong-token.
+- 400 missing keys, 400 empty array, 400 >100 keys (error message mentions 100).
+- 200 single active license revoked — previousStatus in response.
+- 200 batch of 3 licenses — all 3 in changed, 0 skipped.
+- Skip already-canceled license — reason: "already_revoked".
+- Skip unknown key — reason: "not_found".
+- Mixed batch (active + already-canceled + not-found) — 1 changed, 2 skipped with correct reasons.
+- Key uppercase normalization.
+- DB persistence: `findLicense` after call confirms `status === 'canceled'`.
+- `?token=` query-param auth.
+
+### Tests
+445 passed (up from 432). 20 test files green. `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated
+  singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`.
+  This prevents latent race-condition test failures in future Xcode builds.
+- Consider collapsing the admin page's 18+ panels into accordion sections to reduce vertical
+  scroll length — the page is growing long. Could start with a `<details>/<summary>` wrapper
+  or a `useState`-based expand/collapse toggle per panel.
+- Add `POST /api/admin/bulk-reactivate` endpoint (same shape as bulk-revoke but sets status
+  back to `active`) — completes the bulk status management toolkit alongside bulk-revoke.
+
+---
+
 ## Run 256 — 2026-07-03T20:11:00Z — ?since= + ?status= + ?plan= filters for GET /api/admin/search-licenses
 
 ### Shipped
