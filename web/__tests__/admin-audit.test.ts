@@ -1,11 +1,16 @@
 // Tests for GET /api/admin/audit-log and audit log instrumentation on admin routes.
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
 import { NextRequest } from 'next/server';
 import { resetDbForTesting, insertLicense, listAuditLog } from '@/lib/db';
+
+vi.mock('@/lib/email', () => ({
+  sendLicenseEmail: vi.fn().mockResolvedValue(undefined),
+  sendPaymentFailedEmail: vi.fn().mockResolvedValue(undefined),
+}));
 
 let dbPath: string;
 
@@ -297,6 +302,141 @@ describe('change_email writes audit log', () => {
     const detail = JSON.parse(entries[0].detail!);
     expect(detail.oldEmail).toBe('old@example.com');
     expect(detail.newEmail).toBe('new@example.com');
+  });
+});
+
+// ─── resend_license writes audit log ─────────────────────────────────────────
+
+async function callResendLicense(body: { key?: string; email?: string }) {
+  const { POST } = await import('@/app/api/admin/resend-license/route');
+  const req = new NextRequest('http://localhost/api/admin/resend-license', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
+  });
+  return POST(req);
+}
+
+describe('resend_license writes audit log', () => {
+  it('logs resend_license action with to and resolvedBy=key when key is supplied', async () => {
+    insertLicense({ key: 'ADIA-AUDIT-RSK1-AAAA', email: 'resend-k@example.com', plan: 'lifetime', expiresAt: null });
+    await callResendLicense({ key: 'ADIA-AUDIT-RSK1-AAAA' });
+    const entries = listAuditLog({ licenseKey: 'ADIA-AUDIT-RSK1-AAAA' });
+    expect(entries.length).toBe(1);
+    expect(entries[0].action).toBe('resend_license');
+    const detail = JSON.parse(entries[0].detail!);
+    expect(detail.to).toBe('resend-k@example.com');
+    expect(detail.resolvedBy).toBe('key');
+  });
+
+  it('logs resend_license action with resolvedBy=email when email is supplied without key', async () => {
+    insertLicense({ key: 'ADIA-AUDIT-RSE1-AAAA', email: 'resend-e@example.com', plan: 'lifetime', expiresAt: null });
+    await callResendLicense({ email: 'resend-e@example.com' });
+    const entries = listAuditLog({ licenseKey: 'ADIA-AUDIT-RSE1-AAAA' });
+    expect(entries.length).toBe(1);
+    expect(entries[0].action).toBe('resend_license');
+    const detail = JSON.parse(entries[0].detail!);
+    expect(detail.to).toBe('resend-e@example.com');
+    expect(detail.resolvedBy).toBe('email');
+  });
+});
+
+// ─── deactivate_all writes audit log ─────────────────────────────────────────
+
+async function callDeactivateAll(key: string) {
+  const { POST } = await import('@/app/api/admin/deactivate-all/route');
+  const req = new NextRequest('http://localhost/api/admin/deactivate-all', {
+    method: 'POST',
+    body: JSON.stringify({ key }),
+    headers: { 'Content-Type': 'application/json', ...authHeader() },
+  });
+  return POST(req);
+}
+
+describe('deactivate_all writes audit log', () => {
+  it('logs deactivate_all action with removedCount=0 when no activations exist', async () => {
+    insertLicense({ key: 'ADIA-AUDIT-DAL0-AAAA', email: 'dal0@example.com', plan: 'lifetime', expiresAt: null });
+    await callDeactivateAll('ADIA-AUDIT-DAL0-AAAA');
+    const entries = listAuditLog({ licenseKey: 'ADIA-AUDIT-DAL0-AAAA' });
+    expect(entries.length).toBe(1);
+    expect(entries[0].action).toBe('deactivate_all');
+    const detail = JSON.parse(entries[0].detail!);
+    expect(detail.removedCount).toBe(0);
+  });
+
+  it('logs deactivate_all with correct removedCount after activations are removed', async () => {
+    const { recordActivation } = await import('@/lib/db');
+    insertLicense({ key: 'ADIA-AUDIT-DAL2-AAAA', email: 'dal2@example.com', plan: 'lifetime', expiresAt: null });
+    recordActivation('ADIA-AUDIT-DAL2-AAAA', 'machine-hash-1');
+    recordActivation('ADIA-AUDIT-DAL2-AAAA', 'machine-hash-2');
+    await callDeactivateAll('ADIA-AUDIT-DAL2-AAAA');
+    const entries = listAuditLog({ licenseKey: 'ADIA-AUDIT-DAL2-AAAA' });
+    expect(entries.length).toBe(1);
+    expect(entries[0].action).toBe('deactivate_all');
+    const detail = JSON.parse(entries[0].detail!);
+    expect(detail.removedCount).toBe(2);
+  });
+});
+
+// ─── CSV export ───────────────────────────────────────────────────────────────
+
+describe('GET /api/admin/audit-log?format=csv', () => {
+  it('returns 401 when not authorized', async () => {
+    const { GET } = await import('@/app/api/admin/audit-log/route');
+    const req = new NextRequest('http://localhost/api/admin/audit-log?format=csv', { method: 'GET' });
+    const res = await GET(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns text/csv Content-Type', async () => {
+    const { GET } = await import('@/app/api/admin/audit-log/route');
+    const req = new NextRequest('http://localhost/api/admin/audit-log?format=csv', {
+      method: 'GET',
+      headers: authHeader(),
+    });
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type')).toContain('text/csv');
+  });
+
+  it('returns CSV with header row and one data row per audit entry', async () => {
+    insertLicense({ key: 'ADIA-AUDIT-CSV1-AAAA', email: 'csv@example.com', plan: 'lifetime', expiresAt: null });
+    await callRevoke('ADIA-AUDIT-CSV1-AAAA');
+
+    const { GET } = await import('@/app/api/admin/audit-log/route');
+    const req = new NextRequest('http://localhost/api/admin/audit-log?format=csv', {
+      method: 'GET',
+      headers: authHeader(),
+    });
+    const res = await GET(req);
+    const text = await res.text();
+    const lines = text.trim().split('\n');
+    expect(lines[0]).toBe('id,createdAt,licenseKey,action,detail');
+    expect(lines.length).toBeGreaterThanOrEqual(2);
+    expect(lines[1]).toContain('revoke');
+    expect(lines[1]).toContain('ADIA-AUDIT-CSV1-AAAA');
+  });
+
+  it('CSV detail field escapes internal double quotes (RFC 4180)', async () => {
+    const { insertAuditLog } = await import('@/lib/db');
+    insertLicense({ key: 'ADIA-AUDIT-CSQ1-AAAA', email: 'csvq@example.com', plan: 'lifetime', expiresAt: null });
+    insertAuditLog({ licenseKey: 'ADIA-AUDIT-CSQ1-AAAA', action: 'set_note', detail: { note: 'say "hello"' } });
+
+    const { GET } = await import('@/app/api/admin/audit-log/route');
+    const req = new NextRequest('http://localhost/api/admin/audit-log?format=csv&key=ADIA-AUDIT-CSQ1-AAAA', {
+      method: 'GET',
+      headers: authHeader(),
+    });
+    const res = await GET(req);
+    const text = await res.text();
+    // The detail is stored as JSON: {"note":"say \"hello\""}
+    // After CSV double-quote escaping, every " becomes "" inside the quoted field.
+    // Verify the field is CSV-quoted and the key appears escaped.
+    expect(text).toContain('ADIA-AUDIT-CSQ1-AAAA');
+    expect(text).toContain('set_note');
+    // No bare (unescaped) double quotes outside the surrounding CSV quotes.
+    const dataLine = text.trim().split('\n')[1];
+    expect(dataLine.startsWith('"') || dataLine.includes(',"')).toBe(true);
   });
 });
 

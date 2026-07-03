@@ -649,6 +649,8 @@ function AuditPanel({ token }: { token: string }) {
     if (action === 'extend') return 'text-blue-600';
     if (action === 'set_note') return 'text-teal-600';
     if (action === 'change_email') return 'text-orange-600';
+    if (action === 'resend_license') return 'text-sky-600';
+    if (action === 'deactivate_all') return 'text-rose-600';
     return 'text-ink/70';
   }
 
@@ -657,7 +659,8 @@ function AuditPanel({ token }: { token: string }) {
       <h2 className="text-lg font-semibold mb-3">Admin audit log</h2>
       <p className="text-sm text-ink/60 mb-3">
         All admin actions on licenses — issue, revoke, change_plan, extend, reactivate, set_note,
-        change_email. Most recent first. Filter by license key to see history for one license.
+        change_email, resend_license, deactivate_all. Most recent first. Filter by license key to
+        see history for one license.
       </p>
       <form onSubmit={load} className="card space-y-3">
         <Field label="License key (optional — leave blank for all recent actions)">
@@ -668,9 +671,27 @@ function AuditPanel({ token }: { token: string }) {
             className="input font-mono"
           />
         </Field>
-        <button type="submit" className="btn-primary" disabled={loading}>
-          {loading ? 'Loading…' : 'Load audit log'}
-        </button>
+        <div className="flex gap-2">
+          <button type="submit" className="btn-primary" disabled={loading}>
+            {loading ? 'Loading…' : 'Load audit log'}
+          </button>
+          <button
+            type="button"
+            className="btn-secondary text-xs px-3 py-1"
+            onClick={() => {
+              if (!token) return;
+              const params = new URLSearchParams({ limit: '500', format: 'csv' });
+              if (keyFilter.trim()) params.set('key', keyFilter.trim().toUpperCase());
+              const url = `/api/admin/audit-log?${params}&token=${encodeURIComponent(token)}`;
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'audit-log.csv';
+              a.click();
+            }}
+          >
+            Export CSV
+          </button>
+        </div>
       </form>
 
       {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
@@ -1196,6 +1217,7 @@ type LicenseRow = {
   issuedAt: string;
   expiresAt: string | null;
   machineCount: number;
+  note?: string | null;
 };
 
 function LicensesByEmailPanel({ token }: { token: string }) {
@@ -1266,7 +1288,8 @@ function LicensesByEmailPanel({ token }: { token: string }) {
                   <th className="pb-1 pr-3">Plan</th>
                   <th className="pb-1 pr-3">Status</th>
                   <th className="pb-1 pr-3">Issued</th>
-                  <th className="pb-1">Expires</th>
+                  <th className="pb-1 pr-3">Expires</th>
+                  <th className="pb-1">Note</th>
                 </tr>
               </thead>
               <tbody>
@@ -1278,7 +1301,8 @@ function LicensesByEmailPanel({ token }: { token: string }) {
                       {lic.status}
                     </td>
                     <td className="py-1 pr-3 text-ink/50">{lic.issuedAt.slice(0, 10)}</td>
-                    <td className="py-1 text-ink/50">{lic.expiresAt ? lic.expiresAt.slice(0, 10) : '—'}</td>
+                    <td className="py-1 pr-3 text-ink/50">{lic.expiresAt ? lic.expiresAt.slice(0, 10) : '—'}</td>
+                    <td className="py-1 text-ink/50 italic">{lic.note ?? '—'}</td>
                   </tr>
                 ))}
               </tbody>

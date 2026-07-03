@@ -9,7 +9,7 @@
 // gates on past_due). Admins know what they're doing.
 
 import { NextRequest, NextResponse } from 'next/server';
-import { findLicense, findLicensesByEmail } from '@/lib/store';
+import { findLicense, findLicensesByEmail, insertAuditLog } from '@/lib/store';
 import { sendLicenseEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
@@ -57,5 +57,10 @@ export async function POST(req: NextRequest) {
   }
 
   await sendLicenseEmail(license.email, license.key, license.plan);
+  await insertAuditLog({
+    licenseKey: license.key,
+    action: 'resend_license',
+    detail: { to: license.email, resolvedBy: rawKey ? 'key' : 'email' },
+  });
   return NextResponse.json({ ok: true, to: license.email, key: license.key, plan: license.plan });
 }

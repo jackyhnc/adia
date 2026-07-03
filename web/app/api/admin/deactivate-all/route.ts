@@ -4,7 +4,7 @@
 // Auth: ADMIN_TOKEN bearer header or ?token= query param.
 
 import { NextRequest, NextResponse } from 'next/server';
-import { findLicense, removeAllActivations } from '@/lib/store';
+import { findLicense, removeAllActivations, insertAuditLog } from '@/lib/store';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -31,5 +31,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'unknown key' }, { status: 404 });
   }
   const removedCount = await removeAllActivations(key);
+  await insertAuditLog({ licenseKey: key, action: 'deactivate_all', detail: { removedCount } });
   return NextResponse.json({ ok: true, key, removedCount });
 }
