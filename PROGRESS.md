@@ -10205,3 +10205,45 @@ Nothing blocked.
 - Consider adding a "Copy API key" shortcut / link within the app's onboarding flow (currently requires the user to go to platform.anthropic.com separately).
 - Consider a `PATCH /api/user/email` self-service email update endpoint with key+current-email verification (no admin required).
 - Add `spele.lv` variants and other regional browser gaming portals that appear in student cohorts.
+
+---
+
+## Run 244 — 2026-07-03
+
+### Shipped
+
+**`Sources/AdiCore/Models/SuggestedSessionTemplates.swift` — curated starter template catalog:**
+- 8 pre-built session templates covering the most common student/worker tasks: essay writing, problem set, exam study, chapter reading, lab report, coding project, job applications, email inbox
+- Each template carries an SF Symbol icon, task text, success criteria, and recommended duration
+- `SuggestedSessionTemplates.displayCount = 3` caps how many appear in the notch to avoid overflow
+- New users (no pinned templates) now see a "SUGGESTIONS" section instead of an empty notch
+
+**`Sources/AdiCore/Views/Notch/IdleNotchView.swift` — SUGGESTIONS section for first-run UX:**
+- When `templates.isEmpty`, shows "SUGGESTIONS" header + 3 pre-built suggestion buttons
+- Tapping a suggestion prefills `SessionCreationFormView` (via `state.startCreating(prefill:)`) so users can personalise before starting — not an immediate launch like pinned templates
+- Suggestion buttons use lighter treatment (4% background + border) vs pinned buttons (7%, pin + play icon) to signal starter prompts vs saved sessions
+- Once users pin their own templates, PINNED section appears and SUGGESTIONS disappears
+
+**`Tests/AdiTests/SuggestedSessionTemplatesTests.swift` — 10 new tests:**
+- Catalog non-empty; all templates have non-empty task/criteria/icon; all durations positive; displayCount valid; catalog contains essay + coding templates; task texts unique
+
+**`Sources/AdiCore/Models/DefaultBlocklists.swift` — 14 new blocked domains:**
+- Image boards: `4chan.org`, `4channel.org`, `8kun.top`
+- Gaming portals: `newgrounds.com`, `gamejolt.com`, `lagged.com`
+- Clip sharing: `streamable.com`
+- European classifieds: `leboncoin.fr`, `marktplaats.nl`, `tradera.com`, `subito.it`
+- Anime streaming: `9anime.to`, `zoro.to`, `aniwatch.to`
+
+### Verification
+- Web tests: 335 pass, 0 fail
+- Swift build: no toolchain in Linux CI; verified via code review
+- `SuggestedTemplate` is Sendable, pure value type — no concurrency concerns
+
+### Blocked
+Nothing blocked.
+
+### Next agent should
+- Consider a "dismiss suggestions" affordance so power users can hide them permanently (SettingsStore Bool, default true)
+- Consider showing suggestions after PINNED as "EXPLORE MORE" for users with 1-2 saved templates
+- `handshake.com` (campus recruiting) is widely used by students — consider adding to blocklist
+- Wire `SuggestedTemplate.preferredDuration` into the creation form's duration picker when prefilling

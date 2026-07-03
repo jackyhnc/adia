@@ -62,6 +62,8 @@ struct IdleBody: View {
 
             if !templates.isEmpty {
                 templateSection
+            } else {
+                suggestedSection
             }
 
             if let err = templateError {
@@ -134,6 +136,21 @@ struct IdleBody: View {
         }
     }
 
+    @ViewBuilder
+    private var suggestedSection: some View {
+        let suggestions = Array(SuggestedSessionTemplates.all.prefix(SuggestedSessionTemplates.displayCount))
+        VStack(alignment: .leading, spacing: 5) {
+            Text("SUGGESTIONS")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundStyle(.white.opacity(0.3))
+                .tracking(1.5)
+
+            ForEach(suggestions, id: \.task) { s in
+                suggestedButton(s)
+            }
+        }
+    }
+
     private func templateButton(_ t: SessionTemplate) -> some View {
         Button {
             launchTemplate(t)
@@ -160,6 +177,39 @@ struct IdleBody: View {
             .padding(.vertical, 6)
             .background(Color.white.opacity(0.07))
             .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func suggestedButton(_ s: SuggestedTemplate) -> some View {
+        Button {
+            withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
+                state.startCreating(prefill: s.task)
+            }
+        } label: {
+            HStack(spacing: 7) {
+                Image(systemName: s.icon)
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.3))
+                Text(s.task)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.6))
+                    .lineLimit(1)
+                Spacer()
+                if let dur = s.preferredDuration {
+                    Text(templateDurationLabel(dur))
+                        .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(.white.opacity(0.25))
+                }
+            }
+            .padding(.horizontal, 9)
+            .padding(.vertical, 6)
+            .background(Color.white.opacity(0.04))
+            .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 7, style: .continuous)
+                    .stroke(Color.white.opacity(0.06), lineWidth: 0.5)
+            )
         }
         .buttonStyle(.plain)
     }

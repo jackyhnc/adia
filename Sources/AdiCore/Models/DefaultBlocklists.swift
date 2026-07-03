@@ -333,6 +333,25 @@ extension Session {
         "lemon8-app.com",        // ByteDance Lemon8
         // News aggregators — procrastination disguised as staying informed
         "flipboard.com",
+        // Image boards and meme archives — notorious deep time sinks
+        "4chan.org",
+        "4channel.org",      // SFW-branded 4chan alias, same server
+        "8kun.top",          // 4chan successor board
+        // Remaining browser gaming portals
+        "newgrounds.com",    // large flash/game/animation archive
+        "gamejolt.com",      // indie game portal (separate from itch.io)
+        "lagged.com",        // browser games portal
+        // Short video clip sharing (fragments of longer YouTube content)
+        "streamable.com",
+        // European classifieds — same rabbit-hole pattern as kijiji/gumtree
+        "leboncoin.fr",      // French classifieds (largest in France)
+        "marktplaats.nl",    // Dutch secondhand marketplace
+        "tradera.com",       // Swedish marketplace
+        "subito.it",         // Italian classifieds
+        // Anime / manga streaming (growing student distraction)
+        "9anime.to",
+        "zoro.to",
+        "aniwatch.to",
     ]
 
     public static let defaultBlockedApps: [BlockedApp] = [
