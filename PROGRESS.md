@@ -1,5 +1,61 @@
 # Adia — Build Progress
 
+## Run 256 — 2026-07-03T20:11:00Z — ?since= + ?status= + ?plan= filters for GET /api/admin/search-licenses
+
+### Shipped
+
+**`web/lib/db.ts` — filter params on `searchLicenses`, `countSearchLicenses`, `searchLicensesAll`:**
+- All three functions now accept optional `since?`, `status?`, `plan?`.
+- Dynamic WHERE clause: wraps the existing full-text OR group in parens, then ANDs the extra conditions so full-text filtering and column filtering compose cleanly.
+- Uses variadic `.all as (...a: unknown[]) => any[]` cast to avoid better-sqlite3 type limitation.
+
+**`web/lib/db-pg.ts` — Postgres equivalents updated:**
+- `searchLicensesPg`, `countSearchLicensesPg`, `searchLicensesAllPg` all accept `since?`, `status?`, `plan?`.
+- Uses the `(${val}::text IS NULL OR l.col = ${val}::text)` guard pattern consistent with `countLicensesByEmailPg`.
+- Full-text OR group wrapped in parens before ANDing filter conditions.
+
+**`web/lib/store.ts` — facade signatures updated:**
+- `searchLicenses`, `countSearchLicenses`, `searchLicensesAll` thread new params through to both backends.
+
+**`web/app/api/admin/search-licenses/route.ts` — new query params:**
+- `VALID_STATUSES = new Set(['active', 'canceled', 'expired', 'past_due'])` and `VALID_PLANS` allowlists.
+- `?status=` and `?plan=` return 400 with `{ error: "invalid ?status= — must be one of: ..." }` on unknown values.
+- `?since=` passed through without format validation (same pattern as licenses-by-email).
+- JSON response echoes `since`, `status`, `plan` when set.
+- CSV export path respects all three filters.
+- Comment block at top updated to document the new params.
+
+**`web/app/admin/page.tsx` — SearchLicensesPanel filter UI:**
+- New `sinceFilter`, `statusFilter`, `planFilter` state vars.
+- `buildParams()` helper builds URLSearchParams with all active filters — used in `runSearch`, `loadMore`, and `exportCsv`.
+- `useEffect` dep array now includes filter state so results re-fetch on filter change (same debounce as query).
+- Filter row UI: "Issued since" date input + "Status" select + "Plan" select, reusing `STATUS_OPTIONS` / `PLAN_OPTIONS` already defined at module scope.
+
+**Tests (11 new, 421 → 432):**
+- 400 for invalid `?status=` value.
+- 400 for invalid `?plan=` value.
+- `?since=` excludes licenses issued before the date.
+- `?status=active` excludes canceled licenses.
+- `?plan=lifetime` returns only lifetime licenses.
+- `?plan=yearly` returns empty when no yearly licenses match.
+- Combined `?status=active + ?plan=yearly` narrows both dimensions.
+- Combined `?since= + ?status= + ?plan=` all three narrows to exact match.
+- Response echoes `since`, `status`, `plan` in body when set.
+- Filter does not bleed across users in same search.
+- CSV export respects `?plan=` filter.
+
+**Web test count: 421 → 432 (20 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add `POST /api/admin/bulk-revoke` endpoint (same shape as bulk-change-plan but calls `setStatus(key, 'canceled')`) for disabling a cohort of compromised or fraudulent licenses in one call.
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`.
+- Consider collapsing the admin page's 17+ panels into accordion sections to reduce vertical scroll length — `BulkChangePlanPanel` and `SearchLicensesPanel` are natural candidates.
+
+---
+
 ## Run 255 — 2026-07-03T19:09:00Z — Rate-limit resend-license + bulk-change-plan endpoint + admin UI panel
 
 ### Shipped
