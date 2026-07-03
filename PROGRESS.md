@@ -10439,3 +10439,44 @@ Nothing blocked.
 - Wire `SuggestedTemplate.preferredDuration` into the `SessionCreationFormView` directly (currently handled via `NotchState.sessionCreationPrefillDuration`; consider if there's a more direct path for the pinned template flow)
 - Add `itch.io/gamejolt`-style browser gaming sites per-region for completeness
 - CI on this branch is based on the web/* jobs; the Swift jobs rely on the macOS runner which isn't available in this container
+
+---
+
+## Run 250 — 2026-07-03
+
+### Shipped
+
+**`Sources/AdiCore/SessionNotifier.swift` — streak milestone notification system:**
+- `nonisolated static let streakMilestoneDays: Set<Int> = [3, 7, 14, 21, 30]`
+- `nonisolated static func streakMilestoneValue(_ streak: Int) -> Int?` — returns the milestone if `streak` matches, else nil; pure function for direct testing
+- `nonisolated static func streakMilestoneBody(days: Int) -> String` — Adia-voice copy for each milestone ("3 days in a row. the streak is on." / "one full week. you're building something." / etc.); fallback for unknown day counts
+- `func sendStreakMilestone(days: Int)` — fires a `UNUserNotificationContent` banner with `"\(days)-day streak 🔥"` title and the milestone body; stable notification ID per milestone level so rapid re-scheduling doesn't stack banners
+
+**`Sources/AdiCore/SessionManager.swift` — streak notification trigger in `endSession()`:**
+- Captures `wasSuccessful = sessionEndedSuccessfully` before the Task (the property is reset to `false` synchronously after the Task is enqueued, so the capture is the only way to read the pre-reset value inside the Task body)
+- After `SessionHistory.shared.record(record)`, checks `SessionHistory.shared.stats()` to get the updated streak
+- Only fires if: (a) the session was verified complete, (b) the new streak is a recognized milestone, (c) that milestone is higher than `adia.lastNotifiedStreakMilestone` in UserDefaults — monotone gate so the same milestone level never fires twice regardless of how many sessions the user runs that day
+- UserDefaults key `adia.lastNotifiedStreakMilestone` persists across launches; defaults to 0 so 3-day fires immediately on first milestone
+
+**`Tests/AdiTests/SessionNotifierTests.swift` — 9 new tests in `SessionNotifierStreakTests` suite:**
+- Suite has no `.enabled(if: runningInAppBundle)` restriction — pure static-function tests run unconditionally in `swift test` and CI
+- `streakMilestoneValue` — covers each milestone, zero, 1 and 2, and 18 in-between/out-of-range values
+- `streakMilestoneDays` set equality check
+- `streakMilestoneBody` — non-empty for all milestones; each body contains the day count; none uses corporate voice ("congratulations", "achievement unlocked", "great job"); fallback for day=100 mentions the count
+
+### Verification
+- No Swift toolchain in this container. Verified by code review:
+  - `wasSuccessful` captured before Task — avoids reading the already-reset `sessionEndedSuccessfully = false`
+  - All added methods are `public` and accessible from `SessionManager` which is in the same `AdiCore` target
+  - `nonisolated static` on `streakMilestoneValue` and `streakMilestoneBody` matches the existing pattern on `blockedAppHiddenBody` and `foregroundPresentationOptions`
+  - Notification fires only on successful completion (`guard wasSuccessful`) and only on a new milestone level (`last < milestone`); early-exit sessions never notify
+  - Test suite uses Swift Testing `@Suite` annotation consistent with all other test files
+
+### Blocked
+Nothing blocked.
+
+### Next agent should
+- Consider resetting `adia.lastNotifiedStreakMilestone` when the user's streak drops to 0 so they can re-earn lower milestones on a new streak run (current monotone gate: once notified at 7, you won't see 3 or 7 again even after breaking streak)
+- Consider adding a "streak broken" notification when the user misses a day after a ≥7-day streak (motivational re-engagement)
+- Add `itch.io` to the blocklist (indie game hosting platform — distinct from `gamejolt.com` already blocked)
+- Wire `SessionTemplate.preferredDuration` into the pinned-template "prefill and edit" flow (right-click context menu on the notch pin button to open the form pre-filled instead of launching immediately)

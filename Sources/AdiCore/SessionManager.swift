@@ -106,7 +106,20 @@ public final class SessionManager: ObservableObject {
                 streamFailureCount: s.streamFailureCount
             )
             _lastEndedRecord = record
-            Task { await SessionHistory.shared.record(record) }
+            let wasSuccessful = sessionEndedSuccessfully
+            Task {
+                await SessionHistory.shared.record(record)
+                guard wasSuccessful else { return }
+                let stats = await SessionHistory.shared.stats()
+                if let milestone = SessionNotifier.streakMilestoneValue(stats.streak) {
+                    let key = "adia.lastNotifiedStreakMilestone"
+                    let last = UserDefaults.standard.integer(forKey: key)
+                    if last < milestone {
+                        UserDefaults.standard.set(milestone, forKey: key)
+                        SessionNotifier.shared.sendStreakMilestone(days: milestone)
+                    }
+                }
+            }
         }
         sessionEndedSuccessfully = false
         onTaskCheckCount = 0

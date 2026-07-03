@@ -103,3 +103,74 @@ struct SessionNotifierTests {
         #expect(notifier.responds(to: sel))
     }
 }
+
+// MARK: - Streak milestone pure-function tests (no app bundle required)
+
+/// Tests for `SessionNotifier.streakMilestoneValue` and `streakMilestoneBody`.
+/// These only exercise `nonisolated static` functions and need no `UNUserNotificationCenter`,
+/// so they run unconditionally in `swift test` and CI.
+@Suite("SessionNotifier streak milestones")
+struct SessionNotifierStreakTests {
+
+    // MARK: streakMilestoneValue
+
+    @Test func streakMilestoneValue_returnsValueForEveryMilestone() {
+        for days in [3, 7, 14, 21, 30] {
+            #expect(SessionNotifier.streakMilestoneValue(days) == days,
+                    "\(days) should be a recognized milestone")
+        }
+    }
+
+    @Test func streakMilestoneValue_returnsNilForZero() {
+        #expect(SessionNotifier.streakMilestoneValue(0) == nil)
+    }
+
+    @Test func streakMilestoneValue_returnsNilForOneAndTwo() {
+        #expect(SessionNotifier.streakMilestoneValue(1) == nil)
+        #expect(SessionNotifier.streakMilestoneValue(2) == nil)
+    }
+
+    @Test func streakMilestoneValue_returnsNilForInBetweenValues() {
+        for days in [4, 5, 6, 8, 9, 10, 11, 12, 13, 15, 16, 20, 22, 25, 29, 31, 100] {
+            #expect(SessionNotifier.streakMilestoneValue(days) == nil,
+                    "\(days) is not a milestone and should return nil")
+        }
+    }
+
+    @Test func streakMilestoneDays_containsExpectedValues() {
+        let expected: Set<Int> = [3, 7, 14, 21, 30]
+        #expect(SessionNotifier.streakMilestoneDays == expected)
+    }
+
+    // MARK: streakMilestoneBody
+
+    @Test func streakMilestoneBody_isNonEmptyForAllMilestones() {
+        for days in [3, 7, 14, 21, 30] {
+            #expect(!SessionNotifier.streakMilestoneBody(days: days).isEmpty)
+        }
+    }
+
+    @Test func streakMilestoneBody_mentionsDayCountForAllMilestones() {
+        for days in [3, 7, 14, 21, 30] {
+            let body = SessionNotifier.streakMilestoneBody(days: days)
+            #expect(body.contains("\(days)"),
+                    "body for \(days)-day streak should mention the count")
+        }
+    }
+
+    @Test func streakMilestoneBody_doesNotUseCorporateVoice() {
+        // Adia's tone is direct and friend-like, not a notification-center press release.
+        for days in [3, 7, 14, 21, 30] {
+            let body = SessionNotifier.streakMilestoneBody(days: days).lowercased()
+            #expect(!body.contains("congratulations"))
+            #expect(!body.contains("achievement unlocked"))
+            #expect(!body.contains("great job"))
+        }
+    }
+
+    @Test func streakMilestoneBody_fallbackForUnknownDayCount() {
+        let body = SessionNotifier.streakMilestoneBody(days: 100)
+        #expect(!body.isEmpty)
+        #expect(body.contains("100"))
+    }
+}
