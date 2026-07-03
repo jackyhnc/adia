@@ -15,6 +15,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { NextRequest } from 'next/server';
 import { resetDbForTesting, insertLicense, recordActivation, findLicense, insertAuditLog, setIssuedAt, setStatus } from '@/lib/db';
+import { _resetForTesting as resetRateLimit } from '@/lib/ratelimit';
 
 vi.mock('@/lib/email', () => ({
   sendLicenseEmail: vi.fn().mockResolvedValue(undefined),
@@ -33,6 +34,7 @@ beforeEach(() => {
     `adia-admin-routes-${Date.now()}-${Math.random().toString(36).slice(2)}.db`,
   );
   resetDbForTesting(dbPath);
+  resetRateLimit();
   process.env.ADMIN_TOKEN = 'test-admin-token';
   mockSendPaymentFailedEmail.mockReset();
   mockSendPaymentFailedEmail.mockResolvedValue(undefined);
@@ -1174,6 +1176,61 @@ describe('POST /api/admin/resend-license', () => {
     expect(res.status).toBe(200);
     expect(mockSendLicenseEmail).toHaveBeenCalledOnce();
   });
+
+  it('returns 429 after exceeding 20 requests per minute from the same IP', async () => {
+    insertLicense({ key: 'ADIA-RLSE-RLMT-AAAA', email: 'ratelimit@example.com', plan: 'monthly', expiresAt: null });
+    const { POST } = await import('@/app/api/admin/resend-license/route');
+    const makeReq = () =>
+      new NextRequest('http://localhost/api/admin/resend-license', {
+        method: 'POST',
+        body: JSON.stringify({ key: 'ADIA-RLSE-RLMT-AAAA' }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer test-admin-token',
+          'x-forwarded-for': '10.0.0.1',
+        },
+      });
+
+    // First 20 requests succeed.
+    for (let i = 0; i < 20; i++) {
+      const res = await POST(makeReq());
+      expect(res.status).toBe(200);
+    }
+
+    // 21st request is rejected.
+    const res = await POST(makeReq());
+    expect(res.status).toBe(429);
+    const body = await res.json();
+    expect(body.error).toMatch(/too many requests/i);
+    expect(res.headers.get('Retry-After')).toBeTruthy();
+  });
+
+  it('rate limit is per IP — a different IP is not affected', async () => {
+    insertLicense({ key: 'ADIA-RLSE-RLIP-AAAA', email: 'rlip@example.com', plan: 'lifetime', expiresAt: null });
+    const { POST } = await import('@/app/api/admin/resend-license/route');
+
+    const makeReq = (ip: string) =>
+      new NextRequest('http://localhost/api/admin/resend-license', {
+        method: 'POST',
+        body: JSON.stringify({ key: 'ADIA-RLSE-RLIP-AAAA' }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer test-admin-token',
+          'x-forwarded-for': ip,
+        },
+      });
+
+    // Exhaust the bucket for 10.0.0.2.
+    for (let i = 0; i < 20; i++) {
+      await POST(makeReq('10.0.0.2'));
+    }
+    const blocked = await POST(makeReq('10.0.0.2'));
+    expect(blocked.status).toBe(429);
+
+    // A different IP (10.0.0.3) still gets through.
+    const allowed = await POST(makeReq('10.0.0.3'));
+    expect(allowed.status).toBe(200);
+  });
 });
 
 // ─── POST /api/admin/change-email ─────────────────────────────────────────────
@@ -1785,6 +1842,181 @@ describe('POST /api/admin/change-plan', () => {
     const body = await res.json();
     expect(body.ok).toBe(true);
     expect(body.newPlan).toBe('lifetime');
+  });
+});
+
+// ─── POST /api/admin/bulk-change-plan ────────────────────────────────────────
+
+async function callBulkChangePlan(body: unknown, token = 'test-admin-token') {
+  const { POST } = await import('@/app/api/admin/bulk-change-plan/route');
+  const req = new NextRequest('http://localhost/api/admin/bulk-change-plan', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+  });
+  return POST(req);
+}
+
+describe('POST /api/admin/bulk-change-plan', () => {
+  it('returns 401 without a token', async () => {
+    const { POST } = await import('@/app/api/admin/bulk-change-plan/route');
+    const req = new NextRequest('http://localhost/api/admin/bulk-change-plan', {
+      method: 'POST',
+      body: JSON.stringify({ keys: ['ADIA-BKPL-NOAU-AAAA'], plan: 'yearly' }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callBulkChangePlan({ keys: ['ADIA-BKPL-WRNG-AAAA'], plan: 'yearly' }, 'bad-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when keys is missing', async () => {
+    const res = await callBulkChangePlan({ plan: 'yearly' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing.*keys/i);
+  });
+
+  it('returns 400 when keys is an empty array', async () => {
+    const res = await callBulkChangePlan({ keys: [], plan: 'yearly' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing.*keys|empty/i);
+  });
+
+  it('returns 400 when keys exceeds 100 items', async () => {
+    const keys = Array.from({ length: 101 }, (_, i) => `ADIA-BKPL-OVFL-${String(i).padStart(4, '0')}`);
+    const res = await callBulkChangePlan({ keys, plan: 'yearly' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/too many/i);
+  });
+
+  it('returns 400 when plan is missing', async () => {
+    const res = await callBulkChangePlan({ keys: ['ADIA-BKPL-NOPLN-AA'] });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing plan/i);
+  });
+
+  it('returns 400 when plan is invalid', async () => {
+    const res = await callBulkChangePlan({ keys: ['ADIA-BKPL-INVPLN-A'], plan: 'enterprise' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/invalid plan/i);
+  });
+
+  it('changes plan for a single key and returns changed array', async () => {
+    insertLicense({ key: 'ADIA-BKPL-SING-AAAA', email: 'bulk1@example.com', plan: 'monthly', expiresAt: null });
+
+    const res = await callBulkChangePlan({ keys: ['ADIA-BKPL-SING-AAAA'], plan: 'yearly' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.plan).toBe('yearly');
+    expect(body.changed).toHaveLength(1);
+    expect(body.changed[0]).toMatchObject({ key: 'ADIA-BKPL-SING-AAAA', previousPlan: 'monthly' });
+    expect(body.skipped).toHaveLength(0);
+  });
+
+  it('changes plan for multiple keys in one request', async () => {
+    insertLicense({ key: 'ADIA-BKPL-MUL1-AAAA', email: 'bkmul1@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-BKPL-MUL2-BBBB', email: 'bkmul2@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-BKPL-MUL3-CCCC', email: 'bkmul3@example.com', plan: 'monthly', expiresAt: null });
+
+    const res = await callBulkChangePlan({
+      keys: ['ADIA-BKPL-MUL1-AAAA', 'ADIA-BKPL-MUL2-BBBB', 'ADIA-BKPL-MUL3-CCCC'],
+      plan: 'lifetime',
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(3);
+    expect(body.skipped).toHaveLength(0);
+    // All three should have previousPlan=monthly and show up in changed.
+    const changedKeys = body.changed.map((c: { key: string }) => c.key);
+    expect(changedKeys).toContain('ADIA-BKPL-MUL1-AAAA');
+    expect(changedKeys).toContain('ADIA-BKPL-MUL2-BBBB');
+    expect(changedKeys).toContain('ADIA-BKPL-MUL3-CCCC');
+  });
+
+  it('skips keys already on the target plan with reason=already_on_plan', async () => {
+    insertLicense({ key: 'ADIA-BKPL-SKIP-AAAA', email: 'bkskip@example.com', plan: 'yearly', expiresAt: null });
+
+    const res = await callBulkChangePlan({ keys: ['ADIA-BKPL-SKIP-AAAA'], plan: 'yearly' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(0);
+    expect(body.skipped).toHaveLength(1);
+    expect(body.skipped[0]).toMatchObject({ key: 'ADIA-BKPL-SKIP-AAAA', reason: 'already_on_plan' });
+  });
+
+  it('skips unknown keys with reason=not_found', async () => {
+    const res = await callBulkChangePlan({ keys: ['ADIA-BKPL-UNKN-ZZZZ'], plan: 'monthly' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(0);
+    expect(body.skipped).toHaveLength(1);
+    expect(body.skipped[0]).toMatchObject({ key: 'ADIA-BKPL-UNKN-ZZZZ', reason: 'not_found' });
+  });
+
+  it('mixes changed and skipped in the same batch', async () => {
+    insertLicense({ key: 'ADIA-BKPL-MIX1-AAAA', email: 'bkmix1@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-BKPL-MIX2-BBBB', email: 'bkmix2@example.com', plan: 'yearly', expiresAt: null });
+    // MIX3 does not exist.
+
+    const res = await callBulkChangePlan({
+      keys: ['ADIA-BKPL-MIX1-AAAA', 'ADIA-BKPL-MIX2-BBBB', 'ADIA-BKPL-MIX3-CCCC'],
+      plan: 'yearly',
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(1);
+    expect(body.changed[0].key).toBe('ADIA-BKPL-MIX1-AAAA');
+    expect(body.skipped).toHaveLength(2);
+    const skippedReasons = Object.fromEntries(
+      body.skipped.map((s: { key: string; reason: string }) => [s.key, s.reason]),
+    );
+    expect(skippedReasons['ADIA-BKPL-MIX2-BBBB']).toBe('already_on_plan');
+    expect(skippedReasons['ADIA-BKPL-MIX3-CCCC']).toBe('not_found');
+  });
+
+  it('normalizes keys to uppercase', async () => {
+    insertLicense({ key: 'ADIA-BKPL-CASE-AAAA', email: 'bkcase@example.com', plan: 'monthly', expiresAt: null });
+
+    const res = await callBulkChangePlan({ keys: ['adia-bkpl-case-aaaa'], plan: 'lifetime' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(1);
+    expect(body.changed[0].key).toBe('ADIA-BKPL-CASE-AAAA');
+  });
+
+  it('persists the new plan to the database', async () => {
+    insertLicense({ key: 'ADIA-BKPL-PRST-AAAA', email: 'bkprst@example.com', plan: 'monthly', expiresAt: null });
+
+    await callBulkChangePlan({ keys: ['ADIA-BKPL-PRST-AAAA'], plan: 'lifetime' });
+
+    const { findLicense: fl } = await import('@/lib/db');
+    const license = fl('ADIA-BKPL-PRST-AAAA');
+    expect(license?.plan).toBe('lifetime');
+  });
+
+  it('accepts ?token= query param auth', async () => {
+    insertLicense({ key: 'ADIA-BKPL-TOKN-AAAA', email: 'bktokn@example.com', plan: 'monthly', expiresAt: null });
+    const { POST } = await import('@/app/api/admin/bulk-change-plan/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/bulk-change-plan?token=test-admin-token',
+      {
+        method: 'POST',
+        body: JSON.stringify({ keys: ['ADIA-BKPL-TOKN-AAAA'], plan: 'yearly' }),
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+    const res = await POST(req);
+    expect(res.status).toBe(200);
   });
 });
 

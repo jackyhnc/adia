@@ -1,5 +1,42 @@
 # Adia — Build Progress
 
+## Run 255 — 2026-07-03T19:09:00Z — Rate-limit resend-license + bulk-change-plan endpoint + admin UI panel
+
+### Shipped
+
+**`web/app/api/admin/resend-license/route.ts` — rate limiting:**
+- Added `rateLimit('admin-resend-license:<IP>', 20, 60)` check before auth — 429 with `Retry-After` header on exhaustion.
+- `_resetForTesting` imported in `admin-routes.test.ts` `beforeEach` so rate limit state is clean across tests.
+- 2 new tests: exhaust 20 requests → 429; different IP is unaffected.
+
+**`web/app/api/admin/bulk-change-plan/route.ts` — new endpoint:**
+- `POST /api/admin/bulk-change-plan` — body: `{ keys: string[], plan: "monthly"|"yearly"|"lifetime" }`.
+- Validates: keys is a non-empty array, max 100, plan is in allowlist.
+- Normalizes keys to uppercase. Processes all keys in parallel via `Promise.all`.
+- Returns `{ ok, plan, changed: [{key, previousPlan}], skipped: [{key, reason}] }`.
+  - `reason: "not_found"` — key doesn't exist in the DB.
+  - `reason: "already_on_plan"` — key is already on the requested plan; silently skipped.
+- Writes one `change_plan` audit log entry per successfully changed key (includes `bulk: true` flag in detail).
+- 15 new tests covering: auth (401/bad-token), input validation (missing keys, empty array, >100 keys, missing/invalid plan), single change, batch change, skip-already-on-plan, skip-not-found, mixed batch, key normalization, DB persistence, ?token= auth.
+
+**`web/app/admin/page.tsx` — BulkChangePlanPanel:**
+- New `BulkChangePlanPanel` component added between `ChangePlanPanel` and `SetExpiryPanel`.
+- Textarea for keys (one per line or comma-separated), plan select dropdown.
+- Result shows "N changed, M skipped → plan" summary with per-key lists (changed with strikethrough previousPlan, skipped with reason label).
+
+**Web test count: 406 → 421 (20 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add `?since= + ?status= + ?plan=` combined filters to `GET /api/admin/search-licenses` for parity with the licenses-by-email endpoint (which already has all three).
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`.
+- Consider adding a `POST /api/admin/bulk-revoke` endpoint (same shape as bulk-change-plan but calls `setStatus(key, 'canceled')`) for disabling a cohort of compromised or fraudulent licenses in one call.
+- Consider exposing `BulkChangePlanPanel` in a collapsed/expandable accordion in the admin UI to reduce page length — the page now has 17+ panels and is getting long.
+
+---
+
 ## Run 254 — 2026-07-03T17:10:00Z — ?plan= filter for licenses-by-email
 
 ### Shipped

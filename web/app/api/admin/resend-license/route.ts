@@ -11,6 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { findLicense, findLicensesByEmail, insertAuditLog } from '@/lib/store';
 import { sendLicenseEmail } from '@/lib/email';
+import { rateLimit, clientIp } from '@/lib/ratelimit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -24,6 +25,14 @@ function authorized(req: NextRequest): boolean {
 }
 
 export async function POST(req: NextRequest) {
+  const rl = rateLimit(`admin-resend-license:${clientIp(req)}`, 20, 60);
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: 'too many requests' },
+      { status: 429, headers: { 'Retry-After': String(rl.retryAfterSec) } },
+    );
+  }
+
   if (!authorized(req)) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }

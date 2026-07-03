@@ -43,6 +43,7 @@ export default function Admin() {
       <ReactivatePanel token={token} />
       <ExtendPanel token={token} />
       <ChangePlanPanel token={token} />
+      <BulkChangePlanPanel token={token} />
       <SetExpiryPanel token={token} />
     </section>
   );
@@ -1494,6 +1495,133 @@ function ChangePlanPanel({ token }: { token: string }) {
             {' → '}
             <span className="font-semibold text-violet-700">{result.newPlan}</span>
           </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Bulk change plan ─────────────────────────────────────────────────────────
+
+type BulkChangedEntry = { key: string; previousPlan: string };
+type BulkSkippedEntry = { key: string; reason: string };
+
+function BulkChangePlanPanel({ token }: { token: string }) {
+  const [keysText, setKeysText] = useState('');
+  const [plan, setPlanValue] = useState<'monthly' | 'yearly' | 'lifetime'>('lifetime');
+  const [result, setResult] = useState<{
+    ok: boolean;
+    plan: string;
+    changed: BulkChangedEntry[];
+    skipped: BulkSkippedEntry[];
+  } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function bulkChange(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setResult(null);
+    setError('');
+    const keys = keysText
+      .split(/[\n,]+/)
+      .map((k) => k.trim().toUpperCase())
+      .filter(Boolean);
+    if (keys.length === 0) {
+      setError('Enter at least one key.');
+      setLoading(false);
+      return;
+    }
+    try {
+      const res = await fetch('/api/admin/bulk-change-plan', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keys, plan }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(body);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Bulk change plan</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Change the plan for multiple license keys in one operation — for example, upgrading a cohort
+        of users as compensation after a service outage. Paste keys one per line or comma-separated.
+        Keys already on the target plan or not found are silently skipped and listed in the result.
+      </p>
+      <form onSubmit={bulkChange} className="card space-y-3">
+        <Field label="License keys (one per line or comma-separated)">
+          <textarea
+            value={keysText}
+            onChange={(e) => setKeysText(e.target.value)}
+            placeholder={'ADIA-XXXX-XXXX-XXXX\nADIA-YYYY-YYYY-YYYY'}
+            className="input font-mono h-28 resize-y"
+            required
+          />
+        </Field>
+        <Field label="New plan">
+          <select
+            value={plan}
+            onChange={(e) => setPlanValue(e.target.value as typeof plan)}
+            className="input"
+          >
+            <option value="lifetime">Lifetime</option>
+            <option value="yearly">Yearly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </Field>
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 disabled:opacity-40"
+          disabled={loading}
+        >
+          {loading ? 'Changing…' : 'Bulk change plan'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {result && (
+        <div className="card mt-3 text-sm space-y-2">
+          <p className="font-medium text-violet-700">
+            {result.changed.length} changed, {result.skipped.length} skipped →{' '}
+            <span className="font-semibold">{result.plan}</span>
+          </p>
+          {result.changed.length > 0 && (
+            <div>
+              <p className="font-medium mb-1">Changed:</p>
+              <ul className="space-y-0.5">
+                {result.changed.map((c) => (
+                  <li key={c.key} className="font-mono text-xs">
+                    {c.key}{' '}
+                    <span className="text-ink/40 line-through">{c.previousPlan}</span>
+                    {' → '}
+                    <span className="text-violet-700">{result.plan}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {result.skipped.length > 0 && (
+            <div>
+              <p className="font-medium mb-1">Skipped:</p>
+              <ul className="space-y-0.5">
+                {result.skipped.map((s) => (
+                  <li key={s.key} className="font-mono text-xs text-ink/60">
+                    {s.key} — {s.reason.replace(/_/g, ' ')}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
     </div>
