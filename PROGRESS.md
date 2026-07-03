@@ -1,5 +1,36 @@
 # Adia — Build Progress
 
+## Run 243 — 2026-07-03T01:15:00Z — Admin audit log + note field in License type
+
+### Shipped
+
+**Admin audit log (`audit_log` table + API + UI + 7 routes instrumented):**
+- `web/lib/db.ts` / `db-pg.ts`: `audit_log` table (id, license_key, action, detail TEXT/JSON, created_at); idempotent migration on both SQLite and Postgres adapters. `insertAuditLog(entry)` and `listAuditLog(opts?)` functions.
+- `web/lib/store.ts`: `insertAuditLog` and `listAuditLog` facades; exports `AuditEntry` type.
+- `web/app/api/admin/audit-log/route.ts`: `GET /api/admin/audit-log` — lists entries newest-first, optional `?key=` filter to scope to a single license, `?limit=` (1–500, default 100), ADMIN_TOKEN auth.
+- Admin routes instrumented: `issue` (action=issue, detail={email,plan,expiresAt,note}), `revoke` (revoke), `change-plan` (change_plan), `extend` (extend), `reactivate` (reactivate), `note POST` (set_note), `change-email` (change_email).
+- `web/app/admin/page.tsx`: `AuditPanel` component — color-coded action labels, inline detail rendering (key: value · key: value), placed between NotePanel and ActivationsPanel.
+
+**`note` field added to `License` type:**
+- `License` type gains `note?: string | null`.
+- `findLicense` and `findLicensesByEmail` (both SQLite and Postgres) now return `note` — no separate `getNote` call needed for lookup/by-email panels.
+
+**Tests:**
+- `web/__tests__/admin-audit.test.ts`: 19 new tests — auth (401/token-fallback), empty list, descending order, limit/clamp, key filter, entry shape, detail JSON, per-action instrumentation (revoke/change_plan/extend/reactivate/set_note/change_email), `findLicense` note field.
+- Total: 303 tests passed (up from 284). 18 test files green.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding `note` column to the LookupPanel results display in the admin UI (currently `findLicense` returns it but the LookupPanel just renders raw JSON so it already shows up).
+- Consider adding audit log entries for `resend_license` and `deactivate_all` admin routes.
+- Consider surfacing `note` more prominently in `LicensesByEmailPanel` table (add a Note column).
+- Consider an audit log export (CSV download button in AuditPanel).
+- Consider adding new blocklist domains or keyword expansions on the Swift side.
+
+---
+
 ## Run 242 — 2026-07-02T23:10:00Z — POST /api/admin/note — persist admin notes on licenses
 
 ### Shipped
