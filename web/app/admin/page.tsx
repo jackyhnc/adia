@@ -44,6 +44,7 @@ export default function Admin() {
       <ExtendPanel token={token} />
       <ChangePlanPanel token={token} />
       <BulkChangePlanPanel token={token} />
+      <BulkRevokePanel token={token} />
       <SetExpiryPanel token={token} />
     </section>
   );
@@ -1648,6 +1649,120 @@ function BulkChangePlanPanel({ token }: { token: string }) {
                     <span className="text-ink/40 line-through">{c.previousPlan}</span>
                     {' → '}
                     <span className="text-violet-700">{result.plan}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {result.skipped.length > 0 && (
+            <div>
+              <p className="font-medium mb-1">Skipped:</p>
+              <ul className="space-y-0.5">
+                {result.skipped.map((s) => (
+                  <li key={s.key} className="font-mono text-xs text-ink/60">
+                    {s.key} — {s.reason.replace(/_/g, ' ')}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Bulk revoke licenses ────────────────────────────────────────────────────
+
+type BulkRevokeRevokedEntry = { key: string; previousStatus: string };
+type BulkRevokeSkippedEntry = { key: string; reason: string };
+
+function BulkRevokePanel({ token }: { token: string }) {
+  const [keysText, setKeysText] = useState('');
+  const [result, setResult] = useState<{
+    ok: boolean;
+    changed: BulkRevokeRevokedEntry[];
+    skipped: BulkRevokeSkippedEntry[];
+  } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function bulkRevoke(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setResult(null);
+    setError('');
+    const keys = keysText
+      .split(/[\n,]+/)
+      .map((k) => k.trim().toUpperCase())
+      .filter(Boolean);
+    if (keys.length === 0) {
+      setError('Enter at least one key.');
+      setLoading(false);
+      return;
+    }
+    try {
+      const res = await fetch('/api/admin/bulk-revoke', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keys }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(body);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Bulk revoke</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Cancel multiple license keys in one operation — for example, disabling a cohort of keys
+        from a stolen credit card or cleaning up fraudulent accounts. Paste keys one per line or
+        comma-separated. Keys already canceled or not found are silently skipped and listed in the
+        result.
+      </p>
+      <form onSubmit={bulkRevoke} className="card space-y-3">
+        <Field label="License keys (one per line or comma-separated)">
+          <textarea
+            value={keysText}
+            onChange={(e) => setKeysText(e.target.value)}
+            placeholder={'ADIA-XXXX-XXXX-XXXX\nADIA-YYYY-YYYY-YYYY'}
+            className="input font-mono h-28 resize-y"
+            required
+          />
+        </Field>
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 disabled:opacity-40"
+          disabled={loading}
+        >
+          {loading ? 'Revoking…' : 'Bulk revoke'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {result && (
+        <div className="card mt-3 text-sm space-y-2">
+          <p className="font-medium text-red-700">
+            {result.changed.length} revoked, {result.skipped.length} skipped
+          </p>
+          {result.changed.length > 0 && (
+            <div>
+              <p className="font-medium mb-1">Revoked:</p>
+              <ul className="space-y-0.5">
+                {result.changed.map((c) => (
+                  <li key={c.key} className="font-mono text-xs">
+                    {c.key}{' '}
+                    <span className="text-ink/40 line-through">{c.previousStatus}</span>
+                    {' → '}
+                    <span className="text-red-700">canceled</span>
                   </li>
                 ))}
               </ul>

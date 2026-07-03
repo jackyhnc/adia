@@ -2020,6 +2020,163 @@ describe('POST /api/admin/bulk-change-plan', () => {
   });
 });
 
+// ─── POST /api/admin/bulk-revoke ─────────────────────────────────────────────
+
+async function callBulkRevoke(body: unknown, token = 'test-admin-token') {
+  const { POST } = await import('@/app/api/admin/bulk-revoke/route');
+  const req = new NextRequest('http://localhost/api/admin/bulk-revoke', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+  });
+  return POST(req);
+}
+
+describe('POST /api/admin/bulk-revoke', () => {
+  it('returns 401 without a token', async () => {
+    delete process.env.ADMIN_TOKEN;
+    const { POST } = await import('@/app/api/admin/bulk-revoke/route');
+    const req = new NextRequest('http://localhost/api/admin/bulk-revoke', {
+      method: 'POST',
+      body: JSON.stringify({ keys: ['ADIA-BKRV-NTKN-AAAA'] }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callBulkRevoke({ keys: ['ADIA-BKRV-WTKN-AAAA'] }, 'bad-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 when keys is missing', async () => {
+    const res = await callBulkRevoke({});
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing or empty keys/i);
+  });
+
+  it('returns 400 when keys is an empty array', async () => {
+    const res = await callBulkRevoke({ keys: [] });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/missing or empty keys/i);
+  });
+
+  it('returns 400 when keys array exceeds 100', async () => {
+    const keys = Array.from({ length: 101 }, (_, i) => `ADIA-BKRV-TOO${i}-AAAA`);
+    const res = await callBulkRevoke({ keys });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/too many keys/i);
+    expect(body.error).toMatch(/100/);
+  });
+
+  it('revokes a single active license', async () => {
+    insertLicense({ key: 'ADIA-BKRV-SING-AAAA', email: 'bkrvsing@example.com', plan: 'monthly', expiresAt: null });
+
+    const res = await callBulkRevoke({ keys: ['ADIA-BKRV-SING-AAAA'] });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(body.changed).toHaveLength(1);
+    expect(body.changed[0].key).toBe('ADIA-BKRV-SING-AAAA');
+    expect(body.changed[0].previousStatus).toBe('active');
+    expect(body.skipped).toHaveLength(0);
+  });
+
+  it('revokes multiple active licenses in one call', async () => {
+    insertLicense({ key: 'ADIA-BKRV-MUL1-AAAA', email: 'bkrvmul1@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-BKRV-MUL2-BBBB', email: 'bkrvmul2@example.com', plan: 'yearly', expiresAt: null });
+    insertLicense({ key: 'ADIA-BKRV-MUL3-CCCC', email: 'bkrvmul3@example.com', plan: 'lifetime', expiresAt: null });
+
+    const res = await callBulkRevoke({ keys: ['ADIA-BKRV-MUL1-AAAA', 'ADIA-BKRV-MUL2-BBBB', 'ADIA-BKRV-MUL3-CCCC'] });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(3);
+    expect(body.skipped).toHaveLength(0);
+  });
+
+  it('skips already-canceled licenses with reason "already_revoked"', async () => {
+    insertLicense({ key: 'ADIA-BKRV-SKIP-AAAA', email: 'bkrvskip@example.com', plan: 'monthly', expiresAt: null });
+    const { setStatus: ss } = await import('@/lib/db');
+    ss('ADIA-BKRV-SKIP-AAAA', 'canceled');
+
+    const res = await callBulkRevoke({ keys: ['ADIA-BKRV-SKIP-AAAA'] });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(0);
+    expect(body.skipped).toHaveLength(1);
+    expect(body.skipped[0].key).toBe('ADIA-BKRV-SKIP-AAAA');
+    expect(body.skipped[0].reason).toBe('already_revoked');
+  });
+
+  it('skips unknown keys with reason "not_found"', async () => {
+    const res = await callBulkRevoke({ keys: ['ADIA-BKRV-UNKN-ZZZZ'] });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(0);
+    expect(body.skipped).toHaveLength(1);
+    expect(body.skipped[0].key).toBe('ADIA-BKRV-UNKN-ZZZZ');
+    expect(body.skipped[0].reason).toBe('not_found');
+  });
+
+  it('handles a mixed batch of active, already-canceled, and not-found keys', async () => {
+    insertLicense({ key: 'ADIA-BKRV-MIX1-AAAA', email: 'bkrvmix1@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-BKRV-MIX2-BBBB', email: 'bkrvmix2@example.com', plan: 'yearly', expiresAt: null });
+    const { setStatus: ss } = await import('@/lib/db');
+    ss('ADIA-BKRV-MIX2-BBBB', 'canceled');
+
+    const res = await callBulkRevoke({
+      keys: ['ADIA-BKRV-MIX1-AAAA', 'ADIA-BKRV-MIX2-BBBB', 'ADIA-BKRV-NOPE-ZZZZ'],
+    });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(1);
+    expect(body.changed[0].key).toBe('ADIA-BKRV-MIX1-AAAA');
+    expect(body.skipped).toHaveLength(2);
+    const reasons = body.skipped.map((s: any) => s.reason);
+    expect(reasons).toContain('already_revoked');
+    expect(reasons).toContain('not_found');
+  });
+
+  it('normalizes keys to uppercase', async () => {
+    insertLicense({ key: 'ADIA-BKRV-CASE-AAAA', email: 'bkrvcase@example.com', plan: 'monthly', expiresAt: null });
+
+    const res = await callBulkRevoke({ keys: ['adia-bkrv-case-aaaa'] });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.changed).toHaveLength(1);
+    expect(body.changed[0].key).toBe('ADIA-BKRV-CASE-AAAA');
+  });
+
+  it('persists the canceled status to the database', async () => {
+    insertLicense({ key: 'ADIA-BKRV-PRST-AAAA', email: 'bkrvprst@example.com', plan: 'monthly', expiresAt: null });
+
+    await callBulkRevoke({ keys: ['ADIA-BKRV-PRST-AAAA'] });
+
+    const { findLicense: fl } = await import('@/lib/db');
+    const license = fl('ADIA-BKRV-PRST-AAAA');
+    expect(license?.status).toBe('canceled');
+  });
+
+  it('accepts ?token= query param auth', async () => {
+    insertLicense({ key: 'ADIA-BKRV-TOKN-AAAA', email: 'bkrvtokn@example.com', plan: 'monthly', expiresAt: null });
+    const { POST } = await import('@/app/api/admin/bulk-revoke/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/bulk-revoke?token=test-admin-token',
+      {
+        method: 'POST',
+        body: JSON.stringify({ keys: ['ADIA-BKRV-TOKN-AAAA'] }),
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+  });
+});
+
 // ─── GET /api/admin/stats ─────────────────────────────────────────────────────
 
 async function callStats(token = 'test-admin-token') {
