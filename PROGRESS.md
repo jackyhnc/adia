@@ -1,5 +1,59 @@
 # Adia — Build Progress
 
+## Run 258 — 2026-07-03T22:07:00Z — POST /api/admin/bulk-reactivate + BulkReactivatePanel + 15 tests
+
+### Shipped
+
+**`web/app/api/admin/bulk-reactivate/route.ts` — new admin endpoint:**
+- `POST /api/admin/bulk-reactivate` — restores multiple license keys to active in one batch.
+- Body: `{ keys: string[] }` — non-empty array, max 100 keys.
+- 400 on missing/empty keys array; 400 when `keys.length > 100`.
+- Keys already active are silently skipped with `reason: "already_active"`.
+- Unknown keys are silently skipped with `reason: "not_found"`.
+- Each successfully reactivated key writes a `reactivate` audit log entry with `{ bulk: true }` flag.
+- Returns `{ ok, changed: [{key, previousStatus}], skipped: [{key, reason}] }`.
+- Auth: ADMIN_TOKEN bearer header or `?token=` query param (consistent with all admin routes).
+
+**`web/app/admin/page.tsx` — BulkReactivatePanel:**
+- Added after `BulkRevokePanel` (natural pairing: bulk revoke ↔ bulk reactivate).
+- Green submit button (visually distinct from red BulkRevoke and violet BulkChangePlan).
+- Textarea for keys (one per line or comma-separated).
+- Result shows "N reactivated, M skipped" summary with per-key lists (previous status strikethrough → "active"; skipped with reason label).
+
+**`web/__tests__/admin-routes.test.ts` — 15 new tests (445 → 460):**
+- 401 no-token, 401 wrong-token.
+- 400 missing keys, 400 empty array, 400 >100 keys (error mentions the limit).
+- 200 single canceled license reactivated — previousStatus in response.
+- 200 batch of 3 licenses (canceled, expired, past_due) — all 3 in changed, 0 skipped.
+- Skip already-active license — reason: "already_active".
+- Skip unknown key — reason: "not_found".
+- Mixed batch (canceled + already-active + not-found) — 1 changed, 2 skipped with correct reasons.
+- Key uppercase normalization.
+- DB persistence: `findLicense` after call confirms `status === 'active'`.
+- Audit log written with `bulk: true`, correct previousStatus and newStatus.
+- No audit log written for skipped (already-active) keys.
+- `?token=` query-param auth.
+
+### Tests
+460 passed (up from 445). 20 test files green. `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated
+  singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`.
+  This prevents latent race-condition test failures in future Xcode builds.
+- Consider collapsing the admin page's 19+ panels into accordion sections to reduce vertical
+  scroll length — the page is growing very long. Could start with a `<details>/<summary>` wrapper
+  or a `useState`-based expand/collapse toggle per panel.
+- Add `POST /api/admin/bulk-set-status` — set any arbitrary status on multiple keys in one request,
+  replacing the need for separate bulk-revoke / bulk-reactivate calls.
+- Add `itch.io` to the Swift blocklist in `DefaultBlocklists.swift` (indie game hosting platform —
+  distinct from `gamejolt.com` already blocked).
+
+---
+
 ## Run 257 — 2026-07-03T21:06:00Z — POST /api/admin/bulk-revoke + BulkRevokePanel + 13 tests
 
 ### Shipped
