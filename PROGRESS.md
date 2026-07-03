@@ -10720,3 +10720,53 @@ Nothing blocked. Swift toolchain unavailable on Linux container.
 - Consider a "streak broken for N-th time" variant: after the user breaks and re-builds the same milestone twice, shift the tone to encouraging persistence rather than surprise
 - Consider resetting `adia.lastActiveStreak` when the user manually clears session history (HistoryTab "Delete All" action)
 - `@MainActor` annotation audit for remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`
+
+---
+
+## Run 241 — 2026-07-03T18:07:00Z — POST /api/admin/set-expiry + SetExpiryPanel + 17 tests
+
+### Shipped
+
+**`web/app/api/admin/set-expiry/route.ts` — new admin endpoint:**
+- `POST /api/admin/set-expiry` — sets a license's `expiresAt` to an absolute date or null (lifetime).
+- Body: `{ key: string, expiresAt: string | null }` — both required; `expiresAt` must be present in the body (even if null) to distinguish "not provided" from "lifetime".
+- `expiresAt: null` converts the license to lifetime (no expiry).
+- Validates ISO-8601 format with a lightweight regex + `new Date()` parse check.
+- Normalises the stored value to a full ISO string (e.g. `"2026-06-30"` → `"2026-06-30T00:00:00.000Z"`).
+- 400 on missing key; 400 on missing `expiresAt` field; 400 on invalid date string; 400 on wrong type (number, boolean).
+- 404 on unknown key.
+- 422 if `expiresAt` is already set to the same normalised value (no-op guard — catches both date equality and null → null).
+- No status gate — admin can change expiry regardless of license status (active/canceled/expired).
+- Returns `{ ok, key, previousExpiresAt, newExpiresAt }`.
+- Writes a `set_expiry` audit log entry on success.
+- Auth: ADMIN_TOKEN bearer header or `?token=` query param.
+
+**`web/app/admin/page.tsx` — `SetExpiryPanel` component:**
+- Added after `ChangePlanPanel` (completes the expiry toolkit: extend relative days ↔ set absolute date).
+- Teal submit button (visually distinct from blue Extend / violet ChangePlan / green Reactivate).
+- Date input (`type="date"`) for the new expiry value.
+- "Set to lifetime" checkbox: when checked, the date input hides and `expiresAt: null` is sent.
+- Success card shows `previousExpiresAt` (strikethrough, "none (lifetime)" if null) → `newExpiresAt`.
+
+**`web/__tests__/admin-set-expiry.test.ts` — 17 tests:**
+- 401 no-token, 401 ADMIN_TOKEN absent.
+- 400 missing key, 400 missing expiresAt field, 400 invalid date string, 400 wrong type (number).
+- 404 unknown key.
+- 422 same date no-op, 422 null → null no-op.
+- 200 set specific date (returns previous + new), 200 set to null (lifetime).
+- DB persistence: findLicense confirms new expiresAt stored; null stored for lifetime.
+- Key uppercase normalisation.
+- ?token= query param auth.
+- Audit log written on success; no audit log on 404.
+
+### Tests
+404 passed (up from 387). 20 test files green. `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent
+All GOAL.md items complete. Good next areas:
+- Rate-limiting on admin endpoints: all admin routes are bearer-auth-gated; a generous limit (e.g. 20/min per IP) on admin endpoints would be consistent with user-facing endpoints. `web/lib/ratelimit.ts` already has the helper — wire it into each admin route's POST/GET handler at the top (after auth, before business logic).
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`. This prevents latent race-condition test failures in future Xcode builds.
+- `POST /api/admin/bulk-set-status` — set the same status on multiple license keys in one request (useful for disabling a batch of fraudulent keys from a stolen credit card).

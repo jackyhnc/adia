@@ -43,6 +43,7 @@ export default function Admin() {
       <ReactivatePanel token={token} />
       <ExtendPanel token={token} />
       <ChangePlanPanel token={token} />
+      <SetExpiryPanel token={token} />
     </section>
   );
 }
@@ -1492,6 +1493,117 @@ function ChangePlanPanel({ token }: { token: string }) {
             <span className="line-through text-ink/40">{result.previousPlan}</span>
             {' → '}
             <span className="font-semibold text-violet-700">{result.newPlan}</span>
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Set absolute expiry date ─────────────────────────────────────────────────
+
+function SetExpiryPanel({ token }: { token: string }) {
+  const [key, setKey] = useState('');
+  const [expiresAt, setExpiresAt] = useState('');
+  const [lifetime, setLifetime] = useState(false);
+  const [result, setResult] = useState<{
+    ok: boolean;
+    key: string;
+    previousExpiresAt: string | null;
+    newExpiresAt: string | null;
+  } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function setExpiry(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setResult(null);
+    setError('');
+    const newExpiry = lifetime ? null : expiresAt || null;
+    try {
+      const res = await fetch('/api/admin/set-expiry', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: key.trim().toUpperCase(), expiresAt: newExpiry }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(body);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold mb-3">Set expiry date</h2>
+      <p className="text-sm text-ink/60 mb-3">
+        Set an absolute <code className="font-mono">expiresAt</code> on a license. Complements
+        &ldquo;Extend&rdquo; (relative days): use this when you need a specific renewal date, want
+        to immediately expire a license, or convert it to lifetime (null).
+      </p>
+      <form onSubmit={setExpiry} className="card space-y-3">
+        <Field label="License key">
+          <input
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            placeholder="ADIA-XXXX-XXXX-XXXX"
+            className="input font-mono"
+            required
+          />
+        </Field>
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={lifetime}
+            onChange={(e) => setLifetime(e.target.checked)}
+            className="rounded"
+          />
+          Set to lifetime (no expiry)
+        </label>
+        {!lifetime && (
+          <Field label="New expiry date (ISO, e.g. 2025-12-31)">
+            <input
+              type="date"
+              value={expiresAt}
+              onChange={(e) => setExpiresAt(e.target.value)}
+              className="input"
+              required={!lifetime}
+            />
+          </Field>
+        )}
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-lg bg-teal-600 text-white text-sm font-medium hover:bg-teal-700 disabled:opacity-40"
+          disabled={loading}
+        >
+          {loading ? 'Setting…' : 'Set expiry'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {result && (
+        <div className="card mt-3 text-sm space-y-1">
+          <p className="font-medium text-teal-700">Expiry updated</p>
+          <p>
+            Key: <code className="font-mono">{result.key}</code>
+          </p>
+          <p>
+            Previous:{' '}
+            <span className="line-through text-ink/40">
+              {result.previousExpiresAt ?? 'none (lifetime)'}
+            </span>
+          </p>
+          <p>
+            New expiry:{' '}
+            <span className="font-semibold text-teal-700">
+              {result.newExpiresAt ?? 'lifetime (no expiry)'}
+            </span>
           </p>
         </div>
       )}
