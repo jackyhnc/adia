@@ -1,5 +1,54 @@
 # Adia — Build Progress
 
+## Run 254 — 2026-07-03T17:10:00Z — ?plan= filter for licenses-by-email
+
+### Shipped
+
+**`web/lib/db.ts` — plan param on both count and find:**
+- `countLicensesByEmail(email, since?, status?, plan?)` — adds `l.plan = ?` condition when plan is set.
+- `findLicensesByEmail(email, limit?, offset?, since?, status?, plan?)` — same; both functions use the existing positional `?` dynamic-conditions pattern.
+
+**`web/lib/db-pg.ts` — Postgres equivalents:**
+- `countLicensesByEmailPg` and `findLicensesByEmailPg` updated with `plan?: string`.
+- Uses `(${planVal}::text IS NULL OR l.plan = ${planVal}::text)` — consistent with the `since`/`status` pattern from Run 253.
+- Both paginated and unpaginated branches updated.
+
+**`web/lib/store.ts` — facade signatures updated:**
+- `countLicensesByEmail(email, since?, status?, plan?)` and `findLicensesByEmail(email, limit?, offset?, since?, status?, plan?)` — threads plan through to both backends.
+
+**`web/app/api/admin/licenses-by-email/route.ts` — new query param:**
+- `VALID_PLANS = new Set(['monthly', 'yearly', 'lifetime'])` allowlist.
+- `?plan=monthly|yearly|lifetime` — returns 400 with `{ error: "invalid ?plan= — must be one of: ..." }` on unknown value.
+- CSV export path respects the plan filter.
+- `plan` echoed in JSON response body when set.
+
+**`web/app/admin/page.tsx` — LicensesByEmailPanel plan filter UI:**
+- `PLAN_OPTIONS = ['', 'monthly', 'yearly', 'lifetime']` constant at module scope.
+- `planFilter` state variable.
+- "Plan" select added to the `flex gap-3` filter row alongside "Issued since" and "Status".
+- `planFilter` forwarded as `?plan=` in `lookup()`, `loadMore()`, and `exportCsv()`.
+
+**Tests (6 new, 381 → 387):**
+- 400 for unknown `?plan=` value (`enterprise`).
+- `plan=monthly` returns only monthly licenses + echoes `plan` in body.
+- `plan=yearly` returns only yearly licenses.
+- `plan=lifetime` filter returns empty list when no lifetime licenses exist.
+- Plan filter does not bleed across emails (two different users, same plan filter).
+- `plan=yearly + status=active` combined — excludes canceled yearly license.
+
+**Web test count: 381 → 387 (19 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add rate-limiting to `POST /api/admin/resend-license` (admin routes are bearer-auth-gated; a generous 20/min per IP would be consistent with user-facing endpoints; current implementation has no rate limit at all)
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (check for strict-concurrency warnings in a real Xcode build)
+- Consider `POST /api/admin/bulk-change-plan` — batch plan change for a list of keys (e.g., compensating a cohort of users for a service outage); follows the same `setPlan` + `insertAuditLog` pattern as the single `change-plan` route
+- Consider adding a combined `?since= + ?status= + ?plan=` filter to the search-licenses endpoint for parity with the licenses-by-email endpoint
+
+---
+
 ## Run 253 — 2026-07-03T16:10:00Z — ?since= and ?status= filters for licenses-by-email
 
 ### Shipped
