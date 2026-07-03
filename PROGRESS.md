@@ -1,5 +1,68 @@
 # Adia — Build Progress
 
+## Run 259 — 2026-07-03T23:15:00Z — Admin accordion UI + POST /api/admin/bulk-set-status + itch.io blocklist
+
+### Shipped
+
+**`web/app/admin/page.tsx` — collapsible accordion sections:**
+- Added `CollapsibleSection` component: bordered card with clickable chevron header; body shown/hidden via `useState`.
+- Wrapped all 22 panels in `<CollapsibleSection title="...">`. StatsPanel has `defaultOpen`, all others collapsed.
+- Removed redundant `<h2>` from each panel (title now lives in the CollapsibleSection header only).
+- StatsPanel: Refresh button moved to inline `flex justify-end` instead of the former flex-row header.
+- `space-y-10` → `space-y-4`; page loads as a compact list of collapsible sections, eliminating the extreme scroll length with 19+ always-open panels.
+
+**`web/app/api/admin/bulk-set-status/route.ts` — new admin endpoint:**
+- `POST /api/admin/bulk-set-status` — set any valid status on multiple keys in one batch.
+- Body: `{ keys: string[], status: 'active' | 'canceled' | 'expired' | 'past_due' }`.
+- 400 on missing/empty keys array; 400 when `keys.length > 100`; 400 when `status` is missing or not a valid enum value.
+- Keys already at the target status are silently skipped (`reason: "already_set"`). Unknown keys skipped with `reason: "not_found"`.
+- Each successfully changed key writes a `set_status` audit log entry with `{ previousStatus, newStatus, bulk: true }`.
+- Returns `{ ok, changed: [{key, previousStatus}], skipped: [{key, reason}] }`.
+- Auth: ADMIN_TOKEN bearer header or `?token=` query param.
+
+**`web/app/admin/page.tsx` — BulkSetStatusPanel:**
+- Added after BulkReactivatePanel (natural pairing: bulk revoke ↔ bulk reactivate ↔ bulk set-status).
+- Textarea for keys (newline/comma-separated) + status `<select>` dropdown.
+- Result shows "N set to 'status', M skipped" with per-key detail (previousStatus strikethrough → new; skipped with italic reason).
+
+**`web/__tests__/admin-routes.test.ts` — 18 new tests (460 → 478):**
+- 401 no-token, 401 wrong-token.
+- 400 missing keys, 400 empty array, 400 >100 keys, 400 invalid status ("banned"), 400 missing status.
+- 200 single active license set to canceled — previousStatus in response.
+- 200 canceled → expired transition — previousStatus reflects pre-change state.
+- 200 batch of 3 licenses (all active) → past_due — 3 changed, 0 skipped.
+- Skip already-at-target — reason: "already_set".
+- Skip unknown key — reason: "not_found".
+- Mixed batch (expired + active-same-target + unknown) — 1 changed, 2 skipped with correct reasons.
+- Key uppercase normalization.
+- DB persistence: `findLicense` after call confirms new status.
+- Audit log written with `bulk: true`, correct previousStatus and newStatus.
+- No audit log written for skipped keys.
+- `?token=` query-param auth.
+
+**`Sources/AdiCore/Models/DefaultBlocklists.swift`:**
+- Added `itch.io` (indie game hosting/storefront) next to `gamejolt.com`.
+
+### Tests
+478 passed (up from 460). 20 test files green. `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated
+  singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`.
+  This prevents latent race-condition test failures in future Xcode builds.
+- Consider adding a search/filter bar at the top of the admin page to jump to a section by name —
+  with 22 collapsible panels, keyboard-navigable search would be faster than scrolling the list.
+- Consider adding a `GET /api/admin/export-licenses` CSV/JSON export endpoint that returns all
+  licenses with their status, plan, machineCount, and recent audit event — useful for bulk
+  off-system analysis.
+- Consider adding `POST /api/admin/bulk-note` — set or append a note to multiple license keys
+  in one request, mirroring the shape of bulk-set-status but targeting the `note` field.
+
+---
+
 ## Run 258 — 2026-07-03T22:07:00Z — POST /api/admin/bulk-reactivate + BulkReactivatePanel + 15 tests
 
 ### Shipped
