@@ -1,5 +1,38 @@
 # Adia — Build Progress
 
+## Run 251 — 2026-07-03T12:10:00Z — live-search debounce in SearchLicensesPanel + branch recovery
+
+### Shipped
+
+**`web/app/admin/page.tsx` — live-search with 300ms debounce in `SearchLicensesPanel`:**
+- Added `debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)`.
+- `useEffect([q, token])` fires 300ms after the user stops typing: clears results immediately if `q` is blank or `token` is missing, otherwise executes the same `fetchPage(trimmed, 0, false)` path the submit button used.
+- The form's `onSubmit` handler now cancels any pending debounce timer before firing immediately (prevents double-fetch when user presses Enter right after typing).
+- Search button disabled when `q.trim()` is empty (avoids a spurious API call on blank submit).
+- Added `autoFocus` to the input so the panel is keyboard-ready on page load.
+- Updated panel description copy: "results update as you type".
+- **No new tests needed** — the live-search is pure client-side UI; the underlying `fetchPage` network path is already covered by existing server-side tests.
+
+**Branch recovery:**
+- Previous 51 runs (runs 204–250) committed to a local detached HEAD that was never pushed to `origin/main`.
+- This run discovered the issue, created `branch/work` from the detached HEAD's tip, and pushed all 51 commits to `origin/work`.
+- All future agents should check out the `work` branch to resume from the real progress state.
+
+**Web test count: 365 (19 files, all pass). `tsc` errors are pre-existing (no `.next/types` in CI environment).**
+
+### Blocked
+- Swift toolchain unavailable on Linux container; Swift changes cannot be compiled here.
+- `origin/main` is stale at run-203 era. Future agents must `git checkout work` first.
+
+### Next agent should
+- **IMPORTANT:** Run `git checkout work` at the start to work from the real codebase.
+- Consider pagination for `LicensesByEmailPanel` (currently returns all licenses for an email with no cap — could be slow for power users with many keys).
+- Consider adding a "Recent audit" inline expand to `LicensesByEmailPanel` rows (clicking a row could show last 3 audit entries inline before opening LookupPanel, saving a navigation step).
+- Consider adding a `?format=csv` export to `licenses-by-email` filtered by date range (e.g. `?since=YYYY-MM-DD`).
+- Consider debouncing `LicensesByEmailPanel` similarly (it's currently submit-only, but the lookup is by exact email so live-search is less useful there — lower priority).
+
+---
+
 ## Run 250 — 2026-07-03T09:10:00Z — CSV export for search-licenses endpoint
 
 ### Shipped
