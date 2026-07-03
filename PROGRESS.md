@@ -1,5 +1,46 @@
 # Adia — Build Progress
 
+## Run 248 — 2026-07-03T07:15:00Z — search-licenses pagination + LicensesByEmailPanel lastAction column
+
+### Shipped
+
+**`GET /api/admin/search-licenses` — pagination support:**
+- `web/lib/db.ts`: `searchLicenses(query, limit, offset)` — added `OFFSET ?` to the SQL query.
+- `web/lib/db.ts`: `countSearchLicenses(query)` — new function, counts total matches with `COUNT(DISTINCT l.key)` (no LIMIT/OFFSET), used for `hasMore` computation.
+- `web/lib/db-pg.ts`: `searchLicensesPg` gains `offset` param + `OFFSET ${offset}` in SQL.
+- `web/lib/db-pg.ts`: `countSearchLicensesPg` — Postgres equivalent of the count function.
+- `web/lib/store.ts`: `searchLicenses` facade passes `offset` through; new `countSearchLicenses` facade.
+- `web/app/api/admin/search-licenses/route.ts`: accepts `?offset=N` (default 0); calls both `searchLicenses` and `countSearchLicenses` in parallel; response changed from `{ count, results }` to `{ count, total, hasMore, offset, limit, results }`.
+- `web/app/admin/page.tsx` — `SearchLicensesPanel`:
+  - Tracks `total` and `hasMore` state.
+  - New `fetchPage(query, offset, append)` helper — on first search, replaces results; on "Load more", appends.
+  - Shows "Showing N of M results" header; "Load more (K remaining)" button when `hasMore` is true; spinner while loading more.
+  - Description updated (removed "20 match" cap language).
+
+**`LicensesByEmailPanel` — "Last action" column:**
+- `web/lib/db.ts` — `License` type gains `lastAction?: string | null` and `lastActionAt?: string | null`.
+- `web/lib/db.ts` — `findLicensesByEmail`: added two correlated subqueries (`ORDER BY id DESC LIMIT 1`) to fetch the most recent audit action + timestamp per license; avoids same-millisecond timestamp collision by using `id` not `created_at`.
+- `web/lib/db-pg.ts` — `findLicensesByEmailPg`: same correlated subqueries with Postgres syntax.
+- `web/app/admin/page.tsx` — `LicenseRow` type gains `lastAction` / `lastActionAt`.
+- `web/app/admin/page.tsx` — `LicensesByEmailPanel` table: new "Last action" column showing action name + muted date; truncated with `title` tooltip for long action names.
+
+**Tests (9 new):**
+- `web/__tests__/admin-search.test.ts`: `response shape fields`, `total independent of limit`, `offset skips earlier results`, `hasMore false on last page`, `offset beyond total returns empty`, `offset defaults to 0`.
+- `web/__tests__/admin-routes.test.ts`: `lastAction null when no audit entries`, `lastAction returns most recent action`, `lastAction does not bleed across licenses`.
+
+**Web test count: 335 → 344 (19 test files, all pass).**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider debounce/live-search (on-change) for `SearchLicensesPanel` instead of form submit (after typing stops, auto-fire with a 300ms debounce).
+- Consider adding `?format=csv` export to `licenses-by-email` endpoint (similar to the audit-log CSV export pattern).
+- Consider pagination for `LicensesByEmailPanel` as well (currently returns all licenses for an email with no cap).
+- Consider adding a "Recent audit" inline expand to `LicensesByEmailPanel` rows (clicking a row could show the last 3 audit entries inline before opening LookupPanel).
+
+---
+
 ## Run 247 — 2026-07-03T05:15:00Z — machineCount in licenses-by-email + Seats column + click-to-lookup
 
 ### Shipped
