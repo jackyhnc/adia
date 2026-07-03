@@ -73,6 +73,7 @@ export type License = {
   issuedAt: string;
   expiresAt: string | null;
   note?: string | null;
+  machineCount?: number;
 };
 
 export type AuditEntry = {
@@ -316,9 +317,12 @@ export function searchLicenses(query: string, limit = 20): License[] {
   const lq = `%${query.trim().toLowerCase()}%`;
   const rows = db()
     .prepare(`
-      SELECT * FROM licenses
-      WHERE key LIKE ? OR email LIKE ? OR note LIKE ?
-      ORDER BY issued_at DESC
+      SELECT l.*, COUNT(a.machine_hash) AS machine_count_live
+      FROM licenses l
+      LEFT JOIN activations a ON a.license_key = l.key
+      WHERE l.key LIKE ? OR l.email LIKE ? OR l.note LIKE ?
+      GROUP BY l.key
+      ORDER BY l.issued_at DESC
       LIMIT ?
     `)
     .all(q.toUpperCase(), lq, q, Math.min(limit, 100)) as any[];
@@ -330,6 +334,7 @@ export function searchLicenses(query: string, limit = 20): License[] {
     issuedAt: r.issued_at,
     expiresAt: r.expires_at,
     note: r.note ?? null,
+    machineCount: r.machine_count_live as number,
   }));
 }
 

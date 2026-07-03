@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function Admin() {
   const [token, setToken] = useState('');
+  const [autoLookupKey, setAutoLookupKey] = useState('');
 
   return (
     <section className="pt-12 pb-20 max-w-xl space-y-10">
@@ -30,8 +31,8 @@ export default function Admin() {
       <ResendLicensePanel token={token} />
       <ChangeEmailPanel token={token} />
       <LicensesByEmailPanel token={token} />
-      <SearchLicensesPanel token={token} />
-      <LookupPanel token={token} />
+      <SearchLicensesPanel token={token} onSelectKey={setAutoLookupKey} />
+      <LookupPanel token={token} autoKey={autoLookupKey} onAutoKeyConsumed={() => setAutoLookupKey('')} />
       <NotePanel token={token} />
       <AuditPanel token={token} />
       <ActivationsPanel token={token} />
@@ -433,7 +434,7 @@ type License = {
 
 // ─── License search ───────────────────────────────────────────────────────────
 
-function SearchLicensesPanel({ token }: { token: string }) {
+function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKey: (key: string) => void }) {
   const [q, setQ] = useState('');
   const [results, setResults] = useState<License[] | null>(null);
   const [error, setError] = useState('');
@@ -469,6 +470,7 @@ function SearchLicensesPanel({ token }: { token: string }) {
       <h2 className="text-lg font-semibold mb-3">Search licenses</h2>
       <p className="text-sm text-ink/60 mb-3">
         Full-text search across license key, email, and note. Returns up to 20 matches, newest first.
+        Click a key to auto-fill the lookup panel below.
       </p>
       <form onSubmit={search} className="card space-y-3">
         <Field label="Search query (key, email, or note fragment)">
@@ -488,10 +490,10 @@ function SearchLicensesPanel({ token }: { token: string }) {
       {results !== null && (
         <div className="card mt-3">
           {results.length === 0 ? (
-            <p className="text-sm text-ink/50">No licenses matched "{q}".</p>
+            <p className="text-sm text-ink/50">No licenses matched &quot;{q}&quot;.</p>
           ) : (
             <>
-              <p className="text-xs text-ink/50 mb-2">{results.length} result{results.length !== 1 ? 's' : ''}</p>
+              <p className="text-xs text-ink/50 mb-2">{results.length} result{results.length !== 1 ? 's' : ''} — click a key for full detail</p>
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
                   <thead>
@@ -500,14 +502,15 @@ function SearchLicensesPanel({ token }: { token: string }) {
                       <th className="pb-1 pr-3">Email</th>
                       <th className="pb-1 pr-3">Plan</th>
                       <th className="pb-1 pr-3">Status</th>
+                      <th className="pb-1 pr-3">Seats</th>
                       <th className="pb-1 pr-3">Issued</th>
                       <th className="pb-1">Note</th>
                     </tr>
                   </thead>
                   <tbody>
                     {results.map((lic) => (
-                      <tr key={lic.key} className="border-t border-ink/5">
-                        <td className="py-1 pr-3 font-mono">{lic.key}</td>
+                      <tr key={lic.key} className="border-t border-ink/5 hover:bg-ink/5 cursor-pointer" onClick={() => onSelectKey(lic.key)}>
+                        <td className="py-1 pr-3 font-mono text-sky-600 hover:underline">{lic.key}</td>
                         <td className="py-1 pr-3">{lic.email}</td>
                         <td className="py-1 pr-3">{lic.plan}</td>
                         <td className="py-1 pr-3">
@@ -515,6 +518,7 @@ function SearchLicensesPanel({ token }: { token: string }) {
                             {lic.status}
                           </span>
                         </td>
+                        <td className="py-1 pr-3 tabular-nums text-ink/60">{lic.machineCount ?? 0}/3</td>
                         <td className="py-1 pr-3 text-ink/50">{lic.issuedAt?.slice(0, 10) ?? '—'}</td>
                         <td className="py-1 text-ink/60 italic">{lic.note ?? '—'}</td>
                       </tr>
@@ -537,22 +541,30 @@ type LookupResult = {
   recentAudit: AuditEntry[];
 };
 
-function LookupPanel({ token }: { token: string }) {
+function LookupPanel({
+  token,
+  autoKey,
+  onAutoKeyConsumed,
+}: {
+  token: string;
+  autoKey?: string;
+  onAutoKeyConsumed?: () => void;
+}) {
   const [key, setKey] = useState('');
   const [email, setEmail] = useState('');
   const [result, setResult] = useState<LookupResult | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
 
-  async function lookup(e: React.FormEvent) {
-    e.preventDefault();
+  async function doLookup(lookupKey: string, lookupEmail?: string) {
     if (!token) { setError('Paste admin token above first.'); return; }
     setLoading(true);
     setError('');
     setResult(null);
     try {
-      const params = new URLSearchParams({ key });
-      if (email) params.set('email', email);
+      const params = new URLSearchParams({ key: lookupKey });
+      if (lookupEmail) params.set('email', lookupEmail);
       const res = await fetch(`/api/admin/lookup?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -569,8 +581,24 @@ function LookupPanel({ token }: { token: string }) {
     }
   }
 
+  useEffect(() => {
+    if (!autoKey) return;
+    setKey(autoKey);
+    setEmail('');
+    void doLookup(autoKey);
+    onAutoKeyConsumed?.();
+    // Scroll the panel into view after a brief tick so the result renders first
+    setTimeout(() => panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoKey]);
+
+  async function lookup(e: React.FormEvent) {
+    e.preventDefault();
+    await doLookup(key, email || undefined);
+  }
+
   return (
-    <div>
+    <div ref={panelRef}>
       <h2 className="text-lg font-semibold mb-3">License lookup</h2>
       <form onSubmit={lookup} className="card space-y-3">
         <Field label="License key">

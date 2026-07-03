@@ -1,5 +1,34 @@
 # Adia — Build Progress
 
+## Run 246 — 2026-07-03T04:10:00Z — machineCount in search results + click-to-lookup UX
+
+### Shipped
+
+**`machineCount` in `searchLicenses` (SQLite + Postgres):**
+- `web/lib/db.ts`: `searchLicenses` now does `LEFT JOIN activations … GROUP BY l.key` and returns `machineCount` (live count from activations table, not the stale `machine_count` column).
+- `web/lib/db-pg.ts`: `searchLicensesPg` same JOIN with `COUNT(a.machine_hash)::int AS "machineCount"`.
+- `web/lib/db.ts`: `License` type gains `machineCount?: number`.
+- `web/app/admin/page.tsx`: `SearchLicensesPanel` table gains a **Seats** column showing `N/3` per row.
+
+**Click-to-lookup UX:**
+- `web/app/admin/page.tsx`: `Admin` component lifts `autoLookupKey` state and passes `onSelectKey` to `SearchLicensesPanel`, `autoKey` + `onAutoKeyConsumed` to `LookupPanel`.
+- `SearchLicensesPanel`: each result row is now `cursor-pointer`, key cell has `text-sky-600 hover:underline`; clicking a row calls `onSelectKey(lic.key)`.
+- `LookupPanel`: accepts `autoKey?: string` + `onAutoKeyConsumed?: () => void`; a `useEffect` on `autoKey` pre-fills the key field, triggers `doLookup`, consumes the key, and scrolls the panel into view. Internal `doLookup(key, email?)` extracted so both the form submit and the effect can call it cleanly.
+
+**Tests (3 new, 1 extended):**
+- `web/__tests__/admin-search.test.ts`: `recordActivation` imported; updated "result fields" test to also assert `machineCount`; 3 new tests — `machineCount 0 when no activations`, `machineCount equals activation count`, `no bleed across licenses in same search`.
+- 332 tests passed (up from 329). 19 test files green.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding a "Machines" column to `LicensesByEmailPanel` table (`findLicensesByEmail` currently omits `machineCount`; can be added with the same LEFT JOIN approach).
+- Consider pagination (`?offset=N`) for `search-licenses` for large result sets.
+- Consider debounce/live-search (on-change) for `SearchLicensesPanel` instead of form submit.
+
+---
+
 ## Run 245 — 2026-07-03T03:12:00Z — search-licenses endpoint, enhanced LookupPanel, resend_payment_failed audit log
 
 ### Shipped

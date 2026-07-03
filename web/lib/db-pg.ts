@@ -324,12 +324,15 @@ export async function searchLicensesPg(query: string, limit = 20): Promise<Licen
   const lq = `%${query.trim().toLowerCase()}%`;
   const cap = Math.min(limit, 100);
   const result = await sql<any>`
-    SELECT key, email, plan, status, note,
-           to_char(issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
-           to_char(expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt"
-    FROM licenses
-    WHERE key ILIKE ${q} OR email ILIKE ${lq} OR note ILIKE ${q}
-    ORDER BY issued_at DESC
+    SELECT l.key, l.email, l.plan, l.status, l.note,
+           to_char(l.issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
+           to_char(l.expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt",
+           COUNT(a.machine_hash)::int AS "machineCount"
+    FROM licenses l
+    LEFT JOIN activations a ON a.license_key = l.key
+    WHERE l.key ILIKE ${q} OR l.email ILIKE ${lq} OR l.note ILIKE ${q}
+    GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at
+    ORDER BY l.issued_at DESC
     LIMIT ${cap}
   `;
   return result.rows.map((r: any) => ({
@@ -340,6 +343,7 @@ export async function searchLicensesPg(query: string, limit = 20): Promise<Licen
     issuedAt: r.issuedAt,
     expiresAt: r.expiresAt,
     note: r.note ?? null,
+    machineCount: r.machineCount,
   }));
 }
 

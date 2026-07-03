@@ -37,3 +37,4 @@
 - [x] Admin reactivate endpoint: POST /api/admin/reactivate sets canceled/expired/past_due license back to active; ReactivatePanel in admin UI; 11 tests
 - [x] Admin stats endpoint: GET /api/admin/stats returns aggregate counts by plan/status + new-in-7d/30d + activated machines; StatsPanel in admin UI; 8 tests; fix findLicensesByEmail ordering ASC→DESC bug + tighten order test
 - [x] Admin search-licenses endpoint + enhanced LookupPanel: GET /api/admin/search-licenses full-text search across key/email/note; lookup route now returns {license, recentAudit}; LookupPanel shows structured card + 5 most-recent audit entries; resend_payment_failed now writes audit log; 18 tests
+- [x] machineCount in search results + click-to-lookup: searchLicenses LEFT JOIN on activations; machineCount column in search table; clicking a key auto-fills and triggers LookupPanel with scroll; 3 tests (machineCount=0, machineCount=N, no bleed across rows)

@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
 import { NextRequest } from 'next/server';
-import { resetDbForTesting, insertLicense, listAuditLog } from '@/lib/db';
+import { resetDbForTesting, insertLicense, listAuditLog, recordActivation } from '@/lib/db';
 
 vi.mock('@/lib/email', () => ({
   sendLicenseEmail: vi.fn().mockResolvedValue(undefined),
@@ -137,7 +137,7 @@ describe('GET /api/admin/search-licenses', () => {
     expect(res.status).toBe(200);
   });
 
-  it('returns result fields: key, email, plan, status, issuedAt, expiresAt, note', async () => {
+  it('returns result fields: key, email, plan, status, issuedAt, expiresAt, note, machineCount', async () => {
     insertLicense({ key: 'ADIA-SRCH-FLDS-AAAA', email: 'fields@test.com', plan: 'lifetime', expiresAt: null });
     const res = await callSearch({ q: 'fields@test.com' });
     const body = await res.json();
@@ -149,6 +149,36 @@ describe('GET /api/admin/search-licenses', () => {
     expect(r).toHaveProperty('issuedAt');
     expect(r).toHaveProperty('expiresAt');
     expect(r).toHaveProperty('note');
+    expect(r).toHaveProperty('machineCount');
+  });
+
+  it('returns machineCount 0 when no activations exist', async () => {
+    insertLicense({ key: 'ADIA-SRCH-MC0-AAAA', email: 'zero@machines.com', plan: 'monthly', expiresAt: null });
+    const res = await callSearch({ q: 'zero@machines.com' });
+    const body = await res.json();
+    expect(body.results[0].machineCount).toBe(0);
+  });
+
+  it('returns machineCount equal to number of activations', async () => {
+    insertLicense({ key: 'ADIA-SRCH-MC2-AAAA', email: 'two@machines.com', plan: 'yearly', expiresAt: null });
+    recordActivation('ADIA-SRCH-MC2-AAAA', 'hash-machine-1');
+    recordActivation('ADIA-SRCH-MC2-AAAA', 'hash-machine-2');
+    const res = await callSearch({ q: 'two@machines.com' });
+    const body = await res.json();
+    expect(body.results[0].machineCount).toBe(2);
+  });
+
+  it('machineCount does not bleed across licenses in same search', async () => {
+    insertLicense({ key: 'ADIA-SRCH-MCA-AAAA', email: 'multi@group.io', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-SRCH-MCB-BBBB', email: 'multi@group.io', plan: 'yearly', expiresAt: null });
+    recordActivation('ADIA-SRCH-MCA-AAAA', 'hash-a-1');
+    recordActivation('ADIA-SRCH-MCA-AAAA', 'hash-a-2');
+    recordActivation('ADIA-SRCH-MCA-AAAA', 'hash-a-3');
+    const res = await callSearch({ q: 'multi@group.io' });
+    const body = await res.json();
+    const byKey = Object.fromEntries(body.results.map((r: any) => [r.key, r.machineCount]));
+    expect(byKey['ADIA-SRCH-MCA-AAAA']).toBe(3);
+    expect(byKey['ADIA-SRCH-MCB-BBBB']).toBe(0);
   });
 
   it('accepts ?token= query param as auth fallback', async () => {
