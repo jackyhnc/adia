@@ -444,6 +444,7 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const PAGE_SIZE = 20;
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   async function fetchPage(query: string, offset: number, append: boolean) {
     const params = new URLSearchParams({ q: query.trim(), limit: String(PAGE_SIZE), offset: String(offset) });
@@ -460,16 +461,51 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
     setResults(prev => append && prev ? [...prev, ...body.results] : body.results);
   }
 
+  // Live-search: fire 300ms after the user stops typing
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    const trimmed = q.trim();
+    if (!trimmed || !token) {
+      setResults(null);
+      setTotal(0);
+      setHasMore(false);
+      setError('');
+      return;
+    }
+    debounceRef.current = setTimeout(async () => {
+      setLoading(true);
+      setError('');
+      setResults(null);
+      setHasMore(false);
+      setTotal(0);
+      try {
+        await fetchPage(trimmed, 0, false);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q, token]);
+
+  // Keep form submit as an immediate-fire fallback (Enter key / Search button)
   async function search(e: React.FormEvent) {
     e.preventDefault();
     if (!token) { setError('Paste admin token above first.'); return; }
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    const trimmed = q.trim();
+    if (!trimmed) return;
     setLoading(true);
     setError('');
     setResults(null);
     setHasMore(false);
     setTotal(0);
     try {
-      await fetchPage(q, 0, false);
+      await fetchPage(trimmed, 0, false);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -504,7 +540,7 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
     <div>
       <h2 className="text-lg font-semibold mb-3">Search licenses</h2>
       <p className="text-sm text-ink/60 mb-3">
-        Full-text search across license key, email, and note. Click a key to auto-fill the lookup panel below.
+        Full-text search across license key, email, and note — results update as you type. Click a key to auto-fill the lookup panel below.
       </p>
       <form onSubmit={search} className="card space-y-3">
         <Field label="Search query (key, email, or note fragment)">
@@ -513,10 +549,10 @@ function SearchLicensesPanel({ token, onSelectKey }: { token: string; onSelectKe
             onChange={(e) => setQ(e.target.value)}
             placeholder="jane@example.com or ADIA-1234 or enterprise"
             className="input"
-            required
+            autoFocus
           />
         </Field>
-        <button type="submit" className="btn-primary" disabled={loading}>
+        <button type="submit" className="btn-primary" disabled={loading || !q.trim()}>
           {loading ? 'Searching…' : 'Search'}
         </button>
       </form>
