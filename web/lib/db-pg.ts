@@ -336,30 +336,39 @@ export async function insertAuditLogPg(entry: {
   `;
 }
 
+export async function countAuditLogPg(opts?: { licenseKey?: string; action?: string }): Promise<number> {
+  await ensureSchema();
+  const keyVal = opts?.licenseKey ? opts.licenseKey.trim().toUpperCase() : null;
+  const actionVal = opts?.action ? opts.action.trim() : null;
+  const result = await sql<any>`
+    SELECT COUNT(*) AS n FROM audit_log
+    WHERE (${keyVal}::text IS NULL OR license_key = ${keyVal}::text)
+      AND (${actionVal}::text IS NULL OR action = ${actionVal}::text)
+  `;
+  return Number(result.rows[0].n);
+}
+
 export async function listAuditLogPg(opts?: {
   licenseKey?: string;
   limit?: number;
+  offset?: number;
+  action?: string;
 }): Promise<AuditEntry[]> {
   await ensureSchema();
   const limit = Math.min(opts?.limit ?? 100, 500);
-  const result = opts?.licenseKey
-    ? await sql<any>`
-        SELECT id, license_key,
-               action, detail,
-               to_char(created_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS created_at
-        FROM audit_log
-        WHERE license_key = ${opts.licenseKey.trim().toUpperCase()}
-        ORDER BY id DESC
-        LIMIT ${limit}
-      `
-    : await sql<any>`
-        SELECT id, license_key,
-               action, detail,
-               to_char(created_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS created_at
-        FROM audit_log
-        ORDER BY id DESC
-        LIMIT ${limit}
-      `;
+  const offset = opts?.offset ?? 0;
+  const keyVal = opts?.licenseKey ? opts.licenseKey.trim().toUpperCase() : null;
+  const actionVal = opts?.action ? opts.action.trim() : null;
+  const result = await sql<any>`
+    SELECT id, license_key,
+           action, detail,
+           to_char(created_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS created_at
+    FROM audit_log
+    WHERE (${keyVal}::text IS NULL OR license_key = ${keyVal}::text)
+      AND (${actionVal}::text IS NULL OR action = ${actionVal}::text)
+    ORDER BY id DESC
+    LIMIT ${limit} OFFSET ${offset}
+  `;
   return result.rows.map((r: any) => ({
     id: r.id,
     licenseKey: r.license_key,

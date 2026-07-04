@@ -10,6 +10,28 @@ export default function Admin() {
   const [sectionFilter, setSectionFilter] = useState('');
   const filterInputRef = useRef<HTMLInputElement>(null);
 
+  // Pre-fill token from ?token= and section filter from ?section= URL params on mount.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get('token');
+    if (t) setToken(t);
+    const s = params.get('section');
+    if (s) setSectionFilter(s);
+  }, []);
+
+  // Keep ?section= in sync with the filter input so filtered views are bookmarkable.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (sectionFilter) {
+      params.set('section', sectionFilter);
+    } else {
+      params.delete('section');
+    }
+    const qs = params.toString();
+    const next = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+    window.history.replaceState(null, '', next);
+  }, [sectionFilter]);
+
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
@@ -44,6 +66,7 @@ export default function Admin() {
           placeholder="paste token here — shared across all forms below"
           className="input w-full"
         />
+        <p className="text-xs text-ink/40">Tip: bookmark <code className="font-mono">/admin?token=YOUR_TOKEN</code> to skip pasting.</p>
       </div>
 
       <div className="sticky top-3 z-10">
@@ -1217,21 +1240,27 @@ type AuditEntry = {
   createdAt: string;
 };
 
+const AUDIT_PAGE_SIZE = 50;
+
 function AuditPanel({ token }: { token: string }) {
   const [keyFilter, setKeyFilter] = useState('');
+  const [actionFilter, setActionFilter] = useState('');
   const [entries, setEntries] = useState<AuditEntry[] | null>(null);
+  const [total, setTotal] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [currentOffset, setCurrentOffset] = useState(0);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  async function load(e: React.FormEvent) {
-    e.preventDefault();
+  async function fetchPage(offset: number, append: boolean) {
     if (!token) { setError('Paste admin token above first.'); return; }
-    setLoading(true);
+    if (append) setLoadingMore(true); else setLoading(true);
     setError('');
-    setEntries(null);
     try {
-      const params = new URLSearchParams({ limit: '100' });
+      const params = new URLSearchParams({ limit: String(AUDIT_PAGE_SIZE), offset: String(offset) });
       if (keyFilter.trim()) params.set('key', keyFilter.trim().toUpperCase());
+      if (actionFilter.trim()) params.set('action', actionFilter.trim());
       const res = await fetch(`/api/admin/audit-log?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -1240,34 +1269,53 @@ function AuditPanel({ token }: { token: string }) {
         setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
       } else {
         const body = await res.json();
-        setEntries(body.entries);
+        setEntries(prev => append && prev ? [...prev, ...body.entries] : body.entries);
+        setTotal(body.total ?? body.count ?? 0);
+        setHasMore(body.hasMore ?? false);
+        setCurrentOffset(offset + body.entries.length);
       }
     } catch (err: any) {
       setError(`Error: ${err.message}`);
     } finally {
-      setLoading(false);
+      if (append) setLoadingMore(false); else setLoading(false);
     }
+  }
+
+  function load(e: React.FormEvent) {
+    e.preventDefault();
+    setEntries(null);
+    setCurrentOffset(0);
+    fetchPage(0, false);
   }
 
   const actionColor = auditActionColor;
 
   return (
     <div>
-
       <p className="text-sm text-ink/60 mb-3">
         All admin actions on licenses — issue, revoke, change_plan, extend, reactivate, set_note,
-        change_email, resend_license, deactivate_all, resend_payment_failed. Most recent first. Filter by license key to
-        see history for one license.
+        change_email, resend_license, deactivate_all, resend_payment_failed. Most recent first.
+        Filter by license key or action name.
       </p>
       <form onSubmit={load} className="card space-y-3">
-        <Field label="License key (optional — leave blank for all recent actions)">
-          <input
-            value={keyFilter}
-            onChange={(e) => setKeyFilter(e.target.value)}
-            placeholder="ADIA-XXXX-XXXX-XXXX or blank"
-            className="input font-mono"
-          />
-        </Field>
+        <div className="flex gap-3">
+          <Field label="License key (optional)">
+            <input
+              value={keyFilter}
+              onChange={(e) => setKeyFilter(e.target.value)}
+              placeholder="ADIA-XXXX-XXXX-XXXX or blank"
+              className="input font-mono"
+            />
+          </Field>
+          <Field label="Action (optional)">
+            <input
+              value={actionFilter}
+              onChange={(e) => setActionFilter(e.target.value)}
+              placeholder="e.g. revoke, issue, extend"
+              className="input"
+            />
+          </Field>
+        </div>
         <div className="flex gap-2">
           <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? 'Loading…' : 'Load audit log'}
@@ -1279,6 +1327,7 @@ function AuditPanel({ token }: { token: string }) {
               if (!token) return;
               const params = new URLSearchParams({ limit: '500', format: 'csv' });
               if (keyFilter.trim()) params.set('key', keyFilter.trim().toUpperCase());
+              if (actionFilter.trim()) params.set('action', actionFilter.trim());
               const url = `/api/admin/audit-log?${params}&token=${encodeURIComponent(token)}`;
               const a = document.createElement('a');
               a.href = url;
@@ -1298,44 +1347,58 @@ function AuditPanel({ token }: { token: string }) {
           {entries.length === 0 ? (
             <p className="text-sm text-ink/50">No audit log entries found.</p>
           ) : (
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="text-left text-ink/50 border-b border-ink/10">
-                  <th className="pb-1 pr-3">When</th>
-                  <th className="pb-1 pr-3">Action</th>
-                  <th className="pb-1 pr-3">License key</th>
-                  <th className="pb-1">Detail</th>
-                </tr>
-              </thead>
-              <tbody>
-                {entries.map((e) => {
-                  let detailObj: Record<string, unknown> | null = null;
-                  try { detailObj = e.detail ? JSON.parse(e.detail) : null; } catch {}
-                  return (
-                    <tr key={e.id} className="border-t border-ink/5">
-                      <td className="py-1 pr-3 font-mono text-ink/40 whitespace-nowrap">
-                        {e.createdAt.slice(0, 16).replace('T', ' ')}
-                      </td>
-                      <td className={`py-1 pr-3 font-semibold ${actionColor(e.action)}`}>
-                        {e.action}
-                      </td>
-                      <td className="py-1 pr-3 font-mono text-ink/60">
-                        {e.licenseKey ?? <span className="italic text-ink/30">—</span>}
-                      </td>
-                      <td className="py-1 font-mono text-ink/50 break-all">
-                        {detailObj
-                          ? Object.entries(detailObj)
-                              .map(([k, v]) => `${k}: ${v ?? 'null'}`)
-                              .join(' · ')
-                          : (e.detail ?? '—')}
-                      </td>
+            <>
+              <p className="text-xs text-ink/40">Showing {entries.length} of {total} entries</p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="text-left text-ink/50 border-b border-ink/10">
+                      <th className="pb-1 pr-3">When</th>
+                      <th className="pb-1 pr-3">Action</th>
+                      <th className="pb-1 pr-3">License key</th>
+                      <th className="pb-1">Detail</th>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                  </thead>
+                  <tbody>
+                    {entries.map((e) => {
+                      let detailObj: Record<string, unknown> | null = null;
+                      try { detailObj = e.detail ? JSON.parse(e.detail) : null; } catch {}
+                      return (
+                        <tr key={e.id} className="border-t border-ink/5">
+                          <td className="py-1 pr-3 font-mono text-ink/40 whitespace-nowrap">
+                            {e.createdAt.slice(0, 16).replace('T', ' ')}
+                          </td>
+                          <td className={`py-1 pr-3 font-semibold ${actionColor(e.action)}`}>
+                            {e.action}
+                          </td>
+                          <td className="py-1 pr-3 font-mono text-ink/60">
+                            {e.licenseKey ?? <span className="italic text-ink/30">—</span>}
+                          </td>
+                          <td className="py-1 font-mono text-ink/50 break-all">
+                            {detailObj
+                              ? Object.entries(detailObj)
+                                  .map(([k, v]) => `${k}: ${v ?? 'null'}`)
+                                  .join(' · ')
+                              : (e.detail ?? '—')}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              {hasMore && (
+                <button
+                  type="button"
+                  className="btn-secondary text-xs w-full mt-1"
+                  disabled={loadingMore}
+                  onClick={() => fetchPage(currentOffset, true)}
+                >
+                  {loadingMore ? 'Loading…' : `Load more (${total - currentOffset} remaining)`}
+                </button>
+              )}
+            </>
           )}
-          <p className="text-xs text-ink/30 pt-1">Showing {entries.length} entries (max 100).</p>
         </div>
       )}
     </div>

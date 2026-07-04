@@ -1,5 +1,67 @@
 # Adia — Build Progress
 
+## Run 269 — 2026-07-04T14:10:00Z — Audit-log pagination + action filter + admin panel URL param pre-fill
+
+### Shipped
+
+**`web/lib/db.ts` — `countAuditLog` + pagination/action in `listAuditLog`:**
+- Added `countAuditLog(opts?: { licenseKey?, action? }): number` — `SELECT COUNT(*)` with optional WHERE conditions.
+- `listAuditLog` now accepts `offset?: number` and `action?: string`; builds a dynamic WHERE clause and appends `LIMIT ? OFFSET ?` for pagination.
+
+**`web/lib/db-pg.ts` — Postgres equivalents:**
+- Added `countAuditLogPg` — uses `($val::text IS NULL OR col = $val::text)` pattern for optional filters.
+- Updated `listAuditLogPg` with `offset` and `action` params; single `sql` template covers all filter combinations.
+
+**`web/lib/store.ts` — facade updates:**
+- Added `countAuditLog(opts?)` facade routing to SQLite or Postgres.
+- `listAuditLog` signature updated to include `offset` and `action`.
+
+**`web/app/api/admin/audit-log/route.ts` — pagination + action filter:**
+- Now accepts `?offset=N` (default 0) and `?action=<name>` filter.
+- Runs `countAuditLog` + `listAuditLog` in parallel.
+- Response: `{ count: total, total, hasMore, offset, limit, entries }`.
+- CSV path unchanged (exports current filter page, no count overhead).
+
+**`web/app/admin/page.tsx` — AuditPanel redesign:**
+- Added `actionFilter` state + "Action" text input alongside the key filter.
+- `load()` now calls `fetchPage(0, false)` (resets entries); `fetchPage(offset, append)` handles both first load and load-more.
+- Tracks `total`, `hasMore`, `currentOffset`, `loadingMore` state.
+- "Showing N of M entries" header replaces old "max 100" footer.
+- "Load more (K remaining)" button appears when `hasMore` is true; disabled while `loadingMore`.
+- Table wrapped in `overflow-x: auto` container for wide viewports.
+- `AUDIT_PAGE_SIZE = 50` constant (previously hard-coded 100).
+- Export CSV button forwards `action` filter to `?action=` param.
+
+**`web/app/admin/page.tsx` — URL param pre-fill:**
+- `useEffect` on mount reads `?token=` from `window.location.search` and pre-fills token state.
+- `useEffect` on mount reads `?section=` and pre-fills section filter state.
+- Second `useEffect` on `sectionFilter` change calls `window.history.replaceState` to keep `?section=` in sync — filtered views are now bookmarkable.
+- Added tip text below token input: bookmark `/admin?token=YOUR_TOKEN` to skip pasting.
+
+**Tests (9 new — added to `web/__tests__/admin-audit.test.ts`, 627 → 636):**
+- `response includes total, hasMore, offset, limit fields`.
+- `total reflects count of all entries regardless of limit`.
+- `hasMore is true when more entries exist beyond the current page`.
+- `hasMore is false when all entries fit on the page`.
+- `offset skips earlier entries and returns the next page` (no overlap check).
+- `?token= query param auth works for pagination`.
+- `action filter returns only entries with that action`.
+- `action filter combined with key filter narrows results`.
+- `unknown action returns empty result`.
+
+**Web test count: 627 → 636 (27 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding a `?since=YYYY-MM-DD` filter to `GET /api/admin/audit-log` for time-scoped audit views (currently only `audit-log-export` supports `since`; parity would let admins use the inline viewer for recent-activity checks).
+- Consider debounce/live-search on the audit key filter input (currently form-submit only) — similar to the 300ms debounce already on `SearchLicensesPanel`.
+- Consider adding `@MainActor` annotations to remaining Swift test suites (`OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`) when a macOS build environment is available.
+- Consider persisting `?token=` in the URL when the admin pastes it (via `replaceState`) so refreshing the page keeps you authenticated — must weigh browser-history security implications.
+
+---
+
 ## Run 268 — 2026-07-04T13:08:00Z — POST /api/admin/bulk-transfer + BulkTransferPanel + 20 tests
 
 ### Shipped

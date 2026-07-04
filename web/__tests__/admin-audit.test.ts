@@ -442,6 +442,134 @@ describe('GET /api/admin/audit-log?format=csv', () => {
   });
 });
 
+// ─── audit-log pagination and action filter ──────────────────────────────────
+
+describe('GET /api/admin/audit-log — pagination', () => {
+  it('response includes total, hasMore, offset, limit fields', async () => {
+    insertLicense({ key: 'ADIA-PAGN-FLDS-AAAA', email: 'pgflds@example.com', plan: 'lifetime', expiresAt: null });
+    await callRevoke('ADIA-PAGN-FLDS-AAAA');
+    const res = await callAuditLog({ limit: '10' });
+    const body = await res.json();
+    expect(body).toHaveProperty('total');
+    expect(body).toHaveProperty('hasMore');
+    expect(body).toHaveProperty('offset');
+    expect(body).toHaveProperty('limit');
+    expect(body.limit).toBe(10);
+    expect(body.offset).toBe(0);
+  });
+
+  it('total reflects count of all entries regardless of limit', async () => {
+    const { insertAuditLog } = await import('@/lib/db');
+    for (let i = 1; i <= 5; i++) {
+      const key = `ADIA-PGTT-TOT${i}-AAAA`;
+      insertLicense({ key, email: `pgtt${i}@example.com`, plan: 'lifetime', expiresAt: null });
+      insertAuditLog({ licenseKey: key, action: 'issue', detail: {} });
+    }
+    const res = await callAuditLog({ limit: '2' });
+    const body = await res.json();
+    expect(body.total).toBeGreaterThanOrEqual(5);
+    expect(body.entries.length).toBe(2);
+  });
+
+  it('hasMore is true when more entries exist beyond the current page', async () => {
+    const { insertAuditLog } = await import('@/lib/db');
+    for (let i = 1; i <= 4; i++) {
+      const key = `ADIA-PGHS-MOR${i}-AAAA`;
+      insertLicense({ key, email: `pghs${i}@example.com`, plan: 'lifetime', expiresAt: null });
+      insertAuditLog({ licenseKey: key, action: 'issue', detail: {} });
+    }
+    const res = await callAuditLog({ limit: '2', offset: '0' });
+    const body = await res.json();
+    expect(body.hasMore).toBe(true);
+    expect(body.entries.length).toBe(2);
+  });
+
+  it('hasMore is false when all entries fit on the page', async () => {
+    const { insertAuditLog } = await import('@/lib/db');
+    const key = 'ADIA-PGHS-FIT1-AAAA';
+    insertLicense({ key, email: 'pghsfit@example.com', plan: 'lifetime', expiresAt: null });
+    insertAuditLog({ licenseKey: key, action: 'issue', detail: {} });
+    // Use key filter so only 1 entry matches
+    const res = await callAuditLog({ key: 'ADIA-PGHS-FIT1-AAAA', limit: '50' });
+    const body = await res.json();
+    expect(body.hasMore).toBe(false);
+    expect(body.total).toBe(1);
+  });
+
+  it('offset skips earlier entries and returns the next page', async () => {
+    const { insertAuditLog, countAuditLog } = await import('@/lib/db');
+    // Insert 3 entries for a specific key, newest first
+    const key = 'ADIA-PGOF-SKP1-AAAA';
+    insertLicense({ key, email: 'pgofskp@example.com', plan: 'lifetime', expiresAt: null });
+    insertAuditLog({ licenseKey: key, action: 'issue', detail: {} });
+    insertAuditLog({ licenseKey: key, action: 'extend', detail: {} });
+    insertAuditLog({ licenseKey: key, action: 'revoke', detail: {} });
+    // Page 1: first 2 entries
+    const res1 = await callAuditLog({ key, limit: '2', offset: '0' });
+    const body1 = await res1.json();
+    expect(body1.entries.length).toBe(2);
+    expect(body1.hasMore).toBe(true);
+    // Page 2: 1 remaining entry
+    const res2 = await callAuditLog({ key, limit: '2', offset: '2' });
+    const body2 = await res2.json();
+    expect(body2.entries.length).toBe(1);
+    expect(body2.hasMore).toBe(false);
+    // No overlap
+    const ids1 = new Set(body1.entries.map((e: any) => e.id));
+    const ids2 = new Set(body2.entries.map((e: any) => e.id));
+    for (const id of ids2) expect(ids1.has(id)).toBe(false);
+  });
+
+  it('?token= query param auth works for pagination', async () => {
+    const { GET } = await import('@/app/api/admin/audit-log/route');
+    const req = new NextRequest('http://localhost/api/admin/audit-log?token=test-admin-token&limit=10');
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toHaveProperty('entries');
+  });
+});
+
+describe('GET /api/admin/audit-log — action filter', () => {
+  it('action filter returns only entries with that action', async () => {
+    const { insertAuditLog } = await import('@/lib/db');
+    const keyA = 'ADIA-AFLT-ACT1-AAAA';
+    const keyB = 'ADIA-AFLT-ACT2-AAAA';
+    insertLicense({ key: keyA, email: 'afltact1@example.com', plan: 'lifetime', expiresAt: null });
+    insertLicense({ key: keyB, email: 'afltact2@example.com', plan: 'lifetime', expiresAt: null });
+    insertAuditLog({ licenseKey: keyA, action: 'issue', detail: {} });
+    insertAuditLog({ licenseKey: keyB, action: 'revoke', detail: {} });
+    insertAuditLog({ licenseKey: keyA, action: 'extend', detail: {} });
+    const res = await callAuditLog({ action: 'revoke' });
+    const body = await res.json();
+    expect(body.entries.every((e: any) => e.action === 'revoke')).toBe(true);
+    expect(body.entries.some((e: any) => e.licenseKey === keyB)).toBe(true);
+    expect(body.entries.some((e: any) => e.action === 'issue')).toBe(false);
+  });
+
+  it('action filter combined with key filter narrows results', async () => {
+    const { insertAuditLog } = await import('@/lib/db');
+    const key = 'ADIA-AFLT-COMB-AAAA';
+    insertLicense({ key, email: 'afltcomb@example.com', plan: 'lifetime', expiresAt: null });
+    insertAuditLog({ licenseKey: key, action: 'issue', detail: {} });
+    insertAuditLog({ licenseKey: key, action: 'extend', detail: {} });
+    // Only "issue" for this specific key
+    const res = await callAuditLog({ key, action: 'issue' });
+    const body = await res.json();
+    expect(body.total).toBe(1);
+    expect(body.entries[0].action).toBe('issue');
+  });
+
+  it('unknown action returns empty result', async () => {
+    const res = await callAuditLog({ action: 'nonexistent_action_xyz' });
+    const body = await res.json();
+    expect(res.status).toBe(200);
+    expect(body.entries.length).toBe(0);
+    expect(body.total).toBe(0);
+    expect(body.hasMore).toBe(false);
+  });
+});
+
 // ─── findLicense now includes note field ─────────────────────────────────────
 
 describe('findLicense note field', () => {

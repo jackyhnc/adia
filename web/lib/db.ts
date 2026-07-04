@@ -333,16 +333,30 @@ export function insertAuditLog(entry: {
   );
 }
 
-export function listAuditLog(opts?: { licenseKey?: string; limit?: number }): AuditEntry[] {
+export function countAuditLog(opts?: { licenseKey?: string; action?: string }): number {
+  const conditions: string[] = [];
+  const params: unknown[] = [];
+  if (opts?.licenseKey) { conditions.push('license_key = ?'); params.push(opts.licenseKey.trim().toUpperCase()); }
+  if (opts?.action) { conditions.push('action = ?'); params.push(opts.action.trim()); }
+  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const row = (db()
+    .prepare(`SELECT COUNT(*) AS n FROM audit_log ${where}`)
+    .get as (...a: unknown[]) => any)(...params);
+  return (row as any).n as number;
+}
+
+export function listAuditLog(opts?: { licenseKey?: string; limit?: number; offset?: number; action?: string }): AuditEntry[] {
   const limit = Math.min(opts?.limit ?? 100, 500);
-  const rows = opts?.licenseKey
-    ? db()
-        .prepare('SELECT * FROM audit_log WHERE license_key = ? ORDER BY id DESC LIMIT ?')
-        .all(opts.licenseKey.trim().toUpperCase(), limit)
-    : db()
-        .prepare('SELECT * FROM audit_log ORDER BY id DESC LIMIT ?')
-        .all(limit);
-  return (rows as any[]).map(r => ({
+  const offset = opts?.offset ?? 0;
+  const conditions: string[] = [];
+  const params: unknown[] = [];
+  if (opts?.licenseKey) { conditions.push('license_key = ?'); params.push(opts.licenseKey.trim().toUpperCase()); }
+  if (opts?.action) { conditions.push('action = ?'); params.push(opts.action.trim()); }
+  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const rows = (db()
+    .prepare(`SELECT * FROM audit_log ${where} ORDER BY id DESC LIMIT ? OFFSET ?`)
+    .all as (...a: unknown[]) => any[])(...params, limit, offset);
+  return rows.map(r => ({
     id: r.id,
     licenseKey: r.license_key,
     action: r.action,

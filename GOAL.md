@@ -42,3 +42,6 @@
 - [x] Template "Edit & Launch" context menu: right-click pinned template in idle notch opens session creation form pre-filled with template task + preferredDuration; left-click direct-launch preserved
 - [x] SessionManagerTests @MainActor refactor: add @MainActor to struct, eliminate await MainActor.run{} boilerplate across all 50+ test call sites, make injectSession() synchronous
 - [x] Admin bulk-issue endpoint: POST /api/admin/bulk-issue generates 1–50 license keys at once; shared email/plan/note/expiresAt override; BulkIssuePanel with copy-all button; 26 tests
+- [x] Admin bulk-transfer endpoint: POST /api/admin/bulk-transfer moves up to 100 keys to a new email; changed + skipped (not_found/already_set); BulkTransferPanel; 20 tests
+- [x] Admin panel URL param pre-fill: ?token= pre-fills token input on load; ?section= pre-fills section filter + stays in sync as filter changes (bookmarkable filtered views); token hint tip added to card
+- [x] Audit-log pagination + action filter: GET /api/admin/audit-log gains ?offset= + ?action= params; countAuditLog DB function (SQLite + Postgres); response includes total/hasMore/offset/limit; AuditPanel load-more button + action filter input; 13 tests (627 → 636)

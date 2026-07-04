@@ -235,9 +235,22 @@ export async function listAllLicenses(since?: string, status?: string, plan?: st
   return sqlite.listAllLicenses(since, status, plan);
 }
 
+export async function countAuditLog(opts?: {
+  licenseKey?: string;
+  action?: string;
+}): Promise<number> {
+  if (usePg) {
+    const { countAuditLogPg } = await import('./db-pg');
+    return countAuditLogPg(opts);
+  }
+  return sqlite.countAuditLog(opts);
+}
+
 export async function listAuditLog(opts?: {
   licenseKey?: string;
   limit?: number;
+  offset?: number;
+  action?: string;
 }): Promise<AuditEntry[]> {
   if (usePg) {
     const { listAuditLogPg } = await import('./db-pg');
