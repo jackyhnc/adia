@@ -41,3 +41,4 @@
 - [x] Admin rate-limit: adminGuard() helper combines 20 req/60s per-IP rate-limit + ADMIN_TOKEN auth; wired into all 26 admin routes; 14 tests
 - [x] Template "Edit & Launch" context menu: right-click pinned template in idle notch opens session creation form pre-filled with template task + preferredDuration; left-click direct-launch preserved
 - [x] SessionManagerTests @MainActor refactor: add @MainActor to struct, eliminate await MainActor.run{} boilerplate across all 50+ test call sites, make injectSession() synchronous
+- [x] Admin bulk-issue endpoint: POST /api/admin/bulk-issue generates 1–50 license keys at once; shared email/plan/note/expiresAt override; BulkIssuePanel with copy-all button; 26 tests

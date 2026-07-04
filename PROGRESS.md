@@ -1,5 +1,46 @@
 # Adia — Build Progress
 
+## Run 267 — 2026-07-04T12:15:00Z — POST /api/admin/bulk-issue + BulkIssuePanel + 26 tests
+
+### Shipped
+
+**`web/app/api/admin/bulk-issue/route.ts` — new admin endpoint:**
+- `POST /api/admin/bulk-issue`: Generate 1–50 license keys in a single request.
+- Body: `{ count: number, plan: "monthly" | "yearly" | "lifetime", email?: string, note?: string, expiresAt?: string | null }`
+- `count` must be a positive integer ≤ 50.
+- `email` optional — defaults to `"bulk@admin"` when omitted; normalized to lowercase.
+- `note` optional — same note applied to every generated key.
+- `expiresAt` optional override — `null` forces lifetime; ISO string overrides plan default; omit to use plan's standard expiry.
+- Each generated key: inserted into licenses table, note stored if provided, one `issued_bulk` audit log entry written (with `batchSize`).
+- Auth: ADMIN_TOKEN bearer header or `?token=` query param (via `adminGuard`).
+
+**`web/app/admin/page.tsx` — BulkIssuePanel:**
+- New "Bulk issue licenses" collapsible section (after "Issue comp license").
+- Count input (1–50), plan select, optional email + note fields.
+- On success: displays all generated keys in a monospace list with a "Copy all" button (copies keys as newline-separated text to clipboard).
+
+**Tests (26 new — `web/__tests__/admin-bulk-issue.test.ts`):**
+- Auth: 401 no-token, 401 wrong-token, 200 `?token=` auth.
+- Validation: missing count, count=0, negative count, fractional count, count>50, missing plan, invalid plan, invalid expiresAt string, numeric expiresAt.
+- Core: generates correct number of keys, all unique, all match ADIA-XXXX-XXXX-XXXX pattern.
+- Email: uses provided email (lowercase), defaults to bulk@admin when omitted.
+- Note: applied to all keys in DB, null when omitted.
+- Persistence: all keys stored in DB with status=active.
+- Audit: one `issued_bulk` entry per key.
+- Expiry: lifetime→null, monthly→~31d, yearly→~366d, explicit null override, explicit date override.
+- 569+26→607 tests (26 test files, all pass). `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `POST /api/admin/bulk-transfer` — move a list of license keys to a new email address (e.g., company re-org or merging accounts). Returns changed + skipped (not_found, already_set).
+- Consider adding `?token=` auth to the admin panel login form as a URL param pre-fill (paste `?token=XYZ` to skip typing it every time).
+- Consider `SessionTemplateTests @MainActor` annotation (check if `SessionTemplateStore` actor calls require it — likely not since store is created locally in each test).
+- Consider debounce on the "Licenses by email" email input for auto-lookup (currently form-submit only).
+
+---
+
 ## Run 264 — 2026-07-04T07:12:00Z — POST /api/admin/bulk-set-expiry + BulkSetExpiryPanel + 21 tests
 
 ### Shipped

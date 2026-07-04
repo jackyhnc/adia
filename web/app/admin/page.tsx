@@ -78,6 +78,9 @@ export default function Admin() {
       <CollapsibleSection title="Issue comp license">
         <IssuePanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Bulk issue licenses">
+        <BulkIssuePanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Resend license email">
         <ResendLicensePanel token={token} />
       </CollapsibleSection>
@@ -345,6 +348,152 @@ function IssuePanel({ token }: { token: string }) {
             {result.email} · {result.plan}
             {result.expiresAt ? ` · expires ${result.expiresAt.slice(0, 10)}` : ' · no expiry'}
           </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Bulk issue licenses ──────────────────────────────────────────────────────
+
+function BulkIssuePanel({ token }: { token: string }) {
+  const [count, setCount] = useState('5');
+  const [plan, setPlan] = useState<'monthly' | 'yearly' | 'lifetime'>('lifetime');
+  const [email, setEmail] = useState('');
+  const [note, setNote] = useState('');
+  const [result, setResult] = useState<{
+    ok: boolean;
+    keys: string[];
+    count: number;
+    email: string;
+    plan: string;
+    expiresAt: string | null;
+    note: string | null;
+  } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const n = parseInt(count, 10);
+    if (!n || n < 1 || n > 50) {
+      setError('Count must be between 1 and 50.');
+      return;
+    }
+    setLoading(true);
+    setResult(null);
+    setError('');
+    setCopied(false);
+    try {
+      const body: Record<string, unknown> = { count: n, plan };
+      if (email.trim()) body.email = email.trim();
+      if (note.trim()) body.note = note.trim();
+      const res = await fetch('/api/admin/bulk-issue', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${data.error ?? 'unknown error'}`);
+      } else {
+        setResult(data);
+      }
+    } catch (err: unknown) {
+      setError(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function copyAll() {
+    if (!result) return;
+    navigator.clipboard.writeText(result.keys.join('\n')).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Generate multiple license keys at once — useful for conference giveaways, batch promo
+        codes, or seeding a cohort. All keys share the same plan, email, and note.
+      </p>
+      <form onSubmit={submit} className="card space-y-3">
+        <Field label="Number of keys (1–50)">
+          <input
+            type="number"
+            value={count}
+            onChange={(e) => setCount(e.target.value)}
+            min={1}
+            max={50}
+            className="input"
+            required
+          />
+        </Field>
+        <Field label="Plan">
+          <select
+            value={plan}
+            onChange={(e) => setPlan(e.target.value as typeof plan)}
+            className="input"
+          >
+            <option value="lifetime">Lifetime</option>
+            <option value="yearly">Yearly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </Field>
+        <Field label="Email (optional — defaults to bulk@admin)">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="promo@example.com"
+            className="input"
+          />
+        </Field>
+        <Field label="Note (optional — applied to every key)">
+          <input
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="conference giveaway, beta cohort, …"
+            className="input"
+          />
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Generating…' : `Generate ${count || '?'} keys`}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {result && (
+        <div className="card mt-3 space-y-3 border border-green-500/30 bg-green-50/5">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold text-green-600">
+              {result.count} keys generated ✓
+            </p>
+            <button
+              type="button"
+              onClick={copyAll}
+              className="text-xs px-2 py-1 rounded border border-ink/20 hover:bg-ink/5"
+            >
+              {copied ? 'Copied!' : 'Copy all'}
+            </button>
+          </div>
+          <p className="text-xs text-ink/50">
+            {result.email} · {result.plan}
+            {result.expiresAt ? ` · expires ${result.expiresAt.slice(0, 10)}` : ' · no expiry'}
+            {result.note ? ` · note: ${result.note}` : ''}
+          </p>
+          <ul className="space-y-1">
+            {result.keys.map((k) => (
+              <li key={k} className="font-mono text-sm tracking-wide select-all text-green-800">
+                {k}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
