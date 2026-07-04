@@ -482,3 +482,33 @@ export async function getStatsPg(): Promise<LicenseStats> {
     activatedMachines: activationRes.rows[0]?.c ?? 0,
   };
 }
+
+export async function listAllLicensesPg(since?: string, status?: string, plan?: string): Promise<License[]> {
+  await ensureSchema();
+  const sinceVal = since ?? null;
+  const statusVal = status ?? null;
+  const planVal = plan ?? null;
+  const result = await sql<any>`
+    SELECT l.key, l.email, l.plan, l.status, l.note,
+           to_char(l.issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
+           to_char(l.expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt",
+           COUNT(a.machine_hash)::int AS "machineCount"
+    FROM licenses l
+    LEFT JOIN activations a ON a.license_key = l.key
+    WHERE (${sinceVal}::text IS NULL OR l.issued_at >= ${sinceVal}::text)
+      AND (${statusVal}::text IS NULL OR l.status = ${statusVal}::text)
+      AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
+    GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at
+    ORDER BY l.issued_at DESC
+  `;
+  return result.rows.map((r: any) => ({
+    key: r.key,
+    email: r.email,
+    plan: r.plan,
+    status: r.status,
+    issuedAt: r.issuedAt,
+    expiresAt: r.expiresAt ?? null,
+    note: r.note ?? null,
+    machineCount: r.machineCount,
+  }));
+}

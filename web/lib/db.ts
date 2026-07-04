@@ -470,3 +470,32 @@ export function getStats(): LicenseStats {
 
   return { total, byStatus, byPlan, newLast7Days, newLast30Days, activatedMachines };
 }
+
+export function listAllLicenses(since?: string, status?: string, plan?: string): License[] {
+  const conditions: string[] = [];
+  const params: unknown[] = [];
+  if (since) { conditions.push('l.issued_at >= ?'); params.push(since); }
+  if (status) { conditions.push('l.status = ?'); params.push(status); }
+  if (plan) { conditions.push('l.plan = ?'); params.push(plan); }
+  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const rows = (db()
+    .prepare(`
+      SELECT l.*, COUNT(a.machine_hash) AS machine_count_live
+      FROM licenses l
+      LEFT JOIN activations a ON a.license_key = l.key
+      ${where}
+      GROUP BY l.key
+      ORDER BY l.issued_at DESC
+    `)
+    .all as (...a: unknown[]) => any[])(...params);
+  return rows.map(r => ({
+    key: r.key,
+    email: r.email,
+    plan: r.plan,
+    status: r.status,
+    issuedAt: r.issued_at,
+    expiresAt: r.expires_at ?? null,
+    note: r.note ?? null,
+    machineCount: r.machine_count_live as number,
+  }));
+}

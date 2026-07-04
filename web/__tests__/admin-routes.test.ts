@@ -2645,3 +2645,157 @@ describe('POST /api/admin/bulk-set-status', () => {
     expect(res.status).toBe(200);
   });
 });
+
+// ─── GET /api/admin/export-licenses ─────────────────────────────────────────
+
+describe('GET /api/admin/export-licenses', () => {
+  async function callExport(
+    params: Record<string, string> = {},
+    token = 'test-admin-token',
+  ) {
+    const { GET } = await import('@/app/api/admin/export-licenses/route');
+    const sp = new URLSearchParams(params);
+    const req = new NextRequest(
+      `http://localhost/api/admin/export-licenses?${sp.toString()}`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+    return GET(req);
+  }
+
+  it('returns 401 with no token', async () => {
+    const { GET } = await import('@/app/api/admin/export-licenses/route');
+    const req = new NextRequest('http://localhost/api/admin/export-licenses');
+    const res = await GET(req);
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 401 with wrong token', async () => {
+    const res = await callExport({}, 'bad-token');
+    expect(res.status).toBe(401);
+  });
+
+  it('returns 400 for invalid format', async () => {
+    const res = await callExport({ format: 'xml' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/format/);
+  });
+
+  it('returns 400 for invalid status', async () => {
+    const res = await callExport({ status: 'banned' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/status/);
+  });
+
+  it('returns 400 for invalid plan', async () => {
+    const res = await callExport({ plan: 'enterprise' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/plan/);
+  });
+
+  it('returns 400 for invalid since date', async () => {
+    const res = await callExport({ since: 'not-a-date' });
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toMatch(/since/);
+  });
+
+  it('returns CSV with correct Content-Type for empty table', async () => {
+    const res = await callExport({ format: 'csv' });
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type')).toMatch(/text\/csv/);
+    const text = await res.text();
+    expect(text.startsWith('key,email,plan,status,issuedAt,expiresAt,machineCount,note')).toBe(true);
+  });
+
+  it('returns JSON with licenses array for empty table', async () => {
+    const res = await callExport({ format: 'json' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.licenses).toEqual([]);
+    expect(body.count).toBe(0);
+  });
+
+  it('includes all licenses in CSV export', async () => {
+    insertLicense({ key: 'ADIA-EXPRT-AAA-0001', email: 'exportA@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-EXPRT-BBB-0002', email: 'exportB@example.com', plan: 'yearly', expiresAt: null });
+    const res = await callExport({ format: 'csv' });
+    expect(res.status).toBe(200);
+    const text = await res.text();
+    const lines = text.split('\n');
+    expect(lines.length).toBe(3); // header + 2 rows
+    expect(text).toContain('ADIA-EXPRT-AAA-0001');
+    expect(text).toContain('ADIA-EXPRT-BBB-0002');
+  });
+
+  it('includes all licenses in JSON export with machineCount', async () => {
+    insertLicense({ key: 'ADIA-EXPRT-CCC-0003', email: 'exportC@example.com', plan: 'lifetime', expiresAt: null });
+    recordActivation('ADIA-EXPRT-CCC-0003', 'machine-abc');
+    const res = await callExport({ format: 'json' });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    const found = body.licenses.find((l: { key: string }) => l.key === 'ADIA-EXPRT-CCC-0003');
+    expect(found).toBeDefined();
+    expect(found.machineCount).toBe(1);
+    expect(found.plan).toBe('lifetime');
+  });
+
+  it('filters by status', async () => {
+    insertLicense({ key: 'ADIA-EXPRT-STA-0001', email: 'exprtSta1@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-EXPRT-STA-0002', email: 'exprtSta2@example.com', plan: 'monthly', expiresAt: null });
+    setStatus('ADIA-EXPRT-STA-0002', 'canceled');
+    const res = await callExport({ format: 'json', status: 'active' });
+    const body = await res.json();
+    const keys = body.licenses.map((l: { key: string }) => l.key);
+    expect(keys).toContain('ADIA-EXPRT-STA-0001');
+    expect(keys).not.toContain('ADIA-EXPRT-STA-0002');
+  });
+
+  it('filters by plan', async () => {
+    insertLicense({ key: 'ADIA-EXPRT-PLN-0001', email: 'exprtPln1@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-EXPRT-PLN-0002', email: 'exprtPln2@example.com', plan: 'yearly', expiresAt: null });
+    const res = await callExport({ format: 'json', plan: 'yearly' });
+    const body = await res.json();
+    const keys = body.licenses.map((l: { key: string }) => l.key);
+    expect(keys).toContain('ADIA-EXPRT-PLN-0002');
+    expect(keys).not.toContain('ADIA-EXPRT-PLN-0001');
+  });
+
+  it('filters by since date', async () => {
+    insertLicense({ key: 'ADIA-EXPRT-SNC-0001', email: 'exprtSnc1@example.com', plan: 'monthly', expiresAt: null });
+    setIssuedAt('ADIA-EXPRT-SNC-0001', '2020-01-01T00:00:00Z');
+    insertLicense({ key: 'ADIA-EXPRT-SNC-0002', email: 'exprtSnc2@example.com', plan: 'monthly', expiresAt: null });
+    setIssuedAt('ADIA-EXPRT-SNC-0002', '2030-01-01T00:00:00Z');
+    const res = await callExport({ format: 'json', since: '2025-01-01' });
+    const body = await res.json();
+    const keys = body.licenses.map((l: { key: string }) => l.key);
+    expect(keys).toContain('ADIA-EXPRT-SNC-0002');
+    expect(keys).not.toContain('ADIA-EXPRT-SNC-0001');
+  });
+
+  it('CSV escapes commas and quotes in note field', async () => {
+    insertLicense({ key: 'ADIA-EXPRT-ESC-0001', email: 'exprtEsc@example.com', plan: 'monthly', expiresAt: null });
+    const { setNote } = await import('@/lib/db');
+    setNote('ADIA-EXPRT-ESC-0001', 'has, comma and "quote"');
+    const res = await callExport({ format: 'csv' });
+    const text = await res.text();
+    expect(text).toContain('"has, comma and ""quote"""');
+  });
+
+  it('Content-Disposition header includes a .csv filename', async () => {
+    const res = await callExport({ format: 'csv' });
+    const cd = res.headers.get('content-disposition') ?? '';
+    expect(cd).toMatch(/attachment.*\.csv/);
+  });
+
+  it('accepts ?token= query-param auth', async () => {
+    const { GET } = await import('@/app/api/admin/export-licenses/route');
+    const req = new NextRequest(
+      'http://localhost/api/admin/export-licenses?token=test-admin-token&format=json',
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+  });
+});

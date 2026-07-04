@@ -227,6 +227,14 @@ export async function searchLicensesAll(query: string, since?: string, status?: 
   return sqlite.searchLicensesAll(query, since, status, plan);
 }
 
+export async function listAllLicenses(since?: string, status?: string, plan?: string): Promise<License[]> {
+  if (usePg) {
+    const { listAllLicensesPg } = await import('./db-pg');
+    return listAllLicensesPg(since, status, plan);
+  }
+  return sqlite.listAllLicenses(since, status, plan);
+}
+
 export async function listAuditLog(opts?: {
   licenseKey?: string;
   limit?: number;

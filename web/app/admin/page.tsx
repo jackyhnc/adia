@@ -92,6 +92,9 @@ export default function Admin() {
       <CollapsibleSection title="Set expiry date">
         <SetExpiryPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Export licenses">
+        <ExportLicensesPanel token={token} />
+      </CollapsibleSection>
     </section>
   );
 }
@@ -2726,6 +2729,114 @@ function BulkSetStatusPanel({ token }: { token: string }) {
               ))}
             </ul>
           )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Export licenses ─────────────────────────────────────────────────────────
+
+function ExportLicensesPanel({ token }: { token: string }) {
+  const [format, setFormat] = useState<'csv' | 'json'>('csv');
+  const [status, setStatus] = useState('');
+  const [plan, setPlan] = useState('');
+  const [since, setSince] = useState('');
+  const [error, setError] = useState('');
+  const [jsonResult, setJsonResult] = useState<{ licenses: unknown[]; count: number } | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  function buildUrl() {
+    const params = new URLSearchParams({ token, format });
+    if (status) params.set('status', status);
+    if (plan) params.set('plan', plan);
+    if (since) params.set('since', since);
+    return `/api/admin/export-licenses?${params.toString()}`;
+  }
+
+  async function handleExport(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    setJsonResult(null);
+    setLoading(true);
+    try {
+      const res = await fetch(buildUrl(), { headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+        return;
+      }
+      if (format === 'json') {
+        const body = await res.json();
+        setJsonResult(body);
+      } else {
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const filename = `adia-licenses-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Download all licenses as CSV or JSON. Optional filters narrow the export.
+      </p>
+      <form onSubmit={handleExport} className="card space-y-3">
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Format">
+            <select value={format} onChange={(e) => setFormat(e.target.value as 'csv' | 'json')} className="input w-full">
+              <option value="csv">CSV</option>
+              <option value="json">JSON</option>
+            </select>
+          </Field>
+          <Field label="Status (optional)">
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="input w-full">
+              <option value="">All</option>
+              <option value="active">active</option>
+              <option value="canceled">canceled</option>
+              <option value="expired">expired</option>
+              <option value="past_due">past_due</option>
+            </select>
+          </Field>
+          <Field label="Plan (optional)">
+            <select value={plan} onChange={(e) => setPlan(e.target.value)} className="input w-full">
+              <option value="">All</option>
+              <option value="monthly">monthly</option>
+              <option value="yearly">yearly</option>
+              <option value="lifetime">lifetime</option>
+            </select>
+          </Field>
+          <Field label="Issued since (optional)">
+            <input
+              type="date"
+              value={since}
+              onChange={(e) => setSince(e.target.value)}
+              className="input w-full"
+            />
+          </Field>
+        </div>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Exporting…' : format === 'csv' ? 'Download CSV' : 'Fetch JSON'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+      {jsonResult && (
+        <div className="card mt-3 space-y-2 border border-blue-500/30 bg-blue-50/5">
+          <p className="text-sm font-semibold text-blue-600">{jsonResult.count} license{jsonResult.count !== 1 ? 's' : ''} returned</p>
+          <pre className="text-xs font-mono overflow-x-auto max-h-64 whitespace-pre-wrap break-all">
+            {JSON.stringify(jsonResult.licenses.slice(0, 5), null, 2)}
+            {jsonResult.licenses.length > 5 && `\n… and ${jsonResult.licenses.length - 5} more`}
+          </pre>
         </div>
       )}
     </div>
