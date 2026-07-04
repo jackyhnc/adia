@@ -1,5 +1,42 @@
 # Adia — Build Progress
 
+## Run 268 — 2026-07-04T13:08:00Z — POST /api/admin/bulk-transfer + BulkTransferPanel + 20 tests
+
+### Shipped
+
+**`web/app/api/admin/bulk-transfer/route.ts` — new admin endpoint:**
+- `POST /api/admin/bulk-transfer`: Move up to 100 license keys to a new owner email in one request.
+- Body: `{ keys: string[], newEmail: string }`
+- Unknown keys → skipped with `reason: 'not_found'`.
+- Keys already owned by `newEmail` → skipped with `reason: 'already_set'`.
+- Each transferred key gets one `bulk_transfer` audit log entry (`oldEmail`, `newEmail`, `bulk: true`).
+- Auth: ADMIN_TOKEN bearer header or `?token=` query param (via `adminGuard`). Max 100 keys.
+
+**`web/app/admin/page.tsx` — BulkTransferPanel:**
+- New "Bulk transfer" collapsible section placed after "Change license email".
+- Keys textarea + destination email input.
+- Result: changed list (key + old → new email in green) + skipped list (muted, with reason).
+
+**Tests (20 new — `web/__tests__/admin-bulk-transfer.test.ts`):**
+- Auth: 401 no-token, 401 wrong-token, 200 `?token=` auth.
+- Validation: missing keys, empty keys, >100 keys, missing newEmail, invalid email format.
+- Core: single-key transfer, multi-key, lowercase normalization of email, uppercase normalization of keys, newEmail in response.
+- Skip: not_found skip, already_set skip, mixed changed+skipped, skipped key not mutated.
+- Audit: one entry per changed key, detail contains oldEmail/newEmail/bulk=true, no entry for skipped keys.
+
+**607 → 627 tests (27 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `?token=` auth pre-fill in admin panel login form as a URL param (paste `?token=XYZ` in the URL to skip typing it every time — purely frontend, no server change).
+- Consider `@MainActor` annotation on remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`.
+- Consider rate-limiting on export endpoints (`audit-log-export`, `export-licenses`): a 10/min per-IP limit on GET would be appropriate for large exports.
+- Consider pagination for `LicensesByEmailPanel` (currently returns all licenses for an email with no cap).
+
+---
+
 ## Run 267 — 2026-07-04T12:15:00Z — POST /api/admin/bulk-issue + BulkIssuePanel + 26 tests
 
 ### Shipped
