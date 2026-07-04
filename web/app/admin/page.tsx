@@ -141,6 +141,9 @@ export default function Admin() {
       <CollapsibleSection title="Bulk extend">
         <BulkExtendPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Bulk set expiry date">
+        <BulkSetExpiryPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Set expiry date">
         <SetExpiryPanel token={token} />
       </CollapsibleSection>
@@ -3223,6 +3226,129 @@ function BulkExtendPanel({ token }: { token: string }) {
                 <li key={c.key} className="text-green-700">
                   ✓ {c.key} → {new Date(c.newExpiresAt).toLocaleDateString()}{' '}
                   <span className="text-ink/40">(+{c.days}d)</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {result.skipped.length > 0 && (
+            <ul className="text-xs space-y-1 font-mono">
+              {result.skipped.map((s) => (
+                <li key={s.key} className="text-ink/50">
+                  — {s.key} ({s.reason})
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── BulkSetExpiry ─────────────────────────────────────────────────────────────
+
+type BulkSetExpiryResult = {
+  ok: boolean;
+  changed: { key: string; previousExpiresAt: string | null; newExpiresAt: string | null }[];
+  skipped: { key: string; reason: string }[];
+};
+
+function BulkSetExpiryPanel({ token }: { token: string }) {
+  const [rawKeys, setRawKeys] = useState('');
+  const [expiresAt, setExpiresAt] = useState('');
+  const [lifetime, setLifetime] = useState(false);
+  const [result, setResult] = useState<BulkSetExpiryResult | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    setResult(null);
+    const keys = rawKeys
+      .split(/[\n,]+/)
+      .map((k) => k.trim())
+      .filter(Boolean);
+    if (keys.length === 0) {
+      setError('Enter at least one license key.');
+      return;
+    }
+    if (!lifetime && !expiresAt) {
+      setError('Enter an expiry date or check "Set as lifetime".');
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/bulk-set-expiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ keys, expiresAt: lifetime ? null : expiresAt }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${data.error ?? 'unknown error'}`);
+        return;
+      }
+      setResult(data);
+    } catch (err: unknown) {
+      setError(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Set an absolute expiry date on multiple license keys at once. Use this to align a cohort to
+        a specific renewal date, convert licenses to lifetime, or immediately expire a group.
+        One key per line or comma-separated.
+      </p>
+      <form onSubmit={submit} className="card space-y-3">
+        <Field label="License keys (one per line or comma-separated)">
+          <textarea
+            value={rawKeys}
+            onChange={(e) => setRawKeys(e.target.value)}
+            rows={4}
+            placeholder={'ADIA-XXXX-YYYY-ZZZZ\nADIA-AAAA-BBBB-CCCC'}
+            className="input w-full font-mono text-xs resize-y"
+          />
+        </Field>
+        <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={lifetime}
+            onChange={(e) => setLifetime(e.target.checked)}
+            className="rounded"
+          />
+          Set as lifetime (no expiry)
+        </label>
+        {!lifetime && (
+          <Field label="New expiry date">
+            <input
+              type="date"
+              value={expiresAt}
+              onChange={(e) => setExpiresAt(e.target.value)}
+              className="input"
+            />
+          </Field>
+        )}
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Setting…' : 'Set expiry'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+      {result && (
+        <div className="card mt-3 space-y-2 border border-green-500/30 bg-green-50/5">
+          <p className="text-sm font-semibold text-green-600">
+            {result.changed.length} updated, {result.skipped.length} skipped
+          </p>
+          {result.changed.length > 0 && (
+            <ul className="text-xs space-y-1 font-mono">
+              {result.changed.map((c) => (
+                <li key={c.key} className="text-green-700">
+                  ✓ {c.key} →{' '}
+                  {c.newExpiresAt ? new Date(c.newExpiresAt).toLocaleDateString() : 'lifetime'}
                 </li>
               ))}
             </ul>
