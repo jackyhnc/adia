@@ -1,5 +1,47 @@
 # Adia — Build Progress
 
+## Run 274 — 2026-07-04T21:15:00Z — POST /api/admin/notify + NotifyPanel + 19 tests (693 → 712)
+
+### Shipped
+
+**`web/lib/email.ts` — `sendCustomEmail(to, subject, message)`:**
+- HTML-escapes message body (`&`, `<`, `>`, `\n→<br>`) and wraps in a minimal styled div.
+- Appends `— The Adia team` footer automatically.
+- Graceful no-op (console.log) when `RESEND_API_KEY` is absent.
+
+**`web/app/api/admin/notify/route.ts` — `POST /api/admin/notify`:**
+- Body: `{ key: string, subject: string, message: string }`.
+- `key` resolved to email via DB lookup; unknown key → 404.
+- `subject` max 200 chars, `message` max 2000 chars; both validated with descriptive errors.
+- Custom 10 req/60 s email-send rate limit keyed on `notify-email:ip` — separate from the
+  `adminGuard` bucket so the two limiters don't share tokens.
+- Writes a `notify` audit log entry (`{ to, subject }` in detail) on success.
+- Returns `{ ok, key, to, sentAt }`.
+
+**`web/app/admin/page.tsx` — `NotifyPanel`:**
+- Key + subject + message textarea with live char counter (2000).
+- Shows success card with `to`, `key`, and sent-at timestamp.
+- Placed between "Resend payment-failed email" and "Revoke license" sections.
+
+**`web/__tests__/admin-notify.test.ts` — 19 new tests (30 test files):**
+- Auth (2): 401 no-token, 401 wrong-token.
+- Validation (5): missing key, missing subject, missing message, subject > 200, message > 2000.
+- Core (4): 200 shape; `sendCustomEmail` called with correct args; key normalised to uppercase; boundary values (200/2000 chars) accepted.
+- Audit (4): `notify` entry written; detail has `to` + `subject`; no entry on 404; `sendCustomEmail` not called on 404.
+- Rate limit (2): 429 after 10 requests; `Retry-After` header present.
+
+**Test count: 693 → 712 (30 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment).
+- Consider a `GET /api/admin/notify-history` endpoint or adding `notify` action to the AuditPanel quick-filter so admins can review past custom emails sent to a customer.
+- Consider `?token=` query-param auth in the rate-limit test (admin-notify currently only tests Bearer auth — the `?token=` path through `adminGuard` is exercised by other test suites but not explicitly for notify).
+
+---
+
 ## Run 273 — 2026-07-04T20:07:00Z — Admin bulk-revoke tests (20 tests, 673 → 693)
 
 ### Shipped
