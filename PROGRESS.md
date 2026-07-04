@@ -1,5 +1,40 @@
 # Adia — Build Progress
 
+## Run 264 — 2026-07-04T07:12:00Z — POST /api/admin/bulk-set-expiry + BulkSetExpiryPanel + 21 tests
+
+### Shipped
+
+**`web/app/api/admin/bulk-set-expiry/route.ts` — new admin endpoint:**
+- `POST /api/admin/bulk-set-expiry`: Batch set absolute expiry date on up to 100 license keys.
+- Body: `{ keys: string[], expiresAt: string | null }`
+- `expiresAt: null` → converts licenses to lifetime (no expiry).
+- `expiresAt: string` → must be a valid ISO-8601 date string (e.g. `"2030-06-30"`).
+- Unknown keys → `skipped` with `reason: 'not_found'`.
+- Keys already at target value → `skipped` with `reason: 'already_set'` (including null→null).
+- Date-only inputs (e.g. `"2030-06-30"`) normalized to full ISO string before storing.
+- One `bulk_set_expiry` audit log entry per changed key (includes `previousExpiresAt`, `newExpiresAt`, `bulk: true`).
+- Auth: ADMIN_TOKEN bearer header or `?token=` query param. Max 100 keys per request.
+
+**`web/app/admin/page.tsx` — BulkSetExpiryPanel:**
+- New "Bulk set expiry date" collapsible section (after "Bulk extend").
+- Keys textarea + "Set as lifetime" checkbox + date picker (date picker hidden when lifetime is checked).
+- Result display: updated list (green, shows formatted date or "lifetime") + skipped list (muted, with reason).
+
+**Tests (21 new):**
+- `web/__tests__/admin-bulk-set-expiry.test.ts`: 401 no-token, 401 wrong-token, 200 `?token=` auth; 400 missing/empty keys, >100 keys, missing expiresAt, invalid date string, numeric expiresAt; set future date on null license; overwrite existing expiry; convert to lifetime (null); set past date for immediate expiry; not_found skip; already_set skip; null→null no-op skip; multiple keys mixed outcomes; uppercase normalization; date-only normalized to ISO; audit log written for changed keys; no audit log for skipped keys.
+- 548 → 569 tests (24 test files, all pass). `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`. This prevents latent race-condition test failures in future Xcode builds.
+- Consider pagination (`?offset=N`) for the `LicensesByEmailPanel` (currently returns all licenses for an email with no cap).
+- Consider rate-limiting on the export endpoints (`audit-log-export`, `export-licenses`): a 10/min per-IP limit on GET requests would be appropriate for large exports.
+- Consider debounce/live-search for `SearchLicensesPanel` instead of form submit (auto-fire with 300ms debounce after typing stops).
+
+---
+
 ## Run 263 — 2026-07-04T06:07:00Z — POST /api/admin/bulk-extend + BulkExtendPanel + 18 tests
 
 ### Shipped
