@@ -13,24 +13,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { findLicense, setPlan, insertAuditLog } from '@/lib/store';
 import type { License } from '@/lib/store';
+import { adminGuard } from '@/lib/admin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const VALID_PLANS: License['plan'][] = ['monthly', 'yearly', 'lifetime'];
 
-function authorized(req: NextRequest): boolean {
-  const token = process.env.ADMIN_TOKEN;
-  if (!token) return false;
-  const hdr = req.headers.get('authorization') ?? '';
-  if (hdr.startsWith('Bearer ')) return hdr.slice(7) === token;
-  return req.nextUrl.searchParams.get('token') === token;
-}
-
 export async function POST(req: NextRequest) {
-  if (!authorized(req)) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  }
+  const denied = adminGuard(req, 'change-plan');
+  if (denied) return denied;
   const body = await req.json().catch(() => null);
   const rawKey = body?.key;
   if (!rawKey) return NextResponse.json({ error: 'missing key in body' }, { status: 400 });

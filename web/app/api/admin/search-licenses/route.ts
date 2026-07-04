@@ -8,20 +8,13 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { searchLicenses, countSearchLicenses, searchLicensesAll } from '@/lib/store';
+import { adminGuard } from '@/lib/admin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const VALID_STATUSES = new Set(['active', 'canceled', 'expired', 'past_due']);
 const VALID_PLANS = new Set(['monthly', 'yearly', 'lifetime']);
-
-function authorized(req: NextRequest): boolean {
-  const token = process.env.ADMIN_TOKEN;
-  if (!token) return false;
-  const hdr = req.headers.get('authorization') ?? '';
-  if (hdr.startsWith('Bearer ')) return hdr.slice(7) === token;
-  return req.nextUrl.searchParams.get('token') === token;
-}
 
 function csvCell(value: string | number | null | undefined): string {
   const s = value == null ? '' : String(value);
@@ -34,9 +27,8 @@ function csvCell(value: string | number | null | undefined): string {
 const CSV_HEADER = 'key,email,plan,status,machineCount,issuedAt,expiresAt,note';
 
 export async function GET(req: NextRequest) {
-  if (!authorized(req)) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  }
+  const denied = adminGuard(req, 'search-licenses');
+  if (denied) return denied;
   const q = req.nextUrl.searchParams.get('q');
   if (!q || !q.trim()) {
     return NextResponse.json({ error: 'missing ?q= search query' }, { status: 400 });

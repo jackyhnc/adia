@@ -11,6 +11,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { findLicensesByEmail, countLicensesByEmail } from '@/lib/store';
+import { adminGuard } from '@/lib/admin';
 
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
@@ -20,14 +21,6 @@ const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-function authorized(req: NextRequest): boolean {
-  const token = process.env.ADMIN_TOKEN;
-  if (!token) return false;
-  const hdr = req.headers.get('authorization') ?? '';
-  if (hdr.startsWith('Bearer ')) return hdr.slice(7) === token;
-  return req.nextUrl.searchParams.get('token') === token;
-}
 
 function csvCell(value: string | number | null | undefined): string {
   const s = value == null ? '' : String(value);
@@ -41,9 +34,8 @@ function csvCell(value: string | number | null | undefined): string {
 const CSV_HEADER = 'key,plan,status,machineCount,issuedAt,expiresAt,note,lastAction,lastActionAt';
 
 export async function GET(req: NextRequest) {
-  if (!authorized(req)) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  }
+  const denied = adminGuard(req, 'licenses-by-email');
+  if (denied) return denied;
   const email = req.nextUrl.searchParams.get('email');
   if (!email) return NextResponse.json({ error: 'missing ?email=' }, { status: 400 });
 

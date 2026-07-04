@@ -15,6 +15,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { findLicense, setPlan, insertAuditLog } from '@/lib/store';
 import type { License } from '@/lib/store';
+import { adminGuard } from '@/lib/admin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -22,21 +23,12 @@ export const dynamic = 'force-dynamic';
 const VALID_PLANS: License['plan'][] = ['monthly', 'yearly', 'lifetime'];
 const MAX_KEYS = 100;
 
-function authorized(req: NextRequest): boolean {
-  const token = process.env.ADMIN_TOKEN;
-  if (!token) return false;
-  const hdr = req.headers.get('authorization') ?? '';
-  if (hdr.startsWith('Bearer ')) return hdr.slice(7) === token;
-  return req.nextUrl.searchParams.get('token') === token;
-}
-
 type ChangeResult = { key: string; previousPlan: License['plan'] };
 type SkipResult = { key: string; reason: 'not_found' | 'already_on_plan' };
 
 export async function POST(req: NextRequest) {
-  if (!authorized(req)) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  }
+  const denied = adminGuard(req, 'bulk-change-plan');
+  if (denied) return denied;
 
   const body = await req.json().catch(() => null);
 

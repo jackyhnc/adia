@@ -9,17 +9,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { listAllAuditLog } from '@/lib/store';
 import type { AuditEntry } from '@/lib/store';
+import { adminGuard } from '@/lib/admin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-function authorized(req: NextRequest): boolean {
-  const token = process.env.ADMIN_TOKEN;
-  if (!token) return false;
-  const hdr = req.headers.get('authorization') ?? '';
-  if (hdr.startsWith('Bearer ')) return hdr.slice(7) === token;
-  return req.nextUrl.searchParams.get('token') === token;
-}
 
 function escapeCSV(v: string | number | null | undefined): string {
   if (v == null) return '';
@@ -41,9 +34,8 @@ function toCSV(entries: AuditEntry[], date: string): string {
 }
 
 export async function GET(req: NextRequest) {
-  if (!authorized(req)) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  }
+  const denied = adminGuard(req, 'audit-log-export');
+  if (denied) return denied;
 
   const sp = req.nextUrl.searchParams;
   const format = sp.get('format') ?? 'csv';

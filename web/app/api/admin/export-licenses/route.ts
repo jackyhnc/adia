@@ -9,20 +9,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { listAllLicenses } from '@/lib/store';
 import type { License } from '@/lib/store';
+import { adminGuard } from '@/lib/admin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const VALID_STATUSES = new Set(['active', 'canceled', 'expired', 'past_due']);
 const VALID_PLANS = new Set(['monthly', 'yearly', 'lifetime']);
-
-function authorized(req: NextRequest): boolean {
-  const token = process.env.ADMIN_TOKEN;
-  if (!token) return false;
-  const hdr = req.headers.get('authorization') ?? '';
-  if (hdr.startsWith('Bearer ')) return hdr.slice(7) === token;
-  return req.nextUrl.searchParams.get('token') === token;
-}
 
 function toCSV(licenses: License[]): string {
   const header = 'key,email,plan,status,issuedAt,expiresAt,machineCount,note';
@@ -43,9 +36,8 @@ function toCSV(licenses: License[]): string {
 }
 
 export async function GET(req: NextRequest) {
-  if (!authorized(req)) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  }
+  const denied = adminGuard(req, 'export-licenses');
+  if (denied) return denied;
 
   const sp = req.nextUrl.searchParams;
   const format = sp.get('format') ?? 'csv';

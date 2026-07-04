@@ -6,22 +6,14 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { listAuditLog } from '@/lib/store';
+import { adminGuard } from '@/lib/admin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-function authorized(req: NextRequest): boolean {
-  const token = process.env.ADMIN_TOKEN;
-  if (!token) return false;
-  const hdr = req.headers.get('authorization') ?? '';
-  if (hdr.startsWith('Bearer ')) return hdr.slice(7) === token;
-  return req.nextUrl.searchParams.get('token') === token;
-}
-
 export async function GET(req: NextRequest) {
-  if (!authorized(req)) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  }
+  const denied = adminGuard(req, 'audit-log');
+  if (denied) return denied;
   const rawKey = req.nextUrl.searchParams.get('key');
   const rawLimit = req.nextUrl.searchParams.get('limit');
   const format = req.nextUrl.searchParams.get('format');

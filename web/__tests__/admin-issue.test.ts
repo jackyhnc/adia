@@ -4,10 +4,12 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { NextRequest } from 'next/server';
 import { resetDbForTesting, findLicense } from '@/lib/db';
+import { _resetForTesting as resetRateLimit } from '@/lib/ratelimit';
 
 let dbPath: string;
 
 beforeEach(() => {
+  resetRateLimit();
   dbPath = path.join(os.tmpdir(), `adia-admin-issue-${Date.now()}-${Math.random().toString(36).slice(2)}.db`);
   resetDbForTesting(dbPath);
   process.env.ADMIN_TOKEN = 'test-admin-token';

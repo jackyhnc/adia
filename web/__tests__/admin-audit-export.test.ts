@@ -6,6 +6,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { NextRequest } from 'next/server';
 import { resetDbForTesting, insertLicense, insertAuditLog } from '@/lib/db';
+import { _resetForTesting as resetRateLimit } from '@/lib/ratelimit';
 
 vi.mock('@/lib/email', () => ({
   sendLicenseEmail: vi.fn().mockResolvedValue(undefined),
@@ -15,6 +16,7 @@ vi.mock('@/lib/email', () => ({
 let dbPath: string;
 
 beforeEach(() => {
+  resetRateLimit();
   dbPath = path.join(
     os.tmpdir(),
     `adia-audit-export-${Date.now()}-${Math.random().toString(36).slice(2)}.db`,

@@ -14,19 +14,12 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { findLicense, setExpiry, insertAuditLog } from '@/lib/store';
+import { adminGuard } from '@/lib/admin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const MAX_KEYS = 100;
-
-function authorized(req: NextRequest): boolean {
-  const token = process.env.ADMIN_TOKEN;
-  if (!token) return false;
-  const hdr = req.headers.get('authorization') ?? '';
-  if (hdr.startsWith('Bearer ')) return hdr.slice(7) === token;
-  return req.nextUrl.searchParams.get('token') === token;
-}
 
 function isValidIsoDate(s: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}(T[\d:.Z+-]+)?$/.test(s)) return false;
@@ -42,9 +35,8 @@ type ChangedResult = {
 type SkipResult = { key: string; reason: 'not_found' | 'already_set' };
 
 export async function POST(req: NextRequest) {
-  if (!authorized(req)) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  }
+  const denied = adminGuard(req, 'bulk-set-expiry');
+  if (denied) return denied;
 
   const body = await req.json().catch(() => null);
 

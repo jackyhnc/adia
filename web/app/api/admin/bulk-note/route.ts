@@ -14,6 +14,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { findLicense, getNote, setNote, insertAuditLog } from '@/lib/store';
+import { adminGuard } from '@/lib/admin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -22,21 +23,12 @@ const MAX_KEYS = 100;
 const MODES = ['set', 'append', 'clear'] as const;
 type Mode = (typeof MODES)[number];
 
-function authorized(req: NextRequest): boolean {
-  const token = process.env.ADMIN_TOKEN;
-  if (!token) return false;
-  const hdr = req.headers.get('authorization') ?? '';
-  if (hdr.startsWith('Bearer ')) return hdr.slice(7) === token;
-  return req.nextUrl.searchParams.get('token') === token;
-}
-
 type ChangedResult = { key: string; previousNote: string | null; newNote: string | null };
 type SkipResult = { key: string; reason: 'not_found' | 'already_set' };
 
 export async function POST(req: NextRequest) {
-  if (!authorized(req)) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  }
+  const denied = adminGuard(req, 'bulk-note');
+  if (denied) return denied;
 
   const body = await req.json().catch(() => null);
 

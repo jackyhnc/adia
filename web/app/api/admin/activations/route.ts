@@ -5,22 +5,14 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { findLicense, listActivations, removeActivation } from '@/lib/store';
+import { adminGuard } from '@/lib/admin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-function authorized(req: NextRequest): boolean {
-  const token = process.env.ADMIN_TOKEN;
-  if (!token) return false;
-  const hdr = req.headers.get('authorization') ?? '';
-  if (hdr.startsWith('Bearer ')) return hdr.slice(7) === token;
-  return req.nextUrl.searchParams.get('token') === token;
-}
-
 export async function GET(req: NextRequest) {
-  if (!authorized(req)) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  }
+  const denied = adminGuard(req, 'activations');
+  if (denied) return denied;
   const rawKey = req.nextUrl.searchParams.get('key');
   if (!rawKey) return NextResponse.json({ error: 'missing ?key=' }, { status: 400 });
   const key = rawKey.trim().toUpperCase();
@@ -38,9 +30,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!authorized(req)) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-  }
+  const denied = adminGuard(req, 'activations');
+  if (denied) return denied;
   const rawKey = req.nextUrl.searchParams.get('key');
   const machine = req.nextUrl.searchParams.get('machine');
   if (!rawKey || !machine) {

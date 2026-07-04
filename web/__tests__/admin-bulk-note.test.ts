@@ -7,10 +7,12 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { NextRequest } from 'next/server';
 import { resetDbForTesting, insertLicense, getNote } from '@/lib/db';
+import { _resetForTesting as resetRateLimit } from '@/lib/ratelimit';
 
 let dbPath: string;
 
 beforeEach(() => {
+  resetRateLimit();
   dbPath = path.join(
     os.tmpdir(),
     `adia-bulk-note-${Date.now()}-${Math.random().toString(36).slice(2)}.db`,
