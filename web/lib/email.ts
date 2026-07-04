@@ -3,6 +3,26 @@ import { Resend } from 'resend';
 const apiKey = process.env.RESEND_API_KEY;
 const from = process.env.RESEND_FROM ?? 'Adia <hello@adia.app>';
 
+export async function sendCustomEmail(to: string, subject: string, message: string) {
+  if (!apiKey) {
+    console.log('[email] RESEND_API_KEY not set; would have sent custom email:', { to, subject });
+    return;
+  }
+  const resend = new Resend(apiKey);
+  const escapedHtml = message
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n/g, '<br>');
+  await resend.emails.send({
+    from,
+    to,
+    subject,
+    html: `<div style="font-family:sans-serif;max-width:600px">${escapedHtml}<br><br>— The Adia team</div>`,
+    text: `${message}\n\n— The Adia team`,
+  });
+}
+
 export async function sendPaymentFailedEmail(to: string, key: string, plan: string) {
   if (!apiKey) {
     console.log('[email] RESEND_API_KEY not set; would have sent payment failed:', { to, key, plan });

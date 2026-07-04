@@ -156,6 +156,9 @@ export default function Admin() {
       <CollapsibleSection title="Resend payment-failed email">
         <ResendPaymentFailedPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Send custom email to license holder">
+        <NotifyPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Revoke license">
         <RevokePanel token={token} />
       </CollapsibleSection>
@@ -2765,6 +2768,95 @@ function ResendPaymentFailedPanel({ token }: { token: string }) {
             Sent to <strong>{result.to}</strong> for key{' '}
             <span className="font-mono">{result.key}</span> ({result.plan})
           </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Custom notify ────────────────────────────────────────────────────────────
+
+function NotifyPanel({ token }: { token: string }) {
+  const [key, setKey] = useState('');
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+  const [result, setResult] = useState<{ ok: true; key: string; to: string; sentAt: string } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function send(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ key: key.trim().toUpperCase(), subject: subject.trim(), message: message.trim() }),
+      });
+      const body = await res.json();
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(body);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Send a custom email to any license holder. Use this for billing follow-ups, policy notices,
+        or personalised outreach. Rate-limited to 10 emails per minute.
+      </p>
+      <form onSubmit={send} className="card space-y-3">
+        <Field label="License key">
+          <input
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+            placeholder="ADIA-XXXX-XXXX-XXXX"
+            className="input font-mono"
+            required
+          />
+        </Field>
+        <Field label="Subject">
+          <input
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            placeholder="e.g. A quick note about your Adia account"
+            className="input"
+            maxLength={200}
+            required
+          />
+        </Field>
+        <Field label="Message">
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Your message here. Plain text — line breaks are preserved."
+            className="input min-h-[100px]"
+            maxLength={2000}
+            required
+          />
+          <p className="text-xs text-ink/40 mt-1">{message.length}/2000 chars</p>
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Sending…' : 'Send email'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+      {result && (
+        <div className="card mt-3">
+          <p className="text-sm text-green-600 font-medium">Email sent.</p>
+          <p className="text-xs text-ink/60 mt-1">
+            To: <span className="font-mono">{result.to}</span> · Key: <span className="font-mono">{result.key}</span>
+          </p>
+          <p className="text-xs text-ink/40 mt-0.5">Sent at {result.sentAt.slice(0, 16).replace('T', ' ')} UTC</p>
         </div>
       )}
     </div>
