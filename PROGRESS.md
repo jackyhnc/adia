@@ -1,5 +1,28 @@
 # Adia — Build Progress
 
+## Run 273 — 2026-07-04T20:07:00Z — Admin bulk-revoke tests (20 tests, 673 → 693)
+
+### Shipped
+
+**`web/__tests__/admin-bulk-revoke.test.ts` — 20 new tests for the existing bulk-revoke API:**
+- Auth (3): 401 no-token, 401 wrong-token, 200 `?token=` query param.
+- Validation (3): 400 missing `keys`, 400 empty `keys`, 400 exceeds 100-key limit.
+- Core behavior (5): single active key revoked → `canceled`; multiple keys in one request; key normalized to uppercase; `previousStatus: 'active'` preserved in response; `past_due` and `expired` licenses also revoke to `canceled` with correct `previousStatus`.
+- Skip behavior (4): `not_found` → reason in skipped; `already_revoked` (status=`canceled`) → reason in skipped; mixed changed + skipped in one request; skipped key not mutated.
+- Audit log (4): one `revoke` entry per changed key; detail contains `{ previousStatus, newStatus: 'canceled', bulk: true }`; no audit entry for `not_found`; no audit entry for `already_revoked`.
+
+**Test count: 673 → 693 (29 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider pagination for `LicensesByEmailPanel` (currently returns all licenses for an email with no cap — could be expensive for power users). Add `?offset=` + `?limit=` params to `GET /api/admin/licenses-by-email` and a load-more button in `LicensesByEmailPanel`.
+- Consider `@MainActor` annotation for remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment).
+- Consider `POST /api/admin/bulk-set-status` — set the same status on multiple license keys in one request (useful for disabling a batch of fraudulent keys or re-activating a batch in bulk without revoking them to `canceled`).
+
+---
+
 ## Run 272 — 2026-07-04T18:10:00Z — expiringIn30Days in stats + admin token URL persistence
 
 ### Shipped
