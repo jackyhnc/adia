@@ -1,5 +1,41 @@
 # Adia — Build Progress
 
+## Run 272 — 2026-07-04T18:10:00Z — expiringIn30Days in stats + admin token URL persistence
+
+### Shipped
+
+**`web/lib/db.ts` — `LicenseStats.expiringIn30Days` + `getStats()` update:**
+- Added `expiringIn30Days: number` to `LicenseStats` type.
+- `getStats()` queries `COUNT(*) WHERE expires_at IS NOT NULL AND expires_at >= now AND expires_at <= now+30d AND status = 'active'`.
+
+**`web/lib/db-pg.ts` — `getStatsPg()` update:**
+- Added parallel query: `COUNT(*)::int WHERE expires_at IS NOT NULL AND expires_at >= NOW() AND expires_at <= NOW() + INTERVAL '30 days' AND status = 'active'`.
+
+**`web/app/admin/page.tsx` — StatsPanel + token URL persistence:**
+- Added `expiringIn30Days: number` to the `Stats` client-side type.
+- StatsPanel shows an "Expiring (30d)" tile in the second stat row; yellow accent ≥1, red accent ≥10.
+- Token URL persistence: new `useEffect` on `token` calls `window.history.replaceState` to keep `?token=` in the URL after the admin pastes their token, so a page refresh doesn't lose the session.
+
+**Tests (5 new — `web/__tests__/admin-routes.test.ts`, 668 → 673):**
+- `expiringIn30Days is 0 when no licenses are expiring`
+- `expiringIn30Days counts active licenses within 30 days`
+- `expiringIn30Days excludes lifetime licenses`
+- `expiringIn30Days excludes already-expired licenses`
+- `expiringIn30Days excludes non-active licenses`
+
+**Web test count: 668 → 673 (28 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider rate-limiting on export endpoints (`audit-log-export`, `export-licenses`): 10 req/min per-IP would be appropriate.
+- Consider pagination for `LicensesByEmailPanel` (currently returns all licenses for an email with no cap).
+- Consider adding `@MainActor` annotations to remaining Swift test suites (`OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`) when a macOS build environment is available.
+- Consider a "copy token to clipboard" button in the admin token input so admins can copy the token they pasted back out easily.
+
+---
+
 ## Run 271 — 2026-07-04T17:15:00Z — Expiring-soon endpoint + ExpiringSoonPanel + 26 tests
 
 ### Shipped
