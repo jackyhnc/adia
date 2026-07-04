@@ -1,5 +1,69 @@
 # Adia — Build Progress
 
+## Run 260 — 2026-07-04T00:08:00Z — GET /api/admin/export-licenses + ExportLicensesPanel + 16 tests
+
+### Shipped
+
+**`web/lib/db.ts` — `listAllLicenses(since?, status?, plan?)`:**
+- SQLite implementation with LEFT JOIN on activations for machineCount.
+- Supports optional `since` (ISO date), `status`, and `plan` filters.
+- Returns all rows ordered by `issuedAt DESC` with no pagination cap.
+
+**`web/lib/db-pg.ts` — `listAllLicensesPg(...)`:**
+- Postgres equivalent using the parameterized `sql` tagged template.
+- Same field mapping as existing Pg helpers.
+
+**`web/lib/store.ts` — `listAllLicenses(...)`:**
+- Async façade that delegates to Pg or SQLite based on DATABASE_URL.
+
+**`web/app/api/admin/export-licenses/route.ts` — new admin endpoint:**
+- `GET /api/admin/export-licenses` — export all licenses.
+- Auth: ADMIN_TOKEN bearer header or `?token=` query param.
+- `?format=csv` (default) or `?format=json`
+- Optional filters: `?status=`, `?plan=`, `?since=` (any parseable date string).
+- CSV: RFC-4180 compliant comma/quote escaping; `Content-Disposition: attachment` with dated filename.
+- JSON: `{ licenses, count }` envelope.
+- 400 on invalid format/status/plan/since; 401 on bad/missing token.
+
+**`web/app/admin/page.tsx` — ExportLicensesPanel:**
+- Added after `SetExpiryPanel` (collapsible section "Export licenses").
+- 2×2 grid: format select, status filter, plan filter, since-date picker.
+- CSV mode: triggers browser download via `URL.createObjectURL`.
+- JSON mode: previews first 5 rows inline with count summary.
+
+**`web/__tests__/admin-routes.test.ts` — 16 new tests (478 → 494):**
+- 401 no-token, 401 wrong-token.
+- 400 invalid format ("xml"), 400 invalid status ("banned"), 400 invalid plan ("enterprise"), 400 invalid since ("not-a-date").
+- 200 CSV on empty table — header line present, correct Content-Type.
+- 200 JSON on empty table — `licenses: [], count: 0`.
+- 200 CSV with 2 licenses — correct row count, keys present.
+- 200 JSON with machineCount reflected from activations table.
+- Filter by status — only matching rows returned.
+- Filter by plan — only matching rows returned.
+- Filter by since — old license excluded, new license included.
+- CSV escaping — commas and double-quotes in note field correctly escaped.
+- Content-Disposition header includes `.csv` filename.
+- `?token=` query-param auth.
+
+### Tests
+494 passed (up from 478). 20 test files green. `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated
+  singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`.
+  This prevents latent race-condition test failures in future Xcode builds.
+- Consider adding `POST /api/admin/bulk-note` — set or append a note to multiple license keys
+  in one request, mirroring the shape of bulk-set-status but targeting the `note` field.
+- Consider adding a search/filter bar at the top of the admin page to jump to a section by name —
+  with 23 collapsible panels, keyboard-navigable search would be faster than scrolling the list.
+- Consider adding a `GET /api/admin/audit-log-export` endpoint — export all audit log entries
+  as CSV/JSON with optional `since`, `action`, and `licenseKey` filters, mirroring export-licenses.
+
+---
+
 ## Run 259 — 2026-07-03T23:15:00Z — Admin accordion UI + POST /api/admin/bulk-set-status + itch.io blocklist
 
 ### Shipped
