@@ -1,5 +1,43 @@
 # Adia — Build Progress
 
+## Run 262 — 2026-07-04T05:09:00Z — POST /api/admin/bulk-note + BulkNotePanel + jump-to-section filter + 19 tests
+
+### Shipped
+
+**`POST /api/admin/bulk-note` — new admin endpoint:**
+- `web/app/api/admin/bulk-note/route.ts`: Batch set/append/clear a note on up to 100 license keys.
+- Body: `{ keys: string[], note?: string | null, mode?: 'set' | 'append' | 'clear' }`
+- Modes: `set` (default, overwrites; empty clears), `append` (appends with ` | ` separator, creates if no prior note), `clear` (always sets null, ignores note field).
+- Unknown keys → `skipped` with `reason: 'not_found'`; unchanged keys → `skipped` with `reason: 'already_set'`.
+- One `bulk_note` audit log entry per changed key (includes mode, previousNote, newNote, bulk:true).
+- Auth: ADMIN_TOKEN bearer header or `?token=` query param. Max 100 keys per request.
+
+**`web/app/admin/page.tsx` — BulkNotePanel:**
+- New "Bulk note" collapsible section (after "Bulk set status").
+- Keys textarea (one per line or comma-separated), mode select, note input (hidden for `clear` mode).
+- Result display: changed list (green, with new note value) + skipped list (muted, with reason).
+
+**`web/app/admin/page.tsx` — jump-to-section filter bar:**
+- Sticky search bar at the top of the panel list with a magnifying-glass icon and clear button.
+- `SectionFilterContext` (React context) propagated to all `CollapsibleSection`s; each returns `null` when the filter text doesn't match the section title (case-insensitive).
+- Keyboard shortcut: `/` focuses the filter when no input is active; `Escape` clears and blurs it.
+- No changes needed to individual `CollapsibleSection` call sites — context handles it transparently.
+
+**Tests (19 new):**
+- `web/__tests__/admin-bulk-note.test.ts`: 401/wrong-token/`?token=` auth; 400 missing/empty keys, too-many keys, invalid mode; set: sets note + audit log, not_found skip, already_set skip, clears on empty string, clears on omitted note, multiple keys mixed outcomes, uppercase normalization; append: appends with separator, creates when no existing, skips on empty append; clear: clears note, skips when already null.
+- 511 → 530 tests (22 test files, all pass). `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`. This prevents latent race-condition test failures in future Xcode builds.
+- Consider rate-limiting on the export endpoints (`audit-log-export`, `export-licenses`): a 10/min per-IP limit on GET requests would be appropriate for large exports.
+- Consider `POST /api/admin/bulk-extend` — extend expiry on multiple license keys in one request (mirrors bulk-set-status shape, body: `{ keys, days }`).
+- Consider pagination (`?offset=N`) for the `LicensesByEmailPanel` (currently returns all licenses for an email with no cap).
+
+---
+
 ## Run 261 — 2026-07-04T01:09:00Z — GET /api/admin/audit-log-export + AuditLogExportPanel + 17 tests
 
 ### Shipped

@@ -1,12 +1,32 @@
 'use client';
 
-import { useState, useEffect, useRef, Fragment } from 'react';
+import { useState, useEffect, useRef, Fragment, createContext, useContext } from 'react';
+
+const SectionFilterContext = createContext('');
 
 export default function Admin() {
   const [token, setToken] = useState('');
   const [autoLookupKey, setAutoLookupKey] = useState('');
+  const [sectionFilter, setSectionFilter] = useState('');
+  const filterInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        filterInputRef.current?.focus();
+      }
+      if (e.key === 'Escape') {
+        setSectionFilter('');
+        filterInputRef.current?.blur();
+      }
+    }
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   return (
+    <SectionFilterContext.Provider value={sectionFilter}>
     <section className="pt-12 pb-20 max-w-xl space-y-4">
       <div>
         <h1 className="text-3xl font-semibold tracking-tight">Admin dashboard</h1>
@@ -24,6 +44,32 @@ export default function Admin() {
           placeholder="paste token here — shared across all forms below"
           className="input w-full"
         />
+      </div>
+
+      <div className="sticky top-3 z-10">
+        <div className="relative">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink/40 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            ref={filterInputRef}
+            type="text"
+            value={sectionFilter}
+            onChange={(e) => setSectionFilter(e.target.value)}
+            placeholder="Jump to section… (press / to focus)"
+            className="input w-full pl-9 pr-8 bg-canvas shadow-sm"
+          />
+          {sectionFilter && (
+            <button
+              type="button"
+              onClick={() => setSectionFilter('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ink/40 hover:text-ink/70"
+              aria-label="Clear filter"
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
 
       <CollapsibleSection title="License overview" defaultOpen>
@@ -89,6 +135,9 @@ export default function Admin() {
       <CollapsibleSection title="Bulk set status">
         <BulkSetStatusPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Bulk note">
+        <BulkNotePanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Set expiry date">
         <SetExpiryPanel token={token} />
       </CollapsibleSection>
@@ -99,6 +148,7 @@ export default function Admin() {
         <AuditLogExportPanel token={token} />
       </CollapsibleSection>
     </section>
+    </SectionFilterContext.Provider>
   );
 }
 
@@ -2957,6 +3007,123 @@ function AuditLogExportPanel({ token }: { token: string }) {
   );
 }
 
+// ─── Bulk note ───────────────────────────────────────────────────────────────
+
+type BulkNoteResult = {
+  ok: boolean;
+  changed: { key: string; previousNote: string | null; newNote: string | null }[];
+  skipped: { key: string; reason: string }[];
+};
+
+function BulkNotePanel({ token }: { token: string }) {
+  const [rawKeys, setRawKeys] = useState('');
+  const [note, setNote] = useState('');
+  const [mode, setMode] = useState<'set' | 'append' | 'clear'>('set');
+  const [result, setResult] = useState<BulkNoteResult | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    setResult(null);
+    const keys = rawKeys
+      .split(/[\n,]+/)
+      .map((k) => k.trim())
+      .filter(Boolean);
+    if (keys.length === 0) {
+      setError('Enter at least one license key.');
+      return;
+    }
+    setLoading(true);
+    try {
+      const body: Record<string, unknown> = { keys, mode };
+      if (mode !== 'clear') body.note = note;
+      const res = await fetch('/api/admin/bulk-note', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${data.error ?? 'unknown error'}`);
+        return;
+      }
+      setResult(data);
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Set, append to, or clear notes on multiple license keys at once. One key per line (or comma-separated).
+      </p>
+      <form onSubmit={submit} className="card space-y-3">
+        <Field label="License keys (one per line or comma-separated)">
+          <textarea
+            value={rawKeys}
+            onChange={(e) => setRawKeys(e.target.value)}
+            rows={4}
+            placeholder={'ADIA-XXXX-YYYY-ZZZZ\nADIA-AAAA-BBBB-CCCC'}
+            className="input w-full font-mono text-xs resize-y"
+          />
+        </Field>
+        <Field label="Mode">
+          <select value={mode} onChange={(e) => setMode(e.target.value as typeof mode)} className="input w-full">
+            <option value="set">set — overwrite note (empty clears)</option>
+            <option value="append">append — add to existing note</option>
+            <option value="clear">clear — remove note</option>
+          </select>
+        </Field>
+        {mode !== 'clear' && (
+          <Field label="Note">
+            <input
+              type="text"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder={mode === 'append' ? 'Text to append…' : 'Note text (leave empty to clear)'}
+              className="input w-full"
+            />
+          </Field>
+        )}
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Saving…' : 'Apply'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+      {result && (
+        <div className="card mt-3 space-y-2 border border-green-500/30 bg-green-50/5">
+          <p className="text-sm font-semibold text-green-600">
+            {result.changed.length} changed, {result.skipped.length} skipped
+          </p>
+          {result.changed.length > 0 && (
+            <ul className="text-xs space-y-1 font-mono">
+              {result.changed.map((c) => (
+                <li key={c.key} className="text-green-700">
+                  ✓ {c.key} → {c.newNote === null ? <em>cleared</em> : <span>"{c.newNote}"</span>}
+                </li>
+              ))}
+            </ul>
+          )}
+          {result.skipped.length > 0 && (
+            <ul className="text-xs space-y-1 font-mono">
+              {result.skipped.map((s) => (
+                <li key={s.key} className="text-ink/50">
+                  — {s.key} ({s.reason})
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Shared ────────────────────────────────────────────────────────────────────
 
 function CollapsibleSection({
@@ -2968,7 +3135,9 @@ function CollapsibleSection({
   defaultOpen?: boolean;
   children: React.ReactNode;
 }) {
+  const filter = useContext(SectionFilterContext);
   const [open, setOpen] = useState(defaultOpen);
+  if (filter && !title.toLowerCase().includes(filter.toLowerCase())) return null;
   return (
     <div className="border border-ink/10 rounded-xl overflow-hidden">
       <button
