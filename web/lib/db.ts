@@ -506,6 +506,40 @@ export function getStats(): LicenseStats {
   return { total, byStatus, byPlan, newLast7Days, newLast30Days, activatedMachines };
 }
 
+// Returns active licenses whose expires_at falls within the next `days` days,
+// ordered by expires_at ascending (soonest first). Excludes lifetime (null expiresAt).
+export function listExpiringLicenses(days: number, plan?: string): License[] {
+  const now = new Date().toISOString();
+  const cutoff = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
+  const params: unknown[] = [now, cutoff];
+  const planClause = plan ? ' AND l.plan = ?' : '';
+  if (plan) params.push(plan);
+  const rows = (db()
+    .prepare(`
+      SELECT l.*, COUNT(a.machine_hash) AS machine_count_live
+      FROM licenses l
+      LEFT JOIN activations a ON a.license_key = l.key
+      WHERE l.expires_at IS NOT NULL
+        AND l.expires_at >= ?
+        AND l.expires_at <= ?
+        AND l.status = 'active'
+        ${planClause}
+      GROUP BY l.key
+      ORDER BY l.expires_at ASC
+    `)
+    .all as (...a: unknown[]) => any[])(...params);
+  return rows.map(r => ({
+    key: r.key,
+    email: r.email,
+    plan: r.plan,
+    status: r.status,
+    issuedAt: r.issued_at,
+    expiresAt: r.expires_at ?? null,
+    note: r.note ?? null,
+    machineCount: r.machine_count_live as number,
+  }));
+}
+
 export function listAllLicenses(since?: string, status?: string, plan?: string): License[] {
   const conditions: string[] = [];
   const params: unknown[] = [];

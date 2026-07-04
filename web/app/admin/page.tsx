@@ -98,6 +98,9 @@ export default function Admin() {
       <CollapsibleSection title="License overview" defaultOpen>
         <StatsPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Expiring soon">
+        <ExpiringSoonPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Issue comp license">
         <IssuePanel token={token} />
       </CollapsibleSection>
@@ -3718,6 +3721,164 @@ function BulkTransferPanel({ token }: { token: string }) {
                 </li>
               ))}
             </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Expiring soon ───────────────────────────────────────────────────────────
+
+type ExpiringSoonRow = {
+  key: string;
+  email: string;
+  plan: string;
+  status: string;
+  expiresAt: string | null;
+  machineCount: number;
+  note?: string | null;
+};
+
+function ExpiringSoonPanel({ token }: { token: string }) {
+  const [days, setDays] = useState('30');
+  const [planFilter, setPlanFilter] = useState('');
+  const [result, setResult] = useState<{ licenses: ExpiringSoonRow[]; count: number; days: number } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function load(e: React.FormEvent) {
+    e.preventDefault();
+    if (!token) { setError('Paste admin token above first.'); return; }
+    const daysNum = parseInt(days, 10);
+    if (!Number.isFinite(daysNum) || daysNum < 1 || daysNum > 365) {
+      setError('Days must be between 1 and 365.');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    setResult(null);
+    try {
+      const params = new URLSearchParams({ days: String(daysNum) });
+      if (planFilter) params.set('plan', planFilter);
+      const res = await fetch(`/api/admin/expiring-soon?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function exportCsv() {
+    if (!result) return;
+    const params = new URLSearchParams({ days: String(result.days), format: 'csv', token });
+    if (planFilter) params.set('plan', planFilter);
+    const a = document.createElement('a');
+    a.href = `/api/admin/expiring-soon?${params}`;
+    a.download = `adia-expiring-${result.days}d-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+  }
+
+  function daysUntil(expiresAt: string | null): string {
+    if (!expiresAt) return '—';
+    const diff = Math.ceil((new Date(expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+    if (diff <= 0) return 'today';
+    return `${diff}d`;
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        List active licenses expiring within a look-ahead window. Lifetime licenses (no expiry) are never returned.
+        Results are ordered soonest-expiring first.
+      </p>
+      <form onSubmit={load} className="card space-y-3">
+        <div className="flex gap-3">
+          <Field label="Look-ahead (days)">
+            <input
+              type="number"
+              value={days}
+              onChange={(e) => setDays(e.target.value)}
+              min={1}
+              max={365}
+              className="input w-28"
+              required
+            />
+          </Field>
+          <Field label="Plan (optional)">
+            <select
+              value={planFilter}
+              onChange={(e) => setPlanFilter(e.target.value)}
+              className="input"
+            >
+              <option value="">All</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </Field>
+        </div>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Loading…' : 'Find expiring licenses'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {result && (
+        <div className="mt-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold">
+              {result.count === 0
+                ? `No active licenses expiring in the next ${result.days} days`
+                : `${result.count} license${result.count !== 1 ? 's' : ''} expiring in the next ${result.days} days`}
+            </p>
+            {result.count > 0 && (
+              <button onClick={exportCsv} className="btn-secondary text-xs px-3 py-1">
+                Export CSV
+              </button>
+            )}
+          </div>
+          {result.licenses.length > 0 && (
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs font-mono border-collapse">
+                <thead>
+                  <tr className="border-b border-ink/10 text-ink/50 uppercase text-left">
+                    <th className="pr-3 pb-2 font-normal">Key</th>
+                    <th className="pr-3 pb-2 font-normal">Email</th>
+                    <th className="pr-3 pb-2 font-normal">Plan</th>
+                    <th className="pr-3 pb-2 font-normal">Expires at</th>
+                    <th className="pb-2 font-normal">Time left</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {result.licenses.map((l) => {
+                    const daysLeft = l.expiresAt
+                      ? Math.ceil((new Date(l.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+                      : null;
+                    const urgent = daysLeft !== null && daysLeft <= 7;
+                    return (
+                      <tr key={l.key} className="border-b border-ink/5 hover:bg-ink/5">
+                        <td className="pr-3 py-1.5 text-blue-600">{l.key}</td>
+                        <td className="pr-3 py-1.5 text-ink/80">{l.email}</td>
+                        <td className="pr-3 py-1.5 text-ink/60">{l.plan}</td>
+                        <td className="pr-3 py-1.5 text-ink/60">{l.expiresAt?.slice(0, 10) ?? '—'}</td>
+                        <td className={`py-1.5 font-semibold ${urgent ? 'text-red-500' : 'text-yellow-600'}`}>
+                          {daysUntil(l.expiresAt)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       )}

@@ -521,6 +521,38 @@ export async function listAllAuditLogPg(since?: string, action?: string, license
   }));
 }
 
+export async function listExpiringLicensesPg(days: number, plan?: string): Promise<License[]> {
+  await ensureSchema();
+  const now = new Date().toISOString();
+  const cutoff = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
+  const planVal = plan ?? null;
+  const result = await sql<any>`
+    SELECT l.key, l.email, l.plan, l.status, l.note,
+           to_char(l.issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
+           to_char(l.expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt",
+           COUNT(a.machine_hash)::int AS "machineCount"
+    FROM licenses l
+    LEFT JOIN activations a ON a.license_key = l.key
+    WHERE l.expires_at IS NOT NULL
+      AND l.expires_at >= ${now}
+      AND l.expires_at <= ${cutoff}
+      AND l.status = 'active'
+      AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
+    GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at
+    ORDER BY l.expires_at ASC
+  `;
+  return result.rows.map((r: any) => ({
+    key: r.key,
+    email: r.email,
+    plan: r.plan,
+    status: r.status,
+    issuedAt: r.issuedAt,
+    expiresAt: r.expiresAt ?? null,
+    note: r.note ?? null,
+    machineCount: r.machineCount,
+  }));
+}
+
 export async function listAllLicensesPg(since?: string, status?: string, plan?: string): Promise<License[]> {
   await ensureSchema();
   const sinceVal = since ?? null;

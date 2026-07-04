@@ -1,5 +1,55 @@
 # Adia — Build Progress
 
+## Run 271 — 2026-07-04T17:15:00Z — Expiring-soon endpoint + ExpiringSoonPanel + 26 tests
+
+### Shipped
+
+**`web/lib/db.ts` — `listExpiringLicenses(days, plan?)`:**
+- Returns active licenses whose `expires_at` falls within `[now, now+days]`, ordered by `expires_at ASC`.
+- Excludes lifetime licenses (`expires_at IS NULL`), already-expired rows, and non-active statuses.
+- Optional `plan` filter (monthly | yearly).
+
+**`web/lib/db-pg.ts` — `listExpiringLicensesPg(days, plan?)`:**
+- Postgres equivalent using `null`-safe `($val::text IS NULL OR …)` pattern for optional plan filter.
+
+**`web/lib/store.ts` — `listExpiringLicenses(days, plan?)` facade.**
+
+**`web/app/api/admin/expiring-soon/route.ts` — new admin endpoint:**
+- `GET /api/admin/expiring-soon` — list active licenses expiring within the next N days.
+- `?days=N` — look-ahead window (default 30, max 365 — silently clamped, never a 400).
+- `?plan=monthly|yearly` — optional plan filter; `lifetime` rejected with 400 (lifetime licenses have no expiry).
+- `?format=csv` — CSV download; `format=json` (default) returns `{ licenses, count, days }`.
+- Auth: `adminGuard` (20 req/60 s per-IP + ADMIN_TOKEN).
+- CSV header: `key,email,plan,status,expiresAt,machineCount,note`; commas/quotes escaped per RFC 4180.
+
+**`web/app/admin/page.tsx` — ExpiringSoonPanel:**
+- New "Expiring soon" collapsible section placed just below "License overview".
+- Days input (1–365) + optional plan dropdown.
+- Results table shows key, email, plan, expiry date, and time-until column.
+- Per-row urgency coloring: ≤7 days → red; >7 days → yellow.
+- "Export CSV" button on non-empty results.
+- Empty-result message: "No active licenses expiring in the next N days."
+
+**Tests (26 new — `web/__tests__/admin-expiring-soon.test.ts`, 642 → 668):**
+- Auth: 401 no-token, 401 wrong-token, 200 `?token=` param.
+- Validation: days=0, days=-5, non-numeric days, days>365 clamped silently, invalid plan, invalid format.
+- Core: empty list, license within window, license outside window, lifetime excluded, already-expired excluded, non-active excluded, ascending sort order, default 30 days.
+- Plan filter: monthly-only, yearly-only.
+- CSV: correct content-type, Content-Disposition header, correct header row, row data, RFC 4180 escaping.
+- Response shape: licenses/count/days fields present, per-row fields present.
+
+**Web test count: 642 → 668 (28 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider token URL persistence: when admin pastes a token into the form, call `window.history.replaceState` with `?token=` so refreshing keeps them authenticated (weigh against browser-history exposure).
+- Consider expiring-soon alert count in the StatsPanel — a badge showing "N expiring in 30d" as an overview tile would surface the data without opening the panel.
+- Consider adding `@MainActor` annotations to remaining Swift test suites (`OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`) when a macOS build environment is available.
+
+---
+
 ## Run 270 — 2026-07-04T15:10:00Z — Audit-log ?since= filter + AuditPanel debounce
 
 ### Shipped
