@@ -1,5 +1,63 @@
 # Adia — Build Progress
 
+## Run 261 — 2026-07-04T01:09:00Z — GET /api/admin/audit-log-export + AuditLogExportPanel + 17 tests
+
+### Shipped
+
+**`web/lib/db.ts` — `listAllAuditLog(since?, action?, licenseKey?)`:**
+- No row cap (for export use); builds a dynamic WHERE clause from whichever filters are provided.
+- All three filters are optional and compose correctly (AND logic).
+- `licenseKey` is normalised to upper-case before the query.
+
+**`web/lib/db-pg.ts` — `listAllAuditLogPg(...)`:**
+- Postgres mirror; uses NULL-aware `IS NULL OR col = $val` parameterized conditions.
+- Imports `AuditEntry` from `./db`; removed duplicate `LicenseStats, AuditEntry` import that caused a `tsc` duplicate-identifier error.
+
+**`web/lib/store.ts` — `listAllAuditLog(...)`:**
+- Async facade that delegates to Pg or SQLite based on DATABASE_URL.
+
+**`web/app/api/admin/audit-log-export/route.ts` — new admin endpoint:**
+- `GET /api/admin/audit-log-export` — export all audit log entries.
+- Auth: ADMIN_TOKEN bearer header or `?token=` query param.
+- `?format=csv` (default) or `?format=json`
+- Optional filters: `?since=` (parseable date string), `?action=` (exact match), `?licenseKey=` (case-insensitive, normalised to upper).
+- CSV: RFC-4180 compliant escaping; `Content-Disposition: attachment` with dated filename `adia-audit-log-YYYY-MM-DD.csv`.
+- JSON: `{ entries, count }` envelope.
+- 400 on invalid format/since; 401 on bad/missing token.
+
+**`web/app/admin/page.tsx` — AuditLogExportPanel:**
+- Added after ExportLicensesPanel (collapsible "Export audit log" section).
+- 2×2 grid: format select, since-date picker, action text input (with placeholder), license-key text input.
+- CSV mode: triggers browser download via `URL.createObjectURL`.
+- JSON mode: previews first 5 entries inline with count.
+
+**`web/__tests__/admin-audit-export.test.ts` — 17 tests:**
+- 401 no-token, 401 wrong token, 200 `?token=` query-param auth.
+- 400 invalid format ("xml"), 400 invalid since ("not-a-date").
+- 200 CSV empty table — header only.
+- 200 JSON empty table — `entries: [], count: 0`.
+- 200 CSV with 3 entries — correct row count; dated Content-Disposition.
+- 200 JSON with entries — correct count and field shape.
+- action filter returns only matching action.
+- licenseKey filter returns only matching key; case-insensitive.
+- since filter with future date returns zero; with past date returns all.
+- Combined action + licenseKey filter narrows correctly.
+- CSV wraps detail field (contains commas) in double-quotes.
+
+### Tests
+511 passed (up from 494). 21 test files green. `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`. This prevents latent race-condition test failures in future Xcode builds.
+- Consider `POST /api/admin/bulk-note` — set or append a note to multiple license keys in one request (mirrors bulk-set-status shape).
+- Consider adding a search/filter bar at the top of the admin page to jump to a section by name — with 24+ collapsible panels, keyboard-navigable jump-to-section would be faster than scrolling.
+- Consider adding rate-limiting on the new `audit-log-export` and `export-licenses` export endpoints (large exports; a 10/min per-IP limit on GET requests is appropriate).
+
+---
+
 ## Run 260 — 2026-07-04T00:08:00Z — GET /api/admin/export-licenses + ExportLicensesPanel + 16 tests
 
 ### Shipped
