@@ -138,6 +138,9 @@ export default function Admin() {
       <CollapsibleSection title="Bulk note">
         <BulkNotePanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Bulk extend">
+        <BulkExtendPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Set expiry date">
         <SetExpiryPanel token={token} />
       </CollapsibleSection>
@@ -3105,6 +3108,121 @@ function BulkNotePanel({ token }: { token: string }) {
               {result.changed.map((c) => (
                 <li key={c.key} className="text-green-700">
                   ✓ {c.key} → {c.newNote === null ? <em>cleared</em> : <span>"{c.newNote}"</span>}
+                </li>
+              ))}
+            </ul>
+          )}
+          {result.skipped.length > 0 && (
+            <ul className="text-xs space-y-1 font-mono">
+              {result.skipped.map((s) => (
+                <li key={s.key} className="text-ink/50">
+                  — {s.key} ({s.reason})
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Bulk extend ─────────────────────────────────────────────────────────────
+
+type BulkExtendResult = {
+  ok: boolean;
+  changed: { key: string; previousExpiresAt: string | null; newExpiresAt: string; days: number }[];
+  skipped: { key: string; reason: string }[];
+};
+
+function BulkExtendPanel({ token }: { token: string }) {
+  const [rawKeys, setRawKeys] = useState('');
+  const [days, setDays] = useState('30');
+  const [result, setResult] = useState<BulkExtendResult | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    setResult(null);
+    const keys = rawKeys
+      .split(/[\n,]+/)
+      .map((k) => k.trim())
+      .filter(Boolean);
+    if (keys.length === 0) {
+      setError('Enter at least one license key.');
+      return;
+    }
+    const daysNum = parseInt(days, 10);
+    if (!Number.isInteger(daysNum) || daysNum < 1) {
+      setError('Days must be a positive integer.');
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/bulk-extend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ keys, days: daysNum }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${data.error ?? 'unknown error'}`);
+        return;
+      }
+      setResult(data);
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Extend expiry on multiple license keys at once. Extends from the later of today or the
+        current expiry, so expired licenses are never left still-expired. One key per line or
+        comma-separated.
+      </p>
+      <form onSubmit={submit} className="card space-y-3">
+        <Field label="License keys (one per line or comma-separated)">
+          <textarea
+            value={rawKeys}
+            onChange={(e) => setRawKeys(e.target.value)}
+            rows={4}
+            placeholder={'ADIA-XXXX-YYYY-ZZZZ\nADIA-AAAA-BBBB-CCCC'}
+            className="input w-full font-mono text-xs resize-y"
+          />
+        </Field>
+        <Field label="Days to extend">
+          <input
+            type="number"
+            value={days}
+            onChange={(e) => setDays(e.target.value)}
+            min={1}
+            max={3650}
+            step={1}
+            className="input w-32"
+          />
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Extending…' : 'Extend'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+      {result && (
+        <div className="card mt-3 space-y-2 border border-green-500/30 bg-green-50/5">
+          <p className="text-sm font-semibold text-green-600">
+            {result.changed.length} extended, {result.skipped.length} skipped
+          </p>
+          {result.changed.length > 0 && (
+            <ul className="text-xs space-y-1 font-mono">
+              {result.changed.map((c) => (
+                <li key={c.key} className="text-green-700">
+                  ✓ {c.key} → {new Date(c.newExpiresAt).toLocaleDateString()}{' '}
+                  <span className="text-ink/40">(+{c.days}d)</span>
                 </li>
               ))}
             </ul>
