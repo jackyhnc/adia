@@ -1,5 +1,38 @@
 # Adia — Build Progress
 
+## Run 263 — 2026-07-04T06:07:00Z — POST /api/admin/bulk-extend + BulkExtendPanel + 18 tests
+
+### Shipped
+
+**`web/app/api/admin/bulk-extend/route.ts` — new admin endpoint:**
+- `POST /api/admin/bulk-extend`: Batch extend expiry on up to 100 license keys in one request.
+- Body: `{ keys: string[], days: number }`
+- `days` must be a positive integer ≤ 3650 (10 years) to prevent typos.
+- Extends from `max(now, currentExpiresAt)` — expired/null (lifetime) licenses always get a future expiry.
+- Unknown keys → `skipped` with `reason: 'not_found'`.
+- One `bulk_extend` audit log entry per changed key (includes `previousExpiresAt`, `newExpiresAt`, `days`, `bulk: true`).
+- Auth: ADMIN_TOKEN bearer header or `?token=` query param. Max 100 keys per request.
+
+**`web/app/admin/page.tsx` — BulkExtendPanel:**
+- New "Bulk extend" collapsible section (after "Bulk note", before "Set expiry date").
+- Keys textarea + days number input (default 30, min 1, max 3650).
+- Result display: changed list (green, with new expiry date + +Nd badge) + skipped list (muted, with reason).
+
+**Tests (18 new):**
+- `web/__tests__/admin-bulk-extend.test.ts`: 401 no-token, 401 wrong-token, 200 `?token=` auth; 400 missing/empty keys, >100 keys, missing/zero/negative/fractional days, days>3650; extend future expiry (adds days from existing expiry); extend null (lifetime) expiry from now; extend past expiry from now (not from past date); not_found skip; multiple keys mixed outcomes; lowercase normalization; audit log entry with `bulk:true`.
+- 530 → 548 tests (23 test files, all pass). `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`. This prevents latent race-condition test failures in future Xcode builds.
+- Consider pagination (`?offset=N`) for the `LicensesByEmailPanel` (currently returns all licenses for an email with no cap).
+- Consider rate-limiting on the export endpoints (`audit-log-export`, `export-licenses`): a 10/min per-IP limit on GET requests would be appropriate for large exports.
+- Consider `POST /api/admin/bulk-set-expiry` — set an absolute expiry date on multiple license keys in one request (mirrors bulk-extend shape, body: `{ keys, expiresAt }`).
+
+---
+
 ## Run 262 — 2026-07-04T05:09:00Z — POST /api/admin/bulk-note + BulkNotePanel + jump-to-section filter + 19 tests
 
 ### Shipped
