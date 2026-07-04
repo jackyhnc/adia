@@ -351,6 +351,25 @@ export function listAuditLog(opts?: { licenseKey?: string; limit?: number }): Au
   }));
 }
 
+export function listAllAuditLog(since?: string, action?: string, licenseKey?: string): AuditEntry[] {
+  const conditions: string[] = [];
+  const params: unknown[] = [];
+  if (since) { conditions.push('created_at >= ?'); params.push(since); }
+  if (action) { conditions.push('action = ?'); params.push(action.trim()); }
+  if (licenseKey) { conditions.push('license_key = ?'); params.push(licenseKey.trim().toUpperCase()); }
+  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+  const rows = (db()
+    .prepare(`SELECT * FROM audit_log ${where} ORDER BY id DESC`)
+    .all as (...a: unknown[]) => any[])(...params);
+  return rows.map(r => ({
+    id: r.id,
+    licenseKey: r.license_key,
+    action: r.action,
+    detail: r.detail,
+    createdAt: r.created_at,
+  }));
+}
+
 export function searchLicenses(query: string, limit = 20, offset = 0, since?: string, status?: string, plan?: string): License[] {
   const q = `%${query.trim()}%`;
   const lq = `%${query.trim().toLowerCase()}%`;

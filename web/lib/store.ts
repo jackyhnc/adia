@@ -245,3 +245,11 @@ export async function listAuditLog(opts?: {
   }
   return sqlite.listAuditLog(opts);
 }
+
+export async function listAllAuditLog(since?: string, action?: string, licenseKey?: string): Promise<AuditEntry[]> {
+  if (usePg) {
+    const { listAllAuditLogPg } = await import('./db-pg');
+    return listAllAuditLogPg(since, action, licenseKey);
+  }
+  return sqlite.listAllAuditLog(since, action, licenseKey);
+}

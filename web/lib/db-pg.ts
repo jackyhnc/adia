@@ -5,7 +5,7 @@
 // Idempotent — IF NOT EXISTS everywhere.
 
 import { sql } from '@vercel/postgres';
-import type { License, Activation } from './db';
+import type { License, Activation, AuditEntry } from './db';
 
 let _schemaReady = false;
 
@@ -321,7 +321,7 @@ export async function getNotePg(key: string): Promise<string | null> {
   return result.rows[0]?.note ?? null;
 }
 
-import type { LicenseStats, AuditEntry } from './db';
+import type { LicenseStats } from './db';
 
 export async function insertAuditLogPg(entry: {
   licenseKey: string | null;
@@ -481,6 +481,30 @@ export async function getStatsPg(): Promise<LicenseStats> {
     newLast30Days: week30Res.rows[0]?.c ?? 0,
     activatedMachines: activationRes.rows[0]?.c ?? 0,
   };
+}
+
+export async function listAllAuditLogPg(since?: string, action?: string, licenseKey?: string): Promise<AuditEntry[]> {
+  await ensureSchema();
+  const sinceVal = since ?? null;
+  const actionVal = action?.trim() ?? null;
+  const keyVal = licenseKey ? licenseKey.trim().toUpperCase() : null;
+  const result = await sql<any>`
+    SELECT id, license_key,
+           action, detail,
+           to_char(created_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS created_at
+    FROM audit_log
+    WHERE (${sinceVal}::text IS NULL OR created_at >= ${sinceVal}::text)
+      AND (${actionVal}::text IS NULL OR action = ${actionVal}::text)
+      AND (${keyVal}::text IS NULL OR license_key = ${keyVal}::text)
+    ORDER BY id DESC
+  `;
+  return result.rows.map((r: any) => ({
+    id: r.id,
+    licenseKey: r.license_key,
+    action: r.action,
+    detail: r.detail,
+    createdAt: r.created_at,
+  }));
 }
 
 export async function listAllLicensesPg(since?: string, status?: string, plan?: string): Promise<License[]> {

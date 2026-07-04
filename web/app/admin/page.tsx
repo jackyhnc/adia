@@ -95,6 +95,9 @@ export default function Admin() {
       <CollapsibleSection title="Export licenses">
         <ExportLicensesPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Export audit log">
+        <AuditLogExportPanel token={token} />
+      </CollapsibleSection>
     </section>
   );
 }
@@ -2836,6 +2839,117 @@ function ExportLicensesPanel({ token }: { token: string }) {
           <pre className="text-xs font-mono overflow-x-auto max-h-64 whitespace-pre-wrap break-all">
             {JSON.stringify(jsonResult.licenses.slice(0, 5), null, 2)}
             {jsonResult.licenses.length > 5 && `\n… and ${jsonResult.licenses.length - 5} more`}
+          </pre>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Audit log export ────────────────────────────────────────────────────────
+
+type AuditLogExportResult = { entries: unknown[]; count: number };
+
+function AuditLogExportPanel({ token }: { token: string }) {
+  const [format, setFormat] = useState<'csv' | 'json'>('csv');
+  const [since, setSince] = useState('');
+  const [action, setAction] = useState('');
+  const [licenseKey, setLicenseKey] = useState('');
+  const [error, setError] = useState('');
+  const [jsonResult, setJsonResult] = useState<AuditLogExportResult | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  function buildUrl() {
+    const params = new URLSearchParams({ token, format });
+    if (since) params.set('since', since);
+    if (action.trim()) params.set('action', action.trim());
+    if (licenseKey.trim()) params.set('licenseKey', licenseKey.trim());
+    return `/api/admin/audit-log-export?${params.toString()}`;
+  }
+
+  async function handleExport(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    setJsonResult(null);
+    setLoading(true);
+    try {
+      const res = await fetch(buildUrl(), { headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+        return;
+      }
+      if (format === 'json') {
+        const body = await res.json();
+        setJsonResult(body);
+      } else {
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const filename = `adia-audit-log-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Download the full admin audit log as CSV or JSON. Filter by date, action type, or license key.
+      </p>
+      <form onSubmit={handleExport} className="card space-y-3">
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Format">
+            <select value={format} onChange={(e) => setFormat(e.target.value as 'csv' | 'json')} className="input w-full">
+              <option value="csv">CSV</option>
+              <option value="json">JSON</option>
+            </select>
+          </Field>
+          <Field label="Since (optional)">
+            <input
+              type="date"
+              value={since}
+              onChange={(e) => setSince(e.target.value)}
+              className="input w-full"
+            />
+          </Field>
+          <Field label="Action (optional)">
+            <input
+              type="text"
+              value={action}
+              onChange={(e) => setAction(e.target.value)}
+              placeholder="e.g. issue, revoke, set_status"
+              className="input w-full font-mono text-xs"
+            />
+          </Field>
+          <Field label="License key (optional)">
+            <input
+              type="text"
+              value={licenseKey}
+              onChange={(e) => setLicenseKey(e.target.value)}
+              placeholder="ADIA-XXXX-YYYY"
+              className="input w-full font-mono text-xs"
+            />
+          </Field>
+        </div>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Exporting…' : format === 'csv' ? 'Download CSV' : 'Fetch JSON'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+      {jsonResult && (
+        <div className="card mt-3 space-y-2 border border-blue-500/30 bg-blue-50/5">
+          <p className="text-sm font-semibold text-blue-600">{jsonResult.count} entr{jsonResult.count !== 1 ? 'ies' : 'y'} returned</p>
+          <pre className="text-xs font-mono overflow-x-auto max-h-64 whitespace-pre-wrap break-all">
+            {JSON.stringify(jsonResult.entries.slice(0, 5), null, 2)}
+            {jsonResult.entries.length > 5 && `\n… and ${jsonResult.entries.length - 5} more`}
           </pre>
         </div>
       )}
