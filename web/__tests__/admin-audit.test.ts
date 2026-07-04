@@ -570,6 +570,117 @@ describe('GET /api/admin/audit-log — action filter', () => {
   });
 });
 
+// ─── GET /api/admin/audit-log — since filter ─────────────────────────────────
+
+describe('GET /api/admin/audit-log — since filter', () => {
+  it('since filter excludes entries before the given date', async () => {
+    const { insertAuditLog } = await import('@/lib/db');
+    const key = 'ADIA-SNCE-OLD1-AAAA';
+    insertLicense({ key, email: 'snceold1@example.com', plan: 'lifetime', expiresAt: null });
+
+    // Insert an old entry
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-01-15T10:00:00Z'));
+    insertAuditLog({ licenseKey: key, action: 'issue', detail: {} });
+
+    // Insert a recent entry
+    vi.setSystemTime(new Date('2026-07-04T10:00:00Z'));
+    insertAuditLog({ licenseKey: key, action: 'extend', detail: {} });
+    vi.useRealTimers();
+
+    const res = await callAuditLog({ since: '2026-07-01' });
+    const body = await res.json();
+    expect(body.entries.every((e: any) => e.createdAt >= '2026-07-01')).toBe(true);
+    expect(body.entries.some((e: any) => e.action === 'extend')).toBe(true);
+    expect(body.entries.some((e: any) => e.createdAt < '2026-07-01')).toBe(false);
+  });
+
+  it('since filter includes entries on the exact since date', async () => {
+    const { insertAuditLog } = await import('@/lib/db');
+    const key = 'ADIA-SNCE-EXC1-AAAA';
+    insertLicense({ key, email: 'snceexc1@example.com', plan: 'lifetime', expiresAt: null });
+
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-06-30T23:59:59Z'));
+    insertAuditLog({ licenseKey: key, action: 'issue', detail: {} });
+    vi.useRealTimers();
+
+    const res = await callAuditLog({ since: '2026-06-30' });
+    const body = await res.json();
+    expect(body.total).toBeGreaterThanOrEqual(1);
+    expect(body.entries.some((e: any) => e.licenseKey === key)).toBe(true);
+  });
+
+  it('since filter combined with action filter narrows results', async () => {
+    const { insertAuditLog } = await import('@/lib/db');
+    const key = 'ADIA-SNCE-CMB1-AAAA';
+    insertLicense({ key, email: 'sncecmb1@example.com', plan: 'lifetime', expiresAt: null });
+
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-01-10T00:00:00Z'));
+    insertAuditLog({ licenseKey: key, action: 'revoke', detail: {} });
+    vi.setSystemTime(new Date('2026-07-04T00:00:00Z'));
+    insertAuditLog({ licenseKey: key, action: 'revoke', detail: {} });
+    insertAuditLog({ licenseKey: key, action: 'extend', detail: {} });
+    vi.useRealTimers();
+
+    // since=2026-07-01 + action=revoke should return only the recent revoke
+    const res = await callAuditLog({ since: '2026-07-01', action: 'revoke' });
+    const body = await res.json();
+    expect(body.total).toBe(1);
+    expect(body.entries[0].action).toBe('revoke');
+    expect(body.entries[0].createdAt >= '2026-07-01').toBe(true);
+  });
+
+  it('since filter with no matching entries returns empty', async () => {
+    const { insertAuditLog } = await import('@/lib/db');
+    const key = 'ADIA-SNCE-EMP1-AAAA';
+    insertLicense({ key, email: 'snceemp1@example.com', plan: 'lifetime', expiresAt: null });
+
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2025-06-01T00:00:00Z'));
+    insertAuditLog({ licenseKey: key, action: 'issue', detail: {} });
+    vi.useRealTimers();
+
+    // Requesting entries from the future
+    const res = await callAuditLog({ since: '2027-01-01' });
+    const body = await res.json();
+    expect(body.entries.length).toBe(0);
+    expect(body.total).toBe(0);
+    expect(body.hasMore).toBe(false);
+  });
+
+  it('malformed since value is ignored (treated as no filter)', async () => {
+    const res = await callAuditLog({ since: 'not-a-date' });
+    expect(res.status).toBe(200);
+    // should not error — invalid since is silently dropped
+    const body = await res.json();
+    expect(body).toHaveProperty('entries');
+  });
+
+  it('since filter is forwarded in count so total reflects filtered set', async () => {
+    const { insertAuditLog } = await import('@/lib/db');
+    const key = 'ADIA-SNCE-TTL1-AAAA';
+    insertLicense({ key, email: 'sncettl1@example.com', plan: 'lifetime', expiresAt: null });
+
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-03-01T00:00:00Z'));
+    insertAuditLog({ licenseKey: key, action: 'issue', detail: {} });
+    vi.setSystemTime(new Date('2026-03-02T00:00:00Z'));
+    insertAuditLog({ licenseKey: key, action: 'extend', detail: {} });
+    vi.setSystemTime(new Date('2026-07-04T00:00:00Z'));
+    insertAuditLog({ licenseKey: key, action: 'revoke', detail: {} });
+    vi.useRealTimers();
+
+    const res = await callAuditLog({ since: '2026-07-01', key });
+    const body = await res.json();
+    // Only the July entry should be counted and returned
+    expect(body.total).toBe(1);
+    expect(body.entries.length).toBe(1);
+    expect(body.hasMore).toBe(false);
+  });
+});
+
 // ─── findLicense now includes note field ─────────────────────────────────────
 
 describe('findLicense note field', () => {

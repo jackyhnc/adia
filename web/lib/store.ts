@@ -238,6 +238,7 @@ export async function listAllLicenses(since?: string, status?: string, plan?: st
 export async function countAuditLog(opts?: {
   licenseKey?: string;
   action?: string;
+  since?: string;
 }): Promise<number> {
   if (usePg) {
     const { countAuditLogPg } = await import('./db-pg');
@@ -251,6 +252,7 @@ export async function listAuditLog(opts?: {
   limit?: number;
   offset?: number;
   action?: string;
+  since?: string;
 }): Promise<AuditEntry[]> {
   if (usePg) {
     const { listAuditLogPg } = await import('./db-pg');

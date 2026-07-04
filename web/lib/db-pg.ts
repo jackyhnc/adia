@@ -336,14 +336,16 @@ export async function insertAuditLogPg(entry: {
   `;
 }
 
-export async function countAuditLogPg(opts?: { licenseKey?: string; action?: string }): Promise<number> {
+export async function countAuditLogPg(opts?: { licenseKey?: string; action?: string; since?: string }): Promise<number> {
   await ensureSchema();
   const keyVal = opts?.licenseKey ? opts.licenseKey.trim().toUpperCase() : null;
   const actionVal = opts?.action ? opts.action.trim() : null;
+  const sinceVal = opts?.since ? opts.since.trim() : null;
   const result = await sql<any>`
     SELECT COUNT(*) AS n FROM audit_log
     WHERE (${keyVal}::text IS NULL OR license_key = ${keyVal}::text)
       AND (${actionVal}::text IS NULL OR action = ${actionVal}::text)
+      AND (${sinceVal}::text IS NULL OR created_at >= ${sinceVal}::text)
   `;
   return Number(result.rows[0].n);
 }
@@ -353,12 +355,14 @@ export async function listAuditLogPg(opts?: {
   limit?: number;
   offset?: number;
   action?: string;
+  since?: string;
 }): Promise<AuditEntry[]> {
   await ensureSchema();
   const limit = Math.min(opts?.limit ?? 100, 500);
   const offset = opts?.offset ?? 0;
   const keyVal = opts?.licenseKey ? opts.licenseKey.trim().toUpperCase() : null;
   const actionVal = opts?.action ? opts.action.trim() : null;
+  const sinceVal = opts?.since ? opts.since.trim() : null;
   const result = await sql<any>`
     SELECT id, license_key,
            action, detail,
@@ -366,6 +370,7 @@ export async function listAuditLogPg(opts?: {
     FROM audit_log
     WHERE (${keyVal}::text IS NULL OR license_key = ${keyVal}::text)
       AND (${actionVal}::text IS NULL OR action = ${actionVal}::text)
+      AND (${sinceVal}::text IS NULL OR created_at >= ${sinceVal}::text)
     ORDER BY id DESC
     LIMIT ${limit} OFFSET ${offset}
   `;

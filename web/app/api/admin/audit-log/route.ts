@@ -1,7 +1,8 @@
 // Admin: list admin audit log entries.
-// GET ?key=ADIA-...&limit=100&offset=0&action=revoke
+// GET ?key=ADIA-...&limit=100&offset=0&action=revoke&since=2026-01-01
 //   key: optional — filter by license key.
 //   action: optional — filter by action name (e.g. revoke, issue, extend).
+//   since: optional — ISO date prefix (YYYY-MM-DD); only entries on or after this date.
 //   limit: optional — max 500, default 100.
 //   offset: optional — default 0. Enables pagination.
 //   format=csv — download as CSV (no pagination; exports current page).
@@ -15,6 +16,8 @@ import { adminGuard } from '@/lib/admin';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+const SINCE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
 export async function GET(req: NextRequest) {
   const denied = adminGuard(req, 'audit-log');
   if (denied) return denied;
@@ -23,16 +26,18 @@ export async function GET(req: NextRequest) {
   const rawLimit = req.nextUrl.searchParams.get('limit');
   const rawOffset = req.nextUrl.searchParams.get('offset');
   const rawAction = req.nextUrl.searchParams.get('action');
+  const rawSince = req.nextUrl.searchParams.get('since');
   const format = req.nextUrl.searchParams.get('format');
 
   const licenseKey = rawKey ? rawKey.trim().toUpperCase() : undefined;
   const action = rawAction ? rawAction.trim() : undefined;
+  const since = rawSince && SINCE_RE.test(rawSince.trim()) ? rawSince.trim() : undefined;
   const limit = rawLimit ? Math.min(Math.max(1, Number(rawLimit) || 100), 500) : 100;
   const offset = rawOffset ? Math.max(0, Number(rawOffset) || 0) : 0;
 
   const [entries, total] = await Promise.all([
-    listAuditLog({ licenseKey, limit, offset, action }),
-    countAuditLog({ licenseKey, action }),
+    listAuditLog({ licenseKey, limit, offset, action, since }),
+    countAuditLog({ licenseKey, action, since }),
   ]);
 
   if (format === 'csv') {

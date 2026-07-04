@@ -333,11 +333,12 @@ export function insertAuditLog(entry: {
   );
 }
 
-export function countAuditLog(opts?: { licenseKey?: string; action?: string }): number {
+export function countAuditLog(opts?: { licenseKey?: string; action?: string; since?: string }): number {
   const conditions: string[] = [];
   const params: unknown[] = [];
   if (opts?.licenseKey) { conditions.push('license_key = ?'); params.push(opts.licenseKey.trim().toUpperCase()); }
   if (opts?.action) { conditions.push('action = ?'); params.push(opts.action.trim()); }
+  if (opts?.since) { conditions.push('created_at >= ?'); params.push(opts.since.trim()); }
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
   const row = (db()
     .prepare(`SELECT COUNT(*) AS n FROM audit_log ${where}`)
@@ -345,13 +346,14 @@ export function countAuditLog(opts?: { licenseKey?: string; action?: string }): 
   return (row as any).n as number;
 }
 
-export function listAuditLog(opts?: { licenseKey?: string; limit?: number; offset?: number; action?: string }): AuditEntry[] {
+export function listAuditLog(opts?: { licenseKey?: string; limit?: number; offset?: number; action?: string; since?: string }): AuditEntry[] {
   const limit = Math.min(opts?.limit ?? 100, 500);
   const offset = opts?.offset ?? 0;
   const conditions: string[] = [];
   const params: unknown[] = [];
   if (opts?.licenseKey) { conditions.push('license_key = ?'); params.push(opts.licenseKey.trim().toUpperCase()); }
   if (opts?.action) { conditions.push('action = ?'); params.push(opts.action.trim()); }
+  if (opts?.since) { conditions.push('created_at >= ?'); params.push(opts.since.trim()); }
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
   const rows = (db()
     .prepare(`SELECT * FROM audit_log ${where} ORDER BY id DESC LIMIT ? OFFSET ?`)

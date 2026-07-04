@@ -1245,6 +1245,7 @@ const AUDIT_PAGE_SIZE = 50;
 function AuditPanel({ token }: { token: string }) {
   const [keyFilter, setKeyFilter] = useState('');
   const [actionFilter, setActionFilter] = useState('');
+  const [sinceFilter, setSinceFilter] = useState('');
   const [entries, setEntries] = useState<AuditEntry[] | null>(null);
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(false);
@@ -1252,15 +1253,20 @@ function AuditPanel({ token }: { token: string }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  async function fetchPage(offset: number, append: boolean) {
+  async function fetchPage(offset: number, append: boolean, overrides?: { key?: string; action?: string; since?: string }) {
     if (!token) { setError('Paste admin token above first.'); return; }
     if (append) setLoadingMore(true); else setLoading(true);
     setError('');
     try {
+      const key = overrides?.key ?? keyFilter;
+      const action = overrides?.action ?? actionFilter;
+      const since = overrides?.since ?? sinceFilter;
       const params = new URLSearchParams({ limit: String(AUDIT_PAGE_SIZE), offset: String(offset) });
-      if (keyFilter.trim()) params.set('key', keyFilter.trim().toUpperCase());
-      if (actionFilter.trim()) params.set('action', actionFilter.trim());
+      if (key.trim()) params.set('key', key.trim().toUpperCase());
+      if (action.trim()) params.set('action', action.trim());
+      if (since.trim()) params.set('since', since.trim());
       const res = await fetch(`/api/admin/audit-log?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -1288,6 +1294,15 @@ function AuditPanel({ token }: { token: string }) {
     fetchPage(0, false);
   }
 
+  function scheduleDebounce(key: string, action: string, since: string) {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setEntries(null);
+      setCurrentOffset(0);
+      fetchPage(0, false, { key, action, since });
+    }, 300);
+  }
+
   const actionColor = auditActionColor;
 
   return (
@@ -1295,14 +1310,14 @@ function AuditPanel({ token }: { token: string }) {
       <p className="text-sm text-ink/60 mb-3">
         All admin actions on licenses — issue, revoke, change_plan, extend, reactivate, set_note,
         change_email, resend_license, deactivate_all, resend_payment_failed. Most recent first.
-        Filter by license key or action name.
+        Filter by license key, action name, or date.
       </p>
       <form onSubmit={load} className="card space-y-3">
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap">
           <Field label="License key (optional)">
             <input
               value={keyFilter}
-              onChange={(e) => setKeyFilter(e.target.value)}
+              onChange={(e) => { setKeyFilter(e.target.value); scheduleDebounce(e.target.value, actionFilter, sinceFilter); }}
               placeholder="ADIA-XXXX-XXXX-XXXX or blank"
               className="input font-mono"
             />
@@ -1310,8 +1325,16 @@ function AuditPanel({ token }: { token: string }) {
           <Field label="Action (optional)">
             <input
               value={actionFilter}
-              onChange={(e) => setActionFilter(e.target.value)}
+              onChange={(e) => { setActionFilter(e.target.value); scheduleDebounce(keyFilter, e.target.value, sinceFilter); }}
               placeholder="e.g. revoke, issue, extend"
+              className="input"
+            />
+          </Field>
+          <Field label="Since (optional)">
+            <input
+              type="date"
+              value={sinceFilter}
+              onChange={(e) => { setSinceFilter(e.target.value); scheduleDebounce(keyFilter, actionFilter, e.target.value); }}
               className="input"
             />
           </Field>
@@ -1328,6 +1351,7 @@ function AuditPanel({ token }: { token: string }) {
               const params = new URLSearchParams({ limit: '500', format: 'csv' });
               if (keyFilter.trim()) params.set('key', keyFilter.trim().toUpperCase());
               if (actionFilter.trim()) params.set('action', actionFilter.trim());
+              if (sinceFilter.trim()) params.set('since', sinceFilter.trim());
               const url = `/api/admin/audit-log?${params}&token=${encodeURIComponent(token)}`;
               const a = document.createElement('a');
               a.href = url;
