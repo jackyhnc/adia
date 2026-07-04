@@ -11260,3 +11260,49 @@ All GOAL.md items complete. Good next areas:
 - Rate-limiting on admin endpoints: all admin routes are bearer-auth-gated; a generous limit (e.g. 20/min per IP) on admin endpoints would be consistent with user-facing endpoints. `web/lib/ratelimit.ts` already has the helper — wire it into each admin route's POST/GET handler at the top (after auth, before business logic).
 - Add `@MainActor` annotation to remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`. This prevents latent race-condition test failures in future Xcode builds.
 - `POST /api/admin/bulk-set-status` — set the same status on multiple license keys in one request (useful for disabling a batch of fraudulent keys from a stolen credit card).
+
+---
+
+## Run 265 — 2026-07-04T10:11:00Z — Rate-limit all admin routes via adminGuard helper
+
+### Shipped
+
+**`web/lib/admin.ts` — new shared helper:**
+- `adminGuard(req, routeName)` — combines 20 req/60s per-IP rate-limit + ADMIN_TOKEN auth into one call.
+- Rate-limit key is `admin-${routeName}:${ip}` — per-route buckets so one hammered endpoint cannot starve others.
+- Returns `NextResponse` (429 with Retry-After, or 401) on rejection; `null` on success.
+- Rate-limit check runs before auth — prevents timing oracle leakage to unauthenticated callers.
+
+**26 admin route files updated:**
+- Removed the duplicated `authorized()` function from each file.
+- Replaced `if (!authorized(req)) { … }` with `const denied = adminGuard(req, '<route>'); if (denied) return denied;`.
+- `resend-license` also had its inline `rateLimit`/`clientIp` imports removed (helper now covers it with the same bucket key `admin-resend-license:${ip}`).
+
+**`web/__tests__/admin-guard.test.ts` — 11 new unit tests + 3 route spot-checks:**
+- `adminGuard` returns null for valid bearer token.
+- `adminGuard` returns null for valid `?token=` param.
+- `adminGuard` returns 401 when `ADMIN_TOKEN` env var is unset.
+- `adminGuard` returns 401 for wrong token.
+- `adminGuard` returns 429 after 20 requests from same IP.
+- 429 includes `Retry-After` header.
+- Rate limit is keyed per route — exhausting `stats` does not block `revoke`.
+- Rate limit is keyed per IP — different IP has own bucket.
+- Rate limit fires before auth (wrong token gets 429 when bucket exhausted).
+- Spot-check: `POST /api/admin/revoke` returns 429 after 20 reqs from same IP.
+- Spot-check: `GET /api/admin/stats` returns 429 after 20 reqs from same IP.
+- Spot-check: `GET /api/admin/lookup` returns 429 after 20 reqs from same IP.
+
+**9 admin test files patched:**
+- Added `import { _resetForTesting as resetRateLimit } from '@/lib/ratelimit'` and `resetRateLimit()` call in `beforeEach` to: `admin-audit.test.ts`, `admin-audit-export.test.ts`, `admin-bulk-extend.test.ts`, `admin-bulk-note.test.ts`, `admin-bulk-set-expiry.test.ts`, `admin-issue.test.ts`, `admin-note.test.ts`, `admin-search.test.ts`, `admin-set-expiry.test.ts`.
+
+### Verification
+- 569 → 581 tests (25 test files, all pass). `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding `itch.io` to the blocklist (`Sources/AdiCore/DefaultBlocklists.swift`) — indie game hosting platform distinct from `gamejolt.com` which is already blocked.
+- Wire `SessionTemplate.preferredDuration` into the pinned-template "prefill and edit" flow (right-click on notch pin button opens the session creation form pre-filled with that template's duration instead of launching immediately).
+- `@MainActor` annotation audit for remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`.
+- Consider a "streak broken for N-th time" variant for SessionNotifier (after user breaks and re-builds same milestone twice, shift tone to encouraging persistence rather than surprise).
