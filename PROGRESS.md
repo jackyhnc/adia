@@ -1,5 +1,53 @@
 # Adia — Build Progress
 
+## Run 270 — 2026-07-04T15:10:00Z — Audit-log ?since= filter + AuditPanel debounce
+
+### Shipped
+
+**`web/lib/db.ts` — `countAuditLog` + `listAuditLog` gain `since?: string`:**
+- `countAuditLog`: adds `created_at >= ?` condition when `since` is provided.
+- `listAuditLog`: same — `since` filters rows by date prefix before applying LIMIT/OFFSET.
+
+**`web/lib/db-pg.ts` — Postgres equivalents:**
+- `countAuditLogPg`: uses null-safe `($val::text IS NULL OR created_at >= $val::text)` pattern.
+- `listAuditLogPg`: same null-safe since condition added to WHERE clause.
+
+**`web/lib/store.ts` — facade:**
+- `countAuditLog` and `listAuditLog` both accept `since?: string` and forward to SQLite or Postgres.
+
+**`web/app/api/admin/audit-log/route.ts` — `?since=` param:**
+- Parses `?since=` with `/^\d{4}-\d{2}-\d{2}$/` guard — malformed values silently dropped (no 400).
+- Passes validated `since` to both `listAuditLog` and `countAuditLog` so `total` and `hasMore` reflect the filtered set.
+- CSV export uses same filters (since already forwarded via params).
+
+**`web/app/admin/page.tsx` — AuditPanel UX:**
+- Added `sinceFilter` state + `<input type="date">` field in the filter row.
+- `scheduleDebounce(key, action, since)` fires a 300ms debounced reload whenever any filter input changes — avoids manual Submit for incremental adjustments.
+- Manual "Load audit log" button still works (calls `fetchPage` directly).
+- "Export CSV" button includes `since` in the download URL.
+- Description text updated: "Filter by license key, action name, or date."
+
+**Tests (6 new — `web/__tests__/admin-audit.test.ts`, 636 → 642):**
+- `since filter excludes entries before the given date` — inserts old (Jan) + recent (Jul) entries via `vi.setSystemTime`; queries since=2026-07-01; old entry absent.
+- `since filter includes entries on the exact since date` — entry timestamped at 2026-06-30 is returned by since=2026-06-30.
+- `since filter combined with action filter narrows results` — 3 entries; only the single recent revoke matches since + action.
+- `since filter with no matching entries returns empty` — entry in 2025; since=2027-01-01 → 0 results.
+- `malformed since value is ignored (treated as no filter)` — since=not-a-date returns 200, no crash.
+- `since filter is forwarded in count so total reflects filtered set` — 3 entries at different dates; since=2026-07-01 → total=1.
+
+**Web test count: 636 → 642 (27 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `?since=` on export endpoints (`audit-log-export`) for parity with the inline viewer — `listAllAuditLog` already accepts `since`, so it's a query-param parse + pass-through.
+- Consider rate-limiting on export endpoints (`audit-log-export`, `export-licenses`): 10/min per-IP would be appropriate for large exports.
+- Consider pagination for `LicensesByEmailPanel` (currently returns all licenses for an email with no cap).
+- Consider adding `@MainActor` annotations to remaining Swift test suites (`OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`) when a macOS build environment is available.
+
+---
+
 ## Run 269 — 2026-07-04T14:10:00Z — Audit-log pagination + action filter + admin panel URL param pre-fill
 
 ### Shipped

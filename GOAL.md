@@ -45,3 +45,4 @@
 - [x] Admin bulk-transfer endpoint: POST /api/admin/bulk-transfer moves up to 100 keys to a new email; changed + skipped (not_found/already_set); BulkTransferPanel; 20 tests
 - [x] Admin panel URL param pre-fill: ?token= pre-fills token input on load; ?section= pre-fills section filter + stays in sync as filter changes (bookmarkable filtered views); token hint tip added to card
 - [x] Audit-log pagination + action filter: GET /api/admin/audit-log gains ?offset= + ?action= params; countAuditLog DB function (SQLite + Postgres); response includes total/hasMore/offset/limit; AuditPanel load-more button + action filter input; 13 tests (627 → 636)
+- [x] Audit-log since filter + debounce: ?since=YYYY-MM-DD on GET /api/admin/audit-log (SQLite + Postgres); AuditPanel date input + 300ms debounce on key/action/since inputs; CSV export forwards since; 6 tests (636 → 642)
