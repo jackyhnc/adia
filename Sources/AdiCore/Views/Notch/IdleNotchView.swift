@@ -193,6 +193,20 @@ struct IdleBody: View {
             .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
         }
         .buttonStyle(.plain)
+        .contextMenu {
+            Button {
+                launchTemplate(t)
+            } label: {
+                Label("Launch", systemImage: "play.fill")
+            }
+            Button {
+                withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
+                    state.startCreating(prefill: t.task, duration: t.preferredDuration)
+                }
+            } label: {
+                Label("Edit & Launch\u{2026}", systemImage: "pencil")
+            }
+        }
     }
 
     private func suggestedButton(_ s: SuggestedTemplate) -> some View {

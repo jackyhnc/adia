@@ -11306,3 +11306,36 @@ None. Swift toolchain unavailable on Linux container.
 - Wire `SessionTemplate.preferredDuration` into the pinned-template "prefill and edit" flow (right-click on notch pin button opens the session creation form pre-filled with that template's duration instead of launching immediately).
 - `@MainActor` annotation audit for remaining Swift test suites that access `@MainActor`-isolated singletons: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`.
 - Consider a "streak broken for N-th time" variant for SessionNotifier (after user breaks and re-builds same milestone twice, shift tone to encouraging persistence rather than surprise).
+
+---
+
+## Run 266 — 2026-07-04T11:20:00Z — Template "Edit & Launch" context menu + SessionManagerTests @MainActor refactor
+
+### Shipped
+
+**`Sources/AdiCore/Views/Notch/IdleNotchView.swift` — context menu on pinned template buttons:**
+- Added `.contextMenu { }` modifier to `templateButton(_:)`.
+- Right-click (Ctrl+click) on any pinned template in the idle notch now shows two options:
+  - **Launch** — same as left-click; starts the session immediately without opening the form.
+  - **Edit & Launch…** — calls `state.startCreating(prefill: t.task, duration: t.preferredDuration)`, opening the session creation form pre-filled with the template's task text and preferred duration.
+- Left-click direct-launch behavior is completely unchanged.
+- `SessionTemplate.preferredDuration` is now correctly wired into the "prefill and edit" flow: if the template has a preferred duration that matches a preset (25m/45m/1h/90m), that preset button is pre-selected; otherwise the duration is written into the custom duration text field (e.g. "2h", "1h30m").
+
+**`Tests/AdiTests/SessionManagerTests.swift` — @MainActor annotation, eliminate await MainActor.run{} boilerplate:**
+- Added `@MainActor` to `struct SessionManagerTests`.
+- `injectSession(_:)` is now synchronous (no `async`, no `await MainActor.run`).
+- Removed `await injectSession(...)` → plain `injectSession(...)` at all call sites.
+- Removed ~50 `await MainActor.run { sync_code }` void wrappers → direct calls.
+- Removed ~20 `let x = await MainActor.run { sync_expr }` bindings → direct bindings.
+- Preserved `await` for genuinely async methods: `endSession()`, `pauseSession()`, `resumeSession()`, `whitelist(domain:)`, `verifyAndEnd()`, `mock.verifyCallCount`.
+- Net: −185 / +164 lines (21 net lines removed; same 50 tests, cleaner code).
+- `itch.io` blocklist: already present in `DefaultBlocklists.swift` at line 164 and 343 — no change needed.
+
+### Blocked
+Swift toolchain unavailable on Linux container — build verified by code review only.
+
+### Next agent should
+- Consider adding `@MainActor` to `SessionTemplateTests` if it accesses `@MainActor`-isolated singletons.
+- Consider a "streak broken for N-th time" variant for SessionNotifier (after user breaks and re-builds same milestone twice, shift tone to encouraging persistence rather than surprise).
+- Wire a "duplicate and edit" flow: long-press / right-click on a *suggested* template row in the idle notch could also support context menu (currently suggested templates only open the form on left-click, which is fine, but consistency with pinned templates could be good).
+- Admin UI: consider a "Bulk revoke" panel similar to existing "Bulk extend" / "Bulk set expiry" panels.
