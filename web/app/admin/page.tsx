@@ -87,6 +87,9 @@ export default function Admin() {
       <CollapsibleSection title="Change license email">
         <ChangeEmailPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Bulk transfer">
+        <BulkTransferPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Licenses by email">
         <LicensesByEmailPanel token={token} onSelectKey={setAutoLookupKey} />
       </CollapsibleSection>
@@ -3507,6 +3510,124 @@ function BulkSetExpiryPanel({ token }: { token: string }) {
               {result.skipped.map((s) => (
                 <li key={s.key} className="text-ink/50">
                   — {s.key} ({s.reason})
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Bulk transfer ───────────────────────────────────────────────────────────
+
+type BulkTransferChangedEntry = { key: string; oldEmail: string };
+type BulkTransferSkippedEntry = { key: string; reason: string };
+
+function BulkTransferPanel({ token }: { token: string }) {
+  const [keysText, setKeysText] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [result, setResult] = useState<{
+    ok: boolean;
+    newEmail: string;
+    changed: BulkTransferChangedEntry[];
+    skipped: BulkTransferSkippedEntry[];
+  } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    setResult(null);
+    const keys = keysText
+      .split(/[\n,]+/)
+      .map((k) => k.trim())
+      .filter(Boolean);
+    if (keys.length === 0) {
+      setError('Enter at least one license key.');
+      return;
+    }
+    if (!newEmail.trim()) {
+      setError('Enter the destination email address.');
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/bulk-transfer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ keys, newEmail: newEmail.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${data.error ?? 'unknown error'}`);
+        return;
+      }
+      setResult(data);
+    } catch (err: unknown) {
+      setError(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Move multiple license keys to a new owner email in one operation — for company re-orgs,
+        account merges, or customers with many keys who changed their email. Keys already owned by
+        the destination address or not found are silently skipped.
+        One key per line or comma-separated.
+      </p>
+      <form onSubmit={submit} className="card space-y-3">
+        <Field label="License keys (one per line or comma-separated)">
+          <textarea
+            value={keysText}
+            onChange={(e) => setKeysText(e.target.value)}
+            rows={4}
+            placeholder={'ADIA-XXXX-YYYY-ZZZZ\nADIA-AAAA-BBBB-CCCC'}
+            className="input w-full font-mono text-xs resize-y"
+          />
+        </Field>
+        <Field label="Destination email">
+          <input
+            type="email"
+            value={newEmail}
+            onChange={(e) => setNewEmail(e.target.value)}
+            placeholder="newowner@example.com"
+            className="input"
+          />
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Transferring…' : 'Bulk transfer'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+      {result && (
+        <div className="card mt-3 space-y-2 border border-green-500/30 bg-green-50/5">
+          <p className="text-sm font-semibold text-green-600">
+            {result.changed.length} transferred to {result.newEmail},{' '}
+            {result.skipped.length} skipped
+          </p>
+          {result.changed.length > 0 && (
+            <ul className="text-xs space-y-1 font-mono">
+              {result.changed.map((c) => (
+                <li key={c.key} className="text-green-700">
+                  ✓ {c.key}{' '}
+                  <span className="text-ink/40">{c.oldEmail}</span>
+                  {' → '}
+                  {result.newEmail}
+                </li>
+              ))}
+            </ul>
+          )}
+          {result.skipped.length > 0 && (
+            <ul className="text-xs space-y-1 font-mono">
+              {result.skipped.map((s) => (
+                <li key={s.key} className="text-ink/50">
+                  — {s.key} ({s.reason.replace(/_/g, ' ')})
                 </li>
               ))}
             </ul>
