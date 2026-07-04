@@ -472,13 +472,14 @@ export async function searchLicensesAllPg(query: string, since?: string, status?
 export async function getStatsPg(): Promise<LicenseStats> {
   await ensureSchema();
 
-  const [totalRes, statusRes, planRes, week7Res, week30Res, activationRes] = await Promise.all([
+  const [totalRes, statusRes, planRes, week7Res, week30Res, activationRes, expiring30Res] = await Promise.all([
     sql<{ total: number }>`SELECT COUNT(*)::int AS total FROM licenses`,
     sql<{ status: string; c: number }>`SELECT status, COUNT(*)::int AS c FROM licenses GROUP BY status`,
     sql<{ plan: string; c: number }>`SELECT plan, COUNT(*)::int AS c FROM licenses GROUP BY plan`,
     sql<{ c: number }>`SELECT COUNT(*)::int AS c FROM licenses WHERE issued_at >= NOW() - INTERVAL '7 days'`,
     sql<{ c: number }>`SELECT COUNT(*)::int AS c FROM licenses WHERE issued_at >= NOW() - INTERVAL '30 days'`,
     sql<{ c: number }>`SELECT COUNT(*)::int AS c FROM activations`,
+    sql<{ c: number }>`SELECT COUNT(*)::int AS c FROM licenses WHERE expires_at IS NOT NULL AND expires_at >= NOW() AND expires_at <= NOW() + INTERVAL '30 days' AND status = 'active'`,
   ]);
 
   const byStatus: Record<string, number> = {};
@@ -494,6 +495,7 @@ export async function getStatsPg(): Promise<LicenseStats> {
     newLast7Days: week7Res.rows[0]?.c ?? 0,
     newLast30Days: week30Res.rows[0]?.c ?? 0,
     activatedMachines: activationRes.rows[0]?.c ?? 0,
+    expiringIn30Days: expiring30Res.rows[0]?.c ?? 0,
   };
 }
 

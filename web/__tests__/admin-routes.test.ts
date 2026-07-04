@@ -2269,6 +2269,48 @@ describe('GET /api/admin/stats', () => {
     const res = await GET(req);
     expect(res.status).toBe(200);
   });
+
+  it('expiringIn30Days is 0 when no licenses are expiring', async () => {
+    const res = await callStats();
+    const body = await res.json();
+    expect(body.expiringIn30Days).toBe(0);
+  });
+
+  it('expiringIn30Days counts active licenses whose expiresAt is within 30 days', async () => {
+    const { setIssuedAt } = await import('@/lib/db');
+    const soon = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString();
+    const late = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString();
+    insertLicense({ key: 'ADIA-STAT-EX10-AAAA', email: 'ex10@example.com', plan: 'monthly', expiresAt: soon });
+    insertLicense({ key: 'ADIA-STAT-EX60-BBBB', email: 'ex60@example.com', plan: 'monthly', expiresAt: late });
+    const res = await callStats();
+    const body = await res.json();
+    expect(body.expiringIn30Days).toBe(1);
+  });
+
+  it('expiringIn30Days excludes lifetime licenses', async () => {
+    insertLicense({ key: 'ADIA-STAT-EXLF-AAAA', email: 'exlf@example.com', plan: 'lifetime', expiresAt: null });
+    const res = await callStats();
+    const body = await res.json();
+    expect(body.expiringIn30Days).toBe(0);
+  });
+
+  it('expiringIn30Days excludes already-expired licenses', async () => {
+    const past = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString();
+    insertLicense({ key: 'ADIA-STAT-EXPS-AAAA', email: 'exps@example.com', plan: 'monthly', expiresAt: past });
+    const res = await callStats();
+    const body = await res.json();
+    expect(body.expiringIn30Days).toBe(0);
+  });
+
+  it('expiringIn30Days excludes non-active licenses', async () => {
+    const { setStatus } = await import('@/lib/db');
+    const soon = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString();
+    insertLicense({ key: 'ADIA-STAT-EXCA-AAAA', email: 'exca@example.com', plan: 'monthly', expiresAt: soon });
+    setStatus('ADIA-STAT-EXCA-AAAA', 'canceled');
+    const res = await callStats();
+    const body = await res.json();
+    expect(body.expiringIn30Days).toBe(0);
+  });
 });
 
 // ─── POST /api/admin/bulk-reactivate ─────────────────────────────────────────

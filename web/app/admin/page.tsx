@@ -19,6 +19,19 @@ export default function Admin() {
     if (s) setSectionFilter(s);
   }, []);
 
+  // Keep ?token= in sync so refreshing the page preserves the session.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (token) {
+      params.set('token', token);
+    } else {
+      params.delete('token');
+    }
+    const qs = params.toString();
+    const next = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
+    window.history.replaceState(null, '', next);
+  }, [token]);
+
   // Keep ?section= in sync with the filter input so filtered views are bookmarkable.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -199,6 +212,7 @@ type Stats = {
   newLast7Days: number;
   newLast30Days: number;
   activatedMachines: number;
+  expiringIn30Days: number;
 };
 
 function StatsPanel({ token }: { token: string }) {
@@ -245,6 +259,8 @@ function StatsPanel({ token }: { token: string }) {
           </div>
           <div className="grid grid-cols-3 gap-3">
             <Stat label="Active machines" value={stats.activatedMachines} />
+            <Stat label="Expiring (30d)" value={stats.expiringIn30Days}
+              accent={stats.expiringIn30Days > 0 ? (stats.expiringIn30Days >= 10 ? 'red' : 'yellow') : undefined} />
             {Object.entries(stats.byStatus).map(([s, c]) => (
               <Stat key={s} label={`Status: ${s}`} value={c}
                 accent={s === 'active' ? 'green' : s === 'canceled' ? 'red' : 'yellow'} />

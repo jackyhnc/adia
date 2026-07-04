@@ -300,6 +300,7 @@ export type LicenseStats = {
   newLast7Days: number;
   newLast30Days: number;
   activatedMachines: number;
+  expiringIn30Days: number;
 };
 
 export function setNote(key: string, note: string | null): void {
@@ -503,7 +504,18 @@ export function getStats(): LicenseStats {
     db().prepare('SELECT COUNT(*) as c FROM activations').get() as { c: number }
   ).c;
 
-  return { total, byStatus, byPlan, newLast7Days, newLast30Days, activatedMachines };
+  const now30 = new Date().toISOString();
+  const cutoff30 = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+  const expiringIn30Days = (
+    db()
+      .prepare(
+        `SELECT COUNT(*) as c FROM licenses
+         WHERE expires_at IS NOT NULL AND expires_at >= ? AND expires_at <= ? AND status = 'active'`,
+      )
+      .get(now30, cutoff30) as { c: number }
+  ).c;
+
+  return { total, byStatus, byPlan, newLast7Days, newLast30Days, activatedMachines, expiringIn30Days };
 }
 
 // Returns active licenses whose expires_at falls within the next `days` days,
