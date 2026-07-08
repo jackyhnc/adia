@@ -156,6 +156,9 @@ export default function Admin() {
       <CollapsibleSection title="Deactivate all machines">
         <DeactivateAllPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Bulk deactivate all machines">
+        <BulkDeactivateAllPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Transfer license">
         <TransferPanel />
       </CollapsibleSection>
@@ -3174,6 +3177,118 @@ function DeactivateAllPanel({ token }: { token: string }) {
             {result.removedCount === 1 ? '' : 's'} for{' '}
             <span className="font-mono">{result.key}</span>
           </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Bulk deactivate all machines ────────────────────────────────────────────
+
+type BulkDeactivateAllResult = {
+  ok: true;
+  changed: { key: string; removedCount: number }[];
+  skipped: { key: string; reason: string }[];
+};
+
+function BulkDeactivateAllPanel({ token }: { token: string }) {
+  const [keysInput, setKeysInput] = useState('');
+  const [result, setResult] = useState<BulkDeactivateAllResult | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const keys = keysInput
+      .split(/[\n,]+/)
+      .map((k) => k.trim().toUpperCase())
+      .filter(Boolean);
+    if (keys.length === 0) { setError('Enter at least one key.'); return; }
+    if (!confirm(`Remove ALL activations for ${keys.length} key${keys.length === 1 ? '' : 's'}? Users will need to re-activate on each machine.`)) return;
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/bulk-deactivate-all', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keys }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+        setKeysInput('');
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const totalRemoved = result?.changed.reduce((s, r) => s + r.removedCount, 0) ?? 0;
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Wipes every machine activation for a batch of license keys at once. Use when multiple
+        customers have lost access to their machines and need seats cleared.
+      </p>
+      <form onSubmit={submit} className="card space-y-3">
+        <Field label="License keys (one per line or comma-separated, max 100)">
+          <textarea
+            value={keysInput}
+            onChange={(e) => setKeysInput(e.target.value)}
+            placeholder={"ADIA-XXXX-XXXX-XXXX\nADIA-YYYY-YYYY-YYYY"}
+            className="input font-mono text-xs min-h-[80px]"
+            rows={4}
+          />
+        </Field>
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-lg bg-orange-600 text-white text-sm font-medium hover:bg-orange-700 disabled:opacity-40"
+          disabled={loading}
+        >
+          {loading ? 'Deactivating…' : 'Deactivate all machines'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {result && (
+        <div className="mt-3 space-y-2">
+          <div className="card border border-green-500/30 bg-green-50/5">
+            <p className="text-sm font-semibold text-green-600">
+              {result.changed.length} key{result.changed.length === 1 ? '' : 's'} cleared
+              {totalRemoved > 0 && ` — ${totalRemoved} activation${totalRemoved === 1 ? '' : 's'} removed`}
+            </p>
+          </div>
+          {result.changed.length > 0 && (
+            <div className="card text-xs space-y-1">
+              <p className="font-semibold text-ink/70 mb-1">Cleared</p>
+              {result.changed.map((r) => (
+                <p key={r.key}>
+                  <span className="font-mono">{r.key}</span>
+                  <span className="text-ink/50 ml-2">
+                    {r.removedCount} activation{r.removedCount === 1 ? '' : 's'} removed
+                  </span>
+                </p>
+              ))}
+            </div>
+          )}
+          {result.skipped.length > 0 && (
+            <div className="card text-xs space-y-1">
+              <p className="font-semibold text-ink/70 mb-1">Skipped</p>
+              {result.skipped.map((s) => (
+                <p key={s.key}>
+                  <span className="font-mono">{s.key}</span>
+                  <span className="text-ink/50 ml-2 italic">{s.reason}</span>
+                </p>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
