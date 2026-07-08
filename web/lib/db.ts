@@ -368,6 +368,39 @@ export function listAuditLog(opts?: { licenseKey?: string; limit?: number; offse
   }));
 }
 
+export function countNotifyHistory(email: string): number {
+  const norm = email.trim().toLowerCase();
+  const row = (db()
+    .prepare(`
+      SELECT COUNT(*) AS n FROM audit_log al
+      JOIN licenses l ON l.key = al.license_key
+      WHERE LOWER(l.email) = ? AND al.action = 'notify'
+    `)
+    .get as (...a: unknown[]) => any)(norm);
+  return (row as any).n as number;
+}
+
+export function listNotifyHistory(email: string, limit = 20, offset = 0): AuditEntry[] {
+  const cap = Math.min(limit, 100);
+  const norm = email.trim().toLowerCase();
+  const rows = (db()
+    .prepare(`
+      SELECT al.* FROM audit_log al
+      JOIN licenses l ON l.key = al.license_key
+      WHERE LOWER(l.email) = ? AND al.action = 'notify'
+      ORDER BY al.id DESC
+      LIMIT ? OFFSET ?
+    `)
+    .all as (...a: unknown[]) => any[])(norm, cap, offset);
+  return rows.map(r => ({
+    id: r.id,
+    licenseKey: r.license_key,
+    action: r.action,
+    detail: r.detail,
+    createdAt: r.created_at,
+  }));
+}
+
 export function listAllAuditLog(since?: string, action?: string, licenseKey?: string): AuditEntry[] {
   const conditions: string[] = [];
   const params: unknown[] = [];

@@ -499,6 +499,40 @@ export async function getStatsPg(): Promise<LicenseStats> {
   };
 }
 
+export async function countNotifyHistoryPg(email: string): Promise<number> {
+  await ensureSchema();
+  const norm = email.trim().toLowerCase();
+  const result = await sql<any>`
+    SELECT COUNT(*) AS n FROM audit_log al
+    JOIN licenses l ON l.key = al.license_key
+    WHERE LOWER(l.email) = ${norm} AND al.action = 'notify'
+  `;
+  return Number(result.rows[0].n);
+}
+
+export async function listNotifyHistoryPg(email: string, limit = 20, offset = 0): Promise<AuditEntry[]> {
+  await ensureSchema();
+  const norm = email.trim().toLowerCase();
+  const cap = Math.min(limit, 100);
+  const result = await sql<any>`
+    SELECT al.id, al.license_key,
+           al.action, al.detail,
+           to_char(al.created_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS created_at
+    FROM audit_log al
+    JOIN licenses l ON l.key = al.license_key
+    WHERE LOWER(l.email) = ${norm} AND al.action = 'notify'
+    ORDER BY al.id DESC
+    LIMIT ${cap} OFFSET ${offset}
+  `;
+  return result.rows.map((r: any) => ({
+    id: r.id,
+    licenseKey: r.license_key,
+    action: r.action,
+    detail: r.detail,
+    createdAt: r.created_at,
+  }));
+}
+
 export async function listAllAuditLogPg(since?: string, action?: string, licenseKey?: string): Promise<AuditEntry[]> {
   await ensureSchema();
   const sinceVal = since ?? null;

@@ -159,6 +159,9 @@ export default function Admin() {
       <CollapsibleSection title="Send custom email to license holder">
         <NotifyPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Outreach history by email">
+        <NotifyHistoryPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Revoke license">
         <RevokePanel token={token} />
       </CollapsibleSection>
@@ -2858,6 +2861,114 @@ function NotifyPanel({ token }: { token: string }) {
           </p>
           <p className="text-xs text-ink/40 mt-0.5">Sent at {result.sentAt.slice(0, 16).replace('T', ' ')} UTC</p>
         </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Outreach history by email ────────────────────────────────────────────────
+
+type NotifyEntry = {
+  id: number;
+  licenseKey: string;
+  action: string;
+  detail: string | null;
+  createdAt: string;
+};
+
+function NotifyHistoryPanel({ token }: { token: string }) {
+  const [email, setEmail] = useState('');
+  const [entries, setEntries] = useState<NotifyEntry[]>([]);
+  const [total, setTotal] = useState(0);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function load(nextOffset = 0) {
+    if (!email.trim()) return;
+    setLoading(true);
+    setError('');
+    try {
+      const params = new URLSearchParams({ email: email.trim(), limit: '20', offset: String(nextOffset) });
+      const res = await fetch(`/api/admin/notify-history?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const body = await res.json();
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+        return;
+      }
+      if (nextOffset === 0) {
+        setEntries(body.entries ?? []);
+      } else {
+        setEntries(prev => [...prev, ...(body.entries ?? [])]);
+      }
+      setTotal(body.count ?? 0);
+      setOffset(nextOffset);
+      setHasMore(body.hasMore ?? false);
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function parseDetail(raw: string | null): { to?: string; subject?: string } {
+    if (!raw) return {};
+    try { return JSON.parse(raw); } catch { return {}; }
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        View all custom emails sent to a customer across all their license keys.
+      </p>
+      <form onSubmit={(e) => { e.preventDefault(); load(0); }} className="card space-y-3">
+        <Field label="Customer email">
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="user@example.com"
+            className="input"
+            type="email"
+            required
+          />
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Loading…' : 'Fetch history'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+      {entries.length > 0 && (
+        <div className="mt-3 space-y-2">
+          <p className="text-xs text-ink/50">{total} email{total !== 1 ? 's' : ''} sent to {email.trim().toLowerCase()}</p>
+          {entries.map(e => {
+            const d = parseDetail(e.detail);
+            return (
+              <div key={e.id} className="card text-sm space-y-0.5">
+                <p className="font-medium truncate">{d.subject ?? '(no subject)'}</p>
+                <p className="text-xs text-ink/50">
+                  Key: <span className="font-mono">{e.licenseKey}</span>
+                  {' · '}{e.createdAt.slice(0, 16).replace('T', ' ')} UTC
+                </p>
+              </div>
+            );
+          })}
+          {hasMore && (
+            <button
+              type="button"
+              className="btn-secondary w-full"
+              disabled={loading}
+              onClick={() => load(offset + 20)}
+            >
+              {loading ? 'Loading…' : 'Load more'}
+            </button>
+          )}
+        </div>
+      )}
+      {!loading && entries.length === 0 && total === 0 && email && (
+        <p className="mt-3 text-sm text-ink/50">No emails sent to this address.</p>
       )}
     </div>
   );

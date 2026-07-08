@@ -276,3 +276,19 @@ export async function listAllAuditLog(since?: string, action?: string, licenseKe
   }
   return sqlite.listAllAuditLog(since, action, licenseKey);
 }
+
+export async function countNotifyHistory(email: string): Promise<number> {
+  if (usePg) {
+    const { countNotifyHistoryPg } = await import('./db-pg');
+    return countNotifyHistoryPg(email);
+  }
+  return sqlite.countNotifyHistory(email);
+}
+
+export async function listNotifyHistory(email: string, limit?: number, offset?: number): Promise<AuditEntry[]> {
+  if (usePg) {
+    const { listNotifyHistoryPg } = await import('./db-pg');
+    return listNotifyHistoryPg(email, limit, offset);
+  }
+  return sqlite.listNotifyHistory(email, limit, offset);
+}
