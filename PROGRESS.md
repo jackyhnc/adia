@@ -1,5 +1,45 @@
 # Adia — Build Progress
 
+## Run 284 — 2026-07-08T23:10:00Z — POST /api/admin/bulk-change-email + BulkChangeEmailPanel + 23 tests (875 → 898)
+
+### Shipped
+
+**`web/app/api/admin/bulk-change-email/route.ts` — new endpoint:**
+- `POST /api/admin/bulk-change-email` — maps each license key to its own individual email address.
+- Body: `{ changes: [{ key: string, newEmail: string }] }` — max 100 entries per request.
+- Key difference vs `bulk-transfer`: bulk-transfer moves all keys to ONE email; bulk-change-email maps each key to its own distinct email (per-key assignment).
+- All entries validated up-front before any mutation — invalid email in entry N prevents mutation of entries 0..N-1.
+- Unknown keys skipped with `reason: "not_found"`; keys already at target email skipped with `reason: "already_set"`.
+- Writes `bulk_change_email` audit log entry `{ oldEmail, newEmail, bulk: true }` per changed key.
+- Response: `{ ok, changed: [{key, oldEmail, newEmail}], skipped: [{key, reason}] }`.
+- `adminGuard` auth (Bearer token or `?token=`).
+
+**`web/app/admin/page.tsx` — BulkChangeEmailPanel:**
+- `CollapsibleSection title="Bulk change email"` inserted after "Bulk transfer".
+- Textarea accepts key → email pairs, one per line (whitespace or comma separated: `ADIA-XXX  alice@corp.com`).
+- Submit parses, validates, POSTs; shows per-key changed (oldEmail → newEmail) and skipped (with reason) lists.
+
+**`web/__tests__/admin-bulk-change-email.test.ts` — 23 tests:**
+- Auth: 401 no-token, 401 wrong-token, 200 ?token= query-param.
+- Validation: missing changes, empty array, >100 entries, missing key, missing newEmail, invalid email, invalid email in later entry does not mutate earlier valid entries.
+- Core: single key change, multiple keys each to different email, key uppercase normalisation, email lowercase normalisation, response shape with oldEmail+newEmail per entry.
+- Skip: not_found, already_set, mixed batch, no mutation on skipped key.
+- Audit log: one entry per changed key, detail shape (oldEmail/newEmail/bulk=true), per-key newEmail captured independently, no entry for skipped keys.
+
+### Tests
+898 passed (up from 875). 38 test files green. `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `GET /api/admin/usage-heatmap` — per-hour activation counts across all machines for the past N days; returns a 24-bucket array (hour 0–23); optional `?days=` and `?plan=` filters; useful for understanding when users are most active.
+- Consider `bulk:true` detail flag in audit log entries for `bulk-change-plan`, `bulk-extend`, `bulk-set-expiry` (currently only `bulk-revoke`, `bulk-reactivate`, `bulk-set-status`, `bulk-resend-license`, `bulk-deactivate-all`, and now `bulk-change-email` set this flag).
+- Consider `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment).
+- Consider rate-limit coverage for `bulk-change-email` — currently `adminGuard` applies the 20 req/60s per-IP rate limit; add an explicit test asserting 429 on the 21st request (pattern from `admin-export-licenses.test.ts`).
+
+---
+
 ## Run 283 — 2026-07-08T22:10:00Z — GET /api/admin/dormant + DormantPanel + 31 tests (844 → 875)
 
 ### Shipped
