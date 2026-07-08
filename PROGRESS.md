@@ -1,5 +1,49 @@
 # Adia — Build Progress
 
+## Run 277 — 2026-07-08T13:10:00Z — GET /api/admin/notify-history + NotifyHistoryPanel + 20 tests (763 → 783)
+
+### Shipped
+
+**`web/lib/db.ts` — two new functions:**
+- `countNotifyHistory(email: string): number` — JOIN audit_log + licenses, filters by LOWER(email) and action='notify'.
+- `listNotifyHistory(email: string, limit?: number, offset?: number): AuditEntry[]` — same JOIN, paginated, newest-first.
+
+**`web/lib/db-pg.ts` — Postgres equivalents:**
+- `countNotifyHistoryPg` and `listNotifyHistoryPg` using tagged template SQL with LOWER() and JOIN on licenses.
+
+**`web/lib/store.ts` — async facades:**
+- `countNotifyHistory` and `listNotifyHistory` routed to Postgres or SQLite adapter.
+
+**`web/app/api/admin/notify-history/route.ts` — new endpoint:**
+- `GET /api/admin/notify-history?email=...` — auth via adminGuard; ?limit= (default 20, max 100) + ?offset= pagination.
+- Response: `{ email, count, hasMore, offset, limit, entries }`.
+- 400 on missing/blank email. Email normalized to lowercase in response.
+- Aggregates across ALL license keys owned by that email — unlike audit-log?key=&action=notify which requires knowing the specific key.
+
+**`web/app/admin/page.tsx` — NotifyHistoryPanel:**
+- Email input + "Fetch history" button.
+- Shows total count, per-entry card with subject + key + timestamp.
+- "Load more" button when hasMore=true.
+- Placed immediately after NotifyPanel (natural pairing: send → review history).
+
+**`web/__tests__/admin-notify-history.test.ts` — 20 new tests (33 test files):**
+- Auth (3): 401 no-token, 401 wrong-token, 200 ?token= query param.
+- Validation (2): 400 missing email, 400 blank email.
+- Core (9): empty result for email with no notify; empty for unknown email; single key entry; detail contains to+subject; email normalized; response echoes lowercase email; multi-key aggregation; non-notify entries excluded; no bleed across customers; newest-first ordering.
+- Pagination (5): hasMore=false when fits; count reflects total vs page; offset skips; limit capped at 100; invalid limit falls back to 20.
+
+**Test count: 763 → 783 (33 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider a `GET /api/admin/licenses-by-email` **CSV export pagination test** — the CSV path returns all records (no pagination) but has no tests verifying it respects `?plan=` or `?status=` filters in combination. Could add 3–4 tests to `admin-routes.test.ts`.
+- Consider adding `itch.io` to `DefaultBlocklists.swift` (indie game hosting — distinct from `gamejolt.com` already blocked). Requires macOS build environment.
+- Consider `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests`. Requires macOS.
+
+---
+
 ## Run 276 — 2026-07-08T11:10:00Z — Export endpoint rate limiting + tests (26 tests, 737 → 763)
 
 ### Shipped
