@@ -71,6 +71,21 @@ describe('POST /api/admin/notify', () => {
     expect(res.status).toBe(401);
   });
 
+  it('accepts ?token= query-param auth', async () => {
+    const { POST } = await import('@/app/api/admin/notify/route');
+    insertLicense({ key: 'ADIA-NTFY-AUTH-CCCC', email: 'qtok@example.com', plan: 'monthly', expiresAt: null });
+    const req = new NextRequest(
+      'http://localhost/api/admin/notify?token=test-admin-token',
+      {
+        method: 'POST',
+        body: JSON.stringify({ key: 'ADIA-NTFY-AUTH-CCCC', subject: 'hi', message: 'hello' }),
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+  });
+
   // ─── Validation ───────────────────────────────────────────────────────────
 
   it('returns 400 when key is missing', async () => {

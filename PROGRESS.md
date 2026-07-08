@@ -1,5 +1,42 @@
 # Adia — Build Progress
 
+## Run 276 — 2026-07-08T11:10:00Z — Export endpoint rate limiting + tests (26 tests, 737 → 763)
+
+### Shipped
+
+**`web/app/api/admin/audit-log-export/route.ts` — secondary rate limit:**
+- Added `rateLimit('export-audit-log:<ip>', 10, 60)` check before `adminGuard`, keyed on a separate bucket so bulk CSV downloads can't exhaust the shared 20 req/60 s adminGuard bucket.
+- Pattern mirrors `POST /api/admin/notify`'s pre-guard rate limiter.
+
+**`web/app/api/admin/export-licenses/route.ts` — secondary rate limit:**
+- Added `rateLimit('export-licenses:<ip>', 10, 60)` check before `adminGuard` on its own bucket.
+
+**`web/__tests__/admin-export-licenses.test.ts` — 23 new tests for `GET /api/admin/export-licenses`:**
+- Auth (3): 401 no-token, 401 wrong-token, 200 `?token=` query param.
+- Validation (4): 400 invalid format, 400 invalid status (`suspended`), 400 invalid plan (`enterprise`), 400 invalid since date.
+- Empty table (2): CSV with header row only, JSON with empty array + count 0.
+- With data (11): CSV row count; CSV Content-Disposition with dated filename; CSV Cache-Control: no-store; JSON shape with all fields; status filter (active); plan filter (monthly); plan filter (lifetime); since filter (future → 0 results); since filter (past → all results); combined plan+status filter; CSV email field appears in data row.
+- Rate limit (3): 429 after 10 requests; Retry-After header; rate limit fires before the adminGuard bucket.
+
+**`web/__tests__/admin-audit-export.test.ts` — +2 rate-limit tests:**
+- 429 after 10 requests from the same IP.
+- Retry-After header present on 429 response.
+
+**`web/__tests__/admin-notify.test.ts` — +1 auth test:**
+- 200 when authenticating via `?token=` query param (the `adminGuard` `?token=` path was exercised by other suites but not explicitly for this endpoint).
+
+**Test count: 737 → 763 (32 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `GET /api/admin/licenses-by-email` pagination test suite — the endpoint already supports `?limit=` + `?offset=` + `hasMore` but has no tests exercising pagination, only the happy-path single-page case.
+- Consider `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment).
+- Consider a `GET /api/admin/notify-history` endpoint or adding `notify` action to the AuditPanel quick-filter so admins can review past custom emails sent to a customer.
+
+---
+
 ## Run 275 — 2026-07-08T10:07:00Z — Admin bulk-set-status tests (25 tests, 712 → 737)
 
 ### Shipped

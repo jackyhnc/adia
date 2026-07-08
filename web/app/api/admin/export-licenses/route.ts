@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { listAllLicenses } from '@/lib/store';
 import type { License } from '@/lib/store';
 import { adminGuard } from '@/lib/admin';
+import { rateLimit, clientIp } from '@/lib/ratelimit';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -36,6 +37,16 @@ function toCSV(licenses: License[]): string {
 }
 
 export async function GET(req: NextRequest) {
+  // Tighter export rate limit (10 req/60 s) on a separate bucket so bulk
+  // CSV downloads can't starve the shared adminGuard bucket.
+  const rl = rateLimit(`export-licenses:${clientIp(req)}`, 10, 60);
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: 'too many requests' },
+      { status: 429, headers: { 'Retry-After': String(rl.retryAfterSec) } },
+    );
+  }
+
   const denied = adminGuard(req, 'export-licenses');
   if (denied) return denied;
 
