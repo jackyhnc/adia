@@ -138,6 +138,9 @@ export default function Admin() {
       <CollapsibleSection title="Bulk transfer">
         <BulkTransferPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Bulk change email">
+        <BulkChangeEmailPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Licenses by email">
         <LicensesByEmailPanel token={token} onSelectKey={setAutoLookupKey} />
       </CollapsibleSection>
@@ -4175,6 +4178,122 @@ function BulkTransferPanel({ token }: { token: string }) {
                   <span className="text-ink/40">{c.oldEmail}</span>
                   {' → '}
                   {result.newEmail}
+                </li>
+              ))}
+            </ul>
+          )}
+          {result.skipped.length > 0 && (
+            <ul className="text-xs space-y-1 font-mono">
+              {result.skipped.map((s) => (
+                <li key={s.key} className="text-ink/50">
+                  — {s.key} ({s.reason.replace(/_/g, ' ')})
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Bulk change email ───────────────────────────────────────────────────────
+
+type BulkChangeEmailChangedEntry = { key: string; oldEmail: string; newEmail: string };
+type BulkChangeEmailSkippedEntry = { key: string; reason: string };
+
+function BulkChangeEmailPanel({ token }: { token: string }) {
+  const [changesText, setChangesText] = useState('');
+  const [result, setResult] = useState<{
+    ok: boolean;
+    changed: BulkChangeEmailChangedEntry[];
+    skipped: BulkChangeEmailSkippedEntry[];
+  } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    setResult(null);
+
+    // Parse "KEY  email@example.com" lines (whitespace or comma separated)
+    const lines = changesText
+      .split('\n')
+      .map((l) => l.trim())
+      .filter(Boolean);
+    const changes: { key: string; newEmail: string }[] = [];
+    for (const line of lines) {
+      const parts = line.split(/[\s,]+/);
+      if (parts.length < 2) {
+        setError(`Cannot parse line: "${line}" — expected "KEY  email@example.com"`);
+        return;
+      }
+      changes.push({ key: parts[0], newEmail: parts[1] });
+    }
+    if (changes.length === 0) {
+      setError('Enter at least one key → email mapping.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/bulk-change-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ changes }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${data.error ?? 'unknown error'}`);
+        return;
+      }
+      setResult(data);
+    } catch (err: unknown) {
+      setError(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Assign each license key to its own individual email address — useful for corporate seat
+        reassignments where multiple employees each need a different key. Unlike "Bulk transfer"
+        (all keys → one email), this maps each key to a distinct address.
+        <br />
+        Format: one entry per line, key followed by whitespace or comma, then the new email.
+        Example: <code className="font-mono text-xs">ADIA-XXXX-YYYY-ZZZZ  alice@corp.com</code>
+      </p>
+      <form onSubmit={submit} className="card space-y-3">
+        <Field label='Key → email pairs (one per line: "KEY  new@email.com")'>
+          <textarea
+            value={changesText}
+            onChange={(e) => setChangesText(e.target.value)}
+            rows={6}
+            placeholder={'ADIA-XXXX-YYYY-ZZZZ  alice@corp.com\nADIA-AAAA-BBBB-CCCC  bob@corp.com'}
+            className="input w-full font-mono text-xs resize-y"
+          />
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Changing emails…' : 'Bulk change email'}
+        </button>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+      {result && (
+        <div className="card mt-3 space-y-2 border border-green-500/30 bg-green-50/5">
+          <p className="text-sm font-semibold text-green-600">
+            {result.changed.length} changed, {result.skipped.length} skipped
+          </p>
+          {result.changed.length > 0 && (
+            <ul className="text-xs space-y-1 font-mono">
+              {result.changed.map((c) => (
+                <li key={c.key} className="text-green-700">
+                  ✓ {c.key}{' '}
+                  <span className="text-ink/40">{c.oldEmail}</span>
+                  {' → '}
+                  {c.newEmail}
                 </li>
               ))}
             </ul>
