@@ -1,5 +1,60 @@
 # Adia — Build Progress
 
+## Run 283 — 2026-07-08T22:10:00Z — GET /api/admin/dormant + DormantPanel + 31 tests (844 → 875)
+
+### Shipped
+
+**`web/lib/db.ts` — `listDormantLicenses(days, plan?, status?)`:**
+- Added `lastSeen?: string | null` to `License` type.
+- INNER JOIN activations (so never-activated licenses are excluded), HAVING MAX(a.last_seen) < datetime('now', '-N days').
+- Results ordered most-recently-seen DESC — closest to reactivating is first, most actionable for re-engagement.
+
+**`web/lib/db-pg.ts` — `listDormantLicensesPg`:**
+- Postgres equivalent; `HAVING MAX(a.last_seen) < NOW() - (${days} * INTERVAL '1 day')`.
+- Includes `to_char(MAX(a.last_seen), ...) AS "lastSeen"` in projection.
+
+**`web/lib/store.ts` — `listDormantLicenses` facade:**
+- Routes to SQLite or Postgres backend based on `usePg`.
+
+**`web/app/api/admin/dormant/route.ts` — new endpoint:**
+- `GET /api/admin/dormant` — returns licenses that have been activated but are inactive.
+- `?days=N` — look-back window 1–365, default 30.
+- `?plan=monthly|yearly|lifetime` — optional plan filter.
+- `?status=active|canceled|expired|past_due` — optional status filter.
+- `?format=csv` — CSV download with `key,email,plan,status,issuedAt,machineCount,lastSeen,note` header.
+- 400 on invalid days/plan/status/format with descriptive error messages.
+- Response `{ licenses, count, days }` — each row includes `lastSeen`.
+- `adminGuard` auth (Bearer token or `?token=`).
+
+**`web/app/admin/page.tsx` — DormantPanel:**
+- `CollapsibleSection title="Dormant licenses"` inserted after "Never activated".
+- Days input (default 30, range 1–365), plan dropdown, status dropdown.
+- Result: summary line (N dormant licenses, inactive Nd+), table with key/email/plan/status/machineCount/lastSeen columns.
+- Export CSV button forwards current filters.
+
+**`web/__tests__/admin-dormant.test.ts` — 31 tests:**
+- Auth: 401 no-token, 401 wrong-token, 200 ?token= query-param.
+- Validation: days=0, days=366, non-integer days, invalid plan, invalid status, invalid format.
+- Core: empty list, never-activated excluded, recent activation excluded, old activation returned, machineCount+lastSeen in row, response shape (licenses/count/days), default days=30, mixed-machine (one old + one new = not dormant), ordering DESC by lastSeen.
+- Plan filter: monthly-only, lifetime-only.
+- Status filter: all statuses, active-only, canceled-only.
+- Days window: days=365 accepted, days=1 accepted, 45-day dormant appears under days=30 but not days=60.
+- CSV: content-type, Content-Disposition, header row includes lastSeen, data row, CSV escaping.
+
+### Tests
+875 passed (up from 844). 37 test files green. `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `POST /api/admin/bulk-change-email` — transfer multiple keys to new owners in one request, mirroring bulk-transfer but targeting the email field directly; useful for corporate seat reassignments.
+- Consider `GET /api/admin/usage-heatmap` — per-hour activation counts across all machines for the past N days; returns a 24-bucket array; useful for seeing when users are most active.
+- Consider `bulk:true` detail flag in audit log entries for `bulk-change-plan`, `bulk-extend`, `bulk-set-expiry` (currently only `bulk-revoke`, `bulk-reactivate`, `bulk-set-status`, `bulk-resend-license`, `bulk-deactivate-all` set this flag).
+- Consider `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment).
+
+---
+
 ## Run 282 — 2026-07-08T21:10:00Z — POST /api/admin/bulk-deactivate-all + BulkDeactivateAllPanel + 18 tests (826 → 844)
 
 ### Shipped
