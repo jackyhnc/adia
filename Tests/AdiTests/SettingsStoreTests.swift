@@ -663,4 +663,78 @@ struct SettingsStoreTests {
             #expect(m > 0)
         }
     }
+
+    // MARK: - dismissedSuggestionTasks
+
+    private func resetDismissedSuggestions() async {
+        await MainActor.run { SettingsStore.shared.resetDismissedSuggestions() }
+    }
+
+    @Test func dismissSuggestionAddsToSet() async {
+        await resetDismissedSuggestions()
+        await MainActor.run { SettingsStore.shared.dismissSuggestion(task: "write my essay") }
+        let dismissed = await MainActor.run { SettingsStore.shared.dismissedSuggestionTasks }
+        #expect(dismissed.contains("write my essay"))
+        await resetDismissedSuggestions()
+    }
+
+    @Test func dismissSuggestionIsIdempotent() async {
+        await resetDismissedSuggestions()
+        await MainActor.run {
+            SettingsStore.shared.dismissSuggestion(task: "write my essay")
+            SettingsStore.shared.dismissSuggestion(task: "write my essay")
+        }
+        let dismissed = await MainActor.run { SettingsStore.shared.dismissedSuggestionTasks }
+        #expect(dismissed.count == 1)
+        await resetDismissedSuggestions()
+    }
+
+    @Test func resetDismissedSuggestionsClearsAll() async {
+        await MainActor.run {
+            SettingsStore.shared.dismissSuggestion(task: "write my essay")
+            SettingsStore.shared.dismissSuggestion(task: "study for exam")
+        }
+        await resetDismissedSuggestions()
+        let dismissed = await MainActor.run { SettingsStore.shared.dismissedSuggestionTasks }
+        #expect(dismissed.isEmpty)
+    }
+
+    @Test func showSuggestedTemplatesEnableResetsAllDismissed() async {
+        // Dismiss a suggestion, hide the section, then re-enable — dismissed list must clear.
+        await resetDismissedSuggestions()
+        await MainActor.run {
+            SettingsStore.shared.dismissSuggestion(task: "write my essay")
+            SettingsStore.shared.showSuggestedTemplates = false
+            SettingsStore.shared.showSuggestedTemplates = true  // re-enable
+        }
+        let dismissed = await MainActor.run { SettingsStore.shared.dismissedSuggestionTasks }
+        #expect(dismissed.isEmpty)
+        // Restore
+        await MainActor.run { SettingsStore.shared.showSuggestedTemplates = true }
+    }
+
+    @Test func showSuggestedTemplatesDisableDoesNotClearDismissed() async {
+        // Toggling off should NOT clear dismissed — only toggling back on does.
+        await resetDismissedSuggestions()
+        await MainActor.run {
+            SettingsStore.shared.dismissSuggestion(task: "write my essay")
+            SettingsStore.shared.showSuggestedTemplates = false
+        }
+        let dismissed = await MainActor.run { SettingsStore.shared.dismissedSuggestionTasks }
+        #expect(dismissed.contains("write my essay"))
+        // Restore
+        await MainActor.run { SettingsStore.shared.showSuggestedTemplates = true }
+        await resetDismissedSuggestions()
+    }
+
+    @Test func dismissedSuggestionsPersistToUserDefaults() async {
+        await resetDismissedSuggestions()
+        await MainActor.run { SettingsStore.shared.dismissSuggestion(task: "finish the report") }
+        // Verify the UserDefaults key was written.
+        let data = UserDefaults.standard.data(forKey: "adia.dismissedSuggestions")
+        #expect(data != nil)
+        let decoded = try? JSONDecoder().decode([String].self, from: data ?? Data())
+        #expect(decoded?.contains("finish the report") == true)
+        await resetDismissedSuggestions()
+    }
 }

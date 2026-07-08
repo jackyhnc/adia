@@ -226,6 +226,16 @@ struct IdleBody: View {
             } label: {
                 Label("Edit & Launch\u{2026}", systemImage: "pencil")
             }
+            Divider()
+            Button(role: .destructive) {
+                withAnimation(.easeOut(duration: 0.15)) {
+                    templates.removeAll { $0.id == t.id }
+                    NotchState.shared.idleTemplateCount = templates.count
+                }
+                Task { await SessionTemplateStore.shared.delete(id: t.id) }
+            } label: {
+                Label("Unpin", systemImage: "pin.slash")
+            }
         }
     }
 

@@ -39,7 +39,13 @@ public final class SettingsStore: ObservableObject {
     /// When true (default), show the SUGGESTIONS section in the idle notch for users
     /// with no pinned templates. Set to false permanently via the "hide" button in the notch.
     @Published public var showSuggestedTemplates: Bool {
-        didSet { defaults.set(showSuggestedTemplates, forKey: "adia.showSuggestedTemplates") }
+        didSet {
+            defaults.set(showSuggestedTemplates, forKey: "adia.showSuggestedTemplates")
+            // Re-enabling shows all suggestions fresh — previously dismissed items
+            // from a prior hide/show cycle are stale once the user consciously
+            // brings the section back.
+            if showSuggestedTemplates { resetDismissedSuggestions() }
+        }
     }
 
     /// Task strings of suggested templates the user has individually dismissed.
