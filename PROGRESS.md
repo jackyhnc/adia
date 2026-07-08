@@ -12066,3 +12066,44 @@ None. Swift toolchain unavailable on Linux container.
 - Expose streak break counts in FocusInsights (e.g., "broken N times") so the data is visible in the idle notch, not just in notification copy.
 - Add `SessionManagerTests` coverage for the daily goal gate: mock `SessionHistory.stats()` to return `todayMinutes >= goal`, verify `sendDailyGoalAchieved` fires once and not twice on the same calendar day.
 - Consider a "morning nudge" notification: fire a reminder if no session has been started by a configurable time (e.g. 10am) and the daily goal has not yet been hit.
+
+---
+
+## Run 280 — 2026-07-08
+
+### Shipped
+- **Morning nudge notification** (`feat: morning nudge notification`)
+  - `SettingsStore.morningNudgeEnabled` — `@Published Bool`, default `false`, key `adia.morningNudgeEnabled`
+  - `SettingsStore.morningNudgeHour` — `@Published Int`, default `10`, clamped to `morningNudgeHourRange` (6…18) at init
+  - `SettingsStore.morningNudgeHourRange` — `nonisolated static let ClosedRange<Int> = 6...18`
+  - `SessionNotifier.morningNudgeBody()` — `nonisolated static`, friend-like copy: "no sessions yet today. open adia and pick a task."
+  - `SessionNotifier.scheduleMorningNudge(hour:)` — `UNCalendarNotificationTrigger(dateMatching:repeats:false)` with stable id `adia.morning.nudge`
+  - `SessionNotifier.cancelMorningNudge()` — `removePendingNotificationRequests(withIdentifiers:)`, safe to call multiple times
+  - `SessionNotifier.rescheduleMorningNudge()` — cancel + clear date gate + reschedule; call when user changes nudge hour in Settings
+  - `SessionNotifier.scheduleMorningNudgeIfNeeded()` — once-per-day gate via `adia.lastScheduledMorningNudgeDate` UserDefaults key; skips if nudge hour has already passed; called on app launch from `SessionManager.restoreIfNeeded()`
+  - `SessionNotifier.nudgeTodayDateString()` — private `nonisolated static` date string helper (avoids cross-type dependency on `SessionManager.todayDateString()`)
+  - `SessionManager.start()` — calls `SessionNotifier.shared.cancelMorningNudge()` before activating session
+  - `SessionManager.restoreIfNeeded()` — calls `SessionNotifier.shared.scheduleMorningNudgeIfNeeded()` after streak check
+  - `AccountSettingsTab` — new `MorningNudgeSection` struct with `Toggle` + `Picker` (formatNudgeHour helper); `.onChange(of: morningNudgeEnabled)` cancels/reschedules; `.onChange(of: morningNudgeHour)` calls `rescheduleMorningNudge()`
+  - `SettingsView` — Account tab height `500 → 540`
+  - 5 new tests: `SessionNotifierMorningNudgeTests` (isNotEmpty, isNotCorporate, referencesStartingWork, isNotPunishing, doesNotContainAllCapsWords)
+  - 9 new tests: `SettingsStoreTests` morning nudge section (range constants, toggle round-trip, persistence, hour round-trips all 13 valid values)
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `morningNudgeBody()` is `nonisolated static` so copy tests run unconditionally in `swift test`
+- SettingsStore init pattern matches existing `timerExpiredRearmMinutes`/`dailyFocusGoalMinutes` — same `defaults.object(forKey:) as? T ?? default` form
+- `UNCalendarNotificationTrigger` with `repeats: false` and matching hour/minute fires on the next occurrence of that time (today if before the hour, tomorrow otherwise); the `scheduleMorningNudgeIfNeeded` guard `currentHour < nudgeHour` ensures we never schedule for a time that has passed today
+- `cancelMorningNudge()` guards on `canUseNotificationCenter` (same guard used by all other notification methods)
+- SwiftUI `.onChange(of:)` on macOS 14+ calls closures on the main actor; both SessionNotifier methods accessed are `@MainActor` — no actor hop needed
+- `morningNudgeHourRange` is `nonisolated static` — safely accessible from the ForEach in the SwiftUI Picker
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider exposing streak break counts in FocusInsights or the idle notch so the data is visible in-app (currently only drives notification copy via `SessionNotifier.streakRepeatBrokenBody`).
+- Consider adding `SessionManagerTests` for the daily goal gate: inject a mock `SessionHistory` returning `todayMinutes >= goal`, verify `sendDailyGoalAchieved` fires and the UserDefaults gate prevents a second fire on the same day.
+- Consider "morning nudge suppression on session restore": if the user has a crash-recovered session, `restoreIfNeeded()` still calls `scheduleMorningNudgeIfNeeded()` — arguably fine since the session hasn't officially "started" yet, but could cancel it post-restore too.
+- Consider a "nudge sent" confirmation log entry via `AppLogger.info("notifier.morning_nudge_scheduled", ["hour": "\(nudgeHour)"])` in `scheduleMorningNudgeIfNeeded()` for debuggability.
+- Consider adding more morning nudge copy variants (random pool) similar to CalloutMessages, to reduce notification fatigue.
