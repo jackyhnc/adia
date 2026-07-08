@@ -1,5 +1,45 @@
 # Adia — Build Progress
 
+## Run 282 — 2026-07-08T21:10:00Z — POST /api/admin/bulk-deactivate-all + BulkDeactivateAllPanel + 18 tests (826 → 844)
+
+### Shipped
+
+**`web/app/api/admin/bulk-deactivate-all/route.ts` — new admin endpoint:**
+- `POST /api/admin/bulk-deactivate-all` — wipes all machine activations for a batch of license keys in one request.
+- Body: `{ keys: string[] }` — non-empty array, max 100 keys.
+- 400 on missing/empty keys array; 400 when `keys.length > 100`.
+- Keys normalized to uppercase before lookup.
+- Unknown keys skipped with `reason: "not_found"`; keys with 0 activations skipped with `reason: "already_clear"`.
+- For each key with activations: calls `removeAllActivations(key)`, writes `deactivate_all` audit log entry with `{ removedCount, bulk: true }`.
+- Returns `{ ok, changed: [{key, removedCount}], skipped: [{key, reason}] }`.
+- `adminGuard` auth (Bearer token or `?token=`).
+
+**`web/app/admin/page.tsx` — BulkDeactivateAllPanel:**
+- Inserted after existing "Deactivate all machines" section (natural pairing).
+- Textarea for keys (newline or comma-separated, max 100).
+- Confirm dialog before execution (names key count).
+- Result: summary card (N keys cleared, total activations removed), per-key cleared list with removedCount, per-key skipped list with italic reason.
+
+**`web/__tests__/admin-bulk-deactivate-all.test.ts` — 18 tests:**
+- Auth: 401 no-token, 401 wrong-token, 200 `?token=` query-param.
+- Validation: 400 missing keys, 400 empty array, 400 >100 keys.
+- Core: removes activations for single key, removes for multiple keys, normalizes to uppercase, returns correct removedCount (1 machine / 3 machines).
+- Skip: not_found, already_clear (0 activations), mixed batch (changed+not_found+already_clear), no mutation on skipped key.
+- Audit log: one `deactivate_all` entry per changed key, detail contains `removedCount` + `bulk:true`, no entry for skipped keys.
+
+### Tests
+844 passed (up from 826). 36 test files green. `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `GET /api/admin/dormant` — licenses where ALL activations' `last_seen < NOW() - N days`, ordered by most-recently-seen DESC; useful for re-engagement campaigns; optional `?days=`, `?plan=`, `?format=csv`; the activations table already tracks `last_seen` per machine.
+- Consider `POST /api/admin/bulk-change-email` — transfer multiple keys to new owners in one request, mirroring bulk-transfer but targeting the email field directly; useful for corporate seat reassignments.
+- Consider `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment).
+
+---
+
 ## Run 281 — 2026-07-08T20:10:00Z — GET /api/admin/never-activated + NeverActivatedPanel + 25 tests (801 → 826)
 
 ### Shipped
