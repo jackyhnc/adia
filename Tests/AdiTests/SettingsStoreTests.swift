@@ -806,4 +806,85 @@ struct SettingsStoreTests {
         #expect(count7  == 0)
         #expect(count14 == 0)
     }
+
+    // MARK: - Morning nudge settings
+
+    private func restoreNudgeDefaults() async {
+        await MainActor.run {
+            SettingsStore.shared.morningNudgeEnabled = false
+            SettingsStore.shared.morningNudgeHour = 10
+        }
+    }
+
+    @Test func morningNudgeHourRange_is6to18() {
+        // Static constant — no singleton access needed.
+        #expect(SettingsStore.morningNudgeHourRange == 6...18)
+    }
+
+    @Test func morningNudgeHourRange_contains10() {
+        #expect(SettingsStore.morningNudgeHourRange.contains(10),
+                "default nudge hour (10) must be within the valid range")
+    }
+
+    @Test func morningNudgeHourRange_doesNotContain5() {
+        #expect(!SettingsStore.morningNudgeHourRange.contains(5),
+                "5 AM is outside the valid morning nudge range")
+    }
+
+    @Test func morningNudgeHourRange_doesNotContain19() {
+        #expect(!SettingsStore.morningNudgeHourRange.contains(19),
+                "7 PM is outside the valid morning nudge range")
+    }
+
+    @Test func morningNudgeEnabled_canBeSetToTrue() async {
+        await restoreNudgeDefaults()
+        await MainActor.run { SettingsStore.shared.morningNudgeEnabled = true }
+        let enabled = await MainActor.run { SettingsStore.shared.morningNudgeEnabled }
+        #expect(enabled == true)
+        await restoreNudgeDefaults()
+    }
+
+    @Test func morningNudgeEnabled_canBeSetToFalse() async {
+        await MainActor.run { SettingsStore.shared.morningNudgeEnabled = true }
+        await MainActor.run { SettingsStore.shared.morningNudgeEnabled = false }
+        let enabled = await MainActor.run { SettingsStore.shared.morningNudgeEnabled }
+        #expect(enabled == false)
+    }
+
+    @Test func morningNudgeEnabled_persistedToUserDefaults() async {
+        await MainActor.run { SettingsStore.shared.morningNudgeEnabled = true }
+        let stored = UserDefaults.standard.bool(forKey: "adia.morningNudgeEnabled")
+        #expect(stored == true)
+        await restoreNudgeDefaults()
+    }
+
+    @Test func morningNudgeHour_defaultInRange() async {
+        let hour = await MainActor.run { SettingsStore.shared.morningNudgeHour }
+        #expect(SettingsStore.morningNudgeHourRange.contains(hour),
+                "morningNudgeHour must always be within morningNudgeHourRange")
+    }
+
+    @Test func morningNudgeHour_canBeUpdated() async {
+        await MainActor.run { SettingsStore.shared.morningNudgeHour = 9 }
+        let hour = await MainActor.run { SettingsStore.shared.morningNudgeHour }
+        #expect(hour == 9)
+        await restoreNudgeDefaults()
+    }
+
+    @Test func morningNudgeHour_persistedToUserDefaults() async {
+        await MainActor.run { SettingsStore.shared.morningNudgeHour = 8 }
+        let stored = UserDefaults.standard.integer(forKey: "adia.morningNudgeHour")
+        #expect(stored == 8)
+        await restoreNudgeDefaults()
+    }
+
+    @Test func morningNudgeHour_roundTripsAllValidHours() async {
+        let original = await MainActor.run { SettingsStore.shared.morningNudgeHour }
+        for hour in SettingsStore.morningNudgeHourRange {
+            await MainActor.run { SettingsStore.shared.morningNudgeHour = hour }
+            let stored = await MainActor.run { SettingsStore.shared.morningNudgeHour }
+            #expect(stored == hour, "morningNudgeHour \(hour) must round-trip via UserDefaults")
+        }
+        await MainActor.run { SettingsStore.shared.morningNudgeHour = original }
+    }
 }

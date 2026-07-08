@@ -4,7 +4,7 @@ public struct SettingsView: View {
     @AppStorage("settingsSelectedTab") private var selectedTab: Int = 0
 
     nonisolated static let tabHeights: [Int: CGFloat] = [
-        0: 500,   // Account  — API key, license, shortcuts, reminders, daily goal
+        0: 540,   // Account  — API key, license, shortcuts, reminders, daily goal, morning nudge
         1: 560,   // Blocking — many toggles, benefits from tall viewport
         2: 490,   // Templates — list + footer row (two toggles)
         3: 600,   // History  — heatmap + insights + session list

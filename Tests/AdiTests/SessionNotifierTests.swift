@@ -104,6 +104,51 @@ struct SessionNotifierTests {
     }
 }
 
+// MARK: - Morning nudge pure-function tests (no app bundle required)
+
+/// Tests for `SessionNotifier.morningNudgeBody` — exercises only a `nonisolated static`
+/// function, so no `UNUserNotificationCenter` call occurs; runs unconditionally in CI.
+@Suite("SessionNotifier morning nudge")
+struct SessionNotifierMorningNudgeTests {
+
+    @Test func morningNudgeBody_isNotEmpty() {
+        #expect(!SessionNotifier.morningNudgeBody().isEmpty)
+    }
+
+    @Test func morningNudgeBody_isNotCorporate() {
+        let body = SessionNotifier.morningNudgeBody().lowercased()
+        let corporatePhrases = ["congratulations", "achievement", "great job", "well done", "perfect", "awesome"]
+        for phrase in corporatePhrases {
+            #expect(!body.contains(phrase),
+                    "morning nudge copy must not use corporate language: '\(phrase)'")
+        }
+    }
+
+    @Test func morningNudgeBody_referencesStartingWork() {
+        let body = SessionNotifier.morningNudgeBody().lowercased()
+        let actionWords = ["start", "session", "task", "open", "begin", "yet", "today"]
+        #expect(actionWords.contains { body.contains($0) },
+                "morning nudge copy must reference starting work or the current state")
+    }
+
+    @Test func morningNudgeBody_isNotPunishing() {
+        let body = SessionNotifier.morningNudgeBody().lowercased()
+        let shamePhrases = ["failed", "loser", "disappointed", "shame", "terrible", "bad person"]
+        for phrase in shamePhrases {
+            #expect(!body.contains(phrase),
+                    "morning nudge body must not use punishing language: '\(phrase)'")
+        }
+    }
+
+    @Test func morningNudgeBody_doesNotContainAllCapsWords() {
+        let body = SessionNotifier.morningNudgeBody()
+        let hasShoutingWord = body.components(separatedBy: .whitespaces)
+            .filter { $0.count > 1 }
+            .contains { w in w == w.uppercased() && w.first?.isLetter == true }
+        #expect(!hasShoutingWord, "morning nudge body must not contain shouting all-caps words")
+    }
+}
+
 // MARK: - Streak milestone pure-function tests (no app bundle required)
 
 /// Tests for `SessionNotifier.streakMilestoneValue` and `streakMilestoneBody`.

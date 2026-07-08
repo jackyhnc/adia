@@ -21,6 +21,8 @@ public final class SettingsStore: ObservableObject {
 
     private static let dismissedSuggestionsKey  = "adia.dismissedSuggestions"
     private static let streakBreakCountsKey     = "adia.streakBreakCounts"
+    private static let morningNudgeEnabledKey   = "adia.morningNudgeEnabled"
+    private static let morningNudgeHourKey      = "adia.morningNudgeHour"
 
     @Published public private(set) var agentAIKey: String?
     @Published public var crashReportsEnabled: Bool {
@@ -115,6 +117,22 @@ public final class SettingsStore: ObservableObject {
         }
     }
 
+    // MARK: - Morning nudge
+
+    /// Valid hours for the morning nudge setting (6 AM – 6 PM, inclusive).
+    public nonisolated static let morningNudgeHourRange: ClosedRange<Int> = 6...18
+
+    /// When true, fires a nudge notification at `morningNudgeHour` if no session has started today.
+    @Published public var morningNudgeEnabled: Bool {
+        didSet { defaults.set(morningNudgeEnabled, forKey: Self.morningNudgeEnabledKey) }
+    }
+
+    /// Hour of day (0–23) at which the morning nudge fires if no session has been started today.
+    /// Stored value is clamped to `morningNudgeHourRange` at init time.
+    @Published public var morningNudgeHour: Int {
+        didSet { defaults.set(morningNudgeHour, forKey: Self.morningNudgeHourKey) }
+    }
+
     /// Allowed presets for the daily focus goal picker in Settings.
     public nonisolated static let dailyGoalPresets: [(Int, String)] = [
         (30, "30m"), (60, "1h"), (90, "90m"), (120, "2h"), (180, "3h"), (240, "4h")
@@ -197,6 +215,9 @@ public final class SettingsStore: ObservableObject {
                 return (i, v)
             })
         }
+        morningNudgeEnabled = defaults.object(forKey: Self.morningNudgeEnabledKey) as? Bool ?? false
+        let storedNudgeHour = defaults.object(forKey: Self.morningNudgeHourKey) as? Int ?? 10
+        morningNudgeHour = Self.morningNudgeHourRange.contains(storedNudgeHour) ? storedNudgeHour : 10
     }
 
     /// Returns the trimmed string, or nil if it is nil/empty/whitespace-only.

@@ -82,6 +82,8 @@ struct AccountSettingsTab: View {
             }
 
             DailyGoalSection(settings: settings)
+
+            MorningNudgeSection(settings: settings)
         }
         .formStyle(.grouped)
         .alert("Deactivate This Mac?", isPresented: $showDeactivateThisMacAlert) {
@@ -364,6 +366,49 @@ struct AccountSettingsTab: View {
             emailChangeError = err
         }
         changingEmail = false
+    }
+}
+
+// MARK: - Morning Nudge Section
+
+struct MorningNudgeSection: View {
+    @ObservedObject var settings: SettingsStore
+
+    var body: some View {
+        Section {
+            Toggle("Remind me if I haven't started", isOn: $settings.morningNudgeEnabled)
+                .onChange(of: settings.morningNudgeEnabled) {
+                    if settings.morningNudgeEnabled {
+                        SessionNotifier.shared.scheduleMorningNudgeIfNeeded()
+                    } else {
+                        SessionNotifier.shared.cancelMorningNudge()
+                    }
+                }
+            if settings.morningNudgeEnabled {
+                Picker("If no session by", selection: $settings.morningNudgeHour) {
+                    ForEach(Array(SettingsStore.morningNudgeHourRange), id: \.self) { hour in
+                        Text(formatNudgeHour(hour)).tag(hour)
+                    }
+                }
+                .onChange(of: settings.morningNudgeHour) {
+                    SessionNotifier.shared.rescheduleMorningNudge()
+                }
+            }
+        } header: {
+            Text("Morning Nudge")
+        } footer: {
+            Text(settings.morningNudgeEnabled
+                 ? "You'll get a nudge at \(formatNudgeHour(settings.morningNudgeHour)) if no session has started today."
+                 : "Enable to get a reminder to start your first session of the day.")
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func formatNudgeHour(_ hour: Int) -> String {
+        if hour == 0  { return "12 AM" }
+        if hour < 12  { return "\(hour) AM" }
+        if hour == 12 { return "12 PM" }
+        return "\(hour - 12) PM"
     }
 }
 

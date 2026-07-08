@@ -226,6 +226,84 @@ public final class SessionNotifier: NSObject {
         #endif
     }
 
+    // MARK: - Morning nudge
+
+    private static let morningNudgeID = "adia.morning.nudge"
+    private static let lastScheduledNudgeDateKey = "adia.lastScheduledMorningNudgeDate"
+
+    /// Friend-like nudge copy for users who haven't started a session by their configured nudge hour.
+    /// Exposed as a pure function so tests can verify the copy without needing a notification center.
+    nonisolated public static func morningNudgeBody() -> String {
+        "no sessions yet today. open adia and pick a task."
+    }
+
+    /// Schedules a one-time morning nudge notification for the next occurrence of `hour`.
+    /// Replaces any existing pending morning nudge request with the same identifier.
+    /// When `hour` has not yet passed today, the notification fires today; when it has,
+    /// it fires tomorrow — callers should guard with the current hour before calling (see
+    /// `scheduleMorningNudgeIfNeeded`).
+    public func scheduleMorningNudge(hour: Int) {
+        #if canImport(UserNotifications)
+        guard Self.canUseNotificationCenter else { return }
+        var components = DateComponents()
+        components.hour = hour
+        components.minute = 0
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+        let content = UNMutableNotificationContent()
+        content.title = "haven't started yet"
+        content.body = Self.morningNudgeBody()
+        content.sound = .default
+        let request = UNNotificationRequest(identifier: Self.morningNudgeID, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error { AppLogger.error("notifier.morning_nudge_schedule_failed", ["error": "\(error)"]) }
+        }
+        #endif
+    }
+
+    /// Cancels any pending morning nudge notification. Safe to call multiple times — no-op when
+    /// no request is pending.
+    public func cancelMorningNudge() {
+        #if canImport(UserNotifications)
+        guard Self.canUseNotificationCenter else { return }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [Self.morningNudgeID])
+        #endif
+    }
+
+    /// Cancels any existing morning nudge, clears the per-day gate, then reschedules.
+    /// Call after the user changes the nudge hour in Settings so the new time takes effect immediately.
+    public func rescheduleMorningNudge() {
+        cancelMorningNudge()
+        UserDefaults.standard.removeObject(forKey: Self.lastScheduledNudgeDateKey)
+        scheduleMorningNudgeIfNeeded()
+    }
+
+    /// Schedules a morning nudge for today if all of the following hold:
+    /// 1. `morningNudgeEnabled` is true in SettingsStore.
+    /// 2. Today's nudge has not already been scheduled (gated by a UserDefaults date key).
+    /// 3. The configured nudge hour has not yet passed for today.
+    ///
+    /// Called on app launch from `SessionManager.restoreIfNeeded()` so the nudge is always
+    /// armed once per calendar day as long as the app starts before the nudge hour.
+    public func scheduleMorningNudgeIfNeeded() {
+        guard SettingsStore.shared.morningNudgeEnabled else { return }
+        let nudgeHour = SettingsStore.shared.morningNudgeHour
+        let todayStr = Self.nudgeTodayDateString()
+        guard UserDefaults.standard.string(forKey: Self.lastScheduledNudgeDateKey) != todayStr else { return }
+        let currentHour = Calendar.current.component(.hour, from: Date())
+        guard currentHour < nudgeHour else { return }
+        UserDefaults.standard.set(todayStr, forKey: Self.lastScheduledNudgeDateKey)
+        scheduleMorningNudge(hour: nudgeHour)
+    }
+
+    /// "yyyy-MM-dd" string for today. Duplicates `SessionManager.todayDateString()` to avoid
+    /// a cross-type internal dependency between two unrelated @MainActor classes.
+    private nonisolated static func nudgeTodayDateString() -> String {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "yyyy-MM-dd"
+        fmt.locale = Locale(identifier: "en_US_POSIX")
+        return fmt.string(from: Date())
+    }
+
     /// Expands the notch panel. Called when the user taps a notification banner.
     /// Exposed as `internal` (not private) so unit tests can invoke it directly
     /// without needing a real `UNNotificationResponse`.

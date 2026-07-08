@@ -47,6 +47,8 @@ public final class SessionManager: ObservableObject {
             "taskLength": String(task.count),
             "criteriaLength": String(successCriteria.count)
         ])
+        // User is actively starting work — cancel any pending morning nudge for today.
+        SessionNotifier.shared.cancelMorningNudge()
         let s = Session(
             task: task,
             successCriteria: successCriteria,
@@ -281,6 +283,8 @@ public final class SessionManager: ObservableObject {
 
     public func restoreIfNeeded() async {
         await checkStreakBreak()
+        // Schedule today's morning nudge if the feature is enabled and the window hasn't passed.
+        SessionNotifier.shared.scheduleMorningNudgeIfNeeded()
         guard let saved = persistence.load() else { return }
         var s = saved
         let wasPaused = s.phase == .paused
