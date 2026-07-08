@@ -1,5 +1,62 @@
 # Adia — Build Progress
 
+## Run 281 — 2026-07-08T20:10:00Z — GET /api/admin/never-activated + NeverActivatedPanel + 25 tests (801 → 826)
+
+### Shipped
+
+**`web/lib/db.ts` — `listNeverActivatedLicenses(plan?, since?, status?)`:**
+- Selects licenses with `HAVING COUNT(a.machine_hash) = 0` (true zero activations).
+- Optional WHERE filters: `l.plan = ?`, `l.issued_at >= ?`, `l.status = ?` — compose cleanly.
+- Ordered by `l.issued_at DESC` (newest-issued first — most recently issued never-opened keys are most actionable).
+
+**`web/lib/db-pg.ts` — `listNeverActivatedLicensesPg`:**
+- Postgres equivalent using the `(${val}::text IS NULL OR l.col = ${val}::text)` guard pattern
+  consistent with other Pg functions.
+- `HAVING COUNT(a.machine_hash) = 0` for aggregate filter.
+
+**`web/lib/store.ts` — `listNeverActivatedLicenses` facade:**
+- Routes to SQLite or Postgres backend based on `usePg`.
+
+**`web/app/api/admin/never-activated/route.ts` — new endpoint:**
+- `GET /api/admin/never-activated` — returns licenses with machineCount = 0.
+- `?plan=monthly|yearly|lifetime` — optional plan filter (all three plans valid, unlike expiring-soon which excludes lifetime).
+- `?since=YYYY-MM-DD` — optional issued-since date filter.
+- `?status=active|canceled|expired|past_due` — optional status filter (default: all statuses).
+- `?format=csv` — CSV download with `key,email,plan,status,issuedAt,machineCount,note` header.
+- 400 on invalid plan/status/format values with descriptive error messages.
+- `adminGuard` auth (Bearer token or `?token=`).
+- Returns `{ licenses, count }` in JSON mode.
+
+**`web/app/admin/page.tsx` — NeverActivatedPanel:**
+- `CollapsibleSection title="Never activated"` inserted after "Expiring soon".
+- Plan dropdown (All / Monthly / Yearly / Lifetime), Status dropdown, "Issued since" date input.
+- Result table: key (blue), email, plan, status (green/red), issuedAt columns.
+- Export CSV button triggers download with current filters.
+- `NeverActivatedRow` type and `NeverActivatedPanel` component added before `ExpiringSoonPanel`.
+
+**`web/__tests__/admin-never-activated.test.ts` — 25 tests:**
+- Auth: 401 no-token, 401 wrong-token, 200 ?token= query-param.
+- Validation: 400 invalid plan, 400 invalid status, 400 invalid format.
+- Core: empty list, never-activated returned, activated excluded, mixed batch, ordering (all present), response shape (licenses/count), row shape (key/email/plan/status/issuedAt/machineCount).
+- Plan filter: monthly-only, lifetime-only.
+- Status filter: all statuses (no param), active-only, canceled-only.
+- Since filter: future date excludes all, past date includes today.
+- CSV: content-type, Content-Disposition, header row, data row, escaping (commas/quotes in note).
+
+### Tests
+826 passed (up from 801). 35 test files green. `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment).
+- Consider `POST /api/admin/bulk-note` — set or append a note to multiple license keys in one request, mirroring bulk-set-status shape but targeting the `note` field. Useful for bulk-tagging keys (e.g., "gifted", "refund-issued") without editing individually.
+- Consider an admin section search/filter bar at the top of the page — with 25+ collapsible panels, a text input that fuzzy-filters visible sections by name would let admins navigate without scrolling.
+- Consider `bulk:true` detail flag in audit log entries for `bulk-change-plan`, `bulk-extend`, `bulk-set-expiry` (currently only `bulk-revoke`, `bulk-reactivate`, `bulk-set-status`, `bulk-resend-license` set this flag).
+
+---
+
 ## Run 280 — 2026-07-08T18:10:00Z — Admin bulk-resend-license endpoint + panel + 18 tests (783 → 801)
 
 ### Shipped
