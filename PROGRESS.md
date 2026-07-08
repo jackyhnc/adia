@@ -11742,3 +11742,35 @@ Swift toolchain unavailable on Linux container — build verified by code review
 - Consider a "streak broken for N-th time" variant for SessionNotifier (after user breaks and re-builds same milestone twice, shift tone to encouraging persistence rather than surprise).
 - Wire a "duplicate and edit" flow: long-press / right-click on a *suggested* template row in the idle notch could also support context menu (currently suggested templates only open the form on left-click, which is fine, but consistency with pinned templates could be good).
 - Admin UI: consider a "Bulk revoke" panel similar to existing "Bulk extend" / "Bulk set expiry" panels.
+
+---
+
+## Run 267 — 2026-07-08T00:00:00Z — Suggested template context menu
+
+### Shipped
+
+**`Sources/AdiCore/Views/Notch/IdleNotchView.swift` — context menu on suggested template buttons:**
+- Added `.contextMenu { }` modifier to `suggestedButton(_ s:)`.
+- Right-click (Ctrl+click) on any suggested template in the idle notch now shows two options:
+  - **Launch** — directly starts the session with the suggested task/successCriteria/preferredDuration (no form shown).
+  - **Edit & Launch…** — opens the creation form pre-filled with the suggested task and duration (same as left-click).
+- Left-click pre-fill behavior is completely unchanged.
+- Added `launchSuggested(_ s: SuggestedTemplate)` — mirrors `launchTemplate()` exactly but omits `recordUse` (suggested templates are static, no persistent store).
+- Error handling paths (`.permissionDenied` / generic) are identical to the pinned template flow, so user-visible error messages are consistent.
+
+**`GOAL.md` — new task appended and checked:**
+- "Suggested template context menu: right-click on suggested template in idle notch shows 'Launch' (direct start) and 'Edit & Launch…' (pre-filled form); left-click pre-fill behavior preserved; launchSuggested() mirrors launchTemplate() error handling without recordUse"
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+Context menu structure matches pinned template pattern exactly (same Label / systemImage / action shape).
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add `@MainActor` to `SuggestedSessionTemplatesTests` if it accesses `@MainActor`-isolated singletons (check: it tests static data only so likely fine as-is).
+- Consider adding a "peek" tooltip on hover for suggested templates showing the full success criteria, so users can decide between Launch and Edit before right-clicking.
+- Consider adding `SessionTemplateTests` @MainActor annotation — `SessionTemplateStore` is an `actor` (not `@MainActor`), so tests already use `await` correctly; likely no change needed.
+- Consider a "streak broken for N-th time" variant for SessionNotifier — after user breaks and re-builds the same milestone twice, shift tone to encouraging persistence rather than surprise.
+- Consider adding a "Dismiss all suggestions" button to the suggested section header (in addition to the existing "hide" which hides the whole section); individual suggest dismissal could persist per-task in UserDefaults.
