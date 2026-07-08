@@ -585,6 +585,38 @@ export function listExpiringLicenses(days: number, plan?: string): License[] {
   }));
 }
 
+// Returns licenses that have never been activated (machineCount = 0),
+// ordered by issuedAt DESC (newest issued first).
+export function listNeverActivatedLicenses(plan?: string, since?: string, status?: string): License[] {
+  const whereConditions: string[] = [];
+  const params: unknown[] = [];
+  if (plan) { whereConditions.push('l.plan = ?'); params.push(plan); }
+  if (since) { whereConditions.push('l.issued_at >= ?'); params.push(since); }
+  if (status) { whereConditions.push('l.status = ?'); params.push(status); }
+  const where = whereConditions.length ? `WHERE ${whereConditions.join(' AND ')}` : '';
+  const rows = (db()
+    .prepare(`
+      SELECT l.*, COUNT(a.machine_hash) AS machine_count_live
+      FROM licenses l
+      LEFT JOIN activations a ON a.license_key = l.key
+      ${where}
+      GROUP BY l.key
+      HAVING COUNT(a.machine_hash) = 0
+      ORDER BY l.issued_at DESC
+    `)
+    .all as (...a: unknown[]) => any[])(...params);
+  return rows.map(r => ({
+    key: r.key,
+    email: r.email,
+    plan: r.plan,
+    status: r.status,
+    issuedAt: r.issued_at,
+    expiresAt: r.expires_at ?? null,
+    note: r.note ?? null,
+    machineCount: r.machine_count_live as number,
+  }));
+}
+
 export function listAllLicenses(since?: string, status?: string, plan?: string): License[] {
   const conditions: string[] = [];
   const params: unknown[] = [];

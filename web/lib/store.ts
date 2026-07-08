@@ -235,6 +235,14 @@ export async function listExpiringLicenses(days: number, plan?: string): Promise
   return sqlite.listExpiringLicenses(days, plan);
 }
 
+export async function listNeverActivatedLicenses(plan?: string, since?: string, status?: string): Promise<License[]> {
+  if (usePg) {
+    const { listNeverActivatedLicensesPg } = await import('./db-pg');
+    return listNeverActivatedLicensesPg(plan, since, status);
+  }
+  return sqlite.listNeverActivatedLicenses(plan, since, status);
+}
+
 export async function listAllLicenses(since?: string, status?: string, plan?: string): Promise<License[]> {
   if (usePg) {
     const { listAllLicensesPg } = await import('./db-pg');
