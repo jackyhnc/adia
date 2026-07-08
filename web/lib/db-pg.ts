@@ -620,6 +620,37 @@ export async function listNeverActivatedLicensesPg(plan?: string, since?: string
   }));
 }
 
+export async function listDormantLicensesPg(days: number, plan?: string, status?: string): Promise<License[]> {
+  await ensureSchema();
+  const planVal = plan ?? null;
+  const statusVal = status ?? null;
+  const result = await sql<any>`
+    SELECT l.key, l.email, l.plan, l.status, l.note,
+           to_char(l.issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
+           to_char(l.expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt",
+           COUNT(a.machine_hash)::int AS "machineCount",
+           to_char(MAX(a.last_seen), 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "lastSeen"
+    FROM licenses l
+    INNER JOIN activations a ON a.license_key = l.key
+    WHERE (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
+      AND (${statusVal}::text IS NULL OR l.status = ${statusVal}::text)
+    GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at
+    HAVING MAX(a.last_seen) < NOW() - (${days} * INTERVAL '1 day')
+    ORDER BY MAX(a.last_seen) DESC
+  `;
+  return result.rows.map((r: any) => ({
+    key: r.key,
+    email: r.email,
+    plan: r.plan,
+    status: r.status,
+    issuedAt: r.issuedAt,
+    expiresAt: r.expiresAt ?? null,
+    note: r.note ?? null,
+    machineCount: r.machineCount,
+    lastSeen: r.lastSeen ?? null,
+  }));
+}
+
 export async function listAllLicensesPg(since?: string, status?: string, plan?: string): Promise<License[]> {
   await ensureSchema();
   const sinceVal = since ?? null;

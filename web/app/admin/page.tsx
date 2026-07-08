@@ -117,6 +117,9 @@ export default function Admin() {
       <CollapsibleSection title="Never activated">
         <NeverActivatedPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Dormant licenses">
+        <DormantPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Issue comp license">
         <IssuePanel token={token} />
       </CollapsibleSection>
@@ -4184,6 +4187,164 @@ function BulkTransferPanel({ token }: { token: string }) {
                 </li>
               ))}
             </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Dormant licenses ────────────────────────────────────────────────────────
+
+type DormantRow = {
+  key: string;
+  email: string;
+  plan: string;
+  status: string;
+  issuedAt: string;
+  machineCount: number;
+  lastSeen: string | null;
+  note?: string | null;
+};
+
+function DormantPanel({ token }: { token: string }) {
+  const [days, setDays] = useState('30');
+  const [planFilter, setPlanFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [result, setResult] = useState<{ licenses: DormantRow[]; count: number; days: number } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function load(e: React.FormEvent) {
+    e.preventDefault();
+    if (!token) { setError('Paste admin token above first.'); return; }
+    setLoading(true);
+    setError('');
+    setResult(null);
+    try {
+      const params = new URLSearchParams({ days });
+      if (planFilter) params.set('plan', planFilter);
+      if (statusFilter) params.set('status', statusFilter);
+      const res = await fetch(`/api/admin/dormant?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function exportCsv() {
+    const params = new URLSearchParams({ days, format: 'csv', token });
+    if (planFilter) params.set('plan', planFilter);
+    if (statusFilter) params.set('status', statusFilter);
+    const a = document.createElement('a');
+    a.href = `/api/admin/dormant?${params}`;
+    a.download = `adia-dormant-${days}d-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        List licenses that have been activated but where every machine's last_seen is older
+        than N days. Useful for re-engagement campaigns. Results ordered most-recently-seen first.
+      </p>
+      <form onSubmit={load} className="card space-y-3">
+        <div className="flex gap-3 flex-wrap">
+          <Field label="Dormant for at least (days)">
+            <input
+              type="number"
+              min="1"
+              max="365"
+              value={days}
+              onChange={(e) => setDays(e.target.value)}
+              className="input w-24"
+            />
+          </Field>
+          <Field label="Plan (optional)">
+            <select
+              value={planFilter}
+              onChange={(e) => setPlanFilter(e.target.value)}
+              className="input"
+            >
+              <option value="">All</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+              <option value="lifetime">Lifetime</option>
+            </select>
+          </Field>
+          <Field label="Status (optional)">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="input"
+            >
+              <option value="">All</option>
+              <option value="active">Active</option>
+              <option value="canceled">Canceled</option>
+              <option value="expired">Expired</option>
+              <option value="past_due">Past due</option>
+            </select>
+          </Field>
+        </div>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Loading…' : 'Find dormant licenses'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {result && (
+        <div className="mt-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold">
+              {result.count === 0
+                ? `No dormant licenses found (window: ${result.days} days)`
+                : `${result.count} dormant license${result.count !== 1 ? 's' : ''} (inactive ${result.days}+ days)`}
+            </p>
+            {result.count > 0 && (
+              <button onClick={exportCsv} className="btn-secondary text-xs px-3 py-1">
+                Export CSV
+              </button>
+            )}
+          </div>
+          {result.licenses.length > 0 && (
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs font-mono border-collapse">
+                <thead>
+                  <tr className="border-b border-ink/10 text-ink/50 uppercase text-left">
+                    <th className="pr-3 pb-2 font-normal">Key</th>
+                    <th className="pr-3 pb-2 font-normal">Email</th>
+                    <th className="pr-3 pb-2 font-normal">Plan</th>
+                    <th className="pr-3 pb-2 font-normal">Status</th>
+                    <th className="pr-3 pb-2 font-normal">Machines</th>
+                    <th className="pb-2 font-normal">Last seen</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {result.licenses.map((l) => (
+                    <tr key={l.key} className="border-b border-ink/5 hover:bg-ink/5">
+                      <td className="pr-3 py-1.5 text-blue-600">{l.key}</td>
+                      <td className="pr-3 py-1.5 text-ink/80">{l.email}</td>
+                      <td className="pr-3 py-1.5 text-ink/60">{l.plan}</td>
+                      <td className={`pr-3 py-1.5 font-semibold ${l.status === 'active' ? 'text-green-600' : 'text-red-500'}`}>
+                        {l.status}
+                      </td>
+                      <td className="pr-3 py-1.5 text-ink/60">{l.machineCount}</td>
+                      <td className="py-1.5 text-ink/60">{l.lastSeen?.slice(0, 10) ?? '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       )}

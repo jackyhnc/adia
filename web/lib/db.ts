@@ -76,6 +76,7 @@ export type License = {
   machineCount?: number;
   lastAction?: string | null;
   lastActionAt?: string | null;
+  lastSeen?: string | null;
 };
 
 export type AuditEntry = {
@@ -614,6 +615,41 @@ export function listNeverActivatedLicenses(plan?: string, since?: string, status
     expiresAt: r.expires_at ?? null,
     note: r.note ?? null,
     machineCount: r.machine_count_live as number,
+  }));
+}
+
+// Returns licenses that HAVE activations but where every machine's last_seen is
+// older than `days` days — i.e. the user has gone dormant. Ordered by most-recently
+// seen first (closest to reactivating), which makes the list most actionable for
+// re-engagement campaigns.
+export function listDormantLicenses(days: number, plan?: string, status?: string): License[] {
+  const whereConditions: string[] = [];
+  const params: unknown[] = [];
+  if (plan) { whereConditions.push('l.plan = ?'); params.push(plan); }
+  if (status) { whereConditions.push('l.status = ?'); params.push(status); }
+  params.push(days);
+  const where = whereConditions.length ? `WHERE ${whereConditions.join(' AND ')}` : '';
+  const rows = (db()
+    .prepare(`
+      SELECT l.*, COUNT(a.machine_hash) AS machine_count_live, MAX(a.last_seen) AS max_last_seen
+      FROM licenses l
+      INNER JOIN activations a ON a.license_key = l.key
+      ${where}
+      GROUP BY l.key
+      HAVING MAX(a.last_seen) < datetime('now', '-' || ? || ' days')
+      ORDER BY MAX(a.last_seen) DESC
+    `)
+    .all as (...a: unknown[]) => any[])(...params);
+  return rows.map(r => ({
+    key: r.key,
+    email: r.email,
+    plan: r.plan,
+    status: r.status,
+    issuedAt: r.issued_at,
+    expiresAt: r.expires_at ?? null,
+    note: r.note ?? null,
+    machineCount: r.machine_count_live as number,
+    lastSeen: r.max_last_seen as string,
   }));
 }
 
