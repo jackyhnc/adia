@@ -11818,3 +11818,45 @@ None. Swift toolchain unavailable on Linux container.
 - Consider adding `SessionTemplateTests` @MainActor annotation — `SessionTemplateStore` is an `actor` (not `@MainActor`), so tests already use `await` correctly; likely no change needed.
 - Consider a "streak broken for N-th time" variant for SessionNotifier — after user breaks and re-builds the same milestone twice, shift tone to encouraging persistence rather than surprise.
 - Consider adding a "Dismiss all suggestions" button to the suggested section header (in addition to the existing "hide" which hides the whole section); individual suggest dismissal could persist per-task in UserDefaults.
+
+---
+
+## Run 278 — 2026-07-08T00:00:00Z — Suggested template dismissal + peek tooltip
+
+### Shipped
+
+**`Sources/AdiCore/Settings/SettingsStore.swift` — per-suggestion dismissal persistence:**
+- Added `private static let dismissedSuggestionsKey = "adia.dismissedSuggestions"`.
+- Added `@Published public private(set) var dismissedSuggestionTasks: Set<String>` with `didSet` that serializes the set to UserDefaults via the existing `saveDomainList` helper (same pattern as `disabledDefaultDomains`).
+- Loaded in `init()` from UserDefaults on startup.
+- Added `dismissSuggestion(task:)` — inserts one task string into the set; triggers the `didSet` persist.
+- Added `resetDismissedSuggestions()` — clears the set; triggers persist.
+
+**`Sources/AdiCore/Views/Notch/IdleNotchView.swift` — UX improvements:**
+- `suggestedSection`: filters `SuggestedSessionTemplates.all.prefix(displayCount)` against `dismissedSuggestionTasks` before rendering; wraps the whole section in `if !suggestions.isEmpty` so it collapses naturally when all are dismissed.
+- `suggestedSection` header: replaced single "hide" button with "dismiss all" + "·" separator + "hide" so the two actions are distinct — "dismiss all" removes the current visible suggestions individually (they can be reset per-item), while "hide" hides the whole section (re-enabled via toggle).
+- `suggestedButton`: added `.help("Done when: \(s.successCriteria)")` — hovering any suggested template now shows a tooltip with its full success criteria without requiring a click.
+- `suggestedButton` context menu: added `Divider()` + `Button(role: .destructive)` "Dismiss" below the existing "Launch" / "Edit & Launch…" items, calling `settings.dismissSuggestion(task: s.task)` with `.easeOut` animation.
+
+**`Sources/AdiCore/Views/Settings/TemplatesSettingsTab.swift` — reset control:**
+- Added a "Reset dismissed suggestions" `Button` below the "Show starter suggestions" toggle, guarded by `if !settings.dismissedSuggestionTasks.isEmpty`.
+- `.foregroundStyle(.secondary)` + `.font(.caption)` + `.help(...)` tooltip keeps it visually subordinate to the toggle.
+- Since `dismissedSuggestionTasks` is `@Published` and `settings` is `@ObservedObject`, the button appears/disappears reactively.
+
+**`GOAL.md` — new task appended and checked:**
+- "Suggested template dismissal + peek tooltip: hover over any suggestion shows its success criteria via .help(); right-click context menu adds 'Dismiss' (destructive) to remove that suggestion without hiding the section; 'dismiss all' header button dismisses visible suggestions at once; dismissals persist in SettingsStore.dismissedSuggestionTasks (UserDefaults); 'Reset dismissed suggestions' button appears in Settings → Templates when any are dismissed"
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+Pattern is identical to how `disabledDefaultDomains: Set<String>` is persisted and read in the same file; no new primitives introduced.
+`Button(role: .destructive)` and `Divider()` in `.contextMenu` are macOS 12+ APIs, within the macOS 14+ target.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding `@MainActor` to `SuggestedSessionTemplatesTests` if it accesses `@MainActor`-isolated singletons (it tests static data only so likely fine as-is; low priority).
+- Consider a "streak broken for N-th time" variant for SessionNotifier — after user breaks and re-builds same milestone twice, shift tone to encouraging persistence rather than surprise.
+- Consider an Admin "Bulk revoke" panel in the web admin UI similar to existing "Bulk extend" / "Bulk set expiry" panels.
+- Consider adding individual dismissal for *pinned* templates from the notch directly (right-click "Remove pin" to unpin without opening Settings).
+- Consider adding a `resetDismissedSuggestions()` call inside the `showSuggestedTemplates` toggle's `didSet` so that re-enabling the toggle also restores dismissed items (currently dismissed items persist across hide/show cycles).
