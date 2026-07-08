@@ -1,5 +1,32 @@
 # Adia — Build Progress
 
+## Run 275 — 2026-07-08T10:07:00Z — Admin bulk-set-status tests (25 tests, 712 → 737)
+
+### Shipped
+
+**`web/__tests__/admin-bulk-set-status.test.ts` — 25 new tests for the existing bulk-set-status API:**
+
+The `POST /api/admin/bulk-set-status` endpoint and `BulkSetStatusPanel` UI already existed but had zero test coverage. This run adds a comprehensive test suite modeled after the existing `admin-bulk-revoke.test.ts`.
+
+- Auth (3): 401 no-token, 401 wrong-token, 200 `?token=` query param.
+- Validation (5): 400 missing `keys`, 400 empty `keys`, 400 exceeds 100-key limit, 400 missing `status`, 400 invalid `status` value (`suspended`).
+- Core behavior (9): single active key set to `canceled`; multiple keys set to `expired`; key normalized to uppercase; `previousStatus` in changed entry; `active → past_due`; `canceled → active` (re-activation); `expired → active`; `past_due → canceled`; all four valid target statuses accepted.
+- Skip behavior (4): `not_found` → reason in skipped; `already_set` (target status already matches) → reason in skipped; mixed changed + skipped in one request; skipped key not mutated.
+- Audit log (4): one `set_status` entry per changed key; detail contains `{ previousStatus, newStatus, bulk: true }`; no audit entry for `not_found`; no audit entry for `already_set`.
+
+**Test count: 712 → 737 (31 test files, all pass). `tsc --noEmit` clean.**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider rate-limiting on export endpoints (`/api/admin/audit-log-export`, `/api/admin/export-licenses`): currently these can be hammered without a separate cap; a 10 req/60 s per-IP limit (separate from the main adminGuard bucket) would match the pattern used for `POST /api/admin/notify`.
+- Consider `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment).
+- Consider adding `?token=` query-param auth test to `admin-notify.test.ts` — the `?token=` path through `adminGuard` is tested by other suites but not explicitly for the notify endpoint.
+- Consider a `GET /api/admin/licenses-by-email` pagination test suite — the endpoint already supports `?limit=` + `?offset=` + `hasMore` but has no tests exercising pagination, only the happy-path single-page case.
+
+---
+
 ## Run 274 — 2026-07-04T21:15:00Z — POST /api/admin/notify + NotifyPanel + 19 tests (693 → 712)
 
 ### Shipped
