@@ -19,6 +19,8 @@ public final class SettingsStore: ObservableObject {
     private static let customAppsKey     = "adia.customBlockedApps"
     private static let disabledAppsKey   = "adia.disabledDefaultApps"
 
+    private static let dismissedSuggestionsKey = "adia.dismissedSuggestions"
+
     @Published public private(set) var agentAIKey: String?
     @Published public var crashReportsEnabled: Bool {
         didSet { defaults.set(crashReportsEnabled, forKey: "crashReportsEnabled") }
@@ -38,6 +40,20 @@ public final class SettingsStore: ObservableObject {
     /// with no pinned templates. Set to false permanently via the "hide" button in the notch.
     @Published public var showSuggestedTemplates: Bool {
         didSet { defaults.set(showSuggestedTemplates, forKey: "adia.showSuggestedTemplates") }
+    }
+
+    /// Task strings of suggested templates the user has individually dismissed.
+    /// The section still shows when `showSuggestedTemplates` is true but these entries are hidden.
+    @Published public private(set) var dismissedSuggestionTasks: Set<String> {
+        didSet { Self.saveDomainList(Array(dismissedSuggestionTasks), key: Self.dismissedSuggestionsKey, to: defaults) }
+    }
+
+    public func dismissSuggestion(task: String) {
+        dismissedSuggestionTasks.insert(task)
+    }
+
+    public func resetDismissedSuggestions() {
+        dismissedSuggestionTasks = []
     }
     /// How often (in minutes) the notch re-opens to remind the user to verify after
     /// their session's target duration has elapsed. Clamped to `Self.timerExpiredRearmMinuteOptions`
@@ -114,6 +130,7 @@ public final class SettingsStore: ObservableObject {
         showMenuBarItem                  = defaults.object(forKey: "adia.showMenuBarItem")                     as? Bool ?? true
         idleTemplatesFollowManualOrder   = defaults.object(forKey: "adia.idleTemplatesFollowManualOrder")      as? Bool ?? false
         showSuggestedTemplates           = defaults.object(forKey: "adia.showSuggestedTemplates")              as? Bool ?? true
+        dismissedSuggestionTasks         = Set(Self.loadDomainList(key: Self.dismissedSuggestionsKey, from: defaults))
         let storedRearmMinutes = defaults.object(forKey: "adia.timerExpiredRearmMinutes") as? Int ?? 10
         timerExpiredRearmMinutes = Self.timerExpiredRearmMinuteOptions.contains(storedRearmMinutes) ? storedRearmMinutes : 10
         let storedGoal = defaults.object(forKey: "adia.dailyFocusGoalMinutes") as? Int

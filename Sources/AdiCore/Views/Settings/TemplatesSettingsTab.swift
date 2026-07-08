@@ -61,6 +61,15 @@ struct TemplatesSettingsTab: View {
                         .toggleStyle(.switch)
                         .controlSize(.mini)
                         .help("Show built-in session suggestions in the notch when you have no pinned templates yet.")
+                    if !settings.dismissedSuggestionTasks.isEmpty {
+                        Button("Reset dismissed suggestions") {
+                            settings.resetDismissedSuggestions()
+                        }
+                        .font(.caption)
+                        .buttonStyle(.borderless)
+                        .foregroundStyle(.secondary)
+                        .help("Restore all individually dismissed starter suggestions.")
+                    }
                 }
                 .padding(.horizontal, 12)
             }

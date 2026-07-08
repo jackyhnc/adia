@@ -138,29 +138,49 @@ struct IdleBody: View {
 
     @ViewBuilder
     private var suggestedSection: some View {
-        let suggestions = Array(SuggestedSessionTemplates.all.prefix(SuggestedSessionTemplates.displayCount))
-        VStack(alignment: .leading, spacing: 5) {
-            HStack {
-                Text("SUGGESTIONS")
-                    .font(.system(size: 9, weight: .bold))
-                    .foregroundStyle(.white.opacity(0.3))
-                    .tracking(1.5)
-                Spacer()
-                Button {
-                    withAnimation(.easeOut(duration: 0.15)) {
-                        settings.showSuggestedTemplates = false
+        let suggestions = SuggestedSessionTemplates.all
+            .prefix(SuggestedSessionTemplates.displayCount)
+            .filter { !settings.dismissedSuggestionTasks.contains($0.task) }
+        if !suggestions.isEmpty {
+            VStack(alignment: .leading, spacing: 5) {
+                HStack {
+                    Text("SUGGESTIONS")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.3))
+                        .tracking(1.5)
+                    Spacer()
+                    Button {
+                        withAnimation(.easeOut(duration: 0.15)) {
+                            for s in suggestions { settings.dismissSuggestion(task: s.task) }
+                        }
+                    } label: {
+                        Text("dismiss all")
+                            .font(.system(size: 9))
+                            .foregroundStyle(.white.opacity(0.2))
                     }
-                } label: {
-                    Text("hide")
-                        .font(.system(size: 9))
-                        .foregroundStyle(.white.opacity(0.2))
-                }
-                .buttonStyle(.plain)
-                .help("Hide suggestions. Re-enable in Settings → Templates.")
-            }
+                    .buttonStyle(.plain)
+                    .help("Dismiss all suggestions. Reset in Settings → Templates.")
 
-            ForEach(suggestions, id: \.task) { s in
-                suggestedButton(s)
+                    Text("·")
+                        .font(.system(size: 9))
+                        .foregroundStyle(.white.opacity(0.1))
+
+                    Button {
+                        withAnimation(.easeOut(duration: 0.15)) {
+                            settings.showSuggestedTemplates = false
+                        }
+                    } label: {
+                        Text("hide")
+                            .font(.system(size: 9))
+                            .foregroundStyle(.white.opacity(0.2))
+                    }
+                    .buttonStyle(.plain)
+                    .help("Hide suggestions section. Re-enable in Settings → Templates.")
+                }
+
+                ForEach(Array(suggestions), id: \.task) { s in
+                    suggestedButton(s)
+                }
             }
         }
     }
@@ -240,6 +260,7 @@ struct IdleBody: View {
             )
         }
         .buttonStyle(.plain)
+        .help("Done when: \(s.successCriteria)")
         .contextMenu {
             Button {
                 launchSuggested(s)
@@ -252,6 +273,14 @@ struct IdleBody: View {
                 }
             } label: {
                 Label("Edit & Launch\u{2026}", systemImage: "pencil")
+            }
+            Divider()
+            Button(role: .destructive) {
+                withAnimation(.easeOut(duration: 0.15)) {
+                    settings.dismissSuggestion(task: s.task)
+                }
+            } label: {
+                Label("Dismiss", systemImage: "xmark")
             }
         }
     }
