@@ -737,4 +737,73 @@ struct SettingsStoreTests {
         #expect(decoded?.contains("finish the report") == true)
         await resetDismissedSuggestions()
     }
+
+    // MARK: - Streak break counts
+
+    private func resetBreakCounts() async {
+        await MainActor.run { SettingsStore.shared._resetStreakBreakCounts() }
+    }
+
+    @Test func streakBreakCount_returnsZeroWhenNeverBroken() async {
+        await resetBreakCounts()
+        let count = await MainActor.run { SettingsStore.shared.streakBreakCount(for: 7) }
+        #expect(count == 0)
+        await resetBreakCounts()
+    }
+
+    @Test func incrementStreakBreak_returnsOneOnFirstCall() async {
+        await resetBreakCounts()
+        let count = await MainActor.run { SettingsStore.shared.incrementStreakBreak(days: 7) }
+        #expect(count == 1)
+        await resetBreakCounts()
+    }
+
+    @Test func incrementStreakBreak_incrementsOnSubsequentCalls() async {
+        await resetBreakCounts()
+        let first  = await MainActor.run { SettingsStore.shared.incrementStreakBreak(days: 14) }
+        let second = await MainActor.run { SettingsStore.shared.incrementStreakBreak(days: 14) }
+        let third  = await MainActor.run { SettingsStore.shared.incrementStreakBreak(days: 14) }
+        #expect(first  == 1)
+        #expect(second == 2)
+        #expect(third  == 3)
+        await resetBreakCounts()
+    }
+
+    @Test func incrementStreakBreak_tracksMilestonesIndependently() async {
+        await resetBreakCounts()
+        await MainActor.run {
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+        }
+        let count7  = await MainActor.run { SettingsStore.shared.incrementStreakBreak(days: 7) }
+        let count14 = await MainActor.run { SettingsStore.shared.incrementStreakBreak(days: 14) }
+        #expect(count7  == 4)
+        #expect(count14 == 1)
+        await resetBreakCounts()
+    }
+
+    @Test func streakBreakCountsPersistedToUserDefaults() async {
+        await resetBreakCounts()
+        _ = await MainActor.run { SettingsStore.shared.incrementStreakBreak(days: 21) }
+        _ = await MainActor.run { SettingsStore.shared.incrementStreakBreak(days: 21) }
+        let data = UserDefaults.standard.data(forKey: "adia.streakBreakCounts")
+        #expect(data != nil, "break counts should be persisted to UserDefaults")
+        let decoded = try? JSONDecoder().decode([String: Int].self, from: data ?? Data())
+        #expect(decoded?["21"] == 2, "persisted count for day 21 should be 2")
+        await resetBreakCounts()
+    }
+
+    @Test func resetStreakBreakCounts_clearsAllCounts() async {
+        await resetBreakCounts()
+        await MainActor.run {
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 14)
+        }
+        await resetBreakCounts()
+        let count7  = await MainActor.run { SettingsStore.shared.streakBreakCount(for: 7) }
+        let count14 = await MainActor.run { SettingsStore.shared.streakBreakCount(for: 14) }
+        #expect(count7  == 0)
+        #expect(count14 == 0)
+    }
 }

@@ -234,3 +234,109 @@ struct SessionNotifierStreakBrokenTests {
         }
     }
 }
+
+// MARK: - Streak repeat broken pure-function tests (no app bundle required)
+
+/// Tests for `SessionNotifier.streakRepeatBrokenBody` — exercises only a `nonisolated static`
+/// function so no `UNUserNotificationCenter` call occurs; runs unconditionally in CI.
+@Suite("SessionNotifier streak repeat broken")
+struct SessionNotifierStreakRepeatBrokenTests {
+
+    // MARK: Non-empty
+
+    @Test func streakRepeatBrokenBody_isNonEmptyForAllMilestonesAtBreakCount2() {
+        for days in [7, 14, 21, 30] {
+            #expect(
+                !SessionNotifier.streakRepeatBrokenBody(days: days, breakCount: 2).isEmpty,
+                "repeat-broken body for \(days)-day streak (breakCount=2) must not be empty"
+            )
+        }
+    }
+
+    @Test func streakRepeatBrokenBody_isNonEmptyForAllMilestonesAtBreakCount3() {
+        for days in [7, 14, 21, 30] {
+            #expect(
+                !SessionNotifier.streakRepeatBrokenBody(days: days, breakCount: 3).isEmpty,
+                "repeat-broken body for \(days)-day streak (breakCount=3) must not be empty"
+            )
+        }
+    }
+
+    @Test func streakRepeatBrokenBody_isNonEmptyForFallbackAtBreakCount2() {
+        let body = SessionNotifier.streakRepeatBrokenBody(days: 8, breakCount: 2)
+        #expect(!body.isEmpty, "fallback repeat-broken body must not be empty")
+    }
+
+    // MARK: Day count mentioned
+
+    @Test func streakRepeatBrokenBody_mentionsDayCountForMilestonesAtBreakCount2() {
+        for days in [7, 14, 21, 30] {
+            let body = SessionNotifier.streakRepeatBrokenBody(days: days, breakCount: 2)
+            #expect(body.contains("\(days)"),
+                    "repeat-broken body for \(days)-day streak should mention the count")
+        }
+    }
+
+    @Test func streakRepeatBrokenBody_fallbackMentionsDayCount() {
+        let body = SessionNotifier.streakRepeatBrokenBody(days: 11, breakCount: 2)
+        #expect(body.contains("11"), "fallback body must mention the day count")
+    }
+
+    // MARK: Copy shifts from first-break copy
+
+    @Test func streakRepeatBrokenBody_differsFromFirstBreakCopyForMilestones() {
+        for days in [7, 14, 21, 30] {
+            let firstBreak = SessionNotifier.streakBrokenBody(previousStreak: days)
+            let repeatBreak = SessionNotifier.streakRepeatBrokenBody(days: days, breakCount: 2)
+            #expect(firstBreak != repeatBreak,
+                    "repeat-break copy for \(days)-day streak must differ from first-break copy")
+        }
+    }
+
+    @Test func streakRepeatBrokenBody_breakCount3DiffersFromBreakCount2ForMilestones() {
+        for days in [7, 14, 21, 30] {
+            let second = SessionNotifier.streakRepeatBrokenBody(days: days, breakCount: 2)
+            let third  = SessionNotifier.streakRepeatBrokenBody(days: days, breakCount: 3)
+            #expect(second != third,
+                    "breakCount=3 copy for \(days)-day streak must differ from breakCount=2 copy")
+        }
+    }
+
+    // MARK: Tone
+
+    @Test func streakRepeatBrokenBody_toneIsNotPunishing() {
+        let shamePhrases = ["failed", "loser", "disappointed", "shame", "bad", "terrible"]
+        for days in [7, 8, 14, 21, 30] {
+            for breakCount in [2, 3] {
+                let body = SessionNotifier.streakRepeatBrokenBody(days: days, breakCount: breakCount).lowercased()
+                for phrase in shamePhrases {
+                    #expect(!body.contains(phrase),
+                            "repeat-broken body (\(days)d, count=\(breakCount)) must not contain \"\(phrase)\"")
+                }
+            }
+        }
+    }
+
+    @Test func streakRepeatBrokenBody_toneIsNotCorporate() {
+        let corporatePhrases = ["congratulations", "achievement", "great job", "well done"]
+        for days in [7, 14, 21, 30] {
+            for breakCount in [2, 3] {
+                let body = SessionNotifier.streakRepeatBrokenBody(days: days, breakCount: breakCount).lowercased()
+                for phrase in corporatePhrases {
+                    #expect(!body.contains(phrase),
+                            "repeat-broken body (\(days)d, count=\(breakCount)) must not contain corporate phrase \"\(phrase)\"")
+                }
+            }
+        }
+    }
+
+    @Test func streakRepeatBrokenBody_isActionOriented() {
+        // Repeat copy should prompt the user to investigate or change something.
+        let actionWords = ["figure", "find", "change", "what", "different", "fix", "capable"]
+        for days in [7, 14, 21, 30] {
+            let body = SessionNotifier.streakRepeatBrokenBody(days: days, breakCount: 2).lowercased()
+            let hasActionWord = actionWords.contains { body.contains($0) }
+            #expect(hasActionWord, "repeat-broken body for \(days)d should contain an action-oriented word")
+        }
+    }
+}

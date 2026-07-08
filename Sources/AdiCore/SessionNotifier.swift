@@ -156,13 +156,46 @@ public final class SessionNotifier: NSObject {
         }
     }
 
+    /// Pattern-aware re-engagement copy for when the same milestone streak breaks a second or
+    /// third+ time. Tone shifts from "you can pick it back up" to "here's what to actually change."
+    /// `breakCount` is the number of times this day-count streak has now been broken (≥ 2).
+    nonisolated public static func streakRepeatBrokenBody(days: Int, breakCount: Int) -> String {
+        switch days {
+        case 7:
+            return breakCount >= 3
+                ? "the 7-day wall keeps showing up. figure out which day trips you and change that day."
+                : "7-day streak again. you know the pattern — find the day that breaks it."
+        case 14:
+            return breakCount >= 3
+                ? "14 days three times. weeks 1–2 aren't the problem. what shifts in week 3?"
+                : "you've had a 14-day streak before. something specific ends it. find that thing."
+        case 21:
+            return breakCount >= 3
+                ? "21 days keeps getting close. the last week needs something different."
+                : "21 days again. you know how to start one. figure out what stops week 3."
+        case 30:
+            return breakCount >= 3
+                ? "multiple times near 30 days. you're capable — something specific is in the way. what is it?"
+                : "you've almost hit 30 before. you're not unlucky. find the one thing and fix it."
+        default:
+            return breakCount >= 3
+                ? "same pattern, again. this isn't random. figure out what to change and change it."
+                : "you've broken a \(days)-day streak before. you know what gets in the way now."
+        }
+    }
+
     /// Fires a re-engagement banner when the user misses a day after a ≥7-day streak.
+    /// Increments the persistent break count for this day total and selects pattern-aware
+    /// copy if this milestone has been broken before.
     /// Uses a stable identifier so rapid launches don't stack banners.
     public func sendStreakBroken(previousStreak: Int) {
         #if canImport(UserNotifications)
+        let breakCount = SettingsStore.shared.incrementStreakBreak(days: previousStreak)
         let content = UNMutableNotificationContent()
         content.title = "streak ended at \(previousStreak) days"
-        content.body = Self.streakBrokenBody(previousStreak: previousStreak)
+        content.body = breakCount >= 2
+            ? Self.streakRepeatBrokenBody(days: previousStreak, breakCount: breakCount)
+            : Self.streakBrokenBody(previousStreak: previousStreak)
         content.sound = .default
         schedule(content, id: "adia.streak.broken")
         #endif

@@ -19,7 +19,8 @@ public final class SettingsStore: ObservableObject {
     private static let customAppsKey     = "adia.customBlockedApps"
     private static let disabledAppsKey   = "adia.disabledDefaultApps"
 
-    private static let dismissedSuggestionsKey = "adia.dismissedSuggestions"
+    private static let dismissedSuggestionsKey  = "adia.dismissedSuggestions"
+    private static let streakBreakCountsKey     = "adia.streakBreakCounts"
 
     @Published public private(set) var agentAIKey: String?
     @Published public var crashReportsEnabled: Bool {
@@ -61,6 +62,40 @@ public final class SettingsStore: ObservableObject {
     public func resetDismissedSuggestions() {
         dismissedSuggestionTasks = []
     }
+
+    // MARK: - Streak break counts
+
+    /// How many times each previous-streak day count has been broken.
+    /// Persisted as JSON ({String(days): count}) to UserDefaults.
+    private var streakBreakCountsDict: [Int: Int] = [:]
+
+    /// Returns the number of times a streak ending at `days` has been broken.
+    /// Returns 0 if the milestone has never been broken before.
+    public func streakBreakCount(for days: Int) -> Int {
+        streakBreakCountsDict[days] ?? 0
+    }
+
+    /// Increments the break count for `days` and returns the new count.
+    /// Call this when a streak ends so subsequent breaks get pattern-aware copy.
+    @discardableResult
+    public func incrementStreakBreak(days: Int) -> Int {
+        let newCount = (streakBreakCountsDict[days] ?? 0) + 1
+        streakBreakCountsDict[days] = newCount
+        saveStreakBreakCounts()
+        return newCount
+    }
+
+    private func saveStreakBreakCounts() {
+        let stringKeyed = Dictionary(uniqueKeysWithValues: streakBreakCountsDict.map { (String($0.key), $0.value) })
+        guard let data = try? JSONEncoder().encode(stringKeyed) else { return }
+        defaults.set(data, forKey: Self.streakBreakCountsKey)
+    }
+
+    internal func _resetStreakBreakCounts() {
+        streakBreakCountsDict = [:]
+        saveStreakBreakCounts()
+    }
+
     /// How often (in minutes) the notch re-opens to remind the user to verify after
     /// their session's target duration has elapsed. Clamped to `Self.timerExpiredRearmMinuteOptions`
     /// so a corrupted default can't silently disable the reminder (e.g. by storing 0).
@@ -155,6 +190,13 @@ public final class SettingsStore: ObservableObject {
         disabledDefaultDomains = Set(Self.loadDomainList(key: Self.disabledDomainsKey, from: defaults))
         customBlockedApps      = Self.loadDomainList(key: Self.customAppsKey,      from: defaults)
         disabledDefaultApps    = Set(Self.loadDomainList(key: Self.disabledAppsKey,    from: defaults))
+        if let data = defaults.data(forKey: Self.streakBreakCountsKey),
+           let stringKeyed = try? JSONDecoder().decode([String: Int].self, from: data) {
+            streakBreakCountsDict = Dictionary(uniqueKeysWithValues: stringKeyed.compactMap { k, v in
+                guard let i = Int(k) else { return nil }
+                return (i, v)
+            })
+        }
     }
 
     /// Returns the trimmed string, or nil if it is nil/empty/whitespace-only.

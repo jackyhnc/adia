@@ -11939,3 +11939,68 @@ None. Swift toolchain unavailable on Linux container.
 - Consider an Admin "Bulk revoke" panel in the web admin UI similar to existing "Bulk extend" / "Bulk set expiry" panels.
 - Consider adding individual dismissal for *pinned* templates from the notch directly (right-click "Remove pin" to unpin without opening Settings).
 - Consider adding a `resetDismissedSuggestions()` call inside the `showSuggestedTemplates` toggle's `didSet` so that re-enabling the toggle also restores dismissed items (currently dismissed items persist across hide/show cycles).
+
+---
+
+## Run 279 — 2026-07-08T00:00:00Z — Streak repeat-broken copy
+
+### Shipped
+
+**`Sources/AdiCore/Settings/SettingsStore.swift` — streak break count persistence:**
+- Added `private static let streakBreakCountsKey = "adia.streakBreakCounts"`.
+- Added `private var streakBreakCountsDict: [Int: Int] = [:]` — in-memory map of `previousStreak → timesBreakCount`.
+- Added `public func streakBreakCount(for days: Int) -> Int` — returns 0 when never broken.
+- Added `@discardableResult public func incrementStreakBreak(days: Int) -> Int` — increments the count, persists immediately, returns new count.
+- Added `private func saveStreakBreakCounts()` — serializes `[Int: Int]` as `[String: Int]` JSON (JSON requires string keys) and writes to UserDefaults.
+- Added `internal func _resetStreakBreakCounts()` — test helper that clears the dict and persists the empty state.
+- Loaded `streakBreakCountsDict` from UserDefaults in `init()` by decoding the `[String: Int]` JSON and converting keys back to `Int`.
+
+**`Sources/AdiCore/SessionNotifier.swift` — pattern-aware streak-broken copy:**
+- Added `nonisolated public static func streakRepeatBrokenBody(days: Int, breakCount: Int) -> String`:
+  - days=7, breakCount=2: "7-day streak again. you know the pattern — find the day that breaks it."
+  - days=7, breakCount≥3: "the 7-day wall keeps showing up. figure out which day trips you and change that day."
+  - days=14, breakCount=2: "you've had a 14-day streak before. something specific ends it. find that thing."
+  - days=14, breakCount≥3: "14 days three times. weeks 1–2 aren't the problem. what shifts in week 3?"
+  - days=21, breakCount=2: "21 days again. you know how to start one. figure out what stops week 3."
+  - days=21, breakCount≥3: "21 days keeps getting close. the last week needs something different."
+  - days=30, breakCount=2: "you've almost hit 30 before. you're not unlucky. find the one thing and fix it."
+  - days=30, breakCount≥3: "multiple times near 30 days. you're capable — something specific is in the way. what is it?"
+  - default, breakCount=2: "you've broken a N-day streak before. you know what gets in the way now."
+  - default, breakCount≥3: "same pattern, again. this isn't random. figure out what to change and change it."
+- Modified `sendStreakBroken(previousStreak:)` to call `SettingsStore.shared.incrementStreakBreak(days:)` and use `streakRepeatBrokenBody` when `breakCount >= 2`; first break still uses the existing `streakBrokenBody`.
+
+**`Tests/AdiTests/SessionNotifierTests.swift` — new suite `SessionNotifier streak repeat broken`:**
+- `streakRepeatBrokenBody_isNonEmptyForAllMilestonesAtBreakCount2` — all of [7,14,21,30]
+- `streakRepeatBrokenBody_isNonEmptyForAllMilestonesAtBreakCount3`
+- `streakRepeatBrokenBody_isNonEmptyForFallbackAtBreakCount2`
+- `streakRepeatBrokenBody_mentionsDayCountForMilestonesAtBreakCount2`
+- `streakRepeatBrokenBody_fallbackMentionsDayCount`
+- `streakRepeatBrokenBody_differsFromFirstBreakCopyForMilestones` — repeat copy ≠ first-break copy
+- `streakRepeatBrokenBody_breakCount3DiffersFromBreakCount2ForMilestones`
+- `streakRepeatBrokenBody_toneIsNotPunishing` — no "failed/loser/shame/bad/terrible"
+- `streakRepeatBrokenBody_toneIsNotCorporate` — no "congratulations/achievement/great job"
+- `streakRepeatBrokenBody_isActionOriented` — body contains ≥1 action word (figure/find/change/what/different/fix/capable)
+
+**`Tests/AdiTests/SettingsStoreTests.swift` — 6 new tests in existing suite:**
+- `streakBreakCount_returnsZeroWhenNeverBroken`
+- `incrementStreakBreak_returnsOneOnFirstCall`
+- `incrementStreakBreak_incrementsOnSubsequentCalls`
+- `incrementStreakBreak_tracksMilestonesIndependently`
+- `streakBreakCountsPersistedToUserDefaults`
+- `resetStreakBreakCounts_clearsAllCounts`
+
+**`GOAL.md` — new task appended and checked:**
+- "Streak repeat-broken copy: SettingsStore.streakBreakCounts persists per-milestone break counts to UserDefaults; incrementStreakBreak(days:) returns new count; SessionNotifier.streakRepeatBrokenBody(days:breakCount:) shifts tone from surprise to pattern-aware action on second+ break; sendStreakBroken uses repeat copy when breakCount≥2; 12 new tests (6 NotifierTests + 6 SettingsStoreTests)"
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+All new functions are `nonisolated static` pure functions (for the copy) or thin wrappers over `UserDefaults` JSON round-trips (for persistence). Persistence pattern is identical to `dismissedSuggestionTasks`; loading/saving uses the same JSONEncoder/JSONDecoder approach already proven in that path. `sendStreakBroken` is `@MainActor` so `SettingsStore.shared.incrementStreakBreak` is a same-actor call with no await needed.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider tracking the "streak restored" count in the same way — e.g., after breaking and rebuilding a 7-day streak three times, the milestone notification could reference the rebuild pattern ("back to 7. you know how this goes — keep the streak this time").
+- Consider adding a UI surface for the streak break counts in FocusInsights (e.g., "you've broken a 7-day streak N times") to make the data visible, not just notification-copy-aware.
+- Consider adding tests to `SessionManagerTests` that call `checkStreakBreak()` in a mocked environment and verify `sendStreakBroken` is called with the right `previousStreak` value.
+- Consider `SuggestedSessionTemplatesTests @MainActor` annotation if it ever accesses `@MainActor`-isolated singletons (currently tests static data only — low priority).
