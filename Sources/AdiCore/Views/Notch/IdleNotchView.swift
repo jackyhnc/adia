@@ -240,6 +240,42 @@ struct IdleBody: View {
             )
         }
         .buttonStyle(.plain)
+        .contextMenu {
+            Button {
+                launchSuggested(s)
+            } label: {
+                Label("Launch", systemImage: "play.fill")
+            }
+            Button {
+                withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
+                    state.startCreating(prefill: s.task, duration: s.preferredDuration)
+                }
+            } label: {
+                Label("Edit & Launch\u{2026}", systemImage: "pencil")
+            }
+        }
+    }
+
+    private func launchSuggested(_ s: SuggestedTemplate) {
+        templateError = nil
+        Task { @MainActor in
+            do {
+                try await SessionManager.shared.start(
+                    task: s.task,
+                    successCriteria: s.successCriteria,
+                    targetDuration: s.preferredDuration
+                )
+                NotchState.shared.collapse()
+            } catch CaptureError.permissionDenied {
+                withAnimation {
+                    templateError = "Screen Recording permission required — enable Adia in System Settings."
+                }
+            } catch {
+                withAnimation {
+                    templateError = "Couldn't start session — try again."
+                }
+            }
+        }
     }
 
     private func templateDurationLabel(_ seconds: TimeInterval) -> String {
