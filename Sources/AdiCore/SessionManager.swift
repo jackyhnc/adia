@@ -107,10 +107,23 @@ public final class SessionManager: ObservableObject {
             )
             _lastEndedRecord = record
             let wasSuccessful = sessionEndedSuccessfully
+            let goalMinutes = SettingsStore.shared.dailyFocusGoalMinutes
             Task {
                 await SessionHistory.shared.record(record)
-                guard wasSuccessful else { return }
                 let stats = await SessionHistory.shared.stats()
+
+                // Daily goal check — fires on any session (goal = time spent, not task success).
+                if let goal = goalMinutes, stats.todayMinutes >= goal {
+                    let todayStr = SessionManager.todayDateString()
+                    let lastKey = "adia.lastDailyGoalAchievedDate"
+                    let lastDate = UserDefaults.standard.string(forKey: lastKey)
+                    if lastDate != todayStr {
+                        UserDefaults.standard.set(todayStr, forKey: lastKey)
+                        SessionNotifier.shared.sendDailyGoalAchieved(goalMinutes: goal)
+                    }
+                }
+
+                guard wasSuccessful else { return }
                 // Persist streak so broken-streak detection on next launch has a baseline.
                 UserDefaults.standard.set(stats.streak, forKey: "adia.lastActiveStreak")
                 if let milestone = SessionNotifier.streakMilestoneValue(stats.streak) {
@@ -149,6 +162,17 @@ public final class SessionManager: ObservableObject {
         NotchState.shared.setVerificationResult(nil)
         NotchState.shared.exitConversation()
         NotchState.shared.collapse()
+    }
+
+    // MARK: - Helpers
+
+    /// Returns today's date as "yyyy-MM-dd" using the device's calendar, used to
+    /// gate once-per-day notifications (e.g. daily goal achieved).
+    internal static func todayDateString() -> String {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "yyyy-MM-dd"
+        fmt.locale = Locale(identifier: "en_US_POSIX")
+        return fmt.string(from: Date())
     }
 
     // MARK: - Pause / Resume

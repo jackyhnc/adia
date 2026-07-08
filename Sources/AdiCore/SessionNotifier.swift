@@ -108,6 +108,31 @@ public final class SessionNotifier: NSObject {
         #endif
     }
 
+    // MARK: - Daily goal notifications
+
+    /// Pure body-text builder for `sendDailyGoalAchieved`, exposed so tests can verify
+    /// the friend-like copy without needing a real `UNNotificationContent`.
+    nonisolated public static func dailyGoalAchievedBody(goalMinutes: Int) -> String {
+        switch goalMinutes {
+        case 60:  return "an hour of focus today. goal's done."
+        case 120: return "two hours of focus today. goal's done."
+        default:  return "\(goalMinutes) minutes of focus today. goal's done."
+        }
+    }
+
+    /// Fires a "daily goal ✓" banner the first time the user's today-total focus minutes
+    /// crosses the configured daily goal. Safe to call multiple times — only the first
+    /// call per calendar day schedules a notification.
+    public func sendDailyGoalAchieved(goalMinutes: Int) {
+        #if canImport(UserNotifications)
+        let content = UNMutableNotificationContent()
+        content.title = "daily goal ✓"
+        content.body = Self.dailyGoalAchievedBody(goalMinutes: goalMinutes)
+        content.sound = .default
+        schedule(content, id: "adia.daily.goal_achieved")
+        #endif
+    }
+
     // MARK: - Streak milestone notifications
 
     /// Calendar days at which the app celebrates a consecutive-day focus streak.

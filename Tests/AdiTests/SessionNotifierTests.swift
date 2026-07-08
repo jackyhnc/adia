@@ -340,3 +340,95 @@ struct SessionNotifierStreakRepeatBrokenTests {
         }
     }
 }
+
+// MARK: - Daily goal achieved pure-function tests (no app bundle required)
+
+/// Tests for `SessionNotifier.dailyGoalAchievedBody` — exercises only a `nonisolated static`
+/// function so no `UNUserNotificationCenter` call occurs; runs unconditionally in CI.
+@Suite("SessionNotifier daily goal achieved")
+struct SessionNotifierDailyGoalTests {
+
+    // MARK: Non-empty
+
+    @Test func dailyGoalAchievedBody_isNonEmptyForCommonGoals() {
+        for minutes in [15, 30, 45, 60, 90, 120, 180] {
+            #expect(
+                !SessionNotifier.dailyGoalAchievedBody(goalMinutes: minutes).isEmpty,
+                "daily-goal body for \(minutes) min must not be empty"
+            )
+        }
+    }
+
+    // MARK: Mentions the minute count
+
+    @Test func dailyGoalAchievedBody_mentionsMinuteCountForNonRoundHours() {
+        // Exact hours (60, 120) use "hour/hours" phrasing; everything else must mention the number.
+        for minutes in [15, 30, 45, 90, 180] {
+            let body = SessionNotifier.dailyGoalAchievedBody(goalMinutes: minutes)
+            #expect(body.contains("\(minutes)"),
+                    "body for \(minutes)-min goal should mention the minute count")
+        }
+    }
+
+    @Test func dailyGoalAchievedBody_60minUsesHourPhrasing() {
+        let body = SessionNotifier.dailyGoalAchievedBody(goalMinutes: 60).lowercased()
+        #expect(body.contains("hour"), "60-min goal body should use 'hour' phrasing")
+    }
+
+    @Test func dailyGoalAchievedBody_120minUsesHourPhrasing() {
+        let body = SessionNotifier.dailyGoalAchievedBody(goalMinutes: 120).lowercased()
+        #expect(body.contains("hour"), "120-min goal body should use 'hour' phrasing")
+    }
+
+    // MARK: Tone
+
+    @Test func dailyGoalAchievedBody_toneIsNotCorporate() {
+        let corporatePhrases = ["congratulations", "achievement", "great job", "well done", "amazing"]
+        for minutes in [30, 60, 90, 120] {
+            let body = SessionNotifier.dailyGoalAchievedBody(goalMinutes: minutes).lowercased()
+            for phrase in corporatePhrases {
+                #expect(!body.contains(phrase),
+                        "daily-goal body for \(minutes) min must not use corporate phrase \"\(phrase)\"")
+            }
+        }
+    }
+
+    @Test func dailyGoalAchievedBody_confirmsGoalIsComplete() {
+        // Every variant should make it clear the goal is done.
+        let completionWords = ["done", "hit", "goal"]
+        for minutes in [15, 30, 45, 60, 90, 120, 180] {
+            let body = SessionNotifier.dailyGoalAchievedBody(goalMinutes: minutes).lowercased()
+            let hasCompletionWord = completionWords.contains { body.contains($0) }
+            #expect(hasCompletionWord,
+                    "daily-goal body for \(minutes) min should confirm the goal is complete")
+        }
+    }
+
+    // MARK: todayDateString helper
+
+    @Test func todayDateString_matchesExpectedFormat() {
+        let str = SessionManager.todayDateString()
+        // Must be exactly "yyyy-MM-dd" — 10 characters, digits and hyphens only.
+        #expect(str.count == 10, "date string must be 10 characters")
+        #expect(str.filter({ $0 == "-" }).count == 2, "date string must have exactly 2 hyphens")
+        let parts = str.split(separator: "-")
+        #expect(parts.count == 3, "date string must have 3 components")
+        #expect(parts[0].count == 4, "year component must be 4 digits")
+        #expect(parts[1].count == 2, "month component must be 2 digits")
+        #expect(parts[2].count == 2, "day component must be 2 digits")
+    }
+
+    @Test func todayDateString_containsCurrentYear() {
+        let str = SessionManager.todayDateString()
+        // The year in the string must be the current calendar year.
+        let year = Calendar.current.component(.year, from: Date())
+        #expect(str.hasPrefix(String(year)), "date string must start with the current year \(year)")
+    }
+
+    @Test func todayDateString_isStableWithinSameSecond() {
+        // Two consecutive calls must return the same string (same calendar day).
+        let a = SessionManager.todayDateString()
+        let b = SessionManager.todayDateString()
+        #expect(a == b, "two consecutive todayDateString calls must return the same value")
+    }
+}
