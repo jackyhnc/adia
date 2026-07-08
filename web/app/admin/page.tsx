@@ -123,6 +123,9 @@ export default function Admin() {
       <CollapsibleSection title="Resend license email">
         <ResendLicensePanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Bulk resend license email">
+        <BulkResendLicensePanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Change license email">
         <ChangeEmailPanel token={token} />
       </CollapsibleSection>
@@ -633,6 +636,129 @@ function ResendLicensePanel({ token }: { token: string }) {
             Sent to <strong>{result.to}</strong> — key{' '}
             <span className="font-mono select-all">{result.key}</span> ({result.plan})
           </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Admin bulk resend license email ─────────────────────────────────────────
+
+function BulkResendLicensePanel({ token }: { token: string }) {
+  const [keysRaw, setKeysRaw] = useState('');
+  const [dryRun, setDryRun] = useState(false);
+  const [result, setResult] = useState<{
+    ok: boolean;
+    dryRun: boolean;
+    sent: { key: string; email: string; plan: string }[];
+    skipped: { key: string; reason: string }[];
+  } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const keys = keysRaw
+      .split(/[\n,]+/)
+      .map((k) => k.trim().toUpperCase())
+      .filter(Boolean);
+    if (keys.length === 0) {
+      setError('Enter at least one license key.');
+      return;
+    }
+    setLoading(true);
+    setResult(null);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/bulk-resend-license', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keys, dryRun }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(body);
+        if (!dryRun && body.sent?.length > 0) setKeysRaw('');
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Re-send the license welcome email to multiple customers at once (max 50 keys).
+        Keys that are not found or have no email address are silently skipped.
+        Use <strong>dry run</strong> to preview which keys would be resolved without sending.
+      </p>
+      <form onSubmit={submit} className="card space-y-3">
+        <Field label="License keys (one per line or comma-separated, max 50)">
+          <textarea
+            value={keysRaw}
+            onChange={(e) => setKeysRaw(e.target.value)}
+            rows={5}
+            placeholder={'ADIA-XXXX-XXXX-XXXX\nADIA-YYYY-YYYY-YYYY'}
+            className="input font-mono"
+          />
+        </Field>
+        <label className="flex items-center gap-2 text-sm text-ink/70 select-none">
+          <input
+            type="checkbox"
+            checked={dryRun}
+            onChange={(e) => setDryRun(e.target.checked)}
+            className="rounded"
+          />
+          Dry run (preview only — no emails sent, no audit log written)
+        </label>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Sending…' : dryRun ? 'Preview' : 'Resend license emails'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {result && (
+        <div className="mt-3 space-y-3">
+          <div className={`card border ${result.dryRun ? 'border-yellow-400/40 bg-yellow-50/5' : 'border-green-500/30 bg-green-50/5'}`}>
+            <p className="text-sm font-semibold">
+              {result.dryRun ? '🔍 Dry run — ' : ''}
+              {result.sent.length} email{result.sent.length !== 1 ? 's' : ''} {result.dryRun ? 'would be sent' : 'sent'},&nbsp;
+              {result.skipped.length} skipped
+            </p>
+          </div>
+          {result.sent.length > 0 && (
+            <div className="card space-y-1">
+              <p className="text-xs font-semibold text-ink/60 uppercase tracking-wide mb-2">
+                {result.dryRun ? 'Would send' : 'Sent'}
+              </p>
+              {result.sent.map((s) => (
+                <div key={s.key} className="flex items-center gap-2 text-xs font-mono">
+                  <span className="text-green-500">✓</span>
+                  <span className="select-all">{s.key}</span>
+                  <span className="text-ink/50">→</span>
+                  <span className="text-ink/70">{s.email}</span>
+                  <span className="text-ink/40">({s.plan})</span>
+                </div>
+              ))}
+            </div>
+          )}
+          {result.skipped.length > 0 && (
+            <div className="card space-y-1">
+              <p className="text-xs font-semibold text-ink/60 uppercase tracking-wide mb-2">Skipped</p>
+              {result.skipped.map((s) => (
+                <div key={s.key} className="flex items-center gap-2 text-xs font-mono">
+                  <span className="text-yellow-500">–</span>
+                  <span className="select-all">{s.key}</span>
+                  <span className="text-ink/40 italic">{s.reason}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

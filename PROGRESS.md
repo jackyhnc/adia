@@ -1,5 +1,49 @@
 # Adia — Build Progress
 
+## Run 280 — 2026-07-08T18:10:00Z — Admin bulk-resend-license endpoint + panel + 18 tests (783 → 801)
+
+### Shipped
+
+**`web/app/api/admin/bulk-resend-license/route.ts` — new admin endpoint:**
+- `POST /api/admin/bulk-resend-license` — re-sends the license welcome email to multiple keys at once.
+- Body: `{ keys: string[], dryRun?: boolean }` — non-empty array, max 50 keys.
+- 400 on missing/empty keys array; 400 when `keys.length > 50`.
+- Keys normalized to uppercase before lookup.
+- Unknown keys silently skipped with `reason: "not_found"`.
+- For each matched key: calls `sendLicenseEmail(email, key, plan)`, writes `resend_license` audit log entry with `{ to, bulk: true }`.
+- `dryRun: true` resolves and validates all keys without sending emails or writing audit log; returns same shape with `dryRun: true` in response.
+- Returns `{ ok, dryRun, sent: [{key, email, plan}], skipped: [{key, reason}] }`.
+- Auth: ADMIN_TOKEN bearer header or `?token=` query param (adminGuard).
+
+**`web/app/admin/page.tsx` — BulkResendLicensePanel:**
+- Added after `ResendLicensePanel` (natural pairing: single-key resend → bulk resend).
+- Textarea for keys (newline or comma-separated, max 50).
+- Dry run checkbox: preview resolution without sending.
+- Submit label adapts to "Preview" in dry-run mode vs "Resend license emails" otherwise.
+- Result section: summary line ("N emails sent, M skipped"), per-key sent list (key → email + plan), per-key skipped list (key + italic reason).
+- Dry-run summary uses yellow card + "🔍 Dry run — N would be sent" label vs green card for real sends.
+
+**`web/__tests__/admin-bulk-resend-license.test.ts` — 18 tests:**
+- Auth: 401 no-token, 401 wrong-token, 200 ?token= query-param.
+- Validation: 400 missing keys, 400 empty array, 400 >50 keys.
+- Core: sends email for a known key, sends for multiple keys, normalizes keys to uppercase, skips unknown with not_found, handles mixed batch (found + not_found), sends regardless of license status.
+- Audit log: one resend_license entry per sent key with `{ to, bulk: true }`, one entry per key in multi-key batch, no entry for skipped keys.
+- Dry run: no email sent, no audit log written, dryRun:true in response, dry run still skips not_found, dryRun:false when field omitted.
+
+### Tests
+801 passed (up from 783). 34 test files green.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment).
+- Consider a `GET /api/admin/never-activated` endpoint — licenses with machineCount=0 ordered by issuedAt DESC; useful for finding keys issued but never opened; optional ?plan= and ?since= filters; ?format=csv export.
+- Consider adding a `bulk:true` detail flag to other single→bulk parallel endpoints (bulk-change-plan, bulk-extend, bulk-set-expiry) for audit log consistency.
+- Consider an admin section search bar — with 24+ collapsible panels, a fuzzy-filter input at the top of the page would let admins jump to a section by name without scrolling.
+
+---
+
 ## Run 279 — 2026-07-08T00:00:00Z — showSuggestedTemplates reset + Unpin context menu + 6 tests
 
 ### Shipped
