@@ -12004,3 +12004,21 @@ None. Swift toolchain unavailable on Linux container.
 - Consider adding a UI surface for the streak break counts in FocusInsights (e.g., "you've broken a 7-day streak N times") to make the data visible, not just notification-copy-aware.
 - Consider adding tests to `SessionManagerTests` that call `checkStreakBreak()` in a mocked environment and verify `sendStreakBroken` is called with the right `previousStreak` value.
 - Consider `SuggestedSessionTemplatesTests @MainActor` annotation if it ever accesses `@MainActor`-isolated singletons (currently tests static data only — low priority).
+
+---
+
+## Run 279 — 2026-07-08
+
+### Shipped
+- **Daily goal achieved notification** (`feat: daily goal achieved notification`)
+  - `SessionNotifier.dailyGoalAchievedBody(goalMinutes:)` — `nonisolated static` pure builder with friend-like copy; round-hour goals get "an hour" / "two hours" phrasing; everything else uses the minute count
+  - `sendDailyGoalAchieved(goalMinutes:)` — schedules "daily goal ✓" banner via `UNUserNotificationCenter`
+  - `SessionManager.endSession()` — restructured post-session Task so stats are loaded before `guard wasSuccessful`; daily goal check now runs for every session (not just successful ones); gates the notification to once per calendar day via `adia.lastDailyGoalAchievedDate` UserDefaults key
+  - `SessionManager.todayDateString()` — `internal static` helper returning `"yyyy-MM-dd"` via `DateFormatter` with `en_US_POSIX` locale
+  - 14 new tests in `SessionNotifierDailyGoalTests`: non-empty body, minute-count mention, hour phrasing for 60/120 min, no corporate language, completion-word confirmation, `todayDateString` format + stability
+  - Web tests: 783 passed (unchanged)
+
+### What's next
+- Expose streak break counts in FocusInsights (e.g., "broken N times") so the data is visible in the idle notch, not just in notification copy.
+- Add `SessionManagerTests` coverage for the daily goal gate: mock `SessionHistory.stats()` to return `todayMinutes >= goal`, verify `sendDailyGoalAchieved` fires once and not twice on the same calendar day.
+- Consider a "morning nudge" notification: fire a reminder if no session has been started by a configurable time (e.g. 10am) and the daily goal has not yet been hit.
