@@ -514,3 +514,66 @@ struct SessionNotifierDailyGoalTests {
         #expect(a == b, "two consecutive todayDateString calls must return the same value")
     }
 }
+
+// MARK: - Morning nudge title variants
+
+/// Property-based tests for the `morningNudgeTitles` pool.
+/// Mirrors the structure of `SessionNotifierMorningNudgeTests` for consistency.
+@Suite("SessionNotifier — morning nudge titles")
+struct SessionNotifierMorningNudgeTitleTests {
+
+    @Test func morningNudgeTitles_poolIsNonEmpty() {
+        #expect(!SessionNotifier.morningNudgeTitles.isEmpty)
+    }
+
+    @Test func morningNudgeTitles_hasAtLeastThreeVariants() {
+        #expect(SessionNotifier.morningNudgeTitles.count >= 3,
+                "pool must have at least 3 variants to meaningfully reduce notification fatigue")
+    }
+
+    @Test func morningNudgeTitles_allVariantsAreUnique() {
+        let titles = SessionNotifier.morningNudgeTitles
+        #expect(Set(titles).count == titles.count, "every title variant must be unique")
+    }
+
+    @Test func morningNudgeTitle_returnsNonEmptyString() {
+        #expect(!SessionNotifier.morningNudgeTitle().isEmpty)
+    }
+
+    @Test func morningNudgeTitles_noneAreEmpty() {
+        for title in SessionNotifier.morningNudgeTitles {
+            #expect(!title.isEmpty, "every title variant must be non-empty")
+        }
+    }
+
+    @Test func morningNudgeTitles_noneUseCorporateLanguage() {
+        let banned = ["congratulations", "achievement", "great job", "well done", "awesome"]
+        for title in SessionNotifier.morningNudgeTitles {
+            let lower = title.lowercased()
+            for word in banned {
+                #expect(!lower.contains(word), "title '\(title)' must not use corporate language '\(word)'")
+            }
+        }
+    }
+
+    @Test func morningNudgeTitles_noneUsePunishingLanguage() {
+        let banned = ["failed", "loser", "disappointed", "shame", "terrible", "pathetic"]
+        for title in SessionNotifier.morningNudgeTitles {
+            let lower = title.lowercased()
+            for word in banned {
+                #expect(!lower.contains(word), "title '\(title)' must not use punishing language '\(word)'")
+            }
+        }
+    }
+
+    @Test func morningNudgeTitles_noneContainAllCapsWords() {
+        for title in SessionNotifier.morningNudgeTitles {
+            let words = title.split(separator: " ").map(String.init)
+            for word in words where word.count > 1 {
+                let letters = word.filter { $0.isLetter }
+                #expect(letters != letters.uppercased() || letters.isEmpty,
+                        "title '\(title)' must not contain an all-caps word '\(word)'")
+            }
+        }
+    }
+}

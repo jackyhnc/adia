@@ -12771,3 +12771,53 @@ None. Swift toolchain unavailable on Linux container.
 - Consider exposing `SettingsStore.shared.streakBreakCounts` data in the idle notch or FocusInsights view so users can see their pattern of broken streaks (currently only affects notification copy tone).
 - Consider a `morning_nudge_scheduled` `AppLogger.info(...)` call inside `scheduleMorningNudgeIfNeeded()` for debuggability (mentioned in multiple prior runs).
 - Consider `SessionManagerTests` for the streak milestone gate: similar structure to the daily goal gate tests — extract the milestone check into an `internal` testable method, verify it fires only when `streak >= milestone` and not when the same milestone was already notified.
+
+---
+
+## Run 290 — 2026-07-09
+
+### Shipped
+- **Streak milestone gate unit tests** + **Morning nudge title variants** + **Morning nudge AppLogger** (`feat: streak milestone gate tests + morning nudge title pool`)
+  - `SessionManager.fireStreakMilestoneNotificationIfNeeded(streak:defaults:)` — extracted from inline `endSession()` Task; `@discardableResult internal func` with injected `defaults: UserDefaults = .standard`; callsite in `endSession()` simplifies to `self.fireStreakMilestoneNotificationIfNeeded(streak: stats.streak)`
+  - **10 new Swift tests** in `SessionManagerTests.swift` (MARK: `fireStreakMilestoneNotificationIfNeeded`):
+    - `streakMilestoneGate_returnsFalseForNonMilestoneStreak` — streak=5 → false
+    - `streakMilestoneGate_returnsTrueForMilestone3` — streak=3 → true
+    - `streakMilestoneGate_returnsTrueForMilestone7` — streak=7 → true
+    - `streakMilestoneGate_allMilestonesFire` — loop over [3,7,14,21,30], each returns true on fresh suite
+    - `streakMilestoneGate_returnsFalseWhenMilestoneAlreadyNotified` — pre-seed key=7, streak=7 → false
+    - `streakMilestoneGate_returnsTrueForHigherMilestone` — pre-seed key=7, streak=14 → true
+    - `streakMilestoneGate_writesMilestoneToDefaults` — verifies `lastNotifiedStreakMilestone` key = 7 after fire
+    - `streakMilestoneGate_returnsFalseOnSecondCallSameMilestone` — first=true, second=false (gate active)
+    - `streakMilestoneGate_doesNotWriteDefaultsForNonMilestone` — streak=5, key stays 0
+    - `streakMilestoneGate_milestoneIsReearnableAfterBreakReset` — pre-seed key=0, streak=7 → true (re-earnable)
+    - `streakMilestoneGate_streakZeroIsNotMilestone` — streak=0 → false
+  - `SessionNotifier.morningNudgeTitles` — `nonisolated public static let [String]` with 5 short direct titles:
+    1. "haven't started yet" (original)
+    2. "no session today"
+    3. "day's not started"
+    4. "still at zero"
+    5. "nothing yet today"
+  - `SessionNotifier.morningNudgeTitle()` — `nonisolated public static func` returning `morningNudgeTitles.randomElement() ?? morningNudgeTitles[0]`
+  - `scheduleMorningNudge(hour:)` — `content.title` now uses `Self.morningNudgeTitle()` instead of fixed "haven't started yet"
+  - **8 new Swift tests** in new `SessionNotifierMorningNudgeTitleTests` suite in `SessionNotifierTests.swift`:
+    - `morningNudgeTitles_poolIsNonEmpty`, `hasAtLeastThreeVariants`, `allVariantsAreUnique`
+    - `morningNudgeTitle_returnsNonEmptyString`
+    - `morningNudgeTitles_noneAreEmpty`, `noneUseCorporateLanguage`, `noneUsePunishingLanguage`, `noneContainAllCapsWords`
+  - `SessionNotifier.scheduleMorningNudgeIfNeeded()` — adds `AppLogger.info("notifier.morning_nudge_scheduled", ["hour": "\(nudgeHour)"])` after scheduling; matches the existing error-logging pattern for schedule failures
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `fireStreakMilestoneNotificationIfNeeded` mirrors `fireDailyGoalNotificationIfNeeded` exactly: same `@discardableResult internal func` shape, same `defaults:` injection for test isolation. Logic is a direct lift from the inline block it replaces — no behavioral change.
+- `freshSuite()` is shared from the existing helper already in `SessionManagerTests`; each new test calls it independently so there's no inter-test bleed.
+- `morningNudgeTitles[0]` fallback in `morningNudgeTitle()` is unreachable (array has 5 literals) but prevents a force-unwrap.
+- All 5 titles pass tone checks: none use corporate/punishing language; none are all-caps; all are ≤30 characters (short enough for a notification title).
+- `AppLogger.info` call is placed after `scheduleMorningNudge(hour:)` succeeds — same pattern as the existing `scheduleMorningNudge` error-logger for failures.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider exposing `SettingsStore.shared.streakBreakCounts` in the idle notch or FocusInsights so users can see how many times each streak milestone has been broken (currently only affects notification copy).
+- Consider more morning nudge title variants (currently 5 — same pool size as messages has 7; could grow to 7 for parity).
+- Consider `morning_nudge_title` AppLogger field (currently only logs hour; could also log the chosen title for debugging notification variety).
+- Consider `SessionManagerTests` for `checkStreakBreak()`: mock `SessionHistory.shared.stats()` to return streak=0, verify `sendStreakBroken` fires only when `lastActiveStreak >= 7`.

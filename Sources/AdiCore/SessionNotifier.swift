@@ -231,6 +231,21 @@ public final class SessionNotifier: NSObject {
     private static let morningNudgeID = "adia.morning.nudge"
     private static let lastScheduledNudgeDateKey = "adia.lastScheduledMorningNudgeDate"
 
+    /// Full pool of morning nudge notification titles. All entries are short, direct, and
+    /// friend-like. Exposed so tests can verify every variant without relying on random selection.
+    nonisolated public static let morningNudgeTitles: [String] = [
+        "haven't started yet",
+        "no session today",
+        "day's not started",
+        "still at zero",
+        "nothing yet today",
+    ]
+
+    /// Returns a random morning nudge title from `morningNudgeTitles`.
+    nonisolated public static func morningNudgeTitle() -> String {
+        morningNudgeTitles.randomElement() ?? morningNudgeTitles[0]
+    }
+
     /// Full pool of morning nudge messages. All entries pass the same tone constraints:
     /// friend-like, action-oriented, no corporate/punishing language, no all-caps shouting.
     /// Exposed so tests can verify every variant without relying on random selection.
@@ -263,7 +278,7 @@ public final class SessionNotifier: NSObject {
         components.minute = 0
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
         let content = UNMutableNotificationContent()
-        content.title = "haven't started yet"
+        content.title = Self.morningNudgeTitle()
         content.body = Self.morningNudgeBody()
         content.sound = .default
         let request = UNNotificationRequest(identifier: Self.morningNudgeID, content: content, trigger: trigger)
@@ -306,6 +321,7 @@ public final class SessionNotifier: NSObject {
         guard currentHour < nudgeHour else { return }
         UserDefaults.standard.set(todayStr, forKey: Self.lastScheduledNudgeDateKey)
         scheduleMorningNudge(hour: nudgeHour)
+        AppLogger.info("notifier.morning_nudge_scheduled", ["hour": "\(nudgeHour)"])
     }
 
     /// "yyyy-MM-dd" string for today. Duplicates `SessionManager.todayDateString()` to avoid

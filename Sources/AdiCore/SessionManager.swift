@@ -122,14 +122,7 @@ public final class SessionManager: ObservableObject {
                 guard wasSuccessful else { return }
                 // Persist streak so broken-streak detection on next launch has a baseline.
                 UserDefaults.standard.set(stats.streak, forKey: "adia.lastActiveStreak")
-                if let milestone = SessionNotifier.streakMilestoneValue(stats.streak) {
-                    let milestoneKey = "adia.lastNotifiedStreakMilestone"
-                    let last = UserDefaults.standard.integer(forKey: milestoneKey)
-                    if last < milestone {
-                        UserDefaults.standard.set(milestone, forKey: milestoneKey)
-                        SessionNotifier.shared.sendStreakMilestone(days: milestone)
-                    }
-                }
+                self.fireStreakMilestoneNotificationIfNeeded(streak: stats.streak)
             }
         }
         sessionEndedSuccessfully = false
@@ -188,6 +181,25 @@ public final class SessionManager: ObservableObject {
         guard lastDate != todayStr else { return false }
         defaults.set(todayStr, forKey: lastKey)
         SessionNotifier.shared.sendDailyGoalAchieved(goalMinutes: goal)
+        return true
+    }
+
+    /// Fires a streak-milestone notification when `streak` is a recognized milestone day count and
+    /// that milestone has not already been notified this streak run.
+    /// Returns `true` when the notification was actually sent.
+    /// Separated from `endSession` so the gate logic is unit-testable without a live
+    /// SessionHistory actor or a running SCStream.
+    @discardableResult
+    internal func fireStreakMilestoneNotificationIfNeeded(
+        streak: Int,
+        defaults: UserDefaults = .standard
+    ) -> Bool {
+        guard let milestone = SessionNotifier.streakMilestoneValue(streak) else { return false }
+        let milestoneKey = "adia.lastNotifiedStreakMilestone"
+        let last = defaults.integer(forKey: milestoneKey)
+        guard last < milestone else { return false }
+        defaults.set(milestone, forKey: milestoneKey)
+        SessionNotifier.shared.sendStreakMilestone(days: milestone)
         return true
     }
 

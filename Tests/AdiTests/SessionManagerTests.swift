@@ -828,4 +828,102 @@ struct SessionManagerTests {
         )
         #expect(result == true)
     }
+
+    // MARK: - fireStreakMilestoneNotificationIfNeeded(streak:defaults:)
+
+    @Test func streakMilestoneGate_returnsFalseForNonMilestoneStreak() {
+        let result = SessionManager.shared.fireStreakMilestoneNotificationIfNeeded(
+            streak: 5, defaults: freshSuite()
+        )
+        #expect(result == false)
+    }
+
+    @Test func streakMilestoneGate_returnsTrueForMilestone3() {
+        let result = SessionManager.shared.fireStreakMilestoneNotificationIfNeeded(
+            streak: 3, defaults: freshSuite()
+        )
+        #expect(result == true)
+    }
+
+    @Test func streakMilestoneGate_returnsTrueForMilestone7() {
+        let result = SessionManager.shared.fireStreakMilestoneNotificationIfNeeded(
+            streak: 7, defaults: freshSuite()
+        )
+        #expect(result == true)
+    }
+
+    @Test func streakMilestoneGate_allMilestonesFire() {
+        for milestone in [3, 7, 14, 21, 30] {
+            let result = SessionManager.shared.fireStreakMilestoneNotificationIfNeeded(
+                streak: milestone, defaults: freshSuite()
+            )
+            #expect(result == true, "Milestone \(milestone) should fire on a fresh defaults suite")
+        }
+    }
+
+    @Test func streakMilestoneGate_returnsFalseWhenMilestoneAlreadyNotified() {
+        let suite = freshSuite()
+        suite.set(7, forKey: "adia.lastNotifiedStreakMilestone")
+        let result = SessionManager.shared.fireStreakMilestoneNotificationIfNeeded(
+            streak: 7, defaults: suite
+        )
+        #expect(result == false, "Should not fire if this milestone was already notified")
+    }
+
+    @Test func streakMilestoneGate_returnsTrueForHigherMilestone() {
+        let suite = freshSuite()
+        // Simulate having notified for 7-day streak; now reaching 14.
+        suite.set(7, forKey: "adia.lastNotifiedStreakMilestone")
+        let result = SessionManager.shared.fireStreakMilestoneNotificationIfNeeded(
+            streak: 14, defaults: suite
+        )
+        #expect(result == true, "Higher milestone should fire even when a lower one was already notified")
+    }
+
+    @Test func streakMilestoneGate_writesMilestoneToDefaults() {
+        let suite = freshSuite()
+        SessionManager.shared.fireStreakMilestoneNotificationIfNeeded(
+            streak: 7, defaults: suite
+        )
+        #expect(suite.integer(forKey: "adia.lastNotifiedStreakMilestone") == 7)
+    }
+
+    @Test func streakMilestoneGate_returnsFalseOnSecondCallSameMilestone() {
+        let suite = freshSuite()
+        let first = SessionManager.shared.fireStreakMilestoneNotificationIfNeeded(
+            streak: 7, defaults: suite
+        )
+        let second = SessionManager.shared.fireStreakMilestoneNotificationIfNeeded(
+            streak: 7, defaults: suite
+        )
+        #expect(first == true)
+        #expect(second == false, "Gate must prevent double-fire for the same milestone")
+    }
+
+    @Test func streakMilestoneGate_doesNotWriteDefaultsForNonMilestone() {
+        let suite = freshSuite()
+        SessionManager.shared.fireStreakMilestoneNotificationIfNeeded(
+            streak: 5, defaults: suite
+        )
+        // Default integer value is 0; a non-milestone should never write to the key.
+        #expect(suite.integer(forKey: "adia.lastNotifiedStreakMilestone") == 0)
+    }
+
+    @Test func streakMilestoneGate_milestoneIsReearnableAfterBreakReset() {
+        // After a streak break (checkStreakBreak resets the key to 0), the same milestone
+        // can fire again on the next streak run.
+        let suite = freshSuite()
+        suite.set(0, forKey: "adia.lastNotifiedStreakMilestone")
+        let result = SessionManager.shared.fireStreakMilestoneNotificationIfNeeded(
+            streak: 7, defaults: suite
+        )
+        #expect(result == true, "Milestone should be re-earnable after streak break resets key to 0")
+    }
+
+    @Test func streakMilestoneGate_streakZeroIsNotMilestone() {
+        let result = SessionManager.shared.fireStreakMilestoneNotificationIfNeeded(
+            streak: 0, defaults: freshSuite()
+        )
+        #expect(result == false)
+    }
 }
