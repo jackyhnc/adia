@@ -184,6 +184,18 @@ struct SessionNotifierMorningNudgeTests {
                     "morning nudge variant '\(message)' must not contain shouting all-caps words")
         }
     }
+
+    @Test func morningNudgeMessages_hasSevenVariants() {
+        #expect(SessionNotifier.morningNudgeMessages.count == 7,
+                "messages pool must have exactly 7 variants for parity with the morningNudgeTitles pool")
+    }
+
+    @Test func morningNudgeMessages_allVariantsAreLowercase() {
+        for message in SessionNotifier.morningNudgeMessages {
+            #expect(message == message.lowercased(),
+                    "message '\(message)' must be fully lowercase — friend-like tone uses no capitalization")
+        }
+    }
 }
 
 // MARK: - Streak milestone pure-function tests (no app bundle required)

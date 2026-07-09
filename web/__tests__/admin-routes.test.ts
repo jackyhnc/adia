@@ -928,6 +928,29 @@ describe('GET /api/admin/licenses-by-email', () => {
     expect(body.count).toBe(1);
     expect(body.licenses[0].key).toBe('ADIA-PSC-YA-BBBB');
   });
+
+  it('CSV export respects combined plan + status filters', async () => {
+    insertLicense({ key: 'ADIA-CSVC-MY-AAAA', email: 'csvcomb@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: 'ADIA-CSVC-YA-BBBB', email: 'csvcomb@example.com', plan: 'yearly', expiresAt: null });
+    insertLicense({ key: 'ADIA-CSVC-YC-CCCC', email: 'csvcomb@example.com', plan: 'yearly', expiresAt: null });
+    setStatus('ADIA-CSVC-YC-CCCC', 'canceled');
+    const { GET } = await import('@/app/api/admin/licenses-by-email/route');
+    // plan=yearly + status=active + format=csv → only BBBB row (not monthly AAAA, not canceled CCCC)
+    const req = new NextRequest(
+      'http://localhost/api/admin/licenses-by-email?email=csvcomb%40example.com&plan=yearly&status=active&format=csv',
+      { method: 'GET', headers: authHeader() },
+    );
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    expect(res.headers.get('content-type')).toMatch(/text\/csv/);
+    const text = await res.text();
+    const lines = text.trim().split(/\r?\n/);
+    // header + exactly one data row
+    expect(lines).toHaveLength(2);
+    expect(text).toContain('ADIA-CSVC-YA-BBBB');
+    expect(text).not.toContain('ADIA-CSVC-MY-AAAA');
+    expect(text).not.toContain('ADIA-CSVC-YC-CCCC');
+  });
 });
 
 // ─── POST /api/admin/resend-payment-failed ─────────────────────────────────
