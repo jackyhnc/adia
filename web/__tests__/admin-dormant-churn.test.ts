@@ -547,4 +547,24 @@ describe('GET /api/admin/dormant-churn — rate limit', () => {
     const res = await GET(req);
     expect(res.status).toBe(429);
   });
+
+  it('rate limit fires before format parsing — ?format=csv still gets 429 when bucket exhausted', async () => {
+    const { GET } = await import('@/app/api/admin/dormant-churn/route');
+    const ip = '10.92.1.4';
+    // Exhaust the bucket
+    for (let i = 0; i < 20; i++) {
+      const req = new NextRequest('http://localhost/api/admin/dormant-churn', {
+        method: 'GET',
+        headers: { Authorization: 'Bearer test-admin-token', 'x-forwarded-for': ip },
+      });
+      await GET(req);
+    }
+    // ?format=csv on 21st request — should get 429 not 400 (format validation comes after rate limit)
+    const req = new NextRequest('http://localhost/api/admin/dormant-churn?format=csv', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer test-admin-token', 'x-forwarded-for': ip },
+    });
+    const res = await GET(req);
+    expect(res.status).toBe(429);
+  });
 });

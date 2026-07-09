@@ -1,5 +1,49 @@
 # Adia — Build Progress
 
+## Run 296 — 2026-07-09T18:10:00Z — Dormant-churn CSV rate-limit test + HistoryInsightsSection extraction + fitness keywords
+
+### Shipped
+
+**`web/__tests__/admin-dormant-churn.test.ts` — 4th rate-limit test:**
+- Added test: "rate limit fires before format parsing — ?format=csv still gets 429 when bucket exhausted"
+- Exhausts IP 10.92.1.4 bucket with 20 requests, then sends `?format=csv` on 21st — expects 429 not 400.
+- This confirms rate-limit middleware runs before query-param validation, matching the auth-before-format behavior.
+- 1235 → 1236 web tests, all green.
+
+**`Sources/AdiCore/Views/Settings/HistoryInsightsSection.swift` — extract streakBreakChipLabel:**
+- Extracted inline streak-break chip logic from `body` into `static internal func streakBreakChipLabel(totalBreaks: Int, mostBroken: Int?) -> (label: String, value: String)?`.
+- Returns nil when totalBreaks == 0 (chip hidden), `("Fragile streak", "\(N)d")` when mostBroken set, `("Streak breaks", "\(totalBreaks)")` otherwise.
+- `body` updated to use `Self.streakBreakChipLabel(...)` — behavior unchanged.
+
+**`Tests/AdiTests/HistoryInsightsSectionTests.swift` — 7 new Swift tests:**
+- `hiddenWhenNoBreaks` — totalBreaks=0 + mostBroken=nil → nil
+- `hiddenWhenNoBreaksIgnoresMostBroken` — totalBreaks=0 + mostBroken=7 → nil
+- `showsBreakCountLabel` — totalBreaks=3 + mostBroken=nil → label="Streak breaks", value="3"
+- `breakCountValueMatchesTotalBreaks` — counts 1/5/12 all produce matching value string
+- `showsFragileStreakLabel` — totalBreaks=2 + mostBroken=14 → label="Fragile streak", value="14d"
+- `fragileValueUsesMostBrokenLength` — days 1/7/30 all produce "\(N)d" value
+- `fragilePreferredOverCountForSingleBreak` — totalBreaks=1 + mostBroken=5 → fragile label wins
+
+**`Sources/AdiCore/Callout/CalloutManager.swift` — fitness keyword expansion:**
+- Added `word("exercise") || word("exercises") || word("exercising")` to fitness branch.
+- Added `word("running")` to fitness branch.
+- Added `lower.contains("training session") || lower.contains("training plan")` to fitness branch.
+- `fitnessCallouts(tier:)` already existed — no changes needed there.
+
+### Tests
+1236 web tests passed (up from 1235). Swift tests compile (toolchain unavailable on Linux container, no runtime run).
+
+### Blocked
+Swift toolchain unavailable on Linux container — Swift tests are written and should compile but can't be run here.
+
+### Next agent should pick up
+- Admin panel `?section=` URL sync verification: add a Playwright or fetch-based integration test confirming the `?section=` query param updates in the browser URL as `sectionFilter` state changes
+- `extractTaskKeyword` unit tests: extract function to a testable internal static on `CalloutManager` and write Swift tests for keyword branches (essay, code, fitness, etc.)
+- HistoryInsightsSection `trendLabel` + `streakDisplayLabel` extractions: apply the same pure-function extraction pattern used for `streakBreakChipLabel` to the `trendLabel(insight:)` and `streakDisplayLabel(current:best:)` helpers and add tests
+- Add a "never-activated plan filter" test: admin-never-activated.test.ts currently has no `?plan=` filter test — add one confirming monthly-only and yearly-only filtering
+
+---
+
 ## Run 295 — 2026-07-09T17:10:00Z — Cohort cross-highlight (CohortRetentionPanel ↔ ChurnCohortPanel)
 
 ### Shipped

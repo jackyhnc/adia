@@ -113,18 +113,24 @@ struct HistoryInsightsSection: View {
                 if let pauses = insights.avgPausesPerSession, pauses > 0 {
                     insightChip(icon: "pause.circle", label: "Avg pauses", value: String(format: "%.1f", pauses))
                 }
-                if totalStreakBreaks > 0 {
-                    if let fragile = mostBrokenStreakLength {
-                        insightChip(icon: "flame.slash", label: "Fragile streak", value: "\(fragile)d")
-                    } else {
-                        insightChip(icon: "flame.slash", label: "Streak breaks", value: "\(totalStreakBreaks)")
-                    }
+                if let chip = Self.streakBreakChipLabel(totalBreaks: totalStreakBreaks, mostBroken: mostBrokenStreakLength) {
+                    insightChip(icon: "flame.slash", label: chip.label, value: chip.value)
                 }
             }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
         .background(.background)
+    }
+
+    /// Pure helper for unit tests: returns `(label, value)` for the streak-break insight chip,
+    /// or nil when there are no streak breaks to show.
+    static internal func streakBreakChipLabel(totalBreaks: Int, mostBroken: Int?) -> (label: String, value: String)? {
+        guard totalBreaks > 0 else { return nil }
+        if let fragile = mostBroken {
+            return (label: "Fragile streak", value: "\(fragile)d")
+        }
+        return (label: "Streak breaks", value: "\(totalBreaks)")
     }
 
     @ViewBuilder

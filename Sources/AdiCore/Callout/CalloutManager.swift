@@ -201,11 +201,13 @@ public final class CalloutManager {
             return "practice"
         }
         if word("workout") || word("workouts") || word("gym")
+            || word("exercise") || word("exercises") || word("exercising")
             || word("lifting") || word("weightlifting") || word("bodybuilding")
-            || word("cardio") || word("jogging") || word("cycling") || word("yoga") || word("pilates")
-            || word("stretching") || word("swimming")
+            || word("running") || word("cardio") || word("jogging") || word("cycling")
+            || word("yoga") || word("pilates") || word("stretching") || word("swimming")
             || lower.contains("strength training") || lower.contains("weight training")
             || lower.contains("cross training") || lower.contains("endurance training")
+            || lower.contains("training session") || lower.contains("training plan")
             || lower.contains("meal prep") || lower.contains("nutrition plan")
             || word("calories") {
             return "fitness"
