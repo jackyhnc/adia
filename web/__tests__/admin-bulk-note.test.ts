@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
 import { NextRequest } from 'next/server';
-import { resetDbForTesting, insertLicense, getNote } from '@/lib/db';
+import { resetDbForTesting, insertLicense, getNote, listAuditLog } from '@/lib/db';
 import { _resetForTesting as resetRateLimit } from '@/lib/ratelimit';
 
 let dbPath: string;
@@ -256,5 +256,53 @@ describe('POST /api/admin/bulk-note — mode: clear', () => {
     const body = await res.json();
     expect(body.changed).toHaveLength(0);
     expect(body.skipped[0]).toMatchObject({ key, reason: 'already_set' });
+  });
+});
+
+// ─── Audit log ───────────────────────────────────────────────────────────────
+
+describe('POST /api/admin/bulk-note — audit log', () => {
+  it('writes one bulk_note audit entry per changed key', async () => {
+    const k1 = 'ADIA-BNAL-LOG1-AAAA';
+    const k2 = 'ADIA-BNAL-LOG2-AAAA';
+    insertLicense({ key: k1, email: 'log1@example.com', plan: 'monthly', expiresAt: null });
+    insertLicense({ key: k2, email: 'log2@example.com', plan: 'yearly', expiresAt: null });
+
+    await callPost({ keys: [k1, k2], note: 'hello', mode: 'set' });
+
+    for (const key of [k1, k2]) {
+      const logs = listAuditLog({ licenseKey: key });
+      expect(logs).toHaveLength(1);
+      expect(logs[0].action).toBe('bulk_note');
+    }
+  });
+
+  it('audit log detail contains mode, previousNote, newNote, and bulk=true', async () => {
+    const key = 'ADIA-BNAL-DET1-AAAA';
+    insertLicense({ key, email: 'det1@example.com', plan: 'lifetime', expiresAt: null });
+
+    await callPost({ keys: [key], note: 'my note', mode: 'set' });
+
+    const logs = listAuditLog({ licenseKey: key });
+    const detail = typeof logs[0].detail === 'string' ? JSON.parse(logs[0].detail) : logs[0].detail;
+    expect(detail).toMatchObject({
+      mode: 'set',
+      previousNote: null,
+      newNote: 'my note',
+      bulk: true,
+    });
+  });
+
+  it('does not write audit log for skipped keys', async () => {
+    const key = 'ADIA-BNAL-SKP1-AAAA';
+    insertLicense({ key, email: 'skp1@example.com', plan: 'monthly', expiresAt: null });
+    await callPost({ keys: [key], note: 'existing' });
+
+    // Second call with same note → already_set → skipped; not_found key also skipped
+    await callPost({ keys: [key, 'ADIA-BNAL-NOTFOUND'], note: 'existing' });
+
+    // Only one audit entry (from the first call)
+    const logs = listAuditLog({ licenseKey: key });
+    expect(logs).toHaveLength(1);
   });
 });

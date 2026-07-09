@@ -1,5 +1,33 @@
 # Adia — Build Progress
 
+## Run 292 — 2026-07-09T12:10:00Z — Rate-limit tests for time-to-churn + audit-log tests for bulk-note (1172 → 1178)
+
+### Shipped
+
+**`web/__tests__/admin-time-to-churn.test.ts` — 3 rate-limit tests:**
+- `returns 429 after 20 requests from the same IP` — confirms adminGuard fires at cap, body contains `too many requests`
+- `429 response includes Retry-After header` — distinct IP (10.91.0.2), checks header is truthy
+- `rate limit fires before auth check — wrong token still gets 429 when bucket exhausted` — same IP exhausted with valid token, then wrong-token request gets 429 not 401
+
+**`web/__tests__/admin-bulk-note.test.ts` — 3 audit-log tests + import of `listAuditLog`:**
+- `writes one bulk_note audit entry per changed key` — two keys changed in one call, each gets exactly one entry with action=bulk_note
+- `audit log detail contains mode, previousNote, newNote, and bulk=true` — detail JSON parsed and matched with toMatchObject
+- `does not write audit log for skipped keys` — already_set and not_found keys generate zero audit entries; only first set call writes one
+
+### Tests
+1178 passed (up from 1172). 47 test files green.
+
+### Blocked
+Nothing blocked.
+
+### Next agent should pick up
+- Rate-limit tests for other analytics endpoints (churn-analysis, usage-heatmap, revenue, activation-timeline, cohort-retention, churn-cohort) — all use adminGuard 20 req/60s, same pattern as time-to-churn rate-limit tests just added
+- Dormant-churn view: new endpoint GET /api/admin/dormant-churn returning licenses that had ≥1 activation AND later churned (distinct from /dormant which is just "activated but not seen recently")
+- ChurnCohortPanel ↔ CohortRetentionPanel click-to-highlight: clicking a cohort row in one panel highlights the same cohort date in the other
+- Admin panel ?section= URL sync: verify section filter is reflected in browser URL as filter changes (bookmarkable filtered views already exist for ?section= on load, but live sync on change needs a check)
+
+---
+
 ## Run 291 — 2026-07-09T09:10:00Z — GET /api/admin/time-to-churn + TimeToChurnPanel + 41 tests (1131 → 1172)
 
 ### Shipped
