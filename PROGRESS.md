@@ -12979,3 +12979,43 @@ None. Swift toolchain unavailable on Linux container.
 - Consider growing the `morningNudgeTitles` pool from 5 → 7 entries to match the `morningNudgeMessages` pool size for parity.
 - Consider a `HistoryInsightsSection` preview or snapshot test that exercises `totalStreakBreaks > 0` and `mostBrokenStreakLength != nil` paths so the chip rendering is covered by tests (currently only the data logic is tested).
 - Consider wiring `totalStreakBreaks` / `mostBrokenStreakLength` into a `@Published` wrapper or `@ObservedObject` so `HistoryTab` refreshes reactively if break counts change while the tab is open (current implementation reads values at render time, acceptable since breaks only fire at session end).
+
+---
+
+## Run 294 — 2026-07-09
+
+### Shipped
+- **Morning nudge title pool expansion + AppLogger title field** (`feat: morning nudge title pool 5→7 + AppLogger title field`)
+  - `SessionNotifier.swift` — two new entries in `morningNudgeTitles` (5 → 7):
+    - `"today's untouched"` — short, factual, friend-like
+    - `"no work yet today"` — action-implied, direct
+    Both pass all existing tone constraints (fully lowercase, no corporate/punishing language, no all-caps words, unique).
+  - `SessionNotifier.swift` — `scheduleMorningNudge(hour:)` now captures the chosen title before setting it on `content.title`:
+    ```swift
+    let title = Self.morningNudgeTitle()
+    // ... build content ...
+    content.title = title
+    // ... schedule ...
+    AppLogger.info("notifier.morning_nudge_scheduled", ["hour": "\(hour)", "title": title])
+    ```
+    This consolidates the AppLogger call previously split across `scheduleMorningNudge` (error log only) and `scheduleMorningNudgeIfNeeded` (info log with hour). Now a single structured entry is written per `scheduleMorningNudge` call, regardless of which path invoked it (direct call, `scheduleMorningNudgeIfNeeded`, or `rescheduleMorningNudge`).
+  - `SessionNotifierTests.swift` — **2 new tests** in `SessionNotifierMorningNudgeTitleTests`:
+    - `morningNudgeTitles_hasSevenVariants` — `count == 7`, pinning pool size to match `morningNudgeMessages` for parity
+    - `morningNudgeTitles_allVariantsAreLowercase` — every title satisfies `title == title.lowercased()`, enforcing friend-like lowercase tone constraint
+  - Test count: 123 → 125
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- Both new titles ("today's untouched", "no work yet today") are fully lowercase, unique, non-empty, and pass the corporate/punishing/all-caps banned-word lists in existing tests.
+- The `allVariantsAreLowercase` test checks `title == title.lowercased()` — a stronger constraint than the existing `noneContainAllCapsWords` (which only checks individual words).
+- The `hasSevenVariants` test uses `count == 7` (exact) rather than `>= 3` so future additions require deliberate acknowledgment rather than silently passing.
+- Removing `AppLogger.info` from `scheduleMorningNudgeIfNeeded` is safe: `scheduleMorningNudge` is the single call site that always runs when a notification is scheduled; logging there guarantees one log entry per scheduled notification regardless of call path.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider a `HistoryInsightsSection` unit test that exercises `totalStreakBreaks > 0` and `mostBrokenStreakLength != nil` paths — tests the chip condition logic without needing a full SwiftUI render (use conditional logic directly on the computed properties).
+- Consider wiring `totalStreakBreaks` / `mostBrokenStreakLength` into a `@Published` property or `ObservableObject` wrapper so `HistoryTab` refreshes reactively when break counts change while the tab is open (current read-at-render is safe since breaks only fire at session end, but a reactive path would be more correct).
+- Consider adding `morningNudgeBody_allVariantsAreLowercase` test to `SessionNotifierMorningNudgeTests` for parity with the new title test (messages pool — check that all 7 body messages also pass the lowercase constraint).
+- Consider whether `scheduleMorningNudgeIfNeeded` should also log the `todayStr` gate value for easier debugging of "why wasn't the nudge scheduled today?" issues in production.

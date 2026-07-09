@@ -239,6 +239,8 @@ public final class SessionNotifier: NSObject {
         "day's not started",
         "still at zero",
         "nothing yet today",
+        "today's untouched",
+        "no work yet today",
     ]
 
     /// Returns a random morning nudge title from `morningNudgeTitles`.
@@ -273,18 +275,20 @@ public final class SessionNotifier: NSObject {
     public func scheduleMorningNudge(hour: Int) {
         #if canImport(UserNotifications)
         guard Self.canUseNotificationCenter else { return }
+        let title = Self.morningNudgeTitle()
         var components = DateComponents()
         components.hour = hour
         components.minute = 0
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
         let content = UNMutableNotificationContent()
-        content.title = Self.morningNudgeTitle()
+        content.title = title
         content.body = Self.morningNudgeBody()
         content.sound = .default
         let request = UNNotificationRequest(identifier: Self.morningNudgeID, content: content, trigger: trigger)
         UNUserNotificationCenter.current().add(request) { error in
             if let error { AppLogger.error("notifier.morning_nudge_schedule_failed", ["error": "\(error)"]) }
         }
+        AppLogger.info("notifier.morning_nudge_scheduled", ["hour": "\(hour)", "title": title])
         #endif
     }
 
@@ -321,7 +325,6 @@ public final class SessionNotifier: NSObject {
         guard currentHour < nudgeHour else { return }
         UserDefaults.standard.set(todayStr, forKey: Self.lastScheduledNudgeDateKey)
         scheduleMorningNudge(hour: nudgeHour)
-        AppLogger.info("notifier.morning_nudge_scheduled", ["hour": "\(nudgeHour)"])
     }
 
     /// "yyyy-MM-dd" string for today. Duplicates `SessionManager.todayDateString()` to avoid

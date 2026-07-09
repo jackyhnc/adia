@@ -576,4 +576,16 @@ struct SessionNotifierMorningNudgeTitleTests {
             }
         }
     }
+
+    @Test func morningNudgeTitles_hasSevenVariants() {
+        #expect(SessionNotifier.morningNudgeTitles.count == 7,
+                "titles pool must have exactly 7 variants for parity with the morningNudgeMessages pool")
+    }
+
+    @Test func morningNudgeTitles_allVariantsAreLowercase() {
+        for title in SessionNotifier.morningNudgeTitles {
+            #expect(title == title.lowercased(),
+                    "title '\(title)' must be fully lowercase — friend-like tone uses no capitalization")
+        }
+    }
 }
