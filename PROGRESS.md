@@ -1,5 +1,28 @@
 # Adia — Build Progress
 
+## Run 298 — 2026-07-09 — morningNudgeMessages parity tests + CSV plan+status combo test
+
+### Shipped
+- **`Tests/AdiTests/SessionNotifierTests.swift` — 2 new Swift tests** in `SessionNotifierMorningNudgeTests`:
+  - `morningNudgeMessages_hasSevenVariants` — asserts pool size == 7, matching `morningNudgeTitles_hasSevenVariants` parity rule
+  - `morningNudgeMessages_allVariantsAreLowercase` — asserts every message passes `message == message.lowercased()`, mirroring the equivalent title pool constraint; all 7 current entries pass (125 → 127 Swift tests)
+- **`web/__tests__/admin-routes.test.ts` — 1 new web test** in `GET /api/admin/licenses-by-email`:
+  - "CSV export respects combined plan + status filters" — seeds 3 licenses (monthly/active, yearly/active, yearly/canceled), requests `?format=csv&plan=yearly&status=active`, confirms exactly 1 CSV data row (the yearly/active key), and that the monthly and canceled keys are absent; 1257 → 1258 web tests, all green
+
+### Verification
+All 1258 web tests pass. Swift tests compile (toolchain unavailable on Linux container).
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `extractTaskKeyword` unit tests: extract function to a testable internal static on `CalloutManager` and write Swift tests for keyword branches (essay, code, fitness, etc.)
+- Consider HistoryInsightsSection `trendLabel` + `streakDisplayLabel` extractions: apply the same pure-function extraction pattern used for `streakBreakChipLabel` to the `trendLabel(insight:)` and `streakDisplayLabel(current:best:)` helpers and add tests
+- Consider more suggested session templates in `SuggestedTemplates.swift` (e.g. "Record a podcast episode", "Prepare presentation slides") to expand the idle notch catalog beyond the current 8 entries (requires macOS)
+- Consider wiring `totalStreakBreaks` / `mostBrokenStreakLength` into a `@Published` property or `ObservableObject` wrapper so `HistoryTab` refreshes reactively when break counts change while the tab is open (currently reads at render time — safe since breaks only fire at session end)
+
+---
+
 ## Run 297 — 2026-07-09 — LicenseTimelinePanel admin UI panel
 
 ### Shipped
