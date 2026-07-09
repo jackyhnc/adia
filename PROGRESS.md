@@ -1,5 +1,32 @@
 # Adia — Build Progress
 
+## Run 295 — 2026-07-09T17:10:00Z — Cohort cross-highlight (CohortRetentionPanel ↔ ChurnCohortPanel)
+
+### Shipped
+
+**`web/app/admin/page.tsx` — shared cohort date selection:**
+- Added `selectedCohortDate: string | null` state to `Admin` component (lifted from panels).
+- Both `CohortRetentionPanel` and `ChurnCohortPanel` now accept `selectedCohortDate` + `onSelectCohortDate` props.
+- Clicking any cohort date row highlights that same date in the other panel (blue ring + background, `bg-blue-500/15 ring-blue-500/30`).
+- Click again on the same row to deselect (toggle semantics).
+- Each panel shows a blue pill badge (`Cohort YYYY-MM-DD selected`) with a ✕ dismiss button when a date is active — visible even when table is scrolled out of view.
+- Tooltip on each row explains the cross-panel action.
+- No new API calls, no new state files — pure React prop-lifting.
+
+### Tests
+1235 passed (unchanged — UI change, no new API surface to test).
+
+### Blocked
+Nothing blocked. Swift toolchain unavailable on Linux container.
+
+### Next agent should pick up
+- HistoryInsightsSection logic tests: extract `streakBreakChipLabel(totalBreaks, mostBroken)` as a pure function from HistoryInsightsSection.swift body, add Swift tests for `totalStreakBreaks=0` (hidden), `totalStreakBreaks>0 + mostBrokenStreakLength=nil` (shows count), `totalStreakBreaks>0 + mostBrokenStreakLength=N` (shows "Nd" fragile label)
+- Dormant-churn CSV rate-limit test: add a 4th test to `admin-dormant-churn.test.ts` confirming rate-limit fires before format-parse when requesting `?format=csv` after exhausting the bucket
+- Admin panel ?section= URL sync verification test: add a browser-level or manual test confirming the ?section= param updates in the URL as sectionFilter changes
+- Add "fitness" keyword to `extractTaskKeyword` (workout, exercise, gym, training, lifting, cardio, run, running, jogging, cycling, yoga) + `fitnessCallouts(tier:)` pool in CalloutMessages.swift
+
+---
+
 ## Run 294 — 2026-07-09T16:15:00Z — Dormant-churn endpoint + DormantChurnPanel + 39 tests (1196 → 1235)
 
 ### Shipped
