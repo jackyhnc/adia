@@ -2307,6 +2307,54 @@ struct CalloutManagerTests {
         }
     }
 
+    // MARK: - Fitness keyword expansion (exercise/running/training additions)
+
+    @Test func extractTaskKeywordFromExercise() {
+        #expect(CalloutManager.extractTaskKeyword(from: "do my exercise routine") == "fitness")
+    }
+
+    @Test func extractTaskKeywordFromExercises() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my core exercises before class") == "fitness")
+    }
+
+    @Test func extractTaskKeywordFromExercising() {
+        #expect(CalloutManager.extractTaskKeyword(from: "stop procrastinating and start exercising") == "fitness")
+    }
+
+    @Test func extractTaskKeywordFromRunning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "go running for 30 minutes") == "fitness")
+    }
+
+    @Test func extractTaskKeywordFromTrainingSession() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my training session before dinner") == "fitness")
+    }
+
+    @Test func extractTaskKeywordFromTrainingPlan() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my training plan for the next four weeks") == "fitness")
+    }
+
+    @Test func extractTaskKeywordRunningDoesNotOverrideCode() {
+        // "running a python script" — "python" and "script" hit code branch first
+        #expect(CalloutManager.extractTaskKeyword(from: "debug why running the python script fails") == "code")
+    }
+
+    @Test func extractTaskKeywordExerciseDoesNotOverrideStudying() {
+        // "biology exam" hits studying branch before exercise fires
+        #expect(CalloutManager.extractTaskKeyword(from: "study the exercise physiology questions for biology exam") == "studying")
+    }
+
+    @Test func extractTaskKeywordTrainingSessionDoesNotOverrideCode() {
+        // "training a machine learning model" contains "training" but not the phrase "training session"
+        // — should NOT match fitness; instead falls through (research or nil)
+        let kw = CalloutManager.extractTaskKeyword(from: "training a machine learning model on the dataset")
+        #expect(kw != "fitness", "bare 'training' without 'session'/'plan' suffix should not yield fitness")
+    }
+
+    @Test func extractTaskKeywordMarathonTrainingPlan() {
+        // "training plan" phrase matches via lower.contains("training plan")
+        #expect(CalloutManager.extractTaskKeyword(from: "write out my marathon training plan") == "fitness")
+    }
+
     // MARK: - Podcast keyword extraction
 
     @Test func extractTaskKeywordFromPodcast() {

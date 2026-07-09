@@ -13143,3 +13143,20 @@ None. Swift toolchain unavailable on Linux container.
 - Consider wiring `totalStreakBreaks` / `mostBrokenStreakLength` into a `@Published` property or `ObservableObject` wrapper so `HistoryTab` refreshes reactively when break counts change while the tab is open (current read-at-render is safe since breaks only fire at session end, but a reactive path would be more correct).
 - Consider adding `morningNudgeBody_allVariantsAreLowercase` test to `SessionNotifierMorningNudgeTests` for parity with the new title test (messages pool — check that all 7 body messages also pass the lowercase constraint).
 - Consider whether `scheduleMorningNudgeIfNeeded` should also log the `todayStr` gate value for easier debugging of "why wasn't the nudge scheduled today?" issues in production.
+
+---
+
+## Run 296 — 2026-07-09
+
+### Shipped
+- Cherry-picked orphaned commit `bfc70ce` (dormant-churn CSV rate-limit test + HistoryInsightsSection extraction + fitness keywords) onto main — it had fallen off the branch after a detached HEAD session.
+- **Swift: Fitness keyword unit tests** — 10 new `@Test` functions in `CalloutManagerTests.swift` covering the recently-expanded fitness branch: `exercise`, `exercises`, `exercising`, `running`, `training session`, `training plan`; plus false-positive guards confirming `word("running")` and `word("exercise")` don't override earlier code/studying branches when those terms also appear.
+- **Web: `GET /api/admin/license-timeline`** — new endpoint at `web/app/api/admin/license-timeline/route.ts`; takes required `?key=` (normalized to uppercase), returns `{ license, total, hasMore, offset, limit, entries }` with full paginated audit history for one license; `?format=csv` exports filename `timeline-{KEY}.csv`; `?action=` and `?since=YYYY-MM-DD` filters; limit capped at 200 (default 50); 404 on unknown key; rate-limited via `adminGuard`; 21 new tests covering auth (401/200-via-?token=), validation (missing key, unknown key), core (license object in response, entries isolation by key, uppercase normalization, response shape), pagination (limit/offset/hasMore/cap-at-200), action filter (match/no-match), since filter (invalid date ignored), CSV (content-type, filename, row count, 404, rate-limit-before-format); **1236 → 1257 tests**.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container (Swift tests verified by code inspection).
+
+### Next agent should
+- Consider adding a `LicenseTimelinePanel` in the admin UI (`web/app/admin/`), mirroring the pattern of `LookupPanel` — text input for key, paginated table of audit entries.
+- Consider `morningNudgeBody_allVariantsAreLowercase` test for parity with the title pool lowercase test.
+- Consider more suggested session templates (e.g. "Record a podcast episode", "Prepare presentation slides") to expand the idle notch catalog beyond the current 8 entries.
