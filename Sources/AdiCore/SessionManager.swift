@@ -336,23 +336,39 @@ public final class SessionManager: ObservableObject {
     // MARK: - Streak break detection
 
     /// Checks whether the user's active streak has dropped to 0 since the last successful session.
-    /// - Resets `adia.lastNotifiedStreakMilestone` to 0 whenever the streak hits 0, so milestones
-    ///   can be re-earned on the next streak run.
-    /// - Fires a re-engagement notification when the broken streak was ≥7 days.
+    /// Delegates the pure gate logic to `fireStreakBrokenNotificationIfNeeded` so it can be
+    /// unit-tested without a live SessionHistory actor.
     /// Called once per app launch from `restoreIfNeeded()`.
     internal func checkStreakBreak() async {
-        let activeKey = "adia.lastActiveStreak"
-        let milestoneKey = "adia.lastNotifiedStreakMilestone"
-        let lastActive = UserDefaults.standard.integer(forKey: activeKey)
+        let lastActive = UserDefaults.standard.integer(forKey: "adia.lastActiveStreak")
         guard lastActive > 0 else { return }
         let stats = await SessionHistory.shared.stats()
-        guard stats.streak == 0 else { return }
-        // Streak has broken. Reset both keys so milestones can be re-earned.
-        UserDefaults.standard.set(0, forKey: activeKey)
-        UserDefaults.standard.set(0, forKey: milestoneKey)
+        fireStreakBrokenNotificationIfNeeded(
+            lastActiveStreak: lastActive,
+            currentStreak: stats.streak
+        )
+    }
+
+    /// Pure gate for streak-break notifications. Resets both streak UserDefaults keys whenever
+    /// the streak has broken (current == 0), and sends a notification when the broken streak
+    /// was meaningful (≥7 days). Returns `true` when the notification was sent.
+    /// Separated from `checkStreakBreak` so the gate logic is unit-testable without a live
+    /// SessionHistory actor or a running SCStream.
+    @discardableResult
+    internal func fireStreakBrokenNotificationIfNeeded(
+        lastActiveStreak: Int,
+        currentStreak: Int,
+        defaults: UserDefaults = .standard
+    ) -> Bool {
+        guard lastActiveStreak > 0 else { return false }
+        guard currentStreak == 0 else { return false }
+        // Streak has broken — always reset both keys so milestones can be re-earned.
+        defaults.set(0, forKey: "adia.lastActiveStreak")
+        defaults.set(0, forKey: "adia.lastNotifiedStreakMilestone")
         // Only notify for meaningful streaks (≥7 days) to avoid banner fatigue.
-        guard lastActive >= 7 else { return }
-        SessionNotifier.shared.sendStreakBroken(previousStreak: lastActive)
+        guard lastActiveStreak >= 7 else { return false }
+        SessionNotifier.shared.sendStreakBroken(previousStreak: lastActiveStreak)
+        return true
     }
 
     // MARK: - Test helpers

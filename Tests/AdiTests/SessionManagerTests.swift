@@ -926,4 +926,141 @@ struct SessionManagerTests {
         )
         #expect(result == false)
     }
+
+    // MARK: - fireStreakBrokenNotificationIfNeeded(lastActiveStreak:currentStreak:defaults:)
+
+    @Test func streakBreakGate_returnsFalseWhenLastActiveIsZero() {
+        // No previous streak — nothing to break.
+        let result = SessionManager.shared.fireStreakBrokenNotificationIfNeeded(
+            lastActiveStreak: 0, currentStreak: 0, defaults: freshSuite()
+        )
+        #expect(result == false)
+    }
+
+    @Test func streakBreakGate_returnsFalseWhenCurrentStreakIsNonZero() {
+        // Streak is still alive — no break.
+        let result = SessionManager.shared.fireStreakBrokenNotificationIfNeeded(
+            lastActiveStreak: 10, currentStreak: 3, defaults: freshSuite()
+        )
+        #expect(result == false)
+    }
+
+    @Test func streakBreakGate_returnsFalseForLastActiveZeroCurrentStreakZero() {
+        // Both zero: lastActive guard exits before streak check.
+        let result = SessionManager.shared.fireStreakBrokenNotificationIfNeeded(
+            lastActiveStreak: 0, currentStreak: 0, defaults: freshSuite()
+        )
+        #expect(result == false)
+    }
+
+    @Test func streakBreakGate_returnsTrueForMeaningfulBreak() {
+        // 7-day streak broken → notification fires.
+        let result = SessionManager.shared.fireStreakBrokenNotificationIfNeeded(
+            lastActiveStreak: 7, currentStreak: 0, defaults: freshSuite()
+        )
+        #expect(result == true)
+    }
+
+    @Test func streakBreakGate_returnsTrueForLargeBreak() {
+        // 30-day streak broken → notification fires.
+        let result = SessionManager.shared.fireStreakBrokenNotificationIfNeeded(
+            lastActiveStreak: 30, currentStreak: 0, defaults: freshSuite()
+        )
+        #expect(result == true)
+    }
+
+    @Test func streakBreakGate_returnsFalseForOneToSixDayBreak() {
+        // Streaks below 7 days: no notification, but keys still reset.
+        for days in 1...6 {
+            let result = SessionManager.shared.fireStreakBrokenNotificationIfNeeded(
+                lastActiveStreak: days, currentStreak: 0, defaults: freshSuite()
+            )
+            #expect(result == false, "Streak of \(days) day(s) broken should not fire notification")
+        }
+    }
+
+    @Test func streakBreakGate_returnsFalseAtExactlySevenMinusOne() {
+        // lastActive == 6: exactly one below the 7-day threshold.
+        let result = SessionManager.shared.fireStreakBrokenNotificationIfNeeded(
+            lastActiveStreak: 6, currentStreak: 0, defaults: freshSuite()
+        )
+        #expect(result == false, "6-day streak should NOT trigger a broken-streak notification")
+    }
+
+    @Test func streakBreakGate_resetsActiveStreakKeyOnBreak() {
+        let suite = freshSuite()
+        suite.set(10, forKey: "adia.lastActiveStreak")
+        SessionManager.shared.fireStreakBrokenNotificationIfNeeded(
+            lastActiveStreak: 10, currentStreak: 0, defaults: suite
+        )
+        #expect(suite.integer(forKey: "adia.lastActiveStreak") == 0,
+                "lastActiveStreak key must be reset to 0 when streak breaks")
+    }
+
+    @Test func streakBreakGate_resetsMilestoneKeyOnBreak() {
+        let suite = freshSuite()
+        suite.set(7, forKey: "adia.lastNotifiedStreakMilestone")
+        SessionManager.shared.fireStreakBrokenNotificationIfNeeded(
+            lastActiveStreak: 10, currentStreak: 0, defaults: suite
+        )
+        #expect(suite.integer(forKey: "adia.lastNotifiedStreakMilestone") == 0,
+                "lastNotifiedStreakMilestone key must be reset to 0 when streak breaks")
+    }
+
+    @Test func streakBreakGate_resetsKeysEvenForSmallStreak() {
+        // A streak below 7 days still resets both UserDefaults keys — just no notification.
+        let suite = freshSuite()
+        suite.set(3, forKey: "adia.lastActiveStreak")
+        suite.set(3, forKey: "adia.lastNotifiedStreakMilestone")
+        let result = SessionManager.shared.fireStreakBrokenNotificationIfNeeded(
+            lastActiveStreak: 3, currentStreak: 0, defaults: suite
+        )
+        #expect(result == false)
+        #expect(suite.integer(forKey: "adia.lastActiveStreak") == 0)
+        #expect(suite.integer(forKey: "adia.lastNotifiedStreakMilestone") == 0)
+    }
+
+    @Test func streakBreakGate_doesNotWriteDefaultsWhenCurrentStreakIsNonZero() {
+        // Streak is still alive — keys must be untouched.
+        let suite = freshSuite()
+        suite.set(10, forKey: "adia.lastActiveStreak")
+        suite.set(7, forKey: "adia.lastNotifiedStreakMilestone")
+        SessionManager.shared.fireStreakBrokenNotificationIfNeeded(
+            lastActiveStreak: 10, currentStreak: 5, defaults: suite
+        )
+        #expect(suite.integer(forKey: "adia.lastActiveStreak") == 10,
+                "lastActiveStreak must not be modified when streak is still running")
+        #expect(suite.integer(forKey: "adia.lastNotifiedStreakMilestone") == 7,
+                "lastNotifiedStreakMilestone must not be modified when streak is still running")
+    }
+
+    @Test func streakBreakGate_doesNotWriteDefaultsWhenLastActiveIsZero() {
+        // No prior streak at all — keys must remain at their defaults.
+        let suite = freshSuite()
+        SessionManager.shared.fireStreakBrokenNotificationIfNeeded(
+            lastActiveStreak: 0, currentStreak: 0, defaults: suite
+        )
+        // integer(forKey:) returns 0 when the key is absent — same as "not written".
+        #expect(suite.object(forKey: "adia.lastActiveStreak") == nil,
+                "Keys must not be written when lastActive == 0")
+        #expect(suite.object(forKey: "adia.lastNotifiedStreakMilestone") == nil,
+                "Keys must not be written when lastActive == 0")
+    }
+
+    @Test func streakBreakGate_miletonesReearnableAfterBreakReset() {
+        // After a break resets milestone key to 0, the milestone gate can fire again.
+        let suite = freshSuite()
+        suite.set(7, forKey: "adia.lastNotifiedStreakMilestone")
+        // Simulate break: reset milestone key.
+        SessionManager.shared.fireStreakBrokenNotificationIfNeeded(
+            lastActiveStreak: 7, currentStreak: 0, defaults: suite
+        )
+        #expect(suite.integer(forKey: "adia.lastNotifiedStreakMilestone") == 0,
+                "milestone key should be 0 after break so the 7-day milestone is re-earnable")
+        // Now the streak milestone gate should fire again with streak==7.
+        let milestoneResult = SessionManager.shared.fireStreakMilestoneNotificationIfNeeded(
+            streak: 7, defaults: suite
+        )
+        #expect(milestoneResult == true, "After break reset, 7-day milestone should be re-earnable")
+    }
 }

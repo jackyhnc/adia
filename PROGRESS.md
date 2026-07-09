@@ -12821,3 +12821,52 @@ None. Swift toolchain unavailable on Linux container.
 - Consider more morning nudge title variants (currently 5 — same pool size as messages has 7; could grow to 7 for parity).
 - Consider `morning_nudge_title` AppLogger field (currently only logs hour; could also log the chosen title for debugging notification variety).
 - Consider `SessionManagerTests` for `checkStreakBreak()`: mock `SessionHistory.shared.stats()` to return streak=0, verify `sendStreakBroken` fires only when `lastActiveStreak >= 7`.
+
+---
+
+## Run 291 — 2026-07-09
+
+### Shipped
+- **checkStreakBreak unit tests** (`feat: checkStreakBreak gate unit tests`)
+  - `SessionManager.swift` — extracted pure gate logic from `checkStreakBreak()` into:
+    ```swift
+    @discardableResult
+    internal func fireStreakBrokenNotificationIfNeeded(
+        lastActiveStreak: Int,
+        currentStreak: Int,
+        defaults: UserDefaults = .standard
+    ) -> Bool
+    ```
+    `checkStreakBreak()` now reads `lastActive` from `UserDefaults.standard`, awaits `SessionHistory.shared.stats()`, and delegates to `fireStreakBrokenNotificationIfNeeded(lastActiveStreak:currentStreak:)`.
+    The extracted function resets both `adia.lastActiveStreak` and `adia.lastNotifiedStreakMilestone` to 0 whenever a streak breaks (regardless of duration), then sends the notification only when `lastActiveStreak >= 7`.
+  - `SessionManagerTests.swift` — **13 new tests** in `MARK: - fireStreakBrokenNotificationIfNeeded(lastActiveStreak:currentStreak:defaults:)`:
+    - `streakBreakGate_returnsFalseWhenLastActiveIsZero` — no prior streak, gate exits early
+    - `streakBreakGate_returnsFalseWhenCurrentStreakIsNonZero` — streak still alive, no break
+    - `streakBreakGate_returnsFalseForLastActiveZeroCurrentStreakZero` — both zero edge case
+    - `streakBreakGate_returnsTrueForMeaningfulBreak` — lastActive=7, current=0 → true
+    - `streakBreakGate_returnsTrueForLargeBreak` — lastActive=30, current=0 → true
+    - `streakBreakGate_returnsFalseForOneToSixDayBreak` — loops 1–6, each → false
+    - `streakBreakGate_returnsFalseAtExactlySevenMinusOne` — lastActive=6 → false (boundary)
+    - `streakBreakGate_resetsActiveStreakKeyOnBreak` — verifies `adia.lastActiveStreak` set to 0
+    - `streakBreakGate_resetsMilestoneKeyOnBreak` — verifies `adia.lastNotifiedStreakMilestone` set to 0
+    - `streakBreakGate_resetsKeysEvenForSmallStreak` — <7 day break: no notification but both keys reset
+    - `streakBreakGate_doesNotWriteDefaultsWhenCurrentStreakIsNonZero` — keys untouched when streak alive
+    - `streakBreakGate_doesNotWriteDefaultsWhenLastActiveIsZero` — `object(forKey:)` still nil
+    - `streakBreakGate_miletonesReearnableAfterBreakReset` — after break resets milestone key, `fireStreakMilestoneNotificationIfNeeded(streak:7:)` fires again
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `fireStreakBrokenNotificationIfNeeded` mirrors `fireDailyGoalNotificationIfNeeded` and `fireStreakMilestoneNotificationIfNeeded` exactly in structure: `@discardableResult internal func`, `defaults:` injection, early returns, `return true` only on actual notification send.
+- `checkStreakBreak()` retains its async coordination (reads real `UserDefaults.standard`, awaits real `SessionHistory.shared.stats()`) but no longer contains duplicated gate logic.
+- `freshSuite()` helper already exists in `SessionManagerTests` from prior runs — no new helper needed.
+- `streakBreakGate_doesNotWriteDefaultsWhenLastActiveIsZero` uses `suite.object(forKey:) == nil` rather than `integer(forKey:) == 0` to distinguish "key absent" from "key set to 0".
+- `streakBreakGate_miletonesReearnableAfterBreakReset` calls both `fireStreakBrokenNotificationIfNeeded` and `fireStreakMilestoneNotificationIfNeeded` on the same suite, confirming the reset chain works end-to-end.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider exposing `SettingsStore.shared.streakBreakCounts` in the idle notch or FocusInsights so users can see how many times each streak milestone has been broken (currently only affects notification copy via `SessionNotifier.streakRepeatBrokenBody`).
+- Consider more morning nudge title variants (currently 5; messages pool has 7 — growing titles to 7 would match parity).
+- Consider `morning_nudge_title` AppLogger field (currently only logs hour; logging the chosen title would help debug notification copy variety in prod).
+- Consider adding a FocusInsights computed property that surfaces `avgBreakCountPerMilestone` from `SettingsStore.streakBreakCounts` for the HistoryTab insights panel.
