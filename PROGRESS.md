@@ -12497,3 +12497,38 @@ None. Swift toolchain unavailable on Linux container.
 - Consider "morning nudge suppression on session restore": if the user has a crash-recovered session, `restoreIfNeeded()` still calls `scheduleMorningNudgeIfNeeded()` — arguably fine since the session hasn't officially "started" yet, but could cancel it post-restore too.
 - Consider a "nudge sent" confirmation log entry via `AppLogger.info("notifier.morning_nudge_scheduled", ["hour": "\(nudgeHour)"])` in `scheduleMorningNudgeIfNeeded()` for debuggability.
 - Consider adding more morning nudge copy variants (random pool) similar to CalloutMessages, to reduce notification fatigue.
+
+---
+
+## Run 287 — 2026-07-09
+
+### Shipped
+- **Admin bulk-change-plan tests** + **Admin bulk-reactivate tests** (`feat: admin bulk-change-plan + bulk-reactivate tests`)
+  - `web/__tests__/admin-bulk-change-plan.test.ts` — 23 new tests covering:
+    - Auth: no token (401), wrong token (401), `?token=` query param (200)
+    - Validation: missing keys (400), empty keys (400), >100 keys (400), missing plan (400), invalid plan (400)
+    - Core: changes single key, changes multiple keys, normalizes keys to uppercase, captures `previousPlan` for all three transitions (monthly→yearly, yearly→lifetime, lifetime→monthly), response includes target `plan` field
+    - Skip: `not_found`, `already_on_plan`, mixed changed+skipped, no mutation of skipped key
+    - Audit log: one `change_plan` entry per changed key, detail shape (`previousPlan`/`newPlan`/`bulk:true`), no entry for not_found or already_on_plan
+  - `web/__tests__/admin-bulk-reactivate.test.ts` — 20 new tests covering:
+    - Auth: no token (401), wrong token (401), `?token=` query param (200)
+    - Validation: missing keys (400), empty keys (400), >100 keys (400)
+    - Core: reactivates single canceled key, reactivates multiple keys, normalizes to uppercase, captures `previousStatus` for canceled/expired/past_due licenses
+    - Skip: `not_found`, `already_active`, mixed changed+skipped, no mutation of skipped (already-active) key
+    - Audit log: one `reactivate` entry per changed key, detail shape (`previousStatus`/`newStatus:active`/`bulk:true`), no entry for not_found or already_active
+  - **Test count: 1013 → 1056 (+43)**
+
+### Verification
+All 1056 tests pass (`node_modules/.bin/vitest --run`).
+`bulk-change-plan` route: `setPlan()` + `insertAuditLog()` called only on changed keys; already_on_plan guard (`license.plan === plan`) prevents redundant writes; key normalization `.toUpperCase()` confirmed by test.
+`bulk-reactivate` route: `setStatus('active')` + `insertAuditLog()` called only on non-active keys; already_active guard (`license.status === 'active'`) prevents no-op writes; mirrors `bulk-revoke` test structure exactly.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Add `BulkChangePlanPanel` to `web/app/admin/page.tsx` — the route already exists; the admin UI is the only missing piece
+- Add `BulkReactivatePanel` to `web/app/admin/page.tsx` for the same reason
+- Expose streak break counts in FocusInsights or idle notch (Swift app) so the data from `SettingsStore.streakBreakCounts` is visible in-app
+- Consider `SessionManagerTests` for the daily goal gate: mock `SessionHistory.stats()` returning `todayMinutes >= goal`, verify `sendDailyGoalAchieved` fires once per day
+- Consider morning nudge copy variants pool (random selection) similar to `CalloutMessages` to reduce notification fatigue
