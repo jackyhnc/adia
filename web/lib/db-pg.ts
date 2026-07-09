@@ -840,3 +840,73 @@ export async function cohortRetentionPg(days: number, plan?: string): Promise<Co
     ...(plan ? { plan } : {}),
   };
 }
+
+import type { ChurnAnalysisResult, ChurnBucket, ChurnByPlan } from './db';
+
+export async function churnAnalysisPg(days: number, plan?: string): Promise<ChurnAnalysisResult> {
+  const planVal = plan ?? null;
+
+  const bucketsResult = await sql<any>`
+    SELECT
+      to_char(a.created_at::date, 'YYYY-MM-DD') AS event_date,
+      COUNT(*)::int AS churned
+    FROM audit_log a
+    INNER JOIN licenses l ON a.license_key = l.key
+    WHERE a.created_at >= NOW() - (${days} * INTERVAL '1 day')
+      AND (
+        a.action = 'revoke'
+        OR (a.action = 'set_status' AND (a.detail::jsonb)->>'status' IN ('canceled', 'expired', 'past_due'))
+      )
+      AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
+    GROUP BY a.created_at::date
+    ORDER BY event_date ASC
+  `;
+
+  const bucketMap = new Map<string, number>(bucketsResult.rows.map((r: any) => [r.event_date as string, r.churned as number]));
+  const now = Date.now();
+  const buckets: ChurnBucket[] = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(now - i * 24 * 60 * 60 * 1000);
+    const dateStr = d.toISOString().slice(0, 10);
+    buckets.push({ date: dateStr, churned: bucketMap.get(dateStr) ?? 0 });
+  }
+  const totalChurned = buckets.reduce((s, b) => s + b.churned, 0);
+
+  const byPlanResult = await sql<any>`
+    SELECT l.plan, COUNT(*)::int AS churned
+    FROM audit_log a
+    INNER JOIN licenses l ON a.license_key = l.key
+    WHERE a.created_at >= NOW() - (${days} * INTERVAL '1 day')
+      AND (
+        a.action = 'revoke'
+        OR (a.action = 'set_status' AND (a.detail::jsonb)->>'status' IN ('canceled', 'expired', 'past_due'))
+      )
+      AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
+    GROUP BY l.plan
+  `;
+
+  const byPlan: ChurnByPlan = { monthly: 0, yearly: 0, lifetime: 0 };
+  for (const r of byPlanResult.rows) {
+    if (r.plan === 'monthly' || r.plan === 'yearly' || r.plan === 'lifetime') {
+      byPlan[r.plan as keyof ChurnByPlan] = r.churned as number;
+    }
+  }
+
+  const activeResult = await sql<any>`
+    SELECT COUNT(*)::int AS cnt FROM licenses
+    WHERE status = 'active'
+      AND (${planVal}::text IS NULL OR plan = ${planVal}::text)
+  `;
+  const currentActive = (activeResult.rows[0]?.cnt as number) ?? 0;
+  const denominator = totalChurned + currentActive;
+  const churnRate = denominator > 0 ? Math.round((totalChurned / denominator) * 1000) / 10 : 0;
+
+  return {
+    buckets,
+    totalChurned,
+    byPlan,
+    churnRate,
+    windowDays: days,
+    ...(plan ? { plan } : {}),
+  };
+}

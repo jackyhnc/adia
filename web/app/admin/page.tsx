@@ -129,6 +129,9 @@ export default function Admin() {
       <CollapsibleSection title="Cohort retention">
         <CohortRetentionPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Churn analysis">
+        <ChurnAnalysisPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Revenue (MRR / ARR)">
         <RevenueMRRPanel token={token} />
       </CollapsibleSection>
@@ -5164,6 +5167,126 @@ function CohortRetentionPanel({ token }: { token: string }) {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+type ChurnBucket = { date: string; churned: number };
+type ChurnByPlan = { monthly: number; yearly: number; lifetime: number };
+type ChurnAnalysisResult = {
+  buckets: ChurnBucket[];
+  totalChurned: number;
+  byPlan: ChurnByPlan;
+  churnRate: number;
+  windowDays: number;
+  plan?: string;
+};
+
+function ChurnAnalysisPanel({ token }: { token: string }) {
+  const [days, setDays] = useState('30');
+  const [plan, setPlan] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<ChurnAnalysisResult | null>(null);
+
+  async function load(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const params = new URLSearchParams({ days });
+      if (plan) params.set('plan', plan);
+      const res = await fetch(`/api/admin/churn-analysis?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? res.statusText);
+      setResult(json);
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const maxChurned = result ? Math.max(...result.buckets.map(b => b.churned), 1) : 1;
+  const showDates = result ? result.windowDays <= 60 : false;
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Churn events (revoked or set to canceled/expired/past_due) per day over the selected window.
+        Churn rate = churned ÷ (churned + currently active).
+      </p>
+      <form onSubmit={load} className="card space-y-3">
+        <Field label="Window (days)">
+          <input
+            type="number"
+            min={1}
+            max={365}
+            value={days}
+            onChange={e => setDays(e.target.value)}
+            className="input w-28"
+          />
+        </Field>
+        <Field label="Plan (optional)">
+          <select value={plan} onChange={e => setPlan(e.target.value)} className="input w-40">
+            <option value="">All plans</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+            <option value="lifetime">Lifetime</option>
+          </select>
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Loading…' : 'Load churn analysis'}
+        </button>
+      </form>
+      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+      {result && (
+        <div className="mt-4 space-y-4">
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-ink/5 rounded-lg p-3">
+              <p className="text-xs text-ink/50 mb-1">Total churned</p>
+              <p className="text-lg font-semibold text-ink">{result.totalChurned}</p>
+              <p className="text-xs text-ink/40">in last {result.windowDays}d</p>
+            </div>
+            <div className="bg-ink/5 rounded-lg p-3">
+              <p className="text-xs text-ink/50 mb-1">Churn rate</p>
+              <p className={`text-lg font-semibold ${rateColor(100 - result.churnRate)}`}>{result.churnRate}%</p>
+              <p className="text-xs text-ink/40">of active + churned</p>
+            </div>
+            <div className="bg-ink/5 rounded-lg p-3">
+              <p className="text-xs text-ink/50 mb-1">By plan</p>
+              <p className="text-xs text-ink/70 space-y-0.5">
+                {(['monthly', 'yearly', 'lifetime'] as const).map(p => (
+                  result.byPlan[p] > 0 && (
+                    <span key={p} className="block">{p}: {result.byPlan[p]}</span>
+                  )
+                ))}
+                {result.totalChurned === 0 && <span className="text-ink/40">none</span>}
+              </p>
+            </div>
+          </div>
+          {result.buckets.every(b => b.churned === 0) ? (
+            <p className="text-sm text-ink/40">0 churn events in this window.</p>
+          ) : (
+            <div className="flex items-end gap-0.5 h-28 mt-2">
+              {result.buckets.map((b, i) => (
+                <div key={b.date} className="flex flex-col items-center flex-1 h-full justify-end">
+                  <div
+                    title={`${b.date}: ${b.churned} churned`}
+                    className="w-full rounded-t bg-red-500"
+                    style={{ height: `${Math.round((b.churned / maxChurned) * 100)}%`, opacity: b.churned === 0 ? 0.15 : 0.8 + 0.2 * (b.churned / maxChurned) }}
+                  />
+                  {showDates && i % Math.ceil(result.buckets.length / 10) === 0 && (
+                    <span className="text-[9px] text-ink/40 mt-0.5 rotate-45 origin-left whitespace-nowrap">{b.date.slice(5)}</span>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>

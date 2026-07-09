@@ -1,5 +1,53 @@
 # Adia — Build Progress
 
+## Run 289 — 2026-07-09T05:10:00Z — GET /api/admin/churn-analysis + ChurnAnalysisPanel + 33 tests (1056 → 1089)
+
+### Shipped
+
+**`web/lib/db.ts` — churnAnalysis():**
+- Added `ChurnBucket`, `ChurnByPlan`, `ChurnAnalysisResult` types.
+- `churnAnalysis(days, plan?)` — SQLite query using `audit_log` INNER JOIN `licenses`: counts churn events (action='revoke' OR action='set_status' with json_extract status in {canceled,expired,past_due}) per day, gap-fills daily buckets, computes byPlan breakdown and churnRate = totalChurned / (totalChurned + currentActive) × 100.
+
+**`web/lib/db-pg.ts` — churnAnalysisPg():**
+- Mirror using `a.created_at::date`, `NOW() - (days * INTERVAL '1 day')`, and `(a.detail::jsonb)->>'status'` for Postgres.
+
+**`web/lib/store.ts` — churnAnalysis() dispatch:**
+- Re-exports `ChurnAnalysisResult`, `ChurnBucket`, `ChurnByPlan` types.
+- `churnAnalysis(days, plan?)` dispatches to Postgres or SQLite variant.
+
+**`web/app/api/admin/churn-analysis/route.ts` — new endpoint:**
+- `GET /api/admin/churn-analysis` — returns `ChurnAnalysisResult` JSON.
+- `?days=` — integer 1–365, default 30.
+- `?plan=monthly|yearly|lifetime` — optional filter.
+- `adminGuard` auth (Bearer token or `?token=`).
+
+**`web/app/admin/page.tsx` — ChurnAnalysisPanel:**
+- `CollapsibleSection title="Churn analysis"` inserted between "Cohort retention" and "Revenue (MRR / ARR)".
+- Three summary tiles: Total churned (with window label), Churn rate (color-coded via rateColor on retention inverse), By plan breakdown.
+- Red bar chart of daily buckets; height + opacity scaled to max; date labels when days ≤ 60.
+- "0 churn events" empty-state message.
+
+**`web/__tests__/admin-churn-analysis.test.ts` — 33 tests:**
+- Auth: 401 no-token, 401 wrong-token, 200 ?token=.
+- Validation: days=0, days=366, non-integer, fractional, invalid plan.
+- Response shape: 200 empty DB, buckets.length = days param, default days=30, days=1, days=365, bucket shape, ascending date order, plan field present/absent.
+- Core behavior: revoke counted, set_status to canceled/expired/past_due counted, set_status to active NOT counted, events outside window excluded, boundary day included, event lands in correct bucket, zero-fill, byPlan counts, churnRate formula, churnRate=0 with no events.
+- Plan filter: monthly excludes yearly, yearly filter, lifetime=0 when no lifetime churn, no filter = all plans.
+
+### Tests
+1089 passed (up from 1056). 45 test files green.
+
+### Blocked
+Nothing blocked.
+
+### Next agent should pick up
+- Consider adding rate-limit test for churn-analysis (429 on 21st req/60s) — pattern from `admin-export-licenses.test.ts`.
+- Consider `bulk:true` audit-log flag for `bulk-change-plan`, `bulk-extend`, `bulk-set-expiry` — currently only revoke/reactivate/set-status/resend-license/deactivate-all/change-email set it.
+- Consider a "dormant churn" panel: licenses that were activated (had at least one machine_hash) but then churned — signals engaged users who left vs. never-started licenses.
+- Consider churn cohort breakdown: for each issuance-date cohort, show what % churned within 30/60/90 days of issue (complements cohort-retention).
+
+---
+
 ## Run 288 — 2026-07-09T03:10:00Z — GET /api/admin/cohort-retention + CohortRetentionPanel + 36 tests (977 → 1013)
 
 ### Shipped

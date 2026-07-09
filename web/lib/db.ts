@@ -905,3 +905,88 @@ export function cohortRetention(days: number, plan?: string): CohortRetentionRes
     ...(plan ? { plan } : {}),
   };
 }
+
+export type ChurnBucket = { date: string; churned: number };
+export type ChurnByPlan = { monthly: number; yearly: number; lifetime: number };
+export type ChurnAnalysisResult = {
+  buckets: ChurnBucket[];
+  totalChurned: number;
+  byPlan: ChurnByPlan;
+  churnRate: number;
+  windowDays: number;
+  plan?: string;
+};
+
+// Returns daily churn event counts over the past `days` days.
+// Churn events: license revoked, OR set_status to canceled/expired/past_due.
+// churnRate = totalChurned / (totalChurned + currentActive) * 100.
+export function churnAnalysis(days: number, plan?: string): ChurnAnalysisResult {
+  const planFilter = plan ? 'AND l.plan = ?' : '';
+
+  const churnWhere = `
+    a.created_at >= date('now', '-' || ? || ' days')
+    AND (
+      a.action = 'revoke'
+      OR (a.action = 'set_status' AND json_extract(a.detail, '$.status') IN ('canceled', 'expired', 'past_due'))
+    )
+    ${planFilter}
+  `;
+  const baseParams: unknown[] = [days];
+  if (plan) baseParams.push(plan);
+
+  const rawBuckets = (db()
+    .prepare(`
+      SELECT date(a.created_at) AS event_date, COUNT(*) AS churned
+      FROM audit_log a
+      INNER JOIN licenses l ON a.license_key = l.key
+      WHERE ${churnWhere}
+      GROUP BY date(a.created_at)
+      ORDER BY event_date ASC
+    `)
+    .all as (...a: unknown[]) => any[])(...baseParams);
+
+  const bucketMap = new Map<string, number>(rawBuckets.map((r: any) => [r.event_date as string, r.churned as number]));
+  const now = Date.now();
+  const buckets: ChurnBucket[] = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(now - i * 24 * 60 * 60 * 1000);
+    const dateStr = d.toISOString().slice(0, 10);
+    buckets.push({ date: dateStr, churned: bucketMap.get(dateStr) ?? 0 });
+  }
+  const totalChurned = buckets.reduce((s, b) => s + b.churned, 0);
+
+  const rawByPlan = (db()
+    .prepare(`
+      SELECT l.plan, COUNT(*) AS churned
+      FROM audit_log a
+      INNER JOIN licenses l ON a.license_key = l.key
+      WHERE ${churnWhere}
+      GROUP BY l.plan
+    `)
+    .all as (...a: unknown[]) => any[])(...baseParams);
+
+  const byPlan: ChurnByPlan = { monthly: 0, yearly: 0, lifetime: 0 };
+  for (const r of rawByPlan) {
+    if (r.plan === 'monthly' || r.plan === 'yearly' || r.plan === 'lifetime') {
+      byPlan[r.plan as keyof ChurnByPlan] = r.churned as number;
+    }
+  }
+
+  const activeFilter = plan ? 'WHERE plan = ? AND status = \'active\'' : 'WHERE status = \'active\'';
+  const activeParams: unknown[] = plan ? [plan] : [];
+  const activeRow = (db()
+    .prepare(`SELECT COUNT(*) AS cnt FROM licenses ${activeFilter}`)
+    .get as (...a: unknown[]) => any)(...activeParams);
+  const currentActive = (activeRow?.cnt as number) ?? 0;
+  const denominator = totalChurned + currentActive;
+  const churnRate = denominator > 0 ? Math.round((totalChurned / denominator) * 1000) / 10 : 0;
+
+  return {
+    buckets,
+    totalChurned,
+    byPlan,
+    churnRate,
+    windowDays: days,
+    ...(plan ? { plan } : {}),
+  };
+}
