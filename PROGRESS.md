@@ -12898,3 +12898,47 @@ None. Swift toolchain unavailable on Linux container.
 - Consider more morning nudge title variants (currently 5; messages pool has 7 — growing titles to 7 would match parity).
 - Consider `morning_nudge_title` AppLogger field (currently only logs hour; logging the chosen title would help debug notification copy variety in prod).
 - Consider adding a FocusInsights computed property that surfaces `avgBreakCountPerMilestone` from `SettingsStore.streakBreakCounts` for the HistoryTab insights panel.
+
+---
+
+## Run 292 — 2026-07-09
+
+### Shipped
+- **Streak break pattern in FocusInsights** (`feat: expose streak break pattern in FocusInsights (HistoryTab)`)
+  - `SettingsStore.swift` — two new public computed properties:
+    - `totalStreakBreaks: Int` — `streakBreakCountsDict.values.reduce(0, +)`; 0 when no breaks recorded
+    - `mostBrokenStreakLength: Int?` — streak length (days) with the highest break count; tie-breaks in favour of the longer streak (more significant pattern); nil when no breaks recorded
+  - `HistoryInsightsSection.swift` — two new optional params with default values:
+    - `var totalStreakBreaks: Int = 0`
+    - `var mostBrokenStreakLength: Int? = nil`
+    Third insight row now shows a `flame.slash` chip when `totalStreakBreaks > 0`:
+    - "Fragile streak: Nd" when `mostBrokenStreakLength` is non-nil (most actionable)
+    - "Streak breaks: N" fallback when `mostBrokenStreakLength` is nil (impossible with current logic, but safe fallback)
+  - `HistoryTab.swift` — `HistoryInsightsSection` call updated to pass `SettingsStore.shared.totalStreakBreaks` and `SettingsStore.shared.mostBrokenStreakLength` — synchronous `@MainActor` reads; no async needed
+  - **9 new Swift tests** in `SettingsStoreTests.swift` (`MARK: totalStreakBreaks + mostBrokenStreakLength`):
+    - `totalStreakBreaks_returnsZeroWhenNoBroken`
+    - `totalStreakBreaks_countsSingleMilestone` — 3 increments of same day → 3
+    - `totalStreakBreaks_sumsAcrossMultipleMilestones` — 2+1+2 = 5
+    - `totalStreakBreaks_reflectsResetToZero`
+    - `mostBrokenStreakLength_returnsNilWhenNoBroken`
+    - `mostBrokenStreakLength_returnsSingleMilestoneWhenOnlyOne`
+    - `mostBrokenStreakLength_returnsHighestFrequencyMilestone` — 7×3 vs 14×2 → 7
+    - `mostBrokenStreakLength_tieBreaksInFavorOfLongerStreak` — 7×1 vs 21×1 → 21
+    - `mostBrokenStreakLength_updatesAfterAdditionalBreaks` — starts at 14, flips to 7 after more 7-day breaks
+  - Test count: 114 → 123
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `totalStreakBreaks` uses `values.reduce(0, +)` — always returns 0 on empty dict, correct sum otherwise.
+- `mostBrokenStreakLength` comparator `a.value < b.value || (a.value == b.value && a.key < b.key)` correctly makes `.max` return the highest-count entry; when counts are equal, returns the entry with the higher key (longer streak).
+- `HistoryInsightsSection` default param values (`= 0`, `= nil`) mean all existing instantiations compile unchanged — backward-compatible.
+- Accessing `SettingsStore.shared.totalStreakBreaks` from SwiftUI `body` is safe: `View.body` is implicitly `@MainActor`, and `SettingsStore` is `@MainActor`; same pattern as `IdleNotchView`'s `SettingsStore.shared` access.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding `morning_nudge_title` as an AppLogger field alongside hour in `scheduleMorningNudgeIfNeeded()` (currently only logs `hour`; logging the chosen title would help debug copy variety in production).
+- Consider growing the `morningNudgeTitles` pool from 5 → 7 entries to match the `morningNudgeMessages` pool size for parity.
+- Consider a `HistoryInsightsSection` preview or snapshot test that exercises `totalStreakBreaks > 0` and `mostBrokenStreakLength != nil` paths so the chip rendering is covered by tests (currently only the data logic is tested).
+- Consider wiring `totalStreakBreaks` / `mostBrokenStreakLength` into a `@Published` wrapper or `@ObservedObject` so `HistoryTab` refreshes reactively if break counts change while the tab is open (current implementation reads values at render time, acceptable since breaks only fire at session end).
