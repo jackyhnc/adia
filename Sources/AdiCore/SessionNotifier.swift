@@ -231,10 +231,23 @@ public final class SessionNotifier: NSObject {
     private static let morningNudgeID = "adia.morning.nudge"
     private static let lastScheduledNudgeDateKey = "adia.lastScheduledMorningNudgeDate"
 
-    /// Friend-like nudge copy for users who haven't started a session by their configured nudge hour.
-    /// Exposed as a pure function so tests can verify the copy without needing a notification center.
+    /// Full pool of morning nudge messages. All entries pass the same tone constraints:
+    /// friend-like, action-oriented, no corporate/punishing language, no all-caps shouting.
+    /// Exposed so tests can verify every variant without relying on random selection.
+    nonisolated public static let morningNudgeMessages: [String] = [
+        "no sessions yet today. open adia and pick a task.",
+        "haven't started yet. pick something and begin.",
+        "today's at zero sessions. what are you working on?",
+        "still no focus session today. open adia.",
+        "day's ticking. no session yet — pick a task.",
+        "you haven't started yet. whatever it is, begin now.",
+        "nothing yet today. open adia and get going.",
+    ]
+
+    /// Returns a random morning nudge message from `morningNudgeMessages`.
+    /// Exposed as a pure function so tests can verify tone without a notification center.
     nonisolated public static func morningNudgeBody() -> String {
-        "no sessions yet today. open adia and pick a task."
+        morningNudgeMessages.randomElement() ?? morningNudgeMessages[0]
     }
 
     /// Schedules a one-time morning nudge notification for the next occurrence of `hour`.

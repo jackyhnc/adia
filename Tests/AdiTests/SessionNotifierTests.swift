@@ -106,46 +106,83 @@ struct SessionNotifierTests {
 
 // MARK: - Morning nudge pure-function tests (no app bundle required)
 
-/// Tests for `SessionNotifier.morningNudgeBody` — exercises only a `nonisolated static`
-/// function, so no `UNUserNotificationCenter` call occurs; runs unconditionally in CI.
+/// Tests for `SessionNotifier.morningNudgeBody` and `morningNudgeMessages`.
+/// Exercises only `nonisolated static` members, so no `UNUserNotificationCenter` call
+/// occurs and the suite runs unconditionally in CI.
+///
+/// The property-based tests iterate over the full `morningNudgeMessages` pool so that
+/// a passing suite guarantees every variant ships with the right tone — not just the
+/// random one that happened to be picked during this particular test run.
 @Suite("SessionNotifier morning nudge")
 struct SessionNotifierMorningNudgeTests {
 
-    @Test func morningNudgeBody_isNotEmpty() {
+    // MARK: - Pool shape
+
+    @Test func morningNudgeMessages_poolIsNonEmpty() {
+        #expect(!SessionNotifier.morningNudgeMessages.isEmpty)
+    }
+
+    @Test func morningNudgeMessages_hasAtLeastThreeVariants() {
+        #expect(SessionNotifier.morningNudgeMessages.count >= 3,
+                "pool should have multiple variants to reduce notification fatigue")
+    }
+
+    @Test func morningNudgeMessages_allVariantsAreUnique() {
+        let messages = SessionNotifier.morningNudgeMessages
+        #expect(Set(messages).count == messages.count, "pool should not contain duplicate messages")
+    }
+
+    @Test func morningNudgeBody_returnsNonEmptyString() {
         #expect(!SessionNotifier.morningNudgeBody().isEmpty)
     }
 
-    @Test func morningNudgeBody_isNotCorporate() {
-        let body = SessionNotifier.morningNudgeBody().lowercased()
+    // MARK: - Tone constraints (checked across every pool variant)
+
+    @Test func morningNudgeMessages_noneAreEmpty() {
+        for message in SessionNotifier.morningNudgeMessages {
+            #expect(!message.isEmpty, "every morning nudge variant must be non-empty")
+        }
+    }
+
+    @Test func morningNudgeMessages_noneUseCorporateLanguage() {
         let corporatePhrases = ["congratulations", "achievement", "great job", "well done", "perfect", "awesome"]
-        for phrase in corporatePhrases {
-            #expect(!body.contains(phrase),
-                    "morning nudge copy must not use corporate language: '\(phrase)'")
+        for message in SessionNotifier.morningNudgeMessages {
+            let lower = message.lowercased()
+            for phrase in corporatePhrases {
+                #expect(!lower.contains(phrase),
+                        "morning nudge variant '\(message)' must not use corporate language: '\(phrase)'")
+            }
         }
     }
 
-    @Test func morningNudgeBody_referencesStartingWork() {
-        let body = SessionNotifier.morningNudgeBody().lowercased()
-        let actionWords = ["start", "session", "task", "open", "begin", "yet", "today"]
-        #expect(actionWords.contains { body.contains($0) },
-                "morning nudge copy must reference starting work or the current state")
+    @Test func morningNudgeMessages_allReferenceStartingWork() {
+        let actionWords = ["start", "session", "task", "open", "begin", "yet", "today", "going", "now"]
+        for message in SessionNotifier.morningNudgeMessages {
+            let lower = message.lowercased()
+            #expect(actionWords.contains { lower.contains($0) },
+                    "morning nudge variant '\(message)' must reference starting work or the current state")
+        }
     }
 
-    @Test func morningNudgeBody_isNotPunishing() {
-        let body = SessionNotifier.morningNudgeBody().lowercased()
+    @Test func morningNudgeMessages_noneUsePunishingLanguage() {
         let shamePhrases = ["failed", "loser", "disappointed", "shame", "terrible", "bad person"]
-        for phrase in shamePhrases {
-            #expect(!body.contains(phrase),
-                    "morning nudge body must not use punishing language: '\(phrase)'")
+        for message in SessionNotifier.morningNudgeMessages {
+            let lower = message.lowercased()
+            for phrase in shamePhrases {
+                #expect(!lower.contains(phrase),
+                        "morning nudge variant '\(message)' must not use punishing language: '\(phrase)'")
+            }
         }
     }
 
-    @Test func morningNudgeBody_doesNotContainAllCapsWords() {
-        let body = SessionNotifier.morningNudgeBody()
-        let hasShoutingWord = body.components(separatedBy: .whitespaces)
-            .filter { $0.count > 1 }
-            .contains { w in w == w.uppercased() && w.first?.isLetter == true }
-        #expect(!hasShoutingWord, "morning nudge body must not contain shouting all-caps words")
+    @Test func morningNudgeMessages_noneContainAllCapsWords() {
+        for message in SessionNotifier.morningNudgeMessages {
+            let hasShoutingWord = message.components(separatedBy: .whitespaces)
+                .filter { $0.count > 1 }
+                .contains { w in w == w.uppercased() && w.first?.isLetter == true }
+            #expect(!hasShoutingWord,
+                    "morning nudge variant '\(message)' must not contain shouting all-caps words")
+        }
     }
 }
 

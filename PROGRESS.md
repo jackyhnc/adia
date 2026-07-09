@@ -12630,3 +12630,45 @@ None. Swift toolchain unavailable on Linux container.
 - Expose streak break counts in FocusInsights or idle notch (Swift app) so the data from `SettingsStore.streakBreakCounts` is visible in-app
 - Consider `SessionManagerTests` for the daily goal gate: mock `SessionHistory.stats()` returning `todayMinutes >= goal`, verify `sendDailyGoalAchieved` fires once per day
 - Consider morning nudge copy variants pool (random selection) similar to `CalloutMessages` to reduce notification fatigue
+
+---
+
+## Run 288 — 2026-07-09
+
+### Shipped
+- **Morning nudge copy variants** (`feat: morning nudge copy variants pool`)
+  - `SessionNotifier.morningNudgeMessages` — `nonisolated public static let [String]` with 7 friend-like variants:
+    1. "no sessions yet today. open adia and pick a task." (original)
+    2. "haven't started yet. pick something and begin."
+    3. "today's at zero sessions. what are you working on?"
+    4. "still no focus session today. open adia."
+    5. "day's ticking. no session yet — pick a task."
+    6. "you haven't started yet. whatever it is, begin now."
+    7. "nothing yet today. open adia and get going."
+  - `SessionNotifier.morningNudgeBody()` — changed from returning a single static string to `morningNudgeMessages.randomElement() ?? morningNudgeMessages[0]`; callers and `scheduleMorningNudge(hour:)` are unaffected
+  - **Tests refactored** (`SessionNotifierTests.swift`): `SessionNotifierMorningNudgeTests` suite grew from 5 single-call tests to 9 full-pool property checks:
+    - `morningNudgeMessages_poolIsNonEmpty` — pool has at least one entry
+    - `morningNudgeMessages_hasAtLeastThreeVariants` — pool count ≥ 3 (guards against accidental regression to a single-message pool)
+    - `morningNudgeMessages_allVariantsAreUnique` — Set(pool).count == pool.count
+    - `morningNudgeBody_returnsNonEmptyString` — function itself works
+    - `morningNudgeMessages_noneAreEmpty` — every variant is non-empty
+    - `morningNudgeMessages_noneUseCorporateLanguage` — no congratulations/achievement/great job/etc.
+    - `morningNudgeMessages_allReferenceStartingWork` — every variant contains ≥1 action word (start/session/task/open/begin/yet/today/going/now)
+    - `morningNudgeMessages_noneUsePunishingLanguage` — no failed/loser/disappointed/shame/terrible
+    - `morningNudgeMessages_noneContainAllCapsWords` — no shouting
+  - Web tests: 1131 passed (unchanged)
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- All 7 messages satisfy the tone checks: each contains at least one of the action words; none use corporate or punishing language; none have >1-char all-uppercase letter tokens.
+- `morningNudgeBody()` pattern `randomElement() ?? messages[0]` is safe: the array is non-empty by construction (7 literals), so `??` is an unreachable fallback but keeps the compiler happy without a force-unwrap.
+- `scheduleMorningNudge(hour:)` calls `Self.morningNudgeBody()` — no change needed; it already picks a fresh random variant each time a notification is scheduled.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding `SessionManagerTests` for the daily goal gate: mock `SessionHistory.stats()` returning `todayMinutes >= goal`, verify `sendDailyGoalAchieved` fires once per day and not twice (UserDefaults gate).
+- Consider exposing streak break counts in FocusInsights or the idle notch so the `SettingsStore.streakBreakCounts` data is visible in-app (currently only drives notification copy).
+- Consider adding `morning_nudge_scheduled` AppLogger call inside `scheduleMorningNudgeIfNeeded()` for debuggability.
+- Consider more morning nudge title variants (currently fixed to "haven't started yet") — same pool pattern applied to the notification title.
