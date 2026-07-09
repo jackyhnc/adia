@@ -653,6 +653,29 @@ export function listDormantLicenses(days: number, plan?: string, status?: string
   }));
 }
 
+export type HeatmapBucket = { hour: number; count: number };
+
+// Returns a 24-bucket array (hours 0–23) counting new activations by hour-of-day
+// over the last `days` days. Buckets with no activations are included with count=0.
+export function activationHeatmap(days: number, plan?: string): HeatmapBucket[] {
+  const conditions: string[] = [`a.first_seen >= datetime('now', '-' || ? || ' days')`];
+  const params: unknown[] = [days];
+  if (plan) { conditions.push('l.plan = ?'); params.push(plan); }
+  const where = `WHERE ${conditions.join(' AND ')}`;
+  const rows = (db()
+    .prepare(`
+      SELECT CAST(strftime('%H', a.first_seen) AS INTEGER) AS hour, COUNT(*) AS count
+      FROM activations a
+      INNER JOIN licenses l ON l.key = a.license_key
+      ${where}
+      GROUP BY hour
+      ORDER BY hour
+    `)
+    .all as (...a: unknown[]) => any[])(...params);
+  const map = new Map<number, number>(rows.map((r: any) => [r.hour as number, r.count as number]));
+  return Array.from({ length: 24 }, (_, h) => ({ hour: h, count: map.get(h) ?? 0 }));
+}
+
 export function listAllLicenses(since?: string, status?: string, plan?: string): License[] {
   const conditions: string[] = [];
   const params: unknown[] = [];

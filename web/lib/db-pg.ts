@@ -651,6 +651,24 @@ export async function listDormantLicensesPg(days: number, plan?: string, status?
   }));
 }
 
+export type HeatmapBucket = { hour: number; count: number };
+
+export async function activationHeatmapPg(days: number, plan?: string): Promise<HeatmapBucket[]> {
+  await ensureSchema();
+  const planVal = plan ?? null;
+  const result = await sql<any>`
+    SELECT EXTRACT(HOUR FROM first_seen::timestamptz)::int AS hour, COUNT(*)::int AS count
+    FROM activations a
+    INNER JOIN licenses l ON l.key = a.license_key
+    WHERE a.first_seen >= NOW() - (${days} * INTERVAL '1 day')
+      AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
+    GROUP BY hour
+    ORDER BY hour
+  `;
+  const map = new Map<number, number>(result.rows.map((r: any) => [r.hour as number, r.count as number]));
+  return Array.from({ length: 24 }, (_, h) => ({ hour: h, count: map.get(h) ?? 0 }));
+}
+
 export async function listAllLicensesPg(since?: string, status?: string, plan?: string): Promise<License[]> {
   await ensureSchema();
   const sinceVal = since ?? null;

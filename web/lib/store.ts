@@ -251,6 +251,16 @@ export async function listDormantLicenses(days: number, plan?: string, status?: 
   return sqlite.listDormantLicenses(days, plan, status);
 }
 
+export type HeatmapBucket = { hour: number; count: number };
+
+export async function activationHeatmap(days: number, plan?: string): Promise<HeatmapBucket[]> {
+  if (usePg) {
+    const { activationHeatmapPg } = await import('./db-pg');
+    return activationHeatmapPg(days, plan);
+  }
+  return sqlite.activationHeatmap(days, plan);
+}
+
 export async function listAllLicenses(since?: string, status?: string, plan?: string): Promise<License[]> {
   if (usePg) {
     const { listAllLicensesPg } = await import('./db-pg');
