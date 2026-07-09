@@ -120,6 +120,9 @@ export default function Admin() {
       <CollapsibleSection title="Dormant licenses">
         <DormantPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Dormant &amp; churned">
+        <DormantChurnPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Activation heatmap">
         <UsageHeatmapPanel token={token} />
       </CollapsibleSection>
@@ -4480,6 +4483,170 @@ function DormantPanel({ token }: { token: string }) {
                       </td>
                       <td className="pr-3 py-1.5 text-ink/60">{l.machineCount}</td>
                       <td className="py-1.5 text-ink/60">{l.lastSeen?.slice(0, 10) ?? '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Dormant & churned ────────────────────────────────────────────────────────
+
+type DormantChurnRow = {
+  key: string;
+  email: string;
+  plan: string;
+  status: string;
+  issuedAt: string;
+  machineCount: number;
+  churnDate: string;
+  note?: string | null;
+};
+
+function DormantChurnPanel({ token }: { token: string }) {
+  const [days, setDays] = useState('30');
+  const [planFilter, setPlanFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [result, setResult] = useState<{ licenses: DormantChurnRow[]; count: number; days: number } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function load(e: React.FormEvent) {
+    e.preventDefault();
+    if (!token) { setError('Paste admin token above first.'); return; }
+    setLoading(true);
+    setError('');
+    setResult(null);
+    try {
+      const params = new URLSearchParams({ days });
+      if (planFilter) params.set('plan', planFilter);
+      if (statusFilter) params.set('status', statusFilter);
+      const res = await fetch(`/api/admin/dormant-churn?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function exportCsv() {
+    const params = new URLSearchParams({ days, format: 'csv', token });
+    if (planFilter) params.set('plan', planFilter);
+    if (statusFilter) params.set('status', statusFilter);
+    const a = document.createElement('a');
+    a.href = `/api/admin/dormant-churn?${params}`;
+    a.download = `adia-dormant-churn-${days}d-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        List licenses that had ≥1 activation AND a churn event (revoke or cancellation) within
+        the past N days. These users tried Adia and left — highest priority for re-engagement.
+        Results ordered most-recently-churned first.
+      </p>
+      <form onSubmit={load} className="card space-y-3">
+        <div className="flex gap-3 flex-wrap">
+          <Field label="Churned within (days)">
+            <input
+              type="number"
+              min="1"
+              max="365"
+              value={days}
+              onChange={(e) => setDays(e.target.value)}
+              className="input w-24"
+            />
+          </Field>
+          <Field label="Plan (optional)">
+            <select
+              value={planFilter}
+              onChange={(e) => setPlanFilter(e.target.value)}
+              className="input"
+            >
+              <option value="">All</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+              <option value="lifetime">Lifetime</option>
+            </select>
+          </Field>
+          <Field label="Status (optional)">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="input"
+            >
+              <option value="">All</option>
+              <option value="active">Active</option>
+              <option value="canceled">Canceled</option>
+              <option value="expired">Expired</option>
+              <option value="past_due">Past due</option>
+            </select>
+          </Field>
+        </div>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Loading…' : 'Find dormant-churn licenses'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {result && (
+        <div className="mt-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold">
+              {result.count === 0
+                ? `No dormant-churn licenses found (window: ${result.days} days)`
+                : `${result.count} license${result.count !== 1 ? 's' : ''} activated then churned (last ${result.days} days)`}
+            </p>
+            {result.count > 0 && (
+              <button onClick={exportCsv} className="btn-secondary text-xs px-3 py-1">
+                Export CSV
+              </button>
+            )}
+          </div>
+          {result.licenses.length > 0 && (
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs font-mono border-collapse">
+                <thead>
+                  <tr className="border-b border-ink/10 text-ink/50 uppercase text-left">
+                    <th className="pr-3 pb-2 font-normal">Key</th>
+                    <th className="pr-3 pb-2 font-normal">Email</th>
+                    <th className="pr-3 pb-2 font-normal">Plan</th>
+                    <th className="pr-3 pb-2 font-normal">Status</th>
+                    <th className="pr-3 pb-2 font-normal">Machines</th>
+                    <th className="pb-2 font-normal">Churned</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {result.licenses.map(l => (
+                    <tr key={l.key} className="border-b border-ink/5 hover:bg-ink/3">
+                      <td className="pr-3 py-1.5 text-ink/80">{l.key}</td>
+                      <td className="pr-3 py-1.5 text-ink/80">{l.email}</td>
+                      <td className="pr-3 py-1.5 text-ink/60">{l.plan}</td>
+                      <td className="pr-3 py-1.5">
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                          l.status === 'active' ? 'bg-green-100 text-green-800' :
+                          l.status === 'canceled' ? 'bg-red-100 text-red-700' :
+                          l.status === 'past_due' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-ink/10 text-ink/60'
+                        }`}>{l.status}</span>
+                      </td>
+                      <td className="pr-3 py-1.5 text-ink/60">{l.machineCount}</td>
+                      <td className="py-1.5 text-ink/60">{l.churnDate.slice(0, 10)}</td>
                     </tr>
                   ))}
                 </tbody>

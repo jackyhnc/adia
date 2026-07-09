@@ -1177,3 +1177,64 @@ export function timeToChurn(days: number, plan?: string): TimeToChurnResult {
     ...(plan ? { plan } : {}),
   };
 }
+
+export type DormantChurnLicense = {
+  key: string;
+  email: string;
+  plan: 'monthly' | 'yearly' | 'lifetime';
+  status: 'active' | 'canceled' | 'expired' | 'past_due';
+  issuedAt: string;
+  expiresAt: string | null;
+  note?: string | null;
+  machineCount: number;
+  churnDate: string;
+};
+
+// Returns licenses that had ≥1 activation AND a churn event (revoke or
+// set_status→canceled/expired/past_due) within the last `days` days.
+// Distinct from /dormant (activated but recently inactive) — this is
+// "tried the product and then left."  Ordered by churnDate DESC so the
+// freshest churns (most re-engageable) appear first.
+export function listDormantChurnLicenses(days: number, plan?: string, status?: string): DormantChurnLicense[] {
+  const whereConditions: string[] = [];
+  const params: unknown[] = [days];
+  if (plan) { whereConditions.push('l.plan = ?'); params.push(plan); }
+  if (status) { whereConditions.push('l.status = ?'); params.push(status); }
+  const where = whereConditions.length ? `AND ${whereConditions.join(' AND ')}` : '';
+
+  const rows = (db()
+    .prepare(`
+      SELECT l.key, l.email, l.plan, l.status, l.note,
+             l.issued_at, l.expires_at,
+             COUNT(a.machine_hash) AS machine_count_live,
+             fc.churn_date
+      FROM licenses l
+      INNER JOIN activations a ON a.license_key = l.key
+      INNER JOIN (
+        SELECT license_key, MIN(created_at) AS churn_date
+        FROM audit_log
+        WHERE (
+          action = 'revoke'
+          OR (action = 'set_status' AND json_extract(detail, '$.status') IN ('canceled', 'expired', 'past_due'))
+        )
+        AND created_at >= date('now', '-' || ? || ' days')
+        GROUP BY license_key
+      ) fc ON fc.license_key = l.key
+      WHERE 1=1 ${where}
+      GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at, fc.churn_date
+      ORDER BY fc.churn_date DESC
+    `)
+    .all as (...a: unknown[]) => any[])(...params);
+
+  return rows.map(r => ({
+    key: r.key as string,
+    email: r.email as string,
+    plan: r.plan as DormantChurnLicense['plan'],
+    status: r.status as DormantChurnLicense['status'],
+    issuedAt: r.issued_at as string,
+    expiresAt: (r.expires_at as string | null) ?? null,
+    note: (r.note as string | null) ?? null,
+    machineCount: r.machine_count_live as number,
+    churnDate: r.churn_date as string,
+  }));
+}

@@ -378,3 +378,13 @@ export async function timeToChurn(days: number, plan?: string): Promise<import('
   }
   return sqlite.timeToChurn(days, plan);
 }
+
+export type { DormantChurnLicense } from './db';
+
+export async function listDormantChurnLicenses(days: number, plan?: string, status?: string): Promise<import('./db').DormantChurnLicense[]> {
+  if (usePg) {
+    const { listDormantChurnLicensesPg } = await import('./db-pg');
+    return listDormantChurnLicensesPg(days, plan, status);
+  }
+  return sqlite.listDormantChurnLicenses(days, plan, status);
+}

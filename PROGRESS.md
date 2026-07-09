@@ -1,5 +1,58 @@
 # Adia — Build Progress
 
+## Run 294 — 2026-07-09T16:15:00Z — Dormant-churn endpoint + DormantChurnPanel + 39 tests (1196 → 1235)
+
+### Shipped
+
+**`web/lib/db.ts` — DormantChurnLicense type + listDormantChurnLicenses():**
+- `DormantChurnLicense` type with key, email, plan, status, issuedAt, expiresAt, note, machineCount, churnDate.
+- `listDormantChurnLicenses(days, plan?, status?)` SQLite query: INNER JOIN activations (ensures ≥1 machine activated) + INNER JOIN subquery of first churn event per license (revoke OR set_status→canceled/expired/past_due within last N days). Returns churnDate = MIN(created_at) of first churn event. Ordered by churnDate DESC (freshest churns first — highest re-engagement priority).
+
+**`web/lib/db-pg.ts` — listDormantChurnLicensesPg():**
+- Postgres mirror using `(detail::jsonb)->>'status'` and INTERVAL arithmetic. Returns same DormantChurnLicense shape.
+
+**`web/lib/store.ts` — dispatcher:**
+- `DormantChurnLicense` type re-export.
+- `listDormantChurnLicenses(days, plan?, status?)` dispatches to Pg or SQLite variant.
+
+**`web/app/api/admin/dormant-churn/route.ts` — new endpoint:**
+- `GET /api/admin/dormant-churn` — auth via adminGuard (Bearer token or ?token=).
+- `?days=` — integer 1–365, default 30.
+- `?plan=monthly|yearly|lifetime` — optional filter.
+- `?status=active|canceled|expired|past_due` — optional filter.
+- `?format=csv` — CSV with churnDate column; filename includes "dormant-churn".
+- Returns `{ licenses, count, days }`.
+
+**`web/app/admin/page.tsx` — DormantChurnPanel:**
+- `DormantChurnRow` local type.
+- `DormantChurnPanel` with days/plan/status filters, "Find dormant-churn licenses" submit, CSV export button.
+- Table with status badge coloring (green=active, red=canceled, yellow=past_due).
+- `CollapsibleSection title="Dormant & churned"` inserted between "Dormant licenses" and "Activation heatmap".
+
+**`web/__tests__/admin-dormant-churn.test.ts` — 39 tests:**
+- Auth: 401 no-token, 401 wrong-token, 200 ?token=.
+- Validation: days=0, days=366, non-integer, fractional, invalid plan, invalid status, invalid format.
+- Core: empty DB, revoke counts, set_status canceled/expired/past_due count, set_status active does NOT count, no-activation excluded, no-churn-event excluded, response shape, churnDate field, churnDate = first event (multi-event per license), ordering DESC.
+- Days window: days=365, days=1, outside-window excluded, inside-window included, boundary test (45d excluded at 30d / included at 60d).
+- Plan filter: monthly-only, lifetime-only.
+- Status filter: all statuses when omitted, canceled-only.
+- CSV: content-type, Content-Disposition with "dormant-churn", header row with churnDate, data row.
+- Rate limit: 429 at cap, Retry-After header, rate-limit before auth.
+
+### Tests
+1235 passed (up from 1196). 48 test files green.
+
+### Blocked
+Nothing blocked. Swift toolchain unavailable on Linux container.
+
+### Next agent should pick up
+- ChurnCohortPanel ↔ CohortRetentionPanel click-to-highlight: clicking a cohort row in one panel highlights the same cohort date in the other (requires shared React state at page level or URL param)
+- HistoryInsightsSection logic tests: extract `streakBreakChipLabel(totalBreaks, mostBroken)` as a pure function from HistoryInsightsSection.swift body, add Swift tests for `totalStreakBreaks=0` (hidden), `totalStreakBreaks>0 + mostBrokenStreakLength=nil` (shows count), `totalStreakBreaks>0 + mostBrokenStreakLength=N` (shows "Nd" fragile label)
+- Dormant-churn rate-limit tests for remaining format: currently tests cover 3 rate-limit scenarios; could add ?format=csv rate-limit confirmation
+- Admin panel ?section= URL sync: verify section filter is reflected in browser URL as filter changes
+
+---
+
 ## Run 293 — 2026-07-09T14:10:00Z — Rate-limit tests for remaining analytics endpoints (1178 → 1196)
 
 ### Shipped

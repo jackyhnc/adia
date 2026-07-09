@@ -1044,3 +1044,45 @@ export async function timeToChurnPg(days: number, plan?: string): Promise<TimeTo
     ...(plan ? { plan } : {}),
   };
 }
+
+import type { DormantChurnLicense } from './db';
+
+export async function listDormantChurnLicensesPg(days: number, plan?: string, status?: string): Promise<DormantChurnLicense[]> {
+  await ensureSchema();
+  const planVal = plan ?? null;
+  const statusVal = status ?? null;
+  const result = await sql<any>`
+    SELECT l.key, l.email, l.plan, l.status, l.note,
+           to_char(l.issued_at,  'YYYY-MM-DD"T"HH24:MI:SSZ') AS "issuedAt",
+           to_char(l.expires_at, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "expiresAt",
+           COUNT(a.machine_hash)::int AS "machineCount",
+           to_char(fc.churn_date, 'YYYY-MM-DD"T"HH24:MI:SSZ') AS "churnDate"
+    FROM licenses l
+    INNER JOIN activations a ON a.license_key = l.key
+    INNER JOIN (
+      SELECT license_key, MIN(created_at) AS churn_date
+      FROM audit_log
+      WHERE (
+        action = 'revoke'
+        OR (action = 'set_status' AND (detail::jsonb)->>'status' IN ('canceled', 'expired', 'past_due'))
+      )
+        AND created_at >= NOW() - (${days} * INTERVAL '1 day')
+      GROUP BY license_key
+    ) fc ON fc.license_key = l.key
+    WHERE (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
+      AND (${statusVal}::text IS NULL OR l.status = ${statusVal}::text)
+    GROUP BY l.key, l.email, l.plan, l.status, l.note, l.issued_at, l.expires_at, fc.churn_date
+    ORDER BY fc.churn_date DESC
+  `;
+  return result.rows.map((r: any) => ({
+    key: r.key as string,
+    email: r.email as string,
+    plan: r.plan as DormantChurnLicense['plan'],
+    status: r.status as DormantChurnLicense['status'],
+    issuedAt: r.issuedAt as string,
+    expiresAt: (r.expiresAt as string | null) ?? null,
+    note: (r.note as string | null) ?? null,
+    machineCount: r.machineCount as number,
+    churnDate: r.churnDate as string,
+  }));
+}
