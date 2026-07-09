@@ -1,5 +1,34 @@
 # Adia — Build Progress
 
+## Run 297 — 2026-07-09 — LicenseTimelinePanel admin UI panel
+
+### Shipped
+- **`web/app/admin/page.tsx` — `LicenseTimelinePanel`** (186 lines added):
+  - Registered as `<CollapsibleSection title="License timeline">` immediately after "License lookup" section so the two per-key panels sit together.
+  - Input fields: required license key (font-mono), optional `action` filter, optional `since` date filter.
+  - On submit: `fetchPage(0, false)` — clears previous results, sets `LicenseCard` license metadata, loads first 50 entries from `GET /api/admin/license-timeline?key=&limit=50&offset=&action=&since=`.
+  - Shows `LicenseCard` (email/plan/status) above the audit table on first load — same component used by `LookupPanel`.
+  - Audit table columns: When (UTC, font-mono), Action (`auditActionColor`-coded, bold), Detail (parsed JSON as `k: v · k: v` or raw string; identical pattern to `AuditPanel`).
+  - "Load more" button appears when `hasMore=true`; shows count of remaining entries (`total - currentOffset`).
+  - "Export CSV" button triggers `filename=timeline-{KEY}.csv` download via `?format=csv&token=` query auth (same download pattern as `AuditLogExportPanel`).
+  - Error display: HTTP status + error field; "License key required" pre-validation before fetch.
+  - State: `license | null`, `entries: AuditEntry[] | null`, `total`, `hasMore`, `currentOffset`, `loading`, `loadingMore`.
+- **Test count**: 1257 (no new tests — API endpoint already has 21 tests in `admin-license-timeline.test.ts`; React UI components are not unit-tested in this codebase).
+
+### Verification
+All 1257 web tests pass (`npx vitest run`). `tsc --noEmit` shows only pre-existing dependency errors (React types, better-sqlite3, stripe, resend — not installed in build env); no new errors from the panel code.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `morningNudgeBody_allVariantsAreLowercase` test for parity with the title pool lowercase test (body messages pool — all 7 should pass `s == s.lowercased()` constraint).
+- Consider more suggested session templates in `SuggestedTemplates.swift` (e.g. "Record a podcast episode", "Prepare presentation slides") to expand the idle notch catalog beyond the current 8 entries (requires macOS).
+- Consider wiring `totalStreakBreaks` / `mostBrokenStreakLength` into a `@Published` property or `ObservableObject` wrapper so `HistoryTab` refreshes reactively when break counts change while the tab is open (currently reads at render time — safe since breaks only fire at session end).
+- Consider a `GET /api/admin/licenses-by-email` CSV filter combination test — the CSV export path has no test confirming `?plan=` + `?status=` in combination.
+
+---
+
 ## Run 296 — 2026-07-09T18:10:00Z — Dormant-churn CSV rate-limit test + HistoryInsightsSection extraction + fitness keywords
 
 ### Shipped
