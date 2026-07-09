@@ -704,3 +704,96 @@ export function listAllLicenses(since?: string, status?: string, plan?: string):
     machineCount: r.machine_count_live as number,
   }));
 }
+
+// Pricing constants (USD)
+const PRICE_MONTHLY = 7.00;
+const PRICE_YEARLY_MONTHLY = 59.00 / 12; // ~$4.9167/mo
+const PRICE_LIFETIME = 149.00;
+
+function round2(n: number): number {
+  return Math.round(n * 100) / 100;
+}
+
+export type PlanRevenueRow = {
+  active: number;
+  pastDue: number;
+  new30d: number;
+};
+
+export type RevenueMetrics = {
+  mrr: number;
+  arr: number;
+  lifetimeRevenue: number;
+  pastDueMrr: number;
+  newMrr30d: number;
+  byPlan: {
+    monthly: PlanRevenueRow & { mrr: number };
+    yearly: PlanRevenueRow & { mrr: number };
+    lifetime: PlanRevenueRow & { revenue: number };
+  };
+};
+
+export function revenueMetrics(): RevenueMetrics {
+  const day30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+  type CountRow = { plan: string; status: string; c: number };
+  const counts = db()
+    .prepare(`
+      SELECT plan, status, COUNT(*) AS c
+      FROM licenses
+      WHERE plan IN ('monthly','yearly','lifetime')
+        AND status IN ('active','past_due')
+      GROUP BY plan, status
+    `)
+    .all() as CountRow[];
+
+  type NewRow = { plan: string; c: number };
+  const newCounts = db()
+    .prepare(`
+      SELECT plan, COUNT(*) AS c
+      FROM licenses
+      WHERE plan IN ('monthly','yearly','lifetime')
+        AND status = 'active'
+        AND issued_at >= ?
+      GROUP BY plan
+    `)
+    .all(day30) as NewRow[];
+
+  function get(plan: string, status: string): number {
+    return counts.find(r => r.plan === plan && r.status === status)?.c ?? 0;
+  }
+  function getNew(plan: string): number {
+    return newCounts.find(r => r.plan === plan)?.c ?? 0;
+  }
+
+  const mActive = get('monthly', 'active');
+  const mPastDue = get('monthly', 'past_due');
+  const mNew = getNew('monthly');
+
+  const yActive = get('yearly', 'active');
+  const yPastDue = get('yearly', 'past_due');
+  const yNew = getNew('yearly');
+
+  const lActive = get('lifetime', 'active');
+  const lPastDue = get('lifetime', 'past_due');
+  const lNew = getNew('lifetime');
+
+  const mrr = round2(mActive * PRICE_MONTHLY + yActive * PRICE_YEARLY_MONTHLY);
+  const arr = round2(mrr * 12);
+  const lifetimeRevenue = round2(lActive * PRICE_LIFETIME);
+  const pastDueMrr = round2(mPastDue * PRICE_MONTHLY + yPastDue * PRICE_YEARLY_MONTHLY);
+  const newMrr30d = round2(mNew * PRICE_MONTHLY + yNew * PRICE_YEARLY_MONTHLY);
+
+  return {
+    mrr,
+    arr,
+    lifetimeRevenue,
+    pastDueMrr,
+    newMrr30d,
+    byPlan: {
+      monthly:  { active: mActive, pastDue: mPastDue, new30d: mNew, mrr: round2(mActive * PRICE_MONTHLY) },
+      yearly:   { active: yActive, pastDue: yPastDue, new30d: yNew, mrr: round2(yActive * PRICE_YEARLY_MONTHLY) },
+      lifetime: { active: lActive, pastDue: lPastDue, new30d: lNew, revenue: round2(lActive * PRICE_LIFETIME) },
+    },
+  };
+}

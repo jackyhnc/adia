@@ -303,6 +303,16 @@ export async function listAllAuditLog(since?: string, action?: string, licenseKe
   return sqlite.listAllAuditLog(since, action, licenseKey);
 }
 
+export type { RevenueMetrics } from './db';
+
+export async function revenueMetrics(): Promise<import('./db').RevenueMetrics> {
+  if (usePg) {
+    const { revenueMetricsPg } = await import('./db-pg');
+    return revenueMetricsPg();
+  }
+  return sqlite.revenueMetrics();
+}
+
 export async function countNotifyHistory(email: string): Promise<number> {
   if (usePg) {
     const { countNotifyHistoryPg } = await import('./db-pg');

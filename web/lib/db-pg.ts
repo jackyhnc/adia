@@ -698,3 +698,71 @@ export async function listAllLicensesPg(since?: string, status?: string, plan?: 
     machineCount: r.machineCount,
   }));
 }
+
+// Pricing constants (USD)
+const PG_PRICE_MONTHLY = 7.00;
+const PG_PRICE_YEARLY_MONTHLY = 59.00 / 12;
+const PG_PRICE_LIFETIME = 149.00;
+
+function pg_round2(n: number): number {
+  return Math.round(n * 100) / 100;
+}
+
+import type { RevenueMetrics } from './db';
+
+export async function revenueMetricsPg(): Promise<RevenueMetrics> {
+  await ensureSchema();
+  const counts = await sql<any>`
+    SELECT plan, status, COUNT(*)::int AS c
+    FROM licenses
+    WHERE plan IN ('monthly','yearly','lifetime')
+      AND status IN ('active','past_due')
+    GROUP BY plan, status
+  `;
+  const newCounts = await sql<any>`
+    SELECT plan, COUNT(*)::int AS c
+    FROM licenses
+    WHERE plan IN ('monthly','yearly','lifetime')
+      AND status = 'active'
+      AND issued_at >= NOW() - INTERVAL '30 days'
+    GROUP BY plan
+  `;
+
+  function get(plan: string, status: string): number {
+    return counts.rows.find((r: any) => r.plan === plan && r.status === status)?.c ?? 0;
+  }
+  function getNew(plan: string): number {
+    return newCounts.rows.find((r: any) => r.plan === plan)?.c ?? 0;
+  }
+
+  const mActive = get('monthly', 'active');
+  const mPastDue = get('monthly', 'past_due');
+  const mNew = getNew('monthly');
+
+  const yActive = get('yearly', 'active');
+  const yPastDue = get('yearly', 'past_due');
+  const yNew = getNew('yearly');
+
+  const lActive = get('lifetime', 'active');
+  const lPastDue = get('lifetime', 'past_due');
+  const lNew = getNew('lifetime');
+
+  const mrr = pg_round2(mActive * PG_PRICE_MONTHLY + yActive * PG_PRICE_YEARLY_MONTHLY);
+  const arr = pg_round2(mrr * 12);
+  const lifetimeRevenue = pg_round2(lActive * PG_PRICE_LIFETIME);
+  const pastDueMrr = pg_round2(mPastDue * PG_PRICE_MONTHLY + yPastDue * PG_PRICE_YEARLY_MONTHLY);
+  const newMrr30d = pg_round2(mNew * PG_PRICE_MONTHLY + yNew * PG_PRICE_YEARLY_MONTHLY);
+
+  return {
+    mrr,
+    arr,
+    lifetimeRevenue,
+    pastDueMrr,
+    newMrr30d,
+    byPlan: {
+      monthly:  { active: mActive, pastDue: mPastDue, new30d: mNew, mrr: pg_round2(mActive * PG_PRICE_MONTHLY) },
+      yearly:   { active: yActive, pastDue: yPastDue, new30d: yNew, mrr: pg_round2(yActive * PG_PRICE_YEARLY_MONTHLY) },
+      lifetime: { active: lActive, pastDue: lPastDue, new30d: lNew, revenue: pg_round2(lActive * PG_PRICE_LIFETIME) },
+    },
+  };
+}

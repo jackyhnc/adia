@@ -123,6 +123,9 @@ export default function Admin() {
       <CollapsibleSection title="Activation heatmap">
         <UsageHeatmapPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Revenue (MRR / ARR)">
+        <RevenueMRRPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Issue comp license">
         <IssuePanel token={token} />
       </CollapsibleSection>
@@ -4899,6 +4902,120 @@ function ExpiringSoonPanel({ token }: { token: string }) {
               </table>
             </div>
           )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Revenue (MRR / ARR) ─────────────────────────────────────────────────────
+
+type PlanRevenueRow = { active: number; pastDue: number; new30d: number };
+type RevenueMetrics = {
+  mrr: number;
+  arr: number;
+  lifetimeRevenue: number;
+  pastDueMrr: number;
+  newMrr30d: number;
+  byPlan: {
+    monthly: PlanRevenueRow & { mrr: number };
+    yearly: PlanRevenueRow & { mrr: number };
+    lifetime: PlanRevenueRow & { revenue: number };
+  };
+};
+
+function fmt(n: number): string {
+  return n.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function RevenueMRRPanel({ token }: { token: string }) {
+  const [result, setResult] = useState<RevenueMetrics | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function load(e: React.FormEvent) {
+    e.preventDefault();
+    if (!token) { setError('Paste admin token above first.'); return; }
+    setLoading(true);
+    setError('');
+    setResult(null);
+    try {
+      const res = await fetch('/api/admin/revenue', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Monthly and annual recurring revenue derived from active license counts.
+        Prices: monthly $7/mo · yearly $59/yr ($4.92/mo) · lifetime $149 one-time.
+      </p>
+      <form onSubmit={load} className="card space-y-3">
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Loading…' : 'Load revenue metrics'}
+        </button>
+      </form>
+      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+      {result && (
+        <div className="mt-4 space-y-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {[
+              { label: 'MRR', value: fmt(result.mrr) },
+              { label: 'ARR', value: fmt(result.arr) },
+              { label: 'Lifetime revenue', value: fmt(result.lifetimeRevenue) },
+              { label: 'New MRR (30d)', value: fmt(result.newMrr30d) },
+              { label: 'MRR at risk (past due)', value: fmt(result.pastDueMrr) },
+            ].map(({ label, value }) => (
+              <div key={label} className="bg-ink/5 rounded-lg p-3">
+                <p className="text-xs text-ink/50 mb-1">{label}</p>
+                <p className="text-lg font-semibold">{value}</p>
+              </div>
+            ))}
+          </div>
+          <table className="w-full text-sm border border-ink/10 rounded-lg overflow-hidden">
+            <thead className="bg-ink/5">
+              <tr>
+                {['Plan', 'Active', 'Past due', 'New (30d)', 'Contribution'].map(h => (
+                  <th key={h} className="text-left px-3 py-2 text-xs uppercase tracking-wide text-ink/60">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-ink/10">
+              <tr>
+                <td className="px-3 py-2">Monthly</td>
+                <td className="px-3 py-2">{result.byPlan.monthly.active}</td>
+                <td className="px-3 py-2">{result.byPlan.monthly.pastDue}</td>
+                <td className="px-3 py-2">{result.byPlan.monthly.new30d}</td>
+                <td className="px-3 py-2">{fmt(result.byPlan.monthly.mrr)}/mo</td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2">Yearly</td>
+                <td className="px-3 py-2">{result.byPlan.yearly.active}</td>
+                <td className="px-3 py-2">{result.byPlan.yearly.pastDue}</td>
+                <td className="px-3 py-2">{result.byPlan.yearly.new30d}</td>
+                <td className="px-3 py-2">{fmt(result.byPlan.yearly.mrr)}/mo</td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2">Lifetime</td>
+                <td className="px-3 py-2">{result.byPlan.lifetime.active}</td>
+                <td className="px-3 py-2">{result.byPlan.lifetime.pastDue}</td>
+                <td className="px-3 py-2">{result.byPlan.lifetime.new30d}</td>
+                <td className="px-3 py-2">{fmt(result.byPlan.lifetime.revenue)} one-time</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       )}
     </div>

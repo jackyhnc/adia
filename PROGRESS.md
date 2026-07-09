@@ -1,5 +1,53 @@
 # Adia — Build Progress
 
+## Run 286 — 2026-07-09T01:10:00Z — GET /api/admin/revenue + RevenueMRRPanel + 25 tests (922 → 947)
+
+### Shipped
+
+**`web/lib/db.ts` — revenueMetrics():**
+- Added `PlanRevenueRow` and `RevenueMetrics` types.
+- Added `PRICE_MONTHLY`, `PRICE_YEARLY_MONTHLY`, `PRICE_LIFETIME` constants and `round2()` helper.
+- `revenueMetrics()` — two SQLite queries: plan×status counts (active/past_due) + new-in-30d counts; computes MRR, ARR, lifetimeRevenue, pastDueMrr, newMrr30d, and byPlan breakdown.
+
+**`web/lib/db-pg.ts` — revenueMetricsPg():**
+- Mirror of SQLite implementation using `sql` template tag with `NOW() - INTERVAL '30 days'` for the new-licenses window.
+- Imports `RevenueMetrics` type from `./db`.
+
+**`web/lib/store.ts` — revenueMetrics() dispatch:**
+- Re-exports `RevenueMetrics` type.
+- `revenueMetrics()` — dispatches to Postgres or SQLite variant.
+
+**`web/app/api/admin/revenue/route.ts` — new endpoint:**
+- `GET /api/admin/revenue` — returns `RevenueMetrics` JSON.
+- `adminGuard` auth (Bearer token or `?token=`).
+- No query params (metrics are always across all active/past_due licenses).
+
+**`web/app/admin/page.tsx` — RevenueMRRPanel:**
+- `CollapsibleSection title="Revenue (MRR / ARR)"` inserted after "Activation heatmap".
+- `RevenueMRRPanel`: stat tile grid (MRR, ARR, Lifetime revenue, New MRR 30d, MRR at risk) + per-plan table (Monthly/Yearly/Lifetime × active/pastDue/new30d/contribution).
+- `fmt()` helper for USD currency formatting.
+
+**`web/__tests__/admin-revenue.test.ts` — 25 tests:**
+- Auth: 401 no-token, 401 wrong-token, 200 ?token=.
+- Empty DB: all zeros, byPlan all zeros.
+- Monthly: 1 active → mrr=$7/arr=$84; 3 active → mrr=$21.
+- Yearly: 1 active → mrr=$4.92; 12 active → mrr=$59.00.
+- Lifetime: 1 active → lifetimeRevenue=$149; lifetime doesn't affect mrr.
+- Mixed: monthly + yearly + lifetime combined.
+- Past_due: monthly past_due → pastDueMrr=$7 not in mrr; yearly past_due → pastDueMrr=$4.92.
+- newMrr30d: 10d old active → counted; 45d old → excluded; canceled 10d old → excluded; yearly 5d old → counted.
+- Canceled/expired: neither contributes to mrr or pastDueMrr.
+- Response shape: top-level keys; byPlan keys; monthly fields; lifetime has revenue not mrr; arr = mrr * 12.
+
+### Blocked
+Nothing blocked.
+
+### Next agent should pick up
+- Add more admin panel features: e.g. cohort retention metrics (% of licenses still active 30/60/90 days after issuance)
+- Or Swift app improvements: e.g. improved session history UI, or additional blocklist sources
+
+---
+
 ## Run 285 — 2026-07-09T00:10:00Z — GET /api/admin/usage-heatmap + UsageHeatmapPanel + 24 tests (898 → 922)
 
 ### Shipped
