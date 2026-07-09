@@ -828,3 +828,80 @@ export function activationTimeline(days: number, plan?: string): TimelineDay[] {
   }
   return result;
 }
+
+export type CohortRow = {
+  date: string;
+  total: number;
+  activeNow: number;
+  ageDays: number;
+  retentionRate: number;
+};
+
+export type CohortSummary = {
+  cohortCount: number;
+  totalLicenses: number;
+  activeCount: number;
+  rate: number;
+};
+
+export type CohortRetentionResult = {
+  cohorts: CohortRow[];
+  summary30d: CohortSummary | null;
+  summary60d: CohortSummary | null;
+  summary90d: CohortSummary | null;
+  windowDays: number;
+  plan?: string;
+};
+
+// Returns per-day cohort retention: for each day in the past `days` days,
+// how many licenses were issued and how many are still active now.
+// Also computes summary retention rates for 30/60/90-day-old cohorts.
+export function cohortRetention(days: number, plan?: string): CohortRetentionResult {
+  const conditions: string[] = [`l.issued_at >= date('now', '-' || ? || ' days')`];
+  const params: unknown[] = [days];
+  if (plan) { conditions.push('l.plan = ?'); params.push(plan); }
+  const where = `WHERE ${conditions.join(' AND ')}`;
+  const rows = (db()
+    .prepare(`
+      SELECT
+        date(l.issued_at) AS cohort_date,
+        COUNT(*) AS total,
+        SUM(CASE WHEN l.status = 'active' THEN 1 ELSE 0 END) AS active_now,
+        CAST(julianday('now') - julianday(date(l.issued_at)) AS INTEGER) AS age_days
+      FROM licenses l
+      ${where}
+      GROUP BY date(l.issued_at)
+      ORDER BY cohort_date ASC
+    `)
+    .all as (...a: unknown[]) => any[])(...params);
+
+  const cohorts: CohortRow[] = rows.map((r: any) => ({
+    date: r.cohort_date as string,
+    total: r.total as number,
+    activeNow: r.active_now as number,
+    ageDays: r.age_days as number,
+    retentionRate: r.total > 0 ? Math.round((r.active_now / r.total) * 1000) / 10 : 0,
+  }));
+
+  function summary(minAge: number): CohortSummary | null {
+    const eligible = cohorts.filter(c => c.ageDays >= minAge);
+    if (eligible.length === 0) return null;
+    const totalLicenses = eligible.reduce((s, c) => s + c.total, 0);
+    const activeCount = eligible.reduce((s, c) => s + c.activeNow, 0);
+    return {
+      cohortCount: eligible.length,
+      totalLicenses,
+      activeCount,
+      rate: totalLicenses > 0 ? Math.round((activeCount / totalLicenses) * 1000) / 10 : 0,
+    };
+  }
+
+  return {
+    cohorts,
+    summary30d: summary(30),
+    summary60d: summary(60),
+    summary90d: summary(90),
+    windowDays: days,
+    ...(plan ? { plan } : {}),
+  };
+}

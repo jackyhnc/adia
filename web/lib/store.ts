@@ -338,3 +338,13 @@ export async function listNotifyHistory(email: string, limit?: number, offset?: 
   }
   return sqlite.listNotifyHistory(email, limit, offset);
 }
+
+export type { CohortRetentionResult, CohortRow, CohortSummary } from './db';
+
+export async function cohortRetention(days: number, plan?: string): Promise<import('./db').CohortRetentionResult> {
+  if (usePg) {
+    const { cohortRetentionPg } = await import('./db-pg');
+    return cohortRetentionPg(days, plan);
+  }
+  return sqlite.cohortRetention(days, plan);
+}

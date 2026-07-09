@@ -126,6 +126,9 @@ export default function Admin() {
       <CollapsibleSection title="Activation timeline">
         <ActivationTimelinePanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Cohort retention">
+        <CohortRetentionPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Revenue (MRR / ARR)">
         <RevenueMRRPanel token={token} />
       </CollapsibleSection>
@@ -5030,6 +5033,137 @@ function ActivationTimelinePanel({ token }: { token: string }) {
                 })}
               </div>
               <p className="text-xs text-ink/40 mt-6">Dates in UTC. Hover a bar for exact count.</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Cohort retention ─────────────────────────────────────────────────────────
+
+type CohortRow = { date: string; total: number; activeNow: number; ageDays: number; retentionRate: number };
+type CohortSummary = { cohortCount: number; totalLicenses: number; activeCount: number; rate: number };
+type CohortRetentionResult = {
+  cohorts: CohortRow[];
+  summary30d: CohortSummary | null;
+  summary60d: CohortSummary | null;
+  summary90d: CohortSummary | null;
+  windowDays: number;
+  plan?: string;
+};
+
+function rateColor(rate: number): string {
+  if (rate >= 70) return 'text-emerald-600 dark:text-emerald-400';
+  if (rate >= 40) return 'text-yellow-600 dark:text-yellow-400';
+  return 'text-red-500 dark:text-red-400';
+}
+
+function CohortRetentionPanel({ token }: { token: string }) {
+  const [days, setDays] = useState('90');
+  const [plan, setPlan] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<CohortRetentionResult | null>(null);
+
+  async function load(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const params = new URLSearchParams({ days });
+      if (plan) params.set('plan', plan);
+      const res = await fetch(`/api/admin/cohort-retention?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? res.statusText);
+      setResult(json);
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function SummaryTile({ label, summary }: { label: string; summary: CohortSummary | null }) {
+    if (!summary) return (
+      <div className="bg-ink/5 rounded-lg p-3">
+        <p className="text-xs text-ink/50 mb-1">{label} retention</p>
+        <p className="text-sm text-ink/40">Not enough data</p>
+      </div>
+    );
+    return (
+      <div className="bg-ink/5 rounded-lg p-3">
+        <p className="text-xs text-ink/50 mb-1">{label} retention</p>
+        <p className={`text-lg font-semibold ${rateColor(summary.rate)}`}>{summary.rate}%</p>
+        <p className="text-xs text-ink/40">{summary.activeCount}/{summary.totalLicenses} active · {summary.cohortCount} cohorts</p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Retention rate: % of licenses issued in each cohort that are still active today.
+        30d/60d/90d summaries only include cohorts old enough to qualify.
+      </p>
+      <form onSubmit={load} className="card space-y-3">
+        <Field label="Window (days)">
+          <input
+            type="number"
+            min={1}
+            max={365}
+            value={days}
+            onChange={e => setDays(e.target.value)}
+            className="input w-28"
+          />
+        </Field>
+        <Field label="Plan (optional)">
+          <select value={plan} onChange={e => setPlan(e.target.value)} className="input w-40">
+            <option value="">All plans</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+            <option value="lifetime">Lifetime</option>
+          </select>
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Loading…' : 'Load cohort retention'}
+        </button>
+      </form>
+      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+      {result && (
+        <div className="mt-4 space-y-4">
+          <div className="grid grid-cols-3 gap-3">
+            <SummaryTile label="30d" summary={result.summary30d} />
+            <SummaryTile label="60d" summary={result.summary60d} />
+            <SummaryTile label="90d" summary={result.summary90d} />
+          </div>
+          {result.cohorts.length === 0 ? (
+            <p className="text-sm text-ink/40">No licenses in this window.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm border border-ink/10 rounded-lg overflow-hidden">
+                <thead className="bg-ink/5">
+                  <tr>
+                    {['Cohort date', 'Issued', 'Active now', 'Age (days)', 'Retention'].map(h => (
+                      <th key={h} className="text-left px-3 py-2 text-xs uppercase tracking-wide text-ink/60">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-ink/10">
+                  {result.cohorts.map(c => (
+                    <tr key={c.date}>
+                      <td className="px-3 py-2 font-mono text-xs">{c.date}</td>
+                      <td className="px-3 py-2">{c.total}</td>
+                      <td className="px-3 py-2">{c.activeNow}</td>
+                      <td className="px-3 py-2">{c.ageDays}</td>
+                      <td className={`px-3 py-2 font-semibold ${rateColor(c.retentionRate)}`}>{c.retentionRate}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>

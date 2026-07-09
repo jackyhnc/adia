@@ -1,5 +1,56 @@
 # Adia — Build Progress
 
+## Run 288 — 2026-07-09T03:10:00Z — GET /api/admin/cohort-retention + CohortRetentionPanel + 36 tests (977 → 1013)
+
+### Shipped
+
+**`web/lib/db.ts` — cohortRetention():**
+- Added `CohortRow`, `CohortSummary`, `CohortRetentionResult` types.
+- `cohortRetention(days, plan?)` — SQLite query: groups `licenses.issued_at` by date, counts total and `status='active'` per cohort, computes `ageDays` via `julianday`.
+- Computes `summary30d/60d/90d` in application code by filtering cohorts where `ageDays >= N`; returns `null` when no eligible cohorts exist.
+- `retentionRate` rounded to 1 decimal place (`Math.round(x * 1000) / 10`).
+
+**`web/lib/db-pg.ts` — cohortRetentionPg():**
+- Mirror using `to_char(l.issued_at::date, 'YYYY-MM-DD')` + `EXTRACT(day FROM NOW() - issued_at::date)` for age.
+- Same summary computation in JS after the DB query.
+
+**`web/lib/store.ts` — cohortRetention() dispatch:**
+- Re-exports `CohortRetentionResult`, `CohortRow`, `CohortSummary` types.
+- `cohortRetention(days, plan?)` dispatches to Postgres or SQLite variant.
+
+**`web/app/api/admin/cohort-retention/route.ts` — new endpoint:**
+- `GET /api/admin/cohort-retention` — returns `CohortRetentionResult` JSON.
+- `?days=` — integer 1–365, default 90.
+- `?plan=monthly|yearly|lifetime` — optional filter.
+- `adminGuard` auth (Bearer token or `?token=`).
+
+**`web/app/admin/page.tsx` — CohortRetentionPanel:**
+- `CollapsibleSection title="Cohort retention"` inserted between "Activation timeline" and "Revenue (MRR / ARR)".
+- Three summary tiles (30d / 60d / 90d) with color-coded retention rate (green ≥70%, yellow ≥40%, red <40%) or "Not enough data" when null.
+- Scrollable table of all cohort rows: date, total issued, active now, age in days, retention rate (color-coded).
+- `rateColor()` helper shared between tiles and table rows.
+
+**`web/__tests__/admin-cohort-retention.test.ts` — 36 tests:**
+- Auth: 401 no-token, 401 wrong-token, 200 ?token=.
+- Validation: days=0, days=366, non-integer, fractional, invalid plan.
+- Response shape: 200 empty DB, empty cohorts, default 90d, null summaries, cohort row shape, plan absent/present, days=1, days=365.
+- Core behavior: grouping by date, activeNow counts active-only, canceled/expired/past_due not counted, retentionRate formula (66.7%), ascending order, window exclusion/inclusion, ageDays correctness.
+- Summary stats: 30d null when young, 30d populated, 60d excludes < 60d cohorts, 90d null, multi-cohort aggregation.
+- Plan filter: monthly, yearly, lifetime=0, no filter = all.
+
+### Tests
+1013 passed (up from 977). 42 test files green.
+
+### Blocked
+Nothing blocked.
+
+### Next agent should pick up
+- Consider adding rate-limit test for cohort-retention (429 on 21st req/60s) — pattern from `admin-export-licenses.test.ts`.
+- Consider `bulk:true` audit-log flag for `bulk-change-plan`, `bulk-extend`, `bulk-set-expiry` — currently only revoke/reactivate/set-status/resend-license/deactivate-all/change-email set it.
+- Consider a churn analysis endpoint: licenses that transitioned from active → canceled/expired within a given window, grouped by plan and time bucket.
+
+---
+
 ## Run 287 — 2026-07-09T02:08:00Z — GET /api/admin/activation-timeline + ActivationTimelinePanel + 30 tests (947 → 977)
 
 ### Shipped

@@ -791,3 +791,52 @@ export async function activationTimelinePg(days: number, plan?: string): Promise
   }
   return output;
 }
+
+import type { CohortRetentionResult } from './db';
+
+export async function cohortRetentionPg(days: number, plan?: string): Promise<CohortRetentionResult> {
+  await ensureSchema();
+  const planVal = plan ?? null;
+  const result = await sql<any>`
+    SELECT
+      to_char(l.issued_at::date, 'YYYY-MM-DD') AS cohort_date,
+      COUNT(*)::int AS total,
+      SUM(CASE WHEN l.status = 'active' THEN 1 ELSE 0 END)::int AS active_now,
+      EXTRACT(day FROM NOW() - l.issued_at::date)::int AS age_days
+    FROM licenses l
+    WHERE l.issued_at >= NOW() - (${days} * INTERVAL '1 day')
+      AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
+    GROUP BY l.issued_at::date
+    ORDER BY l.issued_at::date ASC
+  `;
+
+  const cohorts = result.rows.map((r: any) => ({
+    date: r.cohort_date as string,
+    total: r.total as number,
+    activeNow: r.active_now as number,
+    ageDays: r.age_days as number,
+    retentionRate: r.total > 0 ? Math.round((r.active_now / r.total) * 1000) / 10 : 0,
+  }));
+
+  function summary(minAge: number) {
+    const eligible = cohorts.filter((c: any) => c.ageDays >= minAge);
+    if (eligible.length === 0) return null;
+    const totalLicenses = eligible.reduce((s: number, c: any) => s + c.total, 0);
+    const activeCount = eligible.reduce((s: number, c: any) => s + c.activeNow, 0);
+    return {
+      cohortCount: eligible.length,
+      totalLicenses,
+      activeCount,
+      rate: totalLicenses > 0 ? Math.round((activeCount / totalLicenses) * 1000) / 10 : 0,
+    };
+  }
+
+  return {
+    cohorts,
+    summary30d: summary(30),
+    summary60d: summary(60),
+    summary90d: summary(90),
+    windowDays: days,
+    ...(plan ? { plan } : {}),
+  };
+}
