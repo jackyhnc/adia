@@ -8,6 +8,7 @@ export default function Admin() {
   const [token, setToken] = useState('');
   const [autoLookupKey, setAutoLookupKey] = useState('');
   const [sectionFilter, setSectionFilter] = useState('');
+  const [selectedCohortDate, setSelectedCohortDate] = useState<string | null>(null);
   const filterInputRef = useRef<HTMLInputElement>(null);
 
   // Pre-fill token from ?token= and section filter from ?section= URL params on mount.
@@ -130,13 +131,13 @@ export default function Admin() {
         <ActivationTimelinePanel token={token} />
       </CollapsibleSection>
       <CollapsibleSection title="Cohort retention">
-        <CohortRetentionPanel token={token} />
+        <CohortRetentionPanel token={token} selectedCohortDate={selectedCohortDate} onSelectCohortDate={setSelectedCohortDate} />
       </CollapsibleSection>
       <CollapsibleSection title="Churn analysis">
         <ChurnAnalysisPanel token={token} />
       </CollapsibleSection>
       <CollapsibleSection title="Churn cohort breakdown">
-        <ChurnCohortPanel token={token} />
+        <ChurnCohortPanel token={token} selectedCohortDate={selectedCohortDate} onSelectCohortDate={setSelectedCohortDate} />
       </CollapsibleSection>
       <CollapsibleSection title="Time-to-churn distribution">
         <TimeToChurnPanel token={token} />
@@ -5236,7 +5237,7 @@ function rateColor(rate: number): string {
   return 'text-red-500 dark:text-red-400';
 }
 
-function CohortRetentionPanel({ token }: { token: string }) {
+function CohortRetentionPanel({ token, selectedCohortDate, onSelectCohortDate }: { token: string; selectedCohortDate: string | null; onSelectCohortDate: (date: string | null) => void }) {
   const [days, setDays] = useState('90');
   const [plan, setPlan] = useState('');
   const [loading, setLoading] = useState(false);
@@ -5284,7 +5285,15 @@ function CohortRetentionPanel({ token }: { token: string }) {
       <p className="text-sm text-ink/60 mb-3">
         Retention rate: % of licenses issued in each cohort that are still active today.
         30d/60d/90d summaries only include cohorts old enough to qualify.
+        Click any cohort row to cross-highlight the same date in the churn cohort panel.
       </p>
+      {selectedCohortDate && (
+        <div className="flex items-center gap-2 mb-3 text-xs text-blue-400">
+          <span className="inline-block w-2 h-2 rounded-full bg-blue-400" />
+          Cohort <span className="font-mono">{selectedCohortDate}</span> selected
+          <button type="button" onClick={() => onSelectCohortDate(null)} className="text-ink/40 hover:text-ink/70 ml-1">✕</button>
+        </div>
+      )}
       <form onSubmit={load} className="card space-y-3">
         <Field label="Window (days)">
           <input
@@ -5329,15 +5338,23 @@ function CohortRetentionPanel({ token }: { token: string }) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-ink/10">
-                  {result.cohorts.map(c => (
-                    <tr key={c.date}>
-                      <td className="px-3 py-2 font-mono text-xs">{c.date}</td>
-                      <td className="px-3 py-2">{c.total}</td>
-                      <td className="px-3 py-2">{c.activeNow}</td>
-                      <td className="px-3 py-2">{c.ageDays}</td>
-                      <td className={`px-3 py-2 font-semibold ${rateColor(c.retentionRate)}`}>{c.retentionRate}%</td>
-                    </tr>
-                  ))}
+                  {result.cohorts.map(c => {
+                    const isSelected = c.date === selectedCohortDate;
+                    return (
+                      <tr
+                        key={c.date}
+                        onClick={() => onSelectCohortDate(isSelected ? null : c.date)}
+                        className={`cursor-pointer transition-colors ${isSelected ? 'bg-blue-500/15 ring-1 ring-inset ring-blue-500/30' : 'hover:bg-ink/5'}`}
+                        title={isSelected ? 'Click to deselect' : 'Click to highlight in churn cohort panel'}
+                      >
+                        <td className="px-3 py-2 font-mono text-xs">{c.date}</td>
+                        <td className="px-3 py-2">{c.total}</td>
+                        <td className="px-3 py-2">{c.activeNow}</td>
+                        <td className="px-3 py-2">{c.ageDays}</td>
+                        <td className={`px-3 py-2 font-semibold ${rateColor(c.retentionRate)}`}>{c.retentionRate}%</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -5501,7 +5518,7 @@ function churnRateColor(rate: number): string {
   return 'text-red-500';
 }
 
-function ChurnCohortPanel({ token }: { token: string }) {
+function ChurnCohortPanel({ token, selectedCohortDate, onSelectCohortDate }: { token: string; selectedCohortDate: string | null; onSelectCohortDate: (date: string | null) => void }) {
   const [days, setDays] = useState('90');
   const [plan, setPlan] = useState('');
   const [loading, setLoading] = useState(false);
@@ -5550,7 +5567,15 @@ function ChurnCohortPanel({ token }: { token: string }) {
         Per-cohort churn: for each issuance-date cohort, how many licenses churned
         (ever) and how quickly (within 30/60/90 days of issuance).
         Complements cohort retention — retention shows who stayed, this shows who left and when.
+        Click any cohort row to cross-highlight the same date in the cohort retention panel.
       </p>
+      {selectedCohortDate && (
+        <div className="flex items-center gap-2 mb-3 text-xs text-blue-400">
+          <span className="inline-block w-2 h-2 rounded-full bg-blue-400" />
+          Cohort <span className="font-mono">{selectedCohortDate}</span> selected
+          <button type="button" onClick={() => onSelectCohortDate(null)} className="text-ink/40 hover:text-ink/70 ml-1">✕</button>
+        </div>
+      )}
       <form onSubmit={load} className="card space-y-3">
         <Field label="Window (days)">
           <input
@@ -5600,18 +5625,26 @@ function ChurnCohortPanel({ token }: { token: string }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {result.cohorts.map(c => (
-                    <tr key={c.date} className="border-b border-ink/5 hover:bg-ink/5">
-                      <td className="py-1.5 pr-3 font-mono text-xs">{c.date}</td>
-                      <td className="py-1.5 pr-3">{c.total}</td>
-                      <td className="py-1.5 pr-3">{c.churned}</td>
-                      <td className={`py-1.5 pr-3 font-semibold ${churnRateColor(c.churnRate)}`}>{c.churnRate}%</td>
-                      <td className="py-1.5 pr-3">{c.churnedWithin30d}</td>
-                      <td className="py-1.5 pr-3">{c.churnedWithin60d}</td>
-                      <td className="py-1.5 pr-3">{c.churnedWithin90d}</td>
-                      <td className="py-1.5 text-ink/50">{c.ageDays}</td>
-                    </tr>
-                  ))}
+                  {result.cohorts.map(c => {
+                    const isSelected = c.date === selectedCohortDate;
+                    return (
+                      <tr
+                        key={c.date}
+                        onClick={() => onSelectCohortDate(isSelected ? null : c.date)}
+                        className={`border-b border-ink/5 cursor-pointer transition-colors ${isSelected ? 'bg-blue-500/15 ring-1 ring-inset ring-blue-500/30' : 'hover:bg-ink/5'}`}
+                        title={isSelected ? 'Click to deselect' : 'Click to highlight in cohort retention panel'}
+                      >
+                        <td className="py-1.5 pr-3 font-mono text-xs">{c.date}</td>
+                        <td className="py-1.5 pr-3">{c.total}</td>
+                        <td className="py-1.5 pr-3">{c.churned}</td>
+                        <td className={`py-1.5 pr-3 font-semibold ${churnRateColor(c.churnRate)}`}>{c.churnRate}%</td>
+                        <td className="py-1.5 pr-3">{c.churnedWithin30d}</td>
+                        <td className="py-1.5 pr-3">{c.churnedWithin60d}</td>
+                        <td className="py-1.5 pr-3">{c.churnedWithin90d}</td>
+                        <td className="py-1.5 text-ink/50">{c.ageDays}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
