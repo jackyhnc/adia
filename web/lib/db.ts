@@ -1084,3 +1084,96 @@ export function churnCohort(days: number, plan?: string): ChurnCohortResult {
     ...(plan ? { plan } : {}),
   };
 }
+
+export type TimeToChurnBucket = {
+  label: string;
+  minDays: number;
+  maxDays: number | null;
+  count: number;
+  pct: number;
+};
+
+export type TimeToChurnResult = {
+  buckets: TimeToChurnBucket[];
+  totalChurned: number;
+  medianDays: number | null;
+  meanDays: number | null;
+  windowDays: number;
+  plan?: string;
+};
+
+const TIME_TO_CHURN_BUCKETS: { label: string; minDays: number; maxDays: number | null }[] = [
+  { label: '0-7d',   minDays: 0,  maxDays: 7 },
+  { label: '8-30d',  minDays: 8,  maxDays: 30 },
+  { label: '31-90d', minDays: 31, maxDays: 90 },
+  { label: '91d+',   minDays: 91, maxDays: null },
+];
+
+// Returns a histogram of days from license issuance to the first churn event,
+// bucketed into four life-stage bands plus median/mean summary stats.
+export function timeToChurn(days: number, plan?: string): TimeToChurnResult {
+  const conditions: string[] = [`l.issued_at >= date('now', '-' || ? || ' days')`];
+  const params: unknown[] = [days];
+  if (plan) { conditions.push('l.plan = ?'); params.push(plan); }
+  const where = conditions.join(' AND ');
+
+  const rows = (db()
+    .prepare(`
+      SELECT
+        CAST(julianday(date(fc.event_date)) - julianday(date(l.issued_at)) AS INTEGER) AS days_to_churn
+      FROM licenses l
+      INNER JOIN (
+        SELECT license_key, MIN(date(created_at)) AS event_date
+        FROM audit_log
+        WHERE action = 'revoke'
+          OR (action = 'set_status' AND json_extract(detail, '$.status') IN ('canceled', 'expired', 'past_due'))
+        GROUP BY license_key
+      ) fc ON fc.license_key = l.key
+      WHERE ${where}
+    `)
+    .all as (...a: unknown[]) => any[])(...params);
+
+  const allDays: number[] = rows
+    .map((r: any) => r.days_to_churn as number)
+    .filter((d: number) => d >= 0);
+  const totalChurned = allDays.length;
+
+  const counts = new Array<number>(TIME_TO_CHURN_BUCKETS.length).fill(0);
+  for (const d of allDays) {
+    for (let i = 0; i < TIME_TO_CHURN_BUCKETS.length; i++) {
+      const b = TIME_TO_CHURN_BUCKETS[i]!;
+      if (d >= b.minDays && (b.maxDays === null || d <= b.maxDays)) {
+        counts[i]!++;
+        break;
+      }
+    }
+  }
+
+  const buckets: TimeToChurnBucket[] = TIME_TO_CHURN_BUCKETS.map((b, i) => ({
+    label: b.label,
+    minDays: b.minDays,
+    maxDays: b.maxDays,
+    count: counts[i]!,
+    pct: totalChurned > 0 ? Math.round((counts[i]! / totalChurned) * 1000) / 10 : 0,
+  }));
+
+  let medianDays: number | null = null;
+  let meanDays: number | null = null;
+  if (totalChurned > 0) {
+    const sorted = [...allDays].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    medianDays = sorted.length % 2 === 0
+      ? Math.round(((sorted[mid - 1]! + sorted[mid]!) / 2) * 10) / 10
+      : sorted[mid]!;
+    meanDays = Math.round((allDays.reduce((s, d) => s + d, 0) / totalChurned) * 10) / 10;
+  }
+
+  return {
+    buckets,
+    totalChurned,
+    medianDays,
+    meanDays,
+    windowDays: days,
+    ...(plan ? { plan } : {}),
+  };
+}

@@ -135,6 +135,9 @@ export default function Admin() {
       <CollapsibleSection title="Churn cohort breakdown">
         <ChurnCohortPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Time-to-churn distribution">
+        <TimeToChurnPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Revenue (MRR / ARR)">
         <RevenueMRRPanel token={token} />
       </CollapsibleSection>
@@ -5444,6 +5447,130 @@ function ChurnCohortPanel({ token }: { token: string }) {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+type TimeToChurnBucket = {
+  label: string;
+  minDays: number;
+  maxDays: number | null;
+  count: number;
+  pct: number;
+};
+
+type TimeToChurnResult = {
+  buckets: TimeToChurnBucket[];
+  totalChurned: number;
+  medianDays: number | null;
+  meanDays: number | null;
+  windowDays: number;
+  plan?: string;
+};
+
+function TimeToChurnPanel({ token }: { token: string }) {
+  const [days, setDays] = useState('365');
+  const [plan, setPlan] = useState('');
+  const [result, setResult] = useState<TimeToChurnResult | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function load(e: React.FormEvent) {
+    e.preventDefault();
+    if (!token) { setError('Paste admin token above first.'); return; }
+    setLoading(true);
+    setError('');
+    setResult(null);
+    try {
+      const params = new URLSearchParams({ days });
+      if (plan) params.set('plan', plan);
+      const res = await fetch(`/api/admin/time-to-churn?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const maxCount = result ? Math.max(...result.buckets.map(b => b.count), 1) : 1;
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Distribution of how quickly churned licenses dropped off, from issuance to first churn event.
+        Useful for diagnosing onboarding (0-7d) vs. long-term retention (91d+) issues.
+      </p>
+      <form onSubmit={load} className="card space-y-3">
+        <div className="flex gap-3 flex-wrap">
+          <Field label="Look-back window (days)">
+            <input
+              type="number"
+              min={1}
+              max={365}
+              value={days}
+              onChange={e => setDays(e.target.value)}
+              className="input w-28"
+            />
+          </Field>
+          <Field label="Plan (optional)">
+            <select value={plan} onChange={e => setPlan(e.target.value)} className="input">
+              <option value="">All plans</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+              <option value="lifetime">Lifetime</option>
+            </select>
+          </Field>
+        </div>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Loading…' : 'Load distribution'}
+        </button>
+      </form>
+      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+      {result && (
+        <div className="mt-4 space-y-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: 'Total churned', value: String(result.totalChurned) },
+              { label: 'Window', value: `${result.windowDays}d${result.plan ? ` · ${result.plan}` : ''}` },
+              { label: 'Median days', value: result.medianDays !== null ? `${result.medianDays}d` : '—' },
+              { label: 'Mean days', value: result.meanDays !== null ? `${result.meanDays}d` : '—' },
+            ].map(({ label, value }) => (
+              <div key={label} className="bg-ink/5 rounded-lg p-3">
+                <p className="text-xs text-ink/50 mb-1">{label}</p>
+                <p className="text-lg font-semibold">{value}</p>
+              </div>
+            ))}
+          </div>
+          {result.totalChurned === 0 ? (
+            <p className="text-sm text-ink/40">No churn events in this window.</p>
+          ) : (
+            <div className="space-y-2">
+              {result.buckets.map(b => (
+                <div key={b.label} className="flex items-center gap-3">
+                  <span className="text-xs font-mono w-14 text-ink/60 shrink-0">{b.label}</span>
+                  <div className="flex-1 bg-ink/10 rounded-full h-5 overflow-hidden">
+                    <div
+                      className="h-full bg-red-400 rounded-full transition-all"
+                      style={{ width: `${(b.count / maxCount) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-xs w-20 text-right shrink-0">
+                    {b.count} <span className="text-ink/40">({b.pct}%)</span>
+                  </span>
+                </div>
+              ))}
             </div>
           )}
         </div>

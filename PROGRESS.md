@@ -1,5 +1,54 @@
 # Adia — Build Progress
 
+## Run 291 — 2026-07-09T09:10:00Z — GET /api/admin/time-to-churn + TimeToChurnPanel + 41 tests (1131 → 1172)
+
+### Shipped
+
+**`web/lib/db.ts` — timeToChurn():**
+- Added `TimeToChurnBucket`, `TimeToChurnResult` types.
+- Defined `TIME_TO_CHURN_BUCKETS` constant: 4 life-stage bands (0-7d / 8-30d / 31-90d / 91d+).
+- `timeToChurn(days, plan?)` — SQLite: INNER JOIN licenses with earliest churn event per license (MIN date of revoke or set_status to canceled/expired/past_due); computes days_to_churn as julianday diff; buckets counts; computes medianDays (rounded) and meanDays (rounded).
+
+**`web/lib/db-pg.ts` — timeToChurnPg():**
+- Mirror using `EXTRACT(day FROM fc.event_date::date - l.issued_at::date)::int` for day-diff, `(detail::jsonb)->>'status'` for Postgres JSON, `(planVal::text IS NULL OR l.plan = planVal::text)` for optional plan filter.
+
+**`web/lib/store.ts` — timeToChurn() dispatch:**
+- Re-exports `TimeToChurnResult`, `TimeToChurnBucket` types.
+- `timeToChurn(days, plan?)` dispatches to Postgres or SQLite variant.
+
+**`web/app/api/admin/time-to-churn/route.ts` — new endpoint:**
+- `GET /api/admin/time-to-churn` — returns `TimeToChurnResult` JSON.
+- `?days=` — integer 1–365, default 365.
+- `?plan=monthly|yearly|lifetime` — optional filter.
+- `adminGuard` auth (Bearer token or `?token=`).
+
+**`web/app/admin/page.tsx` — TimeToChurnPanel:**
+- `TimeToChurnBucket`, `TimeToChurnResult` local types.
+- `TimeToChurnPanel` with days + plan filter form, 4-tile summary row (totalChurned, window, medianDays, meanDays), horizontal bar chart scaled to max bucket count with pct labels, "No churn events" empty state.
+- `CollapsibleSection title="Time-to-churn distribution"` inserted between "Churn cohort breakdown" and "Revenue (MRR / ARR)".
+
+**`web/__tests__/admin-time-to-churn.test.ts` — 41 tests:**
+- Auth: 401 no-token, 401 wrong-token, 200 ?token=.
+- Validation: days=0, days=366, non-integer, fractional, invalid plan.
+- Response shape: 200 empty DB, four buckets, correct labels, required fields, last bucket maxDays=null, default days=365, days=30, days=365, plan field present/absent.
+- Core behavior: revoke counted, set_status canceled/expired/past_due counted, set_status active NOT counted, issued outside window excluded, boundary inclusion, first-event-only (multi-event per license), day-0/7/8/30/31/91 bucket boundary tests.
+- Pct + stats: pct=100 single bucket, pct=50 split, medianDays odd count, medianDays even count (average), meanDays, null when no events.
+- Plan filter: monthly excludes yearly, yearly-only, lifetime=0 when no lifetime, no filter = all.
+
+### Tests
+1172 passed (up from 1131). 47 test files green.
+
+### Blocked
+Nothing blocked.
+
+### Next agent should pick up
+- Consider rate-limit tests for time-to-churn (429 on 21st req/60s) — pattern from `admin-export-licenses.test.ts`.
+- Consider `bulk:true` audit-log flag audit: verify that bulk-change-email and bulk-note set bulk=true (currently only revoke/reactivate/set-status/resend-license/deactivate-all/change-email/change-plan set it).
+- Consider linking ChurnCohortPanel ↔ CohortRetentionPanel: clicking a cohort row in one highlights the same cohort in the other.
+- Consider a "dormant churn" view: licenses that had at least one machine activation but then churned — signals engaged users who left vs. never-started churners.
+
+---
+
 ## Run 290 — 2026-07-09T06:15:00Z — GET /api/admin/churn-cohort + ChurnCohortPanel + 42 tests (1089 → 1131)
 
 ### Shipped

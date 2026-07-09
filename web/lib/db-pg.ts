@@ -972,3 +972,75 @@ export async function churnCohortPg(days: number, plan?: string): Promise<ChurnC
     ...(plan ? { plan } : {}),
   };
 }
+
+import type { TimeToChurnResult } from './db';
+
+const TTCBuckets = [
+  { label: '0-7d',   minDays: 0,  maxDays: 7    as number | null },
+  { label: '8-30d',  minDays: 8,  maxDays: 30   as number | null },
+  { label: '31-90d', minDays: 31, maxDays: 90   as number | null },
+  { label: '91d+',   minDays: 91, maxDays: null as number | null },
+];
+
+export async function timeToChurnPg(days: number, plan?: string): Promise<TimeToChurnResult> {
+  const planVal = plan ?? null;
+
+  const result = await sql<any>`
+    SELECT
+      EXTRACT(day FROM fc.event_date::date - l.issued_at::date)::int AS days_to_churn
+    FROM licenses l
+    INNER JOIN (
+      SELECT license_key, MIN(created_at::date) AS event_date
+      FROM audit_log
+      WHERE action = 'revoke'
+        OR (action = 'set_status' AND (detail::jsonb)->>'status' IN ('canceled', 'expired', 'past_due'))
+      GROUP BY license_key
+    ) fc ON fc.license_key = l.key
+    WHERE l.issued_at >= NOW() - (${days} * INTERVAL '1 day')
+      AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
+  `;
+
+  const allDays: number[] = result.rows
+    .map((r: any) => r.days_to_churn as number)
+    .filter((d: number) => d >= 0);
+  const totalChurned = allDays.length;
+
+  const counts = new Array<number>(TTCBuckets.length).fill(0);
+  for (const d of allDays) {
+    for (let i = 0; i < TTCBuckets.length; i++) {
+      const b = TTCBuckets[i]!;
+      if (d >= b.minDays && (b.maxDays === null || d <= b.maxDays)) {
+        counts[i]!++;
+        break;
+      }
+    }
+  }
+
+  const buckets = TTCBuckets.map((b, i) => ({
+    label: b.label,
+    minDays: b.minDays,
+    maxDays: b.maxDays,
+    count: counts[i]!,
+    pct: totalChurned > 0 ? Math.round((counts[i]! / totalChurned) * 1000) / 10 : 0,
+  }));
+
+  let medianDays: number | null = null;
+  let meanDays: number | null = null;
+  if (totalChurned > 0) {
+    const sorted = [...allDays].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    medianDays = sorted.length % 2 === 0
+      ? Math.round(((sorted[mid - 1]! + sorted[mid]!) / 2) * 10) / 10
+      : sorted[mid]!;
+    meanDays = Math.round((allDays.reduce((s, d) => s + d, 0) / totalChurned) * 10) / 10;
+  }
+
+  return {
+    buckets,
+    totalChurned,
+    medianDays,
+    meanDays,
+    windowDays: days,
+    ...(plan ? { plan } : {}),
+  };
+}

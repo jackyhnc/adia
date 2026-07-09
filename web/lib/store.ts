@@ -368,3 +368,13 @@ export async function churnCohort(days: number, plan?: string): Promise<import('
   }
   return sqlite.churnCohort(days, plan);
 }
+
+export type { TimeToChurnResult, TimeToChurnBucket } from './db';
+
+export async function timeToChurn(days: number, plan?: string): Promise<import('./db').TimeToChurnResult> {
+  if (usePg) {
+    const { timeToChurnPg } = await import('./db-pg');
+    return timeToChurnPg(days, plan);
+  }
+  return sqlite.timeToChurn(days, plan);
+}
