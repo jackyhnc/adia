@@ -1,5 +1,53 @@
 # Adia — Build Progress
 
+## Run 287 — 2026-07-09T02:08:00Z — GET /api/admin/activation-timeline + ActivationTimelinePanel + 30 tests (947 → 977)
+
+### Shipped
+
+**`web/lib/db.ts` — activationTimeline():**
+- Added `TimelineDay = { date: string; count: number }` type.
+- `activationTimeline(days, plan?)` — SQLite query: groups `activations.first_seen` by `date()` and INNER JOINs licenses for plan filter; fills the full `days`-day array with 0 for missing dates; oldest day is index 0.
+
+**`web/lib/db-pg.ts` — activationTimelinePg():**
+- Mirror using `to_char(a.first_seen::date, 'YYYY-MM-DD')` + `NOW() - (days * INTERVAL '1 day')` window.
+- Same gap-fill logic as SQLite variant.
+- Imports `TimelineDay` from `./db`.
+
+**`web/lib/store.ts` — activationTimeline() dispatch:**
+- Re-exports `TimelineDay` type.
+- `activationTimeline(days, plan?)` — dispatches to Postgres or SQLite variant.
+
+**`web/app/api/admin/activation-timeline/route.ts` — new endpoint:**
+- `GET /api/admin/activation-timeline` — returns `{ buckets[days], total, days, plan? }`.
+- `?days=` — integer 1–365, default 30.
+- `?plan=monthly|yearly|lifetime` — optional filter.
+- `adminGuard` auth (Bearer token or `?token=`).
+- `total` = sum of all bucket counts.
+
+**`web/app/admin/page.tsx` — ActivationTimelinePanel:**
+- `CollapsibleSection title="Activation timeline"` inserted between "Activation heatmap" and "Revenue (MRR / ARR)".
+- `ActivationTimelinePanel`: form (days input + plan select) + emerald bar chart; bar height + opacity scaled to max-count; date labels shown when days ≤ 60 (rotated 45°); hover title shows exact date + count; "0 activations" empty-state message.
+
+**`web/__tests__/admin-activation-timeline.test.ts` — 30 tests:**
+- Auth: 401 no-token, 401 wrong-token, 200 ?token=.
+- Validation: days=0, days=366, non-integer, fractional, invalid plan.
+- Response shape: 200 empty DB, exactly `days` buckets, 30 default, bucket shape, ascending date order, plan absent/present, days=1, days=365, all-zero empty DB.
+- Core behavior: correct date bucket, zero-count gaps, multi-activation same day, multi-day spread, exclude older than window, include within window, total = sum of buckets.
+- Plan filter: monthly-only, lifetime=0 when monthly-only, yearly excludes monthly, all plans 200, no filter returns all.
+
+### Tests
+977 passed (up from 947). 41 test files green.
+
+### Blocked
+Nothing blocked.
+
+### Next agent should pick up
+- Consider adding cohort retention metrics: % of licenses still active N days after issuance (30/60/90d cohorts).
+- Consider rate-limit test for activation-timeline (429 on 21st req/60s) — pattern from `admin-export-licenses.test.ts`.
+- Consider `bulk:true` audit-log flag for `bulk-change-plan`, `bulk-extend`, `bulk-set-expiry` — currently only revoke/reactivate/set-status/resend-license/deactivate-all/change-email set it.
+
+---
+
 ## Run 286 — 2026-07-09T01:10:00Z — GET /api/admin/revenue + RevenueMRRPanel + 25 tests (922 → 947)
 
 ### Shipped

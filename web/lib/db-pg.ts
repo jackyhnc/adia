@@ -766,3 +766,28 @@ export async function revenueMetricsPg(): Promise<RevenueMetrics> {
     },
   };
 }
+
+import type { TimelineDay } from './db';
+
+export async function activationTimelinePg(days: number, plan?: string): Promise<TimelineDay[]> {
+  await ensureSchema();
+  const planVal = plan ?? null;
+  const result = await sql<any>`
+    SELECT to_char(a.first_seen::date, 'YYYY-MM-DD') AS date, COUNT(*)::int AS count
+    FROM activations a
+    INNER JOIN licenses l ON l.key = a.license_key
+    WHERE a.first_seen >= NOW() - (${days} * INTERVAL '1 day')
+      AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
+    GROUP BY a.first_seen::date
+    ORDER BY a.first_seen::date
+  `;
+  const map = new Map<string, number>(result.rows.map((r: any) => [r.date as string, r.count as number]));
+  const output: TimelineDay[] = [];
+  const now = Date.now();
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(now - i * 24 * 60 * 60 * 1000);
+    const dateStr = d.toISOString().slice(0, 10);
+    output.push({ date: dateStr, count: map.get(dateStr) ?? 0 });
+  }
+  return output;
+}

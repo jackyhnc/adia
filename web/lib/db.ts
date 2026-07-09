@@ -797,3 +797,34 @@ export function revenueMetrics(): RevenueMetrics {
     },
   };
 }
+
+export type TimelineDay = { date: string; count: number };
+
+// Returns an array of daily activation counts over the last `days` days.
+// Each entry: { date: "YYYY-MM-DD", count: N }. Days with no activations
+// are included with count=0. Oldest day is index 0.
+export function activationTimeline(days: number, plan?: string): TimelineDay[] {
+  const conditions: string[] = [`a.first_seen >= date('now', '-' || ? || ' days')`];
+  const params: unknown[] = [days];
+  if (plan) { conditions.push('l.plan = ?'); params.push(plan); }
+  const where = `WHERE ${conditions.join(' AND ')}`;
+  const rows = (db()
+    .prepare(`
+      SELECT date(a.first_seen) AS date, COUNT(*) AS count
+      FROM activations a
+      INNER JOIN licenses l ON l.key = a.license_key
+      ${where}
+      GROUP BY date
+      ORDER BY date
+    `)
+    .all as (...a: unknown[]) => any[])(...params);
+  const map = new Map<string, number>(rows.map((r: any) => [r.date as string, r.count as number]));
+  const result: TimelineDay[] = [];
+  const now = Date.now();
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(now - i * 24 * 60 * 60 * 1000);
+    const dateStr = d.toISOString().slice(0, 10);
+    result.push({ date: dateStr, count: map.get(dateStr) ?? 0 });
+  }
+  return result;
+}

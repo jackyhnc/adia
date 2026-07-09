@@ -123,6 +123,9 @@ export default function Admin() {
       <CollapsibleSection title="Activation heatmap">
         <UsageHeatmapPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Activation timeline">
+        <ActivationTimelinePanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Revenue (MRR / ARR)">
         <RevenueMRRPanel token={token} />
       </CollapsibleSection>
@@ -4909,6 +4912,131 @@ function ExpiringSoonPanel({ token }: { token: string }) {
 }
 
 // ─── Revenue (MRR / ARR) ─────────────────────────────────────────────────────
+
+// ─── Activation timeline ──────────────────────────────────────────────────────
+
+type TimelineDay = { date: string; count: number };
+
+function ActivationTimelinePanel({ token }: { token: string }) {
+  const [days, setDays] = useState('30');
+  const [planFilter, setPlanFilter] = useState('');
+  const [result, setResult] = useState<{ buckets: TimelineDay[]; total: number; days: number; plan?: string } | null>(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function load(e: React.FormEvent) {
+    e.preventDefault();
+    if (!token) { setError('Paste admin token above first.'); return; }
+    setLoading(true);
+    setError('');
+    setResult(null);
+    try {
+      const params = new URLSearchParams({ days });
+      if (planFilter) params.set('plan', planFilter);
+      const res = await fetch(`/api/admin/activation-timeline?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+      } else {
+        setResult(await res.json());
+      }
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const maxCount = result ? Math.max(1, ...result.buckets.map(b => b.count)) : 1;
+
+  function shortDate(iso: string): string {
+    // "2024-07-09" → "7/9"
+    const [, m, d] = iso.split('-');
+    return `${parseInt(m)}/${parseInt(d)}`;
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Daily new-activation counts over the last N days. Useful for spotting
+        growth trends, launch spikes, and day-of-week patterns.
+      </p>
+      <form onSubmit={load} className="card space-y-3">
+        <div className="flex gap-3 flex-wrap">
+          <Field label="Window (days)">
+            <input
+              type="number"
+              min="1"
+              max="365"
+              value={days}
+              onChange={(e) => setDays(e.target.value)}
+              className="input w-20"
+            />
+          </Field>
+          <Field label="Plan (optional)">
+            <select
+              value={planFilter}
+              onChange={(e) => setPlanFilter(e.target.value)}
+              className="input"
+            >
+              <option value="">All</option>
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+              <option value="lifetime">Lifetime</option>
+            </select>
+          </Field>
+        </div>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Loading…' : 'Load timeline'}
+        </button>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {result && (
+        <div className="mt-4 space-y-2">
+          <p className="text-sm font-semibold">
+            {result.total} activation{result.total !== 1 ? 's' : ''} in the last {result.days} day{result.days !== 1 ? 's' : ''}
+            {result.plan ? ` (${result.plan})` : ''}
+          </p>
+          {result.total === 0 ? (
+            <p className="text-sm text-ink/50">No activations in this window.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <div className="flex gap-px items-end min-w-max">
+                {result.buckets.map(b => {
+                  const pct = Math.round((b.count / maxCount) * 100);
+                  const height = Math.max(4, Math.round((b.count / maxCount) * 80));
+                  return (
+                    <div
+                      key={b.date}
+                      className="flex flex-col items-center gap-1"
+                      title={`${b.date}: ${b.count} activation${b.count !== 1 ? 's' : ''}`}
+                    >
+                      <span className="text-[9px] text-ink/60 font-mono leading-none">{b.count > 0 ? b.count : ''}</span>
+                      <div
+                        className="w-5 rounded-sm bg-emerald-500"
+                        style={{ height: `${height}px`, opacity: b.count === 0 ? 0.1 : 0.3 + 0.7 * (pct / 100) }}
+                      />
+                      {result.days <= 60 && (
+                        <span className="text-[8px] text-ink/40 font-mono leading-none rotate-45 origin-top-left translate-y-3">
+                          {shortDate(b.date)}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="text-xs text-ink/40 mt-6">Dates in UTC. Hover a bar for exact count.</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 type PlanRevenueRow = { active: number; pastDue: number; new30d: number };
 type RevenueMetrics = {

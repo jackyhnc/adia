@@ -313,6 +313,16 @@ export async function revenueMetrics(): Promise<import('./db').RevenueMetrics> {
   return sqlite.revenueMetrics();
 }
 
+export type { TimelineDay } from './db';
+
+export async function activationTimeline(days: number, plan?: string): Promise<import('./db').TimelineDay[]> {
+  if (usePg) {
+    const { activationTimelinePg } = await import('./db-pg');
+    return activationTimelinePg(days, plan);
+  }
+  return sqlite.activationTimeline(days, plan);
+}
+
 export async function countNotifyHistory(email: string): Promise<number> {
   if (usePg) {
     const { countNotifyHistoryPg } = await import('./db-pg');
