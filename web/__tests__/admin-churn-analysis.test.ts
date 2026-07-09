@@ -405,3 +405,76 @@ describe('GET /api/admin/churn-analysis — plan filter', () => {
     expect(json.totalChurned).toBe(3);
   });
 });
+
+// ─── Rate limit ───────────────────────────────────────────────────────────────
+
+describe('GET /api/admin/churn-analysis — rate limit', () => {
+  it('returns 429 after 20 requests from the same IP', async () => {
+    const { GET } = await import('@/app/api/admin/churn-analysis/route');
+    const makeReq = () =>
+      new NextRequest('http://localhost/api/admin/churn-analysis', {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer test-admin-token',
+          'x-forwarded-for': '10.91.1.1',
+        },
+      });
+
+    for (let i = 0; i < 20; i++) {
+      const res = await GET(makeReq());
+      expect(res.status).toBe(200);
+    }
+
+    const res = await GET(makeReq());
+    expect(res.status).toBe(429);
+    const body = await res.json();
+    expect(body.error).toMatch(/too many requests/i);
+  });
+
+  it('429 response includes Retry-After header', async () => {
+    const { GET } = await import('@/app/api/admin/churn-analysis/route');
+    const makeReq = () =>
+      new NextRequest('http://localhost/api/admin/churn-analysis', {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer test-admin-token',
+          'x-forwarded-for': '10.91.1.2',
+        },
+      });
+
+    for (let i = 0; i < 20; i++) {
+      await GET(makeReq());
+    }
+
+    const res = await GET(makeReq());
+    expect(res.status).toBe(429);
+    expect(res.headers.get('Retry-After')).toBeTruthy();
+  });
+
+  it('rate limit fires before auth check — wrong token still gets 429 when bucket exhausted', async () => {
+    const { GET } = await import('@/app/api/admin/churn-analysis/route');
+    const goodReq = () =>
+      new NextRequest('http://localhost/api/admin/churn-analysis', {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer test-admin-token',
+          'x-forwarded-for': '10.91.1.3',
+        },
+      });
+    const badReq = () =>
+      new NextRequest('http://localhost/api/admin/churn-analysis', {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer wrong-token',
+          'x-forwarded-for': '10.91.1.3',
+        },
+      });
+
+    for (let i = 0; i < 20; i++) {
+      await GET(goodReq());
+    }
+
+    const res = await GET(badReq());
+    expect(res.status).toBe(429);
+  });
+});

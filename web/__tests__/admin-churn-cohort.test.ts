@@ -559,3 +559,76 @@ describe('GET /api/admin/churn-cohort — plan filter', () => {
     expect(total).toBe(3);
   });
 });
+
+// ─── Rate limit ───────────────────────────────────────────────────────────────
+
+describe('GET /api/admin/churn-cohort — rate limit', () => {
+  it('returns 429 after 20 requests from the same IP', async () => {
+    const { GET } = await import('@/app/api/admin/churn-cohort/route');
+    const makeReq = () =>
+      new NextRequest('http://localhost/api/admin/churn-cohort', {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer test-admin-token',
+          'x-forwarded-for': '10.91.6.1',
+        },
+      });
+
+    for (let i = 0; i < 20; i++) {
+      const res = await GET(makeReq());
+      expect(res.status).toBe(200);
+    }
+
+    const res = await GET(makeReq());
+    expect(res.status).toBe(429);
+    const body = await res.json();
+    expect(body.error).toMatch(/too many requests/i);
+  });
+
+  it('429 response includes Retry-After header', async () => {
+    const { GET } = await import('@/app/api/admin/churn-cohort/route');
+    const makeReq = () =>
+      new NextRequest('http://localhost/api/admin/churn-cohort', {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer test-admin-token',
+          'x-forwarded-for': '10.91.6.2',
+        },
+      });
+
+    for (let i = 0; i < 20; i++) {
+      await GET(makeReq());
+    }
+
+    const res = await GET(makeReq());
+    expect(res.status).toBe(429);
+    expect(res.headers.get('Retry-After')).toBeTruthy();
+  });
+
+  it('rate limit fires before auth check — wrong token still gets 429 when bucket exhausted', async () => {
+    const { GET } = await import('@/app/api/admin/churn-cohort/route');
+    const goodReq = () =>
+      new NextRequest('http://localhost/api/admin/churn-cohort', {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer test-admin-token',
+          'x-forwarded-for': '10.91.6.3',
+        },
+      });
+    const badReq = () =>
+      new NextRequest('http://localhost/api/admin/churn-cohort', {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer wrong-token',
+          'x-forwarded-for': '10.91.6.3',
+        },
+      });
+
+    for (let i = 0; i < 20; i++) {
+      await GET(goodReq());
+    }
+
+    const res = await GET(badReq());
+    expect(res.status).toBe(429);
+  });
+});
