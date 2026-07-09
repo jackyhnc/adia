@@ -76,5 +76,47 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Inbox at zero — all urgent emails replied to or archived",
             preferredDuration: 25 * 60
         ),
+        SuggestedTemplate(
+            icon: "person.wave.2",
+            task: "Prepare my presentation slides",
+            successCriteria: "Slide deck complete with all sections filled in and a full run-through done",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "mic",
+            task: "Record a podcast episode",
+            successCriteria: "Episode fully recorded, rough edit done, and exported audio file visible in Finder or editor",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "paintbrush",
+            task: "Design a mockup in Figma",
+            successCriteria: "Mockup covers all key screens or states for the target flow and is ready for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "briefcase",
+            task: "Prep for my upcoming interview",
+            successCriteria: "Practiced answers to the top 10 questions and reviewed the company and role out loud",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "pencil.and.outline",
+            task: "Write a blog post",
+            successCriteria: "Post drafted, revised for clarity, and either published or saved as a final draft ready to publish",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.richtext",
+            task: "Work on my thesis or research paper",
+            successCriteria: "At least one full section drafted or revised with citations in place",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "figure.run",
+            task: "Complete my workout",
+            successCriteria: "All planned exercises finished and logged in workout app or journal",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

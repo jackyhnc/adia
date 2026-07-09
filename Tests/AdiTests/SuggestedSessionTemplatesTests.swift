@@ -65,4 +65,69 @@ struct SuggestedSessionTemplatesTests {
         let uniqueTasks = Set(tasks)
         #expect(tasks.count == uniqueTasks.count, "catalog has duplicate task texts")
     }
+
+    @Test func catalogHasAtLeastFifteenTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 15,
+                "catalog should contain at least 15 templates for broad coverage")
+    }
+
+    @Test func catalogContainsPresentationTemplate() {
+        let hasPresentation = SuggestedSessionTemplates.all.contains {
+            $0.task.lowercased().contains("presentation") || $0.task.lowercased().contains("slides")
+        }
+        #expect(hasPresentation, "catalog should contain a presentation/slides template")
+    }
+
+    @Test func catalogContainsPodcastTemplate() {
+        let hasPodcast = SuggestedSessionTemplates.all.contains {
+            $0.task.lowercased().contains("podcast")
+        }
+        #expect(hasPodcast, "catalog should contain a podcast recording template")
+    }
+
+    @Test func catalogContainsDesignTemplate() {
+        let hasDesign = SuggestedSessionTemplates.all.contains {
+            let t = $0.task.lowercased()
+            return t.contains("design") || t.contains("mockup") || t.contains("figma")
+        }
+        #expect(hasDesign, "catalog should contain a design/mockup template")
+    }
+
+    @Test func catalogContainsInterviewTemplate() {
+        let hasInterview = SuggestedSessionTemplates.all.contains {
+            $0.task.lowercased().contains("interview")
+        }
+        #expect(hasInterview, "catalog should contain an interview-prep template")
+    }
+
+    @Test func catalogContainsBlogOrWritingTemplate() {
+        let hasBlog = SuggestedSessionTemplates.all.contains {
+            let t = $0.task.lowercased()
+            return t.contains("blog") || t.contains("post") || t.contains("newsletter")
+        }
+        #expect(hasBlog, "catalog should contain a blog-post or writing template")
+    }
+
+    @Test func catalogContainsThesisOrResearchTemplate() {
+        let hasThesis = SuggestedSessionTemplates.all.contains {
+            let t = $0.task.lowercased()
+            return t.contains("thesis") || t.contains("research") || t.contains("paper")
+        }
+        #expect(hasThesis, "catalog should contain a thesis or research paper template")
+    }
+
+    @Test func catalogContainsFitnessOrWorkoutTemplate() {
+        let hasFitness = SuggestedSessionTemplates.all.contains {
+            let t = $0.task.lowercased()
+            return t.contains("workout") || t.contains("exercise") || t.contains("gym") || t.contains("run")
+        }
+        #expect(hasFitness, "catalog should contain a fitness or workout template")
+    }
+
+    @Test func allTemplatesHaveValidSuccessCriteriaLength() {
+        for t in SuggestedSessionTemplates.all {
+            #expect(t.successCriteria.count >= 20,
+                    "template '\(t.task)' has suspiciously short successCriteria: '\(t.successCriteria)'")
+        }
+    }
 }
