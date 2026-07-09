@@ -175,6 +175,9 @@ export default function Admin() {
       <CollapsibleSection title="License lookup">
         <LookupPanel token={token} autoKey={autoLookupKey} onAutoKeyConsumed={() => setAutoLookupKey('')} />
       </CollapsibleSection>
+      <CollapsibleSection title="License timeline">
+        <LicenseTimelinePanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Admin note">
         <NotePanel token={token} />
       </CollapsibleSection>
@@ -3132,6 +3135,189 @@ function NotifyHistoryPanel({ token }: { token: string }) {
       )}
       {!loading && entries.length === 0 && total === 0 && email && (
         <p className="mt-3 text-sm text-ink/50">No emails sent to this address.</p>
+      )}
+    </div>
+  );
+}
+
+// ─── License timeline (full audit for one key) ───────────────────────────────
+
+function LicenseTimelinePanel({ token }: { token: string }) {
+  const [key, setKey] = useState('');
+  const [actionFilter, setActionFilter] = useState('');
+  const [sinceFilter, setSinceFilter] = useState('');
+  const [license, setLicense] = useState<License | null>(null);
+  const [entries, setEntries] = useState<AuditEntry[] | null>(null);
+  const [total, setTotal] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [currentOffset, setCurrentOffset] = useState(0);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  async function fetchPage(offset: number, append: boolean, overrides?: { key?: string; action?: string; since?: string }) {
+    if (!token) { setError('Paste admin token above first.'); return; }
+    const lookupKey = (overrides?.key ?? key).trim().toUpperCase();
+    if (!lookupKey) { setError('License key is required.'); return; }
+    if (append) setLoadingMore(true); else setLoading(true);
+    setError('');
+    try {
+      const action = overrides?.action ?? actionFilter;
+      const since = overrides?.since ?? sinceFilter;
+      const params = new URLSearchParams({ key: lookupKey, limit: '50', offset: String(offset) });
+      if (action.trim()) params.set('action', action.trim());
+      if (since.trim()) params.set('since', since.trim());
+      const res = await fetch(`/api/admin/license-timeline?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(`HTTP ${res.status}: ${body.error ?? 'unknown error'}`);
+        return;
+      }
+      const body = await res.json();
+      if (!append) setLicense(body.license ?? null);
+      setEntries(prev => append && prev ? [...prev, ...(body.entries ?? [])] : (body.entries ?? []));
+      setTotal(body.total ?? body.count ?? 0);
+      setHasMore(body.hasMore ?? false);
+      setCurrentOffset(offset + (body.entries?.length ?? 0));
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      if (append) setLoadingMore(false); else setLoading(false);
+    }
+  }
+
+  function load(e: React.FormEvent) {
+    e.preventDefault();
+    setEntries(null);
+    setLicense(null);
+    setCurrentOffset(0);
+    fetchPage(0, false);
+  }
+
+  function exportCsv() {
+    if (!token) return;
+    const lookupKey = key.trim().toUpperCase();
+    if (!lookupKey) return;
+    const params = new URLSearchParams({ key: lookupKey, format: 'csv', token: encodeURIComponent(token) });
+    if (actionFilter.trim()) params.set('action', actionFilter.trim());
+    if (sinceFilter.trim()) params.set('since', sinceFilter.trim());
+    const a = document.createElement('a');
+    a.href = `/api/admin/license-timeline?${params}`;
+    a.download = `timeline-${lookupKey}.csv`;
+    a.click();
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Full paginated audit log for a single license key — every issue, revoke, extend, change_plan, and more.
+      </p>
+      <form onSubmit={load} className="card space-y-3">
+        <div className="flex gap-3 flex-wrap">
+          <Field label="License key">
+            <input
+              value={key}
+              onChange={(e) => setKey(e.target.value)}
+              placeholder="ADIA-XXXX-XXXX-XXXX"
+              className="input font-mono"
+              required
+            />
+          </Field>
+          <Field label="Action (optional)">
+            <input
+              value={actionFilter}
+              onChange={(e) => setActionFilter(e.target.value)}
+              placeholder="e.g. revoke, extend"
+              className="input"
+            />
+          </Field>
+          <Field label="Since (optional)">
+            <input
+              type="date"
+              value={sinceFilter}
+              onChange={(e) => setSinceFilter(e.target.value)}
+              className="input"
+            />
+          </Field>
+        </div>
+        <div className="flex gap-2">
+          <button type="submit" className="btn-primary" disabled={loading}>
+            {loading ? 'Loading…' : 'Load timeline'}
+          </button>
+          <button
+            type="button"
+            className="btn-secondary text-xs px-3 py-1"
+            onClick={exportCsv}
+          >
+            Export CSV
+          </button>
+        </div>
+      </form>
+
+      {error && <p className="mt-3 text-sm text-red-500">{error}</p>}
+
+      {license && (
+        <div className="card mt-3">
+          <LicenseCard lic={license} />
+        </div>
+      )}
+
+      {entries !== null && (
+        <div className="card mt-3 space-y-2">
+          {entries.length === 0 ? (
+            <p className="text-sm text-ink/50">No audit entries found.</p>
+          ) : (
+            <>
+              <p className="text-xs text-ink/40">Showing {entries.length} of {total} entries</p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="text-left text-ink/50 border-b border-ink/10">
+                      <th className="pb-1 pr-3">When</th>
+                      <th className="pb-1 pr-3">Action</th>
+                      <th className="pb-1">Detail</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {entries.map((e) => {
+                      let detailObj: Record<string, unknown> | null = null;
+                      try { detailObj = e.detail ? JSON.parse(e.detail) : null; } catch {}
+                      return (
+                        <tr key={e.id} className="border-t border-ink/5">
+                          <td className="py-1 pr-3 font-mono text-ink/40 whitespace-nowrap">
+                            {e.createdAt.slice(0, 16).replace('T', ' ')}
+                          </td>
+                          <td className={`py-1 pr-3 font-semibold ${auditActionColor(e.action)}`}>
+                            {e.action}
+                          </td>
+                          <td className="py-1 font-mono text-ink/50 break-all">
+                            {detailObj
+                              ? Object.entries(detailObj)
+                                  .map(([k, v]) => `${k}: ${v ?? 'null'}`)
+                                  .join(' · ')
+                              : (e.detail ?? '—')}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              {hasMore && (
+                <button
+                  type="button"
+                  className="btn-secondary text-xs w-full mt-1"
+                  disabled={loadingMore}
+                  onClick={() => fetchPage(currentOffset, true)}
+                >
+                  {loadingMore ? 'Loading…' : `Load more (${total - currentOffset} remaining)`}
+                </button>
+              )}
+            </>
+          )}
+        </div>
       )}
     </div>
   );
