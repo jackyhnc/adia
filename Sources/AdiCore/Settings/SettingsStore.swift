@@ -98,6 +98,22 @@ public final class SettingsStore: ObservableObject {
         saveStreakBreakCounts()
     }
 
+    /// Total number of streak-break events recorded across all streak lengths.
+    /// 0 when the user has never broken a tracked streak.
+    public var totalStreakBreaks: Int {
+        streakBreakCountsDict.values.reduce(0, +)
+    }
+
+    /// The streak length (in days) that the user has broken most often.
+    /// When two lengths are tied, returns the longer one (more significant pattern).
+    /// nil when no breaks have been recorded.
+    public var mostBrokenStreakLength: Int? {
+        guard !streakBreakCountsDict.isEmpty else { return nil }
+        return streakBreakCountsDict
+            .max { a, b in a.value < b.value || (a.value == b.value && a.key < b.key) }?
+            .key
+    }
+
     /// How often (in minutes) the notch re-opens to remind the user to verify after
     /// their session's target duration has elapsed. Clamped to `Self.timerExpiredRearmMinuteOptions`
     /// so a corrupted default can't silently disable the reminder (e.g. by storing 0).

@@ -122,7 +122,11 @@ struct HistoryTab: View {
                         HistoryWeeklySection(stats: stats, heatmapDays: heatmapDays)
                     }
                     if let ins = insights, ins.sessionCount >= insightsMinSessions {
-                        HistoryInsightsSection(insights: ins)
+                        HistoryInsightsSection(
+                            insights: ins,
+                            totalStreakBreaks: SettingsStore.shared.totalStreakBreaks,
+                            mostBrokenStreakLength: SettingsStore.shared.mostBrokenStreakLength
+                        )
                     }
                     HistorySearchFilterBar(searchText: $searchText, completionFilter: $completionFilter)
                     if filteredRecords.isEmpty {

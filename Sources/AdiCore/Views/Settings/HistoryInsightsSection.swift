@@ -67,6 +67,10 @@ struct HistoryWeeklySection: View {
 
 struct HistoryInsightsSection: View {
     let insights: FocusInsights
+    /// Total streak-break events. 0 when never broken.
+    var totalStreakBreaks: Int = 0
+    /// The streak length (days) broken most often. nil when no breaks recorded.
+    var mostBrokenStreakLength: Int? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -108,6 +112,13 @@ struct HistoryInsightsSection: View {
                 }
                 if let pauses = insights.avgPausesPerSession, pauses > 0 {
                     insightChip(icon: "pause.circle", label: "Avg pauses", value: String(format: "%.1f", pauses))
+                }
+                if totalStreakBreaks > 0 {
+                    if let fragile = mostBrokenStreakLength {
+                        insightChip(icon: "flame.slash", label: "Fragile streak", value: "\(fragile)d")
+                    } else {
+                        insightChip(icon: "flame.slash", label: "Streak breaks", value: "\(totalStreakBreaks)")
+                    }
                 }
             }
         }

@@ -807,6 +807,108 @@ struct SettingsStoreTests {
         #expect(count14 == 0)
     }
 
+    // MARK: - totalStreakBreaks + mostBrokenStreakLength
+
+    @Test func totalStreakBreaks_returnsZeroWhenNoBroken() async {
+        await resetBreakCounts()
+        let total = await MainActor.run { SettingsStore.shared.totalStreakBreaks }
+        #expect(total == 0)
+        await resetBreakCounts()
+    }
+
+    @Test func totalStreakBreaks_countsSingleMilestone() async {
+        await resetBreakCounts()
+        await MainActor.run {
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+        }
+        let total = await MainActor.run { SettingsStore.shared.totalStreakBreaks }
+        #expect(total == 3)
+        await resetBreakCounts()
+    }
+
+    @Test func totalStreakBreaks_sumsAcrossMultipleMilestones() async {
+        await resetBreakCounts()
+        await MainActor.run {
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 14)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 21)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 21)
+        }
+        let total = await MainActor.run { SettingsStore.shared.totalStreakBreaks }
+        #expect(total == 5)
+        await resetBreakCounts()
+    }
+
+    @Test func totalStreakBreaks_reflectsResetToZero() async {
+        await resetBreakCounts()
+        await MainActor.run { _ = SettingsStore.shared.incrementStreakBreak(days: 7) }
+        await resetBreakCounts()
+        let total = await MainActor.run { SettingsStore.shared.totalStreakBreaks }
+        #expect(total == 0)
+    }
+
+    @Test func mostBrokenStreakLength_returnsNilWhenNoBroken() async {
+        await resetBreakCounts()
+        let fragile = await MainActor.run { SettingsStore.shared.mostBrokenStreakLength }
+        #expect(fragile == nil)
+        await resetBreakCounts()
+    }
+
+    @Test func mostBrokenStreakLength_returnsSingleMilestoneWhenOnlyOne() async {
+        await resetBreakCounts()
+        await MainActor.run { _ = SettingsStore.shared.incrementStreakBreak(days: 14) }
+        let fragile = await MainActor.run { SettingsStore.shared.mostBrokenStreakLength }
+        #expect(fragile == 14)
+        await resetBreakCounts()
+    }
+
+    @Test func mostBrokenStreakLength_returnsHighestFrequencyMilestone() async {
+        await resetBreakCounts()
+        await MainActor.run {
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 14)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 14)
+        }
+        let fragile = await MainActor.run { SettingsStore.shared.mostBrokenStreakLength }
+        #expect(fragile == 7)
+        await resetBreakCounts()
+    }
+
+    @Test func mostBrokenStreakLength_tieBreaksInFavorOfLongerStreak() async {
+        await resetBreakCounts()
+        await MainActor.run {
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 21)
+        }
+        let fragile = await MainActor.run { SettingsStore.shared.mostBrokenStreakLength }
+        // Both have count=1; tie breaks to the longer streak (21).
+        #expect(fragile == 21)
+        await resetBreakCounts()
+    }
+
+    @Test func mostBrokenStreakLength_updatesAfterAdditionalBreaks() async {
+        await resetBreakCounts()
+        await MainActor.run {
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 14)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 14)
+        }
+        let first = await MainActor.run { SettingsStore.shared.mostBrokenStreakLength }
+        #expect(first == 14, "14 has 2 breaks vs 7's 1 — should be 14")
+        await MainActor.run {
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+            _ = SettingsStore.shared.incrementStreakBreak(days: 7)
+        }
+        let second = await MainActor.run { SettingsStore.shared.mostBrokenStreakLength }
+        #expect(second == 7, "7 now has 3 breaks vs 14's 2 — should flip to 7")
+        await resetBreakCounts()
+    }
+
     // MARK: - Morning nudge settings
 
     private func restoreNudgeDefaults() async {
