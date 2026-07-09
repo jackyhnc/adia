@@ -990,3 +990,97 @@ export function churnAnalysis(days: number, plan?: string): ChurnAnalysisResult 
     ...(plan ? { plan } : {}),
   };
 }
+
+export type ChurnCohortRow = {
+  date: string;
+  total: number;
+  churned: number;
+  churnedWithin30d: number;
+  churnedWithin60d: number;
+  churnedWithin90d: number;
+  churnRate: number;
+  ageDays: number;
+};
+
+export type ChurnCohortSummary = {
+  cohortCount: number;
+  totalLicenses: number;
+  totalChurned: number;
+  avgChurnRate: number;
+};
+
+export type ChurnCohortResult = {
+  cohorts: ChurnCohortRow[];
+  summary30d: ChurnCohortSummary | null;
+  summary60d: ChurnCohortSummary | null;
+  summary90d: ChurnCohortSummary | null;
+  windowDays: number;
+  plan?: string;
+};
+
+// For each issuance-date cohort in the past `days` days, returns how many
+// licenses churned (ever) and how many churned within 30/60/90 days of issuance.
+// Churn = first revoke or set_status to canceled/expired/past_due event.
+export function churnCohort(days: number, plan?: string): ChurnCohortResult {
+  const conditions: string[] = [`l.issued_at >= date('now', '-' || ? || ' days')`];
+  const params: unknown[] = [days];
+  if (plan) { conditions.push('l.plan = ?'); params.push(plan); }
+  const where = `WHERE ${conditions.join(' AND ')}`;
+
+  const rows = (db()
+    .prepare(`
+      SELECT
+        date(l.issued_at) AS cohort_date,
+        COUNT(*) AS total,
+        COUNT(fc.license_key) AS churned,
+        COUNT(CASE WHEN CAST(julianday(date(fc.event_date)) - julianday(date(l.issued_at)) AS INTEGER) <= 30 THEN 1 END) AS churned_30d,
+        COUNT(CASE WHEN CAST(julianday(date(fc.event_date)) - julianday(date(l.issued_at)) AS INTEGER) <= 60 THEN 1 END) AS churned_60d,
+        COUNT(CASE WHEN CAST(julianday(date(fc.event_date)) - julianday(date(l.issued_at)) AS INTEGER) <= 90 THEN 1 END) AS churned_90d,
+        CAST(julianday('now') - julianday(date(l.issued_at)) AS INTEGER) AS age_days
+      FROM licenses l
+      LEFT JOIN (
+        SELECT license_key, MIN(date(created_at)) AS event_date
+        FROM audit_log
+        WHERE action = 'revoke'
+          OR (action = 'set_status' AND json_extract(detail, '$.status') IN ('canceled', 'expired', 'past_due'))
+        GROUP BY license_key
+      ) fc ON fc.license_key = l.key
+      ${where}
+      GROUP BY date(l.issued_at)
+      ORDER BY cohort_date ASC
+    `)
+    .all as (...a: unknown[]) => any[])(...params);
+
+  const cohorts: ChurnCohortRow[] = rows.map((r: any) => ({
+    date: r.cohort_date as string,
+    total: r.total as number,
+    churned: r.churned as number,
+    churnedWithin30d: r.churned_30d as number,
+    churnedWithin60d: r.churned_60d as number,
+    churnedWithin90d: r.churned_90d as number,
+    churnRate: r.total > 0 ? Math.round((r.churned / r.total) * 1000) / 10 : 0,
+    ageDays: r.age_days as number,
+  }));
+
+  function summary(minAge: number): ChurnCohortSummary | null {
+    const eligible = cohorts.filter(c => c.ageDays >= minAge);
+    if (eligible.length === 0) return null;
+    const totalLicenses = eligible.reduce((s, c) => s + c.total, 0);
+    const totalChurned = eligible.reduce((s, c) => s + c.churned, 0);
+    return {
+      cohortCount: eligible.length,
+      totalLicenses,
+      totalChurned,
+      avgChurnRate: totalLicenses > 0 ? Math.round((totalChurned / totalLicenses) * 1000) / 10 : 0,
+    };
+  }
+
+  return {
+    cohorts,
+    summary30d: summary(30),
+    summary60d: summary(60),
+    summary90d: summary(90),
+    windowDays: days,
+    ...(plan ? { plan } : {}),
+  };
+}

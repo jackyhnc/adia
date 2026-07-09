@@ -132,6 +132,9 @@ export default function Admin() {
       <CollapsibleSection title="Churn analysis">
         <ChurnAnalysisPanel token={token} />
       </CollapsibleSection>
+      <CollapsibleSection title="Churn cohort breakdown">
+        <ChurnCohortPanel token={token} />
+      </CollapsibleSection>
       <CollapsibleSection title="Revenue (MRR / ARR)">
         <RevenueMRRPanel token={token} />
       </CollapsibleSection>
@@ -5287,6 +5290,160 @@ function ChurnAnalysisPanel({ token }: { token: string }) {
                   )}
                 </div>
               ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+type ChurnCohortRow = {
+  date: string;
+  total: number;
+  churned: number;
+  churnedWithin30d: number;
+  churnedWithin60d: number;
+  churnedWithin90d: number;
+  churnRate: number;
+  ageDays: number;
+};
+
+type ChurnCohortSummary = {
+  cohortCount: number;
+  totalLicenses: number;
+  totalChurned: number;
+  avgChurnRate: number;
+};
+
+type ChurnCohortResult = {
+  cohorts: ChurnCohortRow[];
+  summary30d: ChurnCohortSummary | null;
+  summary60d: ChurnCohortSummary | null;
+  summary90d: ChurnCohortSummary | null;
+  windowDays: number;
+  plan?: string;
+};
+
+function churnRateColor(rate: number): string {
+  if (rate < 10) return 'text-green-500';
+  if (rate < 25) return 'text-yellow-500';
+  return 'text-red-500';
+}
+
+function ChurnCohortPanel({ token }: { token: string }) {
+  const [days, setDays] = useState('90');
+  const [plan, setPlan] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<ChurnCohortResult | null>(null);
+
+  async function load(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const params = new URLSearchParams({ days });
+      if (plan) params.set('plan', plan);
+      const res = await fetch(`/api/admin/churn-cohort?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? res.statusText);
+      setResult(json);
+    } catch (err: any) {
+      setError(`Error: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function SummaryTile({ label, s }: { label: string; s: ChurnCohortSummary | null }) {
+    if (!s) return (
+      <div className="bg-ink/5 rounded-lg p-3">
+        <p className="text-xs text-ink/50 mb-1">{label} cohorts</p>
+        <p className="text-sm text-ink/40">Not enough data</p>
+      </div>
+    );
+    return (
+      <div className="bg-ink/5 rounded-lg p-3">
+        <p className="text-xs text-ink/50 mb-1">{label} cohorts</p>
+        <p className={`text-lg font-semibold ${churnRateColor(s.avgChurnRate)}`}>{s.avgChurnRate}%</p>
+        <p className="text-xs text-ink/40">{s.totalChurned}/{s.totalLicenses} churned ({s.cohortCount} cohorts)</p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <p className="text-sm text-ink/60 mb-3">
+        Per-cohort churn: for each issuance-date cohort, how many licenses churned
+        (ever) and how quickly (within 30/60/90 days of issuance).
+        Complements cohort retention — retention shows who stayed, this shows who left and when.
+      </p>
+      <form onSubmit={load} className="card space-y-3">
+        <Field label="Window (days)">
+          <input
+            type="number"
+            min={1}
+            max={365}
+            value={days}
+            onChange={e => setDays(e.target.value)}
+            className="input w-28"
+          />
+        </Field>
+        <Field label="Plan (optional)">
+          <select value={plan} onChange={e => setPlan(e.target.value)} className="input w-40">
+            <option value="">All plans</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+            <option value="lifetime">Lifetime</option>
+          </select>
+        </Field>
+        <button type="submit" className="btn-primary" disabled={loading}>
+          {loading ? 'Loading…' : 'Load churn cohorts'}
+        </button>
+      </form>
+      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+      {result && (
+        <div className="mt-4 space-y-4">
+          <div className="grid grid-cols-3 gap-3">
+            <SummaryTile label="30d+" s={result.summary30d} />
+            <SummaryTile label="60d+" s={result.summary60d} />
+            <SummaryTile label="90d+" s={result.summary90d} />
+          </div>
+          {result.cohorts.length === 0 ? (
+            <p className="text-sm text-ink/40">No cohorts in this window.</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="text-left text-xs text-ink/50 border-b border-ink/10">
+                    <th className="pb-2 pr-3">Cohort date</th>
+                    <th className="pb-2 pr-3">Issued</th>
+                    <th className="pb-2 pr-3">Churned</th>
+                    <th className="pb-2 pr-3">Churn rate</th>
+                    <th className="pb-2 pr-3">Within 30d</th>
+                    <th className="pb-2 pr-3">Within 60d</th>
+                    <th className="pb-2 pr-3">Within 90d</th>
+                    <th className="pb-2">Age (days)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {result.cohorts.map(c => (
+                    <tr key={c.date} className="border-b border-ink/5 hover:bg-ink/5">
+                      <td className="py-1.5 pr-3 font-mono text-xs">{c.date}</td>
+                      <td className="py-1.5 pr-3">{c.total}</td>
+                      <td className="py-1.5 pr-3">{c.churned}</td>
+                      <td className={`py-1.5 pr-3 font-semibold ${churnRateColor(c.churnRate)}`}>{c.churnRate}%</td>
+                      <td className="py-1.5 pr-3">{c.churnedWithin30d}</td>
+                      <td className="py-1.5 pr-3">{c.churnedWithin60d}</td>
+                      <td className="py-1.5 pr-3">{c.churnedWithin90d}</td>
+                      <td className="py-1.5 text-ink/50">{c.ageDays}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>

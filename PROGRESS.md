@@ -1,5 +1,55 @@
 # Adia — Build Progress
 
+## Run 290 — 2026-07-09T06:15:00Z — GET /api/admin/churn-cohort + ChurnCohortPanel + 42 tests (1089 → 1131)
+
+### Shipped
+
+**`web/lib/db.ts` — churnCohort():**
+- Added `ChurnCohortRow`, `ChurnCohortSummary`, `ChurnCohortResult` types.
+- `churnCohort(days, plan?)` — SQLite query: LEFT JOIN on a subquery that finds each license's first churn event (MIN date of revoke or set_status to canceled/expired/past_due); groups by issuance date; computes `churned`, `churnedWithin30d/60d/90d` (days between issuance and first churn event), `churnRate`, `ageDays`.
+- `summary(minAge)` helper filters cohorts by age and aggregates `cohortCount`, `totalLicenses`, `totalChurned`, `avgChurnRate`.
+
+**`web/lib/db-pg.ts` — churnCohortPg():**
+- Mirror using `EXTRACT(day FROM fc.event_date::date - l.issued_at::date)` for day-diff, `to_char(..., 'YYYY-MM-DD')` for date formatting, `(${planVal}::text IS NULL OR l.plan = ...)` for optional plan filter.
+
+**`web/lib/store.ts` — churnCohort() dispatch:**
+- Re-exports `ChurnCohortResult`, `ChurnCohortRow`, `ChurnCohortSummary` types.
+- `churnCohort(days, plan?)` dispatches to Postgres or SQLite variant.
+
+**`web/app/api/admin/churn-cohort/route.ts` — new endpoint:**
+- `GET /api/admin/churn-cohort` — returns `ChurnCohortResult` JSON.
+- `?days=` — integer 1–365, default 90.
+- `?plan=monthly|yearly|lifetime` — optional filter.
+- `adminGuard` auth (Bearer token or `?token=`).
+
+**`web/app/admin/page.tsx` — ChurnCohortPanel:**
+- `ChurnCohortRow`, `ChurnCohortSummary`, `ChurnCohortResult` local types.
+- `churnRateColor(rate)` helper: green <10%, yellow <25%, red >=25%.
+- `ChurnCohortPanel` with load form (days + plan), 3-tile summary row (30d+/60d+/90d+ cohorts showing avgChurnRate + totalChurned/totalLicenses), empty state, and scrollable table (cohort date, issued, churned, churn rate, within-30d/60d/90d, age).
+- `CollapsibleSection title="Churn cohort breakdown"` inserted between "Churn analysis" and "Revenue (MRR / ARR)".
+
+**`web/__tests__/admin-churn-cohort.test.ts` — 42 tests:**
+- Auth: 401 no-token, 401 wrong-token, 200 ?token=.
+- Validation: days=0, days=366, non-integer, fractional, invalid plan.
+- Response shape: 200 empty DB, empty cohorts + null summaries, default days=90, days=1, days=365, cohort row shape (7 fields), ascending date order, plan field present/absent.
+- Core behavior: revoke counted, set_status canceled/expired/past_due counted, set_status active NOT counted, license outside window excluded, boundary inclusion, churnRate formula (50%), churnedWithin30d (20d after), churnedWithin30d=0 (45d after), churnedWithin60d=0 (75d after), no churn=0, multiple events per license uses earliest, groups by issuance date.
+- Summary stats: summary30d null when cohort <30d old, populated when >=30d, summary60d null/populated, summary90d null when <90d, avgChurnRate formula (50%), multi-cohort aggregation (5 total, 4 churned, 80%).
+- Plan filter: monthly excludes yearly, yearly-only, lifetime=0 when no lifetime, no filter = all.
+
+### Tests
+1131 passed (up from 1089). 46 test files green.
+
+### Blocked
+Nothing blocked.
+
+### Next agent should pick up
+- Consider rate-limit test for churn-cohort (429 on 21st req/60s) — pattern from `admin-export-licenses.test.ts`.
+- Consider a "time-to-churn distribution" panel: histogram of days-to-first-churn across all churned licenses, showing early (0–7d), mid (8–30d), late (31–90d), very late (90d+) buckets. Useful for diagnosing onboarding vs. long-term retention issues.
+- Consider linking ChurnCohortPanel ↔ CohortRetentionPanel: clicking a cohort row in one highlights the same cohort in the other.
+- Consider `bulk:true` audit-log flag audit: verify that bulk-change-email and bulk-note set bulk=true (currently only revoke/reactivate/set-status/resend-license/deactivate-all/change-email/change-plan set it).
+
+---
+
 ## Run 289 — 2026-07-09T05:10:00Z — GET /api/admin/churn-analysis + ChurnAnalysisPanel + 33 tests (1056 → 1089)
 
 ### Shipped

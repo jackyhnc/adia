@@ -910,3 +910,65 @@ export async function churnAnalysisPg(days: number, plan?: string): Promise<Chur
     ...(plan ? { plan } : {}),
   };
 }
+
+import type { ChurnCohortResult, ChurnCohortRow, ChurnCohortSummary } from './db';
+
+export async function churnCohortPg(days: number, plan?: string): Promise<ChurnCohortResult> {
+  const planVal = plan ?? null;
+
+  const rows = await sql<any>`
+    SELECT
+      to_char(l.issued_at::date, 'YYYY-MM-DD') AS cohort_date,
+      COUNT(*)::int AS total,
+      COUNT(fc.license_key)::int AS churned,
+      COUNT(CASE WHEN EXTRACT(day FROM fc.event_date::date - l.issued_at::date) <= 30 THEN 1 END)::int AS churned_30d,
+      COUNT(CASE WHEN EXTRACT(day FROM fc.event_date::date - l.issued_at::date) <= 60 THEN 1 END)::int AS churned_60d,
+      COUNT(CASE WHEN EXTRACT(day FROM fc.event_date::date - l.issued_at::date) <= 90 THEN 1 END)::int AS churned_90d,
+      EXTRACT(day FROM NOW() - l.issued_at::date)::int AS age_days
+    FROM licenses l
+    LEFT JOIN (
+      SELECT license_key, MIN(created_at::date) AS event_date
+      FROM audit_log
+      WHERE action = 'revoke'
+        OR (action = 'set_status' AND (detail::jsonb)->>'status' IN ('canceled', 'expired', 'past_due'))
+      GROUP BY license_key
+    ) fc ON fc.license_key = l.key
+    WHERE l.issued_at >= NOW() - (${days} * INTERVAL '1 day')
+      AND (${planVal}::text IS NULL OR l.plan = ${planVal}::text)
+    GROUP BY l.issued_at::date
+    ORDER BY cohort_date ASC
+  `;
+
+  const cohorts: ChurnCohortRow[] = rows.rows.map((r: any) => ({
+    date: r.cohort_date as string,
+    total: r.total as number,
+    churned: r.churned as number,
+    churnedWithin30d: r.churned_30d as number,
+    churnedWithin60d: r.churned_60d as number,
+    churnedWithin90d: r.churned_90d as number,
+    churnRate: r.total > 0 ? Math.round((r.churned / r.total) * 1000) / 10 : 0,
+    ageDays: r.age_days as number,
+  }));
+
+  function summary(minAge: number): ChurnCohortSummary | null {
+    const eligible = cohorts.filter(c => c.ageDays >= minAge);
+    if (eligible.length === 0) return null;
+    const totalLicenses = eligible.reduce((s, c) => s + c.total, 0);
+    const totalChurned = eligible.reduce((s, c) => s + c.churned, 0);
+    return {
+      cohortCount: eligible.length,
+      totalLicenses,
+      totalChurned,
+      avgChurnRate: totalLicenses > 0 ? Math.round((totalChurned / totalLicenses) * 1000) / 10 : 0,
+    };
+  }
+
+  return {
+    cohorts,
+    summary30d: summary(30),
+    summary60d: summary(60),
+    summary90d: summary(90),
+    windowDays: days,
+    ...(plan ? { plan } : {}),
+  };
+}
