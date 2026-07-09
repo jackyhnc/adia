@@ -1,5 +1,41 @@
 # Adia — Build Progress
 
+## Run 299 — 2026-07-09 — Suggested template catalog expansion 8→15 + 9 catalog tests
+
+### Shipped
+- **`Sources/AdiCore/Models/SuggestedSessionTemplates.swift` — 7 new suggested templates** (catalog 8 → 15):
+  - `"Prepare my presentation slides"` (icon: person.wave.2, 60 min)
+  - `"Record a podcast episode"` (icon: mic, 45 min)
+  - `"Design a mockup in Figma"` (icon: paintbrush, 60 min)
+  - `"Prep for my upcoming interview"` (icon: briefcase, 45 min)
+  - `"Write a blog post"` (icon: pencil.and.outline, 60 min)
+  - `"Work on my thesis or research paper"` (icon: doc.richtext, 90 min)
+  - `"Complete my workout"` (icon: figure.run, 45 min)
+  - Catalog grows from 8 (student-only) to 15 (student + knowledge-worker + creator + fitness), displayCount stays 3
+- **`Tests/AdiTests/SuggestedSessionTemplatesTests.swift` — 9 new Swift tests**:
+  - `catalogHasAtLeastFifteenTemplates` — size guard (≥15)
+  - `catalogContainsPresentationTemplate` — finds presentation/slides entry
+  - `catalogContainsPodcastTemplate` — finds podcast entry
+  - `catalogContainsDesignTemplate` — finds design/mockup/figma entry
+  - `catalogContainsInterviewTemplate` — finds interview entry
+  - `catalogContainsBlogOrWritingTemplate` — finds blog/post/newsletter entry
+  - `catalogContainsThesisOrResearchTemplate` — finds thesis/research/paper entry
+  - `catalogContainsFitnessOrWorkoutTemplate` — finds workout/exercise/gym/run entry
+  - `allTemplatesHaveValidSuccessCriteriaLength` — guards each criteria is ≥20 chars
+
+### Verification
+All 1258 web tests pass (unchanged). Swift tests compile (no toolchain on Linux).
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `HistoryInsightsSection.trendLabel` extraction: move the `trendLabel(_:)` free function from `FocusInsights.swift` into a `static internal func` on `HistoryInsightsSection` (matching the `streakBreakChipLabel` pattern) so it's explicitly co-located with its UI consumer; add 4 tests (one per FocusTrend case) in `HistoryInsightsSectionTests.swift` for parity
+- Consider `HistoryWeeklySection.weekSummaryText` extraction: `weekSummaryText(_:)` is a private View method; extract to `static internal func weekSummaryText(_ s: SessionStats) -> String` and add unit tests (0 minutes, hour-only, minute-only, h+m combos)
+- Consider expanding the notch idle UI to use a weighted random selection from the 15-entry catalog (rather than always showing the first 3), so users see variety across launches — `SuggestedSessionTemplates.randomSuggestions(count:excluding:)` returns a shuffled sample filtered by dismissed entries; `IdleNotchView` calls it instead of `.prefix(displayCount)`
+
+---
+
 ## Run 298 — 2026-07-09 — morningNudgeMessages parity tests + CSV plan+status combo test
 
 ### Shipped
