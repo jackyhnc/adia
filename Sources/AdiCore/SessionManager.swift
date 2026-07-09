@@ -115,14 +115,8 @@ public final class SessionManager: ObservableObject {
                 let stats = await SessionHistory.shared.stats()
 
                 // Daily goal check — fires on any session (goal = time spent, not task success).
-                if let goal = goalMinutes, stats.todayMinutes >= goal {
-                    let todayStr = SessionManager.todayDateString()
-                    let lastKey = "adia.lastDailyGoalAchievedDate"
-                    let lastDate = UserDefaults.standard.string(forKey: lastKey)
-                    if lastDate != todayStr {
-                        UserDefaults.standard.set(todayStr, forKey: lastKey)
-                        SessionNotifier.shared.sendDailyGoalAchieved(goalMinutes: goal)
-                    }
+                if let goal = goalMinutes {
+                    self.fireDailyGoalNotificationIfNeeded(todayMinutes: stats.todayMinutes, goal: goal)
                 }
 
                 guard wasSuccessful else { return }
@@ -175,6 +169,26 @@ public final class SessionManager: ObservableObject {
         fmt.dateFormat = "yyyy-MM-dd"
         fmt.locale = Locale(identifier: "en_US_POSIX")
         return fmt.string(from: Date())
+    }
+
+    /// Fires the daily-goal-achieved notification at most once per calendar day.
+    /// Returns `true` when the notification was actually sent.
+    /// Separated from `endSession` so the gate logic is unit-testable without a live
+    /// SessionHistory actor or a running SCStream.
+    @discardableResult
+    internal func fireDailyGoalNotificationIfNeeded(
+        todayMinutes: Int,
+        goal: Int,
+        defaults: UserDefaults = .standard
+    ) -> Bool {
+        guard todayMinutes >= goal else { return false }
+        let todayStr = SessionManager.todayDateString()
+        let lastKey = "adia.lastDailyGoalAchievedDate"
+        let lastDate = defaults.string(forKey: lastKey)
+        guard lastDate != todayStr else { return false }
+        defaults.set(todayStr, forKey: lastKey)
+        SessionNotifier.shared.sendDailyGoalAchieved(goalMinutes: goal)
+        return true
     }
 
     // MARK: - Pause / Resume

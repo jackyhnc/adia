@@ -12672,3 +12672,53 @@ None. Swift toolchain unavailable on Linux container.
 - Consider exposing streak break counts in FocusInsights or the idle notch so the `SettingsStore.streakBreakCounts` data is visible in-app (currently only drives notification copy).
 - Consider adding `morning_nudge_scheduled` AppLogger call inside `scheduleMorningNudgeIfNeeded()` for debuggability.
 - Consider more morning nudge title variants (currently fixed to "haven't started yet") — same pool pattern applied to the notification title.
+
+---
+
+## Run 289 — 2026-07-09
+
+### Shipped
+- **Daily goal gate unit tests** (`feat: daily goal gate unit tests`)
+  - `SessionManager.swift` — extracted inline daily-goal check from `endSession()` Task body into:
+    ```swift
+    @discardableResult
+    internal func fireDailyGoalNotificationIfNeeded(
+        todayMinutes: Int,
+        goal: Int,
+        defaults: UserDefaults = .standard
+    ) -> Bool
+    ```
+    The `defaults:` parameter allows isolated `UserDefaults` suites in tests (no cross-test bleed).
+    Callsite in `endSession()` simplifies to `self.fireDailyGoalNotificationIfNeeded(todayMinutes: stats.todayMinutes, goal: goal)`.
+  - `SessionManagerTests.swift` — **12 new tests**:
+    - `todayDateStringIsNonEmpty` — non-empty string returned
+    - `todayDateStringMatchesYYYYMMDDFormat` — exactly 10 chars, 3 dash-separated parts with lengths 4/2/2
+    - `todayDateStringContainsCurrentYear` — starts with the current 4-digit year
+    - `todayDateStringIsConsistentWithinOneSecond` — two calls in sequence return the same value
+    - `dailyGoalGate_returnsFalseWhenBelowGoal` — 29 min, goal 30 → false
+    - `dailyGoalGate_returnsTrueWhenExactlyAtGoal` — 30 min, goal 30 → true
+    - `dailyGoalGate_returnsTrueWhenAboveGoal` — 60 min, goal 30 → true
+    - `dailyGoalGate_writesTodayStringToDefaultsOnFirstFire` — stored key == `todayDateString()` after fire
+    - `dailyGoalGate_returnsFalseOnSecondCallSameDay` — first returns true, second returns false (gate active)
+    - `dailyGoalGate_doesNotWriteDefaultsWhenBelowGoal` — UserDefaults key remains nil
+    - `dailyGoalGate_refiresTomorrow` — stored date "1970-01-01" → true, updated to today
+    - `dailyGoalGate_goalZeroFiresWhenMinutesIsZero` — edge case: 0 min, goal 0 → true
+  - Each test uses `freshSuite()` which creates a UUID-named `UserDefaults(suiteName:)` to avoid inter-test bleed
+  - Web tests: 1131 (unchanged)
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `fireDailyGoalNotificationIfNeeded` has the same logic as the inline code it replaces — the only structural change is the `defaults:` parameter and the `return Bool` that makes the gate outcome observable in tests.
+- `freshSuite()` force-unwrap is documented: `UserDefaults(suiteName:)` only returns nil for the empty-string name; UUID-based names are always non-empty.
+- `dailyGoalGate_refiresTomorrow` pre-seeds the key with `"1970-01-01"` (never today), so it always tests the "stale date" re-fire path without depending on the current date.
+- `dailyGoalGate_goalZeroFiresWhenMinutesIsZero` exercises the edge case where `todayMinutes == goal == 0`, ensuring the guard `todayMinutes >= goal` passes for boundary values.
+- `todayDateStringMatchesYYYYMMDDFormat` is purely format-structural — it doesn't need to know the actual date.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `SessionNotifier.morningNudgeMessages` title variants pool (currently the notification title is fixed to "haven't started yet") — same pool pattern applied to the notification title, similar to how message body has 7 variants.
+- Consider exposing `SettingsStore.shared.streakBreakCounts` data in the idle notch or FocusInsights view so users can see their pattern of broken streaks (currently only affects notification copy tone).
+- Consider a `morning_nudge_scheduled` `AppLogger.info(...)` call inside `scheduleMorningNudgeIfNeeded()` for debuggability (mentioned in multiple prior runs).
+- Consider `SessionManagerTests` for the streak milestone gate: similar structure to the daily goal gate tests — extract the milestone check into an `internal` testable method, verify it fires only when `streak >= milestone` and not when the same milestone was already notified.

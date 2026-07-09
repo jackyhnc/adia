@@ -722,4 +722,110 @@ struct SessionManagerTests {
     @Test func watchdogCheckIntervalIsLessThanStalenessTimeout() {
         #expect(ScreenCaptureManager.watchdogCheckInterval < ScreenCaptureManager.frameStalenessTimeout)
     }
+
+    // MARK: - todayDateString()
+
+    @Test func todayDateStringIsNonEmpty() {
+        #expect(!SessionManager.todayDateString().isEmpty)
+    }
+
+    @Test func todayDateStringMatchesYYYYMMDDFormat() {
+        let s = SessionManager.todayDateString()
+        // Exactly "YYYY-MM-DD" — 10 characters, dashes at positions 4 and 7.
+        #expect(s.count == 10)
+        let parts = s.split(separator: "-", omittingEmptySubsequences: false)
+        #expect(parts.count == 3)
+        #expect(parts[0].count == 4)
+        #expect(parts[1].count == 2)
+        #expect(parts[2].count == 2)
+    }
+
+    @Test func todayDateStringContainsCurrentYear() {
+        let year = Calendar.current.component(.year, from: Date())
+        #expect(SessionManager.todayDateString().hasPrefix(String(year)))
+    }
+
+    @Test func todayDateStringIsConsistentWithinOneSecond() {
+        // Called twice back-to-back should return the same day string.
+        #expect(SessionManager.todayDateString() == SessionManager.todayDateString())
+    }
+
+    // MARK: - fireDailyGoalNotificationIfNeeded(todayMinutes:goal:defaults:)
+
+    private func freshSuite() -> UserDefaults {
+        // Each test gets its own isolated UserDefaults suite so tests don't bleed into each other.
+        let name = "adia.test.\(UUID().uuidString)"
+        // Force unwrap is safe: UserDefaults(suiteName:) only returns nil for the empty-string
+        // suite name, and we always pass a non-empty UUID-based name.
+        return UserDefaults(suiteName: name)!
+    }
+
+    @Test func dailyGoalGate_returnsFalseWhenBelowGoal() {
+        let result = SessionManager.shared.fireDailyGoalNotificationIfNeeded(
+            todayMinutes: 29, goal: 30, defaults: freshSuite()
+        )
+        #expect(result == false)
+    }
+
+    @Test func dailyGoalGate_returnsTrueWhenExactlyAtGoal() {
+        let result = SessionManager.shared.fireDailyGoalNotificationIfNeeded(
+            todayMinutes: 30, goal: 30, defaults: freshSuite()
+        )
+        #expect(result == true)
+    }
+
+    @Test func dailyGoalGate_returnsTrueWhenAboveGoal() {
+        let result = SessionManager.shared.fireDailyGoalNotificationIfNeeded(
+            todayMinutes: 60, goal: 30, defaults: freshSuite()
+        )
+        #expect(result == true)
+    }
+
+    @Test func dailyGoalGate_writesTodayStringToDefaultsOnFirstFire() {
+        let suite = freshSuite()
+        SessionManager.shared.fireDailyGoalNotificationIfNeeded(
+            todayMinutes: 30, goal: 30, defaults: suite
+        )
+        let stored = suite.string(forKey: "adia.lastDailyGoalAchievedDate")
+        #expect(stored == SessionManager.todayDateString())
+    }
+
+    @Test func dailyGoalGate_returnsFalseOnSecondCallSameDay() {
+        let suite = freshSuite()
+        let first = SessionManager.shared.fireDailyGoalNotificationIfNeeded(
+            todayMinutes: 30, goal: 30, defaults: suite
+        )
+        let second = SessionManager.shared.fireDailyGoalNotificationIfNeeded(
+            todayMinutes: 45, goal: 30, defaults: suite
+        )
+        #expect(first == true)
+        #expect(second == false, "Gate must prevent double-fire on same day")
+    }
+
+    @Test func dailyGoalGate_doesNotWriteDefaultsWhenBelowGoal() {
+        let suite = freshSuite()
+        SessionManager.shared.fireDailyGoalNotificationIfNeeded(
+            todayMinutes: 5, goal: 30, defaults: suite
+        )
+        #expect(suite.string(forKey: "adia.lastDailyGoalAchievedDate") == nil)
+    }
+
+    @Test func dailyGoalGate_refiresTomorrow() {
+        // Simulate the gate having fired "yesterday" — the stored date is in the past.
+        let suite = freshSuite()
+        suite.set("1970-01-01", forKey: "adia.lastDailyGoalAchievedDate")
+        let result = SessionManager.shared.fireDailyGoalNotificationIfNeeded(
+            todayMinutes: 30, goal: 30, defaults: suite
+        )
+        #expect(result == true, "Goal notification should fire again when the stored date is not today")
+        #expect(suite.string(forKey: "adia.lastDailyGoalAchievedDate") == SessionManager.todayDateString())
+    }
+
+    @Test func dailyGoalGate_goalZeroFiresWhenMinutesIsZero() {
+        // Edge case: goal of 0 minutes — even 0 minutes clears the bar.
+        let result = SessionManager.shared.fireDailyGoalNotificationIfNeeded(
+            todayMinutes: 0, goal: 0, defaults: freshSuite()
+        )
+        #expect(result == true)
+    }
 }
