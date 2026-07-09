@@ -1,5 +1,56 @@
 # Adia — Build Progress
 
+## Run 285 — 2026-07-09T00:10:00Z — GET /api/admin/usage-heatmap + UsageHeatmapPanel + 24 tests (898 → 922)
+
+### Shipped
+
+**`web/lib/db.ts` — activationHeatmap():**
+- Added `HeatmapBucket = { hour: number; count: number }` type.
+- `activationHeatmap(days, plan?)` — SQLite query using `strftime('%H', a.first_seen)` to group by UTC hour; INNER JOIN licenses for plan filter; fills full 24-bucket array with 0 for missing hours.
+
+**`web/lib/db-pg.ts` — activationHeatmapPg():**
+- Added `HeatmapBucket` type mirror.
+- `activationHeatmapPg(days, plan?)` — Postgres equivalent using `EXTRACT(HOUR FROM first_seen::timestamptz)::int`; same 24-bucket fill logic.
+
+**`web/lib/store.ts` — activationHeatmap() dispatch:**
+- Exports `HeatmapBucket` type.
+- `activationHeatmap(days, plan?)` — dispatches to pg or sqlite variant.
+
+**`web/app/api/admin/usage-heatmap/route.ts` — new endpoint:**
+- `GET /api/admin/usage-heatmap` — returns `{ buckets[24], total, days, plan? }`.
+- `?days=` — integer 1–90, default 7.
+- `?plan=monthly|yearly|lifetime` — optional filter.
+- `adminGuard` auth (Bearer token or `?token=`).
+- `total` = sum of all bucket counts (convenience field).
+
+**`web/app/admin/page.tsx` — UsageHeatmapPanel:**
+- `CollapsibleSection title="Activation heatmap"` inserted after "Dormant licenses".
+- Bar chart: 24 columns, height and opacity scaled to max-count bucket.
+- Hour labels: "12a", "1a"…"12p", "1p"…"11p" format.
+- `title` attribute on each bar for hover tooltip with exact count.
+- Zero-count bars shown at 10% opacity (visible but clearly inactive).
+
+**`web/__tests__/admin-usage-heatmap.test.ts` — 24 tests:**
+- Auth: 401 no-token, 401 wrong-token, 200 ?token=.
+- Validation: days=0, days=91, non-integer days, fractional days, invalid plan.
+- Response shape: 24-bucket array on empty DB, hours 0–23 in order, plan absent/present, default days=7, days=1, days=90.
+- Core behavior: correct hour bucket, zero-count buckets, same-hour multi-count, multi-hour spread, window exclusion (10d ago vs 7d window), window inclusion (6d ago vs 7d window).
+- Plan filter: monthly-only count, lifetime returns 0 for monthly-only data, all three plans return 200.
+
+### Tests
+922 passed (up from 898). 39 test files green. `tsc --noEmit` clean.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding rate-limit coverage for `usage-heatmap` — the 20 req/60s adminGuard limit applies; add an explicit 429 test on the 21st request (pattern from `admin-export-licenses.test.ts`).
+- Consider `bulk:true` detail flag in audit log entries for `bulk-change-plan`, `bulk-extend`, `bulk-set-expiry` — currently only revoke/reactivate/set-status/resend-license/deactivate-all/change-email set this flag.
+- Consider a `GET /api/admin/activation-timeline` endpoint: daily new-activation counts over the last N days (an array of `{date: "YYYY-MM-DD", count: N}` buckets), useful for growth trend visualization in the admin panel.
+- Consider `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment).
+
+---
+
 ## Run 284 — 2026-07-08T23:10:00Z — POST /api/admin/bulk-change-email + BulkChangeEmailPanel + 23 tests (875 → 898)
 
 ### Shipped
