@@ -1,5 +1,42 @@
 # Adia — Build Progress
 
+## Run 293 — 2026-07-09T14:10:00Z — Rate-limit tests for remaining analytics endpoints (1178 → 1196)
+
+### Shipped
+
+**Rate-limit tests for 6 analytics endpoints** (`feat: rate-limit tests for all analytics endpoints`):
+
+Added 3 tests × 6 files = 18 new web tests confirming that `adminGuard` correctly gates all remaining analytics endpoints at 20 req/60s:
+
+- `admin-churn-analysis.test.ts` — IPs 10.91.1.x
+- `admin-usage-heatmap.test.ts` — IPs 10.91.2.x
+- `admin-revenue.test.ts` — IPs 10.91.3.x
+- `admin-activation-timeline.test.ts` — IPs 10.91.4.x
+- `admin-cohort-retention.test.ts` — IPs 10.91.5.x
+- `admin-churn-cohort.test.ts` — IPs 10.91.6.x
+
+Each file received the same 3-test block:
+1. `returns 429 after 20 requests from the same IP` — 20× 200 then 429 with `too many requests` body
+2. `429 response includes Retry-After header` — distinct IP, header is truthy after bucket exhausted
+3. `rate limit fires before auth check — wrong token still gets 429 when bucket exhausted` — wrong-token request gets 429 not 401
+
+Unique IP subnets per file prevent cross-test contamination. The rate-limit bucket is per-IP (from `x-forwarded-for`), so IPs are scoped to each describe group.
+
+### Tests
+1196 passed (up from 1178). 47 test files green.
+
+### Blocked
+Nothing blocked. Swift toolchain unavailable on Linux container.
+
+### Next agent should pick up
+- Dormant-churn view: new endpoint `GET /api/admin/dormant-churn` returning licenses that had ≥1 activation AND later churned (distinct from `/dormant` which is just "activated but not seen recently")
+- ChurnCohortPanel ↔ CohortRetentionPanel click-to-highlight: clicking a cohort row in one panel highlights the same cohort date in the other
+- Rate-limit tests for time-to-churn (already done in Run 292) — all 6 remaining analytics endpoints are now covered
+- HistoryInsightsSection preview/snapshot test exercising `totalStreakBreaks > 0` and `mostBrokenStreakLength != nil` paths
+- Growing `morningNudgeTitles` pool from 5 → 7 entries to match the `morningNudgeMessages` pool size
+
+---
+
 ## Run 292 — 2026-07-09T12:10:00Z — Rate-limit tests for time-to-churn + audit-log tests for bulk-note (1172 → 1178)
 
 ### Shipped
