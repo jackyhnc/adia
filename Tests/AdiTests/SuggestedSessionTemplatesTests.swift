@@ -130,4 +130,41 @@ struct SuggestedSessionTemplatesTests {
                     "template '\(t.task)' has suspiciously short successCriteria: '\(t.successCriteria)'")
         }
     }
+
+    // MARK: randomSuggestions
+
+    @Test func randomSuggestionsRespectsCount() {
+        let results = SuggestedSessionTemplates.randomSuggestions(count: 3)
+        #expect(results.count == 3)
+    }
+
+    @Test func randomSuggestionsExcludesSpecifiedTasks() {
+        let excluded = Set(SuggestedSessionTemplates.all.prefix(5).map(\.task))
+        let results = SuggestedSessionTemplates.randomSuggestions(
+            count: SuggestedSessionTemplates.all.count,
+            excluding: excluded
+        )
+        for task in excluded {
+            #expect(!results.map(\.task).contains(task),
+                    "randomSuggestions should not return excluded task '\(task)'")
+        }
+    }
+
+    @Test func randomSuggestionsCountCappedByCatalogSize() {
+        let results = SuggestedSessionTemplates.randomSuggestions(count: 999)
+        #expect(results.count == SuggestedSessionTemplates.all.count,
+                "count > catalog should return all available templates")
+    }
+
+    @Test func randomSuggestionsReturnsEmptyWhenAllExcluded() {
+        let allTasks = Set(SuggestedSessionTemplates.all.map(\.task))
+        let results = SuggestedSessionTemplates.randomSuggestions(count: 3, excluding: allTasks)
+        #expect(results.isEmpty, "all tasks excluded → result should be empty")
+    }
+
+    @Test func randomSuggestionsResultsAreUnique() {
+        let results = SuggestedSessionTemplates.randomSuggestions(count: SuggestedSessionTemplates.all.count)
+        let tasks = results.map(\.task)
+        #expect(tasks.count == Set(tasks).count, "randomSuggestions should not return duplicate templates")
+    }
 }

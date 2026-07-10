@@ -14,6 +14,7 @@ struct IdleBody: View {
     @State private var templates: [SessionTemplate] = []
     @State private var templateError: String? = nil
     @State private var heatmapDays: [DayActivity] = []
+    @State private var displayedSuggestions: [SuggestedTemplate] = []
 
     var body: some View {
         Group {
@@ -36,10 +37,22 @@ struct IdleBody: View {
                 : await SessionTemplateStore.shared.sorted()
             templates = Array(ordered.prefix(2))
             heatmapDays = await SessionHistory.shared.weeklyHeatmap()
+            displayedSuggestions = SuggestedSessionTemplates.randomSuggestions(
+                count: SuggestedSessionTemplates.displayCount,
+                excluding: settings.dismissedSuggestionTasks
+            )
             NotchState.shared.idleTemplateCount = templates.count
             NotchState.shared.idleHasNote = lastRecord?.note != nil
             NotchState.shared.idleHasHeatmap = heatmapDays.contains { $0.sessionCount > 0 }
             NotchState.shared.idleHasDailyGoal = settings.dailyFocusGoalMinutes != nil
+        }
+        .onChange(of: settings.showSuggestedTemplates) { _, newValue in
+            if newValue {
+                displayedSuggestions = SuggestedSessionTemplates.randomSuggestions(
+                    count: SuggestedSessionTemplates.displayCount,
+                    excluding: settings.dismissedSuggestionTasks
+                )
+            }
         }
     }
 
@@ -138,10 +151,7 @@ struct IdleBody: View {
 
     @ViewBuilder
     private var suggestedSection: some View {
-        let suggestions = SuggestedSessionTemplates.all
-            .prefix(SuggestedSessionTemplates.displayCount)
-            .filter { !settings.dismissedSuggestionTasks.contains($0.task) }
-        if !suggestions.isEmpty {
+        if !displayedSuggestions.isEmpty {
             VStack(alignment: .leading, spacing: 5) {
                 HStack {
                     Text("SUGGESTIONS")
@@ -151,7 +161,8 @@ struct IdleBody: View {
                     Spacer()
                     Button {
                         withAnimation(.easeOut(duration: 0.15)) {
-                            for s in suggestions { settings.dismissSuggestion(task: s.task) }
+                            for s in displayedSuggestions { settings.dismissSuggestion(task: s.task) }
+                            displayedSuggestions = []
                         }
                     } label: {
                         Text("dismiss all")
@@ -178,7 +189,7 @@ struct IdleBody: View {
                     .help("Hide suggestions section. Re-enable in Settings → Templates.")
                 }
 
-                ForEach(Array(suggestions), id: \.task) { s in
+                ForEach(displayedSuggestions, id: \.task) { s in
                     suggestedButton(s)
                 }
             }
@@ -288,6 +299,7 @@ struct IdleBody: View {
             Button(role: .destructive) {
                 withAnimation(.easeOut(duration: 0.15)) {
                     settings.dismissSuggestion(task: s.task)
+                    displayedSuggestions.removeAll { $0.task == s.task }
                 }
             } label: {
                 Label("Dismiss", systemImage: "xmark")

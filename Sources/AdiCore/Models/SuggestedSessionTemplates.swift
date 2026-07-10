@@ -27,6 +27,12 @@ public struct SuggestedTemplate: Sendable {
 public enum SuggestedSessionTemplates {
     public static let displayCount: Int = 3
 
+    /// Returns a randomly ordered selection of templates, filtered by excluded task names.
+    /// When `count` exceeds the available (non-excluded) catalog size, all available items are returned.
+    public static func randomSuggestions(count: Int, excluding excludedTasks: Set<String> = []) -> [SuggestedTemplate] {
+        Array(all.filter { !excludedTasks.contains($0.task) }.shuffled().prefix(count))
+    }
+
     public static let all: [SuggestedTemplate] = [
         SuggestedTemplate(
             icon: "doc.text",
