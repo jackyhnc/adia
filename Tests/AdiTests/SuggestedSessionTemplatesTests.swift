@@ -1011,4 +1011,40 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 66,
                 "catalog should have ≥66 templates after statistics/kinesiology/veterinary additions")
     }
+
+    // MARK: - Business/management templates
+
+    @Test func catalogContainsMBACaseAnalysisTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("mba") || (lower.contains("case analysis") && lower.contains("strategic"))
+        }
+        #expect(has, "catalog must include an MBA case analysis or strategic management template")
+    }
+
+    @Test func catalogContainsGMATTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            t.task.lowercased().contains("gmat")
+        }
+        #expect(has, "catalog must include a GMAT prep template")
+    }
+
+    @Test func businessTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("mba") || lower.contains("gmat")
+        }
+        #expect(!templates.isEmpty, "at least one business template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "business template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastSixtyEightTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 68,
+                "catalog should have ≥68 templates after business additions")
+    }
 }

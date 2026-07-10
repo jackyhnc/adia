@@ -229,6 +229,30 @@ public final class CalloutManager {
             || word("wireframing") || lower.contains("user story") || lower.contains("user stories") {
             return "ux"
         }
+        // business/management — positioned before research so "marketing research" and "market analysis"
+        // route here rather than the generic research pool. Startup branch above already catches
+        // "business plan", "pitch deck", and "business model" before this point.
+        if word("mba") || word("gmat")
+            || lower.contains("case analysis") || lower.contains("business case")
+            || lower.contains("operations management")
+            || lower.contains("supply chain")
+            || lower.contains("organizational behavior") || lower.contains("organisational behaviour")
+            || lower.contains("strategic management") || lower.contains("business strategy")
+            || lower.contains("marketing research") || lower.contains("market research")
+            || lower.contains("market analysis") || lower.contains("market segmentation")
+            || lower.contains("human resources") || lower.contains("hr management")
+            || lower.contains("management consulting") || lower.contains("consulting case")
+            || lower.contains("competitive analysis") || lower.contains("competitor analysis")
+            || lower.contains("consumer behavior") || lower.contains("consumer behaviour")
+            || lower.contains("brand management") || lower.contains("brand strategy")
+            || lower.contains("corporate strategy")
+            || lower.contains("business administration")
+            || lower.contains("swot analysis") || word("swot")
+            || lower.contains("value chain")
+            || lower.contains("business school")
+            || lower.contains("management class") || lower.contains("management course") {
+            return "business"
+        }
         if word("research") || word("lab")
             || lower.contains("case study") || lower.contains("case studies")
             || lower.contains("data analysis") || lower.contains("data collection")

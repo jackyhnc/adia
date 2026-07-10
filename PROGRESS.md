@@ -14200,3 +14200,44 @@ None.
   - **Business/management keyword**: MBA, GMAT, operations management, supply chain, organizational behavior, strategic management, business strategy, marketing research, HR/human resources → `"business"` keyword; callout pool; templates ("Work on an MBA case analysis" + "Prepare for the GMAT")
   - **Sports science/kinesiology keyword**: kinesiology, exercise science, biomechanics, sport psychology, exercise physiology, sport performance, athletic training, kinematic — distinct from fitness (fitness = workout tracking) and premed → `"sportsscience"` keyword
   - **AppMonitor observability tests**: requires macOS build environment
+
+---
+## Run 314 — 2026-07-10
+
+### Shipped
+- **Business/management keyword + callout pool + templates**: `extractTaskKeyword` gains `"business"` branch positioned BEFORE research so MBA/management tasks route here instead of the generic research pool. Startup branch above still catches "business plan"/"pitch deck" first.
+  - Matches: `word("mba")`, `word("gmat")`, `lower.contains("case analysis")`, `lower.contains("business case")`, `lower.contains("operations management")`, `lower.contains("supply chain")`, `lower.contains("organizational behavior")` / `"organisational behaviour"`, `lower.contains("strategic management")` / `"business strategy"`, `lower.contains("marketing research")` / `"market research"` / `"market analysis"` / `"market segmentation"`, `lower.contains("human resources")` / `"hr management"`, `lower.contains("management consulting")` / `"consulting case"`, `lower.contains("competitive analysis")` / `"competitor analysis"`, `lower.contains("consumer behavior")` / `"consumer behaviour"`, `lower.contains("brand management")` / `"brand strategy"`, `lower.contains("corporate strategy")`, `lower.contains("business administration")`, `lower.contains("swot analysis")` / `word("swot")`, `lower.contains("value chain")`, `lower.contains("business school")`, `lower.contains("management class")` / `"management course"`.
+  - `businessCallouts(tier:)`: 3-tier pool (4/3/3) in MBA/consulting voice:
+    - Tier 1: "your case analysis isn't going to write itself." / "get back to your business work." / "McKinsey recruits don't get there by browsing." / "your MBA coursework is waiting."
+    - Tier 2: "stop. your business assignment is due." / "this isn't your case study." / "close this and get back to your management work."
+    - Tier 3: "CLOSE THIS. open your case analysis." / "no one gets their MBA by scrolling." / "your business strategy won't write itself — back to work."
+  - `case "business": return businessCallouts(tier: tier)` added to `taskAwareCallouts` switch.
+  - `SuggestedSessionTemplates.all` grows 66→68:
+    - "Work on an MBA case analysis or strategic management assignment" (briefcase.fill icon, 60 min)
+    - "Prep for the GMAT or business school entrance exam" (graduationcap.fill icon, 90 min)
+- **17 new tests** in `CalloutManagerTests.swift` (642→659):
+  - `extractTaskKeywordBusinessMBA`, `BusinessGMAT`, `BusinessCaseAnalysis`, `BusinessSupplyChain`, `BusinessOrgBehavior`, `BusinessStrategy`, `BusinessMarketResearch`, `BusinessMarketingResearch`, `BusinessSWOT`, `BusinessHumanResources`, `BusinessCompetitiveAnalysis`
+  - `extractTaskKeywordBusinessDoesNotOverrideStartup` (pitch deck → startup), `BusinessDoesNotOverrideCode` (debug → code)
+  - `taskAwareCalloutsBusinessHasMessages`, `BusinessDedicatedPoolSize`, `BusinessTier1ReferencesBusinessWork`, `BusinessTier3HasUrgentDirective`
+- **4 new tests** in `SuggestedSessionTemplatesTests.swift` (114→118):
+  - `catalogContainsMBACaseAnalysisTemplate`, `catalogContainsGMATTemplate`, `businessTemplatesHaveReasonableDuration`, `catalogHasAtLeastSixtyEightTemplates`
+
+### Verification
+Swift toolchain unavailable on Linux container — verified by code inspection:
+- business branch positioned after ux (line 231) and before research (line 232+) → "market research" fires business first ✓
+- startup branch (line 92) is positioned before business → "pitch deck" fires startup ✓
+- code branch (line 124) is before business → word("debug") fires code for "debug the business logic" ✓
+- `word("swot")` uses `\bswot\b` — no false positive for unrelated words ✓
+- "business plan" already matched by startup's `lower.contains("business plan")` before reaching business ✓
+- `businessCallouts(tier: 3)` contains "CLOSE THIS. open your case analysis." → `hasPrefix("CLOSE THIS")` passes ✓
+- Template `preferredDuration`: 60*60=3600s (MBA case), 90*60=5400s (GMAT) — both in [300, 10800] ✓
+
+### Blocked / skipped
+None.
+
+### Next agent should pick up
+- **Finance/accounting keyword expansion**: current `finance` branch catches professional accounting (CPA, financial modeling, balance sheet); could add more exam-specific terms (Series 7/63, CFA Level 1/2/3, Bloomberg Terminal) and investment analysis terms (DCF model, comparable company analysis, leveraged buyout/LBO) for finance students
+- **Social work keyword split**: current `therapy` branch catches "social work" and social worker/LCSW/LMFT terms; a dedicated "socialwork" branch could have more precise callouts (case management, social work assessment, community organizing, field placement, MSW program)
+- **AppMonitor observability tests**: requires macOS build environment
+- **arduino false-positive check**: "write arduino code" — code branch checks before engineering, so "arduino code" hits code first; worth macOS build verification
+- **Piano/instrument practice distinction**: "practice piano" hits the `practice` keyword branch already; no additional routing needed

@@ -430,5 +430,17 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target subject reviewed, key pharmacology or pathology concepts summarized, and at least 15 practice questions completed with explanations",
             preferredDuration: 90 * 60
         ),
+        SuggestedTemplate(
+            icon: "briefcase.fill",
+            task: "Work on an MBA case analysis or strategic management assignment",
+            successCriteria: "Case analysis fully written with problem identification, frameworks applied (SWOT, Porter's Five Forces, or similar), strategic recommendations clear, and document saved for submission",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "graduationcap.fill",
+            task: "Prep for the GMAT or business school entrance exam",
+            successCriteria: "At least one full practice section completed, incorrect answers reviewed and error patterns identified, and key concepts or formulas for that section noted for further review",
+            preferredDuration: 90 * 60
+        ),
     ]
 }

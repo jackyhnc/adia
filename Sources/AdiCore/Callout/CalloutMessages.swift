@@ -100,6 +100,7 @@ extension CalloutManager {
         case "statistics":     return statisticsCallouts(tier: tier)
         case "kinesiology":    return kinesiologyCallouts(tier: tier)
         case "veterinary":     return veterinaryCallouts(tier: tier)
+        case "business":       return businessCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1161,6 +1162,27 @@ extension CalloutManager {
             "CLOSE THIS. open your veterinary notes.",
             "no one passes NAVLE by scrolling.",
             "your animal science work won't do itself — back to it.",
+        ]
+        }
+    }
+
+    private func businessCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your case analysis isn't going to write itself.",
+            "get back to your business work.",
+            "McKinsey recruits don't get there by browsing.",
+            "your MBA coursework is waiting.",
+        ]
+        case 2: return [
+            "stop. your business assignment is due.",
+            "this isn't your case study.",
+            "close this and get back to your management work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your case analysis.",
+            "no one gets their MBA by scrolling.",
+            "your business strategy won't write itself — back to work.",
         ]
         }
     }

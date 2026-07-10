@@ -4798,4 +4798,100 @@ struct CalloutManagerTests {
             #expect(tier4 == tier3, "tier4 (out of range) should return same pool as tier3")
         }
     }
+
+    // MARK: - Business/management keyword tests
+
+    @Test func extractTaskKeywordBusinessMBA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my MBA strategic management case") == "business")
+    }
+
+    @Test func extractTaskKeywordBusinessGMAT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for the GMAT verbal section") == "business")
+    }
+
+    @Test func extractTaskKeywordBusinessCaseAnalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my case analysis for marketing class") == "business")
+    }
+
+    @Test func extractTaskKeywordBusinessSupplyChain() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze our supply chain bottlenecks") == "business")
+    }
+
+    @Test func extractTaskKeywordBusinessOrgBehavior() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study organizational behavior for my management class") == "business")
+    }
+
+    @Test func extractTaskKeywordBusinessStrategy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "draft our business strategy for next quarter") == "business")
+    }
+
+    @Test func extractTaskKeywordBusinessMarketResearch() {
+        #expect(CalloutManager.extractTaskKeyword(from: "do market research for our product launch") == "business")
+    }
+
+    @Test func extractTaskKeywordBusinessMarketingResearch() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete a marketing research assignment") == "business")
+    }
+
+    @Test func extractTaskKeywordBusinessSWOT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete a SWOT analysis for my management assignment") == "business")
+    }
+
+    @Test func extractTaskKeywordBusinessHumanResources() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my human resources management case study") == "business")
+    }
+
+    @Test func extractTaskKeywordBusinessCompetitiveAnalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a competitive analysis for my strategy class") == "business")
+    }
+
+    @Test func extractTaskKeywordBusinessDoesNotOverrideStartup() {
+        // pitch deck is already in the startup branch (positioned before business)
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my pitch deck for the investor meeting") == "startup")
+    }
+
+    @Test func extractTaskKeywordBusinessDoesNotOverrideCode() {
+        // "debug" fires the code branch before business is reached
+        #expect(CalloutManager.extractTaskKeyword(from: "debug the business logic in my app") == "code")
+    }
+
+    @Test func taskAwareCalloutsBusinessHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "business", tier: tier)
+                #expect(!msgs.isEmpty, "business tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsBusinessDedicatedPoolSize() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "business", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "business", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "business", tier: 3)
+            #expect(t1.count >= 3, "business tier1 must have at least 3 messages")
+            #expect(t2.count >= 2, "business tier2 must have at least 2 messages")
+            #expect(t3.count >= 2, "business tier3 must have at least 2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsBusinessTier1ReferencesBusinessWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "business", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("case") || lower.contains("business") || lower.contains("mba")
+                    || lower.contains("mckinsey") || lower.contains("management") || lower.contains("strategy")
+            }
+            #expect(hasRef, "business tier1 messages must reference business work domain")
+        }
+    }
+
+    @Test func taskAwareCalloutsBusinessTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "business", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "business tier3 should contain a CLOSE THIS directive")
+        }
+    }
 }
