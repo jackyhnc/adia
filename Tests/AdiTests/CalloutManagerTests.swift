@@ -4382,4 +4382,141 @@ struct CalloutManagerTests {
             #expect(tier4 == tier3, "tier4 (out of range) should return same pool as tier3")
         }
     }
+
+    // MARK: - UX design keyword
+
+    @Test func extractTaskKeywordFromUserResearch() {
+        // "user research" routes to ux even though it contains "research";
+        // the ux branch is ordered before the generic research branch.
+        #expect(CalloutManager.extractTaskKeyword(from: "conduct user research for my app") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "do user research interviews today") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze my user research data") == "ux")
+    }
+
+    @Test func extractTaskKeywordFromUsabilityTesting() {
+        // avoid "report" (report branch) and standalone "test" (studying branch)
+        #expect(CalloutManager.extractTaskKeyword(from: "run usability tests on the prototype") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my usability testing writeup") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "run my usability testing today") == "ux")
+    }
+
+    @Test func extractTaskKeywordFromUserFlow() {
+        // avoid "document" (report branch)
+        #expect(CalloutManager.extractTaskKeyword(from: "map out the user flow for checkout") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the user flows for onboarding") == "ux")
+    }
+
+    @Test func extractTaskKeywordFromUserJourney() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my user journey map") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "create user journey maps for each persona") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the journey mapping exercise") == "ux")
+    }
+
+    @Test func extractTaskKeywordFromAffinityMap() {
+        // avoid "notes" and "research" as standalone words (studying / research branches)
+        #expect(CalloutManager.extractTaskKeyword(from: "do affinity mapping from my interviews") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "build an affinity diagram for the product") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "cluster insights into an affinity map") == "ux")
+    }
+
+    @Test func extractTaskKeywordFromDesignThinking() {
+        #expect(CalloutManager.extractTaskKeyword(from: "apply design thinking to this problem") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "facilitate a design thinking exercise") == "ux")
+    }
+
+    @Test func extractTaskKeywordFromHCI() {
+        // avoid "study"/"exam" (studying branch)
+        #expect(CalloutManager.extractTaskKeyword(from: "apply HCI principles to my interface") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "learn about human-computer interaction today") == "ux")
+    }
+
+    @Test func extractTaskKeywordFromUXResearch() {
+        // "ux research" is a compound phrase caught by the ux branch before the report branch
+        #expect(CalloutManager.extractTaskKeyword(from: "write up my UX research findings") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "do UX design work for the onboarding flow") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "work on UX writing for the dashboard") == "ux")
+    }
+
+    @Test func extractTaskKeywordFromInformationArchitecture() {
+        // "information architecture" is a UX term — must not route to building architecture
+        // avoid "document" (report branch)
+        #expect(CalloutManager.extractTaskKeyword(from: "design the information architecture for my app") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "map out the information architecture of the site") == "ux")
+    }
+
+    @Test func extractTaskKeywordFromInteractionDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on interaction design for the modal") == "ux")
+    }
+
+    @Test func extractTaskKeywordFromUserStory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write user stories for the sprint") == "ux")
+        #expect(CalloutManager.extractTaskKeyword(from: "refine user story acceptance criteria") == "ux")
+    }
+
+    @Test func extractTaskKeywordFromWireframing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "wireframing the settings screen today") == "ux")
+    }
+
+    @Test func extractTaskKeywordUXDoesNotOverrideEssay() {
+        // essay fires before ux
+        #expect(CalloutManager.extractTaskKeyword(from: "write an essay on UX design principles") == "essay")
+    }
+
+    @Test func extractTaskKeywordUXDoesNotOverrideCode() {
+        // code fires before ux
+        #expect(CalloutManager.extractTaskKeyword(from: "code the user authentication flow") == "code")
+    }
+
+    @Test func extractTaskKeywordUXDoesNotFalseMatchGenericDesign() {
+        // generic design without any UX-specific terms routes to design, not ux
+        #expect(CalloutManager.extractTaskKeyword(from: "design my logo in Photoshop") == "design")
+    }
+
+    @Test func taskAwareCalloutsUXHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "ux", tier: tier)
+                #expect(!msgs.isEmpty, "ux tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsUXDedicatedPoolSize() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "ux", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "ux", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "ux", tier: 3)
+            #expect(t1.count >= 3, "ux tier1 must have at least 3 messages")
+            #expect(t2.count >= 2, "ux tier2 must have at least 2 messages")
+            #expect(t3.count >= 2, "ux tier3 must have at least 2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsUXTier1ReferencesUXWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "ux", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("ux") || lower.contains("user") || lower.contains("design")
+                    || lower.contains("research") || lower.contains("usability")
+            }
+            #expect(hasRef, "ux tier1 messages must reference UX work domain")
+        }
+    }
+
+    @Test func taskAwareCalloutsUXTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "ux", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "ux tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsUXTier4FallsThrough() async {
+        await MainActor.run {
+            let tier4 = CalloutManager.shared.taskAwareCallouts(keyword: "ux", tier: 4)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "ux", tier: 3)
+            #expect(tier4 == tier3, "tier4 (out of range) should return same pool as tier3")
+        }
+    }
 }

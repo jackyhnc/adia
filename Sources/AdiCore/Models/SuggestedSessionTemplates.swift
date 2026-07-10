@@ -382,5 +382,17 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Document reviewed, key provisions summarized, implications identified, and at least two paragraphs of critical analysis written with citations",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "person.2.fill",
+            task: "Conduct user research and synthesize findings",
+            successCriteria: "All interviews or surveys completed, notes organized, key themes identified in an affinity diagram or synthesis document, and a clear summary of insights written up",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "rectangle.on.rectangle",
+            task: "Map out a user flow or wireframe a feature in Figma",
+            successCriteria: "Complete user flow or wireframe screens created for the target feature, with all key states and edge cases covered and a brief annotation explaining design decisions",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

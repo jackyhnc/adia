@@ -96,6 +96,7 @@ extension CalloutManager {
         case "enviro":         return enviroCallouts(tier: tier)
         case "finance":        return financeCallouts(tier: tier)
         case "policy":         return policyCallouts(tier: tier)
+        case "ux":             return uxCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1073,6 +1074,27 @@ extension CalloutManager {
             "CLOSE THIS. open your policy memo.",
             "your regulatory analysis won't write itself — back to work.",
             "no one writes policy briefs by scrolling.",
+        ]
+        }
+    }
+
+    private func uxCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your user research isn't going to conduct itself.",
+            "get back to your UX work.",
+            "those flows won't map themselves.",
+            "your users are waiting for a better experience.",
+        ]
+        case 2: return [
+            "stop. your UX deliverable is waiting.",
+            "this isn't your Figma file.",
+            "close this and get back to your user research.",
+        ]
+        default: return [
+            "CLOSE THIS. open your design tool.",
+            "no one ships great UX by browsing — back to work.",
+            "your usability report won't write itself — close this.",
         ]
         }
     }

@@ -868,4 +868,43 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 58,
                 "catalog should have ≥58 templates after finance and policy additions")
     }
+
+    // MARK: - UX design templates
+
+    @Test func catalogContainsUserResearchTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("user research")
+        }
+        #expect(has, "catalog must include a user research template")
+    }
+
+    @Test func catalogContainsUXWireframeTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return (lower.contains("user flow") || lower.contains("wireframe"))
+                && (lower.contains("figma") || lower.contains("feature") || lower.contains("map"))
+        }
+        #expect(has, "catalog must include a user flow or wireframe template")
+    }
+
+    @Test func uxTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("user research") || lower.contains("user flow")
+                || lower.contains("wireframe")
+        }
+        #expect(!templates.isEmpty, "at least one UX template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "UX template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastSixtyTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 60,
+                "catalog should have ≥60 templates after UX additions")
+    }
 }

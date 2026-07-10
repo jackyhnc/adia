@@ -192,6 +192,27 @@ public final class CalloutManager {
             || lower.contains("random forest") || lower.contains("decision tree") {
             return "datascience"
         }
+        // ux — positioned before research so "user research" routes here rather than to the
+        // generic research pool. "information architecture" is also caught here (not building arch).
+        if lower.contains("user research") || lower.contains("usability testing")
+            || lower.contains("usability test")
+            || lower.contains("user flow") || lower.contains("user flows")
+            || lower.contains("user journey") || lower.contains("user journeys")
+            || lower.contains("journey map") || lower.contains("journey mapping")
+            || lower.contains("affinity map") || lower.contains("affinity mapping")
+            || lower.contains("affinity diagram") || lower.contains("affinity diagrams")
+            || lower.contains("user persona") || lower.contains("user personas")
+            || lower.contains("design thinking")
+            || word("hci") || lower.contains("human-computer interaction")
+            || lower.contains("user testing")
+            || lower.contains("ux research") || lower.contains("ux writing")
+            || lower.contains("ux design") || word("ux")
+            || lower.contains("information architecture")
+            || lower.contains("interaction design")
+            || lower.contains("accessibility audit")
+            || word("wireframing") || lower.contains("user story") || lower.contains("user stories") {
+            return "ux"
+        }
         if word("research") || word("lab")
             || lower.contains("case study") || lower.contains("case studies")
             || lower.contains("data analysis") || lower.contains("data collection")
@@ -513,10 +534,13 @@ public final class CalloutManager {
             || word("litigation") || word("motions") {
             return "legal"
         }
-        // Guard common software-domain false positives before checking architecture keywords.
+        // Guard common software-domain and UX false positives before checking architecture keywords.
+        // "information architecture" routes to the ux branch above; also guarded here so that
+        // if the ux branch is ever reordered the building-architecture messages don't fire.
         let isSoftwareArchitecture = lower.contains("software architecture")
             || lower.contains("system architecture") || lower.contains("application architecture")
             || lower.contains("cloud architecture") || lower.contains("data architecture")
+            || lower.contains("information architecture")
         if !isSoftwareArchitecture
             && (word("architect") || word("architecture") || word("architectural")
                 || word("autocad") || word("revit") || word("rhino") || word("grasshopper") || word("archicad")

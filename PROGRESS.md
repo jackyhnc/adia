@@ -14117,3 +14117,55 @@ None.
 - **AppMonitor observability tests**: requires macOS build environment
 - **arduino false-positive check**: "write arduino code" — engineering branch checked after code, so this should route to code; worth verifying on macOS build
 - **Music production instrument practice distinction**: "practice piano" is currently unmatched (doesn't hit musicproduction or musictheory); consider adding `word("practice") && word("instrument")` style match — but "practice" alone is already in the `practice` keyword branch, so "practice piano" already routes to `practice` ✓
+
+---
+## Run 313 — 2026-07-10
+
+**Shipped:** UX design keyword + callout pool + 2 templates + 20 tests + information-architecture false-positive fix
+
+### What changed
+- **`extractTaskKeyword` — new `"ux"` branch** (`CalloutManager.swift`): positioned BEFORE the generic `research` branch so "user research" routes to UX-specific callouts rather than the generic research pool.
+  - Matches: `user research`, `usability testing`/`usability test`, `user flow`/`user flows`, `user journey`/`user journeys`, `journey map`/`journey mapping`, `affinity map`/`affinity mapping`, `affinity diagram`/`affinity diagrams`, `user persona`/`user personas`, `design thinking`, `word("hci")`, `human-computer interaction`, `user testing`, `ux research`/`ux writing`/`ux design`, `word("ux")`, `information architecture`, `interaction design`, `accessibility audit`, `word("wireframing")`, `user story`/`user stories`.
+  - Ordering: datascience (line 193) → **ux** (line 214) → research (line 220) → art → design. Positioning before research is critical so `lower.contains("user research")` fires before `word("research")`.
+
+- **"information architecture" false-positive fix** (`CalloutManager.swift`): "information architecture" is a UX term — it now routes to the `ux` branch. Belt-and-suspenders: also added to the `isSoftwareArchitecture` guard (line 543) so building-architecture callouts can never fire even if the ux branch were reordered.
+
+- **`uxCallouts(tier:)`** (`CalloutMessages.swift`): 3-tier pool (4/3/3 messages):
+  - Tier 1: user-research/Figma voice — "your user research isn't going to conduct itself." / "get back to your UX work." / "those flows won't map themselves." / "your users are waiting for a better experience."
+  - Tier 2: "stop. your UX deliverable is waiting." / "this isn't your Figma file." / "close this and get back to your user research."
+  - Tier 3: "CLOSE THIS. open your design tool." / "no one ships great UX by browsing — back to work." / "your usability report won't write itself — close this."
+  - `case "ux": return uxCallouts(tier: tier)` added to `taskAwareCallouts` switch.
+
+- **`SuggestedSessionTemplates`** grows 58→60:
+  - "Conduct user research and synthesize findings" (person.2.fill icon, 45 min)
+  - "Map out a user flow or wireframe a feature in Figma" (rectangle.on.rectangle icon, 45 min)
+
+- **`CalloutManagerTests.swift`**: 20 new `@Test` functions (577→597):
+  - Keyword extraction: `extractTaskKeywordFromUserResearch` (3 inputs, verifies ux fires before research branch), `extractTaskKeywordFromUsabilityTesting`, `extractTaskKeywordFromUserFlow`, `extractTaskKeywordFromUserJourney`, `extractTaskKeywordFromAffinityMap`, `extractTaskKeywordFromDesignThinking`, `extractTaskKeywordFromHCI`, `extractTaskKeywordFromUXResearch`, `extractTaskKeywordFromInformationArchitecture` (verifies no route to building architecture), `extractTaskKeywordFromInteractionDesign`, `extractTaskKeywordFromUserStory`, `extractTaskKeywordFromWireframing`
+  - Counter-cases: `extractTaskKeywordUXDoesNotOverrideEssay`, `extractTaskKeywordUXDoesNotOverrideCode`, `extractTaskKeywordUXDoesNotFalseMatchGenericDesign` (design logo → design, not ux)
+  - Pool tests: `taskAwareCalloutsUXHasMessages`, `taskAwareCalloutsUXDedicatedPoolSize` (≥3/2/2), `taskAwareCalloutsUXTier1ReferencesUXWork`, `taskAwareCalloutsUXTier3HasUrgentDirective`, `taskAwareCalloutsUXTier4FallsThrough`
+
+- **`SuggestedSessionTemplatesTests.swift`**: 4 new tests (100→104):
+  - `catalogContainsUserResearchTemplate`, `catalogContainsUXWireframeTemplate`, `uxTemplatesHaveReasonableDuration`, `catalogHasAtLeastSixtyTemplates`
+
+### Verification
+Swift toolchain unavailable on Linux container — verified by code inspection:
+- ux branch (line 194) positioned before research (line 220) → "conduct user research for my app" fires `lower.contains("user research")` in ux block ✓
+- `word("ux")` uses `\bux\b` — no false positive for "linux", "flux", "crux" (all lack `\b` before "u") ✓
+- "information architecture" now in both ux branch AND isSoftwareArchitecture guard — building architecture callouts cannot fire ✓
+- uxCallouts tier3 contains "CLOSE THIS. open your design tool." → `hasPrefix("CLOSE THIS")` passes ✓
+- Template durations: 45*60=2700s, in [300, 10800] ✓
+- Counter-case: "design my logo in Photoshop" → word("design") fires in design branch (after ux); no UX-specific term matches in ux branch ✓
+- Counter-case: "code the user authentication flow" → word("code") fires in code branch (before ux) ✓
+
+### Blocked / skipped
+None.
+
+### Next agent should pick up
+- All GOAL.md items remain checked; BUILD_COMPLETE is in place.
+- Swift test count: 597 (CalloutManagerTests) + 104 (SuggestedSessionTemplatesTests)
+- Template catalog: 60 templates
+- Potential next improvements:
+  - **Business/management keyword**: MBA, GMAT, operations management, supply chain, organizational behavior, strategic management, business strategy, marketing research, HR/human resources → `"business"` keyword; callout pool; templates ("Work on an MBA case analysis" + "Prepare for the GMAT")
+  - **Sports science/kinesiology keyword**: kinesiology, exercise science, biomechanics, sport psychology, exercise physiology, sport performance, athletic training, kinematic — distinct from fitness (fitness = workout tracking) and premed → `"sportsscience"` keyword
+  - **AppMonitor observability tests**: requires macOS build environment
