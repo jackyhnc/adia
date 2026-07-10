@@ -416,4 +416,41 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 32,
                 "catalog should have at least 32 templates after nursing additions")
     }
+
+    // MARK: - Photography templates
+
+    @Test func catalogContainsPhotoEditingTemplate() {
+        let hasPhotoEdit = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("photo") && (lower.contains("edit") || lower.contains("export"))
+        }
+        #expect(hasPhotoEdit, "catalog must include a photo editing template")
+    }
+
+    @Test func catalogContainsPhotographyPracticeTemplate() {
+        let hasPractice = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("photo") || lower.contains("photograph")
+        }
+        #expect(hasPractice, "catalog must include a photography practice template")
+    }
+
+    @Test func photographyTemplatesHaveReasonableDuration() {
+        let photoTemplates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("photo") || lower.contains("photograph") || lower.contains("lightroom")
+        }
+        #expect(!photoTemplates.isEmpty, "at least one photography template must exist")
+        for template in photoTemplates {
+            if let dur = template.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                            "photography template duration must be between 5 minutes and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastThirtyFourTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 34,
+                "catalog should have at least 34 templates after photography additions")
+    }
 }

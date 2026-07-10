@@ -3309,4 +3309,98 @@ struct CalloutManagerTests {
             #expect(!result.isEmpty)
         }
     }
+
+    // MARK: - Photography keyword + callout pool
+
+    @Test func extractTaskKeywordPhotographyWord() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my photography project") == "photography")
+        #expect(CalloutManager.extractTaskKeyword(from: "I am a photographer building my portfolio") == "photography")
+    }
+
+    @Test func extractTaskKeywordPhotographyLightroom() {
+        #expect(CalloutManager.extractTaskKeyword(from: "edit my photos in lightroom") == "photography")
+        #expect(CalloutManager.extractTaskKeyword(from: "lightroom editing session") == "photography")
+    }
+
+    @Test func extractTaskKeywordPhotographyPhotoShoot() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for my photo shoot tomorrow") == "photography")
+        #expect(CalloutManager.extractTaskKeyword(from: "photoshoot prep and planning") == "photography")
+    }
+
+    @Test func extractTaskKeywordPhotographyEditingPhrases() {
+        #expect(CalloutManager.extractTaskKeyword(from: "photo editing session in capture one") == "photography")
+        #expect(CalloutManager.extractTaskKeyword(from: "editing photos from the event") == "photography")
+    }
+
+    @Test func extractTaskKeywordPhotographyPortraitLandscape() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice portrait photography techniques") == "photography")
+        #expect(CalloutManager.extractTaskKeyword(from: "review my landscape photography from the trip") == "photography")
+    }
+
+    @Test func extractTaskKeywordPhotographyHeadshots() {
+        #expect(CalloutManager.extractTaskKeyword(from: "edit client headshots from today") == "photography")
+        #expect(CalloutManager.extractTaskKeyword(from: "deliver the headshot gallery to my client") == "photography")
+    }
+
+    @Test func extractTaskKeywordPhotographyRawFiles() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cull and edit raw files from the weekend") == "photography")
+        #expect(CalloutManager.extractTaskKeyword(from: "raw editing for the wedding album") == "photography")
+    }
+
+    @Test func extractTaskKeywordPhotographyStreetProduct() {
+        #expect(CalloutManager.extractTaskKeyword(from: "go out and practice street photography") == "photography")
+        #expect(CalloutManager.extractTaskKeyword(from: "product photography shoot for client") == "photography")
+    }
+
+    @Test func extractTaskKeywordPhotographyDarkroom() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work in the darkroom developing film") == "photography")
+    }
+
+    @Test func taskAwareCalloutsPhotographyHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "photography", tier: tier)
+                #expect(!msgs.isEmpty, "photography tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsPhotographyDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "photography", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "photography", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "photography", tier: 3)
+            #expect(tier1.count >= 3, "photography tier1 should have ≥3 messages")
+            #expect(tier2.count >= 2, "photography tier2 should have ≥2 messages")
+            #expect(tier3.count >= 2, "photography tier3 should have ≥2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsPhotographyTier1ReferencesPhotographyWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "photography", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("photo") || lower.contains("lightroom")
+                    || lower.contains("edit") || lower.contains("raw")
+            }
+            #expect(hasRef, "photography tier1 messages must reference photography work")
+        }
+    }
+
+    @Test func taskAwareCalloutsPhotographyTier3HasUrgency() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "photography", tier: 3)
+            #expect(!tier3.isEmpty, "photography tier3 must have messages")
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "photography tier3 should contain an ALL-CAPS urgent directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsPhotographyTier4FallsThrough() async {
+        await MainActor.run {
+            let result = CalloutManager.shared.taskAwareCallouts(keyword: "photography", tier: 4)
+            #expect(!result.isEmpty, "tier 4 should fall through to tier3 photography messages")
+        }
+    }
 }

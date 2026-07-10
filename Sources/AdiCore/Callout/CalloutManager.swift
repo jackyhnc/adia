@@ -179,6 +179,20 @@ public final class CalloutManager {
             || lower.contains("meeting notes") || lower.contains("meeting prep") {
             return "meeting"
         }
+        // Photography must fire before video — "photo editing", "editing photos", "raw editing"
+        // all contain word("editing") which video catches via `word("editing")`.
+        if word("lightroom") || word("photography") || word("photographer")
+            || word("photoshoot") || lower.contains("photo shoot")
+            || lower.contains("photo editing") || lower.contains("edit photos")
+            || lower.contains("edit my photos") || lower.contains("editing photos")
+            || lower.contains("capture one")
+            || lower.contains("portrait photography") || lower.contains("landscape photography")
+            || lower.contains("street photography") || lower.contains("product photography")
+            || word("darkroom") || word("headshots") || word("headshot")
+            || lower.contains("photo series") || lower.contains("photo project")
+            || lower.contains("raw files") || lower.contains("raw editing") {
+            return "photography"
+        }
         if word("video") || word("editing") || word("footage") || word("film") || word("filming") {
             return "video"
         }

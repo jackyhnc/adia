@@ -226,5 +226,17 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Finished a full set of dosage calc problems with all errors reviewed and correct formulas restated from memory",
             preferredDuration: 30 * 60
         ),
+        SuggestedTemplate(
+            icon: "camera",
+            task: "Edit and export photos from my shoot",
+            successCriteria: "All selected photos are edited, color-graded, and exported from Lightroom or Capture One",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "camera.aperture",
+            task: "Practice and study photography composition techniques",
+            successCriteria: "Practiced at least 3 composition techniques with sample shots reviewed and annotated",
+            preferredDuration: 30 * 60
+        ),
     ]
 }

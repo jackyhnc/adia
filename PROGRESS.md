@@ -13815,3 +13815,25 @@ Another keyword domain or functional improvement. Remaining domains not yet cove
 - **Public policy**: policy memo, white paper, regulatory analysis, legislative brief (distinct from legal briefs)
 - **Social work / counseling**: case notes, treatment plan, clinical intake, DSM criteria, therapy notes
 - **Functional**: AppMonitor app-blocking observability tests, OnTaskDetector rate-limiter edge cases
+
+---
+## Run 308 — 2026-07-10
+
+**Shipped:** Photography keyword + callout pool + 2 suggested templates + 19 tests
+
+### What changed
+- `CalloutManager.extractTaskKeyword`: added `"photography"` branch **before the `video` block** (critical ordering — `word("editing")` in the video branch would intercept "photo editing", "editing photos", and "raw editing" tasks if photography came after). Matches: `lightroom`, `photography`, `photographer`, `photoshoot`, `photo shoot`, `photo editing`, `edit photos`, `edit my photos`, `editing photos`, `capture one`, portrait/landscape/street/product photography, `darkroom`, `headshots`, `headshot`, `photo series`, `photo project`, `raw files`, `raw editing`.
+- `CalloutMessages.photographyCallouts(tier:)`: 4-message tier1 pool (editing voice), 3-message tier2 (client pressure), 3-message tier3 (CLOSE THIS urgency).
+- `SuggestedSessionTemplates`: 2 new entries — "Edit and export photos from my shoot" (45 min, camera icon) and "Practice and study photography composition techniques" (30 min, camera.aperture icon). Catalog grows 32→34.
+- `CalloutManagerTests`: 15 new `@Test` functions covering keyword extraction (lightroom, photography/photographer, photo shoot/photoshoot, photo editing phrases, portrait/landscape photography, headshots, raw files, street/product photography, darkroom) plus pool-shape tests (hasMessages, poolSize ≥3/2/2, tier1 references photography work, tier3 has CLOSE THIS urgency, tier4 falls through).
+- `SuggestedSessionTemplatesTests`: 4 new tests (catalogContainsPhotoEditingTemplate, catalogContainsPhotographyPracticeTemplate, photographyTemplatesHaveReasonableDuration, catalogHasAtLeastThirtyFourTemplates).
+- `GOAL.md`: marked photography item as complete.
+
+### Test count
+- Swift: ~448 CalloutManagerTests + ~58 SuggestedSessionTemplatesTests
+
+### Next agent: pick up
+All GOAL.md items are checked. Consider adding:
+- **Data science / ML keyword**: `machine learning`, `deep learning`, `neural network`, `pytorch`, `tensorflow`, `jupyter notebook`, `kaggle` → route to new "datascience" keyword (position BEFORE research, remove `data science`/`data scientist` from research branch)
+- **Game development keyword**: `unity`, `unreal`, `godot`, `game mechanics`, `game design`, `game dev` → "gamedev" keyword
+- **Culinary keyword**: `recipe development`, `culinary`, `food science` → "culinary" keyword

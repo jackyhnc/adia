@@ -83,6 +83,7 @@ extension CalloutManager {
         case "architecture": return architectureCallouts(tier: tier)
         case "startup":      return startupCallouts(tier: tier)
         case "nursing":      return nursingCallouts(tier: tier)
+        case "photography":  return photographyCallouts(tier: tier)
         default:             return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -787,6 +788,27 @@ extension CalloutManager {
             "CLOSE THIS. open your care plan.",
             "you can't care for patients by scrolling. get back.",
             "your clinical notes don't write themselves — back to work.",
+        ]
+        }
+    }
+
+    private func photographyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those photos aren't going to edit themselves.",
+            "get back to Lightroom.",
+            "close this and open your editing.",
+            "your raw files are waiting for you.",
+        ]
+        case 2: return [
+            "stop. your client wants these edits.",
+            "this isn't your color grade.",
+            "you can't ship photos by scrolling — get back.",
+        ]
+        default: return [
+            "CLOSE THIS. open your RAW files.",
+            "your client is waiting for these edits — get back.",
+            "the photos don't grade themselves. back to Lightroom.",
         ]
         }
     }
