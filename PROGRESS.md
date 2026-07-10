@@ -13837,3 +13837,58 @@ All GOAL.md items are checked. Consider adding:
 - **Data science / ML keyword**: `machine learning`, `deep learning`, `neural network`, `pytorch`, `tensorflow`, `jupyter notebook`, `kaggle` → route to new "datascience" keyword (position BEFORE research, remove `data science`/`data scientist` from research branch)
 - **Game development keyword**: `unity`, `unreal`, `godot`, `game mechanics`, `game design`, `game dev` → "gamedev" keyword
 - **Culinary keyword**: `recipe development`, `culinary`, `food science` → "culinary" keyword
+
+---
+
+## Run 309 — 2026-07-10
+
+**Shipped:** Data science / ML keyword + callout pool + 2 suggested templates + 20 tests
+
+### What landed
+- `CalloutManager.extractTaskKeyword`: added `"datascience"` branch positioned **before** the `research` block. Removed `data science`/`data scientist` from research branch. Matches:
+  - `machine learning`, `deep learning`
+  - `neural network`, `neural networks`
+  - `pytorch`, `tensorflow`, `keras`
+  - `scikit-learn`, `sklearn`, `xgboost`
+  - `jupyter`, `jupyter notebook`
+  - `kaggle`
+  - `data science`, `data scientist`
+  - `natural language processing`
+  - `computer vision`
+  - `reinforcement learning`
+  - `model training`, `model accuracy`
+  - `hyperparameter`, `training loss`
+  - `gradient descent`, `gradient boosting`
+  - `random forest`, `decision tree`
+- `CalloutMessages.datascienceCallouts(tier:)`: 3-tier pool (4/3/3 messages) in notebook/model training voice:
+  - Tier 1: "your model isn't going to train itself." / "get back to your notebook." / "the data won't analyze itself — close this." / "your jupyter notebook is waiting."
+  - Tier 2: "stop. your model is waiting." / "this isn't your training run." / "your dataset doesn't clean itself — get back."
+  - Tier 3: "CLOSE THIS. open your jupyter notebook." / "no one trains models by scrolling." / "your model won't converge while you're here — back to work."
+  - Dispatch case `"datascience"` added to `taskAwareCallouts` switch.
+- `SuggestedSessionTemplates.all` grows 34→36:
+  - `"Train and evaluate a machine learning model"` (icon: brain.head.profile, 60-min session)
+  - `"Work through a Kaggle notebook or data science project"` (icon: tablecells.badge.ellipsis, 45-min session)
+- **16 new tests** in `CalloutManagerTests.swift` (448→464 total):
+  - `extractTaskKeywordDatascienceMachineLearning`, `DeepLearning`, `NeuralNetwork`, `Pytorch`, `Tensorflow`, `Jupyter`, `Kaggle`, `DataScientist`, `NLP`, `ModelTraining`, `RandomForest`, `DoesNotOverrideResearch`
+  - `taskAwareCalloutsDatascienceHasMessages`, `DedicatedPoolSize`, `Tier1ReferencesMLWork`, `Tier3HasUrgentDirective`, `Tier4FallsThrough`
+- **4 new tests** in `SuggestedSessionTemplatesTests.swift` (58→62 total):
+  - `catalogContainsMLModelTemplate`, `catalogContainsKaggleTemplate`, `datascienceTemplatesHaveReasonableDuration`, `catalogHasAtLeastThirtySixTemplates`
+
+### Verification
+Swift toolchain unavailable on Linux container — verified by code inspection:
+- datascience branch (line 147) is positioned before research branch (line 165) → `lower.contains("data science")` fires datascience first ✓
+- `lower.contains("data analysis")` + `lower.contains("data collection")` still present in research branch → "data collection for my study" → research ✓
+- `word("pytorch")` + `word("tensorflow")` at datascience → "train a neural network for classification" → datascience ✓
+- `datascienceCallouts(tier: 3)` contains "CLOSE THIS. open your jupyter notebook." → `hasPrefix("CLOSE THIS")` check passes ✓
+- Template `preferredDuration`: 60*60=3600s (ML model) and 45*60=2700s (Kaggle), both in [300, 10800] ✓
+
+### Blocked
+None.
+
+### Next agent should pick up
+Another keyword domain or functional improvement. Remaining domains not yet covered:
+- **Game development keyword**: `unity`, `unreal`, `godot`, `game mechanics`, `game design`, `game dev`, `level design`, `shader`, `sprite` → "gamedev" keyword
+- **Culinary keyword**: `recipe development`, `culinary`, `food science`, `sous vide`, `pastry`, `baking` → "culinary" keyword
+- **Philosophy keyword**: `kant`, `plato`, `socrates`, `dialectic`, `argument analysis`, `logic problem`, `philosophical inquiry` → "philosophy" keyword
+- **Public policy keyword**: `policy memo`, `white paper`, `regulatory analysis`, `legislative brief`, `policy brief` → "policy" keyword
+- **Functional**: AppMonitor app-blocking observability tests, OnTaskDetector rate-limiter edge cases (requires macOS build environment)
