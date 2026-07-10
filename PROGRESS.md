@@ -13500,3 +13500,84 @@ None. Swift toolchain unavailable on Linux container.
 - Consider adding a `"journaling"` callout to test that `journaling` is handled gracefully if somehow the keyword pool returns unexpectedly (edge-case: `taskAwareCallouts(keyword: "journaling", tier: 4)` → default branch)
 - Consider expanding `morningNudgeBody` to reference the user's task description when available (currently static copy; dynamic copy like "you still haven't started your essay" would be more impactful)
 - Consider a `scheduleMorningNudgeIfNeeded` logging improvement: log the `todayStr` gate value when returning early so "why wasn't the nudge scheduled?" is easier to debug in production
+
+---
+
+## Run 303 — 2026-07-10
+
+### Shipped
+- **Swift: Legal keyword + callout pool + suggested templates**
+
+  **CalloutManager.swift** — new `"legal"` branch in `extractTaskKeyword`, positioned after `"journaling"` and before `"deadline"`. Matches:
+  - `word("brief")` / `word("briefs")` — standalone word (`\bbrief\b`), so "debrief", "briefing", "de-brief" do not match
+  - `word("pleading")` / `word("pleadings")`
+  - `word("deposition")` / `word("depositions")`
+  - `word("statute")` / `word("statutes")`
+  - `word("contract")` / `word("contracts")`
+  - `lower.contains("case brief")` / `lower.contains("legal brief")` / `lower.contains("legal memo")`
+  - `lower.contains("legal memorandum")` / `lower.contains("law review")`
+  - `lower.contains("legal research")` / `lower.contains("legal writing")`
+  - `lower.contains("moot court")` / `lower.contains("bar exam")` / `lower.contains("bar prep")`
+  - `word("litigation")` / `word("motions")`
+
+  False-positive notes: "draft a contract" → `word("draft")` fires at writing branch (line 179) before legal — accepted; "design brief" → `word("design")` fires first → "design". "brief overview" → legal, acceptable since "brief" as a standalone word in task descriptions is overwhelmingly legal context.
+
+  **CalloutMessages.swift** — new `legalCallouts(tier:)` private func with 3 tiers:
+  - Tier 1 (4 msgs): "your brief isn't going to write itself." / "get back to your legal work." / "close this and open your brief." / "the deadline won't move."
+  - Tier 2 (3 msgs): "stop. your brief is waiting." / "this isn't case prep." / "you're billing distraction time right now."
+  - Tier 3 (3 msgs): "CLOSE THIS. open your brief." / "you're not going to pass the bar by scrolling." / "the brief doesn't write itself. get back."
+  - Dispatch case `"legal"` added to `taskAwareCallouts` switch.
+
+  **SuggestedSessionTemplates.swift** — 2 new entries (catalog: 22 → 24):
+  - `"Write a case brief for class"` (icon: doc.text, 45-min session, IRAC criteria)
+  - `"Prep for the bar exam — one subject block"` (icon: text.badge.checkmark, 2-hr session, essays + MBE + review criteria)
+
+- **Swift: `scheduleMorningNudgeIfNeeded` debug logging**
+
+  `SessionNotifier.swift` — both early-exit paths in `scheduleMorningNudgeIfNeeded` now emit `AppLogger.info("notifier.morning_nudge_skipped", [...])`:
+  - Gate 2 (already scheduled today): `["reason": "already_scheduled", "todayStr": todayStr, "hour": "\(nudgeHour)"]`
+  - Gate 3 (hour already passed): `["reason": "hour_passed", "todayStr": todayStr, "currentHour": "\(currentHour)", "nudgeHour": "\(nudgeHour)"]`
+
+  Previously, both guards returned silently, making it impossible to distinguish between "nudge correctly skipped because already scheduled" vs "nudge missed because the app launched after the nudge hour" in production logs.
+
+- **Tests**
+
+  **CalloutManagerTests.swift** — 14 new `@Test` functions (347 → 361 total):
+  - `extractTaskKeywordLegalBrief` — brief, legal brief
+  - `extractTaskKeywordLegalMemo` — legal memo, legal memorandum
+  - `extractTaskKeywordBarExam` — bar exam, bar prep
+  - `extractTaskKeywordMootCourt` — moot court
+  - `extractTaskKeywordLawReview` — law review
+  - `extractTaskKeywordLegalResearch` — legal research
+  - `extractTaskKeywordLegalPleading` — pleadings, pleading
+  - `extractTaskKeywordLegalDoesNotOverridePaper` — "research paper on legal briefs" → paper
+  - `extractTaskKeywordContractMapsToLegal` — review/sign/hold contracts
+  - `extractTaskKeywordLitigationMapsToLegal` — litigation strategy
+  - `taskAwareCalloutsLegalHasMessages` — all 3 tiers non-empty
+  - `taskAwareCalloutsLegalDedicatedPoolSize` — tier 1 ≥ 3, tiers 2–3 ≥ 2
+  - `taskAwareCalloutsLegalTier3HasUrgentDirective` — "CLOSE THIS" or "BRIEF" or "BAR" in tier 3
+  - `taskAwareCalloutsLegalTier1ReferencesBrief` — tier 1 references brief / legal / work
+
+  **SuggestedSessionTemplatesTests.swift** — 4 new `@Test` functions (34 → 38 total):
+  - `catalogContainsCaseBriefTemplate` — catalog includes "brief" or "case"
+  - `catalogContainsBarExamTemplate` — catalog includes "bar" or "bar exam"
+  - `legalTemplatesHaveReasonableDuration` — legal templates between 5 min and 3 hr
+  - `catalogHasAtLeastTwentyFourTemplates` — catalog count ≥ 24
+
+### Verification
+Swift toolchain unavailable on Linux container — verified by code inspection.
+- `word("brief")` uses `\b` regex boundaries: won't match "briefing", "debrief", "debriefing" — only "brief" as a standalone word.
+- Chain order: "paper", "research", "writing" (all containing "draft") fire before "legal" — "write a research paper on legal briefs" → "paper" (test confirms).
+- Tier-3 pool contains "CLOSE THIS. open your brief." — satisfies the `hasUrgent` test via `upper.contains("CLOSE")`.
+- Tier-1 pool contains "get back to your legal work." — satisfies `hasBriefRef` via `lower.contains("legal")`.
+- `scheduleMorningNudgeIfNeeded` early-exit logging: both paths log before `return`; AppLogger.info is nonisolated and safe to call from @MainActor context.
+- SuggestedTemplate `preferredDuration` for legal templates: 45 * 60 (2700s) and 2 * 60 * 60 (7200s), both in [300, 10800] range → pass the 5-min–3-hr duration test.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding a false-positive guard test for `word("brief")` with a creative/marketing brief context — e.g. "write a creative brief for the campaign" might map to "legal" (no design/code keyword present); acceptable but worth documenting
+- Consider adding a "journaling tier-4 edge case" test: `taskAwareCallouts(keyword: "journaling", tier: 4)` falls through to default branch without crashing — currently untested
+- Consider extracting `extractTaskKeyword` to its own file (CalloutKeywordExtractor.swift) now that it's grown to 270+ lines, to keep CalloutManager.swift focused on the threshold/firing logic
+- Consider adding a suggested template for social-science research ("Analyze survey data in Excel/Sheets") or pre-med studying ("Study anatomy flashcards for 45 minutes")
