@@ -69,7 +69,8 @@ public final class SettingsStore: ObservableObject {
 
     /// How many times each previous-streak day count has been broken.
     /// Persisted as JSON ({String(days): count}) to UserDefaults.
-    private var streakBreakCountsDict: [Int: Int] = [:]
+    /// `@Published` so views observing SettingsStore re-render when break counts change.
+    @Published private var streakBreakCountsDict: [Int: Int] = [:]
 
     /// Returns the number of times a streak ending at `days` has been broken.
     /// Returns 0 if the milestone has never been broken before.

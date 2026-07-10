@@ -13280,3 +13280,40 @@ None. Swift toolchain unavailable on Linux container (Swift tests verified by co
 - Consider adding a `LicenseTimelinePanel` in the admin UI (`web/app/admin/`), mirroring the pattern of `LookupPanel` — text input for key, paginated table of audit entries.
 - Consider `morningNudgeBody_allVariantsAreLowercase` test for parity with the title pool lowercase test.
 - Consider more suggested session templates (e.g. "Record a podcast episode", "Prepare presentation slides") to expand the idle notch catalog beyond the current 8 entries.
+
+---
+
+## Run 301 — 2026-07-10
+
+### Shipped
+- **Swift: SettingsStore.streakBreakCountsDict @Published + HistoryTab reactive wiring**
+  - `SettingsStore.swift` — added `@Published` to `streakBreakCountsDict: [Int: Int]`:
+    ```swift
+    @Published private var streakBreakCountsDict: [Int: Int] = [:]
+    ```
+    This causes `objectWillChange.send()` whenever `incrementStreakBreak(days:)` or `resetStreakBreaks()` mutates the dict. Previously the computed properties `totalStreakBreaks` and `mostBrokenStreakLength` were backed by a non-published dict, so SwiftUI never re-rendered `HistoryTab` when a session ended while the tab was open.
+  - `HistoryTab.swift` — added `@ObservedObject private var settings = SettingsStore.shared` property to the view struct, then replaced both `SettingsStore.shared.totalStreakBreaks` and `SettingsStore.shared.mostBrokenStreakLength` reads in `body` with `settings.totalStreakBreaks` / `settings.mostBrokenStreakLength`. Now that `settings` is an observed object, SwiftUI will re-render `HistoryTab` when `objectWillChange` fires, causing both computed properties to re-evaluate against the updated dict.
+
+- **Admin: LookupPanel → LicenseTimelinePanel cross-link** (`web/app/admin/page.tsx`)
+  - Added `const [autoTimelineKey, setAutoTimelineKey] = useState('');` to `Admin` component.
+  - `LookupPanel` now receives `onSelectTimeline={setAutoTimelineKey}` prop; updated its signature to include `onSelectTimeline?: (key: string) => void`.
+  - After the `LicenseCard` + recent-audit section in `LookupPanel`, renders a `"View full timeline →"` `<button>` when `onSelectTimeline` is present; clicking calls `onSelectTimeline(result.license.key)`.
+  - `LicenseTimelinePanel` signature updated from `{ token }` to `{ token, autoKey, onAutoKeyConsumed }` with types; added `const panelRef = useRef<HTMLDivElement>(null);` and a `useEffect` mirroring the `LookupPanel` autoKey pattern — sets the key input, resets entries/license/offset, calls `fetchPage(0, false, { key: autoKey })`, calls `onAutoKeyConsumed?.()`, then scrolls the panel into view. The outer `<div>` now carries `ref={panelRef}`.
+  - `LicenseTimelinePanel` at call site updated to: `<LicenseTimelinePanel token={token} autoKey={autoTimelineKey} onAutoKeyConsumed={() => setAutoTimelineKey('')} />`.
+  - Net UX: looking up a key in LookupPanel → clicking "View full timeline →" → LicenseTimelinePanel auto-loads that key's full paginated audit log and scrolls into view. Mirrors the SearchLicensesPanel → LookupPanel click-to-lookup pattern.
+
+### Verification
+Swift toolchain unavailable on Linux container — verified by code inspection.
+- `@Published` on a `@MainActor` `ObservableObject` property is valid Swift 6 — `willSet` observer drives `objectWillChange` publisher.
+- `@ObservedObject` in a SwiftUI `View` subscribes to that publisher; each emission invalidates the view and `body` re-runs, re-evaluating the two computed properties against the now-current dict.
+- The `useEffect` in `LicenseTimelinePanel` correctly passes `{ key: autoKey }` as override so `fetchPage` uses the auto-filled key before the `setKey(autoKey)` state update has settled.
+- `fetchPage` checks `overrides?.key ?? key` — this is safe for the zero-length guard since `autoKey` is always non-empty when set via `LookupPanel`.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding more keyword branches to `extractTaskKeyword` in CalloutManager — e.g. music/composing (currently only covers fitness, studying, coding, writing, reading)
+- Consider a `"listening" / "podcast"` keyword branch for audio work sessions
+- Consider an end-to-end test for the LookupPanel → LicenseTimelinePanel cross-link using React Testing Library once node_modules are available
+- Consider wiring `morningNudgeEnabled` toggle in `AccountSettingsTab` to disable the entire `MorningNudgeSection` gracefully when the `UNUserNotificationCenter` permission is denied (currently shows the toggle regardless of permission state)

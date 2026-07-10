@@ -7,6 +7,7 @@ const SectionFilterContext = createContext('');
 export default function Admin() {
   const [token, setToken] = useState('');
   const [autoLookupKey, setAutoLookupKey] = useState('');
+  const [autoTimelineKey, setAutoTimelineKey] = useState('');
   const [sectionFilter, setSectionFilter] = useState('');
   const [selectedCohortDate, setSelectedCohortDate] = useState<string | null>(null);
   const filterInputRef = useRef<HTMLInputElement>(null);
@@ -173,10 +174,10 @@ export default function Admin() {
         <SearchLicensesPanel token={token} onSelectKey={setAutoLookupKey} />
       </CollapsibleSection>
       <CollapsibleSection title="License lookup">
-        <LookupPanel token={token} autoKey={autoLookupKey} onAutoKeyConsumed={() => setAutoLookupKey('')} />
+        <LookupPanel token={token} autoKey={autoLookupKey} onAutoKeyConsumed={() => setAutoLookupKey('')} onSelectTimeline={setAutoTimelineKey} />
       </CollapsibleSection>
       <CollapsibleSection title="License timeline">
-        <LicenseTimelinePanel token={token} />
+        <LicenseTimelinePanel token={token} autoKey={autoTimelineKey} onAutoKeyConsumed={() => setAutoTimelineKey('')} />
       </CollapsibleSection>
       <CollapsibleSection title="Admin note">
         <NotePanel token={token} />
@@ -1146,10 +1147,12 @@ function LookupPanel({
   token,
   autoKey,
   onAutoKeyConsumed,
+  onSelectTimeline,
 }: {
   token: string;
   autoKey?: string;
   onAutoKeyConsumed?: () => void;
+  onSelectTimeline?: (key: string) => void;
 }) {
   const [key, setKey] = useState('');
   const [email, setEmail] = useState('');
@@ -1243,6 +1246,15 @@ function LookupPanel({
                 ))}
               </div>
             </div>
+          )}
+          {onSelectTimeline && (
+            <button
+              type="button"
+              className="text-xs text-blue-500 hover:underline"
+              onClick={() => onSelectTimeline(result.license.key)}
+            >
+              View full timeline →
+            </button>
           )}
         </div>
       )}
@@ -3142,7 +3154,15 @@ function NotifyHistoryPanel({ token }: { token: string }) {
 
 // ─── License timeline (full audit for one key) ───────────────────────────────
 
-function LicenseTimelinePanel({ token }: { token: string }) {
+function LicenseTimelinePanel({
+  token,
+  autoKey,
+  onAutoKeyConsumed,
+}: {
+  token: string;
+  autoKey?: string;
+  onAutoKeyConsumed?: () => void;
+}) {
   const [key, setKey] = useState('');
   const [actionFilter, setActionFilter] = useState('');
   const [sinceFilter, setSinceFilter] = useState('');
@@ -3154,6 +3174,7 @@ function LicenseTimelinePanel({ token }: { token: string }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   async function fetchPage(offset: number, append: boolean, overrides?: { key?: string; action?: string; since?: string }) {
     if (!token) { setError('Paste admin token above first.'); return; }
@@ -3188,6 +3209,18 @@ function LicenseTimelinePanel({ token }: { token: string }) {
     }
   }
 
+  useEffect(() => {
+    if (!autoKey) return;
+    setKey(autoKey);
+    setEntries(null);
+    setLicense(null);
+    setCurrentOffset(0);
+    void fetchPage(0, false, { key: autoKey });
+    onAutoKeyConsumed?.();
+    setTimeout(() => panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoKey]);
+
   function load(e: React.FormEvent) {
     e.preventDefault();
     setEntries(null);
@@ -3210,7 +3243,7 @@ function LicenseTimelinePanel({ token }: { token: string }) {
   }
 
   return (
-    <div>
+    <div ref={panelRef}>
       <p className="text-sm text-ink/60 mb-3">
         Full paginated audit log for a single license key — every issue, revoke, extend, change_plan, and more.
       </p>

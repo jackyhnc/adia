@@ -97,6 +97,7 @@ enum HistoryCompletionFilter: String, CaseIterable {
 }
 
 struct HistoryTab: View {
+    @ObservedObject private var settings = SettingsStore.shared
     @State private var records: [SessionRecord] = []
     @State private var stats: SessionStats? = nil
     @State private var heatmapDays: [DayActivity] = []
@@ -124,8 +125,8 @@ struct HistoryTab: View {
                     if let ins = insights, ins.sessionCount >= insightsMinSessions {
                         HistoryInsightsSection(
                             insights: ins,
-                            totalStreakBreaks: SettingsStore.shared.totalStreakBreaks,
-                            mostBrokenStreakLength: SettingsStore.shared.mostBrokenStreakLength
+                            totalStreakBreaks: settings.totalStreakBreaks,
+                            mostBrokenStreakLength: settings.mostBrokenStreakLength
                         )
                     }
                     HistorySearchFilterBar(searchText: $searchText, completionFilter: $completionFilter)
