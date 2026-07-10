@@ -178,5 +178,17 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Finished one full subject block (essays + MBE practice) and reviewed wrong answers",
             preferredDuration: 2 * 60 * 60
         ),
+        SuggestedTemplate(
+            icon: "graduationcap",
+            task: "Study for the MCAT",
+            successCriteria: "Finished one full content section (bio/chem/physics/CARS) with practice questions reviewed and wrong answers noted",
+            preferredDuration: 2 * 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.case",
+            task: "Review anatomy for lab practical",
+            successCriteria: "All required structures located, labeled in a diagram, and definitions recalled from memory without looking",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

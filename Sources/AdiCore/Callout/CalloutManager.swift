@@ -141,7 +141,8 @@ public final class CalloutManager {
             return "art"
         }
         if word("design") || word("designing") || word("mockup") || word("wireframe")
-            || word("prototype") || word("figma") || word("sketch") {
+            || word("prototype") || word("figma") || word("sketch")
+            || lower.contains("design brief") {
             return "design"
         }
         if word("email") || word("emails") || word("inbox") {
@@ -182,7 +183,9 @@ public final class CalloutManager {
             || word("grant") || word("grants")
             || word("abstract") || word("abstracts")
             || lower.contains("literature review") || lower.contains("lit review")
-            || lower.contains("peer review") || lower.contains("peer-review") || word("peerreview") {
+            || lower.contains("peer review") || lower.contains("peer-review") || word("peerreview")
+            // Non-legal "brief" contexts — must fire before the legal branch to prevent false positives
+            || lower.contains("creative brief") || lower.contains("marketing brief") {
             return "writing"
         }
         if word("budget") || word("budgeting") || word("budgets")
@@ -248,6 +251,18 @@ public final class CalloutManager {
             || lower.contains("morning pages") || lower.contains("daily log")
             || lower.contains("diary entry") || word("diary") {
             return "journaling"
+        }
+        if word("anatomy") || word("physiology") || word("biochemistry")
+            || word("pharmacology") || word("pathology") || word("histology")
+            || word("microbiology") || word("immunology") || word("embryology")
+            || lower.contains("mcat") || lower.contains("nclex") || lower.contains("usmle")
+            || lower.contains("med school") || lower.contains("medical school")
+            || lower.contains("pre-med") || word("premed")
+            || word("dissection") || word("cadaver")
+            || lower.contains("clinical rotation") || lower.contains("clinical skills")
+            || lower.contains("anatomy lab") || lower.contains("anatomy notes")
+            || lower.contains("step 1") || lower.contains("step 2") || lower.contains("step 3") {
+            return "premed"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")

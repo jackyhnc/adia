@@ -79,6 +79,7 @@ extension CalloutManager {
         case "art":       return artCallouts(tier: tier)
         case "journaling": return journalingCallouts(tier: tier)
         case "legal":     return legalCallouts(tier: tier)
+        case "premed":    return premedCallouts(tier: tier)
         default:          return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -699,6 +700,27 @@ extension CalloutManager {
             "CLOSE THIS. open your brief.",
             "you're not going to pass the bar by scrolling.",
             "the brief doesn't write itself. get back.",
+        ]
+        }
+    }
+
+    private func premedCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "the MCAT isn't going to prep itself.",
+            "that's not your anatomy notes.",
+            "get back to your med school work.",
+            "your future patients are counting on you.",
+        ]
+        case 2: return [
+            "stop. anatomy waits for no one.",
+            "this isn't MCAT prep.",
+            "you can't diagnose patients if you don't study.",
+        ]
+        default: return [
+            "CLOSE THIS. open your anatomy notes.",
+            "the boards don't care what you were scrolling. get back.",
+            "med school doesn't pause. neither should you.",
         ]
         }
     }

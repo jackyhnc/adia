@@ -283,4 +283,37 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 24,
                 "catalog should have at least 24 templates after legal additions")
     }
+
+    // MARK: - Pre-med templates
+
+    @Test func catalogContainsMcatTemplate() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task).map { $0.lowercased() }
+        #expect(tasks.contains { $0.contains("mcat") },
+                "catalog must include an MCAT study template")
+    }
+
+    @Test func catalogContainsAnatomyTemplate() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task).map { $0.lowercased() }
+        #expect(tasks.contains { $0.contains("anatomy") },
+                "catalog must include an anatomy review template")
+    }
+
+    @Test func premedTemplatesHaveReasonableDuration() {
+        let premedTemplates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("mcat") || lower.contains("anatomy") || lower.contains("med school")
+        }
+        #expect(!premedTemplates.isEmpty, "at least one premed template must exist")
+        for template in premedTemplates {
+            if let duration = template.preferredDuration {
+                #expect(duration >= 5 * 60 && duration <= 3 * 60 * 60,
+                        "premed template duration must be between 5 minutes and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastTwentySixTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 26,
+                "catalog should have at least 26 templates after premed additions")
+    }
 }

@@ -2827,4 +2827,151 @@ struct CalloutManagerTests {
             #expect(hasBriefRef, "tier 1 legal messages must reference legal work")
         }
     }
+
+    // MARK: - extractTaskKeyword — creative brief / design brief false-positive guards
+
+    @Test func extractTaskKeywordCreativeBriefDoesNotMapToLegal() {
+        // "creative brief" is a marketing/advertising concept, not a legal brief.
+        // The writing branch now catches it before legal fires.
+        #expect(CalloutManager.extractTaskKeyword(from: "write a creative brief for the campaign") == "writing")
+    }
+
+    @Test func extractTaskKeywordDesignBriefDoesNotMapToLegal() {
+        // "design brief" should map to design, not legal.
+        #expect(CalloutManager.extractTaskKeyword(from: "put together a design brief for the client") == "design")
+    }
+
+    @Test func extractTaskKeywordMarketingBriefDoesNotMapToLegal() {
+        // "marketing brief" is a comms document, not a legal document.
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the marketing brief before the meeting") == "writing")
+    }
+
+    @Test func extractTaskKeywordLegalBriefStillMapsToLegal() {
+        // True legal briefs must still resolve to "legal".
+        #expect(CalloutManager.extractTaskKeyword(from: "draft my appellate brief") == "legal")
+        #expect(CalloutManager.extractTaskKeyword(from: "write a legal brief for the motion") == "legal")
+        #expect(CalloutManager.extractTaskKeyword(from: "write a case brief for class") == "legal")
+    }
+
+    // MARK: - journaling tier-4 edge case (falls through to default → tier 3 pool)
+
+    @Test func taskAwareCalloutsJournalingTier4DoesNotCrash() async {
+        await MainActor.run {
+            // tier 4 has no explicit case in the switch — falls to `default:` which returns tier 3 pool.
+            let result = CalloutManager.shared.taskAwareCallouts(keyword: "journaling", tier: 4)
+            #expect(!result.isEmpty, "tier 4 must fall through to default (tier 3) pool and return messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsJournalingTier0ReturnsMessages() async {
+        await MainActor.run {
+            // tier 0 also hits default: — should not crash or return empty.
+            let result = CalloutManager.shared.taskAwareCallouts(keyword: "journaling", tier: 0)
+            #expect(!result.isEmpty, "tier 0 must return default pool messages")
+        }
+    }
+
+    // MARK: - extractTaskKeyword — pre-med / MCAT
+
+    @Test func extractTaskKeywordAnatomyMapsToPremed() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review anatomy for lab practical") == "premed")
+        #expect(CalloutManager.extractTaskKeyword(from: "anatomy notes for the quiz") == "premed")
+    }
+
+    @Test func extractTaskKeywordPhysiologyMapsToPremed() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my physiology reading") == "premed")
+    }
+
+    @Test func extractTaskKeywordBiochemistryMapsToPremed() {
+        #expect(CalloutManager.extractTaskKeyword(from: "biochemistry chapter 4") == "premed")
+    }
+
+    @Test func extractTaskKeywordPharmacologyMapsToPremed() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pharmacology drug classifications") == "premed")
+    }
+
+    @Test func extractTaskKeywordMcatMapsToPremed() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for the MCAT") == "premed")
+        #expect(CalloutManager.extractTaskKeyword(from: "MCAT practice section — CARS") == "premed")
+    }
+
+    @Test func extractTaskKeywordNclexMapsToPremed() {
+        #expect(CalloutManager.extractTaskKeyword(from: "NCLEX review — med-surg") == "premed")
+    }
+
+    @Test func extractTaskKeywordUsmleMapsToPremed() {
+        #expect(CalloutManager.extractTaskKeyword(from: "USMLE Step 1 practice questions") == "premed")
+    }
+
+    @Test func extractTaskKeywordMedSchoolMapsToPremed() {
+        #expect(CalloutManager.extractTaskKeyword(from: "catch up on med school notes") == "premed")
+        #expect(CalloutManager.extractTaskKeyword(from: "pre-med organic chemistry") == "premed")
+    }
+
+    @Test func extractTaskKeywordPathologyMapsToPremed() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pathology slide review") == "premed")
+    }
+
+    @Test func extractTaskKeywordPremedDoesNotOverrideStudy() {
+        // "study anatomy" — word("study") fires first → "studying", not "premed".
+        // This is intentional: the studying pool is fine for generic study sessions.
+        #expect(CalloutManager.extractTaskKeyword(from: "study anatomy for the exam") == "studying")
+    }
+
+    @Test func extractTaskKeywordBiologyResearchDoesNotMapToPremed() {
+        // "biology research paper" → "paper" fires before premed.
+        #expect(CalloutManager.extractTaskKeyword(from: "write a biology research paper") == "paper")
+    }
+
+    // MARK: - taskAwareCallouts — pre-med pool
+
+    @Test func taskAwareCalloutsPremedHasMessages() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(!manager.taskAwareCallouts(keyword: "premed", tier: 1).isEmpty)
+            #expect(!manager.taskAwareCallouts(keyword: "premed", tier: 2).isEmpty)
+            #expect(!manager.taskAwareCallouts(keyword: "premed", tier: 3).isEmpty)
+        }
+    }
+
+    @Test func taskAwareCalloutsPremedDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "premed", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "premed", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "premed", tier: 3).count >= 2)
+        }
+    }
+
+    @Test func taskAwareCalloutsPremedTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "premed", tier: 3)
+            let hasUrgent = tier3.contains { msg in
+                let upper = msg.uppercased()
+                return upper.contains("CLOSE") || upper.contains("BOARDS") || upper.contains("MCAT")
+                    || upper.contains("ANATOMY") || upper.contains("MED SCHOOL")
+            }
+            #expect(hasUrgent, "tier 3 premed messages must contain an urgent directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsPremedTier1ReferencesMedWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "premed", tier: 1)
+            let hasMedRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("mcat") || lower.contains("anatomy") || lower.contains("med")
+                    || lower.contains("patient") || lower.contains("study")
+            }
+            #expect(hasMedRef, "tier 1 premed messages must reference medical study context")
+        }
+    }
+
+    @Test func taskAwareCalloutsPremedTier4FallsThrough() async {
+        await MainActor.run {
+            // tier 4 → default case → same as tier 3 pool. Must not crash or return empty.
+            let result = CalloutManager.shared.taskAwareCallouts(keyword: "premed", tier: 4)
+            #expect(!result.isEmpty)
+        }
+    }
 }
