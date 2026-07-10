@@ -1,4 +1,44 @@
 
+## Run 304 — 2026-07-10 — audiobook keyword + morning nudge pools 7→9
+
+### Shipped
+- **`Sources/AdiCore/Callout/CalloutManager.swift` — `"audiobook"` keyword in `extractTaskKeyword`**:
+  - Added `|| word("audiobook") || word("audiobooks")` to the `"reading"` branch (line 120–122).
+  - Previously "listen to an audiobook" fell through to `nil` unless "annotate" was also present; now maps cleanly to `"reading"` regardless.
+  - Positioned inside the existing reading branch — no chain-order change needed.
+
+- **`Tests/AdiTests/CalloutManagerTests.swift` — 3 new `@Test` functions** (344 → 347 `@Test` functions):
+  - `extractTaskKeywordAudiobook` — "listen to an audiobook", "finish my audiobook", "audiobooks are on my list" all → `"reading"`
+  - `extractTaskKeywordAudiobookDoesNotMatchPodcast` — "record a podcast episode" still → `"podcast"` (guard)
+  - `extractTaskKeywordAudiobookWithAnnotate` — "listen to and annotate an audiobook chapter" → `"reading"` via `word("annotate")` (first match wins, same result)
+
+- **`Sources/AdiCore/SessionNotifier.swift` — `morningNudgeTitles` + `morningNudgeMessages` pools 7→9**:
+  - `morningNudgeTitles` gains: `"zero sessions so far"` + `"day's still empty"` (7 → 9)
+  - `morningNudgeMessages` gains: `"zero sessions today. open adia and start one."` + `"today's still empty. pick a task and get moving."` (7 → 9)
+  - All new entries: fully lowercase ✓, friend-like ✓, no corporate/punishing language ✓, no all-caps words ✓, reference starting a session ✓
+
+- **`Tests/AdiTests/SessionNotifierTests.swift` — `hasSevenVariants` → `hasNineVariants`**:
+  - `morningNudgeMessages_hasSevenVariants` renamed `morningNudgeMessages_hasNineVariants` (count == 9)
+  - `morningNudgeTitles_hasSevenVariants` renamed `morningNudgeTitles_hasNineVariants` (count == 9)
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `word("audiobook")` uses `\\b` regex word boundaries matching the existing pattern; "audiobook" as a standalone word won't accidentally match in "audiobooks" (which is covered by `word("audiobooks")`).
+- False-positive guard confirmed: "record a podcast episode" reaches the `"podcast"` branch (lines 215–220) without touching "reading" — audiobook only appears in "reading" branch which is earlier, but "record a podcast episode" contains no audiobook-branch token.
+- Pool uniqueness: neither new title nor new message duplicates any existing entry.
+- Both new messages reference starting a session ("open adia and start one", "pick a task and get moving"), satisfying `morningNudgeMessages_allReferenceStartingWork`.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `MorningNudgeSection` permission-granted-while-denied path: when `scenePhase` fires `.active` and `refreshNotificationStatus()` detects `.authorized`, call `scheduleMorningNudgeIfNeeded()` so the nudge re-arms if `settings.morningNudgeEnabled` is already `true`
+- Consider LicenseTimelinePanel → LookupPanel back-link (mirror of the forward-link): "Look up this license →" button in LicenseTimelinePanel that auto-populates LookupPanel
+- Consider `GET /api/admin/churn-by-plan` endpoint returning per-plan daily churn trend to complement the aggregate `churn-analysis` endpoint
+- Consider adding more audiobook-specific callout messages to `readingCallouts(tier:)` — e.g. "you're not listening to your audiobook right now." for tier 1
+
+---
+
 ## Run 303 — 2026-07-10 — weekSummaryText extraction + 7 new Swift tests + 2 catalog presence tests
 
 ### Shipped
