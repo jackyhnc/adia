@@ -4200,4 +4200,186 @@ struct CalloutManagerTests {
             #expect(hasRef, "enviro tier1 messages must reference ecology/environment domain")
         }
     }
+
+    // MARK: - Finance keyword
+
+    @Test func extractTaskKeywordFinanceCPAExam() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my CPA exam") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "prepare for the CPA prep course") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "review my CPA practice problems") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceCFA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my CFA exam") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my CFA practice set") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceStatements() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze these financial statements") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "prepare a balance sheet for class") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "write up the income statement analysis") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceModeling() {
+        #expect(CalloutManager.extractTaskKeyword(from: "build a financial model for the case") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "do my financial analysis assignment") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "complete a corporate finance problem set") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceAudit() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prepare for my auditing exam") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "complete this audit engagement exercise") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceAccounting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study managerial accounting chapter 5") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "do my cost accounting homework") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "study financial accounting principles") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceCashFlow() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write up the cash flow statement") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "complete the cash flow analysis") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceDoesNotOverrideBudget() {
+        // Generic "budget" / "finances" should still route to "budget", not "finance"
+        #expect(CalloutManager.extractTaskKeyword(from: "do my monthly budget") == "budget")
+        #expect(CalloutManager.extractTaskKeyword(from: "manage my personal finances") == "budget")
+    }
+
+    @Test func taskAwareCalloutsFinanceHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "finance", tier: tier)
+                #expect(!msgs.isEmpty, "finance tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsFinanceDedicatedPoolSize() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "finance", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "finance", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "finance", tier: 3)
+            #expect(t1.count >= 3, "finance tier1 must have at least 3 messages")
+            #expect(t2.count >= 2, "finance tier2 must have at least 2 messages")
+            #expect(t3.count >= 2, "finance tier3 must have at least 2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsFinanceTier1ReferencesAccountingWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "finance", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("financial") || lower.contains("accounting") || lower.contains("cpa")
+                    || lower.contains("analysis") || lower.contains("prep")
+            }
+            #expect(hasRef, "finance tier1 messages must reference finance/accounting domain")
+        }
+    }
+
+    @Test func taskAwareCalloutsFinanceTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "finance", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "finance tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsFinanceTier4FallsThrough() async {
+        await MainActor.run {
+            let tier4 = CalloutManager.shared.taskAwareCallouts(keyword: "finance", tier: 4)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "finance", tier: 3)
+            #expect(tier4 == tier3, "tier4 (out of range) should return same pool as tier3")
+        }
+    }
+
+    // MARK: - Policy keyword
+
+    @Test func extractTaskKeywordPolicyMemo() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my policy memo for class") == "policy")
+        #expect(CalloutManager.extractTaskKeyword(from: "draft the policy memos due Friday") == "policy")
+    }
+
+    @Test func extractTaskKeywordPolicyBrief() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a policy brief on housing") == "policy")
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my policy briefs for seminar") == "policy")
+    }
+
+    @Test func extractTaskKeywordPolicyRegulatoryAnalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "do my regulatory analysis assignment") == "policy")
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze the regulatory framework for this industry") == "policy")
+    }
+
+    @Test func extractTaskKeywordPolicyLegislative() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a legislative brief for my policy class") == "policy")
+        #expect(CalloutManager.extractTaskKeyword(from: "draft a legislative memo for the committee") == "policy")
+    }
+
+    @Test func extractTaskKeywordPolicyAnalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my policy analysis paper") == "policy")
+        #expect(CalloutManager.extractTaskKeyword(from: "do policy recommendation research") == "policy")
+    }
+
+    @Test func extractTaskKeywordPolicyHealthFiscal() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a paper on health policy reform") == "policy")
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze fiscal policy effects") == "policy")
+        #expect(CalloutManager.extractTaskKeyword(from: "study monetary policy for my econ exam") == "policy")
+    }
+
+    @Test func extractTaskKeywordPolicyDoesNotOverrideLegal() {
+        // Legal-specific terms should still route to "legal"
+        #expect(CalloutManager.extractTaskKeyword(from: "write a legal brief for moot court") == "legal")
+        #expect(CalloutManager.extractTaskKeyword(from: "draft pleadings for my law class") == "legal")
+    }
+
+    @Test func taskAwareCalloutsPolicyHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "policy", tier: tier)
+                #expect(!msgs.isEmpty, "policy tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsPolicyDedicatedPoolSize() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "policy", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "policy", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "policy", tier: 3)
+            #expect(t1.count >= 3, "policy tier1 must have at least 3 messages")
+            #expect(t2.count >= 2, "policy tier2 must have at least 2 messages")
+            #expect(t3.count >= 2, "policy tier3 must have at least 2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsPolicyTier1ReferencesPolicyWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "policy", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("policy") || lower.contains("memo") || lower.contains("brief")
+                    || lower.contains("analysis") || lower.contains("regulatory")
+            }
+            #expect(hasRef, "policy tier1 messages must reference policy work domain")
+        }
+    }
+
+    @Test func taskAwareCalloutsPolicyTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "policy", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "policy tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsPolicyTier4FallsThrough() async {
+        await MainActor.run {
+            let tier4 = CalloutManager.shared.taskAwareCallouts(keyword: "policy", tier: 4)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "policy", tier: 3)
+            #expect(tier4 == tier3, "tier4 (out of range) should return same pool as tier3")
+        }
+    }
 }

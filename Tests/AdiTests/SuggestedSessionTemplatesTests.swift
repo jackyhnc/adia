@@ -798,4 +798,74 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 54,
                 "catalog should have ≥54 templates after music split + enviro additions")
     }
+
+    // MARK: - Finance templates
+
+    @Test func catalogContainsFinanceModelingTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("financial") && (lower.contains("model") || lower.contains("analysis"))
+        }
+        #expect(has, "catalog must include a financial modeling/analysis template")
+    }
+
+    @Test func catalogContainsCPACFATemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return (lower.contains("cpa") || lower.contains("cfa")) && lower.contains("exam")
+        }
+        #expect(has, "catalog must include a CPA or CFA exam study template")
+    }
+
+    @Test func financeTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("financial") || lower.contains("cpa") || lower.contains("cfa")
+        }
+        #expect(!templates.isEmpty, "at least one finance template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "finance template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Policy templates
+
+    @Test func catalogContainsPolicyMemoTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("policy") && (lower.contains("memo") || lower.contains("brief"))
+        }
+        #expect(has, "catalog must include a policy memo or brief template")
+    }
+
+    @Test func catalogContainsRegulatoryAnalysisTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("regulatory") || (lower.contains("policy") && lower.contains("document"))
+        }
+        #expect(has, "catalog must include a regulatory analysis template")
+    }
+
+    @Test func policyTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("policy memo") || lower.contains("policy brief")
+                || lower.contains("regulatory")
+        }
+        #expect(!templates.isEmpty, "at least one policy template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "policy template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastFiftyEightTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 58,
+                "catalog should have ≥58 templates after finance and policy additions")
+    }
 }

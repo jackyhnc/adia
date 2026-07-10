@@ -267,6 +267,27 @@ public final class CalloutManager {
             || lower.contains("creative brief") || lower.contains("marketing brief") {
             return "writing"
         }
+        // finance — positioned before budget so professional exam/analysis terms (CPA, financial modeling,
+        // balance sheet) route here instead of the generic budget/financial branch.
+        if lower.contains("financial statements") || lower.contains("financial statement")
+            || lower.contains("balance sheet") || lower.contains("balance sheets")
+            || lower.contains("income statement") || lower.contains("income statements")
+            || lower.contains("cpa exam") || lower.contains("cpa prep") || word("cpa")
+            || word("cfa") || word("gaap") || word("ifrs")
+            || lower.contains("financial modeling") || lower.contains("financial model")
+            || lower.contains("financial analysis")
+            || lower.contains("cost accounting") || lower.contains("managerial accounting")
+            || lower.contains("financial accounting") || lower.contains("tax accounting")
+            || word("audit") || word("auditing")
+            || lower.contains("corporate finance") || lower.contains("investment analysis")
+            || lower.contains("cash flow statement") || lower.contains("cash flow analysis")
+            || word("accrual")
+            || lower.contains("accounts payable") || lower.contains("accounts receivable")
+            || lower.contains("trial balance")
+            || lower.contains("equity analysis")
+            || lower.contains("financial ratios") || lower.contains("financial ratio") {
+            return "finance"
+        }
         if word("budget") || word("budgeting") || word("budgets")
             || word("spreadsheet") || word("spreadsheets")
             || word("finances") || word("financial") || word("accounting") || word("bookkeeping")
@@ -465,6 +486,22 @@ public final class CalloutManager {
             || lower.contains("philosophy course") || lower.contains("philosophy paper")
             || word("utilitarianism") || word("deontology") || word("consequentialism") {
             return "philosophy"
+        }
+        // policy — positioned after socialscience (which owns "public policy"/"public administration")
+        // and before legal (which catches bare `word("brief")`). This intercepts "policy brief" and
+        // "legislative brief" before legal's `word("brief")` fires.
+        if lower.contains("policy memo") || lower.contains("policy memos")
+            || lower.contains("policy brief") || lower.contains("policy briefs")
+            || lower.contains("regulatory analysis")
+            || lower.contains("legislative brief") || lower.contains("legislative briefs")
+            || lower.contains("legislative memo") || lower.contains("legislative memos")
+            || lower.contains("policy analysis")
+            || lower.contains("policy recommendation") || lower.contains("policy recommendations")
+            || lower.contains("regulatory framework")
+            || lower.contains("policy implementation")
+            || lower.contains("health policy") || lower.contains("public health policy")
+            || lower.contains("fiscal policy") || lower.contains("monetary policy") {
+            return "policy"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")

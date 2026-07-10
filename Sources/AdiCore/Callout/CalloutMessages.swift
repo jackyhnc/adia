@@ -94,6 +94,8 @@ extension CalloutManager {
         case "culinary":       return culinaryCallouts(tier: tier)
         case "philosophy":     return philosophyCallouts(tier: tier)
         case "enviro":         return enviroCallouts(tier: tier)
+        case "finance":        return financeCallouts(tier: tier)
+        case "policy":         return policyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1029,6 +1031,48 @@ extension CalloutManager {
             "CLOSE THIS. open your philosophy notes.",
             "no one writes a dialectical argument by browsing.",
             "your philosophy paper won't write itself — back to work.",
+        ]
+        }
+    }
+
+    private func financeCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your financial statements aren't going to analyze themselves.",
+            "get back to your accounting work.",
+            "this isn't your financial analysis.",
+            "your CPA prep isn't going to do itself.",
+        ]
+        case 2: return [
+            "stop. your accounting assignment is waiting.",
+            "this isn't your financial analysis.",
+            "close this and get back to your finance work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your accounting notes.",
+            "no one passes the CPA exam by scrolling.",
+            "your financial model won't build itself — back to work.",
+        ]
+        }
+    }
+
+    private func policyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your policy memo isn't going to write itself.",
+            "get back to your policy work.",
+            "this isn't your policy brief.",
+            "your policy analysis is waiting.",
+        ]
+        case 2: return [
+            "stop. your policy memo is due.",
+            "this isn't your policy work.",
+            "close this and get back to your analysis.",
+        ]
+        default: return [
+            "CLOSE THIS. open your policy memo.",
+            "your regulatory analysis won't write itself — back to work.",
+            "no one writes policy briefs by scrolling.",
         ]
         }
     }

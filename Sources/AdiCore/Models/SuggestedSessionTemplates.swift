@@ -358,5 +358,29 @@ public enum SuggestedSessionTemplates {
             successCriteria: "All assigned chapters reviewed, key concepts and processes summarized in notes, and a short self-quiz completed with corrections",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "chart.line.uptrend.xyaxis",
+            task: "Complete a financial analysis or modeling assignment",
+            successCriteria: "Financial model complete with all assumptions documented, key metrics calculated, and a brief written summary of findings",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "building.columns",
+            task: "Study for the CPA or CFA exam",
+            successCriteria: "All assigned material reviewed, practice problems completed with corrections, and a summary of weak areas noted for further review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text",
+            task: "Write a policy memo or brief",
+            successCriteria: "Memo complete with executive summary, problem statement, analysis of at least two policy options, and a clear recommendation with supporting evidence",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "magnifyingglass.circle",
+            task: "Analyze a regulatory framework or policy document",
+            successCriteria: "Document reviewed, key provisions summarized, implications identified, and at least two paragraphs of critical analysis written with citations",
+            preferredDuration: 45 * 60
+        ),
     ]
 }
