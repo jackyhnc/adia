@@ -154,5 +154,17 @@ public enum SuggestedSessionTemplates {
             successCriteria: "At least 500 words written and saved (word count visible in writing app)",
             preferredDuration: 60 * 60
         ),
+        SuggestedTemplate(
+            icon: "book.pages",
+            task: "Write today's journal entry",
+            successCriteria: "At least 200 words written and saved in journal app or document",
+            preferredDuration: 20 * 60
+        ),
+        SuggestedTemplate(
+            icon: "headphones",
+            task: "Listen to and annotate an audiobook chapter",
+            successCriteria: "Chapter finished and key points noted in reading app or document",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

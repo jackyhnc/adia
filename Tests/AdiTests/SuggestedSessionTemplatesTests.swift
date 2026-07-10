@@ -66,9 +66,9 @@ struct SuggestedSessionTemplatesTests {
         #expect(tasks.count == uniqueTasks.count, "catalog has duplicate task texts")
     }
 
-    @Test func catalogHasAtLeastTwentyTemplates() {
-        #expect(SuggestedSessionTemplates.all.count >= 20,
-                "catalog should contain at least 20 templates for broad coverage")
+    @Test func catalogHasAtLeastTwentyTwoTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 22,
+                "catalog should contain at least 22 templates for broad coverage")
     }
 
     @Test func catalogContainsPresentationTemplate() {
@@ -164,6 +164,33 @@ struct SuggestedSessionTemplatesTests {
             return t.contains("novel") || t.contains("chapter") || t.contains("fiction")
         }
         #expect(hasCreative, "catalog should contain a creative writing / novel template")
+    }
+
+    @Test func catalogContainsJournalingTemplate() {
+        let hasJournaling = SuggestedSessionTemplates.all.contains {
+            let t = $0.task.lowercased()
+            return t.contains("journal")
+        }
+        #expect(hasJournaling, "catalog should contain a journaling template")
+    }
+
+    @Test func catalogContainsAudiobookTemplate() {
+        let hasAudiobook = SuggestedSessionTemplates.all.contains {
+            let t = $0.task.lowercased()
+            return t.contains("audiobook") || t.contains("listen") || t.contains("annotate")
+        }
+        #expect(hasAudiobook, "catalog should contain an audiobook or listening template")
+    }
+
+    @Test func journalingTemplateHasReasonableDuration() {
+        let journaling = SuggestedSessionTemplates.all.first {
+            $0.task.lowercased().contains("journal")
+        }
+        if let t = journaling, let dur = t.preferredDuration {
+            // Journal sessions should be under an hour — people don't journal for 2 hours
+            #expect(dur <= 3600, "journaling template preferredDuration should be <= 60 minutes")
+            #expect(dur >= 300, "journaling template preferredDuration should be >= 5 minutes")
+        }
     }
 
     @Test func allTemplatesHaveValidSuccessCriteriaLength() {

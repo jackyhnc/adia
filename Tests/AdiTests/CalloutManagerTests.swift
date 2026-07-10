@@ -2623,4 +2623,96 @@ struct CalloutManagerTests {
         #expect(CalloutManager.extractTaskKeyword(from: "case studies due tomorrow") == "research")
         #expect(CalloutManager.extractTaskKeyword(from: "review the case studies") == "research")
     }
+
+    // MARK: - Journaling keyword extraction
+
+    @Test func extractTaskKeywordFromJournal() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write in my journal") == "journaling")
+        #expect(CalloutManager.extractTaskKeyword(from: "my journal for today") == "journaling")
+        #expect(CalloutManager.extractTaskKeyword(from: "open journal and reflect") == "journaling")
+    }
+
+    @Test func extractTaskKeywordFromJournaling() {
+        #expect(CalloutManager.extractTaskKeyword(from: "journaling session") == "journaling")
+        #expect(CalloutManager.extractTaskKeyword(from: "daily journaling practice") == "journaling")
+    }
+
+    @Test func extractTaskKeywordFromJournalEntry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a journal entry") == "journaling")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish journal entry for today") == "journaling")
+        #expect(CalloutManager.extractTaskKeyword(from: "catching up on journal entries") == "journaling")
+    }
+
+    @Test func extractTaskKeywordFromMorningPages() {
+        #expect(CalloutManager.extractTaskKeyword(from: "morning pages session") == "journaling")
+        #expect(CalloutManager.extractTaskKeyword(from: "do my morning pages") == "journaling")
+        #expect(CalloutManager.extractTaskKeyword(from: "morning pages before work") == "journaling")
+    }
+
+    @Test func extractTaskKeywordFromDiary() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write in my diary") == "journaling")
+        #expect(CalloutManager.extractTaskKeyword(from: "diary entry for today") == "journaling")
+    }
+
+    @Test func extractTaskKeywordFromDiaryEntry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a diary entry") == "journaling")
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my diary entry") == "journaling")
+    }
+
+    @Test func extractTaskKeywordJournalingDoesNotOverrideEssay() {
+        // "essay" appears earlier in the chain and must win
+        #expect(CalloutManager.extractTaskKeyword(from: "essay about my journal as a student") == "essay")
+    }
+
+    @Test func extractTaskKeywordJournalingDoesNotOverrideWriting() {
+        // "blog" → writing earlier in chain; journaling doesn't interfere
+        #expect(CalloutManager.extractTaskKeyword(from: "write a blog about journaling habits") == "writing")
+    }
+
+    @Test func extractTaskKeywordJournalingDoesNotOverridePaper() {
+        // "paper" keyword fires at line 89, before the journaling branch; "journal" in
+        // academic-submission context doesn't interfere when a clearer keyword is present.
+        #expect(CalloutManager.extractTaskKeyword(from: "submit paper to academic journal") == "paper")
+    }
+
+    @Test func taskAwareCalloutsJournalingHasMessages() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "journaling", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) must have journaling messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsJournalingDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "journaling", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "journaling", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "journaling", tier: 3).count >= 2)
+        }
+    }
+
+    @Test func taskAwareCalloutsJournalingTier3HasUrgentMessage() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "journaling", tier: 3)
+            let hasUrgent = tier3.contains { msg in
+                let upper = msg.uppercased()
+                return upper.contains("CLOSE") || upper.contains("JOURNAL") || upper.contains("WRITE")
+            }
+            #expect(hasUrgent, "tier 3 journaling messages must contain an urgent directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsJournalingTier1ReferencesJournal() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "journaling", tier: 1)
+            let hasJournalRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("journal") || lower.contains("write") || lower.contains("entry")
+            }
+            #expect(hasJournalRef, "tier 1 journaling messages must reference journal or writing")
+        }
+    }
 }

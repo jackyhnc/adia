@@ -242,6 +242,12 @@ public final class CalloutManager {
             || lower.contains("language exchange") || lower.contains("language class") {
             return "language"
         }
+        if word("journal") || word("journaling") || word("journalled") || word("journalling")
+            || lower.contains("journal entry") || lower.contains("journal entries")
+            || lower.contains("morning pages") || lower.contains("daily log")
+            || lower.contains("diary entry") || word("diary") {
+            return "journaling"
+        }
         if word("deadline") || word("deadlines") || lower.contains("due by") || lower.contains("due tonight")
             || lower.contains("due tomorrow") || lower.contains("due at midnight")
             || lower.contains("due at noon") || lower.contains("due at end of")

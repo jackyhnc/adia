@@ -77,6 +77,7 @@ extension CalloutManager {
         case "fitness":   return fitnessCallouts(tier: tier)
         case "podcast":   return podcastCallouts(tier: tier)
         case "art":       return artCallouts(tier: tier)
+        case "journaling": return journalingCallouts(tier: tier)
         default:          return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -655,6 +656,27 @@ extension CalloutManager {
             "CLOSE THIS. Go finish your work.",
             "the piece won't paint itself.",
             "put it down. the canvas is waiting.",
+        ]
+        }
+    }
+
+    private func journalingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your journal's still empty.",
+            "thoughts don't write themselves.",
+            "go back to your journal.",
+            "close this and write.",
+        ]
+        case 2: return [
+            "stop. open your journal.",
+            "this isn't your journal entry.",
+            "you came here to write. so write.",
+        ]
+        default: return [
+            "CLOSE THIS. your journal is waiting.",
+            "you opened Adia to journal. that's not this.",
+            "the entry won't write itself. get back.",
         ]
         }
     }

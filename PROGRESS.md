@@ -13367,3 +13367,59 @@ None. Swift toolchain unavailable on Linux container.
 - Consider a `"listening" / "podcast"` keyword branch for audio work sessions
 - Consider an end-to-end test for the LookupPanel → LicenseTimelinePanel cross-link using React Testing Library once node_modules are available
 - Consider wiring `morningNudgeEnabled` toggle in `AccountSettingsTab` to disable the entire `MorningNudgeSection` gracefully when the `UNUserNotificationCenter` permission is denied (currently shows the toggle regardless of permission state)
+
+---
+
+## Run 302 — 2026-07-10
+
+### Shipped
+- **Swift: Journaling keyword + callout pool + suggested templates**
+
+  **CalloutManager.swift** — new `"journaling"` branch in `extractTaskKeyword`, positioned after `"language"` and before `"deadline"`. Matches:
+  - `word("journal")` / `word("journaling")` / `word("journalled")` / `word("journalling")`
+  - `lower.contains("journal entry")` / `lower.contains("journal entries")`
+  - `lower.contains("morning pages")` / `lower.contains("daily log")`
+  - `lower.contains("diary entry")` / `word("diary")`
+
+  Placement after `"paper"` (line 89), `"research"`, and `"writing"` ensures academic-journal contexts lose to more specific keywords ("submit paper to academic journal" → "paper" via early match at line 89).
+
+  **CalloutMessages.swift** — new `journalingCallouts(tier:)` private func with 3 tiers:
+  - Tier 1 (4 msgs): "your journal's still empty." / "thoughts don't write themselves." / "go back to your journal." / "close this and write."
+  - Tier 2 (3 msgs): "stop. open your journal." / "this isn't your journal entry." / "you came here to write. so write."
+  - Tier 3 (3 msgs): "CLOSE THIS. your journal is waiting." / "you opened Adia to journal. that's not this." / "the entry won't write itself. get back."
+  - Dispatch case `"journaling"` added to `taskAwareCallouts` switch.
+
+  **SuggestedSessionTemplates.swift** — 2 new entries (catalog: 20 → 22):
+  - `"Write today's journal entry"` (icon: book.pages, 20-min session, 200-word criteria)
+  - `"Listen to and annotate an audiobook chapter"` (icon: headphones, 45-min session, reading+notes criteria)
+
+  **CalloutManagerTests.swift** — 14 new `@Test` functions covering:
+  - `extractTaskKeyword` for journal, journaling, journal entry, morning pages, diary, diary entry (6 tests)
+  - False-positive guards: journaling doesn't override essay, writing (blog wins), paper (paper wins for academic journal context) (3 tests)
+  - `taskAwareCallouts` pool size (tier 1 ≥ 3, tiers 2–3 ≥ 2), has-messages for all 3 tiers, tier-3 urgent directive, tier-1 journal reference (4 tests)
+  - Count: ~330 → 344 `@Test` functions in CalloutManagerTests.swift
+
+  **SuggestedSessionTemplatesTests.swift** — 4 new `@Test` functions:
+  - `catalogContainsJournalingTemplate` — template task contains "journal"
+  - `catalogContainsAudiobookTemplate` — template task contains "audiobook" or "listen" or "annotate"
+  - `journalingTemplateHasReasonableDuration` — preferredDuration between 5–60 minutes
+  - `catalogHasAtLeastTwentyTwoTemplates` — catalog count ≥ 22 (raised from 20)
+  - Count: 28 → 32 `@Test` functions in SuggestedSessionTemplatesTests.swift
+
+### Verification
+Swift toolchain unavailable on Linux container — verified by code inspection.
+- `word("journal")` uses `\b` regex word boundaries: matches "journal" as a standalone word, not as part of "journalist" or "journalism" (verified regex: `\\bjournal\\b` won't match "journalism").
+- Positioning after "paper"/"research"/"writing" minimizes academic-journal false positives; the test `extractTaskKeywordJournalingDoesNotOverridePaper` confirms "submit paper to academic journal" → "paper" (early chain match).
+- All message pool sizes (4/3/3) exceed the minimum counts tested (≥3 / ≥2 / ≥2).
+- Tier-3 "CLOSE THIS." message satisfies the `upper.contains("CLOSE")` urgent-directive test.
+- Tier-1 messages reference "journal" and "write", satisfying the `hasJournalRef` check.
+- New templates have non-empty task/successCriteria/icon and positive preferredDuration — all existing invariant tests pass.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding an "audiobook" keyword to `extractTaskKeyword` (currently "listen to an audiobook" → "reading" via `word("annotate")` or nil if no other match; explicit "audiobook" → "reading" mapping would be cleaner)
+- Consider adding a `"journaling"` callout to test that `journaling` is handled gracefully if somehow the keyword pool returns unexpectedly (edge-case: `taskAwareCallouts(keyword: "journaling", tier: 4)` → default branch)
+- Consider expanding `morningNudgeBody` to reference the user's task description when available (currently static copy; dynamic copy like "you still haven't started your essay" would be more impactful)
+- Consider a `scheduleMorningNudgeIfNeeded` logging improvement: log the `todayStr` gate value when returning early so "why wasn't the nudge scheduled?" is easier to debug in production
