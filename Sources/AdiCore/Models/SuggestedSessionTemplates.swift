@@ -238,5 +238,17 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Practiced at least 3 composition techniques with sample shots reviewed and annotated",
             preferredDuration: 30 * 60
         ),
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Train and evaluate a machine learning model",
+            successCriteria: "Model trained, test accuracy logged, and results documented in the notebook with key findings noted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "tablecells.badge.ellipsis",
+            task: "Work through a Kaggle notebook or data science project",
+            successCriteria: "Notebook cells fully run, data explored, baseline model submitted or key findings written up",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

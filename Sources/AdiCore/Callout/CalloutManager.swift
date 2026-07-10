@@ -144,10 +144,27 @@ public final class CalloutManager {
             || word("worksheet") || word("worksheets") {
             return "homework"
         }
+        // datascience — positioned before research so "data science" and ML terms route here
+        // instead of the generic research branch. "data science"/"data scientist" removed from research.
+        if lower.contains("machine learning") || lower.contains("deep learning")
+            || lower.contains("neural network") || lower.contains("neural networks")
+            || word("pytorch") || word("tensorflow") || word("keras")
+            || lower.contains("scikit-learn") || word("sklearn") || word("xgboost")
+            || word("jupyter") || lower.contains("jupyter notebook")
+            || word("kaggle")
+            || lower.contains("data science") || lower.contains("data scientist")
+            || lower.contains("natural language processing")
+            || lower.contains("computer vision")
+            || lower.contains("reinforcement learning")
+            || lower.contains("model training") || lower.contains("model accuracy")
+            || lower.contains("hyperparameter") || lower.contains("training loss")
+            || lower.contains("gradient descent") || lower.contains("gradient boosting")
+            || lower.contains("random forest") || lower.contains("decision tree") {
+            return "datascience"
+        }
         if word("research") || word("lab")
             || lower.contains("case study") || lower.contains("case studies")
             || lower.contains("data analysis") || lower.contains("data collection")
-            || lower.contains("data science") || lower.contains("data scientist")
             || word("dataset") || word("datasets") || lower.contains("qualitative") || lower.contains("quantitative") {
             return "research"
         }

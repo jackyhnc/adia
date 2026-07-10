@@ -84,6 +84,7 @@ extension CalloutManager {
         case "startup":      return startupCallouts(tier: tier)
         case "nursing":      return nursingCallouts(tier: tier)
         case "photography":  return photographyCallouts(tier: tier)
+        case "datascience":  return datascienceCallouts(tier: tier)
         default:             return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -809,6 +810,27 @@ extension CalloutManager {
             "CLOSE THIS. open your RAW files.",
             "your client is waiting for these edits — get back.",
             "the photos don't grade themselves. back to Lightroom.",
+        ]
+        }
+    }
+
+    private func datascienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your model isn't going to train itself.",
+            "get back to your notebook.",
+            "the data won't analyze itself — close this.",
+            "your jupyter notebook is waiting.",
+        ]
+        case 2: return [
+            "stop. your model is waiting.",
+            "this isn't your training run.",
+            "your dataset doesn't clean itself — get back.",
+        ]
+        default: return [
+            "CLOSE THIS. open your jupyter notebook.",
+            "no one trains models by scrolling.",
+            "your model won't converge while you're here — back to work.",
         ]
         }
     }

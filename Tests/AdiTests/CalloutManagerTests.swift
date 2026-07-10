@@ -3403,4 +3403,114 @@ struct CalloutManagerTests {
             #expect(!result.isEmpty, "tier 4 should fall through to tier3 photography messages")
         }
     }
+
+    // MARK: - Data science / ML keyword tests
+
+    @Test func extractTaskKeywordDatascienceMachineLearning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study machine learning concepts") == "datascience")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the machine learning assignment") == "datascience")
+    }
+
+    @Test func extractTaskKeywordDatascienceDeepLearning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "implement a deep learning model") == "datascience")
+        #expect(CalloutManager.extractTaskKeyword(from: "deep learning homework") == "datascience")
+    }
+
+    @Test func extractTaskKeywordDatascienceNeuralNetwork() {
+        #expect(CalloutManager.extractTaskKeyword(from: "train a neural network for image classification") == "datascience")
+        #expect(CalloutManager.extractTaskKeyword(from: "debug my neural networks") == "datascience")
+    }
+
+    @Test func extractTaskKeywordDatasciencePytorch() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write pytorch training loop") == "datascience")
+        #expect(CalloutManager.extractTaskKeyword(from: "fix my pytorch model") == "datascience")
+    }
+
+    @Test func extractTaskKeywordDatascienceTensorflow() {
+        #expect(CalloutManager.extractTaskKeyword(from: "build a tensorflow model") == "datascience")
+        #expect(CalloutManager.extractTaskKeyword(from: "tensorflow and keras experiment") == "datascience")
+    }
+
+    @Test func extractTaskKeywordDatascienceJupyter() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my jupyter notebook") == "datascience")
+        #expect(CalloutManager.extractTaskKeyword(from: "work through the jupyter cells") == "datascience")
+    }
+
+    @Test func extractTaskKeywordDatascienceKaggle() {
+        #expect(CalloutManager.extractTaskKeyword(from: "submit my kaggle competition entry") == "datascience")
+        #expect(CalloutManager.extractTaskKeyword(from: "work on kaggle dataset") == "datascience")
+    }
+
+    @Test func extractTaskKeywordDatascienceDataScientist() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for data science interview") == "datascience")
+        #expect(CalloutManager.extractTaskKeyword(from: "practice data scientist problems") == "datascience")
+    }
+
+    @Test func extractTaskKeywordDatascienceNLP() {
+        #expect(CalloutManager.extractTaskKeyword(from: "build a natural language processing pipeline") == "datascience")
+    }
+
+    @Test func extractTaskKeywordDatascienceModelTraining() {
+        #expect(CalloutManager.extractTaskKeyword(from: "run model training on the dataset") == "datascience")
+        #expect(CalloutManager.extractTaskKeyword(from: "tune hyperparameter settings") == "datascience")
+    }
+
+    @Test func extractTaskKeywordDatascienceRandomForest() {
+        #expect(CalloutManager.extractTaskKeyword(from: "train a random forest classifier") == "datascience")
+        #expect(CalloutManager.extractTaskKeyword(from: "compare gradient boosting methods") == "datascience")
+    }
+
+    @Test func extractTaskKeywordDatascienceDoesNotOverrideResearch() {
+        // Generic "data analysis" and "data collection" should still route to research
+        #expect(CalloutManager.extractTaskKeyword(from: "data collection for my study") == "research")
+        #expect(CalloutManager.extractTaskKeyword(from: "qualitative data analysis") == "research")
+    }
+
+    @Test func taskAwareCalloutsDatascienceHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "datascience", tier: tier)
+                #expect(!msgs.isEmpty, "datascience tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsDatascienceDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "datascience", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "datascience", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "datascience", tier: 3)
+            #expect(tier1.count >= 3, "datascience tier1 should have ≥3 messages")
+            #expect(tier2.count >= 2, "datascience tier2 should have ≥2 messages")
+            #expect(tier3.count >= 2, "datascience tier3 should have ≥2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsDatascienceTier1ReferencesMLWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "datascience", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("model") || lower.contains("notebook")
+                    || lower.contains("data") || lower.contains("jupyter")
+            }
+            #expect(hasRef, "datascience tier1 messages must reference ML/data work")
+        }
+    }
+
+    @Test func taskAwareCalloutsDatascienceTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "datascience", tier: 3)
+            #expect(!tier3.isEmpty, "datascience tier3 must have messages")
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "datascience tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsDatascienceTier4FallsThrough() async {
+        await MainActor.run {
+            let result = CalloutManager.shared.taskAwareCallouts(keyword: "datascience", tier: 4)
+            #expect(!result.isEmpty, "tier 4 should fall through to tier3 datascience messages")
+        }
+    }
 }

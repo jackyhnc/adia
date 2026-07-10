@@ -453,4 +453,42 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 34,
                 "catalog should have at least 34 templates after photography additions")
     }
+
+    // MARK: - Data science / ML templates
+
+    @Test func catalogContainsMLModelTemplate() {
+        let hasML = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("machine learning") || lower.contains("model")
+        }
+        #expect(hasML, "catalog must include a machine learning / model template")
+    }
+
+    @Test func catalogContainsKaggleTemplate() {
+        let hasKaggle = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("kaggle") || lower.contains("data science") || lower.contains("notebook")
+        }
+        #expect(hasKaggle, "catalog must include a Kaggle / data science notebook template")
+    }
+
+    @Test func datascienceTemplatesHaveReasonableDuration() {
+        let dsTemplates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("machine learning") || lower.contains("kaggle")
+                || lower.contains("model") || lower.contains("notebook")
+        }
+        #expect(!dsTemplates.isEmpty, "at least one data science template must exist")
+        for template in dsTemplates {
+            if let dur = template.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                            "data science template duration must be between 5 minutes and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastThirtySixTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 36,
+                "catalog should have at least 36 templates after data science additions")
+    }
 }
