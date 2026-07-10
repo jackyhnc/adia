@@ -594,4 +594,72 @@ struct SuggestedSessionTemplatesTests {
             }
         }
     }
+
+    // MARK: - Social science templates
+
+    @Test func catalogContainsPoliticalScienceTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("political science") || lower.contains("sociology")
+        }
+        #expect(has, "catalog must include a political science/sociology template")
+    }
+
+    @Test func catalogContainsLSATTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            t.task.lowercased().contains("lsat")
+        }
+        #expect(has, "catalog must include an LSAT template")
+    }
+
+    @Test func socialScienceTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("political science") || lower.contains("lsat")
+        }
+        #expect(!templates.isEmpty, "at least one social science template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "social science template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Nutrition templates
+
+    @Test func catalogContainsDieteticsTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("dietetics") || lower.contains("food science")
+        }
+        #expect(has, "catalog must include a dietetics/food science template")
+    }
+
+    @Test func catalogContainsNutritionTrackingTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("nutrition") && lower.contains("track")
+        }
+        #expect(has, "catalog must include a nutrition tracking template")
+    }
+
+    @Test func nutritionTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("dietetics") || lower.contains("nutrition")
+        }
+        #expect(!templates.isEmpty, "at least one nutrition template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "nutrition template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastFortyFiveTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 45,
+                "catalog should have ≥45 templates after social science + nutrition additions")
+    }
 }

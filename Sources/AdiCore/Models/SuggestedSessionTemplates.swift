@@ -286,5 +286,29 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Thought records, behavioral experiments, or treatment plan section completed and ready for review in supervision",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "globe",
+            task: "Work on my political science or sociology paper",
+            successCriteria: "Argument clearly stated, at least one section drafted with supporting evidence cited from peer-reviewed sources",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.badge.plus",
+            task: "Prepare for the LSAT",
+            successCriteria: "One full practice section completed, answers reviewed, and key patterns or mistakes documented for follow-up",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "fork.knife",
+            task: "Complete my dietetics or food science assignment",
+            successCriteria: "All required questions answered or case study analysis written up with appropriate dietary recommendations cited",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.bar",
+            task: "Track and analyze my daily nutrition intake",
+            successCriteria: "All meals logged with macronutrient breakdown complete and a brief written reflection on patterns or gaps",
+            preferredDuration: 30 * 60
+        ),
     ]
 }

@@ -86,9 +86,11 @@ extension CalloutManager {
         case "photography":  return photographyCallouts(tier: tier)
         case "datascience":  return datascienceCallouts(tier: tier)
         case "gamedev":      return gamedevCallouts(tier: tier)
-        case "engineering":  return engineeringCallouts(tier: tier)
-        case "therapy":      return therapyCallouts(tier: tier)
-        default:             return genericKeywordCallouts(keyword: keyword, tier: tier)
+        case "engineering":    return engineeringCallouts(tier: tier)
+        case "therapy":        return therapyCallouts(tier: tier)
+        case "socialscience":  return socialScienceCallouts(tier: tier)
+        case "nutrition":      return nutritionCallouts(tier: tier)
+        default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
 
@@ -897,6 +899,48 @@ extension CalloutManager {
             "CLOSE THIS. open your case notes.",
             "your clinical hours matter. get back.",
             "your clients are counting on your focus — back to work.",
+        ]
+        }
+    }
+
+    private func socialScienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "this isn't your political science work.",
+            "get back to your social science assignment.",
+            "your LSAT prep won't do itself.",
+            "that research won't write itself — close this.",
+        ]
+        case 2: return [
+            "stop. your poli sci paper is waiting.",
+            "this isn't your anthropology homework.",
+            "close this and get back to your social science work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your political science notes.",
+            "your LSAT score won't improve from here.",
+            "your social science work is waiting — back to it.",
+        ]
+        }
+    }
+
+    private func nutritionCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those macros aren't going to track themselves.",
+            "get back to your nutrition work.",
+            "your food journal isn't going to write itself.",
+            "your dietetics notes are waiting.",
+        ]
+        case 2: return [
+            "stop. your clinical nutrition assignment is due.",
+            "this isn't your nutrition work.",
+            "close this and get back to your dietary analysis.",
+        ]
+        default: return [
+            "CLOSE THIS. open your nutrition notes.",
+            "your food science work won't do itself — back to it.",
+            "your dietitian notes are waiting. get back.",
         ]
         }
     }

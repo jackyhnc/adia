@@ -295,6 +295,18 @@ public final class CalloutManager {
             || word("calories") {
             return "fitness"
         }
+        // nutrition/dietetics — positioned after fitness so "nutrition plan" and "meal prep"
+        // stay in fitness; catches professional/clinical dietetics terms not covered there.
+        if word("dietitian") || word("dietician") || word("nutritionist")
+            || word("macronutrients")
+            || lower.contains("food science")
+            || lower.contains("food journal")
+            || lower.contains("dietary analysis") || lower.contains("dietary intake")
+            || lower.contains("nutritional science") || lower.contains("clinical nutrition")
+            || lower.contains("nutrition assessment") || lower.contains("nutrient analysis")
+            || lower.contains("calorie tracking") || lower.contains("calorie counting") {
+            return "nutrition"
+        }
         if word("podcast") || word("podcasting")
             || lower.contains("podcast episode") || lower.contains("record an episode")
             || lower.contains("edit an episode") || lower.contains("edit the episode")
@@ -372,6 +384,19 @@ public final class CalloutManager {
             || lower.contains("supervision notes") || lower.contains("client notes")
             || lower.contains("case notes") || lower.contains("mental health notes") {
             return "therapy"
+        }
+        // socialscience — positioned after therapy (therapy catches "social work" first)
+        // and before legal (LSAT is pre-law, not a bar-exam term).
+        // Note: word("sociology") is already in the studying branch — not repeated here.
+        if lower.contains("political science") || lower.contains("poli sci")
+            || word("anthropology") || word("anthropological")
+            || lower.contains("ethnography") || lower.contains("ethnographic")
+            || word("criminology") || lower.contains("criminal justice")
+            || word("lsat")
+            || lower.contains("pre-law") || word("prelaw")
+            || lower.contains("public policy") || lower.contains("public administration")
+            || lower.contains("comparative politics") || lower.contains("international relations") {
+            return "socialscience"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")

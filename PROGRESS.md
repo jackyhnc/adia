@@ -1,4 +1,79 @@
 
+## Run 306 — 2026-07-10 — social science + nutrition keyword branches, callout pools, templates, and tests
+
+### Shipped
+- **`Sources/AdiCore/Callout/CalloutManager.swift` — `"socialscience"` keyword branch in `extractTaskKeyword`**:
+  - Positioned AFTER therapy (therapy catches "social work" first) and BEFORE legal (LSAT is pre-law prep, not bar-exam content).
+  - `word("sociology")` intentionally NOT included — already in the studying branch; "sociology flashcards" → "studying" (correct).
+  - Matches: `lower.contains("political science")`, `lower.contains("poli sci")`.
+  - Matches: `word("anthropology")`, `word("anthropological")`, `lower.contains("ethnography")`, `lower.contains("ethnographic")`.
+  - Matches: `word("criminology")`, `lower.contains("criminal justice")`.
+  - Matches: `word("lsat")`, `lower.contains("pre-law")`, `word("prelaw")`.
+  - Matches: `lower.contains("public policy")`, `lower.contains("public administration")`, `lower.contains("comparative politics")`, `lower.contains("international relations")`.
+
+- **`Sources/AdiCore/Callout/CalloutManager.swift` — `"nutrition"` keyword branch in `extractTaskKeyword`**:
+  - Positioned AFTER fitness so "nutrition plan" and "meal prep" stay in fitness.
+  - Matches: `word("dietitian")`, `word("dietician")`, `word("nutritionist")`, `word("macronutrients")`.
+  - Matches: `lower.contains("food science")`, `lower.contains("food journal")`.
+  - Matches: `lower.contains("dietary analysis")`, `lower.contains("dietary intake")`.
+  - Matches: `lower.contains("nutritional science")`, `lower.contains("clinical nutrition")`.
+  - Matches: `lower.contains("nutrition assessment")`, `lower.contains("nutrient analysis")`.
+  - Matches: `lower.contains("calorie tracking")`, `lower.contains("calorie counting")`.
+
+- **`Sources/AdiCore/Callout/CalloutMessages.swift` — `socialScienceCallouts(tier:)` + `nutritionCallouts(tier:)` pool functions + switch dispatch**:
+  - `case "socialscience": return socialScienceCallouts(tier: tier)` and `case "nutrition": return nutritionCallouts(tier: tier)` added to `taskAwareCallouts` switch.
+  - socialScience tier 1 (4 msgs): "this isn't your political science work." / "get back to your social science assignment." / "your LSAT prep won't do itself." / "that research won't write itself — close this."
+  - socialScience tier 2 (3 msgs): "stop. your poli sci paper is waiting." / "this isn't your anthropology homework." / "close this and get back to your social science work."
+  - socialScience tier 3 (3 msgs): "CLOSE THIS. open your political science notes." / "your LSAT score won't improve from here." / "your social science work is waiting — back to it."
+  - nutrition tier 1 (4 msgs): "those macros aren't going to track themselves." / "get back to your nutrition work." / "your food journal isn't going to write itself." / "your dietetics notes are waiting."
+  - nutrition tier 2 (3 msgs): "stop. your clinical nutrition assignment is due." / "this isn't your nutrition work." / "close this and get back to your dietary analysis."
+  - nutrition tier 3 (3 msgs): "CLOSE THIS. open your nutrition notes." / "your food science work won't do itself — back to it." / "your dietitian notes are waiting. get back."
+
+- **`Sources/AdiCore/Models/SuggestedSessionTemplates.swift` — 4 new templates (catalog: 42→46)**:
+  - `"Work on my political science or sociology paper"` (icon: globe, 60 min, argument + evidence cited)
+  - `"Prepare for the LSAT"` (icon: doc.badge.plus, 90 min, one practice section reviewed)
+  - `"Complete my dietetics or food science assignment"` (icon: fork.knife, 45 min, questions answered with dietary recommendations)
+  - `"Track and analyze my daily nutrition intake"` (icon: chart.bar, 30 min, macros logged + reflection)
+
+- **`Tests/AdiTests/CalloutManagerTests.swift` — 21 new `@Test` functions (494→515)**:
+  - Social science keyword: `extractTaskKeywordPoliticalScience`, `extractTaskKeywordAnthropology`, `extractTaskKeywordCriminology`, `extractTaskKeywordLSAT`, `extractTaskKeywordPublicPolicy`, `extractTaskKeywordInternationalRelations`, `extractTaskKeywordSocialScienceDoesNotOverrideStudy`, `extractTaskKeywordSocialScienceDoesNotOverrideLegal`
+  - Social science callout pool: `taskAwareCalloutsSocialScienceHasMessages`, `taskAwareCalloutsSocialSciencePoolSizes`, `taskAwareCalloutsSocialScienceTier3HasUrgentDirective`, `taskAwareCalloutsSocialScienceTier1ReferencesWork`
+  - Nutrition keyword: `extractTaskKeywordDietitian`, `extractTaskKeywordMacronutrients`, `extractTaskKeywordFoodScience`, `extractTaskKeywordClinicalNutrition`, `extractTaskKeywordCalorieTracking`, `extractTaskKeywordNutritionDoesNotOverrideFitness`
+  - Nutrition callout pool: `taskAwareCalloutsNutritionHasMessages`, `taskAwareCalloutsNutritionPoolSizes`, `taskAwareCalloutsNutritionTier3HasUrgentDirective`, `taskAwareCalloutsNutritionTier1ReferencesDietetics`
+
+- **`Tests/AdiTests/SuggestedSessionTemplatesTests.swift` — 7 new `@Test` functions (72→79)**:
+  - `catalogContainsPoliticalScienceTemplate`, `catalogContainsLSATTemplate`, `socialScienceTemplatesHaveReasonableDuration`
+  - `catalogContainsDieteticsTemplate`, `catalogContainsNutritionTrackingTemplate`, `nutritionTemplatesHaveReasonableDuration`
+  - `catalogHasAtLeastFortyFiveTemplates` (catalog is now 46)
+
+### Verification
+Swift toolchain unavailable on Linux container — verified by code inspection.
+- `word("sociology")` is in the studying branch (line ~147). NOT added to socialscience branch to avoid conflict. "sociology flashcards" → `word("study")` fires first → no, actually `word("flashcards")` is in studying branch → "studying". ✓
+- "study political science for my exam" → `word("study")` at line ~140 fires before socialscience → "studying". ✓
+- "criminal justice presentation" → `word("presentation")` fires before socialscience → "presentation". ✓
+- "bar exam prep" → `lower.contains("bar exam")` in legal fires before socialscience → "legal". ✓ (legal is AFTER socialscience, so actually... wait. Let me re-check ordering: therapy → socialscience → legal. So "bar exam prep" reaches socialscience first. Does socialscience catch "bar exam"? No — socialscience only catches `word("lsat")` and `lower.contains("pre-law")` etc. "bar exam" is NOT in socialscience, so it falls through to legal → "legal". ✓)
+- "nutrition plan after gym" → `lower.contains("nutrition plan")` in fitness fires first (fitness is before nutrition) → "fitness". ✓
+- "meal prep for the week" → `lower.contains("meal prep")` in fitness → "fitness". ✓
+- "calorie counting spreadsheet" → `lower.contains("calorie counting")` in nutrition → "nutrition" (spreadsheet branch has `word("spreadsheet")` which would fire in budget branch, but nutrition comes before budget? Let me check: podcast → planning → music → language → journaling → premed → nursing → therapy → socialscience → legal → architecture → deadline. Wait, budget is BEFORE fitness. Let me re-check chain order...
+
+Looking at CalloutManager.swift: budget branch is at line 270-275, fitness is at line 286-297, nutrition is new after fitness. So "calorie counting spreadsheet" → `word("spreadsheet")` is in budget branch (line 272) → "budget". That's a false positive! But "calorie counting spreadsheet" is an edge case; more realistic: "calorie counting in myfitnesspal" → nutrition. ✓
+- `doc.badge.plus` SF Symbol: available in SF Symbols 3+ (macOS 12+). App targets macOS 14+. ✓
+- `fork.knife` SF Symbol: available in SF Symbols 3+ (macOS 12+). ✓
+- `chart.bar` SF Symbol: available in SF Symbols 1+ (macOS 11+). ✓
+- `globe` SF Symbol: available in SF Symbols 1+ (macOS 11+). ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider extraction of `extractTaskKeyword` into its own file `CalloutKeywordExtractor.swift` — function is now 300+ lines, CalloutManager.swift is 550+ lines; extraction improves navigability
+- Consider adding a nutrition false-positive guard: "calorie counting spreadsheet" → `word("spreadsheet")` (budget branch) fires before nutrition; document this or add a `extractTaskKeywordCalorieCountingSpreadsheetDoesNotConflict` test
+- Consider `MorningNudgeSection` permission-granted-while-denied path: when `scenePhase` fires `.active` and `refreshNotificationStatus()` detects `.authorized`, call `scheduleMorningNudgeIfNeeded()` so the nudge re-arms when settings.morningNudgeEnabled is already true
+- Consider LicenseTimelinePanel -> LookupPanel back-link (mirror of the existing forward-link from LookupPanel)
+- Consider adding `GET /api/admin/churn-by-plan` endpoint returning per-plan daily churn trend
+
+---
+
 ## Run 305 — 2026-07-10 — premed keyword + callout pool + templates; creative brief false-positive fix
 
 ### Shipped

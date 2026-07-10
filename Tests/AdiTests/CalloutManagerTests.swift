@@ -3726,4 +3726,166 @@ struct CalloutManagerTests {
             #expect(hasUrgent, "therapy tier3 should contain a CLOSE THIS directive")
         }
     }
+
+    // MARK: - Social science keyword tests
+
+    @Test func extractTaskKeywordPoliticalScience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my political science paper") == "socialscience")
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my poli sci essay") == "essay")
+        #expect(CalloutManager.extractTaskKeyword(from: "poli sci readings for Tuesday") == "socialscience")
+    }
+
+    @Test func extractTaskKeywordAnthropology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "anthropology fieldwork writeup") == "socialscience")
+        #expect(CalloutManager.extractTaskKeyword(from: "read my anthropology chapter") == "reading")
+        #expect(CalloutManager.extractTaskKeyword(from: "ethnographic research for class") == "socialscience")
+    }
+
+    @Test func extractTaskKeywordCriminology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "criminology assignment for tomorrow") == "socialscience")
+        #expect(CalloutManager.extractTaskKeyword(from: "criminal justice presentation") == "presentation")
+        #expect(CalloutManager.extractTaskKeyword(from: "study criminal justice for my exam") == "studying")
+    }
+
+    @Test func extractTaskKeywordLSAT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "LSAT prep session") == "socialscience")
+        #expect(CalloutManager.extractTaskKeyword(from: "practice LSAT logic games") == "socialscience")
+        #expect(CalloutManager.extractTaskKeyword(from: "prepare for the LSAT") == "socialscience")
+    }
+
+    @Test func extractTaskKeywordPublicPolicy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "public policy memo for class") == "socialscience")
+        #expect(CalloutManager.extractTaskKeyword(from: "public administration case study") == "socialscience")
+    }
+
+    @Test func extractTaskKeywordInternationalRelations() {
+        #expect(CalloutManager.extractTaskKeyword(from: "international relations theory paper") == "socialscience")
+        #expect(CalloutManager.extractTaskKeyword(from: "comparative politics reading") == "socialscience")
+    }
+
+    @Test func extractTaskKeywordSocialScienceDoesNotOverrideStudy() {
+        // "study sociology" hits word("study") and word("sociology") is in studying branch — stays "studying"
+        #expect(CalloutManager.extractTaskKeyword(from: "study political science for my exam") == "studying")
+        #expect(CalloutManager.extractTaskKeyword(from: "sociology flashcards") == "studying")
+    }
+
+    @Test func extractTaskKeywordSocialScienceDoesNotOverrideLegal() {
+        // bar exam, legal brief — should still resolve to legal, not socialscience
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for the bar exam") == "legal")
+        #expect(CalloutManager.extractTaskKeyword(from: "write my legal brief") == "legal")
+    }
+
+    @Test func taskAwareCalloutsSocialScienceHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "socialscience", tier: tier)
+                #expect(!msgs.isEmpty, "socialscience tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsSocialSciencePoolSizes() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "socialscience", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "socialscience", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "socialscience", tier: 3)
+            #expect(t1.count >= 3, "socialscience tier1 should have ≥3 messages")
+            #expect(t2.count >= 2, "socialscience tier2 should have ≥2 messages")
+            #expect(t3.count >= 2, "socialscience tier3 should have ≥2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsSocialScienceTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "socialscience", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "socialscience tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsSocialScienceTier1ReferencesWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "socialscience", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("political") || lower.contains("social science")
+                    || lower.contains("lsat") || lower.contains("research")
+            }
+            #expect(hasRef, "socialscience tier1 messages must reference the domain")
+        }
+    }
+
+    // MARK: - Nutrition keyword tests
+
+    @Test func extractTaskKeywordDietitian() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for my meeting with my dietitian") == "nutrition")
+        #expect(CalloutManager.extractTaskKeyword(from: "work with a registered dietician") == "nutrition")
+        #expect(CalloutManager.extractTaskKeyword(from: "ask my nutritionist follow-up questions") == "nutrition")
+    }
+
+    @Test func extractTaskKeywordMacronutrients() {
+        #expect(CalloutManager.extractTaskKeyword(from: "log my macronutrients for today") == "nutrition")
+        #expect(CalloutManager.extractTaskKeyword(from: "review macronutrients after my workout") == "nutrition")
+    }
+
+    @Test func extractTaskKeywordFoodScience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "food science lab report") == "nutrition")
+        #expect(CalloutManager.extractTaskKeyword(from: "nutritional science reading assignment") == "nutrition")
+    }
+
+    @Test func extractTaskKeywordClinicalNutrition() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my clinical nutrition case study") == "nutrition")
+        #expect(CalloutManager.extractTaskKeyword(from: "nutrition assessment for my client") == "nutrition")
+    }
+
+    @Test func extractTaskKeywordCalorieTracking() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my calorie tracking for today") == "nutrition")
+        #expect(CalloutManager.extractTaskKeyword(from: "calorie counting spreadsheet") == "nutrition")
+    }
+
+    @Test func extractTaskKeywordNutritionDoesNotOverrideFitness() {
+        // "nutrition plan" and "meal prep" must stay in fitness
+        #expect(CalloutManager.extractTaskKeyword(from: "follow my nutrition plan after gym") == "fitness")
+        #expect(CalloutManager.extractTaskKeyword(from: "meal prep for the week") == "fitness")
+    }
+
+    @Test func taskAwareCalloutsNutritionHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "nutrition", tier: tier)
+                #expect(!msgs.isEmpty, "nutrition tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsNutritionPoolSizes() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "nutrition", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "nutrition", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "nutrition", tier: 3)
+            #expect(t1.count >= 3, "nutrition tier1 should have ≥3 messages")
+            #expect(t2.count >= 2, "nutrition tier2 should have ≥2 messages")
+            #expect(t3.count >= 2, "nutrition tier3 should have ≥2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsNutritionTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "nutrition", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "nutrition tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsNutritionTier1ReferencesDietetics() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "nutrition", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("macro") || lower.contains("nutrition")
+                    || lower.contains("food") || lower.contains("dietetic")
+            }
+            #expect(hasRef, "nutrition tier1 messages must reference dietetics domain")
+        }
+    }
 }
