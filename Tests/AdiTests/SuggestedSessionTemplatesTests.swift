@@ -907,4 +907,108 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 60,
                 "catalog should have ≥60 templates after UX additions")
     }
+
+    // MARK: - Statistics templates
+
+    @Test func catalogContainsStatisticsAnalysisTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return (lower.contains("statistical analysis") || lower.contains("r") || lower.contains("spss"))
+                && (lower.contains("analysis") || lower.contains("run"))
+        }
+        #expect(has, "catalog must include a statistics/R/SPSS analysis template")
+    }
+
+    @Test func catalogContainsStatisticsProblemSetTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("statistics") && (lower.contains("problem set") || lower.contains("lab report"))
+        }
+        #expect(has, "catalog must include a statistics problem set or lab report template")
+    }
+
+    @Test func statisticsTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("statistic") || lower.contains("r or spss")
+        }
+        #expect(!templates.isEmpty, "at least one statistics template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "statistics template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Kinesiology templates
+
+    @Test func catalogContainsKinesiologyAssignmentTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return (lower.contains("kinesiology") || lower.contains("exercise physiology"))
+                && (lower.contains("assignment") || lower.contains("lab report") || lower.contains("complete"))
+        }
+        #expect(has, "catalog must include a kinesiology assignment template")
+    }
+
+    @Test func catalogContainsKinesiologyExamTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return (lower.contains("cscs") || lower.contains("kinesiology"))
+                && (lower.contains("exam") || lower.contains("test") || lower.contains("study"))
+        }
+        #expect(has, "catalog must include a kinesiology exam/CSCS template")
+    }
+
+    @Test func kinesiologyTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("kinesiology") || lower.contains("cscs")
+        }
+        #expect(!templates.isEmpty, "at least one kinesiology template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "kinesiology template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Veterinary templates
+
+    @Test func catalogContainsVeterinaryCaseNotesTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("veterinary") && (lower.contains("case notes") || lower.contains("assignment"))
+        }
+        #expect(has, "catalog must include a veterinary case notes or assignment template")
+    }
+
+    @Test func catalogContainsVeterinaryExamTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("navle") || (lower.contains("veterinary") && lower.contains("exam"))
+        }
+        #expect(has, "catalog must include a NAVLE or vet school exam template")
+    }
+
+    @Test func veterinaryTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("veterinary") || lower.contains("navle")
+        }
+        #expect(!templates.isEmpty, "at least one veterinary template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "veterinary template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastSixtySixTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 66,
+                "catalog should have ≥66 templates after statistics/kinesiology/veterinary additions")
+    }
 }

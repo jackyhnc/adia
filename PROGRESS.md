@@ -1,4 +1,35 @@
 
+## Run 314 — 2026-07-10
+
+**Shipped:** Statistics, kinesiology, and veterinary keyword domains + callout pools + 6 templates + 45 CalloutManager tests + 10 SuggestedTemplates tests
+
+### What changed
+- `CalloutManager.extractTaskKeyword`: added `"statistics"` branch **before the studying block**. Matches: `rstudio`/`r studio`, `spss`, `stata`, `hypothesis testing`/`test`, `linear/logistic/multiple regression`, `regression analysis`, `multivariate analysis`, `anova`, `t-test`, `chi-square`, `confidence interval`, `statistical analysis`/`modeling`/`model`, `descriptive statistics`, `inferential statistics`, `p-value`/`p value`, `effect size`, `sample size calculation`. Bare `word("statistics")` and `word("stats")` intentionally NOT included — "study statistics for my exam" stays in studying. "regression testing" false-positive guarded.
+- `CalloutManager.extractTaskKeyword`: added `"kinesiology"` branch **before the fitness block**. Fixes `exercise physiology` false-positive (fitness catches `word("exercise")`). Matches: `kinesiology`, `biomechanics`, `kinesiologist`, `exercise physiology`, `sports science`/`sport science`, `cscs exam`, `nsca exam`, `motor control`, `gait analysis`, `movement analysis`, `physical therapy`, `physiotherapy`, `athletic training`, `strength and conditioning`, `sport/sports psychology`, `human movement`, `musculoskeletal`.
+- `CalloutManager.extractTaskKeyword`: added `"veterinary"` branch **before the premed block**. Matches: `veterinary`, `veterinarian`, `vet school`/`vet medicine`, `veterinary medicine`/`pathology`/`surgery`/`technician`/`clinic`, `animal science`/`behavior`/`physiology`, `navle`, `zoology`, `comparative anatomy`, `large animal`/`small animal`, `vet tech`, `animal hospital`.
+- `CalloutMessages`: added `statisticsCallouts(tier:)` 4/3/3, `kinesiologyCallouts(tier:)` 4/3/3, `veterinaryCallouts(tier:)` 4/3/3; cases added to `taskAwareCallouts` switch.
+- `SuggestedSessionTemplates.all` grows 60→66: stats analysis in R/SPSS (60 min) + stats problem set (45 min) + kinesiology assignment (60 min) + CSCS exam study (60 min) + vet school case notes (45 min) + NAVLE exam study (90 min).
+- **45 new tests** in `CalloutManagerTests.swift` (597→642): 17 statistics + 14 kinesiology + 14 veterinary.
+- **10 new tests** in `SuggestedSessionTemplatesTests.swift` (104→114): 3 per domain + ≥66 count guard.
+
+### Verification
+Swift toolchain unavailable on Linux — verified by code inspection:
+- statistics branch positioned before studying → "run ANOVA in SPSS" fires statistics ✓; "study statistics" → studying ✓; "write regression tests" → no match in statistics (no bare word("regression")) ✓
+- kinesiology branch positioned before fitness → "exercise physiology assignment" → kinesiology not fitness ✓; "plan my gym workout" → fitness ✓
+- veterinary branch positioned before premed → "vet school anatomy" → veterinary ✓; "study anatomy for medical school" → premed ✓
+- All 6 template durations: 2700/2700/3600/3600/2700/5400 — all in [300, 10800] ✓
+- All three tier-3 pools contain "CLOSE THIS" prefix ✓
+
+### Blocked / skipped
+None.
+
+### Next agent should pick up
+- **AppMonitor observability tests**: requires macOS build environment
+- **arduino false-positive check**: should route to code not engineering (code fires first, but needs macOS verification)
+- More keyword domains: paramedicine/EMT (emt/paramedic/nremt exam), occupational therapy (OT/NBCOT exam/ADLs), social work (could split from therapy)
+
+---
+
 ## Run 313 — 2026-07-10
 
 **Shipped:** Finance + policy keyword branches, callout pools, 4 templates, 32 new tests

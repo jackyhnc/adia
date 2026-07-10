@@ -394,5 +394,41 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Complete user flow or wireframe screens created for the target feature, with all key states and edge cases covered and a brief annotation explaining design decisions",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "chart.xyaxis.line",
+            task: "Run a statistical analysis in R or SPSS",
+            successCriteria: "Dataset loaded, analysis script complete and run without errors, results table or output visible, and a brief interpretation of findings written",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "function",
+            task: "Complete a statistics problem set or lab report",
+            successCriteria: "All problems answered with correct statistical tests shown, interpretation written for each result, and assignment submitted or saved for submission",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "figure.run",
+            task: "Complete my kinesiology or exercise physiology assignment",
+            successCriteria: "All questions answered, movement analysis or lab report written with references to physiological mechanisms, and assignment saved or submitted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "heart.text.clipboard",
+            task: "Study for the CSCS exam or kinesiology test",
+            successCriteria: "Target chapter or topic reviewed, key concepts summarized in own words, and at least 10 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "pawprint.fill",
+            task: "Complete my veterinary school assignment or case notes",
+            successCriteria: "Case notes or assignment written up completely, key clinical findings documented, and differential diagnoses or treatment plan recorded",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "stethoscope",
+            task: "Study for the NAVLE or veterinary school exam",
+            successCriteria: "Target subject reviewed, key pharmacology or pathology concepts summarized, and at least 15 practice questions completed with explanations",
+            preferredDuration: 90 * 60
+        ),
     ]
 }

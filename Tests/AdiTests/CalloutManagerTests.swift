@@ -4519,4 +4519,283 @@ struct CalloutManagerTests {
             #expect(tier4 == tier3, "tier4 (out of range) should return same pool as tier3")
         }
     }
+
+    // MARK: - Statistics keyword tests
+
+    @Test func extractTaskKeywordRStudio() {
+        #expect(CalloutManager.extractTaskKeyword(from: "run my analysis in RStudio") == "statistics")
+    }
+
+    @Test func extractTaskKeywordRStudioSpaced() {
+        #expect(CalloutManager.extractTaskKeyword(from: "open R studio and clean my dataset") == "statistics")
+    }
+
+    @Test func extractTaskKeywordSPSS() {
+        #expect(CalloutManager.extractTaskKeyword(from: "run an ANOVA in SPSS for my thesis") == "statistics")
+    }
+
+    @Test func extractTaskKeywordStata() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze survey data in Stata") == "statistics")
+    }
+
+    @Test func extractTaskKeywordHypothesisTesting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my hypothesis testing assignment") == "statistics")
+    }
+
+    @Test func extractTaskKeywordLinearRegression() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write up my linear regression analysis") == "statistics")
+    }
+
+    @Test func extractTaskKeywordLogisticRegression() {
+        #expect(CalloutManager.extractTaskKeyword(from: "run a logistic regression on this dataset") == "statistics")
+    }
+
+    @Test func extractTaskKeywordANOVA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "interpret the ANOVA results from my lab") == "statistics")
+    }
+
+    @Test func extractTaskKeywordStatisticalAnalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my statistical analysis report") == "statistics")
+    }
+
+    @Test func extractTaskKeywordDescriptiveStatistics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "calculate descriptive statistics for my data") == "statistics")
+    }
+
+    @Test func extractTaskKeywordStatisticsDoesNotOverrideStudying() {
+        // bare word("statistics") stays in studying
+        #expect(CalloutManager.extractTaskKeyword(from: "study statistics for my exam") == "studying")
+    }
+
+    @Test func extractTaskKeywordRegressionTestingRoutesToCode() {
+        // "regression testing" without a specific stats phrase routes to code (via python etc.)
+        // or falls through — should NOT route to statistics
+        let result = CalloutManager.extractTaskKeyword(from: "write regression tests for my API")
+        #expect(result != "statistics", "regression testing (software QA) must not route to statistics")
+    }
+
+    @Test func taskAwareCalloutsStatisticsHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "statistics", tier: tier)
+                #expect(!msgs.isEmpty, "statistics tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsStatisticsDedicatedPoolSize() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "statistics", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "statistics", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "statistics", tier: 3)
+            #expect(t1.count >= 3, "statistics tier1 must have at least 3 messages")
+            #expect(t2.count >= 2, "statistics tier2 must have at least 2 messages")
+            #expect(t3.count >= 2, "statistics tier3 must have at least 2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsStatisticsTier1ReferencesStats() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "statistics", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("stat") || lower.contains("analysis") || lower.contains("regression")
+                    || lower.contains("dataset") || lower.contains("data")
+            }
+            #expect(hasRef, "statistics tier1 messages must reference stats work domain")
+        }
+    }
+
+    @Test func taskAwareCalloutsStatisticsTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "statistics", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "statistics tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsStatisticsTier4FallsThrough() async {
+        await MainActor.run {
+            let tier4 = CalloutManager.shared.taskAwareCallouts(keyword: "statistics", tier: 4)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "statistics", tier: 3)
+            #expect(tier4 == tier3, "tier4 (out of range) should return same pool as tier3")
+        }
+    }
+
+    // MARK: - Kinesiology keyword tests
+
+    @Test func extractTaskKeywordKinesiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my kinesiology assignment") == "kinesiology")
+    }
+
+    @Test func extractTaskKeywordBiomechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write up my biomechanics lab report") == "kinesiology")
+    }
+
+    @Test func extractTaskKeywordExercisePhysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study exercise physiology for my exam") == "kinesiology")
+    }
+
+    @Test func extractTaskKeywordSportsScience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my sports science assignment") == "kinesiology")
+    }
+
+    @Test func extractTaskKeywordCSCS() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for the CSCS exam") == "kinesiology")
+    }
+
+    @Test func extractTaskKeywordPhysicalTherapy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my physical therapy case notes") == "kinesiology")
+    }
+
+    @Test func extractTaskKeywordStrengthAndConditioning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "plan my strength and conditioning program") == "kinesiology")
+    }
+
+    @Test func extractTaskKeywordKinesiologyDoesNotOverrideCode() {
+        // code fires before kinesiology
+        #expect(CalloutManager.extractTaskKeyword(from: "code a biomechanics simulation in Python") == "code")
+    }
+
+    @Test func extractTaskKeywordKinesiologyDoesNotMapGeneralFitness() {
+        // "gym workout" with no kinesiology-specific phrase stays in fitness
+        let result = CalloutManager.extractTaskKeyword(from: "plan my gym workout")
+        #expect(result == "fitness", "generic gym tasks must stay in fitness, not kinesiology")
+    }
+
+    @Test func taskAwareCalloutsKinesiologyHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "kinesiology", tier: tier)
+                #expect(!msgs.isEmpty, "kinesiology tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsKinesiologyDedicatedPoolSize() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "kinesiology", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "kinesiology", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "kinesiology", tier: 3)
+            #expect(t1.count >= 3, "kinesiology tier1 must have at least 3 messages")
+            #expect(t2.count >= 2, "kinesiology tier2 must have at least 2 messages")
+            #expect(t3.count >= 2, "kinesiology tier3 must have at least 2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsKinesiologyTier1ReferencesKinesiology() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "kinesiology", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("kinesiology") || lower.contains("biomechanics")
+                    || lower.contains("physiology") || lower.contains("movement")
+                    || lower.contains("sports") || lower.contains("exercise")
+            }
+            #expect(hasRef, "kinesiology tier1 messages must reference the sports science domain")
+        }
+    }
+
+    @Test func taskAwareCalloutsKinesiologyTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "kinesiology", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "kinesiology tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsKinesiologyTier4FallsThrough() async {
+        await MainActor.run {
+            let tier4 = CalloutManager.shared.taskAwareCallouts(keyword: "kinesiology", tier: 4)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "kinesiology", tier: 3)
+            #expect(tier4 == tier3, "tier4 (out of range) should return same pool as tier3")
+        }
+    }
+
+    // MARK: - Veterinary keyword tests
+
+    @Test func extractTaskKeywordVeterinary() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my veterinary pharmacology notes") == "veterinary")
+    }
+
+    @Test func extractTaskKeywordVeterinarianWord() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for veterinarian licensing exam") == "veterinary")
+    }
+
+    @Test func extractTaskKeywordVetSchool() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my vet school anatomy exam") == "veterinary")
+    }
+
+    @Test func extractTaskKeywordNAVLE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for the NAVLE licensing exam") == "veterinary")
+    }
+
+    @Test func extractTaskKeywordAnimalScience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my animal science research paper") == "veterinary")
+    }
+
+    @Test func extractTaskKeywordZoology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study zoology for my practical exam") == "veterinary")
+    }
+
+    @Test func extractTaskKeywordSmallAnimal() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write up my small animal surgery case notes") == "veterinary")
+    }
+
+    @Test func extractTaskKeywordVetTech() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my vet tech certification materials") == "veterinary")
+    }
+
+    @Test func extractTaskKeywordVeterinaryDoesNotOverridePremed() {
+        // plain anatomy without vet context stays in premed
+        #expect(CalloutManager.extractTaskKeyword(from: "study anatomy for medical school") == "premed")
+    }
+
+    @Test func taskAwareCalloutsVeterinaryHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "veterinary", tier: tier)
+                #expect(!msgs.isEmpty, "veterinary tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsVeterinaryDedicatedPoolSize() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "veterinary", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "veterinary", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "veterinary", tier: 3)
+            #expect(t1.count >= 3, "veterinary tier1 must have at least 3 messages")
+            #expect(t2.count >= 2, "veterinary tier2 must have at least 2 messages")
+            #expect(t3.count >= 2, "veterinary tier3 must have at least 2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsVeterinaryTier1ReferencesVetWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "veterinary", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("vet") || lower.contains("animal") || lower.contains("patient")
+                    || lower.contains("case") || lower.contains("notes")
+            }
+            #expect(hasRef, "veterinary tier1 messages must reference vet work domain")
+        }
+    }
+
+    @Test func taskAwareCalloutsVeterinaryTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "veterinary", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "veterinary tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsVeterinaryTier4FallsThrough() async {
+        await MainActor.run {
+            let tier4 = CalloutManager.shared.taskAwareCallouts(keyword: "veterinary", tier: 4)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "veterinary", tier: 3)
+            #expect(tier4 == tier3, "tier4 (out of range) should return same pool as tier3")
+        }
+    }
 }

@@ -97,6 +97,9 @@ extension CalloutManager {
         case "finance":        return financeCallouts(tier: tier)
         case "policy":         return policyCallouts(tier: tier)
         case "ux":             return uxCallouts(tier: tier)
+        case "statistics":     return statisticsCallouts(tier: tier)
+        case "kinesiology":    return kinesiologyCallouts(tier: tier)
+        case "veterinary":     return veterinaryCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1095,6 +1098,69 @@ extension CalloutManager {
             "CLOSE THIS. open your design tool.",
             "no one ships great UX by browsing — back to work.",
             "your usability report won't write itself — close this.",
+        ]
+        }
+    }
+
+    private func statisticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your statistical analysis isn't going to do itself.",
+            "get back to your stats work.",
+            "those regressions won't run themselves.",
+            "close this and open your dataset.",
+        ]
+        case 2: return [
+            "stop. your analysis is waiting.",
+            "this isn't your R studio.",
+            "close this and get back to your statistics work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your stats software.",
+            "no one passes their stats exam by scrolling.",
+            "your regression isn't going to run itself — back to work.",
+        ]
+        }
+    }
+
+    private func kinesiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your biomechanics assignment isn't going to finish itself.",
+            "get back to your kinesiology work.",
+            "those movement analyses won't write themselves.",
+            "close this and open your physiology notes.",
+        ]
+        case 2: return [
+            "stop. your kinesiology assignment is waiting.",
+            "this isn't your exercise physiology textbook.",
+            "close this and get back to your sports science work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your kinesiology notes.",
+            "no one passes the CSCS exam by scrolling.",
+            "your physiology report won't write itself — back to work.",
+        ]
+        }
+    }
+
+    private func veterinaryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your patients need you focused — get back to your vet work.",
+            "those case notes aren't going to write themselves.",
+            "close this and open your veterinary notes.",
+            "your vet school work is waiting.",
+        ]
+        case 2: return [
+            "stop. your veterinary assignment is waiting.",
+            "this isn't your anatomy atlas.",
+            "close this and get back to your vet school work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your veterinary notes.",
+            "no one passes NAVLE by scrolling.",
+            "your animal science work won't do itself — back to it.",
         ]
         }
     }

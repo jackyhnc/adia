@@ -137,6 +137,22 @@ public final class CalloutManager {
         if word("report") || word("reports") || word("document") || word("documents") || word("doc") || word("docs") {
             return "report"
         }
+        // statistics — positioned before studying so professional stats tools/methods (R, SPSS,
+        // STATA, regression analysis, ANOVA) route here. Bare word("statistics") and word("stats")
+        // stay in studying so "study statistics for my exam" still routes to studying.
+        if lower.contains("rstudio") || lower.contains("r studio") || word("spss") || word("stata")
+            || lower.contains("hypothesis testing") || lower.contains("hypothesis test")
+            || lower.contains("linear regression") || lower.contains("logistic regression")
+            || lower.contains("multiple regression") || lower.contains("multivariate analysis")
+            || lower.contains("regression analysis")
+            || word("anova") || lower.contains("t-test") || lower.contains("chi-square")
+            || lower.contains("confidence interval") || lower.contains("statistical analysis")
+            || lower.contains("statistical modeling") || lower.contains("statistical model")
+            || lower.contains("descriptive statistics") || lower.contains("inferential statistics")
+            || lower.contains("p-value") || lower.contains("p value")
+            || lower.contains("effect size") || lower.contains("sample size calculation") {
+            return "statistics"
+        }
         if word("study") || word("studying") || word("exam") || word("quiz") || word("test")
             || word("midterm") || word("midterms") || word("finals") || word("notes")
             || word("flashcard") || word("flashcards") || word("lecture")
@@ -325,6 +341,19 @@ public final class CalloutManager {
             || word("rehearse") || word("rehearsing") || word("rehearsal") {
             return "practice"
         }
+        // kinesiology — positioned before fitness so biomechanics, exercise physiology,
+        // and physical therapy professional terms route here rather than the generic fitness pool.
+        if word("kinesiology") || word("biomechanics") || word("kinesiologist")
+            || lower.contains("exercise physiology") || lower.contains("sports science")
+            || lower.contains("sport science") || lower.contains("cscs exam")
+            || lower.contains("nsca exam") || lower.contains("motor control")
+            || lower.contains("gait analysis") || lower.contains("movement analysis")
+            || lower.contains("physical therapy") || lower.contains("physiotherapy")
+            || lower.contains("athletic training") || lower.contains("strength and conditioning")
+            || lower.contains("sport psychology") || lower.contains("sports psychology")
+            || lower.contains("human movement") || lower.contains("musculoskeletal") {
+            return "kinesiology"
+        }
         if word("workout") || word("workouts") || word("gym")
             || word("exercise") || word("exercises") || word("exercising")
             || word("lifting") || word("weightlifting") || word("bodybuilding")
@@ -433,6 +462,19 @@ public final class CalloutManager {
             || lower.contains("morning pages") || lower.contains("daily log")
             || lower.contains("diary entry") || word("diary") {
             return "journaling"
+        }
+        // veterinary — positioned before premed so "veterinary clinical rotation", "dissection"
+        // in a vet-school context, and animal anatomy tasks route here, not to premed.
+        if word("veterinary") || word("veterinarian") || lower.contains("vet school")
+            || lower.contains("vet medicine") || lower.contains("veterinary medicine")
+            || lower.contains("animal science") || word("navle")
+            || lower.contains("animal behavior") || word("zoology")
+            || lower.contains("comparative anatomy") || lower.contains("large animal")
+            || lower.contains("small animal") || lower.contains("veterinary pathology")
+            || lower.contains("animal physiology") || lower.contains("veterinary surgery")
+            || lower.contains("vet tech") || lower.contains("veterinary technician")
+            || lower.contains("veterinary clinic") || lower.contains("animal hospital") {
+            return "veterinary"
         }
         if word("anatomy") || word("physiology") || word("biochemistry")
             || word("pharmacology") || word("pathology") || word("histology")
