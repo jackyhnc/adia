@@ -4296,6 +4296,67 @@ struct CalloutManagerTests {
         }
     }
 
+    @Test func extractTaskKeywordFinanceSeries7() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my Series 7 exam") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for the Series 63 license test") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceDCF() {
+        #expect(CalloutManager.extractTaskKeyword(from: "build a DCF model for this company") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "do discounted cash flow analysis for the case") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "complete the DCF assignment") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceLBO() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write up the LBO case") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "build a leveraged buyout model") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceBloomberg() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice on the Bloomberg Terminal") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "run my analysis on bloomberg terminal") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceComparables() {
+        #expect(CalloutManager.extractTaskKeyword(from: "do comparable company analysis for the pitch") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "build a comps analysis for the case") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceInvestmentBanking() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review my investment banking case study") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for IB analyst recruiting") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceEquityResearch() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my equity research report") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the equity research assignment") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceValuation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "build a valuation model for the M&A case") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "complete company valuation for class") == "finance")
+    }
+
+    @Test func extractTaskKeywordFinanceFINRA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my FINRA exam") == "finance")
+        #expect(CalloutManager.extractTaskKeyword(from: "review FINRA rules and regulations") == "finance")
+    }
+
+    @Test func taskAwareCalloutsFinanceMentionsIBTerms() async {
+        await MainActor.run {
+            let allMessages = (1...3).flatMap { tier in
+                CalloutManager.shared.taskAwareCallouts(keyword: "finance", tier: tier)
+            }
+            let hasIBRef = allMessages.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("dcf") || lower.contains("bloomberg") || lower.contains("lbo")
+                    || lower.contains("model") || lower.contains("cfa") || lower.contains("cpa")
+                    || lower.contains("investment") || lower.contains("financial")
+            }
+            #expect(hasIBRef, "finance callout pool should reference investment banking / finance terms")
+        }
+    }
+
     // MARK: - Policy keyword
 
     @Test func extractTaskKeywordPolicyMemo() {

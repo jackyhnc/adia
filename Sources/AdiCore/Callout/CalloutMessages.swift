@@ -1043,20 +1043,20 @@ extension CalloutManager {
     private func financeCallouts(tier: Int) -> [String] {
         switch tier {
         case 1: return [
-            "your financial statements aren't going to analyze themselves.",
-            "get back to your accounting work.",
-            "this isn't your financial analysis.",
-            "your CPA prep isn't going to do itself.",
+            "your DCF model isn't going to build itself.",
+            "get back to your finance work.",
+            "this isn't your Bloomberg Terminal.",
+            "your CFA prep isn't going to do itself.",
         ]
         case 2: return [
-            "stop. your accounting assignment is waiting.",
-            "this isn't your financial analysis.",
+            "stop. your financial analysis is waiting.",
+            "no one passes the CPA or CFA by browsing.",
             "close this and get back to your finance work.",
         ]
         default: return [
-            "CLOSE THIS. open your accounting notes.",
-            "no one passes the CPA exam by scrolling.",
-            "your financial model won't build itself — back to work.",
+            "CLOSE THIS. open your financial model.",
+            "no one cracks investment banking by scrolling.",
+            "your LBO assumptions won't fill themselves — back to work.",
         ]
         }
     }

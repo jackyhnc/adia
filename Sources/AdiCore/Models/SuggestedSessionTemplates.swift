@@ -371,6 +371,12 @@ public enum SuggestedSessionTemplates {
             preferredDuration: 60 * 60
         ),
         SuggestedTemplate(
+            icon: "chart.bar.xaxis",
+            task: "Build a DCF model or investment banking analysis",
+            successCriteria: "Model fully built with revenue projections, cost assumptions, WACC calculated, terminal value estimated, and valuation range summarized in a short written commentary",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
             icon: "doc.text",
             task: "Write a policy memo or brief",
             successCriteria: "Memo complete with executive summary, problem statement, analysis of at least two policy options, and a clear recommendation with supporting evidence",

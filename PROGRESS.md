@@ -14241,3 +14241,70 @@ None.
 - **AppMonitor observability tests**: requires macOS build environment
 - **arduino false-positive check**: "write arduino code" — code branch checks before engineering, so "arduino code" hits code first; worth macOS build verification
 - **Piano/instrument practice distinction**: "practice piano" hits the `practice` keyword branch already; no additional routing needed
+
+---
+## Run 315 — 2026-07-10
+
+### Shipped
+- **Finance keyword expansion (investment banking / securities terms)**: expanded existing `finance` branch in `CalloutManager.swift` with 14 new match clauses:
+  - `lower.contains("cfa level")` — CFA Level 1/2/3 specific (word("cfa") already existed)
+  - `lower.contains("equity research")` — equity research reports (distinct from existing equity analysis)
+  - `lower.contains("discounted cash flow")` || `lower.contains("dcf model")` || `word("dcf")` — DCF models
+  - `lower.contains("leveraged buyout")` || `word("lbo")` — LBO analysis
+  - `lower.contains("bloomberg terminal")` — Bloomberg Terminal practice (guarded against "bloomberg article")
+  - `lower.contains("comparable company")` || `lower.contains("comparable companies")` || `lower.contains("comp analysis")` || `lower.contains("comps analysis")` — comp/comparable analysis
+  - `lower.contains("investment banking")` || `lower.contains("ib analyst")` — IB recruiting/work
+  - `lower.contains("valuation model")` || `lower.contains("company valuation")` — valuation models
+  - `lower.contains("series 7")` || `lower.contains("series 63")` — FINRA securities licensing exams
+  - `word("finra")` — FINRA regulatory exams
+  - `word("acca")` || `word("cima")` — UK/international accounting qualifications
+  - `lower.contains("financial due diligence")` — M&A due diligence
+  - `lower.contains("mergers and acquisitions")` || `lower.contains("m&a analysis")` — M&A coursework
+
+- **`financeCallouts` updated** (`CalloutMessages.swift`) with investment banking voice:
+  - Tier 1: "your DCF model isn't going to build itself." / "get back to your finance work." / "this isn't your Bloomberg Terminal." / "your CFA prep isn't going to do itself."
+  - Tier 2: "stop. your financial analysis is waiting." / "no one passes the CPA or CFA by browsing." / "close this and get back to your finance work."
+  - Tier 3: "CLOSE THIS. open your financial model." / "no one cracks investment banking by scrolling." / "your LBO assumptions won't fill themselves — back to work."
+
+- **`SuggestedSessionTemplates.all` grows 68→69**: "Build a DCF model or investment banking analysis" (chart.bar.xaxis icon, 60 min) — inserted after the CPA/CFA template, success criteria covers revenue projections, WACC, terminal value, valuation range summary.
+
+- **10 new `@Test` functions in `CalloutManagerTests.swift` (659→669)**:
+  - `extractTaskKeywordFinanceSeries7` (Series 7 + Series 63)
+  - `extractTaskKeywordFinanceDCF` (dcf model, discounted cash flow, bare DCF)
+  - `extractTaskKeywordFinanceLBO` (lbo case, leveraged buyout)
+  - `extractTaskKeywordFinanceBloomberg` (bloomberg terminal)
+  - `extractTaskKeywordFinanceComparables` (comparable company, comps analysis)
+  - `extractTaskKeywordFinanceInvestmentBanking` (investment banking, ib analyst)
+  - `extractTaskKeywordFinanceEquityResearch` (equity research)
+  - `extractTaskKeywordFinanceValuation` (valuation model, company valuation)
+  - `extractTaskKeywordFinanceFINRA` (finra exam, finra rules)
+  - `taskAwareCalloutsFinanceMentionsIBTerms` (pool-wide check for DCF/Bloomberg/LBO/model)
+
+- **3 new `@Test` functions in `SuggestedSessionTemplatesTests.swift` (118→121)**:
+  - `catalogContainsDCFModelTemplate`
+  - `dcfTemplateHasReasonableDuration`
+  - `catalogHasAtLeastSixtyNineTemplates`
+
+### Verification
+Swift toolchain unavailable on Linux container — verified by code inspection:
+- `lower.contains("series 7")` in "study for my Series 7 exam" → lowercased → "series 7" present ✓
+- `word("dcf")` → `\bdcf\b` in "complete the dcf assignment" → matches ✓
+- `lower.contains("dcf model")` in "build a dcf model for this company" → ✓
+- `word("lbo")` → `\blbo\b` in "write up the lbo case" → matches ✓
+- `lower.contains("bloomberg terminal")` — guarded: "bloomberg article" does NOT match (no "terminal") ✓
+- `lower.contains("comparable company")` in "do comparable company analysis for the pitch" → ✓
+- `lower.contains("investment banking")` in "review my investment banking case study" → ✓
+- `lower.contains("ib analyst")` in "prep for ib analyst recruiting" → ✓
+- finance branch still positioned before budget → "manage my personal finances" hits budget (word("finances")) first ✓
+- financeCallouts tier3 contains "CLOSE THIS. open your financial model." → hasPrefix("CLOSE THIS") passes ✓
+- New template duration: 60*60=3600s, in [300, 10800] ✓
+- "chart.bar.xaxis" is a valid SF Symbol (used elsewhere in the codebase) ✓
+
+### Blocked / skipped
+None.
+
+### Next agent should pick up
+- **Social work keyword split**: current `therapy` branch catches "social work" + LCSW/LMFT terms; a dedicated "socialwork" branch could add case management, social work assessment, community organizing, field placement, MSW program, ASWB exam; socialWorkCallouts pool; templates ("Complete a social work field placement assignment" + "Study for the ASWB licensing exam")
+- **Public health keyword**: epidemiology, biostatistics, public health, MPH program, health policy, global health, social determinants, population health — distinct from premed and nutrition
+- **AppMonitor observability tests**: requires macOS build environment
+- **arduino false-positive check**: "write arduino code" — code branch checked before engineering, so should route to code; worth verifying on macOS build

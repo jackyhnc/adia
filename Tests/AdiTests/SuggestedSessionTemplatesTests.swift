@@ -1047,4 +1047,30 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 68,
                 "catalog should have ≥68 templates after business additions")
     }
+
+    @Test func catalogContainsDCFModelTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("dcf") || lower.contains("investment banking")
+        }
+        #expect(has, "catalog must include a DCF / investment banking analysis template")
+    }
+
+    @Test func dcfTemplateHasReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("dcf") || t.task.lowercased().contains("investment banking")
+        }
+        #expect(!templates.isEmpty, "at least one DCF/IB template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "DCF template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastSixtyNineTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 69,
+                "catalog should have ≥69 templates after DCF/IB finance template addition")
+    }
 }

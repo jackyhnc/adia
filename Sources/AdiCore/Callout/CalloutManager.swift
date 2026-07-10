@@ -328,13 +328,13 @@ public final class CalloutManager {
             || lower.contains("creative brief") || lower.contains("marketing brief") {
             return "writing"
         }
-        // finance — positioned before budget so professional exam/analysis terms (CPA, financial modeling,
-        // balance sheet) route here instead of the generic budget/financial branch.
+        // finance — positioned before budget so professional exam/analysis terms (CPA, CFA, DCF, LBO,
+        // financial modeling, balance sheet) route here instead of the generic budget/financial branch.
         if lower.contains("financial statements") || lower.contains("financial statement")
             || lower.contains("balance sheet") || lower.contains("balance sheets")
             || lower.contains("income statement") || lower.contains("income statements")
             || lower.contains("cpa exam") || lower.contains("cpa prep") || word("cpa")
-            || word("cfa") || word("gaap") || word("ifrs")
+            || word("cfa") || lower.contains("cfa level") || word("gaap") || word("ifrs")
             || lower.contains("financial modeling") || lower.contains("financial model")
             || lower.contains("financial analysis")
             || lower.contains("cost accounting") || lower.contains("managerial accounting")
@@ -345,8 +345,19 @@ public final class CalloutManager {
             || word("accrual")
             || lower.contains("accounts payable") || lower.contains("accounts receivable")
             || lower.contains("trial balance")
-            || lower.contains("equity analysis")
-            || lower.contains("financial ratios") || lower.contains("financial ratio") {
+            || lower.contains("equity analysis") || lower.contains("equity research")
+            || lower.contains("financial ratios") || lower.contains("financial ratio")
+            || lower.contains("discounted cash flow") || lower.contains("dcf model") || word("dcf")
+            || lower.contains("leveraged buyout") || word("lbo")
+            || lower.contains("bloomberg terminal")
+            || lower.contains("comparable company") || lower.contains("comparable companies")
+            || lower.contains("comp analysis") || lower.contains("comps analysis")
+            || lower.contains("investment banking") || lower.contains("ib analyst")
+            || lower.contains("valuation model") || lower.contains("company valuation")
+            || lower.contains("series 7") || lower.contains("series 63")
+            || word("finra") || word("acca") || word("cima")
+            || lower.contains("financial due diligence")
+            || lower.contains("mergers and acquisitions") || lower.contains("m&a analysis") {
             return "finance"
         }
         if word("budget") || word("budgeting") || word("budgets")
