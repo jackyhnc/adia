@@ -1,4 +1,41 @@
 
+## Run 303 — 2026-07-10 — weekSummaryText extraction + 7 new Swift tests + 2 catalog presence tests
+
+### Shipped
+- **`Sources/AdiCore/Views/Settings/HistoryInsightsSection.swift` — `weekSummaryText` promoted to `static internal func`**:
+  - Changed `private func weekSummaryText(_ s: SessionStats) -> String` → `static internal func weekSummaryText(_ s: SessionStats) -> String` on `HistoryWeeklySection`
+  - Added doc comment matching the `streakBreakChipLabel` pattern ("Pure helper for unit tests")
+  - Updated call site in `body` to `Self.weekSummaryText(s)` (no behavior change)
+- **`Tests/AdiTests/HistoryInsightsSectionTests.swift` — 7 new `HistoryWeeklySectionTests` tests** (7 → 14 tests in this file):
+  - `zeroMinutesShowsCountOnly` — 3 sessions, 0 min → "3 sessions this week"
+  - `singularSessionLabel` — weekCount=1 → "1 session this week" (no trailing "s")
+  - `minutesOnly` — 45 min → "2 sessions this week · 45m"
+  - `hoursOnly` — 120 min → "4 sessions this week · 2h"
+  - `hoursAndMinutes` — 90 min → "5 sessions this week · 1h 30m"
+  - `oneMinute` — 1 min → "1 session this week · 1m"
+  - `largeDuration` — 605 min → "10 sessions this week · 10h 5m"
+- **`Tests/AdiTests/SuggestedSessionTemplatesTests.swift` — 2 new catalog presence tests** (29 → 31 tests):
+  - `catalogContainsEmailTemplate` — asserts "Clear my email inbox" (contains "inbox") is in the catalog
+  - `catalogContainsJobApplicationTemplate` — asserts "Write and send job applications" (contains "application") is in the catalog
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `SessionStats` init uses all required positional params; `makeWeekStats` fixture uses `streak: 0` default matching the public init signature.
+- `Self.weekSummaryText(s)` compiles because the static method is on `HistoryWeeklySection` (same type as the `body` property's enclosing type).
+- Both catalog presence predicates match actual template task strings in `SuggestedSessionTemplates.all` by `lowercased().contains(...)`.
+- No changes to web code; web test count unchanged at 1257.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `MorningNudgeSection` permission-granted-while-denied path: if user grants permission in System Settings and returns, `scenePhase` fires `.active` → `refreshNotificationStatus()` detects `.authorized`; but `settings.morningNudgeEnabled` may still be `true` from before denial, so the toggle shows ON without re-scheduling — call `scheduleMorningNudgeIfNeeded()` in that code path
+- Consider growing `morningNudgeTitles` and `morningNudgeMessages` pools from 7 → 9 entries for further variety
+- Consider LicenseTimelinePanel → LookupPanel back-link (mirror of the existing forward-link)
+- Consider `GET /api/admin/churn-by-plan` endpoint returning per-plan daily churn trend to complement the aggregate churn-analysis endpoint
+
+---
+
 ## Run 302 — 2026-07-10 — Notification permission gating + template catalog 15→20
 
 ### Shipped

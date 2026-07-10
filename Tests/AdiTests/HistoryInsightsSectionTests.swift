@@ -2,6 +2,64 @@ import Testing
 import Foundation
 @testable import AdiCore
 
+// MARK: - Fixture helpers
+
+private func makeWeekStats(weekCount: Int, weekMinutes: Int) -> SessionStats {
+    SessionStats(todayCount: 0, todayMinutes: 0,
+                 weekCount: weekCount, weekMinutes: weekMinutes,
+                 streak: 0)
+}
+
+// MARK: - HistoryWeeklySection.weekSummaryText
+
+@Suite("HistoryWeeklySection.weekSummaryText")
+struct HistoryWeeklySectionTests {
+
+    @Test("zero minutes shows session count only")
+    func zeroMinutesShowsCountOnly() {
+        let s = makeWeekStats(weekCount: 3, weekMinutes: 0)
+        #expect(HistoryWeeklySection.weekSummaryText(s) == "3 sessions this week")
+    }
+
+    @Test("singular session label when weekCount is 1")
+    func singularSessionLabel() {
+        let s = makeWeekStats(weekCount: 1, weekMinutes: 0)
+        #expect(HistoryWeeklySection.weekSummaryText(s) == "1 session this week")
+    }
+
+    @Test("minutes-only duration (no hours)")
+    func minutesOnly() {
+        let s = makeWeekStats(weekCount: 2, weekMinutes: 45)
+        #expect(HistoryWeeklySection.weekSummaryText(s) == "2 sessions this week · 45m")
+    }
+
+    @Test("hours-only duration (exact hour, zero leftover minutes)")
+    func hoursOnly() {
+        let s = makeWeekStats(weekCount: 4, weekMinutes: 120)
+        #expect(HistoryWeeklySection.weekSummaryText(s) == "4 sessions this week · 2h")
+    }
+
+    @Test("hours and minutes combined duration")
+    func hoursAndMinutes() {
+        let s = makeWeekStats(weekCount: 5, weekMinutes: 90)
+        #expect(HistoryWeeklySection.weekSummaryText(s) == "5 sessions this week · 1h 30m")
+    }
+
+    @Test("exactly 1 minute")
+    func oneMinute() {
+        let s = makeWeekStats(weekCount: 1, weekMinutes: 1)
+        #expect(HistoryWeeklySection.weekSummaryText(s) == "1 session this week · 1m")
+    }
+
+    @Test("large duration (10h 5m)")
+    func largeDuration() {
+        let s = makeWeekStats(weekCount: 10, weekMinutes: 605)
+        #expect(HistoryWeeklySection.weekSummaryText(s) == "10 sessions this week · 10h 5m")
+    }
+}
+
+// MARK: - HistoryInsightsSection.streakBreakChipLabel
+
 @Suite("HistoryInsightsSection.streakBreakChipLabel")
 struct HistoryInsightsSectionTests {
 

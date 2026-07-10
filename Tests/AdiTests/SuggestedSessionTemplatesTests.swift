@@ -166,6 +166,22 @@ struct SuggestedSessionTemplatesTests {
         #expect(hasCreative, "catalog should contain a creative writing / novel template")
     }
 
+    @Test func catalogContainsEmailTemplate() {
+        let hasEmail = SuggestedSessionTemplates.all.contains {
+            let t = $0.task.lowercased()
+            return t.contains("email") || t.contains("inbox")
+        }
+        #expect(hasEmail, "catalog should contain an email / inbox-zero template")
+    }
+
+    @Test func catalogContainsJobApplicationTemplate() {
+        let hasJobApp = SuggestedSessionTemplates.all.contains {
+            let t = $0.task.lowercased()
+            return t.contains("job application") || t.contains("job apps") || t.contains("application")
+        }
+        #expect(hasJobApp, "catalog should contain a job-application template")
+    }
+
     @Test func catalogContainsJournalingTemplate() {
         let hasJournaling = SuggestedSessionTemplates.all.contains {
             let t = $0.task.lowercased()

@@ -13,7 +13,7 @@ struct HistoryWeeklySection: View {
                             Image(systemName: "bolt.fill")
                                 .font(.system(size: 11, weight: .bold))
                                 .foregroundStyle(.secondary)
-                            Text(weekSummaryText(s))
+                            Text(Self.weekSummaryText(s))
                                 .font(.system(size: 12, weight: .medium))
                                 .foregroundStyle(.secondary)
                             if s.streak > 0 {
@@ -52,7 +52,8 @@ struct HistoryWeeklySection: View {
         .background(.background)
     }
 
-    private func weekSummaryText(_ s: SessionStats) -> String {
+    /// Pure helper for unit tests: formats the week-summary line shown below the heatmap.
+    static internal func weekSummaryText(_ s: SessionStats) -> String {
         let sessions = "\(s.weekCount) session\(s.weekCount == 1 ? "" : "s") this week"
         guard s.weekMinutes > 0 else { return sessions }
         let h = s.weekMinutes / 60
