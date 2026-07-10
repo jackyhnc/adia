@@ -349,4 +349,37 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 28,
                 "catalog should have at least 28 templates after architecture additions")
     }
+
+    // MARK: - Startup templates
+
+    @Test func catalogContainsPitchDeckTemplate() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task).map { $0.lowercased() }
+        #expect(tasks.contains { $0.contains("pitch") || $0.contains("pitch deck") },
+                "catalog must include a pitch deck template")
+    }
+
+    @Test func catalogContainsBusinessPlanTemplate() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task).map { $0.lowercased() }
+        #expect(tasks.contains { $0.contains("business plan") || $0.contains("business") },
+                "catalog must include a business plan template")
+    }
+
+    @Test func startupTemplatesHaveReasonableDuration() {
+        let startupTemplates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("pitch") || lower.contains("business plan") || lower.contains("startup")
+        }
+        #expect(!startupTemplates.isEmpty, "at least one startup template must exist")
+        for template in startupTemplates {
+            if let duration = template.preferredDuration {
+                #expect(duration >= 5 * 60 && duration <= 3 * 60 * 60,
+                        "startup template duration must be between 5 minutes and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastThirtyTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 30,
+                "catalog should have at least 30 templates after startup additions")
+    }
 }

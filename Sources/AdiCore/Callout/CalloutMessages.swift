@@ -81,6 +81,7 @@ extension CalloutManager {
         case "legal":        return legalCallouts(tier: tier)
         case "premed":       return premedCallouts(tier: tier)
         case "architecture": return architectureCallouts(tier: tier)
+        case "startup":      return startupCallouts(tier: tier)
         default:             return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -743,6 +744,27 @@ extension CalloutManager {
             "CLOSE THIS. open your drawings.",
             "the deadline doesn't move. your model does.",
             "your studio crit is coming — this isn't prep.",
+        ]
+        }
+    }
+
+    private func startupCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your pitch deck isn't going to write itself.",
+            "get back to building your startup.",
+            "your co-founder is working. you're not.",
+            "close this and work on your business.",
+        ]
+        case 2: return [
+            "stop. your pitch won't close itself.",
+            "this isn't building your startup.",
+            "investors don't fund distraction. get back.",
+        ]
+        default: return [
+            "CLOSE THIS. your deck is waiting.",
+            "no one funds a founder who's scrolling.",
+            "the startup doesn't build itself. back to work.",
         ]
         }
     }

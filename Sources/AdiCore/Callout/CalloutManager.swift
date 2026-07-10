@@ -88,6 +88,24 @@ public final class CalloutManager {
         if word("essay") || word("essays") { return "essay" }
         if word("paper") || word("papers") { return "paper" }
         if word("thesis") || word("theses") || word("dissertation") || word("dissertations") { return "thesis" }
+        // startup — must fire before presentation to catch "pitch deck" before word("deck") does.
+        if lower.contains("pitch deck") || lower.contains("investor deck")
+            || lower.contains("go-to-market") || lower.contains("gtm strategy")
+            || lower.contains("business plan") || lower.contains("business model")
+            || lower.contains("lean canvas")
+            || lower.contains("value proposition")
+            || lower.contains("seed round") || lower.contains("series a") || lower.contains("series b")
+            || lower.contains("angel investor")
+            || lower.contains("unit economics") || lower.contains("customer discovery")
+            || lower.contains("product-market fit") || lower.contains("product market fit")
+            || lower.contains("growth strategy") || lower.contains("growth hacking")
+            || lower.contains("minimum viable product")
+            || word("fundraising") || word("fundraise")
+            || word("startup") || word("startups")
+            || word("cofounder") || lower.contains("co-founder")
+            || word("saas") || word("b2b") || word("b2c") {
+            return "startup"
+        }
         if word("presentation") || word("presentations") || word("slides") || word("deck") || word("powerpoint") || word("keynote") {
             return "presentation"
         }

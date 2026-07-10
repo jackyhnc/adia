@@ -202,5 +202,17 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Finished one full practice section (ARE) with wrong answers reviewed and key concepts noted",
             preferredDuration: 60 * 60
         ),
+        SuggestedTemplate(
+            icon: "chart.line.uptrend.xyaxis",
+            task: "Write my startup's pitch deck",
+            successCriteria: "All slides complete: problem, solution, market size, business model, traction, team, and ask — narrative flows end to end",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.magnifyingglass",
+            task: "Draft a section of my business plan",
+            successCriteria: "Section drafted with relevant data, projections, or analysis filled in and conclusion clearly stated",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

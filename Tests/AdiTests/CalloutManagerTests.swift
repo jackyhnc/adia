@@ -3090,4 +3090,123 @@ struct CalloutManagerTests {
             #expect(!result.isEmpty)
         }
     }
+
+    // MARK: - Startup keyword + callout pool
+
+    @Test func extractTaskKeywordStartupPitchDeck() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my pitch deck") == "startup")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the investor deck") == "startup")
+    }
+
+    @Test func extractTaskKeywordStartupGoToMarket() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on go-to-market strategy") == "startup")
+        #expect(CalloutManager.extractTaskKeyword(from: "define our GTM strategy") == "startup")
+    }
+
+    @Test func extractTaskKeywordStartupBusinessPlan() {
+        // "business plan" contains "plan" but startup fires first
+        #expect(CalloutManager.extractTaskKeyword(from: "write my business plan") == "startup")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the business model section") == "startup")
+    }
+
+    @Test func extractTaskKeywordStartupFundraising() {
+        #expect(CalloutManager.extractTaskKeyword(from: "startup fundraising prep") == "startup")
+        #expect(CalloutManager.extractTaskKeyword(from: "fundraise for our seed round") == "startup")
+    }
+
+    @Test func extractTaskKeywordStartupKeyword() {
+        #expect(CalloutManager.extractTaskKeyword(from: "build my startup") == "startup")
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my startups landing page") == "startup")
+    }
+
+    @Test func extractTaskKeywordStartupSeedRound() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prepare seed round materials") == "startup")
+        #expect(CalloutManager.extractTaskKeyword(from: "series a pitch prep") == "startup")
+    }
+
+    @Test func extractTaskKeywordStartupValueProposition() {
+        #expect(CalloutManager.extractTaskKeyword(from: "refine the value proposition") == "startup")
+    }
+
+    @Test func extractTaskKeywordStartupSaas() {
+        #expect(CalloutManager.extractTaskKeyword(from: "SaaS pricing strategy") == "startup")
+        #expect(CalloutManager.extractTaskKeyword(from: "build a b2b sales deck") == "startup")
+        #expect(CalloutManager.extractTaskKeyword(from: "b2c growth model") == "startup")
+    }
+
+    @Test func extractTaskKeywordStartupCofounder() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write co-founder agreement") == "startup")
+        #expect(CalloutManager.extractTaskKeyword(from: "cofounder equity split doc") == "startup")
+    }
+
+    @Test func extractTaskKeywordStartupProductMarketFit() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze product-market fit") == "startup")
+        #expect(CalloutManager.extractTaskKeyword(from: "product market fit research") == "startup")
+    }
+
+    @Test func extractTaskKeywordStartupGrowth() {
+        #expect(CalloutManager.extractTaskKeyword(from: "growth hacking experiment") == "startup")
+        #expect(CalloutManager.extractTaskKeyword(from: "map out growth strategy") == "startup")
+    }
+
+    @Test func extractTaskKeywordStartupDoesNotOverrideEssay() {
+        // "essay" fires before startup
+        #expect(CalloutManager.extractTaskKeyword(from: "essay about startup culture") == "essay")
+    }
+
+    @Test func extractTaskKeywordStartupDoesNotOverridePaper() {
+        // "paper" fires before startup
+        #expect(CalloutManager.extractTaskKeyword(from: "research paper on SaaS growth") == "paper")
+    }
+
+    @Test func taskAwareCalloutsStartupHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "startup", tier: tier)
+                #expect(!msgs.isEmpty, "startup tier \(tier) must be non-empty")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsStartupDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "startup", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "startup", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "startup", tier: 3)
+            #expect(tier1.count >= 3, "startup tier 1 should have at least 3 messages")
+            #expect(tier2.count >= 2, "startup tier 2 should have at least 2 messages")
+            #expect(tier3.count >= 2, "startup tier 3 should have at least 2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsStartupTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "startup", tier: 3)
+            let hasUrgent = tier3.contains { msg in
+                let upper = msg.uppercased()
+                return upper.contains("CLOSE") || upper.contains("DECK") || upper.contains("STARTUP")
+                    || upper.contains("PITCH") || upper.contains("FUND")
+            }
+            #expect(hasUrgent, "tier 3 startup messages must contain an urgent directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsStartupTier1ReferencesStartupWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "startup", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("pitch") || lower.contains("startup") || lower.contains("business")
+                    || lower.contains("co-founder") || lower.contains("deck")
+            }
+            #expect(hasRef, "tier 1 startup messages must reference startup work")
+        }
+    }
+
+    @Test func taskAwareCalloutsStartupTier4FallsThrough() async {
+        await MainActor.run {
+            let result = CalloutManager.shared.taskAwareCallouts(keyword: "startup", tier: 4)
+            #expect(!result.isEmpty)
+        }
+    }
 }
