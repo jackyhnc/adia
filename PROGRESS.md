@@ -14308,3 +14308,28 @@ None.
 - **Public health keyword**: epidemiology, biostatistics, public health, MPH program, health policy, global health, social determinants, population health — distinct from premed and nutrition
 - **AppMonitor observability tests**: requires macOS build environment
 - **arduino false-positive check**: "write arduino code" — code branch checked before engineering, so should route to code; worth verifying on macOS build
+
+---
+
+## Run 72 — 2026-07-10
+
+### Shipped
+- **feat: public health / epidemiology keyword domain + callout pool + templates**
+  - `extractTaskKeyword` gains "publicheath" branch positioned after `therapy` and before `socialscience`. Matches: `word("epidemiology")` / `word("epidemiologist")` / `word("epidemiological")`, `word("biostatistics")` / `word("biostatistician")`, `lower.contains("community health")`, `lower.contains("global health")`, `lower.contains("public health")`, `lower.contains("infectious disease/s")`, `word("outbreak")`, `lower.contains("outbreak investigation")`, `lower.contains("population health")`, `lower.contains("health equity")`, `lower.contains("social determinants of health")`, `word("sdoh")`, `lower.contains("health disparities")`, `lower.contains("health promotion")`, `lower.contains("occupational health")`, `lower.contains("environmental health")`, `lower.contains("disease surveillance")`, `lower.contains("contact tracing")`, `lower.contains("mph program/degree/student/class/exam/capstone/thesis")`, `lower.contains("master of public health")`.
+  - False-positive guard: bare `word("mph")` (miles per hour) is NOT matched — only phrase-context forms fire the branch. "health policy" stays in the `policy` branch; `lower.contains("public policy")` / `lower.contains("public administration")` stay in `socialscience`.
+  - `publichealthCallouts(tier:)` — 4/3/3 message pool (epidemiology/MPH voice): tier-1 "this isn't your epidemiology assignment." / "close this and study epidemiology."; tier-2 "you're not making anyone healthier by scrolling."; tier-3 "CLOSE THIS. open your epidemiology notes." / "no one gets their MPH by scrolling." / "disease doesn't wait. neither should you."
+  - `SuggestedSessionTemplates` grows 69→71: "Study for my public health or epidemiology exam" (60 min, `cross.circle.fill`) + "Work on my epidemiology assignment or community health project" (45 min, `globe.europe.africa.fill`).
+  - **Tests (+17 CalloutManagerTests, +4 SuggestedSessionTemplatesTests)**: keyword extraction (13 positive + 1 false-positive guard), callout pool properties (non-empty tiers, tier1 domain reference, tier3 urgent directive, no empty strings), template existence, duration guard, ≥71 count guard. 686 + 125 total.
+
+### Blocked
+- Nothing.
+
+### Next agent
+- All 14 GOAL.md items remain checked off.
+- Possible next improvements:
+  - (a) **Social work keyword domain**: `therapy` currently catches "social work" + LCSW/LMFT terms. A dedicated `socialwork` branch could add case management, social work assessment, community organizing, field placement, MSW program, ASWB licensing exam; `socialWorkCallouts` pool; 2 templates.
+  - (b) **Pharmacy keyword domain**: NAPLEX exam prep, pharmacokinetics, pharmacodynamics, pharmacy school, drug interactions, dispensing, compounding. `pharmacyCallouts` pool; 2 templates.
+  - (c) **Real estate keyword domain**: MLS, property appraisal, real estate license exam, property valuation, zoning, property management; `realestateCallouts` pool; 2 templates.
+  - (d) **Dental school keyword domain**: NBDE exam, oral anatomy, patient charts; `dentistryCallouts` pool; 2 templates.
+
+---
