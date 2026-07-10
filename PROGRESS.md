@@ -1,4 +1,45 @@
 
+## Run 313 — 2026-07-10
+
+**Shipped:** Finance + policy keyword branches, callout pools, 4 templates, 32 new tests
+
+### What changed
+- `CalloutManager.extractTaskKeyword`: added `"finance"` branch **before the `budget` block** (critical — budget catches `word("financial")` and `word("accounting")` generically; finance fires first for the professional exam/analysis terms budget doesn't own). Matches: `financial statements`/`statement`, `balance sheet`/`sheets`, `income statement`/`statements`, `cpa exam`/`cpa prep`/`word("cpa")`, `word("cfa")`, `word("gaap")`, `word("ifrs")`, `financial modeling`/`model`, `financial analysis`, `cost accounting`, `managerial accounting`, `financial accounting`, `tax accounting`, `audit`/`auditing`, `corporate finance`, `investment analysis`, `cash flow statement`/`analysis`, `accrual`, `accounts payable`/`receivable`, `trial balance`, `equity analysis`, `financial ratios`/`ratio`. Does NOT include bare `word("accounting")` or `word("financial")` — those stay in budget for generic use.
+- `CalloutManager.extractTaskKeyword`: added `"policy"` branch **after philosophy (line 488) and before legal (line 514)**. This ordering is critical — it intercepts `"policy brief"` before legal's `word("brief")` fires, and `"legislative brief"` likewise. Matches: `policy memo`/`memos`, `policy brief`/`briefs`, `regulatory analysis`, `legislative brief`/`briefs`, `legislative memo`/`memos`, `policy analysis`, `policy recommendation`/`recommendations`, `regulatory framework`, `policy implementation`, `health policy`, `public health policy`, `fiscal policy`, `monetary policy`.
+- `CalloutMessages.financeCallouts(tier:)`: 3-tier pool (4/3/3) in CPA/accounting voice — "your financial statements aren't going to analyze themselves." / "no one passes the CPA exam by scrolling." / "CLOSE THIS. open your accounting notes."
+- `CalloutMessages.policyCallouts(tier:)`: 3-tier pool (4/3/3) in memo/analysis voice — "your policy memo isn't going to write itself." / "no one writes policy briefs by scrolling." / "CLOSE THIS. open your policy memo."
+- Dispatch switch: `case "finance"` + `case "policy"` added to `taskAwareCallouts`.
+- `SuggestedSessionTemplates.all` grows 54→58:
+  - "Complete a financial analysis or modeling assignment" (chart.line.uptrend.xyaxis icon, 45 min)
+  - "Study for the CPA or CFA exam" (building.columns icon, 60 min)
+  - "Write a policy memo or brief" (doc.text icon, 60 min)
+  - "Analyze a regulatory framework or policy document" (magnifyingglass.circle icon, 45 min)
+- **25 new tests** in `CalloutManagerTests.swift` (552→577): 13 finance tests (CPAExam, CFA, Statements, Modeling, Audit, Accounting, CashFlow, DoesNotOverrideBudget, HasMessages, DedicatedPoolSize, Tier1References, Tier3HasUrgent, Tier4FallsThrough) + 12 policy tests (Memo, Brief, RegulatoryAnalysis, Legislative, Analysis, HealthFiscal, DoesNotOverrideLegal, HasMessages, DedicatedPoolSize, Tier1References, Tier3HasUrgent, Tier4FallsThrough).
+- **7 new tests** in `SuggestedSessionTemplatesTests.swift` (93→100): 3 finance + 3 policy + count guard (≥58).
+
+### Verification
+Swift toolchain unavailable on Linux container — verified by code inspection:
+- finance branch (line 269) positioned before budget (line 295) → "study for my CPA exam" hits finance first ✓
+- `word("finances")` / `word("financial")` / `word("accounting")` NOT in finance branch → "manage my personal finances" still routes to budget ✓
+- policy branch (line 488) positioned after philosophy (line 488+return) and before legal (line 514) → "write a policy brief" fires policy, not legal ✓
+- "write a legal brief for moot court" — no policy branch conditions match → falls to legal's `word("brief")` ✓
+- `financeCallouts(tier: 3)` contains "CLOSE THIS. open your accounting notes." → `hasPrefix("CLOSE THIS")` passes ✓
+- `policyCallouts(tier: 3)` contains "CLOSE THIS. open your policy memo." → `hasPrefix("CLOSE THIS")` passes ✓
+- All 4 template durations in [300, 10800]: 45*60=2700 and 60*60=3600 ✓
+
+### Blocked / skipped
+None.
+
+### Next agent should pick up
+- **AppMonitor observability tests**: requires macOS build environment
+- **arduino false-positive check**: "write arduino code" should route to `code` not `engineering` — engineering is checked after code, so this should already work, but worth verifying on macOS build
+- **Functional gaps**: OnTaskDetector rate-limiter edge-case tests, SessionManager pipeline integration tests
+- More keyword domains if desired:
+  - **Veterinary/animal science**: `veterinary`, `animal science`, `NAVLE`, `clinical rotation`, `surgery case`, `dissection`
+  - **Sports science/kinesiology**: `kinesiology`, `biomechanics`, `exercise physiology`, `CSCS exam`, `motor control`
+  - **Statistics**: `r studio`, `spss`, `stata`, `regression`, `anova`, `hypothesis testing` — though many route to research/datascience already
+
+---
 ## Run 306 — 2026-07-10 — social science + nutrition keyword branches, callout pools, templates, and tests
 
 ### Shipped
