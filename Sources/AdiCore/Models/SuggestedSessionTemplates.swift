@@ -124,5 +124,35 @@ public enum SuggestedSessionTemplates {
             successCriteria: "All planned exercises finished and logged in workout app or journal",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "character.book.closed",
+            task: "Study vocabulary for my language class",
+            successCriteria: "At least 30 new words reviewed with definitions and used in written sentences",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "music.note",
+            task: "Practice an instrument for 30 minutes",
+            successCriteria: "Practice session complete — pieces or scales logged in practice journal or app",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "video",
+            task: "Edit and export today's video",
+            successCriteria: "Exported video file visible in Finder with correct filename and playback confirmed",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "dollarsign.circle",
+            task: "Update my monthly budget",
+            successCriteria: "All income and expenses for the month entered, categories balanced, and spreadsheet saved",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "text.cursor",
+            task: "Write the next chapter of my novel",
+            successCriteria: "At least 500 words written and saved (word count visible in writing app)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

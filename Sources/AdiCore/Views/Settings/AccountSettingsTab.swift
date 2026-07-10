@@ -1,4 +1,7 @@
 import SwiftUI
+#if canImport(UserNotifications)
+import UserNotifications
+#endif
 
 struct AccountSettingsTab: View {
     @ObservedObject private var settings = SettingsStore.shared
@@ -373,36 +376,98 @@ struct AccountSettingsTab: View {
 
 struct MorningNudgeSection: View {
     @ObservedObject var settings: SettingsStore
+    @Environment(\.openURL) private var openURL
+    @Environment(\.scenePhase) private var scenePhase
+    #if canImport(UserNotifications)
+    @State private var notificationStatus: UNAuthorizationStatus = .notDetermined
+    #endif
 
     var body: some View {
         Section {
-            Toggle("Remind me if I haven't started", isOn: $settings.morningNudgeEnabled)
-                .onChange(of: settings.morningNudgeEnabled) {
-                    if settings.morningNudgeEnabled {
-                        SessionNotifier.shared.scheduleMorningNudgeIfNeeded()
-                    } else {
-                        SessionNotifier.shared.cancelMorningNudge()
+            #if canImport(UserNotifications)
+            if notificationStatus == .denied {
+                Toggle("Remind me if I haven't started", isOn: .constant(false))
+                    .disabled(true)
+                HStack(spacing: 6) {
+                    Image(systemName: "bell.slash")
+                        .foregroundStyle(.orange)
+                        .font(.callout)
+                    Text("Notifications blocked.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                    Button("Open System Settings →") {
+                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
+                            openURL(url)
+                        }
+                    }
+                    .buttonStyle(.borderless)
+                    .font(.callout)
+                }
+            } else {
+            #endif
+                Toggle("Remind me if I haven't started", isOn: $settings.morningNudgeEnabled)
+                    .onChange(of: settings.morningNudgeEnabled) {
+                        if settings.morningNudgeEnabled {
+                            #if canImport(UserNotifications)
+                            if notificationStatus == .notDetermined {
+                                SessionNotifier.shared.requestPermission()
+                            }
+                            #endif
+                            SessionNotifier.shared.scheduleMorningNudgeIfNeeded()
+                        } else {
+                            SessionNotifier.shared.cancelMorningNudge()
+                        }
+                    }
+                if settings.morningNudgeEnabled {
+                    Picker("If no session by", selection: $settings.morningNudgeHour) {
+                        ForEach(Array(SettingsStore.morningNudgeHourRange), id: \.self) { hour in
+                            Text(formatNudgeHour(hour)).tag(hour)
+                        }
+                    }
+                    .onChange(of: settings.morningNudgeHour) {
+                        SessionNotifier.shared.rescheduleMorningNudge()
                     }
                 }
-            if settings.morningNudgeEnabled {
-                Picker("If no session by", selection: $settings.morningNudgeHour) {
-                    ForEach(Array(SettingsStore.morningNudgeHourRange), id: \.self) { hour in
-                        Text(formatNudgeHour(hour)).tag(hour)
-                    }
-                }
-                .onChange(of: settings.morningNudgeHour) {
-                    SessionNotifier.shared.rescheduleMorningNudge()
-                }
+            #if canImport(UserNotifications)
             }
+            #endif
         } header: {
             Text("Morning Nudge")
         } footer: {
-            Text(settings.morningNudgeEnabled
-                 ? "You'll get a nudge at \(formatNudgeHour(settings.morningNudgeHour)) if no session has started today."
-                 : "Enable to get a reminder to start your first session of the day.")
-                .foregroundStyle(.secondary)
+            #if canImport(UserNotifications)
+            if notificationStatus == .denied {
+                Text("Notification permission is required. Enable notifications for Adia in System Settings.")
+                    .foregroundStyle(.secondary)
+            } else {
+            #endif
+                Text(settings.morningNudgeEnabled
+                     ? "You'll get a nudge at \(formatNudgeHour(settings.morningNudgeHour)) if no session has started today."
+                     : "Enable to get a reminder to start your first session of the day.")
+                    .foregroundStyle(.secondary)
+            #if canImport(UserNotifications)
+            }
+            #endif
         }
+        #if canImport(UserNotifications)
+        .task {
+            await refreshNotificationStatus()
+        }
+        .onChange(of: scenePhase) {
+            if scenePhase == .active {
+                Task { await refreshNotificationStatus() }
+            }
+        }
+        #endif
     }
+
+    #if canImport(UserNotifications)
+    private func refreshNotificationStatus() async {
+        // UNUserNotificationCenter.current() crashes outside a real .app bundle (swift test / CI).
+        guard Bundle.main.bundleIdentifier != nil else { return }
+        let notifSettings = await UNUserNotificationCenter.current().notificationSettings()
+        notificationStatus = notifSettings.authorizationStatus
+    }
+    #endif
 
     private func formatNudgeHour(_ hour: Int) -> String {
         if hour == 0  { return "12 AM" }

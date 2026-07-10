@@ -66,9 +66,9 @@ struct SuggestedSessionTemplatesTests {
         #expect(tasks.count == uniqueTasks.count, "catalog has duplicate task texts")
     }
 
-    @Test func catalogHasAtLeastFifteenTemplates() {
-        #expect(SuggestedSessionTemplates.all.count >= 15,
-                "catalog should contain at least 15 templates for broad coverage")
+    @Test func catalogHasAtLeastTwentyTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 20,
+                "catalog should contain at least 20 templates for broad coverage")
     }
 
     @Test func catalogContainsPresentationTemplate() {
@@ -122,6 +122,48 @@ struct SuggestedSessionTemplatesTests {
             return t.contains("workout") || t.contains("exercise") || t.contains("gym") || t.contains("run")
         }
         #expect(hasFitness, "catalog should contain a fitness or workout template")
+    }
+
+    @Test func catalogContainsLanguageLearningTemplate() {
+        let hasLanguage = SuggestedSessionTemplates.all.contains {
+            let t = $0.task.lowercased()
+            return t.contains("language") || t.contains("vocabulary") || t.contains("spanish")
+                || t.contains("french") || t.contains("japanese") || t.contains("duolingo")
+        }
+        #expect(hasLanguage, "catalog should contain a language-learning template")
+    }
+
+    @Test func catalogContainsMusicPracticeTemplate() {
+        let hasMusic = SuggestedSessionTemplates.all.contains {
+            let t = $0.task.lowercased()
+            return t.contains("music") || t.contains("instrument") || t.contains("piano")
+                || t.contains("guitar") || t.contains("practice")
+        }
+        #expect(hasMusic, "catalog should contain a music or instrument practice template")
+    }
+
+    @Test func catalogContainsVideoEditingTemplate() {
+        let hasVideo = SuggestedSessionTemplates.all.contains {
+            let t = $0.task.lowercased()
+            return t.contains("video") || t.contains("edit") || t.contains("footage")
+        }
+        #expect(hasVideo, "catalog should contain a video editing template")
+    }
+
+    @Test func catalogContainsBudgetTemplate() {
+        let hasBudget = SuggestedSessionTemplates.all.contains {
+            let t = $0.task.lowercased()
+            return t.contains("budget") || t.contains("finance") || t.contains("spreadsheet")
+        }
+        #expect(hasBudget, "catalog should contain a budget or finance template")
+    }
+
+    @Test func catalogContainsCreativeWritingTemplate() {
+        let hasCreative = SuggestedSessionTemplates.all.contains {
+            let t = $0.task.lowercased()
+            return t.contains("novel") || t.contains("chapter") || t.contains("fiction")
+        }
+        #expect(hasCreative, "catalog should contain a creative writing / novel template")
     }
 
     @Test func allTemplatesHaveValidSuccessCriteriaLength() {
