@@ -13641,3 +13641,23 @@ None. Swift toolchain unavailable on Linux container.
 - Consider adding a "journaling tier-4 edge case" test: `taskAwareCallouts(keyword: "journaling", tier: 4)` falls through to default branch without crashing — currently untested
 - Consider extracting `extractTaskKeyword` to its own file (CalloutKeywordExtractor.swift) now that it's grown to 270+ lines, to keep CalloutManager.swift focused on the threshold/firing logic
 - Consider adding a suggested template for social-science research ("Analyze survey data in Excel/Sheets") or pre-med studying ("Study anatomy flashcards for 45 minutes")
+
+---
+
+## Run 306 — 2026-07-10
+
+**Shipped:** Architecture keyword + callout pool + suggested templates
+
+### What landed
+- `extractTaskKeyword` gains `"architecture"` branch covering: `architect/architecture/architectural`, `AutoCAD/Revit/Rhino/Grasshopper/SketchUp/ArchiCAD`, `blueprint/blueprints`, `floor plan/floor plans`, `site plan`, `elevation/elevations`, `rendering/renderings`, `3D model`, `construction document`, `design studio/studio crit/pin-up`, `architectural drawing`, `ARE exam/architecture exam`
+- False-positive guard: tasks containing `software architecture`, `system architecture`, `application architecture`, `cloud architecture`, or `data architecture` are excluded so "review the software architecture" → nil, not "architecture"
+- `CalloutMessages` adds `architectureCallouts(tier:)` with a 3-tier pool (4/3/3 messages) in the voice of architecture studio culture: crit deadlines, pin-ups, model-building
+- `SuggestedSessionTemplates.all` grows 26→28: "Work on my architecture studio project" (90 min) + "Study for my architecture licensing exam" (60 min, ARE)
+- 20 new Swift tests in `CalloutManagerTests`: keyword detection (14 positive + 5 false-positive guard), `taskAwareCallouts` pool size, tier-1 design reference, tier-3 urgent directive, tier-4 fall-through; 4 new tests in `SuggestedSessionTemplatesTests`: catalog presence (studio + licensing), duration guard, count ≥ 28
+- Total Swift tests: 387 → 411
+
+### Blocked / skipped
+None.
+
+### Next agent should pick up
+Another keyword domain addition or a functional improvement. Possible domains not yet covered: nursing (separate from premed — care plans, NCLEX is already in premed branch, but nursing theory/clinical notes), entrepreneurship/startup (business plan, pitch deck, go-to-market), philosophy (Kant/Plato/logic problem sets), public policy (policy memo/white paper). For functional work: consider adding AppMonitor app-blocking observability tests, or tightening the OnTaskDetector rate-limiter edge cases.

@@ -274,6 +274,25 @@ public final class CalloutManager {
             || word("litigation") || word("motions") {
             return "legal"
         }
+        // Guard common software-domain false positives before checking architecture keywords.
+        let isSoftwareArchitecture = lower.contains("software architecture")
+            || lower.contains("system architecture") || lower.contains("application architecture")
+            || lower.contains("cloud architecture") || lower.contains("data architecture")
+        if !isSoftwareArchitecture
+            && (word("architect") || word("architecture") || word("architectural")
+                || word("autocad") || word("revit") || word("rhino") || word("grasshopper") || word("archicad")
+                || word("sketchup") || word("blueprint") || word("blueprints")
+                || lower.contains("floor plan") || lower.contains("floor plans")
+                || lower.contains("site plan") || lower.contains("site plans")
+                || word("elevation") || word("elevations")
+                || word("rendering") || word("renderings")
+                || lower.contains("3d model") || lower.contains("3d models")
+                || lower.contains("construction document") || lower.contains("construction documents")
+                || lower.contains("design studio") || lower.contains("studio crit") || lower.contains("pin-up")
+                || lower.contains("architectural drawing") || lower.contains("architectural drawings")
+                || lower.contains("are exam") || lower.contains("architecture exam")) {
+            return "architecture"
+        }
         if word("deadline") || word("deadlines") || lower.contains("due by") || lower.contains("due tonight")
             || lower.contains("due tomorrow") || lower.contains("due at midnight")
             || lower.contains("due at noon") || lower.contains("due at end of")

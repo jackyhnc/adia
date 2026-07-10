@@ -316,4 +316,37 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 26,
                 "catalog should have at least 26 templates after premed additions")
     }
+
+    // MARK: - Architecture templates
+
+    @Test func catalogContainsArchitectureStudioTemplate() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task).map { $0.lowercased() }
+        #expect(tasks.contains { $0.contains("architecture") || $0.contains("studio") },
+                "catalog must include an architecture studio template")
+    }
+
+    @Test func catalogContainsArchitectureLicensingTemplate() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task).map { $0.lowercased() }
+        #expect(tasks.contains { $0.contains("licensing") || $0.contains("are") || $0.contains("architecture exam") },
+                "catalog must include an architecture licensing exam template")
+    }
+
+    @Test func architectureTemplatesHaveReasonableDuration() {
+        let archTemplates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("architecture") || lower.contains("studio")
+        }
+        #expect(!archTemplates.isEmpty, "at least one architecture template must exist")
+        for template in archTemplates {
+            if let duration = template.preferredDuration {
+                #expect(duration >= 5 * 60 && duration <= 3 * 60 * 60,
+                        "architecture template duration must be between 5 minutes and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastTwentyEightTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 28,
+                "catalog should have at least 28 templates after architecture additions")
+    }
 }

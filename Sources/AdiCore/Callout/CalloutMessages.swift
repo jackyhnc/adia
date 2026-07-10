@@ -78,9 +78,10 @@ extension CalloutManager {
         case "podcast":   return podcastCallouts(tier: tier)
         case "art":       return artCallouts(tier: tier)
         case "journaling": return journalingCallouts(tier: tier)
-        case "legal":     return legalCallouts(tier: tier)
-        case "premed":    return premedCallouts(tier: tier)
-        default:          return genericKeywordCallouts(keyword: keyword, tier: tier)
+        case "legal":        return legalCallouts(tier: tier)
+        case "premed":       return premedCallouts(tier: tier)
+        case "architecture": return architectureCallouts(tier: tier)
+        default:             return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
 
@@ -721,6 +722,27 @@ extension CalloutManager {
             "CLOSE THIS. open your anatomy notes.",
             "the boards don't care what you were scrolling. get back.",
             "med school doesn't pause. neither should you.",
+        ]
+        }
+    }
+
+    private func architectureCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your drawings won't finish themselves.",
+            "get back to the studio work.",
+            "that model isn't building itself.",
+            "close this. keep designing.",
+        ]
+        case 2: return [
+            "stop. the crit is coming.",
+            "you can't get pinned up by scrolling.",
+            "your design won't finish itself — get back.",
+        ]
+        default: return [
+            "CLOSE THIS. open your drawings.",
+            "the deadline doesn't move. your model does.",
+            "your studio crit is coming — this isn't prep.",
         ]
         }
     }

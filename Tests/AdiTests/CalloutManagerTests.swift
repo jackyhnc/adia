@@ -2974,4 +2974,120 @@ struct CalloutManagerTests {
             #expect(!result.isEmpty)
         }
     }
+
+    // MARK: - extractTaskKeyword — architecture
+
+    @Test func extractTaskKeywordArchitectMapsToArchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my architect portfolio") == "architecture")
+    }
+
+    @Test func extractTaskKeywordArchitectureMapsToArchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my architecture studio project") == "architecture")
+        #expect(CalloutManager.extractTaskKeyword(from: "architectural drawing for crit") == "architecture")
+    }
+
+    @Test func extractTaskKeywordAutocadMapsToArchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "AutoCAD floor plan for the final") == "architecture")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the autocad drawing") == "architecture")
+    }
+
+    @Test func extractTaskKeywordRevitMapsToArchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "model the building in Revit") == "architecture")
+    }
+
+    @Test func extractTaskKeywordRhinoMapsToArchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "parametric design in Rhino") == "architecture")
+    }
+
+    @Test func extractTaskKeywordBlueprintMapsToArchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the blueprint for the project") == "architecture")
+        #expect(CalloutManager.extractTaskKeyword(from: "review blueprints for the studio") == "architecture")
+    }
+
+    @Test func extractTaskKeywordFloorPlanMapsToArchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "draw the floor plan for unit B") == "architecture")
+        #expect(CalloutManager.extractTaskKeyword(from: "update the floor plans for crit") == "architecture")
+    }
+
+    @Test func extractTaskKeywordSitePlanMapsToArchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "update the site plan for the design review") == "architecture")
+    }
+
+    @Test func extractTaskKeywordElevationMapsToArchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "draw east elevation for project") == "architecture")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish all elevations by tonight") == "architecture")
+    }
+
+    @Test func extractTaskKeywordRenderingMapsToArchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "export the final rendering") == "architecture")
+        #expect(CalloutManager.extractTaskKeyword(from: "set up renderings for pin-up") == "architecture")
+    }
+
+    @Test func extractTaskKeywordAreExamMapsToArchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for the ARE exam — site planning") == "architecture")
+        #expect(CalloutManager.extractTaskKeyword(from: "ARE architecture exam practice questions") == "architecture")
+    }
+
+    @Test func extractTaskKeywordSoftwareArchitectureDoesNotMapToArchitecture() {
+        // software architecture → no specific keyword, falls through to nil
+        #expect(CalloutManager.extractTaskKeyword(from: "review the software architecture") == nil)
+        #expect(CalloutManager.extractTaskKeyword(from: "diagram the system architecture") == nil)
+        #expect(CalloutManager.extractTaskKeyword(from: "cloud architecture for the project") == nil)
+    }
+
+    @Test func extractTaskKeywordDataArchitectureDoesNotMapToArchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "redesign the data architecture") == nil)
+        #expect(CalloutManager.extractTaskKeyword(from: "application architecture review") == nil)
+    }
+
+    // MARK: - taskAwareCallouts — architecture pool
+
+    @Test func taskAwareCalloutsArchitectureHasMessages() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(!manager.taskAwareCallouts(keyword: "architecture", tier: 1).isEmpty)
+            #expect(!manager.taskAwareCallouts(keyword: "architecture", tier: 2).isEmpty)
+            #expect(!manager.taskAwareCallouts(keyword: "architecture", tier: 3).isEmpty)
+        }
+    }
+
+    @Test func taskAwareCalloutsArchitectureDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "architecture", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "architecture", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "architecture", tier: 3).count >= 2)
+        }
+    }
+
+    @Test func taskAwareCalloutsArchitectureTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "architecture", tier: 3)
+            let hasUrgent = tier3.contains { msg in
+                let upper = msg.uppercased()
+                return upper.contains("CLOSE") || upper.contains("STUDIO") || upper.contains("CRIT")
+                    || upper.contains("DEADLINE") || upper.contains("MODEL") || upper.contains("DRAWINGS")
+            }
+            #expect(hasUrgent, "tier 3 architecture messages must contain an urgent directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsArchitectureTier1ReferencesDesignWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "architecture", tier: 1)
+            let hasDesignRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("drawing") || lower.contains("studio") || lower.contains("model")
+                    || lower.contains("designing") || lower.contains("design")
+            }
+            #expect(hasDesignRef, "tier 1 architecture messages must reference design work")
+        }
+    }
+
+    @Test func taskAwareCalloutsArchitectureTier4FallsThrough() async {
+        await MainActor.run {
+            let result = CalloutManager.shared.taskAwareCallouts(keyword: "architecture", tier: 4)
+            #expect(!result.isEmpty)
+        }
+    }
 }

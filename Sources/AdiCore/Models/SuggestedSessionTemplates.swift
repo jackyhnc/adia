@@ -190,5 +190,17 @@ public enum SuggestedSessionTemplates {
             successCriteria: "All required structures located, labeled in a diagram, and definitions recalled from memory without looking",
             preferredDuration: 60 * 60
         ),
+        SuggestedTemplate(
+            icon: "building.2",
+            task: "Work on my architecture studio project",
+            successCriteria: "Design iteration complete with updated floor plans, elevations, and a rendered view ready for critique",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "pencil.and.ruler",
+            task: "Study for my architecture licensing exam",
+            successCriteria: "Finished one full practice section (ARE) with wrong answers reviewed and key concepts noted",
+            preferredDuration: 60 * 60
+        ),
     ]
 }
