@@ -1,3 +1,35 @@
+
+## Run 300 — 2026-07-10 — Randomized idle notch suggestion rotation
+
+### Shipped
+- **`Sources/AdiCore/Models/SuggestedSessionTemplates.swift` — `randomSuggestions(count:excluding:)`**:
+  - New public static method: filters `all` by excluded task names, shuffles, returns first `count` items
+  - Count is capped at available (non-excluded) catalog size — callers never get an empty result from an overshoot
+- **`Sources/AdiCore/Views/Notch/IdleNotchView.swift` — randomized display**:
+  - `@State private var displayedSuggestions: [SuggestedTemplate] = []` replaces the inline `.prefix(displayCount)` computed let in `suggestedSection`
+  - Populated inside the `.task` modifier after templates load — each launch and each session-end triggers a fresh random shuffle from the 15-item catalog
+  - `.onChange(of: settings.showSuggestedTemplates)` re-shuffles when the section is re-enabled (e.g. after "reset dismissed suggestions" + toggle)
+  - "Dismiss all" iterates `displayedSuggestions` and clears local state immediately for a responsive animation
+  - Individual dismiss (context menu) calls `displayedSuggestions.removeAll { $0.task == s.task }` so the remaining two visible suggestions stay stable
+- **`Tests/AdiTests/SuggestedSessionTemplatesTests.swift` — 5 new Swift tests** (total: 139 → 144 Swift tests):
+  - `randomSuggestionsRespectsCount` — exactly 3 returned when 3+ available
+  - `randomSuggestionsExcludesSpecifiedTasks` — excluded tasks absent from result
+  - `randomSuggestionsCountCappedByCatalogSize` — count=999 returns all 15 templates
+  - `randomSuggestionsReturnsEmptyWhenAllExcluded` — all excluded → empty result
+  - `randomSuggestionsResultsAreUnique` — no duplicates in full-catalog request
+
+### Verification
+All 1258 web tests pass (unchanged). Swift tests verified by code inspection (toolchain unavailable on Linux container).
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider `HistoryInsightsSection.trendLabel` extraction: move the `trendLabel(_:)` free function into a `static internal func` on `HistoryInsightsSection` (matching the `streakBreakChipLabel` pattern) and add 4 tests (one per FocusTrend case) in `HistoryInsightsSectionTests.swift`
+- Consider `HistoryWeeklySection.weekSummaryText` extraction: `weekSummaryText(_:)` is a private View method; extract to `static internal func weekSummaryText(_ s: SessionStats) -> String` and add unit tests (0 minutes, hour-only, minute-only, h+m combos)
+- Consider a `GET /api/admin/churn-by-plan` endpoint that returns per-plan churn rate trend (daily or weekly counts split by plan) to complement the existing churn-analysis endpoint's aggregate numbers
+
+---
 # Adia — Build Progress
 
 ## Run 299 — 2026-07-09 — Suggested template catalog expansion 8→15 + 9 catalog tests
