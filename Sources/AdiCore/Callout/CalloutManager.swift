@@ -249,6 +249,16 @@ public final class CalloutManager {
             || lower.contains("diary entry") || word("diary") {
             return "journaling"
         }
+        if word("brief") || word("briefs") || word("pleading") || word("pleadings")
+            || word("deposition") || word("depositions") || word("statute") || word("statutes")
+            || word("contract") || word("contracts")
+            || lower.contains("case brief") || lower.contains("legal brief") || lower.contains("legal memo")
+            || lower.contains("legal memorandum") || lower.contains("law review")
+            || lower.contains("legal research") || lower.contains("legal writing")
+            || lower.contains("moot court") || lower.contains("bar exam") || lower.contains("bar prep")
+            || word("litigation") || word("motions") {
+            return "legal"
+        }
         if word("deadline") || word("deadlines") || lower.contains("due by") || lower.contains("due tonight")
             || lower.contains("due tomorrow") || lower.contains("due at midnight")
             || lower.contains("due at noon") || lower.contains("due at end of")

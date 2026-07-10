@@ -324,9 +324,15 @@ public final class SessionNotifier: NSObject {
         guard SettingsStore.shared.morningNudgeEnabled else { return }
         let nudgeHour = SettingsStore.shared.morningNudgeHour
         let todayStr = Self.nudgeTodayDateString()
-        guard UserDefaults.standard.string(forKey: Self.lastScheduledNudgeDateKey) != todayStr else { return }
+        guard UserDefaults.standard.string(forKey: Self.lastScheduledNudgeDateKey) != todayStr else {
+            AppLogger.info("notifier.morning_nudge_skipped", ["reason": "already_scheduled", "todayStr": todayStr, "hour": "\(nudgeHour)"])
+            return
+        }
         let currentHour = Calendar.current.component(.hour, from: Date())
-        guard currentHour < nudgeHour else { return }
+        guard currentHour < nudgeHour else {
+            AppLogger.info("notifier.morning_nudge_skipped", ["reason": "hour_passed", "todayStr": todayStr, "currentHour": "\(currentHour)", "nudgeHour": "\(nudgeHour)"])
+            return
+        }
         UserDefaults.standard.set(todayStr, forKey: Self.lastScheduledNudgeDateKey)
         scheduleMorningNudge(hour: nudgeHour)
     }

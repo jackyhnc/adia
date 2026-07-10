@@ -78,6 +78,7 @@ extension CalloutManager {
         case "podcast":   return podcastCallouts(tier: tier)
         case "art":       return artCallouts(tier: tier)
         case "journaling": return journalingCallouts(tier: tier)
+        case "legal":     return legalCallouts(tier: tier)
         default:          return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -677,6 +678,27 @@ extension CalloutManager {
             "CLOSE THIS. your journal is waiting.",
             "you opened Adia to journal. that's not this.",
             "the entry won't write itself. get back.",
+        ]
+        }
+    }
+
+    private func legalCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your brief isn't going to write itself.",
+            "get back to your legal work.",
+            "close this and open your brief.",
+            "the deadline won't move.",
+        ]
+        case 2: return [
+            "stop. your brief is waiting.",
+            "this isn't case prep.",
+            "you're billing distraction time right now.",
+        ]
+        default: return [
+            "CLOSE THIS. open your brief.",
+            "you're not going to pass the bar by scrolling.",
+            "the brief doesn't write itself. get back.",
         ]
         }
     }

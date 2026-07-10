@@ -166,5 +166,17 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Chapter finished and key points noted in reading app or document",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "doc.text",
+            task: "Write a case brief for class",
+            successCriteria: "Case brief complete: facts, issue, rule, analysis, and conclusion all filled in",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "text.badge.checkmark",
+            task: "Prep for the bar exam — one subject block",
+            successCriteria: "Finished one full subject block (essays + MBE practice) and reviewed wrong answers",
+            preferredDuration: 2 * 60 * 60
+        ),
     ]
 }

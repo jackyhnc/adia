@@ -2734,4 +2734,97 @@ struct CalloutManagerTests {
             #expect(hasJournalRef, "tier 1 journaling messages must reference journal or writing")
         }
     }
+
+    // MARK: - Legal keyword
+
+    @Test func extractTaskKeywordLegalBrief() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my case brief") == "legal")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the legal brief") == "legal")
+    }
+
+    @Test func extractTaskKeywordLegalMemo() {
+        #expect(CalloutManager.extractTaskKeyword(from: "draft a legal memo") == "legal")
+        #expect(CalloutManager.extractTaskKeyword(from: "write a legal memorandum") == "legal")
+    }
+
+    @Test func extractTaskKeywordBarExam() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for the bar exam") == "legal")
+        #expect(CalloutManager.extractTaskKeyword(from: "bar prep session today") == "legal")
+    }
+
+    @Test func extractTaskKeywordMootCourt() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice my moot court argument") == "legal")
+    }
+
+    @Test func extractTaskKeywordLawReview() {
+        #expect(CalloutManager.extractTaskKeyword(from: "edit law review article") == "legal")
+    }
+
+    @Test func extractTaskKeywordLegalResearch() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish legal research for memo") == "legal")
+    }
+
+    @Test func extractTaskKeywordLegalPleading() {
+        #expect(CalloutManager.extractTaskKeyword(from: "draft the pleadings") == "legal")
+        #expect(CalloutManager.extractTaskKeyword(from: "file a pleading") == "legal")
+    }
+
+    @Test func extractTaskKeywordLegalDoesNotOverridePaper() {
+        // "paper" fires before "brief" — a legal brief submitted as a paper for class
+        // shouldn't override an explicit "paper" match; add "paper" to verify chain order.
+        // This task uses "paper" but also mentions "brief" — paper wins as it's earlier in chain.
+        #expect(CalloutManager.extractTaskKeyword(from: "write a research paper on legal briefs") == "paper")
+    }
+
+    @Test func extractTaskKeywordContractMapsToLegal() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review the contract") == "legal")
+        // "draft" fires writing branch first; use a non-conflicting phrasing
+        #expect(CalloutManager.extractTaskKeyword(from: "sign service contracts") == "legal")
+        #expect(CalloutManager.extractTaskKeyword(from: "contracts for new clients") == "legal")
+    }
+
+    @Test func extractTaskKeywordLitigationMapsToLegal() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prepare litigation strategy") == "legal")
+    }
+
+    @Test func taskAwareCalloutsLegalHasMessages() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            for tier in 1...3 {
+                let msgs = manager.taskAwareCallouts(keyword: "legal", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) must have legal messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsLegalDedicatedPoolSize() async {
+        await MainActor.run {
+            let manager = CalloutManager.shared
+            #expect(manager.taskAwareCallouts(keyword: "legal", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "legal", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "legal", tier: 3).count >= 2)
+        }
+    }
+
+    @Test func taskAwareCalloutsLegalTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "legal", tier: 3)
+            let hasUrgent = tier3.contains { msg in
+                let upper = msg.uppercased()
+                return upper.contains("CLOSE") || upper.contains("BRIEF") || upper.contains("BAR")
+            }
+            #expect(hasUrgent, "tier 3 legal messages must contain an urgent directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsLegalTier1ReferencesBrief() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "legal", tier: 1)
+            let hasBriefRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("brief") || lower.contains("legal") || lower.contains("work")
+            }
+            #expect(hasBriefRef, "tier 1 legal messages must reference legal work")
+        }
+    }
 }

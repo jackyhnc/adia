@@ -252,4 +252,35 @@ struct SuggestedSessionTemplatesTests {
         let tasks = results.map(\.task)
         #expect(tasks.count == Set(tasks).count, "randomSuggestions should not return duplicate templates")
     }
+
+    @Test func catalogContainsCaseBriefTemplate() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task).map { $0.lowercased() }
+        #expect(tasks.contains { $0.contains("brief") || $0.contains("case") },
+                "catalog must include a legal/case-brief template")
+    }
+
+    @Test func catalogContainsBarExamTemplate() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task).map { $0.lowercased() }
+        #expect(tasks.contains { $0.contains("bar") || $0.contains("bar exam") },
+                "catalog must include a bar-exam prep template")
+    }
+
+    @Test func legalTemplatesHaveReasonableDuration() {
+        let legalTemplates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("brief") || lower.contains("bar")
+        }
+        #expect(!legalTemplates.isEmpty, "at least one legal template must exist")
+        for template in legalTemplates {
+            if let duration = template.preferredDuration {
+                #expect(duration >= 5 * 60 && duration <= 3 * 60 * 60,
+                        "legal template duration must be between 5 minutes and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastTwentyFourTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 24,
+                "catalog should have at least 24 templates after legal additions")
+    }
 }
