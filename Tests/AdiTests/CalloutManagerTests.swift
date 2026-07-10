@@ -4955,4 +4955,118 @@ struct CalloutManagerTests {
             #expect(hasUrgent, "business tier3 should contain a CLOSE THIS directive")
         }
     }
+
+    // MARK: - publicheath keyword extraction
+
+    @Test func extractTaskKeywordReturnsPublicheathForEpidemiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study epidemiology for my MPH exam")
+        #expect(kw == "publicheath")
+    }
+
+    @Test func extractTaskKeywordReturnsPublicheathForBiostatistics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my biostatistics homework")
+        #expect(kw == "publicheath")
+    }
+
+    @Test func extractTaskKeywordReturnsPublicheathForCommunityHealth() {
+        let kw = CalloutManager.extractTaskKeyword(from: "work on my community health project")
+        #expect(kw == "publicheath")
+    }
+
+    @Test func extractTaskKeywordReturnsPublicheathForGlobalHealth() {
+        let kw = CalloutManager.extractTaskKeyword(from: "research global health disparities for class")
+        #expect(kw == "publicheath")
+    }
+
+    @Test func extractTaskKeywordReturnsPublicheathForPublicHealth() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study public health for my MPH program")
+        #expect(kw == "publicheath")
+    }
+
+    @Test func extractTaskKeywordReturnsPublicheathForInfectiousDisease() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyze infectious disease transmission data")
+        #expect(kw == "publicheath")
+    }
+
+    @Test func extractTaskKeywordReturnsPublicheathForOutbreak() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write an outbreak investigation report")
+        #expect(kw == "publicheath")
+    }
+
+    @Test func extractTaskKeywordReturnsPublicheathForMphProgram() {
+        let kw = CalloutManager.extractTaskKeyword(from: "finish my MPH program capstone project")
+        #expect(kw == "publicheath")
+    }
+
+    @Test func extractTaskKeywordReturnsPublicheathForMasterOfPublicHealth() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my master of public health thesis")
+        #expect(kw == "publicheath")
+    }
+
+    @Test func extractTaskKeywordReturnsPublicheathForPopulationHealth() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyze population health outcomes for my research")
+        #expect(kw == "publicheath")
+    }
+
+    @Test func extractTaskKeywordReturnsPublicheathForHealthEquity() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write a paper on health equity and social determinants of health")
+        #expect(kw == "publicheath")
+    }
+
+    @Test func extractTaskKeywordReturnsPublicheathForDiseaseSurveillance() {
+        let kw = CalloutManager.extractTaskKeyword(from: "build a disease surveillance dashboard for my MPH class")
+        #expect(kw == "publicheath")
+    }
+
+    @Test func extractTaskKeywordPublicheathFalsePositiveGuard_RunningSpeed() {
+        // "mph" without public health context (miles per hour) should NOT fire publicheath.
+        // The branch only matches "mph program/degree/student/class/exam/capstone/thesis/master of public health"
+        // phrases, not the bare acronym — so "I ran at 6 mph" falls through.
+        let kw = CalloutManager.extractTaskKeyword(from: "I ran at 6 mph today")
+        #expect(kw != "publicheath", "bare mph (miles per hour) must not trigger publicheath")
+    }
+
+    // MARK: - publicheath callout pool properties
+
+    @Test func publichealthCalloutsAllTiersAreNonEmpty() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "publicheath", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "publicheath", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "publicheath", tier: 3)
+            #expect(t1.count >= 3, "publicheath tier1 must have at least 3 messages")
+            #expect(t2.count >= 2, "publicheath tier2 must have at least 2 messages")
+            #expect(t3.count >= 2, "publicheath tier3 must have at least 2 messages")
+        }
+    }
+
+    @Test func publichealthCalloutsTier1ReferencesDomain() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "publicheath", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("epidemiology") || lower.contains("public health")
+                    || lower.contains("community health") || lower.contains("mph")
+            }
+            #expect(hasRef, "publicheath tier1 messages must reference the public health domain")
+        }
+    }
+
+    @Test func publichealthCalloutsTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "publicheath", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.hasPrefix("no one") }
+            #expect(hasUrgent, "publicheath tier3 should contain an urgent directive or MPH line")
+        }
+    }
+
+    @Test func publichealthCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "publicheath", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "publicheath tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
 }

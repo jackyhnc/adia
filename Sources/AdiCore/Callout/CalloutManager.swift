@@ -553,6 +553,26 @@ public final class CalloutManager {
             || lower.contains("case notes") || lower.contains("mental health notes") {
             return "therapy"
         }
+        // publicheath — positioned after therapy (clinical context) and before socialscience.
+        // Catches MPH programs, epidemiology, community/global health, outbreak investigation,
+        // and population health. "health policy" stays in the policy branch.
+        if word("epidemiology") || word("epidemiologist") || word("epidemiological")
+            || word("biostatistics") || word("biostatistician")
+            || lower.contains("community health") || lower.contains("global health")
+            || lower.contains("public health")
+            || lower.contains("infectious disease") || lower.contains("infectious diseases")
+            || word("outbreak") || lower.contains("outbreak investigation")
+            || lower.contains("population health") || lower.contains("health equity")
+            || lower.contains("social determinants of health") || word("sdoh")
+            || lower.contains("health disparities") || lower.contains("health promotion")
+            || lower.contains("occupational health") || lower.contains("environmental health")
+            || lower.contains("disease surveillance") || lower.contains("contact tracing")
+            || lower.contains("mph program") || lower.contains("mph degree")
+            || lower.contains("mph student") || lower.contains("mph class")
+            || lower.contains("mph exam") || lower.contains("mph capstone")
+            || lower.contains("mph thesis") || lower.contains("master of public health") {
+            return "publicheath"
+        }
         // socialscience — positioned after therapy (therapy catches "social work" first)
         // and before legal (LSAT is pre-law, not a bar-exam term).
         // Note: word("sociology") is already in the studying branch — not repeated here.

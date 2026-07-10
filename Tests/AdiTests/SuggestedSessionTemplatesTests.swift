@@ -1073,4 +1073,38 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 69,
                 "catalog should have ≥69 templates after DCF/IB finance template addition")
     }
+
+    // MARK: - Public health templates
+
+    @Test func catalogContainsPublicHealthExamTemplate() {
+        let found = SuggestedSessionTemplates.all.contains { t in
+            t.task.lowercased().contains("public health") && t.task.lowercased().contains("exam")
+        }
+        #expect(found, "catalog must contain a public health exam study template")
+    }
+
+    @Test func catalogContainsEpidemiologyAssignmentTemplate() {
+        let found = SuggestedSessionTemplates.all.contains { t in
+            t.task.lowercased().contains("epidemiology") || t.task.lowercased().contains("community health")
+        }
+        #expect(found, "catalog must contain an epidemiology or community health project template")
+    }
+
+    @Test func publichealthTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("public health") || t.task.lowercased().contains("epidemiology")
+        }
+        #expect(!templates.isEmpty, "at least one public health template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "public health template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastSeventyOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 71,
+                "catalog should have ≥71 templates after public health template additions")
+    }
 }

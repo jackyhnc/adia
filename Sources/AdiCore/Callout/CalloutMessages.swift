@@ -101,6 +101,7 @@ extension CalloutManager {
         case "kinesiology":    return kinesiologyCallouts(tier: tier)
         case "veterinary":     return veterinaryCallouts(tier: tier)
         case "business":       return businessCallouts(tier: tier)
+        case "publicheath":    return publichealthCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1183,6 +1184,27 @@ extension CalloutManager {
             "CLOSE THIS. open your case analysis.",
             "no one gets their MBA by scrolling.",
             "your business strategy won't write itself — back to work.",
+        ]
+        }
+    }
+
+    private func publichealthCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "this isn't your epidemiology assignment.",
+            "get back to your public health work.",
+            "your community health project won't do itself.",
+            "close this and study epidemiology.",
+        ]
+        case 2: return [
+            "you're not making anyone healthier by scrolling.",
+            "stop avoiding your public health work.",
+            "your epidemiology problem set is waiting — close this.",
+        ]
+        default: return [
+            "CLOSE THIS. open your epidemiology notes.",
+            "no one gets their MPH by scrolling.",
+            "disease doesn't wait. neither should you.",
         ]
         }
     }

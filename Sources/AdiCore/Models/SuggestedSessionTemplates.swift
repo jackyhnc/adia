@@ -448,5 +448,17 @@ public enum SuggestedSessionTemplates {
             successCriteria: "At least one full practice section completed, incorrect answers reviewed and error patterns identified, and key concepts or formulas for that section noted for further review",
             preferredDuration: 90 * 60
         ),
+        SuggestedTemplate(
+            icon: "cross.circle.fill",
+            task: "Study for my public health or epidemiology exam",
+            successCriteria: "Target chapter covered, key concepts (epidemiological measures, study designs, or community health frameworks) summarized in own words, and at least 10 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "globe.europe.africa.fill",
+            task: "Work on my epidemiology assignment or community health project",
+            successCriteria: "Assignment fully written with data analysis or case study completed, citations added for key claims, and document saved for submission",
+            preferredDuration: 45 * 60
+        ),
     ]
 }
