@@ -185,9 +185,9 @@ struct SessionNotifierMorningNudgeTests {
         }
     }
 
-    @Test func morningNudgeMessages_hasSevenVariants() {
-        #expect(SessionNotifier.morningNudgeMessages.count == 7,
-                "messages pool must have exactly 7 variants for parity with the morningNudgeTitles pool")
+    @Test func morningNudgeMessages_hasNineVariants() {
+        #expect(SessionNotifier.morningNudgeMessages.count == 9,
+                "messages pool must have exactly 9 variants for parity with the morningNudgeTitles pool")
     }
 
     @Test func morningNudgeMessages_allVariantsAreLowercase() {
@@ -589,9 +589,9 @@ struct SessionNotifierMorningNudgeTitleTests {
         }
     }
 
-    @Test func morningNudgeTitles_hasSevenVariants() {
-        #expect(SessionNotifier.morningNudgeTitles.count == 7,
-                "titles pool must have exactly 7 variants for parity with the morningNudgeMessages pool")
+    @Test func morningNudgeTitles_hasNineVariants() {
+        #expect(SessionNotifier.morningNudgeTitles.count == 9,
+                "titles pool must have exactly 9 variants for parity with the morningNudgeMessages pool")
     }
 
     @Test func morningNudgeTitles_allVariantsAreLowercase() {

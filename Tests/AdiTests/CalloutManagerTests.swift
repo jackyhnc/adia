@@ -601,6 +601,25 @@ struct CalloutManagerTests {
         #expect(CalloutManager.extractTaskKeyword(from: "read the article") == "reading")
     }
 
+    @Test func extractTaskKeywordAudiobook() {
+        // "listen to an audiobook" has no annotate/reading match; audiobook must map to "reading"
+        #expect(CalloutManager.extractTaskKeyword(from: "listen to an audiobook") == "reading")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my audiobook") == "reading")
+        #expect(CalloutManager.extractTaskKeyword(from: "audiobooks are on my list") == "reading")
+    }
+
+    @Test func extractTaskKeywordAudiobookDoesNotMatchPodcast() {
+        // A podcast task must still route to "podcast" even if audiobook is mentioned in passing
+        #expect(CalloutManager.extractTaskKeyword(from: "record a podcast episode") == "podcast")
+    }
+
+    @Test func extractTaskKeywordAudiobookWithAnnotate() {
+        // The existing suggested template "Listen to and annotate an audiobook chapter"
+        // matches "annotate" before reaching "audiobook" — both yield "reading", so the
+        // result must remain "reading" regardless of match order.
+        #expect(CalloutManager.extractTaskKeyword(from: "listen to and annotate an audiobook chapter") == "reading")
+    }
+
     // MARK: - Student-centric keyword additions
 
     @Test func extractTaskKeywordFromMidterm() {

@@ -118,7 +118,8 @@ public final class CalloutManager {
             return "studying"
         }
         if word("reading") || word("book") || word("chapter") || word("article")
-            || word("annotate") || word("annotating") || word("annotation") || word("annotations") || word("annotated") {
+            || word("annotate") || word("annotating") || word("annotation") || word("annotations") || word("annotated")
+            || word("audiobook") || word("audiobooks") {
             return "reading"
         }
         if word("homework") || word("assignment") || lower.contains("problem set") || word("pset")

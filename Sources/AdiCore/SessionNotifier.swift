@@ -241,6 +241,8 @@ public final class SessionNotifier: NSObject {
         "nothing yet today",
         "today's untouched",
         "no work yet today",
+        "zero sessions so far",
+        "day's still empty",
     ]
 
     /// Returns a random morning nudge title from `morningNudgeTitles`.
@@ -259,6 +261,8 @@ public final class SessionNotifier: NSObject {
         "day's ticking. no session yet — pick a task.",
         "you haven't started yet. whatever it is, begin now.",
         "nothing yet today. open adia and get going.",
+        "zero sessions today. open adia and start one.",
+        "today's still empty. pick a task and get moving.",
     ]
 
     /// Returns a random morning nudge message from `morningNudgeMessages`.
