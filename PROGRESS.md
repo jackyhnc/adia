@@ -1,4 +1,54 @@
 
+## Run 302 — 2026-07-10 — Notification permission gating + template catalog 15→20
+
+### Shipped
+- **`Sources/AdiCore/Views/Settings/AccountSettingsTab.swift` — `MorningNudgeSection` notification permission gating**:
+  - Added `import UserNotifications` (guarded by `#if canImport(UserNotifications)`)
+  - `@State private var notificationStatus: UNAuthorizationStatus = .notDetermined` (guarded)
+  - `.task {}` fetches `UNUserNotificationCenter.current().notificationSettings()` on appear; `refreshNotificationStatus()` guards against `Bundle.main.bundleIdentifier == nil` crash in `swift test` / Linux CI
+  - `.onChange(of: scenePhase)` re-checks permission when the user returns from System Settings (uses SwiftUI `@Environment(\.scenePhase)` — no AppKit import needed)
+  - When `.denied`: shows a disabled toggle, `Image(systemName: "bell.slash")` + "Notifications blocked." label + "Open System Settings →" button (uses `@Environment(\.openURL)` — cross-platform, no NSWorkspace); footer text explains the requirement
+  - When `.notDetermined`: clicking the toggle calls `SessionNotifier.shared.requestPermission()` before scheduling, prompting the system dialog
+  - All `UNAuthorizationStatus` references wrapped in `#if canImport(UserNotifications)` so Linux CI continues to compile with the original toggle-only view
+
+- **`Sources/AdiCore/Models/SuggestedSessionTemplates.swift` — catalog 15→20**:
+  - Five new entries covering uncovered `extractTaskKeyword` branches:
+    - `"Study vocabulary for my language class"` (language branch) — icon: `character.book.closed`, 30m
+    - `"Practice an instrument for 30 minutes"` (practice branch) — icon: `music.note`, 30m
+    - `"Edit and export today's video"` (video branch) — icon: `video`, 60m
+    - `"Update my monthly budget"` (budget branch) — icon: `dollarsign.circle`, 30m
+    - `"Write the next chapter of my novel"` (writing/creative branch) — icon: `text.cursor`, 60m
+  - Catalog now covers every major student/knowledge-worker use case visible in `extractTaskKeyword`
+
+- **`Tests/AdiTests/SuggestedSessionTemplatesTests.swift` — 5 new tests** (24 → 29):
+  - `catalogHasAtLeastTwentyTemplates` — replaces `catalogHasAtLeastFifteenTemplates` (pinned to `>= 20`)
+  - `catalogContainsLanguageLearningTemplate`
+  - `catalogContainsMusicPracticeTemplate`
+  - `catalogContainsVideoEditingTemplate`
+  - `catalogContainsBudgetTemplate`
+  - `catalogContainsCreativeWritingTemplate`
+
+- **Recovery**: cherry-picked 11 commits from orphaned detached HEAD (runs 296-301) that were never pushed to origin/main; all clean applies
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `#if canImport(UserNotifications)` wraps every `UNAuthorizationStatus` reference; the `else {}` / `}` that close the condition blocks are also wrapped. On Linux, the section compiles to just the original toggle (no condition). On macOS 14+, the full denied/not-determined flow is active.
+- `refreshNotificationStatus()` guards `Bundle.main.bundleIdentifier != nil` using the same pattern as `SessionNotifier.canUseNotificationCenter` to avoid the known uncaught ObjC exception in swift test.
+- All 5 new templates pass the existing `allTemplatesHaveNonEmptyTask`, `allTemplatesHaveNonEmptySuccessCriteria`, `allTemplatesHaveNonEmptyIcon`, `allPositivePreferredDurationsWhenSet`, `taskTextsAreUnique`, and `allTemplatesHaveValidSuccessCriteriaLength` tests by inspection.
+- Web test count unchanged at 1257.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Consider adding a `catalogContainsEmailTemplate` test (inbox-zero template exists but has no dedicated assertion — the `catalogContainsBlogOrWritingTemplate` uses "post" which could false-match; more specific email coverage would be good)
+- Consider growing the `morningNudgeTitles` and `morningNudgeMessages` pools from 7 → 9 entries for further variety
+- Consider adding a `@State private var permissionGrantedWhileDenied: Bool` path in MorningNudgeSection — currently if the user grants permission and returns to the app, `scenePhase` fires `.active`, `refreshNotificationStatus()` detects the new `.authorized` status, and the denied UI disappears; but `settings.morningNudgeEnabled` may still be true from before denial, so the toggle may immediately show ON without re-scheduling — could call `scheduleMorningNudgeIfNeeded()` in that code path
+- Consider a LicenseTimelinePanel → LookupPanel back-link (mirror of the existing LookupPanel → LicenseTimelinePanel forward-link, so users can look up the license details from the timeline view)
+- Consider `catalogContainsEmailTemplate` and `catalogContainsJobApplicationTemplate` presence assertions now that the catalog is larger
+
+---
+
 ## Run 300 — 2026-07-10 — Randomized idle notch suggestion rotation
 
 ### Shipped
