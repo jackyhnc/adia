@@ -460,5 +460,41 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Assignment fully written with data analysis or case study completed, citations added for key claims, and document saved for submission",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "staroflife.fill",
+            task: "Study for the NREMT or EMT certification exam",
+            successCriteria: "Target topic reviewed, key protocols and interventions summarized in own words, and at least 10 practice questions completed with explanations",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Complete my paramedic or EMS training assignment",
+            successCriteria: "Assignment fully written, clinical scenarios or protocols addressed, key interventions documented, and document saved for submission",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "person.2.fill",
+            task: "Write case notes or intake assessment for field placement",
+            successCriteria: "Case notes or intake assessment written, key presenting issues and interventions documented, and document saved or ready for supervisor review",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study for my social work licensing exam or MSW coursework",
+            successCriteria: "Target chapter or topic covered, key concepts summarized in own words, and at least 10 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "hand.raised.fill",
+            task: "Write up my OT session notes or treatment plan",
+            successCriteria: "Session notes or treatment plan written with goals, client progress, and interventions documented, and notes saved or ready for supervisor review",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study for the NBCOT or occupational therapy school exam",
+            successCriteria: "Target domain reviewed, key concepts in occupational performance and intervention summarized, and at least 10 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

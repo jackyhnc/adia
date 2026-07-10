@@ -1,4 +1,36 @@
 
+## Run 315 — 2026-07-10
+
+**Shipped:** Paramedicine/EMT, social work (split from therapy), and occupational therapy keyword domains + callout pools + 6 templates + 41 CalloutManager tests + 10 SuggestedTemplates tests
+
+### What changed
+- `CalloutManager.extractTaskKeyword`: added `"paramedicine"` branch **before the nursing block**. Matches: `word("emt")`, `word("paramedic")`, `word("paramedics")`, `word("paramedicine")`, `nremt`, `aemt`, `emergency medical technician`, `ems protocol/training/class/certification/exam/program`, `pre-hospital`/`prehospital`, `trauma assessment`, `field triage`, `basic life support`, `advanced life support`, `acls`, `pals`, `cpr certification`, `airway management`.
+- `CalloutManager.extractTaskKeyword`: added `"socialwork"` branch **before the therapy block**. Removes `lower.contains("social work")` from the therapy branch (now owned here). Matches: `social work`/`social worker`/`social workers`, `msw`/`bsw`/`lmsw`, `case management`, `casework`, `child protective services`, `child welfare`, `community resources`, `family services`, `social services`, `intake assessment`, `social welfare`, `welfare policy`, `field placement` + `social`.
+- `CalloutManager.extractTaskKeyword`: added `"occupationaltherapy"` branch **after the therapy block and before publicheath**. Matches: `occupational therapy`/`occupational therapist`/`occupational therapists`, `nbcot`, `activities of daily living`, `adls`/`adl`, `hand therapy`, `pediatric ot`, `sensory integration`, `sensory processing`, `fine motor skills`, `adaptive equipment`, `ot fieldwork`/`ot placement`/`ot school`/`ot program`/`ot class`/`ot exam`.
+- Fixed stale comment in socialscience block (previously said "therapy catches social work first" — now socialwork branch owns that phrase).
+- `CalloutMessages`: added `paramedicineCallouts(tier:)` 4/3/3, `socialworkCallouts(tier:)` 4/3/3, `occupationaltherapyCallouts(tier:)` 4/3/3; three new dispatch cases in `taskAwareCallouts` switch.
+- `SuggestedSessionTemplates.all` grows 71→77: NREMT exam study (60 min) + EMS training assignment (45 min) + social work case notes/intake assessment (45 min) + MSW licensure exam (60 min) + OT session notes/treatment plan (30 min) + NBCOT exam study (60 min).
+- **41 new tests** in `CalloutManagerTests.swift` (686→727): 15 paramedicine + 13 socialwork + 13 occupationaltherapy; each domain has routing tests + false-positive guards + pool property tests.
+- **10 new tests** in `SuggestedSessionTemplatesTests.swift` (125→135): 3 per domain (contains template, has variant, has reasonable duration) + ≥77 count guard.
+
+### Verification
+Swift toolchain unavailable on Linux — verified by code inspection:
+- `paramedicine` branch positioned before `nursing` → "study for my EMT exam" → paramedicine ✓; "write my nursing care plan" → skips paramedicine, routes to nursing ✓
+- `socialwork` branch positioned before `therapy` → "write my social work case notes" → socialwork ✓; "write my therapy notes" → skips socialwork, routes to therapy ✓; "social work" no longer in therapy branch ✓
+- `occupationaltherapy` branch positioned after `therapy`, before `publicheath` → "complete my occupational therapy fieldwork notes" → doesn't match therapy branch, routes to occupationaltherapy ✓
+- All three tier-3 pools contain "CLOSE THIS" or "no one" prefix ✓
+- All 6 new template durations: 3600/2700/2700/3600/1800/3600 — all in [300, 10800] ✓
+
+### Blocked / skipped
+None.
+
+### Next agent should pick up
+- **AppMonitor observability tests**: requires macOS build environment
+- **arduino false-positive check**: should route to code not engineering — worth verifying on macOS
+- More keyword domains: dental (NBDE exam), optometry (NBEO exam), pharmacy (NAPLEX)
+
+---
+
 ## Run 314 — 2026-07-10
 
 **Shipped:** Statistics, kinesiology, and veterinary keyword domains + callout pools + 6 templates + 45 CalloutManager tests + 10 SuggestedTemplates tests

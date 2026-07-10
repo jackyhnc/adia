@@ -523,6 +523,21 @@ public final class CalloutManager {
             || lower.contains("step 1") || lower.contains("step 2") || lower.contains("step 3") {
             return "premed"
         }
+        // paramedicine — positioned before nursing so EMT/paramedic-specific terms
+        // (NREMT exam, pre-hospital care, BLS/ACLS certifications) don't fall through to nursing.
+        if word("emt") || word("paramedic") || word("paramedics") || word("paramedicine")
+            || lower.contains("nremt") || lower.contains("aemt")
+            || lower.contains("emergency medical technician")
+            || lower.contains("ems protocol") || lower.contains("ems training")
+            || lower.contains("ems class") || lower.contains("ems certification")
+            || lower.contains("ems exam") || lower.contains("ems program")
+            || lower.contains("pre-hospital") || lower.contains("prehospital")
+            || lower.contains("trauma assessment") || lower.contains("field triage")
+            || lower.contains("basic life support") || lower.contains("advanced life support")
+            || word("acls") || word("pals")
+            || lower.contains("cpr certification") || lower.contains("airway management") {
+            return "paramedicine"
+        }
         if word("nursing") || lower.contains("care plan") || lower.contains("care plans")
             || lower.contains("nursing notes") || lower.contains("nursing assessment")
             || lower.contains("nursing theory") || lower.contains("nursing diagnosis")
@@ -538,8 +553,23 @@ public final class CalloutManager {
             || lower.contains("wound care") || lower.contains("iv insertion") {
             return "nursing"
         }
+        // socialwork — positioned before therapy so social-work-specific tasks (case management,
+        // child welfare, community resources) route here instead of to therapist callouts.
+        // "social work" is owned here; "social work" in the therapy branch is removed.
+        if lower.contains("social work") || lower.contains("social worker")
+            || lower.contains("social workers")
+            || word("msw") || word("bsw") || word("lmsw")
+            || lower.contains("case management") || word("casework")
+            || lower.contains("child protective services") || lower.contains("child welfare")
+            || lower.contains("community resources") || lower.contains("family services")
+            || lower.contains("social services") || lower.contains("intake assessment")
+            || lower.contains("social welfare") || lower.contains("welfare policy")
+            || (lower.contains("field placement") && lower.contains("social")) {
+            return "socialwork"
+        }
         // therapy — positioned after nursing (shared healthcare context) and before tutor
         // so "counseling" doesn't route to tutor via word("coaching").
+        // "social work" moved to the dedicated socialwork branch above.
         if lower.contains("therapy notes") || lower.contains("session notes")
             || lower.contains("progress notes") || lower.contains("treatment plan")
             || lower.contains("case conceptualization") || lower.contains("case formulation")
@@ -548,10 +578,25 @@ public final class CalloutManager {
             || word("lcsw") || word("lmft") || word("lpc") || word("mft")
             || lower.contains("cbt worksheets") || lower.contains("dbt skills")
             || lower.contains("exposure therapy") || lower.contains("cognitive behavioral")
-            || lower.contains("social work") || lower.contains("clinical hours")
+            || lower.contains("clinical hours")
             || lower.contains("supervision notes") || lower.contains("client notes")
             || lower.contains("case notes") || lower.contains("mental health notes") {
             return "therapy"
+        }
+        // occupationaltherapy — positioned after therapy so OT-specific terms
+        // (NBCOT exam, ADLs, sensory integration, hand therapy) don't conflict with
+        // generic therapy/counseling terms.
+        if lower.contains("occupational therapy") || lower.contains("occupational therapist")
+            || lower.contains("occupational therapists")
+            || word("nbcot")
+            || lower.contains("activities of daily living") || word("adls") || word("adl")
+            || lower.contains("hand therapy") || lower.contains("pediatric ot")
+            || lower.contains("sensory integration") || lower.contains("sensory processing")
+            || lower.contains("fine motor skills") || lower.contains("adaptive equipment")
+            || lower.contains("ot fieldwork") || lower.contains("ot placement")
+            || lower.contains("ot school") || lower.contains("ot program")
+            || lower.contains("ot class") || lower.contains("ot exam") {
+            return "occupationaltherapy"
         }
         // publicheath — positioned after therapy (clinical context) and before socialscience.
         // Catches MPH programs, epidemiology, community/global health, outbreak investigation,
@@ -573,8 +618,8 @@ public final class CalloutManager {
             || lower.contains("mph thesis") || lower.contains("master of public health") {
             return "publicheath"
         }
-        // socialscience — positioned after therapy (therapy catches "social work" first)
-        // and before legal (LSAT is pre-law, not a bar-exam term).
+        // socialscience — positioned after occupationaltherapy and before legal
+        // (LSAT is pre-law, not a bar-exam term). "social work" now routes to the socialwork branch.
         // Note: word("sociology") is already in the studying branch — not repeated here.
         if lower.contains("political science") || lower.contains("poli sci")
             || word("anthropology") || word("anthropological")

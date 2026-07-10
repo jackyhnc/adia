@@ -1107,4 +1107,98 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 71,
                 "catalog should have ≥71 templates after public health template additions")
     }
+
+    // MARK: - paramedicine templates
+
+    @Test func catalogContainsNREMTStudyTemplate() {
+        let found = SuggestedSessionTemplates.all.contains { t in
+            t.task.lowercased().contains("nremt") || t.task.lowercased().contains("emt")
+        }
+        #expect(found, "catalog must contain an NREMT or EMT certification study template")
+    }
+
+    @Test func catalogContainsEMSTrainingTemplate() {
+        let found = SuggestedSessionTemplates.all.contains { t in
+            t.task.lowercased().contains("paramedic") || t.task.lowercased().contains("ems")
+        }
+        #expect(found, "catalog must contain a paramedic or EMS training template")
+    }
+
+    @Test func paramedicineTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("nremt") || t.task.lowercased().contains("emt")
+                || t.task.lowercased().contains("paramedic") || t.task.lowercased().contains("ems")
+        }
+        #expect(!templates.isEmpty, "at least one paramedicine template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "paramedicine template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - social work templates
+
+    @Test func catalogContainsSocialWorkCaseNotesTemplate() {
+        let found = SuggestedSessionTemplates.all.contains { t in
+            t.task.lowercased().contains("case notes") || t.task.lowercased().contains("intake assessment")
+        }
+        #expect(found, "catalog must contain a social work case notes or intake assessment template")
+    }
+
+    @Test func catalogContainsMSWCourseworkTemplate() {
+        let found = SuggestedSessionTemplates.all.contains { t in
+            t.task.lowercased().contains("msw") || t.task.lowercased().contains("social work licensing")
+        }
+        #expect(found, "catalog must contain a social work licensing or MSW coursework template")
+    }
+
+    @Test func socialworkTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("social work") || t.task.lowercased().contains("msw")
+        }
+        #expect(!templates.isEmpty, "at least one social work template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "social work template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - occupational therapy templates
+
+    @Test func catalogContainsOTSessionNotesTemplate() {
+        let found = SuggestedSessionTemplates.all.contains { t in
+            t.task.lowercased().contains("ot session") || t.task.lowercased().contains("occupational therapy")
+        }
+        #expect(found, "catalog must contain an OT session notes or treatment plan template")
+    }
+
+    @Test func catalogContainsNBCOTStudyTemplate() {
+        let found = SuggestedSessionTemplates.all.contains { t in
+            t.task.lowercased().contains("nbcot") || t.task.lowercased().contains("occupational therapy school")
+        }
+        #expect(found, "catalog must contain an NBCOT or OT school exam study template")
+    }
+
+    @Test func occupationaltherapyTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("nbcot") || t.task.lowercased().contains("occupational therapy")
+                || t.task.lowercased().contains("ot session")
+        }
+        #expect(!templates.isEmpty, "at least one occupational therapy template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "occupational therapy template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastSeventySevenTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 77,
+                "catalog should have ≥77 templates after paramedicine/socialwork/OT additions")
+    }
 }

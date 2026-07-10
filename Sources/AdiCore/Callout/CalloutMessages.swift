@@ -99,9 +99,12 @@ extension CalloutManager {
         case "ux":             return uxCallouts(tier: tier)
         case "statistics":     return statisticsCallouts(tier: tier)
         case "kinesiology":    return kinesiologyCallouts(tier: tier)
-        case "veterinary":     return veterinaryCallouts(tier: tier)
-        case "business":       return businessCallouts(tier: tier)
-        case "publicheath":    return publichealthCallouts(tier: tier)
+        case "veterinary":           return veterinaryCallouts(tier: tier)
+        case "business":             return businessCallouts(tier: tier)
+        case "publicheath":          return publichealthCallouts(tier: tier)
+        case "paramedicine":         return paramedicineCallouts(tier: tier)
+        case "socialwork":           return socialworkCallouts(tier: tier)
+        case "occupationaltherapy":  return occupationaltherapyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1205,6 +1208,69 @@ extension CalloutManager {
             "CLOSE THIS. open your epidemiology notes.",
             "no one gets their MPH by scrolling.",
             "disease doesn't wait. neither should you.",
+        ]
+        }
+    }
+
+    private func paramedicineCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those protocols aren't going to memorize themselves.",
+            "get back to your EMS training.",
+            "your NREMT prep won't do itself.",
+            "close this and study your paramedic material.",
+        ]
+        case 2: return [
+            "stop. your EMT exam is waiting.",
+            "this isn't your trauma assessment.",
+            "close this and get back to your EMS coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your paramedic notes.",
+            "no one passes the NREMT by scrolling.",
+            "your future patients need you sharp — back to training.",
+        ]
+        }
+    }
+
+    private func socialworkCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your clients need you focused — get back to your case notes.",
+            "those case files aren't going to write themselves.",
+            "close this and get back to your social work.",
+            "your field placement work is waiting.",
+        ]
+        case 2: return [
+            "stop. your case management notes are due.",
+            "this isn't your intake assessment.",
+            "close this and get back to your social work assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your case notes.",
+            "no one earns their MSW by scrolling.",
+            "your clients are waiting — back to work.",
+        ]
+        }
+    }
+
+    private func occupationaltherapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your OT notes aren't going to write themselves.",
+            "get back to your occupational therapy work.",
+            "your NBCOT prep is waiting.",
+            "close this and open your OT materials.",
+        ]
+        case 2: return [
+            "stop. your OT fieldwork notes are due.",
+            "this isn't your ADL assessment.",
+            "close this and get back to your occupational therapy coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your OT notes.",
+            "no one passes the NBCOT by scrolling.",
+            "your future clients need you studying — not browsing.",
         ]
         }
     }

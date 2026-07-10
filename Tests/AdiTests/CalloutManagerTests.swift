@@ -5069,4 +5069,295 @@ struct CalloutManagerTests {
             }
         }
     }
+
+    // MARK: - paramedicine keyword routing
+
+    @Test func extractTaskKeywordReturnsParamedicineForEMT() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study for my EMT exam")
+        #expect(kw == "paramedicine")
+    }
+
+    @Test func extractTaskKeywordReturnsParamedicineForParamedic() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my paramedic assignment")
+        #expect(kw == "paramedicine")
+    }
+
+    @Test func extractTaskKeywordReturnsParamedicineForNREMT() {
+        let kw = CalloutManager.extractTaskKeyword(from: "prep for the NREMT certification")
+        #expect(kw == "paramedicine")
+    }
+
+    @Test func extractTaskKeywordReturnsParamedicineForAEMT() {
+        let kw = CalloutManager.extractTaskKeyword(from: "finish my AEMT coursework")
+        #expect(kw == "paramedicine")
+    }
+
+    @Test func extractTaskKeywordReturnsParamedicineForEMSProtocol() {
+        let kw = CalloutManager.extractTaskKeyword(from: "review EMS protocol updates for my class")
+        #expect(kw == "paramedicine")
+    }
+
+    @Test func extractTaskKeywordReturnsParamedicineForACLS() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study for my ACLS recertification")
+        #expect(kw == "paramedicine")
+    }
+
+    @Test func extractTaskKeywordReturnsParamedicineForCPRCertification() {
+        let kw = CalloutManager.extractTaskKeyword(from: "prepare for my CPR certification test")
+        #expect(kw == "paramedicine")
+    }
+
+    @Test func extractTaskKeywordReturnsParamedicineForPreHospital() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write a report on pre-hospital care protocols")
+        #expect(kw == "paramedicine")
+    }
+
+    @Test func extractTaskKeywordReturnsParamedicineForTraumaAssessment() {
+        let kw = CalloutManager.extractTaskKeyword(from: "practice trauma assessment scenarios")
+        #expect(kw == "paramedicine")
+    }
+
+    @Test func extractTaskKeywordParamedicineFalsePositive_NursingCarePlan() {
+        // "care plan" should route to nursing, not paramedicine
+        let kw = CalloutManager.extractTaskKeyword(from: "write my nursing care plan for class")
+        #expect(kw == "nursing", "nursing care plan should route to nursing, not paramedicine")
+    }
+
+    // MARK: - paramedicine callout pool properties
+
+    @Test func paramedicineCalloutsAllTiersAreNonEmpty() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "paramedicine", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "paramedicine", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "paramedicine", tier: 3)
+            #expect(t1.count >= 3, "paramedicine tier1 must have at least 3 messages")
+            #expect(t2.count >= 2, "paramedicine tier2 must have at least 2 messages")
+            #expect(t3.count >= 2, "paramedicine tier3 must have at least 2 messages")
+        }
+    }
+
+    @Test func paramedicineTier1HasFourMessages() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "paramedicine", tier: 1)
+            #expect(t1.count == 4, "paramedicine tier1 must have exactly 4 messages")
+        }
+    }
+
+    @Test func paramedicineTier1ReferencesDomain() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "paramedicine", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("nremt") || lower.contains("ems") || lower.contains("emt")
+                    || lower.contains("paramedic") || lower.contains("protocol")
+            }
+            #expect(hasRef, "paramedicine tier1 messages must reference the EMS/EMT domain")
+        }
+    }
+
+    @Test func paramedicineTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "paramedicine", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.hasPrefix("no one") }
+            #expect(hasUrgent, "paramedicine tier3 should contain an urgent directive")
+        }
+    }
+
+    @Test func paramedicineCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "paramedicine", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "paramedicine tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+
+    // MARK: - socialwork keyword routing
+
+    @Test func extractTaskKeywordReturnsSocialworkForSocialWork() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write my social work case notes")
+        #expect(kw == "socialwork")
+    }
+
+    @Test func extractTaskKeywordReturnsSocialworkForMSW() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study for my MSW licensure exam")
+        #expect(kw == "socialwork")
+    }
+
+    @Test func extractTaskKeywordReturnsSocialworkForBSW() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my BSW field placement hours")
+        #expect(kw == "socialwork")
+    }
+
+    @Test func extractTaskKeywordReturnsSocialworkForCaseManagement() {
+        let kw = CalloutManager.extractTaskKeyword(from: "finish my case management documentation")
+        #expect(kw == "socialwork")
+    }
+
+    @Test func extractTaskKeywordReturnsSocialworkForChildWelfare() {
+        let kw = CalloutManager.extractTaskKeyword(from: "research child welfare policy for my assignment")
+        #expect(kw == "socialwork")
+    }
+
+    @Test func extractTaskKeywordReturnsSocialworkForIntakeAssessment() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete the intake assessment for my client")
+        #expect(kw == "socialwork")
+    }
+
+    @Test func extractTaskKeywordReturnsSocialworkForFieldPlacement() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write up my social field placement reflection")
+        #expect(kw == "socialwork")
+    }
+
+    @Test func extractTaskKeywordSocialworkFalsePositive_TherapyNotes() {
+        // therapy notes should route to therapy, not socialwork
+        let kw = CalloutManager.extractTaskKeyword(from: "write my therapy notes for today's session")
+        #expect(kw == "therapy", "therapy notes should route to therapy, not socialwork")
+    }
+
+    // MARK: - socialwork callout pool properties
+
+    @Test func socialworkCalloutsAllTiersAreNonEmpty() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "socialwork", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "socialwork", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "socialwork", tier: 3)
+            #expect(t1.count >= 3, "socialwork tier1 must have at least 3 messages")
+            #expect(t2.count >= 2, "socialwork tier2 must have at least 2 messages")
+            #expect(t3.count >= 2, "socialwork tier3 must have at least 2 messages")
+        }
+    }
+
+    @Test func socialworkTier1HasFourMessages() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "socialwork", tier: 1)
+            #expect(t1.count == 4, "socialwork tier1 must have exactly 4 messages")
+        }
+    }
+
+    @Test func socialworkTier1ReferencesDomain() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "socialwork", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("case") || lower.contains("social work")
+                    || lower.contains("client") || lower.contains("field")
+            }
+            #expect(hasRef, "socialwork tier1 messages must reference the social work domain")
+        }
+    }
+
+    @Test func socialworkTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "socialwork", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.hasPrefix("no one") }
+            #expect(hasUrgent, "socialwork tier3 should contain an urgent directive")
+        }
+    }
+
+    @Test func socialworkCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "socialwork", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "socialwork tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+
+    // MARK: - occupationaltherapy keyword routing
+
+    @Test func extractTaskKeywordReturnsOccupationaltherapyForOccupationalTherapy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my occupational therapy fieldwork notes")
+        #expect(kw == "occupationaltherapy")
+    }
+
+    @Test func extractTaskKeywordReturnsOccupationaltherapyForNBCOT() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study for the NBCOT exam")
+        #expect(kw == "occupationaltherapy")
+    }
+
+    @Test func extractTaskKeywordReturnsOccupationaltherapyForADLs() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write an activities of daily living assessment")
+        #expect(kw == "occupationaltherapy")
+    }
+
+    @Test func extractTaskKeywordReturnsOccupationaltherapyForSensoryIntegration() {
+        let kw = CalloutManager.extractTaskKeyword(from: "read about sensory integration therapy approaches")
+        #expect(kw == "occupationaltherapy")
+    }
+
+    @Test func extractTaskKeywordReturnsOccupationaltherapyForHandTherapy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my hand therapy certification prep")
+        #expect(kw == "occupationaltherapy")
+    }
+
+    @Test func extractTaskKeywordReturnsOccupationaltherapyForOTFieldwork() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write up my OT fieldwork reflection")
+        #expect(kw == "occupationaltherapy")
+    }
+
+    @Test func extractTaskKeywordReturnsOccupationaltherapyForFineMotorSkills() {
+        let kw = CalloutManager.extractTaskKeyword(from: "research fine motor skills interventions for my OT class")
+        #expect(kw == "occupationaltherapy")
+    }
+
+    @Test func extractTaskKeywordOccupationaltherapyFalsePositive_TherapyNotes() {
+        // therapy notes should route to therapy, not occupationaltherapy
+        let kw = CalloutManager.extractTaskKeyword(from: "write my therapy notes for today's session")
+        #expect(kw == "therapy", "therapy notes should route to therapy, not occupationaltherapy")
+    }
+
+    // MARK: - occupationaltherapy callout pool properties
+
+    @Test func occupationaltherapyCalloutsAllTiersAreNonEmpty() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "occupationaltherapy", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "occupationaltherapy", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "occupationaltherapy", tier: 3)
+            #expect(t1.count >= 3, "occupationaltherapy tier1 must have at least 3 messages")
+            #expect(t2.count >= 2, "occupationaltherapy tier2 must have at least 2 messages")
+            #expect(t3.count >= 2, "occupationaltherapy tier3 must have at least 2 messages")
+        }
+    }
+
+    @Test func occupationaltherapyTier1HasFourMessages() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "occupationaltherapy", tier: 1)
+            #expect(t1.count == 4, "occupationaltherapy tier1 must have exactly 4 messages")
+        }
+    }
+
+    @Test func occupationaltherapyTier1ReferencesDomain() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "occupationaltherapy", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("ot") || lower.contains("nbcot") || lower.contains("occupational")
+            }
+            #expect(hasRef, "occupationaltherapy tier1 messages must reference the OT domain")
+        }
+    }
+
+    @Test func occupationaltherapyTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "occupationaltherapy", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.hasPrefix("no one") }
+            #expect(hasUrgent, "occupationaltherapy tier3 should contain an urgent directive")
+        }
+    }
+
+    @Test func occupationaltherapyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "occupationaltherapy", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "occupationaltherapy tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
 }
