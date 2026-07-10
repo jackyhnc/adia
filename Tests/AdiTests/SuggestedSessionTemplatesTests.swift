@@ -382,4 +382,38 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 30,
                 "catalog should have at least 30 templates after startup additions")
     }
+
+    @Test func catalogContainsNursingCarePlanTemplate() {
+        let hasCarePlan = SuggestedSessionTemplates.all.contains { t in
+            t.task.lowercased().contains("care plan") || t.task.lowercased().contains("nursing")
+        }
+        #expect(hasCarePlan, "catalog must include a nursing care plan template")
+    }
+
+    @Test func catalogContainsDosageCalcTemplate() {
+        let hasDosage = SuggestedSessionTemplates.all.contains { t in
+            t.task.lowercased().contains("dosage") || t.task.lowercased().contains("medication")
+                || t.task.lowercased().contains("med calc")
+        }
+        #expect(hasDosage, "catalog must include a dosage calculation template")
+    }
+
+    @Test func nursingTemplatesHaveReasonableDuration() {
+        let nursingTemplates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("care plan") || lower.contains("dosage") || lower.contains("nursing")
+        }
+        #expect(!nursingTemplates.isEmpty, "at least one nursing template must exist")
+        for template in nursingTemplates {
+            if let duration = template.preferredDuration {
+                #expect(duration >= 5 * 60 && duration <= 3 * 60 * 60,
+                        "nursing template duration must be between 5 minutes and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastThirtyTwoTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 32,
+                "catalog should have at least 32 templates after nursing additions")
+    }
 }

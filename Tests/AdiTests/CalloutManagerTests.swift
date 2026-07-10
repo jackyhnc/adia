@@ -3209,4 +3209,104 @@ struct CalloutManagerTests {
             #expect(!result.isEmpty)
         }
     }
+
+    // MARK: - Nursing keyword tests
+
+    @Test func extractTaskKeywordNursingWord() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my nursing notes") == "nursing")
+        #expect(CalloutManager.extractTaskKeyword(from: "nursing school assignment") == "nursing")
+    }
+
+    @Test func extractTaskKeywordNursingCarePlan() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a care plan for my patient") == "nursing")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish care plans for clinical") == "nursing")
+    }
+
+    @Test func extractTaskKeywordNursingCharting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "catch up on nurse charting from today") == "nursing")
+        #expect(CalloutManager.extractTaskKeyword(from: "write shift notes from my clinical") == "nursing")
+    }
+
+    @Test func extractTaskKeywordNursingDosageCalc() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice dosage calculations") == "nursing")
+        #expect(CalloutManager.extractTaskKeyword(from: "study for med calc quiz") == "nursing")
+        #expect(CalloutManager.extractTaskKeyword(from: "review medication calculations") == "nursing")
+    }
+
+    @Test func extractTaskKeywordNursingTheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a nursing theory paper") == "nursing")
+        #expect(CalloutManager.extractTaskKeyword(from: "nursing diagnosis for care plan") == "nursing")
+    }
+
+    @Test func extractTaskKeywordNursingAssessment() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my patient assessment") == "nursing")
+        #expect(CalloutManager.extractTaskKeyword(from: "document vital signs from today") == "nursing")
+        #expect(CalloutManager.extractTaskKeyword(from: "check and record vitals") == "nursing")
+    }
+
+    @Test func extractTaskKeywordNursingClinicalDocs() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish clinical documentation") == "nursing")
+        #expect(CalloutManager.extractTaskKeyword(from: "write shift report before handoff") == "nursing")
+    }
+
+    @Test func extractTaskKeywordNursingWoundCare() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study wound care protocols") == "nursing")
+    }
+
+    @Test func extractTaskKeywordNursingDoesNotMatchPremed() {
+        // anatomy/pharmacology/NCLEX still fire as "premed" since premed branch comes first
+        #expect(CalloutManager.extractTaskKeyword(from: "study anatomy for lab") == "premed")
+        #expect(CalloutManager.extractTaskKeyword(from: "NCLEX review session") == "premed")
+    }
+
+    @Test func taskAwareCalloutsNursingHasMessages() async {
+        await MainActor.run {
+            for tier in 1...4 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "nursing", tier: tier)
+                #expect(!msgs.isEmpty, "nursing tier \(tier) must be non-empty")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsNursingDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "nursing", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "nursing", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "nursing", tier: 3)
+            #expect(tier1.count >= 3, "nursing tier 1 should have at least 3 messages")
+            #expect(tier2.count >= 2, "nursing tier 2 should have at least 2 messages")
+            #expect(tier3.count >= 2, "nursing tier 3 should have at least 2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsNursingTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "nursing", tier: 3)
+            let hasUrgent = tier3.contains { msg in
+                let upper = msg.uppercased()
+                return upper.contains("CLOSE") || upper.contains("CARE PLAN")
+                    || upper.contains("NOTES") || upper.contains("CHART")
+            }
+            #expect(hasUrgent, "tier 3 nursing messages must contain an urgent directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsNursingTier1ReferencesNursingWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "nursing", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("care plan") || lower.contains("nursing") || lower.contains("notes")
+                    || lower.contains("chart") || lower.contains("patient")
+            }
+            #expect(hasRef, "tier 1 nursing messages must reference nursing work")
+        }
+    }
+
+    @Test func taskAwareCalloutsNursingTier4FallsThrough() async {
+        await MainActor.run {
+            let result = CalloutManager.shared.taskAwareCallouts(keyword: "nursing", tier: 4)
+            #expect(!result.isEmpty)
+        }
+    }
 }

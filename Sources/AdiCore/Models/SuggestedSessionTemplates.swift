@@ -214,5 +214,17 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Section drafted with relevant data, projections, or analysis filled in and conclusion clearly stated",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "heart.text.square",
+            task: "Write a nursing care plan for class",
+            successCriteria: "Care plan complete with nursing diagnosis, patient goals, interventions, and rationale for each problem identified",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "pills.circle",
+            task: "Practice dosage calculations and medication math",
+            successCriteria: "Finished a full set of dosage calc problems with all errors reviewed and correct formulas restated from memory",
+            preferredDuration: 30 * 60
+        ),
     ]
 }

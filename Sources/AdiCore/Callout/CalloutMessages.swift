@@ -82,6 +82,7 @@ extension CalloutManager {
         case "premed":       return premedCallouts(tier: tier)
         case "architecture": return architectureCallouts(tier: tier)
         case "startup":      return startupCallouts(tier: tier)
+        case "nursing":      return nursingCallouts(tier: tier)
         default:             return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -765,6 +766,27 @@ extension CalloutManager {
             "CLOSE THIS. your deck is waiting.",
             "no one funds a founder who's scrolling.",
             "the startup doesn't build itself. back to work.",
+        ]
+        }
+    }
+
+    private func nursingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that care plan isn't going to write itself.",
+            "get back to your nursing notes.",
+            "your patients need you focused. so does your care plan.",
+            "close this and get back to charting.",
+        ]
+        case 2: return [
+            "stop. your care plan is due.",
+            "this isn't your clinical documentation.",
+            "nurses stay focused. get back to work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your care plan.",
+            "you can't care for patients by scrolling. get back.",
+            "your clinical notes don't write themselves — back to work.",
         ]
         }
     }

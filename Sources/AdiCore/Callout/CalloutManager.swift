@@ -282,6 +282,21 @@ public final class CalloutManager {
             || lower.contains("step 1") || lower.contains("step 2") || lower.contains("step 3") {
             return "premed"
         }
+        if word("nursing") || lower.contains("care plan") || lower.contains("care plans")
+            || lower.contains("nursing notes") || lower.contains("nursing assessment")
+            || lower.contains("nursing theory") || lower.contains("nursing diagnosis")
+            || lower.contains("nursing diagnoses") || lower.contains("clinical documentation")
+            || lower.contains("nurse charting") || lower.contains("shift notes") || lower.contains("shift report")
+            || lower.contains("dosage calculation") || lower.contains("dosage calculations")
+            || lower.contains("med calc") || lower.contains("medication calculation")
+            || lower.contains("medication calculations")
+            || lower.contains("nursing school") || lower.contains("nursing program")
+            || lower.contains("nursing class") || lower.contains("nursing course")
+            || lower.contains("vital signs") || word("vitals")
+            || lower.contains("patient assessment") || lower.contains("patient care plan")
+            || lower.contains("wound care") || lower.contains("iv insertion") {
+            return "nursing"
+        }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")
             || word("contract") || word("contracts")

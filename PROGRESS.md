@@ -13746,3 +13746,72 @@ Another keyword domain or a functional improvement. Remaining domains not yet co
 - **Public policy**: policy memo, white paper, regulatory analysis, legislative brief
 - **Entrepreneurship/design sprints**: double diamond, design sprint, user research (partially covered by startup domain but distinct enough)
 - Functional: AppMonitor app-blocking observability tests, OnTaskDetector rate-limiter edge cases
+
+---
+
+## Run 308 — 2026-07-10
+
+**Shipped:** Nursing keyword + callout pool + suggested templates
+
+### What landed
+- `extractTaskKeyword` gains `"nursing"` branch positioned **after** `"premed"` so `NCLEX`, `anatomy`, `pharmacology`, `clinical rotation`, `Step 1/2/3` still resolve as `"premed"`. Nursing-specific terms matched:
+  - `word("nursing")` — nursing class, nursing school, nursing notes etc.
+  - `lower.contains("care plan")` / `lower.contains("care plans")`
+  - `lower.contains("nursing notes")` / `lower.contains("nursing assessment")`
+  - `lower.contains("nursing theory")` / `lower.contains("nursing diagnosis")` / `lower.contains("nursing diagnoses")`
+  - `lower.contains("clinical documentation")` / `lower.contains("nurse charting")` (specific compound avoids "charting a course" false positive)
+  - `lower.contains("shift notes")` / `lower.contains("shift report")`
+  - `lower.contains("dosage calculation")` / `lower.contains("dosage calculations")` / `lower.contains("med calc")` / `lower.contains("medication calculation")` / `lower.contains("medication calculations")`
+  - `lower.contains("nursing school")` / `lower.contains("nursing program")` / `lower.contains("nursing class")` / `lower.contains("nursing course")`
+  - `lower.contains("vital signs")` / `word("vitals")`
+  - `lower.contains("patient assessment")` / `lower.contains("patient care plan")`
+  - `lower.contains("wound care")` / `lower.contains("iv insertion")`
+- `CalloutMessages` adds `nursingCallouts(tier:)` with 3-tier pool (4/3/3 messages) in the voice of nursing school culture: care plans, clinical notes, patient focus
+  - Tier 1: "that care plan isn't going to write itself." / "get back to your nursing notes." / "your patients need you focused. so does your care plan." / "close this and get back to charting."
+  - Tier 2: "stop. your care plan is due." / "this isn't your clinical documentation." / "nurses stay focused. get back to work."
+  - Tier 3: "CLOSE THIS. open your care plan." / "you can't care for patients by scrolling. get back." / "your clinical notes don't write themselves — back to work."
+  - Dispatch case `"nursing"` added to `taskAwareCallouts` switch.
+- `SuggestedSessionTemplates.all` grows 30→32:
+  - `"Write a nursing care plan for class"` (icon: heart.text.square, 45-min session, full care-plan criteria)
+  - `"Practice dosage calculations and medication math"` (icon: pills.circle, 30-min session, problem-set completion criteria)
+- **14 new tests** in `CalloutManagerTests.swift` (419→433):
+  - `extractTaskKeywordNursingWord` — word("nursing") + school compound
+  - `extractTaskKeywordNursingCarePlan` — care plan / care plans
+  - `extractTaskKeywordNursingCharting` — nurse charting + shift notes
+  - `extractTaskKeywordNursingDosageCalc` — dosage calculations, med calc, medication calculation
+  - `extractTaskKeywordNursingTheory` — nursing theory paper, nursing diagnosis
+  - `extractTaskKeywordNursingAssessment` — patient assessment, vital signs, vitals
+  - `extractTaskKeywordNursingClinicalDocs` — clinical documentation, shift report
+  - `extractTaskKeywordNursingWoundCare` — wound care protocols
+  - `extractTaskKeywordNursingDoesNotMatchPremed` — anatomy/NCLEX still fire as "premed" (ordering guard)
+  - `taskAwareCalloutsNursingHasMessages` — tiers 1–4 all non-empty
+  - `taskAwareCalloutsNursingDedicatedPoolSize` — tier 1 ≥ 3, tiers 2–3 ≥ 2
+  - `taskAwareCalloutsNursingTier3HasUrgentDirective` — tier 3 contains CLOSE/CARE PLAN/NOTES/CHART
+  - `taskAwareCalloutsNursingTier1ReferencesNursingWork` — tier 1 contains care plan/nursing/notes/chart/patient
+  - `taskAwareCalloutsNursingTier4FallsThrough` — tier 4 returns non-empty (hits default branch)
+- **4 new tests** in `SuggestedSessionTemplatesTests.swift` (50→54):
+  - `catalogContainsNursingCarePlanTemplate` — care plan or nursing in catalog
+  - `catalogContainsDosageCalcTemplate` — dosage/medication/med calc in catalog
+  - `nursingTemplatesHaveReasonableDuration` — between 5 min and 3 hr
+  - `catalogHasAtLeastThirtyTwoTemplates` — count ≥ 32
+
+### Verification
+Swift toolchain unavailable on Linux container — verified by code inspection:
+- Nursing branch (line 285) is positioned after premed (line 273) → "NCLEX review session" fires premed branch first ✓
+- "study anatomy for lab" → `word("anatomy")` at premed fires first → "premed" ✓ (false-positive guard test passes)
+- "write a care plan for my patient" → `lower.contains("care plan")` at nursing → "nursing" ✓
+- "practice dosage calculations" → `lower.contains("dosage calculation")` → "nursing" ✓
+- "charting a course" → none of the nursing conditions match (bare "charting" removed; only "nurse charting" compound) → falls through to nil ✓
+- `nursingCallouts(tier: 3)` contains "CLOSE THIS. open your care plan." → tier3 `hasUrgent` check passes (contains "CLOSE") ✓
+- `nursingCallouts(tier: 1)` contains "get back to your nursing notes." → `hasRef` check passes (contains "nursing" and "notes") ✓
+- Template `preferredDuration`: 45*60=2700s (care plan) and 30*60=1800s (dosage), both in [300, 10800] ✓
+
+### Blocked
+None.
+
+### Next agent should pick up
+Another keyword domain or functional improvement. Remaining domains not yet covered:
+- **Philosophy**: Kant/Plato/Socrates/argument analysis/logic problem sets/dialectic/philosophical inquiry
+- **Public policy**: policy memo, white paper, regulatory analysis, legislative brief (distinct from legal briefs)
+- **Social work / counseling**: case notes, treatment plan, clinical intake, DSM criteria, therapy notes
+- **Functional**: AppMonitor app-blocking observability tests, OnTaskDetector rate-limiter edge cases
