@@ -3513,4 +3513,217 @@ struct CalloutManagerTests {
             #expect(!result.isEmpty, "tier 4 should fall through to tier3 datascience messages")
         }
     }
+
+    // MARK: - Game dev keyword tests
+
+    @Test func extractTaskKeywordGamedevUnity() {
+        #expect(CalloutManager.extractTaskKeyword(from: "build a game in Unity") == "gamedev")
+        #expect(CalloutManager.extractTaskKeyword(from: "fix a bug in my Unity project") == "gamedev")
+    }
+
+    @Test func extractTaskKeywordGamedevGodot() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my Godot project") == "gamedev")
+        #expect(CalloutManager.extractTaskKeyword(from: "add a scene in Godot") == "gamedev")
+    }
+
+    @Test func extractTaskKeywordGamedevGameJam() {
+        #expect(CalloutManager.extractTaskKeyword(from: "submit my game jam entry") == "gamedev")
+        #expect(CalloutManager.extractTaskKeyword(from: "game jam project due tonight") == "gamedev")
+    }
+
+    @Test func extractTaskKeywordGamedevLevelDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "design levels for my platformer") == "gamedev")
+        #expect(CalloutManager.extractTaskKeyword(from: "open the level editor and finish world 2") == "gamedev")
+    }
+
+    @Test func extractTaskKeywordGamedevGDD() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my game design document") == "gamedev")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the GDD for my project") == "gamedev")
+    }
+
+    @Test func extractTaskKeywordGamedevDoesNotMatchGamePlan() {
+        // "game plan" must NOT route to gamedev — it's not a game-dev phrase
+        let result = CalloutManager.extractTaskKeyword(from: "write a game plan for the presentation")
+        #expect(result != "gamedev", "\"game plan\" should not match the gamedev branch")
+    }
+
+    @Test func taskAwareCalloutsGamedevHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "gamedev", tier: tier)
+                #expect(!msgs.isEmpty, "gamedev tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsGamedevPoolSizes() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "gamedev", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "gamedev", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "gamedev", tier: 3)
+            #expect(t1.count >= 3, "gamedev tier1 should have ≥3 messages")
+            #expect(t2.count >= 2, "gamedev tier2 should have ≥2 messages")
+            #expect(t3.count >= 2, "gamedev tier3 should have ≥2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsGamedevTier1ReferencesGameWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "gamedev", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("game") || lower.contains("engine") || lower.contains("level")
+            }
+            #expect(hasRef, "gamedev tier1 messages must reference game/engine/level work")
+        }
+    }
+
+    @Test func taskAwareCalloutsGamedevTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "gamedev", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "gamedev tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsGamedevTier4FallsThrough() async {
+        await MainActor.run {
+            let result = CalloutManager.shared.taskAwareCallouts(keyword: "gamedev", tier: 4)
+            #expect(!result.isEmpty, "tier 4 should fall through to tier3 gamedev messages")
+        }
+    }
+
+    // MARK: - Engineering keyword tests
+
+    @Test func extractTaskKeywordEngineeringSolidworks() {
+        #expect(CalloutManager.extractTaskKeyword(from: "do my SolidWorks homework") == "engineering")
+        #expect(CalloutManager.extractTaskKeyword(from: "model a part in SolidWorks") == "engineering")
+    }
+
+    @Test func extractTaskKeywordEngineeringArduino() {
+        #expect(CalloutManager.extractTaskKeyword(from: "program my arduino sensor board") == "engineering")
+        #expect(CalloutManager.extractTaskKeyword(from: "wire up the arduino circuit") == "engineering")
+    }
+
+    @Test func extractTaskKeywordEngineeringCircuit() {
+        #expect(CalloutManager.extractTaskKeyword(from: "draw the circuit diagram for lab") == "engineering")
+        #expect(CalloutManager.extractTaskKeyword(from: "design a circuit board for ECE class") == "engineering")
+    }
+
+    @Test func extractTaskKeywordEngineeringSubdiscipline() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for mechanical engineering exam") == "engineering")
+        #expect(CalloutManager.extractTaskKeyword(from: "read electrical engineering notes") == "engineering")
+        #expect(CalloutManager.extractTaskKeyword(from: "aerospace engineering assignment") == "engineering")
+    }
+
+    @Test func extractTaskKeywordEngineeringThermodynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study thermodynamics for the lab") == "engineering")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my heat transfer problem set") == "engineering")
+    }
+
+    @Test func taskAwareCalloutsEngineeringHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "engineering", tier: tier)
+                #expect(!msgs.isEmpty, "engineering tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsEngineeringPoolSizes() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "engineering", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "engineering", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "engineering", tier: 3)
+            #expect(t1.count >= 3, "engineering tier1 should have ≥3 messages")
+            #expect(t2.count >= 2, "engineering tier2 should have ≥2 messages")
+            #expect(t3.count >= 2, "engineering tier3 should have ≥2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsEngineeringTier1ReferencesWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "engineering", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("design") || lower.contains("engineering")
+                    || lower.contains("cad") || lower.contains("circuit")
+            }
+            #expect(hasRef, "engineering tier1 messages must reference design/engineering work")
+        }
+    }
+
+    @Test func taskAwareCalloutsEngineeringTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "engineering", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "engineering tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    // MARK: - Therapy keyword tests
+
+    @Test func extractTaskKeywordTherapyNotes() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my therapy notes for today") == "therapy")
+        #expect(CalloutManager.extractTaskKeyword(from: "update progress notes for my client") == "therapy")
+    }
+
+    @Test func extractTaskKeywordTherapyTreatmentPlan() {
+        #expect(CalloutManager.extractTaskKeyword(from: "update my client's treatment plan") == "therapy")
+        #expect(CalloutManager.extractTaskKeyword(from: "draft a treatment plan section") == "therapy")
+    }
+
+    @Test func extractTaskKeywordTherapyCaseConceptualization() {
+        #expect(CalloutManager.extractTaskKeyword(from: "case conceptualization for my client") == "therapy")
+        #expect(CalloutManager.extractTaskKeyword(from: "write case formulation for supervision") == "therapy")
+    }
+
+    @Test func extractTaskKeywordTherapyLCSW() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for LCSW exam") == "therapy")
+        #expect(CalloutManager.extractTaskKeyword(from: "study for LMFT licensing") == "therapy")
+    }
+
+    @Test func extractTaskKeywordTherapySocialWork() {
+        #expect(CalloutManager.extractTaskKeyword(from: "document my social work internship hours") == "therapy")
+        #expect(CalloutManager.extractTaskKeyword(from: "write client notes for my social work placement") == "therapy")
+    }
+
+    @Test func taskAwareCalloutsTherapyHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "therapy", tier: tier)
+                #expect(!msgs.isEmpty, "therapy tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsTherapyPoolSizes() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "therapy", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "therapy", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "therapy", tier: 3)
+            #expect(t1.count >= 3, "therapy tier1 should have ≥3 messages")
+            #expect(t2.count >= 2, "therapy tier2 should have ≥2 messages")
+            #expect(t3.count >= 2, "therapy tier3 should have ≥2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsTherapyTier1ReferencesNotes() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "therapy", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("note") || lower.contains("client") || lower.contains("focus")
+            }
+            #expect(hasRef, "therapy tier1 messages must reference notes/clients/focus")
+        }
+    }
+
+    @Test func taskAwareCalloutsTherapyTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "therapy", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "therapy tier3 should contain a CLOSE THIS directive")
+        }
+    }
 }

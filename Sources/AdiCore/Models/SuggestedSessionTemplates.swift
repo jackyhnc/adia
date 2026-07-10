@@ -250,5 +250,41 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Notebook cells fully run, data explored, baseline model submitted or key findings written up",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "gamecontroller",
+            task: "Build my game in Unity or Godot",
+            successCriteria: "Targeted feature or level implemented, playable in the editor, and no new critical bugs introduced",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text",
+            task: "Write my game design document",
+            successCriteria: "Core gameplay loop, player goals, mechanics, and win/lose conditions all documented clearly",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "wrench.and.screwdriver",
+            task: "Complete my engineering problem set",
+            successCriteria: "All assigned problems attempted, worked solutions shown with units, and answers checked against any known answers",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "ruler",
+            task: "Work on my CAD model or technical drawing",
+            successCriteria: "Target component modeled or drawing completed with dimensions, tolerances, and annotations added",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "note.text",
+            task: "Write up my therapy session notes",
+            successCriteria: "All sessions documented with presenting concerns, interventions used, progress toward goals, and next-session plan",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain",
+            task: "Work on my CBT worksheets or treatment planning",
+            successCriteria: "Thought records, behavioral experiments, or treatment plan section completed and ready for review in supervision",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

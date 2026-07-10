@@ -491,4 +491,107 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 36,
                 "catalog should have at least 36 templates after data science additions")
     }
+
+    // MARK: - Game dev templates
+
+    @Test func catalogContainsGameDevBuildTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("game") && (lower.contains("unity") || lower.contains("godot")
+                || lower.contains("build") || lower.contains("engine"))
+        }
+        #expect(has, "catalog must include a game-engine build template")
+    }
+
+    @Test func catalogContainsGameDesignDocTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("game design") || lower.contains("game design document")
+        }
+        #expect(has, "catalog must include a game design document template")
+    }
+
+    @Test func gamedevTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("game") && (lower.contains("unity") || lower.contains("godot")
+                || lower.contains("design document") || lower.contains("build"))
+        }
+        #expect(!templates.isEmpty, "at least one game dev template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "game dev template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastFortyTwoTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 42,
+                "catalog should have at least 42 templates after gamedev/engineering/therapy additions")
+    }
+
+    // MARK: - Engineering templates
+
+    @Test func catalogContainsEngineeringProblemSetTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("engineering") && lower.contains("problem set")
+        }
+        #expect(has, "catalog must include an engineering problem set template")
+    }
+
+    @Test func catalogContainsCADTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("cad") || lower.contains("technical drawing")
+        }
+        #expect(has, "catalog must include a CAD/technical drawing template")
+    }
+
+    @Test func engineeringTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("engineering") || lower.contains("cad") || lower.contains("technical drawing")
+        }
+        #expect(!templates.isEmpty, "at least one engineering template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "engineering template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Therapy templates
+
+    @Test func catalogContainsTherapyNotesTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("therapy") || lower.contains("session notes") || lower.contains("case notes")
+        }
+        #expect(has, "catalog must include a therapy notes template")
+    }
+
+    @Test func catalogContainsCBTTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("cbt") || lower.contains("treatment plan")
+        }
+        #expect(has, "catalog must include a CBT/treatment planning template")
+    }
+
+    @Test func therapyTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("therapy") || lower.contains("cbt") || lower.contains("treatment")
+        }
+        #expect(!templates.isEmpty, "at least one therapy template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "therapy template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
 }

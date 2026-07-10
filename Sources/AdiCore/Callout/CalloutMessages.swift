@@ -85,6 +85,9 @@ extension CalloutManager {
         case "nursing":      return nursingCallouts(tier: tier)
         case "photography":  return photographyCallouts(tier: tier)
         case "datascience":  return datascienceCallouts(tier: tier)
+        case "gamedev":      return gamedevCallouts(tier: tier)
+        case "engineering":  return engineeringCallouts(tier: tier)
+        case "therapy":      return therapyCallouts(tier: tier)
         default:             return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -831,6 +834,69 @@ extension CalloutManager {
             "CLOSE THIS. open your jupyter notebook.",
             "no one trains models by scrolling.",
             "your model won't converge while you're here — back to work.",
+        ]
+        }
+    }
+
+    private func gamedevCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your game isn't going to build itself.",
+            "get back to your game project.",
+            "close this and open your game engine.",
+            "your levels aren't going to design themselves.",
+        ]
+        case 2: return [
+            "stop. your game jam deadline is real.",
+            "this isn't your game dev work.",
+            "you can't ship a game from here.",
+        ]
+        default: return [
+            "CLOSE THIS. open Unity.",
+            "no one ships games by scrolling.",
+            "your build won't compile itself — back to work.",
+        ]
+        }
+    }
+
+    private func engineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your design isn't going to solve itself.",
+            "get back to your engineering work.",
+            "close this and open your CAD file.",
+            "that circuit isn't going to design itself.",
+        ]
+        case 2: return [
+            "stop. your lab report won't write itself.",
+            "this isn't your engineering homework.",
+            "you can't solve a free-body diagram from here.",
+        ]
+        default: return [
+            "CLOSE THIS. open SolidWorks.",
+            "no one passes statics by scrolling.",
+            "your simulation won't run itself — back to work.",
+        ]
+        }
+    }
+
+    private func therapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those therapy notes aren't going to write themselves.",
+            "get back to your case notes.",
+            "your clients deserve your focus. close this.",
+            "your progress notes are waiting.",
+        ]
+        case 2: return [
+            "stop. your notes are due before supervision.",
+            "this isn't your treatment plan.",
+            "case conceptualization doesn't write itself.",
+        ]
+        default: return [
+            "CLOSE THIS. open your case notes.",
+            "your clinical hours matter. get back.",
+            "your clients are counting on your focus — back to work.",
         ]
         }
     }

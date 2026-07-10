@@ -13892,3 +13892,24 @@ Another keyword domain or functional improvement. Remaining domains not yet cove
 - **Philosophy keyword**: `kant`, `plato`, `socrates`, `dialectic`, `argument analysis`, `logic problem`, `philosophical inquiry` → "philosophy" keyword
 - **Public policy keyword**: `policy memo`, `white paper`, `regulatory analysis`, `legislative brief`, `policy brief` → "policy" keyword
 - **Functional**: AppMonitor app-blocking observability tests, OnTaskDetector rate-limiter edge cases (requires macOS build environment)
+
+---
+
+## Run 310 — 2026-07-10
+
+### Shipped
+- **Game dev keyword + callout pool + templates**: `extractTaskKeyword` gains `"gamedev"` branch positioned before `code`; matches unity/godot/unreal engine/game dev/game development/game design document/GDD/game jam/game engine/level design/level editor/game mechanic/game mechanics/pygame/phaser/libgdx/gdevelop; "game plan" false-positive guarded; `CalloutMessages` adds `gamedevCallouts(tier:)` with 4/3/3 messages (engine/jam voice); `SuggestedSessionTemplates` grows 36→38 ("Build my game in Unity or Godot" 60 min + "Write my game design document" 45 min); 11 new tests in `CalloutManagerTests` + 4 new tests in `SuggestedSessionTemplatesTests`
+- **Engineering keyword + callout pool + templates**: `extractTaskKeyword` gains `"engineering"` branch positioned before datascience/research; matches solidworks/fusion 360/ansys/microcontroller/arduino/raspberry pi/pcb/circuit board/circuit diagram/circuit design/mechanical+electrical+civil+chemical+biomedical+aerospace+computer engineering/finite element/fea/heat transfer/fluid dynamics/fluid mechanics/thermodynamics/structural analysis/strength of materials/machine design/statics lab/engineering lab/engineering report; `CalloutMessages` adds `engineeringCallouts(tier:)` with 4/3/3 messages (CAD/lab voice); `SuggestedSessionTemplates` grows 38→40 ("Complete my engineering problem set" 60 min + "Work on my CAD model or technical drawing" 45 min); 9 new tests + 3 new template tests
+- **Therapy/counseling keyword + callout pool + templates**: `extractTaskKeyword` gains `"therapy"` branch positioned after nursing, before legal; matches therapy notes/session notes/progress notes/treatment plan/case conceptualization/case formulation/intake notes/clinical notes/therapist/counseling/counselor/lcsw/lmft/lpc/mft/cbt worksheets/dbt skills/exposure therapy/cognitive behavioral/social work/clinical hours/supervision notes/client notes/case notes/mental health notes; prevents "counseling" from routing to tutor; `CalloutMessages` adds `therapyCallouts(tier:)` with 4/3/3 messages (client/supervision voice); `SuggestedSessionTemplates` grows 40→42; 10 new tests + 3 new template tests
+- **Test totals**: `CalloutManagerTests` 464 → 494 (+30); `SuggestedSessionTemplatesTests` 62 → 72 (+10)
+- **Template catalog**: 36 → 42 templates
+
+### Blocked / skipped
+- None
+
+### Next agent should pick up
+- **Culinary keyword**: `recipe development`, `culinary`, `food science`, `pastry`, `baking`, `plating` → `"culinary"` keyword; callout pool; templates ("Develop and test a new recipe" + "Study for culinary school exam")
+- **Philosophy keyword**: `Kant`, `Plato`, `Socrates`, `dialectic`, `argument analysis`, `philosophical inquiry`, `logic problem`, `ethics paper` → `"philosophy"` keyword; callout pool; templates ("Analyze a philosophical argument" + "Write a philosophy response paper")
+- **Public policy keyword**: `policy memo`, `white paper`, `regulatory analysis`, `legislative brief`, `policy brief` → `"policy"` keyword; callout pool; templates
+- **AppMonitor observability tests**: requires macOS build environment
+- **arduino false-positive check**: "write arduino code" should route to `code` not `engineering` — needs verification in a macOS Swift build

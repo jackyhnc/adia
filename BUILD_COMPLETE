@@ -1,28 +1,41 @@
-All 14 goals in GOAL.md are implemented and committed.
+All goals in GOAL.md are implemented and committed.
 
-Completed tasks:
+Original 14 goals shipped:
 1. Xcode project scaffold (Package.swift, AdiApp/AdiCore/AdiTests targets)
 2. Notch UI (NotchPanel, collapsed pill, expanded card, animations)
 3. Session model (SessionState, SessionPhase, OnTaskStatus, VerificationResult)
 4. Session creation view (task + criteria form, Go button, inline in notch)
 5. Screen capture pipeline (ScreenCaptureKit SCStream, 1 FPS, CGImage frames)
-6. OpenAI API client (vision + chat, Responses API)
+6. Claude API client (vision + chat, async/await, ANTHROPIC_API_KEY from ProcessInfo)
 7. On-task detection (OnTaskDetector actor, rate-limiting guard, 1s min interval)
 8. Callout system (CalloutManager, threshold=2 consecutive frames, friend-tone messages)
 9. Blocking engine (HostsFileManager, /etc/hosts markers, non-fatal without root)
 10. Blocked page (LocalBlockServer NWListener on port 80/8080, styled HTML)
 11. Reasoning conversation (ConversationManager, AI grants/denies access, context memory)
-12. Task verification (OpenAI vision, strict evidence-based, verified/not-verified)
+12. Task verification (Claude vision, strict evidence-based, verified/not-verified)
 13. Early exit conversation (AI tries to motivate, user can always override)
 14. Session persistence (UserDefaults JSON round-trip, stale session pruning)
 
-Additional shipped:
-- SettingsStore (Keychain API key storage)
-- OnboardingView (welcome → API key → license → done)
-- LicenseManager (trial, licensed, validation against adia.app)
-- Comprehensive test suite (SessionState, HostsFileManager, AgentAIClient, CalloutManager, SessionPersistence)
+Additional shipped (runs 15–310):
+- SettingsStore, OnboardingView, LicenseManager, licensing backend (Stripe, Resend, Vercel)
+- Network resilience, structured logging, focus insights, session reliability tracking
+- Notch/Settings/SessionManager/CalloutManager decomposition into focused sub-files
+- Admin panel: bulk-issue, bulk-transfer, bulk-revoke, bulk-set-status, bulk-change-plan,
+  bulk-reactivate, bulk-resend-license, audit-log pagination, expiring-soon, dormant-churn,
+  usage-heatmap, revenue MRR/ARR, activation-timeline, cohort-retention, churn-analysis,
+  churn-cohort, time-to-churn, license-timeline — 1200+ backend tests
+- Notch UX: template context menus, suggested-template dismissal, rotation, streak milestones,
+  daily goal gate, morning nudge with title/body pools, streak-break copy variants
+- Keyword domain expansion (30 domains): essay, paper, thesis, startup, presentation, gamedev,
+  code, report, studying, reading, homework, engineering, datascience, research, art, design,
+  email, project, proposal, interview, meeting, photography, video, resume, application,
+  writing, budget, tutor, practice, fitness, podcast, planning, music, language, journaling,
+  premed, nursing, therapy, legal, architecture, deadline
+- 42 suggested templates across all domains
+- 494 Swift unit tests
 
 Known user actions required (see USER_TODO.md):
-- Apple Developer account + code signing
+- Apple Developer account + code signing + notarization
 - App Store submission
 - adia.app domain + license backend hosting
+- Stripe/Resend/Vercel env vars wired for production

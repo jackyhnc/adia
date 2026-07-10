@@ -109,6 +109,18 @@ public final class CalloutManager {
         if word("presentation") || word("presentations") || word("slides") || word("deck") || word("powerpoint") || word("keynote") {
             return "presentation"
         }
+        // gamedev — positioned before code so Unity/Godot/engine terms don't fall through to code.
+        // "game plan" is not matched because no specific tool name or game-dev phrase fires.
+        if word("unity") || word("godot") || lower.contains("unreal engine")
+            || lower.contains("game dev") || lower.contains("game development")
+            || lower.contains("game design document") || word("gdd")
+            || lower.contains("game jam")
+            || lower.contains("game engine")
+            || lower.contains("level design") || lower.contains("level editor")
+            || lower.contains("game mechanic") || lower.contains("game mechanics")
+            || word("pygame") || word("phaser") || word("libgdx") || word("gdevelop") {
+            return "gamedev"
+        }
         if word("code") || word("coding") || word("programming") || word("bug") || word("feature") || word("function")
             || word("leetcode") || word("hackerrank") || word("codeforces") || word("codewars")
             || word("algorithm") || word("algorithms") || lower.contains("data structure")
@@ -143,6 +155,24 @@ public final class CalloutManager {
         if word("homework") || word("assignment") || lower.contains("problem set") || word("pset")
             || word("worksheet") || word("worksheets") {
             return "homework"
+        }
+        // engineering — positioned before datascience and research so tool/hardware-specific terms
+        // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
+        if word("solidworks") || lower.contains("fusion 360") || word("ansys")
+            || word("microcontroller") || word("arduino") || lower.contains("raspberry pi")
+            || word("pcb") || lower.contains("circuit board") || lower.contains("circuit diagram")
+            || lower.contains("circuit design")
+            || lower.contains("mechanical engineering") || lower.contains("electrical engineering")
+            || lower.contains("civil engineering") || lower.contains("chemical engineering")
+            || lower.contains("biomedical engineering") || lower.contains("aerospace engineering")
+            || lower.contains("computer engineering")
+            || lower.contains("finite element") || word("fea")
+            || lower.contains("heat transfer") || lower.contains("fluid dynamics")
+            || lower.contains("fluid mechanics") || lower.contains("thermodynamics")
+            || lower.contains("structural analysis") || lower.contains("strength of materials")
+            || lower.contains("machine design") || lower.contains("statics lab")
+            || lower.contains("engineering lab") || lower.contains("engineering report") {
+            return "engineering"
         }
         // datascience — positioned before research so "data science" and ML terms route here
         // instead of the generic research branch. "data science"/"data scientist" removed from research.
@@ -327,6 +357,21 @@ public final class CalloutManager {
             || lower.contains("patient assessment") || lower.contains("patient care plan")
             || lower.contains("wound care") || lower.contains("iv insertion") {
             return "nursing"
+        }
+        // therapy — positioned after nursing (shared healthcare context) and before tutor
+        // so "counseling" doesn't route to tutor via word("coaching").
+        if lower.contains("therapy notes") || lower.contains("session notes")
+            || lower.contains("progress notes") || lower.contains("treatment plan")
+            || lower.contains("case conceptualization") || lower.contains("case formulation")
+            || lower.contains("intake notes") || lower.contains("clinical notes")
+            || word("therapist") || word("counseling") || word("counselor")
+            || word("lcsw") || word("lmft") || word("lpc") || word("mft")
+            || lower.contains("cbt worksheets") || lower.contains("dbt skills")
+            || lower.contains("exposure therapy") || lower.contains("cognitive behavioral")
+            || lower.contains("social work") || lower.contains("clinical hours")
+            || lower.contains("supervision notes") || lower.contains("client notes")
+            || lower.contains("case notes") || lower.contains("mental health notes") {
+            return "therapy"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")
