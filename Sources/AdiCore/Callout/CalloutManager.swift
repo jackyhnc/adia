@@ -332,16 +332,49 @@ public final class CalloutManager {
         if word("plan") || word("planning") || word("planner") {
             return "planning"
         }
-        if word("compose") || word("composing") || word("composition") || word("compositions")
-            || word("lyric") || word("lyrics") || word("songwriter") || word("songwriting")
-            || word("melody") || word("melodies") || word("harmony") || word("harmonies")
-            || word("chord") || word("chords") || lower.contains("write a song") || lower.contains("write songs")
-            || lower.contains("write music") || lower.contains("music production")
-            || lower.contains("beat making") || lower.contains("beatmaking")
-            || word("beatmaker") || word("mixing") || word("mastering")
+        // musicproduction — positioned before musictheory so DAW/production tasks fire first.
+        if lower.contains("music production") || lower.contains("beat making") || lower.contains("beatmaking")
+            || word("beatmaker") || word("mixing") || word("mastering") || word("daw")
             || lower.contains("record a song") || lower.contains("record music")
-            || lower.contains("music theory") {
-            return "music"
+            || lower.contains("write a song") || lower.contains("write songs")
+            || lower.contains("write music") || lower.contains("produce a track")
+            || lower.contains("produce music") || lower.contains("ableton")
+            || lower.contains("logic pro") || lower.contains("fl studio")
+            || lower.contains("pro tools") || lower.contains("garageband")
+            || word("producing") || word("songwriter") || word("songwriting")
+            || word("compose") || word("composing") || word("composition") || word("compositions")
+            || word("lyric") || word("lyrics") || word("melody") || word("melodies") {
+            return "musicproduction"
+        }
+        // musictheory — catches theory study, ear training, sight reading.
+        if lower.contains("music theory") || lower.contains("ear training")
+            || lower.contains("sight reading") || lower.contains("sight-reading")
+            || lower.contains("music notation")
+            || (lower.contains("scale") && lower.contains("music"))
+            || word("counterpoint") || word("solfege") || word("solfège")
+            || lower.contains("chord progression") || word("chord") || word("chords")
+            || (lower.contains("harmony") && lower.contains("music"))
+            || (lower.contains("harmonic") && lower.contains("music"))
+            || lower.contains("music history") || lower.contains("aural skills")
+            || lower.contains("theory class") || lower.contains("theory exam")
+            || lower.contains("music class") || lower.contains("music course") {
+            return "musictheory"
+        }
+        // enviro — environmental science, ecology, sustainability; positioned after fitness/nutrition.
+        if lower.contains("environmental science") || lower.contains("environmental studies")
+            || lower.contains("environmental policy") || lower.contains("environmental impact")
+            || lower.contains("environmental chemistry") || lower.contains("environmental biology")
+            || word("ecology") || word("ecologist") || lower.contains("field ecology")
+            || word("ecosystem") || word("ecosystems") || lower.contains("conservation biology")
+            || lower.contains("climate change") || lower.contains("climate science")
+            || lower.contains("climate policy") || lower.contains("climate model")
+            || word("sustainability") || word("sustainable")
+            || lower.contains("carbon footprint") || lower.contains("greenhouse gas")
+            || lower.contains("biodiversity") || lower.contains("species diversity")
+            || lower.contains("habitat loss") || lower.contains("deforestation")
+            || lower.contains("field report") && (lower.contains("ecology") || lower.contains("environment"))
+            || lower.contains("env sci") || lower.contains("envi sci") {
+            return "enviro"
         }
         if word("spanish") || word("french") || word("japanese") || word("mandarin")
             || word("german") || word("italian") || word("portuguese") || word("korean")

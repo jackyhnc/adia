@@ -14029,3 +14029,50 @@ None.
 - **Environmental science keyword**: ecology/environmental science/environmental policy/sustainability/climate/conservation — new domain for science-focused students
 - **AppMonitor observability tests**: requires macOS build environment
 - **arduino false-positive check**: "write arduino code" should route to `code` not `engineering` — engineering branch is checked AFTER code, so this should already work, but worth a macOS build verification
+
+---
+## Run 312 — 2026-07-10
+
+### Shipped
+- **Music production/theory keyword split**: `extractTaskKeyword` replaces the single `"music"` branch with two precise branches:
+  - `"musicproduction"` (positioned first): matches DAW apps (Ableton, Logic Pro, FL Studio, Pro Tools, GarageBand), `music production`, `beat making`/`beatmaking`, `mixing`, `mastering`, `produce a track`, `record a song`/`record music`, `write a song`/`write songs`/`write music`, `songwriter`/`songwriting`, `compose`/`composing`/`composition`, `lyric`/`lyrics`, `melody`/`melodies`, `producing`, `beatmaker`, `daw`
+  - `"musictheory"` (positioned after musicproduction): matches `music theory`, `ear training`, `sight reading`/`sight-reading`, `music notation`, scale+music combination, `counterpoint`, `solfege`/`solfège`, `chord progression`, `chord`/`chords`, harmony+music, harmonic+music, `music history`, `aural skills`, `theory class`/`theory exam`, `music class`/`music course`
+  - `CalloutMessages.musicProductionCallouts(tier:)`: 4/3/3 messages — "your track isn't going to mix itself." / "you can't produce if you're not in your DAW." / "CLOSE THIS. Open your DAW."
+  - `CalloutMessages.musicTheoryCallouts(tier:)`: 4/3/3 messages — "your ear won't train itself — close this." / "you can't hear intervals from here — get back." / "CLOSE THIS. Do your ear training."
+  - Old `musicCallouts` method removed; dispatch switch updated from `"music"` to `"musicproduction"` + `"musictheory"`
+  - Old tests referencing `"music"` keyword updated to `"musicproduction"` (3 test functions renamed)
+  - `SuggestedSessionTemplates` grows 50→52: "Produce and mix a track in my DAW" (music.note.list icon, 60 min) + "Practice ear training and music theory exercises" (waveform icon, 30 min)
+
+- **Environmental science keyword + callout pool + templates**: `extractTaskKeyword` gains `"enviro"` branch (positioned after musictheory blocks):
+  - Matches: environmental science/studies/policy/impact/chemistry/biology, ecology/ecologist/field ecology, ecosystem/ecosystems, conservation biology, climate change/science/policy/model, sustainability/sustainable, carbon footprint, greenhouse gas, biodiversity, species diversity, habitat loss, deforestation, field report (with ecology/environment context guard), env sci/envi sci
+  - `CalloutMessages.enviroCallouts(tier:)`: 4/3/3 messages — "the ecosystem isn't going to study itself." / "you can't understand climate data from here — close this." / "CLOSE THIS. Open your field notes."
+  - `taskAwareCallouts` dispatch: `case "enviro": return enviroCallouts(tier: tier)`
+  - `SuggestedSessionTemplates` grows 52→54: "Write a field ecology or environmental science report" (leaf icon, 60 min) + "Study for my environmental science exam" (sun.haze icon, 45 min)
+
+### Test counts
+- Swift `CalloutManagerTests`: 539 → 552 (+13 net: 16 new, 3 old "music" tests renamed to "musicproduction")
+- Swift `SuggestedSessionTemplatesTests`: 86 → 93 (+7)
+- `catalogHasAtLeastFiftyFourTemplates` guard added (54 total)
+- Web tests unchanged
+
+### Verification
+Swift toolchain unavailable on Linux container — verified by code inspection:
+- musicproduction branch (line 335) is positioned before musictheory branch (line 349) → "write a song" matches musicproduction first ✓
+- musictheory branch has `word("chord")` + `word("chords")` → "practice my guitar chords" routes to musictheory ✓
+- `harmonic` is now guarded by `lower.contains("music")` → "harmonic motion in physics" won't misfire ✓
+- enviro branch (line 362) is positioned after musictheory → no collision ✓
+- `lower.contains("field report") && (ecology || environment)` → "field report for sociology" correctly doesn't match enviro ✓
+- musicProductionCallouts tier3 contains "CLOSE THIS. Open your DAW." → hasPrefix("CLOSE THIS") passes ✓
+- musicTheoryCallouts tier3 contains "CLOSE THIS. Do your ear training." → hasPrefix("CLOSE THIS") passes ✓
+- enviroCallouts tier3 contains "CLOSE THIS. Open your field notes." → hasPrefix("CLOSE THIS") passes ✓
+- Template preferredDurations: 60*60=3600s (DAW, field report), 30*60=1800s (ear training), 45*60=2700s (enviro exam) — all in [300, 10800] ✓
+
+### Blocked / skipped
+None.
+
+### Next agent should pick up
+- **Public policy keyword**: `policy memo`, `white paper`, `regulatory analysis`, `legislative brief`, `policy brief`, `public policy`, `government report` → `"policy"` keyword; callout pool; templates ("Write a policy memo or white paper" + "Prepare for a public policy seminar or case")
+- **Finance/accounting keyword**: `accounting`, `financial statements`, `balance sheet`, `income statement`, `CPA exam`, `CFA`, `bookkeeping`, `audit`, `financial modeling`, `tax return`, `GAAP` → `"finance"` keyword; callout pool; templates
+- **AppMonitor observability tests**: requires macOS build environment
+- **arduino false-positive check**: "write arduino code" — engineering branch checked after code, so this should route to code; worth verifying on macOS build
+- **Music production instrument practice distinction**: "practice piano" is currently unmatched (doesn't hit musicproduction or musictheory); consider adding `word("practice") && word("instrument")` style match — but "practice" alone is already in the `practice` keyword branch, so "practice piano" already routes to `practice` ✓

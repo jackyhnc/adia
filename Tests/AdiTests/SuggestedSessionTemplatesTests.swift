@@ -731,4 +731,71 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 50,
                 "catalog should have ≥50 templates after culinary + philosophy additions")
     }
+
+    // MARK: - Music production / theory + environmental science templates
+
+    @Test func catalogContainsMusicProductionTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("daw") || lower.contains("produce") || lower.contains("mix")
+        }
+        #expect(has, "catalog must include a music production template")
+    }
+
+    @Test func catalogContainsMusicTheoryTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("ear training") || lower.contains("music theory")
+        }
+        #expect(has, "catalog must include a music theory / ear training template")
+    }
+
+    @Test func musicTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("daw") || lower.contains("ear training") || lower.contains("music theory")
+        }
+        #expect(!templates.isEmpty, "at least one music production/theory template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "music template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogContainsEnviroFieldReportTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return (lower.contains("ecology") || lower.contains("environmental")) && lower.contains("report")
+        }
+        #expect(has, "catalog must include an environmental science field report template")
+    }
+
+    @Test func catalogContainsEnviroExamTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("environmental science") && lower.contains("exam")
+        }
+        #expect(has, "catalog must include an environmental science exam study template")
+    }
+
+    @Test func enviroTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("ecology") || lower.contains("environmental science")
+        }
+        #expect(!templates.isEmpty, "at least one enviro template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "enviro template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastFiftyFourTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 54,
+                "catalog should have ≥54 templates after music split + enviro additions")
+    }
 }

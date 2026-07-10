@@ -72,7 +72,8 @@ extension CalloutManager {
         case "tutor":     return tutorCallouts(tier: tier)
         case "practice":  return practiceCallouts(tier: tier)
         case "planning":  return planningCallouts(tier: tier)
-        case "music":     return musicCallouts(tier: tier)
+        case "musicproduction": return musicProductionCallouts(tier: tier)
+        case "musictheory":    return musicTheoryCallouts(tier: tier)
         case "language":  return languageCallouts(tier: tier)
         case "fitness":   return fitnessCallouts(tier: tier)
         case "podcast":   return podcastCallouts(tier: tier)
@@ -92,6 +93,7 @@ extension CalloutManager {
         case "nutrition":      return nutritionCallouts(tier: tier)
         case "culinary":       return culinaryCallouts(tier: tier)
         case "philosophy":     return philosophyCallouts(tier: tier)
+        case "enviro":         return enviroCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -569,23 +571,65 @@ extension CalloutManager {
         }
     }
 
-    private func musicCallouts(tier: Int) -> [String] {
+    private func musicProductionCallouts(tier: Int) -> [String] {
         switch tier {
         case 1: return [
-            "get back to your music.",
+            "your track isn't going to mix itself.",
             "those lyrics won't write themselves.",
-            "close this and keep creating.",
-            "the track isn't going to finish itself.",
+            "close this and get back to the DAW.",
+            "the beat won't finish itself — get back.",
         ]
         case 2: return [
-            "stop browsing. finish the song.",
-            "you can't produce if you're not in the DAW.",
-            "close this and get back to the beat.",
+            "stop browsing. get back in the session.",
+            "you can't produce if you're not in your DAW.",
+            "close this and finish the song.",
         ]
         default: return [
-            "CLOSE THIS. Go finish your track.",
-            "the music won't make itself.",
-            "put it down. the session needs you.",
+            "CLOSE THIS. Open your DAW.",
+            "the track won't mix itself — get back.",
+            "put it down. your session is waiting.",
+        ]
+        }
+    }
+
+    private func musicTheoryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your ear won't train itself — close this.",
+            "get back to your theory work.",
+            "sight reading won't improve by scrolling.",
+            "close this and do your scales.",
+        ]
+        case 2: return [
+            "stop. your chord progressions aren't going to memorize themselves.",
+            "you can't hear intervals from here — get back.",
+            "close this and keep drilling.",
+        ]
+        default: return [
+            "CLOSE THIS. Do your ear training.",
+            "theory mastery takes reps, not scrolling.",
+            "no one learns counterpoint by browsing — back to work.",
+        ]
+        }
+    }
+
+    private func enviroCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "the ecosystem isn't going to study itself.",
+            "get back to your environmental science work.",
+            "close this and get back to your field notes.",
+            "your lab report won't write itself.",
+        ]
+        case 2: return [
+            "stop. your ecology notes won't review themselves.",
+            "you can't understand climate data from here — close this.",
+            "get back to your environmental science.",
+        ]
+        default: return [
+            "CLOSE THIS. Open your field notes.",
+            "ecosystems need your attention — not your feed.",
+            "no one saves the planet by scrolling — back to work.",
         ]
         }
     }

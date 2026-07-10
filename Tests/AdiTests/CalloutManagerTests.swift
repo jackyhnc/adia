@@ -2126,24 +2126,24 @@ struct CalloutManagerTests {
         }
     }
 
-    // MARK: - Music keyword
+    // MARK: - Music production keyword (was: Music keyword)
 
     @Test func extractTaskKeywordFromCompose() {
-        #expect(CalloutManager.extractTaskKeyword(from: "compose a piece for violin") == "music")
-        #expect(CalloutManager.extractTaskKeyword(from: "composing my EP") == "music")
-        #expect(CalloutManager.extractTaskKeyword(from: "write music for my album") == "music")
+        #expect(CalloutManager.extractTaskKeyword(from: "compose a piece for violin") == "musicproduction")
+        #expect(CalloutManager.extractTaskKeyword(from: "composing my EP") == "musicproduction")
+        #expect(CalloutManager.extractTaskKeyword(from: "write music for my album") == "musicproduction")
     }
 
     @Test func extractTaskKeywordFromLyrics() {
-        #expect(CalloutManager.extractTaskKeyword(from: "write lyrics for my song") == "music")
-        #expect(CalloutManager.extractTaskKeyword(from: "finish the lyric for verse 2") == "music")
-        #expect(CalloutManager.extractTaskKeyword(from: "songwriter challenge") == "music")
+        #expect(CalloutManager.extractTaskKeyword(from: "write lyrics for my song") == "musicproduction")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the lyric for verse 2") == "musicproduction")
+        #expect(CalloutManager.extractTaskKeyword(from: "songwriter challenge") == "musicproduction")
     }
 
     @Test func extractTaskKeywordFromBeatmaking() {
-        #expect(CalloutManager.extractTaskKeyword(from: "finish the beatmaking session") == "music")
-        #expect(CalloutManager.extractTaskKeyword(from: "music production for my EP") == "music")
-        #expect(CalloutManager.extractTaskKeyword(from: "mixing the final master") == "music")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the beatmaking session") == "musicproduction")
+        #expect(CalloutManager.extractTaskKeyword(from: "music production for my EP") == "musicproduction")
+        #expect(CalloutManager.extractTaskKeyword(from: "mixing the final master") == "musicproduction")
     }
 
     @Test func extractTaskKeywordMusicDoesNotOverrideCode() {
@@ -2159,33 +2159,33 @@ struct CalloutManagerTests {
         #expect(CalloutManager.extractTaskKeyword(from: "presentation on music history") == "presentation")
     }
 
-    @Test func taskAwareCalloutsMusicHasMessages() async {
+    @Test func taskAwareCalloutsMusicProductionKeywordHasMessages() async {
         await MainActor.run {
             let manager = CalloutManager.shared
             for tier in 1...3 {
-                let msgs = manager.taskAwareCallouts(keyword: "music", tier: tier)
-                #expect(!msgs.isEmpty, "tier \(tier) must have music messages")
+                let msgs = manager.taskAwareCallouts(keyword: "musicproduction", tier: tier)
+                #expect(!msgs.isEmpty, "tier \(tier) must have musicproduction messages")
             }
         }
     }
 
-    @Test func taskAwareCalloutsMusicDedicatedPoolSize() async {
+    @Test func taskAwareCalloutsMusicProductionKeywordPoolSize() async {
         await MainActor.run {
             let manager = CalloutManager.shared
-            #expect(manager.taskAwareCallouts(keyword: "music", tier: 1).count >= 3)
-            #expect(manager.taskAwareCallouts(keyword: "music", tier: 2).count >= 2)
-            #expect(manager.taskAwareCallouts(keyword: "music", tier: 3).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "musicproduction", tier: 1).count >= 3)
+            #expect(manager.taskAwareCallouts(keyword: "musicproduction", tier: 2).count >= 2)
+            #expect(manager.taskAwareCallouts(keyword: "musicproduction", tier: 3).count >= 2)
         }
     }
 
-    @Test func taskAwareCalloutsMusicTier3HasUrgentMessage() async {
+    @Test func taskAwareCalloutsMusicProductionKeywordTier3HasUrgentMessage() async {
         await MainActor.run {
-            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "music", tier: 3)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "musicproduction", tier: 3)
             let hasUrgent = tier3.contains { msg in
                 let upper = msg.uppercased()
-                return upper.contains("CLOSE") || upper.contains("TRACK") || upper.contains("MUSIC")
+                return upper.contains("CLOSE") || upper.contains("TRACK") || upper.contains("DAW")
             }
-            #expect(hasUrgent, "tier 3 music messages must contain an urgent directive")
+            #expect(hasUrgent, "tier 3 musicproduction messages must contain an urgent directive")
         }
     }
 
@@ -4053,6 +4053,151 @@ struct CalloutManagerTests {
         await MainActor.run {
             let tier4 = CalloutManager.shared.taskAwareCallouts(keyword: "philosophy", tier: 4)
             #expect(!tier4.isEmpty, "philosophy tier4 (default) should still return messages")
+        }
+    }
+
+    // MARK: - Music production / theory split
+
+    @Test func extractTaskKeywordMusicProductionDAW() {
+        #expect(CalloutManager.extractTaskKeyword(from: "produce a track in Ableton") == "musicproduction")
+        #expect(CalloutManager.extractTaskKeyword(from: "mix and master my track") == "musicproduction")
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my music production project") == "musicproduction")
+        #expect(CalloutManager.extractTaskKeyword(from: "write a song for my EP") == "musicproduction")
+        #expect(CalloutManager.extractTaskKeyword(from: "work on songwriting and lyrics") == "musicproduction")
+    }
+
+    @Test func extractTaskKeywordMusicProductionBeatmaking() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on beatmaking tonight") == "musicproduction")
+        #expect(CalloutManager.extractTaskKeyword(from: "record music for my project") == "musicproduction")
+        #expect(CalloutManager.extractTaskKeyword(from: "compose a melody for my track") == "musicproduction")
+        #expect(CalloutManager.extractTaskKeyword(from: "work on a composition for class") == "musicproduction")
+    }
+
+    @Test func extractTaskKeywordMusicTheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study music theory for my exam") == "musictheory")
+        #expect(CalloutManager.extractTaskKeyword(from: "do my ear training exercises") == "musictheory")
+        #expect(CalloutManager.extractTaskKeyword(from: "practice sight reading") == "musictheory")
+        #expect(CalloutManager.extractTaskKeyword(from: "learn chord progressions") == "musictheory")
+        #expect(CalloutManager.extractTaskKeyword(from: "study counterpoint and aural skills") == "musictheory")
+    }
+
+    @Test func extractTaskKeywordMusicProductionBeforeTheory() {
+        // "write a song" should fire musicproduction, not musictheory
+        #expect(CalloutManager.extractTaskKeyword(from: "write a song about summer") == "musicproduction")
+        // "music theory class" should fire musictheory
+        #expect(CalloutManager.extractTaskKeyword(from: "study for music theory class") == "musictheory")
+    }
+
+    @Test func taskAwareCalloutsMusicProductionHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "musicproduction", tier: tier)
+                #expect(!msgs.isEmpty, "musicproduction tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsMusicProductionPoolSizes() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "musicproduction", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "musicproduction", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "musicproduction", tier: 3)
+            #expect(t1.count >= 3)
+            #expect(t2.count >= 2)
+            #expect(t3.count >= 2)
+        }
+    }
+
+    @Test func taskAwareCalloutsMusicProductionTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "musicproduction", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "musicproduction tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsMusicProductionTier1ReferencesDaw() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "musicproduction", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("daw") || lower.contains("track") || lower.contains("beat")
+                    || lower.contains("song") || lower.contains("lyric") || lower.contains("mix")
+            }
+            #expect(hasRef, "musicproduction tier1 messages must reference production domain")
+        }
+    }
+
+    @Test func taskAwareCalloutsMusicTheoryHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "musictheory", tier: tier)
+                #expect(!msgs.isEmpty, "musictheory tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsMusicTheoryTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "musictheory", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "musictheory tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsMusicTheoryTier1ReferencesTheory() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "musictheory", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("ear") || lower.contains("theory") || lower.contains("scale")
+                    || lower.contains("sight") || lower.contains("chord")
+            }
+            #expect(hasRef, "musictheory tier1 messages must reference theory domain")
+        }
+    }
+
+    // MARK: - Environmental science keyword
+
+    @Test func extractTaskKeywordEnviroEcology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my field ecology report") == "enviro")
+        #expect(CalloutManager.extractTaskKeyword(from: "study for environmental science exam") == "enviro")
+        #expect(CalloutManager.extractTaskKeyword(from: "research climate change impacts") == "enviro")
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze biodiversity data for class") == "enviro")
+    }
+
+    @Test func extractTaskKeywordEnviroSustainability() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a sustainability report") == "enviro")
+        #expect(CalloutManager.extractTaskKeyword(from: "do my environmental studies assignment") == "enviro")
+    }
+
+    @Test func taskAwareCalloutsEnviroHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "enviro", tier: tier)
+                #expect(!msgs.isEmpty, "enviro tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsEnviroTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "enviro", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "enviro tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsEnviroTier1ReferencesEcology() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "enviro", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("ecosystem") || lower.contains("ecology")
+                    || lower.contains("field") || lower.contains("environment")
+                    || lower.contains("lab") || lower.contains("report")
+            }
+            #expect(hasRef, "enviro tier1 messages must reference ecology/environment domain")
         }
     }
 }

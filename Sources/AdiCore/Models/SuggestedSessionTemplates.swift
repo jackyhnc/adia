@@ -334,5 +334,29 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Assigned reading complete, key concepts summarized in your own words, and at least three questions or observations noted for discussion",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "music.note.list",
+            task: "Produce and mix a track in my DAW",
+            successCriteria: "Arrangement finalized, mix leveled and exported as a WAV or MP3 file visible in Finder with correct filename",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Practice ear training and music theory exercises",
+            successCriteria: "At least 20 interval or chord identification exercises completed, accuracy score recorded, and one scale or chord progression drilled",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "leaf",
+            task: "Write a field ecology or environmental science report",
+            successCriteria: "Report structure complete — introduction, methods, results, and at least a draft discussion section with citations for all data sources",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "sun.haze",
+            task: "Study for my environmental science exam",
+            successCriteria: "All assigned chapters reviewed, key concepts and processes summarized in notes, and a short self-quiz completed with corrections",
+            preferredDuration: 45 * 60
+        ),
     ]
 }
