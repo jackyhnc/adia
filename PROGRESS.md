@@ -13661,3 +13661,88 @@ None.
 
 ### Next agent should pick up
 Another keyword domain addition or a functional improvement. Possible domains not yet covered: nursing (separate from premed — care plans, NCLEX is already in premed branch, but nursing theory/clinical notes), entrepreneurship/startup (business plan, pitch deck, go-to-market), philosophy (Kant/Plato/logic problem sets), public policy (policy memo/white paper). For functional work: consider adding AppMonitor app-blocking observability tests, or tightening the OnTaskDetector rate-limiter edge cases.
+
+---
+
+## Run 307 — 2026-07-10
+
+### Shipped
+- **Swift: Startup/entrepreneurship keyword + callout pool + suggested templates**
+
+  **CalloutManager.swift** — new `"startup"` branch in `extractTaskKeyword`, positioned after `"thesis"` and immediately before `"presentation"` (critical: "pitch deck" must fire before `word("deck")` in the presentation branch). Matches:
+  - `lower.contains("pitch deck")` / `lower.contains("investor deck")` — phrase-based, won't match stray "deck" uses like "all-hands deck"
+  - `lower.contains("go-to-market")` / `lower.contains("gtm strategy")`
+  - `lower.contains("business plan")` / `lower.contains("business model")`
+  - `lower.contains("lean canvas")` / `lower.contains("value proposition")`
+  - `lower.contains("seed round")` / `lower.contains("series a")` / `lower.contains("series b")`
+  - `lower.contains("angel investor")`
+  - `lower.contains("unit economics")` / `lower.contains("customer discovery")`
+  - `lower.contains("product-market fit")` / `lower.contains("product market fit")`
+  - `lower.contains("growth strategy")` / `lower.contains("growth hacking")`
+  - `lower.contains("minimum viable product")`
+  - `word("fundraising")` / `word("fundraise")`
+  - `word("startup")` / `word("startups")`
+  - `word("cofounder")` / `lower.contains("co-founder")`
+  - `word("saas")` / `word("b2b")` / `word("b2c")`
+
+  False-positive guards: "essay about startup culture" → essay (line 88 fires first); "research paper on SaaS growth" → paper (line 89 fires first). "design my startup's logo" → startup (acceptable: startup callouts still contextually appropriate).
+
+  **CalloutMessages.swift** — new `startupCallouts(tier:)` private func with 3 tiers:
+  - Tier 1 (4 msgs): "your pitch deck isn't going to write itself." / "get back to building your startup." / "your co-founder is working. you're not." / "close this and work on your business."
+  - Tier 2 (3 msgs): "stop. your pitch won't close itself." / "this isn't building your startup." / "investors don't fund distraction. get back."
+  - Tier 3 (3 msgs): "CLOSE THIS. your deck is waiting." / "no one funds a founder who's scrolling." / "the startup doesn't build itself. back to work."
+  - Dispatch case `"startup"` added to `taskAwareCallouts` switch.
+
+  **SuggestedSessionTemplates.swift** — 2 new entries (catalog: 28 → 30):
+  - `"Write my startup's pitch deck"` (icon: chart.line.uptrend.xyaxis, 60-min session, all-slides complete criteria)
+  - `"Draft a section of my business plan"` (icon: doc.text.magnifyingglass, 45-min session, data+projections criteria)
+
+- **Tests**
+
+  **CalloutManagerTests.swift** — 18 new `@Test` functions (401 → 419 total):
+  - `extractTaskKeywordStartupPitchDeck` — "write my pitch deck" + "investor deck"
+  - `extractTaskKeywordStartupGoToMarket` — "go-to-market strategy" + "GTM strategy"
+  - `extractTaskKeywordStartupBusinessPlan` — "business plan" (before planning branch), "business model"
+  - `extractTaskKeywordStartupFundraising` — startup fundraising prep, "fundraise for our seed round"
+  - `extractTaskKeywordStartupKeyword` — "build my startup", "my startups landing page"
+  - `extractTaskKeywordStartupSeedRound` — "seed round materials", "series a pitch prep"
+  - `extractTaskKeywordStartupValueProposition` — "refine the value proposition"
+  - `extractTaskKeywordStartupSaas` — SaaS, b2b, b2c keyword matches
+  - `extractTaskKeywordStartupCofounder` — "co-founder agreement", "cofounder equity split"
+  - `extractTaskKeywordStartupProductMarketFit` — product-market fit + product market fit
+  - `extractTaskKeywordStartupGrowth` — growth hacking + growth strategy
+  - `extractTaskKeywordStartupDoesNotOverrideEssay` — essay fires first (false-positive guard)
+  - `extractTaskKeywordStartupDoesNotOverridePaper` — paper fires first (false-positive guard)
+  - `taskAwareCalloutsStartupHasMessages` — all 3 tiers non-empty
+  - `taskAwareCalloutsStartupDedicatedPoolSize` — tier 1 ≥ 3, tiers 2–3 ≥ 2
+  - `taskAwareCalloutsStartupTier3HasUrgentDirective` — "CLOSE" or "DECK" or "STARTUP" in tier 3
+  - `taskAwareCalloutsStartupTier1ReferencesStartupWork` — pitch/startup/business/co-founder/deck in tier 1
+  - `taskAwareCalloutsStartupTier4FallsThrough` — tier 4 returns non-empty (hits default branch)
+
+  **SuggestedSessionTemplatesTests.swift** — 4 new `@Test` functions (46 → 50 total):
+  - `catalogContainsPitchDeckTemplate` — "pitch" or "pitch deck" in catalog
+  - `catalogContainsBusinessPlanTemplate` — "business plan" or "business" in catalog
+  - `startupTemplatesHaveReasonableDuration` — startup templates between 5 min and 3 hr
+  - `catalogHasAtLeastThirtyTemplates` — catalog count ≥ 30
+
+### Verification
+Swift toolchain unavailable on Linux container — verified by code inspection.
+- Startup branch position (line 91): after thesis (line 90), before presentation (line 109) — ensures "pitch deck" and "investor deck" are caught before `word("deck")` fires.
+- "business plan" → `lower.contains("business plan")` fires at startup branch before `word("plan")` at the planning branch (line 243 after insertion) → "startup" ✓
+- "essay about startup culture" → `word("essay")` at line 88 fires → "essay" ✓ (false-positive guard)
+- "research paper on SaaS growth" → `word("paper")` at line 89 fires → "paper" ✓ (false-positive guard)
+- `startupCallouts(tier: 3)` contains "CLOSE THIS. your deck is waiting." → satisfies `hasUrgent` (contains "CLOSE" and "DECK") ✓
+- `startupCallouts(tier: 1)` contains "get back to building your startup." → satisfies `hasPitchRef` (contains "startup") ✓
+- `startupCallouts(tier: 4)` hits `default:` branch → returns tier-3 messages (non-empty) ✓
+- Template `preferredDuration`: 60*60=3600s (pitch deck) and 45*60=2700s (biz plan), both in [300, 10800] ✓
+
+### Blocked
+None.
+
+### Next agent should pick up
+Another keyword domain or a functional improvement. Remaining domains not yet covered:
+- **Nursing** (separate from premed): care plans, clinical notes, nursing theory, NCLEX is partly in premed but nursing-specific tasks differ
+- **Philosophy**: Kant/Plato/Socrates/argument analysis/logic problem sets/dialectic
+- **Public policy**: policy memo, white paper, regulatory analysis, legislative brief
+- **Entrepreneurship/design sprints**: double diamond, design sprint, user research (partially covered by startup domain but distinct enough)
+- Functional: AppMonitor app-blocking observability tests, OnTaskDetector rate-limiter edge cases
