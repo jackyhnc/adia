@@ -662,4 +662,73 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 45,
                 "catalog should have ≥45 templates after social science + nutrition additions")
     }
+
+    // MARK: - Culinary templates
+
+    @Test func catalogContainsRecipeDevelopmentTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("recipe") || lower.contains("culinary")
+        }
+        #expect(has, "catalog must include a recipe development or culinary template")
+    }
+
+    @Test func catalogContainsCulinaryStudyTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return (lower.contains("culinary") && lower.contains("exam"))
+                || (lower.contains("culinary") && lower.contains("study"))
+        }
+        #expect(has, "catalog must include a culinary exam/study template")
+    }
+
+    @Test func culinaryTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            let lower = t.task.lowercased()
+            return lower.contains("recipe") || lower.contains("culinary")
+        }
+        #expect(!templates.isEmpty, "at least one culinary template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "culinary template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Philosophy templates
+
+    @Test func catalogContainsPhilosophyArgumentTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("philosoph") && (lower.contains("argument") || lower.contains("response"))
+        }
+        #expect(has, "catalog must include a philosophical argument/response template")
+    }
+
+    @Test func catalogContainsPhilosophyReadingTemplate() {
+        let has = SuggestedSessionTemplates.all.contains { t in
+            let lower = t.task.lowercased()
+            return lower.contains("philosoph") && lower.contains("read")
+        }
+        #expect(has, "catalog must include a philosophy reading template")
+    }
+
+    @Test func philosophyTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("philosoph")
+        }
+        #expect(!templates.isEmpty, "at least one philosophy template must exist")
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "philosophy template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastFiftyTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 50,
+                "catalog should have ≥50 templates after culinary + philosophy additions")
+    }
 }

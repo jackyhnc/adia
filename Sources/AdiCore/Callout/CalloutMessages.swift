@@ -90,6 +90,8 @@ extension CalloutManager {
         case "therapy":        return therapyCallouts(tier: tier)
         case "socialscience":  return socialScienceCallouts(tier: tier)
         case "nutrition":      return nutritionCallouts(tier: tier)
+        case "culinary":       return culinaryCallouts(tier: tier)
+        case "philosophy":     return philosophyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -941,6 +943,48 @@ extension CalloutManager {
             "CLOSE THIS. open your nutrition notes.",
             "your food science work won't do itself — back to it.",
             "your dietitian notes are waiting. get back.",
+        ]
+        }
+    }
+
+    private func culinaryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those recipes aren't going to test themselves.",
+            "get back to your culinary work.",
+            "close this and get back in the kitchen.",
+            "your mise en place isn't going to prep itself.",
+        ]
+        case 2: return [
+            "stop. your culinary assignment is waiting.",
+            "this isn't your recipe development.",
+            "close this and get back to your kitchen work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your recipe notes.",
+            "no one develops recipes by scrolling.",
+            "your culinary skills won't sharpen themselves — back to work.",
+        ]
+        }
+    }
+
+    private func philosophyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those arguments aren't going to analyze themselves.",
+            "get back to your philosophy work.",
+            "Kant didn't write the Critique by scrolling. close this.",
+            "your philosophical argument won't write itself.",
+        ]
+        case 2: return [
+            "stop. your philosophy paper is waiting.",
+            "this isn't your Socratic dialogue.",
+            "close this and get back to your philosophy work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your philosophy notes.",
+            "no one writes a dialectical argument by browsing.",
+            "your philosophy paper won't write itself — back to work.",
         ]
         }
     }

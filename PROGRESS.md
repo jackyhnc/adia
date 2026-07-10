@@ -13988,3 +13988,44 @@ Another keyword domain or functional improvement. Remaining domains not yet cove
 - **Public policy keyword**: `policy memo`, `white paper`, `regulatory analysis`, `legislative brief`, `policy brief` → `"policy"` keyword; callout pool; templates
 - **AppMonitor observability tests**: requires macOS build environment
 - **arduino false-positive check**: "write arduino code" should route to `code` not `engineering` — needs verification in a macOS Swift build
+
+---
+## Run 311 — 2026-07-10
+
+**Shipped:** Culinary + philosophy keyword branches, callout pools, 4 templates, 28 new Swift tests
+
+### What changed
+- `CalloutManager.extractTaskKeyword`: added `"culinary"` branch **after the nutrition block** (nutrition owns "food science" + "meal prep"; culinary catches culinary school/program/arts/class/technique, recipe development/testing/creation/writing, baking, pastry/pastry arts/school/class, mise en place, knife skills, plating technique, flavor profile, sauce development, menu development/planning, cooking class/technique, gastronomy).
+- `CalloutManager.extractTaskKeyword`: added `"philosophy"` branch **after socialscience and before legal** (prevents "ethics paper" and "philosophical argument" from falling through to legal; catches philosophy/philosophical/philosopher, Kant/Plato/Socrates/Aristotle/Nietzsche/Descartes/Hume/Locke/Hegel, metaphysics/epistemology/ontology, moral philosophy/political philosophy/philosophy of mind/of science, ethics paper/essay, thought experiment, argument analysis/philosophical argument, logic problem, dialectic, philosophical inquiry, philosophy class/course/paper, utilitarianism/deontology/consequentialism).
+- `CalloutMessages.culinaryCallouts(tier:)`: 3-tier pool (4/3/3) in kitchen/recipe voice — "those recipes aren't going to test themselves." / "CLOSE THIS. open your recipe notes."
+- `CalloutMessages.philosophyCallouts(tier:)`: 3-tier pool (4/3/3) in philosophy/argument voice — "Kant didn't write the Critique by scrolling. close this." / "CLOSE THIS. open your philosophy notes."
+- `taskAwareCallouts` switch: two new dispatch cases `"culinary"` + `"philosophy"`.
+- `SuggestedSessionTemplates.all` grows 46→50 with 4 new entries:
+  - "Develop and test a new recipe" (flame icon, 45 min)
+  - "Study for a culinary school exam or technique quiz" (doc.badge.checkmark icon, 30 min)
+  - "Analyze a philosophical argument or write a response paper" (text.quote icon, 60 min)
+  - "Read and take notes on a philosophy text" (books.vertical icon, 45 min)
+- `CalloutManagerTests`: 10 culinary tests + 11 philosophy tests = **21 new tests** (515→536)
+- `SuggestedSessionTemplatesTests`: 3 culinary + 3 philosophy + 1 count guard = **7 new tests** (79→86)
+
+### Test counts
+- Swift CalloutManagerTests: 536
+- Swift SuggestedSessionTemplatesTests: 86
+
+### Verification
+Swift toolchain unavailable on Linux container — verified by code inspection:
+- culinary branch (line 309) positioned after nutrition (line 308 return) → "food science lab report" still resolves to nutrition ✓
+- philosophy branch (line 434) positioned before legal (line 444) → "write my legal brief" still resolves to legal ✓
+- philosophyCallouts tier3 contains "CLOSE THIS. open your philosophy notes." → hasPrefix("CLOSE THIS") passes ✓
+- culinaryCallouts tier3 contains "CLOSE THIS. open your recipe notes." → hasPrefix("CLOSE THIS") passes ✓
+- 4 templates all have preferredDuration in [300, 10800] range (30min/45min/60min) ✓
+
+### Blocked / skipped
+None.
+
+### Next agent should pick up
+- **Culinary false-positive check**: "writing a recipe for success" metaphor unlikely in task descriptions — no guard needed, but worth verifying
+- **Music production keyword split**: current "music" keyword catches both music theory study AND music production (beatmaking, mixing, mastering) — could split into "musicproduction" + "musictheory" for more precise callout messages
+- **Environmental science keyword**: ecology/environmental science/environmental policy/sustainability/climate/conservation — new domain for science-focused students
+- **AppMonitor observability tests**: requires macOS build environment
+- **arduino false-positive check**: "write arduino code" should route to `code` not `engineering` — engineering branch is checked AFTER code, so this should already work, but worth a macOS build verification

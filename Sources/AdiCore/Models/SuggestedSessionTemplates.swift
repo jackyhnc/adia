@@ -310,5 +310,29 @@ public enum SuggestedSessionTemplates {
             successCriteria: "All meals logged with macronutrient breakdown complete and a brief written reflection on patterns or gaps",
             preferredDuration: 30 * 60
         ),
+        SuggestedTemplate(
+            icon: "flame",
+            task: "Develop and test a new recipe",
+            successCriteria: "Recipe written with ingredients, quantities, and step-by-step instructions; tested at least once with notes on what to adjust next time",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.badge.checkmark",
+            task: "Study for a culinary school exam or technique quiz",
+            successCriteria: "All required material reviewed, key techniques and terms memorized, and a short self-quiz completed with corrections noted",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "text.quote",
+            task: "Analyze a philosophical argument or write a response paper",
+            successCriteria: "Core argument clearly identified and reconstructed, your position stated, and at least one objection with a rebuttal drafted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "books.vertical",
+            task: "Read and take notes on a philosophy text",
+            successCriteria: "Assigned reading complete, key concepts summarized in your own words, and at least three questions or observations noted for discussion",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

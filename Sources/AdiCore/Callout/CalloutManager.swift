@@ -307,6 +307,22 @@ public final class CalloutManager {
             || lower.contains("calorie tracking") || lower.contains("calorie counting") {
             return "nutrition"
         }
+        // culinary — positioned after nutrition (nutrition owns "food science", "meal prep", "nutrition plan");
+        // catches culinary school, recipe work, pastry, baking, plating, and chef technique.
+        if word("culinary") || lower.contains("culinary school") || lower.contains("culinary program")
+            || lower.contains("culinary arts") || lower.contains("culinary class")
+            || lower.contains("culinary technique") || lower.contains("culinary final")
+            || lower.contains("recipe development") || lower.contains("recipe testing")
+            || lower.contains("recipe creation") || lower.contains("recipe writing")
+            || word("baking") || word("pastry") || lower.contains("pastry arts")
+            || lower.contains("pastry school") || lower.contains("pastry class")
+            || lower.contains("mise en place") || lower.contains("knife skills")
+            || lower.contains("plating technique") || lower.contains("flavor profile")
+            || lower.contains("sauce development") || lower.contains("menu development")
+            || lower.contains("menu planning") || lower.contains("cooking class")
+            || lower.contains("cooking technique") || word("gastronomy") {
+            return "culinary"
+        }
         if word("podcast") || word("podcasting")
             || lower.contains("podcast episode") || lower.contains("record an episode")
             || lower.contains("edit an episode") || lower.contains("edit the episode")
@@ -397,6 +413,25 @@ public final class CalloutManager {
             || lower.contains("public policy") || lower.contains("public administration")
             || lower.contains("comparative politics") || lower.contains("international relations") {
             return "socialscience"
+        }
+        // philosophy — positioned after socialscience (shared "political philosophy" territory)
+        // and before legal so "ethics paper" and "philosophical argument" don't fall to legal.
+        if word("philosophy") || word("philosophical") || word("philosopher")
+            || word("kant") || word("plato") || word("socrates") || word("aristotle")
+            || word("nietzsche") || word("descartes") || word("hume") || word("locke")
+            || word("hegel") || word("hegelian")
+            || word("metaphysics") || word("epistemology") || word("ontology")
+            || lower.contains("moral philosophy") || lower.contains("political philosophy")
+            || lower.contains("philosophy of mind") || lower.contains("philosophy of science")
+            || lower.contains("ethics paper") || lower.contains("ethics essay")
+            || lower.contains("thought experiment") || lower.contains("thought experiments")
+            || lower.contains("argument analysis") || lower.contains("philosophical argument")
+            || lower.contains("logic problem") || lower.contains("logic problems")
+            || word("dialectic") || word("dialectics") || lower.contains("dialectical method")
+            || lower.contains("philosophical inquiry") || lower.contains("philosophy class")
+            || lower.contains("philosophy course") || lower.contains("philosophy paper")
+            || word("utilitarianism") || word("deontology") || word("consequentialism") {
+            return "philosophy"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")

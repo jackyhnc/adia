@@ -3888,4 +3888,171 @@ struct CalloutManagerTests {
             #expect(hasRef, "nutrition tier1 messages must reference dietetics domain")
         }
     }
+
+    // MARK: - Culinary keyword tests
+
+    @Test func extractTaskKeywordCulinary() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice my culinary skills") == "culinary")
+        #expect(CalloutManager.extractTaskKeyword(from: "study for culinary school") == "culinary")
+        #expect(CalloutManager.extractTaskKeyword(from: "attend my culinary arts class") == "culinary")
+    }
+
+    @Test func extractTaskKeywordRecipeDevelopment() {
+        #expect(CalloutManager.extractTaskKeyword(from: "recipe development for my menu") == "culinary")
+        #expect(CalloutManager.extractTaskKeyword(from: "recipe testing for the restaurant") == "culinary")
+        #expect(CalloutManager.extractTaskKeyword(from: "recipe writing for my cookbook") == "culinary")
+    }
+
+    @Test func extractTaskKeywordBakingPastry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my baking project") == "culinary")
+        #expect(CalloutManager.extractTaskKeyword(from: "work on pastry techniques") == "culinary")
+        #expect(CalloutManager.extractTaskKeyword(from: "take my pastry arts class") == "culinary")
+    }
+
+    @Test func extractTaskKeywordCulinaryTechniques() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice mise en place") == "culinary")
+        #expect(CalloutManager.extractTaskKeyword(from: "study knife skills for kitchen exam") == "culinary")
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my menu planning assignment") == "culinary")
+    }
+
+    @Test func extractTaskKeywordCulinaryDoesNotOverrideNutrition() {
+        // "food science" and "meal prep" must stay in nutrition/fitness respectively
+        #expect(CalloutManager.extractTaskKeyword(from: "food science lab report") == "nutrition")
+        #expect(CalloutManager.extractTaskKeyword(from: "meal prep for the week") == "fitness")
+    }
+
+    @Test func taskAwareCalloutsCulinaryHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "culinary", tier: tier)
+                #expect(!msgs.isEmpty, "culinary tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsCulinaryPoolSizes() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "culinary", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "culinary", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "culinary", tier: 3)
+            #expect(t1.count >= 3, "culinary tier1 should have ≥3 messages")
+            #expect(t2.count >= 2, "culinary tier2 should have ≥2 messages")
+            #expect(t3.count >= 2, "culinary tier3 should have ≥2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsCulinaryTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "culinary", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "culinary tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsCulinaryTier1ReferencesKitchenWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "culinary", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("recipe") || lower.contains("culinary")
+                    || lower.contains("kitchen") || lower.contains("mise")
+            }
+            #expect(hasRef, "culinary tier1 messages must reference kitchen/recipe work")
+        }
+    }
+
+    @Test func taskAwareCalloutsCulinaryTier4FallsThrough() async {
+        await MainActor.run {
+            let tier4 = CalloutManager.shared.taskAwareCallouts(keyword: "culinary", tier: 4)
+            #expect(!tier4.isEmpty, "culinary tier4 (default) should still return messages")
+        }
+    }
+
+    // MARK: - Philosophy keyword tests
+
+    @Test func extractTaskKeywordPhilosophy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study philosophy for class") == "philosophy")
+        #expect(CalloutManager.extractTaskKeyword(from: "write a philosophical essay") == "philosophy")
+        #expect(CalloutManager.extractTaskKeyword(from: "read about a famous philosopher") == "philosophy")
+    }
+
+    @Test func extractTaskKeywordPhilosophersNames() {
+        #expect(CalloutManager.extractTaskKeyword(from: "read Kant for class") == "philosophy")
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze Plato's Republic") == "philosophy")
+        #expect(CalloutManager.extractTaskKeyword(from: "write about Socrates and virtue") == "philosophy")
+        #expect(CalloutManager.extractTaskKeyword(from: "study Aristotle's ethics") == "philosophy")
+        #expect(CalloutManager.extractTaskKeyword(from: "read Nietzsche for my philosophy course") == "philosophy")
+    }
+
+    @Test func extractTaskKeywordPhilosophyBranches() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a paper on metaphysics") == "philosophy")
+        #expect(CalloutManager.extractTaskKeyword(from: "epistemology reading for tomorrow") == "philosophy")
+        #expect(CalloutManager.extractTaskKeyword(from: "study ontology concepts") == "philosophy")
+    }
+
+    @Test func extractTaskKeywordPhilosophyPhrases() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my ethics paper") == "philosophy")
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze a philosophical argument") == "philosophy")
+        #expect(CalloutManager.extractTaskKeyword(from: "work through a logic problem") == "philosophy")
+        #expect(CalloutManager.extractTaskKeyword(from: "write about a thought experiment") == "philosophy")
+    }
+
+    @Test func extractTaskKeywordPhilosophySchools() {
+        #expect(CalloutManager.extractTaskKeyword(from: "apply utilitarianism to the case study") == "philosophy")
+        #expect(CalloutManager.extractTaskKeyword(from: "critique deontology in my response paper") == "philosophy")
+        #expect(CalloutManager.extractTaskKeyword(from: "study consequentialism for the exam") == "philosophy")
+    }
+
+    @Test func extractTaskKeywordPhilosophyDoesNotOverrideLegal() {
+        // legal-specific terms must still route to legal
+        #expect(CalloutManager.extractTaskKeyword(from: "write my legal brief") == "legal")
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for bar exam") == "legal")
+    }
+
+    @Test func taskAwareCalloutsPhilosophyHasMessages() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "philosophy", tier: tier)
+                #expect(!msgs.isEmpty, "philosophy tier \(tier) should have messages")
+            }
+        }
+    }
+
+    @Test func taskAwareCalloutsPhilosophyPoolSizes() async {
+        await MainActor.run {
+            let t1 = CalloutManager.shared.taskAwareCallouts(keyword: "philosophy", tier: 1)
+            let t2 = CalloutManager.shared.taskAwareCallouts(keyword: "philosophy", tier: 2)
+            let t3 = CalloutManager.shared.taskAwareCallouts(keyword: "philosophy", tier: 3)
+            #expect(t1.count >= 3, "philosophy tier1 should have ≥3 messages")
+            #expect(t2.count >= 2, "philosophy tier2 should have ≥2 messages")
+            #expect(t3.count >= 2, "philosophy tier3 should have ≥2 messages")
+        }
+    }
+
+    @Test func taskAwareCalloutsPhilosophyTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "philosophy", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") }
+            #expect(hasUrgent, "philosophy tier3 should contain a CLOSE THIS directive")
+        }
+    }
+
+    @Test func taskAwareCalloutsPhilosophyTier1ReferencesPhilosophyWork() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "philosophy", tier: 1)
+            let hasRef = tier1.contains { msg in
+                let lower = msg.lowercased()
+                return lower.contains("argument") || lower.contains("philosophy")
+                    || lower.contains("kant") || lower.contains("critique")
+            }
+            #expect(hasRef, "philosophy tier1 messages must reference philosophy domain")
+        }
+    }
+
+    @Test func taskAwareCalloutsPhilosophyTier4FallsThrough() async {
+        await MainActor.run {
+            let tier4 = CalloutManager.shared.taskAwareCallouts(keyword: "philosophy", tier: 4)
+            #expect(!tier4.isEmpty, "philosophy tier4 (default) should still return messages")
+        }
+    }
 }
