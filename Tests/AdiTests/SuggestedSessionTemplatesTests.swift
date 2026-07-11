@@ -2278,6 +2278,51 @@ struct SuggestedSessionTemplatesTests {
         #expect(hasFEMA, "catalog must include a FEMA certification or emergency management template")
     }
 
+    // MARK: - Aviation templates
+    @Test func aviationTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasFAA   = tasks.contains { $0.localizedCaseInsensitiveContains("FAA") || $0.localizedCaseInsensitiveContains("private pilot") }
+        let hasGround = tasks.contains { $0.localizedCaseInsensitiveContains("ground school") || $0.localizedCaseInsensitiveContains("aviation training") }
+        #expect(hasFAA,    "catalog must include an FAA/private pilot written exam template")
+        #expect(hasGround, "catalog must include a ground school or aviation training template")
+    }
+
+    // MARK: - Product Design templates
+    @Test func productdesignTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasSketch  = tasks.contains { $0.localizedCaseInsensitiveContains("product design") && ($0.localizedCaseInsensitiveContains("sketch") || $0.localizedCaseInsensitiveContains("concept")) }
+        let hasProto   = tasks.contains { $0.localizedCaseInsensitiveContains("prototype") || $0.localizedCaseInsensitiveContains("industrial") }
+        #expect(hasSketch, "catalog must include a product design sketching or concept template")
+        #expect(hasProto,  "catalog must include a product design prototype or industrial design template")
+    }
+
+    // MARK: - Tax Preparation templates
+    @Test func taxprepTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasTaxReturn = tasks.contains { $0.localizedCaseInsensitiveContains("tax return") || $0.localizedCaseInsensitiveContains("file my tax") }
+        let hasEA        = tasks.contains { $0.localizedCaseInsensitiveContains("EA") || $0.localizedCaseInsensitiveContains("Enrolled Agent") || $0.localizedCaseInsensitiveContains("tax preparation assignment") }
+        #expect(hasTaxReturn, "catalog must include a tax return filing template")
+        #expect(hasEA,        "catalog must include an EA exam or tax preparation assignment template")
+    }
+
+    // MARK: - Medical Billing and Coding templates
+    @Test func medicalbillingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCoding = tasks.contains { $0.localizedCaseInsensitiveContains("CPT") || $0.localizedCaseInsensitiveContains("ICD-10") || $0.localizedCaseInsensitiveContains("medical coding") }
+        let hasCPC    = tasks.contains { $0.localizedCaseInsensitiveContains("CPC") || $0.localizedCaseInsensitiveContains("medical billing") }
+        #expect(hasCoding, "catalog must include a CPT/ICD-10 medical coding template")
+        #expect(hasCPC,    "catalog must include a CPC exam or medical billing template")
+    }
+
+    // MARK: - Military Studies templates
+    @Test func militarystudiesTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPaper  = tasks.contains { $0.localizedCaseInsensitiveContains("military history") || $0.localizedCaseInsensitiveContains("defense studies") }
+        let hasASVAB  = tasks.contains { $0.localizedCaseInsensitiveContains("ASVAB") || $0.localizedCaseInsensitiveContains("military science") || $0.localizedCaseInsensitiveContains("ROTC") }
+        #expect(hasPaper, "catalog must include a military history paper or defense studies template")
+        #expect(hasASVAB, "catalog must include an ASVAB or military science/ROTC template")
+    }
+
     // MARK: - Count guard
     @Test func catalogHasAtLeastOneHundredSixtyOneTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 161,
@@ -2286,5 +2331,9 @@ struct SuggestedSessionTemplatesTests {
     @Test func catalogHasAtLeastOneHundredSeventyOneTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 171,
                 "catalog should have ≥171 templates after geospatial/fashiondesign/hospitality/sportsanalytics/emergencymanagement additions")
+    }
+    @Test func catalogHasAtLeastOneHundredEightyOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 181,
+                "catalog should have ≥181 templates after aviation/productdesign/taxprep/medicalbilling/militarystudies additions")
     }
 }

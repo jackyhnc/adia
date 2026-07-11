@@ -152,6 +152,11 @@ extension CalloutManager {
         case "hospitality":            return hospitalityCallouts(tier: tier)
         case "sportsanalytics":        return sportsanalyticsCallouts(tier: tier)
         case "emergencymanagement":    return emergencymanagementCallouts(tier: tier)
+        case "aviation":               return aviationCallouts(tier: tier)
+        case "productdesign":          return productdesignCallouts(tier: tier)
+        case "taxprep":                return taxprepCallouts(tier: tier)
+        case "medicalbilling":         return medicalbillingCallouts(tier: tier)
+        case "militarystudies":        return militarystudiesCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -2323,6 +2328,111 @@ extension CalloutManager {
         default: return [
             "CLOSE THIS. open your \(keyword).",
             "your \(keyword) deadline isn't moving.",
+        ]
+        }
+    }
+
+    private func aviationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that checkride isn't going to pass itself.",
+            "get back to your flight training.",
+            "your FAA exam won't study for itself.",
+            "close this and open your ground school materials.",
+        ]
+        case 2: return [
+            "pilots don't get certified by scrolling.",
+            "your written test isn't going to prep itself.",
+            "stop stalling — your aviation coursework is waiting.",
+        ]
+        default: return [
+            "CLOSE THIS. open your aviation study materials.",
+            "no one earns a pilot certificate by browsing.",
+            "CLOSE THIS. get back to your flight training.",
+        ]
+        }
+    }
+
+    private func productdesignCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that product isn't going to design itself.",
+            "get back to your industrial design work.",
+            "your design model won't build itself.",
+            "close this and open your product design project.",
+        ]
+        case 2: return [
+            "great designers design — close this and be one.",
+            "your ID sketches aren't going to draw themselves.",
+            "stop avoiding your product design assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your product design work.",
+            "no one builds a design career by scrolling.",
+            "CLOSE THIS. get back to your product design project.",
+        ]
+        }
+    }
+
+    private func taxprepCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those taxes aren't going to file themselves.",
+            "get back to your tax return.",
+            "the IRS isn't going to wait — close this.",
+            "close this and open your tax software.",
+        ]
+        case 2: return [
+            "tax season doesn't pause for browsing.",
+            "your tax return isn't going to finish itself.",
+            "stop putting it off — your taxes are waiting.",
+        ]
+        default: return [
+            "CLOSE THIS. open your tax return.",
+            "no one files their taxes by scrolling.",
+            "CLOSE THIS. get back to your tax prep.",
+        ]
+        }
+    }
+
+    private func medicalbillingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those CPT codes aren't going to memorize themselves.",
+            "get back to your medical billing work.",
+            "your CPC exam prep won't do itself.",
+            "close this and open your coding materials.",
+        ]
+        case 2: return [
+            "medical coders don't pass the CPC by scrolling.",
+            "your billing assignment isn't going to complete itself.",
+            "stop avoiding your medical coding practice.",
+        ]
+        default: return [
+            "CLOSE THIS. open your medical billing materials.",
+            "no one passes the CPC by browsing.",
+            "CLOSE THIS. get back to your medical coding work.",
+        ]
+        }
+    }
+
+    private func militarystudiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that mission brief isn't going to write itself.",
+            "get back to your military studies.",
+            "your ASVAB prep won't study for itself.",
+            "close this and open your military coursework.",
+        ]
+        case 2: return [
+            "officers don't get commissioned by scrolling.",
+            "your military history paper isn't going to write itself.",
+            "stop stalling — your ROTC assignment is waiting.",
+        ]
+        default: return [
+            "CLOSE THIS. open your military studies materials.",
+            "no one passes the ASVAB by browsing.",
+            "CLOSE THIS. get back to your military coursework.",
         ]
         }
     }

@@ -1107,5 +1107,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target content area reviewed (incident command, hazard mitigation, or disaster recovery), key concepts and frameworks summarized, and at least 20 practice questions completed with corrections",
             preferredDuration: 60 * 60
         ),
+        // Aviation
+        SuggestedTemplate(
+            icon: "airplane",
+            task: "Study for the FAA private pilot written exam",
+            successCriteria: "Target knowledge area reviewed (weather, regulations, navigation, or aircraft systems), key concepts summarized, and at least 30 practice questions completed with incorrect answers corrected and understood",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cloud.sun.fill",
+            task: "Complete a ground school lesson or aviation training assignment",
+            successCriteria: "Assigned lesson or module completed, notes taken on key concepts (airspace, aerodynamics, or flight planning), and review quiz or self-check passed with at least 80% accuracy",
+            preferredDuration: 45 * 60
+        ),
+        // Product Design
+        SuggestedTemplate(
+            icon: "cube.fill",
+            task: "Sketch concepts and develop a product design proposal",
+            successCriteria: "At least five concept sketches completed, one direction selected and refined with annotated orthographic views, and design rationale written and saved to project folder",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "ruler.fill",
+            task: "Build or refine a physical or digital prototype for my product design project",
+            successCriteria: "Prototype built or model iterated in CAD or foam, key ergonomic and functional issues documented, and revised design photographed or exported and saved for critique",
+            preferredDuration: 90 * 60
+        ),
+        // Tax Preparation
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete and file my tax return",
+            successCriteria: "All income documents gathered and entered, deductions and credits reviewed, return reviewed for accuracy, and either filed electronically with confirmation number saved or exported for review by preparer",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "briefcase.fill",
+            task: "Study for the EA (Enrolled Agent) exam or complete a tax preparation assignment",
+            successCriteria: "Target section reviewed (individual taxation, business taxation, or representation), key rules and limits summarized, and at least 30 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Medical Billing and Coding
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Practice medical coding with CPT and ICD-10 codes",
+            successCriteria: "At least 20 coding scenarios completed, codes verified against official codebook guidelines, accuracy rate calculated, and errors reviewed with correct code rationale noted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "checklist",
+            task: "Study for the CPC exam or complete a medical billing and coding assignment",
+            successCriteria: "Target chapter or code section reviewed, key guidelines and conventions summarized, and at least one full practice exercise or mock scenario set completed and graded",
+            preferredDuration: 60 * 60
+        ),
+        // Military Studies
+        SuggestedTemplate(
+            icon: "shield.lefthalf.filled",
+            task: "Write a military history paper or defense studies analysis",
+            successCriteria: "Thesis clearly stated, primary and secondary sources cited and integrated, argument developed across all body sections, and paper completed and saved in final draft format for review",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "star.circle.fill",
+            task: "Study for the ASVAB or complete a military science / ROTC assignment",
+            successCriteria: "Target ASVAB section or ROTC topic reviewed, key concepts summarized, and at least 30 practice questions completed with corrections and weak areas identified for further review",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

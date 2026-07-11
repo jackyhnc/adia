@@ -361,6 +361,29 @@ public final class CalloutManager {
             || lower.contains("hydrology") {
             return "geology"
         }
+        // aviation — positioned before engineering so flight-school, FAA exam, and piloting
+        // tasks don't fall through to the engineering pool (which owns "aerospace engineering").
+        if word("aviation") || word("aviator") || word("aviators")
+            || lower.contains("pilot training") || lower.contains("student pilot")
+            || lower.contains("flight training") || lower.contains("flight school")
+            || lower.contains("flight lesson") || lower.contains("flight lessons")
+            || lower.contains("ground school") || lower.contains("ground training")
+            || lower.contains("faa exam") || lower.contains("faa written") || lower.contains("faa test")
+            || lower.contains("faa knowledge") || lower.contains("faa checkride") || word("checkride")
+            || lower.contains("private pilot") || lower.contains("commercial pilot")
+            || lower.contains("instrument rating") || lower.contains("instrument pilot")
+            || lower.contains("multi-engine rating") || lower.contains("multi engine rating")
+            || word("ppl") && lower.contains("pilot")
+            || word("cpl") && lower.contains("pilot")
+            || lower.contains("atp certificate") || lower.contains("atp cert") || lower.contains("atp exam")
+            || lower.contains("solo flight") || lower.contains("cross-country flight")
+            || lower.contains("ifr training") || lower.contains("vfr training")
+            || lower.contains("airspace") && lower.contains("study")
+            || word("aopa") || lower.contains("flight simulator") && lower.contains("training")
+            || lower.contains("aviation class") || lower.contains("aviation course")
+            || lower.contains("aviation exam") || lower.contains("aviation program") {
+            return "aviation"
+        }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
         if word("solidworks") || lower.contains("fusion 360") || word("ansys")
@@ -679,6 +702,26 @@ public final class CalloutManager {
             || lower.contains("conservation major") || lower.contains("conservation degree") {
             return "artrestoration"
         }
+        // productdesign — positioned before the generic art and design branches so "industrial design",
+        // "product design", and "design for manufacturing" don't fall to the wireframe/figma design pool.
+        // "design brief" stays in the design branch; "prototyping" here requires a compound term.
+        if lower.contains("industrial design") || lower.contains("industrial designer")
+            || lower.contains("product design") || lower.contains("product designer")
+            || lower.contains("product designers")
+            || word("idsa") || lower.contains("design for manufacturing") || lower.contains("dfm")
+            || lower.contains("product development") && (lower.contains("design") || lower.contains("prototype"))
+            || lower.contains("human factors") && !lower.contains("computer")
+            || word("ergonomics") || word("ergonomic")
+            || lower.contains("model making") || lower.contains("physical prototype")
+            || lower.contains("concept model") || lower.contains("foam model")
+            || lower.contains("product lifecycle") || lower.contains("product launch")
+            || lower.contains("id sketching") || lower.contains("industrial design class")
+            || lower.contains("industrial design course") || lower.contains("industrial design exam")
+            || lower.contains("product design class") || lower.contains("product design course")
+            || lower.contains("product design exam") || lower.contains("design portfolio")
+            && (lower.contains("industrial") || lower.contains("product")) {
+            return "productdesign"
+        }
         if word("drawing") || word("painting") || word("sketching")
             || word("illustration") || word("illustrations") || word("illustrate") || word("illustrating")
             || word("procreate") || word("sculpting")
@@ -815,6 +858,30 @@ public final class CalloutManager {
             // Non-legal "brief" contexts — must fire before the legal branch to prevent false positives
             || lower.contains("creative brief") || lower.contains("marketing brief") {
             return "writing"
+        }
+        // taxprep — positioned before accounting and finance so tax return filing, TurboTax,
+        // H&R Block, IRS forms, and EA exam prep route here rather than the accounting/budget pools.
+        // "tax accounting class/course" stays in the accounting branch (student coursework context).
+        if lower.contains("tax preparation") || lower.contains("tax preparer")
+            || lower.contains("tax return") || lower.contains("tax returns")
+            || lower.contains("tax filing") || lower.contains("file my taxes")
+            || lower.contains("filing taxes") || lower.contains("file taxes")
+            || word("turbotax") || lower.contains("h&r block") || lower.contains("h and r block")
+            || lower.contains("irs form") || lower.contains("irs forms")
+            || lower.contains("income tax") && !lower.contains("income tax class")
+            && !lower.contains("income tax course")
+            || lower.contains("1040 form") || lower.contains("form 1040")
+            || lower.contains("w-2") && lower.contains("tax")
+            || lower.contains("1099") && lower.contains("tax")
+            || lower.contains("tax deduction") || lower.contains("tax deductions")
+            || lower.contains("tax credit") || lower.contains("tax credits")
+            || lower.contains("ea exam") || lower.contains("enrolled agent")
+            || lower.contains("enrolled agent exam") || lower.contains("enrolled agent exam prep")
+            || word("vita") && lower.contains("tax")
+            || lower.contains("tax software") || lower.contains("tax season")
+            || lower.contains("self-employment tax") || lower.contains("quarterly taxes")
+            || lower.contains("small business tax") || lower.contains("business tax return") {
+            return "taxprep"
         }
         // accounting — positioned before forensicaccounting and finance so general accounting
         // coursework, CMA prep, QuickBooks/Xero, and accounting-student tasks route here
@@ -1222,6 +1289,28 @@ public final class CalloutManager {
             || lower.contains("mtm") {
             return "pharmacy"
         }
+        // medicalbilling — positioned after pharmacy and before molecularbiology/premed so
+        // CPT codes, ICD-10, CPC exam, and medical coding tasks route here, not to premed/nursing pools.
+        if lower.contains("medical billing") || lower.contains("medical coding")
+            || lower.contains("medical biller") || lower.contains("medical coder")
+            || lower.contains("medical billers") || lower.contains("medical coders")
+            || lower.contains("cpt code") || lower.contains("cpt codes") || lower.contains("cpt coding")
+            || lower.contains("icd-10") || lower.contains("icd 10") || lower.contains("icd-11")
+            || lower.contains("cpc exam") || lower.contains("cpc certification") || lower.contains("cpc prep")
+            || word("aapc") || lower.contains("aapc exam") || lower.contains("aapc certification")
+            || lower.contains("hcpcs code") || lower.contains("hcpcs codes")
+            || lower.contains("revenue cycle management") || lower.contains("revenue cycle")
+            && lower.contains("billing")
+            || lower.contains("healthcare billing") || lower.contains("health insurance billing")
+            || lower.contains("medical claim") || lower.contains("medical claims")
+            || lower.contains("claim submission") || lower.contains("claims submission")
+            || lower.contains("ehr coding") || lower.contains("electronic health record coding")
+            || lower.contains("health information management")
+            || lower.contains("him program") || lower.contains("him class") || lower.contains("him exam")
+            || lower.contains("medical terminology coding")
+            || lower.contains("billing and coding") || lower.contains("coding and billing") {
+            return "medicalbilling"
+        }
         // molecularbiology — positioned after pharmacy and before premed so lab-science terms
         // (PCR, Western blot, cloning, gene editing) route here rather than the MCAT/clinical pool.
         // Bare word("biochemistry") stays in premed (MCAT context); "molecular biology" is explicit.
@@ -1544,6 +1633,27 @@ public final class CalloutManager {
             || lower.contains("incarceration") || word("victimology")
             || lower.contains("crime prevention") || lower.contains("crime analysis") {
             return "criminaljustice"
+        }
+        // militarystudies — positioned after criminaljustice and before socialscience so military
+        // history, ROTC, and defense-studies tasks don't fall through to socialscience or history pools.
+        // Bare word("history") stays in the studying branch; "military" requires a compound term.
+        if lower.contains("military history") || lower.contains("military science")
+            || lower.contains("military studies") || lower.contains("military strategy")
+            || lower.contains("military tactics") || lower.contains("military operations")
+            || lower.contains("military leadership") || lower.contains("military theory")
+            || word("rotc") || lower.contains("rotc class") || lower.contains("rotc training")
+            || lower.contains("officer training") || lower.contains("officer candidate")
+            || lower.contains("officer candidate school") || lower.contains("ocs prep")
+            || lower.contains("veterans studies") || lower.contains("veteran studies")
+            || lower.contains("defense studies") || lower.contains("national security studies")
+            || lower.contains("armed forces") && lower.contains("study")
+            || lower.contains("military class") || lower.contains("military course")
+            || lower.contains("military exam") || lower.contains("military program")
+            || word("asvab") || lower.contains("asvab prep") || lower.contains("asvab exam")
+            || lower.contains("asvab study") || lower.contains("military entrance")
+            || lower.contains("counterinsurgency") || lower.contains("counterterrorism")
+            || lower.contains("war studies") || lower.contains("conflict studies") {
+            return "militarystudies"
         }
         // socialscience — positioned after criminaljustice (which now owns criminology/criminal justice)
         // and before legal (LSAT is pre-law, not a bar-exam term). "social work" routes to socialwork.
