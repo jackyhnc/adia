@@ -255,6 +255,22 @@ public final class CalloutManager {
             || lower.contains("algebraic topology") || lower.contains("differential geometry") {
             return "mathematics"
         }
+        // signlanguage — positioned BEFORE linguistics so "sign language", "ASL", and
+        // "deaf education" route here rather than the general language-science pool.
+        if lower.contains("sign language") || lower.contains("american sign language")
+            || lower.contains("asl class") || lower.contains("asl course")
+            || lower.contains("asl exam") || lower.contains("asl assignment")
+            || lower.contains("asl program") || lower.contains("asl linguistics")
+            || lower.contains("asl study") || lower.contains("learning asl")
+            || lower.contains("studying asl")
+            || lower.contains("deaf education") || lower.contains("deaf culture")
+            || lower.contains("deaf studies") || lower.contains("deaf community")
+            || word("fingerspelling") || lower.contains("hand shape") || lower.contains("handshape")
+            || lower.contains("signed english") || lower.contains("sign language linguistics")
+            || lower.contains("asl interpreter") || lower.contains("sign language interpreter")
+            || (lower.contains("interpreter training") && (lower.contains("sign") || lower.contains("asl") || lower.contains("deaf"))) {
+            return "signlanguage"
+        }
         // linguistics — positioned before studying so "linguistics exam", "phonetics class",
         // and language-science assignments don't fall through to studying.
         // Language learning (vocabulary, conjugation, Duolingo) stays in the language branch below.
@@ -1103,6 +1119,26 @@ public final class CalloutManager {
             || lower.contains("vocal music program") {
             return "musiceducation"
         }
+        // arteducation — positioned AFTER musiceducation and BEFORE physed so art teacher
+        // certification, visual arts education assignments, and NAEA / Praxis art prep route
+        // here rather than the generic art or education pools.
+        // Bare "art class" or "taking an art class" stays in studying/art; compound art+teaching/education terms fire here.
+        if lower.contains("art education") || lower.contains("art educator")
+            || lower.contains("art teacher") || lower.contains("art teaching")
+            || lower.contains("visual art teacher") || lower.contains("visual arts education")
+            || lower.contains("visual art teaching") || lower.contains("visual arts teacher")
+            || lower.contains("studio art teacher") || lower.contains("elementary art teacher")
+            || lower.contains("high school art teacher")
+            || lower.contains("art curriculum") || lower.contains("art lesson plan")
+            || lower.contains("art methods class") || lower.contains("art methods course")
+            || lower.contains("art pedagogy") || lower.contains("art ed class")
+            || lower.contains("art ed course") || lower.contains("art ed program")
+            || lower.contains("praxis art") || lower.contains("national art education")
+            || word("naea")
+            || lower.contains("teaching art") || lower.contains("art certification")
+                && lower.contains("teach") {
+            return "arteducation"
+        }
         // physed — positioned after education and before tutor so PE teaching and sport/athletic
         // coaching terms route here rather than the generic tutoring/coaching pool.
         // Bare word("coaching") alone stays in tutor; compound coaching terms fire here first.
@@ -1367,6 +1403,26 @@ public final class CalloutManager {
             || lower.contains("dc degree") || lower.contains("dc program")
             || lower.contains("chiropractic rotation") || lower.contains("chiropractic technique") {
             return "chiropractic"
+        }
+        // acupuncture — positioned after chiropractic (both are complementary/alternative medicine)
+        // and before dentallab/premed so TCM, NCCAOM board prep, and acupuncture school assignments
+        // don't fall through to generic premed callouts.
+        if word("acupuncture") || word("acupuncturist") || word("acupuncturists")
+            || lower.contains("traditional chinese medicine") || lower.contains("tcm medicine")
+            || lower.contains("tcm class") || lower.contains("tcm course") || lower.contains("tcm exam")
+            || lower.contains("tcm program") || lower.contains("tcm school")
+            || lower.contains("acupuncture school") || lower.contains("acupuncture program")
+            || lower.contains("acupuncture class") || lower.contains("acupuncture exam")
+            || lower.contains("acupuncture certification") || lower.contains("acupuncture license")
+            || lower.contains("acupuncture board") || lower.contains("acupuncture rotation")
+            || word("nccaom") || lower.contains("nccaom exam") || lower.contains("nccaom board")
+            || lower.contains("oriental medicine") || lower.contains("oriental medicine school")
+            || lower.contains("acupuncture points") || lower.contains("acupoints")
+            || lower.contains("meridian theory") || lower.contains("meridian system")
+            || lower.contains("herbal formula") || lower.contains("herbal medicine class")
+            || lower.contains("chinese herbal") || lower.contains("chinese medicine")
+            || word("moxibustion") || lower.contains("tuina") {
+            return "acupuncture"
         }
         // dentallab — positioned BEFORE dentalassisting so dental lab tech, ceramist, and
         // crown-and-bridge fabrication tasks don't fall through to the dental assistant pool.
@@ -2079,6 +2135,43 @@ public final class CalloutManager {
             || word("ptab") || lower.contains("patent licensing")
             || lower.contains("ip portfolio") || lower.contains("ip policy") {
             return "intellectualproperty"
+        }
+        // environmentallaw — positioned BEFORE the general legal branch so NEPA compliance,
+        // environmental litigation, Clean Air/Water Act assignments, and Superfund research
+        // don't fall through to generic bar-exam / brief callouts.
+        // Bare "environmental science"/"environmental studies" fires the enviro branch earlier.
+        if lower.contains("environmental law") || lower.contains("environmental regulation class")
+            || lower.contains("environmental regulation course") || lower.contains("environmental regulation exam")
+            || lower.contains("environmental litigation") || lower.contains("environmental compliance class")
+            || lower.contains("environmental compliance course")
+            || lower.contains("environmental attorney") || lower.contains("environmental lawyer")
+            || lower.contains("environmental law class") || lower.contains("environmental law course")
+            || lower.contains("environmental law exam") || lower.contains("environmental law assignment")
+            || word("nepa") || lower.contains("national environmental policy act")
+            || lower.contains("clean air act") || lower.contains("clean water act")
+            || lower.contains("endangered species act")
+            || word("cercla") || lower.contains("superfund law") || lower.contains("superfund class")
+            || lower.contains("natural resources law") || lower.contains("land use law")
+            || lower.contains("climate change law") || lower.contains("climate litigation")
+            || lower.contains("epa regulation class") || lower.contains("epa law") {
+            return "environmentallaw"
+        }
+        // familylaw — positioned BEFORE the general legal branch so divorce, custody, adoption,
+        // and domestic-relations coursework routes here rather than generic bar-exam callouts.
+        if lower.contains("family law") || lower.contains("family lawyer")
+            || lower.contains("family attorney") || lower.contains("family law class")
+            || lower.contains("family law course") || lower.contains("family law exam")
+            || lower.contains("family law assignment") || lower.contains("family law clinic")
+            || lower.contains("divorce law") || lower.contains("divorce proceeding")
+            || lower.contains("child custody") || lower.contains("custody agreement")
+            || lower.contains("custody battle") || lower.contains("parental rights")
+            || lower.contains("adoption law") || lower.contains("adoption proceeding")
+            || lower.contains("domestic relations") || lower.contains("domestic violence law")
+            || lower.contains("alimony") || lower.contains("spousal support law")
+            || lower.contains("child support law") || lower.contains("marital property")
+            || lower.contains("prenuptial agreement") || lower.contains("postnuptial agreement")
+            || lower.contains("guardianship law") || lower.contains("termination of parental rights") {
+            return "familylaw"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")

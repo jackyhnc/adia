@@ -177,6 +177,11 @@ extension CalloutManager {
         case "medicallabscience":      return medicallabscienceCallouts(tier: tier)
         case "radiologictechnology":   return radiologictechnologyCallouts(tier: tier)
         case "intellectualproperty":   return intellectualpropertyCallouts(tier: tier)
+        case "signlanguage":           return signlanguageCallouts(tier: tier)
+        case "acupuncture":            return acupunctureCallouts(tier: tier)
+        case "arteducation":           return arteducationCallouts(tier: tier)
+        case "environmentallaw":       return environmentallawCallouts(tier: tier)
+        case "familylaw":              return familylawCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -2873,6 +2878,111 @@ extension CalloutManager {
             "CLOSE THIS. open your IP law study materials.",
             "no one passes the patent bar by browsing.",
             "CLOSE THIS. get back to your patent prosecution notes.",
+        ]
+        }
+    }
+
+    private func signlanguageCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those signs aren't going to practice themselves.",
+            "get back to your ASL notes.",
+            "your sign language exam won't prep itself.",
+            "close this and open your ASL study materials.",
+        ]
+        case 2: return [
+            "sign language interpreters don't get certified by scrolling.",
+            "your deaf community deserves your full attention — get back to your ASL work.",
+            "stop avoiding your sign language assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your ASL study guide.",
+            "no one masters sign language by browsing.",
+            "CLOSE THIS. get back to your sign language notes.",
+        ]
+        }
+    }
+
+    private func acupunctureCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those acupuncture points aren't going to memorize themselves.",
+            "get back to your TCM notes.",
+            "your NCCAOM exam won't prep itself.",
+            "close this and open your acupuncture study materials.",
+        ]
+        case 2: return [
+            "acupuncturists don't get licensed by scrolling.",
+            "your meridian theory notes aren't going to review themselves.",
+            "stop avoiding your acupuncture or TCM assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your acupuncture or TCM study guide.",
+            "no one passes the NCCAOM boards by browsing.",
+            "CLOSE THIS. get back to your traditional Chinese medicine notes.",
+        ]
+        }
+    }
+
+    private func arteducationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your students are waiting — get back to your art curriculum.",
+            "that art lesson plan isn't going to write itself.",
+            "your Praxis art exam won't prep itself.",
+            "close this and open your art education materials.",
+        ]
+        case 2: return [
+            "art teachers don't get certified by scrolling.",
+            "your visual arts lesson plans aren't going to design themselves.",
+            "stop avoiding your art education assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your art education study guide.",
+            "no one passes the Praxis art exam by browsing.",
+            "CLOSE THIS. get back to your visual arts teaching notes.",
+        ]
+        }
+    }
+
+    private func environmentallawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that environmental brief isn't going to write itself.",
+            "get back to your environmental law notes.",
+            "your environmental law exam won't prep itself.",
+            "close this and open your environmental law materials.",
+        ]
+        case 2: return [
+            "environmental lawyers don't master NEPA by scrolling.",
+            "your Clean Air Act analysis isn't going to complete itself.",
+            "stop avoiding your environmental law assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your environmental law notes.",
+            "no one masters environmental regulation by browsing.",
+            "CLOSE THIS. get back to your environmental law or climate litigation work.",
+        ]
+        }
+    }
+
+    private func familylawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those family law briefs aren't going to write themselves.",
+            "get back to your family law notes.",
+            "your family law exam won't prep itself.",
+            "close this and open your family law materials.",
+        ]
+        case 2: return [
+            "family law attorneys don't master custody law by scrolling.",
+            "your domestic relations brief isn't going to write itself.",
+            "stop avoiding your family law assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your family law notes.",
+            "no one masters family law by browsing.",
+            "CLOSE THIS. get back to your divorce, custody, or adoption law work.",
         ]
         }
     }

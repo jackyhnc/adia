@@ -1432,5 +1432,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target MPEP chapter or IP topic reviewed, key rules and case holdings summarized, and at least 25 practice questions completed with corrections",
             preferredDuration: 90 * 60
         ),
+        // Sign Language / ASL
+        SuggestedTemplate(
+            icon: "hand.wave.fill",
+            task: "Practice ASL vocabulary and sign language skills",
+            successCriteria: "Target vocabulary set drilled with at least 85% accuracy, handshape and movement notes reviewed, and practice session logged or recorded for self-review",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "graduationcap.fill",
+            task: "Study for an ASL or sign language exam or complete a sign language assignment",
+            successCriteria: "Target content area reviewed (grammar, vocabulary, Deaf culture, or interpreting), key concepts summarized, and assignment or practice sentences completed and saved",
+            preferredDuration: 45 * 60
+        ),
+        // Acupuncture / TCM
+        SuggestedTemplate(
+            icon: "staroflife.fill",
+            task: "Study acupuncture points or TCM theory for class or board prep",
+            successCriteria: "Target meridian or TCM topic reviewed (channel pathways, point locations, herbal formulas, or diagnostic theory), key points summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete an acupuncture or traditional Chinese medicine school assignment",
+            successCriteria: "Assigned readings finished and notes taken, case study or theory questions answered, and assignment saved or submitted for review",
+            preferredDuration: 45 * 60
+        ),
+        // Art Education
+        SuggestedTemplate(
+            icon: "paintpalette.fill",
+            task: "Write an art lesson plan or unit plan for visual arts class",
+            successCriteria: "Lesson objectives aligned to standards, materials and media listed, instructional sequence outlined with timing, and completed plan saved for cooperating teacher or supervisor review",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "graduationcap.fill",
+            task: "Study for the Praxis art education exam or complete an art methods assignment",
+            successCriteria: "Target content area reviewed (art history, studio media, pedagogy, or assessment), key concepts summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Environmental Law
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Write an environmental law brief or policy analysis",
+            successCriteria: "Relevant statute or regulation identified (NEPA, Clean Air Act, Clean Water Act, or Superfund), legal argument outlined with supporting case law, draft completed, and saved for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.magnifyingglass",
+            task: "Study for an environmental law exam or complete an environmental regulation assignment",
+            successCriteria: "Target statute or topic reviewed, key provisions and landmark cases summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Family Law
+        SuggestedTemplate(
+            icon: "house.fill",
+            task: "Draft a family law brief or domestic relations memo",
+            successCriteria: "Relevant facts organized, applicable statutes and case law identified (divorce, custody, adoption, or support), legal argument drafted, and saved for attorney or supervisor review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.fill",
+            task: "Study for a family law exam or complete a domestic relations assignment",
+            successCriteria: "Target topic reviewed (divorce, custody, child support, adoption, or parental rights), key rules and cases summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

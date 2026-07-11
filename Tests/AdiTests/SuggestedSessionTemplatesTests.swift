@@ -2532,4 +2532,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 223,
                 "catalog should have ≥223 templates after musiceducation/massagetherapy/medicallabscience/radiologictechnology/intellectualproperty additions")
     }
+
+    // MARK: - Sign Language / ASL templates
+    @Test func signlanguageTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasASL = tasks.contains { $0.localizedCaseInsensitiveContains("ASL") || $0.localizedCaseInsensitiveContains("sign language") }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("ASL") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("assignment")) }
+        #expect(hasASL,  "catalog must include an ASL or sign language practice template")
+        #expect(hasExam, "catalog must include an ASL exam or assignment template")
+    }
+
+    // MARK: - Acupuncture / TCM templates
+    @Test func acupunctureTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasBoard = tasks.contains { $0.localizedCaseInsensitiveContains("acupuncture") && $0.localizedCaseInsensitiveContains("board") || $0.localizedCaseInsensitiveContains("TCM") }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("acupuncture") && $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("traditional chinese medicine") }
+        #expect(hasBoard,      "catalog must include an acupuncture board or TCM template")
+        #expect(hasAssignment, "catalog must include an acupuncture assignment or TCM school template")
+    }
+
+    // MARK: - Art Education templates
+    @Test func arteducationTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasLesson = tasks.contains { $0.localizedCaseInsensitiveContains("art lesson plan") || $0.localizedCaseInsensitiveContains("visual arts class") }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("Praxis art") || $0.localizedCaseInsensitiveContains("art methods") }
+        #expect(hasLesson, "catalog must include an art lesson plan template")
+        #expect(hasExam,   "catalog must include a Praxis art or art methods template")
+    }
+
+    // MARK: - Environmental Law templates
+    @Test func environmentallawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasBrief = tasks.contains { $0.localizedCaseInsensitiveContains("environmental law brief") || $0.localizedCaseInsensitiveContains("environmental law") && $0.localizedCaseInsensitiveContains("policy") }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("environmental law exam") || $0.localizedCaseInsensitiveContains("environmental regulation") }
+        #expect(hasBrief, "catalog must include an environmental law brief or policy template")
+        #expect(hasExam,  "catalog must include an environmental law exam or regulation template")
+    }
+
+    // MARK: - Family Law templates
+    @Test func familylawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasBrief = tasks.contains { $0.localizedCaseInsensitiveContains("family law brief") || $0.localizedCaseInsensitiveContains("domestic relations") }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("family law exam") || $0.localizedCaseInsensitiveContains("domestic relations assignment") }
+        #expect(hasBrief, "catalog must include a family law brief or domestic relations template")
+        #expect(hasExam,  "catalog must include a family law exam or domestic relations assignment template")
+    }
+
+    // MARK: - Count guard
+    @Test func catalogHasAtLeastTwoHundredThirtyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 233,
+                "catalog should have ≥233 templates after signlanguage/acupuncture/arteducation/environmentallaw/familylaw additions")
+    }
 }

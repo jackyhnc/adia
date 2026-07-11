@@ -14096,3 +14096,68 @@ None. Swift toolchain unavailable on Linux container.
 - Consider: wine studies/sommelier (separate from culinary/hospitality); dental prosthetics sub-domains (orthodontic lab vs prosthodontic)
 - Consider: `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment)
 - Consider: nursing informatics, informatics nursing (separate from nursing/healthcareadmin)
+
+---
+
+## Run 332 — 2026-07-11 — Sign language/ASL, acupuncture/TCM, art education, environmental law, and family law keyword domains (1420→1465 tests, 223→233 templates)
+
+### Shipped
+
+**New keyword domain — signlanguage:**
+- Branch positioned BEFORE linguistics (was line ~261) so "sign language", "ASL", and "deaf education" route here rather than the general language-science pool
+- Matches: sign language, american sign language, ASL class/course/exam/assignment/program/linguistics/study, learning asl, studying asl, deaf education/culture/studies/community, fingerspelling, hand shape/handshape, signed english, sign language linguistics, asl interpreter, sign language interpreter, interpreter training + sign/asl/deaf context
+- `signlanguageCallouts(tier:)` 4/3/3: "those signs aren't going to practice themselves." / "sign language interpreters don't get certified by scrolling." / "CLOSE THIS. open your ASL study guide."
+- 2 templates: "Practice ASL vocabulary and sign language skills" (30 min) + "Study for an ASL or sign language exam or complete a sign language assignment" (45 min)
+
+**New keyword domain — acupuncture:**
+- Branch positioned AFTER chiropractic and BEFORE dentallab (both complementary/alternative medicine traditions; DC-degree already caught, acupuncture now separates out TCM)
+- Matches: acupuncture/acupuncturist, traditional chinese medicine, tcm medicine/class/course/exam/program/school, acupuncture school/program/class/exam/certification/license/board/rotation, NCCAOM/nccaom exam/board, oriental medicine, acupuncture points/acupoints, meridian theory/system, herbal formula, herbal medicine class, chinese herbal, chinese medicine, moxibustion, tuina
+- `acupunctureCallouts(tier:)` 4/3/3: "those acupuncture points aren't going to memorize themselves." / "acupuncturists don't get licensed by scrolling." / "CLOSE THIS. open your acupuncture or TCM study guide."
+- 2 templates: "Study acupuncture points or TCM theory for class or board prep" (60 min) + "Complete an acupuncture or traditional Chinese medicine school assignment" (45 min)
+
+**New keyword domain — arteducation:**
+- Branch positioned AFTER musiceducation and BEFORE physed so art teacher certification, visual arts education assignments, and NAEA / Praxis art prep route here rather than the generic art or education pools
+- Bare "art class" or "taking an art class" stays in studying/art; compound art+teaching/education terms fire here
+- Matches: art education/educator/teacher/teaching, visual art teacher, visual arts education/teaching/teacher, studio art teacher, elementary/high school art teacher, art curriculum, art lesson plan, art methods class/course, art pedagogy, art ed class/course/program, praxis art, national art education, NAEA, teaching art, art certification + teach
+- `arteducationCallouts(tier:)` 4/3/3: "your students are waiting — get back to your art curriculum." / "art teachers don't get certified by scrolling." / "CLOSE THIS. open your art education study guide."
+- 2 templates: "Write an art lesson plan or unit plan for visual arts class" (45 min) + "Study for the Praxis art education exam or complete an art methods assignment" (60 min)
+
+**New keyword domain — environmentallaw:**
+- Branch positioned AFTER intellectualproperty and BEFORE the generic legal branch so NEPA compliance, environmental litigation, Clean Air/Water Act assignments, and Superfund research don't fall through to generic bar-exam callouts
+- Bare "environmental science"/"environmental studies" fires the enviro branch much earlier (~line 1326)
+- Matches: environmental law class/course/exam/assignment, environmental regulation class/course/exam, environmental litigation, environmental compliance class/course, environmental attorney/lawyer, NEPA/national environmental policy act, clean air act, clean water act, endangered species act, CERCLA/superfund law/class, natural resources law, land use law, climate change law, climate litigation, EPA regulation class, EPA law
+- `environmentallawCallouts(tier:)` 4/3/3: "that environmental brief isn't going to write itself." / "environmental lawyers don't master NEPA by scrolling." / "CLOSE THIS. open your environmental law notes."
+- 2 templates: "Write an environmental law brief or policy analysis" (60 min) + "Study for an environmental law exam or complete an environmental regulation assignment" (60 min)
+
+**New keyword domain — familylaw:**
+- Branch positioned AFTER environmentallaw and BEFORE the generic legal branch so divorce, custody, adoption, and domestic-relations coursework routes here rather than generic bar-exam callouts
+- Matches: family law class/course/exam/assignment/clinic/lawyer/attorney, divorce law/proceeding, child custody/custody agreement/custody battle, parental rights, adoption law/proceeding, domestic relations, domestic violence law, alimony, spousal support law, child support law, marital property, prenuptial/postnuptial agreement, guardianship law, termination of parental rights
+- `familylawCallouts(tier:)` 4/3/3: "those family law briefs aren't going to write themselves." / "family law attorneys don't master custody law by scrolling." / "CLOSE THIS. open your family law notes."
+- 2 templates: "Draft a family law brief or domestic relations memo" (60 min) + "Study for a family law exam or complete a domestic relations assignment" (60 min)
+
+**Test counts:**
+- CalloutManagerTests.swift: 1420 → 1465 (+45: 9 tests per domain × 5 domains)
+- SuggestedSessionTemplatesTests.swift: +12 (5 domain existence tests × 2 asserts each + ≥233 count guard)
+
+**Template catalog: 223 → 233**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `signlanguage` fires BEFORE linguistics (line ~258 vs linguistics at ~274). "studying sign language for my asl class assignment" → signlanguage ✓; "linguistics exam on phonology" → linguistics ✓; "learning spanish vocabulary with duolingo" → language ✓
+- `acupuncture` fires AFTER chiropractic (line ~1369) and BEFORE dentallab (line ~1371). "nccaom board exam prep for acupuncture licensing" → acupuncture ✓; "chiropractic school assignment on spinal adjustment" → chiropractic ✓; "mcat prep for med school" → premed ✓
+- `arteducation` fires AFTER musiceducation (line ~1120) and BEFORE physed (line ~1142). "art teacher certification program assignment on visual arts lesson planning" → arteducation ✓; "music education class on choral directing" → musiceducation ✓; "physical education teacher certification" → physed ✓
+- `environmentallaw` fires AFTER intellectualproperty (~2137) and BEFORE legal (~2176). "environmental law class assignment on NEPA" → environmentallaw ✓; "studying for environmental science exam on ecology" → enviro (fires much earlier) ✓; "patent bar exam and patent prosecution" → intellectualproperty ✓
+- `familylaw` fires AFTER environmentallaw (~2157) and BEFORE legal (~2176). "family law class assignment on child custody" → familylaw ✓; "environmental law exam on NEPA" → environmentallaw ✓; "bar exam prep on constitutional law" → legal ✓
+- Five new dispatch cases and pool functions confirmed present. Template count: 233 (verified by `grep -c "icon:" SuggestedSessionTemplates.swift`). ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains: nuclear medicine technology (separate from radiologictechnology), diagnostic medical sonography, cardiovascular technology, surgical technology
+- Consider: drama/theatre education (dramaturge/playwright path; performingarts already has "stage direction"/"drama class" so a separate dramatheatre branch would need to focus on playwriting, dramatic literature, theatre history, theatre design)
+- Consider: wine studies/sommelier (separate from culinary/hospitality)
+- Consider: acupuncture sub-domains (five-element acupuncture vs TCM acupuncture vs Japanese acupuncture)
+- Consider: `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment)
+- Consider: nursing informatics (separate from nursing/healthcareadmin)
+- Consider: art therapy (separate from therapy/arteducation), music therapy (separate from musictheory/therapy)
