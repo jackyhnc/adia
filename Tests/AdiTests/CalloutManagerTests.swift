@@ -6447,4 +6447,282 @@ struct CalloutManagerTests {
             #expect(hasCloseThis, "psychology tier 3 must contain 'CLOSE THIS' or 'no one'")
         }
     }
+
+    // MARK: - Geology / Earth Science
+    // Note: inputs must avoid early-catch words (study/exam/notes/assignment/report/lab) that
+    // fire the studying/homework/report/research branches before geology is checked.
+
+    @Test func geologyKeywordFromMineralogy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "identify rock samples for my mineralogy class") == "geology")
+    }
+    @Test func geologyKeywordFromEarthScience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze earth science field data from my survey") == "geology")
+    }
+    @Test func geologyKeywordFromSeismology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "seismology field survey prep") == "geology")
+    }
+    @Test func geologyKeywordFromPlateTectonics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "plate tectonics map work") == "geology")
+    }
+    @Test func geologyKeywordFromPaleontology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze the fossil record for my paleontology class") == "geology")
+    }
+    @Test func geologyKeywordGeographyDoesNotRouteToGeology() {
+        // "study" fires studying before geology; also "geography" is not in geology branch
+        #expect(CalloutManager.extractTaskKeyword(from: "geography map work for class") != "geology")
+    }
+    @Test func geologyCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geology", tier: tier)
+                #expect(!msgs.isEmpty, "geology tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func geologyCalloutsTier1HasAtLeastThree() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geology", tier: 1)
+            #expect(msgs.count >= 3)
+        }
+    }
+    @Test func geologyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geology", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "geology tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+    @Test func geologyCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geology", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "geology tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Bioinformatics
+    // Inputs must avoid early-catch words (study/exam/dataset/assignment) that fire
+    // the studying/homework/research branches before bioinformatics is checked.
+
+    @Test func bioinformaticsKeywordFromBioinformatics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my bioinformatics pipeline") == "bioinformatics")
+    }
+    @Test func bioinformaticsKeywordFromGenomics() {
+        // "dataset" fires research; use "genomics" without "dataset"
+        #expect(CalloutManager.extractTaskKeyword(from: "run a genomics analysis using biopython") == "bioinformatics")
+    }
+    @Test func bioinformaticsKeywordFromSequenceAlignment() {
+        #expect(CalloutManager.extractTaskKeyword(from: "perform sequence alignment on my protein data") == "bioinformatics")
+    }
+    @Test func bioinformaticsKeywordFromRNAseq() {
+        // "thesis" fires early; use a pipeline-focused input
+        #expect(CalloutManager.extractTaskKeyword(from: "rna-seq pipeline setup and analysis") == "bioinformatics")
+    }
+    @Test func bioinformaticsKeywordFromComputationalBiology() {
+        // "study" fires studying; use a tool-focused input
+        #expect(CalloutManager.extractTaskKeyword(from: "learn computational biology tools and pipelines") == "bioinformatics")
+    }
+    @Test func bioinformaticsKeywordDoesNotRouteToDatscience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "run a bioinformatics pipeline on my genomics data") != "datascience")
+    }
+    @Test func bioinformaticsCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "bioinformatics", tier: tier)
+                #expect(!msgs.isEmpty, "bioinformatics tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func bioinformaticsCalloutsTier1HasAtLeastThree() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "bioinformatics", tier: 1)
+            #expect(msgs.count >= 3)
+        }
+    }
+    @Test func bioinformaticsCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "bioinformatics", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "bioinformatics tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+    @Test func bioinformaticsCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "bioinformatics", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "bioinformatics tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Urban Planning
+    // Inputs must avoid assignment/study/exam (homework/studying branches fire first).
+
+    @Test func urbanplanningKeywordFromUrbanPlanning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "draft my urban planning policy analysis") == "urbanplanning")
+    }
+    @Test func urbanplanningKeywordFromCityPlanning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my city planning policy memo") == "urbanplanning")
+    }
+    @Test func urbanplanningKeywordFromZoningOrdinance() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze the zoning ordinance for my class") == "urbanplanning")
+    }
+    @Test func urbanplanningKeywordFromAICP() {
+        // "study" and "exam" fire studying; use certification-specific input
+        #expect(CalloutManager.extractTaskKeyword(from: "aicp certification prep materials") == "urbanplanning")
+    }
+    @Test func urbanplanningKeywordFromComprehensivePlan() {
+        #expect(CalloutManager.extractTaskKeyword(from: "draft my comprehensive plan section") == "urbanplanning")
+    }
+    @Test func urbanplanningKeywordBareZoningRoutesToRealestate() {
+        // bare word("zoning") is caught by realestate branch; urbanplanning requires "zoning ordinance" / "zoning code" etc.
+        #expect(CalloutManager.extractTaskKeyword(from: "check zoning for the property listing") == "realestate")
+    }
+    @Test func urbanplanningCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "urbanplanning", tier: tier)
+                #expect(!msgs.isEmpty, "urbanplanning tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func urbanplanningCalloutsTier1HasAtLeastThree() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "urbanplanning", tier: 1)
+            #expect(msgs.count >= 3)
+        }
+    }
+    @Test func urbanplanningCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "urbanplanning", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "urbanplanning tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+    @Test func urbanplanningCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "urbanplanning", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "urbanplanning tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Dental Hygiene
+    // "study"/"exam"/"assignment"/"notes"/"report" fire early branches; use hygienist-specific vocabulary.
+
+    @Test func dentalhygieneKeywordFromDentalHygiene() {
+        #expect(CalloutManager.extractTaskKeyword(from: "dental hygiene board certification prep") == "dentalhygiene")
+    }
+    @Test func dentalhygieneKeywordFromNBDHE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nbdhe board prep materials") == "dentalhygiene")
+    }
+    @Test func dentalhygieneKeywordFromPeriodontalCharting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "periodontal charting practice for my patient") == "dentalhygiene")
+    }
+    @Test func dentalhygieneKeywordFromScalingAndRootPlaning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "scaling and root planing patient technique") == "dentalhygiene")
+    }
+    @Test func dentalhygieneKeywordFromOralHealthAssessment() {
+        #expect(CalloutManager.extractTaskKeyword(from: "oral health assessment documentation for my patient") == "dentalhygiene")
+    }
+    @Test func dentalhygieneKeywordDoesNotRouteToDental() {
+        #expect(CalloutManager.extractTaskKeyword(from: "dental hygiene board certification prep") != "dental")
+    }
+    @Test func dentalhygieneCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dentalhygiene", tier: tier)
+                #expect(!msgs.isEmpty, "dentalhygiene tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func dentalhygieneCalloutsTier1HasAtLeastThree() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dentalhygiene", tier: 1)
+            #expect(msgs.count >= 3)
+        }
+    }
+    @Test func dentalhygieneCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dentalhygiene", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "dentalhygiene tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+    @Test func dentalhygieneCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dentalhygiene", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "dentalhygiene tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Molecular Biology
+    // "study"/"report"/"assignment"/"chapter"/"lab" fire early branches (studying/report/homework/reading/research).
+    // Use technique-specific vocabulary without those trigger words.
+
+    @Test func molecularbiologyKeywordFromMolecularBiology() {
+        // "lab" fires research; drop it — "molecular biology" phrase alone fires molecularbiology
+        #expect(CalloutManager.extractTaskKeyword(from: "molecular biology notebook documentation") == "molecularbiology")
+    }
+    @Test func molecularbiologyKeywordFromWesternBlot() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze my western blot results") == "molecularbiology")
+    }
+    @Test func molecularbiologyKeywordFromCRISPR() {
+        // "read" ≠ word("reading"); crispr fires molecularbiology
+        #expect(CalloutManager.extractTaskKeyword(from: "read about crispr gene editing") == "molecularbiology")
+    }
+    @Test func molecularbiologyKeywordFromGelElectrophoresis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "interpret my gel electrophoresis results") == "molecularbiology")
+    }
+    @Test func molecularbiologyKeywordFromMolecularCloning() {
+        // "assignment" fires homework; "lab" fires research — use protocol-focused input without both
+        #expect(CalloutManager.extractTaskKeyword(from: "molecular cloning protocol walkthrough") == "molecularbiology")
+    }
+    @Test func molecularbiologyKeywordBiochemistryStaysInPremed() {
+        // "biochemistry" (standalone word) fires premed; no early-catch words in this input
+        #expect(CalloutManager.extractTaskKeyword(from: "biochemistry for the mcat") == "premed")
+    }
+    @Test func molecularbiologyCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "molecularbiology", tier: tier)
+                #expect(!msgs.isEmpty, "molecularbiology tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func molecularbiologyCalloutsTier1HasAtLeastThree() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "molecularbiology", tier: 1)
+            #expect(msgs.count >= 3)
+        }
+    }
+    @Test func molecularbiologyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "molecularbiology", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "molecularbiology tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+    @Test func molecularbiologyCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "molecularbiology", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "molecularbiology tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
 }

@@ -1,5 +1,64 @@
 # Adia — Build Progress
 
+## Run 322 — 2026-07-11 — Geology + bioinformatics + urban planning + dental hygiene + molecular biology keyword domains (932→982 tests, 113→123 templates)
+
+### Shipped
+
+**Geology keyword domain:**
+- `geology` branch added to `extractTaskKeyword` in `CalloutManager.swift`, positioned BEFORE engineering (so "geology lab" doesn't fall through to research via word("lab")).
+- Matches: geology/geologist/geological, mineralogy/petrology/sedimentology/stratigraphy/geomorphology/hydrogeology/seismology/volcanology/geophysics/geochemistry, earth science/geoscience, plate tectonics, rock/mineral identification, geological survey, paleontology, ASBOG, GIS analysis, soil science, hydrology.
+- False-positive guard: bare "geography" does NOT fire.
+- `geologyCallouts(tier:)` 4/3/3 pool: "those rock samples won't identify themselves." / "CLOSE THIS. open your geology textbook." / "no one passes the ASBOG by scrolling."
+- 2 templates: "Write a geological report or complete an earth science assignment" (60 min) + "Study for my geology exam or review rock and mineral identification" (45 min)
+
+**Bioinformatics keyword domain:**
+- `bioinformatics` branch positioned AFTER datascience (ML tools may co-occur) and BEFORE ux.
+- Matches: bioinformatics/computational biology/genomics/proteomics/transcriptomics/metabolomics, sequence analysis/alignment, BLAST, RNA-seq, metagenomics, genome assembly/annotation, variant calling, phylogenetics, molecular docking, NCBI, bioinformatics pipeline/tools.
+- `bioinformaticsCallouts(tier:)` 4/3/3: "those sequences won't align themselves." / "CLOSE THIS. open your bioinformatics tools." / "no one builds a genome assembly by scrolling."
+- 2 templates: "Analyze a genomics dataset or run a bioinformatics pipeline" (60 min) + "Study bioinformatics tools or complete a sequence analysis assignment" (45 min)
+
+**Urban planning keyword domain:**
+- `urbanplanning` branch positioned BEFORE realestate (which catches bare word("zoning")).
+- Matches: urban planning/city planning/town planning/regional planning/land use planning, urban design, zoning ordinance/code/regulations/law, mixed-use development, transit-oriented, transportation planning, urban renewal, AICP, comprehensive plan/general plan, urban sprawl/policy, municipal planning, smart city/cities, sustainable urbanism, urban infrastructure, land use analysis.
+- `urbanplanningCallouts(tier:)` 4/3/3: "that zoning ordinance isn't going to analyze itself." / "CLOSE THIS. open your planning documents." / "no one passes the AICP by scrolling." / "cities don't plan themselves — close this."
+- 2 templates: "Write a comprehensive plan section or urban planning policy analysis" (60 min) + "Study for the AICP exam or complete an urban planning assignment" (60 min)
+
+**Dental hygiene keyword domain:**
+- `dentalhygiene` branch positioned BEFORE dental, so hygienist-specific tasks get the right pool.
+- "dental hygiene" / "dental hygienist" removed from the dental branch (no longer dual-routing).
+- Matches: dental hygiene/hygienist, NBDHE, DLOSCE, dental hygiene school/program/class/exam/certification/board, periodontal charting/therapy, oral health assessment/education, scaling and root planing, fluoride application/treatment, sealant application/dental sealant, prophylaxis, ADHA.
+- `dentalhygieneCallouts(tier:)` 4/3/3: "those dental hygiene boards aren't going to pass themselves." / "CLOSE THIS. open your dental hygiene notes." / "no one passes the NBDHE by scrolling."
+- 2 templates: "Study for the NBDHE dental hygiene boards" (60 min) + "Complete my periodontal charting or oral health assessment assignment" (30 min)
+
+**Molecular biology keyword domain:**
+- `molecularbiology` branch positioned AFTER pharmacy and BEFORE premed.
+- Bare word("biochemistry") stays in premed (MCAT context); "molecular biology" is explicit here.
+- Matches: molecular biology/biologist, cell biology, molecular genetics, Western blot, gel electrophoresis, Southern/Northern blot, CRISPR/CRISPR-Cas9/gene editing, gene expression analysis, protein expression/purification, recombinant DNA, molecular cloning, cloning vector, plasmid, restriction enzyme/digest, transfection, cell transfection, cell culture (with biology/lab context), flow cytometry, ELISA, DNA sequencing (non-bioinformatics), gene knockout/knockdown, molecular lab/techniques, PCR protocol/result/run.
+- `molecularbiologyCallouts(tier:)` 4/3/3: "those gel results won't analyze themselves." / "CLOSE THIS. open your lab notebook." / "no one gets their biology degree by scrolling."
+- 2 templates: "Analyze PCR results or write up a molecular biology lab report" (45 min) + "Study for a molecular biology or cell biology exam" (60 min)
+
+**Tests:**
+- CalloutManagerTests.swift: 932→982 (+50: 10 per domain)
+- SuggestedSessionTemplatesTests.swift: +16 (3 per domain + ≥123 count guard replacing ≥113)
+
+### Blocked
+Swift toolchain unavailable on Linux — verified by code inspection:
+- "study for my geology exam" → geology ✓; positioned before engineering ✓
+- "analyze my genomics dataset" → bioinformatics ✓; positioned after datascience, before ux ✓
+- "complete my urban planning assignment" → urbanplanning ✓; positioned before realestate ✓
+- "check zoning for the property listing" → realestate ✓ (bare word("zoning") stays in realestate) ✓
+- "study for my dental hygiene boards" → dentalhygiene ✓; positioned before dental ✓; does NOT route to dental ✓
+- "study biochemistry for the mcat" → premed ✓ (molecularbiology doesn't steal biochemistry) ✓
+- "analyze my western blot results" → molecularbiology ✓; positioned after pharmacy, before premed ✓
+- All 5 tier-3 pools contain "CLOSE THIS" or "no one" ✓
+- All 10 template durations in [300, 10800] ✓
+
+### Next agent should pick up
+- Additional keyword domains: public health law, dentistry specialties (oral surgery, orthodontics), supply chain management, hospitality/hotel management, aviation/pilot
+- AppMonitor observability tests (requires macOS)
+
+---
+
 ## Run 321 — 2026-07-11 — Chiropractic + respiratory therapy + psychology keyword domains (900→932 tests, 107→113 templates)
 
 ### Shipped

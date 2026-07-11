@@ -123,6 +123,11 @@ extension CalloutManager {
         case "chiropractic":           return chiropracticCallouts(tier: tier)
         case "respiratorytherapy":     return respiratorytherapyCallouts(tier: tier)
         case "psychology":             return psychologyCallouts(tier: tier)
+        case "geology":                return geologyCallouts(tier: tier)
+        case "bioinformatics":         return bioinformaticsCallouts(tier: tier)
+        case "urbanplanning":          return urbanplanningCallouts(tier: tier)
+        case "dentalhygiene":          return dentalhygieneCallouts(tier: tier)
+        case "molecularbiology":       return molecularbiologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1667,6 +1672,111 @@ extension CalloutManager {
             "CLOSE THIS. open your psychology textbook.",
             "no one aces psych by scrolling.",
             "your research won't design itself — get back to it.",
+        ]
+        }
+    }
+
+    private func geologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those rock samples won't identify themselves.",
+            "your geological report isn't going to write itself.",
+            "get back to your earth science notes.",
+            "your geology exam isn't going to prep itself.",
+        ]
+        case 2: return [
+            "stop scrolling and get back to your geology work.",
+            "those tectonic processes won't study themselves.",
+            "your geological survey notes are waiting — close this.",
+        ]
+        default: return [
+            "CLOSE THIS. open your geology textbook.",
+            "no one passes the ASBOG by scrolling.",
+            "the earth isn't going to study itself — close this.",
+        ]
+        }
+    }
+
+    private func bioinformaticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those sequences won't align themselves.",
+            "your bioinformatics pipeline isn't going to run itself.",
+            "get back to your genomics work.",
+            "your data isn't going to analyze itself.",
+        ]
+        case 2: return [
+            "stop scrolling and get back to your bioinformatics work.",
+            "those variant calls won't interpret themselves.",
+            "your pipeline isn't going to debug itself — close this.",
+        ]
+        default: return [
+            "CLOSE THIS. open your bioinformatics tools.",
+            "no one builds a genome assembly by scrolling.",
+            "your sequences aren't going to align themselves — close this.",
+        ]
+        }
+    }
+
+    private func urbanplanningCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that zoning ordinance isn't going to analyze itself.",
+            "your comprehensive plan won't write itself.",
+            "get back to your urban planning work.",
+            "your AICP prep isn't going to happen on its own.",
+        ]
+        case 2: return [
+            "stop scrolling and get back to your urban planning work.",
+            "those land use policies won't draft themselves.",
+            "your planning report needs you, not this.",
+        ]
+        default: return [
+            "CLOSE THIS. open your planning documents.",
+            "no one passes the AICP by scrolling.",
+            "cities don't plan themselves — close this.",
+        ]
+        }
+    }
+
+    private func dentalhygieneCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those dental hygiene boards aren't going to pass themselves.",
+            "your periodontal charting won't do itself.",
+            "get back to your dental hygiene notes.",
+            "your NBDHE prep isn't going to happen on its own.",
+        ]
+        case 2: return [
+            "stop scrolling and get back to your dental hygiene work.",
+            "your oral health assessment notes are waiting.",
+            "the NBDHE exam is real — close this.",
+        ]
+        default: return [
+            "CLOSE THIS. open your dental hygiene notes.",
+            "no one passes the NBDHE by scrolling.",
+            "your patients deserve a prepared hygienist — close this.",
+        ]
+        }
+    }
+
+    private func molecularbiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those gel results won't analyze themselves.",
+            "your PCR protocol isn't going to run itself.",
+            "get back to your molecular biology work.",
+            "your lab write-up won't write itself.",
+        ]
+        case 2: return [
+            "stop scrolling and get back to your molecular biology work.",
+            "those Western blots won't interpret themselves.",
+            "your molecular biology assignment needs you.",
+        ]
+        default: return [
+            "CLOSE THIS. open your lab notebook.",
+            "no one gets their biology degree by scrolling.",
+            "your experiment isn't going to analyze itself — close this.",
         ]
         }
     }

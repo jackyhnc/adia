@@ -730,5 +730,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target chapters or topic areas reviewed, key theories and landmark studies summarized, and practice questions or application examples completed",
             preferredDuration: 45 * 60
         ),
+        // Geology / Earth Science
+        SuggestedTemplate(
+            icon: "mountain.2.fill",
+            task: "Write a geological report or complete an earth science assignment",
+            successCriteria: "Geological data analyzed, key formations or processes described with supporting evidence, and a complete written report saved and ready to submit",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "globe.americas.fill",
+            task: "Study for my geology exam or review rock and mineral identification",
+            successCriteria: "Target mineral groups or geological units reviewed, identification criteria for at least 15 samples memorized, and practice questions or diagrams completed",
+            preferredDuration: 45 * 60
+        ),
+        // Bioinformatics
+        SuggestedTemplate(
+            icon: "dna",
+            task: "Analyze a genomics dataset or run a bioinformatics pipeline",
+            successCriteria: "Pipeline executed without errors, output files reviewed and quality-checked, key findings summarized and noted for the final report",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.bar.doc.horizontal",
+            task: "Study bioinformatics tools or complete a sequence analysis assignment",
+            successCriteria: "Target algorithms or bioinformatics tools reviewed, sequence alignment or annotation task completed, and results interpreted and written up",
+            preferredDuration: 45 * 60
+        ),
+        // Urban Planning
+        SuggestedTemplate(
+            icon: "building.2.crop.circle.fill",
+            task: "Write a comprehensive plan section or urban planning policy analysis",
+            successCriteria: "Policy goals and land use recommendations clearly articulated, supporting data cited, and at least one complete section of the plan or analysis written and saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "mappin.and.ellipse",
+            task: "Study for the AICP exam or complete an urban planning assignment",
+            successCriteria: "Target AICP domain or planning topic reviewed, key concepts summarized, and at least 20 practice questions completed with corrections noted",
+            preferredDuration: 60 * 60
+        ),
+        // Dental Hygiene
+        SuggestedTemplate(
+            icon: "mouth.fill",
+            task: "Study for the NBDHE dental hygiene boards",
+            successCriteria: "Target content domain reviewed, key periodontal classifications and oral health assessment criteria summarized, and at least 25 NBDHE-style practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "note.text",
+            task: "Complete my periodontal charting or oral health assessment assignment",
+            successCriteria: "Patient periodontal chart completed with pocket depths, bleeding points, and recession documented, clinical findings written up and ready for instructor review",
+            preferredDuration: 30 * 60
+        ),
+        // Molecular Biology
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Analyze PCR results or write up a molecular biology lab report",
+            successCriteria: "Gel image or PCR data interpreted, results section written with band sizes or Ct values documented, and discussion drafted explaining outcomes relative to expected results",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study for a molecular biology or cell biology exam",
+            successCriteria: "Target chapters reviewed, key techniques and molecular pathways summarized, and at least 20 practice questions or diagrams completed",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

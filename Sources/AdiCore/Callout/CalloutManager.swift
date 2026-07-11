@@ -221,6 +221,28 @@ public final class CalloutManager {
             || word("worksheet") || word("worksheets") {
             return "homework"
         }
+        // geology — positioned before engineering so "geology lab", "gis mapping", and
+        // earth-science field tasks don't fall through to engineering or research via word("lab").
+        // "geography" alone does NOT fire here (stays in studying/socialscience).
+        if word("geology") || word("geologist") || word("geological") || word("geologists")
+            || word("mineralogy") || word("petrology") || word("sedimentology")
+            || word("stratigraphy") || word("stratigraphic") || word("geomorphology")
+            || word("hydrogeology") || word("seismology") || word("volcanology")
+            || word("geophysics") || word("geochemistry")
+            || lower.contains("earth science") || lower.contains("earth sciences")
+            || word("geoscience") || word("geosciences")
+            || lower.contains("plate tectonics") || lower.contains("tectonic plates")
+            || lower.contains("rock cycle") || lower.contains("rock identification")
+            || lower.contains("mineral identification") || lower.contains("mineral analysis")
+            || lower.contains("geological survey") || lower.contains("geologic map")
+            || lower.contains("geological map") || lower.contains("geologic cross section")
+            || word("paleontology") || word("paleontologist") || lower.contains("fossil record")
+            || word("asbog")
+            || lower.contains("gis analysis") || lower.contains("gis mapping")
+            || lower.contains("soil science") || lower.contains("soil mechanics")
+            || lower.contains("hydrology") {
+            return "geology"
+        }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
         if word("solidworks") || lower.contains("fusion 360") || word("ansys")
@@ -257,6 +279,26 @@ public final class CalloutManager {
             || lower.contains("random forest") || lower.contains("decision tree") {
             return "datascience"
         }
+        // bioinformatics — positioned after datascience (ML tools may co-occur) and before ux
+        // so sequence analysis, genomics, and computational-biology pipelines route here.
+        // Bare "biology" stays in studying; "biomedical engineering" stays in engineering above.
+        if lower.contains("bioinformatics") || lower.contains("computational biology")
+            || lower.contains("genomics") || lower.contains("proteomics")
+            || lower.contains("transcriptomics") || lower.contains("metabolomics")
+            || lower.contains("sequence analysis") || lower.contains("sequence alignment")
+            || lower.contains("multiple sequence alignment")
+            || lower.contains("blast search") || lower.contains("blast alignment")
+            || lower.contains("rna-seq") || lower.contains("rnaseq") || lower.contains("rna seq")
+            || lower.contains("metagenomics") || lower.contains("metagenomic")
+            || lower.contains("genome assembly") || lower.contains("genome annotation")
+            || lower.contains("variant calling") || lower.contains("variant annotation")
+            || lower.contains("gene annotation") || lower.contains("genome analysis")
+            || lower.contains("phylogenetics") || lower.contains("phylogenetic tree")
+            || lower.contains("molecular docking") || lower.contains("structural bioinformatics")
+            || word("ncbi") || lower.contains("ncbi blast")
+            || lower.contains("bioinformatics pipeline") || lower.contains("bioinformatics tools") {
+            return "bioinformatics"
+        }
         // ux — positioned before research so "user research" routes here rather than to the
         // generic research pool. "information architecture" is also caught here (not building arch).
         if lower.contains("user research") || lower.contains("usability testing")
@@ -277,6 +319,27 @@ public final class CalloutManager {
             || lower.contains("accessibility audit")
             || word("wireframing") || lower.contains("user story") || lower.contains("user stories") {
             return "ux"
+        }
+        // urbanplanning — positioned before realestate (which catches bare word("zoning")) so
+        // "urban planning", "zoning ordinance", and AICP exam prep route to the planning pool.
+        // "urban design" placed here to not fall through to generic word("design") below.
+        if lower.contains("urban planning") || lower.contains("urban planner")
+            || lower.contains("urban planners") || lower.contains("city planning")
+            || lower.contains("city planner") || lower.contains("town planning")
+            || lower.contains("regional planning") || lower.contains("land use planning")
+            || lower.contains("urban design")
+            || lower.contains("zoning ordinance") || lower.contains("zoning code")
+            || lower.contains("zoning regulations") || lower.contains("zoning law")
+            || lower.contains("mixed-use development") || lower.contains("mixed use development")
+            || lower.contains("transit-oriented") || lower.contains("transit oriented development")
+            || lower.contains("transportation planning") || lower.contains("urban renewal")
+            || word("aicp") || lower.contains("aicp exam")
+            || lower.contains("comprehensive plan") || lower.contains("general plan")
+            || lower.contains("urban sprawl") || lower.contains("urban policy")
+            || lower.contains("municipal planning") || lower.contains("smart city")
+            || lower.contains("smart cities") || lower.contains("sustainable urbanism")
+            || lower.contains("urban infrastructure") || lower.contains("land use analysis") {
+            return "urbanplanning"
         }
         // realestate — positioned before business so "real estate investment", property management,
         // and licensing/appraisal prep route here rather than the generic business pool.
@@ -680,12 +743,30 @@ public final class CalloutManager {
             || lower.contains("chiropractic rotation") || lower.contains("chiropractic technique") {
             return "chiropractic"
         }
+        // dentalhygiene — positioned BEFORE dental so dental hygiene school, NBDHE board prep,
+        // and oral-health-assessment tasks get the hygienist-specific callout pool.
+        // "dental hygiene"/"dental hygienist" removed from the dental branch below.
+        if lower.contains("dental hygiene") || lower.contains("dental hygienist")
+            || lower.contains("dental hygienists")
+            || word("nbdhe") || lower.contains("dlosce")
+            || lower.contains("dental hygiene school") || lower.contains("dental hygiene program")
+            || lower.contains("dental hygiene class") || lower.contains("dental hygiene exam")
+            || lower.contains("dental hygiene certification") || lower.contains("dental hygiene board")
+            || lower.contains("periodontal charting") || lower.contains("periodontal therapy")
+            || lower.contains("oral health assessment") || lower.contains("oral health education")
+            || lower.contains("scaling and root planing") || lower.contains("root planing")
+            || lower.contains("fluoride application") || lower.contains("fluoride treatment")
+            || lower.contains("sealant application") || lower.contains("dental sealant")
+            || word("prophylaxis")
+            || word("adha") {
+            return "dentalhygiene"
+        }
         // dental — positioned before premed so dental-school-specific terms (NBDE, DDS/DMD,
         // perio, ortho, endodontics, dental boards) don't fall through to generic premed callouts.
+        // "dental hygiene"/"dental hygienist" now owned by the dentalhygiene branch above.
         if word("dds") || word("dmd") || lower.contains("dental school")
             || lower.contains("dental board") || lower.contains("dental boards")
             || lower.contains("nbde") || lower.contains("inbde")
-            || lower.contains("dental hygiene") || lower.contains("dental hygienist")
             || lower.contains("dental assistant")
             || word("periodontology") || word("periodontics") || word("periodontal")
             || word("orthodontics") || word("orthodontist")
@@ -718,6 +799,29 @@ public final class CalloutManager {
             || lower.contains("pharmacy rotation") || lower.contains("pharmacy clerkship")
             || lower.contains("mtm") {
             return "pharmacy"
+        }
+        // molecularbiology — positioned after pharmacy and before premed so lab-science terms
+        // (PCR, Western blot, cloning, gene editing) route here rather than the MCAT/clinical pool.
+        // Bare word("biochemistry") stays in premed (MCAT context); "molecular biology" is explicit.
+        if lower.contains("molecular biology") || lower.contains("molecular biologist")
+            || lower.contains("cell biology") || lower.contains("molecular genetics")
+            || lower.contains("western blot") || lower.contains("western blotting")
+            || lower.contains("gel electrophoresis") || lower.contains("gel analysis")
+            || lower.contains("southern blot") || lower.contains("northern blot")
+            || word("crispr") || lower.contains("crispr-cas9") || lower.contains("gene editing")
+            || lower.contains("gene expression analysis") || lower.contains("gene expression study")
+            || lower.contains("protein expression") || lower.contains("protein purification")
+            || lower.contains("recombinant dna") || lower.contains("molecular cloning")
+            || lower.contains("cloning vector") || word("plasmid") || word("plasmids")
+            || lower.contains("restriction enzyme") || lower.contains("restriction digest")
+            || word("transfection") || lower.contains("cell transfection")
+            || lower.contains("cell culture") && (lower.contains("molecular") || lower.contains("biology") || lower.contains("lab"))
+            || lower.contains("flow cytometry") || word("elisa")
+            || lower.contains("dna sequencing") && !lower.contains("bioinformatics")
+            || lower.contains("gene knockout") || lower.contains("gene knockdown")
+            || lower.contains("molecular lab") || lower.contains("molecular techniques")
+            || lower.contains("pcr protocol") || lower.contains("pcr result") || lower.contains("run pcr") {
+            return "molecularbiology"
         }
         if word("anatomy") || word("physiology") || word("biochemistry")
             || word("pharmacology") || word("pathology") || word("histology")

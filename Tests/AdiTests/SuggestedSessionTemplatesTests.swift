@@ -1743,8 +1743,141 @@ struct SuggestedSessionTemplatesTests {
         }
     }
 
-    @Test func catalogHasAtLeastOneHundredThirteenTemplates() {
-        #expect(SuggestedSessionTemplates.all.count >= 113,
-                "catalog should have ≥113 templates after chiropractic/respiratory therapy/psychology additions")
+    // MARK: - Geology
+
+    @Test func geologyTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("geology") || t.task.lowercased().contains("earth science")
+        }
+        #expect(!templates.isEmpty, "at least one geology template must exist")
+    }
+    @Test func geologyTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("geology") || t.task.lowercased().contains("earth science")
+        }
+        #expect(templates.count >= 2, "should have ≥2 geology templates")
+    }
+    @Test func geologyTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("geology") || t.task.lowercased().contains("earth science")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    // MARK: - Bioinformatics
+
+    @Test func bioinformaticsTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("bioinformatics") || t.task.lowercased().contains("genomics")
+        }
+        #expect(!templates.isEmpty, "at least one bioinformatics template must exist")
+    }
+    @Test func bioinformaticsTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("bioinformatics") || t.task.lowercased().contains("genomics")
+        }
+        #expect(templates.count >= 2, "should have ≥2 bioinformatics templates")
+    }
+    @Test func bioinformaticsTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("bioinformatics") || t.task.lowercased().contains("genomics")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    // MARK: - Urban Planning
+
+    @Test func urbanplanningTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("urban planning") || t.task.lowercased().contains("aicp")
+        }
+        #expect(!templates.isEmpty, "at least one urban planning template must exist")
+    }
+    @Test func urbanplanningTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("urban planning") || t.task.lowercased().contains("aicp")
+                || t.task.lowercased().contains("comprehensive plan")
+        }
+        #expect(templates.count >= 2, "should have ≥2 urban planning templates")
+    }
+    @Test func urbanplanningTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("urban planning") || t.task.lowercased().contains("aicp")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    // MARK: - Dental Hygiene
+
+    @Test func dentalhygieneTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("dental hygiene") || t.task.lowercased().contains("nbdhe")
+        }
+        #expect(!templates.isEmpty, "at least one dental hygiene template must exist")
+    }
+    @Test func dentalhygieneTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("dental hygiene") || t.task.lowercased().contains("nbdhe")
+                || t.task.lowercased().contains("periodontal charting")
+        }
+        #expect(templates.count >= 2, "should have ≥2 dental hygiene templates")
+    }
+    @Test func dentalhygieneTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("dental hygiene") || t.task.lowercased().contains("nbdhe")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    // MARK: - Molecular Biology
+
+    @Test func molecularbiologyTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("molecular biology") || t.task.lowercased().contains("pcr")
+        }
+        #expect(!templates.isEmpty, "at least one molecular biology template must exist")
+    }
+    @Test func molecularbiologyTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("molecular biology") || t.task.lowercased().contains("pcr")
+                || t.task.lowercased().contains("cell biology")
+        }
+        #expect(templates.count >= 2, "should have ≥2 molecular biology templates")
+    }
+    @Test func molecularbiologyTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("molecular biology") || t.task.lowercased().contains("pcr")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastOneHundredTwentyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 123,
+                "catalog should have ≥123 templates after geology/bioinformatics/urbanplanning/dentalhygiene/molecularbiology additions")
     }
 }
