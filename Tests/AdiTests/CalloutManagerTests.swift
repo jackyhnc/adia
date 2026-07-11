@@ -6991,4 +6991,308 @@ struct CalloutManagerTests {
             #expect(hasCloseThis, "dentalassisting tier 3 must contain 'CLOSE THIS' or 'no one'")
         }
     }
+
+    // MARK: - Film Studies
+    // Distinct from video (production) and screenwriting (writing fiction/scripts);
+    // catches film criticism, film analysis, film theory, and film-history courses.
+
+    @Test func filmstudiesKeywordFromFilmStudies() {
+        #expect(CalloutManager.extractTaskKeyword(from: "film studies essay on auteur theory") == "filmstudies")
+    }
+    @Test func filmstudiesKeywordFromFilmCriticism() {
+        #expect(CalloutManager.extractTaskKeyword(from: "film criticism paper on Hitchcock") == "filmstudies")
+    }
+    @Test func filmstudiesKeywordFromFilmAnalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "film analysis assignment mise-en-scene") == "filmstudies")
+    }
+    @Test func filmstudiesKeywordFromFilmHistory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "film history class notes on Italian neorealism") == "filmstudies")
+    }
+    @Test func filmstudiesKeywordFromAuteurTheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "auteur theory paper for my film course") == "filmstudies")
+    }
+    @Test func filmstudiesKeywordFromMontageTheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "montage theory assignment for film studies") == "filmstudies")
+    }
+    @Test func filmstudiesFalsePositiveFilmProductionStaysInVideo() {
+        // bare word("film") in a production context stays in video
+        #expect(CalloutManager.extractTaskKeyword(from: "film and edit my vlog footage") == "video")
+    }
+    @Test func filmstudiesFalsePositiveScreenplayStaysInScreenwriting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a screenplay for my spec script") == "screenwriting")
+    }
+    @Test func filmstudiesCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "filmstudies", tier: tier)
+                #expect(!msgs.isEmpty, "filmstudies tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func filmstudiesCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "filmstudies", tier: 1)
+            #expect(msgs.count >= 4, "filmstudies tier1 must have ≥4 messages")
+        }
+    }
+    @Test func filmstudiesCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "filmstudies", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "filmstudies tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+    @Test func filmstudiesCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "filmstudies", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "filmstudies tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Performing Arts
+    // Covers theater, acting, dance, musical theater, choreography, and dramaturgy.
+
+    @Test func performingArtsKeywordFromTheater() {
+        #expect(CalloutManager.extractTaskKeyword(from: "theater class scene study assignment") == "performingarts")
+    }
+    @Test func performingArtsKeywordFromMonologue() {
+        #expect(CalloutManager.extractTaskKeyword(from: "memorize my audition monologue") == "performingarts")
+    }
+    @Test func performingArtsKeywordFromChoreography() {
+        #expect(CalloutManager.extractTaskKeyword(from: "choreography notation for my dance recital") == "performingarts")
+    }
+    @Test func performingArtsKeywordFromMusicalTheater() {
+        #expect(CalloutManager.extractTaskKeyword(from: "musical theater scene work and song prep") == "performingarts")
+    }
+    @Test func performingArtsKeywordFromBallet() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ballet technique practice and class prep") == "performingarts")
+    }
+    @Test func performingArtsKeywordFromDramaClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "drama class rehearsal notes") == "performingarts")
+    }
+    @Test func performingArtsKeywordFromImprov() {
+        #expect(CalloutManager.extractTaskKeyword(from: "improv exercises for my acting class") == "performingarts")
+    }
+    @Test func performingArtsKeywordFromDancecClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "dance class technique work") == "performingarts")
+    }
+    @Test func performingArtsFalsePositiveSketchStaysInDesign() {
+        // bare word("sketch") is a design tool — only routes to performingarts via compound terms
+        #expect(CalloutManager.extractTaskKeyword(from: "wireframe in Sketch app") == "design")
+    }
+    @Test func performingArtsCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "performingarts", tier: tier)
+                #expect(!msgs.isEmpty, "performingarts tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func performingArtsCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "performingarts", tier: 1)
+            #expect(msgs.count >= 4, "performingarts tier1 must have ≥4 messages")
+        }
+    }
+    @Test func performingArtsCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "performingarts", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "performingarts tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+    @Test func performingArtsCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "performingarts", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "performingarts tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Astronomy / Astrophysics
+    // Positioned before studying; word("physics") stays in studying for generic use.
+
+    @Test func astronomyKeywordFromAstronomy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "astronomy homework on stellar evolution") == "astronomy")
+    }
+    @Test func astronomyKeywordFromAstrophysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "astrophysics problem set on orbital mechanics") == "astronomy")
+    }
+    @Test func astronomyKeywordFromCosmology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cosmology class notes on dark matter") == "astronomy")
+    }
+    @Test func astronomyKeywordFromObservatory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "observatory report from last night's session") == "astronomy")
+    }
+    @Test func astronomyKeywordFromDarkMatter() {
+        #expect(CalloutManager.extractTaskKeyword(from: "dark matter lecture notes review") == "astronomy")
+    }
+    @Test func astronomyKeywordFromAstrobiologyClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "astrobiology class exam prep") == "astronomy")
+    }
+    @Test func astronomyFalsePositivePhysicsStaysInStudying() {
+        // bare word("physics") stays in studying (generic academic subject)
+        #expect(CalloutManager.extractTaskKeyword(from: "physics exam review notes") == "studying")
+    }
+    @Test func astronomyCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "astronomy", tier: tier)
+                #expect(!msgs.isEmpty, "astronomy tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func astronomyCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "astronomy", tier: 1)
+            #expect(msgs.count >= 4, "astronomy tier1 must have ≥4 messages")
+        }
+    }
+    @Test func astronomyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "astronomy", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "astronomy tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+    @Test func astronomyCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "astronomy", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "astronomy tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Mathematics (Pure Math / Proofs)
+    // Positioned before studying; catches number theory, proofs, and advanced math.
+
+    @Test func mathematicsKeywordFromNumberTheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "number theory problem set on prime factorization") == "mathematics")
+    }
+    @Test func mathematicsKeywordFromProofWriting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "proof writing assignment by mathematical induction") == "mathematics")
+    }
+    @Test func mathematicsKeywordFromAbstractAlgebra() {
+        #expect(CalloutManager.extractTaskKeyword(from: "abstract algebra group theory homework") == "mathematics")
+    }
+    @Test func mathematicsKeywordFromTopology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "topology homework on compact spaces") == "mathematics")
+    }
+    @Test func mathematicsKeywordFromLinearAlgebra() {
+        #expect(CalloutManager.extractTaskKeyword(from: "linear algebra problem set on eigenvalues") == "mathematics")
+    }
+    @Test func mathematicsKeywordFromRealAnalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "real analysis exam prep on continuity proofs") == "mathematics")
+    }
+    @Test func mathematicsKeywordFromMathCompetition() {
+        #expect(CalloutManager.extractTaskKeyword(from: "math competition prep putnam exam practice") == "mathematics")
+    }
+    @Test func mathematicsKeywordFromDiscretemath() {
+        #expect(CalloutManager.extractTaskKeyword(from: "discrete mathematics combinatorics assignment") == "mathematics")
+    }
+    @Test func mathematicsFalsePositiveGenericAlgebraStaysInStudying() {
+        // bare word("algebra") in a non-proof context stays in studying
+        #expect(CalloutManager.extractTaskKeyword(from: "algebra exam review") == "studying")
+    }
+    @Test func mathematicsCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "mathematics", tier: tier)
+                #expect(!msgs.isEmpty, "mathematics tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func mathematicsCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "mathematics", tier: 1)
+            #expect(msgs.count >= 4, "mathematics tier1 must have ≥4 messages")
+        }
+    }
+    @Test func mathematicsCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "mathematics", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "mathematics tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+    @Test func mathematicsCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "mathematics", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "mathematics tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Linguistics
+    // Positioned before studying; language learning stays in the language branch.
+
+    @Test func linguisticsKeywordFromLinguistics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "linguistics exam prep on morphology") == "linguistics")
+    }
+    @Test func linguisticsKeywordFromPhonology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "phonology problem set on vowel harmony") == "linguistics")
+    }
+    @Test func linguisticsKeywordFromPhonetics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "phonetics assignment on IPA transcription") == "linguistics")
+    }
+    @Test func linguisticsKeywordFromSociolinguistics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sociolinguistics paper on language variation") == "linguistics")
+    }
+    @Test func linguisticsKeywordFromLanguageAcquisition() {
+        #expect(CalloutManager.extractTaskKeyword(from: "language acquisition theory paper") == "linguistics")
+    }
+    @Test func linguisticsKeywordFromHistoricalLinguistics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "historical linguistics class on proto-indo-european") == "linguistics")
+    }
+    @Test func linguisticsKeywordFromDiscourseAnalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "discourse analysis assignment for my linguistics course") == "linguistics")
+    }
+    @Test func linguisticsFalsePositiveLanguageLearningStaysInLanguage() {
+        // language learning (vocabulary, Duolingo) stays in the language branch, not linguistics
+        #expect(CalloutManager.extractTaskKeyword(from: "practice Japanese vocabulary with Duolingo") == "language")
+    }
+    @Test func linguisticsCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "linguistics", tier: tier)
+                #expect(!msgs.isEmpty, "linguistics tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func linguisticsCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "linguistics", tier: 1)
+            #expect(msgs.count >= 4, "linguistics tier1 must have ≥4 messages")
+        }
+    }
+    @Test func linguisticsCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "linguistics", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "linguistics tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+    @Test func linguisticsCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "linguistics", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "linguistics tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
 }

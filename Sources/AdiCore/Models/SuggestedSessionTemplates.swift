@@ -860,5 +860,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Class notes reviewed and organized, chairside procedures or infection control protocols summarized, and assignment written up and ready for submission",
             preferredDuration: 30 * 60
         ),
+        // Film Studies
+        SuggestedTemplate(
+            icon: "film",
+            task: "Write a film analysis essay or film criticism paper",
+            successCriteria: "Target film analyzed with key scenes, cinematic techniques, and theoretical frameworks addressed; essay draft written with argument structure clear and saved for revision",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "play.rectangle.fill",
+            task: "Study for a film studies exam or take critical notes on an assigned film",
+            successCriteria: "Key film theories, movements, or directors reviewed; critical notes taken covering cinematography, editing, and narrative structure; study guide completed and saved",
+            preferredDuration: 60 * 60
+        ),
+        // Performing Arts
+        SuggestedTemplate(
+            icon: "theatermasks.fill",
+            task: "Rehearse a monologue, scene, or dance routine",
+            successCriteria: "Full performance prepared from memory, key blocking or choreographic sequences executed cleanly, and notes on problem areas documented for next rehearsal",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "music.note.list",
+            task: "Write a dramaturgy report or theater analysis paper",
+            successCriteria: "Performance or script analyzed with historical context, staging choices, and character development addressed; written analysis completed and saved for submission",
+            preferredDuration: 60 * 60
+        ),
+        // Astronomy / Astrophysics
+        SuggestedTemplate(
+            icon: "sparkles",
+            task: "Complete an astrophysics problem set or astronomy lab report",
+            successCriteria: "All assigned problems attempted, key equations applied correctly with work shown, and solutions documented and ready for submission",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "moon.stars.fill",
+            task: "Study for an astronomy exam or analyze observational data",
+            successCriteria: "Target concepts reviewed, key physical principles summarized, and at least 20 practice problems or data questions completed with corrections noted",
+            preferredDuration: 60 * 60
+        ),
+        // Mathematics (Pure Math / Proofs)
+        SuggestedTemplate(
+            icon: "function",
+            task: "Write or revise a mathematical proof",
+            successCriteria: "Target theorem identified, proof strategy outlined, complete formal proof written in correct notation, and at least one alternative approach considered",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "sum",
+            task: "Complete a mathematics problem set or number theory assignment",
+            successCriteria: "All assigned problems attempted with full work shown, key theorems applied correctly, and solutions written in proper mathematical notation and ready for submission",
+            preferredDuration: 60 * 60
+        ),
+        // Linguistics
+        SuggestedTemplate(
+            icon: "text.bubble.fill",
+            task: "Write a linguistics analysis paper or phonetics assignment",
+            successCriteria: "Target language phenomenon analyzed with key evidence identified, written analysis completed with proper linguistic notation and citations, and saved for submission",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "character.book.closed.fill",
+            task: "Study for a linguistics exam or work through a discourse analysis",
+            successCriteria: "Key frameworks and terminology reviewed, target corpus or text analyzed, and study guide or analytical notes completed and saved",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

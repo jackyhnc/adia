@@ -202,6 +202,77 @@ public final class CalloutManager {
             || lower.contains("effect size") || lower.contains("sample size calculation") {
             return "statistics"
         }
+        // astronomy — positioned before studying so "astrophysics homework" and "astronomy exam"
+        // don't fall through to the generic studying pool via word("exam").
+        // Bare word("physics") stays in studying; compound celestial/cosmological terms route here.
+        if word("astronomy") || word("astronomer") || word("astronomers")
+            || word("astrophysics") || word("astrophysicist") || word("astrophysicists")
+            || lower.contains("celestial mechanics") || word("cosmology") || word("cosmologist")
+            || lower.contains("observational astronomy") || lower.contains("stellar physics")
+            || lower.contains("stellar evolution") || lower.contains("stellar structure")
+            || lower.contains("planetary science") || lower.contains("planetary formation")
+            || word("exoplanet") || word("exoplanets")
+            || lower.contains("orbital mechanics") || lower.contains("orbital dynamics")
+            || lower.contains("radio astronomy") || lower.contains("astronomical observation")
+            || lower.contains("astronomical imaging") || lower.contains("astronomical data")
+            || word("observatory") || word("planetarium")
+            || word("astrobiology") || lower.contains("star formation")
+            || lower.contains("galaxy formation") || lower.contains("galaxy evolution")
+            || lower.contains("dark matter") || lower.contains("dark energy")
+            || lower.contains("cosmological") || lower.contains("astr class")
+            || lower.contains("astr course") || lower.contains("astr lab")
+            || lower.contains("astr homework") || lower.contains("astronomy class")
+            || lower.contains("astronomy course") || lower.contains("astronomy lab")
+            || lower.contains("astronomy homework") || lower.contains("astronomy exam")
+            || lower.contains("astrophysics class") || lower.contains("astrophysics course")
+            || lower.contains("astrophysics homework") || lower.contains("astrophysics exam") {
+            return "astronomy"
+        }
+        // mathematics — positioned before studying so number theory, proof writing, and
+        // advanced topics (topology, abstract algebra) don't fall through to studying.
+        // word("algebra") and word("calculus") are in studying for generic "algebra exam"
+        // use; mathematics catches explicit pure-math terms and proof-writing tasks.
+        if lower.contains("number theory") || lower.contains("abstract algebra")
+            || lower.contains("real analysis") || lower.contains("complex analysis")
+            || word("topology") || lower.contains("group theory") || lower.contains("ring theory")
+            || lower.contains("vector calculus") || lower.contains("multivariable calculus")
+            || lower.contains("differential equations") || lower.contains("partial differential")
+            || lower.contains("discrete mathematics") || lower.contains("discrete math")
+            || word("combinatorics") || lower.contains("mathematical proof")
+            || lower.contains("proof writing") || lower.contains("write a proof")
+            || lower.contains("writing a proof") || lower.contains("proof by induction")
+            || lower.contains("proof by contradiction") || lower.contains("mathematical induction")
+            || lower.contains("set theory") || lower.contains("mathematical logic")
+            || lower.contains("functional analysis") || lower.contains("measure theory")
+            || lower.contains("numerical analysis") || lower.contains("numerical methods")
+            || lower.contains("linear algebra") || lower.contains("matrix algebra")
+            || lower.contains("math competition") || lower.contains("math olympiad")
+            || lower.contains("putnam exam") || lower.contains("amc exam") || lower.contains("aime exam")
+            || lower.contains("mathematical modeling")
+            || lower.contains("graph theory") || lower.contains("boolean algebra")
+            || lower.contains("field theory") && !lower.contains("magnetic field")
+            || lower.contains("galois theory") || lower.contains("category theory")
+            || lower.contains("algebraic topology") || lower.contains("differential geometry") {
+            return "mathematics"
+        }
+        // linguistics — positioned before studying so "linguistics exam", "phonetics class",
+        // and language-science assignments don't fall through to studying.
+        // Language learning (vocabulary, conjugation, Duolingo) stays in the language branch below.
+        if word("linguistics") || word("linguist") || word("linguistic")
+            || word("phonology") || word("phonetics") || word("phoneme") || word("phonemes")
+            || lower.contains("sociolinguistics") || lower.contains("psycholinguistics")
+            || lower.contains("computational linguistics") || lower.contains("corpus linguistics")
+            || lower.contains("language acquisition") || lower.contains("second language acquisition")
+            || lower.contains("applied linguistics") || lower.contains("historical linguistics")
+            || lower.contains("discourse analysis") || lower.contains("language documentation")
+            || lower.contains("language endangerment") || lower.contains("language typology")
+            || lower.contains("linguistic analysis") || lower.contains("linguistic theory")
+            || lower.contains("linguistics class") || lower.contains("linguistics course")
+            || lower.contains("linguistics program") || lower.contains("linguistics major")
+            || lower.contains("linguistics exam") || lower.contains("linguistic anthropology")
+            || lower.contains("international phonetic alphabet") {
+            return "linguistics"
+        }
         if word("study") || word("studying") || word("exam") || word("quiz") || word("test")
             || word("midterm") || word("midterms") || word("finals") || word("notes")
             || word("flashcard") || word("flashcards") || word("lecture")
@@ -490,6 +561,54 @@ public final class CalloutManager {
             || lower.contains("photo series") || lower.contains("photo project")
             || lower.contains("raw files") || lower.contains("raw editing") {
             return "photography"
+        }
+        // filmstudies — positioned before video so "film history", "film criticism", and
+        // "film essay" don't fall through to word("film") in the video branch.
+        // Bare word("film") still routes to video for production tasks.
+        if lower.contains("film studies") || lower.contains("film criticism")
+            || lower.contains("film critic")
+            || lower.contains("film analysis") || lower.contains("film theory")
+            || lower.contains("film history") || lower.contains("film essay")
+            || lower.contains("film class") || lower.contains("film course")
+            || lower.contains("film program") || lower.contains("film school")
+            || lower.contains("cinematic theory") || lower.contains("auteur theory")
+            || lower.contains("mise-en-scène") || lower.contains("mise en scene")
+            || lower.contains("mise-en-scene")
+            || lower.contains("film genre") || lower.contains("genre analysis")
+            || lower.contains("film noir") || lower.contains("documentary film studies")
+            || lower.contains("film review essay") || lower.contains("film review writing")
+            || lower.contains("movie analysis") || lower.contains("movie essay")
+            || lower.contains("movie criticism") || lower.contains("film semiotics")
+            || lower.contains("cinematography theory") || lower.contains("montage theory")
+            || lower.contains("film studies class") || lower.contains("film studies course")
+            || lower.contains("film studies exam") || lower.contains("film studies major") {
+            return "filmstudies"
+        }
+        // performingarts — positioned before video so "filming" in a theater context and
+        // word("film") don't override theater/acting/dance tasks.
+        // word("sketch") stays in design; "sketch comedy" routes here via "improv".
+        if word("theater") || word("theatre") || word("theatrical")
+            || lower.contains("musical theater") || lower.contains("musical theatre")
+            || lower.contains("stage production") || lower.contains("stage direction")
+            || lower.contains("stage management") || lower.contains("stage manager")
+            || word("improv") || lower.contains("improvisation")
+            || word("monologue") || word("monologues") || word("audition") || word("auditions")
+            || word("choreography") || word("choreographer") || word("choreographers")
+            || lower.contains("dance choreography") || lower.contains("performing arts")
+            || word("ballet") || lower.contains("contemporary dance") || lower.contains("tap dance")
+            || lower.contains("modern dance") || lower.contains("dance class")
+            || lower.contains("dance rehearsal") || lower.contains("dance studio")
+            || lower.contains("dance performance") || lower.contains("dance technique")
+            || lower.contains("dance exam") || lower.contains("dance notation")
+            || lower.contains("drama class") || lower.contains("drama school")
+            || lower.contains("drama program") || lower.contains("drama course")
+            || lower.contains("theater class") || lower.contains("theatre class")
+            || lower.contains("acting class") || lower.contains("acting coach")
+            || lower.contains("acting program") || lower.contains("acting school")
+            || lower.contains("acting technique") || word("dramaturgy") || word("dramaturg")
+            || lower.contains("stanislavski") || lower.contains("meisner technique")
+            || lower.contains("strasberg") || word("amda") {
+            return "performingarts"
         }
         if word("video") || word("editing") || word("footage") || word("film") || word("filming") {
             return "video"

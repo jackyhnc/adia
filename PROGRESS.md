@@ -13533,3 +13533,69 @@ None. Swift toolchain unavailable on Linux container.
 - Consider adding more terms to journalism (newscaster/anchor/correspondent), theology (quran/talmud/torah study), criminaljustice (corrections officer/probation/parole)
 - Consider adding "athletic director" / "sport management" to the physed branch or a new sportmanagement branch
 - Consider adding dental laboratory technology as a distinct domain (dental lab tech, DALE exam) separate from dentalassisting/dental/dentalhygiene
+
+
+---
+
+## Run 323 — 2026-07-11 — Film studies, performing arts, astronomy/astrophysics, mathematics (pure math/proofs), and linguistics keyword domains (1031→1092 tests, 133→143 templates)
+
+### Shipped
+
+**New keyword domain — filmstudies:**
+- Branch positioned BEFORE video so "film history", "film criticism", "film essay" don't fall through to `word("film")` in the video branch; bare `word("film")` still routes to video for production tasks
+- Matches: film studies, film criticism/critic, film analysis, film theory, film history, film essay, film class/course/program/school, cinematic theory, auteur theory, mise-en-scène/mise en scene, film genre, genre analysis, film noir, documentary film studies, film review essay/writing, movie analysis/essay/criticism, film semiotics, cinematography theory, montage theory, film studies class/course/exam/major
+- `filmstudiesCallouts(tier:)` 4/3/3: "that film essay isn't going to write itself." / "no one earns their film degree by scrolling." / "CLOSE THIS. open your film analysis."
+- 2 new templates: "Write a film analysis essay or film criticism paper" (60 min) + "Study for a film studies exam or take critical notes on an assigned film" (60 min)
+
+**New keyword domain — performingarts:**
+- Branch positioned BEFORE video (before `word("film")`) so theater/acting/dance tasks don't route to video
+- `word("sketch")` stays in design; compound theater terms fire here
+- Matches: theater/theatre/theatrical, musical theater/theatre, stage production/direction/management/manager, improv/improvisation, monologue/audition, choreography/choreographer, dance choreography, performing arts, ballet, contemporary/tap/modern dance, dance class/rehearsal/studio/performance/technique/exam/notation, drama class/school/program/course, theater/theatre class, acting class/coach/program/school/technique, dramaturgy/dramaturg, Stanislavski, Meisner technique, Strasberg, AMDA
+- `performingArtsCallouts(tier:)` 4/3/3: "that scene isn't going to rehearse itself." / "no one books the role by scrolling." / "CLOSE THIS. open your script or rehearsal notes."
+- 2 new templates: "Rehearse a monologue, scene, or dance routine" (45 min) + "Write a dramaturgy report or theater analysis paper" (60 min)
+
+**New keyword domain — astronomy:**
+- Branch positioned BEFORE studying so "astrophysics homework" and "astronomy exam" don't fall through to studying via `word("exam")`
+- Bare `word("physics")` stays in studying; compound celestial/cosmological terms route here
+- Matches: astronomy/astronomer, astrophysics/astrophysicist, celestial mechanics, cosmology/cosmologist, observational astronomy, stellar physics/evolution/structure, planetary science/formation, exoplanet, orbital mechanics/dynamics, radio astronomy, astronomical observation/imaging/data, observatory, planetarium, astrobiology, star/galaxy formation/evolution, dark matter, dark energy, cosmological, astr class/course/lab/homework, astronomy class/course/lab/homework/exam, astrophysics class/course/homework/exam
+- `astronomyCallouts(tier:)` 4/3/3: "the universe doesn't study itself — you have to." / "no one maps the cosmos by scrolling." / "CLOSE THIS. open your astronomy notes."
+- 2 new templates: "Complete an astrophysics problem set or astronomy lab report" (60 min) + "Study for an astronomy exam or analyze observational data" (60 min)
+
+**New keyword domain — mathematics:**
+- Branch positioned BEFORE studying so number theory, proof writing, and advanced math topics don't fall through via `word("exam")`; `word("algebra")` and `word("calculus")` stay in studying for generic "algebra exam" use
+- Matches: number theory, abstract algebra, real/complex analysis, topology, group/ring theory, vector/multivariable calculus, differential equations, partial differential, discrete mathematics/math, combinatorics, mathematical proof/proof writing/write a proof/proof by induction/proof by contradiction/mathematical induction, set theory, mathematical logic, functional analysis, measure theory, numerical analysis/methods, linear/matrix algebra, math competition/olympiad, Putnam/AMC/AIME exam, mathematical modeling, graph theory, boolean algebra, field theory (not magnetic), Galois theory, category theory, algebraic topology, differential geometry
+- `mathematicsCallouts(tier:)` 4/3/3: "that proof isn't going to write itself." / "no one cracks abstract algebra by scrolling." / "CLOSE THIS. open your proof."
+- 2 new templates: "Write or revise a mathematical proof" (60 min) + "Complete a mathematics problem set or number theory assignment" (60 min)
+
+**New keyword domain — linguistics:**
+- Branch positioned BEFORE studying so "linguistics exam" and "phonetics class" don't fall through; language learning (vocabulary, Duolingo) stays in the language branch
+- Matches: linguistics/linguist/linguistic, phonology, phonetics, phoneme/phonemes, sociolinguistics, psycholinguistics, computational linguistics, corpus linguistics, language acquisition, second language acquisition, applied linguistics, historical linguistics, discourse analysis, language documentation/endangerment/typology, linguistic analysis/theory, linguistics class/course/program/major/exam, linguistic anthropology, international phonetic alphabet
+- `linguisticsCallouts(tier:)` 4/3/3: "that language analysis isn't going to write itself." / "no one earns their linguistics degree by scrolling." / "CLOSE THIS. open your linguistics notes."
+- 2 new templates: "Write a linguistics analysis paper or phonetics assignment" (45 min) + "Study for a linguistics exam or work through a discourse analysis" (60 min)
+
+**Test counts:**
+- CalloutManagerTests: 1031 → 1092 (+61: 12 filmstudies + 14 performingarts + 12 astronomy + 13 mathematics + 12 linguistics; counted via `@Test func`)
+- SuggestedSessionTemplatesTests: 227 → 243 (+16: 3 per domain × 5 domains + ≥143 count guard)
+
+**Template catalog: 133 → 143**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `filmstudies` branch at ~line 569 fires after photography returns (line 562) and BEFORE video's `word("film")` at ~line 614. "film and edit my vlog" → video (no compound filmstudies term). "film analysis essay" → filmstudies. ✓
+- `performingarts` branch at ~line 592 fires before video. `word("theater")` catches "theater class"; `word("improv")` catches "improv exercises"; `word("ballet")` catches "ballet technique". `word("sketch")` alone still goes to design (no compound performingarts term fires). ✓
+- `astronomy` branch at ~line 208 fires after statistics and before studying. `word("astronomy")`, `word("astrophysics")`, `word("cosmology")` all fire. "physics exam review" → studying (word("physics") is in studying, not here). ✓
+- `mathematics` branch at ~line 232 fires before studying. "number theory" → mathematics; "algebra exam review" → studying (word("algebra") in studying, not number theory term). "linear algebra problem set" → mathematics (via lower.contains("linear algebra")). ✓
+- `linguistics` branch at ~line 257 fires before studying. `word("linguistics")` catches "linguistics exam". `word("phonetics")` catches "phonetics assignment". "Japanese vocabulary with Duolingo" → language (language branch catches word("japanese") and word("duolingo") before linguistics branch sees it). ✓
+- Five new pool functions (filmstudiesCallouts, performingArtsCallouts, astronomyCallouts, mathematicsCallouts, linguisticsCallouts) added in CalloutMessages.swift with correct 4/3/3 tier structure.
+- Five dispatch cases added to taskAwareCallouts() switch.
+- Template count confirmed via grep: 143. ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains: performing arts sub-domains (ballet as standalone if needed), speech arts, music composition vs. music history distinction
+- Consider: art history (separate from art/drawing), forensic science (separate from criminal justice), public health sub-domains (epidemiology as standalone), marine biology/ocean science
+- Consider splitting socialscience further: political science vs. anthropology vs. international relations
+- Consider adding astronomy sub-terms: "spectroscopy" in observatory context, "telescope" with guards, "Hubble Space Telescope", "black hole" with compound guard
+- Consider adding more mathematics sub-terms: "category theory exam", "math proof homework", "theorem proof"

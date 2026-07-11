@@ -133,6 +133,11 @@ extension CalloutManager {
         case "physed":                 return physedCallouts(tier: tier)
         case "libraryscience":         return libraryscienceCallouts(tier: tier)
         case "dentalassisting":        return dentalassistingCallouts(tier: tier)
+        case "filmstudies":            return filmstudiesCallouts(tier: tier)
+        case "performingarts":         return performingArtsCallouts(tier: tier)
+        case "astronomy":              return astronomyCallouts(tier: tier)
+        case "mathematics":            return mathematicsCallouts(tier: tier)
+        case "linguistics":            return linguisticsCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1887,6 +1892,111 @@ extension CalloutManager {
             "CLOSE THIS. open your dental assisting notes.",
             "no one becomes a dental assistant by browsing.",
             "CLOSE THIS. your patients deserve your full focus.",
+        ]
+        }
+    }
+
+    private func filmstudiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that film essay isn't going to write itself.",
+            "your film analysis won't happen while you scroll.",
+            "great film critics watch and write — close this.",
+            "your mise-en-scène notes won't analyze themselves.",
+        ]
+        case 2: return [
+            "no one earns their film degree by scrolling.",
+            "close this and open your film analysis.",
+            "the camera doesn't stop rolling — neither should you.",
+        ]
+        default: return [
+            "CLOSE THIS. open your film analysis.",
+            "no one becomes a film critic by watching YouTube.",
+            "CLOSE THIS. your professor doesn't grade Netflix time.",
+        ]
+        }
+    }
+
+    private func performingArtsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that scene isn't going to rehearse itself.",
+            "great actors show up — close this and get back to work.",
+            "your choreography won't perfect itself while you scroll.",
+            "the curtain goes up whether you're ready or not.",
+        ]
+        case 2: return [
+            "no one books the role by scrolling.",
+            "your lines won't learn themselves — close this.",
+            "your director is counting on your prep.",
+        ]
+        default: return [
+            "CLOSE THIS. open your script or rehearsal notes.",
+            "no one earns a stage role by browsing.",
+            "CLOSE THIS. the stage doesn't wait.",
+        ]
+        }
+    }
+
+    private func astronomyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "the universe doesn't study itself — you have to.",
+            "those equations won't solve themselves.",
+            "you won't discover anything while you scroll.",
+            "great astronomers observe — close this and focus.",
+        ]
+        case 2: return [
+            "no one maps the cosmos by scrolling.",
+            "your astrophysics problem set won't do itself.",
+            "close this — the data isn't going to analyze itself.",
+        ]
+        default: return [
+            "CLOSE THIS. open your astronomy notes.",
+            "no one earns their astrophysics degree by browsing.",
+            "CLOSE THIS. the stars don't wait.",
+        ]
+        }
+    }
+
+    private func mathematicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that proof isn't going to write itself.",
+            "your problem set won't solve itself while you scroll.",
+            "theorems don't prove themselves — close this.",
+            "great mathematicians think. close this and start thinking.",
+        ]
+        case 2: return [
+            "no one cracks abstract algebra by scrolling.",
+            "your proof won't appear while you browse.",
+            "close this and open your math notes.",
+        ]
+        default: return [
+            "CLOSE THIS. open your proof.",
+            "no one earns their math degree by scrolling.",
+            "CLOSE THIS. the theorem is waiting.",
+        ]
+        }
+    }
+
+    private func linguisticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that language analysis isn't going to write itself.",
+            "your phonetics problem set won't do itself.",
+            "great linguists observe and analyze — close this.",
+            "your corpus won't build itself while you scroll.",
+        ]
+        case 2: return [
+            "no one earns their linguistics degree by scrolling.",
+            "your analysis won't write itself — close this.",
+            "close this and open your linguistics notes.",
+        ]
+        default: return [
+            "CLOSE THIS. open your linguistics notes.",
+            "no one masters language structure by browsing.",
+            "CLOSE THIS. your analysis is waiting.",
         ]
         }
     }

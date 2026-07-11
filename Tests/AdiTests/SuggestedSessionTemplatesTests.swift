@@ -2014,8 +2014,141 @@ struct SuggestedSessionTemplatesTests {
         }
     }
 
+    // MARK: - Film Studies
+    @Test func filmstudiesTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("film analysis") || t.task.lowercased().contains("film studies")
+                || t.task.lowercased().contains("film criticism")
+        }
+        #expect(!templates.isEmpty, "at least one film studies template must exist")
+    }
+    @Test func filmstudiesTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("film") && (t.task.lowercased().contains("analysis")
+                || t.task.lowercased().contains("studies") || t.task.lowercased().contains("exam"))
+        }
+        #expect(templates.count >= 2, "should have ≥2 film studies templates")
+    }
+    @Test func filmstudiesTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("film analysis") || t.task.lowercased().contains("film studies")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    // MARK: - Performing Arts
+    @Test func performingArtsTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("rehearse") || t.task.lowercased().contains("monologue")
+                || t.task.lowercased().contains("dramaturgy") || t.task.lowercased().contains("theater")
+        }
+        #expect(!templates.isEmpty, "at least one performing arts template must exist")
+    }
+    @Test func performingArtsTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("rehearse") || t.task.lowercased().contains("dramaturgy")
+        }
+        #expect(templates.count >= 2, "should have ≥2 performing arts templates")
+    }
+    @Test func performingArtsTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("rehearse") || t.task.lowercased().contains("monologue")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    // MARK: - Astronomy
+    @Test func astronomyTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("astrophysics") || t.task.lowercased().contains("astronomy")
+        }
+        #expect(!templates.isEmpty, "at least one astronomy template must exist")
+    }
+    @Test func astronomyTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("astronomy") || t.task.lowercased().contains("astrophysics")
+        }
+        #expect(templates.count >= 2, "should have ≥2 astronomy templates")
+    }
+    @Test func astronomyTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("astrophysics") || t.task.lowercased().contains("astronomy")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    // MARK: - Mathematics
+    @Test func mathematicsTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("proof") || t.task.lowercased().contains("number theory")
+                || t.task.lowercased().contains("mathematics problem")
+        }
+        #expect(!templates.isEmpty, "at least one mathematics template must exist")
+    }
+    @Test func mathematicsTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("proof") || t.task.lowercased().contains("mathematics")
+        }
+        #expect(templates.count >= 2, "should have ≥2 mathematics templates")
+    }
+    @Test func mathematicsTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("mathematical proof") || t.task.lowercased().contains("mathematics problem")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    // MARK: - Linguistics
+    @Test func linguisticsTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("linguistics") || t.task.lowercased().contains("phonetics")
+        }
+        #expect(!templates.isEmpty, "at least one linguistics template must exist")
+    }
+    @Test func linguisticsTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("linguistics")
+        }
+        #expect(templates.count >= 2, "should have ≥2 linguistics templates")
+    }
+    @Test func linguisticsTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("linguistics")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
     @Test func catalogHasAtLeastOneHundredThirtyThreeTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 133,
                 "catalog should have ≥133 templates after forensicaccounting/publicrelations/physed/libraryscience/dentalassisting additions")
+    }
+    @Test func catalogHasAtLeastOneHundredFortyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 143,
+                "catalog should have ≥143 templates after filmstudies/performingarts/astronomy/mathematics/linguistics additions")
     }
 }
