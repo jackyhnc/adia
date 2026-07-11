@@ -2368,6 +2368,51 @@ struct SuggestedSessionTemplatesTests {
         #expect(hasExam,  "catalog must include a cultural studies or women's studies exam template")
     }
 
+    // MARK: - Human Factors / Ergonomics templates
+    @Test func humanfactorsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("human factors") || $0.localizedCaseInsensitiveContains("ergonomics assessment") }
+        let hasExam       = tasks.contains { $0.localizedCaseInsensitiveContains("BCPE") || $0.localizedCaseInsensitiveContains("human factors course") }
+        #expect(hasAssignment, "catalog must include a human factors assignment template")
+        #expect(hasExam,       "catalog must include a BCPE or human factors course template")
+    }
+
+    // MARK: - Behavioral Economics templates
+    @Test func behavioraleconomicsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPaper = tasks.contains { $0.localizedCaseInsensitiveContains("behavioral economics") }
+        let hasExam  = tasks.contains { $0.localizedCaseInsensitiveContains("behavioral economics exam") || $0.localizedCaseInsensitiveContains("behavioral science") }
+        #expect(hasPaper, "catalog must include a behavioral economics paper template")
+        #expect(hasExam,  "catalog must include a behavioral economics exam template")
+    }
+
+    // MARK: - Translational Research templates
+    @Test func translationalresearchTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasProposal = tasks.contains { $0.localizedCaseInsensitiveContains("translational research") }
+        let hasAnalysis = tasks.contains { $0.localizedCaseInsensitiveContains("clinical translation") }
+        #expect(hasProposal, "catalog must include a translational research proposal template")
+        #expect(hasAnalysis, "catalog must include a clinical translation analysis template")
+    }
+
+    // MARK: - Healthcare Law templates
+    @Test func healthcarelawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasMemo = tasks.contains { $0.localizedCaseInsensitiveContains("healthcare law") || $0.localizedCaseInsensitiveContains("bioethics") }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("health law exam") || $0.localizedCaseInsensitiveContains("healthcare regulation") }
+        #expect(hasMemo, "catalog must include a healthcare law memo or bioethics template")
+        #expect(hasExam, "catalog must include a health law exam or regulation template")
+    }
+
+    // MARK: - International Trade Law templates
+    @Test func tradelawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasBrief = tasks.contains { $0.localizedCaseInsensitiveContains("trade law") || $0.localizedCaseInsensitiveContains("comparative law") }
+        let hasExam  = tasks.contains { $0.localizedCaseInsensitiveContains("international law exam") || $0.localizedCaseInsensitiveContains("trade compliance") }
+        #expect(hasBrief, "catalog must include an international trade law brief template")
+        #expect(hasExam,  "catalog must include an international law exam or trade compliance template")
+    }
+
     // MARK: - Count guard
     @Test func catalogHasAtLeastOneHundredSixtyOneTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 161,
@@ -2384,5 +2429,9 @@ struct SuggestedSessionTemplatesTests {
     @Test func catalogHasAtLeastOneHundredNinetyOneTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 191,
                 "catalog should have ≥191 templates after supplychain/communicationstudies/healthcareadmin/neuroscience/ethnicstudies additions")
+    }
+    @Test func catalogHasAtLeastTwoHundredOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 201,
+                "catalog should have ≥201 templates after humanfactors/behavioraleconomics/translationalresearch/healthcarelaw/tradelaw additions")
     }
 }

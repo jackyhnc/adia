@@ -8416,4 +8416,232 @@ struct CalloutManagerTests {
             #expect(hasCloseThis, "ethnicstudies tier 3 must contain 'CLOSE THIS' or 'no one'")
         }
     }
+
+    // MARK: - Human Factors / Ergonomics
+    // Positioned BEFORE engineering so ergonomics, HFE, and BCPE exam tasks get their own pool.
+    // Bare "ergonomic" alone is NOT matched.
+
+    @Test func humanfactorsKeywordFromErgonomicsClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ergonomics class assignment on workstation design") == "humanfactors")
+    }
+    @Test func humanfactorsKeywordFromHumanFactors() {
+        #expect(CalloutManager.extractTaskKeyword(from: "human factors engineering exam prep") == "humanfactors")
+    }
+    @Test func humanfactorsKeywordFromBCPE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for the BCPE certification in ergonomics") == "humanfactors")
+    }
+    @Test func humanfactorsFalsePositiveEngineeringStaysInEngineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mechanical engineering problem set on fluid mechanics") == "engineering")
+    }
+    @Test func humanfactorsCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "humanfactors", tier: tier)
+                #expect(!msgs.isEmpty, "humanfactors tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func humanfactorsCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "humanfactors", tier: 1)
+            #expect(msgs.count >= 4, "humanfactors tier1 must have ≥4 messages")
+        }
+    }
+    @Test func humanfactorsCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "humanfactors", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "humanfactors tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func humanfactorsCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "humanfactors", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "humanfactors tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Behavioral Economics
+    // Positioned AFTER finance and BEFORE budget. Bare "economics" stays in studying/business.
+
+    @Test func behavioraleconomicsKeywordFromNudgeTheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nudge theory assignment for my behavioral economics class") == "behavioraleconomics")
+    }
+    @Test func behavioraleconomicsKeywordFromCognitiveBias() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study cognitive biases and loss aversion for behavioral econ exam") == "behavioraleconomics")
+    }
+    @Test func behavioraleconomicsKeywordFromProspectTheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prospect theory paper on choice architecture and default effects") == "behavioraleconomics")
+    }
+    @Test func behavioraleconomicsFalsePositiveBusinessStaysInBusiness() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mba case analysis on strategic management and supply chain") == "business")
+    }
+    @Test func behavioraleconomicsCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "behavioraleconomics", tier: tier)
+                #expect(!msgs.isEmpty, "behavioraleconomics tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func behavioraleconomicsCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "behavioraleconomics", tier: 1)
+            #expect(msgs.count >= 4, "behavioraleconomics tier1 must have ≥4 messages")
+        }
+    }
+    @Test func behavioraleconomicsCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "behavioraleconomics", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "behavioraleconomics tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func behavioraleconomicsCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "behavioraleconomics", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") || $0.contains("Kahneman") }
+            #expect(hasCloseThis, "behavioraleconomics tier 3 must contain 'CLOSE THIS', 'no one', or 'Kahneman'")
+        }
+    }
+
+    // MARK: - Translational Research
+    // Positioned BEFORE research so "translational research" isn't swallowed by word("research").
+
+    @Test func translationalresearchKeywordFromBenchToBedside() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bench to bedside project on clinical translation of novel therapeutics") == "translationalresearch")
+    }
+    @Test func translationalresearchKeywordFromT2Research() {
+        #expect(CalloutManager.extractTaskKeyword(from: "t2 research assignment on translational medicine methods") == "translationalresearch")
+    }
+    @Test func translationalresearchKeywordFromTranslationalScience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "translational science proposal for CTSA program") == "translationalresearch")
+    }
+    @Test func translationalresearchFalsePositiveResearchStaysInResearch() {
+        #expect(CalloutManager.extractTaskKeyword(from: "collect and analyze qualitative data for my research paper") == "research")
+    }
+    @Test func translationalresearchCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "translationalresearch", tier: tier)
+                #expect(!msgs.isEmpty, "translationalresearch tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func translationalresearchCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "translationalresearch", tier: 1)
+            #expect(msgs.count >= 4, "translationalresearch tier1 must have ≥4 messages")
+        }
+    }
+    @Test func translationalresearchCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "translationalresearch", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "translationalresearch tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func translationalresearchCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "translationalresearch", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "translationalresearch tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Healthcare Law
+    // Positioned BEFORE policy and legal so health law, HIPAA-as-law, bioethics, and medical
+    // malpractice route here. "health policy" stays in policy branch.
+
+    @Test func healthcarelawKeywordFromHealthLaw() {
+        #expect(CalloutManager.extractTaskKeyword(from: "health law class paper on HIPAA and patient rights") == "healthcarelaw")
+    }
+    @Test func healthcarelawKeywordFromMedicalMalpractice() {
+        #expect(CalloutManager.extractTaskKeyword(from: "medical malpractice case study for my healthcare law exam") == "healthcarelaw")
+    }
+    @Test func healthcarelawKeywordFromBioethics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bioethics class assignment on informed consent law") == "healthcarelaw")
+    }
+    @Test func healthcarelawFalsePositiveLegalStaysInLegal() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prepare for the bar exam — write a legal brief on contract law") == "legal")
+    }
+    @Test func healthcarelawCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "healthcarelaw", tier: tier)
+                #expect(!msgs.isEmpty, "healthcarelaw tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func healthcarelawCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "healthcarelaw", tier: 1)
+            #expect(msgs.count >= 4, "healthcarelaw tier1 must have ≥4 messages")
+        }
+    }
+    @Test func healthcarelawCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "healthcarelaw", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "healthcarelaw tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func healthcarelawCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "healthcarelaw", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "healthcarelaw tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - International Trade Law
+    // Positioned BEFORE legal so trade law, WTO, customs, and international arbitration route here.
+    // Bare "trade" alone is NOT matched.
+
+    @Test func tradelawKeywordFromInternationalTradeLaw() {
+        #expect(CalloutManager.extractTaskKeyword(from: "international trade law exam prep on WTO dispute resolution") == "tradelaw")
+    }
+    @Test func tradelawKeywordFromComparativeLaw() {
+        #expect(CalloutManager.extractTaskKeyword(from: "comparative law class paper on treaty law and trade agreements") == "tradelaw")
+    }
+    @Test func tradelawKeywordFromCustomsLaw() {
+        #expect(CalloutManager.extractTaskKeyword(from: "customs law assignment on import export law and trade compliance") == "tradelaw")
+    }
+    @Test func tradelawFalsePositiveLegalStaysInLegal() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a legal memo and prepare for moot court") == "legal")
+    }
+    @Test func tradelawCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "tradelaw", tier: tier)
+                #expect(!msgs.isEmpty, "tradelaw tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func tradelawCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "tradelaw", tier: 1)
+            #expect(msgs.count >= 4, "tradelaw tier1 must have ≥4 messages")
+        }
+    }
+    @Test func tradelawCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "tradelaw", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "tradelaw tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func tradelawCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "tradelaw", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "tradelaw tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
 }

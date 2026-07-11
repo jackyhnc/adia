@@ -1237,5 +1237,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target unit reviewed (critical race theory, intersectionality, feminist theory, or postcolonial studies), key theorists and concepts summarized, and at least 20 review questions or discussion prompts completed",
             preferredDuration: 45 * 60
         ),
+        // Human Factors / Ergonomics
+        SuggestedTemplate(
+            icon: "person.and.background.dotted",
+            task: "Complete a human factors engineering assignment or ergonomics assessment",
+            successCriteria: "Task analysis or workstation assessment completed, human factors principles applied, findings documented with recommendations, and report written and saved for submission",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "figure.stand.line.dotted.figure.stand",
+            task: "Study for the BCPE exam or complete a human factors course assignment",
+            successCriteria: "Target content area reviewed (biomechanics, cognitive ergonomics, or systems design), key principles summarized, and at least 20 practice questions or application exercises completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Behavioral Economics
+        SuggestedTemplate(
+            icon: "brain",
+            task: "Write a behavioral economics analysis or research paper",
+            successCriteria: "Research question clearly stated, key cognitive biases or behavioral mechanisms identified and explained, relevant studies cited, argument developed across body sections, and paper saved in final draft format for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.line.uptrend.xyaxis",
+            task: "Study for a behavioral economics exam or complete a behavioral science assignment",
+            successCriteria: "Target concepts reviewed (nudge theory, prospect theory, or cognitive biases), key theorists and frameworks summarized, and at least 20 practice questions or application examples completed with corrections",
+            preferredDuration: 45 * 60
+        ),
+        // Translational Research
+        SuggestedTemplate(
+            icon: "flask.fill",
+            task: "Write a translational research proposal or bench-to-bedside project plan",
+            successCriteria: "Research question framed in translational context (T1–T4), gap in knowledge identified, methodology and translation pathway outlined, and proposal draft completed and saved for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.vial.fill",
+            task: "Analyze translational research data or complete a clinical translation assignment",
+            successCriteria: "Dataset or study analyzed using appropriate methods, findings interpreted in clinical context, key implications for patient care identified, and analysis written up and saved for review",
+            preferredDuration: 60 * 60
+        ),
+        // Healthcare Law
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Write a healthcare law memo or bioethics analysis",
+            successCriteria: "Legal issue identified and framed, relevant statutes and regulations cited (HIPAA, ACA, or state law), argument developed with counterarguments addressed, and memo or analysis saved in final format for review",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for a health law exam or complete a healthcare regulation assignment",
+            successCriteria: "Target content area reviewed (patient rights, HIPAA, Medicare, or medical malpractice), key cases and regulations summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // International Trade Law
+        SuggestedTemplate(
+            icon: "globe.americas.fill",
+            task: "Write an international trade law brief or comparative law analysis",
+            successCriteria: "Trade dispute or regulatory issue identified, relevant WTO rules or treaty provisions cited, argument structured with supporting cases, and brief or analysis completed and saved for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "building.columns.fill",
+            task: "Study for an international law exam or complete a trade compliance assignment",
+            successCriteria: "Target international law topic reviewed (trade law, treaty interpretation, or international arbitration), key frameworks and case law summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

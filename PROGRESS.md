@@ -1,5 +1,63 @@
 # Adia — Build Progress
 
+## Run 328 — 2026-07-11 — Human factors/ergonomics + behavioral economics + translational research + healthcare law + trade law keyword domains (1290→1330 tests, 193→203 templates)
+
+### Shipped
+
+**Human factors / ergonomics keyword domain:**
+- `humanfactors` branch added to `extractTaskKeyword` in `CalloutManager.swift`, positioned BEFORE engineering so ergonomics and HFE tasks don't fall through to the engineering pool.
+- Matches: human factors / human factor engineering, ergonomics/ergonomist, HFE/HFES, occupational/cognitive/physical/workplace ergonomics, workstation assessment/design, usability engineering, BCPE, anthropometry/anthropometric, work physiology, human-systems integration, human factors/ergonomics class/course/exam.
+- False-positive guard: bare "ergonomic" (product/chair marketing) NOT matched.
+- `humanfactorsCallouts(tier:)` 4/3/3 pool: "those ergonomics concepts won't memorize themselves." / "CLOSE THIS. open your human factors notes." / "no one passes the BCPE by browsing."
+- 2 templates: "Complete a human factors engineering assignment or ergonomics assessment" (60 min) + "Study for the BCPE exam or complete a human factors course assignment" (60 min)
+
+**Behavioral economics keyword domain:**
+- `behavioraleconomics` branch positioned AFTER finance and BEFORE budget.
+- Matches: behavioral/behavioural economics/economist, nudge theory/unit, cognitive bias/biases, loss aversion, prospect theory, anchoring bias/effect, choice/decision architecture, Thaler/Sunstein/Ariely, bounded rationality, satisficing, mental accounting, status quo bias, present bias, hyperbolic discounting, default effects, framing effects, heuristics and biases, dual process theory, behavioral public policy, behavioral science class/course/exam.
+- False-positive guard: bare "economics" and bare "behavioral" NOT matched.
+- `behavioraleconomicsCallouts(tier:)` 4/3/3: "those cognitive biases won't study themselves." / "CLOSE THIS. open your behavioral economics notes." / "CLOSE THIS. Kahneman didn't write Thinking Fast and Slow by scrolling."
+- 2 templates: "Write a behavioral economics analysis or research paper" (60 min) + "Study for a behavioral economics exam or complete a behavioral science assignment" (45 min)
+
+**Translational research keyword domain:**
+- `translationalresearch` branch positioned BEFORE research (critical: `word("research")` uses `\b` boundaries and would otherwise catch "translational research" first).
+- Matches: translational research/medicine/science/biology/pharmacology, bench to bedside/bench-to-bedside, T1/T2/T3/T4 research, clinical translation, biomedical translation, CTSA program, TL1 program, clinical translational.
+- `translationalresearchCallouts(tier:)` 4/3/3: "that research won't translate itself." / "CLOSE THIS. open your translational research notes." / "no one advances medicine by browsing."
+- 2 templates: "Write a translational research proposal or bench-to-bedside project plan" (60 min) + "Analyze translational research data or complete a clinical translation assignment" (60 min)
+
+**Healthcare law keyword domain:**
+- `healthcarelaw` branch positioned BEFORE policy and BEFORE legal so health-law courses, HIPAA-as-law, bioethics law, and medical malpractice tasks route here. "health policy" stays in policy branch.
+- Matches: health law/healthcare law/medical law/health care law, healthcare regulation class/course/exam, HIPAA law/class/course/exam/certification, bioethics class/course/exam, medical ethics class/course, medical liability, medical malpractice, healthcare/health care reform law, patient rights law, informed consent law, health law class/course/exam/paper.
+- `healthcarelawCallouts(tier:)` 4/3/3: "that health law brief isn't going to write itself." / "CLOSE THIS. open your health law notes." / "no one passes the health law exam by browsing."
+- 2 templates: "Write a healthcare law memo or bioethics analysis" (45 min) + "Study for a health law exam or complete a healthcare regulation assignment" (60 min)
+
+**International trade law keyword domain:**
+- `tradelaw` branch positioned BEFORE legal so trade law, WTO, customs-compliance, and international arbitration tasks route here. Bare "trade" NOT matched.
+- Matches: trade law, international trade law, import/export law, WTO law/dispute, trade regulation/compliance class/course, customs law/regulation class, international law class/course/exam/paper, international business law, international arbitration class/course, comparative law class/course, treaty law, transnational law, conflict of laws.
+- `tradelawCallouts(tier:)` 4/3/3: "that trade law brief isn't going to write itself." / "CLOSE THIS. open your trade law notes." / "no one masters international arbitration by browsing."
+- 2 templates: "Write an international trade law brief or comparative law analysis" (60 min) + "Study for an international law exam or complete a trade compliance assignment" (60 min)
+
+**Tests:**
+- CalloutManagerTests.swift: 1290→1330 (+40: 8 per domain)
+- SuggestedSessionTemplatesTests.swift: +16 (2 per domain + ≥201 count guard)
+
+### Blocked
+Swift toolchain unavailable on Linux — verified by code inspection:
+- "ergonomics class assignment on workstation design" → humanfactors ✓; positioned before engineering ✓
+- "nudge theory assignment for behavioral economics class" → behavioraleconomics ✓; positioned after finance ✓
+- "bench to bedside project on clinical translation" → translationalresearch ✓; positioned BEFORE research ✓ (critical fix: word("research") has \b boundaries and would catch "translational research")
+- "collect and analyze qualitative data for my research paper" → research ✓ (not captured by translationalresearch ✓)
+- "health law class paper on HIPAA and patient rights" → healthcarelaw ✓; positioned before legal ✓
+- "international trade law exam prep on WTO dispute resolution" → tradelaw ✓; positioned before legal ✓
+- "write a legal memo and prepare for moot court" → legal ✓ (not caught by tradelaw ✓)
+- All 5 tier-3 pools contain "CLOSE THIS" or "no one" ✓; all tier-1 pools have ≥4 messages ✓
+- All 10 template durations in [300, 10800] ✓
+
+### Next agent should pick up
+- Additional keyword domains: gerontology/aging studies, radiologic technology/imaging sciences, dental surgery/oral surgery, behavioral health/addiction counseling, public health law
+- AppMonitor observability tests (requires macOS)
+
+---
+
 ## Run 327 — 2026-07-11 — Supply chain + communication studies + healthcare admin + neuroscience + ethnic studies keyword domains (1250→1290 tests, 183→193 templates)
 
 ### Shipped

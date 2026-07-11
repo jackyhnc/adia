@@ -162,6 +162,11 @@ extension CalloutManager {
         case "healthcareadmin":        return healthcareadminCallouts(tier: tier)
         case "neuroscience":           return neuroscienceCallouts(tier: tier)
         case "ethnicstudies":          return ethnicstudiesCallouts(tier: tier)
+        case "humanfactors":           return humanfactorsCallouts(tier: tier)
+        case "behavioraleconomics":    return behavioraleconomicsCallouts(tier: tier)
+        case "translationalresearch":  return translationalresearchCallouts(tier: tier)
+        case "healthcarelaw":          return healthcarelawCallouts(tier: tier)
+        case "tradelaw":               return tradelawCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -2543,6 +2548,111 @@ extension CalloutManager {
             "CLOSE THIS. open your ethnic studies notes.",
             "no one masters intersectionality theory by browsing.",
             "CLOSE THIS. get back to your ethnic studies work.",
+        ]
+        }
+    }
+
+    private func humanfactorsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those ergonomics concepts won't memorize themselves.",
+            "get back to your human factors assignment.",
+            "your HFE exam won't prep itself.",
+            "close this and open your human factors notes.",
+        ]
+        case 2: return [
+            "human factors engineers don't design safer systems by scrolling.",
+            "your ergonomics assignment isn't going to complete itself.",
+            "stop avoiding your human factors work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your human factors notes.",
+            "no one passes the BCPE by browsing.",
+            "CLOSE THIS. get back to your ergonomics assignment.",
+        ]
+        }
+    }
+
+    private func behavioraleconomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those cognitive biases won't study themselves.",
+            "get back to your behavioral economics notes.",
+            "your behavioral econ exam won't prep itself.",
+            "close this and open your behavioral economics textbook.",
+        ]
+        case 2: return [
+            "behavioral economists don't understand bias by scrolling.",
+            "your behavioral economics assignment isn't going to complete itself.",
+            "stop procrastinating on your behavioral econ work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your behavioral economics notes.",
+            "no one understands nudge theory by browsing.",
+            "CLOSE THIS. Kahneman didn't write Thinking Fast and Slow by scrolling.",
+        ]
+        }
+    }
+
+    private func translationalresearchCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that research won't translate itself.",
+            "get back to your translational research work.",
+            "your bench-to-bedside project won't progress itself.",
+            "close this and open your research notes.",
+        ]
+        case 2: return [
+            "translational researchers don't advance medicine by scrolling.",
+            "your clinical translation assignment isn't going to complete itself.",
+            "stop avoiding your translational research.",
+        ]
+        default: return [
+            "CLOSE THIS. open your translational research notes.",
+            "no one advances medicine by browsing.",
+            "CLOSE THIS. your bench-to-bedside work won't happen without you.",
+        ]
+        }
+    }
+
+    private func healthcarelawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that health law brief isn't going to write itself.",
+            "get back to your healthcare law notes.",
+            "your health law exam won't prep itself.",
+            "close this and open your healthcare law textbook.",
+        ]
+        case 2: return [
+            "health lawyers don't master HIPAA by scrolling.",
+            "your healthcare law assignment isn't going to complete itself.",
+            "stop avoiding your health law work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your health law notes.",
+            "no one passes the health law exam by browsing.",
+            "CLOSE THIS. get back to your healthcare regulation assignment.",
+        ]
+        }
+    }
+
+    private func tradelawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that trade law brief isn't going to write itself.",
+            "get back to your international law notes.",
+            "your trade law exam won't prep itself.",
+            "close this and open your international law textbook.",
+        ]
+        case 2: return [
+            "international lawyers don't master WTO rules by scrolling.",
+            "your trade law assignment isn't going to complete itself.",
+            "stop avoiding your international law work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your trade law notes.",
+            "no one masters international arbitration by browsing.",
+            "CLOSE THIS. get back to your trade compliance assignment.",
         ]
         }
     }

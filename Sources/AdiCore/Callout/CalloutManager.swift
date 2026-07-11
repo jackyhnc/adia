@@ -384,6 +384,23 @@ public final class CalloutManager {
             || lower.contains("aviation exam") || lower.contains("aviation program") {
             return "aviation"
         }
+        // humanfactors — positioned BEFORE engineering so ergonomics, human-factors engineering,
+        // and BCPE exam tasks get their own pool. Bare "ergonomic" alone is NOT matched (too common
+        // in marketing copy for chairs and keyboards).
+        if lower.contains("human factors") || lower.contains("human factor engineering")
+            || word("ergonomics") || word("ergonomist") || word("hfe") || word("hfes")
+            || lower.contains("occupational ergonomics") || lower.contains("cognitive ergonomics")
+            || lower.contains("physical ergonomics") || lower.contains("workplace ergonomics")
+            || lower.contains("workstation assessment") || lower.contains("workstation design")
+            || lower.contains("usability engineering") || word("bcpe")
+            || lower.contains("anthropometry") || word("anthropometric")
+            || lower.contains("work physiology") || lower.contains("occupational health ergonomics")
+            || lower.contains("human factors exam") || lower.contains("human factors class")
+            || lower.contains("human factors course") || lower.contains("ergonomics class")
+            || lower.contains("ergonomics course") || lower.contains("ergonomics exam")
+            || lower.contains("human-systems integration") || lower.contains("human systems integration") {
+            return "humanfactors"
+        }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
         if word("solidworks") || lower.contains("fusion 360") || word("ansys")
@@ -594,6 +611,18 @@ public final class CalloutManager {
             || lower.contains("business school")
             || lower.contains("management class") || lower.contains("management course") {
             return "business"
+        }
+        // translationalresearch — positioned BEFORE research so "translational research" and
+        // "bench to bedside" route here before word("research") catches them first.
+        if lower.contains("translational research") || lower.contains("translational medicine")
+            || lower.contains("bench to bedside") || lower.contains("bench-to-bedside")
+            || lower.contains("t1 research") || lower.contains("t2 research")
+            || lower.contains("t3 research") || lower.contains("t4 research")
+            || lower.contains("clinical translation") || lower.contains("biomedical translation")
+            || lower.contains("translational science") || lower.contains("translational biology")
+            || lower.contains("ctsa program") || lower.contains("tl1 program")
+            || lower.contains("clinical translational") || lower.contains("translational pharmacology") {
+            return "translationalresearch"
         }
         if word("research") || word("lab")
             || lower.contains("case study") || lower.contains("case studies")
@@ -1001,6 +1030,27 @@ public final class CalloutManager {
             || lower.contains("financial due diligence")
             || lower.contains("mergers and acquisitions") || lower.contains("m&a analysis") {
             return "finance"
+        }
+        // behavioraleconomics — positioned AFTER finance and BEFORE budget so behavioral-finance
+        // and cognitive-bias coursework gets its own pool. Bare "economics" stays in
+        // studying/business; bare "behavioral" alone is NOT matched.
+        if lower.contains("behavioral economics") || lower.contains("behavioural economics")
+            || lower.contains("behavioral economist") || lower.contains("behavioural economist")
+            || lower.contains("nudge theory") || lower.contains("nudge unit")
+            || lower.contains("cognitive bias") || lower.contains("cognitive biases")
+            || lower.contains("loss aversion") || lower.contains("prospect theory")
+            || lower.contains("anchoring bias") || lower.contains("anchoring effect")
+            || lower.contains("choice architecture") || lower.contains("decision architecture")
+            || word("thaler") || word("sunstein") || word("ariely")
+            || lower.contains("bounded rationality") || lower.contains("satisficing")
+            || lower.contains("mental accounting") || lower.contains("status quo bias")
+            || lower.contains("present bias") || lower.contains("hyperbolic discounting")
+            || lower.contains("default effects") || lower.contains("framing effects")
+            || lower.contains("heuristics and biases") || lower.contains("dual process theory")
+            || lower.contains("behavioral public policy")
+            || lower.contains("behavioral science class") || lower.contains("behavioral science course")
+            || lower.contains("behavioral science exam") {
+            return "behavioraleconomics"
         }
         if word("budget") || word("budgeting") || word("budgets")
             || word("spreadsheet") || word("spreadsheets")
@@ -1822,6 +1872,39 @@ public final class CalloutManager {
             || lower.contains("health policy") || lower.contains("public health policy")
             || lower.contains("fiscal policy") || lower.contains("monetary policy") {
             return "policy"
+        }
+        // healthcarelaw — positioned BEFORE legal so health-law courses, HIPAA-as-law, bioethics
+        // law, and medical malpractice tasks route here. "health policy" stays in the policy branch.
+        if lower.contains("health law") || lower.contains("healthcare law") || lower.contains("medical law")
+            || lower.contains("health care law") || lower.contains("healthcare regulation class")
+            || lower.contains("healthcare regulation course") || lower.contains("healthcare regulation exam")
+            || lower.contains("hipaa law") || lower.contains("hipaa class") || lower.contains("hipaa course")
+            || lower.contains("hipaa exam") || lower.contains("hipaa certification")
+            || lower.contains("bioethics class") || lower.contains("bioethics course") || lower.contains("bioethics exam")
+            || lower.contains("medical ethics class") || lower.contains("medical ethics course")
+            || lower.contains("medical liability") || lower.contains("medical malpractice")
+            || lower.contains("healthcare reform law") || lower.contains("health care reform law")
+            || lower.contains("patient rights law") || lower.contains("informed consent law")
+            || lower.contains("health law class") || lower.contains("health law course")
+            || lower.contains("health law exam") || lower.contains("health law paper") {
+            return "healthcarelaw"
+        }
+        // tradelaw — positioned BEFORE legal so international trade, WTO law, and customs-
+        // compliance coursework routes here. Bare "trade" is NOT matched (too common in business).
+        if lower.contains("trade law") || lower.contains("international trade law")
+            || lower.contains("import export law") || lower.contains("import/export law")
+            || lower.contains("wto law") || lower.contains("wto dispute")
+            || lower.contains("trade regulation class") || lower.contains("trade regulation course")
+            || lower.contains("trade compliance class") || lower.contains("trade compliance course")
+            || lower.contains("customs law") || lower.contains("customs regulation class")
+            || lower.contains("international law class") || lower.contains("international law course")
+            || lower.contains("international law exam") || lower.contains("international law paper")
+            || lower.contains("international business law")
+            || lower.contains("international arbitration class") || lower.contains("international arbitration course")
+            || lower.contains("comparative law class") || lower.contains("comparative law course")
+            || lower.contains("treaty law") || lower.contains("transnational law")
+            || lower.contains("conflict of laws") {
+            return "tradelaw"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")
