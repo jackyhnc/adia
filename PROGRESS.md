@@ -13659,3 +13659,70 @@ None. Swift toolchain unavailable on Linux container.
 - Consider adding to arthistory: "visual analysis", "formal analysis", "iconographic analysis", "art world", "postcolonial art theory", "feminist art theory"
 - Consider splitting socialscience: political science vs. anthropology vs. international relations (each deserves its own pool)
 - Consider adding "forensic psychology" to forensicscience or as its own domain
+
+---
+
+## Run 325 — 2026-07-11 — Accounting, sports management, art restoration, computational science, and forensic psychology keyword domains (1128→1169 tests, 151→161 templates)
+
+### Shipped
+
+**New keyword domain — accounting:**
+- Branch positioned BEFORE forensicaccounting and finance/budget so general accounting coursework, CMA prep, QuickBooks/Xero, and accounting-student tasks route here
+- Bare word("accounting") and word("bookkeeping") stay in budget for non-student use
+- Matches: accounting class/course/exam/homework/assignment/textbook/major/degree/program/principles/theory/lab/notes, cma exam/prep/certification/study, word("cma"), word("quickbooks") + quickbooks certification/class/exam, word("xero"), word("aicpa"), audit class/course/textbook/exam, managerial/cost/tax accounting class/course/textbook/exam, intermediate/advanced accounting, accounting software, bookkeeping class/course/exam
+- `accountingCallouts(tier:)` 4/3/3: "those journal entries aren't going to balance themselves." / "no one passes the CMA by scrolling." / "CLOSE THIS. open your accounting work."
+- 2 new templates: "Complete an accounting homework assignment or problem set" (60 min) + "Study for the CMA exam or an accounting course exam" (90 min)
+
+**New keyword domain — sportsmanagement:**
+- Branch positioned AFTER physed (coaching stays there) and BEFORE libraryscience
+- Bare word("sports") alone does NOT fire
+- Matches: sports/sport management/administration/marketing/finance/law/analytics/business, athletic director, athletic administration, stadium/arena management, sports/sport event management, sports industry/organization/agency, player agent, sports revenue/sponsorship/communications, sports management class/course/program/major/exam/assignment
+- `sportsmanagementCallouts(tier:)` 4/3/3: "your sports management case isn't going to write itself." / "athletic directors don't get there by scrolling." / "CLOSE THIS. open your sports management work."
+- 2 new templates: "Write a sports management case study or strategic analysis" (60 min) + "Study for a sports management or sports marketing exam" (60 min)
+
+**New keyword domain — artrestoration:**
+- Branch positioned AFTER arthistory and BEFORE art so conservation/restoration tasks route here
+- word("painting") alone still goes to art; only compound "painting conservation" fires here
+- Matches: art conservation/restoration, art conservator/restorer, painting/paper/object/textile/sculpture conservation/restoration, museum conservation, conservation science/lab/studio/treatment/ethics/materials/class/course/exam/program/major/degree, preventive conservation, varnish removal, inpainting, consolidation treatment, surface cleaning, archival materials/preservation
+- `artrestorationCallouts(tier:)` 4/3/3: "that painting isn't going to conserve itself." / "no conservator got there by scrolling." / "CLOSE THIS. open your conservation work."
+- 2 new templates: "Write a conservation treatment report or condition assessment" (60 min) + "Study for an art conservation exam or conservation science coursework" (60 min)
+
+**New keyword domain — computationalscience:**
+- Branch positioned AFTER datascience and BEFORE bioinformatics
+- "computational biology" stays in bioinformatics (fires later); "numerical analysis" stays in mathematics (fires earlier)
+- Matches: high performance computing, hpc cluster, parallel computing, distributed computing, scientific computing, supercomputer, computational physics/chemistry/neuroscience, monte carlo simulation/method, finite element/difference/numerical simulation, simulation model, MPI/OpenMP/CUDA programming, GPU computing, computational modeling, scientific simulation, cluster computing, job scheduler, slurm/pbs job, matlab/scipy/numpy simulation model, computational science/scientist/problem/assignment/class/course
+- `computationalscienceCallouts(tier:)` 4/3/3: "that simulation isn't going to run itself." / "supercomputers don't do the thinking for you." / "CLOSE THIS. open your simulation code."
+- 2 new templates: "Write or debug a scientific simulation or HPC program" (90 min) + "Complete a computational science problem set or numerical methods assignment" (60 min)
+
+**New keyword domain — forensicpsychology:**
+- Branch positioned AFTER psychology and BEFORE forensicscience
+- Bare "forensics" is NOT matched; requires compound forensic-psychology terms
+- Matches: forensic psychology/psychologist/psychologists, criminal psychology, criminal profiling/profile, competency evaluation/assessment, competency to stand trial, sanity evaluation/hearing, insanity defense, psycholegal, forensic mental health, forensic assessment/evaluation/interview, psychological profiling/autopsy, violence risk assessment, expert witness (psychology/psychiatry), malingering assessment, competency restoration, eppp exam/prep, word("eppp"), forensic psych, forensic psychology class/course/exam/program/major
+- `forensicpsychologyCallouts(tier:)` 4/3/3: "those case notes aren't going to write themselves." / "no one passes the EPPP by scrolling." / "CLOSE THIS. open your forensic psychology work."
+- 2 new templates: "Write a forensic psychological assessment report or case notes" (45 min) + "Study for the EPPP exam or forensic psychology coursework" (90 min)
+
+**Test counts:**
+- CalloutManagerTests: 1128 → 1169 (+41: 9 accounting + 8 sportsmanagement + 8 artrestoration + 8 computationalscience + 8 forensicpsychology)
+- SuggestedSessionTemplatesTests: 248 → 253 (+5 domain tests + updated count guard ≥161)
+
+**Template catalog: 151 → 161**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `accounting` at line 751, fires before `forensicaccounting` at line 797 and `finance/budget` below. "accounting class" → accounting; "forensic accounting fraud examination" → forensicaccounting (fires after accounting but the phrase "forensic accounting" triggers forensicaccounting, not accounting). ✓
+- `sportsmanagement` at line 876, fires after `physed` at line 876 and before `libraryscience` at line 912. "coaching certification" → physed (no sports management compound fires); "sports management case study" → sportsmanagement. ✓
+- `artrestoration` at line 592, fires after `arthistory` at line 592 and before `art` at line 621. "drawing practice" → art (no conservation compound fires); "art conservation treatment" → artrestoration. ✓
+- `computationalscience` at line 401, fires after `datascience` at line 376 and before `bioinformatics` at line 421. "bioinformatics pipeline for rna-seq" → bioinformatics (no computationalscience compound fires first). ✓
+- `forensicpsychology` at line 1408, fires after `psychology` at line 1386 and before `forensicscience` at line 1431. "psychology research paper on attachment theory" → psychology (no forensicpsychology compound fires); "forensic psychology assessment" → forensicpsychology. ✓
+- Five new dispatch cases added in CalloutMessages.swift; five new 4/3/3 pool functions added. ✓
+- Template count: 151 + 10 = 161. ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains: art history sub-domains (visual analysis, iconographic analysis), forensic science sub-domain forensic psychology (already done), accounting vs. tax preparation (H&R Block/TurboTax route vs. accounting class route)
+- Consider adding to marinebiology: "limnology", "marine invertebrates", "kelp forest", "tidal zone", "estuarine ecology"
+- Consider adding to speecharts: "parliamentary procedure", "Lincoln-Douglas case", "cross-examination debate"
+- Consider: sports analytics as own domain (R/Python for sports data separate from sportsmanagement), public health sub-domains (epidemiology standalone), geospatial science (GIS/remote sensing separate from geography/geology)
+- Consider: emergency management (FEMA, disaster response, crisis management separate from criminaljustice/publicheath), hospitality/hotel management, fashion design/fashion merchandising, culinary arts sub-domains (pastry vs. savory)
