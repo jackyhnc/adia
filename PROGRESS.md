@@ -13599,3 +13599,63 @@ None. Swift toolchain unavailable on Linux container.
 - Consider splitting socialscience further: political science vs. anthropology vs. international relations
 - Consider adding astronomy sub-terms: "spectroscopy" in observatory context, "telescope" with guards, "Hubble Space Telescope", "black hole" with compound guard
 - Consider adding more mathematics sub-terms: "category theory exam", "math proof homework", "theorem proof"
+
+---
+
+## Run 324 — 2026-07-11 — Art history, marine biology, speech arts, and forensic science keyword domains (1092→1128 tests, 143→151 templates)
+
+### Shipped
+
+**New keyword domain — arthistory:**
+- Branch positioned BEFORE art so "art history essay", "art criticism", "museum studies", and art-movement terms (baroque, impressionism, renaissance art) route here
+- "digital art", "drawing", "painting" stays in the art branch
+- Matches: art history/historian/historical/criticism/critic, museum studies, art analysis/theory/appreciation, aesthetic theory/class, iconography/iconology, baroque art/period, renaissance art, impressionism, expressionism in art, art movement(s), curatorial, museum curation, art history class/course/exam/essay/paper/major/program
+- `arthistoryCallouts(tier:)` 4/3/3: "that art history essay isn't going to write itself." / "no one learns art history by scrolling." / "CLOSE THIS. open your art history notes."
+- 2 new templates: "Write an art history essay or art criticism paper" (60 min) + "Study for an art history exam or review a major art movement" (60 min)
+
+**New keyword domain — marinebiology:**
+- Branch positioned BEFORE studying so "marine biology exam" and "oceanography lab" don't fall through via word("exam")/word("lab")
+- Bare word("biology") stays in studying for generic "biology exam" tasks
+- Matches: marine biology/biologist/ecology/ecologist/science/life/organisms/mammal(s), oceanography/oceanographer, ocean science(s), coastal/aquatic ecology, aquatic/freshwater biology, coral reef(s), deep sea/ocean, marine conservation, fisheries science, ichthyology, plankton/phytoplankton/zooplankton, benthic/pelagic/littoral, marine lab, all marine biology/oceanography class/course/exam/homework compounds
+- `marinebiologyCallouts(tier:)` 4/3/3: "the ocean doesn't study itself — you have to." / "no one maps the ocean by scrolling." / "CLOSE THIS. open your marine biology notes."
+- 2 new templates: "Write a marine biology lab report or oceanography assignment" (60 min) + "Study for a marine biology or oceanography exam" (60 min)
+
+**New keyword domain — speecharts:**
+- Branch positioned BEFORE speechpathology so debate, Model UN, competitive speech, and public speaking competitions route here; "speech therapy"/"SLP" stay in speechpathology
+- Bare "forensics" NOT matched (ambiguous with forensic science); requires compound debate/speech terms
+- Matches: debate team/tournament/competition, competitive debate, speech team/tournament/competition, speech and debate, Model UN/MUN (with context guard: conference/committee/resolution), Lincoln-Douglas/LD/policy/parliamentary debate, extemporaneous speech/speaking, public speaking class/course/competition/exam, oratory/oratorical, competitive speech, forensics team/tournament, persuasive/informative/impromptu speech, after dinner speech, oral/dramatic interpretation
+- `speechartsCallouts(tier:)` 4/3/3: "no one wins a debate tournament by scrolling." / "no one wins nationals by scrolling." / "CLOSE THIS. open your debate notes."
+- 2 new templates: "Prep a debate case or speech tournament argument" (60 min) + "Prepare for a Model UN conference or public speaking competition" (60 min)
+
+**New keyword domain — forensicscience:**
+- Branch positioned BEFORE criminaljustice; "forensic science" and "crime scene" removed from criminaljustice branch
+- "forensic accounting" owned by its own earlier branch; bare "forensics" NOT matched (too ambiguous with speech forensics)
+- Matches: forensic science/scientist(s), forensic biology/chemistry/toxicology/pathology/entomology/anthropology/serology/genetics, DNA analysis/profiling/evidence/typing, trace evidence, ballistics, fingerprint analysis/identification/examination, crime lab, crime scene, forensic lab, evidence analysis, FEPAC, bloodstain pattern, serology/toxicology lab, forensic class/course/exam/program/degree
+- `forensicscienceCallouts(tier:)` 4/3/3: "no forensic scientist got there by scrolling." / "no one passes FEPAC by scrolling." / "CLOSE THIS. open your forensic science notes."
+- 2 new templates: "Complete a forensic science lab report or crime scene analysis" (60 min) + "Study for a forensic science exam or FEPAC certification prep" (60 min)
+
+**Test counts:**
+- CalloutManagerTests: 1092 → 1128 (+36: 9 tests per domain × 4 domains)
+- SuggestedSessionTemplatesTests: 243 → 248 (+5: 1 domain test per domain + ≥151 count guard)
+
+**Template catalog: 143 → 151**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `arthistory` at line 545, fires before `art` at line 574. "drawing practice for my illustration class" → art (no arthistory compound term fires). "art history essay on impressionism" → arthistory. ✓
+- `marinebiology` at line 280, fires before `studying` at line 309. "biology exam review for tomorrow" → studying (bare word("biology")). "marine biology lab report on coral reefs" → marinebiology. ✓
+- `speecharts` at line 1204, fires before `speechpathology` at line 1244. "write up my speech therapy session notes for my SLP client" → speechpathology (speechpathology branch fires via "speech therapy" / "slp" which do not match speecharts). ✓
+- `forensicscience` at line 1291, fires before `criminaljustice` at line 1327. "forensic science" and "crime scene" removed from criminaljustice; "criminology exam on juvenile justice" → criminaljustice (no forensicscience compound fires). ✓
+- Four new dispatch cases in CalloutMessages.swift (arthistory/marinebiology/speecharts/forensicscience) paired with four new 4/3/3 pool functions. ✓
+- Template count: 143 + 8 = 151. ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains: accounting (general/CPA/CMA separate from forensicaccounting), sports management/athletic director (spin-off from physed), art restoration/conservation (separate from arthistory/art), computational science (HPC, scientific computing — separate from datascience/engineering)
+- Consider adding to marinebiology: "limnology", "hydrobiology", "marine invertebrates", "kelp forest", "tidal zone", "estuarine ecology"
+- Consider adding to speecharts: "parliamentary procedure", "moot court" (currently in legal branch — guard may be needed), "Lincoln-Douglas case", "cross-examination debate"
+- Consider adding to arthistory: "visual analysis", "formal analysis", "iconographic analysis", "art world", "postcolonial art theory", "feminist art theory"
+- Consider splitting socialscience: political science vs. anthropology vs. international relations (each deserves its own pool)
+- Consider adding "forensic psychology" to forensicscience or as its own domain
