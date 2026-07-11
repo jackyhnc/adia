@@ -14161,3 +14161,64 @@ None. Swift toolchain unavailable on Linux container.
 - Consider: `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment)
 - Consider: nursing informatics (separate from nursing/healthcareadmin)
 - Consider: art therapy (separate from therapy/arteducation), music therapy (separate from musictheory/therapy)
+
+---
+
+## Run 333 — 2026-07-11 — Nuclear medicine tech, sonography, cardiovascular tech, surgical tech, and art therapy keyword domains (1465→1510 tests, 233→243 templates)
+
+### Shipped
+
+**New keyword domain — nuclearmedtech:**
+- Branch positioned AFTER `radiologictechnology` and BEFORE `healthcareadmin`
+- Matches: nuclear medicine technology/technologist/tech, CNMT board/exam, NMT, ARRT nuclear medicine, PET scan technologist/class/course/imaging, SPECT imaging class, radiopharmaceuticals/radiopharmacy class/course, nuclear cardiology class, gamma camera (with study/class/exam context), radiation dosimetry class/course, radioisotope/radionuclide therapy, nuclear medicine school/program/class/exam/certification/rotation
+- `nuclearmedtechCallouts(tier:)` 4/3/3: "those nuclear medicine boards aren't going to prep themselves." / "nuclear medicine technologists don't get certified by scrolling." / "CLOSE THIS. open your nuclear medicine or CNMT study guide."
+- 2 templates: "Study nuclear medicine imaging protocols or prepare for the CNMT board exam" (90 min) + "Complete a nuclear medicine technology school assignment or patient imaging report" (45 min)
+
+**New keyword domain — sonography:**
+- Branch positioned AFTER `nuclearmedtech` and BEFORE `healthcareadmin`
+- Matches: diagnostic medical sonography/sonographer, ARDMS registry/exam, ultrasound technologist/technology class/course/exam, abdominal/OB/vascular sonography, ultrasound physics class/course, sonography scanning technique, sonography school/program/class/exam/certification/rotation
+- `sonographyCallouts(tier:)` 4/3/3: "those sonography skills aren't going to develop themselves." / "sonographers don't get certified by scrolling." / "CLOSE THIS. open your sonography or ARDMS study guide."
+- 2 templates: "Study for the ARDMS registry exam or review sonography scanning techniques" (90 min) + "Complete a diagnostic medical sonography school assignment or imaging lab report" (45 min)
+
+**New keyword domain — cardiovasculartech:**
+- Branch positioned AFTER `sonography` and BEFORE `healthcareadmin`
+- Matches: cardiovascular technology/technologist, CCI board/exam, RCIS/RCES exam, cardiac catheterization class/course, cardiac cath lab class/course, echocardiography class/course/exam/program, EKG technician class/course/exam/certification, holter monitor class, cardiac monitoring class, stress test technologist, vascular technology class/course/exam
+- `cardiovasculartechCallouts(tier:)` 4/3/3: "those cardiovascular tech exams aren't going to prep themselves." / "cardiovascular technologists don't get certified by scrolling." / "CLOSE THIS. open your cardiovascular technology study guide."
+- 2 templates: "Study for the CCI board exam or review cardiac catheterization lab procedures" (90 min) + "Complete a cardiovascular technology school assignment or cardiac imaging report" (45 min)
+
+**New keyword domain — surgicaltech:**
+- Branch positioned AFTER `cardiovasculartech` and BEFORE `healthcareadmin`
+- Matches: surgical technology/technologist/technician, surgical tech school/program/class/exam/course/certification/rotation, NBSTSA, CST exam/certification, scrub tech/technician, surgical instrumentation class/course/exam, sterile field technique/class, sterile technique class, surgical case study class, perioperative class/course/exam
+- `surgicaltechCallouts(tier:)` 4/3/3: "those surgical instruments aren't going to memorize themselves." / "surgical technologists don't get certified by scrolling." / "CLOSE THIS. open your surgical technology study guide."
+- 2 templates: "Study surgical instrumentation and sterile field techniques for the CST exam" (90 min) + "Complete a surgical technology school assignment or surgical case study" (45 min)
+
+**New keyword domain — arttherapy:**
+- Branch positioned BEFORE `socialwork` and `therapy` so art therapy/art therapist, ATR board, and expressive arts therapy route here rather than to generic therapy callouts
+- Bare "art class" fires art/studying branches much earlier; "therapy notes"/"counseling" still fire in the `therapy` branch
+- Matches: art therapy/therapist/therapists, ATR board/credential/exam/certification (word-boundary guarded + context), ATCB/ATCB exam, art therapy class/course/program/school/exam/assignment/session/notes/treatment plan/internship, expressive arts therapy/therapist, creative arts therapy/therapist, therapeutic art making/class
+- `arttherapyCallouts(tier:)` 4/3/3: "your clients deserve your full attention — get back to your art therapy notes." / "art therapists don't get credentialed by scrolling." / "CLOSE THIS. open your art therapy or ATR study guide."
+- 2 templates: "Write art therapy session notes or a treatment plan for a client case" (30 min) + "Study for the ATR board exam or complete an art therapy school assignment" (60 min)
+
+**Test counts:**
+- CalloutManagerTests.swift: 1465 → 1510 (+45: 9 tests per domain × 5 domains)
+- SuggestedSessionTemplatesTests.swift: 295 → 301 (+6: domain existence tests + ≥243 count guard)
+
+**Template catalog: 233 → 243**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `nuclearmedtech` fires AFTER radiologictechnology (~line 1600) and BEFORE healthcareadmin (~line 1622). "nuclear medicine technology board exam prep for CNMT certification" → nuclearmedtech ✓; "arrt exam prep for radiologic technology" → radiologictechnology ✓; "healthcare administration class on RHIA" → healthcareadmin ✓
+- `sonography` fires AFTER nuclearmedtech (~line 1621) and BEFORE healthcareadmin (~line 1640). "ardms registry exam prep on abdominal sonography" → sonography ✓; "nuclear medicine technology board" → nuclearmedtech ✓
+- `cardiovasculartech` fires AFTER sonography (~line 1638) and BEFORE healthcareadmin (~line 1658). "cci board exam prep for cardiac catheterization" → cardiovasculartech ✓; "ardms registry sonography" → sonography ✓
+- `surgicaltech` fires AFTER cardiovasculartech (~line 1656) and BEFORE healthcareadmin (~line 1674). "nbstsa certification for surgical technologist" → surgicaltech ✓; "cci board cardiovascular tech" → cardiovasculartech ✓
+- `arttherapy` fires BEFORE socialwork (~line 1800) and therapy (~line 1822). "art therapy session notes and ATR board exam" → arttherapy ✓; "therapy notes for cognitive behavioral therapy" → therapy ✓; "art class at the studio" → not arttherapy ✓
+- Five new dispatch cases and pool functions confirmed present in CalloutMessages.swift (lines 185–189, 2995–3098). Template count: 243 (verified by grep -c "preferredDuration:"). ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains: nuclear medicine sub-domains (diagnostic medical physics, health physics), diagnostic medical sonography sub-specialties (cardiac sonography/echocardiography - note echocardiography is partly in cardiovasculartech), music therapy (separate from musictheory/therapy/arttherapy), drama/theatre education (separate from performingarts/education), wine studies/sommelier (separate from culinary/hospitality)
+- Consider: nursing informatics (separate from nursing/healthcareadmin), polysomnography technology (sleep tech), perfusion technology (cardiovascular perfusionist), ophthalmic medical technology, central sterile processing
+- Consider: `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment)
+- Estimated test count: 1510 (CalloutManagerTests) + additional from other test files
