@@ -5883,4 +5883,58 @@ struct CalloutManagerTests {
             }
         }
     }
+
+    // MARK: - Physician Assistant
+
+    @Test func physicianassistantKeywordFromPhysicianAssistant() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my physician assistant boards") == "physicianassistant")
+    }
+    @Test func physicianassistantKeywordFromPASchool() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my pa school assignment") == "physicianassistant")
+    }
+    @Test func physicianassistantKeywordFromPANCE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for the PANCE exam") == "physicianassistant")
+    }
+    @Test func physicianassistantKeywordFromPAC() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review cardiology for my pa-c rotation") == "physicianassistant")
+    }
+    @Test func physicianassistantKeywordFromPARotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write up my pa rotation notes") == "physicianassistant")
+    }
+    @Test func physicianassistantKeywordDoesNotMatchPremed() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study anatomy for medical school") != "physicianassistant")
+    }
+    @Test func physicianassistantHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "physicianassistant", tier: 1)
+            #expect(!msgs.isEmpty, "physicianassistant tier1 pool must be non-empty")
+        }
+    }
+    @Test func physicianassistantDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "physicianassistant", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "physicianassistant", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "physicianassistant", tier: 3)
+            #expect(tier1.count >= 4, "physicianassistant tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "physicianassistant tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "physicianassistant tier3 must have ≥3 messages")
+        }
+    }
+    @Test func physicianassistantTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "physicianassistant", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.contains("PANCE") }
+            #expect(hasUrgent, "physicianassistant tier3 should contain an urgent directive")
+        }
+    }
+    @Test func physicianassistantCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "physicianassistant", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "physicianassistant tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
 }

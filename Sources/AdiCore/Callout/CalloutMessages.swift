@@ -112,7 +112,8 @@ extension CalloutManager {
         case "screenwriting":        return screenwritingCallouts(tier: tier)
         case "graphicdesign":        return graphicdesignCallouts(tier: tier)
         case "interiordesign":       return interiordesignCallouts(tier: tier)
-        case "speechpathology":      return speechpathologyCallouts(tier: tier)
+        case "speechpathology":        return speechpathologyCallouts(tier: tier)
+        case "physicianassistant":     return physicianassistantCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1447,6 +1448,27 @@ extension CalloutManager {
             "CLOSE THIS. open your therapy notes.",
             "no one earns their CCC-SLP by scrolling.",
             "your clients need you present — close this and focus.",
+        ]
+        }
+    }
+
+    private func physicianassistantCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those PANCE questions aren't going to answer themselves.",
+            "your PA school work is waiting — close this.",
+            "your future patients are counting on you studying.",
+            "get back to your PA coursework.",
+        ]
+        case 2: return [
+            "stop. your clinical rotation notes aren't going to write themselves.",
+            "this isn't your SOAP notes.",
+            "close this and get back to your PA school work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your PA school notes.",
+            "no one passes the PANCE by scrolling.",
+            "your patients deserve a PA who studied — close this.",
         ]
         }
     }

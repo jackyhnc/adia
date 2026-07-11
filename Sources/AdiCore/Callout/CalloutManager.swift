@@ -650,6 +650,19 @@ public final class CalloutManager {
             || lower.contains("optometry chart") || lower.contains("clinical optometry") {
             return "optometry"
         }
+        // physicianassistant — positioned after optometry (PA school shares broad clinical curriculum
+        // with premed/med-school) and before paramedicine (separate emergency-medical track).
+        // Catches PANCE/PANRE exam prep, PA school coursework, and clinical rotation work.
+        if lower.contains("physician assistant") || lower.contains("physician's assistant")
+            || lower.contains("pa school") || lower.contains("pa program")
+            || lower.contains("pa class") || lower.contains("pa exam")
+            || lower.contains("pa student") || lower.contains("pa coursework")
+            || lower.contains("pa rotation") || lower.contains("pa clerkship")
+            || lower.contains("pa notes") || lower.contains("pa clinical")
+            || lower.contains("pance") || lower.contains("panre")
+            || lower.contains("pa-c") {
+            return "physicianassistant"
+        }
         // paramedicine — positioned before nursing so EMT/paramedic-specific terms
         // (NREMT exam, pre-hospital care, BLS/ACLS certifications) don't fall through to nursing.
         if word("emt") || word("paramedic") || word("paramedics") || word("paramedicine")

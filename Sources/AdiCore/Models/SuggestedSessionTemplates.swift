@@ -600,5 +600,18 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target domain reviewed (articulation, language disorders, or fluency), key concepts summarized in notes, and at least 10 practice questions completed with corrections",
             preferredDuration: 60 * 60
         ),
+        // Physician Assistant
+        SuggestedTemplate(
+            icon: "stethoscope",
+            task: "Study for the PANCE or PA school clinical exam",
+            successCriteria: "Target organ system or clinical domain reviewed, key diagnoses and treatment algorithms summarized, and at least 15 PANCE-style questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Write up my PA clinical rotation SOAP notes or patient encounter summaries",
+            successCriteria: "All patient encounter notes written in SOAP format with subjective, objective, assessment, and plan documented, and notes saved or submitted for preceptor review",
+            preferredDuration: 30 * 60
+        ),
     ]
 }

@@ -1451,4 +1451,39 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 93,
                 "catalog should have ≥93 templates after graphic design/interior design/SLP additions")
     }
+
+    // MARK: - Physician Assistant
+
+    @Test func physicianassistantTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("pance") || t.task.lowercased().contains("pa school")
+                || t.task.lowercased().contains("pa clinical") || t.task.lowercased().contains("soap notes")
+                    && t.task.lowercased().contains("pa")
+        }
+        #expect(!templates.isEmpty, "at least one physician assistant template must exist")
+    }
+    @Test func physicianassistantTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("pance") || t.task.lowercased().contains("pa clinical")
+                || t.task.lowercased().contains("pa school")
+        }
+        #expect(templates.count >= 2, "should have ≥2 PA templates (exam prep + clinical notes)")
+    }
+    @Test func physicianassistantTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("pance") || t.task.lowercased().contains("pa clinical")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "PA template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastNinetyFiveTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 95,
+                "catalog should have ≥95 templates after physician assistant additions")
+    }
 }

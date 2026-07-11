@@ -1,5 +1,38 @@
 # Adia — Build Progress
 
+## Run 318 — 2026-07-11 — Physician assistant keyword domain (822→832 Swift tests, 93→95 templates)
+
+### Shipped
+
+**Physician assistant (PA-C/PANCE) keyword domain:**
+
+- `physicianassistant` branch added to `extractTaskKeyword` in `CalloutManager.swift`, positioned AFTER optometry (PA school shares broad clinical curriculum with premed/med-school) and BEFORE paramedicine (separate emergency-medical track).
+- Matches: physician assistant / physician's assistant, pa school/program/class/exam/student/coursework/rotation/clerkship/notes/clinical, pance, panre, pa-c
+
+**CalloutMessages.swift — new 4/3/3 pool:**
+- `physicianassistantCallouts(tier:)`: PANCE/PA-C voice — "those PANCE questions aren't going to answer themselves." / "CLOSE THIS. open your PA school notes." / "no one passes the PANCE by scrolling."
+
+**SuggestedSessionTemplates.swift — 2 new templates (93→95):**
+- "Study for the PANCE or PA school clinical exam" (90 min)
+- "Write up my PA clinical rotation SOAP notes or patient encounter summaries" (30 min)
+
+**Tests:**
+- CalloutManagerTests.swift: 822→832 (+10: 5 keyword tests + 1 negative + 4 pool/quality tests)
+- SuggestedSessionTemplatesTests.swift: +4 (3 PA template tests + ≥95 count guard)
+
+### Blocked
+Swift toolchain unavailable on Linux — verified by code inspection:
+- "physician assistant" → physicianassistant ✓; "pance" → physicianassistant ✓; "pa-c" → physicianassistant ✓
+- physicianassistant positioned after optometry, before paramedicine ✓
+- Tier-3 pool contains "CLOSE THIS" and "PANCE" ✓
+- Both template durations in [300, 10800]: 5400 (90 min) + 1800 (30 min) ✓
+
+### Next agent should pick up
+- AppMonitor observability tests (requires macOS)
+- Additional healthcare/allied-health domains if desired (e.g. chiropractor/chiropractic DC, radiologic technology/RT, respiratory therapy/RRT)
+
+---
+
 ## Run 317 — 2026-07-11 — Restore 456-line regression in CalloutManager + dental/pharmacy/optometry domains (727→757 tests, 77→83 templates)
 
 ### Shipped
