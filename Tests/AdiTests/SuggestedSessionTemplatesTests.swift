@@ -1880,4 +1880,142 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 123,
                 "catalog should have ≥123 templates after geology/bioinformatics/urbanplanning/dentalhygiene/molecularbiology additions")
     }
+
+    // MARK: - Forensic Accounting
+    @Test func forensicaccountingTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("forensic accounting") || t.task.lowercased().contains("cfe")
+                || t.task.lowercased().contains("fraud")
+        }
+        #expect(!templates.isEmpty, "at least one forensic accounting template must exist")
+    }
+    @Test func forensicaccountingTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("forensic accounting") || t.task.lowercased().contains("cfe")
+                || t.task.lowercased().contains("fraud")
+        }
+        #expect(templates.count >= 2, "should have ≥2 forensic accounting templates")
+    }
+    @Test func forensicaccountingTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("forensic accounting") || t.task.lowercased().contains("cfe")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    // MARK: - Public Relations / Communications
+    @Test func publicrelationsTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("pr") || t.task.lowercased().contains("public relations")
+                || t.task.lowercased().contains("communications")
+        }
+        #expect(!templates.isEmpty, "at least one public relations template must exist")
+    }
+    @Test func publicrelationsTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("pr") || t.task.lowercased().contains("communications")
+        }
+        #expect(templates.count >= 2, "should have ≥2 public relations templates")
+    }
+    @Test func publicrelationsTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("pr strategy") || t.task.lowercased().contains("communications exam")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    // MARK: - Physical Education / Sport Coaching
+    @Test func physedTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("coaching") || t.task.lowercased().contains("physical education")
+                || t.task.lowercased().contains("pe teacher")
+        }
+        #expect(!templates.isEmpty, "at least one physical education template must exist")
+    }
+    @Test func physedTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("coaching") && (
+                t.task.lowercased().contains("lesson") || t.task.lowercased().contains("certification")
+            )
+        }
+        #expect(templates.count >= 2, "should have ≥2 physical education/coaching templates")
+    }
+    @Test func physedTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("coaching plans") || t.task.lowercased().contains("coaching certification")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    // MARK: - Library Science
+    @Test func libraryscienceTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("library science") || t.task.lowercased().contains("mlis")
+                || t.task.lowercased().contains("archival")
+        }
+        #expect(!templates.isEmpty, "at least one library science template must exist")
+    }
+    @Test func libraryscienceTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("library") || t.task.lowercased().contains("archival")
+        }
+        #expect(templates.count >= 2, "should have ≥2 library science templates")
+    }
+    @Test func libraryscienceTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("library science") || t.task.lowercased().contains("archival")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    // MARK: - Dental Assisting
+    @Test func dentalassistingTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("danb") || t.task.lowercased().contains("dental assisting")
+                || t.task.lowercased().contains("chairside")
+        }
+        #expect(!templates.isEmpty, "at least one dental assisting template must exist")
+    }
+    @Test func dentalassistingTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("dental assisting")
+        }
+        #expect(templates.count >= 2, "should have ≥2 dental assisting templates")
+    }
+    @Test func dentalassistingTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("danb") || t.task.lowercased().contains("dental assisting")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastOneHundredThirtyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 133,
+                "catalog should have ≥133 templates after forensicaccounting/publicrelations/physed/libraryscience/dentalassisting additions")
+    }
 }

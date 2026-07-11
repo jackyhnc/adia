@@ -13467,3 +13467,69 @@ None. Swift toolchain unavailable on Linux container.
 - Consider adding "newscaster" / "anchor" / "correspondent" to journalism branch
 - Consider adding "quran" / "talmud" / "torah study" / "halal" to theology branch for broader religious-text coverage
 - Consider adding "corrections officer" / "probation" / "parole" to criminaljustice branch
+
+
+---
+
+## Run 322 — 2026-07-11 — Forensic accounting, public relations, physical education/coaching, library science, and dental assisting keyword domains (982→1031 tests, 123→133 templates)
+
+### Shipped
+
+**New keyword domain — forensicaccounting:**
+- Branch positioned BEFORE finance so fraud investigation, CFE exam, and financial forensics tasks route here rather than the generic finance/audit pool
+- Matches: forensic accounting/accountant(s), forensic audit/auditor, forensic financial, fraud investigation/investigator, fraud audit/examination, financial forensics, CFE exam/certification, certified fraud examiner, ACFE, fraud detection/analysis, financial crime, anti-money laundering, money laundering investigation, embezzlement investigation/detection, forensic CPA, litigation support accounting
+- `forensicaccountingCallouts(tier:)` 4/3/3: fraud/CFE voice — "that fraud case isn't going to investigate itself." / "no one cracks fraud cases by scrolling." / "CLOSE THIS. open your forensic accounting work."
+- 2 new templates: "Study for the CFE exam or complete a forensic accounting assignment" (60 min) + "Analyze a financial fraud case or write a forensic accounting report" (60 min)
+
+**New keyword domain — publicrelations:**
+- Branch positioned after journalism and before graphicdesign
+- "press release"/"press releases" stay in journalism (catch above); "brand strategy"/"brand management" stay in startup
+- Matches: public relations, PR strategy/plan/campaign/pitch/writing/firm/agency, media relations, press kit, corporate/internal/crisis/brand communications, communications major/degree/class/course/program/school/exam/strategy, media pitch, spokesperson training, public affairs
+- `publicrelationsCallouts(tier:)` 4/3/3: PR/pitch voice — "that press kit isn't going to write itself." / "no one breaks into PR by browsing." / "CLOSE THIS. open your PR notes."
+- 2 new templates: "Write a PR strategy, press kit, or media pitch" (45 min) + "Study for a communications exam or complete a PR class assignment" (45 min)
+
+**New keyword domain — physed:**
+- Branch positioned after education and BEFORE tutor so PE teaching and sport/athletic coaching terms route here; bare word("coaching") alone still stays in tutor
+- Matches: physical education, PE teacher/teaching/class/curriculum/program/lesson, physical education teacher/curriculum/program/certification, adapted physical education, adaptive PE, sport/sports coaching, athletic coaching/coach, coaching theory/philosophy/certification/license/licensure, youth coaching
+- `physedCallouts(tier:)` 4/3/3: PE/coaching voice — "those lesson plans aren't going to write themselves." / "no one becomes a great coach by scrolling." / "CLOSE THIS. open your coaching or PE notes."
+- 2 new templates: "Write my lesson plans or coaching plans for the week" (60 min) + "Study for my coaching certification or PE teacher exam" (60 min)
+
+**New keyword domain — libraryscience:**
+- Branch positioned after physed and before tutor so MLIS programs, cataloging, archival work, and reference services route here
+- Matches: library science, library and information science, MLIS degree/program, library program/school/class/degree/technician, cataloging/cataloguing/cataloger, reference services/librarian, archival science, archivist, special collections, archival research, library management/collection/metadata, digital library, knowledge organization
+- `libraryscienceCallouts(tier:)` 4/3/3: MLIS/cataloging voice — "those catalogs aren't going to organize themselves." / "no one earns their MLIS by scrolling." / "CLOSE THIS. open your library science notes."
+- 2 new templates: "Complete my library science or MLIS coursework assignment" (45 min) + "Work on archival research or library collection development project" (60 min)
+
+**New keyword domain — dentalassisting:**
+- Branch positioned BEFORE dentalhygiene (NBDHE) so dental assistant school, DANB exam, and chairside assisting tasks route here rather than the hygienist pool
+- "dental assistant" removed from dental branch (now caught by dentalassisting earlier)
+- Matches: dental assisting/assistant program/school/class/exam/certification/course/notes, DANB exam, chairside assisting/assistant, coronal polish, dental assisting school/class/course/exam, dental materials course, infection control dental
+- `dentalassistingCallouts(tier:)` 4/3/3: chairside/DANB voice — "those dental assisting notes aren't going to review themselves." / "no one passes the DANB by scrolling." / "CLOSE THIS. open your dental assisting notes."
+- 2 new templates: "Study for the DANB exam or dental assisting certification" (60 min) + "Complete my dental assisting class notes or chairside assisting assignment" (30 min)
+
+**Test counts:**
+- CalloutManagerTests: 982 → 1031 (+49: 10 forensicaccounting + 10 publicrelations + 10 physed + 9 libraryscience + 10 dentalassisting)
+- SuggestedSessionTemplatesTests: 211 → 227 (+16: 3 per domain × 5 domains + ≥133 count guard)
+
+**Template catalog: 123 → 133**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `forensicaccounting` branch before finance (line 537 area); "auditing financial statements cpa" still routes to finance (word("audit") in finance fires AFTER forensicaccounting check; forensicaccounting requires compound fraud terms, not bare "audit").
+- `publicrelations` branch after journalism (line 429), before graphicdesign. "press release" owned by journalism earlier. "brand strategy"/"brand management" owned by startup. Bare "communications" alone doesn't fire (all terms are compound).
+- `physed` branch after education, before tutor. "coaching theory" fires physed before tutor's word("coaching") can catch it. Bare "coaching my student" still routes to tutor.
+- `libraryscience` branch after physed, before tutor. "mlis", "cataloging", "archivist" all fire here. Bare "library" without LIS-specific context doesn't match.
+- `dentalassisting` branch before dentalhygiene; "dental hygiene board prep nbdhe" still routes to dentalhygiene (dentalhygiene branch checks lower.contains("dental hygiene") before dentalassisting checks specific DA terms).
+- Five new pool functions (forensicaccountingCallouts, publicrelationsCallouts, physedCallouts, libraryscienceCallouts, dentalassistingCallouts) added in CalloutMessages.swift with correct 4/3/3 tier structure.
+- Five dispatch cases added to taskAwareCallouts() switch.
+- Template count: 123 + 10 = 133.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains: performing arts (theater/dance/acting/musical theater), astronomy/astrophysics, mathematics (pure math, number theory, proofs), linguistics, film studies/film criticism
+- Consider splitting socialscience into distinct branches: political science vs. anthropology vs. international relations
+- Consider adding more terms to journalism (newscaster/anchor/correspondent), theology (quran/talmud/torah study), criminaljustice (corrections officer/probation/parole)
+- Consider adding "athletic director" / "sport management" to the physed branch or a new sportmanagement branch
+- Consider adding dental laboratory technology as a distinct domain (dental lab tech, DALE exam) separate from dentalassisting/dental/dentalhygiene

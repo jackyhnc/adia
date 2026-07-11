@@ -411,6 +411,23 @@ public final class CalloutManager {
             || lower.contains("magazine article") {
             return "journalism"
         }
+        // publicrelations — positioned after journalism and before graphicdesign.
+        // "press release"/"press releases" stay in journalism above.
+        if lower.contains("public relations") || lower.contains("pr strategy")
+            || lower.contains("pr plan") || lower.contains("pr campaign")
+            || lower.contains("pr pitch") || lower.contains("pr writing")
+            || lower.contains("media relations") || lower.contains("press kit")
+            || lower.contains("corporate communications") || lower.contains("internal communications")
+            || lower.contains("crisis communications") || lower.contains("crisis communication")
+            || lower.contains("brand communications") || lower.contains("communications strategy")
+            || lower.contains("communications major") || lower.contains("communications degree")
+            || lower.contains("communications class") || lower.contains("communications course")
+            || lower.contains("communications program") || lower.contains("communications school")
+            || lower.contains("communications exam") || lower.contains("media pitch")
+            || lower.contains("pr firm") || lower.contains("pr agency")
+            || lower.contains("spokesperson training") || lower.contains("public affairs") {
+            return "publicrelations"
+        }
         // graphicdesign — positioned BEFORE art (both use illustrator/photoshop terms) and before
         // the generic design branch (which catches bare word("design")).
         // "brand strategy" / "brand management" are owned by the startup branch above.
@@ -521,6 +538,23 @@ public final class CalloutManager {
             || lower.contains("creative brief") || lower.contains("marketing brief") {
             return "writing"
         }
+        // forensicaccounting — positioned before finance so fraud investigation, CFE exam,
+        // and financial forensics tasks route here rather than the generic finance pool.
+        if lower.contains("forensic accounting") || lower.contains("forensic accountant")
+            || lower.contains("forensic accountants") || lower.contains("forensic audit")
+            || lower.contains("forensic auditor") || lower.contains("forensic financial")
+            || lower.contains("fraud investigation") || lower.contains("fraud investigator")
+            || lower.contains("fraud audit") || lower.contains("fraud examination")
+            || lower.contains("financial forensics")
+            || lower.contains("cfe exam") || lower.contains("cfe certification")
+            || lower.contains("certified fraud examiner") || word("acfe")
+            || lower.contains("fraud detection") || lower.contains("fraud analysis")
+            || lower.contains("financial crime") || lower.contains("anti-money laundering")
+            || lower.contains("money laundering investigation")
+            || lower.contains("embezzlement investigation") || lower.contains("embezzlement detection")
+            || lower.contains("forensic cpa") || lower.contains("litigation support accounting") {
+            return "forensicaccounting"
+        }
         // finance — positioned before budget so professional exam/analysis terms (CPA, CFA, DCF, LBO,
         // financial modeling, balance sheet) route here instead of the generic budget/financial branch.
         if lower.contains("financial statements") || lower.contains("financial statement")
@@ -582,6 +616,38 @@ public final class CalloutManager {
             || lower.contains("individualized education plan")
             || lower.contains("individualized education program") {
             return "education"
+        }
+        // physed — positioned after education and before tutor so PE teaching and sport/athletic
+        // coaching terms route here rather than the generic tutoring/coaching pool.
+        // Bare word("coaching") alone stays in tutor; compound coaching terms fire here first.
+        if lower.contains("physical education") || lower.contains("pe teacher")
+            || lower.contains("pe teaching") || lower.contains("pe class")
+            || lower.contains("pe curriculum") || lower.contains("pe program")
+            || lower.contains("pe lesson") || lower.contains("physical education teacher")
+            || lower.contains("physical education curriculum") || lower.contains("physical education class")
+            || lower.contains("physical education program") || lower.contains("physical education certification")
+            || lower.contains("adapted physical education") || lower.contains("adaptive pe")
+            || lower.contains("sport coaching") || lower.contains("sports coaching")
+            || lower.contains("athletic coaching") || lower.contains("athletic coach")
+            || lower.contains("coaching theory") || lower.contains("coaching philosophy")
+            || lower.contains("coaching certification") || lower.contains("coaching license")
+            || lower.contains("coaching licensure") || lower.contains("youth coaching") {
+            return "physed"
+        }
+        // libraryscience — positioned after physed and before tutor so LIS/MLIS programs,
+        // cataloging, archival work, and reference services route here.
+        if lower.contains("library science") || lower.contains("library and information science")
+            || word("mlis") || lower.contains("mlis degree") || lower.contains("mlis program")
+            || lower.contains("library program") || lower.contains("library school")
+            || lower.contains("library class") || lower.contains("library degree")
+            || lower.contains("library technician") || word("cataloging") || word("cataloguing")
+            || word("cataloger") || lower.contains("reference services")
+            || lower.contains("reference librarian") || lower.contains("archival science")
+            || word("archivist") || lower.contains("special collections")
+            || lower.contains("archival research") || lower.contains("library management")
+            || lower.contains("library collection") || lower.contains("digital library")
+            || lower.contains("library metadata") || lower.contains("knowledge organization") {
+            return "libraryscience"
         }
         if word("tutor") || word("tutoring") || word("tutors")
             || word("teach") || word("teaching")
@@ -743,6 +809,21 @@ public final class CalloutManager {
             || lower.contains("chiropractic rotation") || lower.contains("chiropractic technique") {
             return "chiropractic"
         }
+        // dentalassisting — positioned BEFORE dentalhygiene so dental assistant school,
+        // DANB exam, and chairside assisting tasks route here rather than the hygienist pool.
+        if lower.contains("dental assisting") || lower.contains("dental assistant program")
+            || lower.contains("dental assistant school") || lower.contains("dental assistant class")
+            || lower.contains("dental assistant exam") || lower.contains("dental assistant certification")
+            || lower.contains("dental assistant course") || lower.contains("dental assistant notes")
+            || word("danb") || lower.contains("danb exam")
+            || lower.contains("chairside assisting") || lower.contains("chairside assistant")
+            || lower.contains("coronal polish") || lower.contains("dental assisting program")
+            || lower.contains("dental assisting school") || lower.contains("dental assisting class")
+            || lower.contains("dental assisting course") || lower.contains("dental assisting exam")
+            || lower.contains("dental materials course")
+            || lower.contains("infection control dental") {
+            return "dentalassisting"
+        }
         // dentalhygiene — positioned BEFORE dental so dental hygiene school, NBDHE board prep,
         // and oral-health-assessment tasks get the hygienist-specific callout pool.
         // "dental hygiene"/"dental hygienist" removed from the dental branch below.
@@ -767,7 +848,6 @@ public final class CalloutManager {
         if word("dds") || word("dmd") || lower.contains("dental school")
             || lower.contains("dental board") || lower.contains("dental boards")
             || lower.contains("nbde") || lower.contains("inbde")
-            || lower.contains("dental assistant")
             || word("periodontology") || word("periodontics") || word("periodontal")
             || word("orthodontics") || word("orthodontist")
             || word("endodontics") || word("endodontist") || word("root canal")

@@ -795,5 +795,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target chapters reviewed, key techniques and molecular pathways summarized, and at least 20 practice questions or diagrams completed",
             preferredDuration: 60 * 60
         ),
+        // Forensic Accounting
+        SuggestedTemplate(
+            icon: "magnifyingglass.circle.fill",
+            task: "Study for the CFE exam or complete a forensic accounting assignment",
+            successCriteria: "Target topic reviewed, key fraud schemes and detection methods summarized, and at least 20 CFE-style practice questions completed with corrections noted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.magnifyingglass",
+            task: "Analyze a financial fraud case or write a forensic accounting report",
+            successCriteria: "Case details reviewed, evidence trail documented, findings written up in report format, and key conclusions clearly articulated",
+            preferredDuration: 60 * 60
+        ),
+        // Public Relations / Communications
+        SuggestedTemplate(
+            icon: "megaphone.fill",
+            task: "Write a PR strategy, press kit, or media pitch",
+            successCriteria: "Key messages clearly defined, target audience identified, and press kit or pitch fully drafted and ready for review",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.closed.fill",
+            task: "Study for a communications exam or complete a PR class assignment",
+            successCriteria: "Target communications concepts reviewed, key PR frameworks summarized, and assignment or study guide completed and saved",
+            preferredDuration: 45 * 60
+        ),
+        // Physical Education / Sport Coaching
+        SuggestedTemplate(
+            icon: "figure.run",
+            task: "Write my lesson plans or coaching plans for the week",
+            successCriteria: "At least 3 lesson or coaching plans written with objectives, activities, and progressions outlined and saved for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "sportscourt.fill",
+            task: "Study for my coaching certification or PE teacher exam",
+            successCriteria: "Target content domain reviewed, key coaching or PE concepts summarized, and at least 20 practice questions completed with corrections noted",
+            preferredDuration: 60 * 60
+        ),
+        // Library Science
+        SuggestedTemplate(
+            icon: "books.vertical.fill",
+            task: "Complete my library science or MLIS coursework assignment",
+            successCriteria: "Assignment prompt addressed, key cataloging or reference concepts applied, and written work completed and saved for submission",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "archivebox.fill",
+            task: "Work on archival research or library collection development project",
+            successCriteria: "Archival materials reviewed or collection proposal drafted, metadata or annotations completed, and findings documented and saved",
+            preferredDuration: 60 * 60
+        ),
+        // Dental Assisting
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Study for the DANB exam or dental assisting certification",
+            successCriteria: "Target content area reviewed, key dental assisting procedures and materials summarized, and at least 20 DANB-style practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "note.text",
+            task: "Complete my dental assisting class notes or chairside assisting assignment",
+            successCriteria: "Class notes reviewed and organized, chairside procedures or infection control protocols summarized, and assignment written up and ready for submission",
+            preferredDuration: 30 * 60
+        ),
     ]
 }

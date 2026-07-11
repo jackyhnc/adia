@@ -128,6 +128,11 @@ extension CalloutManager {
         case "urbanplanning":          return urbanplanningCallouts(tier: tier)
         case "dentalhygiene":          return dentalhygieneCallouts(tier: tier)
         case "molecularbiology":       return molecularbiologyCallouts(tier: tier)
+        case "forensicaccounting":     return forensicaccountingCallouts(tier: tier)
+        case "publicrelations":        return publicrelationsCallouts(tier: tier)
+        case "physed":                 return physedCallouts(tier: tier)
+        case "libraryscience":         return libraryscienceCallouts(tier: tier)
+        case "dentalassisting":        return dentalassistingCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1777,6 +1782,111 @@ extension CalloutManager {
             "CLOSE THIS. open your lab notebook.",
             "no one gets their biology degree by scrolling.",
             "your experiment isn't going to analyze itself — close this.",
+        ]
+        }
+    }
+
+    private func forensicaccountingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that fraud case isn't going to investigate itself.",
+            "your CFE prep won't happen while you're scrolling.",
+            "forensic accountants catch fraud — not distraction.",
+            "close this and open your case files.",
+        ]
+        case 2: return [
+            "no one cracks fraud cases by scrolling.",
+            "your forensic accounting notes won't write themselves.",
+            "the evidence trail isn't here — close this.",
+        ]
+        default: return [
+            "CLOSE THIS. open your forensic accounting work.",
+            "no one passes the CFE by browsing.",
+            "CLOSE THIS. your fraud case won't crack itself.",
+        ]
+        }
+    }
+
+    private func publicrelationsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that press kit isn't going to write itself.",
+            "your PR strategy won't build itself while you scroll.",
+            "great communicators communicate — close this.",
+            "your media pitch is waiting.",
+        ]
+        case 2: return [
+            "no one breaks into PR by browsing.",
+            "your communications plan won't write itself.",
+            "the pitch won't land if you don't write it — close this.",
+        ]
+        default: return [
+            "CLOSE THIS. open your PR notes.",
+            "no one earns a communications career by scrolling.",
+            "CLOSE THIS. your pitch isn't writing itself.",
+        ]
+        }
+    }
+
+    private func physedCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those lesson plans aren't going to write themselves.",
+            "great coaches plan — close this and get to it.",
+            "your PE curriculum won't build itself.",
+            "coaching theory doesn't learn itself while you scroll.",
+        ]
+        case 2: return [
+            "no one becomes a great coach by scrolling.",
+            "your lesson plans won't write themselves.",
+            "your athletes are counting on your prep — close this.",
+        ]
+        default: return [
+            "CLOSE THIS. open your coaching or PE notes.",
+            "no one earns their coaching certification by browsing.",
+            "CLOSE THIS. your athletes deserve your full prep.",
+        ]
+        }
+    }
+
+    private func libraryscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those catalogs aren't going to organize themselves.",
+            "your MLIS won't earn itself while you scroll.",
+            "great librarians know where things are — including their focus.",
+            "your reference skills won't sharpen by browsing.",
+        ]
+        case 2: return [
+            "no one earns their MLIS by scrolling.",
+            "your library science notes won't write themselves.",
+            "the catalog isn't going to build itself — close this.",
+        ]
+        default: return [
+            "CLOSE THIS. open your library science notes.",
+            "no one becomes a great librarian by browsing.",
+            "CLOSE THIS. your catalog isn't going to build itself.",
+        ]
+        }
+    }
+
+    private func dentalassistingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those dental assisting notes aren't going to review themselves.",
+            "your DANB prep won't happen while you scroll.",
+            "chairside skills don't sharpen by browsing.",
+            "close this and get back to your dental assisting work.",
+        ]
+        case 2: return [
+            "no one passes the DANB by scrolling.",
+            "your dental assisting notes won't study themselves.",
+            "your patients deserve a prepared assistant — close this.",
+        ]
+        default: return [
+            "CLOSE THIS. open your dental assisting notes.",
+            "no one becomes a dental assistant by browsing.",
+            "CLOSE THIS. your patients deserve your full focus.",
         ]
         }
     }
