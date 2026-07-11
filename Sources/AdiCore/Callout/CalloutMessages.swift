@@ -110,6 +110,9 @@ extension CalloutManager {
         case "optometry":            return optometryCallouts(tier: tier)
         case "cybersecurity":        return cybersecurityCallouts(tier: tier)
         case "screenwriting":        return screenwritingCallouts(tier: tier)
+        case "graphicdesign":        return graphicdesignCallouts(tier: tier)
+        case "interiordesign":       return interiordesignCallouts(tier: tier)
+        case "speechpathology":      return speechpathologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1381,6 +1384,69 @@ extension CalloutManager {
             "CLOSE THIS. open your screenplay.",
             "your deadline doesn't care what you're watching.",
             "great writers write. close this and be one.",
+        ]
+        }
+    }
+
+    private func graphicdesignCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that logo isn't going to design itself.",
+            "your brand identity is waiting — get back to your design file.",
+            "close this and get back to your design.",
+            "your client doesn't care what you're browsing — get back to work.",
+        ]
+        case 2: return [
+            "stop. your design work isn't going to finish itself.",
+            "this isn't your design file.",
+            "close this and get back to your project.",
+        ]
+        default: return [
+            "CLOSE THIS. open your design tool.",
+            "your client deadline is real — stop scrolling.",
+            "great designers design. close this and be one.",
+        ]
+        }
+    }
+
+    private func interiordesignCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that space isn't going to plan itself.",
+            "your floor plan is waiting — close this and get back to it.",
+            "close this and get back to your design project.",
+            "your client is waiting for that layout — focus.",
+        ]
+        case 2: return [
+            "stop. your interior project isn't going to finish itself.",
+            "this isn't your floor plan.",
+            "close this and get back to your space planning.",
+        ]
+        default: return [
+            "CLOSE THIS. open your design software.",
+            "your deadline doesn't care about your scroll habit.",
+            "NCIDQ or not — you still need to close this and work.",
+        ]
+        }
+    }
+
+    private func speechpathologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your clients deserve your full attention — close this.",
+            "those therapy notes aren't going to write themselves.",
+            "close this and get back to your clinical work.",
+            "your supervisor isn't going to write your notes for you.",
+        ]
+        case 2: return [
+            "stop. your SLP work isn't going to finish itself.",
+            "this isn't your session notes.",
+            "close this and get back to your speech therapy work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your therapy notes.",
+            "no one earns their CCC-SLP by scrolling.",
+            "your clients need you present — close this and focus.",
         ]
         }
     }

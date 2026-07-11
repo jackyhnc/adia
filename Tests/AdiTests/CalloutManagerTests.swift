@@ -5718,4 +5718,169 @@ struct CalloutManagerTests {
             }
         }
     }
+
+    // MARK: - Graphic Design / Branding
+
+    @Test func graphicdesignKeywordFromGraphicDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on graphic design for my portfolio") == "graphicdesign")
+    }
+    @Test func graphicdesignKeywordFromLogoDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "design a logo for my client") == "graphicdesign")
+    }
+    @Test func graphicdesignKeywordFromBranding() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on branding for the startup") == "graphicdesign")
+    }
+    @Test func graphicdesignKeywordFromTypography() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study typography for my design class") == "graphicdesign")
+    }
+    @Test func graphicdesignKeywordFromInfographic() {
+        #expect(CalloutManager.extractTaskKeyword(from: "create an infographic for my presentation") == "graphicdesign")
+    }
+    @Test func graphicdesignKeywordFromInDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "layout my magazine in indesign") == "graphicdesign")
+    }
+    @Test func graphicdesignKeywordFromBrandIdentity() {
+        #expect(CalloutManager.extractTaskKeyword(from: "develop brand identity for my client") == "graphicdesign")
+    }
+    @Test func graphicdesignKeywordFromCanva() {
+        #expect(CalloutManager.extractTaskKeyword(from: "design a flyer in canva") == "graphicdesign")
+    }
+    @Test func graphicdesignKeywordFromColorPalette() {
+        #expect(CalloutManager.extractTaskKeyword(from: "define the color palette for my brand") == "graphicdesign")
+    }
+    @Test func graphicdesignKeywordFromFlyerDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "create a flyer design for the event") == "graphicdesign")
+    }
+    @Test func graphicdesignDoesNotMatchGenericDesign() {
+        // Bare "graphic design" should route to graphicdesign, not generic design
+        let kw = CalloutManager.extractTaskKeyword(from: "graphic design homework")
+        #expect(kw == "graphicdesign")
+    }
+    @Test func graphicdesignHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "graphicdesign", tier: 1)
+            #expect(!msgs.isEmpty, "graphicdesign tier1 pool must be non-empty")
+        }
+    }
+    @Test func graphicdesignDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "graphicdesign", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "graphicdesign", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "graphicdesign", tier: 3)
+            #expect(tier1.count >= 4, "graphicdesign tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "graphicdesign tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "graphicdesign tier3 must have ≥3 messages")
+        }
+    }
+    @Test func graphicdesignTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "graphicdesign", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.contains("great designers") }
+            #expect(hasUrgent, "graphicdesign tier3 should contain an urgent directive")
+        }
+    }
+
+    // MARK: - Interior Design
+
+    @Test func interiordesignKeywordFromInteriorDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my interior design project") == "interiordesign")
+    }
+    @Test func interiordesignKeywordFromSpacePlanning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete space planning for the apartment") == "interiordesign")
+    }
+    @Test func interiordesignKeywordFromMoodBoard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "create a mood board for my client") == "interiordesign")
+    }
+    @Test func interiordesignKeywordFromFurnitureLayout() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finalize the furniture layout for the living room") == "interiordesign")
+    }
+    @Test func interiordesignKeywordFromNcidq() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for the NCIDQ exam") == "interiordesign")
+    }
+    @Test func interiordesignKeywordFromKitchenDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "design a kitchen layout for my project") == "interiordesign")
+    }
+    @Test func interiordesignHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "interiordesign", tier: 1)
+            #expect(!msgs.isEmpty, "interiordesign tier1 pool must be non-empty")
+        }
+    }
+    @Test func interiordesignDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "interiordesign", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "interiordesign", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "interiordesign", tier: 3)
+            #expect(tier1.count >= 4, "interiordesign tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "interiordesign tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "interiordesign tier3 must have ≥3 messages")
+        }
+    }
+    @Test func interiordesignTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "interiordesign", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.contains("NCIDQ") }
+            #expect(hasUrgent, "interiordesign tier3 should contain an urgent directive")
+        }
+    }
+
+    // MARK: - Speech-Language Pathology
+
+    @Test func speechpathologyKeywordFromSpeechTherapy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my speech therapy session notes") == "speechpathology")
+    }
+    @Test func speechpathologyKeywordFromSpeechLanguage() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my speech-language pathology exam") == "speechpathology")
+    }
+    @Test func speechpathologyKeywordFromSlp() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my slp clinical hours") == "speechpathology")
+    }
+    @Test func speechpathologyKeywordFromAphasia() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review aphasia treatment approaches") == "speechpathology")
+    }
+    @Test func speechpathologyKeywordFromDysphagia() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study dysphagia assessment for my clinical rotation") == "speechpathology")
+    }
+    @Test func speechpathologyKeywordFromStuttering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my stuttering therapy protocol notes") == "speechpathology")
+    }
+    @Test func speechpathologyKeywordFromPhonologicalAwareness() {
+        #expect(CalloutManager.extractTaskKeyword(from: "plan my phonological awareness lesson") == "speechpathology")
+    }
+    @Test func speechpathologyKeywordFromAugmentativeCommunication() {
+        #expect(CalloutManager.extractTaskKeyword(from: "research augmentative communication strategies") == "speechpathology")
+    }
+    @Test func speechpathologyHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "speechpathology", tier: 1)
+            #expect(!msgs.isEmpty, "speechpathology tier1 pool must be non-empty")
+        }
+    }
+    @Test func speechpathologyDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "speechpathology", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "speechpathology", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "speechpathology", tier: 3)
+            #expect(tier1.count >= 4, "speechpathology tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "speechpathology tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "speechpathology tier3 must have ≥3 messages")
+        }
+    }
+    @Test func speechpathologyTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "speechpathology", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.contains("CCC-SLP") }
+            #expect(hasUrgent, "speechpathology tier3 should contain an urgent directive")
+        }
+    }
+    @Test func speechpathologyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "speechpathology", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "speechpathology tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
 }

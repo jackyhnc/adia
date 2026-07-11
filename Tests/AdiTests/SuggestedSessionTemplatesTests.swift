@@ -1359,4 +1359,96 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 87,
                 "catalog should have ≥87 templates after cybersecurity/screenwriting additions")
     }
+
+    // MARK: - Graphic Design / Branding
+
+    @Test func graphicdesignTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("logo") || t.task.lowercased().contains("infographic")
+                || t.task.lowercased().contains("brand")
+        }
+        #expect(!templates.isEmpty, "at least one graphic design template must exist")
+    }
+    @Test func graphicdesignTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("logo") || t.task.lowercased().contains("infographic")
+                || t.task.lowercased().contains("brand")
+        }
+        #expect(templates.count >= 2, "should have ≥2 graphic design templates (logo + infographic)")
+    }
+    @Test func graphicdesignTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("logo") || t.task.lowercased().contains("infographic")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "graphic design template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Interior Design
+
+    @Test func interiordesignTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("interior design") || t.task.lowercased().contains("ncidq")
+                || t.task.lowercased().contains("space plan") || t.task.lowercased().contains("floor layout")
+        }
+        #expect(!templates.isEmpty, "at least one interior design template must exist")
+    }
+    @Test func interiordesignTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("interior design") || t.task.lowercased().contains("ncidq")
+                || t.task.lowercased().contains("space plan") || t.task.lowercased().contains("floor layout")
+        }
+        #expect(templates.count >= 2, "should have ≥2 interior design templates (floor layout + exam)")
+    }
+    @Test func interiordesignTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("interior design") || t.task.lowercased().contains("ncidq")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "interior design template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Speech-Language Pathology
+
+    @Test func speechpathologyTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("speech therapy") || t.task.lowercased().contains("praxis slp")
+                || t.task.lowercased().contains("speech-language")
+        }
+        #expect(!templates.isEmpty, "at least one speech-language pathology template must exist")
+    }
+    @Test func speechpathologyTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("speech therapy") || t.task.lowercased().contains("praxis slp")
+                || t.task.lowercased().contains("speech-language")
+        }
+        #expect(templates.count >= 2, "should have ≥2 SLP templates (session notes + exam prep)")
+    }
+    @Test func speechpathologyTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("speech therapy") || t.task.lowercased().contains("praxis slp")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "SLP template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastNinetyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 93,
+                "catalog should have ≥93 templates after graphic design/interior design/SLP additions")
+    }
 }

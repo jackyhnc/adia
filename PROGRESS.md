@@ -13183,3 +13183,48 @@ None. Swift toolchain unavailable on Linux container.
 ### Next agent should
 - Continue adding keyword domains not yet covered (e.g., graphic design/branding, interior design, real estate, theology, speech pathology)
 - Or add quality improvements: more false-positive guards, additional tier messages, cross-domain disambiguation tests
+
+## Run 319 — 2026-07-11 — Graphic design, interior design, and speech-language pathology keyword domains (788→822 tests, 87→93 templates)
+
+### Shipped
+
+**New keyword domain — graphicdesign:**
+- Branch positioned BEFORE `art` and `design` branches so "graphic design", "logo design", "branding", "typography", "InDesign" route here and not to the generic design pool
+- Matches: graphic design/designer/designing, branding, brand identity, visual identity/branding, logo design/designing a logo/create a logo/logo creation, typography/typeface/typesetting, color palette/colour palette, poster design/flyer design, infographic/infographics, packaging design/product packaging, editorial design/magazine layout/book layout/book design, InDesign/adobe indesign, print design/web graphics, canva
+- False-positive: "brand strategy"/"brand management" stay in startup branch (fires earlier at line 107)
+- `graphicdesignCallouts(tier:)` 4/3/3: "that logo isn't going to design itself." / "great designers design. close this and be one." / "CLOSE THIS. open your design tool."
+- 2 new templates: "Design a logo and visual identity for a brand" (60 min) + "Create an infographic or poster for a design project" (45 min)
+
+**New keyword domain — interiordesign:**
+- Branch positioned BEFORE architecture so "interior design", "space planning", NCIDQ, mood boards, furniture layouts don't fall through to building-architecture messages
+- Matches: interior design/designer/decorating/decorator, space planning, mood board/moodboard/material board/materials board, furniture layout/plan/selection/specification, NCIDQ, kitchen design/bathroom design, interior rendering/room rendering
+- `interiordesignCallouts(tier:)` 4/3/3: "that space isn't going to plan itself." / "CLOSE THIS. open your design software." / "NCIDQ or not — you still need to close this and work."
+- 2 new templates: "Create a space plan or floor layout for an interior design project" (60 min) + "Study for the NCIDQ or interior design school exam" (60 min)
+
+**New keyword domain — speechpathology:**
+- Branch positioned AFTER occupationaltherapy, BEFORE publicheath; "therapy notes" stays in therapy branch
+- Matches: speech therapy/therapist, speech-language pathology (hyphen and space variants), SLP, aphasia/dysarthria/dysphagia/apraxia, language/speech/communication disorder(s), stuttering, voice therapy/disorder, augmentative communication/AAC device, phonological awareness, swallowing/feeding therapy, ASHA, PRAXIS SLP/praxis exam speech, SLP school/program/exam, clinical fellowship + speech
+- `speechpathologyCallouts(tier:)` 4/3/3: "your clients deserve your full attention — close this." / "CLOSE THIS. open your therapy notes." / "no one earns their CCC-SLP by scrolling."
+- 2 new templates: "Write up my speech therapy session notes or progress reports" (30 min) + "Study for the PRAXIS SLP exam or speech-language pathology coursework" (60 min)
+
+**Test counts:**
+- CalloutManagerTests: 787 → 822 (+35: 14 graphicdesign + 9 interiordesign + 12 speechpathology)
+- SuggestedSessionTemplatesTests: 152 → 162 (+10: 3 graphicdesign + 3 interiordesign + 3 speechpathology + 1 ≥93 count guard)
+
+**Template catalog: 87 → 93**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `graphicdesign` branch fires at line 310, after startup (107) so "brand strategy" correctly stays in startup; before art (312+) and design (319+) so specific graphic-design terms claim their keywords.
+- `interiordesign` branch fires at line 838, before the isSoftwareArchitecture guard + architecture block (~line 850+) so "interior design with space planning" routes to interior design, not building architecture.
+- `speechpathology` branch fires at line 746, after occupationaltherapy (726) and before publicheath (748) comment. The `&&` in `lower.contains("clinical fellowship") && lower.contains("speech")` has higher precedence than `||` so only fires when both terms co-occur — correct guard.
+- All three callout dispatch cases added to `taskAwareCallouts()` switch in CalloutMessages.swift (lines 113–115).
+- Template count confirmed: `grep -c "SuggestedTemplate(" SuggestedSessionTemplates.swift` → 93.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains: real estate, theology, speech pathology (done), graphic design (done), interior design (done) — remaining: real estate, theology, dental assisting/dental hygiene split, physical education/coaching, actuarial science, criminal justice (split from socialscience), education/teaching, library science
+- Consider cross-domain disambiguation: "speech" alone (could be a presentation speech vs speech therapy) — add context check or let presentation branch handle it since presentation fires much earlier
+- Consider whether `word("asha")` in speechpathology is too broad (ASHA as a name) — could add `lower.contains("asha") && (lower.contains("speech") || lower.contains("slp") || lower.contains("communication"))` guard if false positives surface

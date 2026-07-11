@@ -288,6 +288,27 @@ public final class CalloutManager {
             || word("dataset") || word("datasets") || lower.contains("qualitative") || lower.contains("quantitative") {
             return "research"
         }
+        // graphicdesign — positioned BEFORE art (both use illustrator/photoshop terms) and before
+        // the generic design branch (which catches bare word("design")).
+        // "brand strategy" / "brand management" are owned by the startup branch above.
+        if lower.contains("graphic design") || lower.contains("graphic designer")
+            || lower.contains("graphic designing")
+            || word("branding") || lower.contains("brand identity") || lower.contains("visual identity")
+            || lower.contains("visual branding")
+            || lower.contains("logo design") || lower.contains("designing a logo")
+            || lower.contains("create a logo") || lower.contains("logo creation")
+            || word("typography") || word("typeface") || word("typesetting")
+            || lower.contains("color palette") || lower.contains("colour palette")
+            || lower.contains("poster design") || lower.contains("flyer design")
+            || word("infographic") || word("infographics")
+            || lower.contains("packaging design") || lower.contains("product packaging")
+            || lower.contains("editorial design") || lower.contains("magazine layout")
+            || lower.contains("book layout") || lower.contains("book design")
+            || word("indesign") || lower.contains("adobe indesign")
+            || lower.contains("print design") || lower.contains("web graphics")
+            || word("canva") {
+            return "graphicdesign"
+        }
         if word("drawing") || word("painting") || word("sketching")
             || word("illustration") || word("illustrations") || word("illustrate") || word("illustrating")
             || word("procreate") || word("sculpting")
@@ -704,6 +725,26 @@ public final class CalloutManager {
             || lower.contains("ot class") || lower.contains("ot exam") {
             return "occupationaltherapy"
         }
+        // speechpathology — positioned after occupationaltherapy, before publicheath.
+        // Catches SLP clinical work, ASHA credentials, communication/swallowing disorders.
+        // "therapy notes" stays in the therapy branch above; speechpathology claims disorder-specific terms.
+        if lower.contains("speech therapy") || lower.contains("speech therapist")
+            || lower.contains("speech-language") || lower.contains("speech language")
+            || word("slp")
+            || word("aphasia") || word("dysarthria") || word("dysphagia") || word("apraxia")
+            || lower.contains("language disorder") || lower.contains("speech disorder")
+            || lower.contains("communication disorder") || lower.contains("communication disorders")
+            || word("stuttering")
+            || lower.contains("voice therapy") || lower.contains("voice disorder")
+            || lower.contains("augmentative communication") || lower.contains("aac device")
+            || lower.contains("phonological awareness")
+            || lower.contains("swallowing therapy") || lower.contains("feeding therapy")
+            || word("asha")
+            || lower.contains("praxis slp") || lower.contains("praxis exam speech")
+            || lower.contains("slp school") || lower.contains("slp program") || lower.contains("slp exam")
+            || lower.contains("clinical fellowship") && lower.contains("speech") {
+            return "speechpathology"
+        }
         // publicheath — positioned after therapy (clinical context) and before socialscience.
         // Catches MPH programs, epidemiology, community/global health, outbreak investigation,
         // and population health. "health policy" stays in the policy branch.
@@ -781,6 +822,20 @@ public final class CalloutManager {
             || lower.contains("moot court") || lower.contains("bar exam") || lower.contains("bar prep")
             || word("litigation") || word("motions") {
             return "legal"
+        }
+        // interiordesign — positioned BEFORE the architecture branch so "interior design",
+        // "space planning", and NCIDQ don't fall through to the building-architecture messages.
+        if lower.contains("interior design") || lower.contains("interior designer")
+            || lower.contains("interior decorating") || lower.contains("interior decorator")
+            || lower.contains("space planning")
+            || lower.contains("mood board") || lower.contains("moodboard")
+            || lower.contains("material board") || lower.contains("materials board")
+            || lower.contains("furniture layout") || lower.contains("furniture plan")
+            || lower.contains("furniture selection") || lower.contains("furniture specification")
+            || word("ncidq")
+            || lower.contains("kitchen design") || lower.contains("bathroom design")
+            || lower.contains("interior rendering") || lower.contains("room rendering") {
+            return "interiordesign"
         }
         // Guard common software-domain and UX false positives before checking architecture keywords.
         // "information architecture" routes to the ux branch above; also guarded here so that

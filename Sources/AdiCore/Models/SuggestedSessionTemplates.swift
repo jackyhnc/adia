@@ -561,5 +561,44 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Story structure or outline updated with act breaks, key plot points, or character arcs mapped out, and outline document saved with at least 5 beats clearly defined",
             preferredDuration: 30 * 60
         ),
+        // Graphic Design / Branding
+        SuggestedTemplate(
+            icon: "paintbrush.pointed.fill",
+            task: "Design a logo and visual identity for a brand",
+            successCriteria: "Logo concept created with at least 2 variations, color palette and typography defined, and design saved to the working file in vector format",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "rectangle.3.group.fill",
+            task: "Create an infographic or poster for a design project",
+            successCriteria: "Infographic or poster layout complete with all content placed, typography and color palette finalized, and export-ready file saved",
+            preferredDuration: 45 * 60
+        ),
+        // Interior Design
+        SuggestedTemplate(
+            icon: "house.fill",
+            task: "Create a space plan or floor layout for an interior design project",
+            successCriteria: "Floor plan with dimensions and furniture placement finalized and saved in design software, ready for client review or critique",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.closed.fill",
+            task: "Study for the NCIDQ or interior design school exam",
+            successCriteria: "Target content area reviewed, key concepts summarized in notes, and at least 10 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Speech-Language Pathology
+        SuggestedTemplate(
+            icon: "waveform.and.mic",
+            task: "Write up my speech therapy session notes or progress reports",
+            successCriteria: "All client session notes written with goals, client performance, and next steps documented, and notes saved or ready for supervisor review",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "ear.badge.checkmark",
+            task: "Study for the PRAXIS SLP exam or speech-language pathology coursework",
+            successCriteria: "Target domain reviewed (articulation, language disorders, or fluency), key concepts summarized in notes, and at least 10 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
     ]
 }
