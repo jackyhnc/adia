@@ -1172,6 +1172,21 @@ public final class CalloutManager {
             || lower.contains("human movement") || lower.contains("musculoskeletal") {
             return "kinesiology"
         }
+        // personaltraining — positioned BEFORE fitness so "NASM personal trainer exam" and
+        // "ACE/NSCA certification" route here rather than the generic workout/gym fitness pool.
+        if lower.contains("personal trainer") || lower.contains("personal training")
+            || lower.contains("personal training certification") || lower.contains("personal training exam")
+            || word("nasm") || lower.contains("nasm exam") || lower.contains("nasm certification")
+            || lower.contains("ace certification") && lower.contains("personal")
+            || lower.contains("ace fitness") || lower.contains("ace cpt")
+            || lower.contains("nsca cpt") || lower.contains("nsca certification") && lower.contains("trainer")
+            || lower.contains("client program") && lower.contains("train")
+            || lower.contains("training program design") || lower.contains("client program design")
+            || lower.contains("fitness coaching") || lower.contains("fitness coach")
+            || lower.contains("corrective exercise") || lower.contains("periodization plan")
+            || lower.contains("personal training class") || lower.contains("personal training course") {
+            return "personaltraining"
+        }
         if word("workout") || word("workouts") || word("gym")
             || word("exercise") || word("exercises") || word("exercising")
             || word("lifting") || word("weightlifting") || word("bodybuilding")
@@ -1212,6 +1227,29 @@ public final class CalloutManager {
             || lower.contains("menu planning") || lower.contains("cooking class")
             || lower.contains("cooking technique") || word("gastronomy") {
             return "culinary"
+        }
+        // cosmetology — positioned after culinary (both involve hands-on technique training);
+        // catches cosmetology school, esthetics, nail tech, barbering, and state board prep.
+        if lower.contains("cosmetology school") || lower.contains("cosmetology program")
+            || lower.contains("cosmetology class") || lower.contains("cosmetology exam")
+            || lower.contains("cosmetology certification") || lower.contains("cosmetology state board")
+            || lower.contains("cosmetology board") || lower.contains("cosmetology license")
+            || word("cosmetologist") || word("cosmetology")
+            || lower.contains("esthetics school") || lower.contains("esthetics program")
+            || lower.contains("esthetics class") || lower.contains("esthetics exam")
+            || lower.contains("esthetics certification") || lower.contains("esthetics license")
+            || word("esthetician") || word("esthetics")
+            || lower.contains("nail tech") || lower.contains("nail technician")
+            || lower.contains("nail school") || lower.contains("nail program") || lower.contains("nail exam")
+            || lower.contains("hair coloring technique") || lower.contains("hair cutting technique")
+            || lower.contains("hair styling technique") || lower.contains("hair color class")
+            || lower.contains("waxing technique") || lower.contains("waxing class")
+            || lower.contains("barbering school") || lower.contains("barbering class")
+            || lower.contains("barbering exam") || lower.contains("barber school")
+            || lower.contains("barber exam") || lower.contains("barber license")
+            || word("nbbi") || lower.contains("nbbi exam")
+            || lower.contains("milady textbook") || lower.contains("milady cosmetology") {
+            return "cosmetology"
         }
         if word("podcast") || word("podcasting")
             || lower.contains("podcast episode") || lower.contains("record an episode")
@@ -1308,6 +1346,22 @@ public final class CalloutManager {
             || lower.contains("dc degree") || lower.contains("dc program")
             || lower.contains("chiropractic rotation") || lower.contains("chiropractic technique") {
             return "chiropractic"
+        }
+        // dentallab — positioned BEFORE dentalassisting so dental lab tech, ceramist, and
+        // crown-and-bridge fabrication tasks don't fall through to the dental assistant pool.
+        if lower.contains("dental lab") || lower.contains("dental laboratory")
+            || lower.contains("dental lab tech") || lower.contains("dental laboratory technician")
+            || word("nbdale") || lower.contains("nbdale exam")
+            || word("ceramist") || lower.contains("dental ceramics") || lower.contains("dental ceramic")
+            || lower.contains("crown and bridge") || lower.contains("crown & bridge")
+            || lower.contains("denture technology") || lower.contains("denture tech")
+            || lower.contains("prosthodontic lab") || lower.contains("prosthodontics lab")
+            || lower.contains("removable prosthodontics") && lower.contains("lab")
+            || lower.contains("dental prosthetics lab") || lower.contains("dental prosthetics program")
+            || lower.contains("dental wax up") || lower.contains("wax up") && lower.contains("dental")
+            || word("nadl") || lower.contains("dental lab program") || lower.contains("dental lab class")
+            || lower.contains("dental lab exam") || lower.contains("dental lab notes") {
+            return "dentallab"
         }
         // dentalassisting — positioned BEFORE dentalhygiene so dental assistant school,
         // DANB exam, and chairside assisting tasks route here rather than the hygienist pool.
@@ -1906,6 +1960,26 @@ public final class CalloutManager {
             || lower.contains("conflict of laws") {
             return "tradelaw"
         }
+        // immigrationlaw — positioned BEFORE the general legal branch so visa petitions,
+        // asylum claims, USCIS filings, and removal proceedings don't fall through to
+        // generic legal/bar-exam callouts.
+        if lower.contains("immigration law") || lower.contains("immigration lawyer")
+            || lower.contains("immigration attorney") || lower.contains("immigration legal")
+            || lower.contains("visa petition") || lower.contains("visa application")
+            || lower.contains("visa renewal") || lower.contains("visa interview")
+            || lower.contains("i-130") || lower.contains("i-485") || lower.contains("i-765")
+            || word("uscis") || lower.contains("uscis form")
+            || lower.contains("asylum claim") || lower.contains("asylum application")
+            || lower.contains("deportation defense") || lower.contains("deportation case")
+            || lower.contains("removal proceedings") || lower.contains("removal defense")
+            || lower.contains("naturalization exam") || lower.contains("citizenship application")
+            || lower.contains("citizenship test") || word("daca")
+            || lower.contains("green card") && lower.contains("applic")
+            || lower.contains("immigration status") || lower.contains("immigration class")
+            || lower.contains("immigration course") || lower.contains("immigration exam")
+            || lower.contains("immigration program") {
+            return "immigrationlaw"
+        }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")
             || word("contract") || word("contracts")
@@ -1929,6 +2003,26 @@ public final class CalloutManager {
             || lower.contains("kitchen design") || lower.contains("bathroom design")
             || lower.contains("interior rendering") || lower.contains("room rendering") {
             return "interiordesign"
+        }
+        // landscapearchitecture — positioned BEFORE the building-architecture branch because
+        // "landscape architect" would otherwise match word("architect") and "site plan" is in both.
+        if lower.contains("landscape architecture") || lower.contains("landscape architect")
+            || lower.contains("landscape architects") || lower.contains("landscape design")
+            || lower.contains("landscape designer")
+            || word("clarb") || lower.contains("clarb exam")
+            || lower.contains("planting plan") || lower.contains("planting design")
+            || lower.contains("planting scheme") || lower.contains("plant palette")
+            || lower.contains("hardscape") || lower.contains("softscape")
+            || lower.contains("la studio") || lower.contains("landscape studio")
+            || lower.contains("grading plan") || lower.contains("site grading")
+            || lower.contains("stormwater management") && lower.contains("design")
+            || lower.contains("constructed wetland") || lower.contains("rain garden")
+            || lower.contains("landscape plan") || lower.contains("site inventory")
+            || lower.contains("landscape class") || lower.contains("landscape exam")
+            || lower.contains("landscape program") || lower.contains("landscape school")
+            || lower.contains("landscape architecture class") || lower.contains("landscape architecture exam")
+            || lower.contains("landscape architecture program") {
+            return "landscapearchitecture"
         }
         // Guard common software-domain and UX false positives before checking architecture keywords.
         // "information architecture" routes to the ux branch above; also guarded here so that

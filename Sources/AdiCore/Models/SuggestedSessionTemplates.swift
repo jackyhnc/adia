@@ -1302,5 +1302,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target international law topic reviewed (trade law, treaty interpretation, or international arbitration), key frameworks and case law summarized, and at least 20 practice questions completed with corrections",
             preferredDuration: 60 * 60
         ),
+        // Cosmetology
+        SuggestedTemplate(
+            icon: "scissors",
+            task: "Study for my cosmetology state board exam",
+            successCriteria: "Target content area reviewed (hair coloring, chemical services, or skin care), key techniques and safety procedures summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "sparkles",
+            task: "Practice and review esthetics or nail tech techniques for class",
+            successCriteria: "Target skill reviewed (waxing, facials, nail art, or manicure/pedicure), technique steps outlined and practiced on reference materials, and class assignment or lab prep completed",
+            preferredDuration: 45 * 60
+        ),
+        // Personal Training
+        SuggestedTemplate(
+            icon: "figure.strengthtraining.traditional",
+            task: "Study for the NASM or ACE personal training certification exam",
+            successCriteria: "Target chapter reviewed (anatomy, exercise science, or program design), key concepts and terminology summarized, and at least 25 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Design a client training program for my personal training practicum",
+            successCriteria: "Client needs assessment completed, periodization model selected, weekly program outlined with sets/reps/intensity, and program saved in shareable format for review",
+            preferredDuration: 45 * 60
+        ),
+        // Dental Lab
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Study for the NBDALE or complete a dental laboratory assignment",
+            successCriteria: "Target content area reviewed (crown-and-bridge, ceramics, or removable prosthodontics), key fabrication steps summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Complete a dental ceramics or crown-and-bridge lab project",
+            successCriteria: "Lab procedure followed step-by-step, fabrication notes completed and documented, and finished project photographed or submitted for instructor review",
+            preferredDuration: 90 * 60
+        ),
+        // Landscape Architecture
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Develop a planting plan or site design for my landscape architecture project",
+            successCriteria: "Site analysis completed, plant palette selected with species and spacing, grading and hardscape elements noted, and design drawing or digital model saved for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "mountain.2.fill",
+            task: "Study for the CLARB exam or complete a landscape architecture assignment",
+            successCriteria: "Target content area reviewed (site design, grading, or environmental systems), key principles and standards summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Immigration Law
+        SuggestedTemplate(
+            icon: "globe.americas.fill",
+            task: "Prepare a visa petition or immigration case brief",
+            successCriteria: "Client facts and immigration history documented, applicable visa category identified with statutory basis, supporting evidence outlined, and petition or brief drafted and saved for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.fill",
+            task: "Study for an immigration law exam or complete an immigration law assignment",
+            successCriteria: "Target topic reviewed (asylum law, visa procedures, removal defense, or naturalization), key cases and regulations summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

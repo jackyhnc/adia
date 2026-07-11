@@ -167,6 +167,11 @@ extension CalloutManager {
         case "translationalresearch":  return translationalresearchCallouts(tier: tier)
         case "healthcarelaw":          return healthcarelawCallouts(tier: tier)
         case "tradelaw":               return tradelawCallouts(tier: tier)
+        case "cosmetology":            return cosmetologyCallouts(tier: tier)
+        case "personaltraining":       return personaltrainingCallouts(tier: tier)
+        case "dentallab":              return dentallabCallouts(tier: tier)
+        case "landscapearchitecture":  return landscapearchitectureCallouts(tier: tier)
+        case "immigrationlaw":         return immigrationlawCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -2653,6 +2658,111 @@ extension CalloutManager {
             "CLOSE THIS. open your trade law notes.",
             "no one masters international arbitration by browsing.",
             "CLOSE THIS. get back to your trade compliance assignment.",
+        ]
+        }
+    }
+
+    private func cosmetologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those clients aren't going to style themselves.",
+            "get back to your cosmetology textbook.",
+            "your state board exam won't prep itself.",
+            "close this and open your milady chapter.",
+        ]
+        case 2: return [
+            "cosmetologists don't pass state boards by scrolling.",
+            "your clients deserve a licensed professional — focus.",
+            "stop avoiding your cosmetology notes.",
+        ]
+        default: return [
+            "CLOSE THIS. open your cosmetology study materials.",
+            "no one passes their state board by browsing.",
+            "CLOSE THIS. get back to your esthetics or nail tech work.",
+        ]
+        }
+    }
+
+    private func personaltrainingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those clients aren't going to train themselves.",
+            "your NASM exam won't prep itself.",
+            "get back to your personal training certification materials.",
+            "close this and open your program design notes.",
+        ]
+        case 2: return [
+            "personal trainers don't get certified by scrolling.",
+            "your clients need you focused — get back to your study materials.",
+            "stop avoiding your training program design work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your NASM or ACE study guide.",
+            "no one passes a fitness certification by browsing.",
+            "CLOSE THIS. get back to your personal training materials.",
+        ]
+        }
+    }
+
+    private func dentallabCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those crowns aren't going to fabricate themselves.",
+            "get back to your dental lab notes.",
+            "your NBDALE exam won't prep itself.",
+            "close this and open your dental ceramics work.",
+        ]
+        case 2: return [
+            "dental lab techs don't get certified by scrolling.",
+            "your crown-and-bridge assignment isn't going to complete itself.",
+            "stop avoiding your dental lab work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your dental lab materials.",
+            "no one passes the NBDALE by browsing.",
+            "CLOSE THIS. get back to your dental laboratory work.",
+        ]
+        }
+    }
+
+    private func landscapearchitectureCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that planting plan isn't going to draw itself.",
+            "get back to your landscape architecture project.",
+            "your CLARB exam won't prep itself.",
+            "close this and open your site design work.",
+        ]
+        case 2: return [
+            "landscape architects don't get licensed by scrolling.",
+            "your planting design isn't going to complete itself.",
+            "stop avoiding your landscape architecture assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your landscape architecture project.",
+            "no one passes the CLARB by browsing.",
+            "CLOSE THIS. get back to your site design or planting plan.",
+        ]
+        }
+    }
+
+    private func immigrationlawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those visa petitions aren't going to file themselves.",
+            "get back to your immigration law notes.",
+            "your immigration case isn't going to prepare itself.",
+            "close this and open your USCIS forms.",
+        ]
+        case 2: return [
+            "immigration clients need you focused — get back to their case.",
+            "your asylum brief isn't going to write itself.",
+            "stop avoiding your immigration law assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your immigration law materials.",
+            "no one masters immigration law by browsing.",
+            "CLOSE THIS. get back to your visa petition or removal defense.",
         ]
         }
     }

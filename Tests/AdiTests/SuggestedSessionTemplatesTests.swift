@@ -2413,6 +2413,51 @@ struct SuggestedSessionTemplatesTests {
         #expect(hasExam,  "catalog must include an international law exam or trade compliance template")
     }
 
+    // MARK: - Cosmetology templates
+    @Test func cosmetologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasBoard = tasks.contains { $0.localizedCaseInsensitiveContains("cosmetology") || $0.localizedCaseInsensitiveContains("state board") }
+        let hasEsthetics = tasks.contains { $0.localizedCaseInsensitiveContains("esthetics") || $0.localizedCaseInsensitiveContains("nail tech") }
+        #expect(hasBoard,    "catalog must include a cosmetology state board template")
+        #expect(hasEsthetics, "catalog must include an esthetics or nail tech template")
+    }
+
+    // MARK: - Personal Training templates
+    @Test func personaltrainingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCert = tasks.contains { $0.localizedCaseInsensitiveContains("NASM") || $0.localizedCaseInsensitiveContains("ACE") && $0.localizedCaseInsensitiveContains("personal training") }
+        let hasProgram = tasks.contains { $0.localizedCaseInsensitiveContains("client training program") || $0.localizedCaseInsensitiveContains("training program") && $0.localizedCaseInsensitiveContains("personal training") }
+        #expect(hasCert,    "catalog must include a NASM/ACE certification template")
+        #expect(hasProgram, "catalog must include a client training program template")
+    }
+
+    // MARK: - Dental Lab templates
+    @Test func dentallabTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasNBDALE = tasks.contains { $0.localizedCaseInsensitiveContains("NBDALE") || $0.localizedCaseInsensitiveContains("dental laboratory") }
+        let hasCeramics = tasks.contains { $0.localizedCaseInsensitiveContains("dental ceramics") || $0.localizedCaseInsensitiveContains("crown-and-bridge") }
+        #expect(hasNBDALE,   "catalog must include a dental lab / NBDALE template")
+        #expect(hasCeramics, "catalog must include a dental ceramics template")
+    }
+
+    // MARK: - Landscape Architecture templates
+    @Test func landscapearchitectureTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPlanting = tasks.contains { $0.localizedCaseInsensitiveContains("planting plan") || $0.localizedCaseInsensitiveContains("landscape architecture") }
+        let hasCLARB = tasks.contains { $0.localizedCaseInsensitiveContains("CLARB") || $0.localizedCaseInsensitiveContains("landscape architecture assignment") }
+        #expect(hasPlanting, "catalog must include a landscape architecture planting plan template")
+        #expect(hasCLARB,    "catalog must include a CLARB exam or landscape architecture assignment template")
+    }
+
+    // MARK: - Immigration Law templates
+    @Test func immigrationlawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPetition = tasks.contains { $0.localizedCaseInsensitiveContains("visa petition") || $0.localizedCaseInsensitiveContains("immigration case") }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("immigration law exam") || $0.localizedCaseInsensitiveContains("immigration law assignment") }
+        #expect(hasPetition, "catalog must include a visa petition / immigration case template")
+        #expect(hasExam,     "catalog must include an immigration law exam template")
+    }
+
     // MARK: - Count guard
     @Test func catalogHasAtLeastOneHundredSixtyOneTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 161,
@@ -2433,5 +2478,9 @@ struct SuggestedSessionTemplatesTests {
     @Test func catalogHasAtLeastTwoHundredOneTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 201,
                 "catalog should have ≥201 templates after humanfactors/behavioraleconomics/translationalresearch/healthcarelaw/tradelaw additions")
+    }
+    @Test func catalogHasAtLeastTwoHundredElevenTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 211,
+                "catalog should have ≥211 templates after cosmetology/personaltraining/dentallab/landscapearchitecture/immigrationlaw additions")
     }
 }
