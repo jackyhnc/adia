@@ -182,6 +182,11 @@ extension CalloutManager {
         case "arteducation":           return arteducationCallouts(tier: tier)
         case "environmentallaw":       return environmentallawCallouts(tier: tier)
         case "familylaw":              return familylawCallouts(tier: tier)
+        case "nuclearmedtech":         return nuclearmedtechCallouts(tier: tier)
+        case "sonography":             return sonographyCallouts(tier: tier)
+        case "cardiovasculartech":     return cardiovasculartechCallouts(tier: tier)
+        case "surgicaltech":           return surgicaltechCallouts(tier: tier)
+        case "arttherapy":             return arttherapyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -2983,6 +2988,111 @@ extension CalloutManager {
             "CLOSE THIS. open your family law notes.",
             "no one masters family law by browsing.",
             "CLOSE THIS. get back to your divorce, custody, or adoption law work.",
+        ]
+        }
+    }
+
+    private func nuclearmedtechCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those nuclear medicine boards aren't going to prep themselves.",
+            "get back to your nuclear medicine studies.",
+            "your CNMT exam won't prep itself.",
+            "close this and open your nuclear medicine study guide.",
+        ]
+        case 2: return [
+            "nuclear medicine technologists don't get certified by scrolling.",
+            "your radiopharmaceutical protocols won't memorize themselves.",
+            "stop avoiding your nuclear medicine class work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your nuclear medicine or CNMT study guide.",
+            "no one passes the CNMT by scrolling.",
+            "CLOSE THIS. get back to your nuclear medicine school work.",
+        ]
+        }
+    }
+
+    private func sonographyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those sonography skills aren't going to develop themselves.",
+            "get back to your ultrasound studies.",
+            "your ARDMS exam won't prep itself.",
+            "close this and open your sonography study guide.",
+        ]
+        case 2: return [
+            "sonographers don't get certified by scrolling.",
+            "your ultrasound physics won't memorize itself.",
+            "stop avoiding your sonography class work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your sonography or ARDMS study guide.",
+            "no one passes the ARDMS registry by scrolling.",
+            "CLOSE THIS. get back to your diagnostic medical sonography work.",
+        ]
+        }
+    }
+
+    private func cardiovasculartechCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those cardiovascular tech exams aren't going to prep themselves.",
+            "get back to your cardiovascular technology studies.",
+            "your CCI board won't prep itself.",
+            "close this and open your cardiovascular tech notes.",
+        ]
+        case 2: return [
+            "cardiovascular technologists don't get certified by scrolling.",
+            "your cardiac cath lab protocols won't learn themselves.",
+            "stop avoiding your cardiovascular tech class work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your cardiovascular technology study guide.",
+            "no one passes the CCI board by scrolling.",
+            "CLOSE THIS. get back to your cardiovascular tech school work.",
+        ]
+        }
+    }
+
+    private func surgicaltechCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those surgical instruments aren't going to memorize themselves.",
+            "get back to your surgical technology studies.",
+            "your CST exam won't prep itself.",
+            "close this and open your surgical tech notes.",
+        ]
+        case 2: return [
+            "surgical technologists don't get certified by scrolling.",
+            "your sterile field technique won't review itself.",
+            "stop avoiding your surgical tech class work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your surgical technology study guide.",
+            "no one passes the CST by scrolling.",
+            "CLOSE THIS. get back to your surgical tech school work.",
+        ]
+        }
+    }
+
+    private func arttherapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your clients deserve your full attention — get back to your art therapy notes.",
+            "that art therapy session plan isn't going to write itself.",
+            "get back to your art therapy study materials.",
+            "close this and open your art therapy notes.",
+        ]
+        case 2: return [
+            "art therapists don't get credentialed by scrolling.",
+            "your ATR board prep won't do itself.",
+            "stop avoiding your art therapy class work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your art therapy or ATR study guide.",
+            "no one earns their ATR by scrolling.",
+            "CLOSE THIS. get back to your art therapy school work.",
         ]
         }
     }

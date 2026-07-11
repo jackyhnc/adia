@@ -1497,5 +1497,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target topic reviewed (divorce, custody, child support, adoption, or parental rights), key rules and cases summarized, and at least 20 practice questions completed with corrections",
             preferredDuration: 60 * 60
         ),
+        // Nuclear Medicine Technology
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study nuclear medicine imaging protocols or prepare for the CNMT board exam",
+            successCriteria: "Target imaging protocol or body system reviewed (PET, SPECT, thyroid, bone scan, or cardiac), radiopharmaceuticals and patient prep summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a nuclear medicine technology school assignment or patient imaging report",
+            successCriteria: "Assigned content reviewed (imaging protocol, radiopharmacy, or radiation safety), questions answered, and assignment saved or submitted for review",
+            preferredDuration: 45 * 60
+        ),
+        // Diagnostic Medical Sonography
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Study for the ARDMS registry exam or review sonography scanning techniques",
+            successCriteria: "Target anatomy or scanning protocol reviewed (abdominal, OB, vascular, or cardiac), key sonographic findings summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a diagnostic medical sonography school assignment or imaging lab report",
+            successCriteria: "Assigned scanning topic reviewed, sonographic anatomy and pathology notes written, and assignment saved or submitted for instructor review",
+            preferredDuration: 45 * 60
+        ),
+        // Cardiovascular Technology
+        SuggestedTemplate(
+            icon: "heart.fill",
+            task: "Study for the CCI board exam or review cardiac catheterization lab procedures",
+            successCriteria: "Target procedure or cardiology topic reviewed (cardiac cath, echo, EKG, or hemodynamics), key concepts and normal values summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a cardiovascular technology school assignment or cardiac imaging report",
+            successCriteria: "Assigned cardiology topic reviewed, procedure steps and documentation requirements outlined, and assignment saved or submitted for review",
+            preferredDuration: 45 * 60
+        ),
+        // Surgical Technology
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Study surgical instrumentation and sterile field techniques for the CST exam",
+            successCriteria: "Target surgical specialty reviewed (general, ortho, OB, or neuro), instrument names and uses memorized, sterile field principles reviewed, and at least 20 practice questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a surgical technology school assignment or surgical case study",
+            successCriteria: "Assigned surgical topic reviewed (instrumentation, anatomy, or procedure steps), case study questions answered, and assignment saved or submitted for instructor review",
+            preferredDuration: 45 * 60
+        ),
+        // Art Therapy
+        SuggestedTemplate(
+            icon: "paintbrush.fill",
+            task: "Write art therapy session notes or a treatment plan for a client case",
+            successCriteria: "Client goals and art directives documented, session observations and responses recorded, progress toward therapeutic goals assessed, and notes saved in the appropriate format",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "graduationcap.fill",
+            task: "Study for the ATR board exam or complete an art therapy school assignment",
+            successCriteria: "Target content area reviewed (art therapy theory, assessment tools, ethics, or population-specific approaches), key concepts summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

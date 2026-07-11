@@ -9372,4 +9372,244 @@ struct CalloutManagerTests {
             #expect(hasCloseThis, "familylaw tier 3 must contain 'CLOSE THIS' or 'no one'")
         }
     }
+
+    // MARK: - Nuclear Medicine Technology
+    @Test func nuclearmedtechKeywordFromNMT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nuclear medicine technology board exam prep for CNMT certification") == "nuclearmedtech")
+    }
+    @Test func nuclearmedtechKeywordFromPETScan() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pet scan technologist class on PET imaging protocols and radiopharmaceuticals") == "nuclearmedtech")
+    }
+    @Test func nuclearmedtechKeywordFromRadiopharmacy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "radiopharmaceuticals class for nuclear medicine technologist certification") == "nuclearmedtech")
+    }
+    @Test func nuclearmedtechFalsePositiveRadiologyStaysRadiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "arrt exam prep for radiologic technology and radiographic positioning")
+        #expect(kw == "radiologictechnology", "radiology tasks should not route to nuclearmedtech")
+    }
+    @Test func nuclearmedtechFalsePositiveHealthcareAdminStaysAdmin() {
+        let kw = CalloutManager.extractTaskKeyword(from: "healthcare administration class on health informatics and RHIA certification")
+        #expect(kw == "healthcareadmin", "healthcare admin tasks should not route to nuclearmedtech")
+    }
+    @Test func nuclearmedtechCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "nuclearmedtech", tier: tier)
+                #expect(!msgs.isEmpty, "nuclearmedtech tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func nuclearmedtechCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "nuclearmedtech", tier: 1)
+            #expect(msgs.count >= 4, "nuclearmedtech tier1 must have ≥4 messages")
+        }
+    }
+    @Test func nuclearmedtechCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "nuclearmedtech", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "nuclearmedtech tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func nuclearmedtechCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "nuclearmedtech", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "nuclearmedtech tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Diagnostic Medical Sonography
+    @Test func sonographyKeywordFromARDMS() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ardms registry exam prep on abdominal and obstetric sonography") == "sonography")
+    }
+    @Test func sonographyKeywordFromUltrasoundTech() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ultrasound technologist class on scanning technique and ultrasound physics") == "sonography")
+    }
+    @Test func sonographyKeywordFromDiagnosticSonography() {
+        #expect(CalloutManager.extractTaskKeyword(from: "diagnostic medical sonography program exam on vascular imaging") == "sonography")
+    }
+    @Test func sonographyFalsePositiveNuclearMedStaysNuclearMed() {
+        let kw = CalloutManager.extractTaskKeyword(from: "nuclear medicine technology board exam prep for CNMT certification")
+        #expect(kw == "nuclearmedtech", "nuclear medicine tasks should not route to sonography")
+    }
+    @Test func sonographyFalsePositiveRadiologyStaysRadiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "arrt exam prep for radiologic technology and radiographic positioning")
+        #expect(kw == "radiologictechnology", "radiology tasks should not route to sonography")
+    }
+    @Test func sonographyCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "sonography", tier: tier)
+                #expect(!msgs.isEmpty, "sonography tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func sonographyCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "sonography", tier: 1)
+            #expect(msgs.count >= 4, "sonography tier1 must have ≥4 messages")
+        }
+    }
+    @Test func sonographyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "sonography", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "sonography tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func sonographyCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "sonography", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "sonography tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Cardiovascular Technology
+    @Test func cardiovasculartechKeywordFromCCI() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cci board exam prep for cardiovascular technology and cardiac catheterization") == "cardiovasculartech")
+    }
+    @Test func cardiovasculartechKeywordFromEcho() {
+        #expect(CalloutManager.extractTaskKeyword(from: "echocardiography class on cardiac imaging and hemodynamics") == "cardiovasculartech")
+    }
+    @Test func cardiovasculartechKeywordFromCardiacCath() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cardiac catheterization course on cath lab procedures and vascular access") == "cardiovasculartech")
+    }
+    @Test func cardiovasculartechFalsePositiveSonographyStaysSonography() {
+        let kw = CalloutManager.extractTaskKeyword(from: "ardms registry exam prep on abdominal and obstetric sonography")
+        #expect(kw == "sonography", "sonography tasks should not route to cardiovasculartech")
+    }
+    @Test func cardiovasculartechFalsePositiveNursingStaysNursing() {
+        let kw = CalloutManager.extractTaskKeyword(from: "nclex exam prep for nursing school on cardiac medications and patient care")
+        #expect(kw == "nursing", "nursing tasks should not route to cardiovasculartech")
+    }
+    @Test func cardiovasculartechCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "cardiovasculartech", tier: tier)
+                #expect(!msgs.isEmpty, "cardiovasculartech tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func cardiovasculartechCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "cardiovasculartech", tier: 1)
+            #expect(msgs.count >= 4, "cardiovasculartech tier1 must have ≥4 messages")
+        }
+    }
+    @Test func cardiovasculartechCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "cardiovasculartech", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "cardiovasculartech tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func cardiovasculartechCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "cardiovasculartech", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "cardiovasculartech tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Surgical Technology
+    @Test func surgicaltechKeywordFromCST() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cst exam prep on surgical instrumentation and sterile field technique") == "surgicaltech")
+    }
+    @Test func surgicaltechKeywordFromScrubTech() {
+        #expect(CalloutManager.extractTaskKeyword(from: "scrub tech class on surgical technology and perioperative patient care") == "surgicaltech")
+    }
+    @Test func surgicaltechKeywordFromNBSTSA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nbstsa certification exam prep for surgical technologist program") == "surgicaltech")
+    }
+    @Test func surgicaltechFalsePositiveCardiovascularStaysCardiovascular() {
+        let kw = CalloutManager.extractTaskKeyword(from: "cci board exam prep for cardiovascular technology and cardiac catheterization")
+        #expect(kw == "cardiovasculartech", "cardiovascular tech tasks should not route to surgicaltech")
+    }
+    @Test func surgicaltechFalsePositiveNursingStaysNursing() {
+        let kw = CalloutManager.extractTaskKeyword(from: "nclex exam prep for nursing school on surgical nursing and perioperative care plan")
+        #expect(kw == "nursing", "nursing tasks should not route to surgicaltech")
+    }
+    @Test func surgicaltechCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "surgicaltech", tier: tier)
+                #expect(!msgs.isEmpty, "surgicaltech tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func surgicaltechCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "surgicaltech", tier: 1)
+            #expect(msgs.count >= 4, "surgicaltech tier1 must have ≥4 messages")
+        }
+    }
+    @Test func surgicaltechCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "surgicaltech", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "surgicaltech tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func surgicaltechCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "surgicaltech", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "surgicaltech tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Art Therapy
+    @Test func arttherapyKeywordFromArtTherapy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "art therapy session notes and treatment plan for client case conceptualization") == "arttherapy")
+    }
+    @Test func arttherapyKeywordFromATR() {
+        #expect(CalloutManager.extractTaskKeyword(from: "atr board exam prep for art therapy certification and credentialing") == "arttherapy")
+    }
+    @Test func arttherapyKeywordFromExpressiveArts() {
+        #expect(CalloutManager.extractTaskKeyword(from: "expressive arts therapy class assignment on creative arts therapist competencies") == "arttherapy")
+    }
+    @Test func arttherapyFalsePositiveTherapyNoteStaysTherapy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "therapy notes and session notes for cognitive behavioral therapy client")
+        #expect(kw == "therapy", "generic therapy tasks should not route to arttherapy")
+    }
+    @Test func arttherapyFalsePositiveArtClassStaysStudying() {
+        let kw = CalloutManager.extractTaskKeyword(from: "taking an art class at the studio this semester")
+        #expect(kw != "arttherapy", "generic art class tasks should not route to arttherapy")
+    }
+    @Test func arttherapyCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "arttherapy", tier: tier)
+                #expect(!msgs.isEmpty, "arttherapy tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func arttherapyCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "arttherapy", tier: 1)
+            #expect(msgs.count >= 4, "arttherapy tier1 must have ≥4 messages")
+        }
+    }
+    @Test func arttherapyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "arttherapy", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "arttherapy tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func arttherapyCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "arttherapy", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "arttherapy tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
 }

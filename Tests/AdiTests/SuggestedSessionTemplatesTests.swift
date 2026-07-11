@@ -2578,9 +2578,58 @@ struct SuggestedSessionTemplatesTests {
         #expect(hasExam,  "catalog must include a family law exam or domestic relations assignment template")
     }
 
+    // MARK: - Nuclear Medicine Technology templates
+    @Test func nuclearmedtechTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCNMT = tasks.contains { $0.localizedCaseInsensitiveContains("nuclear medicine") && ($0.localizedCaseInsensitiveContains("CNMT") || $0.localizedCaseInsensitiveContains("board")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("nuclear medicine") && $0.localizedCaseInsensitiveContains("assignment") }
+        #expect(hasCNMT,       "catalog must include a nuclear medicine board or CNMT prep template")
+        #expect(hasAssignment, "catalog must include a nuclear medicine assignment template")
+    }
+
+    // MARK: - Diagnostic Medical Sonography templates
+    @Test func sonographyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasARDMS = tasks.contains { $0.localizedCaseInsensitiveContains("ARDMS") || $0.localizedCaseInsensitiveContains("sonography") && $0.localizedCaseInsensitiveContains("exam") }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("sonography") && $0.localizedCaseInsensitiveContains("assignment") }
+        #expect(hasARDMS,      "catalog must include an ARDMS registry or sonography exam template")
+        #expect(hasAssignment, "catalog must include a sonography assignment template")
+    }
+
+    // MARK: - Cardiovascular Technology templates
+    @Test func cardiovasculartechTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCCI = tasks.contains { $0.localizedCaseInsensitiveContains("CCI") || $0.localizedCaseInsensitiveContains("cardiovascular technology") && $0.localizedCaseInsensitiveContains("board") }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("cardiovascular technology") && $0.localizedCaseInsensitiveContains("assignment") }
+        #expect(hasCCI,        "catalog must include a CCI board or cardiovascular technology template")
+        #expect(hasAssignment, "catalog must include a cardiovascular technology assignment template")
+    }
+
+    // MARK: - Surgical Technology templates
+    @Test func surgicaltechTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCST = tasks.contains { $0.localizedCaseInsensitiveContains("CST") || $0.localizedCaseInsensitiveContains("surgical instrumentation") }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("surgical technology") && $0.localizedCaseInsensitiveContains("assignment") }
+        #expect(hasCST,        "catalog must include a CST exam or surgical instrumentation template")
+        #expect(hasAssignment, "catalog must include a surgical technology assignment template")
+    }
+
+    // MARK: - Art Therapy templates
+    @Test func arttherapyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasNotes = tasks.contains { $0.localizedCaseInsensitiveContains("art therapy") && $0.localizedCaseInsensitiveContains("session notes") || $0.localizedCaseInsensitiveContains("art therapy") && $0.localizedCaseInsensitiveContains("treatment plan") }
+        let hasATR = tasks.contains { $0.localizedCaseInsensitiveContains("ATR") || $0.localizedCaseInsensitiveContains("art therapy") && $0.localizedCaseInsensitiveContains("board") }
+        #expect(hasNotes, "catalog must include an art therapy session notes or treatment plan template")
+        #expect(hasATR,   "catalog must include an ATR board or art therapy board template")
+    }
+
     // MARK: - Count guard
     @Test func catalogHasAtLeastTwoHundredThirtyThreeTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 233,
                 "catalog should have ≥233 templates after signlanguage/acupuncture/arteducation/environmentallaw/familylaw additions")
+    }
+    @Test func catalogHasAtLeastTwoHundredFortyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 243,
+                "catalog should have ≥243 templates after nuclearmedtech/sonography/cardiovasculartech/surgicaltech/arttherapy additions")
     }
 }

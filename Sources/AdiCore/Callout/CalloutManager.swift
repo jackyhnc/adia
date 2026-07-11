@@ -1599,6 +1599,78 @@ public final class CalloutManager {
             || lower.contains("interventional radiology") && (lower.contains("class") || lower.contains("rotation") || lower.contains("exam")) {
             return "radiologictechnology"
         }
+        // nuclearmedtech — positioned AFTER radiologictechnology and BEFORE healthcareadmin so
+        // nuclear medicine technologist boards, PET/SPECT imaging, and radiopharmaceuticals
+        // coursework routes here rather than to the general imaging pool.
+        if lower.contains("nuclear medicine technology") || lower.contains("nuclear medicine technologist")
+            || lower.contains("nuclear medicine tech") || lower.contains("nuclear medicine school")
+            || lower.contains("nuclear medicine program") || lower.contains("nuclear medicine class")
+            || lower.contains("nuclear medicine exam") || lower.contains("nuclear medicine certification")
+            || lower.contains("nuclear medicine rotation") || lower.contains("nuclear medicine course")
+            || word("cnmt") || word("nmt")
+            || lower.contains("arrt nuclear") || lower.contains("nuclear medicine board")
+            || lower.contains("pet scan tech") || lower.contains("pet technologist")
+            || lower.contains("pet imaging class") || lower.contains("pet imaging course")
+            || lower.contains("spect scan technologist") || lower.contains("spect imaging class")
+            || lower.contains("radiopharmaceuticals class") || lower.contains("radiopharmaceuticals course")
+            || lower.contains("radiopharmacy class") || lower.contains("radiopharmacy course")
+            || lower.contains("nuclear cardiology class") || lower.contains("nuclear cardiology course")
+            || lower.contains("gamma camera") && (lower.contains("class") || lower.contains("exam") || lower.contains("study"))
+            || lower.contains("radiation dosimetry class") || lower.contains("radiation dosimetry course")
+            || lower.contains("radioisotope therapy") || lower.contains("radionuclide therapy") {
+            return "nuclearmedtech"
+        }
+        // sonography — positioned AFTER nuclearmedtech and BEFORE healthcareadmin so
+        // diagnostic medical sonography, ARDMS registry prep, and ultrasound technology
+        // coursework routes here rather than to the general imaging pool.
+        if lower.contains("diagnostic medical sonography") || lower.contains("diagnostic sonography")
+            || lower.contains("sonography school") || lower.contains("sonography program")
+            || lower.contains("sonography class") || lower.contains("sonography exam")
+            || lower.contains("sonography certification") || lower.contains("sonography rotation")
+            || lower.contains("sonography course") || word("sonographer") || word("sonographers")
+            || word("ardms") || lower.contains("ardms registry") || lower.contains("ardms exam")
+            || lower.contains("ultrasound technologist") || lower.contains("ultrasound technology class")
+            || lower.contains("ultrasound technology course") || lower.contains("ultrasound technology exam")
+            || lower.contains("abdominal sonography") || lower.contains("obstetric sonography")
+            || lower.contains("ob sonography") || lower.contains("vascular sonography")
+            || lower.contains("ultrasound physics class") || lower.contains("ultrasound physics course")
+            || lower.contains("sonography scanning") || lower.contains("scanning technique class") {
+            return "sonography"
+        }
+        // cardiovasculartech — positioned AFTER sonography and BEFORE healthcareadmin so
+        // cardiac cath lab, echocardiography, and CCI/RCIS board prep routes here.
+        if lower.contains("cardiovascular technology") || lower.contains("cardiovascular technologist")
+            || lower.contains("cardiovascular tech school") || lower.contains("cardiovascular tech program")
+            || lower.contains("cardiovascular tech class") || lower.contains("cardiovascular tech exam")
+            || lower.contains("cardiovascular tech course") || lower.contains("cardiovascular tech rotation")
+            || word("rcis") || word("rces") || lower.contains("cci board") || lower.contains("cci exam")
+            || lower.contains("cardiac catheterization class") || lower.contains("cardiac catheterization course")
+            || lower.contains("cardiac cath lab class") || lower.contains("cardiac cath lab course")
+            || lower.contains("echocardiography class") || lower.contains("echocardiography course")
+            || lower.contains("echocardiography exam") || lower.contains("echocardiography program")
+            || lower.contains("ekg technician class") || lower.contains("ekg technician course")
+            || lower.contains("ekg technician exam") || lower.contains("ekg certification class")
+            || lower.contains("holter monitor class") || lower.contains("cardiac monitoring class")
+            || lower.contains("stress test technologist") || lower.contains("vascular technology class")
+            || lower.contains("vascular technology course") || lower.contains("vascular technology exam") {
+            return "cardiovasculartech"
+        }
+        // surgicaltech — positioned AFTER cardiovasculartech and BEFORE healthcareadmin so
+        // surgical technology, CST exam, and sterile field technique routes here.
+        if lower.contains("surgical technology") || lower.contains("surgical technologist")
+            || lower.contains("surgical technician") || lower.contains("surgical tech school")
+            || lower.contains("surgical tech program") || lower.contains("surgical tech class")
+            || lower.contains("surgical tech exam") || lower.contains("surgical tech course")
+            || lower.contains("surgical tech certification") || lower.contains("surgical tech rotation")
+            || word("nbstsa") || lower.contains("cst exam") || lower.contains("cst certification")
+            || lower.contains("scrub tech") || lower.contains("scrub technician")
+            || lower.contains("surgical instrumentation class") || lower.contains("surgical instrumentation course")
+            || lower.contains("surgical instrumentation exam") || lower.contains("sterile field technique")
+            || lower.contains("sterile technique class") || lower.contains("surgical case study class")
+            || lower.contains("perioperative class") || lower.contains("perioperative course")
+            || lower.contains("perioperative exam") {
+            return "surgicaltech"
+        }
         // healthcareadmin — positioned after molecularbiology and before premed so healthcare
         // administration, health informatics, and HIM certification prep route here.
         // "health policy" stays in the policy branch; "public health" stays in publicheath.
@@ -1706,6 +1778,23 @@ public final class CalloutManager {
             || lower.contains("patient assessment") || lower.contains("patient care plan")
             || lower.contains("wound care") || lower.contains("iv insertion") {
             return "nursing"
+        }
+        // arttherapy — positioned BEFORE socialwork and therapy so "art therapy", "art therapist",
+        // and ATR/ATCB board prep routes here rather than to generic therapy callouts.
+        // Bare "art class" / "taking an art class" fires the art/studying branch much earlier.
+        if lower.contains("art therapy") || lower.contains("art therapist")
+            || lower.contains("art therapists")
+            || word("atr") && (lower.contains("board") || lower.contains("credential") || lower.contains("exam") || lower.contains("certification"))
+            || word("atcb") || lower.contains("atcb exam") || lower.contains("atcb certification")
+            || lower.contains("art therapy class") || lower.contains("art therapy course")
+            || lower.contains("art therapy program") || lower.contains("art therapy school")
+            || lower.contains("art therapy exam") || lower.contains("art therapy assignment")
+            || lower.contains("art therapy session") || lower.contains("art therapy notes")
+            || lower.contains("art therapy treatment plan") || lower.contains("art therapy internship")
+            || lower.contains("expressive arts therapy") || lower.contains("expressive arts therapist")
+            || lower.contains("creative arts therapy") || lower.contains("creative arts therapist")
+            || lower.contains("therapeutic art making") || lower.contains("therapeutic art class") {
+            return "arttherapy"
         }
         // socialwork — positioned before therapy so social-work-specific tasks (case management,
         // child welfare, community resources) route here instead of to therapist callouts.
