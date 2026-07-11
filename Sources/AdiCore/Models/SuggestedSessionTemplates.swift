@@ -496,5 +496,44 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target domain reviewed, key concepts in occupational performance and intervention summarized, and at least 10 practice questions completed with corrections",
             preferredDuration: 60 * 60
         ),
+        // Dental
+        SuggestedTemplate(
+            icon: "mouth.fill",
+            task: "Study for the NBDE or dental school boards",
+            successCriteria: "Target subject reviewed (anatomy, pathology, or clinical dentistry), key concepts summarized in notes, and at least 15 board-style questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write dental SOAP notes or complete clinical chart entries",
+            successCriteria: "All patient encounter notes written in SOAP format with chief complaint, assessment, treatment plan, and next steps documented and chart updated",
+            preferredDuration: 30 * 60
+        ),
+        // Pharmacy
+        SuggestedTemplate(
+            icon: "pill.fill",
+            task: "Study for the NAPLEX or pharmacy school exam",
+            successCriteria: "Target drug class or therapeutics area reviewed, key pharmacokinetics and mechanisms summarized, and at least 10 NAPLEX-style questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.vial.fill",
+            task: "Review drug interactions and pharmacology for rotation",
+            successCriteria: "Drug class or interaction category reviewed, mechanism and clinical significance summarized in notes, and top drug interactions memorized with at least 5 case-based questions done",
+            preferredDuration: 45 * 60
+        ),
+        // Optometry
+        SuggestedTemplate(
+            icon: "eye.fill",
+            task: "Study for the NBEO or optometry school boards",
+            successCriteria: "Target clinical topic reviewed (visual optics, ocular disease, or contact lens), key concepts summarized, and at least 10 board-style questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.plaintext.fill",
+            task: "Write optometry clinical notes or visual assessment documentation",
+            successCriteria: "Patient encounter documented with visual acuity, refraction findings, ocular health assessment, and plan recorded in SOAP format and chart updated",
+            preferredDuration: 30 * 60
+        ),
     ]
 }

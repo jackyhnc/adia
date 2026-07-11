@@ -5360,4 +5360,193 @@ struct CalloutManagerTests {
             }
         }
     }
+
+    // MARK: - Dental
+
+    @Test func dentalKeywordFromDDS() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my DDS boards") == "dental")
+    }
+
+    @Test func dentalKeywordFromNBDE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for the NBDE exam") == "dental")
+    }
+
+    @Test func dentalKeywordFromDentalSchool() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write dental school clinic notes") == "dental")
+    }
+
+    @Test func dentalKeywordFromPerio() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review periodontics for tomorrow's quiz") == "dental")
+    }
+
+    @Test func dentalKeywordFromOrthodontics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my orthodontics case report") == "dental")
+    }
+
+    @Test func dentalKeywordDoesNotMatchPremed() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study anatomy for med school") != "dental")
+    }
+
+    @Test func dentalHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dental", tier: 1)
+            #expect(!msgs.isEmpty, "dental tier1 pool must be non-empty")
+        }
+    }
+
+    @Test func dentalDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "dental", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "dental", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "dental", tier: 3)
+            #expect(tier1.count >= 4, "dental tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "dental tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "dental tier3 must have ≥3 messages")
+        }
+    }
+
+    @Test func dentalTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "dental", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.hasPrefix("no one") }
+            #expect(hasUrgent, "dental tier3 should contain an urgent directive")
+        }
+    }
+
+    @Test func dentalCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dental", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "dental tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+
+    // MARK: - Pharmacy
+
+    @Test func pharmacyKeywordFromNAPLEX() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for the NAPLEX exam") == "pharmacy")
+    }
+
+    @Test func pharmacyKeywordFromPharmD() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my PharmD boards") == "pharmacy")
+    }
+
+    @Test func pharmacyKeywordFromDrugInteractions() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review drug interactions for my pharmacy rotation") == "pharmacy")
+    }
+
+    @Test func pharmacyKeywordFromPharmacySchool() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my pharmacy school assignment") == "pharmacy")
+    }
+
+    @Test func pharmacyKeywordFromPharmacokinetics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study pharmacokinetics for my exam") == "pharmacy")
+    }
+
+    @Test func pharmacyKeywordDoesNotMatchPremed() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study pharmacology for medical school") != "pharmacy")
+    }
+
+    @Test func pharmacyHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "pharmacy", tier: 1)
+            #expect(!msgs.isEmpty, "pharmacy tier1 pool must be non-empty")
+        }
+    }
+
+    @Test func pharmacyDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "pharmacy", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "pharmacy", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "pharmacy", tier: 3)
+            #expect(tier1.count >= 4, "pharmacy tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "pharmacy tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "pharmacy tier3 must have ≥3 messages")
+        }
+    }
+
+    @Test func pharmacyTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "pharmacy", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.hasPrefix("no one") || $0.contains("close this") }
+            #expect(hasUrgent, "pharmacy tier3 should contain an urgent directive")
+        }
+    }
+
+    @Test func pharmacyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "pharmacy", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "pharmacy tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+
+    // MARK: - Optometry
+
+    @Test func optometryKeywordFromNBEO() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for the NBEO exam") == "optometry")
+    }
+
+    @Test func optometryKeywordFromOptometrySchool() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my optometry school clinical notes") == "optometry")
+    }
+
+    @Test func optometryKeywordFromVisualAcuity() {
+        #expect(CalloutManager.extractTaskKeyword(from: "document visual acuity results for my rotation") == "optometry")
+    }
+
+    @Test func optometryKeywordFromContactLens() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study contact lens fitting techniques") == "optometry")
+    }
+
+    @Test func optometryKeywordFromOptometrist() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my optometrist licensure exam") == "optometry")
+    }
+
+    @Test func optometryKeywordDoesNotMatchPremed() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study clinical skills for medical school") != "optometry")
+    }
+
+    @Test func optometryHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "optometry", tier: 1)
+            #expect(!msgs.isEmpty, "optometry tier1 pool must be non-empty")
+        }
+    }
+
+    @Test func optometryDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "optometry", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "optometry", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "optometry", tier: 3)
+            #expect(tier1.count >= 4, "optometry tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "optometry tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "optometry tier3 must have ≥3 messages")
+        }
+    }
+
+    @Test func optometryTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "optometry", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.hasPrefix("no one") }
+            #expect(hasUrgent, "optometry tier3 should contain an urgent directive")
+        }
+    }
+
+    @Test func optometryCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "optometry", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "optometry tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
 }

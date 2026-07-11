@@ -105,6 +105,9 @@ extension CalloutManager {
         case "paramedicine":         return paramedicineCallouts(tier: tier)
         case "socialwork":           return socialworkCallouts(tier: tier)
         case "occupationaltherapy":  return occupationaltherapyCallouts(tier: tier)
+        case "dental":               return dentalCallouts(tier: tier)
+        case "pharmacy":             return pharmacyCallouts(tier: tier)
+        case "optometry":            return optometryCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1271,6 +1274,69 @@ extension CalloutManager {
             "CLOSE THIS. open your OT notes.",
             "no one passes the NBCOT by scrolling.",
             "your future clients need you studying — not browsing.",
+        ]
+        }
+    }
+
+    private func dentalCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those dental boards aren't going to pass themselves.",
+            "your NBDE prep is waiting — close this.",
+            "your future patients are counting on you studying.",
+            "get back to your dental school work.",
+        ]
+        case 2: return [
+            "stop. your dental charts aren't going to write themselves.",
+            "this isn't your clinical notes.",
+            "close this and get back to your dental coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your dental school notes.",
+            "no one passes the NBDE by scrolling.",
+            "your patients can't wait — and neither can your boards.",
+        ]
+        }
+    }
+
+    private func pharmacyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those drug interactions aren't going to memorize themselves.",
+            "your NAPLEX prep is waiting — close this.",
+            "your future patients need you to know this.",
+            "get back to your pharmacy coursework.",
+        ]
+        case 2: return [
+            "stop. your pharmacokinetics notes aren't going to write themselves.",
+            "this isn't your drug therapy review.",
+            "close this and get back to your pharmacy rotation prep.",
+        ]
+        default: return [
+            "CLOSE THIS. open your pharmacy textbook.",
+            "no one passes the NAPLEX by scrolling.",
+            "medication errors happen when pharmacists don't study — close this.",
+        ]
+        }
+    }
+
+    private func optometryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those NBEO questions won't answer themselves.",
+            "your optometry boards are waiting — close this.",
+            "your future patients need you to know this.",
+            "get back to your optometry coursework.",
+        ]
+        case 2: return [
+            "stop. your clinical optometry notes aren't going to write themselves.",
+            "this isn't your visual acuity assessment.",
+            "close this and get back to your optometry rotation prep.",
+        ]
+        default: return [
+            "CLOSE THIS. open your optometry notes.",
+            "no one passes the NBEO by scrolling.",
+            "your patients' vision depends on you studying — close this.",
         ]
         }
     }

@@ -1201,4 +1201,96 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 77,
                 "catalog should have ≥77 templates after paramedicine/socialwork/OT additions")
     }
+
+    // MARK: - Dental templates
+
+    @Test func dentalTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("nbde") || t.task.lowercased().contains("dental")
+        }
+        #expect(!templates.isEmpty, "at least one dental template must exist")
+    }
+
+    @Test func dentalTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("nbde") || t.task.lowercased().contains("dental")
+        }
+        #expect(templates.count >= 2, "should have ≥2 dental templates (boards study + clinical notes)")
+    }
+
+    @Test func dentalTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("nbde") || t.task.lowercased().contains("dental")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "dental template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Pharmacy templates
+
+    @Test func pharmacyTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("naplex") || t.task.lowercased().contains("pharmacy")
+        }
+        #expect(!templates.isEmpty, "at least one pharmacy template must exist")
+    }
+
+    @Test func pharmacyTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("naplex") || t.task.lowercased().contains("pharmacy")
+        }
+        #expect(templates.count >= 2, "should have ≥2 pharmacy templates (boards study + drug review)")
+    }
+
+    @Test func pharmacyTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("naplex") || t.task.lowercased().contains("pharmacy")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "pharmacy template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Optometry templates
+
+    @Test func optometryTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("nbeo") || t.task.lowercased().contains("optometry")
+        }
+        #expect(!templates.isEmpty, "at least one optometry template must exist")
+    }
+
+    @Test func optometryTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("nbeo") || t.task.lowercased().contains("optometry")
+        }
+        #expect(templates.count >= 2, "should have ≥2 optometry templates (boards study + clinical notes)")
+    }
+
+    @Test func optometryTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("nbeo") || t.task.lowercased().contains("optometry")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "optometry template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastEightyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 83,
+                "catalog should have ≥83 templates after dental/pharmacy/optometry additions")
+    }
 }

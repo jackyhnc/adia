@@ -88,8 +88,38 @@ public final class CalloutManager {
         if word("essay") || word("essays") { return "essay" }
         if word("paper") || word("papers") { return "paper" }
         if word("thesis") || word("theses") || word("dissertation") || word("dissertations") { return "thesis" }
+        // startup — must fire before presentation to catch "pitch deck" before word("deck") does.
+        if lower.contains("pitch deck") || lower.contains("investor deck")
+            || lower.contains("go-to-market") || lower.contains("gtm strategy")
+            || lower.contains("business plan") || lower.contains("business model")
+            || lower.contains("lean canvas")
+            || lower.contains("value proposition")
+            || lower.contains("seed round") || lower.contains("series a") || lower.contains("series b")
+            || lower.contains("angel investor")
+            || lower.contains("unit economics") || lower.contains("customer discovery")
+            || lower.contains("product-market fit") || lower.contains("product market fit")
+            || lower.contains("growth strategy") || lower.contains("growth hacking")
+            || lower.contains("minimum viable product")
+            || word("fundraising") || word("fundraise")
+            || word("startup") || word("startups")
+            || word("cofounder") || lower.contains("co-founder")
+            || word("saas") || word("b2b") || word("b2c") {
+            return "startup"
+        }
         if word("presentation") || word("presentations") || word("slides") || word("deck") || word("powerpoint") || word("keynote") {
             return "presentation"
+        }
+        // gamedev — positioned before code so Unity/Godot/engine terms don't fall through to code.
+        // "game plan" is not matched because no specific tool name or game-dev phrase fires.
+        if word("unity") || word("godot") || lower.contains("unreal engine")
+            || lower.contains("game dev") || lower.contains("game development")
+            || lower.contains("game design document") || word("gdd")
+            || lower.contains("game jam")
+            || lower.contains("game engine")
+            || lower.contains("level design") || lower.contains("level editor")
+            || lower.contains("game mechanic") || lower.contains("game mechanics")
+            || word("pygame") || word("phaser") || word("libgdx") || word("gdevelop") {
+            return "gamedev"
         }
         if word("code") || word("coding") || word("programming") || word("bug") || word("feature") || word("function")
             || word("leetcode") || word("hackerrank") || word("codeforces") || word("codewars")
@@ -107,6 +137,22 @@ public final class CalloutManager {
         if word("report") || word("reports") || word("document") || word("documents") || word("doc") || word("docs") {
             return "report"
         }
+        // statistics — positioned before studying so professional stats tools/methods (R, SPSS,
+        // STATA, regression analysis, ANOVA) route here. Bare word("statistics") and word("stats")
+        // stay in studying so "study statistics for my exam" still routes to studying.
+        if lower.contains("rstudio") || lower.contains("r studio") || word("spss") || word("stata")
+            || lower.contains("hypothesis testing") || lower.contains("hypothesis test")
+            || lower.contains("linear regression") || lower.contains("logistic regression")
+            || lower.contains("multiple regression") || lower.contains("multivariate analysis")
+            || lower.contains("regression analysis")
+            || word("anova") || lower.contains("t-test") || lower.contains("chi-square")
+            || lower.contains("confidence interval") || lower.contains("statistical analysis")
+            || lower.contains("statistical modeling") || lower.contains("statistical model")
+            || lower.contains("descriptive statistics") || lower.contains("inferential statistics")
+            || lower.contains("p-value") || lower.contains("p value")
+            || lower.contains("effect size") || lower.contains("sample size calculation") {
+            return "statistics"
+        }
         if word("study") || word("studying") || word("exam") || word("quiz") || word("test")
             || word("midterm") || word("midterms") || word("finals") || word("notes")
             || word("flashcard") || word("flashcards") || word("lecture")
@@ -118,17 +164,98 @@ public final class CalloutManager {
             return "studying"
         }
         if word("reading") || word("book") || word("chapter") || word("article")
-            || word("annotate") || word("annotating") || word("annotation") || word("annotations") || word("annotated") {
+            || word("annotate") || word("annotating") || word("annotation") || word("annotations") || word("annotated")
+            || word("audiobook") || word("audiobooks") {
             return "reading"
         }
         if word("homework") || word("assignment") || lower.contains("problem set") || word("pset")
             || word("worksheet") || word("worksheets") {
             return "homework"
         }
+        // engineering — positioned before datascience and research so tool/hardware-specific terms
+        // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
+        if word("solidworks") || lower.contains("fusion 360") || word("ansys")
+            || word("microcontroller") || word("arduino") || lower.contains("raspberry pi")
+            || word("pcb") || lower.contains("circuit board") || lower.contains("circuit diagram")
+            || lower.contains("circuit design")
+            || lower.contains("mechanical engineering") || lower.contains("electrical engineering")
+            || lower.contains("civil engineering") || lower.contains("chemical engineering")
+            || lower.contains("biomedical engineering") || lower.contains("aerospace engineering")
+            || lower.contains("computer engineering")
+            || lower.contains("finite element") || word("fea")
+            || lower.contains("heat transfer") || lower.contains("fluid dynamics")
+            || lower.contains("fluid mechanics") || lower.contains("thermodynamics")
+            || lower.contains("structural analysis") || lower.contains("strength of materials")
+            || lower.contains("machine design") || lower.contains("statics lab")
+            || lower.contains("engineering lab") || lower.contains("engineering report") {
+            return "engineering"
+        }
+        // datascience — positioned before research so "data science" and ML terms route here
+        // instead of the generic research branch. "data science"/"data scientist" removed from research.
+        if lower.contains("machine learning") || lower.contains("deep learning")
+            || lower.contains("neural network") || lower.contains("neural networks")
+            || word("pytorch") || word("tensorflow") || word("keras")
+            || lower.contains("scikit-learn") || word("sklearn") || word("xgboost")
+            || word("jupyter") || lower.contains("jupyter notebook")
+            || word("kaggle")
+            || lower.contains("data science") || lower.contains("data scientist")
+            || lower.contains("natural language processing")
+            || lower.contains("computer vision")
+            || lower.contains("reinforcement learning")
+            || lower.contains("model training") || lower.contains("model accuracy")
+            || lower.contains("hyperparameter") || lower.contains("training loss")
+            || lower.contains("gradient descent") || lower.contains("gradient boosting")
+            || lower.contains("random forest") || lower.contains("decision tree") {
+            return "datascience"
+        }
+        // ux — positioned before research so "user research" routes here rather than to the
+        // generic research pool. "information architecture" is also caught here (not building arch).
+        if lower.contains("user research") || lower.contains("usability testing")
+            || lower.contains("usability test")
+            || lower.contains("user flow") || lower.contains("user flows")
+            || lower.contains("user journey") || lower.contains("user journeys")
+            || lower.contains("journey map") || lower.contains("journey mapping")
+            || lower.contains("affinity map") || lower.contains("affinity mapping")
+            || lower.contains("affinity diagram") || lower.contains("affinity diagrams")
+            || lower.contains("user persona") || lower.contains("user personas")
+            || lower.contains("design thinking")
+            || word("hci") || lower.contains("human-computer interaction")
+            || lower.contains("user testing")
+            || lower.contains("ux research") || lower.contains("ux writing")
+            || lower.contains("ux design") || word("ux")
+            || lower.contains("information architecture")
+            || lower.contains("interaction design")
+            || lower.contains("accessibility audit")
+            || word("wireframing") || lower.contains("user story") || lower.contains("user stories") {
+            return "ux"
+        }
+        // business/management — positioned before research so "marketing research" and "market analysis"
+        // route here rather than the generic research pool. Startup branch above already catches
+        // "business plan", "pitch deck", and "business model" before this point.
+        if word("mba") || word("gmat")
+            || lower.contains("case analysis") || lower.contains("business case")
+            || lower.contains("operations management")
+            || lower.contains("supply chain")
+            || lower.contains("organizational behavior") || lower.contains("organisational behaviour")
+            || lower.contains("strategic management") || lower.contains("business strategy")
+            || lower.contains("marketing research") || lower.contains("market research")
+            || lower.contains("market analysis") || lower.contains("market segmentation")
+            || lower.contains("human resources") || lower.contains("hr management")
+            || lower.contains("management consulting") || lower.contains("consulting case")
+            || lower.contains("competitive analysis") || lower.contains("competitor analysis")
+            || lower.contains("consumer behavior") || lower.contains("consumer behaviour")
+            || lower.contains("brand management") || lower.contains("brand strategy")
+            || lower.contains("corporate strategy")
+            || lower.contains("business administration")
+            || lower.contains("swot analysis") || word("swot")
+            || lower.contains("value chain")
+            || lower.contains("business school")
+            || lower.contains("management class") || lower.contains("management course") {
+            return "business"
+        }
         if word("research") || word("lab")
             || lower.contains("case study") || lower.contains("case studies")
             || lower.contains("data analysis") || lower.contains("data collection")
-            || lower.contains("data science") || lower.contains("data scientist")
             || word("dataset") || word("datasets") || lower.contains("qualitative") || lower.contains("quantitative") {
             return "research"
         }
@@ -140,7 +267,8 @@ public final class CalloutManager {
             return "art"
         }
         if word("design") || word("designing") || word("mockup") || word("wireframe")
-            || word("prototype") || word("figma") || word("sketch") {
+            || word("prototype") || word("figma") || word("sketch")
+            || lower.contains("design brief") {
             return "design"
         }
         if word("email") || word("emails") || word("inbox") {
@@ -158,6 +286,20 @@ public final class CalloutManager {
         if word("meeting") || word("meetings") || word("agenda") || word("agendas")
             || lower.contains("meeting notes") || lower.contains("meeting prep") {
             return "meeting"
+        }
+        // Photography must fire before video — "photo editing", "editing photos", "raw editing"
+        // all contain word("editing") which video catches via `word("editing")`.
+        if word("lightroom") || word("photography") || word("photographer")
+            || word("photoshoot") || lower.contains("photo shoot")
+            || lower.contains("photo editing") || lower.contains("edit photos")
+            || lower.contains("edit my photos") || lower.contains("editing photos")
+            || lower.contains("capture one")
+            || lower.contains("portrait photography") || lower.contains("landscape photography")
+            || lower.contains("street photography") || lower.contains("product photography")
+            || word("darkroom") || word("headshots") || word("headshot")
+            || lower.contains("photo series") || lower.contains("photo project")
+            || lower.contains("raw files") || lower.contains("raw editing") {
+            return "photography"
         }
         if word("video") || word("editing") || word("footage") || word("film") || word("filming") {
             return "video"
@@ -181,8 +323,42 @@ public final class CalloutManager {
             || word("grant") || word("grants")
             || word("abstract") || word("abstracts")
             || lower.contains("literature review") || lower.contains("lit review")
-            || lower.contains("peer review") || lower.contains("peer-review") || word("peerreview") {
+            || lower.contains("peer review") || lower.contains("peer-review") || word("peerreview")
+            // Non-legal "brief" contexts — must fire before the legal branch to prevent false positives
+            || lower.contains("creative brief") || lower.contains("marketing brief") {
             return "writing"
+        }
+        // finance — positioned before budget so professional exam/analysis terms (CPA, CFA, DCF, LBO,
+        // financial modeling, balance sheet) route here instead of the generic budget/financial branch.
+        if lower.contains("financial statements") || lower.contains("financial statement")
+            || lower.contains("balance sheet") || lower.contains("balance sheets")
+            || lower.contains("income statement") || lower.contains("income statements")
+            || lower.contains("cpa exam") || lower.contains("cpa prep") || word("cpa")
+            || word("cfa") || lower.contains("cfa level") || word("gaap") || word("ifrs")
+            || lower.contains("financial modeling") || lower.contains("financial model")
+            || lower.contains("financial analysis")
+            || lower.contains("cost accounting") || lower.contains("managerial accounting")
+            || lower.contains("financial accounting") || lower.contains("tax accounting")
+            || word("audit") || word("auditing")
+            || lower.contains("corporate finance") || lower.contains("investment analysis")
+            || lower.contains("cash flow statement") || lower.contains("cash flow analysis")
+            || word("accrual")
+            || lower.contains("accounts payable") || lower.contains("accounts receivable")
+            || lower.contains("trial balance")
+            || lower.contains("equity analysis") || lower.contains("equity research")
+            || lower.contains("financial ratios") || lower.contains("financial ratio")
+            || lower.contains("discounted cash flow") || lower.contains("dcf model") || word("dcf")
+            || lower.contains("leveraged buyout") || word("lbo")
+            || lower.contains("bloomberg terminal")
+            || lower.contains("comparable company") || lower.contains("comparable companies")
+            || lower.contains("comp analysis") || lower.contains("comps analysis")
+            || lower.contains("investment banking") || lower.contains("ib analyst")
+            || lower.contains("valuation model") || lower.contains("company valuation")
+            || lower.contains("series 7") || lower.contains("series 63")
+            || word("finra") || word("acca") || word("cima")
+            || lower.contains("financial due diligence")
+            || lower.contains("mergers and acquisitions") || lower.contains("m&a analysis") {
+            return "finance"
         }
         if word("budget") || word("budgeting") || word("budgets")
             || word("spreadsheet") || word("spreadsheets")
@@ -200,17 +376,59 @@ public final class CalloutManager {
             || word("rehearse") || word("rehearsing") || word("rehearsal") {
             return "practice"
         }
+        // kinesiology — positioned before fitness so biomechanics, exercise physiology,
+        // and physical therapy professional terms route here rather than the generic fitness pool.
+        if word("kinesiology") || word("biomechanics") || word("kinesiologist")
+            || lower.contains("exercise physiology") || lower.contains("sports science")
+            || lower.contains("sport science") || lower.contains("cscs exam")
+            || lower.contains("nsca exam") || lower.contains("motor control")
+            || lower.contains("gait analysis") || lower.contains("movement analysis")
+            || lower.contains("physical therapy") || lower.contains("physiotherapy")
+            || lower.contains("athletic training") || lower.contains("strength and conditioning")
+            || lower.contains("sport psychology") || lower.contains("sports psychology")
+            || lower.contains("human movement") || lower.contains("musculoskeletal") {
+            return "kinesiology"
+        }
         if word("workout") || word("workouts") || word("gym")
             || word("exercise") || word("exercises") || word("exercising")
             || word("lifting") || word("weightlifting") || word("bodybuilding")
-            || word("cardio") || word("run") || word("running") || word("jogging")
-            || word("cycling") || word("yoga") || word("pilates")
-            || word("stretching") || word("swimming") || word("training")
+            || word("run") || word("running") || word("cardio") || word("jogging") || word("cycling")
+            || word("yoga") || word("pilates") || word("stretching") || word("swimming")
+            || word("training")
             || lower.contains("strength training") || lower.contains("weight training")
             || lower.contains("cross training") || lower.contains("endurance training")
+            || lower.contains("training session") || lower.contains("training plan")
             || lower.contains("meal prep") || lower.contains("nutrition plan")
             || word("calories") {
             return "fitness"
+        }
+        // nutrition/dietetics — positioned after fitness so "nutrition plan" and "meal prep"
+        // stay in fitness; catches professional/clinical dietetics terms not covered there.
+        if word("dietitian") || word("dietician") || word("nutritionist")
+            || word("macronutrients")
+            || lower.contains("food science")
+            || lower.contains("food journal")
+            || lower.contains("dietary analysis") || lower.contains("dietary intake")
+            || lower.contains("nutritional science") || lower.contains("clinical nutrition")
+            || lower.contains("nutrition assessment") || lower.contains("nutrient analysis")
+            || lower.contains("calorie tracking") || lower.contains("calorie counting") {
+            return "nutrition"
+        }
+        // culinary — positioned after nutrition (nutrition owns "food science", "meal prep", "nutrition plan");
+        // catches culinary school, recipe work, pastry, baking, plating, and chef technique.
+        if word("culinary") || lower.contains("culinary school") || lower.contains("culinary program")
+            || lower.contains("culinary arts") || lower.contains("culinary class")
+            || lower.contains("culinary technique") || lower.contains("culinary final")
+            || lower.contains("recipe development") || lower.contains("recipe testing")
+            || lower.contains("recipe creation") || lower.contains("recipe writing")
+            || word("baking") || word("pastry") || lower.contains("pastry arts")
+            || lower.contains("pastry school") || lower.contains("pastry class")
+            || lower.contains("mise en place") || lower.contains("knife skills")
+            || lower.contains("plating technique") || lower.contains("flavor profile")
+            || lower.contains("sauce development") || lower.contains("menu development")
+            || lower.contains("menu planning") || lower.contains("cooking class")
+            || lower.contains("cooking technique") || word("gastronomy") {
+            return "culinary"
         }
         if word("podcast") || word("podcasting")
             || lower.contains("podcast episode") || lower.contains("record an episode")
@@ -221,16 +439,49 @@ public final class CalloutManager {
         if word("plan") || word("planning") || word("planner") {
             return "planning"
         }
-        if word("compose") || word("composing") || word("composition") || word("compositions")
-            || word("lyric") || word("lyrics") || word("songwriter") || word("songwriting")
-            || word("melody") || word("melodies") || word("harmony") || word("harmonies")
-            || word("chord") || word("chords") || lower.contains("write a song") || lower.contains("write songs")
-            || lower.contains("write music") || lower.contains("music production")
-            || lower.contains("beat making") || lower.contains("beatmaking")
-            || word("beatmaker") || word("mixing") || word("mastering")
+        // musicproduction — positioned before musictheory so DAW/production tasks fire first.
+        if lower.contains("music production") || lower.contains("beat making") || lower.contains("beatmaking")
+            || word("beatmaker") || word("mixing") || word("mastering") || word("daw")
             || lower.contains("record a song") || lower.contains("record music")
-            || lower.contains("music theory") {
-            return "music"
+            || lower.contains("write a song") || lower.contains("write songs")
+            || lower.contains("write music") || lower.contains("produce a track")
+            || lower.contains("produce music") || lower.contains("ableton")
+            || lower.contains("logic pro") || lower.contains("fl studio")
+            || lower.contains("pro tools") || lower.contains("garageband")
+            || word("producing") || word("songwriter") || word("songwriting")
+            || word("compose") || word("composing") || word("composition") || word("compositions")
+            || word("lyric") || word("lyrics") || word("melody") || word("melodies") {
+            return "musicproduction"
+        }
+        // musictheory — catches theory study, ear training, sight reading.
+        if lower.contains("music theory") || lower.contains("ear training")
+            || lower.contains("sight reading") || lower.contains("sight-reading")
+            || lower.contains("music notation")
+            || (lower.contains("scale") && lower.contains("music"))
+            || word("counterpoint") || word("solfege") || word("solfège")
+            || lower.contains("chord progression") || word("chord") || word("chords")
+            || (lower.contains("harmony") && lower.contains("music"))
+            || (lower.contains("harmonic") && lower.contains("music"))
+            || lower.contains("music history") || lower.contains("aural skills")
+            || lower.contains("theory class") || lower.contains("theory exam")
+            || lower.contains("music class") || lower.contains("music course") {
+            return "musictheory"
+        }
+        // enviro — environmental science, ecology, sustainability; positioned after fitness/nutrition.
+        if lower.contains("environmental science") || lower.contains("environmental studies")
+            || lower.contains("environmental policy") || lower.contains("environmental impact")
+            || lower.contains("environmental chemistry") || lower.contains("environmental biology")
+            || word("ecology") || word("ecologist") || lower.contains("field ecology")
+            || word("ecosystem") || word("ecosystems") || lower.contains("conservation biology")
+            || lower.contains("climate change") || lower.contains("climate science")
+            || lower.contains("climate policy") || lower.contains("climate model")
+            || word("sustainability") || word("sustainable")
+            || lower.contains("carbon footprint") || lower.contains("greenhouse gas")
+            || lower.contains("biodiversity") || lower.contains("species diversity")
+            || lower.contains("habitat loss") || lower.contains("deforestation")
+            || lower.contains("field report") && (lower.contains("ecology") || lower.contains("environment"))
+            || lower.contains("env sci") || lower.contains("envi sci") {
+            return "enviro"
         }
         if word("spanish") || word("french") || word("japanese") || word("mandarin")
             || word("german") || word("italian") || word("portuguese") || word("korean")
@@ -241,6 +492,268 @@ public final class CalloutManager {
             || lower.contains("foreign language") || lower.contains("language learning")
             || lower.contains("language exchange") || lower.contains("language class") {
             return "language"
+        }
+        if word("journal") || word("journaling") || word("journalled") || word("journalling")
+            || lower.contains("journal entry") || lower.contains("journal entries")
+            || lower.contains("morning pages") || lower.contains("daily log")
+            || lower.contains("diary entry") || word("diary") {
+            return "journaling"
+        }
+        // veterinary — positioned before premed so "veterinary clinical rotation", "dissection"
+        // in a vet-school context, and animal anatomy tasks route here, not to premed.
+        if word("veterinary") || word("veterinarian") || lower.contains("vet school")
+            || lower.contains("vet medicine") || lower.contains("veterinary medicine")
+            || lower.contains("animal science") || word("navle")
+            || lower.contains("animal behavior") || word("zoology")
+            || lower.contains("comparative anatomy") || lower.contains("large animal")
+            || lower.contains("small animal") || lower.contains("veterinary pathology")
+            || lower.contains("animal physiology") || lower.contains("veterinary surgery")
+            || lower.contains("vet tech") || lower.contains("veterinary technician")
+            || lower.contains("veterinary clinic") || lower.contains("animal hospital") {
+            return "veterinary"
+        }
+        // dental — positioned before premed so dental-school-specific terms (NBDE, DDS/DMD,
+        // perio, ortho, endodontics, dental boards) don't fall through to generic premed callouts.
+        if word("dds") || word("dmd") || lower.contains("dental school")
+            || lower.contains("dental board") || lower.contains("dental boards")
+            || lower.contains("nbde") || lower.contains("inbde")
+            || lower.contains("dental hygiene") || lower.contains("dental hygienist")
+            || lower.contains("dental assistant")
+            || word("periodontology") || word("periodontics") || word("periodontal")
+            || word("orthodontics") || word("orthodontist")
+            || word("endodontics") || word("endodontist") || word("root canal")
+            || word("prosthodontics") || word("prosthodontist")
+            || word("oral surgery") || lower.contains("oral surgeon")
+            || word("pedodontics") || lower.contains("pediatric dentistry")
+            || lower.contains("dental radiology") || lower.contains("dental x-ray")
+            || lower.contains("dental anatomy") || lower.contains("dental clinic")
+            || lower.contains("clinical dentistry") || lower.contains("dental notes")
+            || lower.contains("dental chart") || lower.contains("soap note")
+                && lower.contains("dental") {
+            return "dental"
+        }
+        // pharmacy — positioned before premed so PharmD/NAPLEX terms don't fall to premed
+        // via shared terms like "pharmacology" (premed catches bare word("pharmacology") for med
+        // school; pharmacy catches pharmacy school and practice terms that don't fit med school).
+        if word("pharmd") || lower.contains("pharm d")
+            || lower.contains("pharmacy school") || lower.contains("pharmacy program")
+            || lower.contains("pharmacy class") || lower.contains("pharmacy exam")
+            || lower.contains("pharmacy board") || lower.contains("naplex")
+            || lower.contains("mpje") || lower.contains("pharmacy practice")
+            || lower.contains("drug interactions") || lower.contains("drug interaction")
+            || lower.contains("clinical pharmacy") || lower.contains("pharmacy notes")
+            || lower.contains("compounding") || lower.contains("dispensing")
+            || lower.contains("pharmacokinetics") || lower.contains("pharmacodynamics")
+            || lower.contains("medication therapy") || lower.contains("medication management")
+            || lower.contains("medication reconciliation")
+            || lower.contains("drug therapy") || lower.contains("therapeutics")
+            || lower.contains("pharmacy rotation") || lower.contains("pharmacy clerkship")
+            || lower.contains("mtm") {
+            return "pharmacy"
+        }
+        if word("anatomy") || word("physiology") || word("biochemistry")
+            || word("pharmacology") || word("pathology") || word("histology")
+            || word("microbiology") || word("immunology") || word("embryology")
+            || lower.contains("mcat") || lower.contains("nclex") || lower.contains("usmle")
+            || lower.contains("med school") || lower.contains("medical school")
+            || lower.contains("pre-med") || word("premed")
+            || word("dissection") || word("cadaver")
+            || lower.contains("clinical rotation") || lower.contains("clinical skills")
+            || lower.contains("anatomy lab") || lower.contains("anatomy notes")
+            || lower.contains("step 1") || lower.contains("step 2") || lower.contains("step 3") {
+            return "premed"
+        }
+        // optometry — positioned after premed so OD-school-specific terms (NBEO, visual acuity,
+        // refraction, optometry clinic) don't misfire for medical students rotating through ophthalmology.
+        if word("optometry") || word("optometrist")
+            || lower.contains("od degree") || lower.contains("od program")
+            || lower.contains("optometry school") || lower.contains("optometry clinic")
+            || lower.contains("optometry board") || lower.contains("nbeo")
+            || lower.contains("visual acuity") || lower.contains("visual field")
+            || lower.contains("refraction") || lower.contains("refractive error")
+            || lower.contains("contact lens") || lower.contains("contact lenses")
+            || word("phoropter") || lower.contains("slit lamp")
+            || lower.contains("retinal exam") || lower.contains("ocular health")
+            || lower.contains("ocular disease") || lower.contains("binocular vision")
+            || lower.contains("low vision") || lower.contains("osce optometry")
+            || lower.contains("optometry rotation") || lower.contains("optometry notes")
+            || lower.contains("optometry chart") || lower.contains("clinical optometry") {
+            return "optometry"
+        }
+        // paramedicine — positioned before nursing so EMT/paramedic-specific terms
+        // (NREMT exam, pre-hospital care, BLS/ACLS certifications) don't fall through to nursing.
+        if word("emt") || word("paramedic") || word("paramedics") || word("paramedicine")
+            || lower.contains("nremt") || lower.contains("aemt")
+            || lower.contains("emergency medical technician")
+            || lower.contains("ems protocol") || lower.contains("ems training")
+            || lower.contains("ems class") || lower.contains("ems certification")
+            || lower.contains("ems exam") || lower.contains("ems program")
+            || lower.contains("pre-hospital") || lower.contains("prehospital")
+            || lower.contains("trauma assessment") || lower.contains("field triage")
+            || lower.contains("basic life support") || lower.contains("advanced life support")
+            || word("acls") || word("pals")
+            || lower.contains("cpr certification") || lower.contains("airway management") {
+            return "paramedicine"
+        }
+        if word("nursing") || lower.contains("care plan") || lower.contains("care plans")
+            || lower.contains("nursing notes") || lower.contains("nursing assessment")
+            || lower.contains("nursing theory") || lower.contains("nursing diagnosis")
+            || lower.contains("nursing diagnoses") || lower.contains("clinical documentation")
+            || lower.contains("nurse charting") || lower.contains("shift notes") || lower.contains("shift report")
+            || lower.contains("dosage calculation") || lower.contains("dosage calculations")
+            || lower.contains("med calc") || lower.contains("medication calculation")
+            || lower.contains("medication calculations")
+            || lower.contains("nursing school") || lower.contains("nursing program")
+            || lower.contains("nursing class") || lower.contains("nursing course")
+            || lower.contains("vital signs") || word("vitals")
+            || lower.contains("patient assessment") || lower.contains("patient care plan")
+            || lower.contains("wound care") || lower.contains("iv insertion") {
+            return "nursing"
+        }
+        // socialwork — positioned before therapy so social-work-specific tasks (case management,
+        // child welfare, community resources) route here instead of to therapist callouts.
+        // "social work" is owned here; "social work" in the therapy branch is removed.
+        if lower.contains("social work") || lower.contains("social worker")
+            || lower.contains("social workers")
+            || word("msw") || word("bsw") || word("lmsw")
+            || lower.contains("case management") || word("casework")
+            || lower.contains("child protective services") || lower.contains("child welfare")
+            || lower.contains("community resources") || lower.contains("family services")
+            || lower.contains("social services") || lower.contains("intake assessment")
+            || lower.contains("social welfare") || lower.contains("welfare policy")
+            || (lower.contains("field placement") && lower.contains("social")) {
+            return "socialwork"
+        }
+        // therapy — positioned after nursing (shared healthcare context) and before tutor
+        // so "counseling" doesn't route to tutor via word("coaching").
+        // "social work" moved to the dedicated socialwork branch above.
+        if lower.contains("therapy notes") || lower.contains("session notes")
+            || lower.contains("progress notes") || lower.contains("treatment plan")
+            || lower.contains("case conceptualization") || lower.contains("case formulation")
+            || lower.contains("intake notes") || lower.contains("clinical notes")
+            || word("therapist") || word("counseling") || word("counselor")
+            || word("lcsw") || word("lmft") || word("lpc") || word("mft")
+            || lower.contains("cbt worksheets") || lower.contains("dbt skills")
+            || lower.contains("exposure therapy") || lower.contains("cognitive behavioral")
+            || lower.contains("clinical hours")
+            || lower.contains("supervision notes") || lower.contains("client notes")
+            || lower.contains("case notes") || lower.contains("mental health notes") {
+            return "therapy"
+        }
+        // occupationaltherapy — positioned after therapy so OT-specific terms
+        // (NBCOT exam, ADLs, sensory integration, hand therapy) don't conflict with
+        // generic therapy/counseling terms.
+        if lower.contains("occupational therapy") || lower.contains("occupational therapist")
+            || lower.contains("occupational therapists")
+            || word("nbcot")
+            || lower.contains("activities of daily living") || word("adls") || word("adl")
+            || lower.contains("hand therapy") || lower.contains("pediatric ot")
+            || lower.contains("sensory integration") || lower.contains("sensory processing")
+            || lower.contains("fine motor skills") || lower.contains("adaptive equipment")
+            || lower.contains("ot fieldwork") || lower.contains("ot placement")
+            || lower.contains("ot school") || lower.contains("ot program")
+            || lower.contains("ot class") || lower.contains("ot exam") {
+            return "occupationaltherapy"
+        }
+        // publicheath — positioned after therapy (clinical context) and before socialscience.
+        // Catches MPH programs, epidemiology, community/global health, outbreak investigation,
+        // and population health. "health policy" stays in the policy branch.
+        if word("epidemiology") || word("epidemiologist") || word("epidemiological")
+            || word("biostatistics") || word("biostatistician")
+            || lower.contains("community health") || lower.contains("global health")
+            || lower.contains("public health")
+            || lower.contains("infectious disease") || lower.contains("infectious diseases")
+            || word("outbreak") || lower.contains("outbreak investigation")
+            || lower.contains("population health") || lower.contains("health equity")
+            || lower.contains("social determinants of health") || word("sdoh")
+            || lower.contains("health disparities") || lower.contains("health promotion")
+            || lower.contains("occupational health") || lower.contains("environmental health")
+            || lower.contains("disease surveillance") || lower.contains("contact tracing")
+            || lower.contains("mph program") || lower.contains("mph degree")
+            || lower.contains("mph student") || lower.contains("mph class")
+            || lower.contains("mph exam") || lower.contains("mph capstone")
+            || lower.contains("mph thesis") || lower.contains("master of public health") {
+            return "publicheath"
+        }
+        // socialscience — positioned after occupationaltherapy and before legal
+        // (LSAT is pre-law, not a bar-exam term). "social work" now routes to the socialwork branch.
+        // Note: word("sociology") is already in the studying branch — not repeated here.
+        if lower.contains("political science") || lower.contains("poli sci")
+            || word("anthropology") || word("anthropological")
+            || lower.contains("ethnography") || lower.contains("ethnographic")
+            || word("criminology") || lower.contains("criminal justice")
+            || word("lsat")
+            || lower.contains("pre-law") || word("prelaw")
+            || lower.contains("public policy") || lower.contains("public administration")
+            || lower.contains("comparative politics") || lower.contains("international relations") {
+            return "socialscience"
+        }
+        // philosophy — positioned after socialscience (shared "political philosophy" territory)
+        // and before legal so "ethics paper" and "philosophical argument" don't fall to legal.
+        if word("philosophy") || word("philosophical") || word("philosopher")
+            || word("kant") || word("plato") || word("socrates") || word("aristotle")
+            || word("nietzsche") || word("descartes") || word("hume") || word("locke")
+            || word("hegel") || word("hegelian")
+            || word("metaphysics") || word("epistemology") || word("ontology")
+            || lower.contains("moral philosophy") || lower.contains("political philosophy")
+            || lower.contains("philosophy of mind") || lower.contains("philosophy of science")
+            || lower.contains("ethics paper") || lower.contains("ethics essay")
+            || lower.contains("thought experiment") || lower.contains("thought experiments")
+            || lower.contains("argument analysis") || lower.contains("philosophical argument")
+            || lower.contains("logic problem") || lower.contains("logic problems")
+            || word("dialectic") || word("dialectics") || lower.contains("dialectical method")
+            || lower.contains("philosophical inquiry") || lower.contains("philosophy class")
+            || lower.contains("philosophy course") || lower.contains("philosophy paper")
+            || word("utilitarianism") || word("deontology") || word("consequentialism") {
+            return "philosophy"
+        }
+        // policy — positioned after socialscience (which owns "public policy"/"public administration")
+        // and before legal (which catches bare `word("brief")`). This intercepts "policy brief" and
+        // "legislative brief" before legal's `word("brief")` fires.
+        if lower.contains("policy memo") || lower.contains("policy memos")
+            || lower.contains("policy brief") || lower.contains("policy briefs")
+            || lower.contains("regulatory analysis")
+            || lower.contains("legislative brief") || lower.contains("legislative briefs")
+            || lower.contains("legislative memo") || lower.contains("legislative memos")
+            || lower.contains("policy analysis")
+            || lower.contains("policy recommendation") || lower.contains("policy recommendations")
+            || lower.contains("regulatory framework")
+            || lower.contains("policy implementation")
+            || lower.contains("health policy") || lower.contains("public health policy")
+            || lower.contains("fiscal policy") || lower.contains("monetary policy") {
+            return "policy"
+        }
+        if word("brief") || word("briefs") || word("pleading") || word("pleadings")
+            || word("deposition") || word("depositions") || word("statute") || word("statutes")
+            || word("contract") || word("contracts")
+            || lower.contains("case brief") || lower.contains("legal brief") || lower.contains("legal memo")
+            || lower.contains("legal memorandum") || lower.contains("law review")
+            || lower.contains("legal research") || lower.contains("legal writing")
+            || lower.contains("moot court") || lower.contains("bar exam") || lower.contains("bar prep")
+            || word("litigation") || word("motions") {
+            return "legal"
+        }
+        // Guard common software-domain and UX false positives before checking architecture keywords.
+        // "information architecture" routes to the ux branch above; also guarded here so that
+        // if the ux branch is ever reordered the building-architecture messages don't fire.
+        let isSoftwareArchitecture = lower.contains("software architecture")
+            || lower.contains("system architecture") || lower.contains("application architecture")
+            || lower.contains("cloud architecture") || lower.contains("data architecture")
+            || lower.contains("information architecture")
+        if !isSoftwareArchitecture
+            && (word("architect") || word("architecture") || word("architectural")
+                || word("autocad") || word("revit") || word("rhino") || word("grasshopper") || word("archicad")
+                || word("sketchup") || word("blueprint") || word("blueprints")
+                || lower.contains("floor plan") || lower.contains("floor plans")
+                || lower.contains("site plan") || lower.contains("site plans")
+                || word("elevation") || word("elevations")
+                || word("rendering") || word("renderings")
+                || lower.contains("3d model") || lower.contains("3d models")
+                || lower.contains("construction document") || lower.contains("construction documents")
+                || lower.contains("design studio") || lower.contains("studio crit") || lower.contains("pin-up")
+                || lower.contains("architectural drawing") || lower.contains("architectural drawings")
+                || lower.contains("are exam") || lower.contains("architecture exam")) {
+            return "architecture"
         }
         if word("deadline") || word("deadlines") || lower.contains("due by") || lower.contains("due tonight")
             || lower.contains("due tomorrow") || lower.contains("due at midnight")
