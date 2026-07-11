@@ -691,5 +691,44 @@ public enum SuggestedSessionTemplates {
             successCriteria: "All patient encounter notes written in SOAP format with subjective, objective, assessment, and plan documented, and notes saved or submitted for preceptor review",
             preferredDuration: 30 * 60
         ),
+        // Chiropractic
+        SuggestedTemplate(
+            icon: "figure.stand",
+            task: "Study for the NBCE chiropractic boards",
+            successCriteria: "At least one NBCE subject area reviewed, key anatomical structures and adjustment techniques summarized, and at least 20 board-style practice questions completed with review",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "note.text",
+            task: "Write chiropractic SOAP notes or complete a clinical case assignment",
+            successCriteria: "Patient encounter documented in SOAP format with history, examination findings, assessment, and treatment plan completed, and notes saved for review",
+            preferredDuration: 30 * 60
+        ),
+        // Respiratory Therapy
+        SuggestedTemplate(
+            icon: "lungs.fill",
+            task: "Study for the NBRC respiratory therapy credentialing exam",
+            successCriteria: "Target content domain reviewed, key ventilator parameters and clinical protocols summarized, and at least 20 NBRC-style questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Complete a respiratory therapy patient assessment or clinical assignment",
+            successCriteria: "Patient respiratory status assessed and documented, ABG values or ventilator settings analyzed with clinical rationale, and findings written up and saved",
+            preferredDuration: 30 * 60
+        ),
+        // Psychology
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Write a psychology research paper or literature review",
+            successCriteria: "Research question defined, key studies and theoretical frameworks summarized, argument outlined, and at least one full section of the paper drafted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.closed.fill",
+            task: "Study for a psychology exam or complete a psych assignment",
+            successCriteria: "Target chapters or topic areas reviewed, key theories and landmark studies summarized, and practice questions or application examples completed",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

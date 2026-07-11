@@ -666,6 +666,20 @@ public final class CalloutManager {
             || lower.contains("veterinary clinic") || lower.contains("animal hospital") {
             return "veterinary"
         }
+        // chiropractic — positioned after veterinary (shares anatomical vocabulary) and before
+        // dental so DC-degree/NBCE board terms don't fall through to generic premed callouts.
+        if word("chiropractor") || word("chiropractic") || word("chiropractors")
+            || lower.contains("chiropractic school") || lower.contains("chiropractic program")
+            || lower.contains("chiropractic class") || lower.contains("chiropractic exam")
+            || lower.contains("chiropractic clinic") || lower.contains("chiropractic notes")
+            || lower.contains("chiropractic adjustment") || lower.contains("spinal adjustment")
+            || lower.contains("spinal manipulation") || word("subluxation")
+            || word("nbce") || lower.contains("chiropractic board")
+            || lower.contains("doctor of chiropractic")
+            || lower.contains("dc degree") || lower.contains("dc program")
+            || lower.contains("chiropractic rotation") || lower.contains("chiropractic technique") {
+            return "chiropractic"
+        }
         // dental — positioned before premed so dental-school-specific terms (NBDE, DDS/DMD,
         // perio, ortho, endodontics, dental boards) don't fall through to generic premed callouts.
         if word("dds") || word("dmd") || lower.contains("dental school")
@@ -761,6 +775,22 @@ public final class CalloutManager {
             || word("acls") || word("pals")
             || lower.contains("cpr certification") || lower.contains("airway management") {
             return "paramedicine"
+        }
+        // respiratorytherapy — positioned after paramedicine (which owns airway management in
+        // the EMS context) and before nursing so RT-specific terms route here.
+        if lower.contains("respiratory therapy") || lower.contains("respiratory therapist")
+            || lower.contains("respiratory therapists")
+            || word("rrt") || word("crt")
+            || word("nbrc") || lower.contains("respiratory therapy board")
+            || lower.contains("respiratory therapy school") || lower.contains("respiratory therapy program")
+            || lower.contains("respiratory therapy class") || lower.contains("respiratory therapy exam")
+            || lower.contains("respiratory therapy notes") || lower.contains("respiratory therapy rotation")
+            || lower.contains("ventilator management") || lower.contains("mechanical ventilation")
+            || lower.contains("pulmonary function test") || lower.contains("pulmonary function tests")
+            || lower.contains("arterial blood gas") || word("abg")
+            || lower.contains("nebulizer treatment") || word("bronchodilator")
+            || lower.contains("respiratory care") || lower.contains("respiratory assessment") {
+            return "respiratorytherapy"
         }
         if word("nursing") || lower.contains("care plan") || lower.contains("care plans")
             || lower.contains("nursing notes") || lower.contains("nursing assessment")
@@ -861,6 +891,31 @@ public final class CalloutManager {
             || lower.contains("mph exam") || lower.contains("mph capstone")
             || lower.contains("mph thesis") || lower.contains("master of public health") {
             return "publicheath"
+        }
+        // psychology — positioned after publicheath and all clinical health branches above.
+        // "educational psychology" fires in the education branch first; clinical/counseling
+        // terms fire in therapy/socialwork above. This catches academic and research psych.
+        if word("psychology") || word("psychologist") || word("psychologists")
+            || lower.contains("psych major") || lower.contains("psych class")
+            || lower.contains("psych course") || lower.contains("psych exam")
+            || lower.contains("psych paper") || lower.contains("psych research")
+            || lower.contains("psych thesis") || lower.contains("psych homework")
+            || lower.contains("psych assignment")
+            || lower.contains("social psychology") || lower.contains("cognitive psychology")
+            || lower.contains("developmental psychology") || lower.contains("behavioral psychology")
+            || lower.contains("abnormal psychology") || lower.contains("neuropsychology")
+            || lower.contains("positive psychology") || lower.contains("personality psychology")
+            || lower.contains("experimental psychology") || lower.contains("applied psychology")
+            || lower.contains("psychology research") || lower.contains("psychology paper")
+            || lower.contains("psychology thesis") || lower.contains("psychology class")
+            || lower.contains("psychology course") || lower.contains("psychology major")
+            || lower.contains("psychology exam") || lower.contains("psychology assignment")
+            || lower.contains("gre psychology") || lower.contains("gre psych")
+            || word("freud") || word("skinner") || word("pavlov") || word("piaget") || word("bandura")
+            || word("psychometrics") || lower.contains("personality theory")
+            || lower.contains("attachment theory") || lower.contains("cognitive development")
+            || lower.contains("psychological research") || lower.contains("psychology study") {
+            return "psychology"
         }
         // criminaljustice — split from socialscience so criminology and criminal justice tasks get
         // a dedicated callout pool. Positioned BEFORE socialscience. "criminal law" routed here

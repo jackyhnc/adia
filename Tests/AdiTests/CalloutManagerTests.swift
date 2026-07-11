@@ -6285,4 +6285,166 @@ struct CalloutManagerTests {
     @Test func criminalJusticeKeywordDoesNotRouteToSocialScience() {
         #expect(CalloutManager.extractTaskKeyword(from: "study criminology for my exam") == "criminaljustice")
     }
+
+    // MARK: - Chiropractic
+
+    @Test func chiropracticKeywordFromBareWord() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my chiropractic exam") == "chiropractic")
+    }
+    @Test func chiropracticKeywordFromNBCE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for the NBCE boards") == "chiropractic")
+    }
+    @Test func chiropracticKeywordFromDoctorOfChiropractic() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review my doctor of chiropractic coursework") == "chiropractic")
+    }
+    @Test func chiropracticKeywordFromSpinalAdjustment() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write up my spinal adjustment notes") == "chiropractic")
+    }
+    @Test func chiropracticKeywordFromSubluxation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review subluxation theory for my exam") == "chiropractic")
+    }
+    @Test func chiropracticKeywordDoesNotRouteToVeterinary() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for my chiropractic boards") != "veterinary")
+    }
+    @Test func chiropracticCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "chiropractic", tier: tier)
+                #expect(!msgs.isEmpty, "chiropractic tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func chiropracticCalloutsTier1HasAtLeastThree() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "chiropractic", tier: 1)
+            #expect(msgs.count >= 3)
+        }
+    }
+    @Test func chiropracticCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "chiropractic", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "chiropractic tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+    @Test func chiropracticCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "chiropractic", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one passes") }
+            #expect(hasCloseThis, "chiropractic tier 3 must contain 'CLOSE THIS' or 'no one passes'")
+        }
+    }
+
+    // MARK: - Respiratory Therapy
+
+    @Test func respiratorytherapyKeywordFromBarePhrase() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my respiratory therapy assignment") == "respiratorytherapy")
+    }
+    @Test func respiratorytherapyKeywordFromNBRC() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for the NBRC exam") == "respiratorytherapy")
+    }
+    @Test func respiratorytherapyKeywordFromRRT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review RRT protocols for my rotation") == "respiratorytherapy")
+    }
+    @Test func respiratorytherapyKeywordFromVentilatorManagement() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete ventilator management case study") == "respiratorytherapy")
+    }
+    @Test func respiratorytherapyKeywordFromABG() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice ABG interpretation") == "respiratorytherapy")
+    }
+    @Test func respiratorytherapyKeywordDoesNotRouteToNursing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study respiratory therapy school material") != "nursing")
+    }
+    @Test func respiratorytherapyCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "respiratorytherapy", tier: tier)
+                #expect(!msgs.isEmpty, "respiratorytherapy tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func respiratorytherapyCalloutsTier1HasAtLeastThree() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "respiratorytherapy", tier: 1)
+            #expect(msgs.count >= 3)
+        }
+    }
+    @Test func respiratorytherapyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "respiratorytherapy", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "respiratorytherapy tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+    @Test func respiratorytherapyCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "respiratorytherapy", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one passes") }
+            #expect(hasCloseThis, "respiratorytherapy tier 3 must contain 'CLOSE THIS' or 'no one passes'")
+        }
+    }
+
+    // MARK: - Psychology
+
+    @Test func psychologyKeywordFromBareWord() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my psychology exam") == "psychology")
+    }
+    @Test func psychologyKeywordFromSocialPsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my social psychology paper") == "psychology")
+    }
+    @Test func psychologyKeywordFromCognitivePsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review cognitive psychology chapter") == "psychology")
+    }
+    @Test func psychologyKeywordFromPsychMajor() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my psych major thesis") == "psychology")
+    }
+    @Test func psychologyKeywordFromFreud() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze freud for my personality theory paper") == "psychology")
+    }
+    @Test func psychologyKeywordFromDevelopmentalPsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study developmental psychology for my exam") == "psychology")
+    }
+    @Test func psychologyKeywordDoesNotRouteToTherapy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my psychology research paper") != "therapy")
+    }
+    @Test func psychologyKeywordEducationalPsychologyRoutesToEducation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my educational psychology assignment") == "education")
+    }
+    @Test func psychologyCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "psychology", tier: tier)
+                #expect(!msgs.isEmpty, "psychology tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func psychologyCalloutsTier1HasAtLeastThree() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "psychology", tier: 1)
+            #expect(msgs.count >= 3)
+        }
+    }
+    @Test func psychologyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "psychology", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "psychology tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+    @Test func psychologyCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "psychology", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "psychology tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
 }

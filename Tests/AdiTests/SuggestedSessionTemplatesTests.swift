@@ -1664,4 +1664,87 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 107,
                 "catalog should have ≥107 templates after journalism/theology/criminal justice additions")
     }
+
+    // MARK: - Chiropractic
+
+    @Test func chiropracticTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("chiropractic") || t.task.lowercased().contains("nbce")
+        }
+        #expect(!templates.isEmpty, "at least one chiropractic template must exist")
+    }
+    @Test func chiropracticTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("chiropractic") || t.task.lowercased().contains("nbce")
+        }
+        #expect(templates.count >= 2, "should have ≥2 chiropractic templates")
+    }
+    @Test func chiropracticTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("chiropractic") || t.task.lowercased().contains("nbce")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    // MARK: - Respiratory Therapy
+
+    @Test func respiratorytherapyTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("respiratory") || t.task.lowercased().contains("nbrc")
+        }
+        #expect(!templates.isEmpty, "at least one respiratory therapy template must exist")
+    }
+    @Test func respiratorytherapyTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("respiratory") || t.task.lowercased().contains("nbrc")
+        }
+        #expect(templates.count >= 2, "should have ≥2 respiratory therapy templates")
+    }
+    @Test func respiratorytherapyTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("respiratory") || t.task.lowercased().contains("nbrc")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    // MARK: - Psychology
+
+    @Test func psychologyTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("psychology") || t.task.lowercased().contains("psych")
+        }
+        #expect(!templates.isEmpty, "at least one psychology template must exist")
+    }
+    @Test func psychologyTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("psychology") || t.task.lowercased().contains("psych")
+        }
+        #expect(templates.count >= 2, "should have ≥2 psychology templates")
+    }
+    @Test func psychologyTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("psychology") || t.task.lowercased().contains("psych")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60)
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastOneHundredThirteenTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 113,
+                "catalog should have ≥113 templates after chiropractic/respiratory therapy/psychology additions")
+    }
 }

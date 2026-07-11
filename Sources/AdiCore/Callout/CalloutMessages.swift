@@ -120,6 +120,9 @@ extension CalloutManager {
         case "journalism":             return journalismCallouts(tier: tier)
         case "theology":               return theologyCallouts(tier: tier)
         case "criminaljustice":        return criminaljusticeCallouts(tier: tier)
+        case "chiropractic":           return chiropracticCallouts(tier: tier)
+        case "respiratorytherapy":     return respiratorytherapyCallouts(tier: tier)
+        case "psychology":             return psychologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1601,6 +1604,69 @@ extension CalloutManager {
             "CLOSE THIS. open your criminal justice notes.",
             "no one masters criminology by scrolling.",
             "justice requires focus — close this.",
+        ]
+        }
+    }
+
+    private func chiropracticCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your chiropractic notes aren't going to write themselves.",
+            "those NBCE questions won't answer themselves.",
+            "your patients' adjustments need you to focus — close this.",
+            "your chiropractic exam isn't going to prep itself.",
+        ]
+        case 2: return [
+            "stop this and get back to your chiropractic studies.",
+            "your NBCE prep is suffering while you scroll.",
+            "those subluxation notes won't study themselves.",
+        ]
+        default: return [
+            "CLOSE THIS. open your chiropractic notes.",
+            "no one passes the NBCE by scrolling.",
+            "your spinal anatomy won't learn itself — get back to work.",
+        ]
+        }
+    }
+
+    private func respiratorytherapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your RT notes aren't going to write themselves.",
+            "those ventilator settings won't memorize themselves.",
+            "your NBRC prep is waiting — close this.",
+            "your patients' airways deserve your full focus.",
+        ]
+        case 2: return [
+            "stop scrolling and get back to your respiratory therapy work.",
+            "your NBRC exam isn't going to prep itself.",
+            "those ABG values won't interpret themselves.",
+        ]
+        default: return [
+            "CLOSE THIS. open your respiratory therapy notes.",
+            "no one passes the NBRC by scrolling.",
+            "your ventilator protocols won't review themselves — get back to work.",
+        ]
+        }
+    }
+
+    private func psychologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your psychology paper isn't going to write itself.",
+            "those research methods won't study themselves.",
+            "your psych exam isn't going to prep itself.",
+            "your psychology notes are waiting — close this.",
+        ]
+        case 2: return [
+            "stop scrolling and get back to your psych work.",
+            "your psychology assignment needs you, not this.",
+            "you're supposed to be studying psychology, not wasting time.",
+        ]
+        default: return [
+            "CLOSE THIS. open your psychology textbook.",
+            "no one aces psych by scrolling.",
+            "your research won't design itself — get back to it.",
         ]
         }
     }

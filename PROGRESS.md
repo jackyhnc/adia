@@ -1,5 +1,48 @@
 # Adia — Build Progress
 
+## Run 321 — 2026-07-11 — Chiropractic + respiratory therapy + psychology keyword domains (900→932 tests, 107→113 templates)
+
+### Shipped
+
+**Chiropractic keyword domain:**
+- `chiropractic` branch added to `extractTaskKeyword` in `CalloutManager.swift`, positioned AFTER veterinary and BEFORE dental.
+- Matches: chiropractor/chiropractic/chiropractors, NBCE, spinal adjustment/manipulation, subluxation, doctor of chiropractic, DC degree/program, chiropractic rotation/technique.
+- `chiropracticCallouts(tier:)` 4/3/3 pool: "those NBCE questions won't answer themselves." / "CLOSE THIS. open your chiropractic notes." / "no one passes the NBCE by scrolling."
+- 2 templates: "Study for the NBCE chiropractic boards" (90 min) + "Write chiropractic SOAP notes or complete a clinical case assignment" (30 min)
+
+**Respiratory therapy keyword domain:**
+- `respiratorytherapy` branch added to `extractTaskKeyword`, positioned AFTER paramedicine and BEFORE nursing.
+- Matches: respiratory therapy/therapist, RRT/CRT, NBRC, ventilator management, mechanical ventilation, pulmonary function tests, arterial blood gas/ABG, nebulizer treatment, bronchodilator, respiratory care/assessment.
+- `respiratorytherapyCallouts(tier:)` 4/3/3 pool: "those ventilator settings won't memorize themselves." / "CLOSE THIS. open your respiratory therapy notes." / "no one passes the NBRC by scrolling."
+- 2 templates: "Study for the NBRC respiratory therapy credentialing exam" (60 min) + "Complete a respiratory therapy patient assessment or clinical assignment" (30 min)
+
+**Psychology keyword domain:**
+- `psychology` branch added to `extractTaskKeyword`, positioned AFTER publicheath and BEFORE criminaljustice. "educational psychology" fires in education branch first; clinical terms fire in therapy/socialwork above.
+- Matches: psychology/psychologist, psych major/class/course/exam/paper/research/thesis, social/cognitive/developmental/behavioral/abnormal/neuropsychology, Freud/Skinner/Pavlov/Piaget/Bandura, psychometrics, personality theory, attachment theory, cognitive development.
+- `psychologyCallouts(tier:)` 4/3/3 pool: "your psychology paper isn't going to write itself." / "CLOSE THIS. open your psychology textbook." / "no one aces psych by scrolling."
+- 2 templates: "Write a psychology research paper or literature review" (60 min) + "Study for a psychology exam or complete a psych assignment" (45 min)
+
+**Tests:**
+- CalloutManagerTests.swift: 900→932 (+32: 10 chiropractic + 10 respiratory therapy + 12 psychology)
+- SuggestedSessionTemplatesTests.swift: +10 (3 per domain + ≥113 count guard)
+
+**Bug fix:**
+- Restored orphaned commits (runs 296–320, 49 commits) from detached HEAD by fast-forwarding main to 5921df3 — all prior work was already pushed to origin/main; only the local branch pointer was stale.
+
+### Blocked
+Swift toolchain unavailable on Linux — verified by code inspection:
+- "prep for the NBCE boards" → chiropractic ✓; positioned after veterinary ✓
+- "study for the NBRC exam" → respiratorytherapy ✓; positioned after paramedicine, before nursing ✓
+- "study for my psychology exam" → psychology ✓; "educational psychology" → education ✓
+- All three tier-3 pools contain "CLOSE THIS" or "no one passes" ✓
+- All 6 template durations in [300, 10800]: 5400/1800/3600/1800/3600/2700 ✓
+
+### Next agent should pick up
+- Additional keyword domains: geology/earth science, urban planning, bioinformatics, dental hygiene (separate from dental), molecular biology
+- AppMonitor observability tests (requires macOS)
+
+---
+
 ## Run 318 — 2026-07-11 — Physician assistant keyword domain (822→832 Swift tests, 93→95 templates)
 
 ### Shipped
