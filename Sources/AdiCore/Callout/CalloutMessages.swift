@@ -187,6 +187,10 @@ extension CalloutManager {
         case "cardiovasculartech":     return cardiovasculartechCallouts(tier: tier)
         case "surgicaltech":           return surgicaltechCallouts(tier: tier)
         case "polysomnography":        return polysomnographyCallouts(tier: tier)
+        case "diagnosticphysics":      return diagnosticphysicsCallouts(tier: tier)
+        case "perfusiontechnology":    return perfusiontechnologyCallouts(tier: tier)
+        case "ophthalmic":             return ophthalmicCallouts(tier: tier)
+        case "centralsterile":         return centralsterileCallouts(tier: tier)
         case "nursinginformatics":     return nursinginformaticsCallouts(tier: tier)
         case "musictherapy":           return musictherapyCallouts(tier: tier)
         case "arttherapy":             return arttherapyCallouts(tier: tier)
@@ -3291,6 +3295,90 @@ extension CalloutManager {
             "CLOSE THIS. open your public health law notes.",
             "no one masters public health law by browsing.",
             "CLOSE THIS. get back to your public health law coursework.",
+        ]
+        }
+    }
+
+    private func diagnosticphysicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that dosimetry problem won't solve itself.",
+            "get back to your medical physics coursework.",
+            "your ABR physics exam won't prep itself.",
+            "close this and open your medical physics notes.",
+        ]
+        case 2: return [
+            "medical physicists don't get board certified by scrolling.",
+            "your radiation protection assignment won't finish itself.",
+            "stop avoiding your diagnostic physics coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your medical physics study guide.",
+            "no one passes the ABR physics exam by browsing.",
+            "CLOSE THIS. get back to your diagnostic medical physics coursework.",
+        ]
+        }
+    }
+
+    private func perfusiontechnologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that bypass circuit isn't going to review itself.",
+            "get back to your perfusion technology coursework.",
+            "your PBSE certification exam won't prep itself.",
+            "close this and open your perfusion notes.",
+        ]
+        case 2: return [
+            "perfusionists don't get certified by scrolling.",
+            "your cardiopulmonary bypass assignment won't finish itself.",
+            "stop avoiding your perfusion coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your perfusion technology study guide.",
+            "no one masters cardiovascular perfusion by browsing.",
+            "CLOSE THIS. get back to your bypass perfusion coursework.",
+        ]
+        }
+    }
+
+    private func ophthalmicCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those ophthalmic procedures aren't going to learn themselves.",
+            "get back to your ophthalmic medical technology coursework.",
+            "your JCAHPO certification exam won't prep itself.",
+            "close this and open your ophthalmic technology notes.",
+        ]
+        case 2: return [
+            "ophthalmic technicians don't get certified by scrolling.",
+            "your slit lamp and tonometry assignment won't finish itself.",
+            "stop avoiding your ophthalmology technician coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your ophthalmic medical technology study guide.",
+            "no one passes the COMT exam by browsing.",
+            "CLOSE THIS. get back to your ophthalmic technician coursework.",
+        ]
+        }
+    }
+
+    private func centralsterileCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those sterilization protocols aren't going to memorize themselves.",
+            "get back to your sterile processing coursework.",
+            "your CRCST certification exam won't prep itself.",
+            "close this and open your sterile processing notes.",
+        ]
+        case 2: return [
+            "sterile processing technicians don't get certified by scrolling.",
+            "your instrument decontamination assignment won't finish itself.",
+            "stop avoiding your central sterile processing coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your central sterile processing study guide.",
+            "no one passes the CBSPD exam by browsing.",
+            "CLOSE THIS. get back to your sterile processing coursework.",
         ]
         }
     }

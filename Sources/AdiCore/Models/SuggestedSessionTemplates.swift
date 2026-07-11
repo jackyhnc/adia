@@ -1679,5 +1679,57 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target content area reviewed (public health statutes, regulatory agencies, infectious disease law, or global health law), key legal standards summarized, and assignment or practice questions completed with corrections",
             preferredDuration: 60 * 60
         ),
+        // Diagnostic Medical Physics / Health Physics
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study for the ABR medical physics board exam or complete a dosimetry assignment",
+            successCriteria: "Target content area reviewed (radiation physics, dosimetry, or imaging systems), key formulas and concepts summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a diagnostic medical physics or health physics coursework assignment",
+            successCriteria: "Assigned radiation physics or dosimetry topic reviewed, analysis or problem set written, and assignment saved or submitted for instructor review",
+            preferredDuration: 60 * 60
+        ),
+        // Perfusion Technology
+        SuggestedTemplate(
+            icon: "heart.fill",
+            task: "Study for the PBSE or cardiovascular perfusion certification exam",
+            successCriteria: "Target content reviewed (cardiopulmonary bypass, pump operation, or anticoagulation management), key concepts summarized, and at least 15 practice questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a perfusion technology or cardiovascular perfusion school assignment",
+            successCriteria: "Assigned bypass perfusion topic reviewed, case analysis or lab notes written, and assignment saved or submitted for instructor review",
+            preferredDuration: 60 * 60
+        ),
+        // Ophthalmic Medical Technology
+        SuggestedTemplate(
+            icon: "eye.fill",
+            task: "Study for the JCAHPO COT, COA, or COMT ophthalmic technology certification exam",
+            successCriteria: "Target content reviewed (refraction, tonometry, visual fields, or ocular motility testing), key procedures summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete an ophthalmic medical technology school assignment or patient workup documentation",
+            successCriteria: "Assigned ophthalmic procedure or topic reviewed, documentation or analysis written, and assignment saved or submitted for instructor review",
+            preferredDuration: 45 * 60
+        ),
+        // Central Sterile Processing
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Study for the CBSPD or CRCST central sterile processing certification exam",
+            successCriteria: "Target content reviewed (sterilization methods, instrument decontamination, or quality control protocols), key standards summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a central sterile processing school assignment or sterilization case study",
+            successCriteria: "Assigned sterile processing topic reviewed (autoclave operation, tray assembly, or infection control), documentation written, and assignment saved or submitted for instructor review",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

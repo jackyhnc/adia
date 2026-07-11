@@ -1762,6 +1762,81 @@ public final class CalloutManager {
             || lower.contains("polysomnography class") || lower.contains("polysomnography exam") {
             return "polysomnography"
         }
+        // diagnosticphysics — positioned after polysomnography and before healthcareadmin so
+        // diagnostic medical physics, health physics, and ABR board prep route here.
+        // "radiation safety" without educational context never fires; bare "physics" alone never fires.
+        if lower.contains("diagnostic medical physics") || lower.contains("health physicist")
+            || lower.contains("health physics class") || lower.contains("health physics course")
+            || lower.contains("health physics program") || lower.contains("health physics exam")
+            || lower.contains("health physics certification") || lower.contains("health physics board")
+            || lower.contains("medical physics class") || lower.contains("medical physics course")
+            || lower.contains("medical physics program") || lower.contains("medical physics exam")
+            || lower.contains("medical physics assignment") || lower.contains("medical physics board")
+            || lower.contains("medical physicist") || lower.contains("therapeutic medical physics")
+            || lower.contains("radiation physics class") || lower.contains("radiation physics course")
+            || lower.contains("dosimetry class") || lower.contains("dosimetry course")
+            || lower.contains("dosimetry exam") || lower.contains("medical dosimetry")
+            || lower.contains("abr physics") || lower.contains("abr exam") && lower.contains("physics")
+            || lower.contains("radiation protection class") || lower.contains("radiation protection course")
+            || lower.contains("radiation safety class") || lower.contains("radiation safety certification")
+            || lower.contains("diagnostic imaging physics") || lower.contains("nuclear physics class") && lower.contains("medical") {
+            return "diagnosticphysics"
+        }
+        // perfusiontechnology — positioned after diagnosticphysics and before healthcareadmin so
+        // cardiovascular perfusion, CCP board, and bypass circuit coursework route here.
+        // "CCP" alone never fires (too ambiguous); requires perfusion context.
+        if lower.contains("perfusion technology") || lower.contains("perfusion technologist")
+            || lower.contains("cardiovascular perfusionist") || lower.contains("cardiovascular perfusion")
+            || word("perfusionist") || lower.contains("perfusion class") || lower.contains("perfusion course")
+            || lower.contains("perfusion school") || lower.contains("perfusion program")
+            || lower.contains("perfusion exam") || lower.contains("perfusion certification")
+            || lower.contains("perfusion assignment") || lower.contains("perfusion notes")
+            || word("amsect") || lower.contains("pbse exam") || lower.contains("pbse board")
+            || lower.contains("heart-lung machine") || lower.contains("heart lung machine")
+            || lower.contains("cardiopulmonary bypass class") || lower.contains("cardiopulmonary bypass course")
+            || lower.contains("cardiopulmonary bypass program") || lower.contains("cardiopulmonary bypass exam")
+            || lower.contains("extracorporeal circulation class") || lower.contains("extracorporeal bypass class")
+            || lower.contains("bypass pump class") || lower.contains("bypass circuit class")
+            || lower.contains("ccp board") && lower.contains("perfusion") {
+            return "perfusiontechnology"
+        }
+        // ophthalmic — positioned after perfusiontechnology and before healthcareadmin so
+        // ophthalmic medical technology, JCAHPO/COMT/COT/COA board prep route here.
+        // "COT" / "COA" alone never fire; require ophthalmic context.
+        if lower.contains("ophthalmic medical technology") || lower.contains("ophthalmic medical technologist")
+            || lower.contains("ophthalmic technician") || lower.contains("ophthalmic technologist")
+            || lower.contains("ophthalmic assistant") || lower.contains("ophthalmic class")
+            || lower.contains("ophthalmic course") || lower.contains("ophthalmic program")
+            || lower.contains("ophthalmic exam") || lower.contains("ophthalmic assignment")
+            || lower.contains("ophthalmic school") || word("jcahpo")
+            || word("comt") && lower.contains("ophthalmic")
+            || lower.contains("cot exam") && lower.contains("ophthalmic")
+            || lower.contains("coa exam") && lower.contains("ophthalmic")
+            || lower.contains("ocular motility") && lower.contains("class")
+            || lower.contains("slit lamp class") || lower.contains("slit lamp exam")
+            || lower.contains("visual field testing class") || lower.contains("tonometry class")
+            || lower.contains("refractometry class") || lower.contains("ophthalmology technician class")
+            || lower.contains("ophthalmology technician program") || lower.contains("ophthalmology tech class") {
+            return "ophthalmic"
+        }
+        // centralsterile — positioned after ophthalmic and before healthcareadmin so
+        // central sterile processing, CBSPD, CRCST, and IAHCSMM board prep route here.
+        // "sterile field" stays in surgicaltech (fires earlier); "infection control" alone never fires.
+        if lower.contains("central sterile processing") || lower.contains("sterile processing class")
+            || lower.contains("sterile processing course") || lower.contains("sterile processing program")
+            || lower.contains("sterile processing school") || lower.contains("sterile processing exam")
+            || lower.contains("sterile processing certification") || lower.contains("sterile processing assignment")
+            || lower.contains("sterile processing technician") || lower.contains("sterile processing tech")
+            || word("cbspd") || word("crcst") || word("iahcsmm")
+            || lower.contains("instrument decontamination class") || lower.contains("instrument decontamination course")
+            || lower.contains("autoclave class") || lower.contains("autoclave exam")
+            || lower.contains("sterilization class") || lower.contains("sterilization course")
+            || lower.contains("sterilization exam") || lower.contains("sterilization certification")
+            || lower.contains("central supply class") || lower.contains("central supply certification")
+            || lower.contains("decontamination class") && lower.contains("sterile")
+            || lower.contains("tray assembly class") || lower.contains("instrument tray class") {
+            return "centralsterile"
+        }
         // healthcareadmin — positioned after molecularbiology and before premed so healthcare
         // administration, health informatics, and HIM certification prep route here.
         // "health policy" stays in the policy branch; "public health" stays in publicheath.

@@ -2721,4 +2721,46 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 259,
                 "catalog should have ≥259 templates after gerontology/addictioncounseling/oralsurgery/publichealthlaw additions")
     }
+
+    // MARK: - Diagnostic Medical Physics templates
+    @Test func diagnosticphysicsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("medical physics") && ($0.localizedCaseInsensitiveContains("ABR") || $0.localizedCaseInsensitiveContains("dosimetry")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("medical physics") && $0.localizedCaseInsensitiveContains("assignment") }
+        #expect(hasExam,       "catalog must include a medical physics board exam or dosimetry template")
+        #expect(hasAssignment, "catalog must include a diagnostic medical physics assignment template")
+    }
+
+    // MARK: - Perfusion Technology templates
+    @Test func perfusiontechnologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("perfusion") && ($0.localizedCaseInsensitiveContains("PBSE") || $0.localizedCaseInsensitiveContains("certification")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("perfusion") && $0.localizedCaseInsensitiveContains("assignment") }
+        #expect(hasExam,       "catalog must include a perfusion technology certification exam template")
+        #expect(hasAssignment, "catalog must include a perfusion technology assignment template")
+    }
+
+    // MARK: - Ophthalmic Medical Technology templates
+    @Test func ophthalmicTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("ophthalmic") && ($0.localizedCaseInsensitiveContains("JCAHPO") || $0.localizedCaseInsensitiveContains("certification")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("ophthalmic") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("documentation")) }
+        #expect(hasExam,       "catalog must include a JCAHPO or ophthalmic certification exam template")
+        #expect(hasAssignment, "catalog must include an ophthalmic assignment or documentation template")
+    }
+
+    // MARK: - Central Sterile Processing templates
+    @Test func centralsterileTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("sterile processing") && ($0.localizedCaseInsensitiveContains("CBSPD") || $0.localizedCaseInsensitiveContains("CRCST")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("sterile processing") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("case study")) }
+        #expect(hasExam,       "catalog must include a CBSPD or CRCST certification exam template")
+        #expect(hasAssignment, "catalog must include a central sterile processing assignment template")
+    }
+
+    // MARK: - Count guard
+    @Test func catalogHasAtLeastTwoHundredSixtyNineTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 269,
+                "catalog should have ≥269 templates after diagnosticphysics/perfusiontechnology/ophthalmic/centralsterile additions")
+    }
 }
