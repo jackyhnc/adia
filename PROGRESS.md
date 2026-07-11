@@ -13726,3 +13726,67 @@ None. Swift toolchain unavailable on Linux container.
 - Consider adding to speecharts: "parliamentary procedure", "Lincoln-Douglas case", "cross-examination debate"
 - Consider: sports analytics as own domain (R/Python for sports data separate from sportsmanagement), public health sub-domains (epidemiology standalone), geospatial science (GIS/remote sensing separate from geography/geology)
 - Consider: emergency management (FEMA, disaster response, crisis management separate from criminaljustice/publicheath), hospitality/hotel management, fashion design/fashion merchandising, culinary arts sub-domains (pastry vs. savory)
+- Consider: emergency management (FEMA, disaster response, crisis management separate from criminaljustice/publicheath), hospitality/hotel management, fashion design/fashion merchandising, culinary arts sub-domains (pastry vs. savory)
+
+---
+
+## Run 326 — 2026-07-11 — Geospatial science, fashion design, hospitality, sports analytics, and emergency management keyword domains (1169→1209 tests, 163→173 templates)
+
+### Shipped
+
+**New keyword domain — geospatial:**
+- Branch positioned BEFORE geology so GIS/remote sensing/spatial analysis tasks route here; "gis analysis"/"gis mapping" removed from geology and owned here
+- Matches: word("gis")/word("arcgis")/word("qgis")/word("postgis"), geographic information system(s), geospatial analysis/science/data/technology, spatial analysis/data/statistics, geographic analysis, gis mapping/analysis/lab/class/course/project/software/exam, remote sensing, satellite imagery, aerial mapping/imagery, lidar data/analysis, cartography/cartographer/cartographic, map projection, gisp exam, word("gisp")
+- `geospatialCallouts(tier:)` 4/3/3: "that spatial analysis isn't going to run itself." / "geospatial scientists don't get there by scrolling." / "CLOSE THIS. open your GIS project."
+- 2 new templates: "Complete a GIS analysis or spatial data project" (60 min) + "Study for the GISP exam or complete a geospatial science assignment" (60 min)
+
+**New keyword domain — fashiondesign:**
+- Branch positioned BEFORE graphicdesign (both use Adobe tools); catches fashion design/illustration/merchandising/garment construction/pattern making/draping
+- Matches: fashion design/designer(s)/illustration, fashion school/program/class/course/major/exam, fashion merchandising/buyer/marketing/business/show/portfolio, garment construction/design, pattern making/drafting, sewing pattern, draping technique, fashion sketching/drawing, textile design, fabric selection, fashion collection/lookbook/tech pack, tech pack, word("couture")/haute couture, fashion history/theory, word("colorway"/"colorways")
+- `fashiondesignCallouts(tier:)` 4/3/3: "that collection isn't going to design itself." / "great designers design — close this and be one." / "CLOSE THIS. open your fashion design work."
+- 2 new templates: "Sketch a fashion collection or draft garment patterns for a design project" (60 min) + "Study for a fashion design exam or complete a fashion merchandising assignment" (45 min)
+
+**New keyword domain — hospitality:**
+- Branch positioned BEFORE business so hotel management, tourism, and event planning coursework routes here rather than the generic business pool
+- Matches: hotel management/operations/industry/school/class/course, hospitality management/industry/school/class/course/program/major/exam, food and beverage, front/back of house, housekeeping operations, room division, hotel revenue management, hotel front desk, event planning/management class/course, tourism management/marketing/class/course, hospitality marketing, word("concierge"), resort management, che/cha exam
+- `hospitalityCallouts(tier:)` 4/3/3: "that hotel case study isn't going to write itself." / "five-star hospitality starts with actually doing the work." / "CLOSE THIS. open your hospitality work."
+- 2 new templates: "Complete a hospitality management case study or hotel operations assignment" (60 min) + "Study for a hospitality or tourism management exam" (60 min)
+
+**New keyword domain — sportsanalytics:**
+- Branch positioned BEFORE sportsmanagement; "sports analytics"/"sport analytics" removed from sportsmanagement and owned here; R/Python for sports data, sabermetrics, player tracking route here
+- Matches: sports/sport analytics, sports/sport data science/analysis, player/athlete tracking, sabermetrics, moneyball, sports statistics class/course, sports performance analytics, game analytics, expected goals, advanced stats sports, sports/predictive modeling sports, sports analytics class/course/program/exam
+- `sportsanalyticsCallouts(tier:)` 4/3/3: "those player stats aren't going to analyze themselves." / "sabermetrics won't come to you by browsing." / "CLOSE THIS. open your sports analytics project."
+- 2 new templates: "Build a sports analytics model or analyze player performance data" (90 min) + "Complete a sports analytics assignment or sabermetrics problem set" (60 min)
+
+**New keyword domain — emergencymanagement:**
+- Branch positioned after publicheath and before psychology; catches FEMA cert prep, disaster response, incident command, and crisis management
+- Matches: emergency management/manager/planning/preparedness, disaster response/management/preparedness/recovery, word("fema")/fema exam/course/certification/training, hazard mitigation, hazardous materials response, incident command, ics training, crisis management/response, emergency operations, continuity of operations, mass casualty, search and rescue training, public safety planning, emergency management class/course/program/major/exam, homeland security class/course/program
+- `emergencymanagementCallouts(tier:)` 4/3/3: "that emergency plan isn't going to write itself." / "emergency managers don't get certified by scrolling." / "CLOSE THIS. open your emergency management work."
+- 2 new templates: "Write an emergency management plan or disaster response protocol" (60 min) + "Study for FEMA certification or an emergency management course exam" (60 min)
+
+**Test counts:**
+- CalloutManagerTests: 1169 → 1209 (+40: 8 tests per domain × 5 domains)
+- SuggestedSessionTemplatesTests: 253 → 259 (+6: 1 domain test per domain + count guard ≥171)
+
+**Template catalog: 163 → 173**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `geospatial` at line 340, fires before `geology` at line 362. "geology lab report on rock identification" → geology (no geospatial compound fires). "gis mapping project for class" → geospatial. ✓
+- `hospitality` at line 527, fires before `business` at line 551. "mba case analysis on strategic management" → business (no hospitality compound fires). "hotel management case study" → hospitality. ✓
+- `fashiondesign` at line 616, fires before `graphicdesign` at line 637. "graphic design logo project for client branding" → graphicdesign (no fashion compound fires). "fashion design portfolio project" → fashiondesign. ✓
+- `sportsanalytics` at line 958, fires before `sportsmanagement` at line 977. "sports management case study on athletic director" → sportsmanagement (no sportsanalytics compound fires). "sports analytics project on player tracking in R" → sportsanalytics. ✓
+- `emergencymanagement` at line 1461, fires after `publicheath` at line 1441 and before `psychology` at line 1486. "epidemiology outbreak investigation" → publicheath (no emergencymanagement compound fires). "fema certification exam prep on incident command" → emergencymanagement. ✓
+- Five new dispatch cases added in CalloutMessages.swift; five new 4/3/3 pool functions added. ✓
+- Template count: 163 + 10 = 173. ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains: sports analytics sub-domain (sports data engineering separate from analytics coursework), public health sub-domains (epidemiology standalone), tax preparation (H&R Block/TurboTax separate from accounting class)
+- Consider: aviation/aerospace piloting (separate from aerospace engineering), military/veteran studies, sign language/ASL, game writing/narrative design (separate from gamedev/screenwriting), product design/industrial design (separate from ux/graphicdesign/engineering)
+- Consider: maritime studies (separate from marinebiology), wine/sommelier studies, dental laboratory technology (separate from dental/dentalhygiene/dentalassisting), health information management, medical billing and coding
+- Consider expanding geospatial: "remote sensing lab", "GIS capstone", "earth observation", "geospatial capstone"
+- Consider expanding hospitality: "front office operations", "rooms division management", "revenue strategy hospitality"
+- Consider expanding fashiondesign: "fashion week prep", "collection brief", "line sheet", "flat sketch"
