@@ -1574,4 +1574,94 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 101,
                 "catalog should have ≥101 templates after real estate/education/actuarial additions")
     }
+
+    // MARK: - Journalism / Media Studies
+
+    @Test func journalismTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("journalism") || t.task.lowercased().contains("news article")
+                || t.task.lowercased().contains("media") || t.task.lowercased().contains("investigative")
+        }
+        #expect(!templates.isEmpty, "at least one journalism template must exist")
+    }
+    @Test func journalismTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("journalism") || t.task.lowercased().contains("news article")
+                || t.task.lowercased().contains("investigative") || t.task.lowercased().contains("media")
+        }
+        #expect(templates.count >= 2, "should have ≥2 journalism templates")
+    }
+    @Test func journalismTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("journalism") || t.task.lowercased().contains("news article")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "journalism template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Theology / Religious Studies
+
+    @Test func theologyTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("theolog") || t.task.lowercased().contains("seminary")
+                || t.task.lowercased().contains("scripture") || t.task.lowercased().contains("divinity")
+        }
+        #expect(!templates.isEmpty, "at least one theology template must exist")
+    }
+    @Test func theologyTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("theolog") || t.task.lowercased().contains("seminary")
+                || t.task.lowercased().contains("scripture")
+        }
+        #expect(templates.count >= 2, "should have ≥2 theology templates")
+    }
+    @Test func theologyTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("theolog") || t.task.lowercased().contains("seminary")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "theology template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Criminal Justice / Criminology
+
+    @Test func criminalJusticeTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("criminolog") || t.task.lowercased().contains("criminal justice")
+        }
+        #expect(!templates.isEmpty, "at least one criminal justice template must exist")
+    }
+    @Test func criminalJusticeTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("criminolog") || t.task.lowercased().contains("criminal justice")
+        }
+        #expect(templates.count >= 2, "should have ≥2 criminal justice templates")
+    }
+    @Test func criminalJusticeTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("criminolog") || t.task.lowercased().contains("criminal justice")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "criminal justice template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastOneHundredSevenTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 107,
+                "catalog should have ≥107 templates after journalism/theology/criminal justice additions")
+    }
 }

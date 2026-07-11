@@ -328,6 +328,26 @@ public final class CalloutManager {
             || word("dataset") || word("datasets") || lower.contains("qualitative") || lower.contains("quantitative") {
             return "research"
         }
+        // journalism — positioned after research and business but before writing so "news article",
+        // "press release", and journalism-school tasks route here. "newsletter"/"blog" stay in writing.
+        if word("journalism") || word("journalist") || word("journalists")
+            || word("reporter") || word("reporters") || word("reporting")
+            || lower.contains("news article") || lower.contains("news story") || lower.contains("news stories")
+            || lower.contains("news writing") || lower.contains("investigative journalism")
+            || lower.contains("investigative reporting") || lower.contains("broadcast journalism")
+            || lower.contains("media studies") || lower.contains("media analysis")
+            || lower.contains("media literacy") || lower.contains("media law")
+            || lower.contains("press release") || lower.contains("press releases")
+            || lower.contains("editorial writing") || lower.contains("op-ed")
+            || lower.contains("column writing")
+            || word("photojournalism") || word("photojournalist")
+            || lower.contains("journalism ethics") || lower.contains("journalism class")
+            || lower.contains("journalism course") || lower.contains("journalism degree")
+            || lower.contains("journalism program") || lower.contains("journalism school")
+            || word("copyediting") || lower.contains("copy editing")
+            || lower.contains("magazine article") {
+            return "journalism"
+        }
         // graphicdesign — positioned BEFORE art (both use illustrator/photoshop terms) and before
         // the generic design branch (which catches bare word("design")).
         // "brand strategy" / "brand management" are owned by the startup branch above.
@@ -842,13 +862,28 @@ public final class CalloutManager {
             || lower.contains("mph thesis") || lower.contains("master of public health") {
             return "publicheath"
         }
-        // socialscience — positioned after occupationaltherapy and before legal
-        // (LSAT is pre-law, not a bar-exam term). "social work" now routes to the socialwork branch.
+        // criminaljustice — split from socialscience so criminology and criminal justice tasks get
+        // a dedicated callout pool. Positioned BEFORE socialscience. "criminal law" routed here
+        // because it is a criminal-justice course, not a law-school litigation task.
+        if word("criminology") || word("criminologist")
+            || lower.contains("criminal justice")
+            || lower.contains("criminal law")
+            || lower.contains("criminal procedure") || lower.contains("criminal court")
+            || word("penology") || lower.contains("prison reform")
+            || lower.contains("juvenile justice") || lower.contains("juvenile delinquency")
+            || lower.contains("forensic science") || lower.contains("crime scene")
+            || lower.contains("law enforcement") || lower.contains("policing")
+            || lower.contains("corrections") || lower.contains("correctional")
+            || lower.contains("incarceration") || word("victimology")
+            || lower.contains("crime prevention") || lower.contains("crime analysis") {
+            return "criminaljustice"
+        }
+        // socialscience — positioned after criminaljustice (which now owns criminology/criminal justice)
+        // and before legal (LSAT is pre-law, not a bar-exam term). "social work" routes to socialwork.
         // Note: word("sociology") is already in the studying branch — not repeated here.
         if lower.contains("political science") || lower.contains("poli sci")
             || word("anthropology") || word("anthropological")
             || lower.contains("ethnography") || lower.contains("ethnographic")
-            || word("criminology") || lower.contains("criminal justice")
             || word("lsat")
             || lower.contains("pre-law") || word("prelaw")
             || lower.contains("public policy") || lower.contains("public administration")
@@ -873,6 +908,27 @@ public final class CalloutManager {
             || lower.contains("philosophy course") || lower.contains("philosophy paper")
             || word("utilitarianism") || word("deontology") || word("consequentialism") {
             return "philosophy"
+        }
+        // theology — positioned after philosophy (shares analytical/historical study methods) and
+        // before policy/legal so scripture analysis and seminary work don't fall to other pools.
+        if word("theology") || word("theological") || word("theologian")
+            || lower.contains("biblical studies") || lower.contains("bible study")
+            || lower.contains("new testament") || lower.contains("old testament")
+            || word("seminary") || lower.contains("seminary class") || lower.contains("seminary school")
+            || lower.contains("systematic theology") || lower.contains("church history")
+            || lower.contains("christian theology")
+            || word("divinity") || lower.contains("divinity school")
+            || lower.contains("mdiv") || lower.contains("m.div")
+            || word("exegesis") || word("hermeneutics") || word("eschatology")
+            || word("christology") || word("soteriology") || word("ecclesiology")
+            || lower.contains("religious studies") || lower.contains("world religions")
+            || lower.contains("comparative religion")
+            || lower.contains("islamic studies") || lower.contains("jewish studies")
+            || lower.contains("philosophy of religion")
+            || lower.contains("scripture analysis") || lower.contains("scripture study")
+            || word("homiletics")
+            || lower.contains("liturgy") || word("liturgical") {
+            return "theology"
         }
         // policy — positioned after socialscience (which owns "public policy"/"public administration")
         // and before legal (which catches bare `word("brief")`). This intercepts "policy brief" and

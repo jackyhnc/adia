@@ -13315,3 +13315,53 @@ None. Swift toolchain unavailable on Linux container.
 - Consider whether `word("escrow")` in realestate is broad enough — "in escrow" is a very real estate specific phrase, no likely false positives
 - Consider `word("edd")` for Doctor of Education in the education branch (currently not matched; "edd" could be a username so left out intentionally)
 
+
+---
+
+## Run 321 — 2026-07-11 — Journalism, theology, and criminal justice keyword domains (866→900 tests, 101→107 templates)
+
+### Shipped
+
+**New keyword domain — journalism:**
+- Branch positioned after research/business but before writing so "news article", "press release", "investigative journalism" tasks route here instead of generic writing/research
+- Matches: journalism/journalist/journalists, reporter/reporters/reporting, news article/news story/news stories, news writing, investigative journalism/reporting, broadcast journalism, media studies/analysis/literacy/law, press release/press releases, editorial writing, op-ed, column writing, photojournalism/photojournalist, journalism ethics/class/course/degree/program/school, copyediting/copy editing, magazine article
+- `journalismCallouts(tier:)` 4/3/3 pool: "that article isn't going to write itself." / "no one becomes a journalist by scrolling." / "CLOSE THIS. open your article."
+- 2 new templates: "Write and file a news article or investigative report" (45 min) + "Study for a journalism exam or media ethics assignment" (45 min)
+
+**New keyword domain — theology:**
+- Branch positioned after philosophy (shares analytical/historical study methods) and before policy/legal so scripture analysis and seminary work don't fall to other pools
+- Matches: theology/theological/theologian, biblical studies, bible study, new testament, old testament, seminary, systematic theology, church history, christian theology, divinity, divinity school, mdiv/m.div, exegesis, hermeneutics, eschatology, christology, soteriology, ecclesiology, religious studies, world religions, comparative religion, islamic studies, jewish studies, philosophy of religion, scripture analysis/study, homiletics, liturgy/liturgical
+- `theologyCallouts(tier:)` 4/3/3 pool: "those scripture passages aren't going to analyze themselves." / "no one gets their M.Div by scrolling." / "CLOSE THIS. open your theology notes."
+- 2 new templates: "Analyze a scripture passage or write a theological essay" (60 min) + "Study for a seminary exam or divinity school assignment" (60 min)
+
+**New keyword domain — criminaljustice:**
+- Split from socialscience branch: `word("criminology")` and `lower.contains("criminal justice")` moved out of socialscience into a dedicated "criminaljustice" branch positioned BEFORE socialscience
+- socialscience updated to remove criminology/criminal justice; comment updated to reflect the split
+- Matches: criminology/criminologist, criminal justice, criminal law, criminal procedure/court, penology, prison reform, juvenile justice/delinquency, forensic science, crime scene, law enforcement, policing, corrections/correctional, incarceration, victimology, crime prevention/analysis
+- `criminaljusticeCallouts(tier:)` 4/3/3 pool: "that case isn't going to analyze itself." / "no one masters criminology by scrolling." / "CLOSE THIS. open your criminal justice notes."
+- 2 new templates: "Complete a criminology or criminal justice assignment" (45 min) + "Study for a criminal justice exam or analyze a crime case" (60 min)
+
+**Test counts:**
+- CalloutManagerTests: 866 → 900 (+34: 11 journalism + 11 theology + 12 criminaljustice)
+- SuggestedSessionTemplatesTests: 176 → 189 (+13: 3 journalism + 3 theology + 3 criminaljustice + ≥107 count guard)
+
+**Template catalog: 101 → 107**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `journalism` branch at line 330 fires after business (323) and before research (355), then writing (~440). No conflict with "newsletter"/"blog" (writing) or "press" alone.
+- `criminaljustice` branch fires before socialscience (now ~895); socialscience no longer contains `word("criminology")` or `lower.contains("criminal justice")`. "poli sci", "anthropology", "LSAT" stay in socialscience.
+- `theology` branch fires at ~931, after philosophy (~920) and before policy/legal (~950). "philosophy of religion" in theology fires before philosophy's own `word("philosophy")` only if theology branch comes first — confirmed theology is at line 931 after philosophy block ends.
+- Three new pool functions (journalismCallouts, theologyCallouts, criminaljusticeCallouts) added in CalloutMessages.swift with correct 4/3/3 tier structure.
+- Three dispatch cases added to taskAwareCallouts() switch.
+- Template count: 101 + 6 = 107; `grep -c "SuggestedTemplate(" SuggestedSessionTemplates.swift` confirms 107.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains: library science, public relations/communications, physical education/sport coaching (split from kinesiology and fitness), dental assisting (split from dental), forensic accounting (split from finance)
+- Consider splitting socialscience further: political science vs. anthropology vs. international relations each as distinct branches with domain-specific messages
+- Consider adding "newscaster" / "anchor" / "correspondent" to journalism branch
+- Consider adding "quran" / "talmud" / "torah study" / "halal" to theology branch for broader religious-text coverage
+- Consider adding "corrections officer" / "probation" / "parole" to criminaljustice branch

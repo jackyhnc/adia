@@ -6111,4 +6111,178 @@ struct CalloutManagerTests {
             }
         }
     }
+
+    // MARK: - Journalism / Media Studies
+
+    @Test func journalismKeywordFromJournalism() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my investigative journalism piece") == "journalism")
+    }
+    @Test func journalismKeywordFromReporter() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my reporter assignment for class") == "journalism")
+    }
+    @Test func journalismKeywordFromNewsArticle() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a news article about the city council vote") == "journalism")
+    }
+    @Test func journalismKeywordFromPressRelease() {
+        #expect(CalloutManager.extractTaskKeyword(from: "draft a press release for the new product launch") == "journalism")
+    }
+    @Test func journalismKeywordFromMediaStudies() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my media studies assignment") == "journalism")
+    }
+    @Test func journalismKeywordFromInvestigativeReporting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "outline my investigative reporting story") == "journalism")
+    }
+    @Test func journalismKeywordDoesNotMatchGenericWriting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my essay about local politics") != "journalism")
+    }
+    @Test func journalismHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "journalism", tier: 1)
+            #expect(!msgs.isEmpty, "journalism tier1 pool must be non-empty")
+        }
+    }
+    @Test func journalismDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "journalism", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "journalism", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "journalism", tier: 3)
+            #expect(tier1.count >= 4, "journalism tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "journalism tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "journalism tier3 must have ≥3 messages")
+        }
+    }
+    @Test func journalismTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "journalism", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.contains("journalist") || $0.contains("article") }
+            #expect(hasUrgent, "journalism tier3 should contain an urgent directive")
+        }
+    }
+    @Test func journalismCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "journalism", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "journalism tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+
+    // MARK: - Theology / Religious Studies
+
+    @Test func theologyKeywordFromTheology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my systematic theology paper") == "theology")
+    }
+    @Test func theologyKeywordFromBiblicalStudies() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my biblical studies midterm") == "theology")
+    }
+    @Test func theologyKeywordFromSeminary() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my seminary assignment") == "theology")
+    }
+    @Test func theologyKeywordFromExegesis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my exegesis paper on Romans 8") == "theology")
+    }
+    @Test func theologyKeywordFromReligiousStudies() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my religious studies reading") == "theology")
+    }
+    @Test func theologyKeywordFromDivinity() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my divinity school exam") == "theology")
+    }
+    @Test func theologyKeywordDoesNotMatchPhilosophy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a philosophy paper on ethics") != "theology")
+    }
+    @Test func theologyHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "theology", tier: 1)
+            #expect(!msgs.isEmpty, "theology tier1 pool must be non-empty")
+        }
+    }
+    @Test func theologyDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "theology", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "theology", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "theology", tier: 3)
+            #expect(tier1.count >= 4, "theology tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "theology tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "theology tier3 must have ≥3 messages")
+        }
+    }
+    @Test func theologyTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "theology", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.contains("M.Div") || $0.contains("theology") }
+            #expect(hasUrgent, "theology tier3 should contain an urgent directive")
+        }
+    }
+    @Test func theologyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "theology", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "theology tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+
+    // MARK: - Criminal Justice / Criminology
+
+    @Test func criminalJusticeKeywordFromCriminology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study criminology for my midterm") == "criminaljustice")
+    }
+    @Test func criminalJusticeKeywordFromCriminalJustice() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my criminal justice paper") == "criminaljustice")
+    }
+    @Test func criminalJusticeKeywordFromForensicScience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my forensic science lab report") == "criminaljustice")
+    }
+    @Test func criminalJusticeKeywordFromJuvenileJustice() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze a juvenile justice case for class") == "criminaljustice")
+    }
+    @Test func criminalJusticeKeywordFromLawEnforcement() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a paper on law enforcement policy") == "criminaljustice")
+    }
+    @Test func criminalJusticeKeywordFromCrimeScene() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study crime scene investigation methods") == "criminaljustice")
+    }
+    @Test func criminalJusticeKeywordDoesNotMatchSocialScience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study political science and international relations") != "criminaljustice")
+    }
+    @Test func criminalJusticeHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "criminaljustice", tier: 1)
+            #expect(!msgs.isEmpty, "criminaljustice tier1 pool must be non-empty")
+        }
+    }
+    @Test func criminalJusticeDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "criminaljustice", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "criminaljustice", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "criminaljustice", tier: 3)
+            #expect(tier1.count >= 4, "criminaljustice tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "criminaljustice tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "criminaljustice tier3 must have ≥3 messages")
+        }
+    }
+    @Test func criminalJusticeTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "criminaljustice", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.contains("criminology") || $0.contains("justice") }
+            #expect(hasUrgent, "criminaljustice tier3 should contain an urgent directive")
+        }
+    }
+    @Test func criminalJusticeCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "criminaljustice", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "criminaljustice tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+    @Test func criminalJusticeKeywordDoesNotRouteToSocialScience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study criminology for my exam") == "criminaljustice")
+    }
 }

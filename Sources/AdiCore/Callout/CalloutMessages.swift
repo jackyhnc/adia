@@ -117,6 +117,9 @@ extension CalloutManager {
         case "realestate":             return realestateCallouts(tier: tier)
         case "education":              return educationCallouts(tier: tier)
         case "actuarial":              return actuarialCallouts(tier: tier)
+        case "journalism":             return journalismCallouts(tier: tier)
+        case "theology":               return theologyCallouts(tier: tier)
+        case "criminaljustice":        return criminaljusticeCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1535,6 +1538,69 @@ extension CalloutManager {
             "CLOSE THIS. open your actuarial exam prep.",
             "no one earns their FSA by scrolling.",
             "your actuarial exam is real — close this.",
+        ]
+        }
+    }
+
+    private func journalismCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that article isn't going to write itself.",
+            "get back to your reporting.",
+            "those sources aren't going to find themselves.",
+            "close this and get back to your news story.",
+        ]
+        case 2: return [
+            "your deadline isn't going to move — close this.",
+            "stop — your press release needs your attention, not this.",
+            "close this and get back to your journalism work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your article.",
+            "no one becomes a journalist by scrolling.",
+            "your editor is waiting — close this and write.",
+        ]
+        }
+    }
+
+    private func theologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those scripture passages aren't going to analyze themselves.",
+            "get back to your theology work.",
+            "your exegesis isn't going to write itself.",
+            "close this and get back to your biblical studies.",
+        ]
+        case 2: return [
+            "your divinity exam isn't going to pass itself.",
+            "stop — your theology paper needs your focus, not this.",
+            "close this and get back to your seminary work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your theology notes.",
+            "no one gets their M.Div by scrolling.",
+            "your faith calls you to focus — close this.",
+        ]
+        }
+    }
+
+    private func criminaljusticeCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that case isn't going to analyze itself.",
+            "get back to your criminology work.",
+            "those crime stats aren't going to interpret themselves.",
+            "close this and get back to your criminal justice assignment.",
+        ]
+        case 2: return [
+            "your criminal justice exam isn't going to pass itself.",
+            "stop — your case analysis needs your attention, not this.",
+            "close this and get back to your criminology notes.",
+        ]
+        default: return [
+            "CLOSE THIS. open your criminal justice notes.",
+            "no one masters criminology by scrolling.",
+            "justice requires focus — close this.",
         ]
         }
     }

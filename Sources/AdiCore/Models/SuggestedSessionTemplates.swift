@@ -639,6 +639,45 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Problem set completed with all solutions worked out, incorrect problems reviewed and corrected, and key formulas or methods annotated in study notes",
             preferredDuration: 60 * 60
         ),
+        // Journalism / Media Studies
+        SuggestedTemplate(
+            icon: "newspaper.fill",
+            task: "Write and file a news article or investigative report",
+            successCriteria: "Article written with headline, lede, body, and sources properly cited, and submitted or saved in the publication system",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "mic.fill",
+            task: "Study for a journalism exam or media ethics assignment",
+            successCriteria: "Target content area reviewed, key journalism ethics or media law concepts summarized in notes, and practice questions completed",
+            preferredDuration: 45 * 60
+        ),
+        // Theology / Religious Studies
+        SuggestedTemplate(
+            icon: "text.book.closed.fill",
+            task: "Analyze a scripture passage or write a theological essay",
+            successCriteria: "Target passage analyzed using exegetical method, key themes documented, and essay or response paper drafted with thesis and supporting arguments",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "building.columns.fill",
+            task: "Study for a seminary exam or divinity school assignment",
+            successCriteria: "Target theology topic reviewed, key doctrines or historical figures summarized in notes, and at least one practice exam section completed",
+            preferredDuration: 60 * 60
+        ),
+        // Criminal Justice / Criminology
+        SuggestedTemplate(
+            icon: "shield.fill",
+            task: "Complete a criminology or criminal justice assignment",
+            successCriteria: "Assignment prompt addressed with relevant theory and case evidence, sources cited, and completed draft saved",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.magnifyingglass",
+            task: "Study for a criminal justice exam or analyze a crime case",
+            successCriteria: "Target content area reviewed, key criminological theories and case examples summarized, and practice questions or case study questions completed",
+            preferredDuration: 60 * 60
+        ),
         // Physician Assistant
         SuggestedTemplate(
             icon: "stethoscope",
