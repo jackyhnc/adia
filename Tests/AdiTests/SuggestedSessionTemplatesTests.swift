@@ -2188,9 +2188,54 @@ struct SuggestedSessionTemplatesTests {
         #expect(hasExam, "catalog must include a forensic science exam template")
     }
 
+    // MARK: - Accounting templates
+    @Test func accountingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasHomework = tasks.contains { $0.localizedCaseInsensitiveContains("accounting homework") || $0.localizedCaseInsensitiveContains("accounting") }
+        let hasCMA = tasks.contains { $0.localizedCaseInsensitiveContains("CMA") || $0.localizedCaseInsensitiveContains("accounting course") }
+        #expect(hasHomework, "catalog must include an accounting homework template")
+        #expect(hasCMA,      "catalog must include a CMA exam or accounting exam template")
+    }
+
+    // MARK: - Sports Management templates
+    @Test func sportsmanagementTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCaseStudy = tasks.contains { $0.localizedCaseInsensitiveContains("sports management") }
+        let hasExam      = tasks.contains { $0.localizedCaseInsensitiveContains("sports marketing") || $0.localizedCaseInsensitiveContains("sports management") }
+        #expect(hasCaseStudy, "catalog must include a sports management case study template")
+        #expect(hasExam,      "catalog must include a sports management exam template")
+    }
+
+    // MARK: - Art Restoration templates
+    @Test func artrestorationTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasReport = tasks.contains { $0.localizedCaseInsensitiveContains("conservation") }
+        let hasExam   = tasks.contains { $0.localizedCaseInsensitiveContains("conservation science") || $0.localizedCaseInsensitiveContains("conservation exam") }
+        #expect(hasReport, "catalog must include a conservation treatment report template")
+        #expect(hasExam,   "catalog must include a conservation science exam template")
+    }
+
+    // MARK: - Computational Science templates
+    @Test func computationalscienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasSimulation = tasks.contains { $0.localizedCaseInsensitiveContains("simulation") || $0.localizedCaseInsensitiveContains("HPC") }
+        let hasProblemSet = tasks.contains { $0.localizedCaseInsensitiveContains("computational science") || $0.localizedCaseInsensitiveContains("numerical methods") }
+        #expect(hasSimulation, "catalog must include a simulation or HPC template")
+        #expect(hasProblemSet, "catalog must include a computational science problem set template")
+    }
+
+    // MARK: - Forensic Psychology templates
+    @Test func forensicpsychologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssessment = tasks.contains { $0.localizedCaseInsensitiveContains("forensic psychological") || $0.localizedCaseInsensitiveContains("forensic psychology") }
+        let hasEPPP       = tasks.contains { $0.localizedCaseInsensitiveContains("EPPP") || $0.localizedCaseInsensitiveContains("forensic psychology") }
+        #expect(hasAssessment, "catalog must include a forensic psychology assessment template")
+        #expect(hasEPPP,       "catalog must include an EPPP exam or forensic psychology template")
+    }
+
     // MARK: - Count guard
-    @Test func catalogHasAtLeastOneHundredFiftyOneTemplates() {
-        #expect(SuggestedSessionTemplates.all.count >= 151,
-                "catalog should have ≥151 templates after arthistory/marinebiology/speecharts/forensicscience additions")
+    @Test func catalogHasAtLeastOneHundredSixtyOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 161,
+                "catalog should have ≥161 templates after accounting/sportsmanagement/artrestoration/computationalscience/forensicpsychology additions")
     }
 }

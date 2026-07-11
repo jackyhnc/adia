@@ -142,6 +142,11 @@ extension CalloutManager {
         case "marinebiology":          return marinebiologyCallouts(tier: tier)
         case "speecharts":             return speechartsCallouts(tier: tier)
         case "forensicscience":        return forensicscienceCallouts(tier: tier)
+        case "accounting":             return accountingCallouts(tier: tier)
+        case "sportsmanagement":       return sportsmanagementCallouts(tier: tier)
+        case "artrestoration":         return artrestorationCallouts(tier: tier)
+        case "computationalscience":   return computationalscienceCallouts(tier: tier)
+        case "forensicpsychology":     return forensicpsychologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -2085,6 +2090,111 @@ extension CalloutManager {
             "CLOSE THIS. open your forensic science notes.",
             "no one passes FEPAC by scrolling.",
             "CLOSE THIS. get back to your lab analysis.",
+        ]
+        }
+    }
+
+    private func accountingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those journal entries aren't going to balance themselves.",
+            "get back to your accounting work.",
+            "your debits and credits won't reconcile themselves.",
+            "close this and open your accounting textbook.",
+        ]
+        case 2: return [
+            "no one passes the CMA by scrolling.",
+            "your accounting assignment isn't going to do itself — get back to it.",
+            "stop avoiding the ledger.",
+        ]
+        default: return [
+            "CLOSE THIS. open your accounting work.",
+            "your accounting deadline is real.",
+            "CLOSE THIS. those accounts won't balance themselves.",
+        ]
+        }
+    }
+
+    private func sportsmanagementCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your sports management case isn't going to write itself.",
+            "get back to your sports management work.",
+            "the game plan starts with actually doing the work.",
+            "close this and open your sports business assignment.",
+        ]
+        case 2: return [
+            "athletic directors don't get there by scrolling.",
+            "your sports management project isn't going to finish itself.",
+            "stop stalling — your case study is waiting.",
+        ]
+        default: return [
+            "CLOSE THIS. open your sports management work.",
+            "no one runs a sports org by browsing.",
+            "CLOSE THIS. get back to your sports business assignment.",
+        ]
+        }
+    }
+
+    private func artrestorationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that painting isn't going to conserve itself.",
+            "get back to your conservation work.",
+            "your treatment plan won't write itself.",
+            "close this and open your conservation notes.",
+        ]
+        case 2: return [
+            "no conservator got there by scrolling.",
+            "your conservation assignment isn't going to do itself.",
+            "stop avoiding your lab report.",
+        ]
+        default: return [
+            "CLOSE THIS. open your conservation work.",
+            "art waits for no one — neither does your deadline.",
+            "CLOSE THIS. get back to your conservation lab.",
+        ]
+        }
+    }
+
+    private func computationalscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that simulation isn't going to run itself.",
+            "get back to your computational work.",
+            "your HPC job won't submit itself.",
+            "close this and open your simulation code.",
+        ]
+        case 2: return [
+            "supercomputers don't do the thinking for you.",
+            "your computational model isn't going to converge itself.",
+            "stop procrastinating — your job queue is waiting.",
+        ]
+        default: return [
+            "CLOSE THIS. open your simulation code.",
+            "no one cracks HPC by scrolling.",
+            "CLOSE THIS. get back to your computational work.",
+        ]
+        }
+    }
+
+    private func forensicpsychologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those case notes aren't going to write themselves.",
+            "get back to your forensic psychology work.",
+            "your competency evaluation won't complete itself.",
+            "close this and open your forensic psych notes.",
+        ]
+        case 2: return [
+            "no one passes the EPPP by scrolling.",
+            "your forensic assessment report isn't going to write itself.",
+            "stop avoiding your case notes.",
+        ]
+        default: return [
+            "CLOSE THIS. open your forensic psychology work.",
+            "criminal profilers don't get there by browsing.",
+            "CLOSE THIS. get back to your forensic psych assignment.",
         ]
         }
     }

@@ -7492,4 +7492,241 @@ struct CalloutManagerTests {
             #expect(hasCloseThis, "forensicscience tier 3 must contain 'CLOSE THIS' or 'no one'")
         }
     }
+
+    // MARK: - Accounting
+    // Positioned BEFORE forensicaccounting and finance.
+    // Bare word("accounting") stays in budget for non-student use.
+
+    @Test func accountingKeywordFromAccountingClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "accounting class chapter 5 practice problems") == "accounting")
+    }
+    @Test func accountingKeywordFromCMAExam() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cma exam prep for part 1 financial planning") == "accounting")
+    }
+    @Test func accountingKeywordFromQuickBooks() {
+        #expect(CalloutManager.extractTaskKeyword(from: "quickbooks certification practice test") == "accounting")
+    }
+    @Test func accountingKeywordFromIntermediateAccounting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "intermediate accounting textbook review for midterm") == "accounting")
+    }
+    @Test func accountingFalsePositiveForensicStaysInForensicAccounting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "forensic accounting fraud examination case") == "forensicaccounting")
+    }
+    @Test func accountingCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "accounting", tier: tier)
+                #expect(!msgs.isEmpty, "accounting tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func accountingCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "accounting", tier: 1)
+            #expect(msgs.count >= 4, "accounting tier1 must have ≥4 messages")
+        }
+    }
+    @Test func accountingCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "accounting", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "accounting tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func accountingCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "accounting", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "accounting tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Sports Management
+    // Positioned after physed (coaching stays there) and before libraryscience.
+    // Bare word("sports") alone does NOT fire.
+
+    @Test func sportsmanagementKeywordFromSportsManagement() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sports management case study on revenue sharing") == "sportsmanagement")
+    }
+    @Test func sportsmanagementKeywordFromAthleticDirector() {
+        #expect(CalloutManager.extractTaskKeyword(from: "athletic director leadership assignment for class") == "sportsmanagement")
+    }
+    @Test func sportsmanagementKeywordFromSportsMarketing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sports marketing exam prep on sponsorship strategy") == "sportsmanagement")
+    }
+    @Test func sportsmanagementFalsePositiveCoachinStaysInPhysed() {
+        // Coaching without sports management terms stays in physed
+        #expect(CalloutManager.extractTaskKeyword(from: "coaching certification course materials and exam prep") == "physed")
+    }
+    @Test func sportsmanagementCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "sportsmanagement", tier: tier)
+                #expect(!msgs.isEmpty, "sportsmanagement tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func sportsmanagementCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "sportsmanagement", tier: 1)
+            #expect(msgs.count >= 4, "sportsmanagement tier1 must have ≥4 messages")
+        }
+    }
+    @Test func sportsmanagementCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "sportsmanagement", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "sportsmanagement tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func sportsmanagementCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "sportsmanagement", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "sportsmanagement tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Art Restoration / Conservation
+    // Positioned after arthistory and BEFORE art.
+    // word("painting") alone goes to art; only compound "painting conservation" fires here.
+
+    @Test func artrestorationKeywordFromArtConservation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "art conservation treatment report on panel painting") == "artrestoration")
+    }
+    @Test func artrestorationKeywordFromPaintingConservation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "painting conservation lab assignment on varnish removal") == "artrestoration")
+    }
+    @Test func artrestorationKeywordFromMuseumConservation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "museum conservation internship case notes for class") == "artrestoration")
+    }
+    @Test func artrestorationFalsePositiveArtHistoryStaysInArtHistory() {
+        // Art history terms without conservation/restoration stay in arthistory
+        #expect(CalloutManager.extractTaskKeyword(from: "art history essay on baroque period and its artists") == "arthistory")
+    }
+    @Test func artrestorationCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "artrestoration", tier: tier)
+                #expect(!msgs.isEmpty, "artrestoration tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func artrestorationCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "artrestoration", tier: 1)
+            #expect(msgs.count >= 4, "artrestoration tier1 must have ≥4 messages")
+        }
+    }
+    @Test func artrestorationCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "artrestoration", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "artrestoration tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func artrestorationCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "artrestoration", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "artrestoration tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Computational Science
+    // Positioned after datascience and before bioinformatics.
+    // "computational biology" stays in bioinformatics (fires later).
+
+    @Test func computationalscienceKeywordFromHPC() {
+        #expect(CalloutManager.extractTaskKeyword(from: "high performance computing job submission on the cluster") == "computationalscience")
+    }
+    @Test func computationalscienceKeywordFromMonteCarloSimulation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "monte carlo simulation assignment for physics class") == "computationalscience")
+    }
+    @Test func computationalscienceKeywordFromParallelComputing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "parallel computing homework on MPI programming") == "computationalscience")
+    }
+    @Test func computationalscienceFalsePositiveBioinformaticsStaysInBioinformatics() {
+        // Bioinformatics terms without HPC/simulation stay in bioinformatics
+        #expect(CalloutManager.extractTaskKeyword(from: "bioinformatics pipeline for rna-seq analysis") == "bioinformatics")
+    }
+    @Test func computationalscienceCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "computationalscience", tier: tier)
+                #expect(!msgs.isEmpty, "computationalscience tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func computationalscienceCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "computationalscience", tier: 1)
+            #expect(msgs.count >= 4, "computationalscience tier1 must have ≥4 messages")
+        }
+    }
+    @Test func computationalscienceCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "computationalscience", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "computationalscience tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func computationalscienceCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "computationalscience", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "computationalscience tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Forensic Psychology
+    // Positioned after psychology and BEFORE forensicscience.
+    // Bare "forensics" is NOT matched; requires compound forensic-psychology terms.
+
+    @Test func forensicpsychologyKeywordFromForensicPsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "forensic psychology assessment report for class") == "forensicpsychology")
+    }
+    @Test func forensicpsychologyKeywordFromCriminalProfiling() {
+        #expect(CalloutManager.extractTaskKeyword(from: "criminal profiling case study for forensic psych") == "forensicpsychology")
+    }
+    @Test func forensicpsychologyKeywordFromEPPPExam() {
+        #expect(CalloutManager.extractTaskKeyword(from: "eppp exam prep for forensic psychology licensure") == "forensicpsychology")
+    }
+    @Test func forensicpsychologyFalsePositivePsychologyStaysInPsychology() {
+        // General psychology without forensic terms stays in psychology
+        #expect(CalloutManager.extractTaskKeyword(from: "psychology research paper on attachment theory and development") == "psychology")
+    }
+    @Test func forensicpsychologyCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "forensicpsychology", tier: tier)
+                #expect(!msgs.isEmpty, "forensicpsychology tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func forensicpsychologyCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "forensicpsychology", tier: 1)
+            #expect(msgs.count >= 4, "forensicpsychology tier1 must have ≥4 messages")
+        }
+    }
+    @Test func forensicpsychologyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "forensicpsychology", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "forensicpsychology tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func forensicpsychologyCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "forensicpsychology", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "forensicpsychology tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
 }

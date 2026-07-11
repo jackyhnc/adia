@@ -977,5 +977,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target forensic discipline reviewed (biology, chemistry, or toxicology), key procedures and case law summarized, and at least 20 practice questions completed with corrections noted",
             preferredDuration: 60 * 60
         ),
+        // Accounting
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete an accounting homework assignment or problem set",
+            successCriteria: "All assigned journal entries, ledger postings, or financial statement problems completed with work shown, reconciled to correct balances, and saved for submission",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.bar.doc.horizontal.fill",
+            task: "Study for the CMA exam or an accounting course exam",
+            successCriteria: "Target content area reviewed (financial reporting, management accounting, or cost analysis), key frameworks summarized, and at least 20 practice questions completed with corrections noted",
+            preferredDuration: 90 * 60
+        ),
+        // Sports Management
+        SuggestedTemplate(
+            icon: "trophy.fill",
+            task: "Write a sports management case study or strategic analysis",
+            successCriteria: "Target sports organization or scenario analyzed, key strategic recommendations drafted with supporting evidence, and case write-up completed and saved for submission",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "sportscourt.fill",
+            task: "Study for a sports management or sports marketing exam",
+            successCriteria: "Key frameworks reviewed (sports finance, marketing mix, or event management), key concepts summarized, and at least 20 practice questions completed with corrections noted",
+            preferredDuration: 60 * 60
+        ),
+        // Art Restoration / Conservation
+        SuggestedTemplate(
+            icon: "paintbrush.pointed.fill",
+            task: "Write a conservation treatment report or condition assessment",
+            successCriteria: "Artwork condition documented with observations noted, proposed treatment plan written with materials and methods justified, and report completed and saved for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "building.columns.fill",
+            task: "Study for an art conservation exam or conservation science coursework",
+            successCriteria: "Target conservation discipline reviewed (paintings, works on paper, or preventive care), key materials and treatment methods summarized, and at least 20 practice questions completed",
+            preferredDuration: 60 * 60
+        ),
+        // Computational Science
+        SuggestedTemplate(
+            icon: "cpu.fill",
+            task: "Write or debug a scientific simulation or HPC program",
+            successCriteria: "Target simulation coded or debugged, job submitted to scheduler or run locally, output verified against expected results, and code with comments saved to repository",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path",
+            task: "Complete a computational science problem set or numerical methods assignment",
+            successCriteria: "All assigned algorithms implemented or analyzed, numerical results validated with error estimates, and solutions written up with code and figures saved for submission",
+            preferredDuration: 60 * 60
+        ),
+        // Forensic Psychology
+        SuggestedTemplate(
+            icon: "person.crop.rectangle.fill",
+            task: "Write a forensic psychological assessment report or case notes",
+            successCriteria: "Assessment data organized and interpreted, key findings documented with relevant legal standards addressed, and full report written in professional format and saved for review",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study for the EPPP exam or forensic psychology coursework",
+            successCriteria: "Target content area reviewed (criminal behavior, legal standards, or assessment methods), key concepts and case law summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
     ]
 }

@@ -375,6 +375,31 @@ public final class CalloutManager {
             || lower.contains("random forest") || lower.contains("decision tree") {
             return "datascience"
         }
+        // computationalscience — positioned after datascience and before bioinformatics so
+        // HPC, parallel computing, and scientific simulation tasks route here.
+        // "computational biology" stays in bioinformatics (fires later);
+        // "numerical analysis" stays in mathematics (fires earlier).
+        // Bare word("matlab") alone can be numerical/engineering — requires compound guard.
+        if lower.contains("high performance computing") || lower.contains("hpc cluster")
+            || lower.contains("parallel computing") || lower.contains("distributed computing")
+            || lower.contains("scientific computing") || lower.contains("supercomputer")
+            || lower.contains("computational physics") || lower.contains("computational chemistry")
+            || lower.contains("computational neuroscience")
+            || lower.contains("monte carlo simulation") || lower.contains("monte carlo method")
+            || lower.contains("finite element simulation") || lower.contains("finite difference simulation")
+            || lower.contains("numerical simulation") || lower.contains("simulation model")
+            || lower.contains("mpi programming") || lower.contains("openmp programming")
+            || lower.contains("cuda programming") || lower.contains("gpu computing")
+            || lower.contains("computational modeling") || lower.contains("scientific simulation")
+            || lower.contains("cluster computing") || lower.contains("job scheduler")
+            || lower.contains("slurm job") || lower.contains("pbs job")
+            || lower.contains("matlab simulation") || lower.contains("matlab model")
+            || lower.contains("scipy simulation") || lower.contains("numpy simulation")
+            || lower.contains("computational science") || lower.contains("computational scientist")
+            || lower.contains("computational problem") || lower.contains("computational assignment")
+            || lower.contains("computational class") || lower.contains("computational course") {
+            return "computationalscience"
+        }
         // bioinformatics — positioned after datascience (ML tools may co-occur) and before ux
         // so sequence analysis, genomics, and computational-biology pipelines route here.
         // Bare "biology" stays in studying; "biomedical engineering" stays in engineering above.
@@ -566,6 +591,28 @@ public final class CalloutManager {
             || lower.contains("art history major") || lower.contains("art history program") {
             return "arthistory"
         }
+        // artrestoration — positioned after arthistory and BEFORE art so conservation/restoration
+        // tasks route here rather than the generic art-making pool.
+        // "painting conservation" is a compound, so word("painting") alone still goes to art.
+        if lower.contains("art conservation") || lower.contains("art conservator")
+            || lower.contains("art conservators") || lower.contains("art restoration")
+            || lower.contains("art restorer") || lower.contains("art restorers")
+            || lower.contains("painting conservation") || lower.contains("painting restoration")
+            || lower.contains("paper conservation") || lower.contains("paper restoration")
+            || lower.contains("object conservation") || lower.contains("textile conservation")
+            || lower.contains("textile restoration") || lower.contains("sculpture conservation")
+            || lower.contains("museum conservation") || lower.contains("conservation science")
+            || lower.contains("preventive conservation") || lower.contains("conservation lab")
+            || lower.contains("conservation studio") || lower.contains("conservation treatment")
+            || lower.contains("varnish removal") || lower.contains("inpainting")
+            || lower.contains("consolidation treatment") || lower.contains("surface cleaning")
+            || lower.contains("conservation ethics") || lower.contains("conservation materials")
+            || lower.contains("archival materials") || lower.contains("archival preservation")
+            || lower.contains("conservation class") || lower.contains("conservation course")
+            || lower.contains("conservation exam") || lower.contains("conservation program")
+            || lower.contains("conservation major") || lower.contains("conservation degree") {
+            return "artrestoration"
+        }
         if word("drawing") || word("painting") || word("sketching")
             || word("illustration") || word("illustrations") || word("illustrate") || word("illustrating")
             || word("procreate") || word("sculpting")
@@ -703,6 +750,35 @@ public final class CalloutManager {
             || lower.contains("creative brief") || lower.contains("marketing brief") {
             return "writing"
         }
+        // accounting — positioned before forensicaccounting and finance so general accounting
+        // coursework, CMA prep, QuickBooks/Xero, and accounting-student tasks route here
+        // rather than the finance or budget pools.
+        // Bare word("accounting") and word("bookkeeping") stay in budget for non-student use.
+        if lower.contains("accounting class") || lower.contains("accounting course")
+            || lower.contains("accounting exam") || lower.contains("accounting homework")
+            || lower.contains("accounting assignment") || lower.contains("accounting textbook")
+            || lower.contains("accounting major") || lower.contains("accounting degree")
+            || lower.contains("accounting program") || lower.contains("accounting principles")
+            || lower.contains("accounting theory") || lower.contains("accounting lab")
+            || lower.contains("accounting study") || lower.contains("accounting notes")
+            || lower.contains("cma exam") || lower.contains("cma prep") || word("cma")
+            || lower.contains("cma certification") || lower.contains("cma study")
+            || word("quickbooks") || lower.contains("quickbooks certification")
+            || lower.contains("quickbooks class") || lower.contains("quickbooks exam")
+            || word("xero") || lower.contains("xero accounting") || lower.contains("xero class")
+            || word("aicpa") || lower.contains("accounting certification")
+            || lower.contains("audit class") || lower.contains("audit course")
+            || lower.contains("audit textbook") || lower.contains("audit exam")
+            || lower.contains("managerial accounting class") || lower.contains("managerial accounting course")
+            || lower.contains("managerial accounting textbook") || lower.contains("managerial accounting exam")
+            || lower.contains("cost accounting class") || lower.contains("cost accounting course")
+            || lower.contains("cost accounting textbook") || lower.contains("cost accounting exam")
+            || lower.contains("tax accounting class") || lower.contains("tax accounting course")
+            || lower.contains("intermediate accounting") || lower.contains("advanced accounting")
+            || lower.contains("accounting software") || lower.contains("bookkeeping class")
+            || lower.contains("bookkeeping course") || lower.contains("bookkeeping exam") {
+            return "accounting"
+        }
         // forensicaccounting — positioned before finance so fraud investigation, CFE exam,
         // and financial forensics tasks route here rather than the generic finance pool.
         if lower.contains("forensic accounting") || lower.contains("forensic accountant")
@@ -798,6 +874,27 @@ public final class CalloutManager {
             || lower.contains("coaching certification") || lower.contains("coaching license")
             || lower.contains("coaching licensure") || lower.contains("youth coaching") {
             return "physed"
+        }
+        // sportsmanagement — positioned after physed (coaching stays there) and before libraryscience
+        // so sports-business, sports-law, and athletic-director tasks route here.
+        // Bare word("sports") alone does NOT fire (too ambiguous).
+        if lower.contains("sports management") || lower.contains("sport management")
+            || lower.contains("sports administration") || lower.contains("sport administration")
+            || lower.contains("sports marketing") || lower.contains("sport marketing")
+            || lower.contains("sports finance") || lower.contains("sports law")
+            || lower.contains("sports analytics") || lower.contains("sport analytics")
+            || lower.contains("sports business") || lower.contains("sport business")
+            || lower.contains("athletic director") || lower.contains("athletic administration")
+            || lower.contains("stadium management") || lower.contains("arena management")
+            || lower.contains("sports event management") || lower.contains("sport event management")
+            || lower.contains("sports industry") || lower.contains("sports organization")
+            || lower.contains("sports agency") || lower.contains("player agent")
+            || lower.contains("sports revenue") || lower.contains("sports sponsorship")
+            || lower.contains("sports communications") || lower.contains("sport communications")
+            || lower.contains("sports management class") || lower.contains("sports management course")
+            || lower.contains("sports management program") || lower.contains("sports management major")
+            || lower.contains("sports management exam") || lower.contains("sports management assignment") {
+            return "sportsmanagement"
         }
         // libraryscience — positioned after physed and before tutor so LIS/MLIS programs,
         // cataloging, archival work, and reference services route here.
@@ -1287,6 +1384,28 @@ public final class CalloutManager {
             || lower.contains("attachment theory") || lower.contains("cognitive development")
             || lower.contains("psychological research") || lower.contains("psychology study") {
             return "psychology"
+        }
+        // forensicpsychology — positioned after psychology and BEFORE forensicscience so
+        // criminal profiling, competency evaluation, and psycholegal tasks route here.
+        // Bare word("forensics") is NOT matched (ambiguous with speech forensics).
+        if lower.contains("forensic psychology") || lower.contains("forensic psychologist")
+            || lower.contains("forensic psychologists") || lower.contains("criminal psychology")
+            || lower.contains("criminal profiling") || lower.contains("criminal profile")
+            || lower.contains("competency evaluation") || lower.contains("competency assessment")
+            || lower.contains("competency to stand trial") || lower.contains("sanity evaluation")
+            || lower.contains("sanity hearing") || lower.contains("insanity defense")
+            || lower.contains("psycholegal") || lower.contains("forensic mental health")
+            || lower.contains("forensic assessment") || lower.contains("forensic evaluation")
+            || lower.contains("forensic interview") || lower.contains("forensic interviews")
+            || lower.contains("psychological profiling") || lower.contains("psychological autopsy")
+            || lower.contains("risk assessment forensic") || lower.contains("violence risk assessment")
+            || lower.contains("expert witness psychology") || lower.contains("expert witness psychiatry")
+            || lower.contains("malingering assessment") || lower.contains("competency restoration")
+            || lower.contains("eppp exam") || lower.contains("eppp prep") || word("eppp")
+            || lower.contains("forensic psych") || lower.contains("forensic psychology class")
+            || lower.contains("forensic psychology course") || lower.contains("forensic psychology exam")
+            || lower.contains("forensic psychology program") || lower.contains("forensic psychology major") {
+            return "forensicpsychology"
         }
         // forensicscience — positioned BEFORE criminaljustice so crime-lab, DNA analysis,
         // and forensic-science coursework route here. "forensic accounting" is owned by its own
