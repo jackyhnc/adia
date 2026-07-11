@@ -317,9 +317,32 @@ public final class CalloutManager {
             || word("worksheet") || word("worksheets") {
             return "homework"
         }
-        // geology — positioned before engineering so "geology lab", "gis mapping", and
-        // earth-science field tasks don't fall through to engineering or research via word("lab").
+        // geospatial — positioned BEFORE geology so GIS/remote sensing/spatial analysis tasks
+        // route here. "gis analysis" and "gis mapping" removed from geology and owned here.
+        // Bare word("geography") alone does NOT fire (stays in studying/socialscience).
+        if word("gis") || word("arcgis") || word("qgis") || word("postgis")
+            || lower.contains("geographic information system") || lower.contains("geographic information systems")
+            || lower.contains("geospatial analysis") || lower.contains("geospatial science")
+            || lower.contains("geospatial data") || lower.contains("geospatial technology")
+            || lower.contains("spatial analysis") || lower.contains("spatial data")
+            || lower.contains("spatial statistics") || lower.contains("geographic analysis")
+            || lower.contains("gis mapping") || lower.contains("gis analysis")
+            || lower.contains("gis lab") || lower.contains("gis class")
+            || lower.contains("gis course") || lower.contains("gis project")
+            || lower.contains("gis software") || lower.contains("gis exam")
+            || lower.contains("remote sensing") || lower.contains("satellite imagery")
+            || lower.contains("aerial mapping") || lower.contains("aerial imagery")
+            || lower.contains("lidar data") || lower.contains("lidar analysis")
+            || word("cartography") || word("cartographer") || word("cartographic")
+            || lower.contains("map projection") || lower.contains("map projections")
+            || lower.contains("geospatial exam") || lower.contains("geospatial course")
+            || lower.contains("gisp exam") || word("gisp") {
+            return "geospatial"
+        }
+        // geology — positioned before engineering so "geology lab" and earth-science field tasks
+        // don't fall through to engineering or research via word("lab").
         // "geography" alone does NOT fire here (stays in studying/socialscience).
+        // "gis mapping" / "gis analysis" now owned by geospatial branch above.
         if word("geology") || word("geologist") || word("geological") || word("geologists")
             || word("mineralogy") || word("petrology") || word("sedimentology")
             || word("stratigraphy") || word("stratigraphic") || word("geomorphology")
@@ -334,7 +357,6 @@ public final class CalloutManager {
             || lower.contains("geological map") || lower.contains("geologic cross section")
             || word("paleontology") || word("paleontologist") || lower.contains("fossil record")
             || word("asbog")
-            || lower.contains("gis analysis") || lower.contains("gis mapping")
             || lower.contains("soil science") || lower.contains("soil mechanics")
             || lower.contains("hydrology") {
             return "geology"
@@ -482,6 +504,28 @@ public final class CalloutManager {
             || word("reit") || lower.contains("open house prep") {
             return "realestate"
         }
+        // hospitality — positioned before business so hotel management, tourism, and event-planning
+        // coursework routes here rather than the generic business pool.
+        if lower.contains("hotel management") || lower.contains("hotel operations")
+            || lower.contains("hotel industry") || lower.contains("hotel school")
+            || lower.contains("hotel class") || lower.contains("hotel course")
+            || lower.contains("hospitality management") || lower.contains("hospitality industry")
+            || lower.contains("hospitality school") || lower.contains("hospitality class")
+            || lower.contains("hospitality course") || lower.contains("hospitality program")
+            || lower.contains("hospitality major") || lower.contains("hospitality exam")
+            || lower.contains("food and beverage") || lower.contains("food & beverage")
+            || lower.contains("front of house") || lower.contains("back of house")
+            || lower.contains("housekeeping operations") || lower.contains("room division")
+            || lower.contains("hotel revenue management") || lower.contains("hotel front desk")
+            || lower.contains("event planning class") || lower.contains("event planning course")
+            || lower.contains("event management class") || lower.contains("event management course")
+            || lower.contains("tourism management") || lower.contains("tourism marketing")
+            || lower.contains("tourism class") || lower.contains("tourism course")
+            || lower.contains("hospitality marketing")
+            || word("concierge") || lower.contains("resort management")
+            || lower.contains("che exam") || lower.contains("cha exam") {
+            return "hospitality"
+        }
         // business/management — positioned before research so "marketing research" and "market analysis"
         // route here rather than the generic research pool. Startup branch above already catches
         // "business plan", "pitch deck", and "business model" before this point.
@@ -548,6 +592,28 @@ public final class CalloutManager {
             || lower.contains("pr firm") || lower.contains("pr agency")
             || lower.contains("spokesperson training") || lower.contains("public affairs") {
             return "publicrelations"
+        }
+        // fashiondesign — positioned BEFORE graphicdesign (both use Adobe tools) and before art
+        // so fashion illustration, garment construction, and fashion school tasks route here.
+        if lower.contains("fashion design") || lower.contains("fashion designer")
+            || lower.contains("fashion designers") || lower.contains("fashion illustration")
+            || lower.contains("fashion school") || lower.contains("fashion program")
+            || lower.contains("fashion class") || lower.contains("fashion course")
+            || lower.contains("fashion major") || lower.contains("fashion exam")
+            || lower.contains("fashion merchandising") || lower.contains("fashion buyer")
+            || lower.contains("fashion marketing") || lower.contains("fashion business")
+            || lower.contains("fashion show") || lower.contains("fashion portfolio")
+            || lower.contains("garment construction") || lower.contains("garment design")
+            || lower.contains("pattern making") || lower.contains("pattern drafting")
+            || lower.contains("sewing pattern") || lower.contains("draping technique")
+            || lower.contains("fashion sketching") || lower.contains("fashion drawing")
+            || lower.contains("textile design") || lower.contains("fabric selection")
+            || lower.contains("fashion collection") || lower.contains("fashion lookbook")
+            || lower.contains("fashion tech pack") || lower.contains("tech pack")
+            || word("couture") || lower.contains("haute couture")
+            || lower.contains("fashion history") || lower.contains("fashion theory")
+            || word("colorway") || word("colorways") {
+            return "fashiondesign"
         }
         // graphicdesign — positioned BEFORE art (both use illustrator/photoshop terms) and before
         // the generic design branch (which catches bare word("design")).
@@ -875,14 +941,28 @@ public final class CalloutManager {
             || lower.contains("coaching licensure") || lower.contains("youth coaching") {
             return "physed"
         }
-        // sportsmanagement — positioned after physed (coaching stays there) and before libraryscience
-        // so sports-business, sports-law, and athletic-director tasks route here.
+        // sportsanalytics — positioned before sportsmanagement so R/Python for sports data,
+        // sabermetrics, player tracking, and sports data science route here (not the management pool).
+        // "sports analytics" / "sport analytics" removed from sportsmanagement and owned here.
+        if lower.contains("sports analytics") || lower.contains("sport analytics")
+            || lower.contains("sports data science") || lower.contains("sport data science")
+            || lower.contains("sports data analysis") || lower.contains("sport data analysis")
+            || lower.contains("player tracking") || lower.contains("athlete tracking")
+            || lower.contains("sabermetrics") || lower.contains("moneyball")
+            || lower.contains("sports statistics class") || lower.contains("sports statistics course")
+            || lower.contains("sports performance analytics") || lower.contains("game analytics")
+            || lower.contains("expected goals") || lower.contains("advanced stats sports")
+            || lower.contains("sports modeling") || lower.contains("predictive modeling sports")
+            || lower.contains("sports analytics class") || lower.contains("sports analytics course")
+            || lower.contains("sports analytics program") || lower.contains("sports analytics exam") {
+            return "sportsanalytics"
+        }
+        // sportsmanagement — "sports analytics" is now owned by the sportsanalytics branch above.
         // Bare word("sports") alone does NOT fire (too ambiguous).
         if lower.contains("sports management") || lower.contains("sport management")
             || lower.contains("sports administration") || lower.contains("sport administration")
             || lower.contains("sports marketing") || lower.contains("sport marketing")
             || lower.contains("sports finance") || lower.contains("sports law")
-            || lower.contains("sports analytics") || lower.contains("sport analytics")
             || lower.contains("sports business") || lower.contains("sport business")
             || lower.contains("athletic director") || lower.contains("athletic administration")
             || lower.contains("stadium management") || lower.contains("arena management")
@@ -1359,6 +1439,26 @@ public final class CalloutManager {
             || lower.contains("mph exam") || lower.contains("mph capstone")
             || lower.contains("mph thesis") || lower.contains("master of public health") {
             return "publicheath"
+        }
+        // emergencymanagement — positioned after publicheath and before psychology.
+        // Catches FEMA cert prep, disaster response, incident command, and crisis management.
+        if lower.contains("emergency management") || lower.contains("emergency manager")
+            || lower.contains("emergency planning") || lower.contains("emergency preparedness")
+            || lower.contains("disaster response") || lower.contains("disaster management")
+            || lower.contains("disaster preparedness") || lower.contains("disaster recovery")
+            || word("fema") || lower.contains("fema exam") || lower.contains("fema course")
+            || lower.contains("fema certification") || lower.contains("fema training")
+            || lower.contains("hazard mitigation") || lower.contains("hazardous materials response")
+            || lower.contains("incident command") || lower.contains("ics training")
+            || lower.contains("crisis management") || lower.contains("crisis response")
+            || lower.contains("emergency operations") || lower.contains("continuity of operations")
+            || lower.contains("mass casualty") || lower.contains("search and rescue training")
+            || lower.contains("public safety planning")
+            || lower.contains("emergency management class") || lower.contains("emergency management course")
+            || lower.contains("emergency management program") || lower.contains("emergency management major")
+            || lower.contains("emergency management exam") || lower.contains("homeland security class")
+            || lower.contains("homeland security course") || lower.contains("homeland security program") {
+            return "emergencymanagement"
         }
         // psychology — positioned after publicheath and all clinical health branches above.
         // "educational psychology" fires in the education branch first; clinical/counseling

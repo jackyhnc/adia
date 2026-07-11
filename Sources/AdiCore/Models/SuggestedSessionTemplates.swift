@@ -1042,5 +1042,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target content area reviewed (criminal behavior, legal standards, or assessment methods), key concepts and case law summarized, and at least 20 practice questions completed with corrections",
             preferredDuration: 90 * 60
         ),
+        // Geospatial Science
+        SuggestedTemplate(
+            icon: "map.fill",
+            task: "Complete a GIS analysis or spatial data project",
+            successCriteria: "Spatial layers loaded and processed in GIS software, analysis run and results validated, map or output exported in required format and saved to project folder",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "globe.americas.fill",
+            task: "Study for the GISP exam or complete a geospatial science assignment",
+            successCriteria: "Target topic reviewed (remote sensing, spatial analysis, or cartography), key concepts summarized with examples, and at least one practice exercise or problem set completed",
+            preferredDuration: 60 * 60
+        ),
+        // Fashion Design
+        SuggestedTemplate(
+            icon: "scissors",
+            task: "Sketch a fashion collection or draft garment patterns for a design project",
+            successCriteria: "At least three complete design sketches or one garment pattern drafted, construction notes annotated, and designs photographed or digitized and saved to portfolio folder",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "tag.fill",
+            task: "Study for a fashion design exam or complete a fashion merchandising assignment",
+            successCriteria: "Target content reviewed (fashion history, textiles, or merchandising principles), key terminology summarized, and assignment written or study notes compiled and saved",
+            preferredDuration: 45 * 60
+        ),
+        // Hospitality Management
+        SuggestedTemplate(
+            icon: "building.2.fill",
+            task: "Complete a hospitality management case study or hotel operations assignment",
+            successCriteria: "Case scenario analyzed, key issues identified, recommendations written with supporting rationale, and final report formatted and saved for submission",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "star.fill",
+            task: "Study for a hospitality or tourism management exam",
+            successCriteria: "Target chapters reviewed and summarized, key concepts and industry terminology noted, and at least one set of practice questions or self-quizzes completed",
+            preferredDuration: 60 * 60
+        ),
+        // Sports Analytics
+        SuggestedTemplate(
+            icon: "chart.bar.fill",
+            task: "Build a sports analytics model or analyze player performance data",
+            successCriteria: "Dataset cleaned and loaded, analysis pipeline coded and run, key metrics calculated and visualized, and findings summarized with interpretation saved to notebook or report",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "sportscourt.fill",
+            task: "Complete a sports analytics assignment or sabermetrics problem set",
+            successCriteria: "All assigned problems or analyses completed, statistical methods applied correctly, results interpreted in sports context, and work saved for submission",
+            preferredDuration: 60 * 60
+        ),
+        // Emergency Management
+        SuggestedTemplate(
+            icon: "exclamationmark.triangle.fill",
+            task: "Write an emergency management plan or disaster response protocol",
+            successCriteria: "Hazard scenarios identified, response procedures drafted with roles and resources defined, plan reviewed against relevant standards (ICS/FEMA), and document saved for submission or review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "shield.fill",
+            task: "Study for FEMA certification or an emergency management course exam",
+            successCriteria: "Target content area reviewed (incident command, hazard mitigation, or disaster recovery), key concepts and frameworks summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

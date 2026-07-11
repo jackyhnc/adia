@@ -7729,4 +7729,232 @@ struct CalloutManagerTests {
             #expect(hasCloseThis, "forensicpsychology tier 3 must contain 'CLOSE THIS' or 'no one'")
         }
     }
+
+    // MARK: - Geospatial Science
+    // Positioned BEFORE geology so GIS/remote sensing/spatial analysis route here.
+    // "gis analysis"/"gis mapping" removed from geology and owned here.
+
+    @Test func geospatialKeywordFromGISMapping() {
+        #expect(CalloutManager.extractTaskKeyword(from: "gis mapping project for my geospatial class") == "geospatial")
+    }
+    @Test func geospatialKeywordFromRemoteSensing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "remote sensing lab assignment on satellite imagery") == "geospatial")
+    }
+    @Test func geospatialKeywordFromArcGIS() {
+        #expect(CalloutManager.extractTaskKeyword(from: "arcgis spatial analysis homework on land use data") == "geospatial")
+    }
+    @Test func geospatialFalsePositiveGeologyStaysInGeology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geology lab report on rock identification and stratigraphy") == "geology")
+    }
+    @Test func geospatialCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geospatial", tier: tier)
+                #expect(!msgs.isEmpty, "geospatial tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func geospatialCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geospatial", tier: 1)
+            #expect(msgs.count >= 4, "geospatial tier1 must have ≥4 messages")
+        }
+    }
+    @Test func geospatialCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geospatial", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "geospatial tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func geospatialCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geospatial", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "geospatial tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Fashion Design
+    // Positioned BEFORE graphicdesign so garment construction, pattern making, and fashion school route here.
+
+    @Test func fashiondesignKeywordFromFashionDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fashion design portfolio project for my class") == "fashiondesign")
+    }
+    @Test func fashiondesignKeywordFromPatternMaking() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pattern making assignment for garment construction lab") == "fashiondesign")
+    }
+    @Test func fashiondesignKeywordFromFashionMerchandising() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fashion merchandising case study for my business class") == "fashiondesign")
+    }
+    @Test func fashiondesignFalsePositiveGraphicDesignStaysInGraphicDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "graphic design logo project for my client branding work") == "graphicdesign")
+    }
+    @Test func fashiondesignCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "fashiondesign", tier: tier)
+                #expect(!msgs.isEmpty, "fashiondesign tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func fashiondesignCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "fashiondesign", tier: 1)
+            #expect(msgs.count >= 4, "fashiondesign tier1 must have ≥4 messages")
+        }
+    }
+    @Test func fashiondesignCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "fashiondesign", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "fashiondesign tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func fashiondesignCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "fashiondesign", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "fashiondesign tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Hospitality Management
+    // Positioned before business so hotel management and tourism coursework route here.
+
+    @Test func hospitalityKeywordFromHotelManagement() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hotel management case study on revenue management strategies") == "hospitality")
+    }
+    @Test func hospitalityKeywordFromHospitalityManagement() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hospitality management exam prep on food and beverage operations") == "hospitality")
+    }
+    @Test func hospitalityKeywordFromTourismMarketing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tourism marketing assignment for my hospitality program") == "hospitality")
+    }
+    @Test func hospitalityFalsePositiveBusinessStaysInBusiness() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mba case analysis on strategic management and operations") == "business")
+    }
+    @Test func hospitalityCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "hospitality", tier: tier)
+                #expect(!msgs.isEmpty, "hospitality tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func hospitalityCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "hospitality", tier: 1)
+            #expect(msgs.count >= 4, "hospitality tier1 must have ≥4 messages")
+        }
+    }
+    @Test func hospitalityCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "hospitality", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "hospitality tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func hospitalityCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "hospitality", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "hospitality tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Sports Analytics
+    // Positioned BEFORE sportsmanagement so R/Python for sports data, sabermetrics,
+    // and player tracking route here. "sports analytics" removed from sportsmanagement.
+
+    @Test func sportsanalyticsKeywordFromSportsAnalytics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sports analytics project on player tracking data in R") == "sportsanalytics")
+    }
+    @Test func sportsanalyticsKeywordFromSabermetrics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sabermetrics assignment on advanced baseball stats") == "sportsanalytics")
+    }
+    @Test func sportsanalyticsKeywordFromPlayerTracking() {
+        #expect(CalloutManager.extractTaskKeyword(from: "player tracking data analysis for my sports science class") == "sportsanalytics")
+    }
+    @Test func sportsanalyticsFalsePositiveSportsManagementStaysInSportsManagement() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sports management case study on athletic director leadership") == "sportsmanagement")
+    }
+    @Test func sportsanalyticsCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "sportsanalytics", tier: tier)
+                #expect(!msgs.isEmpty, "sportsanalytics tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func sportsanalyticsCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "sportsanalytics", tier: 1)
+            #expect(msgs.count >= 4, "sportsanalytics tier1 must have ≥4 messages")
+        }
+    }
+    @Test func sportsanalyticsCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "sportsanalytics", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "sportsanalytics tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func sportsanalyticsCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "sportsanalytics", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "sportsanalytics tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Emergency Management
+    // Positioned after publicheath and before psychology.
+    // Catches FEMA cert prep, disaster response, and incident command.
+
+    @Test func emergencymanagementKeywordFromEmergencyManagement() {
+        #expect(CalloutManager.extractTaskKeyword(from: "emergency management class assignment on hazard mitigation planning") == "emergencymanagement")
+    }
+    @Test func emergencymanagementKeywordFromFEMA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fema certification exam prep on incident command system") == "emergencymanagement")
+    }
+    @Test func emergencymanagementKeywordFromDisasterResponse() {
+        #expect(CalloutManager.extractTaskKeyword(from: "disaster response protocol writing for my emergency management program") == "emergencymanagement")
+    }
+    @Test func emergencymanagementFalsePositivePublicHealthStaysInPublicHealth() {
+        #expect(CalloutManager.extractTaskKeyword(from: "epidemiology class assignment on outbreak investigation methods") == "publicheath")
+    }
+    @Test func emergencymanagementCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "emergencymanagement", tier: tier)
+                #expect(!msgs.isEmpty, "emergencymanagement tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func emergencymanagementCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "emergencymanagement", tier: 1)
+            #expect(msgs.count >= 4, "emergencymanagement tier1 must have ≥4 messages")
+        }
+    }
+    @Test func emergencymanagementCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "emergencymanagement", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "emergencymanagement tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func emergencymanagementCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "emergencymanagement", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "emergencymanagement tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
 }

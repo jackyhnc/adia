@@ -147,6 +147,11 @@ extension CalloutManager {
         case "artrestoration":         return artrestorationCallouts(tier: tier)
         case "computationalscience":   return computationalscienceCallouts(tier: tier)
         case "forensicpsychology":     return forensicpsychologyCallouts(tier: tier)
+        case "geospatial":             return geospatialCallouts(tier: tier)
+        case "fashiondesign":          return fashiondesignCallouts(tier: tier)
+        case "hospitality":            return hospitalityCallouts(tier: tier)
+        case "sportsanalytics":        return sportsanalyticsCallouts(tier: tier)
+        case "emergencymanagement":    return emergencymanagementCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -2195,6 +2200,111 @@ extension CalloutManager {
             "CLOSE THIS. open your forensic psychology work.",
             "criminal profilers don't get there by browsing.",
             "CLOSE THIS. get back to your forensic psych assignment.",
+        ]
+        }
+    }
+
+    private func geospatialCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that spatial analysis isn't going to run itself.",
+            "get back to your GIS work.",
+            "your map isn't going to build itself.",
+            "close this and open your GIS software.",
+        ]
+        case 2: return [
+            "geospatial scientists don't get there by scrolling.",
+            "your spatial data isn't going to analyze itself.",
+            "stop avoiding your GIS assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your GIS project.",
+            "no one earns their GISP by browsing.",
+            "CLOSE THIS. get back to your spatial analysis.",
+        ]
+        }
+    }
+
+    private func fashiondesignCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that collection isn't going to design itself.",
+            "get back to your fashion work.",
+            "your garment won't drape itself.",
+            "close this and open your design sketches.",
+        ]
+        case 2: return [
+            "great designers design — close this and be one.",
+            "your portfolio isn't going to build itself.",
+            "stop procrastinating — your tech pack is waiting.",
+        ]
+        default: return [
+            "CLOSE THIS. open your fashion design work.",
+            "no one builds a fashion career by scrolling.",
+            "CLOSE THIS. get back to your pattern drafting.",
+        ]
+        }
+    }
+
+    private func hospitalityCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that hotel case study isn't going to write itself.",
+            "get back to your hospitality coursework.",
+            "your guests deserve better — so does your assignment.",
+            "close this and open your hospitality notes.",
+        ]
+        case 2: return [
+            "five-star hospitality starts with actually doing the work.",
+            "your event plan isn't going to write itself.",
+            "stop stalling — your tourism assignment is waiting.",
+        ]
+        default: return [
+            "CLOSE THIS. open your hospitality work.",
+            "no one runs a hotel by scrolling.",
+            "CLOSE THIS. get back to your hospitality assignment.",
+        ]
+        }
+    }
+
+    private func sportsanalyticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those player stats aren't going to analyze themselves.",
+            "get back to your sports analytics work.",
+            "your model won't train itself on sports data.",
+            "close this and open your analytics notebook.",
+        ]
+        case 2: return [
+            "sabermetrics won't come to you by browsing.",
+            "your sports data analysis isn't going to do itself.",
+            "stop avoiding your analytics assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your sports analytics project.",
+            "no one builds a sports data career by scrolling.",
+            "CLOSE THIS. get back to your player tracking analysis.",
+        ]
+        }
+    }
+
+    private func emergencymanagementCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that emergency plan isn't going to write itself.",
+            "get back to your emergency management work.",
+            "your disaster response protocol won't draft itself.",
+            "close this and open your FEMA coursework.",
+        ]
+        case 2: return [
+            "emergency managers don't get certified by scrolling.",
+            "your hazard mitigation plan isn't going to write itself.",
+            "stop avoiding your incident command assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your emergency management work.",
+            "no one passes FEMA certification by browsing.",
+            "CLOSE THIS. get back to your disaster response plan.",
         ]
         }
     }

@@ -2233,9 +2233,58 @@ struct SuggestedSessionTemplatesTests {
         #expect(hasEPPP,       "catalog must include an EPPP exam or forensic psychology template")
     }
 
+    // MARK: - Geospatial Science templates
+    @Test func geospatialTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasGIS  = tasks.contains { $0.localizedCaseInsensitiveContains("GIS") || $0.localizedCaseInsensitiveContains("spatial") }
+        let hasGISP = tasks.contains { $0.localizedCaseInsensitiveContains("GISP") || $0.localizedCaseInsensitiveContains("geospatial") }
+        #expect(hasGIS,  "catalog must include a GIS analysis template")
+        #expect(hasGISP, "catalog must include a GISP exam or geospatial science template")
+    }
+
+    // MARK: - Fashion Design templates
+    @Test func fashiondesignTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasSketch = tasks.contains { $0.localizedCaseInsensitiveContains("fashion collection") || $0.localizedCaseInsensitiveContains("garment") }
+        let hasExam   = tasks.contains { $0.localizedCaseInsensitiveContains("fashion design exam") || $0.localizedCaseInsensitiveContains("fashion merchandising") }
+        #expect(hasSketch, "catalog must include a fashion sketching or garment template")
+        #expect(hasExam,   "catalog must include a fashion design exam or merchandising template")
+    }
+
+    // MARK: - Hospitality templates
+    @Test func hospitalityTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCaseStudy = tasks.contains { $0.localizedCaseInsensitiveContains("hospitality") }
+        let hasExam      = tasks.contains { $0.localizedCaseInsensitiveContains("tourism") || $0.localizedCaseInsensitiveContains("hospitality") }
+        #expect(hasCaseStudy, "catalog must include a hospitality management case study template")
+        #expect(hasExam,      "catalog must include a hospitality or tourism exam template")
+    }
+
+    // MARK: - Sports Analytics templates
+    @Test func sportsanalyticsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasModel    = tasks.contains { $0.localizedCaseInsensitiveContains("sports analytics") || $0.localizedCaseInsensitiveContains("player performance") }
+        let hasProbSet  = tasks.contains { $0.localizedCaseInsensitiveContains("sports analytics assignment") || $0.localizedCaseInsensitiveContains("sabermetrics") }
+        #expect(hasModel,   "catalog must include a sports analytics model template")
+        #expect(hasProbSet, "catalog must include a sports analytics assignment or sabermetrics template")
+    }
+
+    // MARK: - Emergency Management templates
+    @Test func emergencymanagementTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPlan = tasks.contains { $0.localizedCaseInsensitiveContains("emergency management plan") || $0.localizedCaseInsensitiveContains("disaster response") }
+        let hasFEMA = tasks.contains { $0.localizedCaseInsensitiveContains("FEMA") || $0.localizedCaseInsensitiveContains("emergency management") }
+        #expect(hasPlan, "catalog must include an emergency management plan template")
+        #expect(hasFEMA, "catalog must include a FEMA certification or emergency management template")
+    }
+
     // MARK: - Count guard
     @Test func catalogHasAtLeastOneHundredSixtyOneTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 161,
                 "catalog should have ≥161 templates after accounting/sportsmanagement/artrestoration/computationalscience/forensicpsychology additions")
+    }
+    @Test func catalogHasAtLeastOneHundredSeventyOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 171,
+                "catalog should have ≥171 templates after geospatial/fashiondesign/hospitality/sportsanalytics/emergencymanagement additions")
     }
 }
