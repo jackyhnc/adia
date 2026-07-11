@@ -5937,4 +5937,178 @@ struct CalloutManagerTests {
             }
         }
     }
+
+    // MARK: - Real Estate
+
+    @Test func realestateKeywordFromRealEstate() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for my real estate licensing exam") == "realestate")
+    }
+    @Test func realestateKeywordFromRealtor() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my realtor certification") == "realestate")
+    }
+    @Test func realestateKeywordFromPropertyManagement() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write up my property management notes") == "realestate")
+    }
+    @Test func realestateKeywordFromComparativeMarketAnalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish the comparative market analysis for my client") == "realestate")
+    }
+    @Test func realestateKeywordFromClosingDocuments() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review closing documents for the transaction") == "realestate")
+    }
+    @Test func realestateKeywordFromEscrow() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep the escrow instructions for my client") == "realestate")
+    }
+    @Test func realestateDoesNotMatchGenericBusiness() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my MBA case analysis") != "realestate")
+    }
+    @Test func realestateHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "realestate", tier: 1)
+            #expect(!msgs.isEmpty, "realestate tier1 pool must be non-empty")
+        }
+    }
+    @Test func realestateDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "realestate", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "realestate", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "realestate", tier: 3)
+            #expect(tier1.count >= 4, "realestate tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "realestate tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "realestate tier3 must have ≥3 messages")
+        }
+    }
+    @Test func realestateTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "realestate", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.contains("license") }
+            #expect(hasUrgent, "realestate tier3 should contain an urgent directive")
+        }
+    }
+    @Test func realestateCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "realestate", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "realestate tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+
+    // MARK: - Education / Teaching
+
+    @Test func educationKeywordFromLessonPlan() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my lesson plan for tomorrow") == "education")
+    }
+    @Test func educationKeywordFromCurriculum() {
+        #expect(CalloutManager.extractTaskKeyword(from: "develop the curriculum for my unit") == "education")
+    }
+    @Test func educationKeywordFromPedagogy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "read about culturally responsive pedagogy") == "education")
+    }
+    @Test func educationKeywordFromTeachingCertificate() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my teaching certificate exam") == "education")
+    }
+    @Test func educationKeywordFromStudentTeaching() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for my student teaching placement") == "education")
+    }
+    @Test func educationKeywordFromPraxis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for the Praxis education exam") == "education")
+    }
+    @Test func educationKeywordFromClassroomManagement() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write up my classroom management plan") == "education")
+    }
+    @Test func educationKeywordDoesNotMatchTutor() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tutor my student in algebra") != "education")
+    }
+    @Test func educationHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "education", tier: 1)
+            #expect(!msgs.isEmpty, "education tier1 pool must be non-empty")
+        }
+    }
+    @Test func educationDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "education", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "education", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "education", tier: 3)
+            #expect(tier1.count >= 4, "education tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "education tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "education tier3 must have ≥3 messages")
+        }
+    }
+    @Test func educationTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "education", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.contains("Praxis") || $0.contains("students") }
+            #expect(hasUrgent, "education tier3 should contain an urgent directive")
+        }
+    }
+    @Test func educationCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "education", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "education tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+
+    // MARK: - Actuarial Science
+
+    @Test func actuarialKeywordFromActuarial() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my actuarial exam") == "actuarial")
+    }
+    @Test func actuarialKeywordFromExamP() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prep for exam P this week") == "actuarial")
+    }
+    @Test func actuarialKeywordFromExamFM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work through exam FM practice problems") == "actuarial")
+    }
+    @Test func actuarialKeywordFromSOAExam() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prepare for my SOA exam next month") == "actuarial")
+    }
+    @Test func actuarialKeywordFromLossModels() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study loss models for my actuarial exam") == "actuarial")
+    }
+    @Test func actuarialKeywordFromActuary() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my actuary study session") == "actuarial")
+    }
+    @Test func actuarialKeywordDoesNotMatchStatistics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "run a regression analysis in R") != "actuarial")
+    }
+    @Test func actuarialHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "actuarial", tier: 1)
+            #expect(!msgs.isEmpty, "actuarial tier1 pool must be non-empty")
+        }
+    }
+    @Test func actuarialDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "actuarial", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "actuarial", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "actuarial", tier: 3)
+            #expect(tier1.count >= 4, "actuarial tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "actuarial tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "actuarial tier3 must have ≥3 messages")
+        }
+    }
+    @Test func actuarialTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "actuarial", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.contains("FSA") || $0.contains("exam") }
+            #expect(hasUrgent, "actuarial tier3 should contain an urgent directive")
+        }
+    }
+    @Test func actuarialCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "actuarial", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "actuarial tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
 }

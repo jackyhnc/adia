@@ -114,6 +114,9 @@ extension CalloutManager {
         case "interiordesign":       return interiordesignCallouts(tier: tier)
         case "speechpathology":        return speechpathologyCallouts(tier: tier)
         case "physicianassistant":     return physicianassistantCallouts(tier: tier)
+        case "realestate":             return realestateCallouts(tier: tier)
+        case "education":              return educationCallouts(tier: tier)
+        case "actuarial":              return actuarialCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1469,6 +1472,69 @@ extension CalloutManager {
             "CLOSE THIS. open your PA school notes.",
             "no one passes the PANCE by scrolling.",
             "your patients deserve a PA who studied — close this.",
+        ]
+        }
+    }
+
+    private func realestateCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that listing isn't going to write itself.",
+            "get back to your real estate prep.",
+            "those property notes aren't going to review themselves.",
+            "close this and prep your CMA.",
+        ]
+        case 2: return [
+            "your real estate exam isn't going to pass itself.",
+            "stop browsing — get back to your real estate work.",
+            "those closing docs aren't going to review themselves.",
+        ]
+        default: return [
+            "CLOSE THIS. open your real estate study materials.",
+            "no one gets their license by scrolling.",
+            "your clients deserve an agent who actually studied — close this.",
+        ]
+        }
+    }
+
+    private func educationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those lesson plans aren't going to write themselves.",
+            "get back to your curriculum work.",
+            "your students deserve a prepared teacher — close this.",
+            "close this and get back to your lesson planning.",
+        ]
+        case 2: return [
+            "your teaching cert exam isn't going to pass itself.",
+            "stop — your lesson plans need your attention, not this.",
+            "close this and get back to your education coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your lesson plans.",
+            "no one passes Praxis by scrolling.",
+            "your future students are counting on you to study — close this.",
+        ]
+        }
+    }
+
+    private func actuarialCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those actuarial problems aren't going to solve themselves.",
+            "your exam P isn't going to pass itself.",
+            "get back to your actuarial work.",
+            "close this and open your actuarial study materials.",
+        ]
+        case 2: return [
+            "stop — your FSA isn't going to earn itself.",
+            "your loss models need your attention, not this.",
+            "close this and get back to actuarial exam prep.",
+        ]
+        default: return [
+            "CLOSE THIS. open your actuarial exam prep.",
+            "no one earns their FSA by scrolling.",
+            "your actuarial exam is real — close this.",
         ]
         }
     }

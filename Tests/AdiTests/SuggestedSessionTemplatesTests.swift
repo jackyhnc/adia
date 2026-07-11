@@ -1486,4 +1486,92 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 95,
                 "catalog should have ≥95 templates after physician assistant additions")
     }
+
+    // MARK: - Real Estate
+
+    @Test func realestateTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("real estate") || t.task.lowercased().contains("comparative market")
+        }
+        #expect(!templates.isEmpty, "at least one real estate template must exist")
+    }
+    @Test func realestateTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("real estate") || t.task.lowercased().contains("comparative market")
+        }
+        #expect(templates.count >= 2, "should have ≥2 real estate templates (licensing exam + CMA)")
+    }
+    @Test func realestateTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("real estate") || t.task.lowercased().contains("comparative market")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "real estate template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Education / Teaching
+
+    @Test func educationTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("lesson plan") || t.task.lowercased().contains("praxis")
+                || t.task.lowercased().contains("teaching certification")
+        }
+        #expect(!templates.isEmpty, "at least one education template must exist")
+    }
+    @Test func educationTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("lesson plan") || t.task.lowercased().contains("praxis")
+        }
+        #expect(templates.count >= 2, "should have ≥2 education templates (lesson plans + Praxis)")
+    }
+    @Test func educationTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("lesson plan") || t.task.lowercased().contains("praxis")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "education template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Actuarial Science
+
+    @Test func actuarialTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("actuarial") || t.task.lowercased().contains("exam p")
+                || t.task.lowercased().contains("loss model")
+        }
+        #expect(!templates.isEmpty, "at least one actuarial template must exist")
+    }
+    @Test func actuarialTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("actuarial")
+        }
+        #expect(templates.count >= 2, "should have ≥2 actuarial templates (exam prep + practice problems)")
+    }
+    @Test func actuarialTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("actuarial")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "actuarial template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastOneHundredOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 101,
+                "catalog should have ≥101 templates after real estate/education/actuarial additions")
+    }
 }

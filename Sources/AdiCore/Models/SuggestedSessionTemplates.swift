@@ -600,6 +600,45 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target domain reviewed (articulation, language disorders, or fluency), key concepts summarized in notes, and at least 10 practice questions completed with corrections",
             preferredDuration: 60 * 60
         ),
+        // Real Estate
+        SuggestedTemplate(
+            icon: "house.circle.fill",
+            task: "Prep for my real estate licensing exam",
+            successCriteria: "Target exam section reviewed, key concepts (contracts, agency, fair housing) summarized in notes, and at least 20 practice questions completed with corrections noted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a comparative market analysis or listing presentation",
+            successCriteria: "CMA or listing presentation completed with comparable properties researched, pricing narrative written, and document saved and ready for client review",
+            preferredDuration: 45 * 60
+        ),
+        // Education / Teaching
+        SuggestedTemplate(
+            icon: "graduationcap.fill",
+            task: "Write my lesson plans for the week",
+            successCriteria: "All required lesson plans drafted with learning objectives, activities, and assessment strategies, and plans saved in the lesson planning tool or document",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "pencil.and.ruler.fill",
+            task: "Study for my teaching certification exam (Praxis)",
+            successCriteria: "Target content area reviewed, key concepts summarized in notes, and at least 15 Praxis-style practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Actuarial Science
+        SuggestedTemplate(
+            icon: "function",
+            task: "Study for my actuarial exam (Exam P, FM, or IFM)",
+            successCriteria: "Target problem type or formula set reviewed, at least 10 practice problems completed and checked against solutions manual, and weak areas noted for next session",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.bar.xaxis",
+            task: "Work through actuarial practice problems or loss models",
+            successCriteria: "Problem set completed with all solutions worked out, incorrect problems reviewed and corrected, and key formulas or methods annotated in study notes",
+            preferredDuration: 60 * 60
+        ),
         // Physician Assistant
         SuggestedTemplate(
             icon: "stethoscope",

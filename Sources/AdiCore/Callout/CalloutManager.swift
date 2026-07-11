@@ -166,6 +166,26 @@ public final class CalloutManager {
         if word("report") || word("reports") || word("document") || word("documents") || word("doc") || word("docs") {
             return "report"
         }
+        // actuarial — positioned before statistics so exam prep (Exam P, FM, IFM, LTAM, STAM,
+        // MAS-I/II) and credential pursuit (ASA, FSA, FCAS, ACAS via SOA/CAS) route here.
+        if word("actuarial") || word("actuary") || word("actuaries")
+            || lower.contains("soa exam") || lower.contains("cas exam")
+            || lower.contains("exam p") || lower.contains("exam fm")
+            || lower.contains("exam ifm") || lower.contains("exam ltam")
+            || lower.contains("exam stam")
+            || lower.contains("exam mas-i") || lower.contains("exam mas-ii")
+            || lower.contains("actuarial science") || lower.contains("actuarial math")
+            || lower.contains("actuarial models") || lower.contains("actuarial exam")
+            || lower.contains("actuarial study") || lower.contains("actuarial prep")
+            || lower.contains("fsa exam") || lower.contains("asa exam")
+            || lower.contains("soa asa") || lower.contains("soa fsa")
+            || lower.contains("fcas exam") || lower.contains("acas exam")
+            || lower.contains("loss models") || lower.contains("loss reserving")
+            || lower.contains("credibility theory") || lower.contains("mortality table")
+            || lower.contains("life table") || lower.contains("actuarial reserve")
+            || lower.contains("actuarial risk") || lower.contains("actuarial pricing") {
+            return "actuarial"
+        }
         // statistics — positioned before studying so professional stats tools/methods (R, SPSS,
         // STATA, regression analysis, ANOVA) route here. Bare word("statistics") and word("stats")
         // stay in studying so "study statistics for my exam" still routes to studying.
@@ -257,6 +277,26 @@ public final class CalloutManager {
             || lower.contains("accessibility audit")
             || word("wireframing") || lower.contains("user story") || lower.contains("user stories") {
             return "ux"
+        }
+        // realestate — positioned before business so "real estate investment", property management,
+        // and licensing/appraisal prep route here rather than the generic business pool.
+        if lower.contains("real estate") || word("realtor") || word("realtors")
+            || lower.contains("real estate agent") || lower.contains("real estate broker")
+            || lower.contains("real estate license") || lower.contains("real estate exam")
+            || lower.contains("real estate school") || lower.contains("real estate class")
+            || lower.contains("real estate appraisal") || lower.contains("property appraisal")
+            || lower.contains("property management") || lower.contains("property manager")
+            || lower.contains("mls listing") || lower.contains("comparative market analysis")
+            || lower.contains("cma report") || lower.contains("cma presentation")
+            || lower.contains("property valuation")
+            || lower.contains("home inspection") || lower.contains("title search")
+            || lower.contains("title insurance") || lower.contains("closing documents")
+            || lower.contains("closing costs") || lower.contains("listing agreement")
+            || lower.contains("purchase agreement") || lower.contains("purchase contract")
+            || word("escrow") || word("zoning")
+            || lower.contains("fair housing") || lower.contains("real estate investing")
+            || word("reit") || lower.contains("open house prep") {
+            return "realestate"
         }
         // business/management — positioned before research so "marketing research" and "market analysis"
         // route here rather than the generic research pool. Startup branch above already catches
@@ -435,6 +475,30 @@ public final class CalloutManager {
             || word("finances") || word("financial") || word("accounting") || word("bookkeeping")
             || word("taxes") || lower.contains("tax return") || word("invoice") || word("invoices") {
             return "budget"
+        }
+        // education — positioned before tutor so lesson planning, curriculum development, and
+        // teaching certification tasks route here rather than the generic tutoring/coaching pool.
+        if lower.contains("lesson plan") || word("curriculum")
+            || word("pedagogy") || word("pedagogical") || word("pedagogist")
+            || lower.contains("teaching certificate") || lower.contains("teaching credential")
+            || lower.contains("teacher certification") || lower.contains("teacher credential")
+            || lower.contains("classroom management")
+            || lower.contains("instructional design") || lower.contains("instructional materials")
+            || lower.contains("learning objectives") || lower.contains("learning outcomes")
+            || lower.contains("student teaching")
+            || lower.contains("assessment rubric") || lower.contains("grading rubric")
+            || lower.contains("differentiated instruction")
+            || lower.contains("educational psychology")
+            || lower.contains("school of education") || lower.contains("college of education")
+            || lower.contains("education class") || lower.contains("education course")
+            || lower.contains("education program") || lower.contains("education degree")
+            || word("edtpa") || lower.contains("ed tpa")
+            || lower.contains("praxis core") || lower.contains("praxis ii") || lower.contains("praxis 2")
+            || (lower.contains("praxis") && (lower.contains("teach") || lower.contains("education")))
+            || lower.contains("teacher licensure") || lower.contains("teaching licensure")
+            || lower.contains("individualized education plan")
+            || lower.contains("individualized education program") {
+            return "education"
         }
         if word("tutor") || word("tutoring") || word("tutors")
             || word("teach") || word("teaching")
