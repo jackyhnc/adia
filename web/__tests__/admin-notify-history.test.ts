@@ -267,3 +267,54 @@ describe('GET /api/admin/notify-history — pagination', () => {
     expect(body.entries).toHaveLength(1);
   });
 });
+
+// ─── Rate limit ───────────────────────────────────────────────────────────────
+
+describe('GET /api/admin/notify-history — rate limit', () => {
+  it('returns 429 after 20 requests from the same IP', async () => {
+    const { GET } = await import('@/app/api/admin/notify-history/route');
+    const ip = '10.96.1.1';
+    let lastStatus = 0;
+    for (let i = 0; i < 21; i++) {
+      const req = new NextRequest('http://localhost/api/admin/notify-history?email=x@example.com', {
+        method: 'GET',
+        headers: { Authorization: 'Bearer test-admin-token', 'x-forwarded-for': ip },
+      });
+      const res = await GET(req);
+      lastStatus = res.status;
+    }
+    expect(lastStatus).toBe(429);
+  });
+
+  it('429 response includes Retry-After header', async () => {
+    const { GET } = await import('@/app/api/admin/notify-history/route');
+    const ip = '10.96.1.2';
+    let lastRes: Response | null = null;
+    for (let i = 0; i < 21; i++) {
+      const req = new NextRequest('http://localhost/api/admin/notify-history?email=x@example.com', {
+        method: 'GET',
+        headers: { Authorization: 'Bearer test-admin-token', 'x-forwarded-for': ip },
+      });
+      lastRes = await GET(req);
+    }
+    expect(lastRes?.headers.get('Retry-After')).toBeTruthy();
+  });
+
+  it('rate limit fires before auth check — wrong token still gets 429 when bucket exhausted', async () => {
+    const { GET } = await import('@/app/api/admin/notify-history/route');
+    const ip = '10.96.1.3';
+    for (let i = 0; i < 20; i++) {
+      const req = new NextRequest('http://localhost/api/admin/notify-history?email=x@example.com', {
+        method: 'GET',
+        headers: { Authorization: 'Bearer test-admin-token', 'x-forwarded-for': ip },
+      });
+      await GET(req);
+    }
+    const req = new NextRequest('http://localhost/api/admin/notify-history?email=x@example.com', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer wrong-token', 'x-forwarded-for': ip },
+    });
+    const res = await GET(req);
+    expect(res.status).toBe(429);
+  });
+});

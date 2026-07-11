@@ -548,10 +548,10 @@ describe('GET /api/admin/dormant-churn — rate limit', () => {
     expect(res.status).toBe(429);
   });
 
-  it('rate limit fires before format parsing — ?format=csv still gets 429 when bucket exhausted', async () => {
+  it('rate limit fires before format-parse — ?format=csv gets 429 when bucket exhausted', async () => {
     const { GET } = await import('@/app/api/admin/dormant-churn/route');
     const ip = '10.92.1.4';
-    // Exhaust the bucket
+    // Exhaust the bucket with JSON requests
     for (let i = 0; i < 20; i++) {
       const req = new NextRequest('http://localhost/api/admin/dormant-churn', {
         method: 'GET',
@@ -559,12 +559,14 @@ describe('GET /api/admin/dormant-churn — rate limit', () => {
       });
       await GET(req);
     }
-    // ?format=csv on 21st request — should get 429 not 400 (format validation comes after rate limit)
-    const req = new NextRequest('http://localhost/api/admin/dormant-churn?format=csv', {
+    // CSV request on 21st — should get 429, not a CSV response
+    const csvReq = new NextRequest('http://localhost/api/admin/dormant-churn?format=csv', {
       method: 'GET',
       headers: { Authorization: 'Bearer test-admin-token', 'x-forwarded-for': ip },
     });
-    const res = await GET(req);
+    const res = await GET(csvReq);
     expect(res.status).toBe(429);
+    // Must not be a CSV response
+    expect(res.headers.get('content-type')).not.toMatch(/text\/csv/);
   });
 });

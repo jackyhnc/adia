@@ -262,3 +262,58 @@ describe('POST /api/admin/bulk-deactivate-all — audit log', () => {
     expect(listAuditLog({ licenseKey: 'ADIA-BDAC-AUDT-NOT-FOUND' })).toHaveLength(0);
   });
 });
+
+// ─── Rate limit ───────────────────────────────────────────────────────────────
+
+describe('POST /api/admin/bulk-deactivate-all — rate limit', () => {
+  it('returns 429 after 20 requests from the same IP', async () => {
+    const { POST } = await import('@/app/api/admin/bulk-deactivate-all/route');
+    const ip = '10.98.3.1';
+    let lastStatus = 0;
+    for (let i = 0; i < 21; i++) {
+      const req = new NextRequest('http://localhost/api/admin/bulk-deactivate-all', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer test-admin-token', 'x-forwarded-for': ip },
+        body: JSON.stringify({}),
+      });
+      const res = await POST(req);
+      lastStatus = res.status;
+    }
+    expect(lastStatus).toBe(429);
+  });
+
+  it('429 response includes Retry-After header', async () => {
+    const { POST } = await import('@/app/api/admin/bulk-deactivate-all/route');
+    const ip = '10.98.3.2';
+    let lastRes: Response | null = null;
+    for (let i = 0; i < 21; i++) {
+      const req = new NextRequest('http://localhost/api/admin/bulk-deactivate-all', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer test-admin-token', 'x-forwarded-for': ip },
+        body: JSON.stringify({}),
+      });
+      lastRes = await POST(req);
+    }
+    expect(lastRes?.headers.get('Retry-After')).toBeTruthy();
+  });
+
+  it('rate limit fires before auth check — wrong token still gets 429 when bucket exhausted', async () => {
+    const { POST } = await import('@/app/api/admin/bulk-deactivate-all/route');
+    const ip = '10.98.3.3';
+    for (let i = 0; i < 20; i++) {
+      const req = new NextRequest('http://localhost/api/admin/bulk-deactivate-all', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer test-admin-token', 'x-forwarded-for': ip },
+        body: JSON.stringify({}),
+      });
+      await POST(req);
+    }
+    const req = new NextRequest('http://localhost/api/admin/bulk-deactivate-all', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer wrong-token', 'x-forwarded-for': ip },
+      body: JSON.stringify({}),
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(429);
+  });
+});

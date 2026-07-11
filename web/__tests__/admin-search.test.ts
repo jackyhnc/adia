@@ -609,3 +609,54 @@ describe('GET /api/admin/lookup includes recentAudit', () => {
     expect(body.recentAudit[0].action).toBe('action_7');
   });
 });
+
+// ─── Rate limit (search-licenses) ────────────────────────────────────────────
+
+describe('GET /api/admin/search-licenses — rate limit', () => {
+  it('returns 429 after 20 requests from the same IP', async () => {
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const ip = '10.97.1.1';
+    let lastStatus = 0;
+    for (let i = 0; i < 21; i++) {
+      const req = new NextRequest('http://localhost/api/admin/search-licenses?q=test', {
+        method: 'GET',
+        headers: { Authorization: 'Bearer test-admin-token', 'x-forwarded-for': ip },
+      });
+      const res = await GET(req);
+      lastStatus = res.status;
+    }
+    expect(lastStatus).toBe(429);
+  });
+
+  it('429 response includes Retry-After header', async () => {
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const ip = '10.97.1.2';
+    let lastRes: Response | null = null;
+    for (let i = 0; i < 21; i++) {
+      const req = new NextRequest('http://localhost/api/admin/search-licenses?q=test', {
+        method: 'GET',
+        headers: { Authorization: 'Bearer test-admin-token', 'x-forwarded-for': ip },
+      });
+      lastRes = await GET(req);
+    }
+    expect(lastRes?.headers.get('Retry-After')).toBeTruthy();
+  });
+
+  it('rate limit fires before auth check — wrong token still gets 429 when bucket exhausted', async () => {
+    const { GET } = await import('@/app/api/admin/search-licenses/route');
+    const ip = '10.97.1.3';
+    for (let i = 0; i < 20; i++) {
+      const req = new NextRequest('http://localhost/api/admin/search-licenses?q=test', {
+        method: 'GET',
+        headers: { Authorization: 'Bearer test-admin-token', 'x-forwarded-for': ip },
+      });
+      await GET(req);
+    }
+    const req = new NextRequest('http://localhost/api/admin/search-licenses?q=test', {
+      method: 'GET',
+      headers: { Authorization: 'Bearer wrong-token', 'x-forwarded-for': ip },
+    });
+    const res = await GET(req);
+    expect(res.status).toBe(429);
+  });
+});

@@ -13,7 +13,7 @@ struct HistoryWeeklySection: View {
                             Image(systemName: "bolt.fill")
                                 .font(.system(size: 11, weight: .bold))
                                 .foregroundStyle(.secondary)
-                            Text(Self.weekSummaryText(s))
+                            Text(weekSummaryText(s))
                                 .font(.system(size: 12, weight: .medium))
                                 .foregroundStyle(.secondary)
                             if s.streak > 0 {
@@ -52,8 +52,7 @@ struct HistoryWeeklySection: View {
         .background(.background)
     }
 
-    /// Pure helper for unit tests: formats the week-summary line shown below the heatmap.
-    static internal func weekSummaryText(_ s: SessionStats) -> String {
+    private func weekSummaryText(_ s: SessionStats) -> String {
         let sessions = "\(s.weekCount) session\(s.weekCount == 1 ? "" : "s") this week"
         guard s.weekMinutes > 0 else { return sessions }
         let h = s.weekMinutes / 60
@@ -124,14 +123,14 @@ struct HistoryInsightsSection: View {
         .background(.background)
     }
 
-    /// Pure helper for unit tests: returns `(label, value)` for the streak-break insight chip,
-    /// or nil when there are no streak breaks to show.
-    static internal func streakBreakChipLabel(totalBreaks: Int, mostBroken: Int?) -> (label: String, value: String)? {
+    /// Pure helper — returns chip label/value pair for streak-break display, or nil when nothing to show.
+    /// Exposed `internal` so unit tests can call it directly without constructing a View.
+    internal static func streakBreakChipLabel(totalBreaks: Int, mostBroken: Int?) -> (label: String, value: String)? {
         guard totalBreaks > 0 else { return nil }
         if let fragile = mostBroken {
-            return (label: "Fragile streak", value: "\(fragile)d")
+            return ("Fragile streak", "\(fragile)d")
         }
-        return (label: "Streak breaks", value: "\(totalBreaks)")
+        return ("Streak breaks", "\(totalBreaks)")
     }
 
     @ViewBuilder
