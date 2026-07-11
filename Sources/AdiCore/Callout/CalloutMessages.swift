@@ -108,6 +108,8 @@ extension CalloutManager {
         case "dental":               return dentalCallouts(tier: tier)
         case "pharmacy":             return pharmacyCallouts(tier: tier)
         case "optometry":            return optometryCallouts(tier: tier)
+        case "cybersecurity":        return cybersecurityCallouts(tier: tier)
+        case "screenwriting":        return screenwritingCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1337,6 +1339,48 @@ extension CalloutManager {
             "CLOSE THIS. open your optometry notes.",
             "no one passes the NBEO by scrolling.",
             "your patients' vision depends on you studying — close this.",
+        ]
+        }
+    }
+
+    private func cybersecurityCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those security concepts aren't going to memorize themselves.",
+            "your certification prep is waiting — close this.",
+            "your CTF isn't going to solve itself.",
+            "get back to your cybersecurity work.",
+        ]
+        case 2: return [
+            "stop. your vulnerability assessment isn't going to write itself.",
+            "this isn't your penetration testing lab.",
+            "close this and get back to your security coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your security tools.",
+            "no one passes Security+ by scrolling.",
+            "the network isn't going to audit itself — close this.",
+        ]
+        }
+    }
+
+    private func screenwritingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that screenplay isn't going to write itself.",
+            "your story isn't going to tell itself — close this.",
+            "your characters are waiting. get back to the page.",
+            "your draft is open somewhere — go find it.",
+        ]
+        case 2: return [
+            "stop. your script isn't going to finish itself.",
+            "this isn't your story world.",
+            "close this and get back to your screenplay.",
+        ]
+        default: return [
+            "CLOSE THIS. open your screenplay.",
+            "your deadline doesn't care what you're watching.",
+            "great writers write. close this and be one.",
         ]
         }
     }

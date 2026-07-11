@@ -1293,4 +1293,70 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 83,
                 "catalog should have ≥83 templates after dental/pharmacy/optometry additions")
     }
+
+    // MARK: - Cybersecurity templates
+
+    @Test func cybersecurityTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("ctf") || t.task.lowercased().contains("security")
+        }
+        #expect(!templates.isEmpty, "at least one cybersecurity template must exist")
+    }
+
+    @Test func cybersecurityTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("ctf") || t.task.lowercased().contains("security")
+                || t.task.lowercased().contains("penetration")
+        }
+        #expect(templates.count >= 2, "should have ≥2 cybersecurity templates (CTF + cert prep)")
+    }
+
+    @Test func cybersecurityTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("ctf") || t.task.lowercased().contains("security+")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "cybersecurity template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    // MARK: - Screenwriting / Creative Writing templates
+
+    @Test func screenwritingTemplatesExist() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("screenplay") || t.task.lowercased().contains("novel")
+                || t.task.lowercased().contains("story structure")
+        }
+        #expect(!templates.isEmpty, "at least one screenwriting template must exist")
+    }
+
+    @Test func screenwritingTemplatesHaveVariety() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("screenplay") || t.task.lowercased().contains("scene")
+                || t.task.lowercased().contains("story") || t.task.lowercased().contains("chapter")
+        }
+        #expect(templates.count >= 2, "should have ≥2 screenwriting templates (scene writing + outline)")
+    }
+
+    @Test func screenwritingTemplatesHaveReasonableDuration() {
+        let templates = SuggestedSessionTemplates.all.filter { t in
+            t.task.lowercased().contains("screenplay") || t.task.lowercased().contains("story structure")
+        }
+        #expect(!templates.isEmpty)
+        for t in templates {
+            if let dur = t.preferredDuration {
+                #expect(dur >= 5 * 60 && dur <= 3 * 60 * 60,
+                        "screenwriting template duration must be between 5 min and 3 hours")
+            }
+        }
+    }
+
+    @Test func catalogHasAtLeastEightySevenTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 87,
+                "catalog should have ≥87 templates after cybersecurity/screenwriting additions")
+    }
 }

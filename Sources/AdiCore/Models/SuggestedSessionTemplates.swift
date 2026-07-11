@@ -535,5 +535,31 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Patient encounter documented with visual acuity, refraction findings, ocular health assessment, and plan recorded in SOAP format and chart updated",
             preferredDuration: 30 * 60
         ),
+        // Cybersecurity
+        SuggestedTemplate(
+            icon: "lock.shield.fill",
+            task: "Complete a CTF challenge or penetration testing lab",
+            successCriteria: "At least one challenge or lab fully solved with the flag captured or vulnerability confirmed exploited, and findings documented in notes",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "checkmark.seal.fill",
+            task: "Study for the CompTIA Security+ or cybersecurity certification exam",
+            successCriteria: "Target domain reviewed (network security, threats, or cryptography), key concepts summarized in notes, and at least 10 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Screenwriting / Creative Writing
+        SuggestedTemplate(
+            icon: "film.fill",
+            task: "Write a scene or chapter for my screenplay or novel",
+            successCriteria: "At least one full scene or chapter draft written with dialogue and action beats (screenplay) or narrative and dialogue (novel), saved to the working document",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "text.bubble.fill",
+            task: "Outline or develop my story structure",
+            successCriteria: "Story structure or outline updated with act breaks, key plot points, or character arcs mapped out, and outline document saved with at least 5 beats clearly defined",
+            preferredDuration: 30 * 60
+        ),
     ]
 }

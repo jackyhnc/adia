@@ -13152,3 +13152,34 @@ None. Swift toolchain unavailable on Linux container.
 - Consider wiring `totalStreakBreaks` / `mostBrokenStreakLength` into a `@Published` property or `ObservableObject` wrapper so `HistoryTab` refreshes reactively when break counts change while the tab is open (current read-at-render is safe since breaks only fire at session end, but a reactive path would be more correct).
 - Consider adding `morningNudgeBody_allVariantsAreLowercase` test to `SessionNotifierMorningNudgeTests` for parity with the new title test (messages pool — check that all 7 body messages also pass the lowercase constraint).
 - Consider whether `scheduleMorningNudgeIfNeeded` should also log the `todayStr` gate value for easier debugging of "why wasn't the nudge scheduled today?" issues in production.
+
+## Run 318 — 2026-07-11 — Cybersecurity + screenwriting keyword domains (757→788 tests, 83→87 templates)
+
+### Shipped
+
+**New keyword domain — cybersecurity:**
+
+- Branch positioned BEFORE gamedev and code so pen-test/hacking tools (Metasploit, Kali, Wireshark) and cert-prep terms (Security+, CEH, OSCP) don't fall through to generic code callouts
+- Matches: penetration testing/pen test, ethical hacking, bug bounty, capture the flag/CTF, vulnerability assessment/scan, network security, cybersecurity, information security/infosec, Security+/CompTIA Security, CEH/OSCP, incident response, malware analysis, threat modeling, security audit, Wireshark/Metasploit/Kali Linux, SOC analyst/SIEM, digital forensics, exploit development, Nmap/Burp Suite, SQL injection/XSS attack, security certification/exam/class, network forensics, cryptography lab
+- False-positive guard: bare "security" alone never fires; "social security paper" routes to "paper" first
+- `cybersecurityCallouts(tier:)` 4/3/3 pool: cert voice — "those security concepts aren't going to memorize themselves." / "no one passes Security+ by scrolling." / "CLOSE THIS. open your security tools."
+- 2 new templates: "Complete a CTF challenge or penetration testing lab" (90 min) + "Study for the CompTIA Security+ or cybersecurity certification exam" (60 min)
+
+**New keyword domain — screenwriting / creative writing:**
+
+- Branch positioned BEFORE writing so screenplay/fiction/novel route here instead of generic writing pool
+- Matches: screenplay/screenwriter/screenwriting, script writing/film script/tv script/spec script/feature film/short film script, fiction/novel/novella, short story/short stories, creative fiction/nonfiction, narrative writing/nonfiction, story outline/structure/world, plot outline, worldbuilding, character development/arc/sheet/profile, scene writing/write a scene/write a chapter/chapter draft
+- False-positive guards: bare "script" NOT matched (avoids "shell script"); bare "outline" NOT matched (stays in writing for doc outlines)
+- `screenwritingCallouts(tier:)` 4/3/3 pool: author voice — "that screenplay isn't going to write itself." / "CLOSE THIS. open your screenplay." / "great writers write. close this and be one."
+- 2 new templates: "Write a scene or chapter for my screenplay or novel" (45 min) + "Outline or develop my story structure" (30 min)
+
+**Test count: 757 → 788 Swift tests**
+- 16 new CalloutManagerTests: cybersecurity keyword routing (pen test, CTF, Security+, OSCP, bug bounty, vulnerability assessment, network security, incident response), false-positive guards (generic code, social security), pool size/content checks
+- 15 new CalloutManagerTests: screenwriting keyword routing (screenplay, novel, short story, fiction, script writing, character development, worldbuilding, story outline, write a scene), false-positive guards (shell script, code outline), pool size/content checks
+- 7 new SuggestedSessionTemplatesTests: cybersecurity exist/variety/duration, screenwriting exist/variety/duration, ≥87 count guard
+
+**Template catalog: 83 → 87**
+
+### Next agent should
+- Continue adding keyword domains not yet covered (e.g., graphic design/branding, interior design, real estate, theology, speech pathology)
+- Or add quality improvements: more false-positive guards, additional tier messages, cross-domain disambiguation tests

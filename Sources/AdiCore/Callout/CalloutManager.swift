@@ -109,6 +109,35 @@ public final class CalloutManager {
         if word("presentation") || word("presentations") || word("slides") || word("deck") || word("powerpoint") || word("keynote") {
             return "presentation"
         }
+        // cybersecurity — positioned before code so pen-test/hacking tools (Metasploit, Kali,
+        // Wireshark) and cert prep terms (Security+, CEH, OSCP) don't fall through to generic code.
+        // "security" alone is NOT matched to avoid false positives like "social security paper".
+        if lower.contains("penetration testing") || lower.contains("pen test") || lower.contains("pen-test")
+            || lower.contains("penetration test")
+            || lower.contains("ethical hacking") || lower.contains("ethical hacker")
+            || lower.contains("bug bounty") || lower.contains("bug bounties")
+            || lower.contains("capture the flag") || word("ctf")
+            || lower.contains("vulnerability assessment") || lower.contains("vulnerability scan")
+            || lower.contains("network security") || lower.contains("cybersecurity")
+            || lower.contains("cyber security") || lower.contains("information security")
+            || lower.contains("infosec")
+            || lower.contains("security+") || lower.contains("comptia security")
+            || word("ceh") || word("oscp") || lower.contains("certified ethical")
+            || lower.contains("incident response") || lower.contains("malware analysis")
+            || lower.contains("threat modeling") || lower.contains("threat model")
+            || lower.contains("security audit") || lower.contains("security assessment")
+            || word("wireshark") || word("metasploit") || lower.contains("kali linux")
+            || lower.contains("soc analyst") || lower.contains("siem")
+            || lower.contains("digital forensics") || lower.contains("forensic analysis")
+            || lower.contains("reverse engineering") && (lower.contains("malware") || lower.contains("binary") || lower.contains("firmware"))
+            || lower.contains("exploit development") || lower.contains("zero day")
+            || lower.contains("nmap scan") || lower.contains("burp suite")
+            || lower.contains("sql injection") || lower.contains("xss attack")
+            || lower.contains("security certification") || lower.contains("security exam")
+            || lower.contains("cybersecurity class") || lower.contains("cybersecurity course")
+            || lower.contains("network forensics") || lower.contains("cryptography lab") {
+            return "cybersecurity"
+        }
         // gamedev — positioned before code so Unity/Godot/engine terms don't fall through to code.
         // "game plan" is not matched because no specific tool name or game-dev phrase fires.
         if word("unity") || word("godot") || lower.contains("unreal engine")
@@ -315,6 +344,26 @@ public final class CalloutManager {
             || word("fellowship") || word("fellowships")
             || word("scholarship") || word("scholarships") {
             return "application"
+        }
+        // screenwriting — positioned before writing so "screenplay", "fiction", and "novel"
+        // route here instead of generic writing. "script" alone is not matched to avoid false
+        // positives like "shell script". "outline" alone stays in writing for general doc outlines.
+        if word("screenplay") || word("screenwriter") || word("screenwriting")
+            || lower.contains("script writing") || lower.contains("film script")
+            || lower.contains("tv script") || lower.contains("spec script")
+            || lower.contains("feature film") || lower.contains("short film script")
+            || word("fiction") || lower.contains("fiction writing") || lower.contains("write fiction")
+            || word("novel") || word("novels") || word("novella") || word("novellas")
+            || lower.contains("short story") || lower.contains("short stories")
+            || lower.contains("creative fiction") || lower.contains("creative nonfiction")
+            || lower.contains("narrative writing") || lower.contains("narrative nonfiction")
+            || lower.contains("story outline") || lower.contains("story structure")
+            || lower.contains("plot outline") || lower.contains("story world")
+            || word("worldbuilding") || lower.contains("world building")
+            || (lower.contains("character") && (lower.contains("development") || lower.contains("arc") || lower.contains("sheet") || lower.contains("profile")))
+            || lower.contains("scene writing") || lower.contains("write a scene")
+            || lower.contains("write a chapter") || lower.contains("chapter draft") {
+            return "screenwriting"
         }
         if word("blog") || word("blogs") || word("newsletter") || word("newsletters")
             || word("draft") || word("drafts") || word("outline") || word("outlines")

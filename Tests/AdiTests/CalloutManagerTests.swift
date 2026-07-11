@@ -5549,4 +5549,173 @@ struct CalloutManagerTests {
             }
         }
     }
+
+    // MARK: - Cybersecurity keyword
+
+    @Test func cybersecurityKeywordFromPenTest() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice penetration testing with Metasploit") == "cybersecurity")
+    }
+
+    @Test func cybersecurityKeywordFromCTF() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on the CTF challenge") == "cybersecurity")
+    }
+
+    @Test func cybersecurityKeywordFromCapturTheFlag() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solve a capture the flag puzzle") == "cybersecurity")
+    }
+
+    @Test func cybersecurityKeywordFromSecurityPlus() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for CompTIA Security+ exam") == "cybersecurity")
+    }
+
+    @Test func cybersecurityKeywordFromOSCP() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prepare for OSCP certification") == "cybersecurity")
+    }
+
+    @Test func cybersecurityKeywordFromBugBounty() {
+        #expect(CalloutManager.extractTaskKeyword(from: "submit my bug bounty report") == "cybersecurity")
+    }
+
+    @Test func cybersecurityKeywordFromVulnerabilityAssessment() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write up my vulnerability assessment findings") == "cybersecurity")
+    }
+
+    @Test func cybersecurityKeywordFromNetworkSecurity() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study network security protocols") == "cybersecurity")
+    }
+
+    @Test func cybersecurityKeywordFromIncidentResponse() {
+        #expect(CalloutManager.extractTaskKeyword(from: "document an incident response playbook") == "cybersecurity")
+    }
+
+    @Test func cybersecurityKeywordDoesNotMatchGenericCode() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a Python script for my project") != "cybersecurity")
+    }
+
+    @Test func cybersecurityKeywordDoesNotMatchGenericSecurity() {
+        // "social security" should NOT trigger cybersecurity
+        #expect(CalloutManager.extractTaskKeyword(from: "write a paper about social security policy") != "cybersecurity")
+    }
+
+    @Test func cybersecurityHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "cybersecurity", tier: 1)
+            #expect(!msgs.isEmpty, "cybersecurity tier1 pool must be non-empty")
+        }
+    }
+
+    @Test func cybersecurityDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "cybersecurity", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "cybersecurity", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "cybersecurity", tier: 3)
+            #expect(tier1.count >= 4, "cybersecurity tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "cybersecurity tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "cybersecurity tier3 must have ≥3 messages")
+        }
+    }
+
+    @Test func cybersecurityTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "cybersecurity", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.hasPrefix("no one") }
+            #expect(hasUrgent, "cybersecurity tier3 should contain an urgent directive")
+        }
+    }
+
+    @Test func cybersecurityCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "cybersecurity", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "cybersecurity tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
+
+    // MARK: - Screenwriting / Creative Writing keyword
+
+    @Test func screenwritingKeywordFromScreenplay() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my screenplay") == "screenwriting")
+    }
+
+    @Test func screenwritingKeywordFromNovel() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on chapter 5 of my novel") == "screenwriting")
+    }
+
+    @Test func screenwritingKeywordFromShortStory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "draft my short story for class") == "screenwriting")
+    }
+
+    @Test func screenwritingKeywordFromFiction() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write fiction for my creative writing class") == "screenwriting")
+    }
+
+    @Test func screenwritingKeywordFromScriptWriting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on script writing for my film project") == "screenwriting")
+    }
+
+    @Test func screenwritingKeywordFromCharacterDevelopment() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my character development sheet") == "screenwriting")
+    }
+
+    @Test func screenwritingKeywordFromWorldbuilding() {
+        #expect(CalloutManager.extractTaskKeyword(from: "do worldbuilding for my fantasy novel") == "screenwriting")
+    }
+
+    @Test func screenwritingKeywordFromStoryOutline() {
+        #expect(CalloutManager.extractTaskKeyword(from: "create a story outline for my screenplay") == "screenwriting")
+    }
+
+    @Test func screenwritingKeywordFromWriteAScene() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write a scene for my TV pilot") == "screenwriting")
+    }
+
+    @Test func screenwritingKeywordDoesNotMatchShellScript() {
+        // bare "script" without screenwriting context should NOT match screenwriting
+        #expect(CalloutManager.extractTaskKeyword(from: "run a shell script for my server") != "screenwriting")
+    }
+
+    @Test func screenwritingKeywordDoesNotMatchCodeOutline() {
+        // "outline" alone in a coding context should not match screenwriting
+        #expect(CalloutManager.extractTaskKeyword(from: "write code and outline the algorithm") != "screenwriting")
+    }
+
+    @Test func screenwritingHasMessages() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "screenwriting", tier: 1)
+            #expect(!msgs.isEmpty, "screenwriting tier1 pool must be non-empty")
+        }
+    }
+
+    @Test func screenwritingDedicatedPoolSize() async {
+        await MainActor.run {
+            let tier1 = CalloutManager.shared.taskAwareCallouts(keyword: "screenwriting", tier: 1)
+            let tier2 = CalloutManager.shared.taskAwareCallouts(keyword: "screenwriting", tier: 2)
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "screenwriting", tier: 3)
+            #expect(tier1.count >= 4, "screenwriting tier1 must have ≥4 messages")
+            #expect(tier2.count >= 3, "screenwriting tier2 must have ≥3 messages")
+            #expect(tier3.count >= 3, "screenwriting tier3 must have ≥3 messages")
+        }
+    }
+
+    @Test func screenwritingTier3HasUrgentDirective() async {
+        await MainActor.run {
+            let tier3 = CalloutManager.shared.taskAwareCallouts(keyword: "screenwriting", tier: 3)
+            let hasUrgent = tier3.contains { $0.hasPrefix("CLOSE THIS") || $0.hasPrefix("great writers") }
+            #expect(hasUrgent, "screenwriting tier3 should contain an urgent directive")
+        }
+    }
+
+    @Test func screenwritingCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "screenwriting", tier: tier)
+                for msg in msgs {
+                    #expect(!msg.isEmpty, "screenwriting tier \(tier) callout must not be empty")
+                }
+            }
+        }
+    }
 }
