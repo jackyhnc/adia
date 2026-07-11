@@ -13971,3 +13971,67 @@ None. Swift toolchain unavailable on Linux container.
 - Consider: cosmetology/esthetics, massage therapy, acupuncture/traditional Chinese medicine, medical laboratory science
 - Consider: music education (separate from musictheory/education), art education (separate from art/education), drama/theatre education
 - Consider: tax law (separate from legal/taxprep), immigration law, intellectual property law, environmental law (sub-domains of legal)
+
+---
+
+## Run 330 — 2026-07-11 — Cosmetology, personal training, dental lab, landscape architecture, and immigration law keyword domains (1330→1375 tests, 203→213 templates)
+
+### Shipped
+
+**New keyword domain — cosmetology:**
+- Branch positioned AFTER culinary (both involve hands-on technique training)
+- Matches: cosmetology school/program/class/exam/state board/board exam/license, cosmetologist, esthetics school/program/class/exam/certification/license, esthetician, nail tech/technician/school/program/exam, hair coloring/cutting/styling technique, barbering school/class/exam/license, barber school/exam/license, NBBI exam, milady textbook/cosmetology
+- `cosmetologyCallouts(tier:)` 4/3/3: "those clients aren't going to style themselves." / "cosmetologists don't pass state boards by scrolling." / "CLOSE THIS. open your cosmetology study materials."
+- 2 templates: "Study for my cosmetology state board exam" (60 min) + "Practice and review esthetics or nail tech techniques for class" (45 min)
+
+**New keyword domain — personaltraining:**
+- Branch positioned AFTER kinesiology, BEFORE fitness so NASM exam and ACE certification route here rather than the generic workout pool
+- Matches: personal trainer/training, personal training certification/exam/class/course, NASM, NASM exam/certification, ACE certification + personal/ACE fitness/ACE CPT, NSCA CPT/NSCA certification + trainer, client program + train, training program design, client program design, fitness coaching/coach, corrective exercise, periodization plan
+- `personaltrainingCallouts(tier:)` 4/3/3: "those clients aren't going to train themselves." / "personal trainers don't get certified by scrolling." / "CLOSE THIS. open your NASM or ACE study guide."
+- 2 templates: "Study for the NASM or ACE personal training certification exam" (60 min) + "Design a client training program for my personal training practicum" (45 min)
+
+**New keyword domain — dentallab:**
+- Branch positioned BEFORE dentalassisting so dental lab tech, ceramist, and crown-and-bridge tasks don't fall through to the dental assistant pool
+- Matches: dental lab/laboratory, dental lab tech, dental laboratory technician, NBDALE/NBDALE exam, ceramist, dental ceramics/ceramic, crown and bridge/crown & bridge, denture technology/tech, prosthodontic lab, prosthodontics lab, removable prosthodontics + lab, dental prosthetics lab/program, dental wax up, wax up + dental, NADL, dental lab program/class/exam/notes
+- `dentallabCallouts(tier:)` 4/3/3: "those crowns aren't going to fabricate themselves." / "dental lab techs don't get certified by scrolling." / "CLOSE THIS. open your dental lab materials."
+- 2 templates: "Study for the NBDALE or complete a dental laboratory assignment" (60 min) + "Complete a dental ceramics or crown-and-bridge lab project" (90 min)
+
+**New keyword domain — landscapearchitecture:**
+- Branch positioned BEFORE architecture (and after interiordesign) because "landscape architect" matches word("architect") and "site plan" appears in both
+- Matches: landscape architecture/architect/architects, landscape design/designer, CLARB/CLARB exam, planting plan/design/scheme, plant palette, hardscape/softscape, LA studio/landscape studio, grading plan/site grading, stormwater management + design, constructed wetland, rain garden, landscape plan, site inventory, landscape class/exam/program/school, landscape architecture class/exam/program
+- `landscapearchitectureCallouts(tier:)` 4/3/3: "that planting plan isn't going to draw itself." / "landscape architects don't get licensed by scrolling." / "CLOSE THIS. open your landscape architecture project."
+- 2 templates: "Develop a planting plan or site design for my landscape architecture project" (60 min) + "Study for the CLARB exam or complete a landscape architecture assignment" (60 min)
+
+**New keyword domain — immigrationlaw:**
+- Branch positioned BEFORE the general legal branch (after tradelaw) so visa petitions, asylum claims, USCIS filings, and removal proceedings don't fall through to generic legal/bar-exam callouts
+- Matches: immigration law/lawyer/attorney/legal, visa petition/application/renewal/interview, I-130/I-485/I-765, USCIS/USCIS form, asylum claim/application, deportation defense/case, removal proceedings/defense, naturalization exam, citizenship application/test, DACA, green card + applic, immigration status/class/course/exam/program
+- `immigrationlawCallouts(tier:)` 4/3/3: "those visa petitions aren't going to file themselves." / "immigration clients need you focused — get back to their case." / "CLOSE THIS. open your immigration law materials."
+- 2 templates: "Prepare a visa petition or immigration case brief" (60 min) + "Study for an immigration law exam or complete an immigration law assignment" (60 min)
+
+**Test counts:**
+- CalloutManagerTests.swift: 1330 → 1375 (+45: 9 tests per domain × 5 domains)
+- SuggestedSessionTemplatesTests.swift: +11 (5 domain existence tests × 2 asserts each + ≥211 count guard)
+
+**Template catalog: 203 → 213**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `personaltraining` fires AFTER kinesiology (line 1173) and BEFORE fitness (line 1203). "nsca exam prep for cscs certification in exercise physiology" → kinesiology (has lower.contains("nsca exam") + "exercise physiology") ✓; "nasm exam prep for personal training certification" → personaltraining (word("nasm") fires) ✓
+- `cosmetology` fires AFTER culinary (line 1252). "cosmetology school state board exam prep" → cosmetology ✓; bare "hair biology" → not matched ✓
+- `dentallab` fires BEFORE dentalassisting (line 1364). "crown and bridge fabrication lab assignment" → dentallab ✓; "dental assisting class on chairside procedures" → dentalassisting ✓; "dental school board exam DDS" → dental ✓
+- `immigrationlaw` fires BEFORE legal (line 1981). "bar exam and legal brief for moot court" → legal ✓; "visa petition for immigration law clinic" → immigrationlaw ✓
+- `landscapearchitecture` fires BEFORE architecture (line 2025). "architecture studio project on building design and revit modeling" → architecture (no landscape compound fires) ✓; "landscape architecture studio project on site design" → landscapearchitecture ✓
+- Five new switch cases and pool functions confirmed present. Template count: 213. ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains: massage therapy (separate from therapy/kinesiology), acupuncture/TCM (separate from premed/nursing), medical laboratory science (MLS, MLT, ASCP), nuclear medicine technology, radiologic technology/radiography
+- Consider: diagnostic medical sonography, cardiovascular technology, surgical technology, respiratory perfusion
+- Consider: music education (separate from musictheory/education), art education (separate from art/education), drama/theatre education (separate from performingarts/education)
+- Consider: intellectual property law, environmental law, family law (sub-domains of legal)
+- Consider: sign language studies/ASL (separate from linguistics/language)
+- Consider: wine studies/sommelier (separate from culinary/hospitality)
+- Consider: dental laboratory technology sub-domains (orthodontic lab vs prosthodontic lab)
+- Consider: nursing informatics, informatics nursing (separate from nursing/healthcareadmin)
