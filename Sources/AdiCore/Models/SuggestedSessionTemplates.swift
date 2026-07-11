@@ -1172,5 +1172,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target ASVAB section or ROTC topic reviewed, key concepts summarized, and at least 30 practice questions completed with corrections and weak areas identified for further review",
             preferredDuration: 60 * 60
         ),
+        // Supply Chain
+        SuggestedTemplate(
+            icon: "shippingbox.fill",
+            task: "Complete a supply chain management assignment or logistics case study",
+            successCriteria: "Assigned scenarios analyzed, supply chain flows mapped or procurement strategies outlined, supporting calculations completed, and work saved in final draft format for submission",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.bar.doc.horizontal.fill",
+            task: "Study for the CPIM or CSCP supply chain certification exam",
+            successCriteria: "Target module reviewed (planning, procurement, or logistics), key concepts and frameworks summarized, and at least 25 practice questions completed with incorrect answers corrected and understood",
+            preferredDuration: 60 * 60
+        ),
+        // Communication Studies
+        SuggestedTemplate(
+            icon: "bubble.left.and.bubble.right.fill",
+            task: "Write a communication theory paper or research assignment",
+            successCriteria: "Thesis or research question clearly stated, relevant theories and studies cited, argument developed across body sections, and paper completed and saved in final draft format for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "text.bubble.fill",
+            task: "Study for a communication studies exam or complete a comm assignment",
+            successCriteria: "Target content reviewed (interpersonal, mass communication, or rhetoric), key concepts and theorists summarized, and at least 20 practice questions or review exercises completed with corrections",
+            preferredDuration: 45 * 60
+        ),
+        // Healthcare Administration
+        SuggestedTemplate(
+            icon: "cross.vial.fill",
+            task: "Complete a healthcare administration case study or health informatics assignment",
+            successCriteria: "Patient flow, revenue cycle, or EHR scenario analyzed and documented, policy recommendations or workflow improvements outlined, and completed work saved for submission",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "stethoscope",
+            task: "Study for the RHIA, RHIT, or health information management certification exam",
+            successCriteria: "Target domain reviewed (health data management, coding, or compliance), key regulations and standards summarized, and at least 30 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Neuroscience
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Write a neuroscience paper or complete a neuro assignment",
+            successCriteria: "Thesis stated, neuroscientific evidence cited from at least three peer-reviewed sources, argument developed across body sections, and paper saved in final draft format for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain",
+            task: "Study for a neuroscience or neuroanatomy exam",
+            successCriteria: "Target brain regions or neural systems reviewed, key pathways and functions summarized, and at least 25 practice questions or diagram labeling exercises completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Ethnic Studies
+        SuggestedTemplate(
+            icon: "person.3.fill",
+            task: "Write an ethnic studies, gender studies, or women's studies research paper",
+            successCriteria: "Research question clearly stated, relevant theoretical frameworks applied, primary and secondary sources cited, argument developed across body sections, and paper saved in final draft format for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "globe.americas.fill",
+            task: "Study for an ethnic studies, cultural studies, or gender studies exam",
+            successCriteria: "Target unit reviewed (critical race theory, intersectionality, feminist theory, or postcolonial studies), key theorists and concepts summarized, and at least 20 review questions or discussion prompts completed",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

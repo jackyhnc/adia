@@ -549,6 +549,28 @@ public final class CalloutManager {
             || lower.contains("che exam") || lower.contains("cha exam") {
             return "hospitality"
         }
+        // supplychain — positioned BEFORE business so SCM-exam prep, logistics coursework, and
+        // procurement/operations-research classes get their own callout pool. Bare "supply chain"
+        // stays in the business branch below for general MBA/business-context use.
+        if lower.contains("cpim") || lower.contains("cscp") || word("apics")
+            || lower.contains("supply chain management class") || lower.contains("supply chain management course")
+            || lower.contains("supply chain management exam") || lower.contains("supply chain management program")
+            || lower.contains("supply chain management degree") || lower.contains("supply chain management major")
+            || lower.contains("logistics management class") || lower.contains("logistics management course")
+            || lower.contains("logistics management exam") || lower.contains("logistics management program")
+            || lower.contains("logistics class") || lower.contains("logistics course")
+            || lower.contains("logistics exam") || lower.contains("logistics assignment")
+            || lower.contains("procurement class") || lower.contains("procurement course")
+            || lower.contains("procurement exam") || lower.contains("procurement assignment")
+            || lower.contains("demand planning class") || lower.contains("demand forecasting class")
+            || lower.contains("inventory management class") || lower.contains("inventory management course")
+            || lower.contains("warehouse management class") || lower.contains("warehouse management course")
+            || lower.contains("six sigma class") || lower.contains("six sigma course") || lower.contains("lean six sigma")
+            || lower.contains("operations research class") || lower.contains("operations research course")
+            || lower.contains("operations research exam") || lower.contains("operations research assignment")
+            || lower.contains("supply chain analytics") || lower.contains("global supply chain class") {
+            return "supplychain"
+        }
         // business/management — positioned before research so "marketing research" and "market analysis"
         // route here rather than the generic research pool. Startup branch above already catches
         // "business plan", "pitch deck", and "business model" before this point.
@@ -578,6 +600,25 @@ public final class CalloutManager {
             || lower.contains("data analysis") || lower.contains("data collection")
             || word("dataset") || word("datasets") || lower.contains("qualitative") || lower.contains("quantitative") {
             return "research"
+        }
+        // communicationstudies — positioned after research/business and before journalism so
+        // interpersonal communication, mass communication, and comm-theory courses route here.
+        // bare word("communication") is NOT matched (too broad: software systems communicate too).
+        // "public relations"/"press release" stay in journalism/publicrelations above.
+        if lower.contains("communication studies") || lower.contains("communications studies")
+            || lower.contains("communication theory") || lower.contains("communications theory")
+            || lower.contains("interpersonal communication class") || lower.contains("interpersonal communication course")
+            || lower.contains("interpersonal communication exam") || lower.contains("interpersonal communication paper")
+            || lower.contains("mass communication") || lower.contains("media theory")
+            || lower.contains("communication major") || lower.contains("communications major")
+            || lower.contains("comm major") || lower.contains("comm class") || lower.contains("comm course")
+            || lower.contains("comm exam") || lower.contains("comm paper") || lower.contains("comm research")
+            || lower.contains("rhetoric class") || lower.contains("rhetoric course")
+            || lower.contains("persuasion theory") || lower.contains("persuasion class")
+            || lower.contains("organizational communication") || lower.contains("intercultural communication")
+            || lower.contains("communication research methods") || lower.contains("comm research methods")
+            || lower.contains("communication degree") || lower.contains("communications degree") {
+            return "communicationstudies"
         }
         // journalism — positioned after research and business but before writing so "news article",
         // "press release", and journalism-school tasks route here. "newsletter"/"blog" stay in writing.
@@ -1334,6 +1375,26 @@ public final class CalloutManager {
             || lower.contains("pcr protocol") || lower.contains("pcr result") || lower.contains("run pcr") {
             return "molecularbiology"
         }
+        // healthcareadmin — positioned after molecularbiology and before premed so healthcare
+        // administration, health informatics, and HIM certification prep route here.
+        // "health policy" stays in the policy branch; "public health" stays in publicheath.
+        if lower.contains("healthcare administration") || lower.contains("hospital administration")
+            || lower.contains("health administration") || lower.contains("healthcare management")
+            || lower.contains("health information management") || lower.contains("health information technology")
+            || lower.contains("health informatics") || lower.contains("clinical informatics")
+            || word("rhia") || word("rhit") || word("cahims") || word("cahiim")
+            || lower.contains("electronic health record") || lower.contains("ehr implementation")
+            || lower.contains("ehr training") || lower.contains("ehr certification")
+            || lower.contains("health it class") || lower.contains("health it course")
+            || lower.contains("health information system") || lower.contains("health information systems")
+            || lower.contains("mha degree") || lower.contains("mha program") || lower.contains("mha class")
+            || lower.contains("healthcare finance") || lower.contains("healthcare operations")
+            || lower.contains("hospital management") || lower.contains("clinic management")
+            || lower.contains("revenue cycle management class") || lower.contains("revenue cycle management course")
+            || lower.contains("medical records management") || lower.contains("medical records class")
+            || lower.contains("hipaa compliance class") || lower.contains("hipaa certification") {
+            return "healthcareadmin"
+        }
         if word("anatomy") || word("physiology") || word("biochemistry")
             || word("pharmacology") || word("pathology") || word("histology")
             || word("microbiology") || word("immunology") || word("embryology")
@@ -1549,6 +1610,26 @@ public final class CalloutManager {
             || lower.contains("homeland security course") || lower.contains("homeland security program") {
             return "emergencymanagement"
         }
+        // neuroscience — positioned BEFORE psychology so brain/neuron-biology terms get a
+        // dedicated pool. "neural network" (ML) stays in datascience (fires much earlier).
+        if word("neuroscience") || word("neuroscientist") || word("neurobiology") || word("neurobiologist")
+            || word("neuroanatomy") || word("neuropathology") || word("neuropharmacology")
+            || lower.contains("cognitive neuroscience") || lower.contains("behavioral neuroscience")
+            || lower.contains("computational neuroscience") || lower.contains("systems neuroscience")
+            || lower.contains("action potential") || lower.contains("synaptic transmission")
+            || word("neurotransmitter") || word("synapse") || word("synaptic")
+            || word("neuroplasticity") || word("neuroimaging")
+            || lower.contains("brain anatomy") || lower.contains("brain structure")
+            || lower.contains("neural circuit") || lower.contains("nervous system anatomy")
+            || lower.contains("brain and behavior") || lower.contains("brain and behaviour")
+            || lower.contains("neuroscience class") || lower.contains("neuroscience course")
+            || lower.contains("neuroscience exam") || lower.contains("neuroscience paper")
+            || lower.contains("neuroscience major") || lower.contains("neuroscience research")
+            || lower.contains("neuro class") || lower.contains("neuro exam") || lower.contains("neuro notes")
+            || word("hippocampus") || word("cortex") || word("cortical") || word("subcortical")
+            || word("hypothalamus") || word("amygdala") || word("cerebellum") {
+            return "neuroscience"
+        }
         // psychology — positioned after publicheath and all clinical health branches above.
         // "educational psychology" fires in the education branch first; clinical/counseling
         // terms fire in therapy/socialwork above. This catches academic and research psych.
@@ -1654,6 +1735,25 @@ public final class CalloutManager {
             || lower.contains("counterinsurgency") || lower.contains("counterterrorism")
             || lower.contains("war studies") || lower.contains("conflict studies") {
             return "militarystudies"
+        }
+        // ethnicstudies — positioned BEFORE socialscience so ethnic/gender/women's studies tasks
+        // get a dedicated callout pool. Bare "gender" or "culture" are NOT matched (too broad).
+        if lower.contains("ethnic studies") || lower.contains("ethnicity studies")
+            || lower.contains("african american studies") || lower.contains("black studies")
+            || lower.contains("african diaspora studies")
+            || lower.contains("latino studies") || lower.contains("latinx studies")
+            || lower.contains("hispanic studies") || lower.contains("chicano studies") || lower.contains("chicanx studies")
+            || lower.contains("asian american studies")
+            || lower.contains("native american studies") || lower.contains("indigenous studies")
+            || lower.contains("women's studies") || lower.contains("womens studies") || lower.contains("women studies")
+            || lower.contains("gender studies") || lower.contains("feminist theory") || lower.contains("feminist studies")
+            || lower.contains("queer theory") || lower.contains("lgbtq+ studies") || lower.contains("lgbtq studies")
+            || word("intersectionality") || word("intersectional")
+            || lower.contains("critical race theory") || lower.contains("postcolonial studies")
+            || lower.contains("postcolonial theory") || lower.contains("decolonization class")
+            || lower.contains("diaspora studies") || lower.contains("cultural studies class")
+            || lower.contains("cultural studies course") || lower.contains("cultural studies exam") {
+            return "ethnicstudies"
         }
         // socialscience — positioned after criminaljustice (which now owns criminology/criminal justice)
         // and before legal (LSAT is pre-law, not a bar-exam term). "social work" routes to socialwork.

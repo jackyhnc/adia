@@ -2323,6 +2323,51 @@ struct SuggestedSessionTemplatesTests {
         #expect(hasASVAB, "catalog must include an ASVAB or military science/ROTC template")
     }
 
+    // MARK: - Supply Chain templates
+    @Test func supplychainTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCase   = tasks.contains { $0.localizedCaseInsensitiveContains("supply chain management") || $0.localizedCaseInsensitiveContains("logistics case") }
+        let hasCPIM   = tasks.contains { $0.localizedCaseInsensitiveContains("CPIM") || $0.localizedCaseInsensitiveContains("CSCP") }
+        #expect(hasCase,  "catalog must include a supply chain management assignment template")
+        #expect(hasCPIM,  "catalog must include a CPIM or CSCP exam prep template")
+    }
+
+    // MARK: - Communication Studies templates
+    @Test func communicationstudiesTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPaper = tasks.contains { $0.localizedCaseInsensitiveContains("communication theory") }
+        let hasExam  = tasks.contains { $0.localizedCaseInsensitiveContains("communication studies exam") || $0.localizedCaseInsensitiveContains("comm assignment") }
+        #expect(hasPaper, "catalog must include a communication theory paper template")
+        #expect(hasExam,  "catalog must include a communication studies exam template")
+    }
+
+    // MARK: - Healthcare Administration templates
+    @Test func healthcareadminTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCase = tasks.contains { $0.localizedCaseInsensitiveContains("healthcare administration") || $0.localizedCaseInsensitiveContains("health informatics") }
+        let hasRHIA = tasks.contains { $0.localizedCaseInsensitiveContains("RHIA") || $0.localizedCaseInsensitiveContains("health information management") }
+        #expect(hasCase, "catalog must include a healthcare administration case study template")
+        #expect(hasRHIA, "catalog must include a RHIA or health information management exam template")
+    }
+
+    // MARK: - Neuroscience templates
+    @Test func neuroscienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPaper = tasks.contains { $0.localizedCaseInsensitiveContains("neuroscience paper") || $0.localizedCaseInsensitiveContains("neuro assignment") }
+        let hasExam  = tasks.contains { $0.localizedCaseInsensitiveContains("neuroscience") && $0.localizedCaseInsensitiveContains("exam") }
+        #expect(hasPaper, "catalog must include a neuroscience paper template")
+        #expect(hasExam,  "catalog must include a neuroscience exam template")
+    }
+
+    // MARK: - Ethnic Studies templates
+    @Test func ethnicstudiesTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPaper = tasks.contains { $0.localizedCaseInsensitiveContains("ethnic studies") || $0.localizedCaseInsensitiveContains("gender studies") }
+        let hasExam  = tasks.contains { $0.localizedCaseInsensitiveContains("cultural studies") || $0.localizedCaseInsensitiveContains("women's studies") }
+        #expect(hasPaper, "catalog must include an ethnic or gender studies paper template")
+        #expect(hasExam,  "catalog must include a cultural studies or women's studies exam template")
+    }
+
     // MARK: - Count guard
     @Test func catalogHasAtLeastOneHundredSixtyOneTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 161,
@@ -2335,5 +2380,9 @@ struct SuggestedSessionTemplatesTests {
     @Test func catalogHasAtLeastOneHundredEightyOneTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 181,
                 "catalog should have ≥181 templates after aviation/productdesign/taxprep/medicalbilling/militarystudies additions")
+    }
+    @Test func catalogHasAtLeastOneHundredNinetyOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 191,
+                "catalog should have ≥191 templates after supplychain/communicationstudies/healthcareadmin/neuroscience/ethnicstudies additions")
     }
 }

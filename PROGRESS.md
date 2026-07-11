@@ -1,5 +1,63 @@
 # Adia — Build Progress
 
+## Run 327 — 2026-07-11 — Supply chain + communication studies + healthcare admin + neuroscience + ethnic studies keyword domains (1250→1290 tests, 183→193 templates)
+
+### Shipped
+
+**Supply chain / logistics keyword domain:**
+- `supplychain` branch added to `extractTaskKeyword` in `CalloutManager.swift`, positioned BEFORE business.
+- Matches: cpim/cscp/apics, supply chain management class/course/exam/program/degree/major, logistics management class/course/exam, logistics class/course/exam/assignment, procurement class/course/exam/assignment, demand planning class, inventory management class/course, warehouse management class/course, six sigma class/course, lean six sigma, operations research class/course/exam/assignment, supply chain analytics, global supply chain class.
+- False-positive guard: bare "supply chain" stays in business branch for MBA/general business context.
+- `supplychainCallouts(tier:)` 4/3/3 pool: "your supply chain isn't going to optimize itself." / "CLOSE THIS. open your supply chain notes." / "no one gets their CPIM by browsing."
+- 2 templates: "Complete a supply chain management assignment or logistics case study" (60 min) + "Study for the CPIM or CSCP supply chain certification exam" (60 min)
+
+**Communication studies keyword domain:**
+- `communicationstudies` branch positioned AFTER research/business and BEFORE journalism.
+- Matches: communication studies/theory, interpersonal communication class/course/exam/paper, mass communication, media theory, communication/communications major/degree, comm major/class/course/exam/paper/research, rhetoric class/course, persuasion theory/class, organizational communication, intercultural communication, communication research methods.
+- False-positive guard: bare word("communication") NOT matched (too broad for software contexts).
+- `communicationstudiesCallouts(tier:)` 4/3/3: "that communication paper isn't going to write itself." / "CLOSE THIS. open your communication studies notes." / "no one aces communication theory by browsing."
+- 2 templates: "Write a communication theory paper or research assignment" (60 min) + "Study for a communication studies exam or complete a comm assignment" (45 min)
+
+**Healthcare administration / health informatics keyword domain:**
+- `healthcareadmin` branch positioned AFTER molecularbiology and BEFORE premed.
+- Matches: healthcare/hospital administration, health administration, healthcare management, health information management/technology, health informatics, clinical informatics, RHIA/RHIT/CAHIMS/CAHIIM, electronic health record/EHR implementation/training/certification, health IT class/course, health information system(s), MHA degree/program/class, healthcare finance/operations, hospital management, clinic management, revenue cycle management class/course, medical records management/class, HIPAA compliance class/certification.
+- `healthcareadminCallouts(tier:)` 4/3/3: "those EHR records aren't going to manage themselves." / "CLOSE THIS. open your healthcare administration notes." / "no one gets their RHIA by browsing."
+- 2 templates: "Complete a healthcare administration case study or health informatics assignment" (60 min) + "Study for the RHIA, RHIT, or health information management certification exam" (60 min)
+
+**Neuroscience keyword domain:**
+- `neuroscience` branch positioned BEFORE psychology so brain/neuron-biology terms get their own pool.
+- Matches: neuroscience/neuroscientist/neurobiology/neurobiologist, neuroanatomy/neuropathology/neuropharmacology, cognitive/behavioral/computational/systems neuroscience, action potential, synaptic transmission, neurotransmitter, synapse/synaptic, neuroplasticity, neuroimaging, brain anatomy/structure, neural circuit, nervous system anatomy, brain and behavior, neuroscience/neuro class/course/exam/paper/major/research/notes, hippocampus, cortex/cortical/subcortical, hypothalamus, amygdala, cerebellum.
+- False-positive guard: "neural network" (ML) stays in datascience which fires much earlier.
+- `neuroscienceCallouts(tier:)` 4/3/3: "those neurons won't study themselves." / "CLOSE THIS. open your neuroscience notes." / "no one aces neuroanatomy by browsing."
+- 2 templates: "Write a neuroscience paper or complete a neuro assignment" (60 min) + "Study for a neuroscience or neuroanatomy exam" (60 min)
+
+**Ethnic studies / gender studies keyword domain:**
+- `ethnicstudies` branch positioned BEFORE socialscience so ethnic/gender/women's studies tasks get a dedicated pool.
+- Matches: ethnic studies/ethnicity studies, African American/Black/African diaspora studies, Latino/Latinx/Hispanic/Chicano/Chicanx studies, Asian American studies, Native American/Indigenous studies, women's/womens/women studies, gender studies, feminist theory/studies, queer theory, LGBTQ+/LGBTQ studies, intersectionality/intersectional, critical race theory, postcolonial studies/theory, decolonization class, diaspora studies, cultural studies class/course/exam.
+- False-positive guard: bare "gender" or "culture" NOT matched.
+- `ethnicstudiesCallouts(tier:)` 4/3/3: "that ethnic studies paper isn't going to write itself." / "CLOSE THIS. open your ethnic studies notes." / "no one masters intersectionality theory by browsing."
+- 2 templates: "Write an ethnic studies, gender studies, or women's studies research paper" (60 min) + "Study for an ethnic studies, cultural studies, or gender studies exam" (45 min)
+
+**Tests:**
+- CalloutManagerTests.swift: 1250→1290 (+40: 8 per domain)
+- SuggestedSessionTemplatesTests.swift: +16 (2 per domain + 1 count guard ≥191)
+
+### Blocked
+Swift toolchain unavailable on Linux — verified by code inspection:
+- "cpim exam prep for apics supply chain management certification" → supplychain ✓; "mba case analysis on strategic management and supply chain" → business ✓ (business fires before supplychain for MBA terms)
+- "communication theory paper on media framing" → communicationstudies ✓; "journalism class writing a news article" → journalism ✓
+- "rhia exam prep for health information management" → healthcareadmin ✓; "mcat prep studying physiology and anatomy" → premed ✓
+- "neuroscience exam on synaptic transmission and action potentials" → neuroscience ✓; "psychology research paper on cognitive development" → psychology ✓
+- "gender studies paper on feminist theory and intersectionality" → ethnicstudies ✓; "political science paper on comparative politics" → socialscience ✓
+- All 5 tier-3 pools contain "CLOSE THIS" or "no one" ✓; all tier-1 pools have ≥4 messages ✓
+- All 10 template durations in [300, 10800] ✓
+
+### Next agent should pick up
+- Additional keyword domains: supply chain law, healthcare law, translational research, behavioral economics, human factors/ergonomics
+- AppMonitor observability tests (requires macOS)
+
+---
+
 ## Run 322 — 2026-07-11 — Geology + bioinformatics + urban planning + dental hygiene + molecular biology keyword domains (932→982 tests, 113→123 templates)
 
 ### Shipped

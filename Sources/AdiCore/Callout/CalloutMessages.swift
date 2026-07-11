@@ -157,6 +157,11 @@ extension CalloutManager {
         case "taxprep":                return taxprepCallouts(tier: tier)
         case "medicalbilling":         return medicalbillingCallouts(tier: tier)
         case "militarystudies":        return militarystudiesCallouts(tier: tier)
+        case "supplychain":            return supplychainCallouts(tier: tier)
+        case "communicationstudies":   return communicationstudiesCallouts(tier: tier)
+        case "healthcareadmin":        return healthcareadminCallouts(tier: tier)
+        case "neuroscience":           return neuroscienceCallouts(tier: tier)
+        case "ethnicstudies":          return ethnicstudiesCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -2433,6 +2438,111 @@ extension CalloutManager {
             "CLOSE THIS. open your military studies materials.",
             "no one passes the ASVAB by browsing.",
             "CLOSE THIS. get back to your military coursework.",
+        ]
+        }
+    }
+
+    private func supplychainCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your supply chain isn't going to optimize itself.",
+            "get back to your logistics assignment.",
+            "your CPIM prep won't do itself.",
+            "close this and open your SCM notes.",
+        ]
+        case 2: return [
+            "supply chain professionals don't get their CPIM by scrolling.",
+            "your logistics assignment isn't going to complete itself.",
+            "stop avoiding your supply chain work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your supply chain notes.",
+            "no one gets their CPIM by browsing.",
+            "CLOSE THIS. get back to your logistics work.",
+        ]
+        }
+    }
+
+    private func communicationstudiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that communication paper isn't going to write itself.",
+            "get back to your comm notes.",
+            "your communication theory exam won't study itself.",
+            "close this and open your comm textbook.",
+        ]
+        case 2: return [
+            "comm majors don't ace theory by scrolling.",
+            "your communication assignment isn't going to complete itself.",
+            "stop putting off your comm work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your communication studies notes.",
+            "no one aces communication theory by browsing.",
+            "CLOSE THIS. get back to your comm assignment.",
+        ]
+        }
+    }
+
+    private func healthcareadminCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those EHR records aren't going to manage themselves.",
+            "get back to your healthcare administration work.",
+            "your RHIA prep won't do itself.",
+            "close this and open your health informatics notes.",
+        ]
+        case 2: return [
+            "health information managers don't pass the RHIA by scrolling.",
+            "your healthcare admin assignment isn't going to complete itself.",
+            "stop avoiding your health informatics work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your healthcare administration notes.",
+            "no one gets their RHIA by browsing.",
+            "CLOSE THIS. get back to your health informatics work.",
+        ]
+        }
+    }
+
+    private func neuroscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those neurons won't study themselves.",
+            "get back to your neuroscience notes.",
+            "your neuro exam won't prep itself.",
+            "close this and open your neuroscience textbook.",
+        ]
+        case 2: return [
+            "neuroscientists don't understand the brain by scrolling.",
+            "your neuroscience assignment isn't going to complete itself.",
+            "stop procrastinating on your neuro work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your neuroscience notes.",
+            "no one aces neuroanatomy by browsing.",
+            "CLOSE THIS. get back to your neuro study.",
+        ]
+        }
+    }
+
+    private func ethnicstudiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that ethnic studies paper isn't going to write itself.",
+            "get back to your gender studies notes.",
+            "your critical race theory reading won't do itself.",
+            "close this and open your ethnic studies textbook.",
+        ]
+        case 2: return [
+            "critical scholars don't build their analysis by scrolling.",
+            "your ethnic studies assignment isn't going to complete itself.",
+            "stop avoiding your gender studies work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your ethnic studies notes.",
+            "no one masters intersectionality theory by browsing.",
+            "CLOSE THIS. get back to your ethnic studies work.",
         ]
         }
     }
