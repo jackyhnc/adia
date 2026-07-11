@@ -1,4 +1,28 @@
 
+## Run 316 — 2026-07-11T00:20:00Z — Rate-limit tests for 20 admin endpoints (1261 → 1321)
+
+### Shipped
+
+**Web — rate-limit coverage sweep (60 new tests across 20 previously-uncovered endpoints):**
+
+Added standard 3-test rate-limit blocks (429-at-cap, Retry-After header, fires-before-auth) to:
+- **GET endpoints** (15 tests): `never-activated`, `expiring-soon`, `dormant`, `notify-history`, `search-licenses`
+- **POST endpoints** (45 tests): `bulk-change-email`, `bulk-change-plan`, `bulk-deactivate-all`, `bulk-extend`, `bulk-issue`, `bulk-note`, `bulk-reactivate`, `bulk-resend-license`, `bulk-revoke`, `bulk-set-expiry`, `bulk-set-status`, `bulk-transfer`, `audit-log`, `issue`, `note`, `set-expiry`
+
+All endpoints use `adminGuard` (20 req/60s per IP) — tests confirm the gate is active before auth and format parsing.
+
+**1261 → 1321 web tests (49 test files, all green).**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should pick up
+- More keyword domains: dental (NBDE exam), optometry (NBEO exam), pharmacy (NAPLEX) — as suggested in Run 315
+- AppMonitor observability tests (requires macOS)
+- Admin bulk-change-email/plan/etc. are tested but have no rate-limit tests for CSV export variants (if any endpoint exposes format=csv for bulk)
+
+---
+
 ## Run 315 — 2026-07-10
 
 **Shipped:** Paramedicine/EMT, social work (split from therapy), and occupational therapy keyword domains + callout pools + 6 templates + 41 CalloutManager tests + 10 SuggestedTemplates tests
