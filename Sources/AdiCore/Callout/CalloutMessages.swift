@@ -186,7 +186,12 @@ extension CalloutManager {
         case "sonography":             return sonographyCallouts(tier: tier)
         case "cardiovasculartech":     return cardiovasculartechCallouts(tier: tier)
         case "surgicaltech":           return surgicaltechCallouts(tier: tier)
+        case "polysomnography":        return polysomnographyCallouts(tier: tier)
+        case "nursinginformatics":     return nursinginformaticsCallouts(tier: tier)
+        case "musictherapy":           return musictherapyCallouts(tier: tier)
         case "arttherapy":             return arttherapyCallouts(tier: tier)
+        case "dramaeducation":         return dramaeducationCallouts(tier: tier)
+        case "winesommelier":          return winesommelierCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -3093,6 +3098,111 @@ extension CalloutManager {
             "CLOSE THIS. open your art therapy or ATR study guide.",
             "no one earns their ATR by scrolling.",
             "CLOSE THIS. get back to your art therapy school work.",
+        ]
+        }
+    }
+
+    private func polysomnographyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those sleep scoring protocols aren't going to memorize themselves.",
+            "get back to your polysomnography studies.",
+            "your RPSGT exam won't prep itself.",
+            "close this and open your sleep technology study guide.",
+        ]
+        case 2: return [
+            "sleep technologists don't get certified by scrolling.",
+            "your PSG scoring skills won't develop themselves.",
+            "stop avoiding your polysomnography class work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your polysomnography or RPSGT study guide.",
+            "no one passes the RPSGT by scrolling.",
+            "CLOSE THIS. get back to your sleep technology school work.",
+        ]
+        }
+    }
+
+    private func nursinginformaticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that nursing informatics assignment isn't going to complete itself.",
+            "get back to your clinical informatics study materials.",
+            "your nursing informatics exam won't prep itself.",
+            "close this and open your nursing informatics notes.",
+        ]
+        case 2: return [
+            "nursing informaticists don't get certified by scrolling.",
+            "your EHR implementation plan won't write itself.",
+            "stop avoiding your nursing informatics class work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your nursing informatics or CNIO study guide.",
+            "no one masters nursing informatics by browsing.",
+            "CLOSE THIS. get back to your clinical informatics work.",
+        ]
+        }
+    }
+
+    private func musictherapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your clients deserve your full attention — get back to your music therapy notes.",
+            "that music therapy session plan isn't going to write itself.",
+            "get back to your MT-BC board study materials.",
+            "close this and open your music therapy notes.",
+        ]
+        case 2: return [
+            "music therapists don't get board-certified by scrolling.",
+            "your MT-BC exam prep won't do itself.",
+            "stop avoiding your music therapy class work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your music therapy or MT-BC study guide.",
+            "no one earns their MT-BC by scrolling.",
+            "CLOSE THIS. get back to your music therapy school work.",
+        ]
+        }
+    }
+
+    private func dramaeducationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that drama lesson plan isn't going to write itself.",
+            "get back to your theatre education work.",
+            "your Praxis drama exam won't prep itself.",
+            "close this and open your drama education notes.",
+        ]
+        case 2: return [
+            "drama teachers don't master their craft by scrolling.",
+            "your playwriting assignment won't finish itself.",
+            "stop avoiding your theatre education class work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your drama education or Praxis theatre notes.",
+            "no one becomes a drama teacher by browsing.",
+            "CLOSE THIS. get back to your theatre education work.",
+        ]
+        }
+    }
+
+    private func winesommelierCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those wine regions aren't going to memorize themselves.",
+            "get back to your sommelier study materials.",
+            "your WSET exam won't prep itself.",
+            "close this and open your wine education notes.",
+        ]
+        case 2: return [
+            "sommeliers don't get certified by scrolling.",
+            "your blind tasting skills won't develop themselves.",
+            "stop avoiding your wine studies coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your sommelier or WSET study guide.",
+            "no one passes the WSET by browsing.",
+            "CLOSE THIS. get back to your wine education work.",
         ]
         }
     }

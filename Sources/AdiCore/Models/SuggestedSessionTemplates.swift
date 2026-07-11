@@ -1562,5 +1562,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target content area reviewed (art therapy theory, assessment tools, ethics, or population-specific approaches), key concepts summarized, and at least 20 practice questions completed with corrections",
             preferredDuration: 60 * 60
         ),
+        // Polysomnography
+        SuggestedTemplate(
+            icon: "moon.fill",
+            task: "Study sleep scoring and polysomnography protocols or prepare for the RPSGT exam",
+            successCriteria: "Target sleep stage or disorder reviewed (REM, NREM, apnea, arousal index), EEG/EOG/EMG scoring rules summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a polysomnography school assignment or sleep study case report",
+            successCriteria: "Assigned PSG topic reviewed (sleep staging, equipment setup, or patient preparation), case questions answered, and assignment saved or submitted for instructor review",
+            preferredDuration: 45 * 60
+        ),
+        // Nursing Informatics
+        SuggestedTemplate(
+            icon: "network",
+            task: "Complete a nursing informatics assignment or EHR implementation case study",
+            successCriteria: "Assigned informatics topic reviewed (EHR workflow, clinical decision support, or health data standards), analysis written, and assignment saved or submitted for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "graduationcap.fill",
+            task: "Study for a nursing informatics exam or clinical informatics certification",
+            successCriteria: "Target content area reviewed (nursing terminology, EHR systems, data governance, or informatics theory), key standards summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Music Therapy
+        SuggestedTemplate(
+            icon: "music.note",
+            task: "Write music therapy session notes or a treatment plan for a client case",
+            successCriteria: "Client goals and music interventions documented, session observations and responses recorded, progress toward therapeutic outcomes assessed, and notes saved in the appropriate format",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "graduationcap.fill",
+            task: "Study for the MT-BC board exam or complete a music therapy school assignment",
+            successCriteria: "Target content area reviewed (music therapy theory, clinical populations, assessment tools, or ethics), key concepts summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Drama/Theatre Education
+        SuggestedTemplate(
+            icon: "theatermasks.fill",
+            task: "Write a drama lesson plan or theatre education curriculum unit",
+            successCriteria: "Learning objectives defined, theatre technique or dramatic literature chosen, activities and assessment plan written, and lesson plan saved or submitted for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for the Praxis drama exam or complete a playwriting or theatre history assignment",
+            successCriteria: "Target topic reviewed (theatre history, playwriting craft, dramatic theory, or stage design), key concepts summarized, and assignment or practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Wine Studies / Sommelier
+        SuggestedTemplate(
+            icon: "wineglass",
+            task: "Study wine regions and varietals to prepare for a WSET or sommelier exam",
+            successCriteria: "Target region or grape variety reviewed (flavor profile, growing conditions, key producers, and food pairings documented), and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "list.bullet.clipboard",
+            task: "Practice blind tasting or complete a viticulture and enology coursework assignment",
+            successCriteria: "Structured tasting notes written using the WSET or SAT framework for at least three wines, or assigned viticulture/enology topic reviewed and assignment saved for submission",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

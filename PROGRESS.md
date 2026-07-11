@@ -14222,3 +14222,65 @@ None. Swift toolchain unavailable on Linux container.
 - Consider: nursing informatics (separate from nursing/healthcareadmin), polysomnography technology (sleep tech), perfusion technology (cardiovascular perfusionist), ophthalmic medical technology, central sterile processing
 - Consider: `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment)
 - Estimated test count: 1510 (CalloutManagerTests) + additional from other test files
+
+---
+
+## Run 334 — 2026-07-11 — Polysomnography, nursing informatics, music therapy, drama/theatre education, and wine studies/sommelier keyword domains (1510→1555 tests, 243→253 templates)
+
+### Shipped
+
+**New keyword domain — polysomnography:**
+- Branch positioned AFTER `surgicaltech` and BEFORE `healthcareadmin`
+- Matches: polysomnography/polysomnographer, RPSGT board/exam, CCSH exam, sleep tech (with class/program/school/exam/certification context), sleep technologist/technology class+program+exam, PSG lab, sleep scoring, sleep study (with class/program/technologist/scoring/polysomnography context), sleep disorders class/course, sleep medicine class/course/program, actigraphy class/course, polysomnography school/program/class/exam
+- `polysomnographyCallouts(tier:)` 4/3/3: "those sleep scoring protocols aren't going to memorize themselves." / "sleep technologists don't get certified by scrolling." / "CLOSE THIS. open your polysomnography or RPSGT study guide."
+- 2 templates: "Study sleep scoring and polysomnography protocols or prepare for the RPSGT exam" (90 min) + "Complete a polysomnography school assignment or sleep study case report" (45 min)
+
+**New keyword domain — nursinginformatics:**
+- Branch positioned BEFORE `nursing` (more specific; catches "nursing informatics" + CNIO + nursing EHR context)
+- "health informatics" alone routes to healthcareadmin (fires earlier at line ~1764); this branch requires explicit nursing/clinical nursing informatics context
+- Matches: nursing informatics, nursing information systems, nursing health informatics, CNIO, nursing EHR, nursing electronic health record, nursing clinical informatics, clinical informatics + nurs, health informatics + nurs, nursing information technology, nursing informatics class/course/program/exam/assignment/certification
+- `nursinginformaticsCallouts(tier:)` 4/3/3: "that nursing informatics assignment isn't going to complete itself." / "nursing informaticists don't get certified by scrolling." / "CLOSE THIS. open your nursing informatics or CNIO study guide."
+- 2 templates: "Complete a nursing informatics assignment or EHR implementation case study" (60 min) + "Study for a nursing informatics exam or clinical informatics certification" (60 min)
+
+**New keyword domain — musictherapy:**
+- Branch positioned BEFORE `arttherapy`, `socialwork`, and `therapy`; "music theory class" fires musictheory much earlier (line ~1401)
+- Matches: music therapy/therapist/therapists, MT-BC (with board/exam/certification/credential), AMTA (with music/therapy context), music therapy class/course/program/school/exam/assignment/session/notes/treatment plan/internship/certification/clinical, neurologic music therapy, Nordoff-Robbins, receptive/active music therapy, board-certified music therapist
+- `musictherapyCallouts(tier:)` 4/3/3: "your clients deserve your full attention — get back to your music therapy notes." / "music therapists don't get board-certified by scrolling." / "CLOSE THIS. open your music therapy or MT-BC study guide."
+- 2 templates: "Write music therapy session notes or a treatment plan for a client case" (30 min) + "Study for the MT-BC board exam or complete a music therapy school assignment" (60 min)
+
+**New keyword domain — dramaeducation:**
+- Branch positioned AFTER `arteducation` and BEFORE `physed`; bare "watching a play" never fires (needs teaching/coursework context)
+- Matches: theatre/theater education/educator, drama teacher/teaching/education/educator, drama classroom/curriculum/lesson plan/pedagogy, drama/theatre methods class/course, Praxis drama/theatre/theater, theatre arts education, TYA + theatre, theatre/theater for young audiences, playwriting class/course/workshop/program, dramatic literature class/course, theatre/theater history class/course, stage/theatre design class/course, directing class (with theatre/drama context), directing workshop + theatre, dramaturgy class/course, dramaturg (with class/course/assignment), acting pedagogy, drama/theatre school assignment
+- `dramaeducationCallouts(tier:)` 4/3/3: "that drama lesson plan isn't going to write itself." / "drama teachers don't master their craft by scrolling." / "CLOSE THIS. open your drama education or Praxis theatre notes."
+- 2 templates: "Write a drama lesson plan or theatre education curriculum unit" (60 min) + "Study for the Praxis drama exam or complete a playwriting or theatre history assignment" (60 min)
+
+**New keyword domain — winesommelier:**
+- Branch positioned AFTER `culinary` and BEFORE `cosmetology`; bare "drinking wine" never fires (needs educational/professional context)
+- Matches: sommelier/sommeliers, WSET (with exam/level/certification/certificate/course/study), court of master sommeliers, certified sommelier/certified wine educator, wine studies, wine tasting class/course, wine education, wine class/course/exam, wine pairing class/course, wine certification, wine program (with class/school/course/study), wine region (with study/class/exam), viticulture/viticulture class+course, enology/oenology/enology class+course/oenology class+course, blind tasting (with wine/sommelier context), wine blind tasting, wine sensory
+- `winesommelierCallouts(tier:)` 4/3/3: "those wine regions aren't going to memorize themselves." / "sommeliers don't get certified by scrolling." / "CLOSE THIS. open your sommelier or WSET study guide."
+- 2 templates: "Study wine regions and varietals to prepare for a WSET or sommelier exam" (60 min) + "Practice blind tasting or complete a viticulture and enology coursework assignment" (45 min)
+
+**Test counts:**
+- CalloutManagerTests.swift: 1510 → 1555 (+45: 9 tests per domain × 5 domains)
+- SuggestedSessionTemplatesTests.swift: +15 (3 existence tests × 5 domains + ≥253 count guard)
+
+**Template catalog: 243 → 253**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `dramaeducation` fires AFTER arteducation (~line 1140) and BEFORE physed (~line 1190). "drama teacher certification program lesson plan on theatre education" → dramaeducation ✓; "art teacher certification program assignment on visual arts lesson planning" → arteducation ✓; "physical education teacher certification program on pe curriculum" → physed ✓
+- `winesommelier` fires AFTER culinary (~line 1319) and BEFORE cosmetology (~line 1364). "studying for sommelier exam with WSET level 3 wine certification prep" → winesommelier ✓; "culinary school assignment on recipe development and menu planning" → culinary ✓; "cosmetology school state board exam prep" → cosmetology ✓
+- `polysomnography` fires AFTER surgicaltech (~line 1727) and BEFORE healthcareadmin (~line 1764). "rpsgt board exam prep for polysomnography certification and sleep scoring" → polysomnography ✓; "cst exam prep on surgical technology" → surgicaltech ✓; "healthcare administration class on RHIA" → healthcareadmin ✓
+- `nursinginformatics` fires BEFORE nursing (~line 1871). "nursing informatics class assignment on ehr implementation" → nursinginformatics ✓; "health informatics class on rhia certification" → healthcareadmin (fires earlier) ✓; "nursing school nclex exam prep on care plan" → nursing ✓
+- `musictherapy` fires AFTER musictheory (~line 1401) and BEFORE arttherapy (~line 1907). "music therapy session notes and mt-bc board exam" → musictherapy ✓; "music theory class on ear training and chord progressions" → musictheory ✓; "art therapy session notes and atr board exam" → arttherapy ✓
+- Five new dispatch cases and pool functions confirmed present (lines 189-194 in CalloutMessages.swift). Template count: 253 (verified by `grep -c "icon:" SuggestedSessionTemplates.swift`). ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains: diagnostic medical physics/health physics, music therapy sub-domains (neurologic vs receptive/active already in musictherapy), drama/theatre performance (separate from dramaeducation/performingarts), wine service (separate from winesommelier), polysomnography sub-specialties (pediatric PSG, home sleep testing)
+- Consider: perfusion technology (cardiovascular perfusionist/CCP board), ophthalmic medical technology (COT/COA exam), central sterile processing (CBSPD/CRCST board)
+- Consider: `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment)
+- Consider: nursing informatics sub-domain split (clinical informatics vs nursing EHR implementation)
+- Estimated test count: 1555 (CalloutManagerTests) + additional from other test files

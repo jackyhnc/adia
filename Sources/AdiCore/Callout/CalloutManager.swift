@@ -1139,6 +1139,39 @@ public final class CalloutManager {
                 && lower.contains("teach") {
             return "arteducation"
         }
+        // dramaeducation — positioned after arteducation and before physed so theatre/drama
+        // teaching, playwriting class, and Praxis drama don't fall through to performingarts or education.
+        // Bare "watching a play" / "going to the theatre" never fires (needs teaching or coursework context).
+        if lower.contains("theatre education") || lower.contains("theater education")
+            || lower.contains("theatre educator") || lower.contains("theater educator")
+            || lower.contains("drama teacher") || lower.contains("drama teaching")
+            || lower.contains("drama education") || lower.contains("drama educator")
+            || lower.contains("drama classroom") || lower.contains("drama curriculum")
+            || lower.contains("drama lesson plan") || lower.contains("drama pedagogy")
+            || lower.contains("drama methods class") || lower.contains("drama methods course")
+            || lower.contains("theatre methods class") || lower.contains("theatre methods course")
+            || lower.contains("praxis drama") || lower.contains("praxis theatre")
+            || lower.contains("praxis theater")
+            || lower.contains("theatre arts education") || lower.contains("theater arts education")
+            || lower.contains("tya") && lower.contains("theatre")
+            || lower.contains("theatre for young audiences")
+            || lower.contains("theater for young audiences")
+            || lower.contains("playwriting class") || lower.contains("playwriting course")
+            || lower.contains("playwriting workshop") || lower.contains("playwriting program")
+            || lower.contains("dramatic literature class") || lower.contains("dramatic literature course")
+            || lower.contains("theatre history class") || lower.contains("theatre history course")
+            || lower.contains("theater history class") || lower.contains("theater history course")
+            || lower.contains("stage design class") || lower.contains("stage design course")
+            || lower.contains("theatre design class") || lower.contains("theatre design course")
+            || lower.contains("directing class") && lower.contains("theatre")
+            || lower.contains("directing class") && lower.contains("drama")
+            || lower.contains("directing workshop") && lower.contains("theatre")
+            || lower.contains("dramaturgy class") || lower.contains("dramaturgy course")
+            || word("dramaturg") && (lower.contains("class") || lower.contains("course") || lower.contains("assignment"))
+            || lower.contains("acting pedagogy") || lower.contains("drama school assignment")
+            || lower.contains("theatre school assignment") {
+            return "dramaeducation"
+        }
         // physed — positioned after education and before tutor so PE teaching and sport/athletic
         // coaching terms route here rather than the generic tutoring/coaching pool.
         // Bare word("coaching") alone stays in tutor; compound coaching terms fire here first.
@@ -1284,6 +1317,28 @@ public final class CalloutManager {
             || lower.contains("menu planning") || lower.contains("cooking class")
             || lower.contains("cooking technique") || word("gastronomy") {
             return "culinary"
+        }
+        // winesommelier — positioned after culinary (shared hospitality/food context) and before
+        // cosmetology. Catches wine education, sommelier certification, and viticulture/enology coursework.
+        // Bare "drinking wine" or "wine with dinner" never fires (needs educational/professional context).
+        if word("sommelier") || lower.contains("sommeliers")
+            || word("wset") && (lower.contains("exam") || lower.contains("level") || lower.contains("certification") || lower.contains("certificate") || lower.contains("course") || lower.contains("study"))
+            || lower.contains("court of master sommeliers")
+            || lower.contains("certified sommelier") || lower.contains("certified wine educator")
+            || lower.contains("wine studies") || lower.contains("wine tasting class")
+            || lower.contains("wine tasting course") || lower.contains("wine education")
+            || lower.contains("wine class") || lower.contains("wine course")
+            || lower.contains("wine exam") || lower.contains("wine pairing class")
+            || lower.contains("wine pairing course") || lower.contains("wine certification")
+            || lower.contains("wine program") && (lower.contains("class") || lower.contains("school") || lower.contains("course") || lower.contains("study"))
+            || lower.contains("wine region") && (lower.contains("study") || lower.contains("class") || lower.contains("exam"))
+            || word("viticulture") || lower.contains("viticulture class") || lower.contains("viticulture course")
+            || word("enology") || word("oenology")
+            || lower.contains("enology class") || lower.contains("enology course")
+            || lower.contains("oenology class") || lower.contains("oenology course")
+            || lower.contains("blind tasting") && (lower.contains("wine") || lower.contains("sommelier"))
+            || lower.contains("wine blind tasting") || lower.contains("wine sensory") {
+            return "winesommelier"
         }
         // cosmetology — positioned after culinary (both involve hands-on technique training);
         // catches cosmetology school, esthetics, nail tech, barbering, and state board prep.
@@ -1671,6 +1726,23 @@ public final class CalloutManager {
             || lower.contains("perioperative exam") {
             return "surgicaltech"
         }
+        // polysomnography — positioned after surgicaltech and before healthcareadmin so sleep
+        // technology, RPSGT board prep, and PSG lab coursework route here.
+        // "sleep study" without educational context never fires (bare study = studying branch).
+        if lower.contains("polysomnography") || lower.contains("polysomnographer")
+            || word("rpsgt") || word("ccsh")
+            || lower.contains("sleep tech") && (lower.contains("class") || lower.contains("program") || lower.contains("school") || lower.contains("exam") || lower.contains("certification"))
+            || lower.contains("sleep technologist") || lower.contains("sleep technology class")
+            || lower.contains("sleep technology program") || lower.contains("sleep technology exam")
+            || lower.contains("psg lab") || lower.contains("sleep scoring")
+            || lower.contains("sleep study") && (lower.contains("class") || lower.contains("program") || lower.contains("technologist") || lower.contains("scoring") || lower.contains("polysomnography"))
+            || lower.contains("sleep disorders class") || lower.contains("sleep medicine class")
+            || lower.contains("sleep medicine course") || lower.contains("sleep medicine program")
+            || lower.contains("actigraphy class") || lower.contains("actigraphy course")
+            || lower.contains("polysomnography school") || lower.contains("polysomnography program")
+            || lower.contains("polysomnography class") || lower.contains("polysomnography exam") {
+            return "polysomnography"
+        }
         // healthcareadmin — positioned after molecularbiology and before premed so healthcare
         // administration, health informatics, and HIM certification prep route here.
         // "health policy" stays in the policy branch; "public health" stays in publicheath.
@@ -1764,6 +1836,25 @@ public final class CalloutManager {
             || lower.contains("respiratory care") || lower.contains("respiratory assessment") {
             return "respiratorytherapy"
         }
+        // nursinginformatics — positioned BEFORE nursing so "nursing informatics", CNIO, and
+        // clinical informatics nursing context route here instead of the general nursing pool.
+        // "health informatics" alone is caught by healthcareadmin above; this branch requires
+        // explicit nursing/clinical nursing informatics context.
+        if lower.contains("nursing informatics")
+            || lower.contains("nursing information systems")
+            || lower.contains("nursing health informatics")
+            || word("cnio")
+            || lower.contains("nursing ehr") || lower.contains("nursing electronic health record")
+            || lower.contains("nursing clinical informatics")
+            || lower.contains("clinical informatics") && lower.contains("nurs")
+            || lower.contains("health informatics") && lower.contains("nurs")
+            || lower.contains("nursing information technology")
+            || lower.contains("nursing informatics class") || lower.contains("nursing informatics course")
+            || lower.contains("nursing informatics program") || lower.contains("nursing informatics exam")
+            || lower.contains("nursing technology class") || lower.contains("nursing technology course")
+            || lower.contains("nursing informatics assignment") || lower.contains("nursing informatics certification") {
+            return "nursinginformatics"
+        }
         if word("nursing") || lower.contains("care plan") || lower.contains("care plans")
             || lower.contains("nursing notes") || lower.contains("nursing assessment")
             || lower.contains("nursing theory") || lower.contains("nursing diagnosis")
@@ -1778,6 +1869,25 @@ public final class CalloutManager {
             || lower.contains("patient assessment") || lower.contains("patient care plan")
             || lower.contains("wound care") || lower.contains("iv insertion") {
             return "nursing"
+        }
+        // musictherapy — positioned BEFORE arttherapy, socialwork, and therapy so music therapy,
+        // MT-BC board prep, and neurologic music therapy route here rather than to musictheory or
+        // generic therapy callouts. "music theory class" fires musictheory much earlier.
+        if lower.contains("music therapy") || lower.contains("music therapist")
+            || lower.contains("music therapists")
+            || word("mtbc") || lower.contains("mt-bc")
+                && (lower.contains("board") || lower.contains("exam") || lower.contains("certification") || lower.contains("credential"))
+            || word("amta") && (lower.contains("music") || lower.contains("therapy"))
+            || lower.contains("music therapy class") || lower.contains("music therapy course")
+            || lower.contains("music therapy program") || lower.contains("music therapy school")
+            || lower.contains("music therapy exam") || lower.contains("music therapy assignment")
+            || lower.contains("music therapy session") || lower.contains("music therapy notes")
+            || lower.contains("music therapy treatment plan") || lower.contains("music therapy internship")
+            || lower.contains("neurologic music therapy") || lower.contains("nordoff-robbins")
+            || lower.contains("receptive music therapy") || lower.contains("active music therapy")
+            || lower.contains("music therapy clinical") || lower.contains("music therapy certification")
+            || lower.contains("board-certified music therapist") {
+            return "musictherapy"
         }
         // arttherapy — positioned BEFORE socialwork and therapy so "art therapy", "art therapist",
         // and ATR/ATCB board prep routes here rather than to generic therapy callouts.
