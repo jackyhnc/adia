@@ -14034,4 +14034,65 @@ None. Swift toolchain unavailable on Linux container.
 - Consider: sign language studies/ASL (separate from linguistics/language)
 - Consider: wine studies/sommelier (separate from culinary/hospitality)
 - Consider: dental laboratory technology sub-domains (orthodontic lab vs prosthodontic lab)
+
+---
+
+## Run 331 — 2026-07-11 — Music education, massage therapy, medical lab science, radiologic technology, and intellectual property law keyword domains (1375→1420 tests, 213→223 templates)
+
+### Shipped
+
+**New keyword domain — musiceducation:**
+- Branch positioned AFTER education (line ~1083), BEFORE physed; compound music+education terms fire here, bare word("music") stays in musicproduction/musictheory, bare "lesson plan"/"curriculum" stays in education
+- Matches: music education/educator/teacher/teaching, music education exam/major/school, music methods class/course, music pedagogy, praxis music (without "education" or "teach" elsewhere), marching band director/teacher, choral director/education, orchestra director/teacher, band director/teacher, instrumental music teacher/class/program, vocal music teacher/class/program
+- `musiceducationCallouts(tier:)` 4/3/3: "your students are counting on you — close this." / "music teachers don't get certified by scrolling." / "CLOSE THIS. open your music education study guide."
+- 2 templates: "Write a lesson plan or unit plan for music class" (45 min) + "Study for the Praxis music education exam or complete a music methods assignment" (60 min)
+
+**New keyword domain — massagetherapy:**
+- Branch positioned AFTER occupationaltherapy, BEFORE speecharts
+- Matches: massage therapy/therapist/therapists, LMT, MBLEx, NCBTMB, Swedish massage, deep tissue massage, sports massage, trigger point therapy/massage, myofascial release, neuromuscular therapy, therapeutic massage, massage school/program/class/exam/certification/license/technique/client notes
+- `massagetherapyCallouts(tier:)` 4/3/3: "those clients aren't going to relax themselves." / "massage therapists don't get licensed by scrolling." / "CLOSE THIS. open your massage therapy study guide."
+- 2 templates: "Study for the MBLEx or massage therapy state board exam" (60 min) + "Complete my massage therapy coursework or practice session notes" (45 min)
+
+**New keyword domain — medicallabscience:**
+- Branch positioned AFTER medicalbilling, BEFORE molecularbiology
+- Matches: medical laboratory science/scientist/scientists, clinical laboratory science/scientist, MLS + educational context, MLT + educational context, ASCP board/exam/certification, blood bank + lab context, hematology lab/class/course, microbiology lab + clinical, urinalysis lab/course/class, complete blood count, differential count, clinical chemistry lab/course, CLS exam, medical lab tech, clinical lab tech, medical lab program/class, clinical laboratory tech
+- `medicallabscienceCallouts(tier:)` 4/3/3: "those lab results aren't going to analyze themselves." / "medical lab scientists don't get certified by scrolling." / "CLOSE THIS. open your medical laboratory science study guide."
+- 2 templates: "Study for the ASCP or medical laboratory science board exam" (60 min) + "Complete a clinical laboratory science lab report or coursework" (45 min)
+
+**New keyword domain — radiologictechnology:**
+- Branch positioned AFTER molecularbiology, BEFORE healthcareadmin
+- Matches: radiologic technology/technologist/technologists, radiographer/radiographers, radiology tech/technician, x-ray tech/technician, xray tech, CT tech/technician, MRI tech/technician, ARRT/ARRT exam/ARRT certification, radiographic positioning, fluoroscopy, computed tomography lab/class/course, diagnostic imaging class/course/exam/program, radiologic science, radiography class/program/school/exam/certification, medical imaging class/course, interventional radiology + class/rotation/exam
+- `radiologictechnologyCallouts(tier:)` 4/3/3: "those images aren't going to read themselves." / "radiology techs don't get certified by scrolling." / "CLOSE THIS. open your radiologic technology study guide."
+- 2 templates: "Study for the ARRT or radiologic technology certification exam" (60 min) + "Complete my radiographic positioning or diagnostic imaging coursework" (45 min)
+
+**New keyword domain — intellectualproperty:**
+- Branch positioned AFTER immigrationlaw, BEFORE the generic legal branch
+- Matches: intellectual property, IP law/lawyer/attorney/litigation/class/course/exam, patent law/lawyer/attorney/litigation/prosecution/application/filing/claims/agent, patent bar, USPTO/patent office, trademark law/infringement/registration/application, copyright law/infringement/registration, trade secret, PTAB, patent licensing, IP portfolio/policy
+- `intellectualpropertyCallouts(tier:)` 4/3/3: "those patent claims aren't going to draft themselves." / "IP attorneys don't get there by scrolling." / "CLOSE THIS. open your IP law study materials."
+- 2 templates: "Draft a patent application or IP litigation brief" (60 min) + "Study for the patent bar exam or complete an intellectual property law assignment" (90 min)
+
+**Test counts:**
+- CalloutManagerTests.swift: 1375 → 1420 (+45: 9 tests per domain × 5 domains)
+- SuggestedSessionTemplatesTests.swift: +11 (5 domain existence tests × 2 asserts each + ≥223 count guard)
+
+**Template catalog: 213 → 223**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `musiceducation` fires AFTER education (line ~1063) but before physed. "lesson plan for science class" → education ✓ (catches "lesson plan" first); "studying music education for my choral ensemble directing assignment" → musiceducation ✓ (no education branch condition fires for "music education" alone); "praxis music exam for band director" → musiceducation ✓ (praxis without "teach"/"education" doesn't fire education branch)
+- `massagetherapy` fires AFTER occupationaltherapy (line ~1633). "massage therapy class assignment on swedish technique" → massagetherapy ✓; "occupational therapy NBCOT exam" → occupationaltherapy ✓
+- `medicallabscience` fires AFTER medicalbilling (line ~1457) and BEFORE molecularbiology. "ascp exam prep for medical laboratory science certification" → medicallabscience ✓; "pcr protocol and western blot" → molecularbiology ✓; "medical billing cpc exam" → medicalbilling ✓
+- `radiologictechnology` fires AFTER molecularbiology (line ~1480) and BEFORE healthcareadmin. "arrt exam prep for radiologic technology certification" → radiologictechnology ✓; "mcat prep for med school" → premed ✓ (premed fires much later but molecularbiology/radiologictechnology don't catch those terms)
+- `intellectualproperty` fires AFTER immigrationlaw (line ~1981) and BEFORE legal. "patent bar exam and patent prosecution" → intellectualproperty ✓; "bar exam prep on constitutional law" → legal ✓; "visa petition for immigration law" → immigrationlaw ✓
+- Five new dispatch cases and pool functions confirmed present. Template count: 223. ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains: acupuncture/TCM (separate from premed/nursing), nuclear medicine technology (separate from radiologictechnology), diagnostic medical sonography, cardiovascular technology, surgical technology
+- Consider: art education (separate from art/education), drama/theatre education (separate from performingarts/education), PE coaching sub-domains
+- Consider: environmental law, family law (sub-domains of legal); sign language/ASL (separate from linguistics/language)
+- Consider: wine studies/sommelier (separate from culinary/hospitality); dental prosthetics sub-domains (orthodontic lab vs prosthodontic)
+- Consider: `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment)
 - Consider: nursing informatics, informatics nursing (separate from nursing/healthcareadmin)

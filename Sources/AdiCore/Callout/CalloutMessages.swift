@@ -172,6 +172,11 @@ extension CalloutManager {
         case "dentallab":              return dentallabCallouts(tier: tier)
         case "landscapearchitecture":  return landscapearchitectureCallouts(tier: tier)
         case "immigrationlaw":         return immigrationlawCallouts(tier: tier)
+        case "musiceducation":         return musiceducationCallouts(tier: tier)
+        case "massagetherapy":         return massagetherapyCallouts(tier: tier)
+        case "medicallabscience":      return medicallabscienceCallouts(tier: tier)
+        case "radiologictechnology":   return radiologictechnologyCallouts(tier: tier)
+        case "intellectualproperty":   return intellectualpropertyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -2763,6 +2768,111 @@ extension CalloutManager {
             "CLOSE THIS. open your immigration law materials.",
             "no one masters immigration law by browsing.",
             "CLOSE THIS. get back to your visa petition or removal defense.",
+        ]
+        }
+    }
+
+    private func musiceducationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your students are counting on you — close this.",
+            "get back to your music education notes.",
+            "your Praxis music exam won't prep itself.",
+            "close this and open your music methods materials.",
+        ]
+        case 2: return [
+            "music teachers don't get certified by scrolling.",
+            "your lesson plans aren't going to write themselves.",
+            "stop avoiding your music education assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your music education study guide.",
+            "no one passes Praxis music by browsing.",
+            "CLOSE THIS. get back to your music teaching notes.",
+        ]
+        }
+    }
+
+    private func massagetherapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those clients aren't going to relax themselves.",
+            "get back to your massage therapy notes.",
+            "your MBLEx exam won't prep itself.",
+            "close this and open your massage therapy materials.",
+        ]
+        case 2: return [
+            "massage therapists don't get licensed by scrolling.",
+            "your technique notes aren't going to review themselves.",
+            "stop avoiding your massage therapy assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your massage therapy study guide.",
+            "no one passes the MBLEx by browsing.",
+            "CLOSE THIS. get back to your massage therapy notes.",
+        ]
+        }
+    }
+
+    private func medicallabscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those lab results aren't going to analyze themselves.",
+            "get back to your medical lab science notes.",
+            "your ASCP exam won't prep itself.",
+            "close this and open your clinical laboratory materials.",
+        ]
+        case 2: return [
+            "medical lab scientists don't get certified by scrolling.",
+            "your hematology notes aren't going to review themselves.",
+            "stop avoiding your clinical laboratory assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your medical laboratory science study guide.",
+            "no one passes the ASCP boards by browsing.",
+            "CLOSE THIS. get back to your clinical lab materials.",
+        ]
+        }
+    }
+
+    private func radiologictechnologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those images aren't going to read themselves.",
+            "get back to your radiologic technology notes.",
+            "your ARRT exam won't prep itself.",
+            "close this and open your radiography materials.",
+        ]
+        case 2: return [
+            "radiology techs don't get certified by scrolling.",
+            "your positioning protocols aren't going to review themselves.",
+            "stop avoiding your radiologic technology assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your radiologic technology study guide.",
+            "no one passes the ARRT by browsing.",
+            "CLOSE THIS. get back to your radiography notes.",
+        ]
+        }
+    }
+
+    private func intellectualpropertyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those patent claims aren't going to draft themselves.",
+            "get back to your IP law notes.",
+            "your patent bar exam won't prep itself.",
+            "close this and open your intellectual property materials.",
+        ]
+        case 2: return [
+            "IP attorneys don't get there by scrolling.",
+            "your trademark brief isn't going to write itself.",
+            "stop avoiding your intellectual property assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your IP law study materials.",
+            "no one passes the patent bar by browsing.",
+            "CLOSE THIS. get back to your patent prosecution notes.",
         ]
         }
     }

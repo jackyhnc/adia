@@ -1367,5 +1367,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target topic reviewed (asylum law, visa procedures, removal defense, or naturalization), key cases and regulations summarized, and at least 20 practice questions completed with corrections",
             preferredDuration: 60 * 60
         ),
+        // Music Education
+        SuggestedTemplate(
+            icon: "music.note",
+            task: "Write a lesson plan or unit plan for music class",
+            successCriteria: "Lesson objectives aligned to standards, instructional sequence outlined with timing, materials and repertoire listed, and completed plan saved for supervisor or cooperating teacher review",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "graduationcap.fill",
+            task: "Study for the Praxis music education exam or complete a music methods assignment",
+            successCriteria: "Target content area reviewed (music history, theory, pedagogy, or conducting), key concepts summarized, and at least 25 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Massage Therapy
+        SuggestedTemplate(
+            icon: "hand.raised.fill",
+            task: "Study for the MBLEx or massage therapy state board exam",
+            successCriteria: "Target content area reviewed (anatomy, kinesiology, pathology, or ethics), key concepts and contraindications summarized, and at least 25 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my massage therapy coursework or practice session notes",
+            successCriteria: "Assigned readings finished and notes taken, technique steps reviewed or documented, and assignment or session notes submitted or saved for review",
+            preferredDuration: 45 * 60
+        ),
+        // Medical Laboratory Science
+        SuggestedTemplate(
+            icon: "cross.vial.fill",
+            task: "Study for the ASCP or medical laboratory science board exam",
+            successCriteria: "Target content area reviewed (hematology, microbiology, blood bank, or clinical chemistry), key procedures and reference ranges summarized, and at least 25 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Complete a clinical laboratory science lab report or coursework",
+            successCriteria: "Lab procedure followed and observations recorded, results calculated and interpreted, report drafted with discussion of normal vs. abnormal findings, and saved for submission",
+            preferredDuration: 45 * 60
+        ),
+        // Radiologic Technology
+        SuggestedTemplate(
+            icon: "rays",
+            task: "Study for the ARRT or radiologic technology certification exam",
+            successCriteria: "Target content area reviewed (patient care, image production, or radiation protection), key positioning concepts and technical factors summarized, and at least 25 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my radiographic positioning or diagnostic imaging coursework",
+            successCriteria: "Assigned positioning chapter reviewed, landmark identification and projections noted, practice positioning scenarios worked through, and assignment or study notes saved for review",
+            preferredDuration: 45 * 60
+        ),
+        // Intellectual Property Law
+        SuggestedTemplate(
+            icon: "lock.doc.fill",
+            task: "Draft a patent application or IP litigation brief",
+            successCriteria: "Invention disclosure or case facts organized, claims drafted or arguments outlined with relevant statutes and case law, draft reviewed for completeness, and saved for attorney or supervisor review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.badge.gearshape",
+            task: "Study for the patent bar exam or complete an intellectual property law assignment",
+            successCriteria: "Target MPEP chapter or IP topic reviewed, key rules and case holdings summarized, and at least 25 practice questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
     ]
 }

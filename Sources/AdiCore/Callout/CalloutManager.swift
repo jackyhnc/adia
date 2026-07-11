@@ -1082,6 +1082,27 @@ public final class CalloutManager {
             || lower.contains("individualized education program") {
             return "education"
         }
+        // musiceducation — positioned BEFORE physed so marching band director, choral director,
+        // and music methods coursework route here rather than the generic education pool.
+        // Bare word("music") stays in musicproduction/musictheory; compound music+education terms fire here.
+        if lower.contains("music education") || lower.contains("music educator")
+            || lower.contains("music teacher") || lower.contains("music teaching")
+            || lower.contains("music education class") || lower.contains("music education course")
+            || lower.contains("music education exam") || lower.contains("music education degree")
+            || lower.contains("music education major") || lower.contains("music education program")
+            || lower.contains("music education school") || lower.contains("music methods class")
+            || lower.contains("music methods course") || lower.contains("music pedagogy")
+            || lower.contains("praxis music")
+            || lower.contains("marching band director") || lower.contains("marching band teacher")
+            || lower.contains("choral director") || lower.contains("choral education")
+            || lower.contains("orchestra director") || lower.contains("orchestra teacher")
+            || lower.contains("band director") || lower.contains("band teacher")
+            || lower.contains("instrumental music teacher") || lower.contains("instrumental music class")
+            || lower.contains("instrumental music program")
+            || lower.contains("vocal music teacher") || lower.contains("vocal music class")
+            || lower.contains("vocal music program") {
+            return "musiceducation"
+        }
         // physed — positioned after education and before tutor so PE teaching and sport/athletic
         // coaching terms route here rather than the generic tutoring/coaching pool.
         // Bare word("coaching") alone stays in tutor; compound coaching terms fire here first.
@@ -1456,6 +1477,26 @@ public final class CalloutManager {
             || lower.contains("billing and coding") || lower.contains("coding and billing") {
             return "medicalbilling"
         }
+        // medicallabscience — positioned AFTER medicalbilling and BEFORE molecularbiology so
+        // ASCP board prep, blood bank, hematology lab, and clinical laboratory science route here.
+        // "medical billing/coding" stays in medicalbilling above; medicallabscience claims bench-lab terms.
+        if lower.contains("medical laboratory science") || lower.contains("medical laboratory scientist")
+            || lower.contains("medical lab scientist") || lower.contains("clinical laboratory science")
+            || lower.contains("clinical lab science") || lower.contains("clinical laboratory scientist")
+            || word("mls") && (lower.contains("exam") || lower.contains("certification") || lower.contains("program") || lower.contains("class") || lower.contains("degree") || lower.contains("lab"))
+            || word("mlt") && (lower.contains("exam") || lower.contains("certification") || lower.contains("program") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("ascp board") || lower.contains("ascp exam") || lower.contains("ascp certification")
+            || lower.contains("blood bank") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("hematology lab") || lower.contains("hematology class") || lower.contains("hematology course")
+            || lower.contains("microbiology lab") && lower.contains("clinical")
+            || lower.contains("urinalysis lab") || lower.contains("urinalysis course") || lower.contains("urinalysis class")
+            || lower.contains("complete blood count") || lower.contains("differential count")
+            || lower.contains("clinical chemistry lab") || lower.contains("clinical chemistry course")
+            || lower.contains("cls exam") || lower.contains("medical lab tech")
+            || lower.contains("clinical lab tech") || lower.contains("medical lab program")
+            || lower.contains("medical lab class") || lower.contains("clinical laboratory tech") {
+            return "medicallabscience"
+        }
         // molecularbiology — positioned after pharmacy and before premed so lab-science terms
         // (PCR, Western blot, cloning, gene editing) route here rather than the MCAT/clinical pool.
         // Bare word("biochemistry") stays in premed (MCAT context); "molecular biology" is explicit.
@@ -1478,6 +1519,29 @@ public final class CalloutManager {
             || lower.contains("molecular lab") || lower.contains("molecular techniques")
             || lower.contains("pcr protocol") || lower.contains("pcr result") || lower.contains("run pcr") {
             return "molecularbiology"
+        }
+        // radiologictechnology — positioned AFTER molecularbiology and BEFORE healthcareadmin so
+        // ARRT exam prep, radiographic positioning, and diagnostic imaging coursework route here.
+        // Bare "radiology" or "x-ray" stays in studying for generic mentions; compound program terms fire here.
+        if lower.contains("radiologic technology") || lower.contains("radiologic technologist")
+            || lower.contains("radiologic technologists") || lower.contains("radiographer")
+            || lower.contains("radiographers") || lower.contains("radiology tech")
+            || lower.contains("radiology technician") || lower.contains("x-ray tech")
+            || lower.contains("x-ray technician") || lower.contains("xray tech")
+            || lower.contains("ct tech") || lower.contains("ct technician")
+            || lower.contains("mri tech") || lower.contains("mri technician")
+            || word("arrt") || lower.contains("arrt exam") || lower.contains("arrt certification")
+            || lower.contains("radiographic positioning") || lower.contains("fluoroscopy")
+            || lower.contains("computed tomography lab") || lower.contains("computed tomography class")
+            || lower.contains("computed tomography course")
+            || lower.contains("diagnostic imaging class") || lower.contains("diagnostic imaging course")
+            || lower.contains("diagnostic imaging exam") || lower.contains("diagnostic imaging program")
+            || lower.contains("radiologic science") || lower.contains("radiography class")
+            || lower.contains("radiography program") || lower.contains("radiography school")
+            || lower.contains("radiography exam") || lower.contains("radiography certification")
+            || lower.contains("medical imaging class") || lower.contains("medical imaging course")
+            || lower.contains("interventional radiology") && (lower.contains("class") || lower.contains("rotation") || lower.contains("exam")) {
+            return "radiologictechnology"
         }
         // healthcareadmin — positioned after molecularbiology and before premed so healthcare
         // administration, health informatics, and HIM certification prep route here.
@@ -1631,6 +1695,22 @@ public final class CalloutManager {
             || lower.contains("ot school") || lower.contains("ot program")
             || lower.contains("ot class") || lower.contains("ot exam") {
             return "occupationaltherapy"
+        }
+        // massagetherapy — positioned AFTER occupationaltherapy and BEFORE speecharts.
+        // Catches LMT coursework, MBLEx exam prep, and hands-on technique study.
+        // "therapy notes" stays in the therapy branch above; massage claims hands-on technique terms.
+        if lower.contains("massage therapy") || lower.contains("massage therapist")
+            || lower.contains("massage therapists") || word("lmt")
+            || word("mblex") || lower.contains("ncbtmb")
+            || lower.contains("swedish massage") || lower.contains("deep tissue massage")
+            || lower.contains("sports massage") || lower.contains("trigger point therapy")
+            || lower.contains("trigger point massage") || lower.contains("myofascial release")
+            || lower.contains("neuromuscular therapy") || lower.contains("therapeutic massage")
+            || lower.contains("massage school") || lower.contains("massage program")
+            || lower.contains("massage class") || lower.contains("massage exam")
+            || lower.contains("massage certification") || lower.contains("massage license")
+            || lower.contains("massage technique") || lower.contains("massage client notes") {
+            return "massagetherapy"
         }
         // speecharts — positioned BEFORE speechpathology so debate, Model UN, public speaking
         // competitions, and competitive speech tasks route here. "speech therapy"/"SLP" stay in
@@ -1979,6 +2059,26 @@ public final class CalloutManager {
             || lower.contains("immigration course") || lower.contains("immigration exam")
             || lower.contains("immigration program") {
             return "immigrationlaw"
+        }
+        // intellectualproperty — positioned BEFORE the general legal branch so patent prosecution,
+        // trademark registration, and patent bar prep don't fall through to generic legal callouts.
+        if lower.contains("intellectual property") || lower.contains("ip law")
+            || lower.contains("ip lawyer") || lower.contains("ip attorney")
+            || lower.contains("ip litigation") || lower.contains("ip class")
+            || lower.contains("ip course") || lower.contains("ip exam")
+            || lower.contains("patent law") || lower.contains("patent lawyer")
+            || lower.contains("patent attorney") || lower.contains("patent litigation")
+            || lower.contains("patent prosecution") || lower.contains("patent application")
+            || lower.contains("patent filing") || lower.contains("patent claims")
+            || lower.contains("patent agent") || lower.contains("patent bar")
+            || word("uspto") || lower.contains("patent office")
+            || lower.contains("trademark law") || lower.contains("trademark infringement")
+            || lower.contains("trademark registration") || lower.contains("trademark application")
+            || lower.contains("copyright law") || lower.contains("copyright infringement")
+            || lower.contains("copyright registration") || lower.contains("trade secret")
+            || word("ptab") || lower.contains("patent licensing")
+            || lower.contains("ip portfolio") || lower.contains("ip policy") {
+            return "intellectualproperty"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")
