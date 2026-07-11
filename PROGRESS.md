@@ -14339,3 +14339,56 @@ None. Swift toolchain unavailable on Linux container.
 - Consider: `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment)
 - Consider: nursing informatics sub-domain split (clinical informatics vs nursing EHR implementation)
 - Estimated test count: 1555 (CalloutManagerTests) + additional from other test files
+
+---
+
+## Run 335 — 2026-07-11 — Diagnostic medical physics, perfusion technology, ophthalmic medical technology, and central sterile processing keyword domains (1587→1619 tests, 261→269 templates)
+
+### Shipped
+
+**New keyword domain — diagnosticphysics:**
+- Branch positioned AFTER `polysomnography` and BEFORE `healthcareadmin`
+- Matches: diagnostic medical physics/physicist, health physicist, health physics class/course/program/exam/certification/board, medical physics class/course/program/exam/assignment/board, medical physicist, therapeutic medical physics, radiation physics class/course, dosimetry class/course/exam, medical dosimetry, ABR physics exam/board, radiation protection class/course, radiation safety class/certification, diagnostic imaging physics, nuclear physics class (with medical context)
+- `diagnosticphysicsCallouts(tier:)` 4/3/3: "that dosimetry problem won't solve itself." / "medical physicists don't get board certified by scrolling." / "CLOSE THIS. open your medical physics study guide."
+- 2 templates: "Study for the ABR medical physics board exam or complete a dosimetry assignment" (90 min) + "Complete a diagnostic medical physics or health physics coursework assignment" (60 min)
+
+**New keyword domain — perfusiontechnology:**
+- Branch positioned AFTER `diagnosticphysics` and BEFORE `healthcareadmin`
+- Matches: perfusion technology/technologist, cardiovascular perfusionist/perfusion, perfusionist (word boundary), perfusion class/course/school/program/exam/certification/assignment/notes, AmSECT, PBSE exam/board, heart-lung machine, cardiopulmonary bypass class/course/program/exam, extracorporeal circulation class, bypass pump/circuit class, CCP board (with perfusion context guard)
+- `perfusiontechnologyCallouts(tier:)` 4/3/3: "that bypass circuit isn't going to review itself." / "perfusionists don't get certified by scrolling." / "CLOSE THIS. open your perfusion technology study guide."
+- 2 templates: "Study for the PBSE or cardiovascular perfusion certification exam" (90 min) + "Complete a perfusion technology or cardiovascular perfusion school assignment" (60 min)
+
+**New keyword domain — ophthalmic:**
+- Branch positioned AFTER `perfusiontechnology` and BEFORE `healthcareadmin`
+- Matches: ophthalmic medical technology/technologist/technician/assistant, ophthalmic class/course/program/exam/assignment/school, JCAHPO, COMT (with ophthalmic context), COT/COA exam (with ophthalmic context), ocular motility class, slit lamp class/exam, visual field testing class, tonometry class, refractometry class, ophthalmology technician class/program
+- `ophthalmicCallouts(tier:)` 4/3/3: "those ophthalmic procedures aren't going to learn themselves." / "ophthalmic technicians don't get certified by scrolling." / "CLOSE THIS. open your ophthalmic medical technology study guide."
+- 2 templates: "Study for the JCAHPO COT, COA, or COMT ophthalmic technology certification exam" (90 min) + "Complete an ophthalmic medical technology school assignment or patient workup documentation" (45 min)
+
+**New keyword domain — centralsterile:**
+- Branch positioned AFTER `ophthalmic` and BEFORE `healthcareadmin`
+- Matches: central sterile processing, sterile processing class/course/program/school/exam/certification/assignment/technician/tech, CBSPD, CRCST, IAHCSMM, instrument decontamination class/course, autoclave class/exam, sterilization class/course/exam/certification, central supply class/certification, decontamination class (with sterile context), tray assembly class, instrument tray class
+- `centralsterileCallouts(tier:)` 4/3/3: "those sterilization protocols aren't going to memorize themselves." / "sterile processing technicians don't get certified by scrolling." / "CLOSE THIS. open your central sterile processing study guide."
+- 2 templates: "Study for the CBSPD or CRCST central sterile processing certification exam" (90 min) + "Complete a central sterile processing school assignment or sterilization case study" (45 min)
+
+**Test counts:**
+- CalloutManagerTests.swift: 1587 → 1619 (+32: 8 tests per domain × 4 domains)
+- SuggestedSessionTemplatesTests.swift: +9 (2 existence tests × 4 domains + 1 count guard ≥269)
+
+**Template catalog: 261 → 269**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `diagnosticphysics` fires AFTER polysomnography (~line 1763) and BEFORE healthcareadmin (~line 1858). "medical physics class assignment on dosimetry" → diagnosticphysics ✓; "rpsgt board exam on polysomnography" → polysomnography ✓; "healthcare administration class on rhia" → healthcareadmin ✓
+- `perfusiontechnology` fires AFTER diagnosticphysics (~line 1783) and BEFORE healthcareadmin (~line 1858). "cardiovascular perfusionist pbse exam prep on bypass circuit" → perfusiontechnology ✓; "abr medical physics board exam" → diagnosticphysics ✓
+- `ophthalmic` fires AFTER perfusiontechnology (~line 1801) and BEFORE healthcareadmin (~line 1858). "jcahpo certification exam ophthalmic technician" → ophthalmic ✓; "nursing school nclex exam prep" → nursing (fires much later) ✓
+- `centralsterile` fires AFTER ophthalmic (~line 1820) and BEFORE healthcareadmin (~line 1858). "crcst certification central sterile processing" → centralsterile ✓; "cst exam surgical technology sterile field nbstsa" → surgicaltech (fires much earlier) ✓
+- Four new dispatch cases confirmed in CalloutMessages.swift (lines 190-193). Four new pool functions (lines 3302, 3323, 3344, 3365). Template count: 269 (verified by grep -c "preferredDuration:"). ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains: diagnostic medical physics sub-domains (nuclear medicine physics distinct from general medical physics - already partially covered), music therapy sub-specialties, drama/theatre performance (separate from dramaeducation), wine service (separate from winesommelier), polysomnography sub-specialties (pediatric PSG, home sleep testing)
+- Consider: opticianry/dispensing optician (distinct from optometry/ophthalmic), respiratory therapy sub-specialties (neonatal RT already in respiratorytherapy), athletic training (already in kinesiology - verify), dance/movement therapy (separate from arttherapy/performingarts)
+- Consider: `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment)
+- Estimated test count: 1619 (CalloutManagerTests) + additional from other test files
