@@ -192,6 +192,10 @@ extension CalloutManager {
         case "arttherapy":             return arttherapyCallouts(tier: tier)
         case "dramaeducation":         return dramaeducationCallouts(tier: tier)
         case "winesommelier":          return winesommelierCallouts(tier: tier)
+        case "gerontology":            return gerontologyCallouts(tier: tier)
+        case "addictioncounseling":    return addictioncounselingCallouts(tier: tier)
+        case "oralsurgery":            return oralsurgeryCallouts(tier: tier)
+        case "publichealthlaw":        return publichealthlawCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -3203,6 +3207,90 @@ extension CalloutManager {
             "CLOSE THIS. open your sommelier or WSET study guide.",
             "no one passes the WSET by browsing.",
             "CLOSE THIS. get back to your wine education work.",
+        ]
+        }
+    }
+
+    private func gerontologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those aging theories aren't going to study themselves.",
+            "get back to your gerontology work.",
+            "your geriatrics exam won't prep itself.",
+            "close this and open your gerontology notes.",
+        ]
+        case 2: return [
+            "gerontologists don't master aging science by scrolling.",
+            "your aging studies assignment won't finish itself.",
+            "stop avoiding your gerontology coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your gerontology or geriatrics notes.",
+            "no one masters aging science by browsing.",
+            "CLOSE THIS. get back to your gerontology work.",
+        ]
+        }
+    }
+
+    private func addictioncounselingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your clients need a focused counselor — get back to your notes.",
+            "that CADC exam won't prep itself.",
+            "your addiction counseling assignment isn't going to write itself.",
+            "close this and open your substance use disorder notes.",
+        ]
+        case 2: return [
+            "addiction counselors don't earn their credentials by scrolling.",
+            "your dual diagnosis assignment won't finish itself.",
+            "stop avoiding your addiction counseling coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your addiction counseling or NAADAC study guide.",
+            "no one earns their CADC by browsing.",
+            "CLOSE THIS. get back to your substance use disorder coursework.",
+        ]
+        }
+    }
+
+    private func oralsurgeryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those oral surgery procedures aren't going to learn themselves.",
+            "get back to your oral surgery coursework.",
+            "your OMFS exam won't prep itself.",
+            "close this and open your oral surgery notes.",
+        ]
+        case 2: return [
+            "oral surgeons don't master their craft by scrolling.",
+            "your orthognathic surgery assignment won't finish itself.",
+            "stop avoiding your oral surgery coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your oral surgery or OMFS study guide.",
+            "no one masters oral surgery by browsing.",
+            "CLOSE THIS. get back to your dental surgery coursework.",
+        ]
+        }
+    }
+
+    private func publichealthlawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that public health law brief isn't going to write itself.",
+            "get back to your public health law coursework.",
+            "your public health law exam won't prep itself.",
+            "close this and open your public health law notes.",
+        ]
+        case 2: return [
+            "public health lawyers don't master FDA regs by scrolling.",
+            "your quarantine law assignment won't finish itself.",
+            "stop avoiding your public health law coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your public health law notes.",
+            "no one masters public health law by browsing.",
+            "CLOSE THIS. get back to your public health law coursework.",
         ]
         }
     }

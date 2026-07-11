@@ -1,5 +1,60 @@
 # Adia — Build Progress
 
+## Run 329 — 2026-07-11 — Gerontology + addiction counseling + oral surgery + public health law keyword domains (1330→1362 tests, 251→259 templates)
+
+### Shipped
+
+**Gerontology / aging studies keyword domain:**
+- `gerontology` branch added to `extractTaskKeyword` in `CalloutManager.swift`, positioned BEFORE publicheath.
+- Matches: gerontology/gerontologist/geriatrics/geriatrician/geriatric, aging studies/science, social/biological gerontology, cognitive/biological aging, aging population/policy/research, age-related disease, aging in place, dementia class/course/assignment, Alzheimer's research class/course, eldercare class, long-term care class/planning, gerontology class/course/exam/program/major/assignment, geriatric medicine class, retirement planning class.
+- False-positive guard: bare "aging" NOT matched (too generic: "aging wine", "aging process in biology").
+- `gerontologyCallouts(tier:)` 4/3/3 pool: "those aging theories aren't going to study themselves." / "CLOSE THIS. open your gerontology or geriatrics notes." / "no one masters aging science by browsing."
+- 2 templates: "Complete a gerontology or aging studies assignment" (60 min) + "Study for a geriatrics exam or complete a gerontology course assignment" (60 min)
+
+**Addiction counseling / behavioral health keyword domain:**
+- `addictioncounseling` branch positioned BEFORE socialwork and therapy.
+- Matches: addiction counseling/counselor, substance use disorder/SUD counseling, substance abuse counseling, dual diagnosis, co-occurring disorders, drug and alcohol counseling/counselor, CADC/NAADAC/LCADC/CAADC, behavioral health counseling class, addiction class/course/program/certification/exam/studies, recovery coaching class/certification, motivational interviewing class/course, relapse prevention class/assignment, substance use class/course/exam, addiction treatment class.
+- False-positive guard: bare word("counseling") stays in therapy branch.
+- `addictioncounselingCallouts(tier:)` 4/3/3: "your clients need a focused counselor — get back to your notes." / "CLOSE THIS. open your addiction counseling or NAADAC study guide." / "no one earns their CADC by browsing."
+- 2 templates: "Write addiction counseling session notes or a substance use disorder treatment plan" (30 min) + "Study for the CADC, NAADAC, or addiction counseling certification exam" (60 min)
+
+**Oral surgery / OMFS keyword domain:**
+- `oralsurgery` branch positioned BEFORE dental.
+- Matches: oral surgery/oral surgeon/oral surgeons, oral and maxillofacial surgery, OMFS, orthognathic surgery, jaw surgery, dental surgery/dental surgeon, surgical dentistry, dentoalveolar surgery, impacted wisdom/wisdom tooth surgery/wisdom teeth removal, tooth extraction class, implant surgery class/dental implant surgery, oral surgery class/course/exam/program/residency/rotation, maxillofacial.
+- "oral surgery" and "oral surgeon" removed from the dental branch (previously caught there).
+- `oralsurgeryCallouts(tier:)` 4/3/3: "those oral surgery procedures aren't going to learn themselves." / "CLOSE THIS. open your oral surgery or OMFS study guide." / "no one masters oral surgery by browsing."
+- 2 templates: "Study for an oral surgery exam or review OMFS procedures and techniques" (60 min) + "Complete an oral surgery coursework assignment or case write-up" (45 min)
+
+**Public health law keyword domain:**
+- `publichealthlaw` branch positioned BEFORE healthcarelaw (both are before legal).
+- Matches: public health law class/course/exam/assignment/paper, public health law and policy, health law and policy, global health law, food and drug law, FDA regulation class/course, FDA law class/course, quarantine law, vaccination law/vaccination mandate law, vaccine mandate law, infectious disease law, public health statute, public health regulation class/course, public health legislation class, population health law.
+- False-positive guard: "health policy"/"public health policy" stay in the policy branch (fires earlier); "healthcare law"/"medical malpractice" stay in healthcarelaw.
+- `publichealthlawCallouts(tier:)` 4/3/3: "that public health law brief isn't going to write itself." / "CLOSE THIS. open your public health law notes." / "no one masters public health law by browsing."
+- 2 templates: "Write a public health law memo or analyze a public health regulation" (60 min) + "Study for a public health law exam or complete a public health law assignment" (60 min)
+
+**Tests:**
+- CalloutManagerTests.swift: 1330→1362 (+32: 8 per domain)
+- SuggestedSessionTemplatesTests.swift: +9 (2 per domain + 1 count guard ≥259)
+
+### Blocked
+Swift toolchain unavailable on Linux — verified by code inspection:
+- "gerontology class on social aging and eldercare policy" → gerontology ✓; positioned before publicheath ✓
+- "epidemiology exam on infectious disease" → publicheath ✓ (not captured by gerontology ✓)
+- "cadc exam prep for addiction counseling certification" → addictioncounseling ✓; bare "counseling" stays in therapy ✓
+- "writing therapy session notes for my counseling internship" → therapy ✓ (counseling in therapy branch, not addictioncounseling ✓)
+- "oral and maxillofacial surgery class omfs residency prep" → oralsurgery ✓; positioned before dental ✓
+- "dental school nbde board prep on periodontics and prosthodontics" → dental ✓ (not caught by oralsurgery ✓)
+- "public health law class on quarantine law and fda regulation" → publichealthlaw ✓; positioned before healthcarelaw ✓
+- "healthcare law class on medical malpractice and hipaa compliance" → healthcarelaw ✓ (not caught by publichealthlaw ✓)
+- All 4 tier-3 pools contain "CLOSE THIS" or "no one" ✓; all tier-1 pools have ≥4 messages ✓
+- All 8 template durations in [300, 10800] ✓; template count 259 ≥ 259 ✓
+
+### Next agent should pick up
+- Additional keyword domains: behavioral health/mental health promotion, dental public health, occupational medicine, global health/international health, integrative medicine
+- AppMonitor observability tests (requires macOS)
+
+---
+
 ## Run 328 — 2026-07-11 — Human factors/ergonomics + behavioral economics + translational research + healthcare law + trade law keyword domains (1290→1330 tests, 193→203 templates)
 
 ### Shipped

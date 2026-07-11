@@ -1627,5 +1627,57 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Structured tasting notes written using the WSET or SAT framework for at least three wines, or assigned viticulture/enology topic reviewed and assignment saved for submission",
             preferredDuration: 45 * 60
         ),
+        // Gerontology / Aging Studies
+        SuggestedTemplate(
+            icon: "person.crop.circle",
+            task: "Complete a gerontology or aging studies assignment on social or biological aging",
+            successCriteria: "Assigned aging topic reviewed (social gerontology, age-related disease, or geriatric care), analysis or response written, and assignment saved or submitted for instructor review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "graduationcap.fill",
+            task: "Study for a geriatrics exam or complete a gerontology course assignment",
+            successCriteria: "Target content area reviewed (aging biology, dementia care, eldercare policy, or gerontological theory), key concepts summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Addiction Counseling / Behavioral Health
+        SuggestedTemplate(
+            icon: "heart.text.square.fill",
+            task: "Write addiction counseling session notes or a substance use disorder treatment plan",
+            successCriteria: "Client substance use history and counseling goals documented, intervention strategies identified, progress assessed, and notes saved in appropriate format for instructor or supervisor review",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "graduationcap.fill",
+            task: "Study for the CADC, NAADAC, or addiction counseling certification exam",
+            successCriteria: "Target content area reviewed (addiction theory, motivational interviewing, relapse prevention, or dual diagnosis), key concepts summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Oral Surgery / OMFS
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Study for an oral surgery exam or review OMFS procedures and techniques",
+            successCriteria: "Target procedure or concept reviewed (orthognathic surgery, dentoalveolar surgery, impacted teeth, or implant surgery), key steps and anatomy summarized, and at least 15 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete an oral surgery coursework assignment or case write-up",
+            successCriteria: "Assigned oral surgery topic reviewed, case details or analysis documented, and assignment saved or submitted for instructor or supervisor review",
+            preferredDuration: 45 * 60
+        ),
+        // Public Health Law
+        SuggestedTemplate(
+            icon: "doc.plaintext.fill",
+            task: "Write a public health law memo or analyze a public health regulation",
+            successCriteria: "Assigned public health law topic researched (quarantine law, FDA regulation, vaccine mandates, or food and drug law), analysis written with statutory and case references, and memo saved or submitted for review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "graduationcap.fill",
+            task: "Study for a public health law exam or complete a public health law assignment",
+            successCriteria: "Target content area reviewed (public health statutes, regulatory agencies, infectious disease law, or global health law), key legal standards summarized, and assignment or practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

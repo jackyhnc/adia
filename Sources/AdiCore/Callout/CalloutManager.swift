@@ -1528,9 +1528,29 @@ public final class CalloutManager {
             || word("adha") {
             return "dentalhygiene"
         }
+        // oralsurgery — positioned BEFORE dental so OMFS residency, orthognathic surgery,
+        // and impacted-teeth/jaw-surgery study tasks get a dedicated pool.
+        // "oral surgery" and "oral surgeon" removed from the dental branch below.
+        if lower.contains("oral surgery") || lower.contains("oral surgeon")
+            || lower.contains("oral surgeons")
+            || lower.contains("oral and maxillofacial") || lower.contains("oral & maxillofacial")
+            || word("omfs")
+            || lower.contains("orthognathic surgery") || lower.contains("jaw surgery")
+            || lower.contains("dental surgery") || lower.contains("dental surgeon")
+            || lower.contains("surgical dentistry") || lower.contains("dentoalveolar surgery")
+            || lower.contains("impacted wisdom") || lower.contains("wisdom tooth surgery")
+            || lower.contains("wisdom teeth removal") || lower.contains("tooth extraction class")
+            || lower.contains("implant surgery class") || lower.contains("dental implant surgery")
+            || lower.contains("oral surgery class") || lower.contains("oral surgery course")
+            || lower.contains("oral surgery exam") || lower.contains("oral surgery program")
+            || lower.contains("oral surgery residency") || lower.contains("oral surgery rotation")
+            || lower.contains("maxillofacial") {
+            return "oralsurgery"
+        }
         // dental — positioned before premed so dental-school-specific terms (NBDE, DDS/DMD,
         // perio, ortho, endodontics, dental boards) don't fall through to generic premed callouts.
         // "dental hygiene"/"dental hygienist" now owned by the dentalhygiene branch above.
+        // "oral surgery"/"oral surgeon" now owned by the oralsurgery branch above.
         if word("dds") || word("dmd") || lower.contains("dental school")
             || lower.contains("dental board") || lower.contains("dental boards")
             || lower.contains("nbde") || lower.contains("inbde")
@@ -1538,7 +1558,6 @@ public final class CalloutManager {
             || word("orthodontics") || word("orthodontist")
             || word("endodontics") || word("endodontist") || word("root canal")
             || word("prosthodontics") || word("prosthodontist")
-            || word("oral surgery") || lower.contains("oral surgeon")
             || word("pedodontics") || lower.contains("pediatric dentistry")
             || lower.contains("dental radiology") || lower.contains("dental x-ray")
             || lower.contains("dental anatomy") || lower.contains("dental clinic")
@@ -1906,6 +1925,29 @@ public final class CalloutManager {
             || lower.contains("therapeutic art making") || lower.contains("therapeutic art class") {
             return "arttherapy"
         }
+        // addictioncounseling — positioned BEFORE socialwork and therapy so substance-use-disorder
+        // counseling coursework, CADC/NAADAC certification prep, and dual-diagnosis study route
+        // to a dedicated pool. Bare word("counseling") stays in therapy.
+        if lower.contains("addiction counseling") || lower.contains("addiction counselor")
+            || lower.contains("addiction counselors")
+            || lower.contains("substance use disorder") || lower.contains("substance use disorders")
+            || lower.contains("sud counseling") || lower.contains("sud counselor")
+            || lower.contains("substance abuse counseling") || lower.contains("substance abuse counselor")
+            || lower.contains("dual diagnosis") || lower.contains("co-occurring disorders")
+            || lower.contains("drug and alcohol counseling") || lower.contains("drug and alcohol counselor")
+            || lower.contains("drug counseling") || lower.contains("alcohol counseling")
+            || word("cadc") || word("naadac") || word("lcadc") || word("caadc")
+            || lower.contains("behavioral health counseling") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("addiction class") || lower.contains("addiction course")
+            || lower.contains("addiction program") || lower.contains("addiction certification")
+            || lower.contains("addiction exam") || lower.contains("addiction studies")
+            || lower.contains("recovery coaching class") || lower.contains("recovery coaching certification")
+            || lower.contains("motivational interviewing class") || lower.contains("motivational interviewing course")
+            || lower.contains("relapse prevention class") || lower.contains("relapse prevention assignment")
+            || lower.contains("substance use class") || lower.contains("substance use course")
+            || lower.contains("substance use exam") || lower.contains("addiction treatment class") {
+            return "addictioncounseling"
+        }
         // socialwork — positioned before therapy so social-work-specific tasks (case management,
         // child welfare, community resources) route here instead of to therapist callouts.
         // "social work" is owned here; "social work" in the therapy branch is removed.
@@ -2008,6 +2050,32 @@ public final class CalloutManager {
             || lower.contains("slp school") || lower.contains("slp program") || lower.contains("slp exam")
             || lower.contains("clinical fellowship") && lower.contains("speech") {
             return "speechpathology"
+        }
+        // gerontology — positioned BEFORE publicheath so aging-science coursework, geriatrics,
+        // and eldercare study tasks get a dedicated pool instead of falling to publicheath.
+        // Bare "aging" is NOT matched (too generic: "aging wine", "aging process" in biology).
+        if word("gerontology") || word("gerontologist") || word("gerontological")
+            || word("geriatrics") || word("geriatrician") || word("geriatric")
+            || lower.contains("aging studies") || lower.contains("aging science")
+            || lower.contains("social gerontology") || lower.contains("biological aging")
+            || lower.contains("cognitive aging") || lower.contains("aging population")
+            || lower.contains("aging policy") || lower.contains("aging research")
+            || lower.contains("age-related disease") || lower.contains("age related disease")
+            || lower.contains("aging and society") || lower.contains("aging in place")
+            || lower.contains("dementia class") || lower.contains("dementia course")
+            || lower.contains("dementia assignment") || lower.contains("dementia care class")
+            || lower.contains("alzheimer's class") || lower.contains("alzheimer class")
+            || lower.contains("alzheimer's research class") || lower.contains("alzheimer's course")
+            || lower.contains("eldercare class") || lower.contains("elder care class")
+            || lower.contains("long-term care class") || lower.contains("long term care class")
+            || lower.contains("long-term care planning") || lower.contains("nursing home class")
+            || lower.contains("gerontology class") || lower.contains("gerontology course")
+            || lower.contains("gerontology exam") || lower.contains("gerontology program")
+            || lower.contains("gerontology major") || lower.contains("gerontology assignment")
+            || lower.contains("geriatric care") && lower.contains("class")
+            || lower.contains("geriatric medicine") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("retirement planning class") || lower.contains("retirement planning course") {
+            return "gerontology"
         }
         // publicheath — positioned after therapy (clinical context) and before socialscience.
         // Catches MPH programs, epidemiology, community/global health, outbreak investigation,
@@ -2261,6 +2329,26 @@ public final class CalloutManager {
             || lower.contains("health policy") || lower.contains("public health policy")
             || lower.contains("fiscal policy") || lower.contains("monetary policy") {
             return "policy"
+        }
+        // publichealthlaw — positioned BEFORE healthcarelaw so public-health-specific legal topics
+        // (quarantine law, vaccine mandates, FDA regulation courses, food/drug law) get a dedicated
+        // pool. "health policy" / "public health policy" stay in the policy branch (fires earlier).
+        if lower.contains("public health law") || lower.contains("public health law class")
+            || lower.contains("public health law course") || lower.contains("public health law exam")
+            || lower.contains("public health law assignment") || lower.contains("public health law paper")
+            || lower.contains("public health law and policy") || lower.contains("health law and policy")
+            || lower.contains("global health law") || lower.contains("global health law class")
+            || lower.contains("food and drug law") || lower.contains("food and drug law class")
+            || lower.contains("fda regulation class") || lower.contains("fda regulation course")
+            || lower.contains("fda law class") || lower.contains("fda law course")
+            || lower.contains("quarantine law") || lower.contains("quarantine regulation class")
+            || lower.contains("vaccination law") || lower.contains("vaccination mandate law")
+            || lower.contains("vaccine mandate law") || lower.contains("infectious disease law")
+            || lower.contains("public health statute") || lower.contains("public health regulation class")
+            || lower.contains("public health regulation course")
+            || lower.contains("public health legislation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("population health law") {
+            return "publichealthlaw"
         }
         // healthcarelaw — positioned BEFORE legal so health-law courses, HIPAA-as-law, bioethics
         // law, and medical malpractice tasks route here. "health policy" stays in the policy branch.

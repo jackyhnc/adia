@@ -2668,6 +2668,42 @@ struct SuggestedSessionTemplatesTests {
         #expect(hasTasting, "catalog must include a blind tasting or viticulture assignment template")
     }
 
+    // MARK: - Gerontology / Aging Studies templates
+    @Test func gerontologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("gerontology") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("aging")) }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("geriatrics") || ($0.localizedCaseInsensitiveContains("gerontology") && $0.localizedCaseInsensitiveContains("exam")) }
+        #expect(hasAssignment, "catalog must include a gerontology assignment or aging studies template")
+        #expect(hasExam,       "catalog must include a geriatrics exam or gerontology course template")
+    }
+
+    // MARK: - Addiction Counseling templates
+    @Test func addictioncounselingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasNotes = tasks.contains { $0.localizedCaseInsensitiveContains("addiction counseling") && ($0.localizedCaseInsensitiveContains("session notes") || $0.localizedCaseInsensitiveContains("treatment plan")) }
+        let hasExam = tasks.contains { ($0.localizedCaseInsensitiveContains("CADC") || $0.localizedCaseInsensitiveContains("NAADAC")) && $0.localizedCaseInsensitiveContains("exam") }
+        #expect(hasNotes, "catalog must include an addiction counseling session notes or treatment plan template")
+        #expect(hasExam,  "catalog must include a CADC or NAADAC exam template")
+    }
+
+    // MARK: - Oral Surgery templates
+    @Test func oralsurgeryTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("oral surgery") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("OMFS")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("oral surgery") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("case write")) }
+        #expect(hasExam,       "catalog must include an oral surgery exam or OMFS template")
+        #expect(hasAssignment, "catalog must include an oral surgery assignment or case write-up template")
+    }
+
+    // MARK: - Public Health Law templates
+    @Test func publichealthlawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasMemo = tasks.contains { $0.localizedCaseInsensitiveContains("public health law") && ($0.localizedCaseInsensitiveContains("memo") || $0.localizedCaseInsensitiveContains("regulation")) }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("public health law") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("assignment")) }
+        #expect(hasMemo, "catalog must include a public health law memo or regulation analysis template")
+        #expect(hasExam, "catalog must include a public health law exam or assignment template")
+    }
+
     // MARK: - Count guard
     @Test func catalogHasAtLeastTwoHundredThirtyThreeTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 233,
@@ -2680,5 +2716,9 @@ struct SuggestedSessionTemplatesTests {
     @Test func catalogHasAtLeastTwoHundredFiftyThreeTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 253,
                 "catalog should have ≥253 templates after polysomnography/nursinginformatics/musictherapy/dramaeducation/winesommelier additions")
+    }
+    @Test func catalogHasAtLeastTwoHundredFiftyNineTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 259,
+                "catalog should have ≥259 templates after gerontology/addictioncounseling/oralsurgery/publichealthlaw additions")
     }
 }
