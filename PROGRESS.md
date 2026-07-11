@@ -13261,3 +13261,57 @@ None. Swift toolchain unavailable on Linux container.
 - Continue adding keyword domains: real estate, theology, speech pathology (done), graphic design (done), interior design (done) — remaining: real estate, theology, dental assisting/dental hygiene split, physical education/coaching, actuarial science, criminal justice (split from socialscience), education/teaching, library science
 - Consider cross-domain disambiguation: "speech" alone (could be a presentation speech vs speech therapy) — add context check or let presentation branch handle it since presentation fires much earlier
 - Consider whether `word("asha")` in speechpathology is too broad (ASHA as a name) — could add `lower.contains("asha") && (lower.contains("speech") || lower.contains("slp") || lower.contains("communication"))` guard if false positives surface
+
+## Run 320 — 2026-07-11 — Real estate, education, and actuarial keyword domains (832→866 tests, 95→101 templates)
+
+### Shipped
+
+**New keyword domain — realestate:**
+- Branch positioned BEFORE business so "real estate investment", property management, and licensing/appraisal prep route here rather than the generic business pool
+- Matches: real estate (contains), realtor/realtors, real estate agent/broker, real estate license/exam/school/class, real estate appraisal, property appraisal, property management/manager, MLS listing, comparative market analysis, CMA report/presentation, property valuation, home inspection, title search/insurance, closing documents/costs, listing agreement, purchase agreement/contract, escrow, zoning, fair housing, real estate investing, REIT, open house prep
+- `realestateCallouts(tier:)` 4/3/3: listing/CMA/license voice — "that listing isn't going to write itself." / "your real estate exam isn't going to pass itself." / "CLOSE THIS. open your real estate study materials."
+- 2 new templates: "Prep for my real estate licensing exam" (60 min) + "Write a comparative market analysis or listing presentation" (45 min)
+
+**New keyword domain — education:**
+- Branch positioned BEFORE tutor so lesson planning, curriculum development, and teaching certification tasks route here rather than the generic tutoring/coaching pool
+- Matches: lesson plan(s/ning), curriculum, pedagogy/pedagogical/pedagogist, teaching certificate/credential, teacher certification/credential, classroom management, instructional design/materials, learning objectives/outcomes, student teaching, assessment rubric, grading rubric, differentiated instruction, educational psychology, school/college of education, education class/course/program/degree, edTPA, Praxis core/II/2, praxis+teach or praxis+education, teacher/teaching licensure, individualized education plan/program
+- Note: "praxis slp" / "praxis exam speech" in the speechpathology branch fire AFTER education (line 820 vs 501), so SLP-specific Praxis correctly stays in speechpathology
+- `educationCallouts(tier:)` 4/3/3: lesson-plan/student voice — "those lesson plans aren't going to write themselves." / "your teaching cert exam isn't going to pass itself." / "CLOSE THIS. open your lesson plans."
+- 2 new templates: "Write my lesson plans for the week" (60 min) + "Study for my teaching certification exam (Praxis)" (60 min)
+
+**New keyword domain — actuarial:**
+- Branch positioned BEFORE statistics so Exam P/FM/IFM/LTAM/STAM, MAS-I/II, SOA/CAS exam prep, and credential pursuit (ASA/FSA/FCAS/ACAS) route here rather than the generic stats pool
+- Matches: actuarial/actuary/actuaries, SOA exam, CAS exam, exam P/FM/IFM/LTAM/STAM, exam MAS-I/MAS-II, actuarial science/math/models/exam/study/prep, FSA exam/ASA exam/SOA ASA/SOA FSA/FCAS exam/ACAS exam, loss models/reserving, credibility theory, mortality table, life table, actuarial reserve/risk/pricing
+- Acronym safety: FSA/ASA require compound terms (fsa exam, soa fsa) to avoid "flexible spending account" and similar false positives
+- `actuarialCallouts(tier:)` 4/3/3: exam-P/FSA voice — "those actuarial problems aren't going to solve themselves." / "stop — your FSA isn't going to earn itself." / "CLOSE THIS. open your actuarial exam prep."
+- 2 new templates: "Study for my actuarial exam (Exam P, FM, or IFM)" (90 min) + "Work through actuarial practice problems or loss models" (60 min)
+
+**Test count: 832 → 866 Swift tests (CalloutManagerTests)**
+- 11 new realestate tests: keyword routing (real estate, realtor, property management, comparative market analysis, closing docs, escrow), false-positive guard (MBA → business), pool non-empty, pool size ≥4/3/3, tier3 urgent directive, none-empty
+- 12 new education tests: keyword routing (lesson plan, curriculum, pedagogy, teaching certificate, student teaching, Praxis+education, classroom management), false-positive guard (tutor → tutor not education), pool non-empty, pool size ≥4/3/3, tier3 urgent directive, none-empty
+- 11 new actuarial tests: keyword routing (actuarial, exam P, exam FM, SOA exam, loss models, actuary), false-positive guard (regression analysis → statistics), pool non-empty, pool size ≥4/3/3, tier3 urgent directive, none-empty
+
+**SuggestedSessionTemplatesTests: 166 → 176**
+- 3 tests per domain (exist, variety ≥2, reasonable duration) + final ≥101 count guard
+
+**Template catalog: 95 → 101**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `realestate` branch at line 299, before business at line 323; `real estate market analysis` now routes to realestate (contains check), not business (market analysis). Correct.
+- `education` branch at line 501, before tutor at line 507. `lesson plan`, `curriculum`, `pedagogy`, `student teaching` all caught by education; `word("tutor")`, `word("teaching")` alone still fall to tutor. Correct.
+- `actuarial` branch at line 187, before statistics at line 203. `exam P`, `SOA exam`, `loss models` caught before stats pool. `regression analysis in R` still routes to statistics. Correct.
+- `praxis slp` in speechpathology (line ~820) fires AFTER education branch (line 501); education condition requires `praxis` + `teach`/`education` so bare `praxis slp` skips education and reaches speechpathology correctly.
+- Three new pool functions (realestateCallouts, educationCallouts, actuarialCallouts) added in CalloutMessages.swift with correct 4/3/3 tier structure.
+- Three dispatch cases added to taskAwareCallouts() switch before `default`.
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains not yet covered: theology, criminal justice (split from socialscience — `word("criminology")` + `lower.contains("criminal justice")` currently in socialscience), library science, physical education/sport coaching (split from kinesiology and fitness), journalism/media studies, public relations/communications
+- Consider splitting socialscience into distinct branches: criminology/criminal justice vs. political science/poli sci vs. anthropology
+- Consider adding "coaching" (sport/athletic coaching) as a distinct domain separate from the tutor/coaching pool — currently `word("coaching")` routes to tutor which is odd for athletic coaching
+- Consider whether `word("escrow")` in realestate is broad enough — "in escrow" is a very real estate specific phrase, no likely false positives
+- Consider `word("edd")` for Doctor of Education in the education branch (currently not matched; "edd" could be a username so left out intentionally)
+
