@@ -2151,4 +2151,46 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 143,
                 "catalog should have ≥143 templates after filmstudies/performingarts/astronomy/mathematics/linguistics additions")
     }
+
+    // MARK: - Art History templates
+    @Test func arthistoryTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasEssay = tasks.contains { $0.localizedCaseInsensitiveContains("art history essay") }
+        let hasExam  = tasks.contains { $0.localizedCaseInsensitiveContains("art history exam") }
+        #expect(hasEssay, "catalog must include an art history essay template")
+        #expect(hasExam,  "catalog must include an art history exam template")
+    }
+
+    // MARK: - Marine Biology templates
+    @Test func marinebiologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasLab  = tasks.contains { $0.localizedCaseInsensitiveContains("marine biology") }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("oceanography") || $0.localizedCaseInsensitiveContains("marine biology") }
+        #expect(hasLab,  "catalog must include a marine biology lab template")
+        #expect(hasExam, "catalog must include a marine biology/oceanography exam template")
+    }
+
+    // MARK: - Speech Arts templates
+    @Test func speechartsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasDebate  = tasks.contains { $0.localizedCaseInsensitiveContains("debate") }
+        let hasModelUN = tasks.contains { $0.localizedCaseInsensitiveContains("Model UN") || $0.localizedCaseInsensitiveContains("public speaking") }
+        #expect(hasDebate,  "catalog must include a debate prep template")
+        #expect(hasModelUN, "catalog must include a Model UN or public speaking template")
+    }
+
+    // MARK: - Forensic Science templates
+    @Test func forensicscienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasLab  = tasks.contains { $0.localizedCaseInsensitiveContains("forensic science") }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("FEPAC") || $0.localizedCaseInsensitiveContains("forensic science exam") }
+        #expect(hasLab,  "catalog must include a forensic science lab template")
+        #expect(hasExam, "catalog must include a forensic science exam template")
+    }
+
+    // MARK: - Count guard
+    @Test func catalogHasAtLeastOneHundredFiftyOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 151,
+                "catalog should have ≥151 templates after arthistory/marinebiology/speecharts/forensicscience additions")
+    }
 }

@@ -138,6 +138,10 @@ extension CalloutManager {
         case "astronomy":              return astronomyCallouts(tier: tier)
         case "mathematics":            return mathematicsCallouts(tier: tier)
         case "linguistics":            return linguisticsCallouts(tier: tier)
+        case "arthistory":             return arthistoryCallouts(tier: tier)
+        case "marinebiology":          return marinebiologyCallouts(tier: tier)
+        case "speecharts":             return speechartsCallouts(tier: tier)
+        case "forensicscience":        return forensicscienceCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -1997,6 +2001,90 @@ extension CalloutManager {
             "CLOSE THIS. open your linguistics notes.",
             "no one masters language structure by browsing.",
             "CLOSE THIS. your analysis is waiting.",
+        ]
+        }
+    }
+
+    private func arthistoryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that art history essay isn't going to write itself.",
+            "get back to your art history work.",
+            "your art analysis isn't going to happen on its own.",
+            "close this and open your art history notes.",
+        ]
+        case 2: return [
+            "you're not going to understand the baroque by scrolling.",
+            "art criticism doesn't write itself — close this.",
+            "your art history exam is waiting.",
+        ]
+        default: return [
+            "CLOSE THIS. open your art history notes.",
+            "no one learns art history by scrolling.",
+            "CLOSE THIS. get back to your analysis.",
+        ]
+        }
+    }
+
+    private func marinebiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that marine biology assignment isn't going to finish itself.",
+            "get back to your ocean science work.",
+            "your marine biology notes aren't going to write themselves.",
+            "close this and open your marine biology materials.",
+        ]
+        case 2: return [
+            "the ocean doesn't study itself — you have to.",
+            "no marine biologist got there by scrolling.",
+            "your oceanography exam is waiting.",
+        ]
+        default: return [
+            "CLOSE THIS. open your marine biology notes.",
+            "no one maps the ocean by scrolling.",
+            "CLOSE THIS. get back to your lab report.",
+        ]
+        }
+    }
+
+    private func speechartsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your debate prep isn't going to happen by scrolling.",
+            "get back to your speech and debate work.",
+            "your argument isn't going to build itself.",
+            "close this and get back to your case.",
+        ]
+        case 2: return [
+            "no one wins a debate tournament by scrolling.",
+            "your speech isn't going to write itself — close this.",
+            "your Model UN resolution is waiting.",
+        ]
+        default: return [
+            "CLOSE THIS. open your debate notes.",
+            "no one wins nationals by scrolling.",
+            "CLOSE THIS. get back to your case prep.",
+        ]
+        }
+    }
+
+    private func forensicscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that forensic science assignment isn't going to finish itself.",
+            "get back to your forensic science work.",
+            "your evidence analysis isn't going to write itself.",
+            "close this and open your forensic science notes.",
+        ]
+        case 2: return [
+            "no forensic scientist got there by scrolling.",
+            "your crime lab report is waiting — close this.",
+            "evidence doesn't analyze itself.",
+        ]
+        default: return [
+            "CLOSE THIS. open your forensic science notes.",
+            "no one passes FEPAC by scrolling.",
+            "CLOSE THIS. get back to your lab analysis.",
         ]
         }
     }

@@ -273,6 +273,31 @@ public final class CalloutManager {
             || lower.contains("international phonetic alphabet") {
             return "linguistics"
         }
+        // marinebiology — positioned before studying so "marine biology exam" and
+        // "oceanography lab" don't fall through via word("exam") or word("lab").
+        // Bare word("biology") stays in studying for generic "biology exam" tasks.
+        if lower.contains("marine biology") || lower.contains("marine biologist")
+            || lower.contains("marine biologists")
+            || lower.contains("marine ecology") || lower.contains("marine ecologist")
+            || lower.contains("marine science") || lower.contains("marine sciences")
+            || lower.contains("marine life") || lower.contains("marine organisms")
+            || lower.contains("marine mammal") || lower.contains("marine mammals")
+            || word("oceanography") || word("oceanographer") || word("oceanographers")
+            || lower.contains("ocean science") || lower.contains("ocean sciences")
+            || lower.contains("coastal ecology") || lower.contains("aquatic ecology")
+            || lower.contains("aquatic biology") || lower.contains("freshwater ecology")
+            || lower.contains("coral reef") || lower.contains("coral reefs")
+            || lower.contains("deep sea") || lower.contains("deep ocean")
+            || lower.contains("marine conservation") || lower.contains("fisheries science")
+            || word("ichthyology") || word("ichthyologist")
+            || word("plankton") || word("phytoplankton") || word("zooplankton")
+            || word("benthic") || word("pelagic") || word("littoral")
+            || lower.contains("marine lab") || lower.contains("marine biology class")
+            || lower.contains("marine biology course") || lower.contains("marine biology exam")
+            || lower.contains("marine biology homework") || lower.contains("oceanography class")
+            || lower.contains("oceanography course") || lower.contains("oceanography exam") {
+            return "marinebiology"
+        }
         if word("study") || word("studying") || word("exam") || word("quiz") || word("test")
             || word("midterm") || word("midterms") || word("finals") || word("notes")
             || word("flashcard") || word("flashcards") || word("lecture")
@@ -519,6 +544,27 @@ public final class CalloutManager {
             || lower.contains("print design") || lower.contains("web graphics")
             || word("canva") {
             return "graphicdesign"
+        }
+        // arthistory — positioned BEFORE art so "art history essay", "art criticism", and
+        // "museum studies" route here rather than the fine-art making branch.
+        // "art theory" is common in art-history courses; "digital art" stays in art.
+        if lower.contains("art history") || lower.contains("art historian")
+            || lower.contains("art historians") || lower.contains("art historical")
+            || lower.contains("art criticism") || lower.contains("art critic")
+            || lower.contains("art critics") || lower.contains("museum studies")
+            || lower.contains("art analysis") || lower.contains("visual culture")
+            || lower.contains("art theory") || lower.contains("art appreciation")
+            || lower.contains("aesthetic theory") || lower.contains("aesthetics class")
+            || lower.contains("iconography") || lower.contains("iconology")
+            || lower.contains("baroque art") || lower.contains("baroque period")
+            || lower.contains("renaissance art") || lower.contains("impressionism")
+            || lower.contains("expressionism in art") || lower.contains("art movement")
+            || lower.contains("art movements") || lower.contains("curatorial")
+            || lower.contains("museum curation") || lower.contains("art history class")
+            || lower.contains("art history course") || lower.contains("art history exam")
+            || lower.contains("art history essay") || lower.contains("art history paper")
+            || lower.contains("art history major") || lower.contains("art history program") {
+            return "arthistory"
         }
         if word("drawing") || word("painting") || word("sketching")
             || word("illustration") || word("illustrations") || word("illustrate") || word("illustrating")
@@ -1155,6 +1201,28 @@ public final class CalloutManager {
             || lower.contains("ot class") || lower.contains("ot exam") {
             return "occupationaltherapy"
         }
+        // speecharts — positioned BEFORE speechpathology so debate, Model UN, public speaking
+        // competitions, and competitive speech tasks route here. "speech therapy"/"SLP" stay in
+        // speechpathology. "forensics" as a bare word is NOT matched (too ambiguous with forensic science).
+        if lower.contains("debate team") || lower.contains("competitive debate")
+            || lower.contains("debate tournament") || lower.contains("debate competition")
+            || lower.contains("speech team") || lower.contains("speech tournament")
+            || lower.contains("speech competition") || lower.contains("speech and debate")
+            || lower.contains("model un") || lower.contains("model united nations")
+            || word("mun") && (lower.contains("conference") || lower.contains("committee") || lower.contains("resolution"))
+            || lower.contains("lincoln-douglas") || lower.contains("ld debate")
+            || lower.contains("policy debate") || lower.contains("parliamentary debate")
+            || lower.contains("extemporaneous speech") || lower.contains("extemporaneous speaking")
+            || lower.contains("public speaking class") || lower.contains("public speaking course")
+            || lower.contains("public speaking competition") || lower.contains("public speaking exam")
+            || lower.contains("oratory") || word("oratorical")
+            || lower.contains("competitive speech") || lower.contains("forensics team")
+            || lower.contains("forensics tournament") || lower.contains("speech tournament")
+            || lower.contains("persuasive speech") || lower.contains("informative speech")
+            || lower.contains("impromptu speech") || lower.contains("after dinner speech")
+            || lower.contains("oral interpretation") || lower.contains("dramatic interpretation") {
+            return "speecharts"
+        }
         // speechpathology — positioned after occupationaltherapy, before publicheath.
         // Catches SLP clinical work, ASHA credentials, communication/swallowing disorders.
         // "therapy notes" stays in the therapy branch above; speechpathology claims disorder-specific terms.
@@ -1220,6 +1288,29 @@ public final class CalloutManager {
             || lower.contains("psychological research") || lower.contains("psychology study") {
             return "psychology"
         }
+        // forensicscience — positioned BEFORE criminaljustice so crime-lab, DNA analysis,
+        // and forensic-science coursework route here. "forensic accounting" is owned by its own
+        // earlier branch. Bare "forensics" is NOT matched (ambiguous: could be speech forensics).
+        if lower.contains("forensic science") || lower.contains("forensic scientist")
+            || lower.contains("forensic scientists")
+            || lower.contains("forensic biology") || lower.contains("forensic chemistry")
+            || lower.contains("forensic toxicology") || lower.contains("forensic pathology")
+            || lower.contains("forensic entomology") || lower.contains("forensic anthropology")
+            || lower.contains("forensic serology") || lower.contains("forensic genetics")
+            || lower.contains("dna analysis") || lower.contains("dna profiling")
+            || lower.contains("dna evidence") || lower.contains("dna typing")
+            || lower.contains("trace evidence") || lower.contains("ballistics")
+            || lower.contains("fingerprint analysis") || lower.contains("fingerprint identification")
+            || lower.contains("fingerprint examination")
+            || lower.contains("crime lab") || lower.contains("crime scene")
+            || lower.contains("forensic lab") || lower.contains("evidence analysis")
+            || word("fepac")
+            || lower.contains("bloodstain pattern") || lower.contains("serology lab")
+            || lower.contains("toxicology lab") || lower.contains("forensic class")
+            || lower.contains("forensic course") || lower.contains("forensic exam")
+            || lower.contains("forensic program") || lower.contains("forensic degree") {
+            return "forensicscience"
+        }
         // criminaljustice — split from socialscience so criminology and criminal justice tasks get
         // a dedicated callout pool. Positioned BEFORE socialscience. "criminal law" routed here
         // because it is a criminal-justice course, not a law-school litigation task.
@@ -1229,7 +1320,6 @@ public final class CalloutManager {
             || lower.contains("criminal procedure") || lower.contains("criminal court")
             || word("penology") || lower.contains("prison reform")
             || lower.contains("juvenile justice") || lower.contains("juvenile delinquency")
-            || lower.contains("forensic science") || lower.contains("crime scene")
             || lower.contains("law enforcement") || lower.contains("policing")
             || lower.contains("corrections") || lower.contains("correctional")
             || lower.contains("incarceration") || word("victimology")

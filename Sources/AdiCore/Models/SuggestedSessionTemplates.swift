@@ -925,5 +925,57 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Key frameworks and terminology reviewed, target corpus or text analyzed, and study guide or analytical notes completed and saved",
             preferredDuration: 60 * 60
         ),
+        // Art History
+        SuggestedTemplate(
+            icon: "paintpalette.fill",
+            task: "Write an art history essay or art criticism paper",
+            successCriteria: "Target artwork or period analyzed with historical context, stylistic features, and theoretical framework addressed; essay draft written with clear argument and saved for revision",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "photo.artframe",
+            task: "Study for an art history exam or review a major art movement",
+            successCriteria: "Key artists, works, and periods reviewed, art movement characteristics summarized, and at least 20 identification or short-answer practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Marine Biology / Oceanography
+        SuggestedTemplate(
+            icon: "fish.fill",
+            task: "Write a marine biology lab report or oceanography assignment",
+            successCriteria: "Experimental data or field observations analyzed, key findings interpreted with supporting evidence, and full lab report written with methods and conclusions saved for submission",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "water.waves",
+            task: "Study for a marine biology or oceanography exam",
+            successCriteria: "Target content area reviewed, key species, ecosystems, or oceanographic processes summarized, and at least 20 practice questions completed with corrections noted",
+            preferredDuration: 60 * 60
+        ),
+        // Speech Arts / Debate
+        SuggestedTemplate(
+            icon: "mic.fill",
+            task: "Prep a debate case or speech tournament argument",
+            successCriteria: "Core argument structured with evidence blocks, rebuttals drafted for likely counter-arguments, and full case flow written and ready for practice round",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "person.wave.2.fill",
+            task: "Prepare for a Model UN conference or public speaking competition",
+            successCriteria: "Research completed, position paper or speech outline finalized, key talking points memorized, and at least one full run-through of the speech or opening statement completed",
+            preferredDuration: 60 * 60
+        ),
+        // Forensic Science
+        SuggestedTemplate(
+            icon: "magnifyingglass",
+            task: "Complete a forensic science lab report or crime scene analysis",
+            successCriteria: "Evidence samples or scenarios analyzed using correct forensic procedures, findings documented with supporting data, and full lab report written and ready for submission",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "flask.fill",
+            task: "Study for a forensic science exam or FEPAC certification prep",
+            successCriteria: "Target forensic discipline reviewed (biology, chemistry, or toxicology), key procedures and case law summarized, and at least 20 practice questions completed with corrections noted",
+            preferredDuration: 60 * 60
+        ),
     ]
 }
