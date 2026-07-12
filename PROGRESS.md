@@ -14578,3 +14578,68 @@ None. Swift toolchain unavailable on Linux container.
   - `interpreting` — ASL/spoken language interpretation (professional, distinct from signlanguage which covers coursework), interpreter certification, RID exam, court interpreting
 - Template count: 297 → 307 after next 5-domain batch
 - Estimated test count: 1735 (CalloutManagerTests) + ~670 additional from other test files ≈ 2405+ total Swift tests
+
+---
+
+## Run — 2026-07-12
+
+### What shipped
+**5 new keyword domains: theatresound, dancescience, forensicnursing, midwiferyassisting, interpreting**
+
+**New keyword domain — theatresound:**
+- Branch positioned BEFORE `musicproduction` (catches FOH mixing before bare `word("mixing")` fires)
+- Matches: front of house, FOH mixing/engineer, stage sound, live sound/audio, sound design + theatre/stage/live/event context, theatre sound, audio tech program/class/school/exam, audio engineering + live/stage/theatre context, monitor mix/engineer, PA system + sound, sound reinforcement, live event audio, concert sound, theatrical sound
+- `theatresoundCallouts(tier:)` 4/3/3: "that FOH mix isn't going to dial itself — get back to your notes." / "CLOSE THIS. open your sound design notes." / "no one masters live audio by browsing."
+- 2 templates: "Study live sound engineering, FOH mixing, or audio tech program coursework" (45 min) + "Complete a sound design or theatre audio assignment for class" (60 min)
+
+**New keyword domain — dancescience:**
+- Branch positioned BEFORE `performingarts` (catches dance anatomy/LMA before bare word("dance") is ambiguous)
+- Matches: dance kinesiology, dance anatomy, dance science, Laban movement analysis, LMA + dance context, somatic movement + dance, Bartenieff fundamentals, dance medicine/injury/biomechanics/physiology, movement analysis + dance/Laban, dance research + science, dance for PD, dance wellness
+- `dancescienceCallouts(tier:)` 4/3/3: "those movement analyses aren't going to write themselves." / "CLOSE THIS. open your dance anatomy notes." / "no one learns Laban Movement Analysis by browsing."
+- 2 templates: "Complete a dance anatomy, dance kinesiology, or Laban Movement Analysis assignment" (60 min) + "Study dance science concepts: somatic movement, dance biomechanics, or dance physiology" (45 min)
+
+**New keyword domain — forensicnursing:**
+- Branch positioned BEFORE `nursing` (prevents word("nursing") from swallowing "forensic nursing" tasks)
+- Matches: forensic nursing/nurse, SANE exam/certification/program, sexual assault nurse/examiner, forensic nursing notes/school/program/class/course/exam, AFN credential, ANES certification, nurse examiner + forensic/assault context, strangulation documentation + nurse, injury documentation + forensic
+- `forensicnursingCallouts(tier:)` 4/3/3: "your patients need you focused — get back to your forensic nursing notes." / "CLOSE THIS. open your forensic nursing notes." / "no one earns their SANE credential by browsing."
+- 2 templates: "Study for the SANE exam or complete a forensic nursing school assignment" (60 min) + "Write forensic nursing case documentation or SANE patient encounter notes" (30 min)
+
+**New keyword domain — midwiferyassisting:**
+- Branch positioned BEFORE `midwifery` (doula terms are specific but placing before midwifery is cleaner)
+- Matches: doula (any), birth/postpartum/labor/antepartum doula, DONA certification/exam/training, CAPPA certification/exam, BADT exam, doula training/certification/program/class/course/exam/school/assignment, childbirth educator + cert/class/exam context, birth support + cert/class
+- `midwiferyassistingCallouts(tier:)` 4/3/3: "those doula training materials aren't going to study themselves." / "CLOSE THIS. open your doula training notes." / "no one earns their DONA certification by browsing."
+- 2 templates: "Study for the DONA doula certification exam or complete a doula training assignment" (60 min) + "Write a birth doula or postpartum doula reflection, care plan, or client support documentation" (30 min)
+
+**New keyword domain — interpreting:**
+- Branch positioned BEFORE `signlanguage` (prevents "sign language interpreting program" from matching "sign language" in signlanguage branch)
+- Matches: sign language interpreting, ASL interpreting, ASL interpreter + cert/class/exam/program/professional context, RID exam/certification/credential, court/medical/community/conference interpreting, spoken language interpreter/interpreting, simultaneous/consecutive interpreting, interpreter certification, interpreter training + lang context, interpreting program/class/exam, language interpreting, legal interpreting
+- `interpretingCallouts(tier:)` 4/3/3: "those interpreting skills aren't going to develop themselves." / "CLOSE THIS. open your interpreting notes." / "no one earns RID certification by browsing."
+- 2 templates: "Study for the RID interpreter certification exam or complete an interpreting program assignment" (60 min) + "Practice and document simultaneous or consecutive interpreting skills for my certification program" (45 min)
+
+**Test counts:**
+- CalloutManagerTests.swift: 1735 → 1775 (+40: 8 tests per domain × 5 domains)
+- SuggestedSessionTemplatesTests.swift: ≥297 count guard → ≥307 count guard + 10 new template existence tests
+
+**Template catalog: 297 → 307**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `interpreting` fires BEFORE `signlanguage` (~line 274 vs ~line 290). "studying for the RID certification exam and completing my sign language interpreting program coursework" → interpreting ✓ (contains "sign language interpreting"); "studying ASL class vocabulary and fingerspelling for my American sign language course assignment" → signlanguage ✓ (no interpreting-specific terms)
+- `dancescience` fires BEFORE `performingarts` (~line 927 vs ~line 953). "completing my Laban Movement Analysis observation paper for dance science class" → dancescience ✓; "rehearsing my contemporary dance piece for the spring performance concert" → performingarts ✓
+- `theatresound` fires BEFORE `musicproduction` (~line 1505 vs ~line 1519). "setting up my FOH mixing notes for live sound reinforcement class exam" → theatresound ✓ ("foh mixing" matches before word("mixing") in musicproduction); "recording and mixing my new track in logic pro x" → musicproduction ✓
+- `midwiferyassisting` fires BEFORE `midwifery` (~line 2205 vs ~line 2229). "studying for the DONA certification exam and completing my birth doula training assignment" → midwiferyassisting ✓; "AMCB certified nurse midwife exam and midwifery school" → midwifery ✓
+- `forensicnursing` fires BEFORE `nursing` (~line 2243 vs ~line 2258). "studying for the SANE exam and reviewing forensic nursing certification materials" → forensicnursing ✓; "writing nursing care plans and completing my NCLEX study guide" → nursing ✓
+- Five new dispatch cases in CalloutMessages.swift (lines 218-222). Five new pool functions (lines 3721-3825). Template count: 307 ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `dramatherapy` — drama therapy/therapist, psychodrama, sociodrama, NADT, drama therapy session notes, separate from dramaeducation (class) and arttherapy
+  - `horsemanship` — equine therapy/equestrian, dressage/show jumping/reining, FEI, horse training, barn management, separate from veterinary (animal science)
+  - `glassblowing` — glass arts/glasswork, kiln-formed glass, flameworking, glass studio, separate from art/craft
+  - `landsurveyingtech` — land surveying technology, survey tech program, FS exam, GPS surveying, property boundaries
+  - `polysomnographytech` — polysomnography technology, sleep tech program, RPSGT exam, home sleep testing, PSG scoring (already noted earlier)
+- Template count: 307 → 317 after next 5-domain batch
+- Estimated test count: 1775 (CalloutManagerTests) + ~670 additional from other test files ≈ 2445+ total Swift tests
