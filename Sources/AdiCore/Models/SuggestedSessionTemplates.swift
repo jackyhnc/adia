@@ -2276,5 +2276,65 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Paralegal assignment completed (research memo drafted, legal document outlined, or case analysis written), and work saved or submitted",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "chart.pie.fill",
+            task: "Study for the CFP exam or complete a financial planning coursework module",
+            successCriteria: "Target CFP content reviewed (financial planning process, investment, insurance, tax, retirement, or estate planning), practice questions completed, and notes saved for next session",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "dollarsign.circle.fill",
+            task: "Build a client financial plan or case study for my financial planning program",
+            successCriteria: "Financial plan section completed (goals, net worth statement, cash flow analysis, or recommendations written), and work saved or submitted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Complete a soil science lab report, field description, or pedology coursework assignment",
+            successCriteria: "Lab report or field description completed (soil horizon descriptions, profile sketch, or taxonomy classification written), and work saved or submitted",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "square.3.layers.3d.down.forward.fill",
+            task: "Study for my soil science exam or work through soil taxonomy and classification materials",
+            successCriteria: "Target soil science content reviewed (soil orders, classification criteria, horizon nomenclature, or formation processes), practice questions completed, and notes saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "shield.lefthalf.filled",
+            task: "Complete my industrial hygiene or occupational safety coursework assignment",
+            successCriteria: "Assignment completed (hazard analysis written, safety program section drafted, OSHA regulation review completed, or problem set solved), and work saved or submitted",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "exclamationmark.triangle.fill",
+            task: "Study for the CIH exam or review OSHA regulations and industrial safety standards",
+            successCriteria: "Target industrial hygiene content reviewed (hazard recognition, evaluation, control, OSHA standards, or toxicology), practice questions completed, and notes saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "fork.knife",
+            task: "Study for the ServSafe certification exam or complete a food safety coursework assignment",
+            successCriteria: "Target food safety content reviewed (foodborne illness, HACCP principles, temperature control, sanitation, or personal hygiene), practice questions completed, and notes saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "checkmark.seal.fill",
+            task: "Write a HACCP plan or complete a food safety audit assignment",
+            successCriteria: "HACCP plan section completed or audit report drafted (hazard analysis, critical control points, corrective actions, or monitoring procedures written), and work saved",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "music.note",
+            task: "Practice and prepare my repertoire for my music jury or audition",
+            successCriteria: "Target repertoire sections practiced (scales, etudes, or solo pieces worked through), performance notes or recordings saved, and preparation checklist updated",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.badge.mic",
+            task: "Work through applied music lessons, scales, and technique exercises",
+            successCriteria: "Lesson assignment or technique exercises completed (scales, etudes, sight-reading, or specific passages practiced and recorded in practice log)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

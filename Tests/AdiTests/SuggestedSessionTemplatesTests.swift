@@ -3200,4 +3200,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 355,
                 "catalog should have ≥355 templates after automotivetech/weldingtechnology/grantwriting/animalhusbandry/paralegal additions")
     }
+
+    // MARK: - Certified Financial Planner templates
+    @Test func certifiedfinancialplannerTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCFPExam = tasks.contains { $0.localizedCaseInsensitiveContains("CFP") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("coursework")) }
+        let hasPlan = tasks.contains { $0.localizedCaseInsensitiveContains("financial plan") && ($0.localizedCaseInsensitiveContains("case study") || $0.localizedCaseInsensitiveContains("client")) }
+        #expect(hasCFPExam, "catalog must include a CFP exam study template")
+        #expect(hasPlan, "catalog must include a client financial plan template")
+    }
+
+    // MARK: - Soil Science templates
+    @Test func soilscienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasLab = tasks.contains { $0.localizedCaseInsensitiveContains("soil science") && ($0.localizedCaseInsensitiveContains("lab report") || $0.localizedCaseInsensitiveContains("field description") || $0.localizedCaseInsensitiveContains("pedology")) }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("soil science") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("taxonomy") || $0.localizedCaseInsensitiveContains("classification")) }
+        #expect(hasLab, "catalog must include a soil science lab or field description template")
+        #expect(hasExam, "catalog must include a soil science exam study template")
+    }
+
+    // MARK: - Industrial Safety templates
+    @Test func industrialsafetyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains { ($0.localizedCaseInsensitiveContains("industrial hygiene") || $0.localizedCaseInsensitiveContains("occupational safety")) && $0.localizedCaseInsensitiveContains("assignment") }
+        let hasCIH = tasks.contains { $0.localizedCaseInsensitiveContains("CIH") || $0.localizedCaseInsensitiveContains("OSHA") && $0.localizedCaseInsensitiveContains("industrial") }
+        #expect(hasAssignment, "catalog must include an industrial safety coursework assignment template")
+        #expect(hasCIH, "catalog must include a CIH exam or OSHA industrial safety study template")
+    }
+
+    // MARK: - Food Safety templates
+    @Test func foodsafetyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasServSafe = tasks.contains { $0.localizedCaseInsensitiveContains("ServSafe") || $0.localizedCaseInsensitiveContains("food safety") && $0.localizedCaseInsensitiveContains("exam") }
+        let hasHACCP = tasks.contains { $0.localizedCaseInsensitiveContains("HACCP") || $0.localizedCaseInsensitiveContains("food safety audit") }
+        #expect(hasServSafe, "catalog must include a ServSafe or food safety certification exam template")
+        #expect(hasHACCP, "catalog must include a HACCP plan or food safety audit template")
+    }
+
+    // MARK: - Applied Music templates
+    @Test func appliedmusicTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasJury = tasks.contains { $0.localizedCaseInsensitiveContains("jury") || $0.localizedCaseInsensitiveContains("audition") && $0.localizedCaseInsensitiveContains("repertoire") }
+        let hasLesson = tasks.contains { $0.localizedCaseInsensitiveContains("applied music") || $0.localizedCaseInsensitiveContains("music lesson") && $0.localizedCaseInsensitiveContains("technique") }
+        #expect(hasJury, "catalog must include a music jury or audition repertoire template")
+        #expect(hasLesson, "catalog must include an applied music lesson and technique template")
+    }
+
+    // MARK: - Count guard (new 5-domain batch: certifiedfinancialplanner/soilscience/industrialsafety/foodsafety/appliedmusic)
+    @Test func catalogHasAtLeastThreeHundredSixtyFiveTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 365,
+                "catalog should have ≥365 templates after certifiedfinancialplanner/soilscience/industrialsafety/foodsafety/appliedmusic additions")
+    }
 }

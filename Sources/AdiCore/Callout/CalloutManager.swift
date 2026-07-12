@@ -186,6 +186,29 @@ public final class CalloutManager {
             || lower.contains("actuarial risk") || lower.contains("actuarial pricing") {
             return "actuarial"
         }
+        // certifiedfinancialplanner — positioned AFTER actuarial and BEFORE statistics.
+        // Catches CFP exam prep, financial planning coursework, and wealth/retirement/estate
+        // planning classes. Bare "financial planning" alone NOT matched — requires CFP context
+        // or class/course/exam qualifier. Generic finance terms (CPA, CFA, DCF) stay in finance.
+        if lower.contains("certified financial planner") || lower.contains("cfp exam")
+            || lower.contains("cfp certification") || lower.contains("cfp board")
+            || lower.contains("cfp class") || lower.contains("cfp course")
+            || lower.contains("cfp program") || lower.contains("cfp notes")
+            || lower.contains("cfp study") || lower.contains("cfp prep")
+            || lower.contains("financial planning class") || lower.contains("financial planning course")
+            || lower.contains("financial planning program") || lower.contains("financial planning exam")
+            || lower.contains("financial planning certification") || lower.contains("personal financial planning")
+            || lower.contains("wealth management class") || lower.contains("wealth management course")
+            || lower.contains("wealth management certification")
+            || lower.contains("retirement planning class") || lower.contains("retirement planning course")
+            || lower.contains("estate planning class") || lower.contains("estate planning course")
+            || lower.contains("investment planning class") || lower.contains("investment planning course")
+            || lower.contains("tax planning class") || lower.contains("tax planning course")
+            || lower.contains("insurance planning class") || lower.contains("insurance planning course")
+            || lower.contains("financial plan class") || lower.contains("financial plan exam")
+            || lower.contains("series 65") || lower.contains("series 66") {
+            return "certifiedfinancialplanner"
+        }
         // statistics — positioned before studying so professional stats tools/methods (R, SPSS,
         // STATA, regression analysis, ANOVA) route here. Bare word("statistics") and word("stats")
         // stay in studying so "study statistics for my exam" still routes to studying.
@@ -373,6 +396,29 @@ public final class CalloutManager {
             || lower.contains("gisp exam") || word("gisp") {
             return "geospatial"
         }
+        // soilscience — positioned BEFORE geology so dedicated soil-science and pedology
+        // coursework gets its own pool. "soil mechanics" stays in geology (construction context).
+        // Bare "soil" alone is NOT matched.
+        if lower.contains("soil science") || lower.contains("soil scientist")
+            || word("pedology") || word("pedologist")
+            || lower.contains("soil taxonomy") || lower.contains("soil classification")
+            || (lower.contains("munsell") && lower.contains("soil"))
+            || word("pedon") || word("pedons")
+            || lower.contains("soil horizon") || lower.contains("soil profile")
+            || lower.contains("soil mapping") || lower.contains("soil survey")
+            || lower.contains("soil genesis") || lower.contains("soil formation")
+            || (lower.contains("soil chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam")))
+            || (lower.contains("soil physics") && (lower.contains("class") || lower.contains("course") || lower.contains("lab")))
+            || (lower.contains("soil biology") && (lower.contains("class") || lower.contains("course") || lower.contains("lab")))
+            || (lower.contains("soil fertility") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || lower.contains("soil judging") || lower.contains("soil characterization")
+            || lower.contains("soil morphology") || lower.contains("nrcs soil")
+            || lower.contains("soil science class") || lower.contains("soil science course")
+            || lower.contains("soil science exam") || lower.contains("soil science program")
+            || lower.contains("soil science notes") || lower.contains("soil science major")
+            || lower.contains("soil science degree") {
+            return "soilscience"
+        }
         // geology — positioned before engineering so "geology lab" and earth-science field tasks
         // don't fall through to engineering or research via word("lab").
         // "geography" alone does NOT fire here (stays in studying/socialscience).
@@ -391,7 +437,7 @@ public final class CalloutManager {
             || lower.contains("geological map") || lower.contains("geologic cross section")
             || word("paleontology") || word("paleontologist") || lower.contains("fossil record")
             || word("asbog")
-            || lower.contains("soil science") || lower.contains("soil mechanics")
+            || lower.contains("soil mechanics")
             || lower.contains("hydrology") {
             return "geology"
         }
@@ -557,6 +603,28 @@ public final class CalloutManager {
             || lower.contains("hvac apprentice") || lower.contains("hvac lab")
             || lower.contains("cooling systems class") || lower.contains("heating systems class") {
             return "hvactechnology"
+        }
+        // industrialsafety — positioned AFTER hvactechnology, BEFORE engineering.
+        // Catches industrial hygiene, CIH exam, OSHA compliance, and occupational-safety coursework.
+        // Bare "OSHA" or "safety" alone NOT matched — requires industrial/class/course/exam context.
+        if lower.contains("industrial hygiene") || lower.contains("industrial hygienist")
+            || (word("cih") && (lower.contains("industrial") || lower.contains("hygiene") || lower.contains("exam") || lower.contains("certification")))
+            || lower.contains("cih exam") || lower.contains("cih certification")
+            || lower.contains("industrial safety") || lower.contains("occupational safety and health")
+            || (lower.contains("occupational safety") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program")))
+            || (lower.contains("osha compliance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("certification")))
+            || (lower.contains("osha 30") && (lower.contains("industrial") || lower.contains("manufacturing") || lower.contains("class") || lower.contains("course")))
+            || (lower.contains("osha 10") && (lower.contains("industrial") || lower.contains("manufacturing") || lower.contains("class") || lower.contains("course")))
+            || lower.contains("osha 300a") || lower.contains("osha 300") && lower.contains("log")
+            || (lower.contains("osha certification") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || lower.contains("safety program design") || lower.contains("safety management class")
+            || (lower.contains("hazard analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("industrial")))
+            || lower.contains("job safety analysis") || lower.contains("job hazard analysis")
+            || (word("jsa") && lower.contains("safety")) || (word("jha") && lower.contains("safety"))
+            || (word("niosh") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("industrial")))
+            || lower.contains("industrial safety class") || lower.contains("industrial safety course")
+            || lower.contains("industrial safety exam") || lower.contains("industrial safety program") {
+            return "industrialsafety"
         }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
@@ -1712,6 +1780,27 @@ public final class CalloutManager {
             || lower.contains("cooking technique") || word("gastronomy") {
             return "culinary"
         }
+        // foodsafety — positioned AFTER culinary (culinary owns general recipe/kitchen technique),
+        // BEFORE winesommelier. Catches ServSafe prep, HACCP certification, and food-safety
+        // coursework. Bare "food" alone NOT matched; "food journal" stays in nutrition (fires earlier);
+        // "food science" stays in nutrition (fires earlier).
+        if lower.contains("food safety") || lower.contains("servsafe")
+            || lower.contains("haccp plan") || lower.contains("haccp certification")
+            || lower.contains("haccp training") || lower.contains("haccp class")
+            || lower.contains("food handler") || lower.contains("food handling certification")
+            || lower.contains("food sanitation") || lower.contains("food safety certification")
+            || lower.contains("food safety exam") || lower.contains("food safety class")
+            || lower.contains("food safety course") || lower.contains("food safety program")
+            || lower.contains("food safety training") || lower.contains("food safety manager")
+            || lower.contains("food safety audit")
+            || (lower.contains("food microbiology") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam")))
+            || (lower.contains("food contamination") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || lower.contains("foodborne illness") || lower.contains("foodborne pathogen")
+            || (lower.contains("food inspection") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || lower.contains("fda food safety") || (lower.contains("fsma") && lower.contains("food"))
+            || lower.contains("food protection manager") || lower.contains("food protection certification") {
+            return "foodsafety"
+        }
         // winesommelier — positioned after culinary (shared hospitality/food context) and before
         // cosmetology. Catches wine education, sommelier certification, and viticulture/enology coursework.
         // Bare "drinking wine" or "wine with dinner" never fires (needs educational/professional context).
@@ -1809,6 +1898,38 @@ public final class CalloutManager {
             || lower.contains("theory class") || lower.contains("theory exam")
             || lower.contains("music class") || lower.contains("music course") {
             return "musictheory"
+        }
+        // appliedmusic — positioned AFTER musictheory so instrument-specific practice, audition
+        // prep, and recital performance route here. Bare instrument names alone NOT matched —
+        // requires practice/lesson/audition/recital context. "music production" (DAW/beatmaking)
+        // and "music theory" (ear training/harmony) already caught by earlier branches.
+        if lower.contains("instrument practice") || lower.contains("practice instrument")
+            || lower.contains("audition prep") || lower.contains("audition preparation")
+            || lower.contains("music audition") || lower.contains("recital preparation")
+            || lower.contains("recital performance") || lower.contains("recital program")
+            || lower.contains("applied music") || lower.contains("music jury")
+            || (lower.contains("jury exam") && (lower.contains("music") || lower.contains("instrument") || lower.contains("piano") || lower.contains("violin") || lower.contains("cello") || lower.contains("guitar") || lower.contains("flute") || lower.contains("trumpet") || lower.contains("saxophone") || lower.contains("clarinet")))
+            || lower.contains("orchestral excerpt") || lower.contains("solo repertoire")
+            || lower.contains("practicing scales") || (lower.contains("scale practice") && lower.contains("instrument"))
+            || word("etude") || word("etudes") || word("étude") || word("études")
+            || lower.contains("piano lesson") || lower.contains("piano practice") || lower.contains("piano recital")
+            || lower.contains("violin lesson") || lower.contains("violin practice") || lower.contains("violin recital")
+            || lower.contains("cello lesson") || lower.contains("cello practice") || lower.contains("cello recital")
+            || lower.contains("guitar lesson") || lower.contains("guitar practice") || lower.contains("guitar recital")
+            || lower.contains("flute lesson") || lower.contains("flute practice") || lower.contains("flute recital")
+            || lower.contains("trumpet lesson") || lower.contains("trumpet practice")
+            || lower.contains("clarinet lesson") || lower.contains("clarinet practice")
+            || lower.contains("oboe lesson") || lower.contains("oboe practice")
+            || lower.contains("trombone lesson") || lower.contains("trombone practice")
+            || lower.contains("viola lesson") || lower.contains("viola practice")
+            || lower.contains("saxophone lesson") || lower.contains("saxophone practice")
+            || lower.contains("drum lesson") || lower.contains("drum practice")
+            || lower.contains("bass lesson") || lower.contains("bass practice")
+            || lower.contains("harp lesson") || lower.contains("harp practice")
+            || lower.contains("voice lesson") || lower.contains("vocal lesson")
+            || lower.contains("singing lesson") || lower.contains("singing practice")
+            || (lower.contains("music lesson") && !lower.contains("music theory") && !lower.contains("music class") && !lower.contains("music course")) {
+            return "appliedmusic"
         }
         // enviro — environmental science, ecology, sustainability; positioned after fitness/nutrition.
         if lower.contains("environmental science") || lower.contains("environmental studies")

@@ -243,6 +243,11 @@ extension CalloutManager {
         case "grantwriting":                return grantwritingCallouts(tier: tier)
         case "animalhusbandry":             return animalhusbandryCallouts(tier: tier)
         case "paralegal":                   return paralegalCallouts(tier: tier)
+        case "certifiedfinancialplanner":   return certifiedfinancialplannerCallouts(tier: tier)
+        case "soilscience":                 return soilscienceCallouts(tier: tier)
+        case "industrialsafety":            return industrialsafetyCallouts(tier: tier)
+        case "foodsafety":                  return foodsafetyCallouts(tier: tier)
+        case "appliedmusic":                return appliedmusicCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -4325,6 +4330,111 @@ extension CalloutManager {
             "CLOSE THIS. open your paralegal notes.",
             "no one passes the CLA or CP exam by scrolling.",
             "CLOSE THIS. get back to your paralegal studies assignment.",
+        ]
+        }
+    }
+
+    private func certifiedfinancialplannerCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that CFP study plan isn't going to complete itself.",
+            "your financial planning clients deserve your full focus.",
+            "close this and open your CFP study materials.",
+            "get back to your financial planning coursework.",
+        ]
+        case 2: return [
+            "financial planners don't earn CFP certification by scrolling.",
+            "your financial planning notes won't review themselves.",
+            "stop avoiding your CFP prep.",
+        ]
+        default: return [
+            "CLOSE THIS. open your CFP study materials.",
+            "no one passes the CFP exam by scrolling.",
+            "CLOSE THIS. get back to your financial planning coursework.",
+        ]
+        }
+    }
+
+    private func soilscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those soil profiles aren't going to classify themselves.",
+            "your soil science coursework won't complete itself — get back to it.",
+            "close this and open your soil science notes.",
+            "get back to your pedology assignment.",
+        ]
+        case 2: return [
+            "soil scientists don't earn their degree by scrolling.",
+            "your soil taxonomy notes won't write themselves.",
+            "stop avoiding your soil science coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your soil science notes.",
+            "no one passes their soil science exam by scrolling.",
+            "CLOSE THIS. get back to your soil characterization assignment.",
+        ]
+        }
+    }
+
+    private func industrialsafetyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those OSHA regulations aren't going to study themselves.",
+            "your industrial safety coursework won't complete itself — get back to it.",
+            "close this and open your industrial hygiene notes.",
+            "get back to your occupational safety assignment.",
+        ]
+        case 2: return [
+            "industrial hygienists don't earn CIH certification by scrolling.",
+            "your hazard analysis notes won't write themselves.",
+            "stop avoiding your industrial safety coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your industrial safety notes.",
+            "no one earns their CIH certification by scrolling.",
+            "CLOSE THIS. get back to your occupational safety assignment.",
+        ]
+        }
+    }
+
+    private func foodsafetyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that HACCP plan isn't going to write itself.",
+            "your food safety coursework won't complete itself — get back to it.",
+            "close this and open your food safety notes.",
+            "get back to your ServSafe prep.",
+        ]
+        case 2: return [
+            "food safety professionals don't pass ServSafe by scrolling.",
+            "your food sanitation notes won't write themselves.",
+            "stop avoiding your food safety coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your food safety notes.",
+            "no one passes ServSafe by scrolling.",
+            "CLOSE THIS. get back to your HACCP assignment.",
+        ]
+        }
+    }
+
+    private func appliedmusicCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that piece isn't going to practice itself.",
+            "your audition rep won't learn itself — get back to the instrument.",
+            "close this and go practice.",
+            "your jury isn't going to pass itself.",
+        ]
+        case 2: return [
+            "musicians don't get better by scrolling.",
+            "your scales won't run themselves — put down the phone.",
+            "stop avoiding the practice room.",
+        ]
+        default: return [
+            "CLOSE THIS. go practice.",
+            "no one passes their jury by scrolling.",
+            "CLOSE THIS. pick up your instrument.",
         ]
         }
     }
