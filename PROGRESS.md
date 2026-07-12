@@ -1,5 +1,69 @@
 # Adia — Build Progress
 
+## Run 331 (automated) — 2026-07-12 — Drama therapy, horsemanship, glassblowing, land surveying technology keyword domains (1775→1807 tests, 307→315 templates)
+
+### Shipped
+
+**Drama therapy / psychodrama keyword domain:**
+- `dramatherapy` branch added to `extractTaskKeyword` in `CalloutManager.swift`, positioned BEFORE arttherapy.
+- Matches: drama therapy/therapist, psychodrama/psychodramatist, sociodrama, NADT exam/cert, drama-based therapy, therapeutic enactment, playback theatre + therapy context.
+- False-positive guard: "drama class" and theatrical performance stay in performingarts/dramaeducation (fire earlier).
+- `dramatherapyCallouts(tier:)` 4/3/3: "those psychodrama techniques aren't going to learn themselves." / "CLOSE THIS. open your drama therapy notes." / "no one earns their drama therapy credential by browsing."
+- 2 templates: "Write drama therapy session notes or a psychodrama treatment plan" (30 min) + "Study for the NADT drama therapy exam" (60 min)
+
+**Horsemanship / equestrian science keyword domain:**
+- `horsemanship` branch positioned BEFORE veterinary so equestrian science, horse training, and FEI/farriery coursework route here.
+- Matches: equestrian/equestrian science/management/studies/program, horse training/trainer/management, equine science/management/nutrition, dressage/show jumping/reining, FEI + riding context, farriery, riding school/program/lesson, horseback riding class, stable/barn management.
+- False-positive guard: bare "animal science" stays in veterinary.
+- `horsemanshipCallouts(tier:)` 4/3/3: "those horse training techniques aren't going to learn themselves." / "CLOSE THIS. open your horsemanship notes." / "no one masters equestrian skills by browsing."
+- 2 templates: "Complete an equestrian science or horsemanship coursework assignment" (45 min) + "Study equine management, horse training theory, or dressage techniques" (60 min)
+
+**Glassblowing / glass arts keyword domain:**
+- `glassblowing` branch positioned BEFORE art so glass arts, flameworking, and kiln-formed glass studio work route here.
+- Matches: glassblowing/glass blowing, glass art/arts, glasswork, flameworking, glass studio, hot glass, kiln-formed/fused glass, borosilicate, stained glass + class/studio context.
+- False-positive guard: bare word("glass") NOT matched (too generic).
+- `glassblowingCallouts(tier:)` 4/3/3: "that glass isn't going to blow itself." / "CLOSE THIS. open your glass studio notes." / "no one masters glassblowing by browsing."
+- 2 templates: "Plan and document a glassblowing or flameworking studio project" (45 min) + "Study glassblowing techniques, glass arts history, or kiln-formed glass methods" (30 min)
+
+**Land surveying technology keyword domain:**
+- `landsurveyingtech` branch positioned BEFORE engineering (after humanfactors) so surveying programs, FS exam prep, and GPS/boundary survey tasks route here.
+- Matches: land surveying/surveyor, survey technology program/class/exam, fundamentals of surveying, boundary/cadastral/topographic survey, geomatics, GPS/GNSS surveying, total station + survey, NCEES surveying.
+- False-positive guard: bare word("survey") stays in research/studying.
+- `landsurveyingtechCallouts(tier:)` 4/3/3: "those survey calculations aren't going to work themselves out." / "CLOSE THIS. open your surveying notes." / "no one passes the fundamentals of surveying exam by browsing."
+- 2 templates: "Complete a land surveying technology assignment or boundary survey problem set" (60 min) + "Study for the Fundamentals of Surveying (FS) exam" (90 min)
+
+**Tests:**
+- CalloutManagerTests.swift: 1775→1807 (+32: 8 per domain)
+- SuggestedSessionTemplatesTests.swift: +1 count guard (≥315)
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- "planning my glassblowing studio project and documenting flameworking techniques for class" → glassblowing ✓; positioned BEFORE art ✓
+- "working on my oil painting and digital art illustration assignment for class" → art ✓ (not caught by glassblowing ✓)
+- "studying for the fundamentals of surveying exam and completing my land surveying technology coursework" → landsurveyingtech ✓; positioned before engineering ✓
+- "completing my mechanical engineering assignment on finite element analysis and SolidWorks CAD" → engineering ✓ (not caught by landsurveyingtech ✓)
+- "completing my equestrian science assignment on horse management and equine nutrition" → horsemanship ✓; positioned before veterinary ✓
+- "studying veterinary medicine and animal science for my NAVLE exam prep" → veterinary ✓ (not caught by horsemanship ✓)
+- "studying for the NADT exam and completing my drama therapy program coursework on psychodrama" → dramatherapy ✓; positioned before arttherapy ✓
+- "working on my ATR credential and art therapy session notes for my art therapy internship" → arttherapy ✓ (not caught by dramatherapy ✓)
+- All 4 tier-3 pools contain "CLOSE THIS" or "no one" ✓; all tier-1 pools have ≥4 messages ✓
+- All 8 template durations in [300, 10800] ✓; template count 315 ≥ 315 ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good remaining candidates:
+  - `polysomnographytech` — sleep tech program (RPSGT exam, PSG scoring, home sleep testing) — polysomnography already covers sleep medicine; skip if redundant or treat as an alias
+  - `horticulturescience` — horticulture science degree (plant science, floriculture, pomology, landscape horticulture, PCA exam) — separate from horticulturetherapy
+  - `globalhealthdev` — global health governance, international development, USAID, NGO program management, global health policy
+  - `pmrehabilitation` — physical medicine and rehabilitation (PM&R), physiatry, ABPMR, rehab medicine residency/clerkship
+  - `performancenutrition` — sports dietitian, CSSD exam, performance nutrition (separate from nutrition/dietetics)
+- Template count: 315 → 325 after next 5-domain batch
+- Estimated test count: 1807 (CalloutManagerTests) + ~670 from other test files ≈ 2477+ total Swift tests
+
+---
+
 ## Run 330 — 2026-07-12 — Occupational medicine + integrative medicine + genetic counseling + behavioral health promotion + dental public health keyword domains (1362→1402 tests, 279→289 templates)
 
 ### Shipped
