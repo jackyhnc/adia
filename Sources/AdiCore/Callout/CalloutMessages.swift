@@ -229,6 +229,10 @@ extension CalloutManager {
         case "healthcoaching":              return healthcoachingCallouts(tier: tier)
         case "podiatry":                    return podiatryCallouts(tier: tier)
         case "classicalstudies":            return classicalstudiesCallouts(tier: tier)
+        case "pmrehabilitation":            return pmrehabilitationCallouts(tier: tier)
+        case "performancenutrition":        return performancenutritionCallouts(tier: tier)
+        case "horticulturescience":         return horticulturecienceCallouts(tier: tier)
+        case "globalhealthdev":             return globalhealthdevCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -4017,6 +4021,90 @@ extension CalloutManager {
             "CLOSE THIS. open your Latin text.",
             "no one learns ancient Greek by browsing.",
             "CLOSE THIS. get back to your classical studies assignment.",
+        ]
+        }
+    }
+
+    private func pmrehabilitationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those ABPMR board questions aren't going to answer themselves — get back to your notes.",
+            "your PM&R coursework won't complete itself.",
+            "get back to your physiatry or rehabilitation medicine assignment.",
+            "close this and open your PM&R study guide.",
+        ]
+        case 2: return [
+            "physiatrists don't earn board certification by scrolling.",
+            "your rehabilitation medicine notes won't write themselves.",
+            "stop avoiding your PM&R coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your physiatry notes.",
+            "no one passes the ABPMR boards by browsing.",
+            "CLOSE THIS. get back to your physical medicine and rehabilitation assignment.",
+        ]
+        }
+    }
+
+    private func performancenutritionCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those sports nutrition protocols aren't going to master themselves — get back to your notes.",
+            "your performance nutrition coursework won't complete itself.",
+            "get back to your sports dietetics or performance nutrition assignment.",
+            "close this and open your CSSD study guide.",
+        ]
+        case 2: return [
+            "sports dietitians don't earn the CSSD by scrolling.",
+            "your athlete fueling notes won't write themselves.",
+            "stop avoiding your performance nutrition coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your sports nutrition notes.",
+            "no one passes the CSSD exam by browsing.",
+            "CLOSE THIS. get back to your performance nutrition assignment.",
+        ]
+        }
+    }
+
+    private func horticulturecienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those plant science concepts aren't going to study themselves — get back to your notes.",
+            "your horticulture science coursework won't complete itself.",
+            "get back to your horticulture or plant science assignment.",
+            "close this and open your horticulture study guide.",
+        ]
+        case 2: return [
+            "horticulturists don't learn plant science by scrolling.",
+            "your floriculture notes won't write themselves.",
+            "stop avoiding your horticulture science coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your horticulture notes.",
+            "no one passes the PCA exam or arborist certification by browsing.",
+            "CLOSE THIS. get back to your horticulture science assignment.",
+        ]
+        }
+    }
+
+    private func globalhealthdevCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that development policy isn't going to write itself — get back to your notes.",
+            "your international development coursework won't complete itself.",
+            "get back to your global health or international development assignment.",
+            "close this and open your development policy study guide.",
+        ]
+        case 2: return [
+            "development professionals don't write proposals by scrolling.",
+            "your NGO program notes won't write themselves.",
+            "stop avoiding your international development coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your international development notes.",
+            "no one gets into global health by browsing.",
+            "CLOSE THIS. get back to your international development assignment.",
         ]
         }
     }

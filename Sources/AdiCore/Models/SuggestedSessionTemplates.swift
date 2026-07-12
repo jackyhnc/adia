@@ -2108,5 +2108,53 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target classical studies material reviewed (ancient Rome, ancient Greece, or classical literature), key themes and arguments summarized, and notes saved for exam or essay writing",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "stethoscope",
+            task: "Study for the ABPMR physiatry board exam or complete a PM&R residency assignment",
+            successCriteria: "Target ABPMR board topics reviewed (spinal cord injury, TBI, musculoskeletal rehab, or electrodiagnostics), practice questions completed, and notes saved for next study session",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write up PM&R patient case notes, a rehabilitation evaluation, or a physiatry SOAP note",
+            successCriteria: "PM&R documentation completed (SOAP note, functional assessment, or rehabilitation plan written), clinical reasoning documented, and write-up saved or submitted",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "fork.knife",
+            task: "Study for the CSSD board exam or complete a sports dietetics or performance nutrition coursework assignment",
+            successCriteria: "Target CSSD board topics reviewed (periodization, macronutrient timing, hydration protocols, or supplement evidence), practice questions completed, and notes saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "figure.run",
+            task: "Design an athlete fueling plan or sports nutrition intervention for a team or client",
+            successCriteria: "Athlete fueling plan drafted (pre/intra/post-workout protocols, hydration strategy, and race-day or competition nutrition outlined), plan reviewed, and document saved",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Complete my horticulture science assignment on plant physiology, pest management, or crop production",
+            successCriteria: "Target horticulture science material covered (plant physiology, IPM, soil science, or crop systems), assignment questions answered, and work saved or submitted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "tree.fill",
+            task: "Study for the ISA arborist certification, PCA exam, or horticulture science licensing exam",
+            successCriteria: "Target exam content reviewed (tree biology, pest identification, plant diagnostics, or horticulture science), practice questions completed, and notes saved for next session",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "globe",
+            task: "Write an international development policy memo or NGO program proposal",
+            successCriteria: "Policy memo or program proposal drafted (problem statement, theory of change, intervention design, and M&E framework outlined), document reviewed, and file saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "books.vertical.fill",
+            task: "Study for a global health governance or international development exam",
+            successCriteria: "Target international development material reviewed (SDGs, development economics, humanitarian frameworks, or global health governance), key concepts summarized, and notes saved",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

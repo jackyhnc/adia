@@ -1435,6 +1435,24 @@ public final class CalloutManager {
             || lower.contains("human movement") || lower.contains("musculoskeletal") {
             return "kinesiology"
         }
+        // pmrehabilitation — positioned AFTER kinesiology and BEFORE personaltraining so
+        // physiatry, PM&R residency/clerkship, and ABPMR board prep get a dedicated pool.
+        // "physical therapy" stays in kinesiology (fires earlier); PM&R catches physician-level terms.
+        if lower.contains("physical medicine and rehabilitation") || lower.contains("physical medicine & rehabilitation")
+            || lower.contains("pm&r") || lower.contains("pm & r")
+            || lower.contains("physiatry") || word("physiatrist") || word("physiatrists")
+            || lower.contains("abpmr") || lower.contains("abpmr board") || lower.contains("abpmr exam")
+            || lower.contains("abpmr certification") || lower.contains("abpmr prep")
+            || lower.contains("rehabilitation medicine") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("residency") || lower.contains("clerkship") || lower.contains("rotation") || lower.contains("notes") || lower.contains("assignment"))
+            || lower.contains("pm&r residency") || lower.contains("pm&r clerkship")
+            || lower.contains("pm&r rotation") || lower.contains("pm&r notes")
+            || lower.contains("pm&r class") || lower.contains("pm&r course") || lower.contains("pm&r exam")
+            || lower.contains("pm&r school") || lower.contains("pm&r program")
+            || lower.contains("spinal cord injury rehabilitation") && lower.contains("class")
+            || lower.contains("traumatic brain injury rehabilitation") && lower.contains("class")
+            || lower.contains("musculoskeletal rehabilitation") && (lower.contains("class") || lower.contains("course") || lower.contains("physician")) {
+            return "pmrehabilitation"
+        }
         // personaltraining — positioned BEFORE fitness so "NASM personal trainer exam" and
         // "ACE/NSCA certification" route here rather than the generic workout/gym fitness pool.
         if lower.contains("personal trainer") || lower.contains("personal training")
@@ -1449,6 +1467,26 @@ public final class CalloutManager {
             || lower.contains("corrective exercise") || lower.contains("periodization plan")
             || lower.contains("personal training class") || lower.contains("personal training course") {
             return "personaltraining"
+        }
+        // performancenutrition — positioned BEFORE healthcoaching and fitness so sports-dietitian
+        // certification prep, CSSD exam, and athlete-fueling tasks route here rather than to the
+        // generic nutrition or fitness pools. "nutrition plan"/"meal prep" stay in fitness (fire later).
+        if lower.contains("sports dietitian") || lower.contains("sport dietitian")
+            || lower.contains("sports dietetics") || lower.contains("sport dietetics")
+            || lower.contains("cssd exam") || lower.contains("cssd certification") || word("cssd")
+            || lower.contains("board certified specialist in sports dietetics")
+            || lower.contains("performance nutrition") || lower.contains("performance nutritionist")
+            || lower.contains("performance dietitian") || lower.contains("athlete nutrition")
+            || lower.contains("athlete fueling") || lower.contains("sports fueling")
+            || lower.contains("sports nutrition certification") || lower.contains("sports nutrition exam")
+            || lower.contains("sports nutrition class") || lower.contains("sports nutrition course")
+            || lower.contains("sports nutrition program") || lower.contains("sports nutrition school")
+            || lower.contains("sport nutrition certification") || lower.contains("sport nutrition exam")
+            || lower.contains("sport nutrition class") || lower.contains("sport nutrition course")
+            || lower.contains("fueling strategy") && (lower.contains("athlete") || lower.contains("sport") || lower.contains("perform"))
+            || lower.contains("competition nutrition") || lower.contains("race day nutrition")
+            || lower.contains("endurance athlete fueling") || lower.contains("team fueling") {
+            return "performancenutrition"
         }
         // healthcoaching — positioned BEFORE fitness so NBC-HWC/NBHWC cert prep and wellness
         // coaching tasks route here rather than the generic workout/gym fitness pool.
@@ -2488,6 +2526,33 @@ public final class CalloutManager {
             || lower.contains("plant therapy class") || lower.contains("garden therapy class") {
             return "horticulturetherapy"
         }
+        // horticulturescience — positioned AFTER horticulturetherapy (fires first if therapy context
+        // present) and BEFORE addictioncounseling so plant science, floriculture, arboriculture, and
+        // PCA/ISA exam prep route to a dedicated horticulture-science callout pool.
+        // Bare word("garden") stays in studying; compound educational/professional terms fire here.
+        if lower.contains("horticulture science") || lower.contains("horticultural science")
+            || lower.contains("horticulture degree") || lower.contains("horticulture major")
+            || lower.contains("horticulture class") || lower.contains("horticulture course")
+            || lower.contains("horticulture exam") || lower.contains("horticulture program")
+            || lower.contains("horticulture school") || lower.contains("horticulture assignment")
+            || lower.contains("horticulture notes") || lower.contains("horticulture certification")
+            || lower.contains("horticulture license") || word("horticulturist") || word("horticulturists")
+            || lower.contains("plant science class") || lower.contains("plant science course")
+            || lower.contains("plant science exam") || lower.contains("plant science program")
+            || lower.contains("plant science degree") || lower.contains("plant science major")
+            || lower.contains("ornamental horticulture") || lower.contains("nursery management class")
+            || lower.contains("turf management class") || lower.contains("turfgrass science")
+            || lower.contains("floriculture class") || lower.contains("floriculture course")
+            || lower.contains("pomology class") || lower.contains("olericulture class")
+            || lower.contains("arboriculture class") || lower.contains("arboriculture course")
+            || lower.contains("arboriculture exam") || word("arborist") && (lower.contains("class") || lower.contains("exam") || lower.contains("certification") || lower.contains("isa") || lower.contains("program"))
+            || lower.contains("isa arborist") || lower.contains("isa certification") && lower.contains("arb")
+            || lower.contains("pca exam") && !lower.contains("physician assistant") && !lower.contains("pa class")
+            || lower.contains("pest control adviser") || lower.contains("pest management class")
+            || lower.contains("integrated pest management class") || lower.contains("ipm class")
+            || lower.contains("landscape horticulture") || lower.contains("urban horticulture") {
+            return "horticulturescience"
+        }
         // addictioncounseling — positioned BEFORE socialwork and therapy so substance-use-disorder
         // counseling coursework, CADC/NAADAC certification prep, and dual-diagnosis study route
         // to a dedicated pool. Bare word("counseling") stays in therapy.
@@ -2679,6 +2744,33 @@ public final class CalloutManager {
             || lower.contains("mph exam") || lower.contains("mph capstone")
             || lower.contains("mph thesis") || lower.contains("master of public health") {
             return "publicheath"
+        }
+        // globalhealthdev — positioned AFTER publicheath (which owns bare "global health") and BEFORE
+        // emergencymanagement so international-development policy, NGO program management, USAID,
+        // and development-economics coursework route to a dedicated pool rather than publicheath.
+        // "global health" alone stays in publicheath; compound development/NGO terms fire here.
+        if lower.contains("international development") || lower.contains("development economics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program") || lower.contains("policy"))
+            || lower.contains("global development") || lower.contains("development policy")
+            || lower.contains("development cooperation") || lower.contains("aid effectiveness")
+            || word("usaid") || lower.contains("usaid program") || lower.contains("usaid project")
+            || lower.contains("world bank development") || lower.contains("development finance")
+            || lower.contains("ngo management") || lower.contains("ngo program")
+            || lower.contains("ngo project") || lower.contains("humanitarian program")
+            || lower.contains("international aid") || lower.contains("foreign aid program")
+            || lower.contains("global health governance") || lower.contains("global health financing")
+            || lower.contains("global health policy") && lower.contains("development")
+            || lower.contains("sustainable development goals") || lower.contains("sdg")
+            || lower.contains("poverty alleviation") || lower.contains("international development class")
+            || lower.contains("international development course") || lower.contains("international development exam")
+            || lower.contains("international development program") || lower.contains("international development major")
+            || lower.contains("development studies class") || lower.contains("development studies course")
+            || lower.contains("development studies exam") || lower.contains("development studies program")
+            || lower.contains("global health development class") || lower.contains("global health development course")
+            || lower.contains("humanitarian logistics") || lower.contains("humanitarian coordination")
+            || lower.contains("global south") && (lower.contains("class") || lower.contains("development") || lower.contains("policy"))
+            || lower.contains("monitoring and evaluation") && (lower.contains("development") || lower.contains("ngo") || lower.contains("program"))
+            || lower.contains("m&e") && (lower.contains("development") || lower.contains("ngo")) {
+            return "globalhealthdev"
         }
         // emergencymanagement — positioned after publicheath and before psychology.
         // Catches FEMA cert prep, disaster response, incident command, and crisis management.

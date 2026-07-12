@@ -1,5 +1,67 @@
 # Adia — Build Progress
 
+## Run 332 (automated) — 2026-07-12 — PM&R + performance nutrition + horticulture science + global health development keyword domains (1847→1879 tests, 325→333 templates)
+
+### Shipped
+
+**PM&R / Physiatry keyword domain:**
+- `pmrehabilitation` branch added to `extractTaskKeyword` in `CalloutManager.swift`, positioned AFTER kinesiology block.
+- Matches: physical medicine and rehabilitation, PM&R, ABPMR board/exam/certification, physiatry/physiatrist, rehabilitation medicine + class/exam/course/notes, PM&R residency/clerkship/rotation/notes/class/course/exam/school/program, spinal cord injury rehabilitation + class, traumatic brain injury rehabilitation + class, musculoskeletal rehabilitation + class/course/physician.
+- False-positive guard: bare "rehabilitation" without PM&R/physiatry context stays in other branches.
+- `pmrehabilitationCallouts(tier:)` 4/3/3: "those ABPMR board questions aren't going to answer themselves." / "physiatrists don't earn board certification by scrolling." / "CLOSE THIS. open your physiatry notes." / "no one passes the ABPMR boards by browsing."
+- 2 templates: "Study for the ABPMR physiatry board exam or complete a PM&R residency assignment" (90 min) + "Write up PM&R patient case notes, a rehabilitation evaluation, or a physiatry SOAP note" (30 min)
+
+**Performance Nutrition / Sports Dietetics keyword domain:**
+- `performancenutrition` branch positioned AFTER personaltraining, BEFORE healthcoaching.
+- Matches: sports dietitian, CSSD exam/certification, board certified specialist in sports dietetics, performance nutrition/nutritionist/dietitian, athlete nutrition/fueling/fueling plan, sports fueling, competition nutrition, race day nutrition, endurance athlete fueling, team fueling, sports nutrition certification/class/course/exam/program/school, sport nutrition class/course/exam, fueling strategy + athlete/sport/perform context.
+- False-positive guard: generic "nutrition class" and clinical dietetics route to nutrition branch (fires earlier).
+- `performancenutritionCallouts(tier:)` 4/3/3: "those sports nutrition protocols aren't going to master themselves." / "sports dietitians don't earn the CSSD by scrolling." / "CLOSE THIS. open your sports nutrition notes." / "no one passes the CSSD exam by browsing."
+- 2 templates: "Study for the CSSD board exam or complete a sports dietetics or performance nutrition coursework assignment" (60 min) + "Design an athlete fueling plan or sports nutrition intervention for a team or client" (45 min)
+
+**Horticulture Science keyword domain:**
+- `horticulturescience` branch positioned AFTER horticulturetherapy, BEFORE addictioncounseling.
+- Matches: horticulture science/degree/class/course/exam/program/school/assignment/notes/certification/license, horticulturist, plant science class/course/exam/program/degree, ornamental horticulture, floriculture/pomology/olericulture/arboriculture class/course/exam, ISA arborist + class/exam/cert/program context, ISA certification + arb context, PCA exam + NOT physician assistant guard, pest control adviser, pest management/IPM class, integrated pest management class, ipm class, turfgrass science/turf management class, landscape/urban horticulture.
+- False-positive guard: "pca exam" guarded against physician assistant false positive.
+- `horticulturecienceCallouts(tier:)` 4/3/3: "those plant science concepts aren't going to study themselves." / "horticulturists don't learn plant science by scrolling." / "CLOSE THIS. open your horticulture notes." / "no one passes the PCA exam or arborist certification by browsing."
+- 2 templates: "Complete my horticulture science assignment on plant physiology, pest management, or crop production" (60 min) + "Study for the ISA arborist certification, PCA exam, or horticulture science licensing exam" (60 min)
+
+**Global Health / International Development keyword domain:**
+- `globalhealthdev` branch positioned AFTER publicheath, BEFORE emergencymanagement.
+- Matches: international development, development economics + class/policy context, global development, development policy/cooperation, aid effectiveness, USAID + program/project, world bank development, development finance, NGO management/program/project, humanitarian program/logistics/coordination, international aid, global health governance/financing/policy + development context, sustainable development goals/SDG, poverty alleviation, development studies class/course/exam/program, global health development class/course, global south + class/development/policy, monitoring and evaluation + ngo/development context, M&E + development/ngo context.
+- False-positive guard: bare "global health" without development context stays in publicheath.
+- `globalhealthdevCallouts(tier:)` 4/3/3: "that development policy isn't going to write itself." / "development professionals don't write proposals by scrolling." / "CLOSE THIS. open your international development notes." / "no one gets into global health by browsing."
+- 2 templates: "Write an international development policy memo or NGO program proposal" (60 min) + "Study for a global health governance or international development exam" (45 min)
+
+**Tests:**
+- CalloutManagerTests.swift: 1847→1879 (+32: 8 per domain)
+- SuggestedSessionTemplatesTests.swift: +9 (2 per domain + ≥333 count guard)
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- "studying for my ABPMR board exam and reviewing PM&R residency clerkship notes" → pmrehabilitation ✓; positioned after kinesiology ✓
+- "completing my physiatry rotation SOAP notes" → pmrehabilitation ✓
+- "studying for the CSSD board exam and reviewing performance nutrition coursework on athlete fueling" → performancenutrition ✓; positioned after personaltraining ✓
+- "completing my horticulture science class assignment on plant physiology and pomology" → horticulturescience ✓; positioned after horticulturetherapy ✓
+- "writing horticultural therapy session notes and HTR credential prep" → horticulturetherapy ✓ (not caught by horticulturescience ✓)
+- "working on my international development class assignment on poverty alleviation and development policy" → globalhealthdev ✓; positioned after publicheath ✓
+- All 4 tier-3 pools contain "CLOSE THIS" or "no one" ✓; all tier-1 pools have ≥4 messages ✓
+- All 8 template durations in [300, 10800] ✓; template count 333 ≥ 333 ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good remaining candidates:
+  - `paleontology` — paleontology degree/class/exam, fossil record, geological time, PALEO prefix
+  - `criminaljustice` — criminal justice major/class/exam (separate from crimlaw/criminology if needed)
+  - `forensicanthropology` — forensic anthropology class/exam, skeletal analysis, human osteology
+  - `exercisephysiology` — exercise physiology degree/program (separate from kinesiology if needed)
+  - `marinebiologyscience` — marine biology class/exam/degree (separate from enviro)
+- Template count: 333 → 343 after next 5-domain batch (if 2 templates per domain)
+- Estimated test count: 1879 + ~40 (5 domains × 8 tests) = 1919+ CalloutManagerTests
+
+---
+
 ## Run 331 (automated) — 2026-07-12 — Drama therapy, horsemanship, glassblowing, land surveying technology keyword domains (1775→1807 tests, 307→315 templates)
 
 ### Shipped

@@ -3056,4 +3056,46 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 325,
                 "catalog should have ≥325 templates after environmentalengineering/techwriting/healthcoaching/podiatry/classicalstudies additions")
     }
+
+    // MARK: - PM&R / Physiatry templates
+    @Test func pmrehabilitationTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasBoard = tasks.contains { $0.localizedCaseInsensitiveContains("ABPMR") || ($0.localizedCaseInsensitiveContains("physiatry") && $0.localizedCaseInsensitiveContains("board")) }
+        let hasNotes = tasks.contains { $0.localizedCaseInsensitiveContains("PM&R") && ($0.localizedCaseInsensitiveContains("case notes") || $0.localizedCaseInsensitiveContains("SOAP note") || $0.localizedCaseInsensitiveContains("evaluation")) }
+        #expect(hasBoard, "catalog must include an ABPMR physiatry board exam study template")
+        #expect(hasNotes, "catalog must include a PM&R case notes or SOAP note template")
+    }
+
+    // MARK: - Performance Nutrition / Sports Dietetics templates
+    @Test func performancenutritionTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCSSD = tasks.contains { $0.localizedCaseInsensitiveContains("CSSD") || ($0.localizedCaseInsensitiveContains("sports dietetics") && $0.localizedCaseInsensitiveContains("exam")) }
+        let hasFueling = tasks.contains { $0.localizedCaseInsensitiveContains("athlete fueling") || $0.localizedCaseInsensitiveContains("sports nutrition intervention") }
+        #expect(hasCSSD,    "catalog must include a CSSD board exam or sports dietetics exam template")
+        #expect(hasFueling, "catalog must include an athlete fueling plan or sports nutrition intervention template")
+    }
+
+    // MARK: - Horticulture Science templates
+    @Test func horticulturescienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("horticulture science") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("plant physiology")) }
+        let hasExam = tasks.contains { ($0.localizedCaseInsensitiveContains("ISA arborist") || $0.localizedCaseInsensitiveContains("PCA exam")) && $0.localizedCaseInsensitiveContains("certification") || ($0.localizedCaseInsensitiveContains("horticulture science") && $0.localizedCaseInsensitiveContains("licensing")) }
+        #expect(hasAssignment, "catalog must include a horticulture science assignment or plant physiology template")
+        #expect(hasExam,       "catalog must include an ISA arborist, PCA exam, or horticulture licensing template")
+    }
+
+    // MARK: - Global Health / International Development templates
+    @Test func globalhealthdevTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasMemo = tasks.contains { $0.localizedCaseInsensitiveContains("international development") && ($0.localizedCaseInsensitiveContains("policy memo") || $0.localizedCaseInsensitiveContains("NGO") || $0.localizedCaseInsensitiveContains("proposal")) }
+        let hasStudy = tasks.contains { ($0.localizedCaseInsensitiveContains("global health governance") || $0.localizedCaseInsensitiveContains("international development")) && $0.localizedCaseInsensitiveContains("exam") }
+        #expect(hasMemo,  "catalog must include an international development policy memo or NGO proposal template")
+        #expect(hasStudy, "catalog must include a global health governance or international development exam study template")
+    }
+
+    // MARK: - Count guard
+    @Test func catalogHasAtLeastThreeHundredThirtyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 333,
+                "catalog should have ≥333 templates after pmrehabilitation/performancenutrition/horticulturescience/globalhealthdev additions")
+    }
 }
