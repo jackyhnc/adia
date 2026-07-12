@@ -14707,3 +14707,71 @@ None. Swift toolchain unavailable on Linux container.
   - `polysomnographytech` — polysomnography technology, sleep tech program, RPSGT exam, home sleep testing, PSG scoring (already noted earlier)
 - Template count: 307 → 317 after next 5-domain batch
 - Estimated test count: 1775 (CalloutManagerTests) + ~670 additional from other test files ≈ 2445+ total Swift tests
+
+---
+
+## Run — 2026-07-12
+
+### What shipped
+**5 new keyword domains: environmentalengineering, techwriting, healthcoaching, podiatry, classicalstudies**
+
+**Also added template existence tests for prior batch:**
+- dramatherapy, horsemanship, glassblowing, landsurveyingtech — now have individual template existence tests in SuggestedSessionTemplatesTests.swift
+
+**New keyword domain — environmentalengineering:**
+- Branch positioned BEFORE `engineering` (after `landsurveyingtech`); prevents wastewater/air-quality/remediation tasks from falling into generic engineering pool
+- Matches: environmental engineering, environmental engineer, wastewater treatment, wastewater plant, water quality (with engineer/class/lab/course context), air quality (with engineer/class/control), environmental remediation, site remediation, groundwater contamination/remediation, hazardous waste (with class/management/engineer), stormwater (with engineer/management/design), environmental impact assessment (with engineer), env eng, environ eng
+- `environmentalengineeringCallouts(tier:)` 4/3/3: "that wastewater treatment design isn't going to write itself." / "no one designs wastewater treatment systems by browsing." / "CLOSE THIS. open your environmental engineering notes."
+- 2 templates: "Complete an environmental engineering assignment on wastewater treatment, water quality, or air quality control" (60 min) + "Study environmental engineering concepts: remediation, stormwater management, or environmental impact assessment" (45 min)
+
+**New keyword domain — techwriting:**
+- Branch positioned AFTER `writing` (writing: generic blog/draft/outline stays there; techwriting catches specific doc types)
+- Matches: technical writing, technical writer, user manual, user manuals, API documentation, API docs, technical documentation, developer documentation, developer docs, software documentation, release notes (with write/draft/documentation), user guide (with write/draft/technical), CPTC certification, technical communication, tech comm, docs-as-code, knowledge base (with write)
+- `techwritingCallouts(tier:)` 4/3/3: "that user manual isn't going to write itself." / "no one earns the CPTC by browsing." / "CLOSE THIS. open your documentation project."
+- 2 templates: "Write or revise a user manual, API documentation, or technical guide" (60 min) + "Study for the CPTC technical writing certification or complete a technical communication coursework assignment" (45 min)
+
+**New keyword domain — healthcoaching:**
+- Branch positioned BEFORE `fitness` so NBC-HWC/NBHWC cert prep and wellness coaching tasks don't fall through
+- Matches: health coach, health coaching, wellness coach, wellness coaching, NBHWC, NBC-HWC, health coaching certification, wellness coaching certification, health and wellness coaching, health behavior coaching, behavior change coaching, health behavior change, lifestyle coaching (with certif/exam/class/program)
+- `healthcoachingCallouts(tier:)` 4/3/3: "those behavior change techniques aren't going to master themselves." / "no one passes the NBHWC exam by browsing." / "CLOSE THIS. open your health coaching notes."
+- 2 templates: "Study for the NBHWC health and wellness coaching certification exam" (60 min) + "Complete a health coaching coursework assignment or wellness coaching session documentation" (45 min)
+
+**New keyword domain — podiatry:**
+- Branch positioned AFTER `acupuncture` and BEFORE `dentallab`; DPM program, APMLE board, foot/ankle surgery
+- Matches: podiatry, podiatrist, podiatrists, podiatric medicine/surgery/school/program/class/exam, podiatry school/program/class/exam, DPM program, DPM degree, APMLE exam/board, foot and ankle (with surgery/class/clinic), podiatric surgery class, CPME, APMA+podiat
+- `podiatryCallouts(tier:)` 4/3/3: "those APMLE questions aren't going to answer themselves." / "no one passes the APMLE by browsing." / "CLOSE THIS. open your podiatry notes."
+- 2 templates: "Study for the APMLE podiatry board exam or complete a podiatric medicine school assignment" (90 min) + "Write up podiatric medicine case notes, a patient encounter summary, or a clinical rotation report" (30 min)
+
+**New keyword domain — classicalstudies:**
+- Branch positioned BEFORE `philosophy`; catches Latin/Greek translation, classical archaeology, ancient history; Plato/Aristotle stay in philosophy for philosophical argument context
+- Matches: classical studies, classics major, classics (with class/course/exam/paper/major), Latin translation, translate Latin, Latin grammar/text/prose/poetry, Latin (with class/course/exam/assignment, guarded against Latin America/Latino/Latina/Latin music/dance), ancient Greek, Attic Greek, Koine Greek, Greek translation, translate Greek, classical archaeology, ancient history, classical literature, ancient literature, ancient Rome, ancient Greece, Homer (with Iliad/Odyssey/class/course), Virgil (with Aeneid/class/course/translation), Cicero (with class/course/translation), Greco-Roman, classical antiquity, Roman history, Hellenistic+class
+- `classicalstudiesCallouts(tier:)` 4/3/3: "Cicero didn't translate himself — get back to your Latin." / "no one learns ancient Greek by browsing." / "CLOSE THIS. open your Latin text."
+- 2 templates: "Translate a Latin or ancient Greek passage and write a commentary or close reading" (60 min) + "Study classical studies content: ancient history, classical literature, or classical archaeology for an exam or paper" (45 min)
+
+**Test counts:**
+- CalloutManagerTests.swift: 1807 → 1847 (+40: 8 tests per domain × 5 domains)
+- SuggestedSessionTemplatesTests.swift: +87 lines (4 prior-batch template tests + 5 new template tests + ≥325 count guard)
+
+**Template catalog: 315 → 325**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `environmentalengineering` fires BEFORE `engineering` (~line 458 vs ~line 478). "wastewater treatment plant design for my environmental engineering class" → environmentalengineering ✓; "SolidWorks CAD mechanical engineering FEA" → engineering ✓
+- `techwriting` fires AFTER `writing` (~line 1070 vs ~line 1058). "blog post draft outline revision" → writing ✓; "writing a user manual and API documentation" → techwriting ✓ (user manual not caught by earlier branches)
+- `healthcoaching` fires BEFORE `fitness` (~line 1462 vs ~line 1475). "NBHWC health wellness coaching certification exam" → healthcoaching ✓; "gym workout strength training session" → fitness ✓
+- `podiatry` fires BEFORE `dentallab` (~line 1723 vs ~line 1730). "APMLE podiatry board exam DPM program" → podiatry ✓; "dental lab ceramist NBDALE exam" → dentallab ✓
+- `classicalstudies` fires BEFORE `philosophy` (~line 2897 vs ~line 2921). "studying for Latin class and translating Cicero classical studies" → classicalstudies ✓; "Kant Plato philosophy metaphysics ethics paper" → philosophy ✓
+- False positive guards: "Latin America" → word("latin") guarded by !lower.contains("latin america") → does NOT fire classicalstudies ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `opticiandispensing` — optical dispensing lab, contact lens fitting separate from opticianry coursework (opticianry is already in code)
+  - `cosmeticchemistry` — cosmetic formulation, cosmetic science degree, personal care product development, beauty chemistry
+  - `floristryweddingplanning` — floral design program, AIFD certification, wedding planning certification, event floral
+  - `maritimestudies` — maritime law, merchant marine, USCG license, navigation class, nautical science
+  - `constructionmanagement` — construction management, CM degree, AIC exam, estimating, project scheduling (separate from architecture and civil engineering)
+- Template count: 325 → 335 after next 5-domain batch
+- Estimated test count: 1847 (CalloutManagerTests) + ~670 additional from other test files ≈ 2517+ total Swift tests
