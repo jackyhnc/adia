@@ -3144,9 +3144,60 @@ struct SuggestedSessionTemplatesTests {
         #expect(hasStudy,       "catalog must include a cosmetic science study template covering emulsification or preservation")
     }
 
-    // MARK: - Count guard (new 5-domain batch)
+    // MARK: - Count guard (maritimestudies/hvac/construction/floristry/cosmeticchemistry batch)
     @Test func catalogHasAtLeastThreeHundredFortyFiveTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 345,
                 "catalog should have ≥345 templates after maritimestudies/hvactechnology/constructionmanagement/floristryweddingplanning/cosmeticchemistry additions")
+    }
+
+    // MARK: - Automotive Technology templates
+    @Test func automotivetechTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasASE     = tasks.contains { $0.localizedCaseInsensitiveContains("ASE") && $0.localizedCaseInsensitiveContains("automotive technology") }
+        let hasService = tasks.contains { $0.localizedCaseInsensitiveContains("automotive service") && ($0.localizedCaseInsensitiveContains("engine diagnostics") || $0.localizedCaseInsensitiveContains("brake") || $0.localizedCaseInsensitiveContains("electrical")) }
+        #expect(hasASE,     "catalog must include an ASE certification automotive technology template")
+        #expect(hasService, "catalog must include an automotive service lab exercises template")
+    }
+
+    // MARK: - Welding Technology templates
+    @Test func weldingtechnologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCert   = tasks.contains { $0.localizedCaseInsensitiveContains("AWS") || $0.localizedCaseInsensitiveContains("CWI") }
+        let hasAssign = tasks.contains { $0.localizedCaseInsensitiveContains("welding technology") && ($0.localizedCaseInsensitiveContains("procedures") || $0.localizedCaseInsensitiveContains("weld testing") || $0.localizedCaseInsensitiveContains("safety")) }
+        #expect(hasCert,   "catalog must include an AWS or CWI welding certification template")
+        #expect(hasAssign, "catalog must include a welding technology assignment template")
+    }
+
+    // MARK: - Grant Writing templates
+    @Test func grantwritingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAims  = tasks.contains { $0.localizedCaseInsensitiveContains("specific aims") || ($0.localizedCaseInsensitiveContains("NIH") && $0.localizedCaseInsensitiveContains("grant")) }
+        let hasDraft = tasks.contains { $0.localizedCaseInsensitiveContains("grant proposal") && $0.localizedCaseInsensitiveContains("funding application") }
+        #expect(hasAims,  "catalog must include an NIH specific aims or grant narrative template")
+        #expect(hasDraft, "catalog must include a grant proposal drafting template")
+    }
+
+    // MARK: - Animal Husbandry templates
+    @Test func animalhusbandryTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasHusbandry = tasks.contains { $0.localizedCaseInsensitiveContains("animal husbandry") || $0.localizedCaseInsensitiveContains("livestock management") }
+        let hasProduction = tasks.contains { ($0.localizedCaseInsensitiveContains("swine") || $0.localizedCaseInsensitiveContains("poultry") || $0.localizedCaseInsensitiveContains("beef") || $0.localizedCaseInsensitiveContains("dairy")) && $0.localizedCaseInsensitiveContains("animal science") }
+        #expect(hasHusbandry,  "catalog must include an animal husbandry or livestock management template")
+        #expect(hasProduction, "catalog must include a livestock production exam study template")
+    }
+
+    // MARK: - Paralegal templates
+    @Test func paralegalTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCert   = tasks.contains { $0.localizedCaseInsensitiveContains("CLA") || $0.localizedCaseInsensitiveContains("CP") && $0.localizedCaseInsensitiveContains("paralegal") }
+        let hasAssign = tasks.contains { $0.localizedCaseInsensitiveContains("paralegal studies") && ($0.localizedCaseInsensitiveContains("legal research") || $0.localizedCaseInsensitiveContains("document drafting") || $0.localizedCaseInsensitiveContains("case analysis")) }
+        #expect(hasCert,   "catalog must include a CLA or CP paralegal certification template")
+        #expect(hasAssign, "catalog must include a paralegal studies assignment template")
+    }
+
+    // MARK: - Count guard (new 5-domain batch: automotivetech/weldingtechnology/grantwriting/animalhusbandry/paralegal)
+    @Test func catalogHasAtLeastThreeHundredFiftyFiveTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 355,
+                "catalog should have ≥355 templates after automotivetech/weldingtechnology/grantwriting/animalhusbandry/paralegal additions")
     }
 }

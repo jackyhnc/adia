@@ -1,5 +1,83 @@
 # Adia — Build Progress
 
+## Run 334 (automated) — 2026-07-12 — Automotive technology + welding technology + grant writing + animal husbandry + paralegal keyword domains (1919→1959 tests, 345→355 templates)
+
+### Shipped
+
+**Automotive Technology keyword domain:**
+- `automotivetech` branch added to `extractTaskKeyword` in `CalloutManager.swift`, positioned BEFORE hvactechnology.
+- Matches: automotive technology/service/technician, auto mechanic/mechanics, auto tech program/class/course, ASE certification/exam/test/prep/cert, automotive class/course/program/school/exam/notes/lab, engine diagnostics, engine repair class, transmission/brake/auto body/collision repair class or program, automotive electrical/electronics + class/course/exam context.
+- False-positive guard: "automotive engineering" and "automotive design" caught by earlier engineering/design branches.
+- `automotivetechCallouts(tier:)` 4/3/3: "those ASE study guides aren't going to read themselves." / "ASE technicians don't pass certification by browsing." / "CLOSE THIS. open your automotive technology notes." / "no one passes the ASE certification by scrolling."
+- 2 templates: "Study for the ASE certification exam" (60 min) + "Work through automotive service lab exercises" (45 min)
+
+**Welding Technology keyword domain:**
+- `weldingtechnology` branch positioned AFTER automotivetech, BEFORE hvactechnology.
+- Bare word("welding") NOT matched — requires educational/certification context.
+- Matches: welding technology/technician, welding certification/certificate/program/class/course/exam/school/notes/lab, AWS welding, American Welding Society, CWI exam/certification, certified welding inspector, MIG/TIG/arc/flux core/structural/pipe welding, welding inspection, weld testing.
+- `weldingtechnologyCallouts(tier:)` 4/3/3: "those welding procedures aren't going to study themselves." / "welding technicians don't pass the CWI by browsing." / "CLOSE THIS. open your welding technology notes." / "no one passes the AWS or CWI certification by scrolling."
+- 2 templates: "Study for the AWS welding certification or CWI exam" (60 min) + "Complete a welding technology program assignment" (45 min)
+
+**Grant Writing keyword domain:**
+- `grantwriting` branch positioned BEFORE writing (bare word("grant") stays in writing branch for generic use).
+- Compound-terms-only: grant proposal/proposals, grant application/applications, grant writing/writer, writing a grant, research grant + writing/application/proposal/narrative context, NIH/NSF grant/application, R01/R21/R03/K99/F31/F32 + grant/aim/application/narrative context, SBIR/STTR grant/application, specific aims, grant narrative/budget/submission/deadline/funding/review + writing, foundation grant.
+- `grantwritingCallouts(tier:)` 4/3/3: "that grant proposal isn't going to write itself." / "researchers don't land grants by scrolling." / "CLOSE THIS. open your grant proposal." / "no one wins funding by browsing."
+- 2 templates: "Write the specific aims or research narrative for my NIH or NSF grant application" (90 min) + "Draft a grant proposal or foundation funding application" (60 min)
+
+**Animal Husbandry keyword domain:**
+- `animalhusbandry` branch positioned AFTER horsemanship, BEFORE veterinary.
+- Bare "animal science" stays in veterinary (fires after).
+- Matches: animal husbandry, livestock management/production/class/course/exam/notes, swine/poultry/beef cattle/dairy/sheep/goat production/management/science/class/course, animal production class/course/exam/program, animal agriculture, feedlot management, feed formulation class, farm management + livestock/animal/production context.
+- `animalhusbandryCallouts(tier:)` 4/3/3: "those livestock management notes aren't going to study themselves." / "livestock producers don't learn animal husbandry by scrolling." / "CLOSE THIS. open your animal husbandry notes." / "no one learns livestock management by browsing."
+- 2 templates: "Complete an animal husbandry or livestock management coursework assignment" (45 min) + "Study for my animal science production exam: swine, poultry, beef, or dairy" (60 min)
+
+**Paralegal keyword domain:**
+- `paralegal` branch positioned BEFORE legal so ABA-accredited paralegal programs, CLA/CP exam prep, and legal-assistant coursework route here rather than the law-school pool.
+- Matches: word("paralegal"/"paralegals"), legal assistant + edu context, ABA paralegal, paralegal certificate/certification/program/class/course/school/exam/studies/notes/degree/major, CLA exam + !clinical guard, CP exam + paralegal, NALA cert + paralegal, PACE exam + paralegal, litigation support class, e-discovery class, legal technology class + paralegal.
+- `paralegalCallouts(tier:)` 4/3/3: "those CLA study materials aren't going to review themselves." / "paralegals don't earn their certification by browsing." / "CLOSE THIS. open your paralegal notes." / "no one passes the CLA or CP exam by scrolling."
+- 2 templates: "Study for the CLA or CP paralegal certification exam" (60 min) + "Complete a paralegal studies assignment: legal research, document drafting, or case analysis" (45 min)
+
+**Tests:**
+- CalloutManagerTests.swift: 1919→1959 (+40: 8 per domain)
+- SuggestedSessionTemplatesTests.swift: +11 (5 domain template tests + ≥355 count guard)
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- "studying for the ASE certification exam and reviewing engine diagnostics for my automotive technology program" → automotivetech ✓; positioned before hvactechnology ✓
+- "automotive engineering design" → engineering (fires earlier) ✓
+- "studying for the AWS welding certification and reviewing MIG welding procedures for my welding technology program" → weldingtechnology ✓
+- "EPA 608 HVAC certification" → hvactechnology ✓ (not caught by weldingtechnology ✓)
+- "writing my NIH grant specific aims for my R01 grant application" → grantwriting ✓; positioned before writing ✓
+- "writing a blog post draft" → writing ✓ (not grantwriting ✓)
+- "completing my livestock management assignment and studying swine production for my animal husbandry class" → animalhusbandry ✓; positioned after horsemanship ✓
+- "studying for the NAVLE veterinary board exam" → veterinary ✓ (not animalhusbandry ✓)
+- "studying for my paralegal certification exam and reviewing paralegal program coursework" → paralegal ✓; positioned before legal ✓
+- "writing a legal brief for moot court in my law school course" → legal ✓ (not paralegal ✓)
+- All 5 tier-3 pools contain "CLOSE THIS" or "no one" ✓; all tier-1 pools have ≥4 messages ✓
+- All 10 template durations in [300, 10800] ✓; template count 355 ≥ 355 ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good remaining candidates:
+  - `appliedmusic` — practicing instruments, audition prep, recital performance (separate from musicproduction/theory)
+  - `soilscience` — soil science, pedology, soil mapping (separate from geology/enviro)
+  - `foodsafety` — food safety certification, ServSafe, HACCP (separate from culinary/nutrition)
+  - `industrialsafety` — OSHA compliance, industrial hygiene, safety program design
+  - `certifiedfinancialplanner` — CFP exam, financial planning coursework (separate from finance/actuarial)
+- Template count: 355 → 365 after next 5-domain batch (2 templates per domain)
+- Estimated test count: 1959 + ~40 (5 domains × 8 tests) = 1999+ CalloutManagerTests
+
+---
+
+## Run 333 (automated) — 2026-07-12 — Maritime studies + HVAC technology + construction management + floristry/wedding planning + cosmetic chemistry keyword domains (1919 tests, 345 templates)
+
+### Shipped
+(see GOAL.md item 136 — code committed but PROGRESS.md entry was missing)
+
+---
+
 ## Run 332 (automated) — 2026-07-12 — PM&R + performance nutrition + horticulture science + global health development keyword domains (1847→1879 tests, 325→333 templates)
 
 ### Shipped

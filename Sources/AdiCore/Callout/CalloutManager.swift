@@ -495,6 +495,49 @@ public final class CalloutManager {
             || lower.contains("env eng") || lower.contains("environ eng") {
             return "environmentalengineering"
         }
+        // automotivetech — positioned BEFORE hvactechnology so ASE certification, engine diagnostics,
+        // and automotive service programs route here. "automotive engineering" and "automotive design"
+        // already caught by engineering/design branches that fire earlier.
+        if lower.contains("automotive technology") || lower.contains("automotive service")
+            || lower.contains("automotive technician") || lower.contains("auto mechanic")
+            || lower.contains("auto mechanics") || lower.contains("auto tech program")
+            || lower.contains("auto technology") || lower.contains("auto service")
+            || lower.contains("ase certification") || lower.contains("ase exam")
+            || lower.contains("ase test") || lower.contains("ase prep") || lower.contains("ase cert")
+            || (lower.contains("ase") && (lower.contains("automotive") || lower.contains("auto tech") || lower.contains("technician")))
+            || lower.contains("automotive class") || lower.contains("automotive course")
+            || lower.contains("automotive program") || lower.contains("automotive school")
+            || lower.contains("automotive exam") || lower.contains("automotive notes")
+            || lower.contains("automotive lab") || lower.contains("auto tech class")
+            || lower.contains("auto tech course") || lower.contains("auto tech notes")
+            || lower.contains("engine diagnostics") || lower.contains("engine repair class")
+            || lower.contains("engine rebuild") && lower.contains("class")
+            || lower.contains("transmission class") || lower.contains("transmission course")
+            || lower.contains("brake service class") || lower.contains("brake systems class")
+            || lower.contains("auto body class") || lower.contains("auto body program")
+            || lower.contains("collision repair class") || lower.contains("collision repair program")
+            || (lower.contains("automotive electrical") || lower.contains("automotive electronics"))
+            && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "automotivetech"
+        }
+        // weldingtechnology — positioned AFTER automotivetech, BEFORE hvactechnology.
+        // Bare word("welding") is NOT matched — requires educational/certification context.
+        if lower.contains("welding technology") || lower.contains("welding technician")
+            || lower.contains("welding certification") || lower.contains("welding certificate")
+            || lower.contains("welding program") || lower.contains("welding class")
+            || lower.contains("welding course") || lower.contains("welding exam")
+            || lower.contains("welding school") || lower.contains("welding notes")
+            || lower.contains("welding lab")
+            || lower.contains("aws welding") || lower.contains("american welding society")
+            || lower.contains("cwi exam") || lower.contains("cwi certification")
+            || lower.contains("certified welding inspector")
+            || (lower.contains("aws certification") && lower.contains("weld"))
+            || lower.contains("mig welding") || lower.contains("tig welding")
+            || lower.contains("arc welding") || lower.contains("flux core welding")
+            || lower.contains("structural welding") || lower.contains("pipe welding")
+            || lower.contains("welding inspection") || lower.contains("weld testing") {
+            return "weldingtechnology"
+        }
         // hvactechnology — positioned BEFORE engineering so HVAC trade programs, EPA 608 exam
         // prep, and refrigeration coursework route here rather than generic engineering pool.
         // "air conditioning" alone not matched; requires class/course/tech/exam context.
@@ -1135,6 +1178,27 @@ public final class CalloutManager {
             || lower.contains("scene writing") || lower.contains("write a scene")
             || lower.contains("write a chapter") || lower.contains("chapter draft") {
             return "screenwriting"
+        }
+        // grantwriting — positioned BEFORE writing so NIH/NSF proposals, specific aims, and
+        // grant narratives route here. Only compound terms matched — bare word("grant") stays in
+        // the writing branch below for generic academic writing tasks.
+        if lower.contains("grant proposal") || lower.contains("grant proposals")
+            || lower.contains("grant application") || lower.contains("grant applications")
+            || lower.contains("grant writing") || lower.contains("grant writer")
+            || lower.contains("writing a grant") || lower.contains("write a grant")
+            || lower.contains("research grant") && (lower.contains("writing") || lower.contains("application") || lower.contains("proposal") || lower.contains("narrative"))
+            || lower.contains("nih grant") || lower.contains("nsf grant")
+            || lower.contains("nih application") || lower.contains("nsf application")
+            || (lower.contains("r01") || lower.contains("r21") || lower.contains("r03") || lower.contains("k99") || lower.contains("f31") || lower.contains("f32"))
+            && (lower.contains("grant") || lower.contains("aim") || lower.contains("application") || lower.contains("narrative"))
+            || lower.contains("sbir grant") || lower.contains("sttr grant")
+            || lower.contains("sbir application") || lower.contains("sttr application")
+            || lower.contains("specific aims") || lower.contains("grant narrative")
+            || lower.contains("grant budget") || lower.contains("grant submission")
+            || lower.contains("grant deadline") || lower.contains("grant funding")
+            || lower.contains("foundation grant") || lower.contains("grant-writing")
+            || lower.contains("grant review") && lower.contains("writing") {
+            return "grantwriting"
         }
         if word("blog") || word("blogs") || word("newsletter") || word("newsletters")
             || word("draft") || word("drafts") || word("outline") || word("outlines")
@@ -1803,6 +1867,29 @@ public final class CalloutManager {
             || lower.contains("stable management") || lower.contains("barn management")
             || lower.contains("horse science class") || lower.contains("horse handling class") {
             return "horsemanship"
+        }
+        // animalhusbandry — positioned AFTER horsemanship, BEFORE veterinary so livestock
+        // production, swine/poultry/beef/dairy science, and farm animal management tasks route
+        // here rather than the veterinary medicine pool. Bare "animal science" stays in veterinary.
+        if lower.contains("animal husbandry")
+            || lower.contains("livestock management") || lower.contains("livestock production")
+            || lower.contains("livestock class") || lower.contains("livestock course")
+            || lower.contains("livestock exam") || lower.contains("livestock notes")
+            || lower.contains("swine production") || lower.contains("swine management")
+            || lower.contains("swine science") || lower.contains("swine class") || lower.contains("swine course")
+            || lower.contains("poultry science") || lower.contains("poultry production")
+            || lower.contains("poultry management") || lower.contains("poultry class") || lower.contains("poultry course")
+            || lower.contains("beef cattle production") || lower.contains("beef cattle management")
+            || lower.contains("beef production class") || lower.contains("beef cattle class")
+            || lower.contains("dairy science") || lower.contains("dairy cattle") || lower.contains("dairy production class")
+            || lower.contains("sheep production") || lower.contains("sheep management") || lower.contains("sheep science")
+            || lower.contains("goat production") || lower.contains("goat management") || lower.contains("goat science")
+            || lower.contains("animal production class") || lower.contains("animal production course")
+            || lower.contains("animal production exam") || lower.contains("animal production program")
+            || lower.contains("animal agriculture") || lower.contains("ag animal")
+            || lower.contains("feedlot management") || lower.contains("feed formulation class")
+            || (lower.contains("farm management") && (lower.contains("livestock") || lower.contains("animal") || lower.contains("production"))) {
+            return "animalhusbandry"
         }
         // veterinary — positioned before premed so "veterinary clinical rotation", "dissection"
         // in a vet-school context, and animal anatomy tasks route here, not to premed.
@@ -3305,6 +3392,24 @@ public final class CalloutManager {
             || lower.contains("prenuptial agreement") || lower.contains("postnuptial agreement")
             || lower.contains("guardianship law") || lower.contains("termination of parental rights") {
             return "familylaw"
+        }
+        // paralegal — positioned BEFORE legal so ABA-accredited paralegal programs, CLA/CP
+        // exam prep, and legal-assistant coursework route here rather than the law-school pool.
+        if word("paralegal") || word("paralegals")
+            || lower.contains("legal assistant") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("certificate") || lower.contains("exam") || lower.contains("school") || lower.contains("notes") || lower.contains("certification"))
+            || lower.contains("aba paralegal") || lower.contains("paralegal certificate")
+            || lower.contains("paralegal certification") || lower.contains("paralegal program")
+            || lower.contains("paralegal class") || lower.contains("paralegal course")
+            || lower.contains("paralegal school") || lower.contains("paralegal exam")
+            || lower.contains("paralegal studies") || lower.contains("paralegal notes")
+            || lower.contains("paralegal degree") || lower.contains("paralegal major")
+            || lower.contains("cla exam") && !lower.contains("clinical")
+            || lower.contains("cp exam") && lower.contains("paralegal")
+            || lower.contains("nala cert") && lower.contains("paralegal")
+            || lower.contains("pace exam") && lower.contains("paralegal")
+            || lower.contains("litigation support class") || lower.contains("e-discovery class")
+            || lower.contains("legal technology class") && lower.contains("paralegal") {
+            return "paralegal"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")

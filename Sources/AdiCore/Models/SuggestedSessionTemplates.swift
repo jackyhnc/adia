@@ -2216,5 +2216,65 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target cosmetic science material reviewed (emulsion theory, preservative systems, surfactant chemistry, or raw material safety), practice questions completed, and notes saved",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "car.fill",
+            task: "Study for the ASE certification exam or complete an automotive technology coursework assignment",
+            successCriteria: "Target ASE content reviewed (engine diagnostics, brake systems, electrical systems, or transmission), practice questions completed, and notes saved for next session",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "wrench.and.screwdriver.fill",
+            task: "Work through automotive service lab exercises: engine diagnostics, brake systems, or electrical systems",
+            successCriteria: "Automotive lab assignment completed (diagnostic steps documented, system inspection notes written, or service procedure outlined), and work saved or submitted",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "flame.fill",
+            task: "Study for the AWS welding certification or CWI exam",
+            successCriteria: "Target welding content reviewed (welding processes, weld quality standards, inspection criteria, or safety procedures), practice questions completed, and notes saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "hammer.fill",
+            task: "Complete a welding technology program assignment: welding procedures, weld testing, or safety",
+            successCriteria: "Welding assignment completed (procedure documented, weld testing steps outlined, or safety analysis written), and work saved or submitted",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write the specific aims or research narrative for my NIH or NSF grant application",
+            successCriteria: "Specific aims page drafted or research narrative section completed, argument is clear and organized, and document is saved with tracked changes or version note",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "pencil.and.list.clipboard",
+            task: "Draft a grant proposal or foundation funding application for my research project",
+            successCriteria: "Grant proposal section completed (background, significance, aims, or budget narrative drafted), argument documented, and work saved or submitted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "hare.fill",
+            task: "Complete an animal husbandry or livestock management coursework assignment",
+            successCriteria: "Assignment completed (livestock production problem set solved, animal management plan written, or exam material reviewed), and work saved or submitted",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "pawprint.fill",
+            task: "Study for my animal science production exam: swine, poultry, beef, or dairy",
+            successCriteria: "Target livestock production content reviewed (species-specific management, nutrition, reproduction, or health), practice questions completed, and notes saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "briefcase.fill",
+            task: "Study for the CLA or CP paralegal certification exam",
+            successCriteria: "Target paralegal content reviewed (legal research, civil procedure, ethics, or substantive law area), practice questions completed, and notes saved for next session",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "folder.fill",
+            task: "Complete a paralegal studies assignment: legal research, document drafting, or case analysis",
+            successCriteria: "Paralegal assignment completed (research memo drafted, legal document outlined, or case analysis written), and work saved or submitted",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

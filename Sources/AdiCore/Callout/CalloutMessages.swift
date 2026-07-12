@@ -238,6 +238,11 @@ extension CalloutManager {
         case "constructionmanagement":      return constructionmanagementCallouts(tier: tier)
         case "floristryweddingplanning":    return floristryweddingplanningCallouts(tier: tier)
         case "cosmeticchemistry":           return cosmeticchemistryCallouts(tier: tier)
+        case "automotivetech":              return automotivetechCallouts(tier: tier)
+        case "weldingtechnology":           return weldingtechnologyCallouts(tier: tier)
+        case "grantwriting":                return grantwritingCallouts(tier: tier)
+        case "animalhusbandry":             return animalhusbandryCallouts(tier: tier)
+        case "paralegal":                   return paralegalCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -4215,6 +4220,111 @@ extension CalloutManager {
             "CLOSE THIS. open your cosmetic chemistry notes.",
             "no one becomes a cosmetic chemist by browsing.",
             "CLOSE THIS. get back to your cosmetic formulation assignment.",
+        ]
+        }
+    }
+
+    private func automotivetechCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those ASE study guides aren't going to read themselves.",
+            "your engine isn't going to diagnose itself — get back to your auto tech coursework.",
+            "close this and open your automotive technology notes.",
+            "get back to your automotive service assignment.",
+        ]
+        case 2: return [
+            "ASE technicians don't pass certification by browsing.",
+            "your automotive lab notes won't write themselves.",
+            "stop avoiding your auto tech coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your automotive technology notes.",
+            "no one passes the ASE certification by scrolling.",
+            "CLOSE THIS. get back to your engine diagnostics or automotive service assignment.",
+        ]
+        }
+    }
+
+    private func weldingtechnologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those welding procedures aren't going to study themselves.",
+            "your welds won't perfect themselves — get back to your welding coursework.",
+            "close this and open your welding technology notes.",
+            "get back to your welding certification prep.",
+        ]
+        case 2: return [
+            "welding technicians don't pass the CWI by browsing.",
+            "your welding lab notes won't write themselves.",
+            "stop avoiding your welding technology coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your welding technology notes.",
+            "no one passes the AWS or CWI certification by scrolling.",
+            "CLOSE THIS. get back to your welding program assignment.",
+        ]
+        }
+    }
+
+    private func grantwritingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that grant proposal isn't going to write itself.",
+            "your NIH specific aims won't draft themselves — get back to your grant writing.",
+            "close this and open your grant narrative.",
+            "get back to your grant proposal.",
+        ]
+        case 2: return [
+            "researchers don't land grants by scrolling.",
+            "your grant application won't submit itself.",
+            "stop avoiding your grant writing.",
+        ]
+        default: return [
+            "CLOSE THIS. open your grant proposal.",
+            "no one wins funding by browsing.",
+            "CLOSE THIS. get back to your grant narrative or application.",
+        ]
+        }
+    }
+
+    private func animalhusbandryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those livestock management notes aren't going to study themselves.",
+            "your animal husbandry coursework won't complete itself — get back to it.",
+            "close this and open your animal production notes.",
+            "get back to your livestock management assignment.",
+        ]
+        case 2: return [
+            "livestock producers don't learn animal husbandry by scrolling.",
+            "your swine or poultry production notes won't write themselves.",
+            "stop avoiding your animal science coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your animal husbandry notes.",
+            "no one learns livestock management by browsing.",
+            "CLOSE THIS. get back to your animal production assignment.",
+        ]
+        }
+    }
+
+    private func paralegalCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those CLA study materials aren't going to review themselves.",
+            "your paralegal coursework won't complete itself — get back to it.",
+            "close this and open your paralegal notes.",
+            "get back to your paralegal studies assignment.",
+        ]
+        case 2: return [
+            "paralegals don't earn their certification by browsing.",
+            "your legal research notes won't write themselves.",
+            "stop avoiding your paralegal coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your paralegal notes.",
+            "no one passes the CLA or CP exam by scrolling.",
+            "CLOSE THIS. get back to your paralegal studies assignment.",
         ]
         }
     }
