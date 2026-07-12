@@ -14518,3 +14518,63 @@ None. Swift toolchain unavailable on Linux container.
 - Consider: athletic training (already confirmed in kinesiology branch — no separate branch needed)
 - Consider: `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment)
 - Estimated test count: 1659 (CalloutManagerTests) + ~670 additional from other test files ≈ 2330+ total Swift tests
+
+---
+
+## Run — 2026-07-12
+
+### What shipped
+**5 new keyword domains: playwriting, sportsmedicine, naturopathicmedicine, midwifery, clinicalpsychology**
+
+**New keyword domain — playwriting:**
+- Branch positioned BEFORE `performingarts` (after `filmstudies`); catches standalone play-crafting work distinct from `dramaeducation` (class context) and `screenwriting` (film scripts)
+- Matches: stage play, one-act/two-act/full-length play, play script, play draft, writing/revising/working on my play, ten-minute play, original play, new play development, dramatic writing (non-class), theatrical writing
+- `playwrightingCallouts(tier:)` 4/3/3: "that play isn't going to write itself." / "your characters are waiting — get back to your script." / "CLOSE THIS. open your play script."
+- 2 templates: "Write or revise a scene or act for my stage play" (45 min) + "Outline or develop the structure of my one-act or full-length play" (30 min)
+
+**New keyword domain — sportsmedicine:**
+- Branch positioned BEFORE `kinesiology`; catches BOC exam, CAATE, sports injury assessment, concussion protocol, return-to-play protocol, athletic taping
+- `sportsmedicineCallouts(tier:)` 4/3/3: "those athletes aren't going to assess themselves." / "no one passes the BOC by browsing." / "CLOSE THIS. open your sports medicine notes."
+- 2 templates: "Complete a sports medicine or athletic training clinical case report" (45 min) + "Study for the BOC exam or complete a sports medicine school assignment" (60 min)
+
+**New keyword domain — naturopathicmedicine:**
+- Branch positioned BEFORE `integrativemedicine`; catches NPLEX exam, ND programs, botanical medicine, herbal medicine, homeopathy, hydrotherapy, Bastyr/SCNM/NCNM schools
+- `naturopathicmedicineCallouts(tier:)` 4/3/3: "those botanical medicine notes aren't going to study themselves." / "no one earns their ND by browsing." / "CLOSE THIS. open your NPLEX study guide."
+- 2 templates: "Complete a naturopathic medicine assignment or botanical medicine case study" (45 min) + "Study for the NPLEX exam or naturopathic school board prep" (90 min)
+
+**New keyword domain — midwifery:**
+- Branch positioned BEFORE `nursing`; catches CNM, AMCB exam, birth plans, prenatal/postpartum charting, labor/delivery notes, certified nurse midwife, direct-entry midwife
+- `midwiferyCallouts(tier:)` 4/3/3: "those birth plans aren't going to write themselves." / "no one earns their CNM by browsing." / "CLOSE THIS. open your midwifery notes."
+- 2 templates: "Write birth plans, prenatal notes, or postpartum charting for midwifery clinical" (30 min) + "Study for the AMCB exam or complete a midwifery school assignment" (90 min)
+
+**New keyword domain — clinicalpsychology:**
+- Branch positioned BEFORE `psychology`; catches APPIC internship match, neuropsychological testing/assessment/reports, psychotherapy practicum notes, Psy.D programs, psychology doctoral programs; EPPP stays in forensicpsychology (already placed there)
+- `clinicalpsychologyCallouts(tier:)` 4/3/3: "those assessment reports aren't going to write themselves." / "no one completes a Psy.D by browsing." / "CLOSE THIS. open your assessment report."
+- 2 templates: "Write a neuropsychological or psychological assessment report" (60 min) + "Work on my APPIC internship application or clinical psychology doctoral materials" (60 min)
+
+**Test counts:**
+- CalloutManagerTests.swift: 1695 → 1735 (+40: 8 tests per domain × 5 domains)
+- SuggestedSessionTemplatesTests.swift: ≥289 count guard → ≥297 count guard
+
+**Template catalog: 287 → 297**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `playwriting` fires BEFORE `performingarts` (~line 920). "write act 2 of my stage play" → playwriting ✓; "drama class scene work and acting technique" → performingarts ✓
+- `sportsmedicine` fires BEFORE `kinesiology` (~line 1333). "BOC exam athletic training certification" → sportsmedicine ✓; "kinesiology biomechanics exercise physiology" → kinesiology ✓
+- `naturopathicmedicine` fires BEFORE `integrativemedicine` (~line 1738). "NPLEX exam botanical medicine" → naturopathicmedicine ✓; "integrative medicine ABIHM board" → integrativemedicine ✓
+- `midwifery` fires BEFORE `nursing` (~line 2181). "AMCB exam CNM midwifery clinical" → midwifery ✓; "nursing care plan NCLEX" → nursing ✓
+- `clinicalpsychology` fires BEFORE `psychology` (~line 2553). "APPIC internship clinical psych doctoral" → clinicalpsychology ✓; "abnormal psychology class psych major" → psychology ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `theatresound` or `sounddesign` — live event audio, FOH mixing, stage sound, audio tech degree, separate from music production/recording
+  - `dancescience` — dance kinesiology, dance anatomy, Laban Movement Analysis, somatic movement, separate from performingarts (dancing) and kinesiology (exercise physiology)
+  - `forensicnursing` — SANE exam, sexual assault nurse examiner, forensic nursing notes, separate from nursing (general) and forensicpsychology
+  - `midwiferyassisting` — doula certification, birth doula, postpartum doula, DONA certification, separate from midwifery (CNM degree)
+  - `interpreting` — ASL/spoken language interpretation (professional, distinct from signlanguage which covers coursework), interpreter certification, RID exam, court interpreting
+- Template count: 297 → 307 after next 5-domain batch
+- Estimated test count: 1735 (CalloutManagerTests) + ~670 additional from other test files ≈ 2405+ total Swift tests
