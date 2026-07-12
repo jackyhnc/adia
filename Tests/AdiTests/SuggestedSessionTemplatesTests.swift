@@ -2763,4 +2763,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 269,
                 "catalog should have ≥269 templates after diagnosticphysics/perfusiontechnology/ophthalmic/centralsterile additions")
     }
+
+    // MARK: - Opticianry templates
+    @Test func opticianryTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("opticianry") && ($0.localizedCaseInsensitiveContains("ABO") || $0.localizedCaseInsensitiveContains("certification")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("opticianry") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("dispensing")) }
+        #expect(hasExam,       "catalog must include an opticianry ABO certification exam template")
+        #expect(hasAssignment, "catalog must include an opticianry dispensing assignment template")
+    }
+
+    // MARK: - Dance/Movement Therapy templates
+    @Test func dancetherapyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasNotes = tasks.contains { $0.localizedCaseInsensitiveContains("dance therapy") && ($0.localizedCaseInsensitiveContains("session notes") || $0.localizedCaseInsensitiveContains("treatment plan")) }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("dance therapy") && ($0.localizedCaseInsensitiveContains("ADTA") || $0.localizedCaseInsensitiveContains("board exam") || $0.localizedCaseInsensitiveContains("assignment")) }
+        #expect(hasNotes, "catalog must include a dance therapy session notes or treatment plan template")
+        #expect(hasExam,  "catalog must include an ADTA board exam or dance therapy assignment template")
+    }
+
+    // MARK: - Recreational Therapy templates
+    @Test func recreationtherapyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasNotes = tasks.contains { ($0.localizedCaseInsensitiveContains("therapeutic recreation") || $0.localizedCaseInsensitiveContains("recreation therapy")) && ($0.localizedCaseInsensitiveContains("treatment plan") || $0.localizedCaseInsensitiveContains("session notes")) }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("CTRS") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("school")) }
+        #expect(hasNotes, "catalog must include a therapeutic recreation treatment plan or session notes template")
+        #expect(hasExam,  "catalog must include a CTRS exam template")
+    }
+
+    // MARK: - Horticultural Therapy templates
+    @Test func horticulturetherapyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasNotes = tasks.contains { $0.localizedCaseInsensitiveContains("horticultural therapy") && ($0.localizedCaseInsensitiveContains("session notes") || $0.localizedCaseInsensitiveContains("program plan")) }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("HTR") && ($0.localizedCaseInsensitiveContains("credential") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("school")) }
+        #expect(hasNotes, "catalog must include a horticultural therapy session notes or program plan template")
+        #expect(hasExam,  "catalog must include an HTR credential or exam template")
+    }
+
+    // MARK: - Dietetic Technology templates
+    @Test func dietetictechnologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("DTR") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("dietetic technician")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("dietetic technician") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("dietary analysis")) }
+        #expect(hasExam,       "catalog must include a DTR exam or dietetic technician template")
+        #expect(hasAssignment, "catalog must include a dietetic technician assignment or dietary analysis template")
+    }
+
+    // MARK: - Count guard
+    @Test func catalogHasAtLeastTwoHundredSeventyNineTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 279,
+                "catalog should have ≥279 templates after opticianry/dancetherapy/recreationtherapy/horticulturetherapy/dietetictechnology additions")
+    }
 }

@@ -1731,5 +1731,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Assigned sterile processing topic reviewed (autoclave operation, tray assembly, or infection control), documentation written, and assignment saved or submitted for instructor review",
             preferredDuration: 45 * 60
         ),
+        // Opticianry
+        SuggestedTemplate(
+            icon: "eyeglasses",
+            task: "Study for the ABO-NCLE opticianry certification exam",
+            successCriteria: "Target content reviewed (ophthalmic optics, contact lens, or dispensing regulations), key concepts summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete an opticianry school assignment or optical dispensing case study",
+            successCriteria: "Assigned topic reviewed (lens prescription, frame selection, or spectacle dispensing), documentation or analysis written, and assignment saved or submitted for instructor review",
+            preferredDuration: 45 * 60
+        ),
+        // Dance/Movement Therapy
+        SuggestedTemplate(
+            icon: "figure.walk",
+            task: "Write dance therapy session notes or a treatment plan for a client case",
+            successCriteria: "Session observations documented, movement interventions described, clinical rationale written, and notes or plan saved or submitted for supervisor review",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for the ADTA dance therapy board exam or complete a dance movement therapy assignment",
+            successCriteria: "Target content reviewed (movement analysis, therapeutic process, or DMT theory), key concepts summarized, and at least one practice item completed with self-correction",
+            preferredDuration: 60 * 60
+        ),
+        // Recreational Therapy
+        SuggestedTemplate(
+            icon: "figure.outdoor.cycle",
+            task: "Write a therapeutic recreation treatment plan or recreation therapy session notes",
+            successCriteria: "Client goals documented, leisure education or adaptive activity plan written, progress notes completed, and documentation saved or submitted for supervisor review",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for the CTRS exam or complete a recreational therapy school assignment",
+            successCriteria: "Target content reviewed (therapeutic recreation process, ICF, or evidence-based practice), key concepts summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Horticultural Therapy
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Write horticultural therapy session notes or a therapeutic horticulture program plan",
+            successCriteria: "Session observations documented, plant-based interventions described, client goals addressed, and notes or plan saved or submitted for supervisor review",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for the HTR credential exam or complete a horticultural therapy school assignment",
+            successCriteria: "Target content reviewed (therapeutic horticulture theory, program design, or population-specific techniques), key concepts summarized, and at least one practice item completed",
+            preferredDuration: 60 * 60
+        ),
+        // Dietetic Technology
+        SuggestedTemplate(
+            icon: "fork.knife",
+            task: "Study for the DTR exam or complete a dietetic technician school assignment",
+            successCriteria: "Target content reviewed (nutrition screening, menu planning, or food service management), key concepts summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a dietary analysis or nutrition screening assignment for dietetic technician class",
+            successCriteria: "Assigned dietary intake or food service topic reviewed, analysis written, and assignment saved or submitted for instructor review",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

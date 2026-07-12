@@ -1302,6 +1302,19 @@ public final class CalloutManager {
             || lower.contains("calorie tracking") || lower.contains("calorie counting") {
             return "nutrition"
         }
+        // dietetictechnology — positioned AFTER nutrition so dietetic-technician-specific terms (DTR, NDTR,
+        // dietetic technician program) route here rather than to the general dietitian/nutritionist pool.
+        if lower.contains("dietetic technician") || lower.contains("dietetic tech")
+            || word("dtr") && (lower.contains("dietetic") || lower.contains("nutrition") || lower.contains("exam") || lower.contains("class") || lower.contains("certification"))
+            || word("ndtr") || lower.contains("dietetic technician registered")
+            || lower.contains("dietetic technician class") || lower.contains("dietetic technician course")
+            || lower.contains("dietetic technician program") || lower.contains("dietetic technician school")
+            || lower.contains("dietetic technician exam") || lower.contains("dietetic technician assignment")
+            || lower.contains("dietetic technician certification") || lower.contains("dietetic technician registration")
+            || lower.contains("dietetic tech program") || lower.contains("dietetic tech class")
+            || lower.contains("dietetic aide") && (lower.contains("class") || lower.contains("exam") || lower.contains("certification")) {
+            return "dietetictechnology"
+        }
         // culinary — positioned after nutrition (nutrition owns "food science", "meal prep", "nutrition plan");
         // catches culinary school, recipe work, pastry, baking, plating, and chef technique.
         if word("culinary") || lower.contains("culinary school") || lower.contains("culinary program")
@@ -1886,6 +1899,24 @@ public final class CalloutManager {
             || lower.contains("optometry chart") || lower.contains("clinical optometry") {
             return "optometry"
         }
+        // opticianry — positioned after optometry so dispensing-optician-specific terms (ABO/NCLE exam,
+        // NOCE, optical dispensing, spectacle lens fitting) route here. "slit lamp" and "contact lens"
+        // alone stay in optometry (fires earlier); opticianry requires school/exam/program context.
+        if lower.contains("dispensing optician") || lower.contains("dispensing opticians")
+            || word("opticianry") || lower.contains("opticianry school") || lower.contains("opticianry program")
+            || lower.contains("opticianry class") || lower.contains("opticianry exam")
+            || lower.contains("opticianry assignment") || lower.contains("opticianry certification")
+            || lower.contains("abo certification") || lower.contains("abo exam") || lower.contains("abo-ncle")
+            || lower.contains("ncle exam") || lower.contains("ncle certification")
+            || lower.contains("noce exam") || lower.contains("noce certification")
+            || lower.contains("optical dispensing") || lower.contains("spectacle lens dispensing")
+            || lower.contains("eyeglass dispensing") || lower.contains("frame selection class")
+            || lower.contains("optician school") || lower.contains("optician program")
+            || lower.contains("optician class") || lower.contains("optician exam")
+            || lower.contains("optician certification") || lower.contains("optician license")
+            || lower.contains("contact lens fitting") && lower.contains("optician") {
+            return "opticianry"
+        }
         // physicianassistant — positioned after optometry (PA school shares broad clinical curriculum
         // with premed/med-school) and before paramedicine (separate emergency-medical track).
         // Catches PANCE/PANRE exam prep, PA school coursework, and clinical rotation work.
@@ -1983,6 +2014,24 @@ public final class CalloutManager {
             || lower.contains("board-certified music therapist") {
             return "musictherapy"
         }
+        // dancetherapy — positioned AFTER musictherapy and BEFORE arttherapy so dance/movement therapy,
+        // DMT credential, and ADTA board prep route here. Bare "dance class"/"dance performance" fires
+        // the performingarts branch much earlier; this branch requires explicit therapy/clinical context.
+        if lower.contains("dance therapy") || lower.contains("dance therapist")
+            || lower.contains("dance therapists")
+            || lower.contains("dance/movement therapy") || lower.contains("dance movement therapy")
+            || lower.contains("movement therapy") && lower.contains("dance")
+            || word("rdmt") || word("admt")
+            || word("adta") && (lower.contains("dance") || lower.contains("therapy"))
+            || lower.contains("dmt credential") || lower.contains("dmt board") || lower.contains("dmt exam")
+            || lower.contains("dance therapy class") || lower.contains("dance therapy course")
+            || lower.contains("dance therapy program") || lower.contains("dance therapy school")
+            || lower.contains("dance therapy exam") || lower.contains("dance therapy assignment")
+            || lower.contains("dance therapy session") || lower.contains("dance therapy notes")
+            || lower.contains("dance therapy treatment plan") || lower.contains("dance therapy internship")
+            || lower.contains("movement psychotherapy") || lower.contains("choreotherapy") {
+            return "dancetherapy"
+        }
         // arttherapy — positioned BEFORE socialwork and therapy so "art therapy", "art therapist",
         // and ATR/ATCB board prep routes here rather than to generic therapy callouts.
         // Bare "art class" / "taking an art class" fires the art/studying branch much earlier.
@@ -1999,6 +2048,41 @@ public final class CalloutManager {
             || lower.contains("creative arts therapy") || lower.contains("creative arts therapist")
             || lower.contains("therapeutic art making") || lower.contains("therapeutic art class") {
             return "arttherapy"
+        }
+        // recreationtherapy — positioned AFTER arttherapy and BEFORE addictioncounseling so therapeutic
+        // recreation, CTRS exam prep, and leisure education route here. Bare "recreation class" stays in
+        // studying; this branch requires explicit therapeutic/CTRS certification context.
+        if lower.contains("recreational therapy") || lower.contains("recreation therapy")
+            || lower.contains("recreational therapist") || lower.contains("recreation therapist")
+            || lower.contains("therapeutic recreation")
+            || word("ctrs") || lower.contains("ctrs exam") || lower.contains("ctrs certification")
+            || lower.contains("ctrs board") || lower.contains("nctrc exam")
+            || word("atra") && (lower.contains("recreation") || lower.contains("therapy"))
+            || lower.contains("recreation therapy class") || lower.contains("recreation therapy course")
+            || lower.contains("recreation therapy program") || lower.contains("recreation therapy school")
+            || lower.contains("recreation therapy exam") || lower.contains("recreation therapy assignment")
+            || lower.contains("recreation therapy notes") || lower.contains("recreation therapy internship")
+            || lower.contains("leisure education") || lower.contains("leisure counseling")
+            || lower.contains("adaptive recreation") || lower.contains("activity therapy")
+            || lower.contains("recreational therapy class") || lower.contains("recreational therapy course")
+            || lower.contains("recreational therapy exam") || lower.contains("recreational therapy assignment") {
+            return "recreationtherapy"
+        }
+        // horticulturetherapy — positioned AFTER recreationtherapy and BEFORE addictioncounseling so
+        // horticultural therapy, HTR certification, and therapeutic horticulture route here.
+        // Bare "gardening" stays in fitness; this branch requires therapeutic/certification context.
+        if lower.contains("horticultural therapy") || lower.contains("horticultural therapist")
+            || lower.contains("horticulture therapy") || lower.contains("horticulture therapist")
+            || lower.contains("therapeutic horticulture")
+            || word("htr") && (lower.contains("horticul") || lower.contains("therapy") || lower.contains("certification"))
+            || word("ahta") && (lower.contains("horticul") || lower.contains("therapy"))
+            || lower.contains("horticultural therapy class") || lower.contains("horticultural therapy course")
+            || lower.contains("horticultural therapy program") || lower.contains("horticultural therapy school")
+            || lower.contains("horticultural therapy exam") || lower.contains("horticultural therapy assignment")
+            || lower.contains("therapeutic gardening") && (lower.contains("class") || lower.contains("course") || lower.contains("therapy") || lower.contains("certification"))
+            || lower.contains("horticultural therapy certification") || lower.contains("horticultural therapy notes")
+            || lower.contains("plant therapy class") || lower.contains("garden therapy class") {
+            return "horticulturetherapy"
         }
         // addictioncounseling — positioned BEFORE socialwork and therapy so substance-use-disorder
         // counseling coursework, CADC/NAADAC certification prep, and dual-diagnosis study route

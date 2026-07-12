@@ -192,8 +192,13 @@ extension CalloutManager {
         case "ophthalmic":             return ophthalmicCallouts(tier: tier)
         case "centralsterile":         return centralsterileCallouts(tier: tier)
         case "nursinginformatics":     return nursinginformaticsCallouts(tier: tier)
+        case "opticianry":             return opticianryCallouts(tier: tier)
         case "musictherapy":           return musictherapyCallouts(tier: tier)
+        case "dancetherapy":           return dancetherapyCallouts(tier: tier)
         case "arttherapy":             return arttherapyCallouts(tier: tier)
+        case "recreationtherapy":      return recreationtherapyCallouts(tier: tier)
+        case "horticulturetherapy":    return horticulturetherapyCallouts(tier: tier)
+        case "dietetictechnology":     return dietetictechnologyCallouts(tier: tier)
         case "dramaeducation":         return dramaeducationCallouts(tier: tier)
         case "winesommelier":          return winesommelierCallouts(tier: tier)
         case "gerontology":            return gerontologyCallouts(tier: tier)
@@ -3379,6 +3384,111 @@ extension CalloutManager {
             "CLOSE THIS. open your central sterile processing study guide.",
             "no one passes the CBSPD exam by browsing.",
             "CLOSE THIS. get back to your sterile processing coursework.",
+        ]
+        }
+    }
+
+    private func opticianryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those lens prescriptions aren't going to interpret themselves.",
+            "get back to your opticianry coursework.",
+            "your ABO exam won't prep itself.",
+            "close this and open your opticianry study guide.",
+        ]
+        case 2: return [
+            "dispensing opticians don't get licensed by scrolling.",
+            "your optical dispensing assignment won't finish itself.",
+            "stop avoiding your opticianry certification prep.",
+        ]
+        default: return [
+            "CLOSE THIS. open your opticianry notes.",
+            "no one passes the ABO-NCLE exam by browsing.",
+            "CLOSE THIS. get back to your optical dispensing coursework.",
+        ]
+        }
+    }
+
+    private func dancetherapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your clients deserve your full attention — get back to your dance therapy notes.",
+            "that treatment plan isn't going to write itself.",
+            "your DMT board prep won't do itself.",
+            "close this and open your dance therapy coursework.",
+        ]
+        case 2: return [
+            "dance therapists don't get credentialed by scrolling.",
+            "your dance therapy session notes won't write themselves.",
+            "stop avoiding your dance movement therapy assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your dance therapy or ADTA study guide.",
+            "no one earns the RDMT credential by browsing.",
+            "CLOSE THIS. get back to your dance movement therapy coursework.",
+        ]
+        }
+    }
+
+    private func recreationtherapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your clients need you focused — get back to your recreation therapy notes.",
+            "that CTRS study guide won't read itself.",
+            "your therapeutic recreation assignment won't finish itself.",
+            "close this and open your recreation therapy coursework.",
+        ]
+        case 2: return [
+            "recreational therapists don't get certified by scrolling.",
+            "your leisure education assignment won't complete itself.",
+            "stop avoiding your CTRS exam prep.",
+        ]
+        default: return [
+            "CLOSE THIS. open your recreation therapy study guide.",
+            "no one passes the CTRS exam by browsing.",
+            "CLOSE THIS. get back to your therapeutic recreation coursework.",
+        ]
+        }
+    }
+
+    private func horticulturetherapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those plants aren't going to journal themselves — get back to your horticulture therapy notes.",
+            "your HTR certification prep won't do itself.",
+            "that therapeutic horticulture assignment isn't going to complete itself.",
+            "close this and open your horticultural therapy coursework.",
+        ]
+        case 2: return [
+            "horticultural therapists don't get registered by scrolling.",
+            "your therapeutic gardening assignment won't finish itself.",
+            "stop avoiding your horticultural therapy certification prep.",
+        ]
+        default: return [
+            "CLOSE THIS. open your horticultural therapy study guide.",
+            "no one earns the HTR credential by browsing.",
+            "CLOSE THIS. get back to your therapeutic horticulture coursework.",
+        ]
+        }
+    }
+
+    private func dietetictechnologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those nutrition assessments aren't going to write themselves.",
+            "get back to your dietetic technician coursework.",
+            "your DTR exam won't prep itself.",
+            "close this and open your dietetic technician study guide.",
+        ]
+        case 2: return [
+            "dietetic technicians don't get registered by scrolling.",
+            "your NDTR exam prep won't do itself.",
+            "stop avoiding your dietetic technology assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your dietetic technician notes.",
+            "no one passes the DTR exam by browsing.",
+            "CLOSE THIS. get back to your dietetic technician coursework.",
         ]
         }
     }
