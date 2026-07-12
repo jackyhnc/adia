@@ -435,6 +435,26 @@ public final class CalloutManager {
             || lower.contains("human-systems integration") || lower.contains("human systems integration") {
             return "humanfactors"
         }
+        // landsurveyingtech — positioned BEFORE engineering so surveying programs, FS exam prep,
+        // and GPS/boundary survey tasks route here. Bare word("survey") stays in research/studying.
+        if lower.contains("land surveying") || lower.contains("land surveyor") || lower.contains("land surveyors")
+            || lower.contains("survey technology") || lower.contains("survey tech program")
+            || lower.contains("survey tech class") || lower.contains("survey tech exam")
+            || lower.contains("surveying program") || lower.contains("surveying class")
+            || lower.contains("surveying course") || lower.contains("surveying exam")
+            || lower.contains("surveying school") || lower.contains("surveying lab")
+            || lower.contains("fs exam") && (lower.contains("surveying") || lower.contains("surveyor"))
+            || lower.contains("fundamentals of surveying") || lower.contains("ps exam") && lower.contains("survey")
+            || lower.contains("boundary survey") || lower.contains("cadastral survey")
+            || lower.contains("topographic survey") || lower.contains("geomatics")
+            || lower.contains("gps surveying") || lower.contains("gnss survey")
+            || lower.contains("total station") && lower.contains("survey")
+            || lower.contains("property survey") && lower.contains("class")
+            || lower.contains("surveying technology") || lower.contains("surveying degree")
+            || lower.contains("ncees surveying") || lower.contains("surveying certification")
+            || lower.contains("plss survey") || lower.contains("legal description") && lower.contains("surveying") {
+            return "landsurveyingtech"
+        }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
         if word("solidworks") || lower.contains("fusion 360") || word("ansys")
@@ -825,6 +845,26 @@ public final class CalloutManager {
             || lower.contains("product design exam") || lower.contains("design portfolio")
             && (lower.contains("industrial") || lower.contains("product")) {
             return "productdesign"
+        }
+        // glassblowing — positioned BEFORE art so glass arts, flameworking, and kiln-formed
+        // glass studio work route to dedicated glass-artist callouts rather than generic art.
+        // Bare word("glass") is NOT matched (too generic: drinking glass, glass ceiling).
+        if lower.contains("glassblowing") || lower.contains("glass blowing")
+            || lower.contains("glass art") || lower.contains("glass arts")
+            || lower.contains("glasswork") || lower.contains("glassworks")
+            || lower.contains("glass artist") || lower.contains("glass artists")
+            || lower.contains("flameworking") || lower.contains("flame working")
+            || lower.contains("glass studio") || lower.contains("hot glass")
+            || lower.contains("kiln-formed glass") || lower.contains("kiln formed glass")
+            || lower.contains("glass casting") || lower.contains("fused glass") || lower.contains("glass fusing")
+            || lower.contains("borosilicate") || lower.contains("torch work") && lower.contains("glass")
+            || lower.contains("gaffer") && lower.contains("glass")
+            || lower.contains("stained glass") && (lower.contains("class") || lower.contains("studio") || lower.contains("project") || lower.contains("art") || lower.contains("technique"))
+            || lower.contains("glass class") || lower.contains("glass course") || lower.contains("glass program")
+            || lower.contains("glass school") || lower.contains("glass exam") || lower.contains("glass techniques")
+            || lower.contains("glass making") || lower.contains("glass fabrication")
+            || lower.contains("cold glass") || lower.contains("warm glass") {
+            return "glassblowing"
         }
         if word("drawing") || word("painting") || word("sketching")
             || word("illustration") || word("illustrations") || word("illustrate") || word("illustrating")
@@ -1564,6 +1604,32 @@ public final class CalloutManager {
             || lower.contains("diary entry") || word("diary") {
             return "journaling"
         }
+        // horsemanship — positioned BEFORE veterinary so equestrian sports, horse training,
+        // and FEI/farriery coursework route here rather than to animal-science callouts.
+        // Bare word("horse") alone is NOT matched (too short); needs equestrian/riding/training context.
+        if lower.contains("equestrian") || lower.contains("equestrian science")
+            || lower.contains("equestrian management") || lower.contains("equestrian studies")
+            || lower.contains("equestrian program") || lower.contains("equestrian class")
+            || lower.contains("equestrian exam") || lower.contains("equestrian assignment")
+            || lower.contains("horse training") || lower.contains("horse trainer")
+            || lower.contains("horse management") || lower.contains("horsemanship")
+            || lower.contains("equine science") || lower.contains("equine management")
+            || lower.contains("equine studies") || lower.contains("equine program")
+            || lower.contains("equine class") || lower.contains("equine exam")
+            || lower.contains("equine nutrition") || lower.contains("equine health") && !lower.contains("vet")
+            || word("dressage") || lower.contains("dressage class") || lower.contains("dressage training")
+            || lower.contains("show jumping") || lower.contains("showjumping")
+            || lower.contains("reining class") || lower.contains("barrel racing") && lower.contains("class")
+            || lower.contains("eventing") && lower.contains("horse")
+            || word("fei") && (lower.contains("horse") || lower.contains("equestrian") || lower.contains("riding"))
+            || lower.contains("horse riding class") || lower.contains("riding lesson")
+            || lower.contains("riding program") || lower.contains("riding school")
+            || lower.contains("farriery") || lower.contains("farrier") && (lower.contains("class") || lower.contains("exam") || lower.contains("certification") || lower.contains("program"))
+            || lower.contains("horseback riding class") || lower.contains("horse care class")
+            || lower.contains("stable management") || lower.contains("barn management")
+            || lower.contains("horse science class") || lower.contains("horse handling class") {
+            return "horsemanship"
+        }
         // veterinary — positioned before premed so "veterinary clinical rotation", "dissection"
         // in a vet-school context, and animal anatomy tasks route here, not to premed.
         if word("veterinary") || word("veterinarian") || lower.contains("vet school")
@@ -2293,6 +2359,26 @@ public final class CalloutManager {
             || lower.contains("dance therapy treatment plan") || lower.contains("dance therapy internship")
             || lower.contains("movement psychotherapy") || lower.contains("choreotherapy") {
             return "dancetherapy"
+        }
+        // dramatherapy — positioned BEFORE arttherapy so psychodrama, NADT exam prep,
+        // and drama therapy session notes route here instead of to generic art-therapy callouts.
+        // "drama class" / "drama performance" stays in performingarts/dramaeducation (both fire earlier).
+        if lower.contains("drama therapy") || lower.contains("drama therapist")
+            || lower.contains("drama therapists")
+            || lower.contains("psychodrama") || lower.contains("psychodramatist")
+            || lower.contains("psychodrama session") || lower.contains("psychodrama class")
+            || lower.contains("sociodrama") || lower.contains("sociodramatist")
+            || word("nadt") || lower.contains("nadt exam") || lower.contains("nadt certification")
+            || lower.contains("drama therapy class") || lower.contains("drama therapy course")
+            || lower.contains("drama therapy program") || lower.contains("drama therapy school")
+            || lower.contains("drama therapy exam") || lower.contains("drama therapy assignment")
+            || lower.contains("drama therapy session") || lower.contains("drama therapy notes")
+            || lower.contains("drama therapy treatment plan") || lower.contains("drama therapy internship")
+            || lower.contains("drama-based therapy") || lower.contains("drama based therapy")
+            || lower.contains("therapeutic drama") && (lower.contains("class") || lower.contains("session") || lower.contains("therapy") || lower.contains("notes"))
+            || lower.contains("playback theatre") && lower.contains("therapy")
+            || lower.contains("therapeutic enactment") {
+            return "dramatherapy"
         }
         // arttherapy — positioned BEFORE socialwork and therapy so "art therapy", "art therapist",
         // and ATR/ATCB board prep routes here rather than to generic therapy callouts.

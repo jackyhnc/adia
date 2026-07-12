@@ -1991,5 +1991,57 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Interpreting practice session completed (minimum 3 practice passages or recordings), performance notes documented, and areas for improvement identified and saved",
             preferredDuration: 45 * 60
         ),
+        // Drama Therapy
+        SuggestedTemplate(
+            icon: "theatermasks.fill",
+            task: "Write drama therapy session notes or a psychodrama treatment plan",
+            successCriteria: "Drama therapy session documentation, psychodrama session write-up, or treatment plan completed, reviewed for completeness, and saved for supervisor review or program submission",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study for the NADT drama therapy exam or complete a drama therapy coursework assignment",
+            successCriteria: "Target drama therapy or psychodrama content reviewed (theory, methods, or techniques), key concepts summarized, and coursework assignment or practice questions completed",
+            preferredDuration: 60 * 60
+        ),
+        // Horsemanship / Equestrian
+        SuggestedTemplate(
+            icon: "figure.equestrian.sports",
+            task: "Complete an equestrian science or horsemanship coursework assignment",
+            successCriteria: "Equestrian science or horsemanship assignment completed (horse management, equine nutrition, or riding technique analysis), key concepts documented, and work saved or submitted",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study equine management, horse training theory, or dressage techniques for my equestrian program",
+            successCriteria: "Target equestrian content reviewed (horse training methods, equine science, or riding discipline), key concepts summarized, and notes saved for exam or practical application",
+            preferredDuration: 60 * 60
+        ),
+        // Glassblowing / Glass Arts
+        SuggestedTemplate(
+            icon: "flame.fill",
+            task: "Plan and document a glassblowing or flameworking studio project",
+            successCriteria: "Glass arts project plan or studio documentation completed (technique notes, design sketches, or process documentation), written portion saved or submitted for review",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study glassblowing techniques, glass arts history, or kiln-formed glass methods for class",
+            successCriteria: "Target glass arts content reviewed (hot glass techniques, kiln-formed methods, or studio safety), key concepts summarized, and notes saved for exam or studio application",
+            preferredDuration: 30 * 60
+        ),
+        // Land Surveying Technology
+        SuggestedTemplate(
+            icon: "map.fill",
+            task: "Complete a land surveying technology assignment or boundary survey problem set",
+            successCriteria: "Survey calculations, boundary description, or lab assignment completed, work checked for accuracy, and solutions documented and saved or submitted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study for the Fundamentals of Surveying (FS) exam or complete a land surveying program assignment",
+            successCriteria: "Target surveying content reviewed (GPS/GNSS methods, traverse calculations, or property boundary law), key concepts summarized, and at least 15 practice problems completed with corrections",
+            preferredDuration: 90 * 60
+        ),
     ]
 }

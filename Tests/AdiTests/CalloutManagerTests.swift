@@ -11083,4 +11083,184 @@ struct CalloutManagerTests {
     @Test func interpretingKeywordFromCourtInterpreting() {
         #expect(CalloutManager.extractTaskKeyword(from: "completing my court interpreting assignment and consecutive interpreting practice for my language interpreting class") == "interpreting")
     }
+
+    // MARK: - dramatherapy
+
+    @Test func dramatherapyKeywordFromNADTExam() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying for the NADT exam and completing my drama therapy program coursework on psychodrama") == "dramatherapy")
+    }
+    @Test func dramatherapyKeywordFromPsychodramaSession() {
+        #expect(CalloutManager.extractTaskKeyword(from: "writing my psychodrama session notes and drama therapy treatment plan for my internship") == "dramatherapy")
+    }
+    @Test func dramatherapyFalsePositiveDramaCourseStaysPerformingArts() {
+        let kw = CalloutManager.extractTaskKeyword(from: "rehearsing my drama performance and working on my theater class final monologue")
+        #expect(kw != "dramatherapy", "generic drama performance should not route to dramatherapy")
+    }
+    @Test func dramatherapyCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dramatherapy", tier: tier)
+                #expect(!msgs.isEmpty, "dramatherapy tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func dramatherapyCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dramatherapy", tier: 1)
+            #expect(msgs.count >= 4, "dramatherapy tier1 must have ≥4 messages")
+        }
+    }
+    @Test func dramatherapyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dramatherapy", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "dramatherapy tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func dramatherapyCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dramatherapy", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "dramatherapy tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func dramatherapyKeywordFromTherapeuticDrama() {
+        #expect(CalloutManager.extractTaskKeyword(from: "completing a therapeutic drama class session and drama therapy assignment for my credential program") == "dramatherapy")
+    }
+
+    // MARK: - horsemanship
+
+    @Test func horsemanshipKeywordFromEquestrianScience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "completing my equestrian science assignment on horse management and equine nutrition") == "horsemanship")
+    }
+    @Test func horsemanshipKeywordFromDressageClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying dressage training techniques and horse training theory for my equestrian program") == "horsemanship")
+    }
+    @Test func horsemanshipFalsePositiveVeterinaryStaysVeterinary() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying veterinary medicine and animal science for my NAVLE exam prep")
+        #expect(kw != "horsemanship", "veterinary school content should not route to horsemanship")
+    }
+    @Test func horsemanshipCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "horsemanship", tier: tier)
+                #expect(!msgs.isEmpty, "horsemanship tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func horsemanshipCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "horsemanship", tier: 1)
+            #expect(msgs.count >= 4, "horsemanship tier1 must have ≥4 messages")
+        }
+    }
+    @Test func horsemanshipCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "horsemanship", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "horsemanship tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func horsemanshipCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "horsemanship", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "horsemanship tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func horsemanshipKeywordFromShowJumping() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying show jumping techniques and writing my equestrian program class assignment on horse training") == "horsemanship")
+    }
+
+    // MARK: - glassblowing
+
+    @Test func glassblowingKeywordFromGlassStudio() {
+        #expect(CalloutManager.extractTaskKeyword(from: "planning my glassblowing studio project and documenting flameworking techniques for class") == "glassblowing")
+    }
+    @Test func glassblowingKeywordFromFusedGlass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying kiln-formed glass and fused glass methods for my glass arts program assignment") == "glassblowing")
+    }
+    @Test func glassblowingFalsePositiveArtClassStaysArt() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my oil painting and digital art illustration assignment for class")
+        #expect(kw != "glassblowing", "generic art class should not route to glassblowing")
+    }
+    @Test func glassblowingCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "glassblowing", tier: tier)
+                #expect(!msgs.isEmpty, "glassblowing tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func glassblowingCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "glassblowing", tier: 1)
+            #expect(msgs.count >= 4, "glassblowing tier1 must have ≥4 messages")
+        }
+    }
+    @Test func glassblowingCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "glassblowing", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "glassblowing tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func glassblowingCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "glassblowing", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "glassblowing tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func glassblowingKeywordFromFlame() {
+        #expect(CalloutManager.extractTaskKeyword(from: "working on my flameworking technique notes and borosilicate glass arts class project") == "glassblowing")
+    }
+
+    // MARK: - landsurveyingtech
+
+    @Test func landsurveyingtechKeywordFromFSExam() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying for the fundamentals of surveying exam and completing my land surveying technology coursework") == "landsurveyingtech")
+    }
+    @Test func landsurveyingtechKeywordFromBoundarySurvey() {
+        #expect(CalloutManager.extractTaskKeyword(from: "working on a boundary survey problem set and GPS surveying lab for my surveying program") == "landsurveyingtech")
+    }
+    @Test func landsurveyingtechFalsePositiveEngineeringStaysEngineering() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my mechanical engineering assignment on finite element analysis and SolidWorks CAD")
+        #expect(kw != "landsurveyingtech", "engineering CAD assignment should not route to landsurveyingtech")
+    }
+    @Test func landsurveyingtechCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "landsurveyingtech", tier: tier)
+                #expect(!msgs.isEmpty, "landsurveyingtech tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func landsurveyingtechCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "landsurveyingtech", tier: 1)
+            #expect(msgs.count >= 4, "landsurveyingtech tier1 must have ≥4 messages")
+        }
+    }
+    @Test func landsurveyingtechCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "landsurveyingtech", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "landsurveyingtech tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func landsurveyingtechCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "landsurveyingtech", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "landsurveyingtech tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func landsurveyingtechKeywordFromGeomatic() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying geomatics and topographic survey methods for my land surveying technology program exam") == "landsurveyingtech")
+    }
 }

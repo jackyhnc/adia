@@ -220,6 +220,10 @@ extension CalloutManager {
         case "forensicnursing":             return forensicnursingCallouts(tier: tier)
         case "midwiferyassisting":          return midwiferyassistingCallouts(tier: tier)
         case "interpreting":                return interpretingCallouts(tier: tier)
+        case "dramatherapy":                return dramatherapyCallouts(tier: tier)
+        case "horsemanship":                return horsemanshipCallouts(tier: tier)
+        case "glassblowing":                return glassblowingCallouts(tier: tier)
+        case "landsurveyingtech":           return landsurveyingtechCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -3819,6 +3823,90 @@ extension CalloutManager {
             "CLOSE THIS. open your interpreting notes.",
             "no one earns RID certification by browsing.",
             "CLOSE THIS. get back to your interpreter training.",
+        ]
+        }
+    }
+
+    private func dramatherapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those psychodrama techniques aren't going to learn themselves — get back to your notes.",
+            "your drama therapy session notes won't write themselves.",
+            "get back to your drama therapy or psychodrama coursework.",
+            "close this and open your drama therapy study guide.",
+        ]
+        case 2: return [
+            "drama therapists don't earn their credential by scrolling.",
+            "your NADT exam prep won't complete itself.",
+            "stop avoiding your drama therapy coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your drama therapy notes.",
+            "no one earns their drama therapy credential by browsing.",
+            "CLOSE THIS. get back to your psychodrama or drama therapy work.",
+        ]
+        }
+    }
+
+    private func horsemanshipCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those horse training techniques aren't going to learn themselves — get back to your notes.",
+            "your equestrian coursework won't complete itself.",
+            "get back to your horsemanship or equine science assignment.",
+            "close this and open your equestrian study guide.",
+        ]
+        case 2: return [
+            "equestrians don't ride better by scrolling.",
+            "your horse management notes won't write themselves.",
+            "stop avoiding your equestrian coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your horsemanship notes.",
+            "no one masters equestrian skills by browsing.",
+            "CLOSE THIS. get back to your equine science coursework.",
+        ]
+        }
+    }
+
+    private func glassblowingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that glass isn't going to blow itself — get back to your notes.",
+            "your glass arts coursework won't complete itself.",
+            "get back to your glassblowing or glass arts assignment.",
+            "close this and open your glass studio notes.",
+        ]
+        case 2: return [
+            "glass artists don't master flameworking by scrolling.",
+            "your glassblowing techniques won't learn themselves.",
+            "stop avoiding your glass arts coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your glass studio notes.",
+            "no one masters glassblowing by browsing.",
+            "CLOSE THIS. get back to your glass arts coursework.",
+        ]
+        }
+    }
+
+    private func landsurveyingtechCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those survey calculations aren't going to work themselves out — get back to your notes.",
+            "your land surveying coursework won't complete itself.",
+            "get back to your survey technology or land surveying assignment.",
+            "close this and open your surveying study guide.",
+        ]
+        case 2: return [
+            "surveyors don't pass the FS exam by scrolling.",
+            "your boundary survey notes won't write themselves.",
+            "stop avoiding your land surveying coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your surveying notes.",
+            "no one passes the fundamentals of surveying exam by browsing.",
+            "CLOSE THIS. get back to your land surveying coursework.",
         ]
         }
     }

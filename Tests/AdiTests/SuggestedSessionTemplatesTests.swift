@@ -2965,4 +2965,8 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 307,
                 "catalog should have ≥307 templates after theatresound/dancescience/forensicnursing/midwiferyassisting/interpreting additions")
     }
+    @Test func catalogHasAtLeastThreeHundredFifteenTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 315,
+                "catalog should have ≥315 templates after dramatherapy/horsemanship/glassblowing/landsurveyingtech additions")
+    }
 }
