@@ -1,5 +1,78 @@
 # Adia — Build Progress
 
+## Run 335 (automated) — 2026-07-12 — Certified financial planner + soil science + industrial safety + food safety + applied music keyword domains (1959→1999 tests, 355→365 templates)
+
+### Shipped
+
+**Certified Financial Planner keyword domain:**
+- `certifiedfinancialplanner` branch positioned AFTER actuarial, BEFORE statistics.
+- Matches: certified financial planner, CFP exam/certification/board, CFP class/course/program/notes/study/prep, financial planning class/course/program/exam/certification, personal financial planning, wealth management class/course/certification, retirement/estate/investment/tax/insurance planning class/course, financial plan class/exam, Series 65/66.
+- Guard: bare "financial planning" alone NOT matched; generic finance (DCF/LBO/CFA) stays in finance branch.
+- `certifiedfinancialplannerCallouts(tier:)` 4/3/3: "that CFP study plan isn't going to complete itself." / "financial planners don't earn CFP certification by scrolling." / "CLOSE THIS. open your CFP study materials." / "no one passes the CFP exam by scrolling."
+- 2 templates: "Study for the CFP exam or complete a financial planning coursework module" (90 min) + "Build a client financial plan or case study for my financial planning program" (60 min)
+
+**Soil Science keyword domain:**
+- `soilscience` branch positioned BEFORE geology; "soil science" removed from geology branch (no test breakage — no existing test matched soil science → geology).
+- Matches: soil science/scientist, pedology/pedologist, soil taxonomy/classification, Munsell + soil, pedon/pedons, soil horizon/profile/mapping/survey/genesis/formation/judging/characterization/morphology, NRCS soil, soil science class/course/exam/program/notes/major/degree.
+- Guard: bare "soil" not matched; "soil mechanics" stays in geology (engineering/construction context).
+- `soilscienceCallouts(tier:)` 4/3/3: "those soil profiles aren't going to classify themselves." / "soil scientists don't earn their degree by scrolling." / "CLOSE THIS. open your soil science notes." / "no one passes their soil science exam by scrolling."
+- 2 templates: "Complete a soil science lab report, field description, or pedology coursework assignment" (45 min) + "Study for my soil science exam or work through soil taxonomy and classification materials" (60 min)
+
+**Industrial Safety keyword domain:**
+- `industrialsafety` branch positioned AFTER hvactechnology, BEFORE engineering.
+- Matches: industrial hygiene/hygienist, CIH exam/certification, industrial safety, occupational safety and health, OSHA compliance + class/course/exam, OSHA 30/10 + industrial/manufacturing/class, OSHA 300A/300 log, OSHA certification + class/course/exam, safety program design/management, hazard analysis + class/industrial context, job safety analysis, job hazard analysis, JSA/JHA + safety, NIOSH + class/industrial context, industrial safety class/course/exam/program.
+- Guard: bare "OSHA" or "safety" alone NOT matched.
+- `industrialsafetyCallouts(tier:)` 4/3/3: "those OSHA regulations aren't going to study themselves." / "industrial hygienists don't earn CIH certification by scrolling." / "CLOSE THIS. open your industrial safety notes." / "no one earns their CIH certification by scrolling."
+- 2 templates: "Complete my industrial hygiene or occupational safety coursework assignment" (45 min) + "Study for the CIH exam or review OSHA regulations and industrial safety standards" (60 min)
+
+**Food Safety keyword domain:**
+- `foodsafety` branch positioned AFTER culinary, BEFORE winesommelier.
+- Matches: food safety, SerSafe, HACCP plan/certification/training/class, food handler/handling certification, food sanitation, food safety certification/exam/class/course/program/training/manager/audit, food microbiology + class/lab/exam, food contamination + class/exam, foodborne illness/pathogen, food inspection + class/exam, FDA food safety, FSMA + food, food protection manager/certification.
+- Guard: bare "food" not matched; "food journal" stays in nutrition; "food science" stays in nutrition.
+- `foodsafetyCallouts(tier:)` 4/3/3: "that HACCP plan isn't going to write itself." / "food safety professionals don't pass ServSafe by scrolling." / "CLOSE THIS. open your food safety notes." / "no one passes ServSafe by scrolling."
+- 2 templates: "Study for the ServSafe certification exam or complete a food safety coursework assignment" (60 min) + "Write a HACCP plan or complete a food safety audit assignment" (45 min)
+
+**Applied Music keyword domain:**
+- `appliedmusic` branch positioned AFTER musictheory, BEFORE enviro.
+- Matches: instrument practice, audition prep/preparation, music audition, recital preparation/performance/program, applied music, music jury, jury exam + music/instrument context, orchestral excerpt, solo repertoire, practicing scales, scale practice + instrument, etude/etudes/étude/études, instrument + lesson/practice/recital (piano/violin/cello/guitar/flute/trumpet/clarinet/oboe/trombone/viola/saxophone/drums/bass/harp), voice/vocal/singing lesson/practice, music lesson (without theory/class/course).
+- Guard: "music production" and "music theory" caught by earlier branches; bare instrument names alone NOT matched.
+- `appliedmusicCallouts(tier:)` 4/3/3: "that piece isn't going to practice itself." / "musicians don't get better by scrolling." / "CLOSE THIS. go practice." / "no one passes their jury by scrolling."
+- 2 templates: "Practice and prepare my repertoire for my music jury or audition" (60 min) + "Work through applied music lessons, scales, and technique exercises" (45 min)
+
+**Tests:**
+- CalloutManagerTests.swift: 1959→1999 (+40: 8 per domain)
+- SuggestedSessionTemplatesTests.swift: +12 (5 domain template tests + ≥365 count guard)
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- "studying for the CFP exam and reviewing financial planning coursework on investment and retirement planning" → certifiedfinancialplanner ✓; positioned before statistics ✓
+- "building a DCF model and financial analysis for investment banking" → finance ✓ (not certifiedfinancialplanner ✓)
+- "completing my soil science lab report on soil horizon descriptions and pedology classification" → soilscience ✓; positioned before geology ✓
+- "studying plate tectonics and mineralogy for my geology lab" → geology ✓ (not soilscience ✓)
+- "studying industrial hygiene and CIH exam for occupational safety" → industrialsafety ✓; positioned after hvactechnology ✓
+- "solidworks FEA mechanical engineering lab" → engineering ✓ (not industrialsafety ✓)
+- "studying for ServSafe food safety certification and HACCP plan" → foodsafety ✓; positioned after culinary ✓
+- "developing a new recipe and practicing knife skills at culinary school" → culinary ✓ (not foodsafety ✓)
+- "working on audition prep and applied music jury with violin etudes" → appliedmusic ✓; positioned after musictheory ✓
+- "studying ear training and chord progressions for music theory class" → musictheory ✓ (not appliedmusic ✓)
+- All 5 tier-3 pools contain "CLOSE THIS" or "no one" ✓; all tier-1 pools have ≥4 messages ✓
+- All 10 template durations in [300, 10800] ✓; template count 365 ≥ 365 ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good remaining candidates:
+  - `winemaking` — wine production, viticulture lab, enology coursework (separate from winesommelier)
+  - `publichealtnutrition` — community nutrition, WIC counseling, nutrition education program
+  - `forestry` — silviculture, forest management, dendrology, timber cruising
+  - `aquaticscience` — aquaculture, fisheries biology, limnology, marine resource management
+  - `emergencynursing` — trauma nursing, emergency nursing certification (CEN), ENPC/TNCC exams
+- Template count: 365 → 375 after next 5-domain batch (2 templates per domain)
+- Estimated test count: 1999 + ~40 (5 domains × 8 tests) = 2039+ CalloutManagerTests
+
+---
+
 ## Run 334 (automated) — 2026-07-12 — Automotive technology + welding technology + grant writing + animal husbandry + paralegal keyword domains (1919→1959 tests, 345→355 templates)
 
 ### Shipped
