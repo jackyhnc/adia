@@ -395,6 +395,32 @@ public final class CalloutManager {
             || lower.contains("hydrology") {
             return "geology"
         }
+        // maritimestudies — positioned BEFORE aviation so USCG licensing, merchant marine
+        // programs, and nautical science coursework get a dedicated pool. "maritime engineering"
+        // NOT matched here (stays in engineering). "maritime law" with class/course fires here;
+        // standalone "trade law" and "international law" stay in their own branches.
+        if lower.contains("maritime studies") || lower.contains("maritime program")
+            || lower.contains("maritime class") || lower.contains("maritime course")
+            || lower.contains("maritime exam") || lower.contains("maritime major")
+            || lower.contains("maritime school") || lower.contains("maritime academy")
+            || lower.contains("maritime law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("assignment"))
+            || lower.contains("maritime transportation") && (lower.contains("class") || lower.contains("course") || lower.contains("program"))
+            || lower.contains("maritime management") && (lower.contains("class") || lower.contains("course") || lower.contains("program"))
+            || lower.contains("merchant marine") || lower.contains("merchant mariner")
+            || lower.contains("uscg license") || lower.contains("uscg certification")
+            || lower.contains("uscg exam") || lower.contains("uscg test") || lower.contains("uscg written")
+            || lower.contains("coast guard license") || lower.contains("coast guard exam")
+            || lower.contains("nautical science") || lower.contains("nautical studies")
+            || lower.contains("nautical class") || lower.contains("nautical course")
+            || lower.contains("marine transportation class") || lower.contains("marine transportation course")
+            || lower.contains("port management class") || lower.contains("port management course")
+            || lower.contains("stcw training") || lower.contains("stcw certification")
+            || lower.contains("seafarer certification") || lower.contains("seafarers exam")
+            || lower.contains("ship navigation class") || lower.contains("ship navigation course")
+            || word("mmba") && lower.contains("maritime")
+            || lower.contains("marine navigation class") || lower.contains("marine navigation course") {
+            return "maritimestudies"
+        }
         // aviation — positioned before engineering so flight-school, FAA exam, and piloting
         // tasks don't fall through to the engineering pool (which owns "aerospace engineering").
         if word("aviation") || word("aviator") || word("aviators")
@@ -468,6 +494,26 @@ public final class CalloutManager {
             || lower.contains("environmental impact assessment") && lower.contains("engineer")
             || lower.contains("env eng") || lower.contains("environ eng") {
             return "environmentalengineering"
+        }
+        // hvactechnology — positioned BEFORE engineering so HVAC trade programs, EPA 608 exam
+        // prep, and refrigeration coursework route here rather than generic engineering pool.
+        // "air conditioning" alone not matched; requires class/course/tech/exam context.
+        if lower.contains("hvac") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("exam") || lower.contains("school") || lower.contains("tech") || lower.contains("certification") || lower.contains("training") || lower.contains("install") || lower.contains("service") || lower.contains("system"))
+            || lower.contains("hvac technology") || lower.contains("hvac technician")
+            || lower.contains("epa 608") || lower.contains("epa608") || lower.contains("epa section 608")
+            || lower.contains("refrigeration class") || lower.contains("refrigeration course")
+            || lower.contains("refrigeration exam") || lower.contains("refrigeration tech")
+            || lower.contains("refrigeration certification") || lower.contains("refrigerant certification")
+            || lower.contains("air conditioning class") || lower.contains("air conditioning course")
+            || lower.contains("air conditioning exam") || lower.contains("air conditioning tech")
+            || lower.contains("heating ventilation and air conditioning")
+            || lower.contains("mechanical systems class") && lower.contains("hvac")
+            || lower.contains("heat pump class") || lower.contains("heat pump course")
+            || lower.contains("boiler operation class") || lower.contains("boiler course")
+            || lower.contains("hvac school") || lower.contains("hvac program")
+            || lower.contains("hvac apprentice") || lower.contains("hvac lab")
+            || lower.contains("cooling systems class") || lower.contains("heating systems class") {
+            return "hvactechnology"
         }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
@@ -571,6 +617,31 @@ public final class CalloutManager {
             || word("wireframing") || lower.contains("user story") || lower.contains("user stories") {
             return "ux"
         }
+        // constructionmanagement — positioned BEFORE urbanplanning so CM-degree coursework,
+        // CCM/CMAA exam prep, estimating, and scheduling tasks route here rather than architecture
+        // (which owns blueprints/design) or engineering. "construction documents" NOT matched
+        // (belongs to architecture). "garment construction" NOT matched (in fashiondesign branch).
+        if lower.contains("construction management") || lower.contains("construction manager")
+            || lower.contains("construction project management")
+            || lower.contains("cm degree") || lower.contains("cm program") || lower.contains("cm major")
+            || word("ccm") && (lower.contains("construction") || lower.contains("certif") || lower.contains("exam"))
+            || lower.contains("cmaa") && (lower.contains("exam") || lower.contains("certif") || lower.contains("construction"))
+            || lower.contains("construction estimating") || lower.contains("cost estimating") && lower.contains("construction")
+            || lower.contains("construction budget") && lower.contains("class")
+            || lower.contains("construction budgeting")
+            || lower.contains("construction scheduling") || lower.contains("cpm scheduling") && lower.contains("construction")
+            || lower.contains("construction bidding") || lower.contains("bid estimate")
+            || lower.contains("construction law class") || lower.contains("construction law course")
+            || lower.contains("construction safety class") || lower.contains("osha 30") && lower.contains("construction")
+            || lower.contains("subcontractor management") || lower.contains("construction quality management")
+            || lower.contains("green building class") || lower.contains("leed exam") && !lower.contains("architect")
+            || lower.contains("bim class") || lower.contains("bim course") && !lower.contains("architect")
+            || lower.contains("construction class") && (lower.contains("management") || lower.contains("estimat"))
+            || lower.contains("construction course") && (lower.contains("management") || lower.contains("estimat"))
+            || lower.contains("construction program") && lower.contains("management")
+            || lower.contains("construction exam") && lower.contains("management") {
+            return "constructionmanagement"
+        }
         // urbanplanning — positioned before realestate (which catches bare word("zoning")) so
         // "urban planning", "zoning ordinance", and AICP exam prep route to the planning pool.
         // "urban design" placed here to not fall through to generic word("design") below.
@@ -633,6 +704,30 @@ public final class CalloutManager {
             || word("concierge") || lower.contains("resort management")
             || lower.contains("che exam") || lower.contains("cha exam") {
             return "hospitality"
+        }
+        // floristryweddingplanning — positioned AFTER hospitality (which owns generic "event
+        // planning" classes) so floral design programs, AIFD certification prep, and wedding
+        // planning certification tasks route to a dedicated pool. "event planning" alone stays
+        // in hospitality; requires wedding/floral context to fire here.
+        if lower.contains("floral design") || lower.contains("floral designer")
+            || word("floristry") || lower.contains("florist") && (lower.contains("class") || lower.contains("program") || lower.contains("exam") || lower.contains("school") || lower.contains("certif"))
+            || word("aifd") || lower.contains("aifd certification") || lower.contains("aifd exam")
+            || lower.contains("american institute of floral designers")
+            || lower.contains("flower arrangement class") || lower.contains("flower arranging class")
+            || lower.contains("floral arrangement class") || lower.contains("floral arrangement course")
+            || lower.contains("floral arrangement exam") || lower.contains("floral arrangement program")
+            || lower.contains("floristry program") || lower.contains("floristry class")
+            || lower.contains("floristry exam") || lower.contains("floristry school")
+            || lower.contains("floristry certification") || lower.contains("floristry course")
+            || lower.contains("wedding planning") || lower.contains("wedding planner")
+            || lower.contains("wedding coordinator") || lower.contains("wedding planning certification")
+            || lower.contains("wedding planning program") || lower.contains("wedding planning class")
+            || lower.contains("wedding planning course") || lower.contains("wedding planning exam")
+            || lower.contains("event florals") || lower.contains("wedding florals")
+            || lower.contains("floral design school") || lower.contains("floral design program")
+            || lower.contains("floral design class") || lower.contains("floral design course")
+            || lower.contains("floral design exam") || lower.contains("floral design certification") {
+            return "floristryweddingplanning"
         }
         // supplychain — positioned BEFORE business so SCM-exam prep, logistics coursework, and
         // procurement/operations-research classes get their own callout pool. Bare "supply chain"
@@ -1874,6 +1969,32 @@ public final class CalloutManager {
             || lower.contains("dental chart") || lower.contains("soap note")
                 && lower.contains("dental") {
             return "dental"
+        }
+        // cosmeticchemistry — positioned BEFORE pharmacy so cosmetic science programs,
+        // personal-care formulation coursework, and SCC certification prep route here.
+        // "pharmacology" and "compounding" stay in pharmacy. "skincare" alone NOT matched
+        // (too broad); requires chemistry/formulation/science context.
+        if lower.contains("cosmetic chemistry") || lower.contains("cosmetic chemist")
+            || lower.contains("cosmetic science") || lower.contains("cosmetic formulation")
+            || lower.contains("cosmetic scientist") || lower.contains("cosmetic ingredients")
+            || lower.contains("cosmetic ingredient") || lower.contains("cosmetics class") && lower.contains("chemist")
+            || lower.contains("personal care formulation") || lower.contains("personal care chemistry")
+            || lower.contains("beauty chemistry") || lower.contains("beauty science") && lower.contains("degree")
+            || lower.contains("beauty science program") || lower.contains("beauty science class")
+            || lower.contains("cosmetic science degree") || lower.contains("cosmetic science program")
+            || lower.contains("cosmetic science class") || lower.contains("cosmetic science course")
+            || lower.contains("cosmetic science exam") || lower.contains("cosmetic science school")
+            || word("pcpc") && (lower.contains("cosmetic") || lower.contains("formul"))
+            || word("scc") && (lower.contains("cosmetic") || lower.contains("formul") || lower.contains("chemist"))
+            || lower.contains("society of cosmetic chemists")
+            || lower.contains("emulsion formulation") && (lower.contains("cosmetic") || lower.contains("skincare") || lower.contains("personal care"))
+            || lower.contains("skincare formulation") || lower.contains("skincare chemistry")
+            || lower.contains("haircare formulation") || lower.contains("hair care formulation")
+            || lower.contains("surfactant chemistry") && (lower.contains("cosmetic") || lower.contains("personal care"))
+            || lower.contains("formulation lab") && (lower.contains("cosmetic") || lower.contains("beauty") || lower.contains("personal care"))
+            || lower.contains("cosmetic lab") && lower.contains("formul")
+            || lower.contains("preservative system") && (lower.contains("cosmetic") || lower.contains("formul") || lower.contains("personal care")) {
+            return "cosmeticchemistry"
         }
         // pharmacy — positioned before premed so PharmD/NAPLEX terms don't fall to premed
         // via shared terms like "pharmacology" (premed catches bare word("pharmacology") for med

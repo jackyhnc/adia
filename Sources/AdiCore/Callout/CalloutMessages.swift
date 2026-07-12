@@ -233,6 +233,11 @@ extension CalloutManager {
         case "performancenutrition":        return performancenutritionCallouts(tier: tier)
         case "horticulturescience":         return horticulturecienceCallouts(tier: tier)
         case "globalhealthdev":             return globalhealthdevCallouts(tier: tier)
+        case "maritimestudies":             return maritimestudiesCallouts(tier: tier)
+        case "hvactechnology":              return hvactechnologyCallouts(tier: tier)
+        case "constructionmanagement":      return constructionmanagementCallouts(tier: tier)
+        case "floristryweddingplanning":    return floristryweddingplanningCallouts(tier: tier)
+        case "cosmeticchemistry":           return cosmeticchemistryCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -4105,6 +4110,111 @@ extension CalloutManager {
             "CLOSE THIS. open your international development notes.",
             "no one gets into global health by browsing.",
             "CLOSE THIS. get back to your international development assignment.",
+        ]
+        }
+    }
+
+    private func maritimestudiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your USCG license isn't going to earn itself — get back to your studies.",
+            "those maritime charts aren't going to study themselves.",
+            "your maritime coursework won't complete itself.",
+            "close this and get back to your navigation or maritime class.",
+        ]
+        case 2: return [
+            "seafarers don't earn their USCG certification by scrolling.",
+            "your maritime notes won't write themselves.",
+            "stop avoiding your maritime studies coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your maritime studies notes.",
+            "no one earns a USCG license by scrolling.",
+            "CLOSE THIS. get back to your maritime class assignment.",
+        ]
+        }
+    }
+
+    private func hvactechnologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those EPA 608 questions aren't going to answer themselves — get back to your notes.",
+            "your HVAC coursework won't complete itself.",
+            "get back to your refrigeration or HVAC systems assignment.",
+            "close this and open your HVAC study guide.",
+        ]
+        case 2: return [
+            "HVAC technicians don't earn their certification by scrolling.",
+            "your refrigeration notes won't memorize themselves.",
+            "stop avoiding your HVAC coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your HVAC notes.",
+            "no one passes the EPA 608 exam by browsing.",
+            "CLOSE THIS. get back to your HVAC assignment.",
+        ]
+        }
+    }
+
+    private func constructionmanagementCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that construction project plan isn't going to write itself — get back to your assignment.",
+            "your construction management coursework won't complete itself.",
+            "get back to your estimating or scheduling assignment.",
+            "close this and open your construction management study guide.",
+        ]
+        case 2: return [
+            "construction managers don't earn their CCM by scrolling.",
+            "your project schedule won't estimate itself.",
+            "stop avoiding your construction management coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your construction management notes.",
+            "no one earns the CCM by browsing.",
+            "CLOSE THIS. get back to your construction project management assignment.",
+        ]
+        }
+    }
+
+    private func floristryweddingplanningCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those flower arrangements aren't going to design themselves — get back to your floral studies.",
+            "your wedding planning coursework won't complete itself.",
+            "get back to your floral design or wedding planning assignment.",
+            "close this and open your floral design notes.",
+        ]
+        case 2: return [
+            "AIFD-certified designers don't get there by scrolling.",
+            "your wedding planning notes won't write themselves.",
+            "stop avoiding your floral design coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your floral design notes.",
+            "no one earns AIFD certification by browsing.",
+            "CLOSE THIS. get back to your wedding planning or floral design assignment.",
+        ]
+        }
+    }
+
+    private func cosmeticchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those formulation notes aren't going to study themselves — get back to your cosmetic chemistry.",
+            "your cosmetic science coursework won't complete itself.",
+            "get back to your formulation or cosmetic chemistry assignment.",
+            "close this and open your cosmetic chemistry notes.",
+        ]
+        case 2: return [
+            "cosmetic chemists don't master formulation by scrolling.",
+            "your ingredient notes won't write themselves.",
+            "stop avoiding your cosmetic chemistry coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your cosmetic chemistry notes.",
+            "no one becomes a cosmetic chemist by browsing.",
+            "CLOSE THIS. get back to your cosmetic formulation assignment.",
         ]
         }
     }

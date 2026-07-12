@@ -3098,4 +3098,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 333,
                 "catalog should have ≥333 templates after pmrehabilitation/performancenutrition/horticulturescience/globalhealthdev additions")
     }
+
+    // MARK: - Maritime Studies templates
+    @Test func maritimestudiesTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasUSCG = tasks.contains { $0.localizedCaseInsensitiveContains("USCG") && $0.localizedCaseInsensitiveContains("maritime") }
+        let hasProject = tasks.contains { $0.localizedCaseInsensitiveContains("maritime") && ($0.localizedCaseInsensitiveContains("law") || $0.localizedCaseInsensitiveContains("port management") || $0.localizedCaseInsensitiveContains("transportation")) }
+        #expect(hasUSCG,    "catalog must include a USCG maritime licensing exam template")
+        #expect(hasProject, "catalog must include a maritime law or port management project template")
+    }
+
+    // MARK: - HVAC Technology templates
+    @Test func hvactechnologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasEPA608 = tasks.contains { $0.localizedCaseInsensitiveContains("EPA 608") || ($0.localizedCaseInsensitiveContains("HVAC") && $0.localizedCaseInsensitiveContains("certification")) }
+        let hasCourse = tasks.contains { $0.localizedCaseInsensitiveContains("HVAC") && ($0.localizedCaseInsensitiveContains("refrigeration") || $0.localizedCaseInsensitiveContains("air conditioning") || $0.localizedCaseInsensitiveContains("trade program")) }
+        #expect(hasEPA608, "catalog must include an EPA 608 HVAC certification exam template")
+        #expect(hasCourse, "catalog must include an HVAC systems or refrigeration coursework template")
+    }
+
+    // MARK: - Construction Management templates
+    @Test func constructionmanagementTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("construction management") && ($0.localizedCaseInsensitiveContains("scheduling") || $0.localizedCaseInsensitiveContains("estimating") || $0.localizedCaseInsensitiveContains("project planning")) }
+        let hasCCM = tasks.contains { $0.localizedCaseInsensitiveContains("CCM") || ($0.localizedCaseInsensitiveContains("construction") && $0.localizedCaseInsensitiveContains("project management") && $0.localizedCaseInsensitiveContains("class")) }
+        #expect(hasAssignment, "catalog must include a construction management scheduling/estimating assignment template")
+        #expect(hasCCM,        "catalog must include a CCM exam or construction project management class template")
+    }
+
+    // MARK: - Floristry / Wedding Planning templates
+    @Test func floristryweddingplanningTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasFloral = tasks.contains { $0.localizedCaseInsensitiveContains("floral design") && ($0.localizedCaseInsensitiveContains("project") || $0.localizedCaseInsensitiveContains("floristry")) }
+        let hasWedding = tasks.contains { $0.localizedCaseInsensitiveContains("wedding planning") && ($0.localizedCaseInsensitiveContains("proposal") || $0.localizedCaseInsensitiveContains("venue") || $0.localizedCaseInsensitiveContains("event floral")) }
+        #expect(hasFloral,  "catalog must include a floral design project or floristry exam template")
+        #expect(hasWedding, "catalog must include a wedding planning or event floral design template")
+    }
+
+    // MARK: - Cosmetic Chemistry templates
+    @Test func cosmeticchemistryTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasFormulation = tasks.contains { $0.localizedCaseInsensitiveContains("cosmetic chemistry") || ($0.localizedCaseInsensitiveContains("cosmetic") && $0.localizedCaseInsensitiveContains("formulation")) }
+        let hasStudy = tasks.contains { $0.localizedCaseInsensitiveContains("cosmetic science") && ($0.localizedCaseInsensitiveContains("emulsification") || $0.localizedCaseInsensitiveContains("preservation") || $0.localizedCaseInsensitiveContains("ingredient")) }
+        #expect(hasFormulation, "catalog must include a cosmetic chemistry formulation assignment template")
+        #expect(hasStudy,       "catalog must include a cosmetic science study template covering emulsification or preservation")
+    }
+
+    // MARK: - Count guard (new 5-domain batch)
+    @Test func catalogHasAtLeastThreeHundredFortyFiveTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 345,
+                "catalog should have ≥345 templates after maritimestudies/hvactechnology/constructionmanagement/floristryweddingplanning/cosmeticchemistry additions")
+    }
 }

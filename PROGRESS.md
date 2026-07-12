@@ -14837,3 +14837,68 @@ None. Swift toolchain unavailable on Linux container.
   - `constructionmanagement` — construction management, CM degree, AIC exam, estimating, project scheduling (separate from architecture and civil engineering)
 - Template count: 325 → 335 after next 5-domain batch
 - Estimated test count: 1847 (CalloutManagerTests) + ~670 additional from other test files ≈ 2517+ total Swift tests
+
+---
+
+## Run — 2026-07-12 (Run 332 retrospective + new batch)
+
+### What shipped
+**Run 332 (previous, not logged): 4 keyword domains: pmrehabilitation, performancenutrition, horticulturescience, globalhealthdev**
+- Template catalog: 325 → 335 (not 333 as estimated — 10 templates actually added)
+- CalloutManagerTests.swift: 1847 → 1879 (+32)
+- SuggestedSessionTemplatesTests count guard: ≥333
+
+**This run: 5 new keyword domains: maritimestudies, hvactechnology, constructionmanagement, floristryweddingplanning, cosmeticchemistry**
+
+**New keyword domain — maritimestudies:**
+- Branch positioned BEFORE `aviation`; catches USCG licensing exam, merchant marine programs, nautical science coursework, maritime law class/course, STCW training, seafarer certification, ship navigation class, port management class
+- `maritimestudiesCallouts(tier:)` 4/3/3: "your USCG license isn't going to earn itself." / "seafarers don't earn their USCG certification by scrolling." / "CLOSE THIS. open your maritime studies notes."
+- 2 templates: "Study for the USCG licensing exam or complete a maritime studies coursework assignment" (60 min) + "Work on a maritime law, port management, or maritime transportation class project" (45 min)
+
+**New keyword domain — hvactechnology:**
+- Branch positioned BEFORE `engineering`; catches HVAC class/program/exam, EPA 608 exam, refrigeration class/course/exam, air conditioning class/course, heat pump class, boiler course, HVAC school/apprentice/lab
+- `hvactechnologyCallouts(tier:)` 4/3/3: "those EPA 608 questions aren't going to answer themselves." / "HVAC technicians don't earn their certification by scrolling." / "CLOSE THIS. open your HVAC notes."
+- 2 templates: "Study for the EPA 608 HVAC certification exam" (60 min) + "Work through HVAC systems or refrigeration cycles coursework" (45 min)
+
+**New keyword domain — constructionmanagement:**
+- Branch positioned BEFORE `urbanplanning`; catches construction management/manager, CCM/CMAA certification, construction estimating, construction scheduling, construction bidding, construction law class, OSHA 30+construction, subcontractor management; guards against "construction documents" (architecture) and "garment construction" (fashiondesign)
+- `constructionmanagementCallouts(tier:)` 4/3/3: "that construction project plan isn't going to write itself." / "construction managers don't earn their CCM by scrolling." / "CLOSE THIS. open your construction management notes."
+- 2 templates: "Complete a construction management assignment on scheduling, estimating, or project planning" (60 min) + "Study for the CCM exam or work on a construction project management class project" (60 min)
+
+**New keyword domain — floristryweddingplanning:**
+- Branch positioned AFTER `hospitality`; catches floral design/designer, AIFD certification, wedding planning/planner/coordinator, floristry program/class/exam, flower arrangement class, event florals, wedding florals; "event planning" alone stays in hospitality
+- `floristryweddingplanningCallouts(tier:)` 4/3/3: "those flower arrangements aren't going to design themselves." / "AIFD-certified designers don't get there by scrolling." / "CLOSE THIS. open your floral design notes."
+- 2 templates: "Complete a floral design project or study for a floristry program exam" (45 min) + "Work on wedding planning coursework, a venue proposal, or an event floral design project" (45 min)
+
+**New keyword domain — cosmeticchemistry:**
+- Branch positioned BEFORE `pharmacy`; catches cosmetic chemistry/chemist/science, cosmetic formulation, personal care formulation/chemistry, beauty chemistry, SCC/Society of Cosmetic Chemists, emulsion formulation+cosmetic context, skincare/haircare formulation, surfactant chemistry+personal care context; "pharmacology"/"compounding" stay in pharmacy
+- `cosmeticchemistryCallouts(tier:)` 4/3/3: "those formulation notes aren't going to study themselves." / "cosmetic chemists don't master formulation by scrolling." / "CLOSE THIS. open your cosmetic chemistry notes."
+- 2 templates: "Work through a cosmetic chemistry formulation assignment or skincare product development project" (60 min) + "Study cosmetic science concepts: emulsification, preservation systems, or ingredient chemistry for an exam" (45 min)
+
+**Test counts:**
+- CalloutManagerTests.swift: 1879 → 1919 (+40: 8 tests per domain × 5 domains)
+- SuggestedSessionTemplatesTests.swift: +51 lines (5 new template tests + ≥345 count guard)
+
+**Template catalog: 335 → 345**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `maritimestudies` fires BEFORE `aviation` (~line 398 vs ~line 423). "USCG licensing exam maritime studies nautical science merchant marine" → maritimestudies ✓; "FAA written exam private pilot flight training ground school" → aviation ✓
+- `hvactechnology` fires BEFORE `engineering` (~line 492 vs ~line 517). "EPA 608 HVAC certification exam refrigeration class trade program" → hvactechnology ✓; "SolidWorks CAD mechanical engineering FEA simulation" → engineering ✓
+- `constructionmanagement` fires BEFORE `urbanplanning` (~line 574 vs ~line 616). "CCM construction management certification exam construction scheduling" → constructionmanagement ✓; "urban planning AICP exam zoning ordinance city planning" → urbanplanning ✓
+- `floristryweddingplanning` fires AFTER `hospitality` (~line 636 vs ~line 730). "event planning class hospitality industry hotel revenue management" → hospitality ✓; "AIFD floral design certification floristry program" → floristryweddingplanning ✓
+- `cosmeticchemistry` fires BEFORE `pharmacy` (~line 1878 vs ~line 1998). "cosmetic chemistry formulation skincare emulsion personal care" → cosmeticchemistry ✓; "NAPLEX pharmacy board PharmD pharmacokinetics" → pharmacy ✓
+- Template count: 345 confirmed (grep task: count = 345)
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `electricaltechnology` — electrician apprenticeship, NEC code exam, NJATC training, journeyman electrician exam (distinct from electrical engineering degree)
+  - `automotivetech` — automotive technology, ASE certification, auto mechanics, NATEF program, vehicle diagnostics
+  - `weldingtech` — welding technology, AWS certification, welding inspection, CWI exam, welding program/class/school
+  - `plumbingtech` — plumbing technology, journeyman plumber, NCCER plumbing, plumbing code class
+  - `cosmetologyadvanced` — advanced cosmetology specialties: barbering theory, esthetics board exam, nail tech exam (separate from the broad cosmetology branch)
+- Template count: 345 → 355 after next 5-domain batch
+- Estimated test count: 1919 (CalloutManagerTests) + ~670 additional from other test files ≈ 2589+ total Swift tests

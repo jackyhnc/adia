@@ -2156,5 +2156,65 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target international development material reviewed (SDGs, development economics, humanitarian frameworks, or global health governance), key concepts summarized, and notes saved",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "sailboat.fill",
+            task: "Study for the USCG licensing exam or complete a maritime studies coursework assignment",
+            successCriteria: "Target maritime studies material reviewed (navigation, maritime law, STCW standards, or port management), practice questions completed, and notes saved for next session",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "ferry.fill",
+            task: "Work on a maritime law, port management, or maritime transportation class project",
+            successCriteria: "Maritime class project completed (case analysis, policy memo, or research paper drafted), argument or analysis documented, and work saved or submitted",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "thermometer.and.liquid.waves",
+            task: "Study for the EPA 608 HVAC certification exam or complete an HVAC technology coursework assignment",
+            successCriteria: "Target EPA 608 or HVAC content reviewed (refrigerant types, recovery procedures, system components, or safety regulations), practice questions completed, and notes saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "wind",
+            task: "Work through HVAC systems, refrigeration cycles, or air conditioning coursework for my trade program",
+            successCriteria: "HVAC trade program assignment completed (system schematics reviewed, troubleshooting steps documented, or theory questions answered), and work saved or submitted",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "building.2.fill",
+            task: "Complete a construction management assignment on scheduling, estimating, or project planning",
+            successCriteria: "Construction management assignment completed (project schedule drafted, cost estimate calculated, or project plan outlined), reasoning documented, and work saved or submitted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.bar.doc.horizontal",
+            task: "Study for the CCM exam or work on a construction project management class project",
+            successCriteria: "Target CCM board topics reviewed (project delivery methods, risk management, scheduling, or contract law), practice questions completed, and notes saved for next session",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "camera.macro",
+            task: "Complete a floral design project or study for a floristry program exam",
+            successCriteria: "Floral design assignment completed (arrangement plan sketched, technique documented, or exam material reviewed), work saved, and notes prepared for next session",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "heart.fill",
+            task: "Work on wedding planning coursework, a venue proposal, or an event floral design project",
+            successCriteria: "Wedding planning or event floral assignment completed (proposal drafted, design plan sketched, or vendor coordination notes written), and work saved or submitted",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "flask.fill",
+            task: "Work through a cosmetic chemistry formulation assignment or skincare product development project",
+            successCriteria: "Cosmetic chemistry assignment completed (formulation drafted, ingredient function documented, or emulsification procedure written), and work saved or submitted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "testtube.2",
+            task: "Study cosmetic science concepts: emulsification, preservation systems, or ingredient chemistry for an exam",
+            successCriteria: "Target cosmetic science material reviewed (emulsion theory, preservative systems, surfactant chemistry, or raw material safety), practice questions completed, and notes saved",
+            preferredDuration: 45 * 60
+        ),
     ]
 }
