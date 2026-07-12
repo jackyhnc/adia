@@ -872,6 +872,27 @@ public final class CalloutManager {
             || lower.contains("film studies exam") || lower.contains("film studies major") {
             return "filmstudies"
         }
+        // playwriting — positioned BEFORE performingarts so crafting a stage play, one-act,
+        // or full-length play script routes here rather than the acting/dancing/theatre class pool.
+        // "playwriting class/course/workshop" is caught earlier by dramaeducation; this branch
+        // covers standalone creative playwriting work. Bare word("play") is NOT matched (too ambiguous).
+        if lower.contains("stage play") || lower.contains("one-act play") || lower.contains("one act play")
+            || lower.contains("two-act play") || lower.contains("two act play")
+            || lower.contains("full-length play") || lower.contains("full length play")
+            || lower.contains("play script") || lower.contains("play draft")
+            || lower.contains("writing a play") || lower.contains("write a play")
+            || lower.contains("writing my play") || lower.contains("write my play")
+            || lower.contains("working on my play") || lower.contains("work on my play")
+            || lower.contains("play i'm writing") || lower.contains("play i am writing")
+            || lower.contains("original play") || lower.contains("new play")
+            || lower.contains("play development") || lower.contains("new play development")
+            || lower.contains("ten-minute play") || lower.contains("ten minute play")
+            || lower.contains("10-minute play") || lower.contains("10 minute play")
+            || lower.contains("play revision") || lower.contains("revising my play")
+            || lower.contains("dramatic writing") && !lower.contains("class") && !lower.contains("course")
+            || lower.contains("theatrical writing") || lower.contains("theatre writing") {
+            return "playwriting"
+        }
         // performingarts — positioned before video so "filming" in a theater context and
         // word("film") don't override theater/acting/dance tasks.
         // word("sketch") stays in design; "sketch comedy" routes here via "improv".
@@ -1273,6 +1294,31 @@ public final class CalloutManager {
             || lower.contains("certified industrial hygienist") {
             return "occupationalmedicine"
         }
+        // sportsmedicine — positioned BEFORE kinesiology so BOC exam prep, CAATE accreditation
+        // coursework, and sports medicine physician rotation notes route to a dedicated pool.
+        // "athletic training" stays in kinesiology for generic use; compound clinical-certification
+        // terms like BOC, CAATE, sports medicine rotation/clinical hours fire here first.
+        if lower.contains("sports medicine") || lower.contains("sport medicine")
+            || lower.contains("sports medicine physician") || lower.contains("sports medicine doctor")
+            || lower.contains("sports medicine class") || lower.contains("sports medicine course")
+            || lower.contains("sports medicine exam") || lower.contains("sports medicine rotation")
+            || lower.contains("sports medicine program") || lower.contains("sports medicine clerkship")
+            || lower.contains("sports medicine clinical") || lower.contains("sports medicine internship")
+            || word("boc") && (lower.contains("exam") || lower.contains("certification") || lower.contains("athletic") || lower.contains("training"))
+            || lower.contains("boc exam") || lower.contains("boc certification") || lower.contains("boc athletic")
+            || word("caate") || lower.contains("caate accreditation")
+            || lower.contains("athletic training clinical") || lower.contains("clinical athletic training")
+            || lower.contains("athletic training hours") || lower.contains("clinical hours athletic")
+            || lower.contains("sports injury assessment") || lower.contains("sports injury documentation")
+            || lower.contains("sideline assessment") || lower.contains("field assessment")
+            || lower.contains("injury evaluation") && (lower.contains("athlete") || lower.contains("sport") || lower.contains("clinical"))
+            || lower.contains("taping technique") || lower.contains("athletic taping")
+            || lower.contains("concussion protocol") || lower.contains("concussion evaluation")
+            || lower.contains("return to play protocol") || lower.contains("return to sport protocol")
+            || lower.contains("sports medicine notes") || lower.contains("athletic training notes")
+            || lower.contains("sports medicine team") && lower.contains("note") {
+            return "sportsmedicine"
+        }
         // kinesiology — positioned before fitness so biomechanics, exercise physiology,
         // and physical therapy professional terms route here rather than the generic fitness pool.
         if word("kinesiology") || word("biomechanics") || word("kinesiologist")
@@ -1639,9 +1685,35 @@ public final class CalloutManager {
             || lower.contains("mtm") {
             return "pharmacy"
         }
+        // naturopathicmedicine — positioned BEFORE integrativemedicine so ND programs,
+        // NPLEX exam prep, and botanical/herbal medicine coursework route to a dedicated pool
+        // rather than the broader integrative-medicine messages.
+        if lower.contains("naturopathic medicine") || lower.contains("naturopathic doctor")
+            || lower.contains("naturopathic physician") || lower.contains("naturopathic school")
+            || lower.contains("naturopathic program") || lower.contains("naturopathic class")
+            || lower.contains("naturopathic course") || lower.contains("naturopathic exam")
+            || lower.contains("naturopathic rotation") || lower.contains("naturopathic clinical")
+            || lower.contains("naturopathic internship") || lower.contains("naturopathic residency")
+            || lower.contains("naturopathic notes") || lower.contains("naturopathic assignment")
+            || word("nd") && (lower.contains("naturo") || lower.contains("naturopathic"))
+            || word("nplex") || lower.contains("nplex exam") || lower.contains("nplex prep")
+            || lower.contains("botanical medicine") || lower.contains("botanical medicine class")
+            || lower.contains("botanical medicine course") || lower.contains("botanical medicine exam")
+            || lower.contains("naturopathic botany") || lower.contains("medicinal herbs class")
+            || lower.contains("herbal medicine class") || lower.contains("herbal medicine course")
+            || lower.contains("herbal medicine exam") || lower.contains("homeopathy class")
+            || lower.contains("homeopathy course") || lower.contains("homeopathy exam")
+            || lower.contains("hydrotherapy class") || lower.contains("physical medicine naturo")
+            || lower.contains("counseling naturo") && lower.contains("class")
+            || lower.contains("naturopathic oncology") || lower.contains("naturopathic cardiology")
+            || lower.contains("bastyr") || lower.contains("national university natural medicine")
+            || lower.contains("scnm") || lower.contains("ncnm")
+            || lower.contains("cnm naturo") || word("aanp") && lower.contains("naturo") {
+            return "naturopathicmedicine"
+        }
         // integrativemedicine — positioned AFTER pharmacy (shared pharmacology/therapeutics
         // context) and BEFORE medicalbilling. Catches integrative/functional medicine specialty
-        // coursework, CAM therapies, naturopathic medicine programs, and mind-body medicine.
+        // coursework, CAM therapies, and mind-body medicine.
         // Bare word("holistic") is NOT matched (too generic in non-clinical contexts).
         if lower.contains("integrative medicine") || lower.contains("integrative health")
             || lower.contains("functional medicine")
@@ -2069,6 +2141,30 @@ public final class CalloutManager {
             || lower.contains("nursing informatics assignment") || lower.contains("nursing informatics certification") {
             return "nursinginformatics"
         }
+        // midwifery — positioned BEFORE nursing so CNM school, AMCB exam prep, birth plan
+        // writing, and prenatal/postpartum charting route to a dedicated midwifery pool rather
+        // than the broader nursing callouts. Bare word("birth") is NOT matched (too generic).
+        if lower.contains("midwifery") || lower.contains("midwife") || lower.contains("midwives")
+            || word("cnm") && (lower.contains("school") || lower.contains("program") || lower.contains("exam") || lower.contains("class") || lower.contains("course") || lower.contains("certification") || lower.contains("credential") || lower.contains("clinical") || lower.contains("rotation") || lower.contains("midwif"))
+            || word("amcb") || lower.contains("amcb exam") || lower.contains("amcb certification")
+            || lower.contains("certified nurse midwife") || lower.contains("certified nurse-midwife")
+            || lower.contains("licensed midwife") || lower.contains("direct-entry midwife")
+            || lower.contains("midwifery school") || lower.contains("midwifery program")
+            || lower.contains("midwifery class") || lower.contains("midwifery course")
+            || lower.contains("midwifery exam") || lower.contains("midwifery rotation")
+            || lower.contains("midwifery clinical") || lower.contains("midwifery internship")
+            || lower.contains("midwifery notes") || lower.contains("midwifery assignment")
+            || lower.contains("birth plan") || lower.contains("birth plans")
+            || lower.contains("prenatal charting") || lower.contains("postpartum charting")
+            || lower.contains("prenatal notes") || lower.contains("postpartum notes")
+            || lower.contains("labor and delivery notes") || lower.contains("l&d notes")
+            || lower.contains("antepartum notes") || lower.contains("intrapartum notes")
+            || lower.contains("newborn assessment notes") || lower.contains("newborn notes")
+            || lower.contains("home birth documentation") || lower.contains("birth center notes")
+            || lower.contains("obstetric notes") && lower.contains("midwif")
+            || lower.contains("midwifery care") && lower.contains("plan") {
+            return "midwifery"
+        }
         if word("nursing") || lower.contains("care plan") || lower.contains("care plans")
             || lower.contains("nursing notes") || lower.contains("nursing assessment")
             || lower.contains("nursing theory") || lower.contains("nursing diagnosis")
@@ -2404,6 +2500,32 @@ public final class CalloutManager {
             || word("hippocampus") || word("cortex") || word("cortical") || word("subcortical")
             || word("hypothalamus") || word("amygdala") || word("cerebellum") {
             return "neuroscience"
+        }
+        // clinicalpsychology — positioned BEFORE psychology so doctoral-level clinical training
+        // (APPIC internship match, neuropsychological assessment, psychotherapy practicum) routes
+        // to a dedicated pool. EPPP is in forensicpsychology; this covers broader clinical training.
+        if lower.contains("clinical psychology") || lower.contains("clinical psychologist")
+            || lower.contains("clinical psychologists")
+            || lower.contains("clinical psych") && !lower.contains("class") && !lower.contains("course") && !lower.contains("exam") && !lower.contains("paper") && !lower.contains("major")
+            || word("appic") || lower.contains("appic match") || lower.contains("internship match") && lower.contains("psych")
+            || lower.contains("psych internship") && !lower.contains("class") && !lower.contains("course")
+            || lower.contains("psychology internship") || lower.contains("psychology practicum")
+            || lower.contains("psych practicum") || lower.contains("clinical practicum") && lower.contains("psych")
+            || lower.contains("neuropsychological testing") || lower.contains("neuropsychological assessment")
+            || lower.contains("neuropsychological evaluation") || lower.contains("neuropsychological report")
+            || lower.contains("psychological assessment") && !lower.contains("forensic") && !lower.contains("class") && !lower.contains("course")
+            || lower.contains("psychological evaluation") && !lower.contains("forensic")
+            || lower.contains("psychological testing") && !lower.contains("forensic")
+            || lower.contains("psychological report") && !lower.contains("forensic")
+            || lower.contains("psych assessment report") || lower.contains("assessment report") && lower.contains("psych")
+            || lower.contains("psy.d") || lower.contains("psyd program") || lower.contains("clinical psyd")
+            || lower.contains("doctoral psychology") || lower.contains("psychology doctoral")
+            || lower.contains("clinical psychology program") || lower.contains("clinical psychology school")
+            || lower.contains("clinical psychology dissertation") || lower.contains("clinical psychology thesis")
+            || lower.contains("clinical psychology rotation") || lower.contains("clinical psychology clerkship")
+            || lower.contains("psychotherapy notes") || lower.contains("psychotherapy session notes")
+            || lower.contains("therapy notes") && lower.contains("doctoral") {
+            return "clinicalpsychology"
         }
         // psychology — positioned after publicheath and all clinical health branches above.
         // "educational psychology" fires in the education branch first; clinical/counseling

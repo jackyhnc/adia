@@ -2854,6 +2854,51 @@ struct SuggestedSessionTemplatesTests {
         #expect(hasExam,     "catalog must include a dental public health board exam or community dentistry template")
     }
 
+    // MARK: - Playwriting templates
+    @Test func playwrightingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasScene = tasks.contains { $0.localizedCaseInsensitiveContains("stage play") && ($0.localizedCaseInsensitiveContains("scene") || $0.localizedCaseInsensitiveContains("act")) }
+        let hasOutline = tasks.contains { ($0.localizedCaseInsensitiveContains("one-act") || $0.localizedCaseInsensitiveContains("full-length play")) && ($0.localizedCaseInsensitiveContains("outline") || $0.localizedCaseInsensitiveContains("structure")) }
+        #expect(hasScene,   "catalog must include a stage play scene/act writing template")
+        #expect(hasOutline, "catalog must include a one-act or full-length play outline template")
+    }
+
+    // MARK: - Sports Medicine templates
+    @Test func sportsmedicineTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCaseReport = tasks.contains { $0.localizedCaseInsensitiveContains("sports medicine") && ($0.localizedCaseInsensitiveContains("case report") || $0.localizedCaseInsensitiveContains("clinical")) }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("BOC") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("sports medicine")) }
+        #expect(hasCaseReport, "catalog must include a sports medicine case report or clinical template")
+        #expect(hasExam,       "catalog must include a BOC exam or sports medicine assignment template")
+    }
+
+    // MARK: - Naturopathic Medicine templates
+    @Test func naturopathicmedicineTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("naturopathic medicine") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("case study")) }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("NPLEX") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("board")) }
+        #expect(hasAssignment, "catalog must include a naturopathic medicine assignment or case study template")
+        #expect(hasExam,       "catalog must include an NPLEX exam or naturopathic board prep template")
+    }
+
+    // MARK: - Midwifery templates
+    @Test func midwiferyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasBirthPlan = tasks.contains { ($0.localizedCaseInsensitiveContains("birth plan") || $0.localizedCaseInsensitiveContains("prenatal notes")) && $0.localizedCaseInsensitiveContains("midwifery") }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("AMCB") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("midwifery")) }
+        #expect(hasBirthPlan, "catalog must include a midwifery birth plan or prenatal notes template")
+        #expect(hasExam,      "catalog must include an AMCB exam or midwifery assignment template")
+    }
+
+    // MARK: - Clinical Psychology templates
+    @Test func clinicalpsychologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasReport = tasks.contains { ($0.localizedCaseInsensitiveContains("neuropsychological") || $0.localizedCaseInsensitiveContains("psychological assessment")) && $0.localizedCaseInsensitiveContains("report") }
+        let hasAPPIC = tasks.contains { $0.localizedCaseInsensitiveContains("APPIC") && ($0.localizedCaseInsensitiveContains("internship") || $0.localizedCaseInsensitiveContains("application")) }
+        #expect(hasReport, "catalog must include a neuropsychological or psychological assessment report template")
+        #expect(hasAPPIC,  "catalog must include an APPIC internship or clinical psychology application template")
+    }
+
     // MARK: - Count guard
     @Test func catalogHasAtLeastTwoHundredSeventyNineTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 279,
@@ -2863,5 +2908,10 @@ struct SuggestedSessionTemplatesTests {
     @Test func catalogHasAtLeastTwoHundredEightyNineTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 289,
                 "catalog should have ≥289 templates after occupationalmedicine/integrativemedicine/geneticcounseling/behavioralhealthpromotion/dentalpublichealth additions")
+    }
+
+    @Test func catalogHasAtLeastTwoHundredNinetySevenTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 297,
+                "catalog should have ≥297 templates after playwriting/sportsmedicine/naturopathicmedicine/midwifery/clinicalpsychology additions")
     }
 }

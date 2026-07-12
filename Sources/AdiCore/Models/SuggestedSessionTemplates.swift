@@ -1861,5 +1861,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target content reviewed (dental epidemiology, oral health policy, or community program planning), key concepts summarized, and at least one practice item completed",
             preferredDuration: 60 * 60
         ),
+        // Playwriting
+        SuggestedTemplate(
+            icon: "pencil",
+            task: "Write or revise a scene or act for my stage play",
+            successCriteria: "Target scene or act drafted or revised, dialogue and stage directions written, and pages saved in my playwriting software or document",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Outline or develop the structure of my one-act or full-length play",
+            successCriteria: "Play outline or story structure developed, key scenes or beats mapped, character arcs sketched, and outline document saved for revision",
+            preferredDuration: 30 * 60
+        ),
+        // Sports Medicine
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Complete a sports medicine or athletic training clinical case report",
+            successCriteria: "Assigned case or injury scenario documented, SOAP or HPOP notes written, relevant assessment findings recorded, and report saved or submitted for clinical supervisor review",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for the BOC exam or complete a sports medicine school assignment",
+            successCriteria: "Target content reviewed (injury evaluation, rehabilitation, immediate care, or professional development), key concepts summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Naturopathic Medicine
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Complete a naturopathic medicine assignment or botanical medicine case study",
+            successCriteria: "Assigned topic completed (botanical materia medica, homeopathy case, or naturopathic treatment plan), key concepts documented, and work saved or submitted for instructor review",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for the NPLEX exam or naturopathic school board prep",
+            successCriteria: "Target content reviewed (clinical sciences, naturopathic principles, botanical medicine, or homeopathy), key concepts summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        // Midwifery
+        SuggestedTemplate(
+            icon: "heart.fill",
+            task: "Write birth plans, prenatal notes, or postpartum charting for midwifery clinical",
+            successCriteria: "Assigned documentation written (birth preferences, prenatal assessment, or postpartum visit notes), clinical details accurately recorded, and notes saved or submitted for preceptor review",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for the AMCB exam or complete a midwifery school assignment",
+            successCriteria: "Target content reviewed (normal physiologic birth, prenatal care, postpartum care, or pharmacology), key concepts summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        // Clinical Psychology
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Write a neuropsychological or psychological assessment report",
+            successCriteria: "Assessment report drafted, behavioral observations, test results, and clinical impressions documented, and report saved or submitted for supervisor review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Work on my APPIC internship application or clinical psychology doctoral materials",
+            successCriteria: "Target APPIC essays, cover letters, or application materials drafted or revised, and documents saved for review or submission",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

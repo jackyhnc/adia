@@ -210,6 +210,11 @@ extension CalloutManager {
         case "geneticcounseling":           return geneticcounselingCallouts(tier: tier)
         case "behavioralhealthpromotion":   return behavioralhealthpromotionCallouts(tier: tier)
         case "dentalpublichealth":          return dentalpublichealthCallouts(tier: tier)
+        case "playwriting":                 return playwrightingCallouts(tier: tier)
+        case "sportsmedicine":              return sportsmedicineCallouts(tier: tier)
+        case "naturopathicmedicine":        return naturopathicmedicineCallouts(tier: tier)
+        case "midwifery":                   return midwiferyCallouts(tier: tier)
+        case "clinicalpsychology":          return clinicalpsychologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -3599,6 +3604,111 @@ extension CalloutManager {
             "CLOSE THIS. open your dental public health notes.",
             "no one masters dental epidemiology by browsing.",
             "CLOSE THIS. get back to your oral health policy work.",
+        ]
+        }
+    }
+
+    private func playwrightingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that play isn't going to write itself.",
+            "your characters are waiting — get back to your script.",
+            "act 2 won't draft itself. close this.",
+            "great playwrights write. close this and be one.",
+        ]
+        case 2: return [
+            "your play is stalled while you scroll — get back to it.",
+            "stop avoiding your script. open it now.",
+            "the blank page is waiting. stop avoiding it.",
+        ]
+        default: return [
+            "CLOSE THIS. open your play script.",
+            "no one writes a great play by browsing.",
+            "CLOSE THIS. your characters need you — not this.",
+        ]
+        }
+    }
+
+    private func sportsmedicineCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those athletes aren't going to assess themselves — get back to your notes.",
+            "your sports medicine clinical notes won't write themselves.",
+            "get back to your BOC exam prep.",
+            "close this and open your sports medicine study guide.",
+        ]
+        case 2: return [
+            "athletic trainers don't pass the BOC by scrolling.",
+            "your sports injury assessment notes won't complete themselves.",
+            "stop avoiding your sports medicine coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your sports medicine notes.",
+            "no one passes the BOC by browsing.",
+            "CLOSE THIS. get back to your athletic training clinical hours.",
+        ]
+        }
+    }
+
+    private func naturopathicmedicineCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those botanical medicine notes aren't going to study themselves.",
+            "your NPLEX prep won't do itself — get back to your notes.",
+            "get back to your naturopathic medicine coursework.",
+            "close this and open your naturopathic study guide.",
+        ]
+        case 2: return [
+            "naturopathic doctors don't pass the NPLEX by scrolling.",
+            "your herbal medicine assignment won't write itself.",
+            "stop avoiding your naturopathic school coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your NPLEX study guide.",
+            "no one earns their ND by browsing.",
+            "CLOSE THIS. get back to your botanical medicine notes.",
+        ]
+        }
+    }
+
+    private func midwiferyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those birth plans aren't going to write themselves.",
+            "your AMCB prep won't do itself — get back to your notes.",
+            "get back to your midwifery clinical notes.",
+            "close this and open your midwifery study guide.",
+        ]
+        case 2: return [
+            "midwives don't pass the AMCB by scrolling.",
+            "your prenatal and postpartum notes won't write themselves.",
+            "stop avoiding your midwifery coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your midwifery notes.",
+            "no one earns their CNM by browsing.",
+            "CLOSE THIS. get back to your birth plan documentation.",
+        ]
+        }
+    }
+
+    private func clinicalpsychologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those assessment reports aren't going to write themselves.",
+            "your APPIC internship application won't complete itself.",
+            "get back to your clinical psychology practicum notes.",
+            "close this and open your neuropsychological assessment materials.",
+        ]
+        case 2: return [
+            "clinical psychologists don't match on internship by scrolling.",
+            "your psychotherapy session notes won't write themselves.",
+            "stop avoiding your clinical psychology doctoral work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your assessment report.",
+            "no one completes a Psy.D by browsing.",
+            "CLOSE THIS. get back to your clinical psychology coursework.",
         ]
         }
     }
