@@ -2809,9 +2809,59 @@ struct SuggestedSessionTemplatesTests {
         #expect(hasAssignment, "catalog must include a dietetic technician assignment or dietary analysis template")
     }
 
+    // MARK: - Occupational Medicine templates
+    @Test func occupationalmedicineTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCaseReport = tasks.contains { $0.localizedCaseInsensitiveContains("occupational medicine") && ($0.localizedCaseInsensitiveContains("case report") || $0.localizedCaseInsensitiveContains("industrial hygiene")) }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("ACOEM") && ($0.localizedCaseInsensitiveContains("boards") || $0.localizedCaseInsensitiveContains("exam")) }
+        #expect(hasCaseReport, "catalog must include an occupational medicine case report or industrial hygiene template")
+        #expect(hasExam,       "catalog must include an ACOEM boards or exam template")
+    }
+
+    // MARK: - Integrative Medicine templates
+    @Test func integrativemedicineTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCaseStudy = tasks.contains { $0.localizedCaseInsensitiveContains("integrative") && ($0.localizedCaseInsensitiveContains("case study") || $0.localizedCaseInsensitiveContains("case report")) }
+        let hasExam = tasks.contains { ($0.localizedCaseInsensitiveContains("integrative medicine") || $0.localizedCaseInsensitiveContains("holistic health")) && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("assignment")) }
+        #expect(hasCaseStudy, "catalog must include an integrative or functional medicine case study template")
+        #expect(hasExam,      "catalog must include an integrative medicine board exam or holistic health assignment template")
+    }
+
+    // MARK: - Genetic Counseling templates
+    @Test func geneticcounselingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCaseReport = tasks.contains { $0.localizedCaseInsensitiveContains("genetic counseling") && ($0.localizedCaseInsensitiveContains("case report") || $0.localizedCaseInsensitiveContains("variant")) }
+        let hasExam = tasks.contains { ($0.localizedCaseInsensitiveContains("ABGC") || $0.localizedCaseInsensitiveContains("CGC")) && ($0.localizedCaseInsensitiveContains("board") || $0.localizedCaseInsensitiveContains("exam")) }
+        #expect(hasCaseReport, "catalog must include a genetic counseling case report or variant interpretation template")
+        #expect(hasExam,       "catalog must include an ABGC board or CGC exam template")
+    }
+
+    // MARK: - Behavioral Health Promotion templates
+    @Test func behavioralhealthpromotionTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasProgram = tasks.contains { $0.localizedCaseInsensitiveContains("health promotion") && ($0.localizedCaseInsensitiveContains("program") || $0.localizedCaseInsensitiveContains("community health")) }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("CHES") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("health education")) }
+        #expect(hasProgram, "catalog must include a health promotion program or community health education template")
+        #expect(hasExam,    "catalog must include a CHES exam or health education specialist template")
+    }
+
+    // MARK: - Dental Public Health templates
+    @Test func dentalpublichealthTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAnalysis = tasks.contains { $0.localizedCaseInsensitiveContains("dental public health") && ($0.localizedCaseInsensitiveContains("analysis") || $0.localizedCaseInsensitiveContains("oral health policy")) }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("dental public health") && ($0.localizedCaseInsensitiveContains("board exam") || $0.localizedCaseInsensitiveContains("community dentistry")) }
+        #expect(hasAnalysis, "catalog must include a dental public health analysis or oral health policy template")
+        #expect(hasExam,     "catalog must include a dental public health board exam or community dentistry template")
+    }
+
     // MARK: - Count guard
     @Test func catalogHasAtLeastTwoHundredSeventyNineTemplates() {
         #expect(SuggestedSessionTemplates.all.count >= 279,
                 "catalog should have ≥279 templates after opticianry/dancetherapy/recreationtherapy/horticulturetherapy/dietetictechnology additions")
+    }
+
+    @Test func catalogHasAtLeastTwoHundredEightyNineTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 289,
+                "catalog should have ≥289 templates after occupationalmedicine/integrativemedicine/geneticcounseling/behavioralhealthpromotion/dentalpublichealth additions")
     }
 }

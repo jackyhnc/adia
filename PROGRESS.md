@@ -1,5 +1,70 @@
 # Adia — Build Progress
 
+## Run 330 — 2026-07-12 — Occupational medicine + integrative medicine + genetic counseling + behavioral health promotion + dental public health keyword domains (1362→1402 tests, 279→289 templates)
+
+### Shipped
+
+**Occupational medicine / industrial hygiene keyword domain:**
+- `occupationalmedicine` branch added to `extractTaskKeyword` in `CalloutManager.swift`, positioned BEFORE kinesiology.
+- Matches: occupational medicine, occupational physician, industrial medicine, ACOEM, occupational disease class/course/exam, work-related illness, workplace health assessment class, occupational medicine residency/clerkship, occupational and environmental medicine, industrial hygiene class/course/exam/certification/program/training, CIH exam, certified industrial hygienist.
+- False-positive guard: bare "occupational health" stays in publicheath; "occupational therapy" fires in its own dedicated branch after therapy.
+- `occupationalmedicineCallouts(tier:)` 4/3/3 pool: "those occupational medicine concepts aren't going to study themselves." / "CLOSE THIS. open your occupational medicine study guide." / "no one passes the ACOEM boards by browsing."
+- 2 templates: "Complete an occupational medicine case report or industrial hygiene assessment" (45 min) + "Study for the ACOEM boards or complete an occupational medicine course assignment" (60 min)
+
+**Integrative medicine / functional medicine / CAM keyword domain:**
+- `integrativemedicine` branch positioned AFTER pharmacy and BEFORE medicalbilling.
+- Matches: integrative medicine/health, functional medicine, holistic medicine, complementary and alternative medicine (CAM), CAM therapies/course/class/program/exam, naturopathic medicine/doctor, mind-body medicine, ABIHM, integrative medicine class/course/exam/program, functional medicine class/course/exam/program, holistic health class/program/course/certification.
+- False-positive guard: bare word("holistic") NOT matched (too generic); pharmacy terms still route to pharmacy.
+- `integrativemedicineCallouts(tier:)` 4/3/3: "that integrative medicine case study isn't going to write itself." / "CLOSE THIS. open your integrative medicine study guide." / "no one earns their ABIHM by browsing."
+- 2 templates: "Write an integrative or functional medicine case study or patient case report" (45 min) + "Study for an integrative medicine board exam or complete a holistic health course assignment" (60 min)
+
+**Genetic counseling keyword domain:**
+- `geneticcounseling` branch positioned AFTER molecularbiology and BEFORE radiologictechnology.
+- Matches: genetic counseling/counselor, ABGC/CGC exam/board/certification, certified genetic counselor, prenatal genetic counseling/genetics, hereditary cancer counseling/genetics, genomic counseling/counselor, genetics clinic class/rotation/course, genetic counseling program/class/school/exam/rotation/clerkship, variant of uncertain significance class/assignment, BRCA counseling, cancer genetics counseling, genetic risk assessment class/course/counseling.
+- False-positive guard: bare "genetics" stays in studying for generic academic use; molecularbiology fires earlier for CRISPR/cloning.
+- `geneticcounselingCallouts(tier:)` 4/3/3: "those variant interpretations aren't going to analyze themselves." / "CLOSE THIS. open your genetic counseling study guide." / "no one passes the CGC board by browsing."
+- 2 templates: "Write a genetic counseling case report or variant interpretation summary" (30 min) + "Study for the ABGC board or CGC exam or complete a genetic counseling school assignment" (90 min)
+
+**Behavioral health promotion / health education keyword domain:**
+- `behavioralhealthpromotion` branch positioned AFTER gerontology and BEFORE publicheath.
+- Matches: behavioral health promotion, mental health promotion + educational context, health behavior theory/change, health education specialist, health educator + educational context, CHES/MCHES exam/certification/prep, community health worker + class/certification/exam/program/training, wellness programming class/course/design, wellness coaching class/course/certification/exam, mental health first aid class/certification/training, behavioral wellness class/course/assignment, health promotion + class/cert/degree/major + NOT public health.
+- False-positive guard: "mph program epidemiology class on public health" stays in publicheath (no "health promotion" phrase present); bare "health promotion" without class/cert context stays in publicheath.
+- `behavioralhealthpromotionCallouts(tier:)` 4/3/3: "those health behavior theories aren't going to study themselves." / "CLOSE THIS. open your health promotion study guide." / "no one earns their CHES by browsing."
+- 2 templates: "Design a health promotion program or write a community health education assignment" (45 min) + "Study for the CHES exam or complete a health education specialist certification assignment" (60 min)
+
+**Dental public health keyword domain:**
+- `dentalpublichealth` branch positioned AFTER dentalassisting and BEFORE dentalhygiene.
+- Matches: dental public health, public health dentistry, community dentistry/dental + educational context, oral health policy/disparities/advocacy/equity, dental epidemiology, population oral health, community oral health + class/course/program, oral health program class/course/planning/exam, dental public health class/course/exam/specialty/residency, AAPHD.
+- False-positive guard: "dental hygiene school NBDHE" stays in dentalhygiene (no dental-public-health terms).
+- `dentalpublichealthCallouts(tier:)` 4/3/3: "that oral health policy brief isn't going to write itself." / "CLOSE THIS. open your dental public health notes." / "no one masters dental epidemiology by browsing."
+- 2 templates: "Write a dental public health analysis or oral health policy assignment" (60 min) + "Study for the dental public health board exam or complete a community dentistry assignment" (60 min)
+
+**Tests:**
+- CalloutManagerTests.swift: 1362→1402 (+40: 8 per domain)
+- SuggestedSessionTemplatesTests.swift: +11 (2 per domain + ≥289 count guard)
+
+### Blocked
+Swift toolchain unavailable on Linux — verified by code inspection:
+- "occupational medicine class on work-related illness and industrial hygiene assessment" → occupationalmedicine ✓; positioned before kinesiology ✓
+- "kinesiology biomechanics assignment on exercise physiology and motor control" ��� kinesiology ✓ (not caught by occupationalmedicine ✓)
+- "occupational therapy NBCOT exam prep on ADLs and sensory integration" → occupationaltherapy ✓ (not caught by occupationalmedicine ✓)
+- "integrative medicine class on CAM therapies and mind-body medicine" → integrativemedicine ✓; positioned after pharmacy ✓
+- "pharmacy school class on pharmacokinetics and drug therapy" → pharmacy ✓ (not caught by integrativemedicine ✓)
+- "genetic counseling program ABGC board exam prep on hereditary cancer risk" → geneticcounseling ��; positioned after molecularbiology ✓
+- "molecular biology class on CRISPR gene editing and plasmid cloning" → molecularbiology ✓ (not caught by geneticcounseling ✓)
+- "CHES exam prep and health education specialist certification study" → behavioralhealthpromotion ✓; positioned before publicheath ✓
+- "mph program epidemiology class on public health and community health" → publicheath ✓ (not caught by behavioralhealthpromotion ✓)
+- "dental public health exam prep on oral health disparities and dental epidemiology" → dentalpublichealth ✓; positioned before dentalhygiene ✓
+- "dental hygiene school NBDHE board prep on periodontal charting and scaling" → dentalhygiene ✓ (not caught by dentalpublichealth ✓)
+- All 5 tier-3 pools contain "CLOSE THIS" or "no one" ✓; all tier-1 pools have ≥4 messages ✓
+- All 10 template durations in [300, 10800] ✓; template count 289 ≥ 289 ✓
+
+### Next agent should pick up
+- Additional keyword domains: horticultural science (not therapy), viticulture/oenology degree (separate from sommelier), dental surgery residency, global health governance/international development, sleep medicine/polysomnography, PM&R/rehabilitation medicine
+- AppMonitor observability tests (requires macOS)
+
+---
+
 ## Run 329 — 2026-07-11 — Gerontology + addiction counseling + oral surgery + public health law keyword domains (1330→1362 tests, 251→259 templates)
 
 ### Shipped

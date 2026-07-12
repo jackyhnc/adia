@@ -1249,6 +1249,30 @@ public final class CalloutManager {
             || word("rehearse") || word("rehearsing") || word("rehearsal") {
             return "practice"
         }
+        // occupationalmedicine — positioned BEFORE kinesiology so physician-specialty terms
+        // (ACOEM boards, industrial hygiene, occupational disease, work-related illness)
+        // route here rather than the sport-science/physical-therapy pool.
+        // "occupational health" (bare) stays in publicheath; "occupational therapy" fires
+        // in its own dedicated branch after the therapy block further below.
+        if lower.contains("occupational medicine") || lower.contains("occupational physician")
+            || lower.contains("occupational medicine physician")
+            || lower.contains("industrial medicine")
+            || word("acoem") || lower.contains("acoem boards") || lower.contains("acoem exam")
+            || lower.contains("occupational disease class") || lower.contains("occupational disease course")
+            || lower.contains("occupational disease exam") || lower.contains("occupational disease assignment")
+            || lower.contains("work-related illness") || lower.contains("work related illness")
+            || lower.contains("workplace health assessment") && (lower.contains("class") || lower.contains("course"))
+            || lower.contains("occupational medicine residency") || lower.contains("occupational medicine clerkship")
+            || lower.contains("occupational and environmental medicine")
+            || lower.contains("occupational medicine class") || lower.contains("occupational medicine course")
+            || lower.contains("occupational medicine exam") || lower.contains("occupational medicine rotation")
+            || lower.contains("industrial hygiene class") || lower.contains("industrial hygiene course")
+            || lower.contains("industrial hygiene exam") || lower.contains("industrial hygiene certification")
+            || lower.contains("industrial hygiene program") || lower.contains("industrial hygiene training")
+            || word("cih") && (lower.contains("exam") || lower.contains("certification") || lower.contains("board") || lower.contains("prep"))
+            || lower.contains("certified industrial hygienist") {
+            return "occupationalmedicine"
+        }
         // kinesiology — positioned before fitness so biomechanics, exercise physiology,
         // and physical therapy professional terms route here rather than the generic fitness pool.
         if word("kinesiology") || word("biomechanics") || word("kinesiologist")
@@ -1523,6 +1547,23 @@ public final class CalloutManager {
             || lower.contains("infection control dental") {
             return "dentalassisting"
         }
+        // dentalpublichealth — positioned AFTER dentalassisting and BEFORE dentalhygiene so
+        // oral-health-policy, community-dentistry, and dental-epidemiology coursework routes
+        // here rather than to the clinical hygiene pool. "dental" terms without a public-
+        // health context still fall through to dentalhygiene or dental below.
+        if lower.contains("dental public health") || lower.contains("public health dentistry")
+            || lower.contains("community dentistry") || lower.contains("community dental") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("clinic") || lower.contains("assignment"))
+            || lower.contains("oral health policy") || lower.contains("oral health disparities")
+            || lower.contains("oral health advocacy") || lower.contains("oral health equity")
+            || lower.contains("dental epidemiology") || lower.contains("population oral health")
+            || lower.contains("community oral health") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("assignment"))
+            || lower.contains("oral health program") && (lower.contains("class") || lower.contains("course") || lower.contains("planning") || lower.contains("exam"))
+            || lower.contains("dental public health class") || lower.contains("dental public health course")
+            || lower.contains("dental public health exam") || lower.contains("dental public health specialty")
+            || lower.contains("dental public health residency")
+            || word("aaphd") || lower.contains("aaphd exam") || lower.contains("aaphd certification") {
+            return "dentalpublichealth"
+        }
         // dentalhygiene — positioned BEFORE dental so dental hygiene school, NBDHE board prep,
         // and oral-health-assessment tasks get the hygienist-specific callout pool.
         // "dental hygiene"/"dental hygienist" removed from the dental branch below.
@@ -1598,6 +1639,32 @@ public final class CalloutManager {
             || lower.contains("mtm") {
             return "pharmacy"
         }
+        // integrativemedicine — positioned AFTER pharmacy (shared pharmacology/therapeutics
+        // context) and BEFORE medicalbilling. Catches integrative/functional medicine specialty
+        // coursework, CAM therapies, naturopathic medicine programs, and mind-body medicine.
+        // Bare word("holistic") is NOT matched (too generic in non-clinical contexts).
+        if lower.contains("integrative medicine") || lower.contains("integrative health")
+            || lower.contains("functional medicine")
+            || lower.contains("holistic medicine")
+            || lower.contains("complementary and alternative medicine")
+            || lower.contains("complementary medicine") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program"))
+            || lower.contains("alternative medicine") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program"))
+            || lower.contains("cam therapies") || lower.contains("cam course") || lower.contains("cam class")
+            || lower.contains("cam program") || lower.contains("cam exam") || lower.contains("cam module")
+            || lower.contains("naturopathic medicine") || lower.contains("naturopathic doctor")
+            || lower.contains("naturopath") && (lower.contains("class") || lower.contains("course") || lower.contains("school") || lower.contains("program") || lower.contains("exam") || lower.contains("board") || lower.contains("nd "))
+            || lower.contains("mind-body medicine") || lower.contains("mind body medicine")
+            || word("abihm") || lower.contains("abihm board") || lower.contains("abihm certification")
+            || lower.contains("integrative medicine class") || lower.contains("integrative medicine course")
+            || lower.contains("integrative medicine exam") || lower.contains("integrative medicine program")
+            || lower.contains("integrative health class") || lower.contains("integrative health course")
+            || lower.contains("integrative health program") || lower.contains("integrative health certification")
+            || lower.contains("functional medicine class") || lower.contains("functional medicine course")
+            || lower.contains("functional medicine exam") || lower.contains("functional medicine program")
+            || lower.contains("holistic health class") || lower.contains("holistic health program")
+            || lower.contains("holistic health course") || lower.contains("holistic health certification") {
+            return "integrativemedicine"
+        }
         // medicalbilling — positioned after pharmacy and before molecularbiology/premed so
         // CPT codes, ICD-10, CPC exam, and medical coding tasks route here, not to premed/nursing pools.
         if lower.contains("medical billing") || lower.contains("medical coding")
@@ -1662,6 +1729,28 @@ public final class CalloutManager {
             || lower.contains("molecular lab") || lower.contains("molecular techniques")
             || lower.contains("pcr protocol") || lower.contains("pcr result") || lower.contains("run pcr") {
             return "molecularbiology"
+        }
+        // geneticcounseling — positioned AFTER molecularbiology (shares genomics vocabulary) and
+        // BEFORE radiologictechnology. Catches ABGC/CGC board prep, prenatal genetics,
+        // hereditary cancer counseling, and genomic counseling coursework.
+        // Bare "genetics" stays in studying for generic academic use.
+        if lower.contains("genetic counseling") || lower.contains("genetic counselor")
+            || lower.contains("genetic counselors")
+            || word("abgc") || lower.contains("abgc exam") || lower.contains("abgc board")
+            || lower.contains("cgc exam") || lower.contains("cgc certification") || lower.contains("cgc board")
+            || lower.contains("certified genetic counselor")
+            || lower.contains("prenatal genetic counseling") || lower.contains("prenatal genetics")
+            || lower.contains("hereditary cancer counseling") || lower.contains("hereditary cancer genetics")
+            || lower.contains("hereditary cancer risk") && (lower.contains("counseling") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("genomic counseling") || lower.contains("genomic counselor")
+            || lower.contains("genetics clinic") && (lower.contains("class") || lower.contains("rotation") || lower.contains("course") || lower.contains("assignment"))
+            || lower.contains("genetic counseling program") || lower.contains("genetic counseling class")
+            || lower.contains("genetic counseling school") || lower.contains("genetic counseling exam")
+            || lower.contains("genetic counseling rotation") || lower.contains("genetic counseling clerkship")
+            || lower.contains("variant of uncertain significance") && (lower.contains("class") || lower.contains("assignment") || lower.contains("report"))
+            || lower.contains("brca counseling") || lower.contains("cancer genetics counseling")
+            || lower.contains("genetic risk assessment") && (lower.contains("class") || lower.contains("course") || lower.contains("counseling")) {
+            return "geneticcounseling"
         }
         // radiologictechnology — positioned AFTER molecularbiology and BEFORE healthcareadmin so
         // ARRT exam prep, radiographic positioning, and diagnostic imaging coursework route here.
@@ -2235,6 +2324,26 @@ public final class CalloutManager {
             || lower.contains("geriatric medicine") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
             || lower.contains("retirement planning class") || lower.contains("retirement planning course") {
             return "gerontology"
+        }
+        // behavioralhealthpromotion — positioned AFTER gerontology and BEFORE publicheath.
+        // Catches CHES/MCHES certification prep, health education specialist coursework,
+        // community health worker training, mental health promotion classes, and wellness
+        // programming courses. Bare "health promotion" (without class/cert context) stays
+        // in publicheath; "mental health" alone stays in therapy/psychology above.
+        if lower.contains("behavioral health promotion") || lower.contains("mental health promotion") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment") || lower.contains("program") || lower.contains("certification"))
+            || lower.contains("health behavior theory") || lower.contains("health behavior change")
+            || lower.contains("health education specialist")
+            || lower.contains("health educator") && (lower.contains("class") || lower.contains("course") || lower.contains("certification") || lower.contains("program") || lower.contains("major") || lower.contains("exam") || lower.contains("school"))
+            || word("ches") && (lower.contains("exam") || lower.contains("certification") || lower.contains("prep") || lower.contains("board") || lower.contains("study") || lower.contains("practice"))
+            || word("mches") || lower.contains("mches exam") || lower.contains("mches certification")
+            || lower.contains("community health worker") && (lower.contains("class") || lower.contains("course") || lower.contains("certification") || lower.contains("exam") || lower.contains("program") || lower.contains("training") || lower.contains("assignment"))
+            || lower.contains("wellness programming") && (lower.contains("class") || lower.contains("course") || lower.contains("design") || lower.contains("program") || lower.contains("assignment"))
+            || lower.contains("wellness coaching") && (lower.contains("class") || lower.contains("course") || lower.contains("certification") || lower.contains("exam") || lower.contains("program"))
+            || lower.contains("mental health first aid") && (lower.contains("class") || lower.contains("certification") || lower.contains("training") || lower.contains("course"))
+            || lower.contains("behavioral wellness class") || lower.contains("behavioral wellness course")
+            || lower.contains("behavioral wellness assignment")
+            || lower.contains("health promotion") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("certification") || lower.contains("degree") || lower.contains("major")) && !lower.contains("public health") {
+            return "behavioralhealthpromotion"
         }
         // publicheath — positioned after therapy (clinical context) and before socialscience.
         // Catches MPH programs, epidemiology, community/global health, outbreak investigation,

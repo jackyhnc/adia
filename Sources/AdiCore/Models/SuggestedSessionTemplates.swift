@@ -1796,5 +1796,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Assigned dietary intake or food service topic reviewed, analysis written, and assignment saved or submitted for instructor review",
             preferredDuration: 45 * 60
         ),
+        // Occupational Medicine
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Complete an occupational medicine case report or industrial hygiene assessment",
+            successCriteria: "Assigned case or assessment written, occupational exposures or work-related conditions documented, relevant regulations or guidelines addressed, and report saved or submitted for instructor review",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for the ACOEM boards or complete an occupational medicine course assignment",
+            successCriteria: "Target content reviewed (occupational disease, industrial hygiene, or workplace health), key concepts summarized, and at least one practice item or case completed",
+            preferredDuration: 60 * 60
+        ),
+        // Integrative Medicine
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Write an integrative or functional medicine case study or patient case report",
+            successCriteria: "Case study written, integrative treatment approach described, evidence reviewed, and report saved or submitted for instructor review",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for an integrative medicine board exam or complete a holistic health course assignment",
+            successCriteria: "Target content reviewed (integrative modalities, CAM therapies, or functional medicine frameworks), key concepts summarized, and at least one practice question or case completed",
+            preferredDuration: 60 * 60
+        ),
+        // Genetic Counseling
+        SuggestedTemplate(
+            icon: "dna",
+            task: "Write a genetic counseling case report or variant interpretation summary",
+            successCriteria: "Case summary written, variant classification or risk assessment documented, family history addressed, and report saved or submitted for supervisor review",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for the ABGC board or CGC exam or complete a genetic counseling school assignment",
+            successCriteria: "Target content reviewed (inheritance patterns, variant interpretation, counseling skills, or ethical issues), key concepts summarized, and at least 20 practice questions completed",
+            preferredDuration: 90 * 60
+        ),
+        // Behavioral Health Promotion
+        SuggestedTemplate(
+            icon: "heart.fill",
+            task: "Design a health promotion program or write a community health education assignment",
+            successCriteria: "Program design or assignment written, target population identified, behavioral theory applied, and work saved or submitted for instructor review",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for the CHES exam or complete a health education specialist certification assignment",
+            successCriteria: "Target content reviewed (health behavior theories, program planning models, or community health worker competencies), key concepts summarized, and at least 20 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        // Dental Public Health
+        SuggestedTemplate(
+            icon: "cross.fill",
+            task: "Write a dental public health analysis or oral health policy assignment",
+            successCriteria: "Assigned topic analyzed, oral health disparities or community dental needs addressed, evidence cited, and paper saved or submitted for instructor review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for the dental public health board exam or complete a community dentistry assignment",
+            successCriteria: "Target content reviewed (dental epidemiology, oral health policy, or community program planning), key concepts summarized, and at least one practice item completed",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

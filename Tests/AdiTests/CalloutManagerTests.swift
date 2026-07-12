@@ -10424,4 +10424,213 @@ struct CalloutManagerTests {
             #expect(hasCloseThis, "dietetictechnology tier 3 must contain 'CLOSE THIS' or 'no one'")
         }
     }
+
+    // MARK: - Occupational Medicine keyword tests
+    @Test func occupationalmedicineKeywordFromOccupationalMedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "occupational medicine class on work-related illness and industrial hygiene assessment") == "occupationalmedicine")
+    }
+    @Test func occupationalmedicineKeywordFromIndustrialHygiene() {
+        #expect(CalloutManager.extractTaskKeyword(from: "industrial hygiene certification exam prep on occupational disease") == "occupationalmedicine")
+    }
+    @Test func occupationalmedicineFalsePositiveKinesiologyStaysKinesiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "kinesiology biomechanics assignment on exercise physiology and motor control")
+        #expect(kw == "kinesiology", "kinesiology tasks should not route to occupationalmedicine")
+    }
+    @Test func occupationalmedicineFalsePositiveOccupationalTherapyStaysOccupationalTherapy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "occupational therapy NBCOT exam prep on ADLs and sensory integration")
+        #expect(kw == "occupationaltherapy", "occupational therapy tasks should not route to occupationalmedicine")
+    }
+    @Test func occupationalmedicineCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "occupationalmedicine", tier: tier)
+                #expect(!msgs.isEmpty, "occupationalmedicine tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func occupationalmedicineCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "occupationalmedicine", tier: 1)
+            #expect(msgs.count >= 4, "occupationalmedicine tier1 must have ≥4 messages")
+        }
+    }
+    @Test func occupationalmedicineCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "occupationalmedicine", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "occupationalmedicine tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func occupationalmedicineCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "occupationalmedicine", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "occupationalmedicine tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Integrative Medicine keyword tests
+    @Test func integrativemedicineKeywordFromIntegrativeMedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "integrative medicine class on CAM therapies and mind-body medicine") == "integrativemedicine")
+    }
+    @Test func integrativemedicineKeywordFromFunctionalMedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "functional medicine program exam prep on holistic health") == "integrativemedicine")
+    }
+    @Test func integrativemedicineFalsePositivePharmacyStaysPharmacy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "pharmacy school class on pharmacokinetics and drug therapy")
+        #expect(kw == "pharmacy", "pharmacy tasks should not route to integrativemedicine")
+    }
+    @Test func integrativemedicineCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "integrativemedicine", tier: tier)
+                #expect(!msgs.isEmpty, "integrativemedicine tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func integrativemedicineCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "integrativemedicine", tier: 1)
+            #expect(msgs.count >= 4, "integrativemedicine tier1 must have ≥4 messages")
+        }
+    }
+    @Test func integrativemedicineCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "integrativemedicine", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "integrativemedicine tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func integrativemedicineCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "integrativemedicine", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "integrativemedicine tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Genetic Counseling keyword tests
+    @Test func geneticcounselingKeywordFromGeneticCounseling() {
+        #expect(CalloutManager.extractTaskKeyword(from: "genetic counseling program ABGC board exam prep on hereditary cancer risk") == "geneticcounseling")
+    }
+    @Test func geneticcounselingKeywordFromPrenatalGenetics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prenatal genetic counseling rotation notes and case preparation") == "geneticcounseling")
+    }
+    @Test func geneticcounselingFalsePositiveMolecularBiologyStaysMolecularBiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "molecular biology class on CRISPR gene editing and plasmid cloning")
+        #expect(kw == "molecularbiology", "molecular biology tasks should not route to geneticcounseling")
+    }
+    @Test func geneticcounselingCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geneticcounseling", tier: tier)
+                #expect(!msgs.isEmpty, "geneticcounseling tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func geneticcounselingCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geneticcounseling", tier: 1)
+            #expect(msgs.count >= 4, "geneticcounseling tier1 must have ≥4 messages")
+        }
+    }
+    @Test func geneticcounselingCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geneticcounseling", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "geneticcounseling tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func geneticcounselingCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geneticcounseling", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "geneticcounseling tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Behavioral Health Promotion keyword tests
+    @Test func behavioralhealthpromotionKeywordFromCHES() {
+        #expect(CalloutManager.extractTaskKeyword(from: "CHES exam prep and health education specialist certification study") == "behavioralhealthpromotion")
+    }
+    @Test func behavioralhealthpromotionKeywordFromCommunityHealthWorker() {
+        #expect(CalloutManager.extractTaskKeyword(from: "community health worker certification training program assignment") == "behavioralhealthpromotion")
+    }
+    @Test func behavioralhealthpromotionFalsePositivePublicHealthStaysPublicHealth() {
+        let kw = CalloutManager.extractTaskKeyword(from: "mph program epidemiology class on public health and community health")
+        #expect(kw == "publicheath", "public health mph tasks should not route to behavioralhealthpromotion")
+    }
+    @Test func behavioralhealthpromotionCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "behavioralhealthpromotion", tier: tier)
+                #expect(!msgs.isEmpty, "behavioralhealthpromotion tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func behavioralhealthpromotionCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "behavioralhealthpromotion", tier: 1)
+            #expect(msgs.count >= 4, "behavioralhealthpromotion tier1 must have ≥4 messages")
+        }
+    }
+    @Test func behavioralhealthpromotionCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "behavioralhealthpromotion", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "behavioralhealthpromotion tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func behavioralhealthpromotionCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "behavioralhealthpromotion", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "behavioralhealthpromotion tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - Dental Public Health keyword tests
+    @Test func dentalpublichealthKeywordFromDentalPublicHealth() {
+        #expect(CalloutManager.extractTaskKeyword(from: "dental public health exam prep on oral health disparities and dental epidemiology") == "dentalpublichealth")
+    }
+    @Test func dentalpublichealthKeywordFromOralHealthPolicy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "oral health policy assignment on community dentistry program planning") == "dentalpublichealth")
+    }
+    @Test func dentalpublichealthFalsePositiveDentalHygieneStaysDentalHygiene() {
+        let kw = CalloutManager.extractTaskKeyword(from: "dental hygiene school NBDHE board prep on periodontal charting and scaling")
+        #expect(kw == "dentalhygiene", "dental hygiene tasks should not route to dentalpublichealth")
+    }
+    @Test func dentalpublichealthCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dentalpublichealth", tier: tier)
+                #expect(!msgs.isEmpty, "dentalpublichealth tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func dentalpublichealthCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dentalpublichealth", tier: 1)
+            #expect(msgs.count >= 4, "dentalpublichealth tier1 must have ≥4 messages")
+        }
+    }
+    @Test func dentalpublichealthCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dentalpublichealth", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "dentalpublichealth tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func dentalpublichealthCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dentalpublichealth", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "dentalpublichealth tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
 }

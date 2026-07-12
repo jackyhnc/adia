@@ -201,10 +201,15 @@ extension CalloutManager {
         case "dietetictechnology":     return dietetictechnologyCallouts(tier: tier)
         case "dramaeducation":         return dramaeducationCallouts(tier: tier)
         case "winesommelier":          return winesommelierCallouts(tier: tier)
-        case "gerontology":            return gerontologyCallouts(tier: tier)
-        case "addictioncounseling":    return addictioncounselingCallouts(tier: tier)
-        case "oralsurgery":            return oralsurgeryCallouts(tier: tier)
-        case "publichealthlaw":        return publichealthlawCallouts(tier: tier)
+        case "gerontology":                 return gerontologyCallouts(tier: tier)
+        case "addictioncounseling":         return addictioncounselingCallouts(tier: tier)
+        case "oralsurgery":                 return oralsurgeryCallouts(tier: tier)
+        case "publichealthlaw":             return publichealthlawCallouts(tier: tier)
+        case "occupationalmedicine":        return occupationalmedicineCallouts(tier: tier)
+        case "integrativemedicine":         return integrativemedicineCallouts(tier: tier)
+        case "geneticcounseling":           return geneticcounselingCallouts(tier: tier)
+        case "behavioralhealthpromotion":   return behavioralhealthpromotionCallouts(tier: tier)
+        case "dentalpublichealth":          return dentalpublichealthCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -3489,6 +3494,111 @@ extension CalloutManager {
             "CLOSE THIS. open your dietetic technician notes.",
             "no one passes the DTR exam by browsing.",
             "CLOSE THIS. get back to your dietetic technician coursework.",
+        ]
+        }
+    }
+
+    private func occupationalmedicineCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those occupational medicine concepts aren't going to study themselves.",
+            "your workplace health assessment report won't write itself.",
+            "get back to your occupational medicine notes.",
+            "close this and open your ACOEM study guide.",
+        ]
+        case 2: return [
+            "occupational physicians don't pass their boards by scrolling.",
+            "your industrial hygiene assignment won't complete itself.",
+            "stop avoiding your occupational medicine coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your occupational medicine study guide.",
+            "no one passes the ACOEM boards by browsing.",
+            "CLOSE THIS. get back to your occupational and environmental medicine notes.",
+        ]
+        }
+    }
+
+    private func integrativemedicineCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that integrative medicine case study isn't going to write itself.",
+            "your functional medicine coursework won't do itself.",
+            "get back to your integrative health notes.",
+            "close this and open your integrative medicine textbook.",
+        ]
+        case 2: return [
+            "integrative practitioners don't get board certified by scrolling.",
+            "your CAM therapy analysis won't complete itself.",
+            "stop avoiding your holistic medicine assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your integrative medicine study guide.",
+            "no one earns their ABIHM by browsing.",
+            "CLOSE THIS. get back to your functional medicine coursework.",
+        ]
+        }
+    }
+
+    private func geneticcounselingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those variant interpretations aren't going to analyze themselves.",
+            "your genetic counseling case notes won't write themselves.",
+            "get back to your ABGC exam prep.",
+            "close this and open your genetics counseling notes.",
+        ]
+        case 2: return [
+            "genetic counselors don't get board certified by scrolling.",
+            "your hereditary cancer risk assessment won't do itself.",
+            "stop avoiding your genetic counseling rotation notes.",
+        ]
+        default: return [
+            "CLOSE THIS. open your genetic counseling study guide.",
+            "no one passes the CGC board by browsing.",
+            "CLOSE THIS. get back to your genomic counseling coursework.",
+        ]
+        }
+    }
+
+    private func behavioralhealthpromotionCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those health behavior theories aren't going to study themselves.",
+            "your health education assignment won't write itself.",
+            "get back to your CHES exam prep.",
+            "close this and open your health promotion notes.",
+        ]
+        case 2: return [
+            "health educators don't get certified by scrolling.",
+            "your community health program plan won't design itself.",
+            "stop avoiding your behavioral wellness coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your health promotion study guide.",
+            "no one earns their CHES by browsing.",
+            "CLOSE THIS. get back to your behavioral health education coursework.",
+        ]
+        }
+    }
+
+    private func dentalpublichealthCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that oral health policy brief isn't going to write itself.",
+            "your dental public health assignment won't do itself.",
+            "get back to your dental epidemiology notes.",
+            "close this and open your dental public health study guide.",
+        ]
+        case 2: return [
+            "oral health advocates don't get ahead by scrolling.",
+            "your community dental program plan won't write itself.",
+            "stop avoiding your dental public health coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your dental public health notes.",
+            "no one masters dental epidemiology by browsing.",
+            "CLOSE THIS. get back to your oral health policy work.",
         ]
         }
     }
