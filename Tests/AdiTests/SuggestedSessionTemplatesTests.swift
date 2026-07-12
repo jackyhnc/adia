@@ -2969,4 +2969,91 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 315,
                 "catalog should have ≥315 templates after dramatherapy/horsemanship/glassblowing/landsurveyingtech additions")
     }
+
+    // MARK: - Drama Therapy templates
+    @Test func dramatherapyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasNADT = tasks.contains { $0.localizedCaseInsensitiveContains("NADT") || ($0.localizedCaseInsensitiveContains("drama therapy") && $0.localizedCaseInsensitiveContains("exam")) }
+        let hasNotes = tasks.contains { $0.localizedCaseInsensitiveContains("drama therapy") && ($0.localizedCaseInsensitiveContains("notes") || $0.localizedCaseInsensitiveContains("treatment plan")) }
+        #expect(hasNADT,  "catalog must include a NADT drama therapy exam template")
+        #expect(hasNotes, "catalog must include a drama therapy session notes template")
+    }
+
+    // MARK: - Horsemanship / Equestrian templates
+    @Test func horsemanshipTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("horsemanship") || $0.localizedCaseInsensitiveContains("equestrian") }
+        let hasStudy = tasks.contains { $0.localizedCaseInsensitiveContains("horse training") || $0.localizedCaseInsensitiveContains("equine") }
+        #expect(hasAssignment, "catalog must include a horsemanship assignment template")
+        #expect(hasStudy,      "catalog must include an equine science study template")
+    }
+
+    // MARK: - Glassblowing / Glass Arts templates
+    @Test func glassblowingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudio = tasks.contains { $0.localizedCaseInsensitiveContains("glassblowing") || $0.localizedCaseInsensitiveContains("flameworking") }
+        let hasStudy = tasks.contains { $0.localizedCaseInsensitiveContains("glass arts") || $0.localizedCaseInsensitiveContains("kiln-formed") }
+        #expect(hasStudio, "catalog must include a glassblowing or flameworking studio template")
+        #expect(hasStudy,  "catalog must include a glass arts study template")
+    }
+
+    // MARK: - Land Surveying Technology templates
+    @Test func landsurveyingtechTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("land surveying") && $0.localizedCaseInsensitiveContains("assignment") }
+        let hasFSExam = tasks.contains { $0.localizedCaseInsensitiveContains("Fundamentals of Surveying") || $0.localizedCaseInsensitiveContains("FS") && $0.localizedCaseInsensitiveContains("surveying") }
+        #expect(hasAssignment, "catalog must include a land surveying assignment template")
+        #expect(hasFSExam,     "catalog must include a Fundamentals of Surveying exam template")
+    }
+
+    // MARK: - Environmental Engineering templates
+    @Test func environmentalengineeringTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("environmental engineering") && ($0.localizedCaseInsensitiveContains("wastewater") || $0.localizedCaseInsensitiveContains("water quality") || $0.localizedCaseInsensitiveContains("air quality")) }
+        let hasStudy = tasks.contains { $0.localizedCaseInsensitiveContains("environmental engineering") && ($0.localizedCaseInsensitiveContains("remediation") || $0.localizedCaseInsensitiveContains("stormwater")) }
+        #expect(hasAssignment, "catalog must include an environmental engineering assignment template")
+        #expect(hasStudy,      "catalog must include an environmental engineering study template")
+    }
+
+    // MARK: - Technical Writing templates
+    @Test func techwritingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasDoc = tasks.contains { $0.localizedCaseInsensitiveContains("user manual") || $0.localizedCaseInsensitiveContains("API documentation") || $0.localizedCaseInsensitiveContains("technical guide") }
+        let hasCPTC = tasks.contains { $0.localizedCaseInsensitiveContains("CPTC") || $0.localizedCaseInsensitiveContains("technical communication") }
+        #expect(hasDoc,   "catalog must include a user manual or API docs template")
+        #expect(hasCPTC,  "catalog must include a CPTC or technical communication template")
+    }
+
+    // MARK: - Health Coaching templates
+    @Test func healthcoachingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasNBHWC = tasks.contains { $0.localizedCaseInsensitiveContains("NBHWC") || ($0.localizedCaseInsensitiveContains("health") && $0.localizedCaseInsensitiveContains("wellness coaching") && $0.localizedCaseInsensitiveContains("certification")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("health coaching") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("documentation")) }
+        #expect(hasNBHWC,      "catalog must include an NBHWC health coaching certification template")
+        #expect(hasAssignment, "catalog must include a health coaching assignment template")
+    }
+
+    // MARK: - Podiatry templates
+    @Test func podiatryTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAPMLE = tasks.contains { $0.localizedCaseInsensitiveContains("APMLE") || ($0.localizedCaseInsensitiveContains("podiatry") && $0.localizedCaseInsensitiveContains("board")) }
+        let hasNotes = tasks.contains { $0.localizedCaseInsensitiveContains("podiatric medicine") || ($0.localizedCaseInsensitiveContains("podiatry") && ($0.localizedCaseInsensitiveContains("notes") || $0.localizedCaseInsensitiveContains("case"))) }
+        #expect(hasAPMLE, "catalog must include an APMLE podiatry board exam template")
+        #expect(hasNotes, "catalog must include a podiatric medicine case notes template")
+    }
+
+    // MARK: - Classical Studies templates
+    @Test func classicalstudiesTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasTranslation = tasks.contains { ($0.localizedCaseInsensitiveContains("Latin") || $0.localizedCaseInsensitiveContains("Greek")) && $0.localizedCaseInsensitiveContains("translate") }
+        let hasStudy = tasks.contains { $0.localizedCaseInsensitiveContains("classical studies") && ($0.localizedCaseInsensitiveContains("ancient history") || $0.localizedCaseInsensitiveContains("classical literature")) }
+        #expect(hasTranslation, "catalog must include a Latin or Greek translation template")
+        #expect(hasStudy,       "catalog must include a classical studies study template")
+    }
+
+    // MARK: - Count guard (new batch)
+    @Test func catalogHasAtLeastThreeHundredTwentyFiveTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 325,
+                "catalog should have ≥325 templates after environmentalengineering/techwriting/healthcoaching/podiatry/classicalstudies additions")
+    }
 }

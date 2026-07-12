@@ -224,6 +224,11 @@ extension CalloutManager {
         case "horsemanship":                return horsemanshipCallouts(tier: tier)
         case "glassblowing":                return glassblowingCallouts(tier: tier)
         case "landsurveyingtech":           return landsurveyingtechCallouts(tier: tier)
+        case "environmentalengineering":    return environmentalengineeringCallouts(tier: tier)
+        case "techwriting":                 return techwritingCallouts(tier: tier)
+        case "healthcoaching":              return healthcoachingCallouts(tier: tier)
+        case "podiatry":                    return podiatryCallouts(tier: tier)
+        case "classicalstudies":            return classicalstudiesCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -3907,6 +3912,111 @@ extension CalloutManager {
             "CLOSE THIS. open your surveying notes.",
             "no one passes the fundamentals of surveying exam by browsing.",
             "CLOSE THIS. get back to your land surveying coursework.",
+        ]
+        }
+    }
+
+    private func environmentalengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that wastewater treatment design isn't going to write itself — get back to your notes.",
+            "your environmental engineering coursework won't complete itself.",
+            "get back to your water quality, air quality, or remediation assignment.",
+            "close this and open your environmental engineering study guide.",
+        ]
+        case 2: return [
+            "environmental engineers don't solve wastewater problems by scrolling.",
+            "your remediation design notes won't write themselves.",
+            "stop avoiding your environmental engineering coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your environmental engineering notes.",
+            "no one designs wastewater treatment systems by browsing.",
+            "CLOSE THIS. get back to your environmental engineering assignment.",
+        ]
+        }
+    }
+
+    private func techwritingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that user manual isn't going to write itself — get back to your docs.",
+            "your API documentation won't draft itself.",
+            "get back to your technical writing or documentation assignment.",
+            "close this and open your technical writing project.",
+        ]
+        case 2: return [
+            "technical writers don't ship docs by scrolling.",
+            "your user guide won't write itself.",
+            "stop avoiding your technical documentation.",
+        ]
+        default: return [
+            "CLOSE THIS. open your documentation project.",
+            "no one earns the CPTC by browsing.",
+            "CLOSE THIS. get back to your technical writing.",
+        ]
+        }
+    }
+
+    private func healthcoachingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those behavior change techniques aren't going to master themselves — get back to your notes.",
+            "your health coaching certification prep won't complete itself.",
+            "get back to your wellness coaching or NBC-HWC exam study materials.",
+            "close this and open your health coaching study guide.",
+        ]
+        case 2: return [
+            "health coaches don't earn the NBHWC credential by scrolling.",
+            "your behavior change coaching notes won't write themselves.",
+            "stop avoiding your health coaching coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your health coaching notes.",
+            "no one passes the NBHWC exam by browsing.",
+            "CLOSE THIS. get back to your wellness coaching coursework.",
+        ]
+        }
+    }
+
+    private func podiatryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those APMLE questions aren't going to answer themselves — get back to your notes.",
+            "your podiatry school assignment won't complete itself.",
+            "get back to your podiatric medicine or foot and ankle surgery coursework.",
+            "close this and open your podiatry study guide.",
+        ]
+        case 2: return [
+            "podiatrists don't earn their DPM by scrolling.",
+            "your podiatric medicine notes won't write themselves.",
+            "stop avoiding your podiatry school coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your podiatry notes.",
+            "no one passes the APMLE by browsing.",
+            "CLOSE THIS. get back to your podiatric medicine coursework.",
+        ]
+        }
+    }
+
+    private func classicalstudiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "Cicero didn't translate himself — get back to your Latin.",
+            "that Greek text isn't going to translate itself.",
+            "get back to your classical studies or ancient history assignment.",
+            "close this and open your Latin or ancient Greek text.",
+        ]
+        case 2: return [
+            "classical scholars don't master Latin by scrolling.",
+            "your Greek translation won't write itself.",
+            "stop avoiding your classical studies coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your Latin text.",
+            "no one learns ancient Greek by browsing.",
+            "CLOSE THIS. get back to your classical studies assignment.",
         ]
         }
     }

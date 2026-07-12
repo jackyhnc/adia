@@ -455,6 +455,20 @@ public final class CalloutManager {
             || lower.contains("plss survey") || lower.contains("legal description") && lower.contains("surveying") {
             return "landsurveyingtech"
         }
+        // environmentalengineering — positioned BEFORE engineering so wastewater treatment, water/air
+        // quality control, and remediation tasks route here. Generic word("engineering") falls through.
+        if lower.contains("environmental engineering") || lower.contains("environmental engineer")
+            || lower.contains("wastewater treatment") || lower.contains("wastewater plant")
+            || lower.contains("water quality") && (lower.contains("engineer") || lower.contains("class") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("air quality") && (lower.contains("engineer") || lower.contains("class") || lower.contains("control"))
+            || lower.contains("environmental remediation") || lower.contains("site remediation")
+            || lower.contains("groundwater contamination") || lower.contains("groundwater remediation")
+            || lower.contains("hazardous waste") && (lower.contains("class") || lower.contains("management") || lower.contains("engineer"))
+            || lower.contains("stormwater") && (lower.contains("engineer") || lower.contains("management") || lower.contains("design"))
+            || lower.contains("environmental impact assessment") && lower.contains("engineer")
+            || lower.contains("env eng") || lower.contains("environ eng") {
+            return "environmentalengineering"
+        }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
         if word("solidworks") || lower.contains("fusion 360") || word("ansys")
@@ -1039,6 +1053,22 @@ public final class CalloutManager {
             || lower.contains("creative brief") || lower.contains("marketing brief") {
             return "writing"
         }
+        // techwriting — positioned after writing so blog/draft/outline stay in writing, but
+        // specific technical writing, API docs, and user manual tasks route here.
+        // Bare word("technical") alone is not matched — requires a compound phrase.
+        if lower.contains("technical writing") || lower.contains("technical writer")
+            || lower.contains("user manual") || lower.contains("user manuals")
+            || lower.contains("api documentation") || lower.contains("api docs")
+            || lower.contains("technical documentation") || lower.contains("developer documentation")
+            || lower.contains("developer docs") || lower.contains("software documentation")
+            || lower.contains("release notes") && (lower.contains("write") || lower.contains("draft") || lower.contains("documentation"))
+            || lower.contains("user guide") && (lower.contains("write") || lower.contains("draft") || lower.contains("technical"))
+            || word("cptc") || lower.contains("cptc certification")
+            || lower.contains("technical communication") || lower.contains("tech comm")
+            || lower.contains("docs-as-code") || lower.contains("docs as code")
+            || lower.contains("knowledge base") && lower.contains("write") {
+            return "techwriting"
+        }
         // taxprep — positioned before accounting and finance so tax return filing, TurboTax,
         // H&R Block, IRS forms, and EA exam prep route here rather than the accounting/budget pools.
         // "tax accounting class/course" stays in the accounting branch (student coursework context).
@@ -1420,6 +1450,17 @@ public final class CalloutManager {
             || lower.contains("personal training class") || lower.contains("personal training course") {
             return "personaltraining"
         }
+        // healthcoaching — positioned BEFORE fitness so NBC-HWC/NBHWC cert prep and wellness
+        // coaching tasks route here rather than the generic workout/gym fitness pool.
+        if lower.contains("health coach") || lower.contains("health coaching")
+            || lower.contains("wellness coach") || lower.contains("wellness coaching")
+            || word("nbhwc") || lower.contains("nbc-hwc") || lower.contains("nbc hwc")
+            || lower.contains("health coaching certification") || lower.contains("wellness coaching certification")
+            || lower.contains("health and wellness coaching") || lower.contains("health behavior coaching")
+            || lower.contains("behavior change coaching") || lower.contains("health behavior change")
+            || lower.contains("lifestyle coaching") && (lower.contains("certif") || lower.contains("exam") || lower.contains("class") || lower.contains("program")) {
+            return "healthcoaching"
+        }
         if word("workout") || word("workouts") || word("gym")
             || word("exercise") || word("exercises") || word("exercising")
             || word("lifting") || word("weightlifting") || word("bodybuilding")
@@ -1676,6 +1717,21 @@ public final class CalloutManager {
             || lower.contains("chinese herbal") || lower.contains("chinese medicine")
             || word("moxibustion") || lower.contains("tuina") {
             return "acupuncture"
+        }
+        // podiatry — positioned after acupuncture and before dentallab so DPM programs,
+        // APMLE board prep, and foot/ankle surgery coursework route here.
+        if word("podiatry") || word("podiatrist") || word("podiatrists")
+            || lower.contains("podiatric medicine") || lower.contains("podiatric surgery")
+            || lower.contains("podiatric school") || lower.contains("podiatric program")
+            || lower.contains("podiatric class") || lower.contains("podiatric exam")
+            || lower.contains("podiatry school") || lower.contains("podiatry program")
+            || lower.contains("podiatry class") || lower.contains("podiatry exam")
+            || lower.contains("dpm program") || lower.contains("dpm degree")
+            || word("apmle") || lower.contains("apmle exam") || lower.contains("apmle board")
+            || lower.contains("foot and ankle") && (lower.contains("surgery") || lower.contains("class") || lower.contains("clinic"))
+            || lower.contains("podiatric surgery class") || lower.contains("cpme")
+            || word("apma") && lower.contains("podiat") {
+            return "podiatry"
         }
         // dentallab — positioned BEFORE dentalassisting so dental lab tech, ceramist, and
         // crown-and-bridge fabrication tasks don't fall through to the dental assistant pool.
@@ -2826,6 +2882,30 @@ public final class CalloutManager {
             || lower.contains("public policy") || lower.contains("public administration")
             || lower.contains("comparative politics") || lower.contains("international relations") {
             return "socialscience"
+        }
+        // classicalstudies — positioned BEFORE philosophy so Latin translation, ancient Greek,
+        // and classical archaeology tasks route here. Plato/Aristotle stay in philosophy too.
+        // Bare word("latin") is guarded against "latin america"/"latino"/"latin music" etc.
+        if lower.contains("classical studies") || lower.contains("classics major")
+            || (word("classics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("major")))
+            || lower.contains("latin translation") || lower.contains("translate latin")
+            || lower.contains("latin grammar") || lower.contains("latin text")
+            || lower.contains("latin prose") || lower.contains("latin poetry")
+            || (word("latin") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment"))
+                && !lower.contains("latin america") && !lower.contains("latino") && !lower.contains("latina")
+                && !lower.contains("latin music") && !lower.contains("latin dance"))
+            || lower.contains("ancient greek") || lower.contains("attic greek")
+            || lower.contains("koine greek") || lower.contains("greek translation") || lower.contains("translate greek")
+            || lower.contains("classical archaeology") || lower.contains("ancient history")
+            || lower.contains("classical literature") || lower.contains("ancient literature")
+            || lower.contains("ancient rome") || lower.contains("ancient greece")
+            || lower.contains("homer") && (lower.contains("iliad") || lower.contains("odyssey") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("virgil") && (lower.contains("aeneid") || lower.contains("class") || lower.contains("course") || lower.contains("translation"))
+            || lower.contains("cicero") && (lower.contains("class") || lower.contains("course") || lower.contains("translation"))
+            || lower.contains("greco-roman") || lower.contains("greco roman")
+            || lower.contains("classical antiquity") || lower.contains("roman history")
+            || lower.contains("hellenistic") && lower.contains("class") {
+            return "classicalstudies"
         }
         // philosophy — positioned after socialscience (shared "political philosophy" territory)
         // and before legal so "ethics paper" and "philosophical argument" don't fall to legal.

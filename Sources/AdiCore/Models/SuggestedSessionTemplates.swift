@@ -2043,5 +2043,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target surveying content reviewed (GPS/GNSS methods, traverse calculations, or property boundary law), key concepts summarized, and at least 15 practice problems completed with corrections",
             preferredDuration: 90 * 60
         ),
+        // Environmental Engineering
+        SuggestedTemplate(
+            icon: "drop.fill",
+            task: "Complete an environmental engineering assignment on wastewater treatment, water quality, or air quality control",
+            successCriteria: "Environmental engineering problem set or lab report completed (wastewater design, pollutant transport, or air quality calculations), work checked for accuracy, and solutions saved or submitted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study environmental engineering concepts: remediation, stormwater management, or environmental impact assessment",
+            successCriteria: "Target environmental engineering content reviewed (remediation methods, stormwater design, or EIA process), key concepts summarized, and notes saved for exam or design application",
+            preferredDuration: 45 * 60
+        ),
+        // Technical Writing
+        SuggestedTemplate(
+            icon: "doc.plaintext.fill",
+            task: "Write or revise a user manual, API documentation, or technical guide for a software or product",
+            successCriteria: "Technical document drafted or revised (user manual, API reference, or how-to guide), reviewed for clarity and accuracy, and saved or submitted to project repository",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study for the CPTC technical writing certification or complete a technical communication coursework assignment",
+            successCriteria: "Target technical writing content reviewed (docs-as-code, user research, or information architecture), key concepts summarized, and assignment or practice exercises completed",
+            preferredDuration: 45 * 60
+        ),
+        // Health Coaching
+        SuggestedTemplate(
+            icon: "heart.text.square.fill",
+            task: "Study for the NBHWC health and wellness coaching certification exam",
+            successCriteria: "Target NBHWC content reviewed (health behavior change models, motivational interviewing, or coaching competencies), key concepts summarized, and at least 10 practice questions completed with review",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a health coaching coursework assignment or wellness coaching session documentation",
+            successCriteria: "Health coaching assignment completed (behavior change plan, client coaching notes, or wellness assessment), reviewed for completeness, and saved or submitted for program review",
+            preferredDuration: 45 * 60
+        ),
+        // Podiatry
+        SuggestedTemplate(
+            icon: "cross.fill",
+            task: "Study for the APMLE podiatry board exam or complete a podiatric medicine school assignment",
+            successCriteria: "Target podiatry content reviewed (foot anatomy, podiatric surgery, or APMLE practice questions), key concepts summarized, and at least 15 board-style questions completed with corrections",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write up podiatric medicine case notes, a patient encounter summary, or a clinical rotation report",
+            successCriteria: "Podiatry case documentation, SOAP note, or clinical rotation write-up completed, reviewed for completeness and accuracy, and saved for supervisor review or program submission",
+            preferredDuration: 30 * 60
+        ),
+        // Classical Studies
+        SuggestedTemplate(
+            icon: "text.book.closed.fill",
+            task: "Translate a Latin or ancient Greek passage and write a commentary or close reading",
+            successCriteria: "Target passage translated (at least one paragraph of Latin or Greek), grammatical analysis completed, commentary written, and work saved or submitted for class",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study classical studies content: ancient history, classical literature, or classical archaeology for an exam or paper",
+            successCriteria: "Target classical studies material reviewed (ancient Rome, ancient Greece, or classical literature), key themes and arguments summarized, and notes saved for exam or essay writing",
+            preferredDuration: 45 * 60
+        ),
     ]
 }
