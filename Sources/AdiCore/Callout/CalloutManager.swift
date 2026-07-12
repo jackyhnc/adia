@@ -255,6 +255,24 @@ public final class CalloutManager {
             || lower.contains("algebraic topology") || lower.contains("differential geometry") {
             return "mathematics"
         }
+        // interpreting — positioned BEFORE signlanguage so RID certification, court/medical/legal
+        // interpreting, and professional ASL/spoken-language interpretation route here rather
+        // than signlanguage coursework. Bare word("interpreter") alone is NOT matched (too
+        // ambiguous with code "interpreter pattern").
+        if lower.contains("sign language interpreting") || lower.contains("asl interpreting")
+            || lower.contains("asl interpreter") && (lower.contains("cert") || lower.contains("class") || lower.contains("exam") || lower.contains("program") || lower.contains("professional"))
+            || lower.contains("rid exam") || lower.contains("rid certification") || lower.contains("rid credential")
+            || lower.contains("court interpreting") || lower.contains("court interpreter")
+            || lower.contains("medical interpreting") || lower.contains("medical interpreter")
+            || lower.contains("community interpreting") || lower.contains("community interpreter")
+            || lower.contains("spoken language interpreter") || lower.contains("spoken language interpreting")
+            || lower.contains("simultaneous interpreting") || lower.contains("consecutive interpreting")
+            || lower.contains("conference interpreting") || lower.contains("conference interpreter")
+            || lower.contains("interpreter certification") || lower.contains("interpreter training") && lower.contains("lang")
+            || lower.contains("interpreting program") || lower.contains("interpreting class") || lower.contains("interpreting exam")
+            || lower.contains("language interpreting") || lower.contains("legal interpreting") {
+            return "interpreting"
+        }
         // signlanguage — positioned BEFORE linguistics so "sign language", "ASL", and
         // "deaf education" route here rather than the general language-science pool.
         if lower.contains("sign language") || lower.contains("american sign language")
@@ -893,6 +911,21 @@ public final class CalloutManager {
             || lower.contains("theatrical writing") || lower.contains("theatre writing") {
             return "playwriting"
         }
+        // dancescience — positioned BEFORE performingarts so dance kinesiology, dance anatomy,
+        // and somatic movement analysis route here rather than to general performing arts.
+        // Bare word("dance") alone stays in performingarts; this branch needs dance + science context.
+        if lower.contains("dance kinesiology") || lower.contains("dance anatomy")
+            || lower.contains("dance science") || lower.contains("laban movement analysis")
+            || word("lma") && lower.contains("dance")
+            || lower.contains("somatic movement") && lower.contains("dance")
+            || lower.contains("bartenieff fundamentals")
+            || lower.contains("dance medicine") || lower.contains("dance injury")
+            || lower.contains("dance biomechanics") || lower.contains("dance physiology")
+            || lower.contains("movement analysis") && (lower.contains("dance") || lower.contains("laban"))
+            || lower.contains("dance research") && lower.contains("science")
+            || lower.contains("dance for pd") || lower.contains("dance wellness") {
+            return "dancescience"
+        }
         // performingarts — positioned before video so "filming" in a theater context and
         // word("film") don't override theater/acting/dance tasks.
         // word("sketch") stays in design; "sketch comedy" routes here via "improv".
@@ -1454,6 +1487,22 @@ public final class CalloutManager {
         }
         if word("plan") || word("planning") || word("planner") {
             return "planning"
+        }
+        // theatresound — positioned BEFORE musicproduction so FOH mixing, stage sound, live audio,
+        // and audio tech program work route here rather than to the DAW/studio recording pool.
+        // Bare word("audio") alone is NOT matched (too ambiguous). "mixing" must be qualified.
+        if lower.contains("front of house") || lower.contains("foh mixing") || lower.contains("foh engineer")
+            || lower.contains("stage sound") || lower.contains("live sound") || lower.contains("live audio")
+            || lower.contains("sound design") && (lower.contains("theatre") || lower.contains("theater") || lower.contains("stage") || lower.contains("live") || lower.contains("event"))
+            || lower.contains("theatre sound") || lower.contains("theater sound")
+            || lower.contains("audio tech") && (lower.contains("degree") || lower.contains("program") || lower.contains("class") || lower.contains("course") || lower.contains("school") || lower.contains("exam"))
+            || lower.contains("audio engineering") && (lower.contains("live") || lower.contains("stage") || lower.contains("theatre") || lower.contains("theater") || lower.contains("event"))
+            || lower.contains("monitor mix") || lower.contains("monitor engineer")
+            || lower.contains("pa system") && lower.contains("sound")
+            || lower.contains("sound reinforcement")
+            || lower.contains("live event audio") || lower.contains("concert sound")
+            || lower.contains("theatrical sound") {
+            return "theatresound"
         }
         // musicproduction — positioned before musictheory so DAW/production tasks fire first.
         if lower.contains("music production") || lower.contains("beat making") || lower.contains("beatmaking")
@@ -2141,6 +2190,20 @@ public final class CalloutManager {
             || lower.contains("nursing informatics assignment") || lower.contains("nursing informatics certification") {
             return "nursinginformatics"
         }
+        // midwiferyassisting — positioned BEFORE midwifery so doula certifications (DONA, CAPPA)
+        // and birth/postpartum doula coursework route here, separate from CNM degree work.
+        if lower.contains("doula") || lower.contains("birth doula") || lower.contains("postpartum doula")
+            || lower.contains("labor doula") || lower.contains("antepartum doula")
+            || lower.contains("dona certification") || lower.contains("dona exam") || lower.contains("dona training")
+            || lower.contains("cappa certification") || lower.contains("cappa exam")
+            || lower.contains("badt exam") || lower.contains("doula training")
+            || lower.contains("doula certification") || lower.contains("doula program")
+            || lower.contains("doula class") || lower.contains("doula course") || lower.contains("doula exam")
+            || lower.contains("doula school") || lower.contains("doula assignment")
+            || lower.contains("childbirth educator") && (lower.contains("cert") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("birth support") && (lower.contains("cert") || lower.contains("class")) {
+            return "midwiferyassisting"
+        }
         // midwifery — positioned BEFORE nursing so CNM school, AMCB exam prep, birth plan
         // writing, and prenatal/postpartum charting route to a dedicated midwifery pool rather
         // than the broader nursing callouts. Bare word("birth") is NOT matched (too generic).
@@ -2164,6 +2227,20 @@ public final class CalloutManager {
             || lower.contains("obstetric notes") && lower.contains("midwif")
             || lower.contains("midwifery care") && lower.contains("plan") {
             return "midwifery"
+        }
+        // forensicnursing — positioned BEFORE nursing so SANE exam, sexual assault nurse examiner
+        // credentials, and forensic nursing notes don't match word("nursing") in the nursing branch.
+        if lower.contains("forensic nursing") || lower.contains("forensic nurse")
+            || lower.contains("sane exam") || lower.contains("sane certification") || lower.contains("sane program")
+            || lower.contains("sexual assault nurse") || lower.contains("sexual assault examiner")
+            || lower.contains("forensic nursing notes") || lower.contains("forensic nursing school")
+            || lower.contains("forensic nursing program") || lower.contains("forensic nursing class")
+            || lower.contains("forensic nursing course") || lower.contains("forensic nursing exam")
+            || lower.contains("afn credential") || lower.contains("anes certification")
+            || lower.contains("nurse examiner") && (lower.contains("forensic") || lower.contains("assault"))
+            || lower.contains("strangulation documentation") && lower.contains("nurse")
+            || lower.contains("injury documentation") && lower.contains("forensic") {
+            return "forensicnursing"
         }
         if word("nursing") || lower.contains("care plan") || lower.contains("care plans")
             || lower.contains("nursing notes") || lower.contains("nursing assessment")

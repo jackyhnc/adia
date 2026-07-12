@@ -2914,4 +2914,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 297,
                 "catalog should have ≥297 templates after playwriting/sportsmedicine/naturopathicmedicine/midwifery/clinicalpsychology additions")
     }
+
+    // MARK: - Theatre Sound templates
+    @Test func theatresoundTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains { $0.localizedCaseInsensitiveContains("live sound") || ($0.localizedCaseInsensitiveContains("audio tech") && $0.localizedCaseInsensitiveContains("program")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("sound design") && $0.localizedCaseInsensitiveContains("theatre") }
+        #expect(hasStudy,      "catalog must include a live sound or audio tech program study template")
+        #expect(hasAssignment, "catalog must include a sound design/theatre audio assignment template")
+    }
+
+    // MARK: - Dance Science templates
+    @Test func dancescienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasLMA = tasks.contains { $0.localizedCaseInsensitiveContains("Laban") || $0.localizedCaseInsensitiveContains("dance kinesiology") || $0.localizedCaseInsensitiveContains("dance anatomy") }
+        let hasStudy = tasks.contains { $0.localizedCaseInsensitiveContains("dance science") || $0.localizedCaseInsensitiveContains("somatic movement") }
+        #expect(hasLMA,   "catalog must include a dance anatomy or LMA assignment template")
+        #expect(hasStudy, "catalog must include a dance science or somatic movement study template")
+    }
+
+    // MARK: - Forensic Nursing templates
+    @Test func forensicnursingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasSANE = tasks.contains { $0.localizedCaseInsensitiveContains("SANE") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("forensic nursing")) }
+        let hasNotes = tasks.contains { $0.localizedCaseInsensitiveContains("forensic nursing") && ($0.localizedCaseInsensitiveContains("notes") || $0.localizedCaseInsensitiveContains("documentation")) }
+        #expect(hasSANE,  "catalog must include a SANE exam or forensic nursing study template")
+        #expect(hasNotes, "catalog must include a forensic nursing documentation template")
+    }
+
+    // MARK: - Midwifery Assisting / Doula templates
+    @Test func midwiferyassistingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasDONA = tasks.contains { $0.localizedCaseInsensitiveContains("DONA") && ($0.localizedCaseInsensitiveContains("certification") || $0.localizedCaseInsensitiveContains("doula")) }
+        let hasDoula = tasks.contains { $0.localizedCaseInsensitiveContains("birth doula") || $0.localizedCaseInsensitiveContains("postpartum doula") }
+        #expect(hasDONA,  "catalog must include a DONA doula certification template")
+        #expect(hasDoula, "catalog must include a birth or postpartum doula template")
+    }
+
+    // MARK: - Interpreting templates
+    @Test func interpretingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasRID = tasks.contains { $0.localizedCaseInsensitiveContains("RID") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("interpreter")) }
+        let hasPractice = tasks.contains { $0.localizedCaseInsensitiveContains("interpreting") && ($0.localizedCaseInsensitiveContains("consecutive") || $0.localizedCaseInsensitiveContains("simultaneous")) }
+        #expect(hasRID,      "catalog must include an RID interpreter certification template")
+        #expect(hasPractice, "catalog must include a consecutive or simultaneous interpreting practice template")
+    }
+
+    // MARK: - Count guard
+    @Test func catalogHasAtLeastThreeHundredSevenTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 307,
+                "catalog should have ≥307 templates after theatresound/dancescience/forensicnursing/midwiferyassisting/interpreting additions")
+    }
 }

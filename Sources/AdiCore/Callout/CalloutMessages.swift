@@ -215,6 +215,11 @@ extension CalloutManager {
         case "naturopathicmedicine":        return naturopathicmedicineCallouts(tier: tier)
         case "midwifery":                   return midwiferyCallouts(tier: tier)
         case "clinicalpsychology":          return clinicalpsychologyCallouts(tier: tier)
+        case "theatresound":                return theatresoundCallouts(tier: tier)
+        case "dancescience":                return dancescienceCallouts(tier: tier)
+        case "forensicnursing":             return forensicnursingCallouts(tier: tier)
+        case "midwiferyassisting":          return midwiferyassistingCallouts(tier: tier)
+        case "interpreting":                return interpretingCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -3709,6 +3714,111 @@ extension CalloutManager {
             "CLOSE THIS. open your assessment report.",
             "no one completes a Psy.D by browsing.",
             "CLOSE THIS. get back to your clinical psychology coursework.",
+        ]
+        }
+    }
+
+    private func theatresoundCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that FOH mix isn't going to dial itself — get back to your notes.",
+            "your sound design notes won't write themselves.",
+            "get back to your live audio or audio tech coursework.",
+            "close this and open your sound design study guide.",
+        ]
+        case 2: return [
+            "audio engineers don't get hired by scrolling.",
+            "your stage sound assignment won't complete itself.",
+            "stop avoiding your audio tech coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your sound design notes.",
+            "no one masters live audio by browsing.",
+            "CLOSE THIS. get back to your theatre sound work.",
+        ]
+        }
+    }
+
+    private func dancescienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those movement analyses aren't going to write themselves — get back to your notes.",
+            "your Laban movement analysis assignment won't complete itself.",
+            "get back to your dance science or dance kinesiology coursework.",
+            "close this and open your dance anatomy notes.",
+        ]
+        case 2: return [
+            "dance scientists don't understand movement by scrolling.",
+            "your somatic movement notes won't write themselves.",
+            "stop avoiding your dance science coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your dance anatomy notes.",
+            "no one learns Laban Movement Analysis by browsing.",
+            "CLOSE THIS. get back to your dance science coursework.",
+        ]
+        }
+    }
+
+    private func forensicnursingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your patients need you focused — get back to your forensic nursing notes.",
+            "those SANE exam prep materials aren't going to review themselves.",
+            "get back to your forensic nursing documentation.",
+            "close this and open your SANE certification study guide.",
+        ]
+        case 2: return [
+            "forensic nurses don't pass the SANE exam by scrolling.",
+            "your forensic nursing case notes won't write themselves.",
+            "stop avoiding your forensic nursing coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your forensic nursing notes.",
+            "no one earns their SANE credential by browsing.",
+            "CLOSE THIS. get back to your forensic nursing documentation.",
+        ]
+        }
+    }
+
+    private func midwiferyassistingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those doula training materials aren't going to study themselves.",
+            "your DONA certification prep won't complete itself — get back to your notes.",
+            "get back to your doula training or childbirth educator coursework.",
+            "close this and open your doula training guide.",
+        ]
+        case 2: return [
+            "birth doulas don't get certified by scrolling.",
+            "your doula training assignment won't write itself.",
+            "stop avoiding your doula certification coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your doula training notes.",
+            "no one earns their DONA certification by browsing.",
+            "CLOSE THIS. get back to your doula program coursework.",
+        ]
+        }
+    }
+
+    private func interpretingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those interpreting skills aren't going to develop themselves — get back to practice.",
+            "your RID certification prep won't complete itself.",
+            "get back to your interpreting program coursework.",
+            "close this and open your interpreting study guide.",
+        ]
+        case 2: return [
+            "interpreters don't pass the RID exam by scrolling.",
+            "your consecutive interpreting notes won't write themselves.",
+            "stop avoiding your interpreter training coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your interpreting notes.",
+            "no one earns RID certification by browsing.",
+            "CLOSE THIS. get back to your interpreter training.",
         ]
         }
     }

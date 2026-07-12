@@ -1926,5 +1926,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target APPIC essays, cover letters, or application materials drafted or revised, and documents saved for review or submission",
             preferredDuration: 60 * 60
         ),
+        // Theatre Sound
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Study live sound engineering, FOH mixing, or audio tech program coursework",
+            successCriteria: "Target audio tech or live sound content reviewed (signal flow, system gain structure, EQ, or mixing concepts), key concepts summarized, and notes saved",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "speaker.wave.3.fill",
+            task: "Complete a sound design or theatre audio assignment for class",
+            successCriteria: "Assigned sound design documentation, mix notes, or audio tech assignment completed, and work submitted or saved for review",
+            preferredDuration: 60 * 60
+        ),
+        // Dance Science
+        SuggestedTemplate(
+            icon: "figure.dance",
+            task: "Complete a dance anatomy, dance kinesiology, or Laban Movement Analysis assignment",
+            successCriteria: "Assigned movement analysis, anatomy content, or LMA observation completed, documented, and saved or submitted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study dance science concepts: somatic movement, dance biomechanics, or dance physiology",
+            successCriteria: "Target content reviewed (somatic principles, injury prevention, or movement analysis methods), key concepts summarized, and notes saved",
+            preferredDuration: 45 * 60
+        ),
+        // Forensic Nursing
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Study for the SANE exam or complete a forensic nursing school assignment",
+            successCriteria: "Target content reviewed (forensic evidence collection, documentation standards, or SANE competencies), key concepts summarized, and at least 15 practice questions completed with corrections",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write forensic nursing case documentation or SANE patient encounter notes",
+            successCriteria: "Forensic nursing encounter notes, injury documentation, or case write-up completed, reviewed for accuracy, and saved or submitted for supervisor review",
+            preferredDuration: 30 * 60
+        ),
+        // Midwifery Assisting / Doula
+        SuggestedTemplate(
+            icon: "heart.fill",
+            task: "Study for the DONA doula certification exam or complete a doula training assignment",
+            successCriteria: "Target doula content reviewed (comfort measures, labor support, or postpartum care), key concepts summarized, and training assignment completed or practice questions answered",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a birth doula or postpartum doula reflection, care plan, or client support documentation",
+            successCriteria: "Doula client documentation, birth reflection, or postpartum support plan written, reviewed for completeness, and saved for program submission or client file",
+            preferredDuration: 30 * 60
+        ),
+        // Interpreting
+        SuggestedTemplate(
+            icon: "person.2.wave.2.fill",
+            task: "Study for the RID interpreter certification exam or complete an interpreting program assignment",
+            successCriteria: "Target interpreting content reviewed (consecutive or simultaneous techniques, ethical practice, or language pair concepts), key concepts summarized, and practice exercises completed",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Practice and document simultaneous or consecutive interpreting skills for my certification program",
+            successCriteria: "Interpreting practice session completed (minimum 3 practice passages or recordings), performance notes documented, and areas for improvement identified and saved",
+            preferredDuration: 45 * 60
+        ),
     ]
 }
