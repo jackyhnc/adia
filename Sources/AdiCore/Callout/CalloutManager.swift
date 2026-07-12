@@ -1823,6 +1823,26 @@ public final class CalloutManager {
             || lower.contains("wine blind tasting") || lower.contains("wine sensory") {
             return "winesommelier"
         }
+        // winemaking — positioned AFTER winesommelier (which captures sommelier study/certification,
+        // viticulture class, and enology class) so production-side terms — winery operations,
+        // cellar management, wine fermentation, barrel aging — get a dedicated winemaking pool.
+        // Bare "wine" alone is NOT matched; needs operational/production context.
+        if lower.contains("winemaking") || lower.contains("wine making")
+            || lower.contains("wine production") || lower.contains("wine fermentation")
+            || lower.contains("wine blending") || lower.contains("wine bottling")
+            || lower.contains("barrel aging") || lower.contains("wine barrel") || lower.contains("oak aging")
+            || lower.contains("winery operations") || lower.contains("winery management")
+            || word("winery") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("lab") || lower.contains("intern"))
+            || lower.contains("cellar management") || lower.contains("cellar operations")
+            || lower.contains("vineyard management") || lower.contains("vineyard operations")
+            || lower.contains("grape crush") || lower.contains("grape harvest") && lower.contains("wine")
+            || lower.contains("wine chemistry lab") || lower.contains("wine chemistry class")
+            || lower.contains("wine chemistry course") || lower.contains("wine lab")
+            || lower.contains("wine analysis") || lower.contains("wine microbiology")
+            || lower.contains("wine production class") || lower.contains("wine production course")
+            || lower.contains("wine production lab") || lower.contains("wine production program") {
+            return "winemaking"
+        }
         // cosmetology — positioned after culinary (both involve hands-on technique training);
         // catches cosmetology school, esthetics, nail tech, barbering, and state board prep.
         if lower.contains("cosmetology school") || lower.contains("cosmetology program")
@@ -1930,6 +1950,53 @@ public final class CalloutManager {
             || lower.contains("singing lesson") || lower.contains("singing practice")
             || (lower.contains("music lesson") && !lower.contains("music theory") && !lower.contains("music class") && !lower.contains("music course")) {
             return "appliedmusic"
+        }
+        // forestry — positioned BEFORE enviro so silviculture, dendrology, timber cruising,
+        // and forest-management coursework route to a dedicated pool rather than generic eco/enviro.
+        // Bare "tree" or "logging" alone NOT matched (computing log / too generic).
+        if word("forestry") || word("silviculture") || word("silvicultural")
+            || word("dendrology") || word("dendrologist")
+            || lower.contains("timber cruising") || lower.contains("timber sale")
+            || lower.contains("forest management") || lower.contains("forest inventory")
+            || lower.contains("forest ecology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment") || lower.contains("lab"))
+            || lower.contains("urban forestry") || lower.contains("reforestation") || lower.contains("afforestation")
+            || lower.contains("forest fire") && lower.contains("management")
+            || lower.contains("wildfire management") && (lower.contains("forestry") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("forest resources") || lower.contains("forest policy")
+            || lower.contains("forest science") || lower.contains("forest ranger") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("exam"))
+            || lower.contains("forestry class") || lower.contains("forestry course")
+            || lower.contains("forestry program") || lower.contains("forestry exam")
+            || lower.contains("forestry degree") || lower.contains("forestry major")
+            || lower.contains("forestry school") || lower.contains("forestry lab")
+            || lower.contains("log scaling") || lower.contains("timber harvesting") && (lower.contains("class") || lower.contains("course") || lower.contains("plan") || lower.contains("exam"))
+            || lower.contains("forest carbon") || lower.contains("carbon sequestration") && lower.contains("forest")
+            || lower.contains("watershed management") && lower.contains("forestry")
+            || lower.contains("national forest") && (lower.contains("class") || lower.contains("internship") || lower.contains("assignment")) {
+            return "forestry"
+        }
+        // aquaticscience — positioned BEFORE enviro so aquaculture, fisheries biology, and
+        // limnology route here rather than to generic ecology/enviro callouts.
+        // Bare "aquatic" alone NOT matched without educational/management context.
+        if word("aquaculture") || lower.contains("aquaculture science")
+            || lower.contains("aquaculture management") || lower.contains("aquaculture program")
+            || lower.contains("aquaculture class") || lower.contains("aquaculture course")
+            || lower.contains("aquaculture lab") || lower.contains("aquaculture exam")
+            || lower.contains("fisheries biology") || lower.contains("fisheries science")
+            || lower.contains("fisheries management") || lower.contains("fisheries ecology")
+            || lower.contains("fisheries resource") || lower.contains("marine fisheries")
+            || lower.contains("freshwater fisheries") || lower.contains("fisheries class")
+            || lower.contains("fisheries course") || lower.contains("fisheries program")
+            || lower.contains("fisheries exam") || lower.contains("fisheries lab")
+            || word("limnology") || lower.contains("limnology class") || lower.contains("limnology course")
+            || lower.contains("limnology lab") || lower.contains("limnology exam")
+            || lower.contains("marine resource management") || lower.contains("aquatic resource management")
+            || lower.contains("fish hatchery") || lower.contains("fish biology")
+            || lower.contains("fish population") && (lower.contains("class") || lower.contains("study") || lower.contains("management") || lower.contains("ecology"))
+            || lower.contains("aquatic science") || lower.contains("aquatic ecology")
+            || lower.contains("aquatic biology") || lower.contains("aquatic toxicology")
+            || lower.contains("aquatic invasive species") || lower.contains("aquatic systems")
+            || lower.contains("fisheries and wildlife") || lower.contains("wildlife and fisheries") {
+            return "aquaticscience"
         }
         // enviro — environmental science, ecology, sustainability; positioned after fitness/nutrition.
         if lower.contains("environmental science") || lower.contains("environmental studies")
@@ -2731,6 +2798,25 @@ public final class CalloutManager {
             || lower.contains("injury documentation") && lower.contains("forensic") {
             return "forensicnursing"
         }
+        // emergencynursing — positioned BEFORE nursing so CEN exam, ENPC/TNCC, trauma nursing,
+        // and ER-nurse-specific tasks route here rather than to the broader nursing callout pool.
+        if lower.contains("emergency nursing") || lower.contains("emergency nurse")
+            || lower.contains("emergency department nurse") || lower.contains("emergency room nurse")
+            || lower.contains("emergency room nursing") || lower.contains("er nurse") && !lower.contains("er nursing informatics")
+            || lower.contains("er nursing") && !lower.contains("er nursing informatics")
+            || word("cen") && (lower.contains("exam") || lower.contains("certification") || lower.contains("board") || lower.contains("credential") || lower.contains("prep") || lower.contains("study"))
+            || word("enpc") || lower.contains("enpc exam") || lower.contains("enpc certification")
+            || word("tncc") || lower.contains("tncc exam") || lower.contains("tncc certification")
+            || lower.contains("trauma nursing") || lower.contains("trauma nurse")
+            || lower.contains("emergency nursing program") || lower.contains("emergency nursing class")
+            || lower.contains("emergency nursing course") || lower.contains("emergency nursing certification")
+            || lower.contains("emergency nursing exam") || lower.contains("emergency nursing assignment")
+            || lower.contains("mass casualty") && lower.contains("nursing")
+            || lower.contains("triage nursing") || lower.contains("triage nurse")
+            || lower.contains("code blue") && lower.contains("nursing")
+            || lower.contains("resuscitation nursing") || lower.contains("rapid assessment nurse") {
+            return "emergencynursing"
+        }
         if word("nursing") || lower.contains("care plan") || lower.contains("care plans")
             || lower.contains("nursing notes") || lower.contains("nursing assessment")
             || lower.contains("nursing theory") || lower.contains("nursing diagnosis")
@@ -3053,6 +3139,25 @@ public final class CalloutManager {
             || lower.contains("behavioral wellness assignment")
             || lower.contains("health promotion") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("certification") || lower.contains("degree") || lower.contains("major")) && !lower.contains("public health") {
             return "behavioralhealthpromotion"
+        }
+        // publichealthnutrition — positioned AFTER behavioralhealthpromotion and BEFORE publicheath.
+        // Catches community nutrition class/program, WIC counseling/education, maternal and infant
+        // nutrition courses, and public health nutrition degree programs. Bare "nutrition" alone
+        // fires the nutrition branch much earlier; this catches the public-health intersection.
+        if lower.contains("community nutrition") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("exam") || lower.contains("assignment") || lower.contains("major") || lower.contains("degree"))
+            || lower.contains("public health nutrition") || lower.contains("public health dietitian")
+            || lower.contains("public health dietetics") || lower.contains("public health registered dietitian")
+            || lower.contains("wic counseling") || lower.contains("wic nutrition") || lower.contains("wic education")
+            || lower.contains("wic class") || lower.contains("wic course") || lower.contains("wic program") && (lower.contains("nutrition") || lower.contains("class") || lower.contains("internship") || lower.contains("rotation"))
+            || lower.contains("nutrition education program") || lower.contains("nutrition education class")
+            || lower.contains("nutrition education course") || lower.contains("nutrition policy")
+            || lower.contains("nutrition surveillance") || lower.contains("dietary surveillance")
+            || lower.contains("maternal nutrition") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program"))
+            || lower.contains("infant nutrition") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program"))
+            || lower.contains("food security") && (lower.contains("nutrition") || lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("policy"))
+            || lower.contains("community dietitian") || lower.contains("community dietetics")
+            || lower.contains("population nutrition") || lower.contains("global nutrition") {
+            return "publichealthnutrition"
         }
         // publicheath — positioned after therapy (clinical context) and before socialscience.
         // Catches MPH programs, epidemiology, community/global health, outbreak investigation,

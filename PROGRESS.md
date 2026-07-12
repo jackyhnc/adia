@@ -1,5 +1,77 @@
 # Adia — Build Progress
 
+## Run 336 (automated) — 2026-07-12 — Winemaking + forestry + aquatic science + emergency nursing + public health nutrition keyword domains (1999→2040 tests, 365→375 templates)
+
+### Shipped
+
+**Winemaking keyword domain:**
+- `winemaking` branch positioned AFTER winesommelier (sommelier/viticulture-study catches first).
+- Matches: winemaking/wine making, wine production/fermentation/blending/bottling, barrel aging, wine barrel, oak aging, winery operations/management, cellar management/operations, vineyard management/operations, grape crush/harvest + wine context, wine chemistry lab/class/course, wine lab, wine analysis, wine microbiology, wine production class/course/lab/program.
+- Guard: "wine class"/"wine tasting class"/"wine certification"/"wine course"/"wine exam" route to winesommelier which fires first; bare "wine" NOT matched.
+- `winemakingCallouts(tier:)` 4/3/3: "that wine isn't going to make itself." / "winemakers don't learn their craft by scrolling." / "CLOSE THIS. open your winemaking lab notes." / "no one masters winemaking by scrolling."
+- 2 templates: "Complete a winemaking lab report or fermentation process assignment" (45 min) + "Study winery operations and wine production techniques" (60 min)
+
+**Forestry keyword domain:**
+- `forestry` branch positioned BEFORE enviro (general ecology/enviro catches fall through otherwise).
+- Matches: word("forestry"/"silviculture"/"dendrology"), timber cruising/sale, forest management/inventory/ecology class, urban forestry, reforestation/afforestation, forest fire management + context, wildfire management + forestry, forest resources/policy/science, forest ranger + class context, forestry class/course/program/exam/degree/major/school/lab, log scaling, timber harvesting + class/plan context, forest carbon/carbon sequestration + forest, watershed management + forestry, national forest + class/internship.
+- Guard: bare "tree" or "logging" NOT matched; general ecology/sustainability routes to enviro.
+- `forestryCallouts(tier:)` 4/3/3: "those trees aren't going to inventory themselves." / "foresters don't manage forests by scrolling." / "CLOSE THIS. open your forestry notes." / "no one earns their forestry degree by scrolling."
+- 2 templates: "Complete my forestry or silviculture assignment" (60 min) + "Study for my forestry exam or review forest management and dendrology materials" (60 min)
+
+**Aquatic Science keyword domain:**
+- `aquaticscience` branch positioned BEFORE enviro (prevents fisheries/aquaculture from routing to generic eco/enviro).
+- Matches: word("aquaculture"/"limnology"), aquaculture science/management/program/class/course/lab/exam, fisheries biology/science/management/ecology/resource, marine fisheries, freshwater fisheries, fisheries class/course/program/exam/lab, limnology class/course/lab/exam, marine resource management, aquatic resource management, fish hatchery, fish biology, fish population + class/study/management/ecology context, aquatic science/ecology/biology/toxicology/invasive species/systems, fisheries and wildlife.
+- Guard: bare "aquatic" NOT matched alone; general climate/biodiversity routes to enviro.
+- `aquaticscienceCallouts(tier:)` 4/3/3: "those fish aren't going to count themselves." / "fisheries biologists don't study ecosystems by scrolling." / "CLOSE THIS. open your aquatic science notes." / "no one earns their fisheries degree by scrolling."
+- 2 templates: "Complete my fisheries biology or aquatic science assignment" (60 min) + "Study for my fisheries or aquatic science exam" (60 min)
+
+**Emergency Nursing keyword domain:**
+- `emergencynursing` branch positioned BEFORE nursing so CEN/ENPC/TNCC and trauma-nursing-specific terms route here.
+- Matches: emergency nursing/nurse, emergency department/room nurse/nursing, ER nurse/nursing (with informatics guard), CEN exam/certification/board/credential/prep/study, ENPC/ENPC exam/certification, TNCC/TNCC exam/certification, trauma nursing/nurse, emergency nursing program/class/course/certification/exam/assignment, mass casualty + nursing, triage nursing/nurse, code blue + nursing, resuscitation nursing, rapid assessment nurse.
+- Guard: bare "ER" NOT matched; generic nursing care plan tasks route to nursing branch after this.
+- `emergencynursingCallouts(tier:)` 4/3/3: "those patients need you focused — close this." / "ER nurses don't pass the CEN by scrolling." / "CLOSE THIS. open your emergency nursing notes." / "no one passes the CEN by scrolling."
+- 2 templates: "Study for the CEN exam or complete an emergency nursing assignment" (60 min) + "Write up my emergency nursing case notes or TNCC/ENPC coursework assignment" (30 min)
+
+**Public Health Nutrition keyword domain:**
+- `publichealthnutrition` branch positioned AFTER behavioralhealthpromotion, BEFORE publicheath.
+- Matches: community nutrition + class/course/program/exam/assignment/major/degree, public health nutrition/dietitian/dietetics/registered dietitian, WIC counseling/nutrition/education/class/course/program + rotation/internship, nutrition education program/class/course, nutrition policy/surveillance, dietary surveillance, maternal nutrition + class context, infant nutrition + class context, food security + nutrition/class/course/program/policy context, community/population/global dietitian/dietetics/nutrition.
+- Guard: bare "nutrition" routes to nutrition branch (fires much earlier); bare "food security" without nutrition/class context stays generic.
+- `publichealthnutritionCallouts(tier:)` 4/3/3: "that community nutrition plan isn't going to write itself." / "public health dietitians don't serve communities by scrolling." / "CLOSE THIS. open your public health nutrition notes." / "no one serves their community by scrolling."
+- 2 templates: "Complete my community nutrition or public health nutrition assignment" (45 min) + "Study for my public health nutrition exam or review WIC program materials" (60 min)
+
+**Tests:**
+- CalloutManagerTests.swift: 1999→2040 (+41: 8 per domain + ≥375 count guard)
+- SuggestedSessionTemplatesTests count guard updated to ≥375 (via separate test in CalloutManagerTests)
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- "completing my winemaking lab report on wine production and fermentation protocol analysis" → winemaking ✓; positioned after winesommelier ✓
+- "studying for my wine tasting class and WSET certification exam" → winesommelier ✓ (not winemaking ✓)
+- "studying silviculture prescriptions and completing a timber cruise analysis for my forestry class" → forestry ✓; positioned before enviro ✓
+- "writing a field ecology report on biodiversity and sustainability" → enviro ✓ (not forestry ✓)
+- "completing my fisheries biology lab report on aquatic resource management and limnology" → aquaticscience ✓; positioned before enviro ✓
+- "studying for the CEN exam and reviewing trauma nursing protocols for emergency nursing certification" → emergencynursing ✓; positioned before nursing ✓
+- "writing nursing care plans and reviewing dosage calculations for nursing school" → nursing ✓ (not emergencynursing ✓)
+- "completing my community nutrition program assignment on WIC counseling and public health nutrition" → publichealthnutrition ✓; positioned before publicheath ✓
+- "tracking my macronutrients and reviewing my dietitian's calorie tracking app" → nutrition ✓ (not publichealthnutrition ✓)
+- All 5 tier-3 pools contain "CLOSE THIS" or "no one" ✓; all tier-1 pools have ≥4 messages ✓
+- All 10 template durations in [300, 10800] ✓; template count 375 ≥ 375 ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good remaining candidates:
+  - `ceramicsandsculpture` — pottery, wheel throwing, kiln firing, ceramic arts program
+  - `urbandesign` — urban design (separate from urban planning), public space design, placemaking
+  - `exercisescience` — exercise science degree (separate from kinesiology and fitness), ACSM exam
+  - `constructiontech` — construction technology (trade school; separate from construction management)
+  - `biochemistry` — biochemistry lab (distinct from molecular biology; enzyme kinetics, spectroscopy)
+- Template count: 375 → 385 after next 5-domain batch (2 templates per domain)
+- Estimated test count: 2040 + ~40 (5 domains × 8 tests) = 2080+ CalloutManagerTests
+
+---
+
 ## Run 335 (automated) — 2026-07-12 — Certified financial planner + soil science + industrial safety + food safety + applied music keyword domains (1959→1999 tests, 355→365 templates)
 
 ### Shipped

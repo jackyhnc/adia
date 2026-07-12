@@ -248,6 +248,11 @@ extension CalloutManager {
         case "industrialsafety":            return industrialsafetyCallouts(tier: tier)
         case "foodsafety":                  return foodsafetyCallouts(tier: tier)
         case "appliedmusic":                return appliedmusicCallouts(tier: tier)
+        case "winemaking":                  return winemakingCallouts(tier: tier)
+        case "forestry":                    return forestryCallouts(tier: tier)
+        case "aquaticscience":              return aquaticscienceCallouts(tier: tier)
+        case "emergencynursing":            return emergencynursingCallouts(tier: tier)
+        case "publichealthnutrition":       return publichealthnutritionCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -4435,6 +4440,111 @@ extension CalloutManager {
             "CLOSE THIS. go practice.",
             "no one passes their jury by scrolling.",
             "CLOSE THIS. pick up your instrument.",
+        ]
+        }
+    }
+
+    private func winemakingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that wine isn't going to make itself.",
+            "your cellar work won't finish itself — get back to it.",
+            "close this and open your winemaking notes.",
+            "your fermentation protocol isn't going to write itself.",
+        ]
+        case 2: return [
+            "winemakers don't learn their craft by scrolling.",
+            "your wine production assignment won't finish itself.",
+            "stop avoiding your winemaking coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your winemaking lab notes.",
+            "no one masters winemaking by scrolling.",
+            "CLOSE THIS. get back to your cellar operations work.",
+        ]
+        }
+    }
+
+    private func forestryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those trees aren't going to inventory themselves.",
+            "your forestry assignment won't finish itself — get back to it.",
+            "close this and open your silviculture notes.",
+            "your timber cruise data isn't going to analyze itself.",
+        ]
+        case 2: return [
+            "foresters don't manage forests by scrolling.",
+            "your forest management plan won't write itself.",
+            "stop avoiding your forestry coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your forestry notes.",
+            "no one earns their forestry degree by scrolling.",
+            "CLOSE THIS. get back to your forest inventory work.",
+        ]
+        }
+    }
+
+    private func aquaticscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those fish aren't going to count themselves.",
+            "your fisheries assignment won't finish itself — get back to it.",
+            "close this and open your aquatic science notes.",
+            "your aquaculture lab report isn't going to write itself.",
+        ]
+        case 2: return [
+            "fisheries biologists don't study ecosystems by scrolling.",
+            "your aquatic science coursework won't complete itself.",
+            "stop avoiding your fisheries assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your aquatic science notes.",
+            "no one earns their fisheries degree by scrolling.",
+            "CLOSE THIS. get back to your aquaculture lab work.",
+        ]
+        }
+    }
+
+    private func emergencynursingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those patients need you focused — close this.",
+            "your CEN prep isn't going to do itself.",
+            "close this and open your emergency nursing notes.",
+            "your trauma nursing assignment won't finish itself.",
+        ]
+        case 2: return [
+            "ER nurses don't pass the CEN by scrolling.",
+            "your emergency nursing coursework won't complete itself.",
+            "stop avoiding your trauma nursing notes.",
+        ]
+        default: return [
+            "CLOSE THIS. open your emergency nursing notes.",
+            "no one passes the CEN by scrolling.",
+            "CLOSE THIS. get back to your trauma nursing work.",
+        ]
+        }
+    }
+
+    private func publichealthnutritionCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that community nutrition plan isn't going to write itself.",
+            "your public health nutrition assignment won't finish itself — get back to it.",
+            "close this and open your community nutrition notes.",
+            "your WIC counseling coursework isn't going to complete itself.",
+        ]
+        case 2: return [
+            "public health dietitians don't serve communities by scrolling.",
+            "your nutrition education program won't complete itself.",
+            "stop avoiding your public health nutrition coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your public health nutrition notes.",
+            "no one serves their community by scrolling.",
+            "CLOSE THIS. get back to your community nutrition work.",
         ]
         }
     }

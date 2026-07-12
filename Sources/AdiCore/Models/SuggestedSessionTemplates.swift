@@ -2336,5 +2336,65 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Lesson assignment or technique exercises completed (scales, etudes, sight-reading, or specific passages practiced and recorded in practice log)",
             preferredDuration: 45 * 60
         ),
+        SuggestedTemplate(
+            icon: "wineglass.fill",
+            task: "Complete a winemaking lab report or fermentation process assignment",
+            successCriteria: "Lab report or fermentation analysis completed (process parameters recorded, data analyzed, or cellar operations procedure documented), and work saved or submitted",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "drop.fill",
+            task: "Study winery operations and wine production techniques for my winemaking course",
+            successCriteria: "Target winemaking content reviewed (fermentation, cellar operations, wine chemistry, or vineyard management), practice questions completed, and notes saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "tree.fill",
+            task: "Complete my forestry or silviculture assignment, lab report, or timber cruise analysis",
+            successCriteria: "Assignment completed (forest inventory analysis, silvicultural prescription written, timber cruise data processed, or management plan section drafted), and work saved or submitted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "leaf.circle.fill",
+            task: "Study for my forestry exam or review forest management and dendrology materials",
+            successCriteria: "Target forestry content reviewed (silviculture principles, tree identification, forest inventory methods, or management prescriptions), practice questions completed, and notes saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "fish.fill",
+            task: "Complete my fisheries biology or aquatic science assignment, lab report, or data analysis",
+            successCriteria: "Assignment completed (fish population data analyzed, aquaculture system design drafted, limnology lab report written, or fisheries management plan section completed), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "water.waves",
+            task: "Study for my fisheries or aquatic science exam and review aquaculture or limnology materials",
+            successCriteria: "Target aquatic science content reviewed (aquaculture systems, fish ecology, water quality, fisheries management, or limnology concepts), practice questions completed, and notes saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Study for the CEN exam or complete an emergency nursing assignment",
+            successCriteria: "Target emergency nursing content reviewed (triage, trauma assessment, ENPC/TNCC procedures, or CEN exam questions practiced), notes saved for next session",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "staroflife.fill",
+            task: "Write up my emergency nursing case notes or TNCC/ENPC coursework assignment",
+            successCriteria: "Case notes or coursework assignment completed (trauma assessment written, SBAR documentation finished, emergency scenario analysis done), and work saved or submitted",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "heart.text.square.fill",
+            task: "Complete my community nutrition or public health nutrition assignment",
+            successCriteria: "Assignment completed (community nutrition assessment written, WIC counseling plan drafted, nutrition education materials developed, or policy brief section completed), and work saved",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "person.3.fill",
+            task: "Study for my public health nutrition exam or review community nutrition and WIC program materials",
+            successCriteria: "Target public health nutrition content reviewed (community assessment, WIC program guidelines, nutrition policy, maternal/infant nutrition, or food security concepts), notes saved",
+            preferredDuration: 60 * 60
+        ),
     ]
 }
