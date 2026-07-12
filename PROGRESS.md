@@ -14392,3 +14392,64 @@ None. Swift toolchain unavailable on Linux container.
 - Consider: opticianry/dispensing optician (distinct from optometry/ophthalmic), respiratory therapy sub-specialties (neonatal RT already in respiratorytherapy), athletic training (already in kinesiology - verify), dance/movement therapy (separate from arttherapy/performingarts)
 - Consider: `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment)
 - Estimated test count: 1619 (CalloutManagerTests) + additional from other test files
+
+---
+
+## Run 336 — 2026-07-12 — Opticianry, dancetherapy, recreationtherapy, horticulturetherapy, dietetictechnology keyword domains (1619→1659 tests, 269→279 templates)
+
+### Shipped
+
+**New keyword domain — opticianry:**
+- Branch positioned AFTER `optometry` and BEFORE `physicianassistant`
+- Matches: dispensing optician/opticians, opticianry school/program/class/exam/assignment/certification, ABO certification/exam, ABO-NCLE, NCLE exam/certification, NOCE exam/certification, optical dispensing, spectacle lens dispensing, eyeglass dispensing, frame selection class, optician school/program/class/exam/certification/license, contact lens fitting (with optician context)
+- `opticianryCallouts(tier:)` 4/3/3: "those lens prescriptions aren't going to interpret themselves." / "dispensing opticians don't get licensed by scrolling." / "CLOSE THIS. open your opticianry notes."
+- 2 templates: "Study for the ABO-NCLE opticianry certification exam" (60 min) + "Complete an opticianry school assignment or optical dispensing case study" (45 min)
+
+**New keyword domain — dancetherapy:**
+- Branch positioned AFTER `musictherapy` and BEFORE `arttherapy`
+- Matches: dance therapy/therapist/therapists, dance/movement therapy, movement therapy (with dance context), RDMT, ADMT, ADTA (with dance/therapy context), DMT credential/board/exam, dance therapy class/course/program/school/exam/assignment/session/notes/treatment plan/internship, movement psychotherapy, choreotherapy
+- `dancetherapyCallouts(tier:)` 4/3/3: "your clients deserve your full attention — get back to your dance therapy notes." / "dance therapists don't get credentialed by scrolling." / "CLOSE THIS. open your dance therapy or ADTA study guide."
+- 2 templates: "Write dance therapy session notes or a treatment plan for a client case" (30 min) + "Study for the ADTA dance therapy board exam or complete a dance movement therapy assignment" (60 min)
+
+**New keyword domain — recreationtherapy:**
+- Branch positioned AFTER `arttherapy` and BEFORE `horticulturetherapy` (then addictioncounseling)
+- Matches: recreational therapy/therapist, recreation therapy/therapist, therapeutic recreation, CTRS exam/certification/board, NCTRC exam, ATRA (with recreation/therapy context), recreation therapy class/course/program/school/exam/assignment/notes/internship, leisure education, leisure counseling, adaptive recreation, activity therapy, recreational therapy class/course/exam/assignment
+- `recreationtherapyCallouts(tier:)` 4/3/3: "your clients need you focused — get back to your recreation therapy notes." / "recreational therapists don't get certified by scrolling." / "CLOSE THIS. open your recreation therapy study guide."
+- 2 templates: "Write a therapeutic recreation treatment plan or recreation therapy session notes" (30 min) + "Study for the CTRS exam or complete a recreational therapy school assignment" (60 min)
+
+**New keyword domain — horticulturetherapy:**
+- Branch positioned AFTER `recreationtherapy` and BEFORE `addictioncounseling`
+- Matches: horticultural therapy/therapist, horticulture therapy/therapist, therapeutic horticulture, HTR (with horticul/therapy/certification context), AHTA (with horticul/therapy context), horticultural therapy class/course/program/school/exam/assignment/certification/notes, therapeutic gardening (with class/course/therapy/certification context), plant therapy class, garden therapy class
+- `horticulturetherapyCallouts(tier:)` 4/3/3: "those plants aren't going to journal themselves — get back to your horticulture therapy notes." / "horticultural therapists don't get registered by scrolling." / "CLOSE THIS. open your horticultural therapy study guide."
+- 2 templates: "Write horticultural therapy session notes or a therapeutic horticulture program plan" (30 min) + "Study for the HTR credential exam or complete a horticultural therapy school assignment" (60 min)
+
+**New keyword domain — dietetictechnology:**
+- Branch positioned AFTER `nutrition` and BEFORE `culinary` (more specific than "dietitian" in nutrition branch)
+- Matches: dietetic technician/tech, DTR (with dietetic/nutrition/exam/class/certification context), NDTR, dietetic technician registered, dietetic technician class/course/program/school/exam/assignment/certification/registration, dietetic tech program/class, dietetic aide (with class/exam/certification context)
+- `dietetictechnologyCallouts(tier:)` 4/3/3: "those nutrition assessments aren't going to write themselves." / "dietetic technicians don't get registered by scrolling." / "CLOSE THIS. open your dietetic technician notes."
+- 2 templates: "Study for the DTR exam or complete a dietetic technician school assignment" (60 min) + "Complete a dietary analysis or nutrition screening assignment for dietetic technician class" (45 min)
+
+**Test counts:**
+- CalloutManagerTests.swift: 1619 → 1659 (+40: 8 tests per domain × 5 domains)
+- SuggestedSessionTemplatesTests.swift: 317 → 329 (+12: 2 existence tests × 5 domains + ≥279 count guard)
+
+**Template catalog: 269 → 279**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `opticianry` fires AFTER optometry (~line 1905) and BEFORE physicianassistant (~line 1935). "abo exam prep reviewing ophthalmic optics and contact lens dispensing" → opticianry ✓; "optometry school nbeo board exam on visual acuity and refraction" → optometry ✓; "physician assistant pa school pance exam" → physicianassistant ✓
+- `dancetherapy` fires AFTER musictherapy (~line 2020) and BEFORE arttherapy (~line 2050). "dmt credential board prep on dance movement therapy techniques" → dancetherapy ✓; "music therapy session notes and mt-bc board" → musictherapy ✓; "art therapy session notes and atr board" → arttherapy ✓
+- `recreationtherapy` fires AFTER arttherapy (~line 2055) and BEFORE addictioncounseling (~line 2090). "ctrs exam prep on therapeutic recreation process" → recreationtherapy ✓; "art therapy session notes and atcb board" → arttherapy ✓; "cadc addiction counseling certification" → addictioncounseling ✓
+- `horticulturetherapy` fires AFTER recreationtherapy (~line 2072) and BEFORE addictioncounseling (~line 2100). "htr certification horticultural therapy class assignment" → horticulturetherapy ✓; "ctrs certification therapeutic recreation" → recreationtherapy ✓; "addiction counseling cadc exam" → addictioncounseling ✓
+- `dietetictechnology` fires AFTER nutrition (~line 1303) and BEFORE culinary (~line 1335). "dtr exam prep on nutrition screening and menu planning for dietetic technician program" → dietetictechnology ✓; "nutritionist clinical nutrition assessment" → nutrition ✓; "culinary school assignment on recipe development" → culinary ✓
+- Five new dispatch cases in CalloutMessages.swift (lines 195, 197, 199, 200, 201). Five new pool functions (lines 3391, 3412, 3433, 3454, 3475). Template count: 279 ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains: drama/theatre performance (separate from dramaeducation/performingarts — specifically covers playwriting, dramatic literature, theatre history for non-teaching tracks), wine service (sommelier floor service distinct from winesommelier certification study), music therapy sub-specialties (neurologic vs receptive/active)
+- Consider: opticianry sub-domain (contact lens dispensing separate from spectacle dispensing — already partly covered), polysomnography sub-specialties (pediatric PSG, home sleep testing), perfusion technology sub-domains (ECMO, pediatric bypass)
+- Consider: athletic training (already confirmed in kinesiology branch — no separate branch needed)
+- Consider: `@MainActor` annotation for remaining Swift test suites: `OnTaskDetectorTests`, `LocalBlockServerTests`, `ScreenCaptureManagerTests` (requires macOS build environment)
+- Estimated test count: 1659 (CalloutManagerTests) + ~670 additional from other test files ≈ 2330+ total Swift tests
