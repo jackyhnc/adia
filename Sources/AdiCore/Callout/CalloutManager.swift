@@ -2150,6 +2150,24 @@ public final class CalloutManager {
             || lower.contains("coaching licensure") || lower.contains("youth coaching") {
             return "physed"
         }
+        // performanceanalysis — positioned BEFORE sportsanalytics so video-analysis tools (Dartfish,
+        // Hudl), notational analysis, tactical/match analysis, and sports performance coaching
+        // tasks route to their own pool. Bare "performance" alone NOT matched (too common).
+        if lower.contains("performance analysis") && (lower.contains("sport") || lower.contains("coach") || lower.contains("athletic") || lower.contains("game") || lower.contains("match") || lower.contains("team") || lower.contains("player") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("performance analyst") || lower.contains("performance analysts")
+            || word("dartfish") || word("hudl")
+            || lower.contains("hudl class") || lower.contains("hudl training") || lower.contains("hudl analysis")
+            || lower.contains("dartfish class") || lower.contains("dartfish training") || lower.contains("dartfish analysis")
+            || lower.contains("video analysis") && (lower.contains("sport") || lower.contains("coach") || lower.contains("athletic") || lower.contains("match") || lower.contains("game") || lower.contains("team") || lower.contains("player"))
+            || lower.contains("notational analysis") || lower.contains("match analysis") && lower.contains("sport")
+            || lower.contains("tactical analysis") && (lower.contains("sport") || lower.contains("coach") || lower.contains("team") || lower.contains("class"))
+            || lower.contains("coaching analytics") || lower.contains("performance coding") || lower.contains("performance tagging")
+            || lower.contains("sport science analysis") || lower.contains("sports science analysis")
+            || lower.contains("sports performance analysis") || lower.contains("sport performance analysis")
+            || lower.contains("performance analysis class") || lower.contains("performance analysis course")
+            || lower.contains("performance analysis program") || lower.contains("performance analysis exam") {
+            return "performanceanalysis"
+        }
         // sportsanalytics — positioned before sportsmanagement so R/Python for sports data,
         // sabermetrics, player tracking, and sports data science route here (not the management pool).
         // "sports analytics" / "sport analytics" removed from sportsmanagement and owned here.
@@ -2541,6 +2559,33 @@ public final class CalloutManager {
             || lower.contains("theatrical sound") {
             return "theatresound"
         }
+        // musicbusiness — positioned BEFORE musicproduction so music industry coursework,
+        // entertainment law (music context), music publishing, ASCAP/BMI class work, and
+        // music management programs route here rather than the DAW/songwriting pool.
+        // Bare "music" alone stays in musicproduction/musictheory; educational compound terms fire here.
+        if lower.contains("music business") || lower.contains("music industry class")
+            || lower.contains("music industry course") || lower.contains("music industry program")
+            || lower.contains("music industry exam") || lower.contains("music industry major")
+            || lower.contains("music industry degree") || lower.contains("music industry assignment")
+            || lower.contains("music publishing class") || lower.contains("music publishing course")
+            || lower.contains("music publishing program")
+            || lower.contains("music management class") || lower.contains("music management course")
+            || lower.contains("music management program") || lower.contains("music management major")
+            || lower.contains("music marketing class") || lower.contains("music marketing course")
+            || lower.contains("music marketing program")
+            || lower.contains("record label management") || lower.contains("record label class")
+            || lower.contains("artist management class") || lower.contains("artist management course")
+            || lower.contains("music entrepreneurship") || lower.contains("music entrepreneur")
+            || lower.contains("entertainment law") && (lower.contains("music") || lower.contains("artist") || lower.contains("record"))
+            || lower.contains("ascap") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("licensing") || lower.contains("royalt"))
+            || lower.contains("bmi") && (lower.contains("licensing") || lower.contains("royalt") || lower.contains("music publishing"))
+            || lower.contains("music royalt") || lower.contains("sync licensing class")
+            || lower.contains("music licensing class") || lower.contains("music licensing course")
+            || lower.contains("music business degree") || lower.contains("music business major")
+            || lower.contains("music business class") || lower.contains("music business course")
+            || lower.contains("music business program") || lower.contains("music business exam") {
+            return "musicbusiness"
+        }
         // musicproduction — positioned before musictheory so DAW/production tasks fire first.
         if lower.contains("music production") || lower.contains("beat making") || lower.contains("beatmaking")
             || word("beatmaker") || word("mixing") || word("mastering") || word("daw")
@@ -2891,6 +2936,23 @@ public final class CalloutManager {
             || lower.contains("oral surgery residency") || lower.contains("oral surgery rotation")
             || lower.contains("maxillofacial") {
             return "oralsurgery"
+        }
+        // dentalanesthesia — positioned BEFORE dentalradiology and dental so dental anesthesia
+        // programs, COMS/DOCS board exam prep, and sedation dentistry coursework route here.
+        if lower.contains("dental anesthesia") || lower.contains("dental anesthesiologist")
+            || lower.contains("dental sedation") || lower.contains("sedation dentistry")
+            || lower.contains("dental anesthesia class") || lower.contains("dental anesthesia course")
+            || lower.contains("dental anesthesia program") || lower.contains("dental anesthesia exam")
+            || lower.contains("dental anesthesia school") || lower.contains("dental anesthesia rotation")
+            || lower.contains("dental anesthesia notes") || lower.contains("dental anesthesia assignment")
+            || lower.contains("coms exam") || lower.contains("coms board") || lower.contains("coms prep")
+            || word("docs") && (lower.contains("board") || lower.contains("exam") || lower.contains("dental anesthesia") || lower.contains("sedation"))
+            || lower.contains("docs exam") || lower.contains("docs board") || lower.contains("docs dental")
+            || lower.contains("iv sedation dentistry") || lower.contains("conscious sedation dental")
+            || lower.contains("nitrous oxide dentistry") || lower.contains("anesthesia for dental")
+            || lower.contains("perioperative dental anesthesia") || lower.contains("dental anesthesiology")
+            || lower.contains("outpatient anesthesia dental") || lower.contains("office-based dental anesthesia") {
+            return "dentalanesthesia"
         }
         // dentalradiology — positioned BEFORE dental so dental radiography programs, DANB RHS
         // exam prep, and dental x-ray technique classes route to a dedicated pool rather than
@@ -3551,6 +3613,27 @@ public final class CalloutManager {
             || lower.contains("midwifery care") && lower.contains("plan") {
             return "midwifery"
         }
+        // palliativecare — positioned BEFORE forensicnursing and nursing so CHPN exam prep,
+        // hospice nursing, end-of-life care, and palliative medicine clinical tasks route here.
+        if lower.contains("palliative care") || lower.contains("palliative nurse")
+            || lower.contains("palliative nursing") || lower.contains("palliative medicine")
+            || lower.contains("palliative care class") || lower.contains("palliative care course")
+            || lower.contains("palliative care program") || lower.contains("palliative care exam")
+            || lower.contains("palliative care rotation") || lower.contains("palliative care notes")
+            || lower.contains("palliative care assignment") || lower.contains("palliative care clinical")
+            || lower.contains("hospice care") || lower.contains("hospice nurse")
+            || lower.contains("hospice nursing") || lower.contains("hospice class")
+            || lower.contains("hospice course") || lower.contains("hospice program")
+            || lower.contains("hospice exam") || lower.contains("hospice notes")
+            || lower.contains("hospice assignment") || lower.contains("hospice volunteer training")
+            || word("chpn") || lower.contains("chpn exam") || lower.contains("chpn certification")
+            || lower.contains("hpcc board") || lower.contains("hpcc exam")
+            || lower.contains("end-of-life care") || lower.contains("end of life care")
+            || lower.contains("comfort care nursing") || lower.contains("comfort measures")
+            || lower.contains("palliative care nurse") || lower.contains("palliative care specialist")
+            || lower.contains("symptom management") && (lower.contains("palliative") || lower.contains("hospice") || lower.contains("end of life") || lower.contains("terminal")) {
+            return "palliativecare"
+        }
         // forensicnursing — positioned BEFORE nursing so SANE exam, sexual assault nurse examiner
         // credentials, and forensic nursing notes don't match word("nursing") in the nursing branch.
         if lower.contains("forensic nursing") || lower.contains("forensic nurse")
@@ -4136,6 +4219,26 @@ public final class CalloutManager {
             || lower.contains("emergency management exam") || lower.contains("homeland security class")
             || lower.contains("homeland security course") || lower.contains("homeland security program") {
             return "emergencymanagement"
+        }
+        // cognitivescience — positioned BEFORE neuroscience so cognitive science/cogsci
+        // interdisciplinary programs (mind, brain, computation, language) get a dedicated pool.
+        // "cognitive neuroscience" stays in neuroscience (below). Bare "cognitive" alone NOT matched.
+        if lower.contains("cognitive science") || word("cogsci")
+            || lower.contains("cognitive systems") || lower.contains("cognitive science class")
+            || lower.contains("cognitive science course") || lower.contains("cognitive science exam")
+            || lower.contains("cognitive science program") || lower.contains("cognitive science major")
+            || lower.contains("cognitive science degree") || lower.contains("cognitive science assignment")
+            || lower.contains("cognitive science paper") || lower.contains("cognitive science research")
+            || lower.contains("cogsci class") || lower.contains("cogsci course") || lower.contains("cogsci exam")
+            || lower.contains("cogsci major") || lower.contains("cogsci program")
+            || lower.contains("mind and brain") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("language and cognition") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("human cognition") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("study"))
+            || lower.contains("cognitive modeling") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("cognitive architecture class") || lower.contains("cognitive architecture course")
+            || lower.contains("philosophy of mind") && (lower.contains("cogsci") || lower.contains("cognitive science"))
+            || lower.contains("computational mind") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "cognitivescience"
         }
         // neuroscience — positioned BEFORE psychology so brain/neuron-biology terms get a
         // dedicated pool. "neural network" (ML) stays in datascience (fires much earlier).

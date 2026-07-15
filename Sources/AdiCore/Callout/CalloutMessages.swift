@@ -298,6 +298,11 @@ extension CalloutManager {
         case "medicalscribing":       return medicalscribingCallouts(tier: tier)
         case "communityhealth":       return communityhealthCallouts(tier: tier)
         case "toxicology":            return toxicologyCallouts(tier: tier)
+        case "performanceanalysis":   return performanceanalysisCallouts(tier: tier)
+        case "musicbusiness":         return musicbusinessCallouts(tier: tier)
+        case "dentalanesthesia":      return dentalanesthesiaCallouts(tier: tier)
+        case "palliativecare":        return palliativecareCallouts(tier: tier)
+        case "cognitivescience":      return cognitivescienceCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -5535,6 +5540,111 @@ extension CalloutManager {
             "CLOSE THIS. open your toxicology notes.",
             "no one masters toxicokinetics by browsing.",
             "CLOSE THIS. get back to your toxicology exam prep.",
+        ]
+        }
+    }
+
+    private func performanceanalysisCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that game film isn't going to analyze itself.",
+            "get back to your performance analysis notes.",
+            "close this and open your Dartfish or Hudl session.",
+            "your match analysis report won't write itself.",
+        ]
+        case 2: return [
+            "no one becomes a performance analyst by scrolling.",
+            "your video analysis isn't going to finish itself — close this.",
+            "stop avoiding your coaching analytics work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your performance analysis software.",
+            "no one passes performance analysis by watching other tabs.",
+            "CLOSE THIS. get back to your match analysis.",
+        ]
+        }
+    }
+
+    private func musicbusinessCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "the music industry isn't going to wait for you.",
+            "get back to your music business notes.",
+            "close this and open your music business coursework.",
+            "your music publishing assignment won't do itself.",
+        ]
+        case 2: return [
+            "no one builds a music career by scrolling.",
+            "your music business paper isn't going to write itself — close this.",
+            "stop avoiding your music industry coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your music business notes.",
+            "no one learns the music industry by browsing.",
+            "CLOSE THIS. get back to your music publishing work.",
+        ]
+        }
+    }
+
+    private func dentalanesthesiaCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those anesthesia protocols aren't going to memorize themselves.",
+            "get back to your dental anesthesia notes.",
+            "close this and open your COMS/DOCS exam prep.",
+            "your sedation dentistry coursework won't do itself.",
+        ]
+        case 2: return [
+            "no one passes the COMS board by scrolling.",
+            "your dental anesthesia notes aren't going to write themselves — close this.",
+            "stop avoiding your sedation dentistry study materials.",
+        ]
+        default: return [
+            "CLOSE THIS. open your dental anesthesia notes.",
+            "no one earns their dental anesthesiology credential by browsing.",
+            "CLOSE THIS. get back to your COMS exam prep.",
+        ]
+        }
+    }
+
+    private func palliativecareCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your patients deserve your full attention — get back to your palliative care notes.",
+            "close this and open your CHPN exam prep.",
+            "that end-of-life care plan isn't going to write itself.",
+            "get back to your hospice nursing coursework.",
+        ]
+        case 2: return [
+            "no one passes the CHPN by scrolling.",
+            "your palliative care assignment isn't going to finish itself — close this.",
+            "stop avoiding your hospice care study materials.",
+        ]
+        default: return [
+            "CLOSE THIS. open your palliative care notes.",
+            "no one earns their CHPN by browsing.",
+            "CLOSE THIS. get back to your end-of-life care coursework.",
+        ]
+        }
+    }
+
+    private func cognitivescienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that cognitive model isn't going to build itself.",
+            "get back to your cognitive science notes.",
+            "close this and open your cogsci coursework.",
+            "your mind and brain assignment won't do itself.",
+        ]
+        case 2: return [
+            "no one masters cognitive science by scrolling.",
+            "your cogsci paper isn't going to write itself — close this.",
+            "stop avoiding your cognitive systems coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your cognitive science notes.",
+            "no one understands cognition by browsing — close this.",
+            "CLOSE THIS. get back to your cogsci exam prep.",
         ]
         }
     }

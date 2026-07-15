@@ -2981,5 +2981,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Toxicology assignment meaningfully advanced (lab data analyzed, tox screen results interpreted, or forensic case findings organized) and saved",
             preferredDuration: 60 * 60
         ),
+        // performanceanalysis templates
+        SuggestedTemplate(
+            icon: "film.stack",
+            task: "Analyze game film or match footage using Dartfish or Hudl and produce a performance analysis report for my team or class",
+            successCriteria: "At least one full game or match reviewed, key performance metrics or tactical patterns identified, clips tagged, and written or visual summary report drafted",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.xyaxis.line",
+            task: "Complete my sports performance analysis class assignment on notational analysis, tactical patterns, or coaching analytics",
+            successCriteria: "Performance analysis assignment meaningfully advanced (data coded, notation system applied, or tactical report section completed) and saved",
+            preferredDuration: 45 * 60
+        ),
+        // musicbusiness templates
+        SuggestedTemplate(
+            icon: "music.note.list",
+            task: "Study for my music business or music industry class exam and review music publishing, licensing, royalties, and artist management",
+            successCriteria: "At least two music business topic areas reviewed (e.g., publishing deals, sync licensing, ASCAP/BMI royalties, record label structures, artist management), practice questions attempted, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write my music business class paper or assignment on music publishing, entertainment law contracts, or the music industry ecosystem",
+            successCriteria: "Music business paper meaningfully advanced (core argument defined, industry examples cited, at least one section drafted) and saved",
+            preferredDuration: 45 * 60
+        ),
+        // dentalanesthesia templates
+        SuggestedTemplate(
+            icon: "syringe.fill",
+            task: "Study for the COMS or DOCS dental anesthesia board exam and review sedation protocols, pharmacology, and patient monitoring",
+            successCriteria: "At least two dental anesthesia topic areas reviewed (e.g., IV sedation protocols, drug interactions, emergency management, monitoring parameters), practice questions attempted, and notes updated",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Complete my dental anesthesia class assignment on sedation techniques, patient assessment, or anesthesia pharmacology",
+            successCriteria: "Dental anesthesia assignment meaningfully advanced (sedation protocol outlined, pharmacology reviewed, or patient case analyzed) and saved",
+            preferredDuration: 45 * 60
+        ),
+        // palliativecare templates
+        SuggestedTemplate(
+            icon: "heart.fill",
+            task: "Study for the CHPN exam and review palliative care principles, pain management, symptom control, and end-of-life care",
+            successCriteria: "At least two palliative care topic areas reviewed (e.g., pain management, communication, symptom control, goals of care, grief support), practice questions attempted, and notes updated",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write up my palliative care or hospice nursing notes, care plan, or end-of-life care class assignment",
+            successCriteria: "Palliative care notes or assignment meaningfully advanced (care plan updated, symptom management goals documented, or assignment section drafted) and saved",
+            preferredDuration: 30 * 60
+        ),
+        // cognitivescience templates
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study for my cognitive science class exam and review cognitive modeling, language and cognition, and mind-brain theory",
+            successCriteria: "At least two cognitive science topic areas reviewed (e.g., cognitive architectures, attention models, language processing, consciousness theories), practice questions attempted, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write my cogsci paper or cognitive science assignment on human cognition, computational mind, or cognitive systems",
+            successCriteria: "Cognitive science paper meaningfully advanced (thesis stated, theoretical framework described, at least one section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

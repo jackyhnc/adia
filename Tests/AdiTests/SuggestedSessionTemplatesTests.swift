@@ -3704,4 +3704,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 463,
                 "catalog should have ≥463 templates after veterinarytechnology/dentalradiology/medicalscribing/communityhealth/toxicology additions")
     }
+
+    // MARK: - performanceanalysis templates
+    @Test func performanceanalysisTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasFilmAnalysis = tasks.contains { $0.localizedCaseInsensitiveContains("performance analysis") && ($0.localizedCaseInsensitiveContains("Dartfish") || $0.localizedCaseInsensitiveContains("Hudl") || $0.localizedCaseInsensitiveContains("game film") || $0.localizedCaseInsensitiveContains("match")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("performance analysis") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("notational") || $0.localizedCaseInsensitiveContains("coaching analytics")) }
+        #expect(hasFilmAnalysis, "catalog must include a performance analysis / game film template")
+        #expect(hasAssignment, "catalog must include a performance analysis class assignment template")
+    }
+
+    // MARK: - musicbusiness templates
+    @Test func musicbusinessTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("music business") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("royalt") || $0.localizedCaseInsensitiveContains("publishing")) }
+        let hasPaper = tasks.contains { $0.localizedCaseInsensitiveContains("music business") && ($0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("entertainment law")) }
+        #expect(hasExam, "catalog must include a music business exam study template")
+        #expect(hasPaper, "catalog must include a music business paper or assignment template")
+    }
+
+    // MARK: - dentalanesthesia templates
+    @Test func dentalanesthesiaTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCOMSExam = tasks.contains { ($0.localizedCaseInsensitiveContains("COMS") || $0.localizedCaseInsensitiveContains("DOCS") || $0.localizedCaseInsensitiveContains("dental anesthesia")) && $0.localizedCaseInsensitiveContains("exam") }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("dental anesthesia") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("sedation")) }
+        #expect(hasCOMSExam, "catalog must include a dental anesthesia board exam study template")
+        #expect(hasAssignment, "catalog must include a dental anesthesia class assignment template")
+    }
+
+    // MARK: - palliativecare templates
+    @Test func palliativecareTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCHPNExam = tasks.contains { ($0.localizedCaseInsensitiveContains("CHPN") || $0.localizedCaseInsensitiveContains("palliative care")) && $0.localizedCaseInsensitiveContains("exam") }
+        let hasNotes = tasks.contains { ($0.localizedCaseInsensitiveContains("palliative care") || $0.localizedCaseInsensitiveContains("hospice")) && ($0.localizedCaseInsensitiveContains("notes") || $0.localizedCaseInsensitiveContains("care plan") || $0.localizedCaseInsensitiveContains("assignment")) }
+        #expect(hasCHPNExam, "catalog must include a CHPN or palliative care exam study template")
+        #expect(hasNotes, "catalog must include a palliative care or hospice notes template")
+    }
+
+    // MARK: - cognitivescience templates
+    @Test func cognitivescienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("cognitive science") && $0.localizedCaseInsensitiveContains("exam") }
+        let hasPaper = tasks.contains { ($0.localizedCaseInsensitiveContains("cogsci") || $0.localizedCaseInsensitiveContains("cognitive science")) && ($0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("assignment")) }
+        #expect(hasExam, "catalog must include a cognitive science exam study template")
+        #expect(hasPaper, "catalog must include a cogsci paper or assignment template")
+    }
+
+    // MARK: - Count guard (performanceanalysis/musicbusiness/dentalanesthesia/palliativecare/cognitivescience)
+    @Test func catalogHasAtLeastFourHundredSeventyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 473,
+                "catalog should have ≥473 templates after performanceanalysis/musicbusiness/dentalanesthesia/palliativecare/cognitivescience additions")
+    }
 }
