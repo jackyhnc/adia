@@ -1,5 +1,73 @@
 # Adia — Build Progress
 
+## Run 344 (automated) — 2026-07-15 — 5 new keyword domains: blockchain, digitalmarketing, projectmanagement, riskmanagement, speechcommunication (423→433 templates)
+
+### What shipped
+
+**New keyword domain — blockchain:**
+- Branch positioned AFTER `artificialintelligence`, BEFORE `gamedev`.
+- Matches: blockchain class/course/exam/program/assignment/project/development/developer, blockchain technology + class/course/exam, blockchain programming/lab, smart contract/contracts, Solidity + class/course/exam/programming/project, Ethereum class/course/development, Web3 class/course/development/project, decentralized application/dApp development, DeFi class/course/project, NFT development/class/course, cryptocurrency class/course/exam, crypto class + exam/course/assignment, distributed ledger + class/course/technology, hyperledger/hyperledger fabric, consensus algorithm + blockchain/class/course context, proof of work/stake + class/course/blockchain context.
+- Guard: bare "crypto" or "bitcoin" alone NOT matched.
+- `blockchainCallouts(tier:)` 4/3/3: "your smart contract isn't going to write itself." / "blockchain developers don't build dApps by scrolling." / "CLOSE THIS. open your blockchain project."
+- 2 templates: "Build a smart contract or complete my blockchain development assignment using Solidity or Web3" (60 min) + "Study for my blockchain class exam and review distributed ledger, consensus algorithms, and smart contract concepts" (60 min)
+
+**New keyword domain — digitalmarketing:**
+- Branch positioned AFTER `publicrelations`, BEFORE `textilesfashion`.
+- Matches: digital marketing class/course/exam/certificate/program/degree/assignment, SEO class/course/certification, search engine optimization class/course, Google Analytics class/certification/exam, social media marketing class/course/exam/certification, content marketing class/course, email marketing class/course, PPC/SEM class/course/certification, pay-per-click class, marketing analytics class/course, Google Ads class/certification, Meta/Facebook Ads class, affiliate marketing class/course, conversion rate optimization + class context, influencer/growth marketing class/course, digital advertising class/course, inbound marketing class, HubSpot certification, marketing automation/funnel class.
+- Guard: "brand strategy"/"brand management" stays in startup (fires much earlier).
+- `digitalmarketingCallouts(tier:)` 4/3/3: "your SEO campaign isn't going to optimize itself." / "digital marketers don't earn certifications by scrolling." / "CLOSE THIS. open your digital marketing study guide."
+- 2 templates: "Study for my Google Analytics or digital marketing certification exam" (60 min) + "Complete my digital marketing assignment on SEO, content marketing, or social media strategy" (45 min)
+
+**New keyword domain — projectmanagement:**
+- Branch positioned AFTER `supplychain`, BEFORE `riskmanagement`/`business`.
+- Matches: PMP exam/certification/class, PMI-ACP, CAPM exam/cert/class, project management class/course/exam/certification/professional/program/degree/assignment, agile certification/class/course/exam/training, scrum master, scrum certification/class/course/exam, kanban class/course/certification, project charter + class/assignment context, work breakdown structure/WBS + class/assignment context, PMBOK, PRINCE2 + class/exam/cert, agile project management, sprint planning class.
+- Guard: bare "project" with generic coding context NOT matched.
+- `projectmanagementCallouts(tier:)` 4/3/3: "your PMP exam questions aren't going to answer themselves." / "project managers don't earn their PMP by scrolling." / "CLOSE THIS. open your PMP study guide."
+- 2 templates: "Study for the PMP, CAPM, or agile certification exam and review PMBOK concepts" (90 min) + "Complete my project management class assignment on project charter, WBS, or agile sprint planning" (60 min)
+
+**New keyword domain — riskmanagement:**
+- Branch positioned AFTER `projectmanagement`, BEFORE `business`.
+- Matches: risk management class/course/exam/certification/program/degree/assignment/professional, enterprise risk management/enterprise risk, ERM class/certification/framework, risk assessment class/course, risk analysis class/course, risk modeling class/course, RIMS certification/exam/class, CRM certification + risk context, risk framework + class/assignment, risk register + class/assignment/project, GRC class/course, governance risk compliance, operational/financial/cyber/IT risk class, ISO 31000 + class/assignment/exam.
+- Guard: bare "risk" alone NOT matched.
+- `riskmanagementCallouts(tier:)` 4/3/3: "your risk assessment isn't going to write itself." / "risk managers don't earn their RIMS certification by scrolling." / "CLOSE THIS. open your risk management study guide."
+- 2 templates: "Study for my RIMS-CRMP or enterprise risk management certification exam" (60 min) + "Complete my risk management class assignment on risk assessment, risk analysis, or GRC frameworks" (60 min)
+
+**New keyword domain — speechcommunication:**
+- Branch positioned AFTER `communicationstudies`, BEFORE `journalism`.
+- Matches: public speaking class/course/exam/assignment, speech class/course/exam + !speech therapy/!speech-language guard, debate class/course/exam/assignment/team/preparation, oral communication class/course/exam/assignment, speech and debate, competitive debate, parliamentary debate, speech forensics/forensics speech, Lincoln-Douglas debate, policy debate class, model UN speech, Toastmasters class/course, speech writing + class/course/assignment context, oratory/elocution class, public address class, persuasive/informative/impromptu speaking class/course, speech preparation + class context.
+- Guard: bare "speech" NOT matched; "speech therapy"/"speech-language" contexts do NOT fire (speechpathology fires earlier).
+- `speechcommunicationCallouts(tier:)` 4/3/3: "your speech isn't going to write itself." / "great speakers practice — they don't scroll." / "CLOSE THIS. open your speech notes."
+- 2 templates: "Write and rehearse my speech or public speaking class presentation" (45 min) + "Prepare my debate arguments and rebuttal points for my debate class or competitive event" (45 min)
+
+**Test updates:**
+- CalloutManagerTests.swift: 13569 → 13769 (+200: 8 tests per domain × 5 domains + count guard ≥433)
+- SuggestedSessionTemplatesTests.swift: +14 tests (2 template existence tests × 5 domains + count guard ≥433)
+
+**Template catalog: 423 → 433**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `blockchain` fires AFTER `artificialintelligence` (~line 282) and BEFORE `gamedev` (~line 310). "writing a smart contract in Solidity for my blockchain class assignment" → blockchain ✓; "bitcoin price is going up" → NOT blockchain ✓ (guard: no class/course/exam context)
+- `digitalmarketing` fires AFTER `publicrelations` (~line 1374) and BEFORE `textilesfashion`. "studying for my SEO certification exam on search engine optimization strategies" → digitalmarketing ✓; "developing a brand strategy for my startup pitch deck" → startup ✓ (fires much earlier)
+- `projectmanagement` fires AFTER `supplychain` (~line 1248) and BEFORE `riskmanagement`/`business`. "studying for the PMP exam and reviewing PMBOK knowledge areas" → projectmanagement ✓; "working on a coding project assignment" → NOT projectmanagement ✓ (guard: bare "project" not matched)
+- `riskmanagement` fires AFTER `projectmanagement` and BEFORE `business`. "studying enterprise risk management and ERM frameworks for my risk management class exam" → riskmanagement ✓; "thinking about the risk of a code deadline" → NOT riskmanagement ✓ (guard: bare "risk" not matched)
+- `speechcommunication` fires AFTER `communicationstudies` (~line 1309) and BEFORE `journalism`. "preparing my speech for my public speaking class presentation" → speechcommunication ✓; "writing up my speech therapy session notes" → speechpathology ✓ (fires earlier, guard also present)
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `informationsystems` — IS degree, MIS program, enterprise systems, SAP ERP class, systems analysis and design class, database systems class (distinct from pure CS/coding)
+  - `publicadministration` — MPA program, local government class, public policy implementation, nonprofit management class, administrative law class, civil service exam (distinct from policy branch)
+  - `internationalrelations` — IR theory class, foreign policy class, diplomatic studies, area studies, international organizations class, global governance class (distinct from socialscience where it currently falls)
+  - `performingarts` — acting class/course, theater production, musical theater, choreography class, dance technique, stage management, audition prep (distinct from musictheory/musicproduction)
+  - `culinaryarts` — check if culinary already exists (it does); pick another: `foodsafety` — ServSafe exam, food handler certification, food science safety class, HACCP class, food protection manager exam
+- Template count: 433 → 443 after next 5-domain batch
+- Estimated test count: ~13769 (CalloutManagerTests) + ~3486 (SuggestedSessionTemplatesTests) + ~560 other Swift tests
+
+---
+
 ## Run 343 (automated) — 2026-07-15 — 5 new keyword domains: robotics, artificialintelligence, osteopathicmedicine, epidemiology, bioethics (413→423 templates)
 
 ### What shipped
