@@ -2396,5 +2396,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target public health nutrition content reviewed (community assessment, WIC program guidelines, nutrition policy, maternal/infant nutrition, or food security concepts), notes saved",
             preferredDuration: 60 * 60
         ),
+        // plumbingtech templates
+        SuggestedTemplate(
+            icon: "wrench.adjustable.fill",
+            task: "Study for the journeyman or master plumber exam and review NCCER plumbing or plumbing code materials",
+            successCriteria: "Target plumbing content reviewed (plumbing code sections, pipe sizing, drainage systems, or NCCER exam questions practiced), notes saved for next session",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "drop.fill",
+            task: "Complete a plumbing technology class assignment on pipe systems, fittings, or plumbing code compliance",
+            successCriteria: "Assignment completed (pipe system diagrams drawn, code compliance questions answered, or lab report written), and work saved",
+            preferredDuration: 45 * 60
+        ),
+        // electricaltechnology templates
+        SuggestedTemplate(
+            icon: "bolt.fill",
+            task: "Study for the journeyman or master electrician exam and review NEC code sections for my electrical apprenticeship",
+            successCriteria: "Target electrical content reviewed (NEC code articles, wiring methods, load calculations, or journeyman exam questions practiced), notes saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "powerplug.fill",
+            task: "Complete an electrical theory or electrical code assignment for my electrician program or IBEW apprenticeship",
+            successCriteria: "Assignment completed (code compliance problems solved, wiring diagrams drawn, electrical theory questions answered), and work saved",
+            preferredDuration: 45 * 60
+        ),
+        // materialscience templates
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Complete a materials science lab report or problem set on phase diagrams, mechanical properties, or crystallography",
+            successCriteria: "Lab report or problem set completed (phase diagrams interpreted, mechanical property calculations done, or crystallography analysis written), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cube.fill",
+            task: "Study for my materials science or materials engineering exam and review metallurgy, polymer science, or composite materials",
+            successCriteria: "Target materials content reviewed (phase diagrams, mechanical properties, polymer chains, composite structures, or metallurgy concepts), notes saved",
+            preferredDuration: 60 * 60
+        ),
+        // networkengineering templates
+        SuggestedTemplate(
+            icon: "network",
+            task: "Study for the CCNA, CCNP, or CompTIA Network+ exam and review networking concepts and protocols",
+            successCriteria: "Target networking content reviewed (subnetting, routing protocols, switching, or CCNA/Network+ exam questions practiced), notes saved for next session",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "antenna.radiowaves.left.and.right",
+            task: "Complete a network engineering assignment on IP addressing, routing protocols, or network infrastructure design",
+            successCriteria: "Assignment completed (network diagrams drawn, IP addressing scheme designed, routing configuration written, or lab scenario completed), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        // environmentalhealth templates
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Study for the REHS exam or complete an environmental health science class assignment on food safety, water quality, or environmental toxicology",
+            successCriteria: "Target environmental health content reviewed (REHS prep, food safety regulations, water quality standards, or environmental toxicology concepts), notes saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "magnifyingglass.circle.fill",
+            task: "Write an environmental health report or case study on community environmental health assessment or public health inspection protocols",
+            successCriteria: "Environmental health report or case study written (community assessment completed, inspection protocols documented, or policy analysis finished), and work saved",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

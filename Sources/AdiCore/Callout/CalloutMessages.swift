@@ -253,6 +253,11 @@ extension CalloutManager {
         case "aquaticscience":              return aquaticscienceCallouts(tier: tier)
         case "emergencynursing":            return emergencynursingCallouts(tier: tier)
         case "publichealthnutrition":       return publichealthnutritionCallouts(tier: tier)
+        case "plumbingtech":                return plumbingtechCallouts(tier: tier)
+        case "electricaltechnology":        return electricaltechnologyCallouts(tier: tier)
+        case "materialscience":             return materialscienceCallouts(tier: tier)
+        case "networkengineering":          return networkengineeringCallouts(tier: tier)
+        case "environmentalhealth":         return environmentalhealthCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -4545,6 +4550,111 @@ extension CalloutManager {
             "CLOSE THIS. open your public health nutrition notes.",
             "no one serves their community by scrolling.",
             "CLOSE THIS. get back to your community nutrition work.",
+        ]
+        }
+    }
+
+    private func plumbingtechCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those plumbing code questions aren't going to answer themselves.",
+            "your plumber exam isn't going to study itself.",
+            "close this and open your plumbing notes.",
+            "get back to your plumbing program coursework.",
+        ]
+        case 2: return [
+            "journeyman plumbers don't earn their license by scrolling.",
+            "your plumbing code notes won't write themselves.",
+            "stop avoiding your plumbing coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your plumbing technology notes.",
+            "no one passes the journeyman plumber exam by scrolling.",
+            "plumbers don't get licensed by browsing.",
+        ]
+        }
+    }
+
+    private func electricaltechnologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those NEC code questions aren't going to answer themselves.",
+            "your journeyman exam isn't going to study itself.",
+            "close this and open your electrical code notes.",
+            "get back to your electrician program coursework.",
+        ]
+        case 2: return [
+            "journeyman electricians don't earn their license by scrolling.",
+            "your NEC code notes won't write themselves.",
+            "stop avoiding your electrician coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your electrical technology notes.",
+            "no one passes the journeyman electrician exam by scrolling.",
+            "electricians don't get licensed by browsing.",
+        ]
+        }
+    }
+
+    private func materialscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those phase diagrams aren't going to study themselves.",
+            "your materials science lab report won't write itself.",
+            "close this and open your materials science notes.",
+            "get back to your materials engineering coursework.",
+        ]
+        case 2: return [
+            "materials engineers don't master phase diagrams by scrolling.",
+            "your crystallography notes won't write themselves.",
+            "stop avoiding your materials science coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your materials science notes.",
+            "no one masters metallurgy by scrolling.",
+            "CLOSE THIS. get back to your materials engineering lab report.",
+        ]
+        }
+    }
+
+    private func networkengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those CCNA questions aren't going to answer themselves.",
+            "your network exam isn't going to study itself.",
+            "close this and open your networking notes.",
+            "get back to your networking coursework.",
+        ]
+        case 2: return [
+            "network engineers don't earn their CCNA by scrolling.",
+            "your networking lab notes won't write themselves.",
+            "stop avoiding your networking coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your networking notes.",
+            "no one passes the CCNA by scrolling.",
+            "CLOSE THIS. get back to your network engineering lab or exam prep.",
+        ]
+        }
+    }
+
+    private func environmentalhealthCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those REHS questions aren't going to answer themselves.",
+            "your environmental health exam isn't going to study itself.",
+            "close this and open your environmental health notes.",
+            "get back to your environmental health coursework.",
+        ]
+        case 2: return [
+            "environmental health specialists don't earn their REHS by scrolling.",
+            "your environmental health notes won't write themselves.",
+            "stop avoiding your environmental health coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your environmental health notes.",
+            "no one passes the REHS exam by scrolling.",
+            "CLOSE THIS. get back to your environmental health science assignment.",
         ]
         }
     }

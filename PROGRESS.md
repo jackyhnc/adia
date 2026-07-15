@@ -15125,3 +15125,61 @@ None. Swift toolchain unavailable on Linux container.
   - `cosmetologyadvanced` — advanced cosmetology specialties: barbering theory, esthetics board exam, nail tech exam (separate from the broad cosmetology branch)
 - Template count: 345 → 355 after next 5-domain batch
 - Estimated test count: 1919 (CalloutManagerTests) + ~670 additional from other test files ≈ 2589+ total Swift tests
+
+---
+
+## Run 337 — 5 new keyword domains: plumbingtech, electricaltechnology, materialscience, networkengineering, environmentalhealth
+
+### What was done
+Added 5 new keyword domains across CalloutManager.swift, CalloutMessages.swift, SuggestedSessionTemplates.swift, CalloutManagerTests.swift, and SuggestedSessionTemplatesTests.swift. Also fixed a critical bug in CalloutManagerTests.swift where the template count guard used `.catalog` (nonexistent) instead of `.all`.
+
+**Bug fix:**
+- CalloutManagerTests.swift line 12563: `SuggestedSessionTemplates.catalog.count >= 375` → `SuggestedSessionTemplates.all.count >= 383`; test renamed `suggestedTemplatesCountAtLeast383()`
+
+**New keyword branches in CalloutManager.swift:**
+1. `plumbingtech` — BEFORE `automotivetech` (~line 545). Matches: plumbing technology/tech, journeyman plumber, master plumber exam/class, NCCER plumbing, plumbing code class/exam, plumber exam/license, plumbing apprentice/plumber apprentice, plumbing school/certification/license/notes/class/course/lab. Bare "plumbing" alone NOT matched.
+2. `electricaltechnology` — BETWEEN `plumbingtech` and `automotivetech`. Matches: journeyman/master electrician exam/class, electrician exam/apprentice/apprenticeship, electrical apprentice/apprenticeship, IBEW/NJATC training, NEC code + class/course/exam/study, national electrical code + class/course/exam, electrical code class/exam/study, electrician class/course/program/school/certification/license, electrical theory class/course. Guard: "electrical engineering" / "computer engineering" NOT matched here (fire in engineering branch later).
+3. `materialscience` — BETWEEN `industrialsafety` and `engineering`. Matches: materials science/engineering, material science/engineering, materials science and engineering, metallurgy, metallurgical engineering, ceramics + class/course/exam/lab/engineering, polymer science/chemistry/engineering + class/course/exam, composite materials + class/course/exam/lab, nanomaterials/nanotechnology + class/course/exam, crystallography + class/course/exam, crystal structure + class/course/lab, phase diagram + class/course/lab, corrosion engineering + class/course, thermodynamics of materials, electronic/magnetic materials + class/course, MEMS + class/course/lab, thin film + lab + materials, MSE + class/course/exam/lab. Guard: bare "ceramics" (art context) NOT matched.
+4. `networkengineering` — AFTER `cybersecurity`, BEFORE `gamedev`. Matches: CCNA/CCNP/CCIE (word), network+/network plus/CompTIA network, cisco networking/IOS + class/course/exam/lab, cisco class/course/exam/certification, cisco router/switch + class/lab, network protocols class/course/exam, subnetting class/exam, routing and switching, network engineering/administration class/course/exam, WAN/LAN class/course, networking class/course/exam/program/certification/lab, OSPF/BGP/EIGRP + class/course/exam, IP addressing class/course, firewall class/configuration class, network infrastructure class. Guard: bare "network" alone NOT matched.
+5. `environmentalhealth` — AFTER `publichealthnutrition`, BEFORE `publicheath`. Matches: environmental health + class/course/exam/program/science/major/degree/certification, REHS (word)/exam/certification, registered environmental health specialist, sanitarian (word)/exam/certification, environmental health science/officer, food inspection/inspector class/course, food safety inspector class/exam, environmental toxicology class/course/exam, environmental epidemiology class/course, water quality testing class/course, environmental health law/policy class, occupational and environmental health + class/course/exam, community environmental health.
+
+**New callout pools in CalloutMessages.swift:**
+- Added 5 dispatch cases before `default:` in the switch
+- Added 5 private callout functions: `plumbingtechCallouts`, `electricaltechnologyCallouts`, `materialscienceCallouts`, `networkengineeringCallouts`, `environmentalhealthCallouts` (each: tier 1 = 4 msgs, tier 2 = 3 msgs, tier 3 = 3 msgs)
+
+**New templates in SuggestedSessionTemplates.swift (10 total, 373 → 383):**
+- plumbingtech: "Study for the journeyman or master plumber exam..." (60 min, wrench.adjustable.fill) + "Complete a plumbing technology class assignment..." (45 min, drop.fill)
+- electricaltechnology: "Study for the journeyman or master electrician exam..." (60 min, bolt.fill) + "Complete an electrical theory or electrical code assignment..." (45 min, powerplug.fill)
+- materialscience: "Complete a materials science lab report..." (60 min, atom) + "Study for my materials science or materials engineering exam..." (60 min, cube.fill)
+- networkengineering: "Study for the CCNA, CCNP, or CompTIA Network+ exam..." (90 min, network) + "Complete a network engineering assignment..." (60 min, antenna.radiowaves.left.and.right)
+- environmentalhealth: "Study for the REHS exam..." (60 min, leaf.fill) + "Write an environmental health report..." (45 min, magnifyingglass.circle.fill)
+
+**New tests in CalloutManagerTests.swift (~60 new tests):**
+- 5 domains × ~12 tests each: keyword routing (2 positive), callout tier non-empty, tier 1 ≥4 messages, none empty, tier 3 contains CLOSE THIS
+- Count guard updated: `suggestedTemplatesCountAtLeast383()` checking `.all >= 383`
+
+**New tests in SuggestedSessionTemplatesTests.swift:**
+- 5 domain template existence tests (2 assertions each)
+- New count guard: `catalogHasAtLeastThreeHundredEightyThreeTemplates()` checking `.all >= 383`
+
+**Test counts:**
+- CalloutManagerTests.swift: 2040 → ~2100 (+60: ~12 tests per domain × 5 domains)
+- SuggestedSessionTemplatesTests.swift: +5 template existence tests + ≥383 count guard
+
+**Template catalog: 373 → 383**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `plumbingtech` fires BEFORE `automotivetech`. "journeyman plumber exam NCCER plumbing code class" → plumbingtech ✓; "ASE certification automotive technology auto mechanics" → automotivetech ✓
+- `electricaltechnology` fires BEFORE `automotivetech` and AFTER `plumbingtech`. "journeyman electrician exam NEC code IBEW apprenticeship" → electricaltechnology ✓; "electrical engineering circuit design FEA" → engineering ✓
+- `materialscience` fires BEFORE `engineering`. "materials science phase diagram lab report metallurgy" → materialscience ✓; "SolidWorks CAD mechanical engineering" → engineering ✓
+- `networkengineering` fires AFTER `cybersecurity` and BEFORE `gamedev`. "CCNA exam subnetting routing protocols networking class" → networkengineering ✓; "network security penetration testing Kali Linux" → cybersecurity ✓
+- `environmentalhealth` fires BEFORE `publicheath`. "REHS exam environmental health class food safety" → environmentalhealth ✓; "public health epidemiology MPH program" → publicheath ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains not yet covered.
+- Template count: 383 confirmed.
+- Estimated test count: ~2100 (CalloutManagerTests) + other test files.

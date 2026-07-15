@@ -138,6 +138,32 @@ public final class CalloutManager {
             || lower.contains("network forensics") || lower.contains("cryptography lab") {
             return "cybersecurity"
         }
+        // networkengineering — positioned AFTER cybersecurity (which owns network security/forensics)
+        // and BEFORE gamedev. Catches CCNA/CCNP/CCIE cert prep, CompTIA Network+, IBEW networking
+        // coursework, and networking class/course/exam terms. Bare "network" alone NOT matched.
+        if word("ccna") || word("ccnp") || word("ccie")
+            || lower.contains("network+") || lower.contains("network plus") || lower.contains("comptia network")
+            || lower.contains("cisco networking") || lower.contains("cisco ios")
+            && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("cisco class") || lower.contains("cisco course") || lower.contains("cisco exam")
+            || lower.contains("cisco certification")
+            || (lower.contains("cisco router") || lower.contains("cisco switch")) && (lower.contains("class") || lower.contains("lab"))
+            || lower.contains("network protocols class") || lower.contains("network protocols course") || lower.contains("network protocols exam")
+            || lower.contains("subnetting class") || lower.contains("subnetting exam")
+            || lower.contains("routing and switching")
+            || lower.contains("network engineering class") || lower.contains("network engineering course") || lower.contains("network engineering exam")
+            || lower.contains("network administration class") || lower.contains("network administration course") || lower.contains("network administration exam")
+            || lower.contains("wan class") || lower.contains("lan class") || lower.contains("wan course") || lower.contains("lan course")
+            || lower.contains("networking class") || lower.contains("networking course") || lower.contains("networking exam")
+            || lower.contains("networking program") || lower.contains("networking certification") || lower.contains("networking lab")
+            || (word("ospf") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (word("bgp") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (word("eigrp") && (lower.contains("class") || lower.contains("course")))
+            || lower.contains("ip addressing class") || lower.contains("ip addressing course")
+            || lower.contains("firewall class") || lower.contains("firewall configuration class")
+            || lower.contains("network infrastructure class") {
+            return "networkengineering"
+        }
         // gamedev — positioned before code so Unity/Godot/engine terms don't fall through to code.
         // "game plan" is not matched because no specific tool name or game-dev phrase fires.
         if word("unity") || word("godot") || lower.contains("unreal engine")
@@ -541,6 +567,38 @@ public final class CalloutManager {
             || lower.contains("env eng") || lower.contains("environ eng") {
             return "environmentalengineering"
         }
+        // plumbingtech — positioned BEFORE automotivetech so journeyman/master plumber exam prep,
+        // NCCER plumbing coursework, plumbing code classes, and plumbing apprenticeship route here.
+        // Bare "plumbing" alone NOT matched — requires program/certification/class/exam context.
+        if lower.contains("plumbing technology") || lower.contains("plumbing tech")
+            || lower.contains("journeyman plumber") || lower.contains("master plumber exam") || lower.contains("master plumber class")
+            || lower.contains("nccer plumbing")
+            || lower.contains("plumbing code class") || lower.contains("plumbing code exam")
+            || lower.contains("plumber exam") || lower.contains("plumber license")
+            || lower.contains("plumbing apprentice") || lower.contains("plumber apprentice")
+            || (lower.contains("plumbing program") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("notes") || lower.contains("lab")))
+            || lower.contains("plumbing school") || lower.contains("plumbing certification") || lower.contains("plumbing license")
+            || lower.contains("plumbing notes") || lower.contains("plumbing class") || lower.contains("plumbing course")
+            || lower.contains("plumbing lab") {
+            return "plumbingtech"
+        }
+        // electricaltechnology — positioned AFTER plumbingtech and BEFORE automotivetech.
+        // Catches journeyman/master electrician exam prep, NEC code classes, IBEW/NJATC training,
+        // and electrician apprenticeship programs. "electrical engineering" and "computer engineering"
+        // are NOT matched here — those fire in the engineering branch later.
+        if lower.contains("journeyman electrician") || lower.contains("master electrician exam") || lower.contains("master electrician class")
+            || lower.contains("electrician exam") || lower.contains("electrician apprentice") || lower.contains("electrician apprenticeship")
+            || lower.contains("electrical apprentice") || lower.contains("electrical apprenticeship")
+            || lower.contains("ibew training") || word("ibew")
+            || lower.contains("njatc training") || word("njatc")
+            || (lower.contains("nec code") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("study")))
+            || (lower.contains("national electrical code") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || lower.contains("electrical code class") || lower.contains("electrical code exam") || lower.contains("electrical code study")
+            || lower.contains("electrician class") || lower.contains("electrician course") || lower.contains("electrician program")
+            || lower.contains("electrician school") || lower.contains("electrician certification") || lower.contains("electrician license")
+            || lower.contains("electrical theory class") || lower.contains("electrical theory course") {
+            return "electricaltechnology"
+        }
         // automotivetech — positioned BEFORE hvactechnology so ASE certification, engine diagnostics,
         // and automotive service programs route here. "automotive engineering" and "automotive design"
         // already caught by engineering/design branches that fire earlier.
@@ -625,6 +683,32 @@ public final class CalloutManager {
             || lower.contains("industrial safety class") || lower.contains("industrial safety course")
             || lower.contains("industrial safety exam") || lower.contains("industrial safety program") {
             return "industrialsafety"
+        }
+        // materialscience — positioned AFTER industrialsafety and BEFORE engineering.
+        // Catches MSE coursework, metallurgy, polymer science, ceramics (in engineering context),
+        // composite materials, nanomaterials, and phase diagram labs. "ceramics" alone (art context)
+        // NOT matched — requires class/course/exam/lab/engineering qualifier.
+        if lower.contains("materials science") || lower.contains("materials engineering")
+            || lower.contains("material science") || lower.contains("material engineering")
+            || lower.contains("materials science and engineering")
+            || lower.contains("metallurgy") || lower.contains("metallurgical engineering")
+            || (lower.contains("ceramics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("engineering")))
+            || (lower.contains("polymer science") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || lower.contains("polymer chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("polymer engineering")
+            || (lower.contains("composite materials") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab")))
+            || (lower.contains("nanomaterials") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("nanotechnology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("crystallography") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("crystal structure") && (lower.contains("class") || lower.contains("course") || lower.contains("lab")))
+            || (lower.contains("phase diagram") && (lower.contains("class") || lower.contains("course") || lower.contains("lab")))
+            || (lower.contains("corrosion engineering") && (lower.contains("class") || lower.contains("course")))
+            || lower.contains("thermodynamics of materials")
+            || (lower.contains("electronic materials") || lower.contains("magnetic materials")) && (lower.contains("class") || lower.contains("course"))
+            || (word("mems") && (lower.contains("class") || lower.contains("course") || lower.contains("lab")))
+            || (lower.contains("thin film") && lower.contains("lab") && lower.contains("material"))
+            || (word("mse") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))) {
+            return "materialscience"
         }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
@@ -3158,6 +3242,26 @@ public final class CalloutManager {
             || lower.contains("community dietitian") || lower.contains("community dietetics")
             || lower.contains("population nutrition") || lower.contains("global nutrition") {
             return "publichealthnutrition"
+        }
+        // environmentalhealth — positioned AFTER publichealthnutrition and BEFORE publicheath.
+        // Catches REHS exam prep, sanitarian certification, food inspection class, environmental
+        // toxicology/epidemiology coursework, and occupational/environmental health programs.
+        // "environmental health" terms here intercept before publicheath's bare catch-all.
+        if (lower.contains("environmental health") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program") || lower.contains("science") || lower.contains("major") || lower.contains("degree") || lower.contains("certification")))
+            || word("rehs") || lower.contains("rehs exam") || lower.contains("rehs certification")
+            || lower.contains("registered environmental health specialist")
+            || word("sanitarian") || lower.contains("sanitarian exam") || lower.contains("sanitarian certification")
+            || lower.contains("environmental health science") || lower.contains("environmental health officer")
+            || lower.contains("food inspection class") || lower.contains("food inspection course")
+            || lower.contains("food inspector class") || lower.contains("food safety inspector class")
+            || lower.contains("food safety inspector exam")
+            || lower.contains("environmental toxicology class") || lower.contains("environmental toxicology course") || lower.contains("environmental toxicology exam")
+            || lower.contains("environmental epidemiology class") || lower.contains("environmental epidemiology course")
+            || lower.contains("water quality testing class") || lower.contains("water quality testing course")
+            || lower.contains("environmental health law") || lower.contains("environmental health policy class")
+            || (lower.contains("occupational and environmental health") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || lower.contains("community environmental health") {
+            return "environmentalhealth"
         }
         // publicheath — positioned after therapy (clinical context) and before socialscience.
         // Catches MPH programs, epidemiology, community/global health, outbreak investigation,

@@ -3251,4 +3251,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 365,
                 "catalog should have ≥365 templates after certifiedfinancialplanner/soilscience/industrialsafety/foodsafety/appliedmusic additions")
     }
+
+    // MARK: - Plumbing Technology templates
+    @Test func plumbingtechTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("plumber exam") || $0.localizedCaseInsensitiveContains("journeyman") && $0.localizedCaseInsensitiveContains("plumb") }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("plumbing technology") || $0.localizedCaseInsensitiveContains("plumbing code") && $0.localizedCaseInsensitiveContains("assignment") }
+        #expect(hasExam, "catalog must include a journeyman/master plumber exam study template")
+        #expect(hasAssignment, "catalog must include a plumbing technology class assignment template")
+    }
+
+    // MARK: - Electrical Technology templates
+    @Test func electricaltechnologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("electrician exam") || $0.localizedCaseInsensitiveContains("journeyman") && $0.localizedCaseInsensitiveContains("electric") }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("IBEW") || $0.localizedCaseInsensitiveContains("electrical theory") || $0.localizedCaseInsensitiveContains("electrician program") }
+        #expect(hasExam, "catalog must include a journeyman/master electrician exam study template")
+        #expect(hasAssignment, "catalog must include an electrical theory or IBEW apprenticeship assignment template")
+    }
+
+    // MARK: - Materials Science templates
+    @Test func materialscienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasLab = tasks.contains { $0.localizedCaseInsensitiveContains("materials science") && ($0.localizedCaseInsensitiveContains("lab report") || $0.localizedCaseInsensitiveContains("phase diagram") || $0.localizedCaseInsensitiveContains("crystallography")) }
+        let hasExam = tasks.contains { ($0.localizedCaseInsensitiveContains("materials science") || $0.localizedCaseInsensitiveContains("materials engineering")) && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("metallurgy") || $0.localizedCaseInsensitiveContains("polymer")) }
+        #expect(hasLab, "catalog must include a materials science lab report or problem set template")
+        #expect(hasExam, "catalog must include a materials science or materials engineering exam study template")
+    }
+
+    // MARK: - Network Engineering templates
+    @Test func networkengineeringTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCCNA = tasks.contains { $0.localizedCaseInsensitiveContains("CCNA") || $0.localizedCaseInsensitiveContains("Network+") || $0.localizedCaseInsensitiveContains("CCNP") }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("network engineering") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("IP addressing") || $0.localizedCaseInsensitiveContains("routing")) }
+        #expect(hasCCNA, "catalog must include a CCNA/CCNP/Network+ exam study template")
+        #expect(hasAssignment, "catalog must include a network engineering assignment template")
+    }
+
+    // MARK: - Environmental Health templates
+    @Test func environmentalhealthTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasREHS = tasks.contains { $0.localizedCaseInsensitiveContains("REHS") || $0.localizedCaseInsensitiveContains("environmental health science") && $0.localizedCaseInsensitiveContains("food safety") }
+        let hasReport = tasks.contains { $0.localizedCaseInsensitiveContains("environmental health report") || $0.localizedCaseInsensitiveContains("community environmental health") }
+        #expect(hasREHS, "catalog must include a REHS exam or environmental health science assignment template")
+        #expect(hasReport, "catalog must include an environmental health report or case study template")
+    }
+
+    // MARK: - Count guard (5-domain batch: plumbingtech/electricaltechnology/materialscience/networkengineering/environmentalhealth)
+    @Test func catalogHasAtLeastThreeHundredEightyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 383,
+                "catalog should have ≥383 templates after plumbingtech/electricaltechnology/materialscience/networkengineering/environmentalhealth additions")
+    }
 }
