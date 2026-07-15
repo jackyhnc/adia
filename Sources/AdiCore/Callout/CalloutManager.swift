@@ -5020,6 +5020,116 @@ public final class CalloutManager {
             || word("litigation") || word("motions") {
             return "legal"
         }
+        // architecturaldesign — positioned BEFORE interiordesign and architecture so
+        // portfolio/charrette/design-competition phrases route here instead of the
+        // technical-drawing messages in the architecture branch.
+        if lower.contains("architecture portfolio") || lower.contains("architectural portfolio")
+            || lower.contains("design charrette") || lower.contains("design charette")
+            || lower.contains("design-build") && (lower.contains("architecture") || lower.contains("studio") || lower.contains("project") || lower.contains("class"))
+            || lower.contains("design build") && (lower.contains("architecture") || lower.contains("studio") || lower.contains("project") || lower.contains("class"))
+            || lower.contains("architectural competition") || lower.contains("architecture competition")
+            || lower.contains("building design competition")
+            || lower.contains("schematic design") && !lower.contains("software") && !lower.contains("database") && !lower.contains("system")
+            || lower.contains("design development") && (lower.contains("architect") || lower.contains("building") || lower.contains("studio"))
+            || lower.contains("architectural concept") || lower.contains("design concept") && lower.contains("architect")
+            || lower.contains("concept design") && lower.contains("architect")
+            || lower.contains("architectural presentation") || lower.contains("architecture presentation")
+            || lower.contains("architecture portfolio") || lower.contains("arch portfolio")
+            || lower.contains("building typology") || lower.contains("building typologies")
+            || lower.contains("program diagram") && (lower.contains("architect") || lower.contains("building") || lower.contains("studio"))
+            || lower.contains("bubble diagram") && (lower.contains("architect") || lower.contains("studio") || lower.contains("building"))
+            || lower.contains("parti diagram") || lower.contains("design parti")
+            || lower.contains("massing model") || lower.contains("architectural massing")
+            || lower.contains("section perspective") && (lower.contains("architect") || lower.contains("studio"))
+            || lower.contains("architectural drawing set") || lower.contains("working drawing set") && lower.contains("architect") {
+            return "architecturaldesign"
+        }
+        // historicpreservation — positioned BEFORE landscapearchitecture and architecture so
+        // preservation-specific terms (HABS, NRHP, adaptive reuse) route here.
+        if lower.contains("historic preservation") || lower.contains("historical preservation")
+            || lower.contains("preservation architect") || lower.contains("preservation architecture")
+            || lower.contains("adaptive reuse") || lower.contains("building rehabilitation") && lower.contains("histor")
+            || lower.contains("building rehab") && lower.contains("histor")
+            || lower.contains("habs documentation") || lower.contains("haer documentation") || word("habs") || word("haer")
+            || lower.contains("national register of historic places") || lower.contains("nrhp")
+            || lower.contains("secretary of the interior standards") || lower.contains("secretary of interior standards")
+            || lower.contains("historic district") && (lower.contains("class") || lower.contains("course") || lower.contains("project") || lower.contains("exam") || lower.contains("study") || lower.contains("plan") || lower.contains("survey"))
+            || lower.contains("historic structure report") || lower.contains("historic resources survey")
+            || lower.contains("preservation planning") || lower.contains("heritage conservation")
+            || lower.contains("heritage preservation") || lower.contains("built heritage")
+            || lower.contains("preservation technology") || lower.contains("preservation program") && !lower.contains("software")
+            || lower.contains("historic building") && (lower.contains("class") || lower.contains("course") || lower.contains("survey") || lower.contains("documentation") || lower.contains("analysis"))
+            || lower.contains("preservation class") || lower.contains("preservation course") || lower.contains("preservation exam")
+            || lower.contains("preservation school") || lower.contains("preservation degree")
+            || lower.contains("building conservation") && !lower.contains("energy") {
+            return "historicpreservation"
+        }
+        // sustainabledesign — positioned BEFORE architecture so LEED, passive house, and net-zero
+        // design terms route here rather than to the generic architecture messages.
+        if lower.contains("leed certification") || lower.contains("leed exam") || lower.contains("leed ap")
+            || lower.contains("leed project") || lower.contains("leed credit") || lower.contains("leed rating")
+            || lower.contains("leed class") || lower.contains("leed course") || lower.contains("leed study")
+            || lower.contains("passive house") || lower.contains("passivhaus") || lower.contains("passive design") && !lower.contains("electronics") && !lower.contains("signal")
+            || lower.contains("net-zero energy") || lower.contains("net zero energy") || lower.contains("net zero building") || lower.contains("net-zero building")
+            || lower.contains("zero energy building") || lower.contains("zero-energy building")
+            || lower.contains("biophilic design") || lower.contains("biophilic architecture")
+            || lower.contains("living building challenge") || word("lbc") && lower.contains("building")
+            || lower.contains("well certification") || lower.contains("well building") || lower.contains("well standard")
+            || lower.contains("sustainable architecture") || lower.contains("green architecture")
+            || lower.contains("sustainable building") || lower.contains("green building design")
+            || lower.contains("sustainable design class") || lower.contains("sustainable design course") || lower.contains("sustainable design exam")
+            || lower.contains("sustainable design project") || lower.contains("sustainable design studio")
+            || lower.contains("energy modeling") && (lower.contains("architect") || lower.contains("building") || lower.contains("design") || lower.contains("class"))
+            || lower.contains("daylighting analysis") || lower.contains("daylight analysis") && lower.contains("design")
+            || lower.contains("embodied carbon") && (lower.contains("architect") || lower.contains("building") || lower.contains("design") || lower.contains("class"))
+            || lower.contains("carbon neutral design") || lower.contains("carbon-neutral design")
+            || lower.contains("green roof design") || lower.contains("living roof") && lower.contains("design")
+            || lower.contains("solar design") && (lower.contains("architect") || lower.contains("building") || lower.contains("class"))
+            || lower.contains("thermal performance") && (lower.contains("architect") || lower.contains("building") || lower.contains("class") || lower.contains("design")) {
+            return "sustainabledesign"
+        }
+        // exhibitdesign — positioned BEFORE graphicdesign and architecture so exhibit/museum/trade
+        // show design tasks route here instead of generic design messages.
+        if lower.contains("exhibit design") || lower.contains("exhibition design")
+            || lower.contains("museum exhibit") || lower.contains("museum design")
+            || lower.contains("gallery design") || lower.contains("gallery installation")
+            || lower.contains("trade show exhibit") || lower.contains("trade show design") || lower.contains("trade show booth")
+            || lower.contains("display design") && !lower.contains("web") && !lower.contains("digital") && !lower.contains("ui") && !lower.contains("screen")
+            || lower.contains("interpretive design") || lower.contains("interpretive exhibit")
+            || lower.contains("exhibit installation") || lower.contains("exhibition installation")
+            || lower.contains("visitor experience design")
+            || lower.contains("museum curation") && lower.contains("design")
+            || lower.contains("exhibit label") || lower.contains("exhibit copy") && lower.contains("design")
+            || lower.contains("exhibition panel") || lower.contains("exhibition graphic")
+            || lower.contains("pop-up exhibit") || lower.contains("pop up exhibit")
+            || lower.contains("immersive exhibit") || lower.contains("interactive exhibit")
+            || lower.contains("wayfinding design") || lower.contains("wayfinding signage")
+            || lower.contains("environmental graphic") && (lower.contains("design") || lower.contains("class") || lower.contains("project"))
+            || lower.contains("exhibit design class") || lower.contains("exhibit design course") || lower.contains("exhibit design program") {
+            return "exhibitdesign"
+        }
+        // lightingdesign — positioned BEFORE architecture and interiordesign so lighting-specific
+        // terms (NCQLP, luminaire, photometric) route here rather than to architecture messages.
+        if lower.contains("lighting design") || lower.contains("architectural lighting")
+            || lower.contains("theatrical lighting") || lower.contains("stage lighting")
+            || word("ncqlp") || lower.contains("lighting certified")
+            || lower.contains("well lighting") && lower.contains("design")
+            || lower.contains("luminaire") || lower.contains("luminaires") || lower.contains("luminaire specification")
+            || lower.contains("photometric analysis") || lower.contains("photometric calculation") || lower.contains("photometric plan")
+            || lower.contains("daylighting design") || lower.contains("daylighting study") && lower.contains("design")
+            || lower.contains("light fixture specification") || lower.contains("lighting specification")
+            || lower.contains("ies lighting") || lower.contains("ies standard") && lower.contains("lighting")
+            || lower.contains("lighting plan") && (lower.contains("design") || lower.contains("class") || lower.contains("project") || lower.contains("architect") || lower.contains("interior"))
+            || lower.contains("lighting layout") && (lower.contains("design") || lower.contains("class") || lower.contains("project"))
+            || lower.contains("lighting class") || lower.contains("lighting course") || lower.contains("lighting exam") || lower.contains("lighting program")
+            || lower.contains("theatrical lighting design") || lower.contains("stage lighting design")
+            || lower.contains("concert lighting") || lower.contains("event lighting design")
+            || lower.contains("lighting simulation") || lower.contains("lighting software") && (lower.contains("design") || lower.contains("class"))
+            || lower.contains("dimming system") && (lower.contains("design") || lower.contains("class") || lower.contains("lighting"))
+            || lower.contains("color temperature") && (lower.contains("lighting") || lower.contains("design") || lower.contains("class"))
+            || lower.contains("lighting level") && (lower.contains("design") || lower.contains("class") || lower.contains("space")) {
+            return "lightingdesign"
+        }
         // interiordesign — positioned BEFORE the architecture branch so "interior design",
         // "space planning", and NCIDQ don't fall through to the building-architecture messages.
         if lower.contains("interior design") || lower.contains("interior designer")

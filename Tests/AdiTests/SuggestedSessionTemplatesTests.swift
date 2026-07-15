@@ -3917,4 +3917,77 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 495,
                 "catalog should have ≥495 templates after criminallaw/civilprocedure/constitutionallaw/evidencelaw/tortlaw additions")
     }
+
+    // MARK: - architecturaldesign
+    @Test func architecturaldesignTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPortfolio = tasks.contains {
+            $0.localizedCaseInsensitiveContains("architecture portfolio") || $0.localizedCaseInsensitiveContains("architectural portfolio")
+        }
+        let hasDesign = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("architectural design") || $0.localizedCaseInsensitiveContains("design concept")) &&
+            ($0.localizedCaseInsensitiveContains("studio") || $0.localizedCaseInsensitiveContains("drawing") || $0.localizedCaseInsensitiveContains("concept"))
+        }
+        #expect(hasPortfolio, "catalog must include an architecture portfolio template")
+        #expect(hasDesign, "catalog must include an architectural design concept or studio template")
+    }
+
+    // MARK: - historicpreservation
+    @Test func historicpreservationTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasSurvey = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("historic preservation") || $0.localizedCaseInsensitiveContains("HABS")) &&
+            ($0.localizedCaseInsensitiveContains("survey") || $0.localizedCaseInsensitiveContains("documentation") || $0.localizedCaseInsensitiveContains("report"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("historic preservation") && $0.localizedCaseInsensitiveContains("exam")
+        }
+        #expect(hasSurvey, "catalog must include a historic preservation survey or documentation template")
+        #expect(hasStudy, "catalog must include a historic preservation exam study template")
+    }
+
+    // MARK: - sustainabledesign
+    @Test func sustainabledesignTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasLEED = tasks.contains {
+            $0.localizedCaseInsensitiveContains("LEED") &&
+            ($0.localizedCaseInsensitiveContains("project") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("class"))
+        }
+        #expect(hasLEED, "catalog must include a LEED project or exam template")
+    }
+
+    // MARK: - exhibitdesign
+    @Test func exhibitdesignTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExhibit = tasks.contains {
+            $0.localizedCaseInsensitiveContains("exhibit") &&
+            ($0.localizedCaseInsensitiveContains("design") || $0.localizedCaseInsensitiveContains("museum") || $0.localizedCaseInsensitiveContains("installation"))
+        }
+        let hasLabel = tasks.contains {
+            $0.localizedCaseInsensitiveContains("exhibit") &&
+            ($0.localizedCaseInsensitiveContains("label") || $0.localizedCaseInsensitiveContains("interpretive") || $0.localizedCaseInsensitiveContains("wayfinding"))
+        }
+        #expect(hasExhibit, "catalog must include an exhibit design or museum installation template")
+        #expect(hasLabel, "catalog must include an exhibit label or interpretive text template")
+    }
+
+    // MARK: - lightingdesign
+    @Test func lightingdesignTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasLightingPlan = tasks.contains {
+            $0.localizedCaseInsensitiveContains("lighting") &&
+            ($0.localizedCaseInsensitiveContains("design") || $0.localizedCaseInsensitiveContains("photometric") || $0.localizedCaseInsensitiveContains("plan"))
+        }
+        let hasNCQLPExam = tasks.contains {
+            $0.localizedCaseInsensitiveContains("NCQLP") || ($0.localizedCaseInsensitiveContains("lighting") && $0.localizedCaseInsensitiveContains("exam"))
+        }
+        #expect(hasLightingPlan, "catalog must include a lighting design plan or photometric template")
+        #expect(hasNCQLPExam, "catalog must include a lighting exam or NCQLP template")
+    }
+
+    // MARK: - Count guard (architecturaldesign/historicpreservation/sustainabledesign/exhibitdesign/lightingdesign)
+    @Test func catalogHasAtLeastFiveHundredFiveTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 505,
+                "catalog should have ≥505 templates after architecturaldesign/historicpreservation/sustainabledesign/exhibitdesign/lightingdesign additions")
+    }
 }

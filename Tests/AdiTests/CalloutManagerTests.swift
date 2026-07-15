@@ -15139,4 +15139,223 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast495() {
         #expect(SuggestedSessionTemplates.all.count >= 495, "template catalog must have ≥495 entries after adding criminallaw/civilprocedure/constitutionallaw/evidencelaw/tortlaw (10 templates)")
     }
+
+    // MARK: - architecturaldesign
+    @Test func architecturaldesignKeywordFromPortfolio() {
+        let kw = CalloutManager.extractTaskKeyword(from: "building out my architecture portfolio with design drawings and project narratives")
+        #expect(kw == "architecturaldesign", "architecture portfolio should route to architecturaldesign")
+    }
+    @Test func architecturaldesignKeywordFromCharrette() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing for the design charrette — working on concept sketches and parti diagrams")
+        #expect(kw == "architecturaldesign", "design charrette should route to architecturaldesign")
+    }
+    @Test func architecturaldesignKeywordFromSchematic() {
+        let kw = CalloutManager.extractTaskKeyword(from: "finishing schematic design drawings for my architecture studio project")
+        #expect(kw == "architecturaldesign", "schematic design for architecture studio should route to architecturaldesign")
+    }
+    @Test func architecturaldesignKeywordFromCompetition() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my architectural competition submission — floor plans and concept narrative")
+        #expect(kw == "architecturaldesign", "architectural competition should route to architecturaldesign")
+    }
+    @Test @MainActor func architecturaldesignCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "architecturaldesign", tier: tier)
+            #expect(!msgs.isEmpty, "architecturaldesign tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func architecturaldesignTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "architecturaldesign", tier: 1)
+        #expect(msgs.count >= 4, "architecturaldesign tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func architecturaldesignNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "architecturaldesign", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "architecturaldesign tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func architecturaldesignTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "architecturaldesign", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "architecturaldesign tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - historicpreservation
+    @Test func historicpreservationKeywordFromPreservation() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my historic preservation report for a 19th century building")
+        #expect(kw == "historicpreservation", "historic preservation report should route to historicpreservation")
+    }
+    @Test func historicpreservationKeywordFromHABS() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing HABS documentation for the historic structure in my preservation class")
+        #expect(kw == "historicpreservation", "HABS documentation should route to historicpreservation")
+    }
+    @Test func historicpreservationKeywordFromNRHP() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing a National Register of Historic Places nomination for my preservation program")
+        #expect(kw == "historicpreservation", "NRHP nomination should route to historicpreservation")
+    }
+    @Test func historicpreservationKeywordFromAdaptiveReuse() {
+        let kw = CalloutManager.extractTaskKeyword(from: "designing an adaptive reuse project converting a historic mill into housing")
+        #expect(kw == "historicpreservation", "adaptive reuse should route to historicpreservation")
+    }
+    @Test @MainActor func historicpreservationCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "historicpreservation", tier: tier)
+            #expect(!msgs.isEmpty, "historicpreservation tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func historicpreservationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "historicpreservation", tier: 1)
+        #expect(msgs.count >= 4, "historicpreservation tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func historicpreservationNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "historicpreservation", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "historicpreservation tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func historicpreservationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "historicpreservation", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "historicpreservation tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - sustainabledesign
+    @Test func sustainabledesignKeywordFromLEED() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for the LEED AP exam — reviewing energy modeling and sustainable design credits")
+        #expect(kw == "sustainabledesign", "LEED AP exam study should route to sustainabledesign")
+    }
+    @Test func sustainabledesignKeywordFromPassiveHouse() {
+        let kw = CalloutManager.extractTaskKeyword(from: "designing a passive house with high R-value walls and triple-glazed windows")
+        #expect(kw == "sustainabledesign", "passive house design should route to sustainabledesign")
+    }
+    @Test func sustainabledesignKeywordFromNetZero() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my net-zero energy building design studio project")
+        #expect(kw == "sustainabledesign", "net-zero energy building design should route to sustainabledesign")
+    }
+    @Test func sustainabledesignKeywordFromEmbodiedCarbon() {
+        let kw = CalloutManager.extractTaskKeyword(from: "calculating embodied carbon for my sustainable architecture class assignment")
+        #expect(kw == "sustainabledesign", "embodied carbon architecture class should route to sustainabledesign")
+    }
+    @Test @MainActor func sustainabledesignCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "sustainabledesign", tier: tier)
+            #expect(!msgs.isEmpty, "sustainabledesign tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func sustainabledesignTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "sustainabledesign", tier: 1)
+        #expect(msgs.count >= 4, "sustainabledesign tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func sustainabledesignNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "sustainabledesign", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "sustainabledesign tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func sustainabledesignTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "sustainabledesign", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "sustainabledesign tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - exhibitdesign
+    @Test func exhibitdesignKeywordFromMuseumExhibit() {
+        let kw = CalloutManager.extractTaskKeyword(from: "designing a museum exhibit on natural history with wayfinding and interpretive panels")
+        #expect(kw == "exhibitdesign", "museum exhibit design should route to exhibitdesign")
+    }
+    @Test func exhibitdesignKeywordFromExhibitionDesign() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my exhibition design project for the gallery installation")
+        #expect(kw == "exhibitdesign", "exhibition design project should route to exhibitdesign")
+    }
+    @Test func exhibitdesignKeywordFromTradeShow() {
+        let kw = CalloutManager.extractTaskKeyword(from: "planning the trade show exhibit booth layout and display design")
+        #expect(kw == "exhibitdesign", "trade show exhibit display design should route to exhibitdesign")
+    }
+    @Test func exhibitdesignKeywordFromInterpretiveDesign() {
+        let kw = CalloutManager.extractTaskKeyword(from: "creating interpretive exhibit panels and visitor experience flow for the science center")
+        #expect(kw == "exhibitdesign", "interpretive exhibit panels should route to exhibitdesign")
+    }
+    @Test @MainActor func exhibitdesignCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "exhibitdesign", tier: tier)
+            #expect(!msgs.isEmpty, "exhibitdesign tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func exhibitdesignTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "exhibitdesign", tier: 1)
+        #expect(msgs.count >= 4, "exhibitdesign tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func exhibitdesignNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "exhibitdesign", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "exhibitdesign tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func exhibitdesignTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "exhibitdesign", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "exhibitdesign tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - lightingdesign
+    @Test func lightingdesignKeywordFromLightingDesign() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my lighting design plan with photometric calculations for the office space")
+        #expect(kw == "lightingdesign", "lighting design plan with photometric calculations should route to lightingdesign")
+    }
+    @Test func lightingdesignKeywordFromNCQLPExam() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for the NCQLP lighting certified exam — reviewing luminaire types and photometrics")
+        #expect(kw == "lightingdesign", "NCQLP lighting certified exam should route to lightingdesign")
+    }
+    @Test func lightingdesignKeywordFromTheatricalLighting() {
+        let kw = CalloutManager.extractTaskKeyword(from: "designing theatrical lighting for my stage lighting class production")
+        #expect(kw == "lightingdesign", "theatrical lighting stage lighting class should route to lightingdesign")
+    }
+    @Test func lightingdesignKeywordFromLuminaire() {
+        let kw = CalloutManager.extractTaskKeyword(from: "specifying luminaires and writing the lighting specification for the interior design project")
+        #expect(kw == "lightingdesign", "luminaire specification for interior design should route to lightingdesign")
+    }
+    @Test @MainActor func lightingdesignCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "lightingdesign", tier: tier)
+            #expect(!msgs.isEmpty, "lightingdesign tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func lightingdesignTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "lightingdesign", tier: 1)
+        #expect(msgs.count >= 4, "lightingdesign tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func lightingdesignNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "lightingdesign", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "lightingdesign tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func lightingdesignTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "lightingdesign", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "lightingdesign tier 3 must contain CLOSE THIS")
+    }
+    @Test func lightingdesignFiresBeforeArchitecture() {
+        let kw = CalloutManager.extractTaskKeyword(from: "creating my lighting design plan and luminaire schedule for the architectural project")
+        #expect(kw == "lightingdesign", "lighting design plan with luminaire schedule should fire lightingdesign before architecture")
+    }
+
+    // MARK: - Count guard (batch: architecturaldesign/historicpreservation/sustainabledesign/exhibitdesign/lightingdesign)
+    @Test func suggestedTemplatesCountAtLeast505() {
+        #expect(SuggestedSessionTemplates.all.count >= 505, "template catalog must have ≥505 entries after adding architecturaldesign/historicpreservation/sustainabledesign/exhibitdesign/lightingdesign (10 templates)")
+    }
 }

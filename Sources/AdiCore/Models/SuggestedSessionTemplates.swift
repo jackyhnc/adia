@@ -3176,5 +3176,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "At least two torts topic areas reviewed (e.g., negligence, intentional torts, proximate cause, strict liability, defenses), case law reviewed, notes updated",
             preferredDuration: 60 * 60
         ),
+        // architecturaldesign
+        SuggestedTemplate(
+            icon: "pencil.and.ruler.fill",
+            task: "Develop my architectural design concept and produce design drawings for my studio project",
+            successCriteria: "Design concept developed (parti/concept statement drafted), at least one design drawing or diagram produced and saved (plan, section, or elevation sketch)",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.richtext.fill",
+            task: "Build out my architecture portfolio with project documentation and design narrative",
+            successCriteria: "At least one portfolio project advanced (drawings selected or updated, design narrative drafted or refined, layout adjusted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // historicpreservation
+        SuggestedTemplate(
+            icon: "building.columns.fill",
+            task: "Complete my historic preservation survey or HABS documentation for a historic structure",
+            successCriteria: "Survey or documentation meaningfully advanced (at least one structure researched, photos cataloged, or HABS form sections completed and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study for my historic preservation exam — review the Secretary of Interior Standards, NRHP criteria, adaptive reuse principles, and preservation technology",
+            successCriteria: "At least two preservation topic areas reviewed (e.g., SOI standards, NRHP criteria, adaptive reuse, materials conservation), notes updated",
+            preferredDuration: 60 * 60
+        ),
+        // sustainabledesign
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Work on my LEED project documentation or sustainable design studio assignment",
+            successCriteria: "LEED scorecard or sustainable design deliverable meaningfully advanced (at least one credit category documented, energy model run, or design section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study for the LEED exam or a sustainable design class — review passive design, energy modeling, net-zero strategies, and green building rating systems",
+            successCriteria: "At least two sustainable design topic areas reviewed (e.g., passive design, energy modeling, LEED credits, biophilic design, embodied carbon), notes updated",
+            preferredDuration: 60 * 60
+        ),
+        // exhibitdesign
+        SuggestedTemplate(
+            icon: "theatermasks.fill",
+            task: "Design an exhibit layout, visitor experience flow, or museum installation plan",
+            successCriteria: "Exhibit design meaningfully advanced (floor plan or visitor flow diagram drafted, panel layout or display concept developed, and at least one deliverable saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.richtext.fill",
+            task: "Write exhibit label copy, interpretive text, or wayfinding signage content for my museum or gallery project",
+            successCriteria: "At least two exhibit labels or a wayfinding sign system section drafted (text written, edited for reading level, and saved in the working document)",
+            preferredDuration: 45 * 60
+        ),
+        // lightingdesign
+        SuggestedTemplate(
+            icon: "lightbulb.fill",
+            task: "Develop a lighting design plan or photometric analysis for my architectural or theatrical lighting project",
+            successCriteria: "Lighting plan or photometric calculation meaningfully advanced (fixture schedule drafted, lighting zones defined, or photometric report generated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study for the NCQLP lighting certification exam or a lighting design class — review luminaire types, photometric principles, daylighting, and lighting standards",
+            successCriteria: "At least two lighting topic areas reviewed (e.g., photometrics, daylighting, luminaire types, color temperature, IES standards), notes updated",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

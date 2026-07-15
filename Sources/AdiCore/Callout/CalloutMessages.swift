@@ -313,6 +313,11 @@ extension CalloutManager {
         case "constitutionallaw":     return constitutionallawCallouts(tier: tier)
         case "evidencelaw":           return evidencelawCallouts(tier: tier)
         case "tortlaw":               return tortlawCallouts(tier: tier)
+        case "architecturaldesign":   return architecturaldesignCallouts(tier: tier)
+        case "historicpreservation":  return historicpreservationCallouts(tier: tier)
+        case "sustainabledesign":     return sustainabledesignCallouts(tier: tier)
+        case "exhibitdesign":         return exhibitdesignCallouts(tier: tier)
+        case "lightingdesign":        return lightingdesignCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -5865,6 +5870,111 @@ extension CalloutManager {
             "CLOSE THIS. open your torts notes.",
             "CLOSE THIS. your torts exam is real.",
             "CLOSE THIS. you have negligence elements to master."
+        ]
+        }
+    }
+
+    private func architecturaldesignCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that design concept isn't going to develop itself.",
+            "your architecture portfolio isn't going to build itself.",
+            "the charrette doesn't wait — close this and design.",
+            "your studio critic won't be impressed if you haven't drawn anything."
+        ]
+        case 2: return [
+            "no one wins a design competition by scrolling.",
+            "close this and get back to your design drawings.",
+            "your schematic isn't going to sketch itself."
+        ]
+        default: return [
+            "CLOSE THIS. open your design files.",
+            "CLOSE THIS. your architecture portfolio needs you.",
+            "CLOSE THIS. the design deadline is real."
+        ]
+        }
+    }
+
+    private func historicpreservationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those historic structures aren't going to document themselves.",
+            "your preservation report isn't going to write itself.",
+            "history is patient — your deadline isn't. close this.",
+            "the Secretary of Interior Standards won't memorize themselves."
+        ]
+        case 2: return [
+            "no one earns their preservation credential by scrolling.",
+            "close this and get back to your preservation work.",
+            "your HABS documentation isn't going to finish itself."
+        ]
+        default: return [
+            "CLOSE THIS. open your preservation project.",
+            "CLOSE THIS. your historic survey is waiting.",
+            "CLOSE THIS. those buildings deserve your attention."
+        ]
+        }
+    }
+
+    private func sustainabledesignCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that LEED scorecard isn't going to fill itself.",
+            "passive design requires active effort — close this and work.",
+            "net-zero doesn't happen by scrolling.",
+            "your energy model isn't going to run itself."
+        ]
+        case 2: return [
+            "no one passes the LEED exam by scrolling.",
+            "close this and get back to your sustainable design project.",
+            "the planet needs you focused — close this."
+        ]
+        default: return [
+            "CLOSE THIS. open your LEED project.",
+            "CLOSE THIS. your sustainable design work is waiting.",
+            "CLOSE THIS. net-zero takes real work."
+        ]
+        }
+    }
+
+    private func exhibitdesignCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that exhibit isn't going to design itself.",
+            "your museum installation isn't going to plan itself.",
+            "visitors deserve a great experience — close this and design it.",
+            "that trade show booth won't design itself."
+        ]
+        case 2: return [
+            "no one designs a great exhibit by scrolling.",
+            "close this and get back to your exhibit project.",
+            "your gallery installation won't come together on its own."
+        ]
+        default: return [
+            "CLOSE THIS. open your exhibit design files.",
+            "CLOSE THIS. your installation deadline is real.",
+            "CLOSE THIS. that museum exhibit needs you."
+        ]
+        }
+    }
+
+    private func lightingdesignCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those luminaires aren't going to specify themselves.",
+            "your lighting plan isn't going to draw itself.",
+            "NCQLP prep doesn't happen by scrolling.",
+            "that photometric analysis isn't going to run itself."
+        ]
+        case 2: return [
+            "no one earns their lighting credential by scrolling.",
+            "close this and get back to your lighting design.",
+            "your light fixture schedule won't write itself."
+        ]
+        default: return [
+            "CLOSE THIS. open your lighting design files.",
+            "CLOSE THIS. your photometric plan is waiting.",
+            "CLOSE THIS. that lighting spec needs you."
         ]
         }
     }

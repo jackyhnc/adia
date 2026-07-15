@@ -1,5 +1,49 @@
 # Adia — Build Progress
 
+## Run 348 (automated) — 2026-07-15 — 5 new keyword domains: architecturaldesign, historicpreservation, sustainabledesign, exhibitdesign, lightingdesign (495→505 templates)
+
+### What shipped
+
+**New keyword domain — architecturaldesign:**
+- Branch positioned BEFORE `interiordesign`, `landscapearchitecture`, and `architecture`.
+- Matches: architecture portfolio, architectural portfolio, design charrette, design-build+arch/studio/project/class, architectural competition, architecture competition, building design competition, schematic design (guarded against software/database/system), design development+arch/building/studio, architectural concept, design concept+arch, concept design+arch, architectural/architecture presentation, arch portfolio, building typology, program/bubble diagram+arch/studio, parti diagram, design parti, massing model, architectural massing, section perspective+arch/studio, architectural drawing set.
+- `architecturaldesignCallouts(tier:)` 4/3/3: "that design concept isn't going to develop itself." / "no one wins a design competition by scrolling." / "CLOSE THIS. open your design files."
+- 2 templates: "Develop my architectural design concept and produce design drawings for my studio project" (90 min) + "Build out my architecture portfolio with project documentation and design narrative" (60 min)
+
+**New keyword domain — historicpreservation:**
+- Branch positioned BEFORE `landscapearchitecture` and `architecture`.
+- Matches: historic preservation, historical preservation, preservation architect/architecture, adaptive reuse, building rehabilitation+histor, HABS documentation, HAER documentation, word("habs"), word("haer"), NRHP, Secretary of Interior Standards, historic district+edu/project/survey, historic structure report, historic resources survey, preservation planning, heritage conservation/preservation, built heritage, preservation technology/program/class/course/exam/school/degree, historic building+class/course/survey/documentation/analysis, building conservation (guarded against energy context).
+- `historicpreservationCallouts(tier:)` 4/3/3: "those historic structures aren't going to document themselves." / "no one earns their preservation credential by scrolling." / "CLOSE THIS. open your preservation project."
+- 2 templates: "Complete my historic preservation survey or HABS documentation for a historic structure" (60 min) + "Study for my historic preservation exam — review the Secretary of Interior Standards, NRHP criteria, adaptive reuse principles, and preservation technology" (60 min)
+
+**New keyword domain — sustainabledesign:**
+- Branch positioned BEFORE `interiordesign`, `landscapearchitecture`, and `architecture`.
+- Matches: LEED certification/exam/AP/project/credit/rating/class/course/study, passive house, passivhaus, passive design (guarded against electronics/signal), net-zero energy, net zero energy/building, zero energy building, biophilic design/architecture, Living Building Challenge, word("lbc")+building, WELL certification/building/standard, sustainable architecture, green architecture, sustainable/green building design, sustainable design class/course/exam/project/studio, energy modeling+arch/building/design/class, daylighting analysis, daylight analysis+design, embodied carbon+arch/building/design/class, carbon neutral/carbon-neutral design, green roof design, living roof+design, solar design+arch/building/class, thermal performance+arch/building/class/design.
+- `sustainabledesignCallouts(tier:)` 4/3/3: "that LEED scorecard isn't going to fill itself." / "no one passes the LEED exam by scrolling." / "CLOSE THIS. open your LEED project."
+- 2 templates: "Work on my LEED project documentation or sustainable design studio assignment" (60 min) + "Study for the LEED exam or a sustainable design class" (60 min)
+
+**New keyword domain — exhibitdesign:**
+- Branch positioned BEFORE `interiordesign` and `architecture`.
+- Matches: exhibit design, exhibition design, museum exhibit/design, gallery design/installation, trade show exhibit/design/booth, display design (guarded against web/digital/ui/screen), interpretive design/exhibit, exhibit installation, exhibition installation, visitor experience design, museum curation+design, exhibit label, exhibit copy+design, exhibition panel/graphic, pop-up exhibit, immersive/interactive exhibit, wayfinding design/signage, environmental graphic+design/class/project, exhibit design class/course/program.
+- `exhibitdesignCallouts(tier:)` 4/3/3: "that exhibit isn't going to design itself." / "no one designs a great exhibit by scrolling." / "CLOSE THIS. open your exhibit design files."
+- 2 templates: "Design an exhibit layout, visitor experience flow, or museum installation plan" (60 min) + "Write exhibit label copy, interpretive text, or wayfinding signage content for my museum or gallery project" (45 min)
+
+**New keyword domain — lightingdesign:**
+- Branch positioned BEFORE `interiordesign`, `landscapearchitecture`, and `architecture`.
+- Matches: lighting design, architectural lighting, theatrical/stage lighting, word("ncqlp"), lighting certified, WELL lighting+design, luminaire/luminaires/luminaire specification, photometric analysis/calculation/plan, daylighting design, daylighting study+design, light fixture specification, lighting specification, IES lighting, IES standard+lighting, lighting plan+design/class/project/arch/interior, lighting layout+design/class/project, lighting class/course/exam/program, theatrical/stage lighting design, concert lighting, event lighting design, lighting simulation, lighting software+design/class, dimming system+design/class/lighting, color temperature+lighting/design/class, lighting level+design/class/space.
+- `lightingdesignCallouts(tier:)` 4/3/3: "those luminaires aren't going to specify themselves." / "no one earns their lighting credential by scrolling." / "CLOSE THIS. open your lighting design files."
+- 2 templates: "Develop a lighting design plan or photometric analysis for my architectural or theatrical lighting project" (60 min) + "Study for the NCQLP lighting certification exam or a lighting design class" (60 min)
+
+### Metrics
+- Template count: 495 → 505 (+10)
+- CalloutManagerTests: +41 tests (8 per domain + 1 false-positive guard for lightingdesign + count guard ≥505)
+- SuggestedSessionTemplatesTests: +11 tests (1–2 domain existence tests per domain + count guard ≥505)
+- Files changed: CalloutManager.swift, CalloutMessages.swift, SuggestedSessionTemplates.swift, CalloutManagerTests.swift, SuggestedSessionTemplatesTests.swift, GOAL.md, PROGRESS.md
+
+### Next agent candidates
+- "architecturalhistory + constructionlaw + facilitymanagement + buildingscience + acousticsdesign" — 5 additional built-environment sub-domains not yet covered
+- "industrialdesign + productpackaging + brandstrategy_standalone + UXwriting + serviceddesign" — design sub-domains
+
 ## Run 347 (automated) — 2026-07-15 — 5 new keyword domains: criminallaw, civilprocedure, constitutionallaw, evidencelaw, tortlaw (485→495 templates)
 
 ### What shipped
