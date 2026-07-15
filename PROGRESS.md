@@ -15183,3 +15183,66 @@ None. Swift toolchain unavailable on Linux container.
 - Continue adding keyword domains not yet covered.
 - Template count: 383 confirmed.
 - Estimated test count: ~2100 (CalloutManagerTests) + other test files.
+
+
+---
+
+## Run — 2026-07-15
+
+### What shipped
+**5 new keyword domains: plumbingtech, electricaltechnology, materialscience, networkengineering, environmentalhealth**
+
+**Bug fix:** `SuggestedSessionTemplates.catalog` → `.all` in CalloutManagerTests.swift (`.catalog` property does not exist; compile error fixed). Count guard updated ≥375 → ≥383.
+
+**New keyword domain — plumbingtech:**
+- Branch positioned BEFORE `automotivetech`; catches journeyman/master plumber exam prep, NCCER plumbing coursework, plumbing code classes, and plumbing apprenticeship programs. Bare "plumbing" alone NOT matched.
+- `plumbingtechCallouts(tier:)` 4/3/3: "those plumbing code questions aren't going to answer themselves." / "no one passes the journeyman plumber exam by scrolling." / "CLOSE THIS. open your plumbing technology notes."
+- 2 templates: "Study for the journeyman or master plumber exam and review NCCER plumbing or plumbing code materials" (60 min) + "Complete a plumbing technology class assignment on pipe systems, fittings, or plumbing code compliance" (45 min)
+
+**New keyword domain — electricaltechnology:**
+- Branch positioned BETWEEN plumbingtech and automotivetech; catches journeyman/master electrician exam prep, NEC code classes, IBEW/NJATC training, and electrician apprenticeship programs. "electrical engineering" stays in engineering branch.
+- `electricaltechnologyCallouts(tier:)` 4/3/3: "those NEC code questions aren't going to answer themselves." / "no one passes the journeyman electrician exam by scrolling." / "CLOSE THIS. open your electrical technology notes."
+- 2 templates: "Study for the journeyman or master electrician exam and review NEC code sections for my electrical apprenticeship" (60 min) + "Complete an electrical theory or electrical code assignment for my electrician program or IBEW apprenticeship" (45 min)
+
+**New keyword domain — materialscience:**
+- Branch positioned AFTER `industrialsafety`, BEFORE `engineering`; catches MSE coursework, metallurgy, polymer science, ceramics in engineering context (art ceramics NOT matched), composite materials, nanomaterials, phase diagram labs, crystallography, MEMS class.
+- `materialscienceCallouts(tier:)` 4/3/3: "those phase diagrams aren't going to study themselves." / "no one masters metallurgy by scrolling." / "CLOSE THIS. open your materials science notes."
+- 2 templates: "Complete a materials science lab report or problem set on phase diagrams, mechanical properties, or crystallography" (60 min) + "Study for my materials science or materials engineering exam and review metallurgy, polymer science, or composite materials" (60 min)
+
+**New keyword domain — networkengineering:**
+- Branch positioned AFTER `cybersecurity`, BEFORE `gamedev`; catches CCNA/CCNP/CCIE (word match), CompTIA Network+, Cisco networking/IOS class/exam, routing and switching, network protocols class, subnetting class, networking class/course/exam/certification/lab, OSPF/BGP/EIGRP + educational context. Bare "network" alone NOT matched.
+- `networkengineeringCallouts(tier:)` 4/3/3: "those CCNA questions aren't going to answer themselves." / "no one passes the CCNA by scrolling." / "CLOSE THIS. open your networking notes."
+- 2 templates: "Study for the CCNA, CCNP, or CompTIA Network+ exam and review networking concepts and protocols" (90 min) + "Complete a network engineering assignment on IP addressing, routing protocols, or network infrastructure design" (60 min)
+
+**New keyword domain — environmentalhealth:**
+- Branch positioned AFTER `publichealthnutrition`, BEFORE `publicheath`; intercepts environmental health terms before publicheath's catch-all. Catches REHS/sanitarian exam/cert, environmental health science/officer, food inspection class, environmental toxicology/epidemiology class, water quality testing class, community environmental health.
+- `environmentalhealthCallouts(tier:)` 4/3/3: "those REHS questions aren't going to answer themselves." / "no one passes the REHS exam by scrolling." / "CLOSE THIS. open your environmental health notes."
+- 2 templates: "Study for the REHS exam or complete an environmental health science class assignment on food safety, water quality, or environmental toxicology" (60 min) + "Write an environmental health report or case study on community environmental health assessment or public health inspection protocols" (45 min)
+
+**Test counts:**
+- CalloutManagerTests.swift: 12566 → 12751 (+185: 8 tests per domain × 5 domains + 1 count guard rename)
+- SuggestedSessionTemplatesTests.swift: 3254 → 3305 (+51: 2 template existence tests × 5 domains + count guard ≥383)
+
+**Template catalog: 373 → 383**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `plumbingtech` fires BEFORE `automotivetech` (~line 570 vs ~line 607). "journeyman plumber exam NCCER plumbing code" → plumbingtech ✓; "ASE certification automotive technology" → automotivetech ✓
+- `electricaltechnology` fires BETWEEN plumbingtech and automotivetech (~line 585). "journeyman electrician NEC code IBEW apprenticeship" → electricaltechnology ✓; "electrical engineering SolidWorks mechanical" → engineering ✓
+- `materialscience` fires BEFORE `engineering` (~line 687 vs ~line 714). "materials science phase diagram metallurgy lab" → materialscience ✓; "SolidWorks mechanical engineering FEA" → engineering ✓; "art ceramics studio" → art ✓ (ceramics guard requires class/course/engineering context)
+- `networkengineering` fires AFTER `cybersecurity` (~line 141 vs ~line 139). "CCNA exam subnetting routing and switching" → networkengineering ✓; "penetration testing OSCP cybersecurity" → cybersecurity ✓
+- `environmentalhealth` fires BEFORE `publicheath` (~line 3246 vs ~line 3270). "REHS exam environmental health science food inspection" → environmentalhealth ✓; "MPH epidemiology community health" → publicheath ✓
+- False positives: "electrical engineering design project" → engineering (electricaltechnology requires electrician/apprentice/NEC/IBEW terms, NOT bare "electrical engineering") ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `quantumcomputing` — quantum computing class, quantum algorithms, Qiskit, quantum circuit, quantum gates, IBM quantum, quantum programming
+  - `cloudcomputing` — AWS cloud class (guarded against AWS welding), Azure certification, GCP certification, cloud computing class/exam, DevOps class, Terraform class, Kubernetes class
+  - `softwaretesting` — QA engineering, software testing class, test automation, Selenium, Jest/PyTest/JUnit in class context, software quality assurance
+  - `dataengineering` — data engineering, Apache Spark/Kafka/Airflow class, ETL class, data pipeline class, dbt class, data warehouse class
+  - `mechanicaldrafting` — drafting class, blueprint reading, technical drawing, CAD drafting (separate from full engineering CAD)
+- Template count: 383 → 393 after next 5-domain batch
+- Estimated test count: 12751 CalloutManagerTests + ~555 other Swift tests
