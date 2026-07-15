@@ -3653,4 +3653,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 453,
                 "catalog should have ≥453 templates after informationsystems/businessintelligence/internationalrelations/publicadministration/laborlaw additions")
     }
+
+    // MARK: - Veterinary technology templates
+    @Test func veterinarytechnologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasVTNE = tasks.contains { $0.localizedCaseInsensitiveContains("VTNE") || ($0.localizedCaseInsensitiveContains("vet tech") && $0.localizedCaseInsensitiveContains("exam")) }
+        let hasVetTechAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("veterinary technology") || ($0.localizedCaseInsensitiveContains("vet tech") && $0.localizedCaseInsensitiveContains("assignment")) }
+        #expect(hasVTNE, "catalog must include a VTNE or vet tech exam study template")
+        #expect(hasVetTechAssignment, "catalog must include a veterinary technology class assignment template")
+    }
+
+    // MARK: - Dental radiology templates
+    @Test func dentalradiologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasDANBRHS = tasks.contains { $0.localizedCaseInsensitiveContains("DANB RHS") || ($0.localizedCaseInsensitiveContains("dental radiography") && $0.localizedCaseInsensitiveContains("exam")) }
+        let hasDentalRadClass = tasks.contains { $0.localizedCaseInsensitiveContains("dental radiography") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("class")) }
+        #expect(hasDANBRHS, "catalog must include a DANB RHS dental radiography exam template")
+        #expect(hasDentalRadClass, "catalog must include a dental radiography class assignment template")
+    }
+
+    // MARK: - Medical scribing templates
+    @Test func medicalscribingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasScribePractice = tasks.contains { $0.localizedCaseInsensitiveContains("medical scribing") || ($0.localizedCaseInsensitiveContains("patient encounter") && $0.localizedCaseInsensitiveContains("note")) }
+        let hasScribeCert = tasks.contains { $0.localizedCaseInsensitiveContains("scribe certification") || ($0.localizedCaseInsensitiveContains("medical scribe") && $0.localizedCaseInsensitiveContains("certification")) }
+        #expect(hasScribePractice, "catalog must include a medical scribing practice template")
+        #expect(hasScribeCert, "catalog must include a medical scribe certification study template")
+    }
+
+    // MARK: - Community health templates
+    @Test func communityhealthTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCHES = tasks.contains { $0.localizedCaseInsensitiveContains("CHES") || ($0.localizedCaseInsensitiveContains("CHW") && $0.localizedCaseInsensitiveContains("certification")) }
+        let hasCHWAssignment = tasks.contains { ($0.localizedCaseInsensitiveContains("community health") || $0.localizedCaseInsensitiveContains("CHW")) && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("outreach")) }
+        #expect(hasCHES, "catalog must include a CHES or CHW certification study template")
+        #expect(hasCHWAssignment, "catalog must include a community health / CHW class assignment template")
+    }
+
+    // MARK: - Toxicology templates
+    @Test func toxicologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasToxExam = tasks.contains { $0.localizedCaseInsensitiveContains("toxicology") && $0.localizedCaseInsensitiveContains("exam") }
+        let hasToxAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("toxicology") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("lab report") || $0.localizedCaseInsensitiveContains("forensic")) }
+        #expect(hasToxExam, "catalog must include a toxicology exam study template")
+        #expect(hasToxAssignment, "catalog must include a toxicology assignment or lab report template")
+    }
+
+    // MARK: - Count guard (veterinarytechnology/dentalradiology/medicalscribing/communityhealth/toxicology)
+    @Test func catalogHasAtLeastFourHundredSixtyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 463,
+                "catalog should have ≥463 templates after veterinarytechnology/dentalradiology/medicalscribing/communityhealth/toxicology additions")
+    }
 }

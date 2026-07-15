@@ -2729,6 +2729,22 @@ public final class CalloutManager {
             || (lower.contains("farm management") && (lower.contains("livestock") || lower.contains("animal") || lower.contains("production"))) {
             return "animalhusbandry"
         }
+        // veterinarytechnology — positioned BEFORE veterinary so vet tech programs, VTNE exam
+        // prep, and veterinary technician school tasks get a dedicated pool separate from the
+        // DVM/veterinary medicine pool. "vet tech" and "veterinary technician" in the veterinary
+        // branch below remain for backward compat but fire after this.
+        if lower.contains("vet tech program") || lower.contains("vet tech class")
+            || lower.contains("vet tech school") || lower.contains("vet tech exam")
+            || lower.contains("vet tech student") || lower.contains("vet tech certification")
+            || lower.contains("vet tech course") || lower.contains("vet tech notes")
+            || lower.contains("veterinary technician program") || lower.contains("veterinary technician school")
+            || lower.contains("veterinary technician class") || lower.contains("veterinary technician exam")
+            || lower.contains("veterinary technology program") || lower.contains("veterinary technology class")
+            || lower.contains("veterinary technology exam") || lower.contains("veterinary technology school")
+            || word("vtne") || lower.contains("vtne exam") || lower.contains("vtne prep")
+            || lower.contains("vet tech license") || lower.contains("vet tech certification") {
+            return "veterinarytechnology"
+        }
         // veterinary — positioned before premed so "veterinary clinical rotation", "dissection"
         // in a vet-school context, and animal anatomy tasks route here, not to premed.
         if word("veterinary") || word("veterinarian") || lower.contains("vet school")
@@ -2876,6 +2892,23 @@ public final class CalloutManager {
             || lower.contains("maxillofacial") {
             return "oralsurgery"
         }
+        // dentalradiology — positioned BEFORE dental so dental radiography programs, DANB RHS
+        // exam prep, and dental x-ray technique classes route to a dedicated pool rather than
+        // the broad dental (DDS/DMD/perio/ortho) pool below.
+        if lower.contains("dental radiography") || lower.contains("dental radiograph")
+            || lower.contains("dental x-ray technique") || lower.contains("dental x-ray class")
+            || lower.contains("dental x-ray course") || lower.contains("dental x-ray exam")
+            || lower.contains("dental x-ray program") || lower.contains("dental x-ray school")
+            || lower.contains("dental radiography program") || lower.contains("dental radiography class")
+            || lower.contains("dental radiography course") || lower.contains("dental radiography exam")
+            || lower.contains("dental radiography school") || lower.contains("dental radiography certification")
+            || lower.contains("danb rhs") || lower.contains("danb rhs exam") || lower.contains("rhs exam")
+            || lower.contains("radiographic technique") && lower.contains("dental")
+            || lower.contains("intraoral radiography") || lower.contains("periapical radiograph")
+            || lower.contains("bitewing radiograph") || lower.contains("panoramic radiograph")
+                && !lower.contains("dental school") {
+            return "dentalradiology"
+        }
         // dental — positioned before premed so dental-school-specific terms (NBDE, DDS/DMD,
         // perio, ortho, endodontics, dental boards) don't fall through to generic premed callouts.
         // "dental hygiene"/"dental hygienist" now owned by the dentalhygiene branch above.
@@ -3013,6 +3046,24 @@ public final class CalloutManager {
             || lower.contains("medical terminology coding")
             || lower.contains("billing and coding") || lower.contains("coding and billing") {
             return "medicalbilling"
+        }
+        // medicalscribing — positioned AFTER medicalbilling (both are clinical documentation
+        // fields) and BEFORE medicallabscience so medical scribe programs, AHDPG/CCM
+        // certification, and physician scribing coursework route here.
+        if lower.contains("medical scribe") || lower.contains("medical scribing")
+            || lower.contains("medical scriber") || lower.contains("medical scribes")
+            || lower.contains("physician scribe") || lower.contains("physician scribing")
+            || lower.contains("clinical scribe") || lower.contains("clinical scribing")
+            || lower.contains("scribe program") && (lower.contains("medical") || lower.contains("clinical") || lower.contains("physician"))
+            || lower.contains("scribe class") && (lower.contains("medical") || lower.contains("clinical"))
+            || lower.contains("scribe exam") && (lower.contains("medical") || lower.contains("clinical"))
+            || lower.contains("scribe certification") && (lower.contains("medical") || lower.contains("clinical"))
+            || lower.contains("scribe training") && (lower.contains("medical") || lower.contains("clinical"))
+            || lower.contains("ahdpg") || lower.contains("ccm certification") && (lower.contains("scribe") || lower.contains("medical documentation"))
+            || lower.contains("real-time documentation") && lower.contains("medical")
+            || lower.contains("ehr documentation") && lower.contains("scribe")
+            || lower.contains("patient encounter documentation") || lower.contains("chart completion") && lower.contains("scribe") {
+            return "medicalscribing"
         }
         // medicallabscience — positioned AFTER medicalbilling and BEFORE molecularbiology so
         // ASCP board prep, blood bank, hematology lab, and clinical laboratory science route here.
@@ -3957,6 +4008,26 @@ public final class CalloutManager {
             || lower.contains("community environmental health") {
             return "environmentalhealth"
         }
+        // toxicology — positioned AFTER environmentalhealth (which owns "environmental
+        // toxicology class") and BEFORE epidemiology so toxicology coursework, forensic
+        // toxicology, and clinical toxicology programs route to a dedicated pool.
+        if lower.contains("toxicology class") || lower.contains("toxicology course")
+            || lower.contains("toxicology exam") || lower.contains("toxicology lab")
+            || lower.contains("toxicology program") || lower.contains("toxicology major")
+            || lower.contains("toxicology degree") || lower.contains("toxicology notes")
+            || lower.contains("toxicology assignment") || lower.contains("toxicology paper")
+            || lower.contains("toxicology report") || lower.contains("toxicologist")
+            || lower.contains("forensic toxicology") || lower.contains("clinical toxicology")
+            || lower.contains("analytical toxicology") || lower.contains("neurotoxicology")
+            || lower.contains("reproductive toxicology") || lower.contains("ecotoxicology")
+            || lower.contains("toxicokinetics") || lower.contains("dose-response")
+                && (lower.contains("toxicology") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("risk assessment") && (lower.contains("toxicology") || lower.contains("toxicologist"))
+            || lower.contains("tox screen") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("poisoning mechanisms") || lower.contains("toxic dose")
+                && (lower.contains("class") || lower.contains("course") || lower.contains("toxicology")) {
+            return "toxicology"
+        }
         // epidemiology — positioned BEFORE publicheath so graduate-level epidemiology research,
         // outbreak investigation coursework, disease surveillance assignments, and epi methods
         // classes get a dedicated pool. "environmental epidemiology" stays in environmentalhealth
@@ -3982,6 +4053,22 @@ public final class CalloutManager {
             || word("biostatistics") || lower.contains("biostatistics class") || lower.contains("biostatistics course")
             || lower.contains("biostatistics exam") || lower.contains("biostatistics assignment") {
             return "epidemiology"
+        }
+        // communityhealth — positioned BEFORE publicheath so CHW certification, CHES exam,
+        // and community health educator programs get a dedicated pool rather than the broad
+        // MPH/epidemiology publicheath pool. "community health" alone stays in publicheath.
+        if lower.contains("community health worker") || lower.contains("community health workers")
+            || word("chw") && (lower.contains("certification") || lower.contains("exam") || lower.contains("program") || lower.contains("class") || lower.contains("training"))
+            || lower.contains("chw certification") || lower.contains("chw exam") || lower.contains("chw program")
+            || lower.contains("chw training") || lower.contains("chw class")
+            || word("ches") && (lower.contains("exam") || lower.contains("certification") || lower.contains("health education"))
+            || lower.contains("ches exam") || lower.contains("ches certification")
+            || lower.contains("community health educator") || lower.contains("community health education")
+            || lower.contains("health educator certification") || lower.contains("certified health education specialist")
+            || lower.contains("community health outreach") || lower.contains("health outreach program")
+            || lower.contains("lay health worker") || lower.contains("promotora")
+            || lower.contains("community health advocate") || lower.contains("patient navigator") {
+            return "communityhealth"
         }
         // publicheath — positioned after therapy (clinical context) and before socialscience.
         // Catches MPH programs, epidemiology, community/global health, outbreak investigation,

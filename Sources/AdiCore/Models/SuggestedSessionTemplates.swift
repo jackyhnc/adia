@@ -2916,5 +2916,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "At least two employment law topic areas reviewed (e.g., FLSA, Title VII, NLRA, FMLA), practice questions completed, and notes updated",
             preferredDuration: 60 * 60
         ),
+        // veterinarytechnology templates
+        SuggestedTemplate(
+            icon: "pawprint.fill",
+            task: "Study for the VTNE or vet tech class exam and review animal anatomy, physiology, pharmacology, and clinical procedures",
+            successCriteria: "At least two veterinary technology topic areas reviewed (e.g., pharmacology, radiology, anesthesia, surgical nursing), practice questions attempted, and notes updated",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Complete my veterinary technology class assignment on patient care, drug calculations, or clinical procedures",
+            successCriteria: "Vet tech assignment meaningfully advanced (calculations checked, procedure steps outlined, or case study answered) and saved",
+            preferredDuration: 45 * 60
+        ),
+        // dentalradiology templates
+        SuggestedTemplate(
+            icon: "rays",
+            task: "Study for the DANB RHS dental radiography exam and review intraoral, bitewing, and panoramic radiograph techniques",
+            successCriteria: "At least two dental radiography topic areas reviewed (e.g., radiation safety, exposure settings, film placement, panoramic technique), practice questions attempted, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my dental radiography class assignment on radiation safety, image quality, or radiographic anatomy",
+            successCriteria: "Dental radiography assignment meaningfully advanced (radiation safety principles reviewed, image critique completed, or anatomy identified) and saved",
+            preferredDuration: 45 * 60
+        ),
+        // medicalscribing templates
+        SuggestedTemplate(
+            icon: "pencil.and.outline",
+            task: "Practice medical scribing by transcribing a patient encounter and documenting the chief complaint, HPI, assessment, and plan",
+            successCriteria: "At least one complete patient encounter note drafted (SOAP or H&P format) with chief complaint, HPI, and assessment/plan sections completed accurately",
+            preferredDuration: 30 * 60
+        ),
+        SuggestedTemplate(
+            icon: "checkmark.seal.fill",
+            task: "Study for my medical scribe certification and review medical terminology, anatomy abbreviations, and documentation standards",
+            successCriteria: "At least two medical scribing topic areas reviewed (e.g., medical terminology, chart structure, specialty-specific templates, EHR navigation), practice scenarios completed, and notes updated",
+            preferredDuration: 45 * 60
+        ),
+        // communityhealth templates
+        SuggestedTemplate(
+            icon: "person.3.fill",
+            task: "Study for the CHES or CHW certification exam and review community health education, behavior change theories, and program planning",
+            successCriteria: "At least two community health topic areas reviewed (e.g., health behavior models, community assessment, program evaluation, cultural competency), practice questions attempted, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "heart.text.clipboard.fill",
+            task: "Complete my community health or CHW class assignment on health outreach, patient navigation, or health education program design",
+            successCriteria: "Community health assignment meaningfully advanced (outreach plan drafted, health education materials outlined, or community assessment section completed) and saved",
+            preferredDuration: 45 * 60
+        ),
+        // toxicology templates
+        SuggestedTemplate(
+            icon: "flask.fill",
+            task: "Study for my toxicology class exam and review dose-response relationships, toxicokinetics, and mechanisms of toxicity",
+            successCriteria: "At least two toxicology topic areas reviewed (e.g., dose-response, absorption/distribution, organ-specific toxicity, forensic toxicology methods), practice questions attempted, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.plaintext.fill",
+            task: "Complete my toxicology lab report or assignment on analytical methods, tox screen interpretation, or forensic case analysis",
+            successCriteria: "Toxicology assignment meaningfully advanced (lab data analyzed, tox screen results interpreted, or forensic case findings organized) and saved",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

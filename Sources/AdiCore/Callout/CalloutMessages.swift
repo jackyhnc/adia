@@ -293,6 +293,11 @@ extension CalloutManager {
         case "internationalrelations":     return internationalrelationsCallouts(tier: tier)
         case "publicadministration":       return publicadministrationCallouts(tier: tier)
         case "laborlaw":                   return laborlawCallouts(tier: tier)
+        case "veterinarytechnology":  return veterinarytechnologyCallouts(tier: tier)
+        case "dentalradiology":       return dentalradiologyCallouts(tier: tier)
+        case "medicalscribing":       return medicalscribingCallouts(tier: tier)
+        case "communityhealth":       return communityhealthCallouts(tier: tier)
+        case "toxicology":            return toxicologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -5425,6 +5430,111 @@ extension CalloutManager {
             "CLOSE THIS. open your labor law notes.",
             "no one masters employment law by browsing.",
             "CLOSE THIS. get back to your labor law assignment.",
+        ]
+        }
+    }
+
+    private func veterinarytechnologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those VTNE questions aren't going to answer themselves.",
+            "get back to your vet tech notes.",
+            "close this and open your veterinary technology study guide.",
+            "your vet tech exam prep won't do itself.",
+        ]
+        case 2: return [
+            "no one passes the VTNE by scrolling.",
+            "your vet tech certification isn't going to earn itself — close this.",
+            "stop avoiding your veterinary technology coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your VTNE prep.",
+            "no one earns their CVT by browsing.",
+            "CLOSE THIS. get back to your vet tech notes.",
+        ]
+        }
+    }
+
+    private func dentalradiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those radiograph techniques aren't going to master themselves.",
+            "get back to your dental radiography notes.",
+            "close this and open your dental radiology study guide.",
+            "your DANB RHS prep won't do itself.",
+        ]
+        case 2: return [
+            "no one passes the DANB RHS by scrolling.",
+            "your bitewing technique isn't going to perfect itself — close this.",
+            "stop avoiding your dental radiography coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your dental radiology notes.",
+            "no one masters intraoral radiography by browsing.",
+            "CLOSE THIS. get back to your dental radiography exam prep.",
+        ]
+        }
+    }
+
+    private func medicalscribingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those patient encounter notes aren't going to write themselves.",
+            "get back to your medical scribing practice.",
+            "close this and open your scribe training materials.",
+            "your scribe certification prep won't do itself.",
+        ]
+        case 2: return [
+            "no one earns their scribe certification by scrolling.",
+            "your clinical documentation skills won't improve themselves — close this.",
+            "stop avoiding your medical scribing coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your scribe training materials.",
+            "no one becomes a great medical scribe by browsing.",
+            "CLOSE THIS. get back to your patient documentation practice.",
+        ]
+        }
+    }
+
+    private func communityhealthCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those CHES questions aren't going to answer themselves.",
+            "get back to your community health notes.",
+            "close this and open your CHW training materials.",
+            "your community health educator exam prep won't do itself.",
+        ]
+        case 2: return [
+            "no one earns their CHES certification by scrolling.",
+            "your community health outreach plans won't write themselves — close this.",
+            "stop avoiding your community health coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your community health notes.",
+            "no one becomes a certified health educator by browsing.",
+            "CLOSE THIS. get back to your CHES exam prep.",
+        ]
+        }
+    }
+
+    private func toxicologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those dose-response curves aren't going to memorize themselves.",
+            "get back to your toxicology notes.",
+            "close this and open your toxicology study guide.",
+            "your toxicology exam prep won't do itself.",
+        ]
+        case 2: return [
+            "no one passes toxicology by scrolling.",
+            "your forensic toxicology report isn't going to write itself — close this.",
+            "stop avoiding your toxicology coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your toxicology notes.",
+            "no one masters toxicokinetics by browsing.",
+            "CLOSE THIS. get back to your toxicology exam prep.",
         ]
         }
     }
