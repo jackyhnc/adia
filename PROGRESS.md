@@ -15794,3 +15794,65 @@ None. Swift toolchain unavailable on Linux container.
   - `horticulturaltherapy` (check if already exists) — confirm not a duplicate
 - Template count: 463 → 473 after next 5-domain batch
 - CalloutManagerTests: ~2370 + 40 new = ~2410 tests after next batch
+
+---
+
+## Run — 2026-07-15
+
+### What shipped
+**5 new keyword domains: performanceanalysis, musicbusiness, dentalanesthesia, palliativecare, cognitivescience**
+
+**New keyword domain — performanceanalysis:**
+- Branch positioned BEFORE `sportsanalytics`; catches sports performance analysis, Dartfish/Hudl class/training/analysis, notational analysis, video analysis (sports context), coaching analytics, tactical analysis class, performance coding/tagging, sport science analysis.
+- `performanceanalysisCallouts(tier:)` 4/3/3: "that game film isn't going to analyze itself." / "no one becomes a performance analyst by scrolling." / "CLOSE THIS. open your performance analysis software."
+- 2 templates: "Analyze game film or match footage using Dartfish or Hudl…" (60 min, film.stack) + "Complete my sports performance analysis class assignment…" (45 min, chart.xyaxis.line)
+
+**New keyword domain — musicbusiness:**
+- Branch positioned BEFORE `musicproduction`; catches music business/industry/publishing/management/marketing class/course/exam/program, ASCAP/BMI licensing (with educational context), entertainment law (music context), sync licensing class, music royalties, artist management class, record label management, music entrepreneurship.
+- `musicbusinessCallouts(tier:)` 4/3/3: "the music industry isn't going to wait for you." / "no one builds a music career by scrolling." / "CLOSE THIS. open your music business notes."
+- 2 templates: "Study for my music business or music industry class exam…" (60 min, music.note.list) + "Write my music business class paper or assignment…" (45 min, doc.text.fill)
+
+**New keyword domain — dentalanesthesia:**
+- Branch positioned BEFORE `dentalradiology`; catches dental anesthesia class/course/program/exam/rotation/notes, COMS exam/board prep, DOCS board/exam, sedation dentistry class, dental anesthesiologist, IV sedation dentistry, conscious sedation dental, nitrous oxide dentistry, anesthesia for dental procedures.
+- `dentalanesthesiaCallouts(tier:)` 4/3/3: "those anesthesia protocols aren't going to memorize themselves." / "no one passes the COMS board by scrolling." / "CLOSE THIS. open your dental anesthesia notes."
+- 2 templates: "Study for the COMS or DOCS dental anesthesia board exam…" (90 min, syringe.fill) + "Complete my dental anesthesia class assignment…" (45 min, waveform.path.ecg)
+
+**New keyword domain — palliativecare:**
+- Branch positioned BEFORE `forensicnursing` (and therefore nursing); catches palliative care/nurse/nursing/medicine class/course/program/exam/rotation/notes, hospice care/nurse/nursing class/course/program/exam/notes, CHPN exam/certification, HPCC board exam, end-of-life care, comfort care nursing, palliative care specialist, symptom management (palliative/hospice/terminal context).
+- `palliativecareCallouts(tier:)` 4/3/3: "your patients deserve your full attention — get back to your palliative care notes." / "no one passes the CHPN by scrolling." / "CLOSE THIS. open your palliative care notes."
+- 2 templates: "Study for the CHPN exam and review palliative care principles…" (90 min, heart.fill) + "Write up my palliative care or hospice nursing notes…" (30 min, doc.text.fill)
+
+**New keyword domain — cognitivescience:**
+- Branch positioned BEFORE `neuroscience`; catches cognitive science class/course/exam/major/degree/program, cogsci, cognitive systems, mind and brain class, language and cognition class, human cognition class, cognitive modeling class, cognitive architecture class. False-positive guard: "cognitive neuroscience" is NOT caught here (doesn't contain "cognitive science" as substring; stays in neuroscience via `lower.contains("cognitive neuroscience")`).
+- `cognitivescienceCallouts(tier:)` 4/3/3: "that cognitive model isn't going to build itself." / "no one masters cognitive science by scrolling." / "CLOSE THIS. open your cognitive science notes."
+- 2 templates: "Study for my cognitive science class exam…" (60 min, brain.head.profile) + "Write my cogsci paper or cognitive science assignment…" (60 min, doc.text.fill)
+
+**New tests:**
+- CalloutManagerTests.swift: +50 tests (9-10 per domain + 1 count guard); 2370 → 2420 approx
+- SuggestedSessionTemplatesTests.swift: +12 tests (2 existence tests per domain + 2 count guards); 428 → 440
+
+**Template catalog: 463 → 473**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `performanceanalysis` fires BEFORE `sportsanalytics` (line 2169 vs 2185). "Dartfish match footage sports performance analysis class" → performanceanalysis ✓; "sports analytics R python sabermetrics" → sportsanalytics ✓; "performance improvements web app code" → code (NOT performanceanalysis) ✓
+- `musicbusiness` fires BEFORE `musicproduction` (line 2587 vs 2601). "music business degree paper entertainment law contracts" → musicbusiness ✓; "mixing track Ableton mastering" → musicproduction ✓
+- `dentalanesthesia` fires BEFORE `dentalradiology` (line 2955 vs 2972). "COMS exam dental anesthesia sedation protocols" → dentalanesthesia ✓; "DANB RHS dental radiography bitewing" → dentalradiology ✓
+- `palliativecare` fires BEFORE `forensicnursing` (line 3635 vs 3649). "CHPN exam hospice nursing palliative care" → palliativecare ✓; "SANE exam forensic nursing" → forensicnursing ✓
+- `cognitivescience` fires BEFORE `neuroscience` (line 4241 vs 4261). "cognitive science major paper mind and brain" → cognitivescience ✓; "cognitive neuroscience action potentials neuroscience class" → neuroscience ✓ ("cognitive science" is NOT a substring of "cognitive neuroscience")
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `dentalradiology` is covered; `dentalanesthesia` is now covered; `musicbusiness` is now covered
+  - `arttherapy` already exists; `horticulturaltherapy` → `horticulturetherapy` already exists; `geographicis` → already covered by `geospatial`
+  - New uncovered candidates:
+    - `ayurvedic` — Ayurvedic medicine, Ayurveda program, panchakarma, NAMA certification
+    - `chinesemedicine` — already covered by `acupuncture` (TCM)? Verify. Or add TCM herbal prescriptions separately
+    - `policeacademy` — law enforcement academy, police science, criminology academy training
+    - `socialentrepreneurship` — social enterprise, impact investing, B-corp, social innovation (separate from startup which is pure business)
+    - `positivepsychology` — positive psychology, well-being science, strengths-based approach, MAPP program, Seligman — currently falls into psychology branch; could specialize
+- Template count: 473 → 483 after next 5-domain batch
+- CalloutManagerTests: ~2420 + 45 new = ~2465 tests after next batch
