@@ -16008,3 +16008,64 @@ None. Swift toolchain unavailable on Linux container.
     - `positivepsychology` — positive psychology, well-being science, strengths-based approach, MAPP program, Seligman — currently falls into psychology branch; could specialize
 - Template count: 473 → 483 after next 5-domain batch
 - CalloutManagerTests: ~2420 + 45 new = ~2465 tests after next batch
+
+---
+
+## Run — 2026-07-15 (batch: socialentrepreneurship/yogapilates/ayurvedic/positivepsychology/policeacademy)
+
+### What shipped
+
+**5 new keyword domains: socialentrepreneurship, yogapilates, ayurvedic, positivepsychology, policeacademy**
+
+**New keyword domain — socialentrepreneurship:**
+- Branch positioned AFTER `startup` (pitch deck/business plan stay there); catches social enterprise, social entrepreneur, B-corp/benefit corporation, impact investing class/course, social innovation class/course, social impact investing, social venture, ESG investing class, triple bottom line class, corporate social responsibility class, social change venture, microfinance class, mission-driven business/venture.
+- `socialentrepreneurshipCallouts(tier:)` 4/3/3: "you can't change the world by scrolling." / "no one builds a social enterprise by scrolling." / "CLOSE THIS. open your social enterprise work."
+- 2 templates: "Develop my social enterprise business model, impact theory of change, or B-corp certification plan" (60 min) + "Study for my social entrepreneurship or impact investing class…" (45 min)
+
+**New keyword domain — yogapilates:**
+- Branch positioned BEFORE `fitness` (bare word("yoga")/word("pilates") stay in fitness); catches yoga teacher training, RYT 200/500, YTT, yoga instructor certification, Yoga Alliance, registered yoga, pilates instructor/teacher/certification, pilates method alliance, PMA exam, pilates teacher training, barre instructor/certification.
+- `yogapilatesCallouts(tier:)` 4/3/3: "you can't earn your RYT by scrolling." / "no one earns their yoga teaching certification by scrolling." / "CLOSE THIS. open your teacher training notes."
+- 2 templates: "Study anatomy, sequencing, or teaching methodology for my yoga teacher training (RYT 200/500)…" (60 min) + "Prepare for my Pilates instructor certification exam…" (60 min)
+
+**New keyword domain — ayurvedic:**
+- Branch positioned AFTER `acupuncture`, BEFORE `podiatry`; catches ayurveda/ayurvedic, panchakarma, NAMA certification (with ayurved context), vata/pitta/kapha/dosha with educational or ayurvedic context, prakriti/tridosha/prana with ayurved context, dinacharya, rasayana.
+- `ayurvedicCallouts(tier:)` 4/3/3: "those doshas aren't going to study themselves." / "no one earns their Ayurvedic practitioner certificate by scrolling." / "CLOSE THIS. open your Ayurveda notes."
+- 2 templates: "Study Ayurvedic principles, doshas, and herbal formulas for NAMA exam prep…" (60 min) + "Complete my Ayurvedic medicine class assignment or write a patient intake and prakruti assessment…" (45 min)
+
+**New keyword domain — positivepsychology:**
+- Branch positioned AFTER `iopsychology`, BEFORE `psychology`; catches positive psychology with class/course/exam/program/research/paper/thesis/major/assignment context, well-being/happiness science, MAPP program, Seligman with class/psych/paper/book context, character strengths with VIA/class context, PERMA model/framework with psych context, flourishing theory, strengths-based approach with psych/class context, resilience/grit/self-determination theory with class context. ("positive psychology" bare mention still falls to psychology as fallback.)
+- `positivepsychologyCallouts(tier:)` 4/3/3: "you won't flourish by scrolling — Seligman literally wrote the book on this." / "no one masters positive psychology by scrolling." / "CLOSE THIS. open your positive psychology notes."
+- 2 templates: "Study for my positive psychology class exam — review PERMA, character strengths, flourishing theory…" (60 min) + "Write a positive psychology paper or research assignment on character strengths, well-being, or flourishing…" (60 min)
+
+**New keyword domain — policeacademy:**
+- Branch positioned BEFORE `criminaljustice`; catches police academy, law enforcement academy, POST certification/exam/training (with police/officer/law enforce/peace context), police officer training/exam/certification, peace officer exam/certification/training, basic law enforcement training, BLET, police science class/course/exam, field training officer program, police entrance exam, police oral board. Generic "law enforcement" and "policing" without academy context still route to criminaljustice.
+- `policeacademyCallouts(tier:)` 4/3/3: "the police academy doesn't wait for scrollers." / "no one passes the police entrance exam by scrolling." / "CLOSE THIS. open your law enforcement training materials."
+- 2 templates: "Study for the police officer entrance exam or POST certification…" (60 min) + "Complete my police academy or law enforcement training assignment…" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +40 tests (8 per domain + 1 count guard ≥513); 2538 → 2578
+- SuggestedSessionTemplatesTests.swift: +12 tests (2 per domain + 1 count guard ≥513)
+
+**Template catalog: 503 → 513**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `socialentrepreneurship` fires AFTER `startup` (line 125 vs 107). "pitch deck seed round investor deck" → startup ✓; "social enterprise business model theory of change" → socialentrepreneurship ✓
+- `yogapilates` fires BEFORE `fitness` (line 2537 vs 2558). "morning yoga workout stretching" → fitness ✓; "yoga teacher training RYT 200 anatomy" → yogapilates ✓
+- `ayurvedic` fires AFTER `acupuncture` (line 2998 vs 2980). "acupuncture points meridian NCCAOM exam" → acupuncture ✓; "ayurveda doshas NAMA certification" → ayurvedic ✓
+- `positivepsychology` fires BEFORE `psychology` (line 4487 vs 4507). "positive psychology class exam PERMA" → positivepsychology ✓; bare "psychology" → psychology ✓
+- `policeacademy` fires BEFORE `criminaljustice` (line 4577 vs 4612). "police academy entrance exam POST certification" → policeacademy ✓; "criminal justice criminology law enforcement" → criminaljustice ✓
+- Brace balance verified: CalloutMessages.swift 558/558 ✓, CalloutManager.swift 307/307 ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `polyvagaltheory` — polyvagal theory, somatic therapy class, nervous system regulation (separate from therapy)
+  - `naturopathicnursing` — NP program, AANP certification, advanced practice nursing, FNP/AGPCNP — check if nursinginformatics/forensicnursing already cover NP; may need a dedicated "nursepractitioner" branch
+  - `dentalschool` — DDS/DMD program, NBDE (if not already in dental branch) — verify dental branch coverage
+  - `environmentalscience` — check if enviro/environmentalhealth already covers well enough, or if a dedicated envscience branch is warranted
+  - `tibetanmedicine` or `homeopathy` — alternative medicine not covered by ayurvedic/acupuncture
+- Template count: 513 → 523 after next 5-domain batch
+- CalloutManagerTests: ~2578 + 40 = ~2618 after next batch
