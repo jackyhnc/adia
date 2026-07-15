@@ -1,5 +1,59 @@
 # Adia — Build Progress
 
+## Run 346 (automated) — 2026-07-15 — 5 new keyword domains: informationassurance, hrmanagement, changemanagement, economics, iopsychology (475→485 templates)
+
+### What shipped
+
+**New keyword domain — informationassurance:**
+- Branch positioned AFTER `networkengineering`, BEFORE `quantumcomputing`.
+- Matches: information assurance, CISM/CRISC/CGEIT/CASP+/CC with exam/cert/class/course/study/prep guards, DoD 8570/8140/DoDD 8570, RMF class/course/training/certification, risk management framework class/course/cert/training, NIST CSF class/framework class, security governance class, cybersecurity governance class, IA certification/program/degree, CISA with exam/cert/class/prep/study guards.
+- Guard: bare "CISM" without edu context NOT matched; "pentesting"/"ethical hacking" stays in cybersecurity (fires much earlier).
+- `informationassuranceCallouts(tier:)` 4/3/3: "those IA concepts aren't going to master themselves." / "no one earns their CISM by scrolling." / "CLOSE THIS. open your information assurance notes."
+- 2 templates: "Study for the CISM, CRISC, CASP+, or CISA certification exam" (60 min) + "Complete my information assurance class assignment on security governance, RMF, DoD 8570 compliance" (60 min)
+
+**New keyword domain — hrmanagement:**
+- Branch positioned AFTER `businessintelligence`, BEFORE `business`.
+- Matches: SHRM-CP/SHRM-SCP/SHRM with exam/cert/prep/study guards, PHR/SPHR/aPHR with exam/cert/prep/study/class guards, HRCI with exam/cert/prep/study, human resource management class/course/exam/program/degree/major, human resources management class/course, hr management class/course/exam/program, talent management/acquisition class, compensation and benefits class, employee relations class, HR analytics class, workforce planning class, HRIS class/course/exam, DEI class/certification, diversity and inclusion class + HR context.
+- Guard: bare "HR" alone NOT matched; "organizational behavior" stays in business.
+- `hrmanagementCallouts(tier:)` 4/3/3: "that SHRM exam isn't going to study itself." / "no one earns their SHRM-CP by scrolling." / "CLOSE THIS. open your HR management notes."
+- 2 templates: "Study for the SHRM-CP, SHRM-SCP, PHR, or SPHR certification exam" (90 min) + "Complete my human resource management class assignment on talent acquisition, compensation" (60 min)
+
+**New keyword domain — changemanagement:**
+- Branch positioned AFTER `hrmanagement`, BEFORE `business`.
+- Matches: change management class/course/exam/cert/program/assignment/professional/training, Prosci cert/program/training with class/exam/cert/prep guards, ADKAR model/framework with class/course/assignment/exam guards, Kotter's model/change, CCMP with exam/cert/class/prep/study guards, change leadership class/course, organizational change class/course, organizational change management class/course, organizational development class/course/exam/program, APMG change management, change agent certification, managing organizational change.
+- Guard: bare "change" NOT matched; Prosci/ADKAR without edu context NOT matched.
+- `changemanagementCallouts(tier:)` 4/3/3: "that change initiative isn't going to manage itself." / "no one earns their CCMP by scrolling." / "CLOSE THIS. open your change management notes."
+- 2 templates: "Study for the Prosci ADKAR or CCMP certification exam" (60 min) + "Complete my organizational change or change management class assignment" (45 min)
+
+**New keyword domain — economics:**
+- Branch positioned AFTER `statistics`, BEFORE `astronomy`.
+- Matches: word("economics")/word("economist")/word("econometrics"), macroeconomics/microeconomics, econ class/course/exam/homework/assignment/paper/major/thesis, economics class/course/exam/assignment/paper/major/degree/program/research/thesis, AP economics/AP macro/AP micro, GRE economics, econometrics class/course/exam/homework, labor/health/environmental/public/monetary/international economics, game theory class/course/exam/homework, economics problem set/econ problem set.
+- Guard: "game theory algorithm in Python" stays in code (fires ~line 358, well before economics at ~line 449); bare "econ" NOT matched alone.
+- `economicsCallouts(tier:)` 4/3/3: "those supply and demand curves aren't going to memorize themselves." / "no one masters micro or macro by scrolling." / "CLOSE THIS. open your economics notes."
+- 2 templates: "Study for my microeconomics or macroeconomics class exam" (60 min) + "Complete my economics problem set or econometrics assignment" (60 min)
+
+**New keyword domain — iopsychology:**
+- Branch positioned AFTER `clinicalpsychology`, BEFORE `psychology`.
+- Matches: industrial-organizational psychology, I/O psychology, IO psychology, I-O psychology, personnel psychology, work psychology, organizational psychology class/course/exam/program/major/degree, SIOP with class/research/conference/paper/study context, IO psych/I-O psych, occupational health psychology with class/course/exam guard, selection and assessment class, personnel selection class, job analysis class/assignment, performance appraisal class/course, motivation at work class, work motivation class.
+- Guard: "Freud + cognitive psychology + intro class" stays in psychology; bare "organizational psychology" without class context NOT matched.
+- `iopsychologyCallouts(tier:)` 4/3/3: "those I/O concepts aren't going to apply themselves." / "no one masters I/O psychology by scrolling." / "CLOSE THIS. open your I/O psychology notes."
+- 2 templates: "Study for my industrial-organizational psychology class exam" (60 min) + "Write my I/O psychology paper or organizational psychology assignment" (60 min)
+
+### Metrics
+- Template count: 473 → 483 (+10)
+- CalloutManagerTests: +45 tests + count guard ≥483
+- SuggestedSessionTemplatesTests: +5 domain existence tests + count guard ≥483
+- Files changed: CalloutManager.swift, CalloutMessages.swift, SuggestedSessionTemplates.swift, CalloutManagerTests.swift, SuggestedSessionTemplatesTests.swift, GOAL.md, PROGRESS.md
+
+### Next agent candidates
+- "criminallaw + civilprocedure + constitutionallaw + evidencelaw + tortlaw" — 5 law school keyword domains
+- "architecturaldesign + interiordesign + urbanplanning + landscapearchitecture + historicpreservation" — 5 design/built-environment domains
+- "dataanalysis + businessanalytics + operationsmanagement + entrepreneurship + venturecapital" — 5 more business sub-domains
+- "speechlanguagepathologyassistant + musictherapy + arttherapy + recreationaltherapy + dancemovementtherapy" — 5 allied health therapy domains
+- "computervision + naturallanguageprocessing + reinforcementlearning + mlops + featureengineering" — 5 ML sub-domains
+
+---
+
 ## Run 345 (automated) — 2026-07-15 — 5 new keyword domains: informationsystems, businessintelligence, internationalrelations, publicadministration, laborlaw (443→453 templates)
 
 ### What shipped

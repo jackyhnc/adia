@@ -164,6 +164,31 @@ public final class CalloutManager {
             || lower.contains("network infrastructure class") {
             return "networkengineering"
         }
+        // informationassurance — positioned AFTER networkengineering and BEFORE quantumcomputing.
+        // Catches information assurance degree programs, IA certification prep (CISM, CASP+,
+        // CRISC, CGEIT, CISA-audit, CC), DoD 8570/8140 compliance coursework, RMF/NIST framework
+        // classes, and cybersecurity governance classes. Distinct from cybersecurity (which handles
+        // pentesting, SOC analyst, CTF, and offensive security tools). Bare "security" NOT matched.
+        if lower.contains("information assurance")
+            || (word("cism") && (lower.contains("exam") || lower.contains("cert") || lower.contains("class") || lower.contains("course") || lower.contains("study") || lower.contains("prep")))
+            || lower.contains("casp+") || lower.contains("casp plus") || lower.contains("comptia casp")
+            || lower.contains("advanced security practitioner")
+            || (word("crisc") && (lower.contains("exam") || lower.contains("cert") || lower.contains("class") || lower.contains("course") || lower.contains("prep") || lower.contains("study")))
+            || (word("cgeit") && (lower.contains("exam") || lower.contains("cert") || lower.contains("class") || lower.contains("course") || lower.contains("prep")))
+            || lower.contains("dod 8570") || lower.contains("dod 8140") || lower.contains("dodd 8570")
+            || lower.contains("dodd 8140") || lower.contains("dod directive 8570")
+            || lower.contains("rmf class") || lower.contains("rmf course") || lower.contains("rmf training")
+            || lower.contains("risk management framework class") || lower.contains("risk management framework course")
+            || lower.contains("risk management framework certification") || lower.contains("risk management framework training")
+            || lower.contains("nist csf class") || lower.contains("nist csf course")
+            || lower.contains("nist framework class") || lower.contains("nist cybersecurity framework class")
+            || lower.contains("security governance class") || lower.contains("security governance course")
+            || lower.contains("cybersecurity governance class") || lower.contains("cybersecurity governance course")
+            || lower.contains("information security governance class") || lower.contains("information security governance course")
+            || lower.contains("ia certification") || lower.contains("ia program") || lower.contains("ia degree")
+            || (word("cisa") && (lower.contains("exam") || lower.contains("cert") || lower.contains("class") || lower.contains("prep") || lower.contains("study"))) {
+            return "informationassurance"
+        }
         // quantumcomputing — positioned AFTER networkengineering and BEFORE gamedev.
         // Catches quantum computing coursework, quantum algorithm classes, Qiskit, IBM Quantum, and
         // quantum cryptography/error-correction courses. Bare word("quantum") NOT matched here —
@@ -393,6 +418,35 @@ public final class CalloutManager {
             || lower.contains("p-value") || lower.contains("p value")
             || lower.contains("effect size") || lower.contains("sample size calculation") {
             return "statistics"
+        }
+        // economics — positioned AFTER statistics and BEFORE astronomy so macroeconomics,
+        // microeconomics, econometrics, and economics class/course terms route to a dedicated pool.
+        // word("economics") catches the discipline name directly. Bare "economy" NOT matched.
+        if word("economics") || word("economist") || word("econometrics")
+            || lower.contains("macroeconomics") || lower.contains("microeconomics")
+            || lower.contains("principles of economics") || lower.contains("intro to economics")
+            || lower.contains("introductory economics") || lower.contains("intermediate microeconomics")
+            || lower.contains("intermediate macroeconomics")
+            || lower.contains("econ class") || lower.contains("econ course")
+            || lower.contains("econ exam") || lower.contains("econ homework")
+            || lower.contains("econ assignment") || lower.contains("econ paper")
+            || lower.contains("econ major") || lower.contains("econ thesis")
+            || lower.contains("economics class") || lower.contains("economics course")
+            || lower.contains("economics exam") || lower.contains("economics assignment")
+            || lower.contains("economics paper") || lower.contains("economics major")
+            || lower.contains("economics degree") || lower.contains("economics program")
+            || lower.contains("economics research") || lower.contains("economics thesis")
+            || lower.contains("ap economics") || lower.contains("ap macro") || lower.contains("ap micro")
+            || lower.contains("gre economics") || lower.contains("gre econ")
+            || lower.contains("econometrics class") || lower.contains("econometrics course")
+            || lower.contains("econometrics exam") || lower.contains("econometrics homework")
+            || lower.contains("labor economics") || lower.contains("health economics")
+            || lower.contains("environmental economics") || lower.contains("public economics")
+            || lower.contains("game theory class") || lower.contains("game theory course")
+            || lower.contains("game theory exam") || lower.contains("game theory homework")
+            || lower.contains("monetary economics") || lower.contains("international economics")
+            || lower.contains("economics problem set") || lower.contains("econ problem set") {
+            return "economics"
         }
         // astronomy — positioned before studying so "astrophysics homework" and "astronomy exam"
         // don't fall through to the generic studying pool via word("exam").
@@ -1361,6 +1415,58 @@ public final class CalloutManager {
             || lower.contains("microsoft power bi")
             || lower.contains("bi dashboard class") || lower.contains("bi reporting class") {
             return "businessintelligence"
+        }
+        // hrmanagement — positioned AFTER businessintelligence and BEFORE business so SHRM/PHR/SPHR
+        // certification prep and dedicated HR management coursework route to a focused pool.
+        // Generic "human resources" and "hr management" remain in the business branch below.
+        if lower.contains("shrm-cp") || lower.contains("shrm-scp") || lower.contains("shrm cp")
+            || lower.contains("shrm scp") || lower.contains("shrm certification")
+            || (word("shrm") && (lower.contains("exam") || lower.contains("cert") || lower.contains("prep") || lower.contains("study") || lower.contains("class")))
+            || lower.contains("phr exam") || lower.contains("phr certification") || lower.contains("phr prep")
+            || lower.contains("phr study") || lower.contains("phr class")
+            || lower.contains("sphr exam") || lower.contains("sphr certification") || lower.contains("sphr prep")
+            || lower.contains("sphr study") || lower.contains("sphr class")
+            || lower.contains("aphr exam") || lower.contains("aphr certification") || lower.contains("aphr prep")
+            || (word("hrci") && (lower.contains("exam") || lower.contains("cert") || lower.contains("prep") || lower.contains("study")))
+            || lower.contains("human resource management class") || lower.contains("human resource management course")
+            || lower.contains("human resource management exam") || lower.contains("human resource management program")
+            || lower.contains("human resource management degree") || lower.contains("human resource management major")
+            || lower.contains("human resources management class") || lower.contains("human resources management course")
+            || lower.contains("hr management class") || lower.contains("hr management course")
+            || lower.contains("hr management exam") || lower.contains("hr management program")
+            || lower.contains("talent management class") || lower.contains("talent management course")
+            || lower.contains("talent acquisition class") || lower.contains("talent acquisition course")
+            || lower.contains("compensation and benefits class") || lower.contains("compensation and benefits course")
+            || lower.contains("employee relations class") || lower.contains("employee relations course")
+            || lower.contains("hr analytics class") || lower.contains("hr analytics course")
+            || lower.contains("workforce planning class") || lower.contains("workforce planning course")
+            || lower.contains("hris class") || lower.contains("hris course") || lower.contains("hris exam")
+            || lower.contains("dei class") || lower.contains("dei certification")
+            || (lower.contains("diversity and inclusion class") && (lower.contains("hr") || lower.contains("human resource") || lower.contains("cert") || lower.contains("exam"))) {
+            return "hrmanagement"
+        }
+        // changemanagement — positioned AFTER hrmanagement and BEFORE business so Prosci
+        // certification prep, ADKAR/Kotter coursework, CCMP exam prep, and organizational
+        // development classes route here. Distinct from projectmanagement (PMP/agile) and
+        // business (MBA-level strategic topics).
+        if lower.contains("change management class") || lower.contains("change management course")
+            || lower.contains("change management exam") || lower.contains("change management certification")
+            || lower.contains("change management program") || lower.contains("change management assignment")
+            || lower.contains("change management professional") || lower.contains("change management training")
+            || lower.contains("prosci certification") || lower.contains("prosci program") || lower.contains("prosci training")
+            || (word("prosci") && (lower.contains("class") || lower.contains("exam") || lower.contains("cert") || lower.contains("prep")))
+            || lower.contains("adkar model") || lower.contains("adkar framework")
+            || (word("adkar") && (lower.contains("class") || lower.contains("course") || lower.contains("assignment") || lower.contains("exam")))
+            || lower.contains("kotter's model") || lower.contains("kotter model") || lower.contains("kotter change")
+            || (word("ccmp") && (lower.contains("exam") || lower.contains("cert") || lower.contains("class") || lower.contains("prep") || lower.contains("study")))
+            || lower.contains("change leadership class") || lower.contains("change leadership course")
+            || lower.contains("organizational change class") || lower.contains("organizational change course")
+            || lower.contains("organizational change management class") || lower.contains("organizational change management course")
+            || lower.contains("organizational development class") || lower.contains("organizational development course")
+            || lower.contains("organizational development exam") || lower.contains("organizational development program")
+            || lower.contains("apmg change management") || lower.contains("change agent certification")
+            || lower.contains("managing organizational change") {
+            return "changemanagement"
         }
         // business/management — positioned before research so "marketing research" and "market analysis"
         // route here rather than the generic research pool. Startup branch above already catches
@@ -4285,6 +4391,26 @@ public final class CalloutManager {
             || lower.contains("psychotherapy notes") || lower.contains("psychotherapy session notes")
             || lower.contains("therapy notes") && lower.contains("doctoral") {
             return "clinicalpsychology"
+        }
+        // iopsychology — positioned AFTER clinicalpsychology and BEFORE psychology so
+        // industrial-organizational psychology programs, personnel psychology coursework, and
+        // SIOP-context papers route to a dedicated pool. Generic "psychology" and "applied
+        // psychology" remain in the psychology branch below.
+        if lower.contains("industrial-organizational") || lower.contains("industrial organizational")
+            || lower.contains("i/o psychology") || lower.contains("io psychology")
+            || lower.contains("i-o psychology")
+            || lower.contains("personnel psychology") || lower.contains("work psychology")
+            || lower.contains("organizational psychology class") || lower.contains("organizational psychology course")
+            || lower.contains("organizational psychology exam") || lower.contains("organizational psychology program")
+            || lower.contains("organizational psychology major") || lower.contains("organizational psychology degree")
+            || (word("siop") && (lower.contains("class") || lower.contains("research") || lower.contains("conference") || lower.contains("paper") || lower.contains("study")))
+            || lower.contains("io psych") || lower.contains("i-o psych")
+            || (lower.contains("occupational health psychology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || lower.contains("selection and assessment class") || lower.contains("personnel selection class")
+            || lower.contains("job analysis class") || lower.contains("job analysis assignment")
+            || lower.contains("performance appraisal class") || lower.contains("performance appraisal course")
+            || lower.contains("motivation at work class") || lower.contains("work motivation class") {
+            return "iopsychology"
         }
         // psychology — positioned after publicheath and all clinical health branches above.
         // "educational psychology" fires in the education branch first; clinical/counseling

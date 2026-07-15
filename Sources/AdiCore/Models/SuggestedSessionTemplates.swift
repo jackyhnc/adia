@@ -3046,5 +3046,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Cognitive science paper meaningfully advanced (thesis stated, theoretical framework described, at least one section drafted and saved)",
             preferredDuration: 60 * 60
         ),
+        // informationassurance
+        SuggestedTemplate(
+            icon: "lock.shield.fill",
+            task: "Study for the CISM, CRISC, CASP+, or CISA certification exam — review RMF, DoD 8570 requirements, security governance frameworks, or NIST CSF",
+            successCriteria: "At least two information assurance topic areas reviewed (e.g., risk management framework, security governance, cybersecurity policy, access control), practice questions attempted, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my information assurance class assignment on security governance, RMF, DoD 8570 compliance, or cybersecurity policy",
+            successCriteria: "IA assignment meaningfully advanced (key concepts outlined, governance framework described, at least one section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // hrmanagement
+        SuggestedTemplate(
+            icon: "person.2.fill",
+            task: "Study for the SHRM-CP, SHRM-SCP, PHR, or SPHR certification exam — review talent management, compensation, employee relations, or HR analytics",
+            successCriteria: "At least two HR management topic areas reviewed (e.g., staffing, compensation and benefits, employee development, labor relations), practice questions attempted, and notes updated",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my human resource management class assignment on talent acquisition, compensation and benefits, employee relations, or workforce planning",
+            successCriteria: "HR management assignment meaningfully advanced (key concepts outlined, HR framework described, at least one section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // changemanagement
+        SuggestedTemplate(
+            icon: "arrow.triangle.2.circlepath",
+            task: "Study for the Prosci ADKAR, CCMP, or APMG change management certification exam — review change models, Kotter's 8 steps, stakeholder engagement, or organizational development",
+            successCriteria: "At least two change management topic areas reviewed (e.g., ADKAR model, Kotter framework, change resistance, communication planning), practice questions attempted, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my organizational change or change management class assignment on change leadership, stakeholder analysis, or organizational development",
+            successCriteria: "Change management assignment meaningfully advanced (key concepts outlined, change framework applied, at least one section drafted and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // economics
+        SuggestedTemplate(
+            icon: "chart.line.uptrend.xyaxis",
+            task: "Study for my microeconomics or macroeconomics class exam — review supply and demand, market structures, GDP, monetary policy, or econometrics",
+            successCriteria: "At least two economics topic areas reviewed (e.g., price elasticity, market equilibrium, fiscal policy, regression analysis), practice problems attempted, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my economics problem set or econometrics assignment — work through regression analysis, demand estimation, or macro model problems",
+            successCriteria: "Economics assignment meaningfully advanced (at least three problems attempted, work shown, and answers written up)",
+            preferredDuration: 60 * 60
+        ),
+        // iopsychology
+        SuggestedTemplate(
+            icon: "building.2.fill",
+            task: "Study for my industrial-organizational psychology class exam — review personnel selection, job analysis, performance appraisal, motivation at work, or organizational behavior",
+            successCriteria: "At least two I/O psychology topic areas reviewed (e.g., selection and assessment, training and development, leadership, organizational culture), practice questions attempted, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write my I/O psychology paper or organizational psychology assignment on personnel selection, job analysis, performance management, or workplace motivation",
+            successCriteria: "I/O psychology paper meaningfully advanced (thesis stated, theoretical framework described, at least one section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

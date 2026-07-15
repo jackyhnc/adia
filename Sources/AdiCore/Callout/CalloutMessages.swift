@@ -303,6 +303,11 @@ extension CalloutManager {
         case "dentalanesthesia":      return dentalanesthesiaCallouts(tier: tier)
         case "palliativecare":        return palliativecareCallouts(tier: tier)
         case "cognitivescience":      return cognitivescienceCallouts(tier: tier)
+        case "informationassurance":  return informationassuranceCallouts(tier: tier)
+        case "hrmanagement":          return hrmanagementCallouts(tier: tier)
+        case "changemanagement":      return changemanagementCallouts(tier: tier)
+        case "economics":             return economicsCallouts(tier: tier)
+        case "iopsychology":          return iopsychologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -5645,6 +5650,111 @@ extension CalloutManager {
             "CLOSE THIS. open your cognitive science notes.",
             "no one understands cognition by browsing — close this.",
             "CLOSE THIS. get back to your cogsci exam prep.",
+        ]
+        }
+    }
+
+    private func informationassuranceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those IA concepts aren't going to master themselves.",
+            "get back to your information assurance coursework.",
+            "close this and open your CISM or RMF study guide.",
+            "your cybersecurity governance assignment won't do itself.",
+        ]
+        case 2: return [
+            "no one earns their CISM by scrolling.",
+            "your IA exam prep isn't going to finish itself — close this.",
+            "stop avoiding your information assurance notes.",
+        ]
+        default: return [
+            "CLOSE THIS. open your information assurance notes.",
+            "no one passes the CISM or CRISC by browsing.",
+            "CLOSE THIS. get back to your IA certification prep.",
+        ]
+        }
+    }
+
+    private func hrmanagementCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that SHRM exam isn't going to study itself.",
+            "get back to your HR management coursework.",
+            "close this and open your PHR or SHRM-CP study guide.",
+            "your talent management assignment won't do itself.",
+        ]
+        case 2: return [
+            "no one earns their SHRM-CP by scrolling.",
+            "your HR management exam prep isn't going to finish itself — close this.",
+            "stop avoiding your human resource management notes.",
+        ]
+        default: return [
+            "CLOSE THIS. open your HR management notes.",
+            "no one passes the PHR or SPHR by browsing.",
+            "CLOSE THIS. get back to your SHRM certification prep.",
+        ]
+        }
+    }
+
+    private func changemanagementCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that change initiative isn't going to manage itself.",
+            "get back to your change management coursework.",
+            "close this and open your Prosci or ADKAR study guide.",
+            "your organizational change assignment won't do itself.",
+        ]
+        case 2: return [
+            "no one earns their CCMP by scrolling.",
+            "your change management exam prep isn't going to finish itself — close this.",
+            "stop avoiding your organizational development notes.",
+        ]
+        default: return [
+            "CLOSE THIS. open your change management notes.",
+            "no one passes the Prosci certification by browsing.",
+            "CLOSE THIS. get back to your ADKAR and Kotter coursework.",
+        ]
+        }
+    }
+
+    private func economicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those supply and demand curves aren't going to memorize themselves.",
+            "get back to your economics notes.",
+            "close this and open your econ textbook.",
+            "your econometrics problem set won't do itself.",
+        ]
+        case 2: return [
+            "no one masters micro or macro by scrolling.",
+            "your economics paper isn't going to write itself — close this.",
+            "stop avoiding your econ coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your economics notes.",
+            "no one aces the econ exam by browsing.",
+            "CLOSE THIS. get back to your econ problem set.",
+        ]
+        }
+    }
+
+    private func iopsychologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those I/O concepts aren't going to apply themselves.",
+            "get back to your organizational psychology notes.",
+            "close this and open your I/O psych coursework.",
+            "your personnel selection assignment won't do itself.",
+        ]
+        case 2: return [
+            "no one masters I/O psychology by scrolling.",
+            "your organizational psychology paper isn't going to write itself — close this.",
+            "stop avoiding your industrial-organizational coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your I/O psychology notes.",
+            "no one passes the I/O exam by browsing.",
+            "CLOSE THIS. get back to your organizational psychology work.",
         ]
         }
     }

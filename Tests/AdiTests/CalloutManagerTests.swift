@@ -14705,4 +14705,223 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast473() {
         #expect(SuggestedSessionTemplates.all.count >= 473, "template catalog must have ≥473 entries after adding performanceanalysis/musicbusiness/dentalanesthesia/palliativecare/cognitivescience (10 templates)")
     }
+
+    // MARK: - informationassurance
+    @Test func informationassuranceKeywordFromCISM() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my CISM exam this weekend")
+        #expect(kw == "informationassurance", "CISM exam should route to informationassurance")
+    }
+    @Test func informationassuranceKeywordFromInfoAssurance() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my information assurance class assignment on RMF and DoD 8570")
+        #expect(kw == "informationassurance", "information assurance + RMF should route to informationassurance")
+    }
+    @Test func informationassuranceKeywordFromRMFCert() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my RMF certification training for work")
+        #expect(kw == "informationassurance", "RMF certification training should route to informationassurance")
+    }
+    @Test @MainActor func informationassuranceCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "informationassurance", tier: tier)
+            #expect(!msgs.isEmpty, "informationassurance tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func informationassuranceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "informationassurance", tier: 1)
+        #expect(msgs.count >= 4, "informationassurance tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func informationassuranceNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "informationassurance", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "informationassurance tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func informationassuranceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "informationassurance", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "informationassurance tier 3 must contain CLOSE THIS")
+    }
+    @Test func informationassuranceFiresBeforeNetworkengineering() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my CISM exam on information assurance and security governance")
+        #expect(kw == "informationassurance", "CISM + information assurance should fire informationassurance before networkengineering")
+    }
+    @Test func informationassuranceFalsePositivePentesting() {
+        let kw = CalloutManager.extractTaskKeyword(from: "practicing pentesting and ethical hacking for my cybersecurity class")
+        #expect(kw == "cybersecurity", "pentesting + ethical hacking should stay in cybersecurity not informationassurance")
+    }
+
+    // MARK: - hrmanagement
+    @Test func hrmanagementKeywordFromSHRM() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my SHRM-CP exam next month")
+        #expect(kw == "hrmanagement", "SHRM-CP exam should route to hrmanagement")
+    }
+    @Test func hrmanagementKeywordFromPHR() {
+        let kw = CalloutManager.extractTaskKeyword(from: "prepping for the PHR exam this weekend")
+        #expect(kw == "hrmanagement", "PHR exam should route to hrmanagement")
+    }
+    @Test func hrmanagementKeywordFromHRMClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "finishing my human resource management class assignment on compensation")
+        #expect(kw == "hrmanagement", "human resource management class assignment should route to hrmanagement")
+    }
+    @Test @MainActor func hrmanagementCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "hrmanagement", tier: tier)
+            #expect(!msgs.isEmpty, "hrmanagement tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func hrmanagementTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "hrmanagement", tier: 1)
+        #expect(msgs.count >= 4, "hrmanagement tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func hrmanagementNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "hrmanagement", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "hrmanagement tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func hrmanagementTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "hrmanagement", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "hrmanagement tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - changemanagement
+    @Test func changemanagementKeywordFromProsci() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my Prosci certification exam on change management")
+        #expect(kw == "changemanagement", "Prosci certification exam should route to changemanagement")
+    }
+    @Test func changemanagementKeywordFromADKAR() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working through the ADKAR model for my class assignment")
+        #expect(kw == "changemanagement", "ADKAR model class assignment should route to changemanagement")
+    }
+    @Test func changemanagementKeywordFromOrgDev() {
+        let kw = CalloutManager.extractTaskKeyword(from: "finishing my organizational development course exam prep")
+        #expect(kw == "changemanagement", "organizational development course exam should route to changemanagement")
+    }
+    @Test @MainActor func changemanagementCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "changemanagement", tier: tier)
+            #expect(!msgs.isEmpty, "changemanagement tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func changemanagementTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "changemanagement", tier: 1)
+        #expect(msgs.count >= 4, "changemanagement tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func changemanagementNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "changemanagement", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "changemanagement tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func changemanagementTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "changemanagement", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "changemanagement tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - economics
+    @Test func economicsKeywordFromMacroeconomics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying macroeconomics for my exam on fiscal and monetary policy")
+        #expect(kw == "economics", "macroeconomics exam should route to economics")
+    }
+    @Test func economicsKeywordFromEconometrics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my econometrics homework on regression analysis")
+        #expect(kw == "economics", "econometrics homework should route to economics")
+    }
+    @Test func economicsKeywordFromEconClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "finishing my econ class problem set on supply and demand")
+        #expect(kw == "economics", "econ class problem set should route to economics")
+    }
+    @Test @MainActor func economicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "economics", tier: tier)
+            #expect(!msgs.isEmpty, "economics tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func economicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "economics", tier: 1)
+        #expect(msgs.count >= 4, "economics tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func economicsNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "economics", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "economics tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func economicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "economics", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "economics tier 3 must contain CLOSE THIS")
+    }
+    @Test func economicsFiresBeforeAstronomy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my economics problem set on labor market theory")
+        #expect(kw == "economics", "economics problem set should fire economics before astronomy")
+    }
+    @Test func economicsFalsePositiveGameTheoryAlgorithm() {
+        let kw = CalloutManager.extractTaskKeyword(from: "implementing a game theory algorithm in Python for my CS class")
+        #expect(kw == "code", "game theory algorithm in Python should route to code not economics")
+    }
+
+    // MARK: - iopsychology
+    @Test func iopsychologyKeywordFromIndustrialOrganizational() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying industrial-organizational psychology for my exam")
+        #expect(kw == "iopsychology", "industrial-organizational psychology exam should route to iopsychology")
+    }
+    @Test func iopsychologyKeywordFromIOPsych() {
+        let kw = CalloutManager.extractTaskKeyword(from: "finishing my I/O psychology class paper on selection and assessment")
+        #expect(kw == "iopsychology", "I/O psychology class paper should route to iopsychology")
+    }
+    @Test func iopsychologyKeywordFromPersonnelPsychology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing personnel psychology concepts for my organizational behavior course")
+        #expect(kw == "iopsychology", "personnel psychology course should route to iopsychology")
+    }
+    @Test @MainActor func iopsychologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "iopsychology", tier: tier)
+            #expect(!msgs.isEmpty, "iopsychology tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func iopsychologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "iopsychology", tier: 1)
+        #expect(msgs.count >= 4, "iopsychology tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func iopsychologyNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "iopsychology", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "iopsychology tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func iopsychologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "iopsychology", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "iopsychology tier 3 must contain CLOSE THIS")
+    }
+    @Test func iopsychologyFiresBeforePsychology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying I/O psychology and organizational behavior for my personnel selection exam")
+        #expect(kw == "iopsychology", "I/O psychology + personnel selection should fire iopsychology before psychology")
+    }
+    @Test func iopsychologyFalsePositiveFreudCognitivePsych() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying Freud and cognitive psychology theories for my intro psychology class")
+        #expect(kw == "psychology", "Freud + cognitive psychology intro class should stay in psychology not iopsychology")
+    }
+
+    // MARK: - Count guard (batch: informationassurance/hrmanagement/changemanagement/economics/iopsychology)
+    @Test func suggestedTemplatesCountAtLeast483() {
+        #expect(SuggestedSessionTemplates.all.count >= 483, "template catalog must have ≥483 entries after adding informationassurance/hrmanagement/changemanagement/economics/iopsychology (10 templates)")
+    }
 }

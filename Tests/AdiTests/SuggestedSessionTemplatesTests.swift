@@ -3755,4 +3755,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 473,
                 "catalog should have ≥473 templates after performanceanalysis/musicbusiness/dentalanesthesia/palliativecare/cognitivescience additions")
     }
+
+    // MARK: - informationassurance
+    @Test func informationassuranceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("CISM") || $0.localizedCaseInsensitiveContains("CRISC") || $0.localizedCaseInsensitiveContains("information assurance")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("certification"))
+        }
+        let hasAssignment = tasks.contains {
+            $0.localizedCaseInsensitiveContains("information assurance") &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("governance") || $0.localizedCaseInsensitiveContains("RMF"))
+        }
+        #expect(hasExam, "catalog must include an information assurance exam/cert study template")
+        #expect(hasAssignment, "catalog must include an information assurance assignment or governance template")
+    }
+
+    // MARK: - hrmanagement
+    @Test func hrmanagementTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("SHRM") || $0.localizedCaseInsensitiveContains("PHR") || $0.localizedCaseInsensitiveContains("SPHR")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("certification"))
+        }
+        let hasAssignment = tasks.contains {
+            $0.localizedCaseInsensitiveContains("human resource management") &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("talent") || $0.localizedCaseInsensitiveContains("compensation"))
+        }
+        #expect(hasExam, "catalog must include a SHRM/PHR exam study template")
+        #expect(hasAssignment, "catalog must include a human resource management assignment template")
+    }
+
+    // MARK: - changemanagement
+    @Test func changemanagementTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("Prosci") || $0.localizedCaseInsensitiveContains("ADKAR") || $0.localizedCaseInsensitiveContains("CCMP")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("cert"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("change management") || $0.localizedCaseInsensitiveContains("organizational change")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("stakeholder") || $0.localizedCaseInsensitiveContains("class"))
+        }
+        #expect(hasExam, "catalog must include a Prosci/ADKAR/CCMP exam or cert template")
+        #expect(hasAssignment, "catalog must include a change management assignment template")
+    }
+
+    // MARK: - economics
+    @Test func economicsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("microeconomics") || $0.localizedCaseInsensitiveContains("macroeconomics") || $0.localizedCaseInsensitiveContains("economics")) &&
+            $0.localizedCaseInsensitiveContains("exam")
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("economics") || $0.localizedCaseInsensitiveContains("econometrics")) &&
+            ($0.localizedCaseInsensitiveContains("problem set") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("regression"))
+        }
+        #expect(hasExam, "catalog must include an economics exam study template")
+        #expect(hasAssignment, "catalog must include an economics problem set or assignment template")
+    }
+
+    // MARK: - iopsychology
+    @Test func iopsychologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("industrial-organizational") || $0.localizedCaseInsensitiveContains("I/O psychology")) &&
+            $0.localizedCaseInsensitiveContains("exam")
+        }
+        let hasPaper = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("I/O psychology") || $0.localizedCaseInsensitiveContains("organizational psychology")) &&
+            ($0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("personnel selection"))
+        }
+        #expect(hasExam, "catalog must include an industrial-organizational psychology exam template")
+        #expect(hasPaper, "catalog must include an I/O or organizational psychology paper/assignment template")
+    }
+
+    // MARK: - Count guard (informationassurance/hrmanagement/changemanagement/economics/iopsychology)
+    @Test func catalogHasAtLeastFourHundredEightyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 483,
+                "catalog should have ≥483 templates after informationassurance/hrmanagement/changemanagement/economics/iopsychology additions")
+    }
 }
