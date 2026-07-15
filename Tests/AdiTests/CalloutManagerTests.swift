@@ -13559,11 +13559,234 @@ struct CalloutManagerTests {
         #expect(CalloutManager.extractTaskKeyword(from: "writing a clinical ethics consultation case summary on patient autonomy and end-of-life ethics") == "bioethics")
     }
 
+    // MARK: - blockchain keyword tests
+    @Test func blockchainKeywordFromSmartContract() {
+        #expect(CalloutManager.extractTaskKeyword(from: "writing a smart contract in Solidity for my blockchain class assignment") == "blockchain")
+    }
+    @Test func blockchainKeywordFromCourseContext() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying for my blockchain course exam on distributed ledger and consensus algorithms") == "blockchain")
+    }
+    @Test func blockchainKeywordFromWeb3() {
+        #expect(CalloutManager.extractTaskKeyword(from: "building a Web3 dApp development project for my blockchain program") == "blockchain")
+    }
+    @Test func blockchainCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "blockchain", tier: tier)
+                #expect(!msgs.isEmpty, "blockchain tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func blockchainCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "blockchain", tier: 1)
+            #expect(msgs.count >= 4, "blockchain tier1 must have ≥4 messages")
+        }
+    }
+    @Test func blockchainCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "blockchain", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "blockchain tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func blockchainCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "blockchain", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "blockchain tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func blockchainFalsePositiveBareKeyword() {
+        let kw = CalloutManager.extractTaskKeyword(from: "bitcoin price is going up")
+        #expect(kw != "blockchain", "bare crypto price talk should not route to blockchain")
+    }
+
+    // MARK: - digitalmarketing keyword tests
+    @Test func digitalmarketingKeywordFromSEO() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying for my SEO certification exam on search engine optimization strategies") == "digitalmarketing")
+    }
+    @Test func digitalmarketingKeywordFromGoogleAnalytics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "completing my Google Analytics certification exam and reviewing data analysis concepts") == "digitalmarketing")
+    }
+    @Test func digitalmarketingKeywordFromCourse() {
+        #expect(CalloutManager.extractTaskKeyword(from: "working on my digital marketing class assignment on content marketing and social media strategy") == "digitalmarketing")
+    }
+    @Test func digitalmarketingCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "digitalmarketing", tier: tier)
+                #expect(!msgs.isEmpty, "digitalmarketing tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func digitalmarketingCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "digitalmarketing", tier: 1)
+            #expect(msgs.count >= 4, "digitalmarketing tier1 must have ≥4 messages")
+        }
+    }
+    @Test func digitalmarketingCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "digitalmarketing", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "digitalmarketing tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func digitalmarketingCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "digitalmarketing", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "digitalmarketing tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func digitalmarketingFalsePositiveBrandStrategy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "developing a brand strategy and brand management plan for my startup pitch deck")
+        #expect(kw != "digitalmarketing", "brand strategy / pitch deck should route to startup, not digitalmarketing")
+    }
+
+    // MARK: - projectmanagement keyword tests
+    @Test func projectmanagementKeywordFromPMP() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying for the PMP exam and reviewing PMBOK knowledge areas") == "projectmanagement")
+    }
+    @Test func projectmanagementKeywordFromScrum() {
+        #expect(CalloutManager.extractTaskKeyword(from: "completing my scrum master certification course on agile project management") == "projectmanagement")
+    }
+    @Test func projectmanagementKeywordFromCourse() {
+        #expect(CalloutManager.extractTaskKeyword(from: "working on my project management class assignment on project charter and WBS") == "projectmanagement")
+    }
+    @Test func projectmanagementCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "projectmanagement", tier: tier)
+                #expect(!msgs.isEmpty, "projectmanagement tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func projectmanagementCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "projectmanagement", tier: 1)
+            #expect(msgs.count >= 4, "projectmanagement tier1 must have ≥4 messages")
+        }
+    }
+    @Test func projectmanagementCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "projectmanagement", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "projectmanagement tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func projectmanagementCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "projectmanagement", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "projectmanagement tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func projectmanagementFalsePositiveBareProject() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on a project for my coding assignment")
+        #expect(kw != "projectmanagement", "bare 'project' with coding context should not route to projectmanagement")
+    }
+
+    // MARK: - riskmanagement keyword tests
+    @Test func riskmanagementKeywordFromERM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying enterprise risk management and ERM frameworks for my risk management class exam") == "riskmanagement")
+    }
+    @Test func riskmanagementKeywordFromRiskAssessment() {
+        #expect(CalloutManager.extractTaskKeyword(from: "completing my risk assessment course assignment on risk analysis methodology") == "riskmanagement")
+    }
+    @Test func riskmanagementKeywordFromGRC() {
+        #expect(CalloutManager.extractTaskKeyword(from: "working on my GRC class project on governance risk and compliance frameworks") == "riskmanagement")
+    }
+    @Test func riskmanagementCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "riskmanagement", tier: tier)
+                #expect(!msgs.isEmpty, "riskmanagement tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func riskmanagementCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "riskmanagement", tier: 1)
+            #expect(msgs.count >= 4, "riskmanagement tier1 must have ≥4 messages")
+        }
+    }
+    @Test func riskmanagementCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "riskmanagement", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "riskmanagement tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func riskmanagementCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "riskmanagement", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "riskmanagement tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func riskmanagementFalsePositiveBareRisk() {
+        let kw = CalloutManager.extractTaskKeyword(from: "thinking about the risk of missing the deadline on my code project")
+        #expect(kw != "riskmanagement", "bare 'risk' in general context should not route to riskmanagement")
+    }
+
+    // MARK: - speechcommunication keyword tests
+    @Test func speechcommunicationKeywordFromPublicSpeaking() {
+        #expect(CalloutManager.extractTaskKeyword(from: "preparing my speech for my public speaking class presentation") == "speechcommunication")
+    }
+    @Test func speechcommunicationKeywordFromDebate() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prepping my arguments and rebuttals for my debate class competition") == "speechcommunication")
+    }
+    @Test func speechcommunicationKeywordFromOralCommunication() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying for my oral communication class exam on persuasive speaking") == "speechcommunication")
+    }
+    @Test func speechcommunicationCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "speechcommunication", tier: tier)
+                #expect(!msgs.isEmpty, "speechcommunication tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func speechcommunicationCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "speechcommunication", tier: 1)
+            #expect(msgs.count >= 4, "speechcommunication tier1 must have ≥4 messages")
+        }
+    }
+    @Test func speechcommunicationCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "speechcommunication", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "speechcommunication tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func speechcommunicationCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "speechcommunication", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "speechcommunication tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func speechcommunicationFalsePositiveSpeechTherapy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing up my speech therapy session notes for my clinical placement")
+        #expect(kw != "speechcommunication", "speech therapy notes should route to speechpathology, not speechcommunication")
+    }
+
     // MARK: - Template count guard
     @Test func suggestedTemplatesCountAtLeast413() {
         #expect(SuggestedSessionTemplates.all.count >= 413, "template catalog must have ≥413 entries after adding 5 new domains (10 templates)")
     }
     @Test func suggestedTemplatesCountAtLeast423() {
         #expect(SuggestedSessionTemplates.all.count >= 423, "template catalog must have ≥423 entries after adding robotics/artificialintelligence/osteopathicmedicine/epidemiology/bioethics (10 templates)")
+    }
+    @Test func suggestedTemplatesCountAtLeast433() {
+        #expect(SuggestedSessionTemplates.all.count >= 433, "template catalog must have ≥433 entries after adding blockchain/digitalmarketing/projectmanagement/riskmanagement/speechcommunication (10 templates)")
     }
 }

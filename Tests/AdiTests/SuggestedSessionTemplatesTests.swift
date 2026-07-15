@@ -3500,4 +3500,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 423,
                 "catalog should have ≥423 templates after robotics/artificialintelligence/osteopathicmedicine/epidemiology/bioethics additions")
     }
+
+    // MARK: - Blockchain templates
+    @Test func blockchainTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasSmartContract = tasks.contains { $0.localizedCaseInsensitiveContains("smart contract") && ($0.localizedCaseInsensitiveContains("Solidity") || $0.localizedCaseInsensitiveContains("blockchain")) }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("blockchain") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("consensus")) }
+        #expect(hasSmartContract, "catalog must include a smart contract / Solidity blockchain template")
+        #expect(hasExam, "catalog must include a blockchain exam / distributed ledger study template")
+    }
+
+    // MARK: - Digital marketing templates
+    @Test func digitalmarketingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCert = tasks.contains { $0.localizedCaseInsensitiveContains("Google Analytics") || ($0.localizedCaseInsensitiveContains("digital marketing") && $0.localizedCaseInsensitiveContains("certification")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("digital marketing") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("SEO") || $0.localizedCaseInsensitiveContains("content marketing")) }
+        #expect(hasCert, "catalog must include a digital marketing certification / Google Analytics template")
+        #expect(hasAssignment, "catalog must include a digital marketing assignment / SEO template")
+    }
+
+    // MARK: - Project management templates
+    @Test func projectmanagementTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPMP = tasks.contains { $0.localizedCaseInsensitiveContains("PMP") || ($0.localizedCaseInsensitiveContains("agile") && $0.localizedCaseInsensitiveContains("certification")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("project management") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("WBS") || $0.localizedCaseInsensitiveContains("sprint")) }
+        #expect(hasPMP, "catalog must include a PMP / agile certification exam study template")
+        #expect(hasAssignment, "catalog must include a project management assignment / WBS template")
+    }
+
+    // MARK: - Risk management templates
+    @Test func riskmanagementTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCert = tasks.contains { $0.localizedCaseInsensitiveContains("RIMS") || ($0.localizedCaseInsensitiveContains("risk management") && $0.localizedCaseInsensitiveContains("certification")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("risk management") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("GRC") || $0.localizedCaseInsensitiveContains("risk assessment")) }
+        #expect(hasCert, "catalog must include a RIMS / ERM certification exam study template")
+        #expect(hasAssignment, "catalog must include a risk management assignment / GRC template")
+    }
+
+    // MARK: - Speech communication templates
+    @Test func speechcommunicationTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasSpeech = tasks.contains { $0.localizedCaseInsensitiveContains("speech") && ($0.localizedCaseInsensitiveContains("public speaking") || $0.localizedCaseInsensitiveContains("rehearse")) }
+        let hasDebate = tasks.contains { $0.localizedCaseInsensitiveContains("debate") && ($0.localizedCaseInsensitiveContains("arguments") || $0.localizedCaseInsensitiveContains("rebuttal")) }
+        #expect(hasSpeech, "catalog must include a public speaking / speech rehearsal template")
+        #expect(hasDebate, "catalog must include a debate arguments / rebuttal preparation template")
+    }
+
+    // MARK: - Count guard (batch: blockchain/digitalmarketing/projectmanagement/riskmanagement/speechcommunication)
+    @Test func catalogHasAtLeastFourHundredThirtyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 433,
+                "catalog should have ≥433 templates after blockchain/digitalmarketing/projectmanagement/riskmanagement/speechcommunication additions")
+    }
 }

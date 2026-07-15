@@ -2721,5 +2721,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Bioethics analysis completed (ethical framework applied, key principles (beneficence, nonmaleficence, autonomy, justice) discussed, and written argument with conclusion drafted), and work saved",
             preferredDuration: 60 * 60
         ),
+        // blockchain templates
+        SuggestedTemplate(
+            icon: "link.circle.fill",
+            task: "Build a smart contract or complete my blockchain development assignment using Solidity or Web3",
+            successCriteria: "Smart contract or blockchain assignment completed (Solidity code written, contract tested, or dApp feature implemented), and work saved or committed to version control",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "network",
+            task: "Study for my blockchain class exam and review distributed ledger, consensus algorithms, and smart contract concepts",
+            successCriteria: "Target blockchain content reviewed (consensus algorithms, Ethereum/Solidity concepts, or DeFi/NFT topics), notes organized, and practice questions completed",
+            preferredDuration: 60 * 60
+        ),
+        // digitalmarketing templates
+        SuggestedTemplate(
+            icon: "chart.line.uptrend.xyaxis",
+            task: "Study for my Google Analytics or digital marketing certification exam",
+            successCriteria: "Target digital marketing content reviewed (SEO, analytics, PPC, or social media marketing concepts), and practice questions or a mock exam completed",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "megaphone.fill",
+            task: "Complete my digital marketing assignment on SEO, content marketing, or social media strategy",
+            successCriteria: "Digital marketing assignment completed (SEO audit, content calendar, social media strategy, or marketing analytics report drafted), and work saved",
+            preferredDuration: 45 * 60
+        ),
+        // projectmanagement templates
+        SuggestedTemplate(
+            icon: "checklist.checked",
+            task: "Study for the PMP, CAPM, or agile certification exam and review PMBOK concepts",
+            successCriteria: "Target project management content reviewed (PMBOK knowledge areas, agile methodology, or scrum/kanban frameworks), and at least 20 practice questions completed",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "calendar.badge.checkmark",
+            task: "Complete my project management class assignment on project charter, WBS, or agile sprint planning",
+            successCriteria: "Project management assignment completed (project charter drafted, WBS created, sprint backlog organized, or risk register updated), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        // riskmanagement templates
+        SuggestedTemplate(
+            icon: "exclamationmark.shield.fill",
+            task: "Study for my RIMS-CRMP or enterprise risk management certification exam",
+            successCriteria: "Target risk management content reviewed (ERM frameworks, risk assessment methodologies, ISO 31000, or governance and compliance concepts), and practice questions completed",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.bar.fill",
+            task: "Complete my risk management class assignment on risk assessment, risk analysis, or GRC frameworks",
+            successCriteria: "Risk management assignment completed (risk register updated, risk matrix built, risk assessment report drafted, or GRC framework analysis completed), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        // speechcommunication templates
+        SuggestedTemplate(
+            icon: "mic.fill",
+            task: "Write and rehearse my speech or public speaking class presentation",
+            successCriteria: "Speech written and outlined (introduction, main points, conclusion structured), key transitions memorized, and at least two full rehearsals completed",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "person.2.wave.2.fill",
+            task: "Prepare my debate arguments and rebuttal points for my debate class or competitive event",
+            successCriteria: "Debate case prepared (affirmative or negative position outlined, key arguments drafted, evidence researched, and at least three potential rebuttal points noted), and work saved",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

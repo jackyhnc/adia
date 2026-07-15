@@ -278,6 +278,11 @@ extension CalloutManager {
         case "osteopathicmedicine":        return osteopathicmedicineCallouts(tier: tier)
         case "epidemiology":               return epidemiologyCallouts(tier: tier)
         case "bioethics":                  return bioethicsCallouts(tier: tier)
+        case "blockchain":                 return blockchainCallouts(tier: tier)
+        case "digitalmarketing":           return digitalmarketingCallouts(tier: tier)
+        case "projectmanagement":          return projectmanagementCallouts(tier: tier)
+        case "riskmanagement":             return riskmanagementCallouts(tier: tier)
+        case "speechcommunication":        return speechcommunicationCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -5095,6 +5100,111 @@ extension CalloutManager {
             "CLOSE THIS. open your bioethics notes.",
             "no one masters research ethics by browsing.",
             "CLOSE THIS. get back to your IRB protocol or bioethics paper.",
+        ]
+        }
+    }
+
+    private func blockchainCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your smart contract isn't going to write itself.",
+            "get back to your blockchain assignment.",
+            "close this and open your Solidity project.",
+            "your blockchain coursework won't finish itself.",
+        ]
+        case 2: return [
+            "blockchain developers don't build dApps by scrolling.",
+            "your smart contracts aren't going to deploy themselves.",
+            "stop avoiding your blockchain coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your blockchain project.",
+            "no one masters smart contracts by browsing.",
+            "CLOSE THIS. get back to your Solidity or Web3 assignment.",
+        ]
+        }
+    }
+
+    private func digitalmarketingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your SEO campaign isn't going to optimize itself.",
+            "get back to your digital marketing assignment.",
+            "close this and open your marketing analytics dashboard.",
+            "your digital marketing coursework won't finish itself.",
+        ]
+        case 2: return [
+            "digital marketers don't earn certifications by scrolling.",
+            "your Google Ads campaign isn't going to write itself.",
+            "stop avoiding your digital marketing coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your digital marketing study guide.",
+            "no one earns a Google Analytics certification by browsing.",
+            "CLOSE THIS. get back to your digital marketing assignment.",
+        ]
+        }
+    }
+
+    private func projectmanagementCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your PMP exam questions aren't going to answer themselves.",
+            "get back to your project management assignment.",
+            "close this and open your PMBOK study guide.",
+            "your project management coursework won't finish itself.",
+        ]
+        case 2: return [
+            "project managers don't earn their PMP by scrolling.",
+            "your sprint plan isn't going to write itself.",
+            "stop avoiding your project management coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your PMP study guide.",
+            "no one earns agile certification by browsing.",
+            "CLOSE THIS. get back to your project management assignment.",
+        ]
+        }
+    }
+
+    private func riskmanagementCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your risk assessment isn't going to write itself.",
+            "get back to your risk management assignment.",
+            "close this and open your ERM coursework.",
+            "your risk management exam prep won't do itself.",
+        ]
+        case 2: return [
+            "risk managers don't earn their RIMS certification by scrolling.",
+            "your risk framework isn't going to build itself.",
+            "stop avoiding your risk management coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your risk management study guide.",
+            "no one masters enterprise risk by browsing.",
+            "CLOSE THIS. get back to your risk management assignment.",
+        ]
+        }
+    }
+
+    private func speechcommunicationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your speech isn't going to write itself.",
+            "get back to your public speaking assignment.",
+            "close this and prepare your speech.",
+            "your debate prep won't do itself.",
+        ]
+        case 2: return [
+            "great speakers practice — they don't scroll.",
+            "your speech outline isn't going to write itself.",
+            "stop avoiding your public speaking assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your speech notes.",
+            "no one wins a debate by scrolling.",
+            "CLOSE THIS. get back to your speech preparation.",
         ]
         }
     }

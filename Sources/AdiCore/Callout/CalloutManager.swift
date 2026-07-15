@@ -281,6 +281,32 @@ public final class CalloutManager {
             || lower.contains("ai textbook") || lower.contains("ai lecture") || lower.contains("ai notes") && lower.contains("class") {
             return "artificialintelligence"
         }
+        // blockchain — positioned AFTER artificialintelligence and BEFORE gamedev so blockchain class/course,
+        // smart contract development, Solidity programming, and crypto/DeFi coursework routes here.
+        // Bare "crypto" or "bitcoin" alone NOT matched — compound context required.
+        if lower.contains("blockchain class") || lower.contains("blockchain course")
+            || lower.contains("blockchain exam") || lower.contains("blockchain program")
+            || lower.contains("blockchain assignment") || lower.contains("blockchain project")
+            || lower.contains("blockchain development") || lower.contains("blockchain developer")
+            || lower.contains("blockchain technology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("blockchain programming") || lower.contains("blockchain lab")
+            || lower.contains("smart contract") || lower.contains("smart contracts")
+            || word("solidity") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("programming") || lower.contains("project"))
+            || lower.contains("solidity programming") || lower.contains("solidity class") || lower.contains("solidity course")
+            || lower.contains("ethereum class") || lower.contains("ethereum course") || lower.contains("ethereum development")
+            || lower.contains("web3 class") || lower.contains("web3 course") || lower.contains("web3 development")
+            || lower.contains("web3 project") || lower.contains("decentralized application") || lower.contains("dapp development")
+            || lower.contains("defi class") || lower.contains("defi course") || lower.contains("defi project")
+            || lower.contains("nft development") || lower.contains("nft class") || lower.contains("nft course")
+            || lower.contains("cryptocurrency class") || lower.contains("cryptocurrency course") || lower.contains("cryptocurrency exam")
+            || lower.contains("crypto class") && (lower.contains("exam") || lower.contains("course") || lower.contains("assignment"))
+            || lower.contains("distributed ledger") && (lower.contains("class") || lower.contains("course") || lower.contains("technology"))
+            || lower.contains("hyperledger") || lower.contains("hyperledger fabric")
+            || lower.contains("consensus algorithm") && (lower.contains("blockchain") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("proof of work") && (lower.contains("class") || lower.contains("course") || lower.contains("blockchain"))
+            || lower.contains("proof of stake") && (lower.contains("class") || lower.contains("course") || lower.contains("blockchain")) {
+            return "blockchain"
+        }
         // gamedev — positioned before code so Unity/Godot/engine terms don't fall through to code.
         // "game plan" is not matched because no specific tool name or game-dev phrase fires.
         if word("unity") || word("godot") || lower.contains("unreal engine")
@@ -1221,6 +1247,51 @@ public final class CalloutManager {
             || lower.contains("supply chain analytics") || lower.contains("global supply chain class") {
             return "supplychain"
         }
+        // projectmanagement — positioned AFTER supplychain and BEFORE riskmanagement/business so PMP exam
+        // prep, agile/scrum certification, and project management courses route here.
+        // Generic "project" tasks stay in the general pool (bare word("project") NOT matched here).
+        if lower.contains("pmp exam") || lower.contains("pmp certification") || lower.contains("pmp class")
+            || word("pmp") && (lower.contains("exam") || lower.contains("cert") || lower.contains("study") || lower.contains("prep") || lower.contains("class"))
+            || lower.contains("pmi-acp") || word("capm") && (lower.contains("exam") || lower.contains("cert") || lower.contains("class"))
+            || lower.contains("project management class") || lower.contains("project management course")
+            || lower.contains("project management exam") || lower.contains("project management certification")
+            || lower.contains("project management professional") || lower.contains("project management program")
+            || lower.contains("project management degree") || lower.contains("project management assignment")
+            || lower.contains("agile certification") || lower.contains("agile class") || lower.contains("agile course")
+            || lower.contains("agile exam") || lower.contains("agile training")
+            || lower.contains("scrum master") || lower.contains("scrum certification")
+            || lower.contains("scrum class") || lower.contains("scrum course") || lower.contains("scrum exam")
+            || lower.contains("kanban class") || lower.contains("kanban course") || lower.contains("kanban certification")
+            || lower.contains("project charter") && (lower.contains("class") || lower.contains("assignment") || lower.contains("course"))
+            || lower.contains("work breakdown structure") && (lower.contains("class") || lower.contains("assignment"))
+            || lower.contains("wbs") && (lower.contains("class") || lower.contains("assignment") || lower.contains("course"))
+            || word("pmbok") || lower.contains("prince2") && (lower.contains("class") || lower.contains("exam") || lower.contains("cert"))
+            || lower.contains("agile project management") || lower.contains("sprint planning class") {
+            return "projectmanagement"
+        }
+        // riskmanagement — positioned AFTER projectmanagement and BEFORE business so ERM, risk assessment,
+        // and risk management certification courses route here (distinct from actuarial exam prep which fires earlier).
+        // Bare "risk" alone NOT matched — compound context required.
+        if lower.contains("risk management class") || lower.contains("risk management course")
+            || lower.contains("risk management exam") || lower.contains("risk management certification")
+            || lower.contains("risk management program") || lower.contains("risk management degree")
+            || lower.contains("risk management assignment") || lower.contains("risk management professional")
+            || lower.contains("enterprise risk management") || lower.contains("enterprise risk")
+            || lower.contains("erm class") || lower.contains("erm certification") || lower.contains("erm framework")
+            || lower.contains("risk assessment class") || lower.contains("risk assessment course")
+            || lower.contains("risk analysis class") || lower.contains("risk analysis course")
+            || lower.contains("risk modeling class") || lower.contains("risk modeling course")
+            || word("rims") && (lower.contains("certification") || lower.contains("exam") || lower.contains("class"))
+            || lower.contains("crm certification") && lower.contains("risk")
+            || lower.contains("risk framework") && (lower.contains("class") || lower.contains("assignment"))
+            || lower.contains("risk register") && (lower.contains("class") || lower.contains("assignment") || lower.contains("project"))
+            || lower.contains("governance risk compliance") || lower.contains("grc class") || lower.contains("grc course")
+            || lower.contains("operational risk class") || lower.contains("operational risk course")
+            || lower.contains("financial risk management class") || lower.contains("financial risk class")
+            || lower.contains("cyber risk class") || lower.contains("it risk class") || lower.contains("it risk management")
+            || lower.contains("iso 31000") && (lower.contains("class") || lower.contains("assignment") || lower.contains("exam")) {
+            return "riskmanagement"
+        }
         // business/management — positioned before research so "marketing research" and "market analysis"
         // route here rather than the generic research pool. Startup branch above already catches
         // "business plan", "pitch deck", and "business model" before this point.
@@ -1282,6 +1353,34 @@ public final class CalloutManager {
             || lower.contains("communication degree") || lower.contains("communications degree") {
             return "communicationstudies"
         }
+        // speechcommunication — positioned AFTER communicationstudies and BEFORE journalism so
+        // public speaking class, debate class, and oral communication courses route here.
+        // Distinct from speechpathology (clinical therapy) and communicationstudies (theory/mass comm).
+        // Bare "speech" alone NOT matched — compound context required.
+        if lower.contains("public speaking class") || lower.contains("public speaking course")
+            || lower.contains("public speaking exam") || lower.contains("public speaking assignment")
+            || lower.contains("speech class") && !lower.contains("speech therapy") && !lower.contains("speech-language")
+            || lower.contains("speech course") && !lower.contains("speech therapy") && !lower.contains("speech-language")
+            || lower.contains("speech exam") && !lower.contains("speech-language")
+            || lower.contains("debate class") || lower.contains("debate course") || lower.contains("debate exam")
+            || lower.contains("debate assignment") || lower.contains("debate team") || lower.contains("debate preparation")
+            || lower.contains("oral communication class") || lower.contains("oral communication course")
+            || lower.contains("oral communication exam") || lower.contains("oral communication assignment")
+            || lower.contains("speech and debate") || lower.contains("competitive debate")
+            || lower.contains("parliamentary debate") || lower.contains("parliamentary procedure class")
+            || lower.contains("forensics speech") || lower.contains("speech forensics")
+            || lower.contains("lincoln-douglas debate") || lower.contains("policy debate class")
+            || lower.contains("model un speech") || lower.contains("model united nations speech")
+            || lower.contains("toastmasters class") || lower.contains("toastmasters course")
+            || lower.contains("speech writing") && (lower.contains("class") || lower.contains("course") || lower.contains("assignment"))
+            || lower.contains("oratory class") || lower.contains("oratory course")
+            || lower.contains("elocution class") || lower.contains("public address class")
+            || lower.contains("persuasive speech class") || lower.contains("persuasive speech course")
+            || lower.contains("informative speech class") || lower.contains("informative speech course")
+            || lower.contains("impromptu speaking class") || lower.contains("impromptu speaking course")
+            || lower.contains("speech preparation") && (lower.contains("class") || lower.contains("course") || lower.contains("assignment")) {
+            return "speechcommunication"
+        }
         // journalism — positioned after research and business but before writing so "news article",
         // "press release", and journalism-school tasks route here. "newsletter"/"blog" stay in writing.
         if word("journalism") || word("journalist") || word("journalists")
@@ -1318,6 +1417,35 @@ public final class CalloutManager {
             || lower.contains("pr firm") || lower.contains("pr agency")
             || lower.contains("spokesperson training") || lower.contains("public affairs") {
             return "publicrelations"
+        }
+        // digitalmarketing — positioned AFTER publicrelations and BEFORE textilesfashion so SEO class/course,
+        // Google Analytics, social media marketing, and digital marketing certificate programs route here.
+        // "brand strategy"/"brand management" stay in startup branch (fires much earlier).
+        if lower.contains("digital marketing class") || lower.contains("digital marketing course")
+            || lower.contains("digital marketing exam") || lower.contains("digital marketing certificate")
+            || lower.contains("digital marketing program") || lower.contains("digital marketing degree")
+            || lower.contains("digital marketing assignment")
+            || lower.contains("seo class") || lower.contains("seo course") || lower.contains("seo certification")
+            || lower.contains("search engine optimization class") || lower.contains("search engine optimization course")
+            || lower.contains("google analytics class") || lower.contains("google analytics certification") || lower.contains("google analytics exam")
+            || lower.contains("social media marketing class") || lower.contains("social media marketing course")
+            || lower.contains("social media marketing exam") || lower.contains("social media marketing certification")
+            || lower.contains("content marketing class") || lower.contains("content marketing course")
+            || lower.contains("email marketing class") || lower.contains("email marketing course")
+            || lower.contains("ppc class") || lower.contains("ppc course") || lower.contains("ppc certification")
+            || lower.contains("sem class") || lower.contains("sem course")
+            || lower.contains("pay-per-click class") || lower.contains("pay per click class")
+            || lower.contains("marketing analytics class") || lower.contains("marketing analytics course")
+            || lower.contains("google ads class") || lower.contains("google ads certification")
+            || lower.contains("meta ads class") || lower.contains("facebook ads class")
+            || lower.contains("affiliate marketing class") || lower.contains("affiliate marketing course")
+            || lower.contains("conversion rate optimization") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("influencer marketing class") || lower.contains("influencer marketing course")
+            || lower.contains("growth marketing class") || lower.contains("growth marketing course")
+            || lower.contains("digital advertising class") || lower.contains("digital advertising course")
+            || lower.contains("inbound marketing class") || lower.contains("hubspot certification")
+            || lower.contains("marketing automation class") || lower.contains("marketing funnel class") {
+            return "digitalmarketing"
         }
         // textilesfashion — positioned BEFORE fashiondesign so fiber arts, hand weaving, natural
         // dyeing, textile engineering, and spinning coursework routes here. "textile design" in a
