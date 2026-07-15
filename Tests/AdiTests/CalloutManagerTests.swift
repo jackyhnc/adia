@@ -13114,8 +13114,228 @@ struct CalloutManagerTests {
         }
     }
 
+    // MARK: - quantumcomputing keyword tests
+    @Test func quantumcomputingKeywordFromQiskit() {
+        #expect(CalloutManager.extractTaskKeyword(from: "build a quantum circuit using qiskit and ibm quantum") == "quantumcomputing")
+    }
+    @Test func quantumcomputingKeywordFromAlgorithm() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study quantum algorithms shor grover for my quantum computing class") == "quantumcomputing")
+    }
+    @Test func quantumcomputingCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "quantumcomputing", tier: tier)
+                #expect(!msgs.isEmpty, "quantumcomputing tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func quantumcomputingCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "quantumcomputing", tier: 1)
+            #expect(msgs.count >= 4, "quantumcomputing tier1 must have ≥4 messages")
+        }
+    }
+    @Test func quantumcomputingCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "quantumcomputing", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "quantumcomputing tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func quantumcomputingCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "quantumcomputing", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "quantumcomputing tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func quantumcomputingFalsePositiveQuantumPhysics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study quantum mechanics for my physics exam")
+        #expect(kw != "quantumcomputing", "bare quantum mechanics for physics should NOT fire quantumcomputing")
+    }
+    @Test func quantumcomputingKeywordFromErrorCorrection() {
+        #expect(CalloutManager.extractTaskKeyword(from: "quantum error correction and quantum cryptography course assignment") == "quantumcomputing")
+    }
+
+    // MARK: - cloudcomputing keyword tests
+    @Test func cloudcomputingKeywordFromAWS() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying for aws certification solutions architect cloud exam") == "cloudcomputing")
+    }
+    @Test func cloudcomputingKeywordFromKubernetes() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete kubernetes class assignment on cka certification and container orchestration") == "cloudcomputing")
+    }
+    @Test func cloudcomputingCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "cloudcomputing", tier: tier)
+                #expect(!msgs.isEmpty, "cloudcomputing tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func cloudcomputingCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "cloudcomputing", tier: 1)
+            #expect(msgs.count >= 4, "cloudcomputing tier1 must have ≥4 messages")
+        }
+    }
+    @Test func cloudcomputingCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "cloudcomputing", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "cloudcomputing tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func cloudcomputingCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "cloudcomputing", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "cloudcomputing tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func cloudcomputingFalsePositiveAWSWelding() {
+        let kw = CalloutManager.extractTaskKeyword(from: "aws welding certification d1.1 structural welding")
+        #expect(kw != "cloudcomputing", "AWS welding context should NOT fire cloudcomputing")
+    }
+    @Test func cloudcomputingKeywordFromDevOps() {
+        #expect(CalloutManager.extractTaskKeyword(from: "devops class assignment on terraform cloud infrastructure deployment pipeline") == "cloudcomputing")
+    }
+
+    // MARK: - softwaretesting keyword tests
+    @Test func softwaretestingKeywordFromISTQB() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for the istqb ctfl exam and software quality assurance concepts") == "softwaretesting")
+    }
+    @Test func softwaretestingKeywordFromTestAutomation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete test automation assignment using selenium for my qa engineering class") == "softwaretesting")
+    }
+    @Test func softwaretestingCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "softwaretesting", tier: tier)
+                #expect(!msgs.isEmpty, "softwaretesting tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func softwaretestingCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "softwaretesting", tier: 1)
+            #expect(msgs.count >= 4, "softwaretesting tier1 must have ≥4 messages")
+        }
+    }
+    @Test func softwaretestingCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "softwaretesting", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "softwaretesting tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func softwaretestingCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "softwaretesting", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "softwaretesting tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func softwaretestingFalsePositivePenetrationTesting() {
+        let kw = CalloutManager.extractTaskKeyword(from: "penetration testing oscp ethical hacking kali linux")
+        #expect(kw != "softwaretesting", "penetration testing should route to cybersecurity, not softwaretesting")
+    }
+    @Test func softwaretestingKeywordFromSoftwareQuality() {
+        #expect(CalloutManager.extractTaskKeyword(from: "software quality assurance class on regression testing and acceptance testing") == "softwaretesting")
+    }
+
+    // MARK: - mechanicaldrafting keyword tests
+    @Test func mechanicaldraftingKeywordFromBlueprintReading() {
+        #expect(CalloutManager.extractTaskKeyword(from: "blueprint reading class for mechanical drafting program certification exam") == "mechanicaldrafting")
+    }
+    @Test func mechanicaldraftingKeywordFromTechnicalDrawing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "engineering drawing class assignment on orthographic projection and technical drawing") == "mechanicaldrafting")
+    }
+    @Test func mechanicaldraftingCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "mechanicaldrafting", tier: tier)
+                #expect(!msgs.isEmpty, "mechanicaldrafting tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func mechanicaldraftingCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "mechanicaldrafting", tier: 1)
+            #expect(msgs.count >= 4, "mechanicaldrafting tier1 must have ≥4 messages")
+        }
+    }
+    @Test func mechanicaldraftingCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "mechanicaldrafting", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "mechanicaldrafting tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func mechanicaldraftingCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "mechanicaldrafting", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "mechanicaldrafting tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func mechanicaldraftingFalsePositiveDraftingPaper() {
+        let kw = CalloutManager.extractTaskKeyword(from: "drafting a paper on climate change policy for my environmental studies class")
+        #expect(kw != "mechanicaldrafting", "drafting a paper should NOT fire mechanicaldrafting")
+    }
+    @Test func mechanicaldraftingKeywordFromAutocadClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "autocad class assignment on 2d drawings and technical drafting for my drafting program") == "mechanicaldrafting")
+    }
+
+    // MARK: - dataengineering keyword tests
+    @Test func dataengineeringKeywordFromETLPipeline() {
+        #expect(CalloutManager.extractTaskKeyword(from: "build an etl pipeline for my data engineering class project") == "dataengineering")
+    }
+    @Test func dataengineeringKeywordFromSpark() {
+        #expect(CalloutManager.extractTaskKeyword(from: "apache spark class assignment on data pipeline design and stream processing") == "dataengineering")
+    }
+    @Test func dataengineeringCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dataengineering", tier: tier)
+                #expect(!msgs.isEmpty, "dataengineering tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func dataengineeringCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dataengineering", tier: 1)
+            #expect(msgs.count >= 4, "dataengineering tier1 must have ≥4 messages")
+        }
+    }
+    @Test func dataengineeringCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dataengineering", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "dataengineering tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func dataengineeringCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "dataengineering", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "dataengineering tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func dataengineeringFalsePositiveDataAnalysis() {
+        let kw = CalloutManager.extractTaskKeyword(from: "data analysis using jupyter notebook and pandas machine learning model")
+        #expect(kw != "dataengineering", "data analysis with jupyter/ML should route to datascience, not dataengineering")
+    }
+    @Test func dataengineeringKeywordFromDataWarehouse() {
+        #expect(CalloutManager.extractTaskKeyword(from: "data warehousing class on snowflake certification and dimensional modeling design") == "dataengineering")
+    }
+
     // MARK: - Template count guard
-    @Test func suggestedTemplatesCountAtLeast403() {
-        #expect(SuggestedSessionTemplates.all.count >= 403, "template catalog must have ≥403 entries after adding 5 new domains (10 templates)")
+    @Test func suggestedTemplatesCountAtLeast413() {
+        #expect(SuggestedSessionTemplates.all.count >= 413, "template catalog must have ≥413 entries after adding 5 new domains (10 templates)")
     }
 }

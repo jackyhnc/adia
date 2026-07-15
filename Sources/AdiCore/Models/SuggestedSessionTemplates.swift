@@ -2591,5 +2591,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Assignment completed (quality management system analysis written, ISO audit findings documented, SPC chart analyzed, or process improvement report drafted), and work saved",
             preferredDuration: 60 * 60
         ),
+        // quantumcomputing templates
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Build a quantum circuit or work through a quantum computing assignment using Qiskit or IBM Quantum",
+            successCriteria: "Quantum circuit implemented or quantum algorithm problem completed (Qiskit code written, circuit gates configured, simulation run, or assignment questions answered), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cpu.fill",
+            task: "Study quantum computing concepts — quantum gates, algorithms, or quantum error correction — for my class or exam",
+            successCriteria: "Target quantum computing content reviewed (quantum gates, Grover's/Shor's algorithm, superposition/entanglement, or error correction schemes), notes saved, and key concepts summarized",
+            preferredDuration: 45 * 60
+        ),
+        // cloudcomputing templates
+        SuggestedTemplate(
+            icon: "cloud.fill",
+            task: "Study for my AWS, Azure, or GCP cloud certification exam and review cloud architecture concepts",
+            successCriteria: "Target cloud certification content reviewed (services, architecture patterns, security, or cost optimization), notes saved, and at least 20 practice questions completed",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "terminal.fill",
+            task: "Complete a DevOps or cloud computing assignment using Terraform, Kubernetes, or Docker",
+            successCriteria: "Assignment completed (infrastructure-as-code written, container configuration defined, pipeline configured, or cloud deployment documented), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        // softwaretesting templates
+        SuggestedTemplate(
+            icon: "checkmark.circle.fill",
+            task: "Study for the ISTQB CTFL exam or complete a software testing assignment on test automation or QA engineering",
+            successCriteria: "Target content reviewed (ISTQB syllabus chapters, test design techniques, or QA concepts), notes saved, and at least 20 practice questions completed",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "hammer.fill",
+            task: "Write automated tests using Selenium, pytest, or JUnit for my software testing class or project",
+            successCriteria: "Test cases written (at least 5 automated tests implemented, test suite runs without errors, assertions cover target functionality), and code saved",
+            preferredDuration: 60 * 60
+        ),
+        // mechanicaldrafting templates
+        SuggestedTemplate(
+            icon: "ruler.fill",
+            task: "Complete a mechanical drafting assignment — technical drawing, blueprint reading, or AutoCAD drafting for my program",
+            successCriteria: "Drafting assignment completed (technical drawing finished, AutoCAD file saved with correct dimensions and views, blueprint reading questions answered, or drafting notes reviewed), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "pencil.and.ruler.fill",
+            task: "Study engineering drawing and blueprint reading for my drafting technology class or certification exam",
+            successCriteria: "Target drafting content reviewed (orthographic projection, sectional views, dimensioning standards, GD&T symbols, or blueprint reading concepts), notes organized and key techniques summarized",
+            preferredDuration: 45 * 60
+        ),
+        // dataengineering templates
+        SuggestedTemplate(
+            icon: "cylinder.split.1x2.fill",
+            task: "Build an ETL pipeline or data engineering project using Apache Spark, Kafka, or Airflow",
+            successCriteria: "Pipeline implemented or project milestone completed (ETL logic coded, Spark job runs, Airflow DAG defined, or data transformation steps documented), and code saved",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "table.fill",
+            task: "Complete my data engineering assignment on data warehouse design, dbt, Snowflake, or data modeling",
+            successCriteria: "Assignment completed (data warehouse schema designed, dbt models defined, Snowflake queries written, or data modeling documentation completed), and work saved",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

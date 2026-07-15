@@ -3398,4 +3398,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 403,
                 "catalog should have ≥403 templates after agriculturalscience/textilesfashion/geographyearthed/childlife/qualitymanagement additions")
     }
+
+    // MARK: - Quantum Computing templates
+    @Test func quantumcomputingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCircuit = tasks.contains { $0.localizedCaseInsensitiveContains("quantum circuit") && ($0.localizedCaseInsensitiveContains("Qiskit") || $0.localizedCaseInsensitiveContains("IBM Quantum")) }
+        let hasStudy = tasks.contains { $0.localizedCaseInsensitiveContains("quantum computing") && ($0.localizedCaseInsensitiveContains("quantum gates") || $0.localizedCaseInsensitiveContains("quantum algorithms")) }
+        #expect(hasCircuit, "catalog must include a Qiskit quantum circuit template")
+        #expect(hasStudy, "catalog must include a quantum computing study/exam template")
+    }
+
+    // MARK: - Cloud Computing templates
+    @Test func cloudcomputingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCert = tasks.contains { ($0.localizedCaseInsensitiveContains("AWS") || $0.localizedCaseInsensitiveContains("Azure") || $0.localizedCaseInsensitiveContains("GCP")) && $0.localizedCaseInsensitiveContains("cloud certification") }
+        let hasDevOps = tasks.contains { ($0.localizedCaseInsensitiveContains("DevOps") || $0.localizedCaseInsensitiveContains("Terraform") || $0.localizedCaseInsensitiveContains("Kubernetes")) && $0.localizedCaseInsensitiveContains("cloud computing") }
+        #expect(hasCert, "catalog must include an AWS/Azure/GCP cloud certification template")
+        #expect(hasDevOps, "catalog must include a DevOps/Terraform/Kubernetes cloud computing template")
+    }
+
+    // MARK: - Software Testing templates
+    @Test func softwaretestingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasISTQB = tasks.contains { $0.localizedCaseInsensitiveContains("ISTQB") && ($0.localizedCaseInsensitiveContains("software testing") || $0.localizedCaseInsensitiveContains("QA engineering")) }
+        let hasAutomation = tasks.contains { ($0.localizedCaseInsensitiveContains("Selenium") || $0.localizedCaseInsensitiveContains("pytest") || $0.localizedCaseInsensitiveContains("JUnit")) && $0.localizedCaseInsensitiveContains("automated tests") }
+        #expect(hasISTQB, "catalog must include an ISTQB or software testing exam template")
+        #expect(hasAutomation, "catalog must include a Selenium/pytest/JUnit test automation template")
+    }
+
+    // MARK: - Mechanical Drafting templates
+    @Test func mechanicaldraftingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains { ($0.localizedCaseInsensitiveContains("mechanical drafting") || $0.localizedCaseInsensitiveContains("AutoCAD")) && ($0.localizedCaseInsensitiveContains("technical drawing") || $0.localizedCaseInsensitiveContains("blueprint reading")) }
+        let hasStudy = tasks.contains { $0.localizedCaseInsensitiveContains("engineering drawing") && ($0.localizedCaseInsensitiveContains("blueprint reading") || $0.localizedCaseInsensitiveContains("orthographic")) }
+        #expect(hasAssignment, "catalog must include a mechanical drafting / AutoCAD assignment template")
+        #expect(hasStudy, "catalog must include an engineering drawing / blueprint reading study template")
+    }
+
+    // MARK: - Data Engineering templates
+    @Test func dataengineeringTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPipeline = tasks.contains { ($0.localizedCaseInsensitiveContains("ETL pipeline") || $0.localizedCaseInsensitiveContains("Apache Spark") || $0.localizedCaseInsensitiveContains("Kafka")) && $0.localizedCaseInsensitiveContains("data engineering") }
+        let hasWarehouse = tasks.contains { ($0.localizedCaseInsensitiveContains("data warehouse") || $0.localizedCaseInsensitiveContains("dbt") || $0.localizedCaseInsensitiveContains("Snowflake")) && $0.localizedCaseInsensitiveContains("data engineering") }
+        #expect(hasPipeline, "catalog must include an ETL/Spark/Kafka data engineering pipeline template")
+        #expect(hasWarehouse, "catalog must include a data warehouse/dbt/Snowflake data engineering template")
+    }
+
+    // MARK: - Count guard (batch: quantumcomputing/cloudcomputing/softwaretesting/mechanicaldrafting/dataengineering)
+    @Test func catalogHasAtLeastFourHundredThirteenTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 413,
+                "catalog should have ≥413 templates after quantumcomputing/cloudcomputing/softwaretesting/mechanicaldrafting/dataengineering additions")
+    }
 }

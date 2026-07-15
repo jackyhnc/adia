@@ -164,6 +164,66 @@ public final class CalloutManager {
             || lower.contains("network infrastructure class") {
             return "networkengineering"
         }
+        // quantumcomputing — positioned AFTER networkengineering and BEFORE gamedev.
+        // Catches quantum computing coursework, quantum algorithm classes, Qiskit, IBM Quantum, and
+        // quantum cryptography/error-correction courses. Bare word("quantum") NOT matched here —
+        // quantum physics or quantum chemistry stays in studying/research.
+        if lower.contains("quantum computing") || lower.contains("quantum computer")
+            || lower.contains("quantum algorithm") || lower.contains("quantum algorithms")
+            || word("qiskit")
+            || lower.contains("quantum circuit") || lower.contains("quantum circuits")
+            || lower.contains("quantum gate") || lower.contains("quantum gates")
+            || lower.contains("ibm quantum") || lower.contains("ibm q ")
+            || lower.contains("quantum programming") || lower.contains("quantum program")
+            || lower.contains("quantum error correction")
+            || lower.contains("quantum cryptography") || lower.contains("quantum key distribution")
+            || (lower.contains("quantum information") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("quantum mechanics") && (lower.contains("computing") || lower.contains("programming") || lower.contains("algorithm"))) {
+            return "quantumcomputing"
+        }
+        // cloudcomputing — positioned AFTER quantumcomputing and BEFORE gamedev.
+        // Catches AWS/Azure/GCP certification prep, cloud architecture/DevOps coursework, and
+        // Terraform/Kubernetes class. "aws" alone NOT matched — requires cloud/cert/class context
+        // to avoid false positives with "AWS" (American Welding Society) in weldingtech tasks.
+        if (lower.contains("aws") && (lower.contains("certification") || lower.contains("cloud") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("training") || lower.contains("architect") || lower.contains("devops") || lower.contains("solutions")))
+            || (lower.contains("azure") && (lower.contains("certification") || lower.contains("cloud") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("architect") || lower.contains("devops")))
+            || (lower.contains("gcp") && (lower.contains("certification") || lower.contains("cloud") || lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("google cloud") && (lower.contains("certification") || lower.contains("class") || lower.contains("exam") || lower.contains("architect")))
+            || lower.contains("cloud computing") || lower.contains("cloud architecture class")
+            || lower.contains("cloud engineer") || lower.contains("cloud architect")
+            || lower.contains("devops class") || lower.contains("devops course") || lower.contains("devops exam")
+            || lower.contains("devops certification") || lower.contains("devops engineer")
+            || lower.contains("terraform class") || lower.contains("terraform course") || lower.contains("terraform exam")
+            || lower.contains("kubernetes class") || lower.contains("kubernetes course") || lower.contains("kubernetes exam")
+            || lower.contains("kubernetes certification") || word("cka") || word("ckad")
+            || lower.contains("docker class") || lower.contains("docker course") || lower.contains("docker exam")
+            || lower.contains("cloud deployment") || lower.contains("cloud infrastructure class")
+            || lower.contains("serverless class") || lower.contains("serverless course")
+            || lower.contains("cloud security class") || lower.contains("cloud migration class") {
+            return "cloudcomputing"
+        }
+        // softwaretesting — positioned AFTER cloudcomputing and BEFORE gamedev.
+        // Catches QA engineering, ISTQB exam prep, test automation frameworks in educational context,
+        // and software quality assurance coursework. Bare "testing" or "test" NOT matched alone.
+        // "penetration testing" stays in cybersecurity (fires earlier).
+        if lower.contains("software testing") || lower.contains("software quality assurance")
+            || lower.contains("qa engineering")
+            || (word("qa") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("engineer") || lower.contains("testing") || lower.contains("program")))
+            || word("istqb") || lower.contains("ctfl exam") || lower.contains("ctal exam")
+            || lower.contains("test automation") || lower.contains("automated testing")
+            || lower.contains("selenium class") || lower.contains("selenium course") || lower.contains("selenium testing")
+            || (word("pytest") && (lower.contains("class") || lower.contains("course") || lower.contains("testing")))
+            || (word("junit") && (lower.contains("class") || lower.contains("course") || lower.contains("testing")))
+            || (lower.contains("software quality") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("engineering")))
+            || lower.contains("quality assurance testing") || lower.contains("qa testing")
+            || (lower.contains("regression testing") && (lower.contains("class") || lower.contains("course")))
+            || (lower.contains("performance testing") && (lower.contains("class") || lower.contains("course")))
+            || lower.contains("load testing class") || lower.contains("load testing course")
+            || lower.contains("unit testing class") || lower.contains("unit testing course")
+            || lower.contains("integration testing class") || lower.contains("integration testing course")
+            || lower.contains("acceptance testing class") || lower.contains("acceptance testing course") {
+            return "softwaretesting"
+        }
         // gamedev — positioned before code so Unity/Godot/engine terms don't fall through to code.
         // "game plan" is not matched because no specific tool name or game-dev phrase fires.
         if word("unity") || word("godot") || lower.contains("unreal engine")
@@ -715,6 +775,26 @@ public final class CalloutManager {
             || lower.contains("cooling systems class") || lower.contains("heating systems class") {
             return "hvactechnology"
         }
+        // mechanicaldrafting — positioned AFTER hvactechnology and BEFORE industrialsafety.
+        // Catches drafting technology programs, technical drawing classes, blueprint reading,
+        // and mechanical/architectural drafting coursework. Bare word("drafting") NOT matched
+        // (avoids false positives with "drafting a paper/plan/email"). "CAD" alone stays in
+        // engineering; "architectural drawing" with design context stays in architecture.
+        if lower.contains("mechanical drafting") || lower.contains("technical drafting")
+            || lower.contains("drafting technology") || lower.contains("drafting technician")
+            || lower.contains("drafting class") || lower.contains("drafting course")
+            || lower.contains("drafting program") || lower.contains("drafting exam")
+            || lower.contains("drafting lab") || lower.contains("drafting school")
+            || lower.contains("drafting certification") || lower.contains("drafting notes")
+            || lower.contains("technical drawing") || lower.contains("technical drawing class")
+            || lower.contains("engineering drawing") || lower.contains("engineering drawing class")
+            || lower.contains("engineering graphics") || lower.contains("engineering graphics class")
+            || lower.contains("blueprint reading") || lower.contains("blueprint reading class")
+            || lower.contains("blueprint reading course") || lower.contains("blueprint reading exam")
+            || lower.contains("drafting and design") || lower.contains("autocad class")
+            || lower.contains("autocad course") || lower.contains("autocad exam") {
+            return "mechanicaldrafting"
+        }
         // industrialsafety — positioned AFTER hvactechnology, BEFORE engineering.
         // Catches industrial hygiene, CIH exam, OSHA compliance, and occupational-safety coursework.
         // Bare "OSHA" or "safety" alone NOT matched — requires industrial/class/course/exam context.
@@ -798,6 +878,27 @@ public final class CalloutManager {
             || lower.contains("gradient descent") || lower.contains("gradient boosting")
             || lower.contains("random forest") || lower.contains("decision tree") {
             return "datascience"
+        }
+        // dataengineering — positioned AFTER datascience and BEFORE computationalscience.
+        // Catches data engineering coursework, ETL pipeline class, Apache Spark/Kafka/Airflow
+        // class, dbt class, and data warehouse coursework. "data analysis" alone stays in
+        // datascience; bare word("data") NOT matched.
+        if lower.contains("data engineering") || lower.contains("data engineer")
+            || (lower.contains("apache spark") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("project")))
+            || (lower.contains("apache kafka") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab")))
+            || (lower.contains("apache airflow") && (lower.contains("class") || lower.contains("course") || lower.contains("project") || lower.contains("pipeline")))
+            || lower.contains("etl pipeline") || lower.contains("etl class") || lower.contains("etl course")
+            || lower.contains("data pipeline") && (lower.contains("class") || lower.contains("course") || lower.contains("build") || lower.contains("design") || lower.contains("project"))
+            || lower.contains("dbt class") || lower.contains("dbt course") || lower.contains("dbt project") || lower.contains("dbt pipeline")
+            || lower.contains("data warehouse class") || lower.contains("data warehouse course")
+            || lower.contains("data warehouse design") || lower.contains("data warehousing")
+            || lower.contains("data lake") && (lower.contains("class") || lower.contains("course") || lower.contains("design") || lower.contains("build"))
+            || lower.contains("spark streaming") || lower.contains("real-time data pipeline")
+            || lower.contains("stream processing class") || lower.contains("batch processing class")
+            || lower.contains("databricks class") || lower.contains("databricks course") || lower.contains("databricks certification")
+            || lower.contains("snowflake class") || lower.contains("snowflake course") || lower.contains("snowflake certification")
+            || lower.contains("data integration class") || lower.contains("data modeling class") {
+            return "dataengineering"
         }
         // computationalscience — positioned after datascience and before bioinformatics so
         // HPC, parallel computing, and scientific simulation tasks route here.

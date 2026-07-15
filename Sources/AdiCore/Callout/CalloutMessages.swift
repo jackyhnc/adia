@@ -257,6 +257,11 @@ extension CalloutManager {
         case "electricaltechnology":        return electricaltechnologyCallouts(tier: tier)
         case "materialscience":             return materialscienceCallouts(tier: tier)
         case "networkengineering":          return networkengineeringCallouts(tier: tier)
+        case "quantumcomputing":            return quantumcomputingCallouts(tier: tier)
+        case "cloudcomputing":              return cloudcomputingCallouts(tier: tier)
+        case "softwaretesting":             return softwaretestingCallouts(tier: tier)
+        case "mechanicaldrafting":          return mechanicaldraftingCallouts(tier: tier)
+        case "dataengineering":             return dataengineeringCallouts(tier: tier)
         case "environmentalhealth":         return environmentalhealthCallouts(tier: tier)
         case "constructiontech":            return constructiontechCallouts(tier: tier)
         case "urbandesign":                 return urbandesignCallouts(tier: tier)
@@ -4875,6 +4880,111 @@ extension CalloutManager {
             "CLOSE THIS. open your CQE exam study guide.",
             "no one passes the ASQ CQE exam by browsing.",
             "CLOSE THIS. get back to your quality systems coursework.",
+        ]
+        }
+    }
+
+    private func quantumcomputingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those quantum circuits aren't going to build themselves.",
+            "your quantum algorithm assignment won't finish itself.",
+            "close this and open your Qiskit notebook.",
+            "get back to your quantum computing coursework.",
+        ]
+        case 2: return [
+            "quantum computing pioneers didn't discover superposition by scrolling.",
+            "your quantum gate assignment won't complete itself.",
+            "stop avoiding your IBM Quantum lab.",
+        ]
+        default: return [
+            "CLOSE THIS. open your quantum computing study guide.",
+            "no one masters quantum algorithms by browsing.",
+            "CLOSE THIS. get back to your quantum computing coursework.",
+        ]
+        }
+    }
+
+    private func cloudcomputingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those AWS certification questions aren't going to answer themselves.",
+            "your cloud architecture assignment won't finish itself.",
+            "close this and open your cloud computing study guide.",
+            "get back to your DevOps or cloud certification prep.",
+        ]
+        case 2: return [
+            "cloud engineers don't earn their AWS certification by scrolling.",
+            "your Terraform or Kubernetes assignment won't do itself.",
+            "stop avoiding your cloud computing exam prep.",
+        ]
+        default: return [
+            "CLOSE THIS. open your AWS or Azure certification guide.",
+            "no one passes the cloud certification exam by browsing.",
+            "CLOSE THIS. get back to your cloud computing coursework.",
+        ]
+        }
+    }
+
+    private func softwaretestingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those ISTQB exam questions aren't going to answer themselves.",
+            "your test automation assignment won't finish itself.",
+            "close this and open your QA engineering study guide.",
+            "get back to your software testing coursework.",
+        ]
+        case 2: return [
+            "QA engineers don't earn their certification by scrolling.",
+            "your Selenium or pytest lab won't complete itself.",
+            "stop avoiding your software quality assurance exam prep.",
+        ]
+        default: return [
+            "CLOSE THIS. open your software testing study guide.",
+            "no one passes the ISTQB exam by browsing.",
+            "CLOSE THIS. get back to your QA engineering coursework.",
+        ]
+        }
+    }
+
+    private func mechanicaldraftingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those blueprints aren't going to read themselves.",
+            "your technical drawing assignment won't finish itself.",
+            "close this and open your drafting notes.",
+            "get back to your mechanical drafting coursework.",
+        ]
+        case 2: return [
+            "drafting technicians don't get certified by scrolling.",
+            "your engineering drawing assignment won't complete itself.",
+            "stop avoiding your blueprint reading and drafting exam prep.",
+        ]
+        default: return [
+            "CLOSE THIS. open your drafting textbook.",
+            "no one passes the drafting certification exam by browsing.",
+            "CLOSE THIS. get back to your technical drawing coursework.",
+        ]
+        }
+    }
+
+    private func dataengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that ETL pipeline isn't going to build itself.",
+            "your data engineering assignment won't finish itself.",
+            "close this and open your Spark or Airflow project.",
+            "get back to your data engineering coursework.",
+        ]
+        case 2: return [
+            "data engineers don't build pipelines by scrolling.",
+            "your data warehouse design won't complete itself.",
+            "stop avoiding your data pipeline project.",
+        ]
+        default: return [
+            "CLOSE THIS. open your data engineering project.",
+            "no one masters Spark and Kafka by browsing.",
+            "CLOSE THIS. get back to your data engineering coursework.",
         ]
         }
     }
