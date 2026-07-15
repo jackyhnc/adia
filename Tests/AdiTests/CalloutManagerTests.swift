@@ -14924,4 +14924,219 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast483() {
         #expect(SuggestedSessionTemplates.all.count >= 483, "template catalog must have ≥483 entries after adding informationassurance/hrmanagement/changemanagement/economics/iopsychology (10 templates)")
     }
+
+    // MARK: - criminallaw
+    @Test func criminallawKeywordFromCrimLawClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my criminal law class exam on mens rea and actus reus")
+        #expect(kw == "criminallaw", "criminal law class exam should route to criminallaw")
+    }
+    @Test func criminallawKeywordFromModelPenalCode() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing the Model Penal Code provisions for my crim law exam")
+        #expect(kw == "criminallaw", "Model Penal Code exam review should route to criminallaw")
+    }
+    @Test func criminallawKeywordFromMensRea() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyzing mens rea requirements for my criminal law paper")
+        #expect(kw == "criminallaw", "mens rea analysis should route to criminallaw")
+    }
+    @Test @MainActor func criminallawCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "criminallaw", tier: tier)
+            #expect(!msgs.isEmpty, "criminallaw tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func criminallawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "criminallaw", tier: 1)
+        #expect(msgs.count >= 4, "criminallaw tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func criminallawNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "criminallaw", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "criminallaw tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func criminallawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "criminallaw", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "criminallaw tier 3 must contain CLOSE THIS")
+    }
+    @Test func criminallawFalsePositiveCriminalJustice() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying criminology and criminal justice for my sociology class")
+        #expect(kw == "criminaljustice", "criminology + criminal justice class should route to criminaljustice not criminallaw")
+    }
+
+    // MARK: - civilprocedure
+    @Test func civilprocedureKeywordFromCivProClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my civ pro class exam on personal jurisdiction and Erie doctrine")
+        #expect(kw == "civilprocedure", "civ pro class exam should route to civilprocedure")
+    }
+    @Test func civilprocedureKeywordFromFRCP() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing the federal rules of civil procedure for my law school exam")
+        #expect(kw == "civilprocedure", "federal rules of civil procedure should route to civilprocedure")
+    }
+    @Test func civilprocedureKeywordFromErieClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a paper on the Erie doctrine for my civil procedure class")
+        #expect(kw == "civilprocedure", "Erie doctrine in civil procedure class should route to civilprocedure")
+    }
+    @Test @MainActor func civilprocedureCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "civilprocedure", tier: tier)
+            #expect(!msgs.isEmpty, "civilprocedure tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func civilprocedureTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "civilprocedure", tier: 1)
+        #expect(msgs.count >= 4, "civilprocedure tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func civilprocedureNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "civilprocedure", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "civilprocedure tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func civilprocedureTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "civilprocedure", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "civilprocedure tier 3 must contain CLOSE THIS")
+    }
+    @Test func civilprocedureFiresBeforeLegal() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a civil procedure class assignment on summary judgment and discovery rules")
+        #expect(kw == "civilprocedure", "civil procedure class assignment should fire civilprocedure before legal")
+    }
+
+    // MARK: - constitutionallaw
+    @Test func constitutionallawKeywordFromConLawClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my con law class exam on due process and equal protection")
+        #expect(kw == "constitutionallaw", "con law class exam should route to constitutionallaw")
+    }
+    @Test func constitutionallawKeywordFromFirstAmendment() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a constitutional law paper on First Amendment free speech analysis")
+        #expect(kw == "constitutionallaw", "First Amendment analysis in con law paper should route to constitutionallaw")
+    }
+    @Test func constitutionallawKeywordFromJudicialReview() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing judicial review and commerce clause doctrine for my constitutional law course")
+        #expect(kw == "constitutionallaw", "judicial review in constitutional law course should route to constitutionallaw")
+    }
+    @Test @MainActor func constitutionallawCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "constitutionallaw", tier: tier)
+            #expect(!msgs.isEmpty, "constitutionallaw tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func constitutionallawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "constitutionallaw", tier: 1)
+        #expect(msgs.count >= 4, "constitutionallaw tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func constitutionallawNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "constitutionallaw", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "constitutionallaw tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func constitutionallawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "constitutionallaw", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "constitutionallaw tier 3 must contain CLOSE THIS")
+    }
+    @Test func constitutionallawFiresBeforeLegal() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyzing equal protection clause doctrine for my con law class paper")
+        #expect(kw == "constitutionallaw", "equal protection in con law class paper should fire constitutionallaw before legal")
+    }
+
+    // MARK: - evidencelaw
+    @Test func evidencelawKeywordFromEvidenceClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my evidence law class exam on hearsay exceptions and authentication")
+        #expect(kw == "evidencelaw", "evidence law class exam should route to evidencelaw")
+    }
+    @Test func evidencelawKeywordFromFRE() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing the federal rules of evidence for my law school evidence exam")
+        #expect(kw == "evidencelaw", "federal rules of evidence should route to evidencelaw")
+    }
+    @Test func evidencelawKeywordFromHearsay() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyzing hearsay exceptions for my evidence law class assignment")
+        #expect(kw == "evidencelaw", "hearsay exceptions in evidence law class should route to evidencelaw")
+    }
+    @Test @MainActor func evidencelawCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "evidencelaw", tier: tier)
+            #expect(!msgs.isEmpty, "evidencelaw tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func evidencelawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "evidencelaw", tier: 1)
+        #expect(msgs.count >= 4, "evidencelaw tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func evidencelawNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "evidencelaw", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "evidencelaw tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func evidencelawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "evidencelaw", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "evidencelaw tier 3 must contain CLOSE THIS")
+    }
+    @Test func evidencelawFalsePositiveCrimeScene() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyzing crime scene evidence and trace evidence for my forensic science class")
+        #expect(kw == "forensicscience", "crime scene evidence in forensic science class should route to forensicscience not evidencelaw")
+    }
+
+    // MARK: - tortlaw
+    @Test func tortlawKeywordFromTortsClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my torts class exam on negligence and products liability")
+        #expect(kw == "tortlaw", "torts class exam should route to tortlaw")
+    }
+    @Test func tortlawKeywordFromNegligenceAnalysis() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a torts paper analyzing negligence and duty of care in Palsgraf")
+        #expect(kw == "tortlaw", "torts paper with Palsgraf negligence should route to tortlaw")
+    }
+    @Test func tortlawKeywordFromIntentionalTorts() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing intentional torts analysis for my law school torts exam")
+        #expect(kw == "tortlaw", "intentional torts law school exam should route to tortlaw")
+    }
+    @Test @MainActor func tortlawCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "tortlaw", tier: tier)
+            #expect(!msgs.isEmpty, "tortlaw tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func tortlawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "tortlaw", tier: 1)
+        #expect(msgs.count >= 4, "tortlaw tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func tortlawNoneEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "tortlaw", tier: tier)
+            #expect(msgs.allSatisfy { !$0.isEmpty }, "tortlaw tier \(tier) must have no empty strings")
+        }
+    }
+    @Test @MainActor func tortlawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "tortlaw", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "tortlaw tier 3 must contain CLOSE THIS")
+    }
+    @Test func tortlawFiresBeforeLegal() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a torts class assignment on proximate cause and comparative negligence")
+        #expect(kw == "tortlaw", "torts class assignment on proximate cause should fire tortlaw before legal")
+    }
+
+    // MARK: - Count guard (batch: criminallaw/civilprocedure/constitutionallaw/evidencelaw/tortlaw)
+    @Test func suggestedTemplatesCountAtLeast495() {
+        #expect(SuggestedSessionTemplates.all.count >= 495, "template catalog must have ≥495 entries after adding criminallaw/civilprocedure/constitutionallaw/evidencelaw/tortlaw (10 templates)")
+    }
 }

@@ -4880,6 +4880,136 @@ public final class CalloutManager {
             || lower.contains("workplace law class") || lower.contains("employee rights law") || lower.contains("wage and hour law class") {
             return "laborlaw"
         }
+        // criminallaw — positioned AFTER laborlaw and BEFORE legal so criminal law class,
+        // crim law exam, and Model Penal Code study route here. "criminal justice"/criminology
+        // stays in criminaljustice (fires earlier). Bare "criminal" NOT matched alone.
+        if lower.contains("criminal law class") || lower.contains("criminal law course")
+            || lower.contains("criminal law exam") || lower.contains("criminal law paper")
+            || lower.contains("criminal law assignment") || lower.contains("criminal law clinic")
+            || lower.contains("criminal law professor") || lower.contains("crim law class")
+            || lower.contains("crim law course") || lower.contains("crim law exam")
+            || lower.contains("crim law paper") || lower.contains("crim law outline")
+            || lower.contains("model penal code") || (word("mpc") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("law")))
+            || lower.contains("mens rea") || lower.contains("actus reus")
+            || lower.contains("homicide class") || lower.contains("homicide law") || lower.contains("homicide course")
+            || lower.contains("murder law class") || lower.contains("criminal homicide")
+            || (lower.contains("assault and battery") && (lower.contains("law class") || lower.contains("law course") || (lower.contains("class") && lower.contains("law"))))
+            || (lower.contains("robbery and theft") && (lower.contains("law") || lower.contains("class")))
+            || lower.contains("criminal defense class") || lower.contains("criminal defense course") || lower.contains("criminal defense analysis")
+            || lower.contains("criminal prosecution class")
+            || lower.contains("crime and punishment class")
+            || lower.contains("substantive criminal law")
+            || (lower.contains("criminal liability") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("law")))
+            || lower.contains("criminal statutes class")
+            || lower.contains("law school criminal law") || lower.contains("law school crim law") {
+            return "criminallaw"
+        }
+        // civilprocedure — positioned AFTER criminallaw and BEFORE legal so civ pro class, FRCP
+        // study, and civil procedure exam tasks route here. Bare "pleading"/"jurisdiction"/"discovery"
+        // NOT matched alone — those stay in legal.
+        if lower.contains("civil procedure class") || lower.contains("civil procedure course")
+            || lower.contains("civil procedure exam") || lower.contains("civil procedure paper")
+            || lower.contains("civil procedure assignment") || lower.contains("civil procedure clinic")
+            || lower.contains("civ pro class") || lower.contains("civ pro course")
+            || lower.contains("civ pro exam") || lower.contains("civ pro paper") || lower.contains("civ pro outline")
+            || lower.contains("frcp class") || lower.contains("frcp course") || lower.contains("frcp exam")
+            || lower.contains("federal rules of civil procedure")
+            || lower.contains("personal jurisdiction class") || lower.contains("personal jurisdiction course")
+            || lower.contains("subject matter jurisdiction class") || lower.contains("subject matter jurisdiction course")
+            || (lower.contains("venue class") && lower.contains("civil")) || (lower.contains("venue") && lower.contains("civil procedure"))
+            || lower.contains("service of process class") || lower.contains("service of process course")
+            || lower.contains("pleading standards class") || lower.contains("pleading standards course")
+            || lower.contains("summary judgment class") || (lower.contains("summary judgment") && lower.contains("civil procedure"))
+            || (lower.contains("discovery class") && (lower.contains("civil procedure") || lower.contains("litigation class")))
+            || lower.contains("class action class") || lower.contains("class action course")
+            || (lower.contains("joinder class") && lower.contains("civil")) || (lower.contains("joinder") && lower.contains("civil procedure"))
+            || lower.contains("erie doctrine class") || lower.contains("erie doctrine course")
+            || lower.contains("res judicata class") || lower.contains("res judicata course")
+            || lower.contains("preclusion doctrine class")
+            || (lower.contains("motion practice class") && lower.contains("civil")) || (lower.contains("motion practice") && lower.contains("civil procedure"))
+            || (lower.contains("12(b)(6)") && (lower.contains("class") || lower.contains("exam") || lower.contains("motion")))
+            || lower.contains("federal civil procedure")
+            || (lower.contains("standing") && lower.contains("civil procedure class")) {
+            return "civilprocedure"
+        }
+        // constitutionallaw — positioned AFTER civilprocedure and BEFORE legal so con law class,
+        // First Amendment analysis, and constitutional law exam tasks route here. Bare
+        // "constitutional"/"constitution" NOT matched alone.
+        if lower.contains("constitutional law class") || lower.contains("constitutional law course")
+            || lower.contains("constitutional law exam") || lower.contains("constitutional law paper")
+            || lower.contains("constitutional law assignment") || lower.contains("constitutional law clinic")
+            || lower.contains("con law class") || lower.contains("con law course")
+            || lower.contains("con law exam") || lower.contains("con law paper") || lower.contains("con law outline")
+            || lower.contains("conlaw class") || lower.contains("conlaw exam")
+            || lower.contains("first amendment class") || lower.contains("first amendment course") || (lower.contains("first amendment analysis") && lower.contains("law"))
+            || lower.contains("fourth amendment class") || lower.contains("fourth amendment course") || (lower.contains("fourth amendment analysis") && lower.contains("law"))
+            || lower.contains("fourteenth amendment class") || lower.contains("fourteenth amendment course")
+            || lower.contains("due process clause class") || lower.contains("due process clause course") || lower.contains("due process clause analysis")
+            || lower.contains("equal protection class") || lower.contains("equal protection clause class") || (lower.contains("equal protection analysis") && lower.contains("law"))
+            || lower.contains("judicial review class") || lower.contains("judicial review course")
+            || (lower.contains("constitutional analysis") && lower.contains("class")) || (lower.contains("constitutional analysis") && lower.contains("law school"))
+            || (lower.contains("federalism class") && lower.contains("law")) || (lower.contains("federalism course") && lower.contains("law"))
+            || lower.contains("commerce clause class") || lower.contains("commerce clause course")
+            || lower.contains("bill of rights class") || lower.contains("bill of rights course")
+            || lower.contains("constitutional interpretation")
+            || lower.contains("constitutional doctrine class") || lower.contains("constitutional doctrine course")
+            || lower.contains("law school con law") || lower.contains("law school constitutional law")
+            || lower.contains("constitutional amendment class") || lower.contains("constitutional amendment course") || lower.contains("constitutional amendment analysis") {
+            return "constitutionallaw"
+        }
+        // evidencelaw — positioned AFTER constitutionallaw and BEFORE legal so evidence class,
+        // FRE study, and hearsay analysis route here. Bare "evidence" NOT matched alone.
+        // "crime scene evidence" stays in forensicscience (fires much earlier).
+        if lower.contains("evidence law class") || lower.contains("evidence law course")
+            || lower.contains("evidence law exam") || lower.contains("evidence law paper")
+            || lower.contains("evidence law assignment") || lower.contains("evidence law clinic")
+            || (lower.contains("evidence class") && (lower.contains("law school") || lower.contains("law exam") || lower.contains("legal")))
+            || (lower.contains("evidence course") && (lower.contains("law school") || lower.contains("law exam") || lower.contains("legal")))
+            || (lower.contains("evidence exam") && (lower.contains("law") || lower.contains("hearsay") || lower.contains("fre")))
+            || lower.contains("fre class") || lower.contains("fre course") || lower.contains("fre exam")
+            || lower.contains("federal rules of evidence")
+            || lower.contains("hearsay rule class") || lower.contains("hearsay rule course") || lower.contains("hearsay rule analysis") || lower.contains("hearsay exception class") || lower.contains("hearsay exception course")
+            || (lower.contains("hearsay") && (lower.contains("class") || lower.contains("course") || lower.contains("evidence law") || lower.contains("law school")))
+            || (lower.contains("authentication") && (lower.contains("evidence") || lower.contains("law class") || (lower.contains("class") && lower.contains("law"))))
+            || (lower.contains("chain of custody") && (lower.contains("law class") || lower.contains("evidence class") || lower.contains("evidence law")))
+            || (lower.contains("expert witness") && (lower.contains("evidence") || lower.contains("law class") || (lower.contains("class") && lower.contains("law"))))
+            || lower.contains("character evidence class") || lower.contains("character evidence course")
+            || (lower.contains("privilege") && lower.contains("evidence class")) || (lower.contains("privilege") && lower.contains("evidence law"))
+            || lower.contains("admissibility class") || (lower.contains("admissibility") && lower.contains("law class"))
+            || (lower.contains("impeachment") && (lower.contains("evidence") || (lower.contains("witness") && lower.contains("class"))))
+            || lower.contains("best evidence rule") || (lower.contains("original document rule") && lower.contains("class"))
+            || (lower.contains("confrontation clause") && lower.contains("evidence"))
+            || lower.contains("law of evidence") || lower.contains("evidence outline") {
+            return "evidencelaw"
+        }
+        // tortlaw — positioned AFTER evidencelaw and BEFORE legal so torts class, negligence
+        // analysis, and products liability study route here. Bare "torts"/"tort"/"negligence" NOT
+        // matched without law/class/course/exam/assignment context.
+        if lower.contains("tort law class") || lower.contains("tort law course")
+            || lower.contains("tort law exam") || lower.contains("tort law paper")
+            || lower.contains("tort law assignment") || lower.contains("tort law clinic")
+            || lower.contains("torts class") || lower.contains("torts course")
+            || lower.contains("torts exam") || lower.contains("torts paper") || lower.contains("torts assignment") || lower.contains("torts analysis") || lower.contains("torts outline")
+            || lower.contains("law of torts")
+            || lower.contains("negligence class") || lower.contains("negligence course") || (lower.contains("negligence analysis") && (lower.contains("law") || lower.contains("torts")))
+            || lower.contains("products liability class") || lower.contains("products liability course") || lower.contains("products liability analysis")
+            || lower.contains("intentional torts class") || lower.contains("intentional torts course") || lower.contains("intentional torts analysis")
+            || (lower.contains("strict liability") && (lower.contains("torts") || (lower.contains("class") && lower.contains("law"))))
+            || (lower.contains("proximate cause") && (lower.contains("torts") || (lower.contains("class") && lower.contains("law"))))
+            || (lower.contains("duty of care") && (lower.contains("torts") || (lower.contains("class") && lower.contains("law"))))
+            || (lower.contains("breach of duty") && (lower.contains("torts") || (lower.contains("class") && lower.contains("law"))))
+            || (lower.contains("palsgraf") && (lower.contains("class") || lower.contains("case") || lower.contains("law") || lower.contains("torts")))
+            || lower.contains("learned hand formula") || (lower.contains("learned hand test") && lower.contains("torts"))
+            || lower.contains("tort reform class") || lower.contains("tort reform course")
+            || lower.contains("negligence per se class") || lower.contains("negligence per se course") || lower.contains("negligence per se law")
+            || lower.contains("comparative negligence class") || lower.contains("comparative negligence course")
+            || lower.contains("contributory negligence class") || lower.contains("contributory negligence course")
+            || (lower.contains("assumption of risk") && (lower.contains("torts") || (lower.contains("class") && lower.contains("law"))))
+            || (lower.contains("defamation") && (lower.contains("torts class") || lower.contains("torts course") || lower.contains("tort law")))
+            || (lower.contains("nuisance") && (lower.contains("torts class") || lower.contains("torts course") || lower.contains("tort law")))
+            || (lower.contains("respondeat superior") && (lower.contains("class") || lower.contains("law"))) {
+            return "tortlaw"
+        }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")
             || word("contract") || word("contracts")

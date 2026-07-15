@@ -3836,4 +3836,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 483,
                 "catalog should have ≥483 templates after informationassurance/hrmanagement/changemanagement/economics/iopsychology additions")
     }
+
+    // MARK: - criminallaw
+    @Test func criminallawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("criminal law") || $0.localizedCaseInsensitiveContains("mens rea") || $0.localizedCaseInsensitiveContains("Model Penal Code")) &&
+            $0.localizedCaseInsensitiveContains("exam")
+        }
+        let hasHypo = tasks.contains {
+            $0.localizedCaseInsensitiveContains("criminal law") &&
+            ($0.localizedCaseInsensitiveContains("hypothetical") || $0.localizedCaseInsensitiveContains("case") || $0.localizedCaseInsensitiveContains("brief"))
+        }
+        #expect(hasExam, "catalog must include a criminal law exam study template")
+        #expect(hasHypo, "catalog must include a criminal law hypothetical or case brief template")
+    }
+
+    // MARK: - civilprocedure
+    @Test func civilprocedureTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("civil procedure") || $0.localizedCaseInsensitiveContains("FRCP") || $0.localizedCaseInsensitiveContains("Erie doctrine")) &&
+            $0.localizedCaseInsensitiveContains("exam")
+        }
+        let hasHypo = tasks.contains {
+            $0.localizedCaseInsensitiveContains("civil procedure") &&
+            ($0.localizedCaseInsensitiveContains("hypothetical") || $0.localizedCaseInsensitiveContains("jurisdiction") || $0.localizedCaseInsensitiveContains("discovery"))
+        }
+        #expect(hasExam, "catalog must include a civil procedure exam study template")
+        #expect(hasHypo, "catalog must include a civil procedure hypothetical or analysis template")
+    }
+
+    // MARK: - constitutionallaw
+    @Test func constitutionallawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("constitutional law") || $0.localizedCaseInsensitiveContains("con law")) &&
+            $0.localizedCaseInsensitiveContains("exam")
+        }
+        let hasAnalysis = tasks.contains {
+            $0.localizedCaseInsensitiveContains("constitutional law") &&
+            ($0.localizedCaseInsensitiveContains("judicial review") || $0.localizedCaseInsensitiveContains("due process") || $0.localizedCaseInsensitiveContains("Amendment"))
+        }
+        #expect(hasExam, "catalog must include a constitutional law exam study template")
+        #expect(hasAnalysis, "catalog must include a constitutional law analysis template")
+    }
+
+    // MARK: - evidencelaw
+    @Test func evidencelawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("evidence law") || $0.localizedCaseInsensitiveContains("Federal Rules of Evidence") || $0.localizedCaseInsensitiveContains("hearsay")) &&
+            $0.localizedCaseInsensitiveContains("exam")
+        }
+        let hasHypo = tasks.contains {
+            $0.localizedCaseInsensitiveContains("evidence") &&
+            ($0.localizedCaseInsensitiveContains("hypothetical") || $0.localizedCaseInsensitiveContains("hearsay") || $0.localizedCaseInsensitiveContains("authentication"))
+        }
+        #expect(hasExam, "catalog must include an evidence law exam study template")
+        #expect(hasHypo, "catalog must include an evidence law hypothetical or analysis template")
+    }
+
+    // MARK: - tortlaw
+    @Test func tortlawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("torts") || $0.localizedCaseInsensitiveContains("tort law")) &&
+            $0.localizedCaseInsensitiveContains("exam")
+        }
+        let hasHypo = tasks.contains {
+            $0.localizedCaseInsensitiveContains("torts") &&
+            ($0.localizedCaseInsensitiveContains("hypothetical") || $0.localizedCaseInsensitiveContains("negligence") || $0.localizedCaseInsensitiveContains("intentional"))
+        }
+        #expect(hasExam, "catalog must include a torts exam study template")
+        #expect(hasHypo, "catalog must include a torts hypothetical or analysis template")
+    }
+
+    // MARK: - Count guard (criminallaw/civilprocedure/constitutionallaw/evidencelaw/tortlaw)
+    @Test func catalogHasAtLeastFourHundredNinetyFiveTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 495,
+                "catalog should have ≥495 templates after criminallaw/civilprocedure/constitutionallaw/evidencelaw/tortlaw additions")
+    }
 }

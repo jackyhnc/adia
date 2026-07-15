@@ -308,6 +308,11 @@ extension CalloutManager {
         case "changemanagement":      return changemanagementCallouts(tier: tier)
         case "economics":             return economicsCallouts(tier: tier)
         case "iopsychology":          return iopsychologyCallouts(tier: tier)
+        case "criminallaw":           return criminallawCallouts(tier: tier)
+        case "civilprocedure":        return civilprocedureCallouts(tier: tier)
+        case "constitutionallaw":     return constitutionallawCallouts(tier: tier)
+        case "evidencelaw":           return evidencelawCallouts(tier: tier)
+        case "tortlaw":               return tortlawCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -5755,6 +5760,111 @@ extension CalloutManager {
             "CLOSE THIS. open your I/O psychology notes.",
             "no one passes the I/O exam by browsing.",
             "CLOSE THIS. get back to your organizational psychology work.",
+        ]
+        }
+    }
+
+    private func criminallawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that criminal law hypo isn't going to analyze itself.",
+            "your mens rea analysis isn't going to write itself.",
+            "crim law doesn't master itself — close this.",
+            "those Model Penal Code sections aren't going to memorize themselves."
+        ]
+        case 2: return [
+            "no one passes the bar on criminal law by scrolling.",
+            "your professor isn't going to brief that case for you.",
+            "close this and get back to your crim law outline."
+        ]
+        default: return [
+            "CLOSE THIS. open your criminal law notes.",
+            "CLOSE THIS. your crim law hypo needs you.",
+            "CLOSE THIS. you have law school to worry about."
+        ]
+        }
+    }
+
+    private func civilprocedureCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that civ pro hypo isn't going to analyze itself.",
+            "the Erie doctrine won't memorize itself — close this.",
+            "your civil procedure outline isn't going to write itself.",
+            "personal jurisdiction isn't going to click without you closing this and studying."
+        ]
+        case 2: return [
+            "no one masters civ pro by scrolling.",
+            "your 12(b)(6) argument isn't going to draft itself.",
+            "close this and get back to your civ pro notes."
+        ]
+        default: return [
+            "CLOSE THIS. open your civil procedure notes.",
+            "CLOSE THIS. your civ pro exam is coming.",
+            "CLOSE THIS. you have law school to focus on."
+        ]
+        }
+    }
+
+    private func constitutionallawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that con law analysis isn't going to write itself.",
+            "the Constitution doesn't interpret itself — close this and get back to work.",
+            "judicial review won't click without you actually studying it.",
+            "your con law outline isn't going to fill itself."
+        ]
+        case 2: return [
+            "no one passes con law by scrolling.",
+            "close this and get back to your constitutional law notes.",
+            "your professor isn't going to analyze that case for you."
+        ]
+        default: return [
+            "CLOSE THIS. open your con law notes.",
+            "CLOSE THIS. your constitutional law exam is real.",
+            "CLOSE THIS. the Supreme Court expects you to know this."
+        ]
+        }
+    }
+
+    private func evidencelawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those hearsay exceptions aren't going to memorize themselves.",
+            "your evidence law outline isn't going to write itself.",
+            "the Federal Rules of Evidence won't learn themselves — close this.",
+            "that evidence hypo isn't going to analyze itself."
+        ]
+        case 2: return [
+            "no one masters the FRE by scrolling.",
+            "close this and get back to your evidence notes.",
+            "your professor isn't going to spot that hearsay exception for you."
+        ]
+        default: return [
+            "CLOSE THIS. open your evidence law notes.",
+            "CLOSE THIS. your evidence exam is real.",
+            "CLOSE THIS. you have evidentiary rules to master."
+        ]
+        }
+    }
+
+    private func tortlawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that torts hypo isn't going to analyze itself.",
+            "negligence doesn't master itself — close this and study.",
+            "your torts outline isn't going to write itself.",
+            "Palsgraf won't make sense until you actually study it."
+        ]
+        case 2: return [
+            "no one passes torts by scrolling.",
+            "close this and get back to your torts notes.",
+            "your professor isn't going to work through that negligence analysis for you."
+        ]
+        default: return [
+            "CLOSE THIS. open your torts notes.",
+            "CLOSE THIS. your torts exam is real.",
+            "CLOSE THIS. you have negligence elements to master."
         ]
         }
     }

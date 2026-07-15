@@ -1,5 +1,59 @@
 # Adia — Build Progress
 
+## Run 347 (automated) — 2026-07-15 — 5 new keyword domains: criminallaw, civilprocedure, constitutionallaw, evidencelaw, tortlaw (485→495 templates)
+
+### What shipped
+
+**New keyword domain — criminallaw:**
+- Branch positioned AFTER `laborlaw`, BEFORE `legal`.
+- Matches: criminal law class/course/exam/paper/assignment/clinic, crim law class/course/exam/outline, Model Penal Code, mens rea, actus reus, homicide class/law/course, murder law class, criminal homicide, criminal defense class/course/analysis, criminal prosecution class, substantive criminal law, criminal liability + class/exam context, law school criminal law.
+- Guard: "criminal justice"/"criminology" stays in criminaljustice (fires earlier); bare "criminal" NOT matched alone.
+- `criminallawCallouts(tier:)` 4/3/3: "that criminal law hypo isn't going to analyze itself." / "no one passes the bar on criminal law by scrolling." / "CLOSE THIS. open your criminal law notes."
+- 2 templates: "Analyze a criminal law hypothetical or brief a criminal law case" (60 min) + "Study for my criminal law class exam" (60 min)
+
+**New keyword domain — civilprocedure:**
+- Branch positioned AFTER `criminallaw`, BEFORE `legal`.
+- Matches: civil procedure class/course/exam, civ pro class/course/exam/outline, FRCP/federal rules of civil procedure, personal/subject matter jurisdiction class/course, Erie doctrine class/course, res judicata class/course, summary judgment class + civil procedure context, 12(b)(6) + class/exam, discovery class + civil procedure/litigation, class action class, federal civil procedure.
+- Guard: bare "pleading"/"jurisdiction"/"discovery" NOT matched alone.
+- `civilprocedureCallouts(tier:)` 4/3/3: "that civ pro hypo isn't going to analyze itself." / "no one masters civ pro by scrolling." / "CLOSE THIS. open your civil procedure notes."
+- 2 templates: "Analyze a civil procedure hypothetical on jurisdiction, pleading, discovery, or summary judgment" (60 min) + "Study for my civil procedure class exam" (60 min)
+
+**New keyword domain — constitutionallaw:**
+- Branch positioned AFTER `civilprocedure`, BEFORE `legal`.
+- Matches: constitutional law class/course/exam, con law class/course/exam/outline, conlaw, First/Fourth/Fourteenth Amendment class/course/analysis, due process clause class/analysis, equal protection class/analysis, judicial review class/course, commerce clause class/course, bill of rights class/course, constitutional interpretation, law school con law.
+- Guard: bare "constitutional"/"constitution" NOT matched alone; First Amendment without edu context NOT matched.
+- `constitutionallawCallouts(tier:)` 4/3/3: "that con law analysis isn't going to write itself." / "no one passes con law by scrolling." / "CLOSE THIS. open your con law notes."
+- 2 templates: "Analyze a constitutional law problem on judicial review, due process, equal protection, or First Amendment issues" (60 min) + "Study for my constitutional law class exam" (60 min)
+
+**New keyword domain — evidencelaw:**
+- Branch positioned AFTER `constitutionallaw`, BEFORE `legal`.
+- Matches: evidence law class/course/exam, FRE class/course/exam, federal rules of evidence, hearsay rule/exception class/course/analysis, hearsay + class/law-school context, authentication + evidence/class context, expert witness + evidence/class, character evidence class/course, admissibility + law class, best evidence rule, confrontation clause + evidence, law of evidence, evidence outline.
+- Guard: bare "evidence" NOT matched alone; "crime scene evidence" stays in forensicscience (fires much earlier).
+- `evidencelawCallouts(tier:)` 4/3/3: "those hearsay exceptions aren't going to memorize themselves." / "no one masters the FRE by scrolling." / "CLOSE THIS. open your evidence law notes."
+- 2 templates: "Analyze an evidence law hypothetical on hearsay, authentication, expert witnesses, or FRE" (60 min) + "Study for my evidence law class exam" (60 min)
+
+**New keyword domain — tortlaw:**
+- Branch positioned AFTER `evidencelaw`, BEFORE `legal`.
+- Matches: tort law class/course/exam, torts class/course/exam/paper/analysis/outline, law of torts, negligence class/course/analysis + law/torts context, products liability class/course/analysis, intentional torts class/course/analysis, strict liability + torts/class, proximate cause + torts/class, duty of care + torts/class, Palsgraf + class/law/torts, Learned Hand formula/test + torts, comparative/contributory negligence class/course, respondeat superior + class/law.
+- Guard: bare "torts"/"tort"/"negligence" NOT matched without law/class/exam context.
+- `tortlawCallouts(tier:)` 4/3/3: "that torts hypo isn't going to analyze itself." / "no one passes torts by scrolling." / "CLOSE THIS. open your torts notes."
+- 2 templates: "Analyze a torts hypothetical on negligence, intentional torts, products liability, or strict liability" (60 min) + "Study for my torts class exam" (60 min)
+
+### Metrics
+- Template count: 485 → 495 (+10)
+- CalloutManagerTests: +41 tests (8 per domain + count guard ≥495)
+- SuggestedSessionTemplatesTests: +6 tests (1 domain existence test per domain + count guard ≥495)
+- Files changed: CalloutManager.swift, CalloutMessages.swift, SuggestedSessionTemplates.swift, CalloutManagerTests.swift, SuggestedSessionTemplatesTests.swift, GOAL.md, PROGRESS.md
+
+### Next agent candidates
+- "criminallaw + civilprocedure + constitutionallaw + evidencelaw + tortlaw" — already done this run
+- "architecturaldesign + historicpreservation + sustainabledesign + exhibit design + lightingdesign" — 5 design/built-environment sub-domains not yet covered
+- "dataanalysis + businessanalytics + operationsmanagement + entrepreneurship + venturecapital" — 5 more business sub-domains
+- "computervision + naturallanguageprocessing + reinforcementlearning + mlops + featureengineering" — 5 ML sub-domains
+- "sportslaw + medicaldevicelaw + bankinglaw + taxlaw + estatelaw" — 5 more specialized law domains
+
+---
+
 ## Run 346 (automated) — 2026-07-15 — 5 new keyword domains: informationassurance, hrmanagement, changemanagement, economics, iopsychology (475→485 templates)
 
 ### What shipped

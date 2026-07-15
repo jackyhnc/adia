@@ -3111,5 +3111,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "I/O psychology paper meaningfully advanced (thesis stated, theoretical framework described, at least one section drafted and saved)",
             preferredDuration: 60 * 60
         ),
+        // criminallaw
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Analyze a criminal law hypothetical or brief a criminal law case on homicide, theft, or defenses",
+            successCriteria: "Criminal law analysis meaningfully advanced (issue identified, rule stated, analysis applied via IRAC, at least one case briefed and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study for my criminal law class exam — review mens rea, actus reus, homicide, defenses, and the Model Penal Code",
+            successCriteria: "At least two criminal law topic areas reviewed (e.g., homicide, theft offenses, defenses, MPC provisions), case law reviewed, notes updated",
+            preferredDuration: 60 * 60
+        ),
+        // civilprocedure
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Analyze a civil procedure hypothetical on jurisdiction, pleading, discovery, or summary judgment",
+            successCriteria: "Civil procedure analysis meaningfully advanced (issue identified, rule applied, FRCP provision cited, at least one analysis section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study for my civil procedure class exam — review personal jurisdiction, subject matter jurisdiction, Erie doctrine, pleading, and discovery rules",
+            successCriteria: "At least two civil procedure topic areas reviewed (e.g., personal jurisdiction, SMJ, Erie, FRCP pleading standards, discovery), notes updated",
+            preferredDuration: 60 * 60
+        ),
+        // constitutionallaw
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Analyze a constitutional law problem on judicial review, due process, equal protection, or First Amendment issues",
+            successCriteria: "Constitutional law analysis meaningfully advanced (issue identified, doctrine applied, case law cited, at least one analysis section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study for my constitutional law class exam — review judicial review, First and Fourteenth Amendment, due process, equal protection, and federalism",
+            successCriteria: "At least two constitutional law topic areas reviewed (e.g., judicial review, due process, equal protection, free speech, commerce clause), cases reviewed, notes updated",
+            preferredDuration: 60 * 60
+        ),
+        // evidencelaw
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Analyze an evidence law hypothetical on hearsay, authentication, expert witnesses, or the Federal Rules of Evidence",
+            successCriteria: "Evidence analysis meaningfully advanced (issue identified, FRE rule cited, hearsay analysis applied, at least one section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study for my evidence law class exam — review hearsay and its exceptions, authentication, privilege, character evidence, and expert witnesses",
+            successCriteria: "At least two evidence topic areas reviewed (e.g., hearsay, authentication, privilege, expert witnesses, relevance), notes updated",
+            preferredDuration: 60 * 60
+        ),
+        // tortlaw
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Analyze a torts hypothetical on negligence, intentional torts, products liability, or strict liability",
+            successCriteria: "Torts analysis meaningfully advanced (issue identified, elements applied, damages addressed, at least one analysis section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study for my torts class exam — review negligence, intentional torts, strict liability, products liability, proximate cause, and defenses",
+            successCriteria: "At least two torts topic areas reviewed (e.g., negligence, intentional torts, proximate cause, strict liability, defenses), case law reviewed, notes updated",
+            preferredDuration: 60 * 60
+        ),
     ]
 }
