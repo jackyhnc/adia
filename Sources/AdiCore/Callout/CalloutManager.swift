@@ -926,6 +926,31 @@ public final class CalloutManager {
             || (word("mse") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))) {
             return "materialscience"
         }
+        // healthphysics — positioned BEFORE engineering so medical/health physics, radiation
+        // protection coursework, and CHP/ABHP board prep route here rather than to the
+        // engineering pool. Bare "physics" alone is NOT matched.
+        if lower.contains("health physics") || lower.contains("medical physics")
+            || word("chp") && (lower.contains("exam") || lower.contains("board") || lower.contains("certification") || lower.contains("prep") || lower.contains("study"))
+            || word("abhp") || lower.contains("health physicist") || lower.contains("medical physicist")
+            || lower.contains("health physics class") || lower.contains("health physics course")
+            || lower.contains("health physics exam") || lower.contains("health physics program")
+            || lower.contains("health physics school") || lower.contains("health physics notes")
+            || lower.contains("medical physics class") || lower.contains("medical physics course")
+            || lower.contains("medical physics exam") || lower.contains("medical physics program")
+            || lower.contains("medical physics residency") || lower.contains("medical physics notes")
+            || lower.contains("radiation protection class") || lower.contains("radiation protection course")
+            || lower.contains("radiation safety class") || lower.contains("radiation safety course")
+            || lower.contains("radiation safety officer class") || lower.contains("radiation safety officer program")
+            || lower.contains("radiation safety exam") || lower.contains("radiation safety certification")
+            || lower.contains("shielding calculation") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("radiation monitoring class") || lower.contains("radiation monitoring course")
+            || lower.contains("dosimetry class") && !(lower.contains("radiation therapy") || lower.contains("nuclear medicine"))
+            || lower.contains("mpse exam") || lower.contains("medical physics board")
+            || lower.contains("radiation physics class") || lower.contains("radiation physics course")
+            || lower.contains("diagnostic medical physics") || lower.contains("nuclear physics class") && lower.contains("radiation")
+            || lower.contains("environmental radiation class") || lower.contains("environmental radiation course") {
+            return "healthphysics"
+        }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
         if word("solidworks") || lower.contains("fusion 360") || word("ansys")
@@ -2219,6 +2244,29 @@ public final class CalloutManager {
             || lower.contains("human movement") || lower.contains("musculoskeletal") {
             return "kinesiology"
         }
+        // orthotics — positioned AFTER kinesiology and BEFORE pmrehabilitation so orthotics/prosthetics
+        // credentialing, O&P fabrication/fitting, and CPO/CPT board prep route here.
+        // "physical therapy" stays in kinesiology (fires earlier).
+        if lower.contains("orthotics and prosthetics") || lower.contains("prosthetics and orthotics")
+            || lower.contains("orthotics program") || lower.contains("orthotics class") || lower.contains("orthotics course")
+            || lower.contains("orthotics exam") || lower.contains("orthotics school") || lower.contains("orthotics lab")
+            || lower.contains("prosthetics program") || lower.contains("prosthetics class") || lower.contains("prosthetics course")
+            || lower.contains("prosthetics exam") || lower.contains("prosthetics school") || lower.contains("prosthetics lab")
+            || lower.contains("cpo exam") || lower.contains("cpo board") || lower.contains("cpo certification")
+            || lower.contains("cpt exam") && (lower.contains("orthotics") || lower.contains("prosthetics") || lower.contains("o&p"))
+            || lower.contains("cfo exam") || lower.contains("cfo certification") && (lower.contains("orthotics") || lower.contains("fitter"))
+            || lower.contains("abc board") && (lower.contains("orthotics") || lower.contains("prosthetics"))
+            || lower.contains("ncope") || lower.contains("caahep orthotics") || lower.contains("jrc-ep")
+            || word("orthotist") || word("prosthetist") || word("prosthetists") || word("orthotists")
+            || lower.contains("o&p class") || lower.contains("o&p course") || lower.contains("o&p exam")
+            || lower.contains("o&p program") || lower.contains("o&p school") || lower.contains("o&p notes")
+            || lower.contains("orthotic device") && (lower.contains("class") || lower.contains("course") || lower.contains("design") || lower.contains("fabrication"))
+            || lower.contains("orthotic lab") || lower.contains("prosthetic fitting") || lower.contains("prosthetic design")
+            || lower.contains("prosthetic fabrication") || lower.contains("limb prosthesis class")
+            || lower.contains("upper extremity prosthetics") || lower.contains("lower extremity prosthetics")
+            || lower.contains("lower limb orthotics") || lower.contains("upper limb orthotics") {
+            return "orthotics"
+        }
         // pmrehabilitation — positioned AFTER kinesiology and BEFORE personaltraining so
         // physiatry, PM&R residency/clerkship, and ABPMR board prep get a dedicated pool.
         // "physical therapy" stays in kinesiology (fires earlier); PM&R catches physician-level terms.
@@ -3027,6 +3075,27 @@ public final class CalloutManager {
             || lower.contains("interventional radiology") && (lower.contains("class") || lower.contains("rotation") || lower.contains("exam")) {
             return "radiologictechnology"
         }
+        // radiationtherapy — positioned AFTER radiologictechnology and BEFORE nuclearmedtech so
+        // radiation therapy tech/oncology coursework, ARRT-T prep, and dosimetry classes route here.
+        if lower.contains("radiation therapy") || lower.contains("radiation therapist")
+            || lower.contains("radiation technologist") && (lower.contains("therapy") || lower.contains("oncology") || lower.contains("treatment"))
+            || word("rtt") && (lower.contains("exam") || lower.contains("certification") || lower.contains("program") || lower.contains("class") || lower.contains("board") || lower.contains("notes") || lower.contains("course"))
+            || lower.contains("arrt-t") || lower.contains("arrt radiation therapy")
+            || lower.contains("radiation oncology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("rotation") || lower.contains("notes") || lower.contains("program"))
+            || lower.contains("radiation dosimetrist") || lower.contains("dosimetrist")
+            || lower.contains("dosimetry class") || lower.contains("dosimetry course") || lower.contains("dosimetry exam")
+            || lower.contains("treatment planning class") || lower.contains("treatment planning course")
+            || lower.contains("radiation treatment planning") || lower.contains("imrt class") || lower.contains("vmat class")
+            || lower.contains("linear accelerator class") || lower.contains("linear accelerator course")
+            || word("linac") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("brachytherapy class") || lower.contains("brachytherapy course")
+            || lower.contains("cbct class") || lower.contains("image guided radiation")
+            || lower.contains("radiation therapy school") || lower.contains("radiation therapy program")
+            || lower.contains("radiation therapy class") || lower.contains("radiation therapy exam")
+            || lower.contains("radiation therapy certification") || lower.contains("radiation therapy notes")
+            || lower.contains("therapeutic radiology class") || lower.contains("therapeutic radiation class") {
+            return "radiationtherapy"
+        }
         // nuclearmedtech — positioned AFTER radiologictechnology and BEFORE healthcareadmin so
         // nuclear medicine technologist boards, PET/SPECT imaging, and radiopharmaceuticals
         // coursework routes here rather than to the general imaging pool.
@@ -3610,6 +3679,28 @@ public final class CalloutManager {
             || lower.contains("substance use exam") || lower.contains("addiction treatment class") {
             return "addictioncounseling"
         }
+        // behavioranalysis — positioned AFTER addictioncounseling and BEFORE socialwork so ABA,
+        // BCBA, and behavior-analysis coursework route here. "behavior" alone is NOT matched.
+        if word("bcba") || word("bcba-d") || lower.contains("bcba exam") || lower.contains("bcba certification")
+            || lower.contains("bcba board") || lower.contains("bcba program") || lower.contains("bcba prep")
+            || word("rbt") && (lower.contains("training") || lower.contains("exam") || lower.contains("certification") || lower.contains("program") || lower.contains("course") || lower.contains("notes"))
+            || lower.contains("applied behavior analysis") || lower.contains("applied behaviour analysis")
+            || lower.contains("behavior analysis class") || lower.contains("behavior analysis course")
+            || lower.contains("behavior analysis exam") || lower.contains("behavior analysis program")
+            || lower.contains("behaviour analysis class") || lower.contains("behaviour analysis course")
+            || lower.contains("aba therapy") || lower.contains("aba program") || lower.contains("aba class")
+            || lower.contains("aba course") || lower.contains("aba practicum") || lower.contains("aba notes")
+            || lower.contains("aba training") || lower.contains("aba supervisor") || lower.contains("aba session")
+            || word("bacb") || lower.contains("bacb exam") || lower.contains("bacb board")
+            || lower.contains("verbal behavior class") || lower.contains("verbal behavior course")
+            || lower.contains("behavior intervention plan") || lower.contains("behaviour intervention plan")
+            || lower.contains("behavior support plan") || lower.contains("positive behavior support")
+            || lower.contains("functional behavior assessment") || word("fba") && (lower.contains("behavior") || lower.contains("aba"))
+            || lower.contains("discrete trial training") || lower.contains("discrete trial teaching") || word("dtt") && lower.contains("behavior")
+            || lower.contains("behavior therapy class") || lower.contains("behavior therapy course")
+            || lower.contains("behavior tech") || lower.contains("behaviour tech") {
+            return "behavioranalysis"
+        }
         // socialwork — positioned before therapy so social-work-specific tasks (case management,
         // child welfare, community resources) route here instead of to therapist callouts.
         // "social work" is owned here; "social work" in the therapy branch is removed.
@@ -3692,6 +3783,29 @@ public final class CalloutManager {
             || lower.contains("impromptu speech") || lower.contains("after dinner speech")
             || lower.contains("oral interpretation") || lower.contains("dramatic interpretation") {
             return "speecharts"
+        }
+        // audiology — positioned BEFORE speechpathology so AuD school, audiometric testing,
+        // hearing science coursework, and PRAXIS audiology prep route here rather than to
+        // speechpathology. "hearing" alone is NOT matched (too generic).
+        if word("audiology") || word("audiologist") || word("audiologists") || word("audiometric")
+            || lower.contains("aud degree") || lower.contains("au.d.") || lower.contains("au.d program")
+            || lower.contains("audiology school") || lower.contains("audiology program")
+            || lower.contains("audiology class") || lower.contains("audiology course")
+            || lower.contains("audiology exam") || lower.contains("audiology clinic")
+            || lower.contains("audiology externship") || lower.contains("audiology rotation")
+            || lower.contains("audiology certification") || lower.contains("audiology board")
+            || lower.contains("praxis audiology") || lower.contains("aud program")
+            || lower.contains("hearing science") || lower.contains("hearing assessment")
+            || lower.contains("audiometric testing") || lower.contains("audiogram")
+            || lower.contains("hearing aids fitting") || lower.contains("hearing aid fitting")
+            || lower.contains("cochlear implant class") || lower.contains("cochlear implant course")
+            || lower.contains("hearing disorder") || lower.contains("balance disorder class")
+            || lower.contains("pure tone audiometry") || lower.contains("speech audiometry")
+            || lower.contains("auditory processing") || lower.contains("central auditory")
+            || lower.contains("tinnitus class") || lower.contains("tinnitus management class")
+            || lower.contains("vestibular class") || lower.contains("vestibular course")
+            || lower.contains("newborn hearing screening") || lower.contains("pediatric audiology") {
+            return "audiology"
         }
         // speechpathology — positioned after occupationaltherapy, before publicheath.
         // Catches SLP clinical work, ASHA credentials, communication/swallowing disorders.

@@ -2786,5 +2786,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Debate case prepared (affirmative or negative position outlined, key arguments drafted, evidence researched, and at least three potential rebuttal points noted), and work saved",
             preferredDuration: 45 * 60
         ),
+        // audiology templates
+        SuggestedTemplate(
+            icon: "ear.fill",
+            task: "Study for the PRAXIS audiology exam and review audiometric testing, hearing disorders, and intervention approaches",
+            successCriteria: "At least two audiology topic areas reviewed (e.g., pure-tone audiometry, hearing loss types, cochlear implant candidacy), practice questions attempted, and notes updated",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Write up my audiology clinical notes or audiology externship documentation",
+            successCriteria: "Clinical notes or externship documentation completed (patient audiogram results summarized, intervention plan documented, or externship reflection written) and saved",
+            preferredDuration: 30 * 60
+        ),
+        // behavioranalysis templates
+        SuggestedTemplate(
+            icon: "person.fill.checkmark",
+            task: "Complete my applied behavior analysis assignment or write a behavior intervention plan",
+            successCriteria: "ABA assignment completed or behavior intervention plan drafted (problem behavior defined, antecedents and consequences identified, intervention strategy outlined) and saved",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study for the BCBA or RBT certification exam and review ABA concepts, verbal behavior, and ethics",
+            successCriteria: "At least two ABA topic areas studied (e.g., reinforcement schedules, discrete trial training, functional behavior assessment), practice questions completed, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        // radiationtherapy templates
+        SuggestedTemplate(
+            icon: "rays",
+            task: "Study for the ARRT radiation therapy exam and review dosimetry, treatment planning, and radiation oncology concepts",
+            successCriteria: "At least two radiation therapy topic areas reviewed (e.g., radiation physics, dosimetry calculations, treatment planning systems), practice questions attempted, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path",
+            task: "Complete my radiation therapy class assignment on treatment planning or linear accelerator operation",
+            successCriteria: "Radiation therapy assignment completed (treatment plan drafted, dosimetry calculation worked through, or LINAC procedure documented) and saved",
+            preferredDuration: 45 * 60
+        ),
+        // orthotics templates
+        SuggestedTemplate(
+            icon: "figure.walk",
+            task: "Complete my orthotics and prosthetics class assignment on device design, fabrication, or patient fitting",
+            successCriteria: "O&P assignment completed (orthotic or prosthetic device design documented, fabrication steps outlined, or patient fitting case study written) and saved",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "person.crop.square",
+            task: "Study for the CPO or CPT board exam and review O&P concepts, biomechanics, and clinical practice",
+            successCriteria: "At least two O&P topic areas studied (e.g., lower limb prosthetics, spinal orthotics, patient gait analysis), practice questions completed, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        // healthphysics templates
+        SuggestedTemplate(
+            icon: "shield.fill",
+            task: "Study for the CHP board exam or medical physics certification and review radiation protection, dosimetry, and shielding",
+            successCriteria: "At least two health physics topic areas reviewed (e.g., radiation measurement, shielding design, biological effects), practice problems completed, and notes updated",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "rays",
+            task: "Complete my health physics or radiation safety assignment on shielding calculations or radiation monitoring",
+            successCriteria: "Health physics assignment completed (shielding calculation worked through, radiation monitoring protocol documented, or safety analysis report drafted) and saved",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

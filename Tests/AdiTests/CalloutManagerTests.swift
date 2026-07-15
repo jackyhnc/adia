@@ -13779,6 +13779,211 @@ struct CalloutManagerTests {
         #expect(kw != "speechcommunication", "speech therapy notes should route to speechpathology, not speechcommunication")
     }
 
+    // MARK: - audiology keyword tests
+    @Test func audiologyKeywordFromAuDSchool() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying for my AuD program audiology school entrance and comprehensive exam") == "audiology")
+    }
+    @Test func audiologyKeywordFromPRAXIS() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prepping for the PRAXIS audiology exam and reviewing audiometric testing") == "audiology")
+    }
+    @Test func audiologyCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "audiology", tier: tier)
+                #expect(!msgs.isEmpty, "audiology tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func audiologyCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "audiology", tier: 1)
+            #expect(msgs.count >= 4, "audiology tier1 must have ≥4 messages")
+        }
+    }
+    @Test func audiologyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "audiology", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "audiology tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func audiologyCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "audiology", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "audiology tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func audiologyFiresBeforeSpeechpathology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying audiology for my AuD school comprehensive hearing assessment exam")
+        #expect(kw == "audiology", "AuD/audiology terms should route to audiology, not speechpathology")
+    }
+
+    // MARK: - behavioranalysis keyword tests
+    @Test func behavioranalysisKeywordFromBCBA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying for my BCBA exam and reviewing applied behavior analysis concepts") == "behavioranalysis")
+    }
+    @Test func behavioranalysisKeywordFromABATherapy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "completing my ABA therapy practicum notes for my behavior analysis program") == "behavioranalysis")
+    }
+    @Test func behavioranalysisCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "behavioranalysis", tier: tier)
+                #expect(!msgs.isEmpty, "behavioranalysis tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func behavioranalysisCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "behavioranalysis", tier: 1)
+            #expect(msgs.count >= 4, "behavioranalysis tier1 must have ≥4 messages")
+        }
+    }
+    @Test func behavioranalysisCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "behavioranalysis", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "behavioranalysis tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func behavioranalysisCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "behavioranalysis", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "behavioranalysis tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func behavioranalysisFalsePositiveBehaviorGeneral() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying organizational behavior theory for my management class")
+        #expect(kw != "behavioranalysis", "generic 'behavior' in management context should not route to behavioranalysis")
+    }
+
+    // MARK: - radiationtherapy keyword tests
+    @Test func radiationtherapyKeywordFromARRT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prepping for the ARRT radiation therapy exam and reviewing dosimetry and treatment planning") == "radiationtherapy")
+    }
+    @Test func radiationtherapyKeywordFromTreatmentPlanning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "completing my radiation therapy class assignment on radiation treatment planning and IMRT") == "radiationtherapy")
+    }
+    @Test func radiationtherapyCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "radiationtherapy", tier: tier)
+                #expect(!msgs.isEmpty, "radiationtherapy tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func radiationtherapyCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "radiationtherapy", tier: 1)
+            #expect(msgs.count >= 4, "radiationtherapy tier1 must have ≥4 messages")
+        }
+    }
+    @Test func radiationtherapyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "radiationtherapy", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "radiationtherapy tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func radiationtherapyCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "radiationtherapy", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "radiationtherapy tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func radiationtherapyFiresBeforeNuclearMed() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying radiation therapy dosimetry and reviewing ARRT-T exam content for my RTT program")
+        #expect(kw == "radiationtherapy", "ARRT-T/RTT terms should route to radiationtherapy, not nuclearmedtech")
+    }
+
+    // MARK: - orthotics keyword tests
+    @Test func orthoticsKeywordFromOandP() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying for the CPO board exam and reviewing orthotics and prosthetics concepts") == "orthotics")
+    }
+    @Test func orthoticsKeywordFromDeviceDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "completing my prosthetics class assignment on prosthetic design and lower extremity prosthetics") == "orthotics")
+    }
+    @Test func orthoticsCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "orthotics", tier: tier)
+                #expect(!msgs.isEmpty, "orthotics tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func orthoticsCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "orthotics", tier: 1)
+            #expect(msgs.count >= 4, "orthotics tier1 must have ≥4 messages")
+        }
+    }
+    @Test func orthoticsCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "orthotics", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "orthotics tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func orthoticsCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "orthotics", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "orthotics tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func orthoticsFiresAfterKinesiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for the CPO board exam on orthotics and prosthetics fabrication and patient fitting")
+        #expect(kw == "orthotics", "CPO/O&P terms should route to orthotics")
+    }
+
+    // MARK: - healthphysics keyword tests
+    @Test func healthphysicsKeywordFromCHP() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying for the CHP board exam on radiation protection, shielding calculations, and health physics") == "healthphysics")
+    }
+    @Test func healthphysicsKeywordFromRadiationSafety() {
+        #expect(CalloutManager.extractTaskKeyword(from: "completing my radiation safety class assignment on shielding calculations and radiation monitoring") == "healthphysics")
+    }
+    @Test func healthphysicsCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "healthphysics", tier: tier)
+                #expect(!msgs.isEmpty, "healthphysics tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func healthphysicsCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "healthphysics", tier: 1)
+            #expect(msgs.count >= 4, "healthphysics tier1 must have ≥4 messages")
+        }
+    }
+    @Test func healthphysicsCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "healthphysics", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "healthphysics tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func healthphysicsCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "healthphysics", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "healthphysics tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func healthphysicsFalsePositiveGeneralPhysics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying quantum physics for my undergraduate physics exam")
+        #expect(kw != "healthphysics", "bare physics context without health/radiation/shielding terms should not route to healthphysics")
+    }
+
     // MARK: - Template count guard
     @Test func suggestedTemplatesCountAtLeast413() {
         #expect(SuggestedSessionTemplates.all.count >= 413, "template catalog must have ≥413 entries after adding 5 new domains (10 templates)")
@@ -13788,5 +13993,8 @@ struct CalloutManagerTests {
     }
     @Test func suggestedTemplatesCountAtLeast433() {
         #expect(SuggestedSessionTemplates.all.count >= 433, "template catalog must have ≥433 entries after adding blockchain/digitalmarketing/projectmanagement/riskmanagement/speechcommunication (10 templates)")
+    }
+    @Test func suggestedTemplatesCountAtLeast443() {
+        #expect(SuggestedSessionTemplates.all.count >= 443, "template catalog must have ≥443 entries after adding audiology/behavioranalysis/radiationtherapy/orthotics/healthphysics (10 templates)")
     }
 }

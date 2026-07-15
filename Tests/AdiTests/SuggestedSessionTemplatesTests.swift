@@ -3551,4 +3551,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 433,
                 "catalog should have ≥433 templates after blockchain/digitalmarketing/projectmanagement/riskmanagement/speechcommunication additions")
     }
+
+    // MARK: - Audiology templates
+    @Test func audiologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPRAXIS = tasks.contains { $0.localizedCaseInsensitiveContains("PRAXIS audiology") || ($0.localizedCaseInsensitiveContains("audiology") && $0.localizedCaseInsensitiveContains("exam")) }
+        let hasClinical = tasks.contains { $0.localizedCaseInsensitiveContains("audiology") && ($0.localizedCaseInsensitiveContains("clinical notes") || $0.localizedCaseInsensitiveContains("externship")) }
+        #expect(hasPRAXIS, "catalog must include a PRAXIS audiology exam study template")
+        #expect(hasClinical, "catalog must include an audiology clinical notes / externship template")
+    }
+
+    // MARK: - Behavior analysis templates
+    @Test func behavioranalysisTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasBIP = tasks.contains { $0.localizedCaseInsensitiveContains("behavior intervention plan") || ($0.localizedCaseInsensitiveContains("applied behavior analysis") && $0.localizedCaseInsensitiveContains("assignment")) }
+        let hasBCBA = tasks.contains { $0.localizedCaseInsensitiveContains("BCBA") || ($0.localizedCaseInsensitiveContains("behavior analysis") && $0.localizedCaseInsensitiveContains("certification")) }
+        #expect(hasBIP, "catalog must include an ABA assignment / behavior intervention plan template")
+        #expect(hasBCBA, "catalog must include a BCBA / RBT certification exam study template")
+    }
+
+    // MARK: - Radiation therapy templates
+    @Test func radiationtherapyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasARRT = tasks.contains { $0.localizedCaseInsensitiveContains("ARRT radiation therapy") || ($0.localizedCaseInsensitiveContains("radiation therapy") && $0.localizedCaseInsensitiveContains("dosimetry")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("radiation therapy") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("linear accelerator") || $0.localizedCaseInsensitiveContains("treatment planning")) }
+        #expect(hasARRT, "catalog must include an ARRT radiation therapy exam study template")
+        #expect(hasAssignment, "catalog must include a radiation therapy class assignment / treatment planning template")
+    }
+
+    // MARK: - Orthotics templates
+    @Test func orthoticsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasOandP = tasks.contains { ($0.localizedCaseInsensitiveContains("orthotics and prosthetics") || $0.localizedCaseInsensitiveContains("O&P")) && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("design")) }
+        let hasCPO = tasks.contains { $0.localizedCaseInsensitiveContains("CPO") || ($0.localizedCaseInsensitiveContains("orthotics") && $0.localizedCaseInsensitiveContains("board exam")) }
+        #expect(hasOandP, "catalog must include an O&P class assignment / device design template")
+        #expect(hasCPO, "catalog must include a CPO / CPT board exam study template")
+    }
+
+    // MARK: - Health physics templates
+    @Test func healthphysicsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCHP = tasks.contains { $0.localizedCaseInsensitiveContains("CHP board exam") || ($0.localizedCaseInsensitiveContains("health physics") && $0.localizedCaseInsensitiveContains("certification")) }
+        let hasAssignment = tasks.contains { ($0.localizedCaseInsensitiveContains("health physics") || $0.localizedCaseInsensitiveContains("radiation safety")) && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("shielding")) }
+        #expect(hasCHP, "catalog must include a CHP board exam / health physics certification study template")
+        #expect(hasAssignment, "catalog must include a health physics / radiation safety assignment template")
+    }
+
+    // MARK: - Count guard (batch: audiology/behavioranalysis/radiationtherapy/orthotics/healthphysics)
+    @Test func catalogHasAtLeastFourHundredFortyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 443,
+                "catalog should have ≥443 templates after audiology/behavioranalysis/radiationtherapy/orthotics/healthphysics additions")
+    }
 }

@@ -283,6 +283,11 @@ extension CalloutManager {
         case "projectmanagement":          return projectmanagementCallouts(tier: tier)
         case "riskmanagement":             return riskmanagementCallouts(tier: tier)
         case "speechcommunication":        return speechcommunicationCallouts(tier: tier)
+        case "audiology":                  return audiologyCallouts(tier: tier)
+        case "behavioranalysis":           return behavioranalysisCallouts(tier: tier)
+        case "radiationtherapy":           return radiationtherapyCallouts(tier: tier)
+        case "orthotics":                  return orthoticsCallouts(tier: tier)
+        case "healthphysics":              return healthphysicsCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -5205,6 +5210,111 @@ extension CalloutManager {
             "CLOSE THIS. open your speech notes.",
             "no one wins a debate by scrolling.",
             "CLOSE THIS. get back to your speech preparation.",
+        ]
+        }
+    }
+
+    private func audiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your audiology notes aren't going to study themselves.",
+            "get back to your audiology assignment.",
+            "close this and open your audiometry materials.",
+            "your audiology coursework won't finish itself.",
+        ]
+        case 2: return [
+            "audiologists don't earn their AuD by scrolling.",
+            "your hearing science notes aren't going to review themselves.",
+            "stop avoiding your audiology coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your audiology notes.",
+            "no one passes the PRAXIS audiology exam by scrolling.",
+            "CLOSE THIS. get back to your audiology assignment.",
+        ]
+        }
+    }
+
+    private func behavioranalysisCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those behavior protocols aren't going to write themselves.",
+            "get back to your ABA assignment.",
+            "close this and open your behavior analysis notes.",
+            "your BCBA exam prep won't do itself.",
+        ]
+        case 2: return [
+            "no one earns their BCBA by scrolling.",
+            "your behavior intervention plan isn't going to write itself.",
+            "stop avoiding your ABA coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your ABA notes.",
+            "no one masters applied behavior analysis by browsing.",
+            "CLOSE THIS. get back to your behavior analysis assignment.",
+        ]
+        }
+    }
+
+    private func radiationtherapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those treatment plans aren't going to write themselves.",
+            "get back to your radiation therapy assignment.",
+            "close this and open your dosimetry notes.",
+            "your radiation therapy coursework won't finish itself.",
+        ]
+        case 2: return [
+            "no one passes the ARRT by scrolling.",
+            "your treatment planning notes aren't going to review themselves.",
+            "stop avoiding your radiation therapy coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your radiation therapy notes.",
+            "no one masters dosimetry by browsing.",
+            "CLOSE THIS. get back to your radiation therapy assignment.",
+        ]
+        }
+    }
+
+    private func orthoticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those orthotic designs aren't going to draw themselves.",
+            "get back to your O&P assignment.",
+            "close this and open your orthotics and prosthetics notes.",
+            "your CPO exam prep won't do itself.",
+        ]
+        case 2: return [
+            "no one earns their CPO by scrolling.",
+            "your prosthetic design notes aren't going to review themselves.",
+            "stop avoiding your O&P coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your O&P notes.",
+            "no one masters orthotics and prosthetics by browsing.",
+            "CLOSE THIS. get back to your O&P assignment.",
+        ]
+        }
+    }
+
+    private func healthphysicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those shielding calculations aren't going to solve themselves.",
+            "get back to your health physics assignment.",
+            "close this and open your radiation protection notes.",
+            "your CHP exam prep won't do itself.",
+        ]
+        case 2: return [
+            "no one earns their CHP by scrolling.",
+            "your radiation safety notes aren't going to review themselves.",
+            "stop avoiding your health physics coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your health physics notes.",
+            "no one masters medical physics by browsing.",
+            "CLOSE THIS. get back to your health physics assignment.",
         ]
         }
     }
