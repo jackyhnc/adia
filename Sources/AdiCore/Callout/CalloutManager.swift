@@ -106,6 +106,24 @@ public final class CalloutManager {
             || word("saas") || word("b2b") || word("b2c") {
             return "startup"
         }
+        // socialentrepreneurship — positioned AFTER startup so "pitch deck"/"business plan" stay in
+        // startup; catches social enterprise and impact-investing coursework that startup doesn't cover.
+        // Bare "social impact" alone NOT matched (too broad); requires a compound educational term.
+        if lower.contains("social enterprise") || lower.contains("social entrepreneur")
+            || lower.contains("social entrepreneurship")
+            || lower.contains("b corp") || lower.contains("b-corp") || lower.contains("benefit corporation")
+            || lower.contains("impact investing") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program") || lower.contains("assignment"))
+            || lower.contains("social innovation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program") || lower.contains("assignment"))
+            || lower.contains("social impact investing") || lower.contains("social venture")
+            || lower.contains("social impact measurement") && (lower.contains("class") || lower.contains("course") || lower.contains("assignment"))
+            || lower.contains("esg investing") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("triple bottom line") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("corporate social responsibility") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("social change") && lower.contains("venture")
+            || lower.contains("microfinance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("mission-driven") && (lower.contains("business") || lower.contains("startup") || lower.contains("venture") || lower.contains("enterprise")) {
+            return "socialentrepreneurship"
+        }
         if word("presentation") || word("presentations") || word("slides") || word("deck") || word("powerpoint") || word("keynote") {
             return "presentation"
         }
@@ -2500,6 +2518,24 @@ public final class CalloutManager {
             || lower.contains("lifestyle coaching") && (lower.contains("certif") || lower.contains("exam") || lower.contains("class") || lower.contains("program")) {
             return "healthcoaching"
         }
+        // yogapilates — positioned BEFORE fitness so yoga-teacher-training and pilates-instructor
+        // certification tasks get a dedicated pool. Generic word("yoga")/word("pilates") stay in
+        // fitness (bare yoga/pilates class or workout fires fitness, not yogapilates).
+        if lower.contains("yoga teacher training") || lower.contains("yoga instructor training")
+            || lower.contains("yoga teacher certification") || lower.contains("yoga instructor certification")
+            || word("ryt") && (lower.contains("200") || lower.contains("500") || lower.contains("yoga") || lower.contains("certif") || lower.contains("train"))
+            || word("ytt") && (lower.contains("yoga") || lower.contains("teacher") || lower.contains("train") || lower.contains("200") || lower.contains("500"))
+            || lower.contains("yoga certification exam") || lower.contains("yoga certification class")
+            || lower.contains("yoga school") || lower.contains("yoga program") && (lower.contains("certif") || lower.contains("teach") || lower.contains("train"))
+            || lower.contains("yoga alliance") || lower.contains("registered yoga")
+            || lower.contains("pilates instructor") || lower.contains("pilates teacher")
+            || lower.contains("pilates certification") || lower.contains("pilates exam")
+            || lower.contains("pilates method alliance") || word("pma") && lower.contains("pilates")
+            || lower.contains("pilates teacher training") || lower.contains("pilates training program")
+            || lower.contains("barre instructor") || lower.contains("barre certification")
+            || lower.contains("barre teacher training") {
+            return "yogapilates"
+        }
         if word("workout") || word("workouts") || word("gym")
             || word("exercise") || word("exercises") || word("exercising")
             || word("lifting") || word("weightlifting") || word("bodybuilding")
@@ -2942,6 +2978,24 @@ public final class CalloutManager {
             || lower.contains("chinese herbal") || lower.contains("chinese medicine")
             || word("moxibustion") || lower.contains("tuina") {
             return "acupuncture"
+        }
+        // ayurvedic — positioned AFTER acupuncture (since TCM is covered there) and BEFORE podiatry;
+        // catches Ayurvedic medicine/practitioner programs, panchakarma, NAMA certification.
+        // Bare "dosha"/"vata"/"pitta"/"kapha" require an educational context to avoid false positives.
+        if lower.contains("ayurveda") || lower.contains("ayurvedic")
+            || lower.contains("ayurvedic medicine") || lower.contains("ayurvedic practitioner")
+            || lower.contains("ayurvedic school") || lower.contains("ayurvedic program")
+            || lower.contains("ayurvedic class") || lower.contains("ayurvedic course")
+            || lower.contains("ayurvedic exam") || lower.contains("ayurvedic certification")
+            || lower.contains("panchakarma") || word("nama") && lower.contains("ayurved")
+            || lower.contains("vata") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("dosha") || lower.contains("ayurved"))
+            || lower.contains("pitta") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("dosha") || lower.contains("ayurved"))
+            || lower.contains("kapha") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("dosha") || lower.contains("ayurved"))
+            || lower.contains("dosha") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("ayurved"))
+            || lower.contains("prakriti") && lower.contains("ayurved")
+            || lower.contains("tridosha") || lower.contains("prana") && lower.contains("ayurved")
+            || lower.contains("dinacharya") || lower.contains("rasayana") {
+            return "ayurvedic"
         }
         // podiatry — positioned after acupuncture and before dentallab so DPM programs,
         // APMLE board prep, and foot/ankle surgery coursework route here.
@@ -4412,6 +4466,26 @@ public final class CalloutManager {
             || lower.contains("motivation at work class") || lower.contains("work motivation class") {
             return "iopsychology"
         }
+        // positivepsychology — positioned BEFORE psychology so "positive psychology" class/course
+        // terms get a dedicated pool instead of falling into the generic psychology branch.
+        // "positive psychology" is still listed in psychology as a fallback for bare mentions,
+        // but explicit class/program/research terms route here.
+        if lower.contains("positive psychology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program") || lower.contains("research") || lower.contains("paper") || lower.contains("thesis") || lower.contains("major") || lower.contains("assignment"))
+            || lower.contains("well-being science") || lower.contains("wellbeing science")
+            || lower.contains("happiness science") || lower.contains("science of happiness")
+            || lower.contains("mapp program") || lower.contains("master of applied positive psychology")
+            || lower.contains("character strengths") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment") || lower.contains("via"))
+            || lower.contains("via strengths") || lower.contains("via survey") && lower.contains("psych")
+            || lower.contains("perma model") || lower.contains("perma framework") && (lower.contains("class") || lower.contains("course") || lower.contains("psych"))
+            || (word("seligman") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("paper") || lower.contains("book")))
+            || lower.contains("flourishing theory") || lower.contains("theories of flourishing")
+            || lower.contains("strengths-based") && (lower.contains("psych") || lower.contains("class") || lower.contains("counseling"))
+            || lower.contains("strength-based approach") && (lower.contains("psych") || lower.contains("class") || lower.contains("counseling"))
+            || lower.contains("resilience psychology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("grit theory") && (lower.contains("psych") || lower.contains("class") || lower.contains("paper"))
+            || lower.contains("self-determination theory") && (lower.contains("psych") || lower.contains("class") || lower.contains("paper") || lower.contains("course")) {
+            return "positivepsychology"
+        }
         // psychology — positioned after publicheath and all clinical health branches above.
         // "educational psychology" fires in the education branch first; clinical/counseling
         // terms fire in therapy/socialwork above. This catches academic and research psych.
@@ -4481,6 +4555,26 @@ public final class CalloutManager {
             || lower.contains("forensic course") || lower.contains("forensic exam")
             || lower.contains("forensic program") || lower.contains("forensic degree") {
             return "forensicscience"
+        }
+        // policeacademy — positioned BEFORE criminaljustice so POST certification, police academy,
+        // and law-enforcement-officer training tasks get a dedicated pool. Generic "law enforcement"
+        // and "policing" terms without academy context still fall through to criminaljustice.
+        if lower.contains("police academy") || lower.contains("law enforcement academy")
+            || lower.contains("police officer training") || lower.contains("police officer exam")
+            || lower.contains("police officer certification") || lower.contains("police certification")
+            || lower.contains("post certification") && (lower.contains("police") || lower.contains("officer") || lower.contains("law enforce") || lower.contains("peace officer"))
+            || lower.contains("post exam") && (lower.contains("police") || lower.contains("officer") || lower.contains("law enforce"))
+            || lower.contains("peace officer exam") || lower.contains("peace officer certification")
+            || lower.contains("peace officer training") || lower.contains("peace officer standard")
+            || lower.contains("basic law enforcement training") || lower.contains("blet exam") || word("blet") && lower.contains("law enforce")
+            || lower.contains("police science class") || lower.contains("police science course") || lower.contains("police science exam")
+            || lower.contains("police science program") || lower.contains("police science major")
+            || lower.contains("law enforcement officer training") || lower.contains("leo certification")
+            || lower.contains("field training officer") && (lower.contains("program") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("police entrance exam") || lower.contains("police entrance test")
+            || lower.contains("police oral board") || lower.contains("police written exam")
+            || lower.contains("police department application") && lower.contains("exam") {
+            return "policeacademy"
         }
         // criminaljustice — split from socialscience so criminology and criminal justice tasks get
         // a dedicated callout pool. Positioned BEFORE socialscience. "criminal law" routed here

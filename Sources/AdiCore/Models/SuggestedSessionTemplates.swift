@@ -3241,5 +3241,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "At least two lighting topic areas reviewed (e.g., photometrics, daylighting, luminaire types, color temperature, IES standards), notes updated",
             preferredDuration: 60 * 60
         ),
+        // socialentrepreneurship
+        SuggestedTemplate(
+            icon: "globe.americas.fill",
+            task: "Develop my social enterprise business model, impact theory of change, or B-corp certification plan",
+            successCriteria: "Social enterprise deliverable meaningfully advanced (business model canvas updated, theory of change drafted, or B-corp assessment section completed and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "book.fill",
+            task: "Study for my social entrepreneurship or impact investing class — review social enterprise models, ESG frameworks, and mission-driven venture strategy",
+            successCriteria: "At least two social entrepreneurship topic areas reviewed (e.g., B-corp, ESG, theory of change, impact measurement, social venture models), notes updated",
+            preferredDuration: 45 * 60
+        ),
+        // yogapilates
+        SuggestedTemplate(
+            icon: "figure.yoga",
+            task: "Study anatomy, sequencing, or teaching methodology for my yoga teacher training (RYT 200/500) program",
+            successCriteria: "Yoga teacher training study session completed (at least one anatomy or sequencing topic reviewed, teaching methodology notes updated, and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "checkmark.seal.fill",
+            task: "Prepare for my Pilates instructor certification exam — review repertoire, anatomy, cueing, and contraindications",
+            successCriteria: "Pilates certification study meaningfully advanced (at least two topic areas reviewed, exam notes updated, and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // ayurvedic
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Study Ayurvedic principles, doshas, and herbal formulas for my Ayurvedic practitioner program or NAMA exam prep",
+            successCriteria: "Ayurveda study session completed (at least one dosha, herbal formula, or treatment protocol reviewed and notes updated)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my Ayurvedic medicine class assignment or write a patient intake and prakruti assessment",
+            successCriteria: "Assignment or assessment meaningfully advanced (intake form drafted, prakruti analysis written, or class deliverable section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // positivepsychology
+        SuggestedTemplate(
+            icon: "sun.max.fill",
+            task: "Study for my positive psychology class exam — review the PERMA model, character strengths, flourishing theory, and Seligman's framework",
+            successCriteria: "At least two positive psychology topics reviewed (e.g., PERMA, character strengths, well-being theory, grit, resilience, self-determination theory), notes updated",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a positive psychology paper or research assignment on character strengths, well-being, or flourishing",
+            successCriteria: "Paper or assignment meaningfully advanced (outline drafted, at least one section written with key literature cited, and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // policeacademy
+        SuggestedTemplate(
+            icon: "shield.fill",
+            task: "Study for the police officer entrance exam or POST certification — review laws, procedures, ethics, and scenario-based questions",
+            successCriteria: "Exam prep meaningfully advanced (at least two subject areas reviewed, practice questions attempted, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.plaintext.fill",
+            task: "Complete my police academy or law enforcement training assignment — review use-of-force policy, community policing, or report writing",
+            successCriteria: "Training assignment meaningfully advanced (at least one policy area studied or report writing exercise completed and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

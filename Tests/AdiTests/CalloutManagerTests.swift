@@ -15358,4 +15358,200 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast505() {
         #expect(SuggestedSessionTemplates.all.count >= 505, "template catalog must have ≥505 entries after adding architecturaldesign/historicpreservation/sustainabledesign/exhibitdesign/lightingdesign (10 templates)")
     }
+
+    // MARK: - socialentrepreneurship
+    @Test func socialentrepreneurshipKeywordFromSocialEnterprise() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my social enterprise business model and theory of change")
+        #expect(kw == "socialentrepreneurship", "social enterprise business model should route to socialentrepreneurship")
+    }
+    @Test func socialentrepreneurshipKeywordFromBCorp() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my B-corp certification assessment for the benefit corporation")
+        #expect(kw == "socialentrepreneurship", "B-corp certification assessment should route to socialentrepreneurship")
+    }
+    @Test func socialentrepreneurshipKeywordFromImpactInvesting() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my impact investing class — reviewing ESG frameworks and social venture models")
+        #expect(kw == "socialentrepreneurship", "impact investing class should route to socialentrepreneurship")
+    }
+    @Test func socialentrepreneurshipKeywordFromSocialVenture() {
+        let kw = CalloutManager.extractTaskKeyword(from: "developing my social change venture and mission-driven business plan")
+        #expect(kw == "socialentrepreneurship", "social change venture should route to socialentrepreneurship")
+    }
+    @Test func socialentrepreneurshipFiresAfterStartup() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my startup pitch deck and seed round investor deck")
+        #expect(kw == "startup", "pitch deck and seed round should still fire startup before socialentrepreneurship")
+    }
+    @Test @MainActor func socialentrepreneurshipCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "socialentrepreneurship", tier: tier)
+            #expect(!msgs.isEmpty, "socialentrepreneurship tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func socialentrepreneurshipTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "socialentrepreneurship", tier: 1)
+        #expect(msgs.count >= 4, "socialentrepreneurship tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func socialentrepreneurshipTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "socialentrepreneurship", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "socialentrepreneurship tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - yogapilates
+    @Test func yogapilatesKeywordFromYogaTeacherTraining() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying anatomy and sequencing for my yoga teacher training RYT 200 program")
+        #expect(kw == "yogapilates", "yoga teacher training RYT 200 should route to yogapilates")
+    }
+    @Test func yogapilatesKeywordFromYTT() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my YTT 200 hour yoga teacher certification coursework")
+        #expect(kw == "yogapilates", "YTT 200 yoga teacher certification should route to yogapilates")
+    }
+    @Test func yogapilatesKeywordFromPilatesInstructor() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing for my Pilates instructor certification exam — reviewing repertoire and anatomy")
+        #expect(kw == "yogapilates", "Pilates instructor certification exam should route to yogapilates")
+    }
+    @Test func yogapilatesKeywordFromYogaAlliance() {
+        let kw = CalloutManager.extractTaskKeyword(from: "submitting my Yoga Alliance registered yoga teacher application and training log")
+        #expect(kw == "yogapilates", "Yoga Alliance registered yoga teacher application should route to yogapilates")
+    }
+    @Test func yogapilatesNotFromGenericYoga() {
+        let kw = CalloutManager.extractTaskKeyword(from: "doing my morning yoga workout and stretching routine")
+        #expect(kw == "fitness", "bare yoga workout should route to fitness, not yogapilates")
+    }
+    @Test @MainActor func yogapilatesCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "yogapilates", tier: tier)
+            #expect(!msgs.isEmpty, "yogapilates tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func yogapilatesTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "yogapilates", tier: 1)
+        #expect(msgs.count >= 4, "yogapilates tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func yogapilatesTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "yogapilates", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "yogapilates tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - ayurvedic
+    @Test func ayurvedicKeywordFromAyurveda() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying Ayurveda doshas and herbal formulas for my NAMA certification exam")
+        #expect(kw == "ayurvedic", "Ayurveda NAMA certification should route to ayurvedic")
+    }
+    @Test func ayurvedicKeywordFromPanchakarma() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a panchakarma treatment plan for my Ayurvedic practitioner program")
+        #expect(kw == "ayurvedic", "panchakarma treatment plan Ayurvedic practitioner should route to ayurvedic")
+    }
+    @Test func ayurvedicKeywordFromDoshaClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "taking notes on vata pitta kapha dosha for my ayurvedic medicine class")
+        #expect(kw == "ayurvedic", "vata pitta kapha dosha ayurvedic class should route to ayurvedic")
+    }
+    @Test func ayurvedicKeywordFromAyurvedicSchool() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my ayurvedic school assignment on rasayana and dinacharya")
+        #expect(kw == "ayurvedic", "ayurvedic school rasayana dinacharya should route to ayurvedic")
+    }
+    @Test @MainActor func ayurvedicCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "ayurvedic", tier: tier)
+            #expect(!msgs.isEmpty, "ayurvedic tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func ayurvedicTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "ayurvedic", tier: 1)
+        #expect(msgs.count >= 4, "ayurvedic tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func ayurvedicTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "ayurvedic", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "ayurvedic tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - positivepsychology
+    @Test func positivepsychologyKeywordFromClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my positive psychology class exam — reviewing PERMA and character strengths")
+        #expect(kw == "positivepsychology", "positive psychology class exam should route to positivepsychology")
+    }
+    @Test func positivepsychologyKeywordFromMAPP() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing my MAPP program thesis on flourishing theory and well-being science")
+        #expect(kw == "positivepsychology", "MAPP program thesis flourishing theory should route to positivepsychology")
+    }
+    @Test func positivepsychologyKeywordFromVIA() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my VIA strengths assessment assignment for positive psychology")
+        #expect(kw == "positivepsychology", "VIA strengths assessment positive psychology should route to positivepsychology")
+    }
+    @Test func positivepsychologyKeywordFromSeligman() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reading Seligman's book for my positive psych paper on self-determination theory course")
+        #expect(kw == "positivepsychology", "Seligman positive psych paper self-determination theory course should route to positivepsychology")
+    }
+    @Test func positivepsychologyFiresBeforePsychology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "researching positive psychology character strengths for my psych class paper")
+        #expect(kw == "positivepsychology", "positive psychology character strengths psych class paper should fire positivepsychology before psychology")
+    }
+    @Test @MainActor func positivepsychologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "positivepsychology", tier: tier)
+            #expect(!msgs.isEmpty, "positivepsychology tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func positivepsychologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "positivepsychology", tier: 1)
+        #expect(msgs.count >= 4, "positivepsychology tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func positivepsychologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "positivepsychology", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "positivepsychology tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - policeacademy
+    @Test func policeacademyKeywordFromPoliceAcademy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing for the police academy entrance exam and written test")
+        #expect(kw == "policeacademy", "police academy entrance exam should route to policeacademy")
+    }
+    @Test func policeacademyKeywordFromPOST() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for the POST certification exam for peace officer law enforcement training")
+        #expect(kw == "policeacademy", "POST certification peace officer law enforcement training should route to policeacademy")
+    }
+    @Test func policeacademyKeywordFromBasicLET() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my basic law enforcement training BLET coursework and exam prep")
+        #expect(kw == "policeacademy", "basic law enforcement training BLET should route to policeacademy")
+    }
+    @Test func policeacademyKeywordFromPoliceOfficerCert() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing police officer certification requirements and law enforcement oral board questions")
+        #expect(kw == "policeacademy", "police officer certification oral board should route to policeacademy")
+    }
+    @Test func policeacademyFiresBeforeCriminaljustice() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for the police academy entrance exam — use of force and police science class")
+        #expect(kw == "policeacademy", "police academy entrance exam police science should fire policeacademy before criminaljustice")
+    }
+    @Test @MainActor func policeacademyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "policeacademy", tier: tier)
+            #expect(!msgs.isEmpty, "policeacademy tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func policeacademyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "policeacademy", tier: 1)
+        #expect(msgs.count >= 4, "policeacademy tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func policeacademyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "policeacademy", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "policeacademy tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: socialentrepreneurship/yogapilates/ayurvedic/positivepsychology/policeacademy)
+    @Test func suggestedTemplatesCountAtLeast513() {
+        #expect(SuggestedSessionTemplates.all.count >= 513, "template catalog must have ≥513 entries after adding socialentrepreneurship/yogapilates/ayurvedic/positivepsychology/policeacademy (10 templates)")
+    }
 }

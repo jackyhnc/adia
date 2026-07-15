@@ -315,9 +315,14 @@ extension CalloutManager {
         case "tortlaw":               return tortlawCallouts(tier: tier)
         case "architecturaldesign":   return architecturaldesignCallouts(tier: tier)
         case "historicpreservation":  return historicpreservationCallouts(tier: tier)
-        case "sustainabledesign":     return sustainabledesignCallouts(tier: tier)
-        case "exhibitdesign":         return exhibitdesignCallouts(tier: tier)
-        case "lightingdesign":        return lightingdesignCallouts(tier: tier)
+        case "sustainabledesign":      return sustainabledesignCallouts(tier: tier)
+        case "exhibitdesign":          return exhibitdesignCallouts(tier: tier)
+        case "lightingdesign":         return lightingdesignCallouts(tier: tier)
+        case "socialentrepreneurship": return socialentrepreneurshipCallouts(tier: tier)
+        case "yogapilates":            return yogapilatesCallouts(tier: tier)
+        case "ayurvedic":              return ayurvedicCallouts(tier: tier)
+        case "positivepsychology":     return positivepsychologyCallouts(tier: tier)
+        case "policeacademy":          return policeacademyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -5975,6 +5980,111 @@ extension CalloutManager {
             "CLOSE THIS. open your lighting design files.",
             "CLOSE THIS. your photometric plan is waiting.",
             "CLOSE THIS. that lighting spec needs you."
+        ]
+        }
+    }
+
+    private func socialentrepreneurshipCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that social enterprise isn't going to build itself.",
+            "impact investors don't wait — close this and get to work.",
+            "your business model for good won't write itself.",
+            "you can't change the world by scrolling."
+        ]
+        case 2: return [
+            "no one builds a social enterprise by scrolling.",
+            "close this and get back to your impact work.",
+            "your social venture notes aren't going to write themselves."
+        ]
+        default: return [
+            "CLOSE THIS. open your social enterprise work.",
+            "CLOSE THIS. your mission-driven work is waiting.",
+            "CLOSE THIS. impact takes focus — give it yours."
+        ]
+        }
+    }
+
+    private func yogapilatesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your yoga teaching notes aren't going to study themselves.",
+            "you can't earn your RYT by scrolling.",
+            "your pilates certification won't come from this screen.",
+            "close this and get back to your teacher training work."
+        ]
+        case 2: return [
+            "no one earns their yoga teaching certification by scrolling.",
+            "close this and get back to your training materials.",
+            "your anatomy sequencing notes won't write themselves."
+        ]
+        default: return [
+            "CLOSE THIS. open your teacher training notes.",
+            "CLOSE THIS. your certification exam is real.",
+            "CLOSE THIS. your students deserve a prepared teacher."
+        ]
+        }
+    }
+
+    private func ayurvedicCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those doshas aren't going to study themselves.",
+            "your Ayurvedic notes won't write themselves — close this.",
+            "NAMA certification doesn't come from scrolling.",
+            "Ayurveda took thousands of years to develop — spend your hour on it."
+        ]
+        case 2: return [
+            "no one earns their Ayurvedic practitioner certificate by scrolling.",
+            "close this and get back to your Ayurveda notes.",
+            "your panchakarma protocols won't memorize themselves."
+        ]
+        default: return [
+            "CLOSE THIS. open your Ayurveda notes.",
+            "CLOSE THIS. your Ayurvedic exam is real.",
+            "CLOSE THIS. those herbal formulas need your attention."
+        ]
+        }
+    }
+
+    private func positivepsychologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "you won't flourish by scrolling — Seligman literally wrote the book on this.",
+            "your positive psychology notes aren't going to write themselves.",
+            "character strengths don't develop from a screen break.",
+            "the MAPP program is rigorous — close this and study."
+        ]
+        case 2: return [
+            "no one masters positive psychology by scrolling.",
+            "close this and get back to your well-being research.",
+            "your PERMA analysis won't write itself."
+        ]
+        default: return [
+            "CLOSE THIS. open your positive psychology notes.",
+            "CLOSE THIS. your well-being research is waiting.",
+            "CLOSE THIS. flourishing requires real effort — give it yours."
+        ]
+        }
+    }
+
+    private func policeacademyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those POST requirements aren't going to study themselves.",
+            "the police academy doesn't wait for scrollers.",
+            "your law enforcement exam prep won't happen on its own.",
+            "no one passes the peace officer exam by browsing."
+        ]
+        case 2: return [
+            "no one passes the police entrance exam by scrolling.",
+            "close this and get back to your academy prep.",
+            "your written exam notes won't write themselves."
+        ]
+        default: return [
+            "CLOSE THIS. open your law enforcement training materials.",
+            "CLOSE THIS. your police exam prep is real.",
+            "CLOSE THIS. the academy expects you prepared — start now."
         ]
         }
     }

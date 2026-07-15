@@ -3990,4 +3990,76 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 505,
                 "catalog should have ≥505 templates after architecturaldesign/historicpreservation/sustainabledesign/exhibitdesign/lightingdesign additions")
     }
+
+    // MARK: - socialentrepreneurship
+    @Test func socialentrepreneurshipTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasModel = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("social enterprise") || $0.localizedCaseInsensitiveContains("B-corp")) &&
+            ($0.localizedCaseInsensitiveContains("business model") || $0.localizedCaseInsensitiveContains("certification") || $0.localizedCaseInsensitiveContains("theory of change"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("social entrepreneurship") || $0.localizedCaseInsensitiveContains("impact investing")
+        }
+        #expect(hasModel, "catalog must include a social enterprise business model or B-corp template")
+        #expect(hasStudy, "catalog must include a social entrepreneurship or impact investing study template")
+    }
+
+    // MARK: - yogapilates
+    @Test func yogapilatesTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasYogaTeacher = tasks.contains {
+            $0.localizedCaseInsensitiveContains("yoga teacher") || $0.localizedCaseInsensitiveContains("RYT")
+        }
+        let hasPilates = tasks.contains {
+            $0.localizedCaseInsensitiveContains("Pilates") && ($0.localizedCaseInsensitiveContains("certification") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("instructor"))
+        }
+        #expect(hasYogaTeacher, "catalog must include a yoga teacher training or RYT template")
+        #expect(hasPilates, "catalog must include a Pilates certification or instructor template")
+    }
+
+    // MARK: - ayurvedic
+    @Test func ayurvedicTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAyurveda = tasks.contains {
+            $0.localizedCaseInsensitiveContains("Ayurved") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("program") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("doshas"))
+        }
+        #expect(hasAyurveda, "catalog must include an Ayurvedic exam or practitioner program template")
+    }
+
+    // MARK: - positivepsychology
+    @Test func positivepsychologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("positive psychology") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("PERMA") || $0.localizedCaseInsensitiveContains("class"))
+        }
+        let hasPaper = tasks.contains {
+            $0.localizedCaseInsensitiveContains("positive psychology") &&
+            ($0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("research") || $0.localizedCaseInsensitiveContains("assignment"))
+        }
+        #expect(hasStudy, "catalog must include a positive psychology study/exam template")
+        #expect(hasPaper, "catalog must include a positive psychology paper or research template")
+    }
+
+    // MARK: - policeacademy
+    @Test func policeacademyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("police officer") || $0.localizedCaseInsensitiveContains("POST")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("certification"))
+        }
+        let hasAcademy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("police academy") || $0.localizedCaseInsensitiveContains("law enforcement training")
+        }
+        #expect(hasExam, "catalog must include a police officer exam or POST certification template")
+        #expect(hasAcademy, "catalog must include a police academy or law enforcement training template")
+    }
+
+    // MARK: - Count guard (socialentrepreneurship/yogapilates/ayurvedic/positivepsychology/policeacademy)
+    @Test func catalogHasAtLeastFiveHundredThirteenTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 513,
+                "catalog should have ≥513 templates after socialentrepreneurship/yogapilates/ayurvedic/positivepsychology/policeacademy additions (10 templates)")
+    }
 }
