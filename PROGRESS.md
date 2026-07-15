@@ -15594,3 +15594,75 @@ None. Swift toolchain unavailable on Linux container.
   - `mechanicaldrafting` — drafting class, blueprint reading, technical drawing, CAD drafting (separate from full engineering CAD)
 - Template count: 383 → 393 after next 5-domain batch
 - Estimated test count: 12751 CalloutManagerTests + ~555 other Swift tests
+
+
+---
+
+## Run — 2026-07-15
+
+### What shipped
+**5 new keyword domains: audiology, behavioranalysis, radiationtherapy, orthotics, healthphysics**
+
+**New keyword domain — audiology:**
+- Branch positioned BEFORE `speechpathology`; catches AuD school/program/class/exam, PRAXIS audiology, audiometric testing, hearing science, hearing assessment, pure-tone/speech audiometry, cochlear implant class, vestibular courses, tinnitus management class, pediatric audiology, newborn hearing screening. Bare "hearing" alone NOT matched.
+- `audiologyCallouts(tier:)` 4/3/3: "your audiology notes aren't going to study themselves." / "audiologists don't earn their AuD by scrolling." / "CLOSE THIS. open your audiology notes."
+- 2 templates: "Study for the PRAXIS audiology exam…" (90 min, ear.fill) + "Write up my audiology clinical notes or audiology externship documentation" (30 min, waveform)
+
+**New keyword domain — behavioranalysis:**
+- Branch positioned AFTER `addictioncounseling`, BEFORE `socialwork`; catches BCBA/RBT exam, ABA therapy program/class/practicum, BACB board, verbal behavior class, behavior intervention plan, behavior support plan, FBA, discrete trial training. Bare "behavior" alone NOT matched.
+- `behavioranalysisCallouts(tier:)` 4/3/3: "those behavior protocols aren't going to write themselves." / "no one earns their BCBA by scrolling." / "CLOSE THIS. open your ABA notes."
+- 2 templates: "Complete my applied behavior analysis assignment or write a behavior intervention plan" (45 min) + "Study for the BCBA or RBT certification exam…" (60 min)
+
+**New keyword domain — radiationtherapy:**
+- Branch positioned AFTER `radiologictechnology`, BEFORE `nuclearmedtech`; catches ARRT-T, radiation therapy tech/therapist, dosimetry class/course, treatment planning class, linear accelerator/LINAC class, brachytherapy class, radiation oncology rotation, radiation therapy school/program/exam.
+- `radiationtherapyCallouts(tier:)` 4/3/3: "those treatment plans aren't going to write themselves." / "no one passes the ARRT by scrolling." / "CLOSE THIS. open your radiation therapy notes."
+- 2 templates: "Study for the ARRT radiation therapy exam…" (60 min, rays) + "Complete my radiation therapy class assignment on treatment planning or linear accelerator operation" (45 min)
+
+**New keyword domain — orthotics:**
+- Branch positioned AFTER `kinesiology`, BEFORE `pmrehabilitation`; catches CPO/CPT board exam, O&P school/program/class/exam, orthotist/prosthetist, ABC board + O&P context, NCOPE, prosthetic design/fabrication, orthotic lab, upper/lower extremity prosthetics. "physical therapy" stays in kinesiology.
+- `orthoticsCallouts(tier:)` 4/3/3: "those orthotic designs aren't going to draw themselves." / "no one earns their CPO by scrolling." / "CLOSE THIS. open your O&P notes."
+- 2 templates: "Complete my orthotics and prosthetics class assignment on device design, fabrication, or patient fitting" (45 min) + "Study for the CPO or CPT board exam…" (60 min)
+
+**New keyword domain — healthphysics:**
+- Branch positioned BEFORE `engineering`; catches CHP board exam, medical physics class/program/residency, radiation protection/safety class, shielding calculations + class/exam context, radiation safety officer program, ABHP exam, MPSE exam, radiation monitoring class, dosimetry class (guarded against radiationtherapy and nuclearmedtech contexts). Bare "physics" alone NOT matched.
+- `healthphysicsCallouts(tier:)` 4/3/3: "those shielding calculations aren't going to solve themselves." / "no one earns their CHP by scrolling." / "CLOSE THIS. open your health physics notes."
+- 2 templates: "Study for the CHP board exam or medical physics certification…" (90 min, shield.fill) + "Complete my health physics or radiation safety assignment on shielding calculations or radiation monitoring" (60 min)
+
+**New tests in CalloutManagerTests.swift (~40 new tests, 5 domains × 7–8 tests each):**
+- audiology: keyword-from-AuD, keyword-from-PRAXIS, all-tiers-non-empty, tier1-has-4, none-empty, tier3-close-this, fires-before-speechpathology
+- behavioranalysis: keyword-from-BCBA, keyword-from-ABA, all-tiers, tier1-has-4, none-empty, tier3-close-this, false-positive-bare-behavior
+- radiationtherapy: keyword-from-ARRT, keyword-from-treatment-planning, all-tiers, tier1-has-4, none-empty, tier3-close-this, fires-before-nuclearmed
+- orthotics: keyword-from-OandP, keyword-from-device-design, all-tiers, tier1-has-4, none-empty, tier3-close-this, fires-after-kinesiology
+- healthphysics: keyword-from-CHP, keyword-from-radiation-safety, all-tiers, tier1-has-4, none-empty, tier3-close-this, false-positive-general-physics
+- Count guard: `suggestedTemplatesCountAtLeast443()` checking `.all >= 443`
+
+**New tests in SuggestedSessionTemplatesTests.swift (5 domain template tests + count guard):**
+- audiologyTemplatesExist (PRAXIS exam + clinical notes)
+- behavioranalysisTemplatesExist (BIP + BCBA exam)
+- radiationtherapyTemplatesExist (ARRT exam + treatment planning)
+- orthoticsTemplatesExist (O&P assignment + CPO exam)
+- healthphysicsTemplatesExist (CHP exam + shielding assignment)
+- `catalogHasAtLeastFourHundredFortyThreeTemplates()` count guard
+
+**Template catalog: 433 → 443**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `audiology` fires BEFORE `speechpathology` (line 3808 vs 3828). "AuD school PRAXIS audiometry hearing assessment" → audiology ✓; "speech therapy SLP aphasia" → speechpathology ✓
+- `behavioranalysis` fires AFTER `addictioncounseling` (line 3702 vs 3680). "BCBA exam ABA therapy program" → behavioranalysis ✓; "social worker MSW case management" → socialwork ✓; "organizational behavior management class" → business ✓ (bare "behavior" NOT matched)
+- `radiationtherapy` fires AFTER `radiologictechnology` (line 3097 vs 3076). "ARRT-T radiation therapy dosimetry class" → radiationtherapy ✓; "ARRT radiology x-ray positioning" → radiologictechnology ✓; "nuclear medicine CNMT PET technologist" → nuclearmedtech ✓
+- `orthotics` fires AFTER `kinesiology` (line 2268 vs 2245). "CPO exam O&P prosthetics class" → orthotics ✓; "exercise physiology biomechanics kinesiology" → kinesiology ✓
+- `healthphysics` fires BEFORE `engineering` (line 952 vs 970). "CHP exam radiation protection shielding class" → healthphysics ✓; "SolidWorks mechanical engineering CAD" → engineering ✓; "quantum physics undergrad physics exam" → studying ✓ (bare "physics" NOT matched by healthphysics)
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered or thinly covered):
+  - `veterinarytechnology` — vet tech (separate from veterinary medicine DVM; catches VTNE exam, animal hospital technician, vet tech program)
+  - `dentalradiology` — dental radiography, DANB RHS exam, dental x-ray class (separate from dentalhygiene/dentalassisting)
+  - `medicalscribing` — medical scribe, AHDPG/CCM certification, physician scribing, clinical documentation
+  - `communityhealth` — community health worker/educator, CHW certification, health education, CHES exam
+  - `toxicology` — toxicology class, forensic toxicology, environmental toxicology (separate from forensicscience/environmentalhealth)
+- Template count: 443 → 453 after next 5-domain batch
+- CalloutManagerTests: ~2252 + 40 new = ~2292 tests
