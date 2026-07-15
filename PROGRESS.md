@@ -1,5 +1,73 @@
 # Adia — Build Progress
 
+## Run 343 (automated) — 2026-07-15 — 5 new keyword domains: robotics, artificialintelligence, osteopathicmedicine, epidemiology, bioethics (413→423 templates)
+
+### What shipped
+
+**New keyword domain — robotics:**
+- Branch positioned AFTER `softwaretesting`, BEFORE `gamedev`.
+- Matches: robotics class/lab/project/assignment/engineering/competition, ROS/ROS2, robot programming/software, autonomous robot, autonomous systems/vehicle/driving class, FIRST/VEX/LEGO robotics, path planning + robot/class context, SLAM + robot/class context, inverse kinematics + robot/arm, mobile robot + class context, robot kinematics/dynamics/perception/planning/control class.
+- Guard: bare "robot" or "automation" NOT matched alone.
+- `roboticsCallouts(tier:)` 4/3/3: "your robot isn't going to program itself." / "robots don't build themselves — close this and build yours." / "CLOSE THIS. open your robotics project."
+- 2 templates: "Build a robotics project or complete a robotics lab assignment using ROS or ROS2" (60 min) + "Study for my robotics exam and review autonomous systems, robot kinematics, and motion planning concepts" (60 min)
+
+**New keyword domain — artificialintelligence:**
+- Branch positioned AFTER `robotics`, BEFORE `gamedev`.
+- Matches: artificial intelligence class/course/exam/program/assignment/project/lecture/notes, AI class/course/exam, AI ethics class/course/exam/paper/essay, prompt engineering class/course/exam/assignment, LLM class/course/assignment, large language model class/course, natural language understanding class/course, AI product management/manager, responsible AI + class/course/exam/paper context, explainable AI + class/course/project context, AI safety class/course/research, AI alignment + class/course/research/paper context, AI regulation/policy + class/course/paper context, knowledge representation class, expert system + class/AI context, search/planning algorithm + AI/class context.
+- Guard: bare "ai" alone NOT matched; "machine learning"/"deep learning" stays in datascience (fires much earlier).
+- `artificialintelligenceCallouts(tier:)` 4/3/3: "your AI assignment isn't going to write itself." / "AI pioneers didn't build the field by scrolling." / "CLOSE THIS. open your AI coursework."
+- 2 templates: "Complete my artificial intelligence class assignment on search algorithms, knowledge representation, or planning" (60 min) + "Study AI ethics, responsible AI, or AI policy concepts and draft my reflection paper or case analysis" (45 min)
+
+**New keyword domain — osteopathicmedicine:**
+- Branch positioned AFTER `physicianassistant`, BEFORE `paramedicine`.
+- Matches: osteopathic medicine/medical/physician/doctor, osteopathic school/program/class/course/exam/rotation/clerkship/clinical/notes/internship/residency/assignment, DO school + osteo context, DO program + osteo context, COMLEX/COMLEX-USA/COMLEX board/level, OMM + manipulative/technique/class/course/lab/session context, osteopathic manipulative/manipulation, cranial osteopathy, counterstrain technique, muscle energy technique + osteo/OMM context, high velocity low amplitude/HVLA technique, myofascial release + osteo/OMM context, somatic dysfunction/dysfunctions, doctor of osteopathic, osteopathic medical school.
+- `osteopathicmedicineCallouts(tier:)` 4/3/3: "those COMLEX questions aren't going to answer themselves." / "osteopathic doctors don't pass COMLEX by scrolling." / "CLOSE THIS. open your COMLEX study guide."
+- 2 templates: "Study for the COMLEX exam or complete my osteopathic medicine school coursework" (90 min) + "Write up my osteopathic manipulative medicine (OMM) session notes or DO clinical rotation documentation" (30 min)
+
+**New keyword domain — epidemiology:**
+- Branch positioned BEFORE `publicheath` (intercepts epidemiology-specific terms that publicheath used to catch).
+- Matches: word("epidemiology"/"epidemiologist"/"epidemiological"), word("biostatistics"), epi methods/research, outbreak investigation/analysis, disease surveillance/data, case-control/cohort/cross-sectional study + class/course/epi/assignment context, incidence rate + class/epi context, prevalence study, epi curve, contact tracing + class/epi context, attributable/relative risk + class/epi context, odds ratio + class/epi context, epidemiology/epi class/course/exam/lab/assignment/paper/project/notes, biostatistics class/course/exam/assignment.
+- Guard: "environmental epidemiology" stays in environmentalhealth (fires before this branch).
+- `epidemiologyCallouts(tier:)` 4/3/3: "that epi analysis isn't going to write itself." / "epidemiologists don't track outbreaks by scrolling." / "CLOSE THIS. open your epi notes."
+- 2 templates: "Complete my epidemiology assignment — design a study, analyze data, or write an outbreak investigation report" (60 min) + "Study for my epidemiology or biostatistics exam and review study designs, measures of association, and epi concepts" (60 min)
+
+**New keyword domain — bioethics:**
+- Branch positioned AFTER `publichealthlaw`, BEFORE `healthcarelaw`.
+- Matches: bioethics, bio-ethics, research ethics + class/course/exam/paper/committee/IRB/board/research context, IRB protocol/submission/application/approval/review/proposal, institutional review board, human subjects research/protection/committee, clinical ethics + class/course/consultation/committee/case/paper context, ethics consultation + clinical/hospital/medical context, medical ethics paper/essay/seminar/assignment, ethics in medicine/healthcare/health care, informed consent research, research consent, beneficence/nonmaleficence + class/course/paper/ethics context, justice in healthcare, healthcare ethics, patient autonomy + class/ethics context, end-of-life/euthanasia/assisted dying ethics, stem cell/genetic/genomic ethics, principlism, four principles + bioethics context, Belmont Report, Declaration of Helsinki, Tuskegee + class/ethics/paper context, research integrity, responsible conduct of research, RCR training.
+- Guard: bare "ethics" alone NOT matched; "health law"/"HIPAA" stays in healthcarelaw (now fires after bioethics).
+- Also removed "bioethics class/course/exam" from healthcarelaw branch (now intercepted by bioethics first).
+- `bioethicsCallouts(tier:)` 4/3/3: "your IRB protocol isn't going to write itself." / "bioethicists don't resolve dilemmas by scrolling." / "CLOSE THIS. open your bioethics notes."
+- 2 templates: "Write my IRB protocol or research ethics application for my human subjects research study" (60 min) + "Analyze a bioethics case or write a medical ethics paper on informed consent, autonomy, or end-of-life care" (60 min)
+
+**Test updates:**
+- CalloutManagerTests.swift: 13341 → 13383 (+42: 8 tests per domain × 5 domains + 1 count guard 423 + 1 count guard 413 retained + fixed 2 stale tests for healthcarelaw-bioethics and emergencymanagement-epidemiology)
+- SuggestedSessionTemplatesTests.swift: 3452 → 3472 (+20: 2 template existence tests × 5 domains + count guard ≥423)
+
+**Template catalog: 413 → 423**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `robotics` fires AFTER `softwaretesting` (~line 227) and BEFORE `gamedev` (~line 287). "building a ROS2 robotics project for my autonomous systems class" → robotics ✓; "game plan for basketball" → NOT robotics ✓ (guard)
+- `artificialintelligence` fires AFTER `robotics` (~line 252) and BEFORE `gamedev` (~line 287). "completing my artificial intelligence class assignment on search algorithms" → artificialintelligence ✓; "training a machine learning model on jupyter notebook" → datascience ✓ (fires much earlier)
+- `osteopathicmedicine` fires AFTER `physicianassistant` (~line 3139) and BEFORE `paramedicine` (~line 3207). "studying for the COMLEX level 1 board exam for my DO school" → osteopathicmedicine ✓; "physical therapy gait analysis kinesiology lab" → kinesiology ✓ (fires earlier)
+- `epidemiology` fires BEFORE `publicheath` (~line 3697 vs ~line 3730). "epidemiology class assignment on case-control study design" → epidemiology ✓; "community health MPH program public health assignment" → publicheath ✓ (guard: no epi terms)
+- `bioethics` fires AFTER `publichealthlaw` (~line 4047) and BEFORE `healthcarelaw` (~line 4076 vs ~line 4108). "IRB protocol submission for human subjects research" → bioethics ✓; "health law class paper on HIPAA and patient rights" → healthcarelaw ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `blockchain` — blockchain class, smart contracts, Solidity, Ethereum, Web3 development, DeFi, NFT development class, cryptocurrency class, distributed ledger, Hyperledger
+  - `digitalmarketing` — SEO class/course, Google Analytics class, social media marketing class, content marketing class, email marketing class, PPC/SEM class, marketing analytics class, digital marketing certificate/exam
+  - `riskmanagement` — risk management class/course/exam, ERM, enterprise risk, CERM certification, risk assessment class, risk analysis class, risk modeling class, actuarial risk class (distinct from actuarial exam prep)
+  - `speechcommunication` — public speaking class, speech class, debate class, oral communication class, rhetoric class (distinct from speechpathology which handles clinical speech therapy)
+  - `horticulturetherapy` — (check if already in code; if so pick another)
+- Template count: 423 → 433 after next 5-domain batch
+- Estimated test count: ~13383 (CalloutManagerTests) + ~3472 (SuggestedSessionTemplatesTests) + ~560 other Swift tests
+
+---
+
 ## Run 342 (automated) — 2026-07-15 — 5 new keyword domains: quantumcomputing, cloudcomputing, softwaretesting, mechanicaldrafting, dataengineering (403→413 templates)
 
 ### What shipped
