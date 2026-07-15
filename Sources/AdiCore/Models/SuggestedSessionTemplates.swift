@@ -2851,5 +2851,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Health physics assignment completed (shielding calculation worked through, radiation monitoring protocol documented, or safety analysis report drafted) and saved",
             preferredDuration: 60 * 60
         ),
+        // informationsystems templates
+        SuggestedTemplate(
+            icon: "server.rack",
+            task: "Complete my MIS or information systems assignment on systems analysis, database design, or enterprise systems",
+            successCriteria: "IS assignment completed (system requirements documented, ERD or data flow diagram drafted, or SAP ERP process mapped) and saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "building.columns",
+            task: "Study for my information systems or MIS class exam and review systems analysis, data modeling, and IT governance concepts",
+            successCriteria: "At least two IS topic areas reviewed (e.g., SDLC phases, database normalization, ERP systems), practice questions attempted, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        // businessintelligence templates
+        SuggestedTemplate(
+            icon: "chart.bar.xaxis",
+            task: "Build a Tableau or Power BI dashboard for my business intelligence class or BI certification project",
+            successCriteria: "BI dashboard created or meaningfully progressed (data connected, at least two visualizations built, and key insights captured), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.line.uptrend.xyaxis",
+            task: "Study for my Tableau or Power BI certification exam and review data visualization, dashboard design, and analytics concepts",
+            successCriteria: "At least two BI topic areas studied (e.g., calculated fields, data blending, visual best practices), practice exercises completed, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        // internationalrelations templates
+        SuggestedTemplate(
+            icon: "globe",
+            task: "Write my international relations paper or analysis on foreign policy, IR theory, or global governance",
+            successCriteria: "IR paper or analysis meaningfully advanced (thesis articulated, at least two IR theories applied, and argument structured with supporting evidence) and saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "person.3.fill",
+            task: "Study for my international relations exam and review IR theory, foreign policy analysis, and global governance concepts",
+            successCriteria: "At least two IR topic areas reviewed (e.g., realism, liberalism, constructivism, international organizations), practice questions attempted, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        // publicadministration templates
+        SuggestedTemplate(
+            icon: "building.2.fill",
+            task: "Write a policy memo or public administration paper for my MPA class or public sector management course",
+            successCriteria: "Policy memo or paper meaningfully advanced (problem statement defined, policy options analyzed, at least one recommendation drafted) and saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "checkmark.seal.fill",
+            task: "Study for my civil service exam or MPA class exam and review public administration, nonprofit management, and government operations concepts",
+            successCriteria: "At least two public administration topic areas reviewed (e.g., administrative law, public budgeting, nonprofit governance), practice questions attempted, and notes updated",
+            preferredDuration: 60 * 60
+        ),
+        // laborlaw templates
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write my employment law or labor law paper analyzing NLRA, collective bargaining, or workplace discrimination law",
+            successCriteria: "Labor law paper meaningfully advanced (legal issue identified, relevant statutes and cases cited, argument structured) and saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "briefcase.fill",
+            task: "Study for my employment law or HR law class exam and review labor relations, wage and hour law, and employment discrimination concepts",
+            successCriteria: "At least two employment law topic areas reviewed (e.g., FLSA, Title VII, NLRA, FMLA), practice questions completed, and notes updated",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

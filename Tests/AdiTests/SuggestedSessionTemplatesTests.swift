@@ -3602,4 +3602,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 443,
                 "catalog should have ≥443 templates after audiology/behavioranalysis/radiationtherapy/orthotics/healthphysics additions")
     }
+
+    // MARK: - Information systems templates
+    @Test func informationsystemsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasMIS = tasks.contains { $0.localizedCaseInsensitiveContains("MIS") || ($0.localizedCaseInsensitiveContains("information systems") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("exam"))) }
+        let hasSAP = tasks.contains { $0.localizedCaseInsensitiveContains("systems analysis") || $0.localizedCaseInsensitiveContains("enterprise systems") || $0.localizedCaseInsensitiveContains("SAP") }
+        #expect(hasMIS, "catalog must include an MIS / information systems assignment or exam template")
+        #expect(hasSAP, "catalog must include a systems analysis / enterprise systems / SAP template")
+    }
+
+    // MARK: - Business intelligence templates
+    @Test func businessintelligenceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasTableau = tasks.contains { $0.localizedCaseInsensitiveContains("Tableau") || $0.localizedCaseInsensitiveContains("Power BI") }
+        let hasBICert = tasks.contains { $0.localizedCaseInsensitiveContains("business intelligence") && ($0.localizedCaseInsensitiveContains("certification") || $0.localizedCaseInsensitiveContains("dashboard")) }
+        #expect(hasTableau, "catalog must include a Tableau or Power BI template")
+        #expect(hasBICert, "catalog must include a business intelligence certification or dashboard template")
+    }
+
+    // MARK: - International relations templates
+    @Test func internationalrelationsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasIRPaper = tasks.contains { $0.localizedCaseInsensitiveContains("international relations") && ($0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("analysis")) }
+        let hasIRExam = tasks.contains { $0.localizedCaseInsensitiveContains("international relations") && $0.localizedCaseInsensitiveContains("exam") }
+        #expect(hasIRPaper, "catalog must include an international relations paper or analysis template")
+        #expect(hasIRExam, "catalog must include an international relations exam study template")
+    }
+
+    // MARK: - Public administration templates
+    @Test func publicadministrationTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasMPA = tasks.contains { $0.localizedCaseInsensitiveContains("MPA") || ($0.localizedCaseInsensitiveContains("public administration") && $0.localizedCaseInsensitiveContains("class")) }
+        let hasCivilService = tasks.contains { $0.localizedCaseInsensitiveContains("civil service") || ($0.localizedCaseInsensitiveContains("public administration") && $0.localizedCaseInsensitiveContains("exam")) }
+        #expect(hasMPA, "catalog must include an MPA class / public administration assignment template")
+        #expect(hasCivilService, "catalog must include a civil service exam / public administration exam study template")
+    }
+
+    // MARK: - Labor law templates
+    @Test func laborlawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasEmploymentLawPaper = tasks.contains { $0.localizedCaseInsensitiveContains("employment law") && ($0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("labor law")) }
+        let hasLaborExam = tasks.contains { ($0.localizedCaseInsensitiveContains("labor law") || $0.localizedCaseInsensitiveContains("employment law")) && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("class")) }
+        #expect(hasEmploymentLawPaper, "catalog must include an employment law / labor law paper template")
+        #expect(hasLaborExam, "catalog must include a labor law / employment law exam study template")
+    }
+
+    // MARK: - Count guard (batch: informationsystems/businessintelligence/internationalrelations/publicadministration/laborlaw)
+    @Test func catalogHasAtLeastFourHundredFiftyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 453,
+                "catalog should have ≥453 templates after informationsystems/businessintelligence/internationalrelations/publicadministration/laborlaw additions")
+    }
 }

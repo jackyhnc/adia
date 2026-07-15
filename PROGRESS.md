@@ -1,5 +1,74 @@
 # Adia — Build Progress
 
+## Run 345 (automated) — 2026-07-15 — 5 new keyword domains: informationsystems, businessintelligence, internationalrelations, publicadministration, laborlaw (443→453 templates)
+
+### What shipped
+
+**New keyword domain — informationsystems:**
+- Branch positioned AFTER `riskmanagement`, BEFORE `business`.
+- Matches: management information systems, MIS class/course/exam/program/degree/major/assignment, SAP ERP class/course/certification, enterprise systems class/course, enterprise resource planning class/course, systems analysis and design class/course, systems analysis/design class/exam, IT governance class/course, IT management class/course, MISA/MISE degree, word("mis") + class/course/exam/program/assignment.
+- Guard: bare word("is") or general IT coding context NOT matched.
+- `informationsystemsCallouts(tier:)` 4/3/3: "that system design isn't going to document itself." / "no one earns their MIS degree by scrolling." / "CLOSE THIS. open your systems analysis notes."
+- 2 templates: "Complete my MIS or information systems assignment on systems analysis, database design, or enterprise systems" (60 min) + "Study for my information systems or MIS class exam" (60 min)
+
+**New keyword domain — businessintelligence:**
+- Branch positioned AFTER `informationsystems`, BEFORE `business`.
+- Matches: Tableau class/course/exam/certification, Power BI class/course/certification/exam, business intelligence class/program/certification/exam/degree, Looker class/certification, Qlik/QlikView class/certification, DOMO class/certification, BI certification/tools class, data visualization class + BI context, Microsoft Power BI, BI dashboard class, reporting and analytics class, BI reporting class.
+- Guard: ML/jupyter stays in datascience (fires much earlier); ETL/Spark stays in dataengineering.
+- `businessintelligenceCallouts(tier:)` 4/3/3: "that Power BI dashboard isn't going to build itself." / "no one earns their BI certification by scrolling." / "CLOSE THIS. open your BI tools."
+- 2 templates: "Build a Tableau or Power BI dashboard for my business intelligence class" (60 min) + "Study for my Tableau or Power BI certification exam" (60 min)
+
+**New keyword domain — internationalrelations:**
+- Branch positioned BEFORE `socialscience` (which previously caught "international relations" generically).
+- Matches: international relations class/course/exam/program/major/degree/assignment/paper, IR theory/class/course/exam/major/program, foreign policy class/course/exam/analysis, diplomatic studies, diplomacy class/course, area studies class/course/program, international organizations class/course, global governance class/course, world politics class/course/exam, international security class/course, geopolitics class/course/exam, international affairs/studies class, international politics class/course, realism/liberalism/constructivism + IR/class context.
+- Guard: bare "international relations" without educational context still falls through to socialscience; generic political science/LSAT stays in socialscience.
+- "public administration" removed from socialscience condition (now owned by `publicadministration` branch).
+- `internationalrelationsCallouts(tier:)` 4/3/3: "that foreign policy analysis isn't going to write itself." / "no one passes IR theory by scrolling." / "CLOSE THIS. open your IR notes."
+- 2 templates: "Write my international relations paper or analysis on foreign policy, IR theory, or global governance" (60 min) + "Study for my international relations exam" (60 min)
+
+**New keyword domain — publicadministration:**
+- Branch positioned AFTER `theology`, BEFORE `policy`.
+- "public administration" removed from socialscience branch (intercepts with compound context before reaching socialscience).
+- Matches: public administration class/course/exam/program/degree/major/assignment/paper, word("mpa") + program/degree/class/course/exam, MPA program/degree/class, local/municipal/city government class/course/exam, nonprofit management/administration class/course/exam, public sector management class/course, administrative law class/course/exam, civil service exam/test/prep, government administration class/course, public management class/course, public budgeting/finance class/course.
+- `publicadministrationCallouts(tier:)` 4/3/3: "that policy memo isn't going to write itself." / "no one earns their MPA by scrolling." / "CLOSE THIS. open your MPA notes."
+- 2 templates: "Write a policy memo or public administration paper for my MPA class" (60 min) + "Study for my civil service exam or MPA class exam" (60 min)
+
+**New keyword domain — laborlaw:**
+- Branch positioned AFTER `paralegal`, BEFORE `legal`.
+- Matches: employment law class/course/exam/assignment/paper/analysis, labor/labour law class/course/exam/assignment/paper, NLRA/National Labor Relations Act class, collective bargaining class/course/law/agreement class, FMLA class/law/course, OSHA regulation/law/compliance class, workers' compensation law/class, HR law class/course, human resources law class, employment discrimination law/class/course, Title VII class/course/law, Americans with Disabilities Act class/ADA employment class, FLSA/Fair Labor Standards Act class/course, labor relations class/course/exam, workplace law class, employee rights law, wage and hour law class.
+- Guard: OSHA in engineering/safety context stays in industrialsafety (fires much earlier); bare "labor"/"employment" NOT matched.
+- `laborlawCallouts(tier:)` 4/3/3: "that employment law brief isn't going to write itself." / "no one passes the employment law bar by scrolling." / "CLOSE THIS. open your labor law notes."
+- 2 templates: "Write my employment law or labor law paper analyzing NLRA, collective bargaining, or workplace discrimination law" (60 min) + "Study for my employment law or HR law class exam" (60 min)
+
+**Test updates:**
+- CalloutManagerTests.swift: 14000 → 14200 approx (+40 keyword tests per 5 domains × 8 tests + count guard ≥453)
+- SuggestedSessionTemplatesTests.swift: 3605 → 3660 approx (+10 template existence tests + count guard ≥453)
+
+**Template catalog: 443 → 453**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `informationsystems` fires AFTER `riskmanagement` (~line 1318) and BEFORE `business` (~line 1342+50). "completing my MIS class assignment on systems analysis and database design" → informationsystems ✓; "writing a python script for IT project" → NOT informationsystems ✓ (guard: no MIS/IS compound)
+- `businessintelligence` fires AFTER `informationsystems`, BEFORE `business`. "studying for my Tableau certification exam" → businessintelligence ✓; "training a machine learning model on jupyter" → datascience ✓ (fires much earlier)
+- `internationalrelations` fires BEFORE `socialscience` (~line 4249 vs ~line 4282). "writing my international relations class paper on IR theory and foreign policy" → internationalrelations ✓; "studying political science and LSAT for pre-law" → socialscience ✓ (guard: no class/IR compound)
+- `publicadministration` fires AFTER `theology` and BEFORE `policy` (~line 4348 vs ~line 4371). "completing my MPA class assignment on public administration and nonprofit management" → publicadministration ✓; "writing a health policy brief" → policy ✓ (bare policy brief → policy branch)
+- `laborlaw` fires AFTER `paralegal` and BEFORE `legal` (~line 4565 vs ~line 4583). "writing a paper for my employment law class on Title VII and employment discrimination" → laborlaw ✓; "OSHA safety standards for mechanical engineering lab" → engineering ✓ (fires much earlier)
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `informationassurance` — information assurance class, IA certification, CISSP in academic context (distinct from cybersecurity which handles pentesting/SOC), security architecture class
+  - `sportsmedicinestrength` — strength and conditioning certification, CSCS exam prep (currently might fall into kinesiology — verify)
+  - `healthinformatics` — health informatics class (currently in healthcareadmin via EHR/RHIA), PHR/SPHR exam (HR certification distinct from laborlaw)
+  - `organizationalbehavior` — OB class, organizational behavior course, org theory, change management class (distinct from business/management which catches MBA-level terms)
+  - `crossculturalcommunication` — intercultural communication class (currently in communicationstudies?), cultural competency class, study abroad prep
+- Template count: 453 → 463 after next 5-domain batch
+- Estimated test count: ~14200 (CalloutManagerTests) + ~3660 (SuggestedSessionTemplatesTests) + ~560 other Swift tests
+
+---
+
 ## Run 344 (automated) — 2026-07-15 — 5 new keyword domains: blockchain, digitalmarketing, projectmanagement, riskmanagement, speechcommunication (423→433 templates)
 
 ### What shipped

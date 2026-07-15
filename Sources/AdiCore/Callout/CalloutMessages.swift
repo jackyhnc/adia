@@ -288,6 +288,11 @@ extension CalloutManager {
         case "radiationtherapy":           return radiationtherapyCallouts(tier: tier)
         case "orthotics":                  return orthoticsCallouts(tier: tier)
         case "healthphysics":              return healthphysicsCallouts(tier: tier)
+        case "informationsystems":         return informationsystemsCallouts(tier: tier)
+        case "businessintelligence":       return businessintelligenceCallouts(tier: tier)
+        case "internationalrelations":     return internationalrelationsCallouts(tier: tier)
+        case "publicadministration":       return publicadministrationCallouts(tier: tier)
+        case "laborlaw":                   return laborlawCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -5315,6 +5320,111 @@ extension CalloutManager {
             "CLOSE THIS. open your health physics notes.",
             "no one masters medical physics by browsing.",
             "CLOSE THIS. get back to your health physics assignment.",
+        ]
+        }
+    }
+
+    private func informationsystemsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that system design isn't going to document itself.",
+            "get back to your MIS assignment.",
+            "close this and open your systems analysis notes.",
+            "your IS exam prep won't do itself.",
+        ]
+        case 2: return [
+            "no one earns their MIS degree by scrolling.",
+            "your ERD isn't going to draw itself — close this.",
+            "stop avoiding your information systems coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your systems analysis notes.",
+            "no one masters enterprise systems by browsing.",
+            "CLOSE THIS. get back to your MIS assignment.",
+        ]
+        }
+    }
+
+    private func businessintelligenceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that Power BI dashboard isn't going to build itself.",
+            "get back to your BI assignment.",
+            "close this and open your Tableau project.",
+            "your BI certification prep won't do itself.",
+        ]
+        case 2: return [
+            "no one earns their BI certification by scrolling.",
+            "your dashboard isn't going to design itself — close this.",
+            "stop avoiding your business intelligence coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your BI tools.",
+            "no one masters Tableau or Power BI by browsing.",
+            "CLOSE THIS. get back to your BI project.",
+        ]
+        }
+    }
+
+    private func internationalrelationsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that foreign policy analysis isn't going to write itself.",
+            "get back to your IR assignment.",
+            "close this and open your international relations notes.",
+            "your IR exam prep won't do itself.",
+        ]
+        case 2: return [
+            "no one passes IR theory by scrolling.",
+            "your foreign policy paper isn't going to write itself — close this.",
+            "stop avoiding your international relations coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your IR notes.",
+            "no one masters global governance by browsing.",
+            "CLOSE THIS. get back to your international relations assignment.",
+        ]
+        }
+    }
+
+    private func publicadministrationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that policy memo isn't going to write itself.",
+            "get back to your MPA assignment.",
+            "close this and open your public administration notes.",
+            "your civil service exam prep won't do itself.",
+        ]
+        case 2: return [
+            "no one earns their MPA by scrolling.",
+            "your policy analysis isn't going to write itself — close this.",
+            "stop avoiding your public administration coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your MPA notes.",
+            "no one masters public sector management by browsing.",
+            "CLOSE THIS. get back to your public administration assignment.",
+        ]
+        }
+    }
+
+    private func laborlawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that employment law brief isn't going to write itself.",
+            "get back to your labor law assignment.",
+            "close this and open your employment law notes.",
+            "your HR law exam prep won't do itself.",
+        ]
+        case 2: return [
+            "no one passes the employment law bar by scrolling.",
+            "your collective bargaining analysis isn't going to write itself — close this.",
+            "stop avoiding your labor law coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your labor law notes.",
+            "no one masters employment law by browsing.",
+            "CLOSE THIS. get back to your labor law assignment.",
         ]
         }
     }

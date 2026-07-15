@@ -1317,6 +1317,51 @@ public final class CalloutManager {
             || lower.contains("iso 31000") && (lower.contains("class") || lower.contains("assignment") || lower.contains("exam")) {
             return "riskmanagement"
         }
+        // informationsystems — positioned AFTER riskmanagement and BEFORE business so MIS programs,
+        // SAP ERP class, systems analysis and design, and enterprise systems courses route here.
+        // Distinct from pure coding (handled far earlier) and generic business management.
+        // Bare word("is") alone NOT matched — compound context required.
+        if lower.contains("management information systems")
+            || lower.contains("mis program") || lower.contains("mis class") || lower.contains("mis course")
+            || lower.contains("mis degree") || lower.contains("mis major") || lower.contains("mis exam")
+            || lower.contains("mis assignment")
+            || lower.contains("information systems class") || lower.contains("information systems course")
+            || lower.contains("information systems exam") || lower.contains("information systems program")
+            || lower.contains("information systems major") || lower.contains("information systems degree")
+            || lower.contains("information systems assignment") || lower.contains("information systems project")
+            || lower.contains("sap erp class") || lower.contains("sap erp course") || lower.contains("sap erp certification")
+            || lower.contains("enterprise systems class") || lower.contains("enterprise systems course")
+            || lower.contains("enterprise resource planning class") || lower.contains("enterprise resource planning course")
+            || lower.contains("systems analysis and design class") || lower.contains("systems analysis and design course")
+            || lower.contains("systems analysis class") || lower.contains("systems analysis course")
+            || lower.contains("systems analysis exam") || lower.contains("systems design class")
+            || lower.contains("it governance class") || lower.contains("it governance course")
+            || lower.contains("it management class") || lower.contains("it management course")
+            || lower.contains("misa degree") || lower.contains("mise degree")
+            || word("mis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program") || lower.contains("assignment")) {
+            return "informationsystems"
+        }
+        // businessintelligence — positioned AFTER informationsystems and BEFORE business so Tableau,
+        // Power BI, and BI certification programs route here. Distinct from datascience (ML/Python/Jupyter)
+        // and dataengineering (ETL/Spark/Airflow). Bare "data visualization" stays in datascience
+        // unless explicitly combined with a BI tool or BI program context.
+        if lower.contains("tableau class") || lower.contains("tableau course") || lower.contains("tableau exam")
+            || lower.contains("tableau certification")
+            || lower.contains("power bi class") || lower.contains("power bi course")
+            || lower.contains("power bi certification") || lower.contains("power bi exam")
+            || lower.contains("business intelligence class") || lower.contains("business intelligence course")
+            || lower.contains("business intelligence program") || lower.contains("business intelligence certification")
+            || lower.contains("business intelligence exam") || lower.contains("business intelligence degree")
+            || lower.contains("looker class") || lower.contains("looker certification")
+            || lower.contains("qlik class") || lower.contains("qlikview class") || lower.contains("qlik certification")
+            || lower.contains("domo class") || lower.contains("domo certification")
+            || lower.contains("bi certification") || lower.contains("bi tools class") || lower.contains("bi tools course")
+            || lower.contains("data visualization class") && (lower.contains("bi") || lower.contains("tableau") || lower.contains("power bi") || lower.contains("business intelligence"))
+            || lower.contains("reporting and analytics class") || lower.contains("reporting and analytics course")
+            || lower.contains("microsoft power bi")
+            || lower.contains("bi dashboard class") || lower.contains("bi reporting class") {
+            return "businessintelligence"
+        }
         // business/management — positioned before research so "marketing research" and "market analysis"
         // route here rather than the generic research pool. Startup branch above already catches
         // "business plan", "pitch deck", and "business model" before this point.
@@ -4176,15 +4221,43 @@ public final class CalloutManager {
             || lower.contains("cultural studies course") || lower.contains("cultural studies exam") {
             return "ethnicstudies"
         }
+        // internationalrelations — positioned BEFORE socialscience (which caught "international relations"
+        // generically) so IR theory, foreign policy, diplomatic studies, and global governance courses
+        // get their own pool. Bare "international relations" without educational context still falls
+        // through to socialscience; compound educational phrases route here.
+        if lower.contains("international relations class") || lower.contains("international relations course")
+            || lower.contains("international relations exam") || lower.contains("international relations program")
+            || lower.contains("international relations major") || lower.contains("international relations degree")
+            || lower.contains("international relations assignment") || lower.contains("international relations paper")
+            || lower.contains("ir theory") || lower.contains("ir class") || lower.contains("ir course")
+            || lower.contains("ir exam") || lower.contains("ir major") || lower.contains("ir program")
+            || lower.contains("foreign policy class") || lower.contains("foreign policy course")
+            || lower.contains("foreign policy exam") || lower.contains("foreign policy analysis")
+            || lower.contains("diplomatic studies") || lower.contains("diplomacy class") || lower.contains("diplomacy course")
+            || lower.contains("area studies class") || lower.contains("area studies course") || lower.contains("area studies program")
+            || lower.contains("international organizations class") || lower.contains("international organizations course")
+            || lower.contains("global governance class") || lower.contains("global governance course")
+            || lower.contains("world politics class") || lower.contains("world politics course") || lower.contains("world politics exam")
+            || lower.contains("international security class") || lower.contains("international security course")
+            || lower.contains("geopolitics class") || lower.contains("geopolitics course") || lower.contains("geopolitics exam")
+            || lower.contains("international affairs class") || lower.contains("international affairs course")
+            || lower.contains("international studies class") || lower.contains("international studies program")
+            || lower.contains("international politics class") || lower.contains("international politics course")
+            || lower.contains("realism") && (lower.contains("ir") || lower.contains("international relations") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("liberalism") && (lower.contains("ir") || lower.contains("international relations") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("constructivism") && (lower.contains("ir") || lower.contains("international relations") || lower.contains("class") || lower.contains("course")) {
+            return "internationalrelations"
+        }
         // socialscience — positioned after criminaljustice (which now owns criminology/criminal justice)
         // and before legal (LSAT is pre-law, not a bar-exam term). "social work" routes to socialwork.
+        // "public administration" now has its own branch below (fires between theology and policy).
         // Note: word("sociology") is already in the studying branch — not repeated here.
         if lower.contains("political science") || lower.contains("poli sci")
             || word("anthropology") || word("anthropological")
             || lower.contains("ethnography") || lower.contains("ethnographic")
             || word("lsat")
             || lower.contains("pre-law") || word("prelaw")
-            || lower.contains("public policy") || lower.contains("public administration")
+            || lower.contains("public policy")
             || lower.contains("comparative politics") || lower.contains("international relations") {
             return "socialscience"
         }
@@ -4252,9 +4325,30 @@ public final class CalloutManager {
             || lower.contains("liturgy") || word("liturgical") {
             return "theology"
         }
-        // policy — positioned after socialscience (which owns "public policy"/"public administration")
-        // and before legal (which catches bare `word("brief")`). This intercepts "policy brief" and
-        // "legislative brief" before legal's `word("brief")` fires.
+        // publicadministration — positioned AFTER theology and BEFORE policy so MPA programs,
+        // local government courses, and nonprofit management classes route here. Distinct from
+        // "public policy" (which stays in the policy branch) and the former "public administration"
+        // catch in socialscience (now removed from that branch).
+        if lower.contains("public administration class") || lower.contains("public administration course")
+            || lower.contains("public administration exam") || lower.contains("public administration program")
+            || lower.contains("public administration degree") || lower.contains("public administration major")
+            || lower.contains("public administration assignment") || lower.contains("public administration paper")
+            || word("mpa") && (lower.contains("program") || lower.contains("degree") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("mpa program") || lower.contains("mpa degree") || lower.contains("mpa class")
+            || lower.contains("local government class") || lower.contains("local government course") || lower.contains("local government exam")
+            || lower.contains("municipal government class") || lower.contains("city government class")
+            || lower.contains("nonprofit management class") || lower.contains("nonprofit management course") || lower.contains("nonprofit management exam")
+            || lower.contains("nonprofit administration class") || lower.contains("nonprofit administration course")
+            || lower.contains("public sector management class") || lower.contains("public sector management course")
+            || lower.contains("administrative law class") || lower.contains("administrative law course") || lower.contains("administrative law exam")
+            || lower.contains("civil service exam") || lower.contains("civil service test") || lower.contains("civil service prep")
+            || lower.contains("government administration class") || lower.contains("government administration course")
+            || lower.contains("public management class") || lower.contains("public management course")
+            || lower.contains("public budgeting class") || lower.contains("public finance class") || lower.contains("public finance course") {
+            return "publicadministration"
+        }
+        // policy — positioned after socialscience and publicadministration, before legal. This
+        // intercepts "policy brief" and "legislative brief" before legal's `word("brief")` fires.
         if lower.contains("policy memo") || lower.contains("policy memos")
             || lower.contains("policy brief") || lower.contains("policy briefs")
             || lower.contains("regulatory analysis")
@@ -4443,6 +4537,32 @@ public final class CalloutManager {
             || lower.contains("litigation support class") || lower.contains("e-discovery class")
             || lower.contains("legal technology class") && lower.contains("paralegal") {
             return "paralegal"
+        }
+        // laborlaw — positioned AFTER paralegal and BEFORE legal so employment law class, labor law
+        // class, and HR law courses route here. "OSHA" in an engineering/safety context stays in
+        // industrialsafety (fires much earlier). Bare "labor" or "employment" alone NOT matched.
+        if lower.contains("employment law class") || lower.contains("employment law course")
+            || lower.contains("employment law exam") || lower.contains("employment law assignment")
+            || lower.contains("employment law paper") || lower.contains("employment law analysis")
+            || lower.contains("labor law class") || lower.contains("labour law class")
+            || lower.contains("labor law course") || lower.contains("labour law course")
+            || lower.contains("labor law exam") || lower.contains("labour law exam")
+            || lower.contains("labor law assignment") || lower.contains("labor law paper")
+            || lower.contains("nlra class") || lower.contains("national labor relations act")
+            || lower.contains("collective bargaining class") || lower.contains("collective bargaining course")
+            || lower.contains("collective bargaining law") || lower.contains("collective bargaining agreement class")
+            || lower.contains("fmla class") || lower.contains("fmla law") || lower.contains("fmla course")
+            || lower.contains("osha regulation class") || lower.contains("osha law class") || lower.contains("osha compliance class")
+            || lower.contains("workers compensation law") || lower.contains("workers' compensation law") || lower.contains("workers comp law class")
+            || lower.contains("hr law class") || lower.contains("hr law course") || lower.contains("human resources law class")
+            || lower.contains("employment discrimination law") || lower.contains("employment discrimination class")
+            || lower.contains("employment discrimination course")
+            || lower.contains("title vii class") || lower.contains("title vii course") || lower.contains("title vii law")
+            || lower.contains("americans with disabilities act class") || lower.contains("ada employment class")
+            || lower.contains("flsa class") || lower.contains("fair labor standards act class") || lower.contains("fair labor standards act course")
+            || lower.contains("labor relations class") || lower.contains("labor relations course") || lower.contains("labor relations exam")
+            || lower.contains("workplace law class") || lower.contains("employee rights law") || lower.contains("wage and hour law class") {
+            return "laborlaw"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")
