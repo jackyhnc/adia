@@ -1,5 +1,80 @@
 # Adia — Build Progress
 
+## Run 341 (automated) — 2026-07-15 — Agricultural science + textiles/fiber arts + geography + child life + quality management keyword domains (2215→~2245 tests approx, 393→403 templates)
+
+### Shipped
+
+**Agricultural Science keyword domain:**
+- `agriculturalscience` branch positioned AFTER soilscience (pedology-specific terms fire first) and BEFORE geographyearthed/geology.
+- Matches: word("agronomy"/"agronomist"/"agronomists"), crop science, crop production class/course/exam, crop management class/course, crop physiology, plant breeding class/course/program, precision agriculture/farming, agricultural science class/course/exam/program/major/degree, agri-science class/course, agriculture class + (exam/lab/assignment/program), agronomy class/course/exam/program, soil fertility class/course/exam, field crop class/course/exam/lab, grain crop class/course/exam, oilseed crop, forage crop class/course, cover crop management class/course, farm management class/course/exam/program, agricultural extension class/course/program/exam, cooperative extension class.
+- Guard: bare "agriculture" alone NOT matched; educational/professional context required. "soil science" stays in soilscience.
+- `agriculturalscienceCallouts(tier:)` 4/3/3: "those agronomy questions aren't going to answer themselves." / "agronomists don't master crop science by scrolling." / "CLOSE THIS. open your agronomy study guide."
+- 2 templates: "Complete my agricultural science assignment on agronomy, crop production, or precision agriculture" (60 min) + "Study for my agronomy exam and review crop science, soil fertility, and field crop management principles" (60 min)
+
+**Textiles/Fiber Arts keyword domain:**
+- `textilesfashion` branch positioned BEFORE fashiondesign so fiber arts, hand weaving, and textile engineering programs route here. "textile design" in fashion context still goes to fashiondesign (fires next).
+- Matches: fiber arts/fibre arts, hand/loom/tapestry weaving, weaving class/course/program/exam/studio/assignment, natural/fabric/textile/fiber/indigo dyeing, fiber/yarn/wool spinning, spinning wheel/class/course/program, drop spindle, textile engineering/science, textile technology/chemistry/manufacturing class/course/program/exam, textile structure class/lab, knitting/crochet/macramé class + program/studio/course/exam context, surface design class/course.
+- Guard: "textile design" in fashion-school context stays in fashiondesign (fires after this). Bare "sewing" NOT matched.
+- `textilesfashionCallouts(tier:)` 4/3/3: "those fiber arts techniques aren't going to master themselves." / "weavers don't master their craft by scrolling." / "CLOSE THIS. get back to your weaving studio."
+- 2 templates: fiber arts/weaving/natural dyeing studio (60 min) + textile science/textile engineering assignment (45 min)
+
+**Geography keyword domain:**
+- `geographyearthed` branch positioned AFTER agriculturalscience, BEFORE geology. GIS tools stay in geospatial (fires much earlier).
+- Matches: human/physical/cultural/political/economic/regional geography, world geography class/course/exam/program/notes/assignment, AP Geography/AP Human Geography/AP Physical Geography, geography class/course/exam/assignment/major/degree/program/notes, urban/rural/population geography, biogeography class/course/exam, climate geography, place-based geography, geographic fieldwork, geography field trip, "geo class" (guarded against geoscience/geology).
+- Guard: bare word("geography") alone NOT matched; educational context required. "gis mapping"/"gis analysis" stays in geospatial.
+- `geographyearthedCallouts(tier:)` 4/3/3: "those geography concepts aren't going to memorize themselves." / "geographers don't understand place by scrolling." / "CLOSE THIS. open your geography study guide."
+- 2 templates: AP Human Geography exam review (60 min) + geography class assignment on human/cultural geography (45 min)
+
+**Child Life keyword domain:**
+- `childlife` branch positioned BEFORE musictherapy, AFTER nursing so child life specialist, CCLS board exam, and pediatric hospital child life tasks route here.
+- Matches: child life specialist/therapy/program/class/course/exam/internship/clinical/certification/notes/assignment/school, word("ccls") + (exam/board/certification/prep/credential/study) context, word("aclp") + (child/life/certification) context, therapeutic play + (child/hospital/pediatric/specialist) context, hospital/pediatric child life, child life session notes/treatment plan/case study.
+- Guard: "pediatric nursing" stays in nursing (fires earlier). Bare "pediatric" NOT matched alone.
+- `childlifeCallouts(tier:)` 4/3/3: "those CCLS exam questions aren't going to answer themselves." / "child life specialists don't get certified by scrolling." / "CLOSE THIS. open your child life certification study guide."
+- 2 templates: CCLS board exam or child life certification study (90 min) + child life session notes or therapeutic play treatment plan (45 min)
+
+**Quality Management keyword domain:**
+- `qualitymanagement` branch positioned BEFORE supplychain (which owns six sigma/lean) and BEFORE business.
+- Matches: word("cqe") + ASQ/exam/certification/board/prep/study/quality context, word("asq") + quality/certification/exam/audit context, ISO 9001/14001/45001, QMS audit/class/course, quality assurance/control/engineering class/course/exam/program, SPC class/course/lab, process improvement class/course, FMEA + class/assignment context, DOE/design of experiments class/course, TQM class/course, total quality management, quality/internal audit class/course, CMQ/OE/CQE exam, quality management class/course/exam/program.
+- Guard: "six sigma class" and "lean six sigma" remain in supplychain. Bare "quality" NOT matched.
+- `qualitymanagementCallouts(tier:)` 4/3/3: "those CQE exam questions aren't going to answer themselves." / "quality engineers don't earn their certification by scrolling." / "CLOSE THIS. open your CQE exam study guide."
+- 2 templates: ASQ CQE exam study on SPC or ISO auditing (90 min) + quality management ISO 9001 assignment (60 min)
+
+**Tests:**
+- CalloutManagerTests.swift: ~2215→~2245 (+30: 6 per domain × 5 domains; count guard updated to ≥403)
+- SuggestedSessionTemplatesTests.swift: +12 template tests (2 per domain + new ≥403 count guard)
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- "working on agronomy and crop science for my farm management program" → agriculturalscience ✓ (word("agronomy") fires before studying branch)
+- "precision agriculture techniques and crop production class on field crop management" → agriculturalscience ✓ (lower.contains("precision agriculture"))
+- "soil science taxonomy" → soilscience ✓ (fires before agriculturalscience)
+- "fiber arts hand weaving tapestry project with natural dyeing on the loom" → textilesfashion ✓ (lower.contains("fiber arts"))
+- "textile engineering class on fabric structure and textile dyeing methods" → textilesfashion ✓
+- "fashion school textile design project" → fashiondesign ✓ (textilesfashion doesn't match "textile design" alone; fashiondesign fires next)
+- "ap human geography review on cultural patterns and regional geography" → geographyearthed ✓ (lower.contains("ap human geography"))
+- "physical geography class on biogeography and climate geography" → geographyearthed ✓ (lower.contains("physical geography"); "physical" ≠ word("physics"))
+- "ccls board certification for child life specialist program" → childlife ✓ (word("ccls") && lower.contains("board"))
+- "child life specialist session plan and therapeutic play for pediatric hospital internship" → childlife ✓
+- "asq cqe certification quality management system and statistical process control class" → qualitymanagement ✓ (word("cqe") fires before supplychain/business)
+- "iso 9001 quality management class on quality assurance and audit process" → qualitymanagement ✓
+- All 5 tier-3 pools contain "CLOSE THIS" or "no one" ✓; all tier-1 pools have ≥4 messages ✓
+- Template count: 403 ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good remaining candidates:
+  - `anthropologyarchaeology` — cultural anthropology, archaeology, ethnography (currently routes to socialscience via word("anthropology"); could be split as a dedicated domain for anthropology majors doing fieldwork/lab analysis). NOTE: socialscience already has word("anthropology") so would need to remove that from socialscience and add before it.
+  - `foodsciencenutrition` — food science (distinct from culinary/foodsafety; food chemistry, food microbiology, food processing engineering, IFT membership)
+  - `environmentalscience` — environmental science programs (distinct from enviro which catches broad ecology; this for ES degrees, NEPA, EIS, environmental impact)
+  - `kineticsenergysystems` — energy systems engineering, renewable energy, solar/wind energy class (distinct from engineering which is broad)
+  - `statisticsadvanced` — probability theory, Bayesian statistics, R/Python stats, biostatistics class (distinct from the generic "statistics" word which routes to studying)
+- Template count: 403 → 413 after next 5-domain batch (2 templates per domain)
+- Estimated test count: ~2245 + ~30 (5 domains × 6 tests) = ~2275 CalloutManagerTests
+
+---
+
 ## Run 340 (automated) — 2026-07-15 — Construction technology + urban design + ceramics/sculpture + exercise science + biochemistry keyword domains (2185→2215 tests approx, 383→393 templates)
 
 ### Shipped

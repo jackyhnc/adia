@@ -12929,8 +12929,193 @@ struct CalloutManagerTests {
         }
     }
 
+    // MARK: - agriculturalscience keyword tests
+    @Test func agriculturalscienceKeywordFromAgronomy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "working on agronomy and crop science for my farm management program") == "agriculturalscience")
+    }
+    @Test func agriculturalscienceKeywordFromPrecisionAgriculture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "precision agriculture techniques and crop production class on field crop management") == "agriculturalscience")
+    }
+    @Test func agriculturalscienceCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "agriculturalscience", tier: tier)
+                #expect(!msgs.isEmpty, "agriculturalscience tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func agriculturalscienceCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "agriculturalscience", tier: 1)
+            #expect(msgs.count >= 4, "agriculturalscience tier1 must have ≥4 messages")
+        }
+    }
+    @Test func agriculturalscienceCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "agriculturalscience", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "agriculturalscience tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func agriculturalscienceCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "agriculturalscience", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "agriculturalscience tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - textilesfashion keyword tests
+    @Test func textilesfashionKeywordFromFiberArts() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fiber arts hand weaving tapestry project with natural dyeing on the loom") == "textilesfashion")
+    }
+    @Test func textilesfashionKeywordFromTextileEngineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "textile engineering class on fabric structure and textile dyeing methods") == "textilesfashion")
+    }
+    @Test func textilesfashionCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "textilesfashion", tier: tier)
+                #expect(!msgs.isEmpty, "textilesfashion tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func textilesfashionCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "textilesfashion", tier: 1)
+            #expect(msgs.count >= 4, "textilesfashion tier1 must have ≥4 messages")
+        }
+    }
+    @Test func textilesfashionCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "textilesfashion", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "textilesfashion tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func textilesfashionCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "textilesfashion", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "textilesfashion tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - geographyearthed keyword tests
+    @Test func geographyearthedKeywordFromAPHumanGeography() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ap human geography review on cultural patterns and regional geography") == "geographyearthed")
+    }
+    @Test func geographyearthedKeywordFromPhysicalGeography() {
+        #expect(CalloutManager.extractTaskKeyword(from: "physical geography class on biogeography and climate geography") == "geographyearthed")
+    }
+    @Test func geographyearthedCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geographyearthed", tier: tier)
+                #expect(!msgs.isEmpty, "geographyearthed tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func geographyearthedCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geographyearthed", tier: 1)
+            #expect(msgs.count >= 4, "geographyearthed tier1 must have ≥4 messages")
+        }
+    }
+    @Test func geographyearthedCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geographyearthed", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "geographyearthed tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func geographyearthedCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "geographyearthed", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "geographyearthed tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - childlife keyword tests
+    @Test func childlifeKeywordFromCCLS() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ccls board certification for child life specialist program") == "childlife")
+    }
+    @Test func childlifeKeywordFromChildLifeSpecialist() {
+        #expect(CalloutManager.extractTaskKeyword(from: "child life specialist session plan and therapeutic play for pediatric hospital internship") == "childlife")
+    }
+    @Test func childlifeCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "childlife", tier: tier)
+                #expect(!msgs.isEmpty, "childlife tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func childlifeCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "childlife", tier: 1)
+            #expect(msgs.count >= 4, "childlife tier1 must have ≥4 messages")
+        }
+    }
+    @Test func childlifeCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "childlife", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "childlife tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func childlifeCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "childlife", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "childlife tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
+    // MARK: - qualitymanagement keyword tests
+    @Test func qualitymanagementKeywordFromCQE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "asq cqe certification quality management system and statistical process control class") == "qualitymanagement")
+    }
+    @Test func qualitymanagementKeywordFromISO9001() {
+        #expect(CalloutManager.extractTaskKeyword(from: "iso 9001 quality management class on quality assurance and audit process") == "qualitymanagement")
+    }
+    @Test func qualitymanagementCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "qualitymanagement", tier: tier)
+                #expect(!msgs.isEmpty, "qualitymanagement tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func qualitymanagementCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "qualitymanagement", tier: 1)
+            #expect(msgs.count >= 4, "qualitymanagement tier1 must have ≥4 messages")
+        }
+    }
+    @Test func qualitymanagementCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "qualitymanagement", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "qualitymanagement tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func qualitymanagementCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "qualitymanagement", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "qualitymanagement tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+
     // MARK: - Template count guard
-    @Test func suggestedTemplatesCountAtLeast393() {
-        #expect(SuggestedSessionTemplates.all.count >= 393, "template catalog must have ≥393 entries after adding 5 new domains (10 templates)")
+    @Test func suggestedTemplatesCountAtLeast403() {
+        #expect(SuggestedSessionTemplates.all.count >= 403, "template catalog must have ≥403 entries after adding 5 new domains (10 templates)")
     }
 }

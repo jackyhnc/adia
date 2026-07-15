@@ -445,6 +445,59 @@ public final class CalloutManager {
             || lower.contains("soil science degree") {
             return "soilscience"
         }
+        // agriculturalscience — positioned AFTER soilscience (soil-science-specific pedology terms fire
+        // first) and BEFORE geology so agronomy, crop science, and precision agriculture coursework
+        // routes here. Bare "agriculture" alone NOT matched; educational/professional context required.
+        if word("agronomy") || word("agronomist") || word("agronomists")
+            || lower.contains("crop science") || lower.contains("crop production class")
+            || lower.contains("crop production course") || lower.contains("crop production exam")
+            || lower.contains("crop management class") || lower.contains("crop management course")
+            || lower.contains("crop physiology") || lower.contains("plant breeding class")
+            || lower.contains("plant breeding course") || lower.contains("plant breeding program")
+            || lower.contains("precision agriculture") || lower.contains("precision farming")
+            || lower.contains("agricultural science class") || lower.contains("agricultural science course")
+            || lower.contains("agricultural science exam") || lower.contains("agricultural science program")
+            || lower.contains("agricultural science major") || lower.contains("agricultural science degree")
+            || lower.contains("agri-science class") || lower.contains("agri-science course")
+            || lower.contains("agriculture class") && (lower.contains("exam") || lower.contains("lab") || lower.contains("assignment") || lower.contains("program"))
+            || lower.contains("agriculture exam") || lower.contains("agriculture lab")
+            || lower.contains("agronomy class") || lower.contains("agronomy course")
+            || lower.contains("agronomy exam") || lower.contains("agronomy program")
+            || lower.contains("soil fertility class") || lower.contains("soil fertility course")
+            || lower.contains("soil fertility exam")
+            || lower.contains("field crop") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("grain crop") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("oilseed crop") || lower.contains("forage crop") && (lower.contains("class") || lower.contains("course"))
+            || lower.contains("cover crop management class") || lower.contains("cover crop management course")
+            || lower.contains("farm management class") || lower.contains("farm management course")
+            || lower.contains("farm management exam") || lower.contains("farm management program")
+            || lower.contains("agricultural extension") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("exam"))
+            || lower.contains("cooperative extension class") || lower.contains("extension agriculture") {
+            return "agriculturalscience"
+        }
+        // geographyearthed — positioned BEFORE geology so AP Human/Physical Geography and world
+        // geography coursework gets a dedicated pool. GIS tools stay in geospatial (fires earlier).
+        // Bare word("geography") alone NOT matched; educational context required.
+        if lower.contains("human geography") || lower.contains("physical geography")
+            || lower.contains("cultural geography") || lower.contains("political geography")
+            || lower.contains("economic geography") || lower.contains("regional geography")
+            || lower.contains("world geography class") || lower.contains("world geography course")
+            || lower.contains("world geography exam") || lower.contains("world geography program")
+            || lower.contains("world geography notes") || lower.contains("world geography assignment")
+            || lower.contains("ap geography") || lower.contains("ap human geography")
+            || lower.contains("ap physical geography")
+            || lower.contains("geography class") || lower.contains("geography course")
+            || lower.contains("geography exam") || lower.contains("geography assignment")
+            || lower.contains("geography major") || lower.contains("geography degree")
+            || lower.contains("geography program") || lower.contains("geography notes")
+            || lower.contains("urban geography") || lower.contains("rural geography")
+            || lower.contains("population geography") || lower.contains("biogeography class")
+            || lower.contains("biogeography course") || lower.contains("biogeography exam")
+            || lower.contains("climate geography") || lower.contains("place-based geography")
+            || lower.contains("geographic fieldwork") || lower.contains("geography field trip")
+            || lower.contains("geo class") && !lower.contains("geoscience") && !lower.contains("geology") {
+            return "geographyearthed"
+        }
         // geology — positioned before engineering so "geology lab" and earth-science field tasks
         // don't fall through to engineering or research via word("lab").
         // "geography" alone does NOT fire here (stays in studying/socialscience).
@@ -959,6 +1012,35 @@ public final class CalloutManager {
             || lower.contains("floral design exam") || lower.contains("floral design certification") {
             return "floristryweddingplanning"
         }
+        // qualitymanagement — positioned BEFORE supplychain (which owns six sigma/lean) and BEFORE
+        // business so ISO auditing, CQE exam prep, and quality systems coursework gets a dedicated
+        // pool. "six sigma class" and "lean six sigma" remain in supplychain. Bare "quality" NOT matched.
+        if word("cqe") && (lower.contains("exam") || lower.contains("certification") || lower.contains("board") || lower.contains("asq") || lower.contains("prep") || lower.contains("study") || lower.contains("quality"))
+            || word("asq") && (lower.contains("quality") || lower.contains("certification") || lower.contains("exam") || lower.contains("cqe") || lower.contains("audit"))
+            || lower.contains("iso 9001") || lower.contains("iso9001")
+            || lower.contains("iso 14001") || lower.contains("iso 45001")
+            || lower.contains("quality management system") || lower.contains("quality management systems")
+            || lower.contains("qms audit") || lower.contains("qms class") || lower.contains("qms course")
+            || lower.contains("quality assurance class") || lower.contains("quality assurance course")
+            || lower.contains("quality assurance exam") || lower.contains("quality assurance program")
+            || lower.contains("quality control class") || lower.contains("quality control course")
+            || lower.contains("quality control exam") || lower.contains("quality control lab")
+            || lower.contains("quality engineering class") || lower.contains("quality engineering course")
+            || lower.contains("quality engineering exam") || lower.contains("quality engineering program")
+            || lower.contains("statistical process control class") || lower.contains("statistical process control course")
+            || lower.contains("spc class") || lower.contains("spc course") || lower.contains("spc lab")
+            || lower.contains("process improvement class") || lower.contains("process improvement course")
+            || lower.contains("fmea analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("assignment"))
+            || lower.contains("design of experiments class") || lower.contains("doe class")
+            || lower.contains("design of experiments course") || lower.contains("doe course")
+            || lower.contains("total quality management") || lower.contains("tqm class") || lower.contains("tqm course")
+            || lower.contains("quality audit class") || lower.contains("quality audit course")
+            || lower.contains("internal audit class") || lower.contains("internal audit course")
+            || lower.contains("cmq/oe") || lower.contains("cmq exam")
+            || lower.contains("quality management class") || lower.contains("quality management course")
+            || lower.contains("quality management exam") || lower.contains("quality management program") {
+            return "qualitymanagement"
+        }
         // supplychain — positioned BEFORE business so SCM-exam prep, logistics coursework, and
         // procurement/operations-research classes get their own callout pool. Bare "supply chain"
         // stays in the business branch below for general MBA/business-context use.
@@ -1078,6 +1160,35 @@ public final class CalloutManager {
             || lower.contains("pr firm") || lower.contains("pr agency")
             || lower.contains("spokesperson training") || lower.contains("public affairs") {
             return "publicrelations"
+        }
+        // textilesfashion — positioned BEFORE fashiondesign so fiber arts, hand weaving, natural
+        // dyeing, textile engineering, and spinning coursework routes here. "textile design" in a
+        // fashion-school context still goes to fashiondesign (fires next). Bare "sewing" NOT matched.
+        if lower.contains("fiber arts") || lower.contains("fibre arts")
+            || lower.contains("hand weaving") || lower.contains("hand-weaving")
+            || lower.contains("loom weaving") || lower.contains("tapestry weaving")
+            || lower.contains("weaving class") || lower.contains("weaving course")
+            || lower.contains("weaving program") || lower.contains("weaving exam")
+            || lower.contains("weaving studio") || lower.contains("weaving assignment")
+            || lower.contains("natural dyeing") || lower.contains("natural dye class")
+            || lower.contains("natural dye course") || lower.contains("fabric dyeing class")
+            || lower.contains("fabric dyeing course") || lower.contains("textile dyeing")
+            || lower.contains("fiber dyeing") || lower.contains("indigo dyeing")
+            || lower.contains("fiber spinning") || lower.contains("spinning wheel")
+            || lower.contains("yarn spinning") || lower.contains("wool spinning")
+            || lower.contains("drop spindle") || lower.contains("spinning class")
+            || lower.contains("spinning course") || lower.contains("spinning program")
+            || lower.contains("textile engineering") || lower.contains("textile science")
+            || lower.contains("textile technology class") || lower.contains("textile technology course")
+            || lower.contains("textile technology program") || lower.contains("textile technology exam")
+            || lower.contains("textile chemistry class") || lower.contains("textile chemistry course")
+            || lower.contains("textile manufacturing class") || lower.contains("textile manufacturing course")
+            || lower.contains("textile structure") && (lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("knitting class") && (lower.contains("program") || lower.contains("course") || lower.contains("studio") || lower.contains("exam"))
+            || lower.contains("crochet class") && (lower.contains("program") || lower.contains("course") || lower.contains("studio") || lower.contains("exam"))
+            || lower.contains("macramé class") || lower.contains("macrame class")
+            || lower.contains("surface design class") || lower.contains("surface design course") {
+            return "textilesfashion"
         }
         // fashiondesign — positioned BEFORE graphicdesign (both use Adobe tools) and before art
         // so fashion illustration, garment construction, and fashion school tasks route here.
@@ -3009,6 +3120,23 @@ public final class CalloutManager {
             || lower.contains("patient assessment") || lower.contains("patient care plan")
             || lower.contains("wound care") || lower.contains("iv insertion") {
             return "nursing"
+        }
+        // childlife — positioned BEFORE musictherapy and other creative-therapy branches so
+        // child life specialist, CCLS board exam, and pediatric hospital child life tasks route here.
+        // "pediatric nursing" stays in nursing (fires earlier). Bare "pediatric" NOT matched alone.
+        if lower.contains("child life specialist") || lower.contains("child life therapy")
+            || lower.contains("child life program") || lower.contains("child life class")
+            || lower.contains("child life course") || lower.contains("child life exam")
+            || lower.contains("child life internship") || lower.contains("child life clinical")
+            || lower.contains("child life certification") || lower.contains("child life notes")
+            || lower.contains("child life assignment") || lower.contains("child life school")
+            || word("ccls") && (lower.contains("exam") || lower.contains("board") || lower.contains("certification") || lower.contains("prep") || lower.contains("credential") || lower.contains("study"))
+            || word("aclp") && (lower.contains("child") || lower.contains("life") || lower.contains("certification"))
+            || lower.contains("therapeutic play") && (lower.contains("child") || lower.contains("hospital") || lower.contains("pediatric") || lower.contains("specialist"))
+            || lower.contains("hospital child life") || lower.contains("pediatric child life")
+            || lower.contains("child life internship notes") || lower.contains("child life session notes")
+            || lower.contains("child life treatment plan") || lower.contains("child life case study") {
+            return "childlife"
         }
         // musictherapy — positioned BEFORE arttherapy, socialwork, and therapy so music therapy,
         // MT-BC board prep, and neurologic music therapy route here rather than to musictheory or

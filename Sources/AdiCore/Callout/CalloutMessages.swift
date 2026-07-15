@@ -263,6 +263,11 @@ extension CalloutManager {
         case "ceramicsandsculpture":        return ceramicsandsculptureCallouts(tier: tier)
         case "exercisescience":             return exercisescienceCallouts(tier: tier)
         case "biochemistry":               return biochemistryCallouts(tier: tier)
+        case "agriculturalscience":        return agriculturalscienceCallouts(tier: tier)
+        case "textilesfashion":            return textilesfashionCallouts(tier: tier)
+        case "geographyearthed":           return geographyearthedCallouts(tier: tier)
+        case "childlife":                  return childlifeCallouts(tier: tier)
+        case "qualitymanagement":          return qualitymanagementCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -4765,6 +4770,111 @@ extension CalloutManager {
             "CLOSE THIS. open your biochemistry lab notes.",
             "no one masters biochemistry by scrolling.",
             "CLOSE THIS. get back to your biochemistry assignment.",
+        ]
+        }
+    }
+
+    private func agriculturalscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those agronomy questions aren't going to answer themselves.",
+            "your crop science assignment won't finish itself.",
+            "close this and open your agricultural science notes.",
+            "get back to your agronomy coursework.",
+        ]
+        case 2: return [
+            "agronomists don't master crop science by scrolling.",
+            "your precision agriculture lab report won't write itself.",
+            "stop avoiding your agricultural science assignment.",
+        ]
+        default: return [
+            "CLOSE THIS. open your agronomy study guide.",
+            "no one earns an agronomy degree by scrolling.",
+            "CLOSE THIS. get back to your crop science coursework.",
+        ]
+        }
+    }
+
+    private func textilesfashionCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those fiber arts techniques aren't going to master themselves.",
+            "your weaving project won't finish itself.",
+            "close this and get back to your loom.",
+            "that dyeing assignment isn't going to complete itself.",
+        ]
+        case 2: return [
+            "weavers don't master their craft by scrolling.",
+            "your textile engineering assignment won't finish itself.",
+            "stop avoiding your fiber arts coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. get back to your weaving studio.",
+            "no one masters fiber arts by scrolling.",
+            "CLOSE THIS. open your textile science notes.",
+        ]
+        }
+    }
+
+    private func geographyearthedCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those geography concepts aren't going to memorize themselves.",
+            "your human geography assignment won't finish itself.",
+            "close this and open your geography notes.",
+            "get back to your AP Geography coursework.",
+        ]
+        case 2: return [
+            "geographers don't understand place by scrolling.",
+            "your physical geography lab report won't write itself.",
+            "stop avoiding your geography exam prep.",
+        ]
+        default: return [
+            "CLOSE THIS. open your geography study guide.",
+            "no one passes AP Human Geography by browsing.",
+            "CLOSE THIS. get back to your geography coursework.",
+        ]
+        }
+    }
+
+    private func childlifeCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those CCLS exam questions aren't going to answer themselves.",
+            "your child life session notes won't write themselves.",
+            "close this and open your child life study guide.",
+            "get back to your child life specialist coursework.",
+        ]
+        case 2: return [
+            "child life specialists don't get certified by scrolling.",
+            "your therapeutic play assignment won't finish itself.",
+            "stop avoiding your CCLS board exam prep.",
+        ]
+        default: return [
+            "CLOSE THIS. open your child life certification study guide.",
+            "no one passes the CCLS exam by browsing.",
+            "CLOSE THIS. get back to your child life coursework.",
+        ]
+        }
+    }
+
+    private func qualitymanagementCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those CQE exam questions aren't going to answer themselves.",
+            "your quality management assignment won't finish itself.",
+            "close this and open your ISO audit notes.",
+            "get back to your quality engineering coursework.",
+        ]
+        case 2: return [
+            "quality engineers don't earn their certification by scrolling.",
+            "your statistical process control assignment won't do itself.",
+            "stop avoiding your quality management exam prep.",
+        ]
+        default: return [
+            "CLOSE THIS. open your CQE exam study guide.",
+            "no one passes the ASQ CQE exam by browsing.",
+            "CLOSE THIS. get back to your quality systems coursework.",
         ]
         }
     }

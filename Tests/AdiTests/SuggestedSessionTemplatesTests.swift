@@ -3347,4 +3347,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 393,
                 "catalog should have ≥393 templates after constructiontech/urbandesign/ceramicsandsculpture/exercisescience/biochemistry additions")
     }
+
+    // MARK: - Agricultural Science templates
+    @Test func agriculturalscienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("agricultural science assignment") && ($0.localizedCaseInsensitiveContains("agronomy") || $0.localizedCaseInsensitiveContains("crop production")) }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("agronomy exam") && ($0.localizedCaseInsensitiveContains("crop science") || $0.localizedCaseInsensitiveContains("soil fertility")) }
+        #expect(hasAssignment, "catalog must include an agricultural science assignment template")
+        #expect(hasExam, "catalog must include an agronomy exam study template")
+    }
+
+    // MARK: - Textiles Fashion templates
+    @Test func textilesfashionTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudio = tasks.contains { ($0.localizedCaseInsensitiveContains("fiber arts") || $0.localizedCaseInsensitiveContains("weaving project")) && ($0.localizedCaseInsensitiveContains("natural dyeing") || $0.localizedCaseInsensitiveContains("spinning")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("textile") && ($0.localizedCaseInsensitiveContains("class assignment") || $0.localizedCaseInsensitiveContains("engineering assignment")) }
+        #expect(hasStudio, "catalog must include a fiber arts weaving or natural dyeing studio template")
+        #expect(hasAssignment, "catalog must include a textile science or textile engineering assignment template")
+    }
+
+    // MARK: - Geography Earth Ed templates
+    @Test func geographyearthedTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { ($0.localizedCaseInsensitiveContains("AP Human Geography") || $0.localizedCaseInsensitiveContains("geography exam")) && ($0.localizedCaseInsensitiveContains("physical geography") || $0.localizedCaseInsensitiveContains("world geography")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("geography class assignment") && ($0.localizedCaseInsensitiveContains("human geography") || $0.localizedCaseInsensitiveContains("cultural geography")) }
+        #expect(hasExam, "catalog must include an AP Human Geography or geography exam template")
+        #expect(hasAssignment, "catalog must include a geography class assignment template")
+    }
+
+    // MARK: - Child Life templates
+    @Test func childlifeTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("CCLS") && ($0.localizedCaseInsensitiveContains("board exam") || $0.localizedCaseInsensitiveContains("certification assignment")) }
+        let hasNotes = tasks.contains { ($0.localizedCaseInsensitiveContains("child life session notes") || $0.localizedCaseInsensitiveContains("therapeutic play treatment plan")) && $0.localizedCaseInsensitiveContains("pediatric") }
+        #expect(hasExam, "catalog must include a CCLS board exam or child life certification template")
+        #expect(hasNotes, "catalog must include a child life session notes or therapeutic play treatment plan template")
+    }
+
+    // MARK: - Quality Management templates
+    @Test func qualitymanagementTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("CQE exam") && ($0.localizedCaseInsensitiveContains("statistical process control") || $0.localizedCaseInsensitiveContains("ISO auditing")) }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("quality management") && ($0.localizedCaseInsensitiveContains("ISO 9001") || $0.localizedCaseInsensitiveContains("quality assurance")) }
+        #expect(hasExam, "catalog must include an ASQ CQE exam or quality engineering template")
+        #expect(hasAssignment, "catalog must include a quality management ISO 9001 assignment template")
+    }
+
+    // MARK: - Count guard (5-domain batch: agriculturalscience/textilesfashion/geographyearthed/childlife/qualitymanagement)
+    @Test func catalogHasAtLeastFourHundredThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 403,
+                "catalog should have ≥403 templates after agriculturalscience/textilesfashion/geographyearthed/childlife/qualitymanagement additions")
+    }
 }

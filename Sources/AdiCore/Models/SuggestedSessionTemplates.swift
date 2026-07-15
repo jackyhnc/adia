@@ -2526,5 +2526,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Target biochemistry content reviewed (enzyme kinetics, Km/Vmax calculations, metabolic pathways, assay principles, or biochemistry exam questions practiced), notes saved",
             preferredDuration: 60 * 60
         ),
+        // agriculturalscience templates
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Complete my agricultural science assignment on agronomy, crop production, or precision agriculture",
+            successCriteria: "Assignment completed (crop production analysis written, agronomy problem sets done, precision agriculture data reviewed, or soil fertility lab report drafted), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "sun.max.fill",
+            task: "Study for my agronomy exam and review crop science, soil fertility, and field crop management principles",
+            successCriteria: "Target content reviewed (crop physiology, soil fertility concepts, field crop management, or precision agriculture principles), notes saved, and at least 20 practice questions completed",
+            preferredDuration: 60 * 60
+        ),
+        // textilesfashion templates
+        SuggestedTemplate(
+            icon: "rectangle.pattern.checkered",
+            task: "Work on my fiber arts or weaving project — hand weaving, tapestry, natural dyeing, or spinning",
+            successCriteria: "Studio session completed (weaving progress documented, dye sample tested, spinning practice done, or tapestry section woven), and progress photographed or journaled",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "scissors",
+            task: "Complete my textile science or textile engineering assignment on fabric structure, dyeing, or fiber properties",
+            successCriteria: "Assignment completed (textile structure analysis written, dye chemistry notes reviewed, fiber property data recorded, or textile technology concepts summarized), and work saved",
+            preferredDuration: 45 * 60
+        ),
+        // geographyearthed templates
+        SuggestedTemplate(
+            icon: "globe.americas.fill",
+            task: "Study for my geography exam — AP Human Geography, world geography, or physical geography concepts",
+            successCriteria: "Target geography content reviewed (human geography themes, physical geography processes, or AP Geography FRQ practice completed), notes organized and key concepts memorized",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "map.fill",
+            task: "Complete my geography class assignment on human geography, cultural geography, or regional analysis",
+            successCriteria: "Assignment completed (regional analysis written, cultural geography essay drafted, human geography case study summarized, or geography field report completed), and work saved",
+            preferredDuration: 45 * 60
+        ),
+        // childlife templates
+        SuggestedTemplate(
+            icon: "heart.text.clipboard.fill",
+            task: "Study for the CCLS board exam or complete a child life specialist certification assignment",
+            successCriteria: "Target content reviewed (CCLS exam domains, therapeutic play theory, developmental assessments, or child life intervention models), notes saved, and at least 20 practice questions completed",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "figure.and.child.holdinghands",
+            task: "Write child life session notes or a therapeutic play treatment plan for my pediatric hospital internship",
+            successCriteria: "Session notes or treatment plan completed (patient goals documented, intervention rationale written, therapeutic play activities planned, or developmental considerations addressed), and work saved",
+            preferredDuration: 45 * 60
+        ),
+        // qualitymanagement templates
+        SuggestedTemplate(
+            icon: "checkmark.seal.fill",
+            task: "Study for the ASQ CQE exam or complete a quality engineering assignment on statistical process control or ISO auditing",
+            successCriteria: "Target content reviewed (CQE body of knowledge sections, SPC control charts, ISO 9001 audit principles, or FMEA methods), notes saved, and at least 20 practice questions completed",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.bar.doc.horizontal.fill",
+            task: "Complete my quality management assignment on ISO 9001, quality assurance, or process improvement",
+            successCriteria: "Assignment completed (quality management system analysis written, ISO audit findings documented, SPC chart analyzed, or process improvement report drafted), and work saved",
+            preferredDuration: 60 * 60
+        ),
     ]
 }
