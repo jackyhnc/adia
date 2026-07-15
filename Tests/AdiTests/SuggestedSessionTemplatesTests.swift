@@ -3449,4 +3449,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 413,
                 "catalog should have ≥413 templates after quantumcomputing/cloudcomputing/softwaretesting/mechanicaldrafting/dataengineering additions")
     }
+
+    // MARK: - Robotics templates
+    @Test func roboticsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasProject = tasks.contains { $0.localizedCaseInsensitiveContains("robotics") && ($0.localizedCaseInsensitiveContains("ROS") || $0.localizedCaseInsensitiveContains("lab")) }
+        let hasStudy = tasks.contains { $0.localizedCaseInsensitiveContains("robotics exam") && ($0.localizedCaseInsensitiveContains("autonomous") || $0.localizedCaseInsensitiveContains("kinematics")) }
+        #expect(hasProject, "catalog must include a robotics project / ROS lab template")
+        #expect(hasStudy,   "catalog must include a robotics exam / autonomous systems study template")
+    }
+
+    // MARK: - Artificial Intelligence templates
+    @Test func artificialintelligenceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("artificial intelligence") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("search algorithm")) }
+        let hasEthics = tasks.contains { ($0.localizedCaseInsensitiveContains("AI ethics") || $0.localizedCaseInsensitiveContains("responsible AI")) && ($0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("reflection")) }
+        #expect(hasAssignment, "catalog must include an AI class assignment template")
+        #expect(hasEthics,     "catalog must include an AI ethics / responsible AI paper template")
+    }
+
+    // MARK: - Osteopathic Medicine templates
+    @Test func osteopathicmedicineTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCOMLEX = tasks.contains { $0.localizedCaseInsensitiveContains("COMLEX") && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("osteopathic medicine")) }
+        let hasOMM = tasks.contains { $0.localizedCaseInsensitiveContains("OMM") && ($0.localizedCaseInsensitiveContains("session notes") || $0.localizedCaseInsensitiveContains("manipulative medicine")) }
+        #expect(hasCOMLEX, "catalog must include a COMLEX exam / osteopathic medicine study template")
+        #expect(hasOMM,    "catalog must include an OMM session notes / DO clinical template")
+    }
+
+    // MARK: - Epidemiology templates
+    @Test func epidemiologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("epidemiology") && ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("outbreak")) }
+        let hasStudy = tasks.contains { ($0.localizedCaseInsensitiveContains("epidemiology") || $0.localizedCaseInsensitiveContains("biostatistics")) && ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("epi concepts")) }
+        #expect(hasAssignment, "catalog must include an epidemiology study design / outbreak template")
+        #expect(hasStudy,      "catalog must include an epidemiology or biostatistics exam study template")
+    }
+
+    // MARK: - Bioethics templates
+    @Test func bioethicsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasIRB = tasks.contains { $0.localizedCaseInsensitiveContains("IRB") && ($0.localizedCaseInsensitiveContains("protocol") || $0.localizedCaseInsensitiveContains("human subjects")) }
+        let hasPaper = tasks.contains { $0.localizedCaseInsensitiveContains("bioethics") && ($0.localizedCaseInsensitiveContains("case") || $0.localizedCaseInsensitiveContains("paper")) }
+        #expect(hasIRB,   "catalog must include an IRB protocol / human subjects research template")
+        #expect(hasPaper, "catalog must include a bioethics case analysis / medical ethics paper template")
+    }
+
+    // MARK: - Count guard (batch: robotics/artificialintelligence/osteopathicmedicine/epidemiology/bioethics)
+    @Test func catalogHasAtLeastFourHundredTwentyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 423,
+                "catalog should have ≥423 templates after robotics/artificialintelligence/osteopathicmedicine/epidemiology/bioethics additions")
+    }
 }

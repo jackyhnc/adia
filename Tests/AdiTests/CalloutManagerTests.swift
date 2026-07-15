@@ -7926,7 +7926,10 @@ struct CalloutManagerTests {
         #expect(CalloutManager.extractTaskKeyword(from: "disaster response protocol writing for my emergency management program") == "emergencymanagement")
     }
     @Test func emergencymanagementFalsePositivePublicHealthStaysInPublicHealth() {
-        #expect(CalloutManager.extractTaskKeyword(from: "epidemiology class assignment on outbreak investigation methods") == "publicheath")
+        // "epidemiology class" now routes to the dedicated epidemiology branch (fires before publicheath).
+        // This test confirms emergencymanagement tasks don't bleed into epidemiology or publicheath.
+        let kw = CalloutManager.extractTaskKeyword(from: "epidemiology class assignment on outbreak investigation methods")
+        #expect(kw == "epidemiology" || kw == "publicheath", "epidemiology class should route to epidemiology or publicheath, not emergencymanagement")
     }
     @Test func emergencymanagementCalloutsAllThreeTiersNonEmpty() async {
         await MainActor.run {
@@ -8564,7 +8567,9 @@ struct CalloutManagerTests {
         #expect(CalloutManager.extractTaskKeyword(from: "medical malpractice case study for my healthcare law exam") == "healthcarelaw")
     }
     @Test func healthcarelawKeywordFromBioethics() {
-        #expect(CalloutManager.extractTaskKeyword(from: "bioethics class assignment on informed consent law") == "healthcarelaw")
+        // "bioethics class" now routes to the dedicated bioethics branch (fires before healthcarelaw).
+        // Healthcare law tests should use HIPAA / medical malpractice / health law terms instead.
+        #expect(CalloutManager.extractTaskKeyword(from: "bioethics class assignment on informed consent law") == "bioethics")
     }
     @Test func healthcarelawFalsePositiveLegalStaysInLegal() {
         #expect(CalloutManager.extractTaskKeyword(from: "prepare for the bar exam — write a legal brief on contract law") == "legal")
@@ -13334,8 +13339,231 @@ struct CalloutManagerTests {
         #expect(CalloutManager.extractTaskKeyword(from: "data warehousing class on snowflake certification and dimensional modeling design") == "dataengineering")
     }
 
+    // MARK: - robotics keyword tests
+    @Test func roboticsKeywordFromROSProject() {
+        #expect(CalloutManager.extractTaskKeyword(from: "building a ROS2 robotics project for my autonomous systems class") == "robotics")
+    }
+    @Test func roboticsKeywordFromRoboticsLab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "completing my robotics lab assignment on path planning and SLAM") == "robotics")
+    }
+    @Test func roboticsCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "robotics", tier: tier)
+                #expect(!msgs.isEmpty, "robotics tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func roboticsCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "robotics", tier: 1)
+            #expect(msgs.count >= 4, "robotics tier1 must have ≥4 messages")
+        }
+    }
+    @Test func roboticsCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "robotics", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "robotics tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func roboticsCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "robotics", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "robotics tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func roboticsFalsePositiveGamePlan() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my game plan for the upcoming basketball season")
+        #expect(kw != "robotics", "game plan should not route to robotics")
+    }
+    @Test func roboticsKeywordFromFIRSTRobotics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "programming my FIRST robotics competition robot code this season") == "robotics")
+    }
+
+    // MARK: - artificialintelligence keyword tests
+    @Test func artificialintelligenceKeywordFromAIClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "completing my artificial intelligence class assignment on search algorithms and planning") == "artificialintelligence")
+    }
+    @Test func artificialintelligenceKeywordFromAIEthics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "writing my AI ethics paper on responsible ai and algorithmic bias for my course") == "artificialintelligence")
+    }
+    @Test func artificialintelligenceCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "artificialintelligence", tier: tier)
+                #expect(!msgs.isEmpty, "artificialintelligence tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func artificialintelligenceCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "artificialintelligence", tier: 1)
+            #expect(msgs.count >= 4, "artificialintelligence tier1 must have ≥4 messages")
+        }
+    }
+    @Test func artificialintelligenceCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "artificialintelligence", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "artificialintelligence tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func artificialintelligenceCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "artificialintelligence", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "artificialintelligence tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func artificialintelligenceFalsePositiveMachineLearning() {
+        let kw = CalloutManager.extractTaskKeyword(from: "training a machine learning model on my jupyter notebook dataset")
+        #expect(kw != "artificialintelligence", "machine learning / jupyter notebook should route to datascience, not artificialintelligence")
+    }
+    @Test func artificialintelligenceKeywordFromPromptEngineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "completing my prompt engineering course assignment on few-shot learning") == "artificialintelligence")
+    }
+
+    // MARK: - osteopathicmedicine keyword tests
+    @Test func osteopathicmedicineKeywordFromCOMLEX() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying for the COMLEX level 1 board exam for my DO school") == "osteopathicmedicine")
+    }
+    @Test func osteopathicmedicineKeywordFromOMMNotes() {
+        #expect(CalloutManager.extractTaskKeyword(from: "writing up my OMM session notes and osteopathic manipulative medicine techniques") == "osteopathicmedicine")
+    }
+    @Test func osteopathicmedicineCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "osteopathicmedicine", tier: tier)
+                #expect(!msgs.isEmpty, "osteopathicmedicine tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func osteopathicmedicineCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "osteopathicmedicine", tier: 1)
+            #expect(msgs.count >= 4, "osteopathicmedicine tier1 must have ≥4 messages")
+        }
+    }
+    @Test func osteopathicmedicineCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "osteopathicmedicine", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "osteopathicmedicine tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func osteopathicmedicineCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "osteopathicmedicine", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "osteopathicmedicine tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func osteopathicmedicineFalsePositivePhysicalTherapy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my physical therapy kinesiology lab on gait analysis")
+        #expect(kw != "osteopathicmedicine", "physical therapy / kinesiology should not route to osteopathicmedicine")
+    }
+    @Test func osteopathicmedicineKeywordFromSomaticDysfunction() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying somatic dysfunction diagnosis and osteopathic medicine treatment principles") == "osteopathicmedicine")
+    }
+
+    // MARK: - epidemiology keyword tests
+    @Test func epidemiologyKeywordFromEpiClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "working on my epidemiology class assignment on case-control study design") == "epidemiology")
+    }
+    @Test func epidemiologyKeywordFromOutbreakInvestigation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "writing an outbreak investigation report on disease surveillance and epi curve analysis") == "epidemiology")
+    }
+    @Test func epidemiologyCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "epidemiology", tier: tier)
+                #expect(!msgs.isEmpty, "epidemiology tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func epidemiologyCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "epidemiology", tier: 1)
+            #expect(msgs.count >= 4, "epidemiology tier1 must have ≥4 messages")
+        }
+    }
+    @Test func epidemiologyCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "epidemiology", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "epidemiology tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func epidemiologyCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "epidemiology", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "epidemiology tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func epidemiologyFalsePositivePublicHealth() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my community health MPH program public health assignment")
+        #expect(kw != "epidemiology", "general MPH / community health should route to publicheath, not epidemiology")
+    }
+    @Test func epidemiologyKeywordFromBiostatistics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "completing my biostatistics class homework on hypothesis testing and confidence intervals") == "epidemiology")
+    }
+
+    // MARK: - bioethics keyword tests
+    @Test func bioethicsKeywordFromIRBProtocol() {
+        #expect(CalloutManager.extractTaskKeyword(from: "writing my IRB protocol submission for my human subjects research study") == "bioethics")
+    }
+    @Test func bioethicsKeywordFromResearchEthics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "writing my research ethics paper on the Belmont Report and informed consent research") == "bioethics")
+    }
+    @Test func bioethicsCalloutsAllThreeTiersNonEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "bioethics", tier: tier)
+                #expect(!msgs.isEmpty, "bioethics tier \(tier) must have callouts")
+            }
+        }
+    }
+    @Test func bioethicsCalloutsTier1HasAtLeastFour() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "bioethics", tier: 1)
+            #expect(msgs.count >= 4, "bioethics tier1 must have ≥4 messages")
+        }
+    }
+    @Test func bioethicsCalloutsNoneAreEmpty() async {
+        await MainActor.run {
+            for tier in 1...3 {
+                let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "bioethics", tier: tier)
+                for msg in msgs { #expect(!msg.isEmpty, "bioethics tier \(tier) callout must not be empty") }
+            }
+        }
+    }
+    @Test func bioethicsCalloutsTier3ContainsCloseThis() async {
+        await MainActor.run {
+            let msgs = CalloutManager.shared.taskAwareCallouts(keyword: "bioethics", tier: 3)
+            let hasCloseThis = msgs.contains { $0.contains("CLOSE THIS") || $0.contains("no one") }
+            #expect(hasCloseThis, "bioethics tier 3 must contain 'CLOSE THIS' or 'no one'")
+        }
+    }
+    @Test func bioethicsFalsePositiveHealthLaw() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying healthcare law and HIPAA regulations for my health law exam")
+        #expect(kw != "bioethics", "healthcare law / HIPAA exam should route to healthcarelaw, not bioethics")
+    }
+    @Test func bioethicsKeywordFromClinicalEthics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "writing a clinical ethics consultation case summary on patient autonomy and end-of-life ethics") == "bioethics")
+    }
+
     // MARK: - Template count guard
     @Test func suggestedTemplatesCountAtLeast413() {
         #expect(SuggestedSessionTemplates.all.count >= 413, "template catalog must have ≥413 entries after adding 5 new domains (10 templates)")
+    }
+    @Test func suggestedTemplatesCountAtLeast423() {
+        #expect(SuggestedSessionTemplates.all.count >= 423, "template catalog must have ≥423 entries after adding robotics/artificialintelligence/osteopathicmedicine/epidemiology/bioethics (10 templates)")
     }
 }

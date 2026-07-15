@@ -224,6 +224,63 @@ public final class CalloutManager {
             || lower.contains("acceptance testing class") || lower.contains("acceptance testing course") {
             return "softwaretesting"
         }
+        // robotics — positioned AFTER softwaretesting and BEFORE gamedev so ROS/ROS2, robot
+        // programming, and autonomous-systems coursework route here first. Unity is used in
+        // robotics but is caught by gamedev next if no robot-specific term fires.
+        // Bare "robot" or "automation" alone NOT matched (too common in other contexts).
+        if lower.contains("robotics class") || lower.contains("robotics course")
+            || lower.contains("robotics exam") || lower.contains("robotics program")
+            || lower.contains("robotics lab") || lower.contains("robotics project")
+            || lower.contains("robotics assignment") || lower.contains("robotics engineering")
+            || lower.contains("robotics competition") || lower.contains("robotics design")
+            || word("ros") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("project") || lower.contains("robotics") || lower.contains("robot"))
+            || lower.contains("ros2") || lower.contains("ros 2")
+            || lower.contains("robot programming") || lower.contains("robot software")
+            || lower.contains("autonomous robot") || lower.contains("autonomous systems class")
+            || lower.contains("autonomous systems course") || lower.contains("autonomous vehicle class")
+            || lower.contains("autonomous driving class") || lower.contains("autonomous driving course")
+            || lower.contains("mobile robot") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("project"))
+            || lower.contains("robot kinematics") || lower.contains("robot dynamics")
+            || lower.contains("robot perception") || lower.contains("robot planning")
+            || lower.contains("robot control") && (lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("first robotics") || lower.contains("vex robotics") || lower.contains("lego robotics")
+            || lower.contains("industrial robot") && (lower.contains("class") || lower.contains("course") || lower.contains("program"))
+            || lower.contains("embedded robotics") || lower.contains("robotics algorithm")
+            || lower.contains("path planning") && (lower.contains("robot") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("slam") && (lower.contains("robot") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("inverse kinematics") && (lower.contains("robot") || lower.contains("class") || lower.contains("arm")) {
+            return "robotics"
+        }
+        // artificialintelligence — positioned AFTER robotics and BEFORE gamedev so AI class/course
+        // work, prompt engineering study, LLM concepts, and AI ethics coursework route here.
+        // "machine learning"/"deep learning" already fires in datascience (much earlier).
+        // Bare "ai" alone NOT matched — requires compound context to avoid false positives.
+        if lower.contains("artificial intelligence class") || lower.contains("artificial intelligence course")
+            || lower.contains("artificial intelligence exam") || lower.contains("artificial intelligence program")
+            || lower.contains("artificial intelligence assignment") || lower.contains("artificial intelligence project")
+            || lower.contains("artificial intelligence lecture") || lower.contains("artificial intelligence notes")
+            || lower.contains("ai class") || lower.contains("ai course") || lower.contains("ai exam")
+            || lower.contains("ai ethics class") || lower.contains("ai ethics course") || lower.contains("ai ethics exam")
+            || lower.contains("ai ethics paper") || lower.contains("ai ethics essay")
+            || lower.contains("prompt engineering class") || lower.contains("prompt engineering course")
+            || lower.contains("prompt engineering exam") || lower.contains("prompt engineering assignment")
+            || lower.contains("large language model class") || lower.contains("large language model course")
+            || lower.contains("llm class") || lower.contains("llm course") || lower.contains("llm assignment")
+            || lower.contains("natural language understanding class") || lower.contains("natural language understanding course")
+            || lower.contains("ai product management") || lower.contains("ai product manager")
+            || lower.contains("responsible ai") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("explainable ai") && (lower.contains("class") || lower.contains("course") || lower.contains("project"))
+            || lower.contains("ai safety class") || lower.contains("ai safety course") || lower.contains("ai safety research")
+            || lower.contains("ai alignment") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("paper"))
+            || lower.contains("ai regulation") && (lower.contains("class") || lower.contains("course") || lower.contains("paper"))
+            || lower.contains("ai policy") && (lower.contains("class") || lower.contains("course") || lower.contains("paper"))
+            || lower.contains("knowledge representation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("expert system") && (lower.contains("class") || lower.contains("course") || lower.contains("ai"))
+            || lower.contains("search algorithm") && (lower.contains("ai") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("planning algorithm") && (lower.contains("ai") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("ai textbook") || lower.contains("ai lecture") || lower.contains("ai notes") && lower.contains("class") {
+            return "artificialintelligence"
+        }
         // gamedev — positioned before code so Unity/Godot/engine terms don't fall through to code.
         // "game plan" is not matched because no specific tool name or game-dev phrase fires.
         if word("unity") || word("godot") || lower.contains("unreal engine")
@@ -3086,6 +3143,33 @@ public final class CalloutManager {
             || lower.contains("pa-c") {
             return "physicianassistant"
         }
+        // osteopathicmedicine — positioned AFTER physicianassistant and BEFORE paramedicine so
+        // DO student coursework, COMLEX exam prep, and osteopathic manipulative medicine (OMM)
+        // sessions route here. "osteopathic" alone fires only when combined with medicine/school
+        // terms to avoid false positives in general anatomy or biomechanics contexts.
+        if lower.contains("osteopathic medicine") || lower.contains("osteopathic medical")
+            || lower.contains("osteopathic physician") || lower.contains("osteopathic doctor")
+            || lower.contains("osteopathic school") || lower.contains("osteopathic program")
+            || lower.contains("osteopathic class") || lower.contains("osteopathic course")
+            || lower.contains("osteopathic exam") || lower.contains("osteopathic rotation")
+            || lower.contains("osteopathic clerkship") || lower.contains("osteopathic clinical")
+            || lower.contains("osteopathic notes") || lower.contains("osteopathic internship")
+            || lower.contains("osteopathic residency") || lower.contains("osteopathic assignment")
+            || lower.contains("do school") && lower.contains("osteo")
+            || lower.contains("do program") && lower.contains("osteo")
+            || word("comlex") || lower.contains("comlex exam") || lower.contains("comlex level")
+            || lower.contains("comlex-usa") || lower.contains("comlex board")
+            || word("omm") && (lower.contains("osteo") || lower.contains("manipulat") || lower.contains("technique") || lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("session"))
+            || lower.contains("osteopathic manipulative") || lower.contains("osteopathic manipulation")
+            || lower.contains("cranial osteopathy") || lower.contains("counterstrain technique")
+            || lower.contains("muscle energy technique") && (lower.contains("osteo") || lower.contains("omm"))
+            || lower.contains("high velocity low amplitude") || lower.contains("hvla technique")
+            || lower.contains("myofascial release") && (lower.contains("osteo") || lower.contains("omm"))
+            || lower.contains("somatic dysfunction") || lower.contains("somatic dysfunctions")
+            || lower.contains("doctor of osteopathic") || lower.contains("osteopathic medical school")
+            || lower.contains("com1") || lower.contains("com2") || lower.contains("com3") || lower.contains("com4") {
+            return "osteopathicmedicine"
+        }
         // paramedicine — positioned before nursing so EMT/paramedic-specific terms
         // (NREMT exam, pre-hospital care, BLS/ACLS certifications) don't fall through to nursing.
         if word("emt") || word("paramedic") || word("paramedics") || word("paramedicine")
@@ -3586,6 +3670,32 @@ public final class CalloutManager {
             || lower.contains("community environmental health") {
             return "environmentalhealth"
         }
+        // epidemiology — positioned BEFORE publicheath so graduate-level epidemiology research,
+        // outbreak investigation coursework, disease surveillance assignments, and epi methods
+        // classes get a dedicated pool. "environmental epidemiology" stays in environmentalhealth
+        // (fires earlier). Bare "epidemic" or "disease" NOT matched alone.
+        if word("epidemiology") || word("epidemiologist") || word("epidemiological")
+            || lower.contains("epi methods") || lower.contains("epi research")
+            || lower.contains("outbreak investigation") || lower.contains("outbreak analysis")
+            || lower.contains("disease surveillance") || lower.contains("surveillance data")
+            || lower.contains("case-control study") || lower.contains("case control study")
+            || lower.contains("cohort study") && (lower.contains("class") || lower.contains("course") || lower.contains("epi") || lower.contains("assignment") || lower.contains("exam"))
+            || lower.contains("cross-sectional study") && (lower.contains("class") || lower.contains("course") || lower.contains("epi") || lower.contains("assignment"))
+            || lower.contains("incidence rate") && (lower.contains("class") || lower.contains("course") || lower.contains("epi") || lower.contains("assignment"))
+            || lower.contains("prevalence study") || lower.contains("epi curve")
+            || lower.contains("contact tracing") && (lower.contains("class") || lower.contains("course") || lower.contains("epi") || lower.contains("assignment"))
+            || lower.contains("attributable risk") || lower.contains("relative risk") && (lower.contains("class") || lower.contains("course") || lower.contains("epi"))
+            || lower.contains("odds ratio") && (lower.contains("class") || lower.contains("course") || lower.contains("epi") || lower.contains("assignment"))
+            || lower.contains("epidemiology class") || lower.contains("epidemiology course")
+            || lower.contains("epidemiology exam") || lower.contains("epidemiology lab")
+            || lower.contains("epidemiology assignment") || lower.contains("epidemiology paper")
+            || lower.contains("epidemiology project") || lower.contains("epidemiology notes")
+            || lower.contains("epi class") || lower.contains("epi course") || lower.contains("epi exam")
+            || lower.contains("epi assignment") || lower.contains("epi project") || lower.contains("epi notes")
+            || word("biostatistics") || lower.contains("biostatistics class") || lower.contains("biostatistics course")
+            || lower.contains("biostatistics exam") || lower.contains("biostatistics assignment") {
+            return "epidemiology"
+        }
         // publicheath — positioned after therapy (clinical context) and before socialscience.
         // Catches MPH programs, epidemiology, community/global health, outbreak investigation,
         // and population health. "health policy" stays in the policy branch.
@@ -3936,14 +4046,42 @@ public final class CalloutManager {
             || lower.contains("population health law") {
             return "publichealthlaw"
         }
-        // healthcarelaw — positioned BEFORE legal so health-law courses, HIPAA-as-law, bioethics
-        // law, and medical malpractice tasks route here. "health policy" stays in the policy branch.
+        // bioethics — positioned AFTER publichealthlaw and BEFORE healthcarelaw so bioethics
+        // research papers, IRB protocol work, clinical ethics consultations, and research-ethics
+        // coursework get a dedicated pool. "bioethics class/course/exam" is intercepted here
+        // (removing those from healthcarelaw below). Bare "ethics" alone NOT matched.
+        if lower.contains("bioethics") || lower.contains("bio-ethics")
+            || lower.contains("research ethics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("committee") || lower.contains("irb") || lower.contains("board") || lower.contains("research"))
+            || lower.contains("irb protocol") || lower.contains("irb submission") || lower.contains("irb application")
+            || lower.contains("irb approval") || lower.contains("irb review") || lower.contains("irb proposal")
+            || lower.contains("institutional review board") || lower.contains("human subjects research")
+            || lower.contains("human subjects protection") || lower.contains("human subjects committee")
+            || lower.contains("clinical ethics") && (lower.contains("class") || lower.contains("course") || lower.contains("consultation") || lower.contains("committee") || lower.contains("case") || lower.contains("paper"))
+            || lower.contains("ethics consultation") && (lower.contains("clinical") || lower.contains("hospital") || lower.contains("medical"))
+            || lower.contains("medical ethics paper") || lower.contains("medical ethics essay")
+            || lower.contains("medical ethics seminar") || lower.contains("medical ethics assignment")
+            || lower.contains("ethics in medicine") || lower.contains("ethics in healthcare") || lower.contains("ethics in health care")
+            || lower.contains("informed consent research") || lower.contains("research consent")
+            || lower.contains("beneficence") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("bioethics") || lower.contains("ethics"))
+            || lower.contains("nonmaleficence") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("ethics"))
+            || lower.contains("justice in healthcare") || lower.contains("healthcare ethics")
+            || lower.contains("patient autonomy") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("ethics"))
+            || lower.contains("end-of-life ethics") || lower.contains("end of life ethics")
+            || lower.contains("euthanasia ethics") || lower.contains("assisted dying ethics")
+            || lower.contains("stem cell ethics") || lower.contains("genetic ethics") || lower.contains("genomic ethics")
+            || lower.contains("principlism") || lower.contains("four principles") && lower.contains("bioethics")
+            || lower.contains("belmont report") || lower.contains("declaration of helsinki")
+            || lower.contains("tuskegee") && (lower.contains("class") || lower.contains("ethics") || lower.contains("paper") || lower.contains("research"))
+            || lower.contains("research integrity") || lower.contains("responsible conduct of research") || lower.contains("rcr training") {
+            return "bioethics"
+        }
+        // healthcarelaw — positioned BEFORE legal so health-law courses, HIPAA-as-law,
+        // and medical malpractice tasks route here. "health policy" stays in the policy branch.
         if lower.contains("health law") || lower.contains("healthcare law") || lower.contains("medical law")
             || lower.contains("health care law") || lower.contains("healthcare regulation class")
             || lower.contains("healthcare regulation course") || lower.contains("healthcare regulation exam")
             || lower.contains("hipaa law") || lower.contains("hipaa class") || lower.contains("hipaa course")
             || lower.contains("hipaa exam") || lower.contains("hipaa certification")
-            || lower.contains("bioethics class") || lower.contains("bioethics course") || lower.contains("bioethics exam")
             || lower.contains("medical ethics class") || lower.contains("medical ethics course")
             || lower.contains("medical liability") || lower.contains("medical malpractice")
             || lower.contains("healthcare reform law") || lower.contains("health care reform law")

@@ -2656,5 +2656,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Assignment completed (data warehouse schema designed, dbt models defined, Snowflake queries written, or data modeling documentation completed), and work saved",
             preferredDuration: 60 * 60
         ),
+        // robotics templates
+        SuggestedTemplate(
+            icon: "cpu.fill",
+            task: "Build a robotics project or complete a robotics lab assignment using ROS or ROS2",
+            successCriteria: "Robotics project milestone completed (ROS node written, robot simulation configured, sensor integration implemented, or path planning algorithm coded), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "gearshape.2.fill",
+            task: "Study for my robotics exam and review autonomous systems, robot kinematics, and motion planning concepts",
+            successCriteria: "Target robotics content reviewed (kinematics, dynamics, path planning, SLAM, or sensor fusion concepts), notes organized, and at least 10 practice problems completed",
+            preferredDuration: 60 * 60
+        ),
+        // artificialintelligence templates
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Complete my artificial intelligence class assignment on search algorithms, knowledge representation, or planning",
+            successCriteria: "AI assignment completed (algorithm implemented, knowledge base built, planning problem solved, or written analysis submitted), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "text.bubble.fill",
+            task: "Study AI ethics, responsible AI, or AI policy concepts and draft my reflection paper or case analysis",
+            successCriteria: "Target AI ethics content reviewed (fairness, accountability, transparency, or AI governance concepts), and draft paper or case analysis completed with key arguments outlined",
+            preferredDuration: 45 * 60
+        ),
+        // osteopathicmedicine templates
+        SuggestedTemplate(
+            icon: "stethoscope",
+            task: "Study for the COMLEX exam or complete my osteopathic medicine school coursework",
+            successCriteria: "Target COMLEX content reviewed (OMM techniques, osteopathic principles, or clinical science concepts), notes organized, and at least 20 practice questions completed",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Write up my osteopathic manipulative medicine (OMM) session notes or DO clinical rotation documentation",
+            successCriteria: "OMM notes or clinical documentation completed (SOAP note written, OMM technique findings documented, or rotation reflection submitted), and work saved",
+            preferredDuration: 30 * 60
+        ),
+        // epidemiology templates
+        SuggestedTemplate(
+            icon: "chart.bar.doc.horizontal.fill",
+            task: "Complete my epidemiology assignment — design a study, analyze data, or write an outbreak investigation report",
+            successCriteria: "Epidemiology assignment completed (study design documented, data analysis run, odds/relative risk calculated, or outbreak report drafted), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Study for my epidemiology or biostatistics exam and review study designs, measures of association, and epi concepts",
+            successCriteria: "Target epi content reviewed (case-control, cohort, cross-sectional designs, epi curve, attributable risk, or biostatistics concepts), notes organized, and practice problems completed",
+            preferredDuration: 60 * 60
+        ),
+        // bioethics templates
+        SuggestedTemplate(
+            icon: "doc.text.magnifyingglass",
+            task: "Write my IRB protocol or research ethics application for my human subjects research study",
+            successCriteria: "IRB protocol sections drafted (research design, risks and benefits, informed consent procedures, or privacy protections completed), and document saved for submission",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "books.vertical.fill",
+            task: "Analyze a bioethics case or write a medical ethics paper on informed consent, autonomy, or end-of-life care",
+            successCriteria: "Bioethics analysis completed (ethical framework applied, key principles (beneficence, nonmaleficence, autonomy, justice) discussed, and written argument with conclusion drafted), and work saved",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

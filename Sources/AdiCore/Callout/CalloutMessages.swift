@@ -273,6 +273,11 @@ extension CalloutManager {
         case "geographyearthed":           return geographyearthedCallouts(tier: tier)
         case "childlife":                  return childlifeCallouts(tier: tier)
         case "qualitymanagement":          return qualitymanagementCallouts(tier: tier)
+        case "robotics":                   return roboticsCallouts(tier: tier)
+        case "artificialintelligence":     return artificialintelligenceCallouts(tier: tier)
+        case "osteopathicmedicine":        return osteopathicmedicineCallouts(tier: tier)
+        case "epidemiology":               return epidemiologyCallouts(tier: tier)
+        case "bioethics":                  return bioethicsCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -4985,6 +4990,111 @@ extension CalloutManager {
             "CLOSE THIS. open your data engineering project.",
             "no one masters Spark and Kafka by browsing.",
             "CLOSE THIS. get back to your data engineering coursework.",
+        ]
+        }
+    }
+
+    private func roboticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your robot isn't going to program itself.",
+            "get back to your robotics assignment.",
+            "close this and open your ROS project.",
+            "your robotics coursework won't finish itself.",
+        ]
+        case 2: return [
+            "robots don't build themselves — close this and build yours.",
+            "your autonomous systems project isn't going to code itself.",
+            "stop avoiding your robotics lab.",
+        ]
+        default: return [
+            "CLOSE THIS. open your robotics project.",
+            "no one masters ROS by scrolling.",
+            "CLOSE THIS. get back to your robotics coursework.",
+        ]
+        }
+    }
+
+    private func artificialintelligenceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your AI assignment isn't going to write itself.",
+            "get back to your artificial intelligence coursework.",
+            "close this and study your AI concepts.",
+            "your AI ethics paper won't finish itself.",
+        ]
+        case 2: return [
+            "AI pioneers didn't build the field by scrolling.",
+            "your prompt engineering assignment isn't going to complete itself.",
+            "stop avoiding your AI class materials.",
+        ]
+        default: return [
+            "CLOSE THIS. open your AI coursework.",
+            "no one understands AI by browsing — close this.",
+            "CLOSE THIS. get back to your artificial intelligence assignment.",
+        ]
+        }
+    }
+
+    private func osteopathicmedicineCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those COMLEX questions aren't going to answer themselves.",
+            "get back to your osteopathic medicine coursework.",
+            "close this and open your OMM notes.",
+            "your DO school assignment won't finish itself.",
+        ]
+        case 2: return [
+            "osteopathic doctors don't pass COMLEX by scrolling.",
+            "your OMM technique notes aren't going to review themselves.",
+            "stop avoiding your osteopathic medicine coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your COMLEX study guide.",
+            "no one passes COMLEX-USA by browsing.",
+            "CLOSE THIS. get back to your osteopathic medicine notes.",
+        ]
+        }
+    }
+
+    private func epidemiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that epi analysis isn't going to write itself.",
+            "get back to your epidemiology assignment.",
+            "close this and open your epi coursework.",
+            "your outbreak investigation won't finish itself.",
+        ]
+        case 2: return [
+            "epidemiologists don't track outbreaks by scrolling.",
+            "your case-control study isn't going to design itself.",
+            "stop avoiding your epidemiology coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your epi notes.",
+            "no one masters epidemiology methods by browsing.",
+            "CLOSE THIS. get back to your epidemiology assignment.",
+        ]
+        }
+    }
+
+    private func bioethicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your IRB protocol isn't going to write itself.",
+            "get back to your bioethics assignment.",
+            "close this and work on your research ethics paper.",
+            "your bioethics paper won't finish itself.",
+        ]
+        case 2: return [
+            "bioethicists don't resolve dilemmas by scrolling.",
+            "your clinical ethics consultation notes aren't going to write themselves.",
+            "stop avoiding your bioethics coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your bioethics notes.",
+            "no one masters research ethics by browsing.",
+            "CLOSE THIS. get back to your IRB protocol or bioethics paper.",
         ]
         }
     }
