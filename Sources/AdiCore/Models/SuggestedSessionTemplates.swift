@@ -2461,5 +2461,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Environmental health report or case study written (community assessment completed, inspection protocols documented, or policy analysis finished), and work saved",
             preferredDuration: 45 * 60
         ),
+        // constructiontech templates
+        SuggestedTemplate(
+            icon: "hammer.fill",
+            task: "Study for the contractor license exam or complete a construction technology program assignment on carpentry, masonry, or concrete",
+            successCriteria: "Target construction tech content reviewed (contractor exam sections, carpentry techniques, masonry principles, or concrete specifications), notes saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "building.2.fill",
+            task: "Complete a building trades class assignment on wood framing, structural systems, or construction inspection",
+            successCriteria: "Assignment completed (framing diagram drawn, construction inspection checklist completed, or structural analysis written), and work saved",
+            preferredDuration: 45 * 60
+        ),
+        // urbandesign templates
+        SuggestedTemplate(
+            icon: "map.fill",
+            task: "Design a streetscape or public space for my urban design studio project",
+            successCriteria: "Urban design project work completed (streetscape sketches drawn, placemaking analysis written, public space program developed, or design diagrams created), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "figure.walk",
+            task: "Complete an urban design class assignment on placemaking, pedestrian design, or public realm analysis",
+            successCriteria: "Assignment completed (site analysis written, placemaking concept developed, pedestrian design documented, or urban design critique drafted), and work saved",
+            preferredDuration: 45 * 60
+        ),
+        // ceramicsandsculpture templates
+        SuggestedTemplate(
+            icon: "flame.fill",
+            task: "Work on my ceramics project — wheel throwing, hand building, or preparing pieces for kiln firing",
+            successCriteria: "Ceramics studio session completed (pottery wheel practice done, hand-built pieces completed, glazing applied, or pieces prepared for kiln), progress documented",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "square.3.layers.3d",
+            task: "Study for my ceramics or sculpture class exam and review techniques, glaze chemistry, or art history context",
+            successCriteria: "Target ceramics content reviewed (ceramic techniques, glaze chemistry, kiln firing processes, or art history concepts), notes saved",
+            preferredDuration: 45 * 60
+        ),
+        // exercisescience templates
+        SuggestedTemplate(
+            icon: "heart.fill",
+            task: "Study for the ACSM exam or complete an exercise science class assignment on exercise testing or metabolic assessment",
+            successCriteria: "Target exercise science content reviewed (ACSM exam sections, graded exercise test protocols, metabolic testing concepts, or CEP competencies), notes saved",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "figure.run",
+            task: "Complete my exercise science lab report on exercise testing, VO2 max assessment, or metabolic measurement",
+            successCriteria: "Lab report completed (exercise test data analyzed, VO2 max calculations done, metabolic assessment results written, or findings interpreted), and work saved",
+            preferredDuration: 45 * 60
+        ),
+        // biochemistry templates
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Complete my biochemistry lab report on enzyme kinetics, protein assay, or metabolic pathway analysis",
+            successCriteria: "Lab report completed (enzyme kinetics calculations done, Michaelis-Menten analysis written, protein assay results interpreted, or metabolic pathway diagram annotated), and work saved",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "testtube.2",
+            task: "Study for my biochemistry exam and review enzyme kinetics, metabolic pathways, or biochemical assay techniques",
+            successCriteria: "Target biochemistry content reviewed (enzyme kinetics, Km/Vmax calculations, metabolic pathways, assay principles, or biochemistry exam questions practiced), notes saved",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

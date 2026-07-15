@@ -3297,9 +3297,54 @@ struct SuggestedSessionTemplatesTests {
         #expect(hasReport, "catalog must include an environmental health report or case study template")
     }
 
-    // MARK: - Count guard (5-domain batch: plumbingtech/electricaltechnology/materialscience/networkengineering/environmentalhealth)
-    @Test func catalogHasAtLeastThreeHundredEightyThreeTemplates() {
-        #expect(SuggestedSessionTemplates.all.count >= 383,
-                "catalog should have ≥383 templates after plumbingtech/electricaltechnology/materialscience/networkengineering/environmentalhealth additions")
+    // MARK: - Construction Technology templates
+    @Test func constructiontechTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("contractor license exam") || $0.localizedCaseInsensitiveContains("construction technology program") && $0.localizedCaseInsensitiveContains("carpentry") }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("building trades") && ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("wood framing")) }
+        #expect(hasExam, "catalog must include a contractor license exam or construction tech assignment template")
+        #expect(hasAssignment, "catalog must include a building trades class assignment template")
+    }
+
+    // MARK: - Urban Design templates
+    @Test func urbandesignTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudio = tasks.contains { $0.localizedCaseInsensitiveContains("urban design studio") || $0.localizedCaseInsensitiveContains("streetscape") }
+        let hasAssignment = tasks.contains { $0.localizedCaseInsensitiveContains("urban design class") && ($0.localizedCaseInsensitiveContains("placemaking") || $0.localizedCaseInsensitiveContains("pedestrian")) }
+        #expect(hasStudio, "catalog must include an urban design studio or streetscape design template")
+        #expect(hasAssignment, "catalog must include an urban design class placemaking or pedestrian design template")
+    }
+
+    // MARK: - Ceramics and Sculpture templates
+    @Test func ceramicsandsculptureTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudio = tasks.contains { $0.localizedCaseInsensitiveContains("ceramics project") || $0.localizedCaseInsensitiveContains("wheel throwing") }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("ceramics") && ($0.localizedCaseInsensitiveContains("class exam") || $0.localizedCaseInsensitiveContains("sculpture class exam")) }
+        #expect(hasStudio, "catalog must include a ceramics project or wheel throwing template")
+        #expect(hasExam, "catalog must include a ceramics class exam template")
+    }
+
+    // MARK: - Exercise Science templates
+    @Test func exercisescienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasACSM = tasks.contains { $0.localizedCaseInsensitiveContains("ACSM exam") || $0.localizedCaseInsensitiveContains("exercise science class") && $0.localizedCaseInsensitiveContains("exercise testing") }
+        let hasLab = tasks.contains { $0.localizedCaseInsensitiveContains("exercise science lab report") || $0.localizedCaseInsensitiveContains("VO2 max") }
+        #expect(hasACSM, "catalog must include an ACSM exam or exercise science class assignment template")
+        #expect(hasLab, "catalog must include an exercise science lab report or VO2 max template")
+    }
+
+    // MARK: - Biochemistry templates
+    @Test func biochemistryTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasLab = tasks.contains { $0.localizedCaseInsensitiveContains("biochemistry lab report") && ($0.localizedCaseInsensitiveContains("enzyme kinetics") || $0.localizedCaseInsensitiveContains("protein assay")) }
+        let hasExam = tasks.contains { $0.localizedCaseInsensitiveContains("biochemistry exam") && ($0.localizedCaseInsensitiveContains("enzyme kinetics") || $0.localizedCaseInsensitiveContains("metabolic pathways")) }
+        #expect(hasLab, "catalog must include a biochemistry lab report template")
+        #expect(hasExam, "catalog must include a biochemistry exam study template")
+    }
+
+    // MARK: - Count guard (5-domain batch: constructiontech/urbandesign/ceramicsandsculpture/exercisescience/biochemistry)
+    @Test func catalogHasAtLeastThreeHundredNinetyThreeTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 393,
+                "catalog should have ≥393 templates after constructiontech/urbandesign/ceramicsandsculpture/exercisescience/biochemistry additions")
     }
 }

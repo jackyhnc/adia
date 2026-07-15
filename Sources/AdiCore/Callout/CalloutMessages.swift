@@ -258,6 +258,11 @@ extension CalloutManager {
         case "materialscience":             return materialscienceCallouts(tier: tier)
         case "networkengineering":          return networkengineeringCallouts(tier: tier)
         case "environmentalhealth":         return environmentalhealthCallouts(tier: tier)
+        case "constructiontech":            return constructiontechCallouts(tier: tier)
+        case "urbandesign":                 return urbandesignCallouts(tier: tier)
+        case "ceramicsandsculpture":        return ceramicsandsculptureCallouts(tier: tier)
+        case "exercisescience":             return exercisescienceCallouts(tier: tier)
+        case "biochemistry":               return biochemistryCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -4655,6 +4660,111 @@ extension CalloutManager {
             "CLOSE THIS. open your environmental health notes.",
             "no one passes the REHS exam by scrolling.",
             "CLOSE THIS. get back to your environmental health science assignment.",
+        ]
+        }
+    }
+
+    private func constructiontechCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those contractor exam questions aren't going to answer themselves.",
+            "your construction tech assignment isn't going to finish itself.",
+            "close this and open your construction technology notes.",
+            "get back to your building trades coursework.",
+        ]
+        case 2: return [
+            "contractors don't earn their license by scrolling.",
+            "your carpentry notes won't write themselves.",
+            "stop avoiding your construction tech coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your construction technology notes.",
+            "no one earns their contractor license by scrolling.",
+            "CLOSE THIS. get back to your building trades assignment.",
+        ]
+        }
+    }
+
+    private func urbandesignCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that streetscape isn't going to design itself.",
+            "your urban design project isn't going to finish itself.",
+            "close this and open your urban design studio notes.",
+            "get back to your urban design coursework.",
+        ]
+        case 2: return [
+            "urban designers don't shape public space by scrolling.",
+            "your placemaking analysis won't write itself.",
+            "stop avoiding your urban design work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your urban design notes.",
+            "no one designs great public spaces by scrolling.",
+            "CLOSE THIS. get back to your urban design studio project.",
+        ]
+        }
+    }
+
+    private func ceramicsandsculptureCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that pottery wheel isn't going to spin itself.",
+            "your ceramics project isn't going to fire itself.",
+            "close this and open your ceramics studio notes.",
+            "get back to your ceramics coursework.",
+        ]
+        case 2: return [
+            "ceramic artists don't master the wheel by scrolling.",
+            "your clay isn't going to shape itself.",
+            "stop avoiding your ceramics work.",
+        ]
+        default: return [
+            "CLOSE THIS. get back to your pottery wheel.",
+            "no one masters ceramics by scrolling.",
+            "CLOSE THIS. open your ceramics notes.",
+        ]
+        }
+    }
+
+    private func exercisescienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those ACSM questions aren't going to answer themselves.",
+            "your exercise science assignment isn't going to finish itself.",
+            "close this and open your exercise science notes.",
+            "get back to your exercise science coursework.",
+        ]
+        case 2: return [
+            "exercise scientists don't earn their degree by scrolling.",
+            "your exercise testing lab report won't write itself.",
+            "stop avoiding your exercise science coursework.",
+        ]
+        default: return [
+            "CLOSE THIS. open your exercise science notes.",
+            "no one passes the ACSM exam by scrolling.",
+            "CLOSE THIS. get back to your exercise science lab or exam prep.",
+        ]
+        }
+    }
+
+    private func biochemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those enzyme kinetics questions aren't going to answer themselves.",
+            "your biochemistry lab report isn't going to write itself.",
+            "close this and open your biochemistry notes.",
+            "get back to your biochemistry coursework.",
+        ]
+        case 2: return [
+            "biochemists don't master enzyme kinetics by scrolling.",
+            "your Michaelis-Menten analysis won't finish itself.",
+            "stop avoiding your biochemistry lab work.",
+        ]
+        default: return [
+            "CLOSE THIS. open your biochemistry lab notes.",
+            "no one masters biochemistry by scrolling.",
+            "CLOSE THIS. get back to your biochemistry assignment.",
         ]
         }
     }

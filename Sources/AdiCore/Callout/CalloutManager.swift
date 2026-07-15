@@ -692,7 +692,7 @@ public final class CalloutManager {
             || lower.contains("material science") || lower.contains("material engineering")
             || lower.contains("materials science and engineering")
             || lower.contains("metallurgy") || lower.contains("metallurgical engineering")
-            || (lower.contains("ceramics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("engineering")))
+            || (lower.contains("ceramics") && !lower.contains("art") && !lower.contains("studio") && !lower.contains("pottery") && !lower.contains("wheel") && !lower.contains("glaze") && !lower.contains("raku") && !lower.contains("kiln firing") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("engineering")))
             || (lower.contains("polymer science") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
             || lower.contains("polymer chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
             || lower.contains("polymer engineering")
@@ -837,9 +837,44 @@ public final class CalloutManager {
             || lower.contains("construction exam") && lower.contains("management") {
             return "constructionmanagement"
         }
+        // constructiontech — positioned AFTER constructionmanagement so trade-school carpentry,
+        // masonry, concrete technology, and contractor license exam prep route here.
+        // "construction management" and CCM/CMAA terms fire constructionmanagement first.
+        if lower.contains("construction technology") || lower.contains("construction tech")
+            || lower.contains("carpentry class") || lower.contains("carpentry course")
+            || lower.contains("carpentry program") || lower.contains("carpentry exam")
+            || lower.contains("wood framing") && (lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("concrete class") || lower.contains("concrete course")
+            || lower.contains("concrete lab") || lower.contains("concrete technology")
+            || lower.contains("masonry class") || lower.contains("masonry course")
+            || lower.contains("masonry program") || lower.contains("masonry exam")
+            || lower.contains("building trades") && (lower.contains("class") || lower.contains("program") || lower.contains("school"))
+            || lower.contains("contractor license exam") || lower.contains("contractor licensing exam")
+            || lower.contains("construction inspection class") || lower.contains("construction inspection course")
+            || lower.contains("construction inspection exam")
+            || lower.contains("trades school") && lower.contains("construction")
+            || lower.contains("construction apprentice") && !lower.contains("management") {
+            return "constructiontech"
+        }
+        // urbandesign — positioned BEFORE urbanplanning so streetscape design, placemaking,
+        // and public space design route to a dedicated design-focused pool.
+        // "urban design" caught here; urbanplanning retains planning/policy terms.
+        if lower.contains("urban design") || lower.contains("placemaking")
+            || lower.contains("place-making") || lower.contains("place making")
+            || lower.contains("streetscape design") || lower.contains("public space design")
+            || lower.contains("public realm design") || lower.contains("civic design")
+            || lower.contains("urban furniture") || lower.contains("street furniture")
+            || lower.contains("complete streets") && lower.contains("design")
+            || lower.contains("pedestrian realm") || lower.contains("pedestrian design")
+            || lower.contains("urban form analysis") || lower.contains("urban form study")
+            || lower.contains("urban park design") || lower.contains("pocket park design")
+            || lower.contains("urban design studio") || lower.contains("urban design project")
+            || lower.contains("urban design class") || lower.contains("urban design course")
+            || lower.contains("urban design program") || lower.contains("urban design exam") {
+            return "urbandesign"
+        }
         // urbanplanning — positioned before realestate (which catches bare word("zoning")) so
         // "urban planning", "zoning ordinance", and AICP exam prep route to the planning pool.
-        // "urban design" placed here to not fall through to generic word("design") below.
         if lower.contains("urban planning") || lower.contains("urban planner")
             || lower.contains("urban planners") || lower.contains("city planning")
             || lower.contains("city planner") || lower.contains("town planning")
@@ -1149,6 +1184,30 @@ public final class CalloutManager {
             || lower.contains("product design exam") || lower.contains("design portfolio")
             && (lower.contains("industrial") || lower.contains("product")) {
             return "productdesign"
+        }
+        // ceramicsandsculpture — positioned BEFORE glassblowing and art so pottery, wheel throwing,
+        // and ceramics arts program work routes here. "ceramics" in engineering/dental context stays
+        // in materialscience/dentallab (fires earlier). word("sculpting") stays in art.
+        if word("pottery") || word("ceramicist") || word("ceramicists")
+            || lower.contains("ceramics") && (lower.contains("class") || lower.contains("studio")
+                || lower.contains("program") || lower.contains("wheel") || lower.contains("kiln")
+                || lower.contains("art") || lower.contains("course") || lower.contains("glaze"))
+            || lower.contains("wheel throwing") || lower.contains("wheel-throwing")
+            || lower.contains("kiln firing") && !lower.contains("glass")
+            || lower.contains("ceramic arts") || lower.contains("ceramic art") && !lower.contains("dental")
+            || lower.contains("pottery class") || lower.contains("pottery wheel")
+            || lower.contains("pottery studio") || lower.contains("pottery course")
+            || lower.contains("hand building") && (lower.contains("clay") || lower.contains("ceramic"))
+            || lower.contains("hand-building") && (lower.contains("clay") || lower.contains("ceramic"))
+            || lower.contains("slip casting") && !lower.contains("concrete")
+            || lower.contains("coil building") && (lower.contains("clay") || lower.contains("ceramic"))
+            || lower.contains("slab building") && (lower.contains("clay") || lower.contains("ceramic"))
+            || lower.contains("raku firing") || lower.contains("raku pottery") || lower.contains("raku kiln")
+            || lower.contains("ceramic glaze") || lower.contains("glazing") && lower.contains("ceramic")
+            || lower.contains("sculpture class") || lower.contains("sculpture course")
+            || lower.contains("sculpture program") || lower.contains("sculpture studio")
+            || lower.contains("sculpture major") || lower.contains("sculpture school") {
+            return "ceramicsandsculpture"
         }
         // glassblowing — positioned BEFORE art so glass arts, flameworking, and kiln-formed
         // glass studio work route to dedicated glass-artist callouts rather than generic art.
@@ -1732,6 +1791,23 @@ public final class CalloutManager {
             || lower.contains("sports medicine notes") || lower.contains("athletic training notes")
             || lower.contains("sports medicine team") && lower.contains("note") {
             return "sportsmedicine"
+        }
+        // exercisescience — positioned BEFORE kinesiology so exercise science degree/major
+        // and ACSM exam prep route to a dedicated pool. "exercise physiology" stays in kinesiology.
+        // Bare word("exercise") stays in fitness.
+        if lower.contains("exercise science") || lower.contains("exercise scientist")
+            || word("acsm") || lower.contains("acsm exam") || lower.contains("acsm certification")
+            || lower.contains("acsm cep") || lower.contains("certified exercise physiologist")
+            || lower.contains("exercise testing") && (lower.contains("class") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("graded exercise test")
+            || word("gxt") && (lower.contains("class") || lower.contains("lab") || lower.contains("test"))
+            || lower.contains("metabolic cart") && (lower.contains("class") || lower.contains("lab") || lower.contains("test"))
+            || lower.contains("metabolic testing") && (lower.contains("class") || lower.contains("lab"))
+            || lower.contains("exercise science class") || lower.contains("exercise science course")
+            || lower.contains("exercise science exam") || lower.contains("exercise science program")
+            || lower.contains("exercise science major") || lower.contains("exercise science degree")
+            || lower.contains("exercise science school") || lower.contains("exercise science notes") {
+            return "exercisescience"
         }
         // kinesiology — positioned before fitness so biomechanics, exercise physiology,
         // and physical therapy professional terms route here rather than the generic fitness pool.
@@ -2490,6 +2566,24 @@ public final class CalloutManager {
             || lower.contains("molecular lab") || lower.contains("molecular techniques")
             || lower.contains("pcr protocol") || lower.contains("pcr result") || lower.contains("run pcr") {
             return "molecularbiology"
+        }
+        // biochemistry — positioned AFTER molecularbiology and BEFORE geneticcounseling.
+        // Catches biochemistry lab/course work with specific enzyme-kinetics and assay terms.
+        // Bare word("biochemistry") alone stays in premed (MCAT context); compound lab terms fire here.
+        if lower.contains("biochemistry lab") || lower.contains("biochemistry class")
+            || lower.contains("biochemistry course") || lower.contains("biochemistry exam")
+            || lower.contains("biochemistry report") || lower.contains("biochemistry program")
+            || lower.contains("biochemistry major") || lower.contains("biochemistry degree")
+            || lower.contains("biochemistry notes") && lower.contains("class")
+            || lower.contains("enzyme kinetics") || lower.contains("michaelis-menten")
+            || lower.contains("michaelis menten") || lower.contains("km and vmax")
+            || lower.contains("bradford assay") || lower.contains("biuret assay")
+            || lower.contains("spectrophotometry") && (lower.contains("biochem") || lower.contains("class"))
+            || lower.contains("protein assay") && !lower.contains("molecular biology")
+            || lower.contains("enzyme assay") || lower.contains("substrate concentration") && lower.contains("biochem")
+            || lower.contains("metabolic pathway analysis") && !lower.contains("bioinformatics")
+            || lower.contains("biochemistry textbook") || lower.contains("lehninger") {
+            return "biochemistry"
         }
         // geneticcounseling — positioned AFTER molecularbiology (shares genomics vocabulary) and
         // BEFORE radiologictechnology. Catches ABGC/CGC board prep, prenatal genetics,

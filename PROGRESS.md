@@ -1,5 +1,74 @@
 # Adia — Build Progress
 
+## Run 340 (automated) — 2026-07-15 — Construction technology + urban design + ceramics/sculpture + exercise science + biochemistry keyword domains (2185→2215 tests approx, 383→393 templates)
+
+### Shipped
+
+**Construction Technology keyword domain:**
+- `constructiontech` branch positioned AFTER constructionmanagement (trade-school track separate from CM degree).
+- Matches: construction technology/tech, carpentry class/course/program/exam, wood framing + class/course/lab, concrete class/course/lab/technology, masonry class/course/program/exam, building trades + class/program/school, contractor license exam/licensing exam, construction inspection class/course/exam, trades school + construction, construction apprentice + !management.
+- `constructiontechCallouts(tier:)` 4/3/3: "those contractor exam questions aren't going to answer themselves." / "contractors don't earn their license by scrolling." / "CLOSE THIS. open your construction technology notes."
+- 2 templates: "Study for the contractor license exam or complete a construction technology program assignment" (60 min) + "Complete a building trades class assignment on wood framing, structural systems, or construction inspection" (45 min)
+
+**Urban Design keyword domain:**
+- `urbandesign` branch positioned BEFORE urbanplanning so design-focused terms (streetscape, placemaking, public space) route here.
+- Matches: urban design, placemaking/place-making/place making, streetscape design, public space/realm design, civic design, urban/street furniture, complete streets + design, pedestrian realm/design, urban form analysis/study, urban park/pocket park design, urban design studio/project/class/course/program/exam.
+- `urbandesignCallouts(tier:)` 4/3/3: "that streetscape isn't going to design itself." / "urban designers don't shape public space by scrolling." / "CLOSE THIS. open your urban design notes."
+- 2 templates: "Design a streetscape or public space for my urban design studio project" (60 min) + "Complete an urban design class assignment on placemaking, pedestrian design, or public realm analysis" (45 min)
+
+**Ceramics and Sculpture keyword domain:**
+- `ceramicsandsculpture` branch positioned BEFORE glassblowing and art.
+- Matches: word("pottery"), ceramicist, ceramics + art/studio/class/wheel/kiln/course/glaze, wheel throwing, kiln firing (no glass), ceramic arts, pottery class/wheel/studio/course, hand building + clay/ceramic context, slip casting, coil/slab building + clay, raku firing/pottery/kiln, ceramic glaze, glazing + ceramic, sculpture class/course/program/studio/major/school.
+- **Guard fix**: materialscience "ceramics" condition updated to exclude art/studio/pottery/wheel/glaze/raku/kiln-firing context so art ceramics classes no longer mis-route to engineering callouts.
+- `ceramicsandsculptureCallouts(tier:)` 4/3/3: "that pottery wheel isn't going to spin itself." / "ceramic artists don't master the wheel by scrolling." / "CLOSE THIS. get back to your pottery wheel."
+- 2 templates: "Work on my ceramics project — wheel throwing, hand building, or preparing pieces for kiln firing" (60 min) + "Study for my ceramics or sculpture class exam and review techniques, glaze chemistry, or art history context" (45 min)
+
+**Exercise Science keyword domain:**
+- `exercisescience` branch positioned BEFORE kinesiology so ACSM exam prep and exercise science degree coursework route here. "exercise physiology" stays in kinesiology.
+- Matches: exercise science (degree/class/course/exam/program/major/degree/school/notes), exercise scientist, word("acsm"), ACSM exam/certification/CEP, certified exercise physiologist, exercise testing + class/lab/course, graded exercise test, GXT + class/lab/test, metabolic cart + class/lab/test, metabolic testing + class/lab.
+- `exercisescienceCallouts(tier:)` 4/3/3: "those ACSM questions aren't going to answer themselves." / "exercise scientists don't earn their degree by scrolling." / "CLOSE THIS. open your exercise science notes."
+- 2 templates: "Study for the ACSM exam or complete an exercise science class assignment" (90 min) + "Complete my exercise science lab report on exercise testing, VO2 max assessment, or metabolic measurement" (45 min)
+
+**Biochemistry keyword domain:**
+- `biochemistry` branch positioned AFTER molecularbiology, BEFORE geneticcounseling. Bare word("biochemistry") alone stays in premed (MCAT context).
+- Matches: biochemistry lab/class/course/exam/report/program/major/degree, enzyme kinetics, Michaelis-Menten, km and vmax, Bradford assay, Biuret assay, spectrophotometry + biochem/class, protein assay + !molecular biology, enzyme assay, substrate concentration + biochem, metabolic pathway analysis + !bioinformatics, biochemistry textbook, Lehninger.
+- `biochemistryCallouts(tier:)` 4/3/3: "those enzyme kinetics questions aren't going to answer themselves." / "biochemists don't master enzyme kinetics by scrolling." / "CLOSE THIS. open your biochemistry lab notes."
+- 2 templates: "Complete my biochemistry lab report on enzyme kinetics, protein assay, or metabolic pathway analysis" (60 min) + "Study for my biochemistry exam and review enzyme kinetics, metabolic pathways, or biochemical assay techniques" (60 min)
+
+**Tests:**
+- CalloutManagerTests.swift: 2185→2215 approx (+30: 6 per domain × 5 domains; count guard updated to ≥393)
+- SuggestedSessionTemplatesTests.swift: +10 domain template tests; count guard updated to ≥393
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- "contractor license exam" → constructiontech ✓; positioned after constructionmanagement ✓
+- "carpentry class" → constructiontech ✓
+- "urban design" → urbandesign ✓; fires before urbanplanning ✓
+- "urban planning policy" → urbanplanning ✓ (not urbandesign ✓)
+- "wheel throwing on the pottery wheel" → ceramicsandsculpture ✓ (not materialscience ✓)
+- "ceramics art class" → materialscience guard excludes "art" → ceramicsandsculpture ✓
+- "materials science ceramics lab" → materialscience fires first via "materials science" ✓
+- "ACSM exam" → exercisescience ✓; "exercise physiology" stays in kinesiology ✓
+- "biochemistry lab report on enzyme kinetics" → biochemistry ✓
+- "studying biochemistry for the MCAT" → premed ✓ (not biochemistry ✓)
+- All 5 tier-3 pools contain "CLOSE THIS" or "no one" ✓; all tier-1 pools have ≥4 messages ✓
+- Template count: 393 ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good remaining candidates:
+  - `horticulturetherapy` — therapeutic horticulture (separate from horticulture science), HTR credential
+  - `agriculturalscience` — agronomy, crop science, soil fertility, precision agriculture, extension
+  - `industrialdesign2` — broader industrial design programs (separate from productdesign)
+  - `textilesfashion` — textile design/science (separate from fashion design; fiber arts, weaving, dyeing)
+  - `recreationtherapy` — CTRS exam, therapeutic recreation, recreation therapy program
+- Template count: 393 → 403 after next 5-domain batch (2 templates per domain)
+- Estimated test count: 2215 + ~30 (5 domains × 6 tests) = ~2245 CalloutManagerTests
+
+---
+
 ## Run 336 (automated) — 2026-07-12 — Winemaking + forestry + aquatic science + emergency nursing + public health nutrition keyword domains (1999→2040 tests, 365→375 templates)
 
 ### Shipped
