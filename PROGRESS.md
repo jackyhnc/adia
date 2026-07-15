@@ -1,5 +1,73 @@
 # Adia — Build Progress
 
+## Run 342 (automated) — 2026-07-15 — 5 new keyword domains: quantumcomputing, cloudcomputing, softwaretesting, mechanicaldrafting, dataengineering (403→413 templates)
+
+### What shipped
+
+**New keyword domain — quantumcomputing:**
+- Branch positioned AFTER `networkengineering`, BEFORE `gamedev`.
+- Matches: quantum computing/computer, quantum algorithm/algorithms, Qiskit, quantum circuit/circuits, quantum gate/gates, IBM Quantum, IBM Q, quantum programming, quantum error correction, quantum cryptography, quantum key distribution, quantum information (with class/course/exam context), quantum mechanics (only when combined with computing/programming/algorithm).
+- Guard: bare "quantum" or "quantum mechanics" for physics course stays in studying/research.
+- `quantumcomputingCallouts(tier:)` 4/3/3: "those quantum circuits aren't going to build themselves." / "quantum computing pioneers didn't discover superposition by scrolling." / "CLOSE THIS. open your quantum computing study guide."
+- 2 templates: "Build a quantum circuit or work through a quantum computing assignment using Qiskit or IBM Quantum" (60 min) + "Study quantum computing concepts — quantum gates, algorithms, or quantum error correction" (45 min)
+
+**New keyword domain — cloudcomputing:**
+- Branch positioned AFTER `quantumcomputing`, BEFORE `gamedev`.
+- Matches: AWS (compound guard: requires certification/cloud/class/course/exam/training/architect/devops/solutions context — AWS welding stays in weldingtech), Azure (compound guard), GCP (compound guard), Google Cloud + cert/class/exam/architect, cloud computing, cloud engineer/architect, DevOps class/course/exam/certification/engineer, Terraform class/course/exam, Kubernetes class/course/exam/certification, CKA, CKAD, Docker class/course/exam, cloud deployment, cloud infrastructure class, serverless class/course, cloud security/migration class.
+- Guard: bare `aws` alone NOT matched — avoids "AWS welding certification" false positive.
+- `cloudcomputingCallouts(tier:)` 4/3/3: "those AWS certification questions aren't going to answer themselves." / "cloud engineers don't earn their AWS certification by scrolling." / "CLOSE THIS. open your AWS or Azure certification guide."
+- 2 templates: "Study for my AWS, Azure, or GCP cloud certification exam and review cloud architecture concepts" (90 min) + "Complete a DevOps or cloud computing assignment using Terraform, Kubernetes, or Docker" (60 min)
+
+**New keyword domain — softwaretesting:**
+- Branch positioned AFTER `cloudcomputing`, BEFORE `gamedev`.
+- Matches: software testing, software quality assurance, QA engineering, qa (compound: class/course/exam/engineer/testing/program), ISTQB, CTFL exam, CTAL exam, test automation, automated testing, Selenium class/course/testing, pytest (with class/course/testing), JUnit (with class/course/testing), software quality (with class/course/exam/engineering), quality assurance testing, QA testing, regression/performance/load/unit/integration/acceptance testing class/course.
+- Guard: bare "testing" or "test" NOT matched; "penetration testing" stays in cybersecurity (fires at line 139, before softwaretesting at line 225).
+- `softwaretestingCallouts(tier:)` 4/3/3: "those ISTQB exam questions aren't going to answer themselves." / "QA engineers don't earn their certification by scrolling." / "CLOSE THIS. open your software testing study guide."
+- 2 templates: "Study for the ISTQB CTFL exam or complete a software testing assignment on test automation or QA engineering" (60 min) + "Write automated tests using Selenium, pytest, or JUnit for my software testing class or project" (60 min)
+
+**New keyword domain — mechanicaldrafting:**
+- Branch positioned AFTER `hvactechnology`, BEFORE `industrialsafety`.
+- Matches: mechanical drafting, technical drafting, drafting technology/technician, drafting class/course/program/exam/lab/school/certification/notes, technical drawing (standalone or in class), engineering drawing/graphics (standalone or in class), blueprint reading (standalone or in class/course/exam), drafting and design, AutoCAD class/course/exam.
+- Guard: bare word("drafting") NOT matched — "drafting a paper" or "drafting a plan" stays in the relevant domain. "AutoCAD" alone without class context stays in the code/design branch.
+- `mechanicaldraftingCallouts(tier:)` 4/3/3: "those blueprints aren't going to read themselves." / "drafting technicians don't get certified by scrolling." / "CLOSE THIS. open your drafting textbook."
+- 2 templates: "Complete a mechanical drafting assignment — technical drawing, blueprint reading, or AutoCAD drafting for my program" (60 min) + "Study engineering drawing and blueprint reading for my drafting technology class or certification exam" (45 min)
+
+**New keyword domain — dataengineering:**
+- Branch positioned AFTER `datascience`, BEFORE `computationalscience`.
+- Matches: data engineering/engineer, Apache Spark (with class/course/exam/lab/project), Apache Kafka (with class/course/exam/lab), Apache Airflow (with class/course/project/pipeline), ETL pipeline/class/course, data pipeline (with class/course/build/design/project), dbt class/course/project/pipeline, data warehouse class/course/design, data warehousing, data lake (with class/course/design/build), Spark streaming, real-time data pipeline, stream/batch processing class, Databricks class/course/certification, Snowflake class/course/certification, data integration/modeling class.
+- Guard: "data analysis" with jupyter/ML stays in datascience (fires first).
+- `dataengineeringCallouts(tier:)` 4/3/3: "that ETL pipeline isn't going to build itself." / "data engineers don't build pipelines by scrolling." / "CLOSE THIS. open your data engineering project."
+- 2 templates: "Build an ETL pipeline or data engineering project using Apache Spark, Kafka, or Airflow" (90 min) + "Complete my data engineering assignment on data warehouse design, dbt, Snowflake, or data modeling" (60 min)
+
+**Test counts:**
+- CalloutManagerTests.swift: 13121 → 13341 (+220: 8 tests per domain × 5 domains + count guard 403→413)
+- SuggestedSessionTemplatesTests.swift: 3401 → 3452 (+51: 2 template existence tests × 5 domains + count guard 403→413)
+
+**Template catalog: 403 → 413**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `quantumcomputing` fires BEFORE `gamedev` (~line 167 vs ~line 227). "quantum computing class qiskit ibm quantum circuit" → quantumcomputing ✓; "quantum mechanics for my physics exam" → NOT quantumcomputing ✓ (guard)
+- `cloudcomputing` fires AFTER `quantumcomputing`, BEFORE `gamedev` (~line 184 vs ~line 203 vs ~line 227). "aws certification solutions architect cloud exam" → cloudcomputing ✓; "aws welding certification d1.1 structural" → NOT cloudcomputing ✓ (compound guard)
+- `softwaretesting` fires AFTER `cloudcomputing`, BEFORE `gamedev` (~line 205 vs ~line 225 vs ~line 227). "istqb ctfl exam software quality assurance" → softwaretesting ✓; "penetration testing oscp kali linux" → cybersecurity (fires at ~line 139) ✓
+- `mechanicaldrafting` fires AFTER `hvactechnology` (~line 776), BEFORE `industrialsafety` (~line 818). "blueprint reading class mechanical drafting program" → mechanicaldrafting ✓; "drafting a paper on climate change" → NOT mechanicaldrafting ✓
+- `dataengineering` fires AFTER `datascience` (~line 880), BEFORE `computationalscience` (~line 926). "etl pipeline data engineering class apache spark project" → dataengineering ✓; "jupyter notebook pandas machine learning model" → datascience ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `robotics` — robotics class, ROS/ROS2, robot programming, autonomous systems, embedded systems for robots, FIRST robotics
+  - `artificialintelligence` — AI class/course (broader than datascience/ML), natural language understanding, large language models, prompt engineering class, AI ethics class, AI product management
+  - `bioethics` — medical ethics class, bioethics class, IRB protocol, research ethics, clinical ethics, human subjects research
+  - `sportsmedicine` — sports medicine, athletic trainer certification, ATC exam, BOC exam, taping and bracing, concussion management, injury prevention
+  - `osteopathicmedicine` — osteopathic medicine, DO student, COMLEX exam, OMM techniques
+- Template count: 413 → 423 after next 5-domain batch
+- Estimated test count: 13341 (CalloutManagerTests) + ~560 other Swift tests
+
+---
+
 ## Run 341 (automated) — 2026-07-15 — Agricultural science + textiles/fiber arts + geography + child life + quality management keyword domains (2215→~2245 tests approx, 393→403 templates)
 
 ### Shipped
