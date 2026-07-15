@@ -15735,3 +15735,62 @@ None. Swift toolchain unavailable on Linux container.
   - `toxicology` — toxicology class, forensic toxicology, environmental toxicology (separate from forensicscience/environmentalhealth)
 - Template count: 443 → 453 after next 5-domain batch
 - CalloutManagerTests: ~2252 + 40 new = ~2292 tests
+
+---
+
+## Run — 2026-07-15
+
+### What shipped
+**5 new keyword domains: veterinarytechnology, dentalradiology, medicalscribing, communityhealth, toxicology**
+
+**New keyword domain — veterinarytechnology:**
+- Branch positioned BEFORE `veterinary`; catches vet tech program/class/school/exam/student/certification/course/notes, veterinary technician program/school/class/exam, veterinary technology program/class/exam/school, VTNE exam/prep, vet tech license. Bare "vet tech" still falls through to veterinary for backward compat.
+- `veterinarytechnologyCallouts(tier:)` 4/3/3: "those VTNE questions aren't going to answer themselves." / "no one passes the VTNE by scrolling." / "CLOSE THIS. open your VTNE prep."
+- 2 templates: "Study for the VTNE or vet tech class exam…" (90 min, pawprint.fill) + "Complete my veterinary technology class assignment…" (45 min, cross.case.fill)
+
+**New keyword domain — dentalradiology:**
+- Branch positioned BEFORE `dental` (after oralsurgery); catches dental radiography/radiograph, dental x-ray technique/class/course/exam/program/school, DANB RHS exam, radiographic technique with dental context, intraoral/bitewing/periapical/panoramic radiograph.
+- `dentalradiologyCallouts(tier:)` 4/3/3: "those radiograph techniques aren't going to master themselves." / "no one passes the DANB RHS by scrolling." / "CLOSE THIS. open your dental radiology notes."
+- 2 templates: "Study for the DANB RHS dental radiography exam…" (60 min, rays) + "Complete my dental radiography class assignment…" (45 min, doc.text.fill)
+
+**New keyword domain — medicalscribing:**
+- Branch positioned AFTER `medicalbilling`, BEFORE `medicallabscience`; catches medical/physician/clinical scribe, scribing, scribe program/class/exam/certification/training with medical/clinical context, AHDPG, real-time documentation with medical context, EHR documentation with scribe context, patient encounter documentation.
+- `medicalscribingCallouts(tier:)` 4/3/3: "those patient encounter notes aren't going to write themselves." / "no one earns their scribe certification by scrolling." / "CLOSE THIS. open your scribe training materials."
+- 2 templates: "Practice medical scribing by transcribing a patient encounter…" (30 min, pencil.and.outline) + "Study for my medical scribe certification…" (45 min, checkmark.seal.fill)
+
+**New keyword domain — communityhealth:**
+- Branch positioned BEFORE `publicheath` (after epidemiology); catches community health worker/workers, CHW certification/exam/program/training/class, CHES exam/certification, community health educator/education, health educator certification, certified health education specialist, community health outreach, health outreach program, lay health worker, promotora, community health advocate, patient navigator.
+- `communityhealthCallouts(tier:)` 4/3/3: "those CHES questions aren't going to answer themselves." / "no one earns their CHES certification by scrolling." / "CLOSE THIS. open your community health notes."
+- 2 templates: "Study for the CHES or CHW certification exam…" (60 min, person.3.fill) + "Complete my community health or CHW class assignment…" (45 min, heart.text.clipboard.fill)
+
+**New keyword domain — toxicology:**
+- Branch positioned AFTER `environmentalhealth`, BEFORE `epidemiology`; catches toxicology class/course/exam/lab/program/major/degree/notes/assignment/paper/report, toxicologist, forensic/clinical/analytical/neurotoxicology, reproductive toxicology, ecotoxicology, toxicokinetics, dose-response with class/course/toxicology context, risk assessment with toxicologist context, tox screen in class/exam context, poisoning mechanisms, toxic dose with class/course context.
+- `toxicologyCallouts(tier:)` 4/3/3: "those dose-response curves aren't going to memorize themselves." / "no one passes toxicology by scrolling." / "CLOSE THIS. open your toxicology notes."
+- 2 templates: "Study for my toxicology class exam…" (60 min, flask.fill) + "Complete my toxicology lab report or assignment…" (60 min, doc.plaintext.fill)
+
+**New tests:**
+- CalloutManagerTests.swift: +41 tests (8 per domain + 1 count guard); 2329 → 2370
+- SuggestedSessionTemplatesTests.swift: +6 tests (1 existence test per domain + 1 count guard at 463); 422 → 428
+
+**Template catalog: 453 → 463**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `veterinarytechnology` fires BEFORE `veterinary`. "VTNE exam vet tech program pharmacology certification" → veterinarytechnology ✓; "vet school veterinary medicine DVM clinical rotation" → veterinary ✓
+- `dentalradiology` fires BEFORE `dental`. "DANB RHS dental radiography bitewing periapical exam" → dentalradiology ✓; "DDS dental school periodontics NBDE board" → dental ✓
+- `medicalscribing` fires AFTER `medicalbilling`. "medical billing CPC exam ICD-10 coding" → medicalbilling ✓; "medical scribing real-time documentation scribe certification" → medicalscribing ✓
+- `communityhealth` fires BEFORE `publicheath`. "CHW certification community health worker patient navigation" → communityhealth ✓; "MPH epidemiology community health policy" → publicheath ✓ (no CHW/CHES terms)
+- `toxicology` fires AFTER `environmentalhealth`. "environmental toxicology REHS food inspection environmental health" → environmentalhealth ✓; "toxicology class dose-response toxicokinetics exam" → toxicology ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `dentalanesthesia` — dental anesthesia class, COMS/DOCS exam, sedation dentistry, anesthesia for dentistry
+  - `geographicis` — GIS software, ArcGIS/QGIS class, spatial analysis, remote sensing class
+  - `musicbusiness` — music business class, music industry, entertainment law, music publishing, ASCAP/BMI
+  - `performanceanalysis` — sports performance analysis, video analysis, Dartfish/Hudl class, coaching analytics
+  - `horticulturaltherapy` (check if already exists) — confirm not a duplicate
+- Template count: 463 → 473 after next 5-domain batch
+- CalloutManagerTests: ~2370 + 40 new = ~2410 tests after next batch
