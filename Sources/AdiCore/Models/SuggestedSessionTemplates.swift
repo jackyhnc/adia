@@ -4190,5 +4190,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Healthcare quality project meaningfully advanced (at least one QI tool applied, data analyzed, or a section of the project written and saved)",
             preferredDuration: 45 * 60
         ),
+        // nursinganesthesia
+        SuggestedTemplate(
+            icon: "staroflife.fill",
+            task: "Study for the NBCRNA exam or CRNA school coursework — review anesthesia pharmacology, anesthesia equipment, or clinical anesthesia concepts",
+            successCriteria: "Nurse anesthesia study session completed (at least two anesthesia concepts reviewed, practice questions attempted and notes updated)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my nurse anesthesia clinical notes, case summaries, or CRNA program coursework assignments",
+            successCriteria: "Nurse anesthesia assignment meaningfully advanced (at least one clinical case documented or a section of coursework written and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // physicalchemistry
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work through my physical chemistry problem set — Gibbs energy, chemical kinetics, partition functions, molecular orbital theory, or quantum chemistry",
+            successCriteria: "Pchem problem set meaningfully advanced (at least two problems worked through with steps shown and notes saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study physical chemistry for my exam — review thermodynamics of reactions, chemical kinetics, statistical thermodynamics, or the Schrödinger equation",
+            successCriteria: "Pchem study session completed (at least two concepts reviewed with worked examples and notes saved)",
+            preferredDuration: 45 * 60
+        ),
+        // inorganicchemistry
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Complete my inorganic chemistry problem set — coordination complexes, crystal field theory, ligand field, d-block elements, or organometallic chemistry",
+            successCriteria: "Inorganic chemistry assignment meaningfully advanced (at least two problems solved or a section of the lab report written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study inorganic chemistry for my exam — review crystal field splitting, coordination chemistry, molecular symmetry, or main group chemistry",
+            successCriteria: "Inorganic chemistry study session completed (at least two inorganic concepts reviewed with examples and notes saved)",
+            preferredDuration: 45 * 60
+        ),
+        // analyticalchemistry
+        SuggestedTemplate(
+            icon: "chart.line.uptrend.xyaxis",
+            task: "Complete my analytical chemistry lab report or problem set — HPLC, GC-MS, titration, gravimetric analysis, or mass spectrometry data analysis",
+            successCriteria: "Analytical chemistry assignment meaningfully advanced (at least one technique analyzed or a section of the lab report written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study analytical chemistry for my exam — review chromatography methods, titration, spectroscopy techniques, or quantitative analysis",
+            successCriteria: "Analytical chemistry study session completed (at least two techniques reviewed with worked examples and notes saved)",
+            preferredDuration: 45 * 60
+        ),
+        // nuclearchemistry
+        SuggestedTemplate(
+            icon: "rays",
+            task: "Work through my nuclear chemistry problem set — radioactive decay, half-life calculations, nuclear equations, fission, or fusion reactions",
+            successCriteria: "Nuclear chemistry problem set meaningfully advanced (at least two decay or reaction problems solved correctly and notes saved)",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study nuclear chemistry for my exam — review radioactive isotopes, alpha/beta/gamma decay, nuclear binding energy, and decay series",
+            successCriteria: "Nuclear chemistry study session completed (at least two nuclear concepts reviewed with worked examples and notes saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

@@ -391,6 +391,11 @@ extension CalloutManager {
         case "operationsresearch":         return operationsresearchCallouts(tier: tier)
         case "internalaudit":              return internalauditCallouts(tier: tier)
         case "healthcarequality":          return healthcarequalityCallouts(tier: tier)
+        case "nursinganesthesia":          return nursinganesthesiaCallouts(tier: tier)
+        case "physicalchemistry":          return physicalchemistryCallouts(tier: tier)
+        case "inorganicchemistry":         return inorganicchemistryCallouts(tier: tier)
+        case "analyticalchemistry":        return analyticalchemistryCallouts(tier: tier)
+        case "nuclearchemistry":           return nuclearchemistryCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -7581,6 +7586,111 @@ extension CalloutManager {
             "CLOSE THIS. open your healthcare quality materials.",
             "CLOSE THIS. quality indicators won't review themselves.",
             "CLOSE THIS. patient safety is too important for scrolling."
+        ]
+        }
+    }
+
+    private func nursinganesthesiaCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that CRNA exam isn't going to study itself.",
+            "close this and get back to your nurse anesthesia work.",
+            "your anesthesia pharmacology won't review itself — close this.",
+            "the NBCRNA won't wait while you scroll — close this.",
+        ]
+        case 2: return [
+            "no one passes the NBCRNA by scrolling.",
+            "close this and open your nurse anesthesia notes.",
+            "your CRNA clinical prep won't do itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your nurse anesthesia materials.",
+            "CLOSE THIS. anesthesia pharmacology doesn't memorize itself.",
+            "CLOSE THIS. the NBCRNA exam demands your full attention."
+        ]
+        }
+    }
+
+    private func physicalchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that pchem problem set isn't going to solve itself.",
+            "close this and get back to your physical chemistry work.",
+            "Gibbs energy won't calculate itself — close this.",
+            "physical chemistry demands your full focus — close this.",
+        ]
+        case 2: return [
+            "no one masters pchem by scrolling.",
+            "close this and open your physical chemistry notes.",
+            "your partition function won't work out itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your pchem textbook.",
+            "CLOSE THIS. chemical kinetics doesn't derive itself.",
+            "CLOSE THIS. the Schrödinger equation won't solve itself while you scroll."
+        ]
+        }
+    }
+
+    private func inorganicchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those coordination complexes aren't going to study themselves.",
+            "close this and get back to your inorganic chemistry work.",
+            "crystal field theory won't review itself — close this.",
+            "inorganic chemistry demands your full focus — close this.",
+        ]
+        case 2: return [
+            "no one masters coordination chemistry by scrolling.",
+            "close this and open your inorganic notes.",
+            "your ligand field analysis won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your inorganic chemistry textbook.",
+            "CLOSE THIS. d-block elements don't study themselves.",
+            "CLOSE THIS. crystal field splitting won't appear while you scroll."
+        ]
+        }
+    }
+
+    private func analyticalchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that HPLC method isn't going to validate itself.",
+            "close this and get back to your analytical chemistry work.",
+            "your titration won't calculate itself — close this.",
+            "analytical chemistry demands your full focus — close this.",
+        ]
+        case 2: return [
+            "no one masters analytical chemistry by scrolling.",
+            "close this and open your analytical chemistry notes.",
+            "your GC-MS data won't interpret itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your analytical chemistry notes.",
+            "CLOSE THIS. chromatograms don't read themselves.",
+            "CLOSE THIS. your titration calculations won't appear while you scroll."
+        ]
+        }
+    }
+
+    private func nuclearchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those radioactive decay equations aren't going to solve themselves.",
+            "close this and get back to your nuclear chemistry work.",
+            "half-life calculations won't do themselves — close this.",
+            "nuclear chemistry demands your full focus — close this.",
+        ]
+        case 2: return [
+            "no one masters nuclear chemistry by scrolling.",
+            "close this and open your nuclear chemistry notes.",
+            "your nuclear equations won't balance themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your nuclear chemistry textbook.",
+            "CLOSE THIS. radioactive isotopes don't study themselves.",
+            "CLOSE THIS. decay series don't resolve while you scroll."
         ]
         }
     }

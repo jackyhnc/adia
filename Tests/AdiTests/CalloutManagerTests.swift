@@ -18206,4 +18206,204 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast652() {
         #expect(SuggestedSessionTemplates.all.count >= 652, "template catalog must have ≥652 entries after organicchemistry/botany/operationsresearch/internalaudit/healthcarequality (10 templates)")
     }
+
+    // MARK: - nursinganesthesia
+    @Test func nursinganesthesiaKeywordFromCRNA() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my CRNA exam and reviewing anesthesia pharmacology for nurse anesthesia program")
+        #expect(kw == "nursinganesthesia", "CRNA exam anesthesia pharmacology nurse anesthesia program should route to nursinganesthesia")
+    }
+    @Test func nursinganesthesiaKeywordFromNBCRNA() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing for the NBCRNA certification exam — reviewing airway management and anesthesia equipment for CRNA school")
+        #expect(kw == "nursinganesthesia", "NBCRNA exam CRNA school should route to nursinganesthesia")
+    }
+    @Test func nursinganesthesiaKeywordFromNurseAnesthesiaClinical() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing up my nurse anesthesia clinical notes and case summary for CRNA rotation")
+        #expect(kw == "nursinganesthesia", "nurse anesthesia clinical notes CRNA rotation should route to nursinganesthesia")
+    }
+    @Test func nursinganesthesiaKeywordFromDNAP() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my DNAP program assignment — pharmacokinetics of volatile anesthetics for nurse anesthesia school")
+        #expect(kw == "nursinganesthesia", "DNAP program nurse anesthesia school should route to nursinganesthesia")
+    }
+    @Test func nursinganesthesiaFalsePositive_nursepractitioner() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for the AANP certification exam as an FNP and reviewing advanced practice nursing for nurse practitioner school")
+        #expect(kw == "nursepractitioner", "AANP FNP nurse practitioner should stay in nursepractitioner")
+    }
+    @Test @MainActor func nursinganesthesiaCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "nursinganesthesia", tier: tier)
+            #expect(!msgs.isEmpty, "nursinganesthesia tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func nursinganesthesiaTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "nursinganesthesia", tier: 1)
+        #expect(msgs.count >= 4, "nursinganesthesia tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func nursinganesthesiaTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "nursinganesthesia", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "nursinganesthesia tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - physicalchemistry
+    @Test func physicalchemistryKeywordFromPchem() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working through my pchem problem set on Gibbs free energy and chemical thermodynamics for my physical chemistry class")
+        #expect(kw == "physicalchemistry", "pchem problem set Gibbs free energy physical chemistry class should route to physicalchemistry")
+    }
+    @Test func physicalchemistryKeywordFromChemicalKinetics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying chemical kinetics and rate laws for my pchem course exam — Arrhenius equation and reaction mechanisms")
+        #expect(kw == "physicalchemistry", "chemical kinetics pchem course exam should route to physicalchemistry")
+    }
+    @Test func physicalchemistryKeywordFromQuantumChemistry() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing quantum chemistry and wave functions for my physical chemistry exam — molecular orbital theory and the Schrödinger equation")
+        #expect(kw == "physicalchemistry", "quantum chemistry wave functions physical chemistry exam should route to physicalchemistry")
+    }
+    @Test func physicalchemistryKeywordFromStatisticalThermodynamics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying statistical thermodynamics and partition functions for my pchem lab report and course exam")
+        #expect(kw == "physicalchemistry", "statistical thermodynamics partition functions pchem lab should route to physicalchemistry")
+    }
+    @Test func physicalchemistryFalsePositive_experimentalphysics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my physics class exam on thermodynamics and mechanics lab report")
+        #expect(kw == "experimentalphysics", "physics class thermodynamics mechanics lab should stay in experimentalphysics")
+    }
+    @Test @MainActor func physicalchemistryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "physicalchemistry", tier: tier)
+            #expect(!msgs.isEmpty, "physicalchemistry tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func physicalchemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "physicalchemistry", tier: 1)
+        #expect(msgs.count >= 4, "physicalchemistry tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func physicalchemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "physicalchemistry", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "physicalchemistry tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - inorganicchemistry
+    @Test func inorganicchemistryKeywordFromCoordinationChemistry() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying coordination chemistry and crystal field theory for my inorganic chemistry exam")
+        #expect(kw == "inorganicchemistry", "coordination chemistry crystal field theory inorganic chemistry exam should route to inorganicchemistry")
+    }
+    @Test func inorganicchemistryKeywordFromLigandField() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing ligand field theory and d-block elements for my inorganic chemistry course problem set")
+        #expect(kw == "inorganicchemistry", "ligand field theory d-block elements inorganic chemistry course should route to inorganicchemistry")
+    }
+    @Test func inorganicchemistryKeywordFromOrganometallic() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working through organometallic chemistry problems and transition metal complexes for my inorganic chem class")
+        #expect(kw == "inorganicchemistry", "organometallic chemistry transition metal complexes inorganic chem class should route to inorganicchemistry")
+    }
+    @Test func inorganicchemistryKeywordFromPointGroup() {
+        let kw = CalloutManager.extractTaskKeyword(from: "determining point groups and molecular symmetry for inorganic chemistry lab — character tables and symmetry elements")
+        #expect(kw == "inorganicchemistry", "point groups molecular symmetry inorganic chemistry lab should route to inorganicchemistry")
+    }
+    @Test func inorganicchemistryFalsePositive_organicchemistry() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working through my orgo problem set on SN2 reactions and retrosynthesis for organic chemistry class")
+        #expect(kw == "organicchemistry", "orgo SN2 retrosynthesis organic chemistry class should stay in organicchemistry")
+    }
+    @Test @MainActor func inorganicchemistryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "inorganicchemistry", tier: tier)
+            #expect(!msgs.isEmpty, "inorganicchemistry tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func inorganicchemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "inorganicchemistry", tier: 1)
+        #expect(msgs.count >= 4, "inorganicchemistry tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func inorganicchemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "inorganicchemistry", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "inorganicchemistry tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - analyticalchemistry
+    @Test func analyticalchemistryKeywordFromHPLC() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyzing my HPLC chromatogram and interpreting peaks for my analytical chemistry lab report")
+        #expect(kw == "analyticalchemistry", "HPLC chromatogram analytical chemistry lab should route to analyticalchemistry")
+    }
+    @Test func analyticalchemistryKeywordFromGCMS() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my GC-MS data interpretation for analytical chemistry class exam prep")
+        #expect(kw == "analyticalchemistry", "GC-MS analytical chemistry class exam should route to analyticalchemistry")
+    }
+    @Test func analyticalchemistryKeywordFromTitration() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my acid-base titration lab report and preparing for the quantitative analysis class exam")
+        #expect(kw == "analyticalchemistry", "acid-base titration quantitative analysis class exam should route to analyticalchemistry")
+    }
+    @Test func analyticalchemistryKeywordFromMassSpectrometry() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying mass spectrometry and ion chromatography methods for my analytical chemistry course")
+        #expect(kw == "analyticalchemistry", "mass spectrometry ion chromatography analytical chemistry course should route to analyticalchemistry")
+    }
+    @Test func analyticalchemistryFalsePositive_biochemistry() {
+        let kw = CalloutManager.extractTaskKeyword(from: "running a Bradford protein assay and spectrophotometry experiment for my biochemistry lab class")
+        #expect(kw == "biochemistry", "Bradford assay spectrophotometry biochemistry lab should stay in biochemistry")
+    }
+    @Test @MainActor func analyticalchemistryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "analyticalchemistry", tier: tier)
+            #expect(!msgs.isEmpty, "analyticalchemistry tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func analyticalchemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "analyticalchemistry", tier: 1)
+        #expect(msgs.count >= 4, "analyticalchemistry tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func analyticalchemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "analyticalchemistry", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "analyticalchemistry tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - nuclearchemistry
+    @Test func nuclearchemistryKeywordFromNuclearChemistry() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying nuclear chemistry for my exam — radioactive decay, half-life calculations, and nuclear equations")
+        #expect(kw == "nuclearchemistry", "nuclear chemistry exam radioactive decay half-life nuclear equations should route to nuclearchemistry")
+    }
+    @Test func nuclearchemistryKeywordFromHalfLife() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working through half-life calculation problems for my nuclear chemistry lab assignment")
+        #expect(kw == "nuclearchemistry", "half-life calculation nuclear chemistry lab should route to nuclearchemistry")
+    }
+    @Test func nuclearchemistryKeywordFromFissionFusion() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing nuclear fission and nuclear fusion reactions for my chemistry class problem set")
+        #expect(kw == "nuclearchemistry", "nuclear fission nuclear fusion chemistry class problem set should route to nuclearchemistry")
+    }
+    @Test func nuclearchemistryKeywordFromAlphaDecay() {
+        let kw = CalloutManager.extractTaskKeyword(from: "practicing alpha decay and beta decay equations and decay series for nuclear chemistry course exam")
+        #expect(kw == "nuclearchemistry", "alpha decay beta decay decay series nuclear chemistry course exam should route to nuclearchemistry")
+    }
+    @Test func nuclearchemistryFalsePositive_nuclearmedtech() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my CNMT board exam and reviewing PET scan radiopharmaceuticals for nuclear medicine school")
+        #expect(kw == "nuclearmedtech", "CNMT board PET scan radiopharmaceuticals nuclear medicine school should stay in nuclearmedtech")
+    }
+    @Test @MainActor func nuclearchemistryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "nuclearchemistry", tier: tier)
+            #expect(!msgs.isEmpty, "nuclearchemistry tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func nuclearchemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "nuclearchemistry", tier: 1)
+        #expect(msgs.count >= 4, "nuclearchemistry tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func nuclearchemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "nuclearchemistry", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "nuclearchemistry tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: nursinganesthesia/physicalchemistry/inorganicchemistry/analyticalchemistry/nuclearchemistry)
+    @Test func suggestedTemplatesCountAtLeast661() {
+        #expect(SuggestedSessionTemplates.all.count >= 661, "template catalog must have ≥661 entries after nursinganesthesia/physicalchemistry/inorganicchemistry/analyticalchemistry/nuclearchemistry (10 templates)")
+    }
 }

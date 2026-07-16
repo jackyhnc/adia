@@ -4184,6 +4184,55 @@ public final class CalloutManager {
             || lower.contains("biochemistry textbook") || lower.contains("lehninger") {
             return "biochemistry"
         }
+        // physicalchemistry — positioned AFTER biochemistry and BEFORE inorganicchemistry/organicchemistry.
+        // Catches pchem, quantum chemistry (for chemists), thermodynamics of reactions, chemical
+        // kinetics, statistical thermodynamics, and molecular orbital theory coursework.
+        // "quantum computing" and bare "thermodynamics" NOT matched. "physics class" stays in
+        // experimentalphysics (fires much earlier).
+        if lower.contains("physical chemistry") || lower.contains("pchem") || lower.contains("p-chem")
+            || lower.contains("quantum chemistry") && !lower.contains("quantum computing") && !lower.contains("physics class") && !lower.contains("physics course")
+            || lower.contains("chemical thermodynamics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("pchem"))
+            || lower.contains("chemical kinetics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("pchem") || lower.contains("physical chemistry"))
+            || lower.contains("reaction thermodynamics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("chemistry"))
+            || lower.contains("gibbs energy") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("pchem"))
+            || lower.contains("gibbs free energy") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("pchem"))
+            || lower.contains("partition function") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("pchem") || lower.contains("statistical thermodynamics"))
+            || lower.contains("statistical thermodynamics") && (lower.contains("chemistry") || lower.contains("class") || lower.contains("pchem") || lower.contains("course"))
+            || lower.contains("schrodinger equation") && !lower.contains("quantum computing") && !lower.contains("physics class") && !lower.contains("physics course")
+            || lower.contains("schrödinger equation") && !lower.contains("quantum computing") && !lower.contains("physics class") && !lower.contains("physics course")
+            || lower.contains("wave function") && (lower.contains("chemistry") || lower.contains("pchem") || lower.contains("physical chemistry"))
+            || lower.contains("molecular orbital") && (lower.contains("class") || lower.contains("course") || lower.contains("pchem") || lower.contains("chemistry") || lower.contains("exam"))
+            || lower.contains("pchem class") || lower.contains("pchem course") || lower.contains("pchem exam")
+            || lower.contains("pchem lab") || lower.contains("pchem problem set") || lower.contains("pchem homework")
+            || lower.contains("physical chemistry class") || lower.contains("physical chemistry course")
+            || lower.contains("physical chemistry exam") || lower.contains("physical chemistry lab")
+            || lower.contains("physical chemistry problem set") || lower.contains("physical chemistry notes") {
+            return "physicalchemistry"
+        }
+        // inorganicchemistry — positioned AFTER physicalchemistry and BEFORE organicchemistry.
+        // Catches coordination chemistry, crystal field theory, ligand field, d-block/f-block elements,
+        // main group chemistry, and organometallic chemistry. "transition metals" alone NOT matched.
+        if lower.contains("inorganic chemistry") || lower.contains("inorganic chem")
+            || lower.contains("coordination chemistry") || lower.contains("coordination compound")
+            || lower.contains("coordination complex") || lower.contains("coordination compounds")
+            || lower.contains("crystal field theory") || lower.contains("crystal field splitting")
+            || lower.contains("ligand field theory") || lower.contains("ligand field")
+            || lower.contains("d-block") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("element") || lower.contains("inorganic"))
+            || lower.contains("f-block") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("element") || lower.contains("inorganic"))
+            || lower.contains("transition metal") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("complex") || lower.contains("inorganic") || lower.contains("chem"))
+            || lower.contains("transition metals") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("complex") || lower.contains("inorganic") || lower.contains("chem"))
+            || lower.contains("main group chemistry") || lower.contains("main group elements") && (lower.contains("class") || lower.contains("inorganic") || lower.contains("chemistry"))
+            || lower.contains("organometallic chemistry") || lower.contains("organometallic compound") || lower.contains("organometallic compounds")
+            || lower.contains("spectrochemical series") || lower.contains("jahn-teller")
+            || lower.contains("cfse") || lower.contains("crystal field stabilization")
+            || lower.contains("molecular symmetry") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("inorganic") || lower.contains("group theory"))
+            || lower.contains("point group") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("symmetry") || lower.contains("inorganic"))
+            || lower.contains("inorganic lab") || lower.contains("inorganic class") || lower.contains("inorganic course")
+            || lower.contains("inorganic exam") || lower.contains("inorganic notes")
+            || lower.contains("inorganic chemistry class") || lower.contains("inorganic chemistry course")
+            || lower.contains("inorganic chemistry exam") || lower.contains("inorganic chemistry lab") {
+            return "inorganicchemistry"
+        }
         // organicchemistry — positioned AFTER biochemistry and BEFORE drugdiscovery.
         // Catches orgo, reaction mechanisms, NMR, synthesis planning, and stereochemistry
         // coursework. "pharmaceutical chemistry" stays in pharmacy (fires earlier).
@@ -4214,6 +4263,55 @@ public final class CalloutManager {
             || lower.contains("woodward-hoffmann") || lower.contains("woodward hoffmann")
             || lower.contains("mcat organic") || lower.contains("mcat orgo") {
             return "organicchemistry"
+        }
+        // analyticalchemistry — positioned AFTER organicchemistry and BEFORE drugdiscovery.
+        // Catches HPLC, GC-MS, titration, chromatography, and spectroscopy in analytical context.
+        // "spectrophotometry" in biochemistry context stays in biochemistry (fires earlier).
+        // Bare "chemistry" NOT matched.
+        if lower.contains("analytical chemistry") || lower.contains("analytic chemistry")
+            || lower.contains("hplc") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("analytical") || lower.contains("course") || lower.contains("method"))
+            || lower.contains("high-performance liquid chromatography") || lower.contains("high performance liquid chromatography")
+            || lower.contains("gc-ms") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("analytical") || lower.contains("course"))
+            || lower.contains("gas chromatography") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("analytical") || lower.contains("course"))
+            || lower.contains("liquid chromatography") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("analytical") || lower.contains("course"))
+            || lower.contains("mass spectrometry") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("analytical") || lower.contains("course"))
+            || lower.contains("acid-base titration") || lower.contains("redox titration")
+            || lower.contains("titration class") || lower.contains("titration lab") || lower.contains("titration exam")
+            || lower.contains("gravimetric analysis") && (lower.contains("class") || lower.contains("lab") || lower.contains("analytical") || lower.contains("chemistry"))
+            || lower.contains("potentiometry") && (lower.contains("class") || lower.contains("lab") || lower.contains("analytical") || lower.contains("course") || lower.contains("chemistry"))
+            || lower.contains("icp-ms") && (lower.contains("class") || lower.contains("lab") || lower.contains("analytical") || lower.contains("course"))
+            || lower.contains("atomic absorption") && (lower.contains("class") || lower.contains("lab") || lower.contains("analytical"))
+            || lower.contains("ion chromatography") && (lower.contains("class") || lower.contains("lab") || lower.contains("analytical") || lower.contains("course"))
+            || lower.contains("electroanalytical chemistry") || lower.contains("electroanalytical") && lower.contains("class")
+            || lower.contains("quantitative analysis class") || lower.contains("quantitative analysis lab") && lower.contains("chemistry")
+            || lower.contains("analytical chemistry class") || lower.contains("analytical chemistry course")
+            || lower.contains("analytical chemistry exam") || lower.contains("analytical chemistry lab")
+            || lower.contains("analytical chemistry notes") || lower.contains("analytical chemistry problem set") {
+            return "analyticalchemistry"
+        }
+        // nuclearchemistry — positioned AFTER analyticalchemistry and BEFORE drugdiscovery.
+        // Catches nuclear chemistry coursework: radioactive decay, half-life, nuclear equations,
+        // fission and fusion in a chemistry class context. "nuclear medicine tech" stays in
+        // nuclearmedtech (fires much earlier). "radiation safety" stays in healthphysics.
+        // "radiobiology" stays in radiobiology. Bare "nuclear" alone NOT matched.
+        if lower.contains("nuclear chemistry") || lower.contains("nuclear chem")
+            || lower.contains("radioactive decay") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("half-life") && (lower.contains("chemistry") || lower.contains("nuclear") || lower.contains("chem") || lower.contains("lab") || lower.contains("calculation"))
+            || lower.contains("half life") && (lower.contains("chemistry") || lower.contains("nuclear") || lower.contains("chem") || lower.contains("lab") || lower.contains("calculation"))
+            || lower.contains("nuclear equation") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("nuclear reaction") && (lower.contains("chemistry") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("nuclear fission") && (lower.contains("chemistry") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("nuclear fusion") && (lower.contains("chemistry") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("alpha decay") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("lab") || lower.contains("chem"))
+            || lower.contains("beta decay") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("lab") || lower.contains("chem"))
+            || lower.contains("gamma decay") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("lab") || lower.contains("chem"))
+            || lower.contains("radioactive isotope") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("lab") || lower.contains("chem"))
+            || lower.contains("nuclear binding energy") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("chem"))
+            || lower.contains("decay series") && (lower.contains("chemistry") || lower.contains("class") || lower.contains("chem"))
+            || lower.contains("nuclear chemistry class") || lower.contains("nuclear chemistry course")
+            || lower.contains("nuclear chemistry exam") || lower.contains("nuclear chemistry lab")
+            || lower.contains("nuclear chemistry notes") || lower.contains("nuclear chemistry problem set") {
+            return "nuclearchemistry"
         }
         // drugdiscovery — positioned AFTER biochemistry and BEFORE biophysics. Catches lead
         // optimization, high-throughput screening, ADMET, and medicinal chemistry research
@@ -4850,6 +4948,25 @@ public final class CalloutManager {
             || lower.contains("aprn program") || lower.contains("aprn exam") || lower.contains("aprn certification")
             || lower.contains("aprn class") || lower.contains("aprn course") || lower.contains("aprn notes") {
             return "nursepractitioner"
+        }
+        // nursinganesthesia — positioned AFTER nursepractitioner and BEFORE nursing so CRNA,
+        // nurse anesthesia programs, and NBCRNA exam prep get a dedicated pool rather than the
+        // broader nursing pool. "nurse practitioner" stays in nursepractitioner above.
+        if lower.contains("nurse anesthesia") || lower.contains("nurse anesthetist")
+            || lower.contains("nurse anesthesiologist") || word("crna")
+            || lower.contains("crna program") || lower.contains("crna school")
+            || lower.contains("crna class") || lower.contains("crna exam")
+            || lower.contains("crna certification") || lower.contains("crna clinical")
+            || lower.contains("crna rotation") || lower.contains("crna notes")
+            || word("nbcrna") || lower.contains("nbcrna exam") || lower.contains("nbcrna certification")
+            || lower.contains("nurse anesthesia program") || lower.contains("nurse anesthesia class")
+            || lower.contains("nurse anesthesia course") || lower.contains("nurse anesthesia school")
+            || lower.contains("nurse anesthesia exam") || lower.contains("nurse anesthesia rotation")
+            || lower.contains("nurse anesthesia clinical") || lower.contains("nurse anesthesia notes")
+            || lower.contains("dnap program") || lower.contains("dnap class") || lower.contains("dnap school")
+            || lower.contains("msna program") || lower.contains("msna class")
+            || lower.contains("anesthesia pharmacology") && (lower.contains("nursing") || lower.contains("crna")) {
+            return "nursinganesthesia"
         }
         if word("nursing") || lower.contains("care plan") || lower.contains("care plans")
             || lower.contains("nursing notes") || lower.contains("nursing assessment")
