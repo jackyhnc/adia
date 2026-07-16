@@ -376,6 +376,11 @@ extension CalloutManager {
         case "informationscience":         return informationscienceCallouts(tier: tier)
         case "socialepidemiology":         return socialepidemiologyCallouts(tier: tier)
         case "cognitiveneuroscience":      return cognitiveneuroscienceCallouts(tier: tier)
+        case "nanotechnology":             return nanotechnologyCallouts(tier: tier)
+        case "appliedlinguistics":         return appliedlinguisticsCallouts(tier: tier)
+        case "radiobiology":               return radiobiologyCallouts(tier: tier)
+        case "translationstudies":         return translationstudiesCallouts(tier: tier)
+        case "ecologyconservation":        return ecologyconservationCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -7251,6 +7256,111 @@ extension CalloutManager {
             "CLOSE THIS. open your cognitive neuroscience materials.",
             "CLOSE THIS. fMRI data analysis demands your full attention.",
             "CLOSE THIS. the brain you're studying is the one letting you scroll — use it."
+        ]
+        }
+    }
+
+    private func nanotechnologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those nanoparticles aren't going to characterize themselves.",
+            "close this and get back to your nanotechnology work.",
+            "nanoscale precision demands full attention — close this.",
+            "your nanofabrication assignment won't complete itself — close this.",
+        ]
+        case 2: return [
+            "no one advances nanotechnology by scrolling.",
+            "close this and open your nanotechnology notes.",
+            "your quantum dot synthesis report won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your nanotechnology materials.",
+            "CLOSE THIS. nanoscale work demands nanoscale focus.",
+            "CLOSE THIS. Feynman said there's plenty of room at the bottom — go find it."
+        ]
+        }
+    }
+
+    private func appliedlinguisticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that second language acquisition analysis isn't going to write itself.",
+            "close this and get back to your applied linguistics work.",
+            "language pedagogy won't design itself — close this.",
+            "your SLA research paper demands your attention — close this.",
+        ]
+        case 2: return [
+            "no one masters applied linguistics by scrolling.",
+            "close this and open your applied linguistics notes.",
+            "your language assessment assignment won't finish itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your applied linguistics materials.",
+            "CLOSE THIS. SLA theory demands active engagement.",
+            "CLOSE THIS. language doesn't acquire itself — neither does your degree."
+        ]
+        }
+    }
+
+    private func radiobiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that DNA damage analysis isn't going to write itself.",
+            "close this and get back to your radiobiology work.",
+            "radiation cell biology won't study itself — close this.",
+            "your radiobiology assignment demands your attention — close this.",
+        ]
+        case 2: return [
+            "no one masters radiobiology by scrolling.",
+            "close this and open your radiobiology notes.",
+            "your survival curve analysis won't finish itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your radiobiology materials.",
+            "CLOSE THIS. ionizing radiation doesn't wait — neither should your studying.",
+            "CLOSE THIS. radiation biology demands your full attention."
+        ]
+        }
+    }
+
+    private func translationstudiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that literary translation isn't going to translate itself.",
+            "close this and get back to your translation work.",
+            "CAT tools won't use themselves — close this.",
+            "your translation assignment demands your full attention — close this.",
+        ]
+        case 2: return [
+            "no one masters translation studies by scrolling.",
+            "close this and open your translation project.",
+            "your localization work won't finish itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your translation files.",
+            "CLOSE THIS. words don't translate themselves.",
+            "CLOSE THIS. great translators translate — close this and be one."
+        ]
+        }
+    }
+
+    private func ecologyconservationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those species aren't going to save themselves.",
+            "close this and get back to your conservation biology work.",
+            "habitat restoration won't plan itself — close this.",
+            "your wildlife ecology assignment demands your attention — close this.",
+        ]
+        case 2: return [
+            "no one saves ecosystems by scrolling.",
+            "close this and open your conservation biology notes.",
+            "your species management plan won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your conservation biology materials.",
+            "CLOSE THIS. biodiversity loss doesn't pause while you scroll.",
+            "CLOSE THIS. the species you're studying need you focused."
         ]
         }
     }

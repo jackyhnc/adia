@@ -1,5 +1,70 @@
 # Adia — Build Progress
 
+## Run 358 (automated) — 2026-07-16 — 5 new keyword domains: nanotechnology, appliedlinguistics, radiobiology, translationstudies, ecologyconservation (619→629 templates)
+
+### What shipped
+
+**5 new keyword domains: nanotechnology, appliedlinguistics, radiobiology, translationstudies, ecologyconservation**
+
+**New keyword domain — nanotechnology:**
+- Branch positioned BEFORE materialscience; "nanomaterials" and "nanotechnology class/course/exam" removed from materialscience and owned here.
+- Catches: word(nanotechnology/nanotechnologist/nanoscience), nanomaterial/nanomaterials, nanoscale+lab/research/imaging/synthesis/fabrication, nanofabrication, quantum dots, carbon nanotubes, graphene+lab/research, NEMS+class/lab/fabrication, AFM imaging (without biophysics guard — lets biophysics catch its own AFM context), STM imaging, nanomedicine, nanotoxicology, nanophotonics+lab, plasmonics+lab, self-assembly+nano/molecular, nanoparticles/nanostructures, nanotechnology class/course/exam/lab/program/research.
+- `nanotechnologyCallouts(tier:)` 4/3/3: "those nanoparticles aren't going to characterize themselves." / "no one advances nanotechnology by scrolling." / "CLOSE THIS. Feynman said there's plenty of room at the bottom — go find it."
+- 2 templates: "Complete my nanotechnology lab report — nanomaterials characterization, quantum dots, or carbon nanotubes" (60 min) + "Study for my nanotechnology exam — nanoscale imaging, quantum confinement, or nanofabrication" (45 min)
+
+**New keyword domain — appliedlinguistics:**
+- Branch positioned AFTER cognitivelinguistics, BEFORE linguistics; "applied linguistics" and "second language acquisition" removed from linguistics branch comment, now owned here.
+- Catches: applied linguistics, second language acquisition, L2/L1 acquisition, discourse analysis+applied/language/class context, language pedagogy, language teaching method, language policy, language planning, language assessment, language testing, language acquisition research/theory, interlanguage+class, multilingualism+class, heritage language+class, language socialization, translanguaging, SLA+class/theory/research, applied linguistics class/course/program/exam/major/degree.
+- `appliedlinguisticsCallouts(tier:)` 4/3/3: "that second language acquisition analysis isn't going to write itself." / "no one masters applied linguistics by scrolling." / "CLOSE THIS. language doesn't acquire itself — neither does your degree."
+- 2 templates: "Write my applied linguistics paper — SLA theory, language pedagogy, or discourse analysis" (60 min) + "Study applied linguistics — SLA, language policy, interlanguage theory, or language testing" (45 min)
+
+**New keyword domain — radiobiology:**
+- Branch positioned AFTER biophysics, BEFORE geneticcounseling; clinical radiation dosimetry stays in radiologictechnology/nuclearmedtech; radiation safety stays in healthphysics.
+- Catches: radiobiology, radio-biology, radiation biology, radiation cell biology, DNA damage+radiation/radiobiology, DNA repair+radiation/radiobiology, radiation-induced+DNA/cell/apoptosis/mutation/damage, chromosome aberrations+radiation/class/lab, clonogenic assay+radiation/class/lab, survival curves+radiation/radiobiology, RBE+radiation/class, linear energy transfer+radiation/class/lab, radiation sensitizer, radiosensitizer, radiosensitivity, ionizing radiation biology, radiation oncology biology, fractionated radiation+biology/class, radiobiological, radiobiology class/course/exam/lab/research/assignment/program.
+- `radiobiologyCallouts(tier:)` 4/3/3: "that DNA damage analysis isn't going to write itself." / "no one masters radiobiology by scrolling." / "CLOSE THIS. ionizing radiation doesn't wait — neither should your studying."
+- 2 templates: "Complete my radiobiology assignment — DNA damage, survival curves, LET, or radiation-induced cell death" (60 min) + "Study radiobiology — ionizing radiation biology, DNA repair, RBE, or fractionated radiation effects" (45 min)
+
+**New keyword domain — translationstudies:**
+- Branch positioned BEFORE language; bare "translate this"/"translation" stays in language. Court/conference interpreting stays in interpreting branch. "translational research" (biomedical) fires much earlier.
+- Catches: translation studies, translation theory, translation research, translation scholarship, literary translation, literary translator, translator training, translation quality assessment, translation pedagogy, translation class/course/program/exam/major/degree, CAT tool/tools, word(trados/memoq/omegat/wordfast), localization+class/course/project/assignment/translation, L10n class/project, subtitling+translation/class/project, post-editing+translation/machine translation, machine translation quality, MT post-editing.
+- `translationstudiesCallouts(tier:)` 4/3/3: "that literary translation isn't going to translate itself." / "no one masters translation studies by scrolling." / "CLOSE THIS. great translators translate — close this and be one."
+- 2 templates: "Work on my literary translation or CAT tool project using Trados or MemoQ" (60 min) + "Study translation theory — domestication/foreignization, CAT tools, or localization methods" (45 min)
+
+**New keyword domain — ecologyconservation:**
+- Branch positioned BEFORE environmentaljustice (and thus before environmentalpolicy and enviro).
+- Catches: conservation biology, restoration ecology, wildlife ecology, wildlife management, species management, conservation ecology, nature reserve+management, conservation genetics/genomics, rewilding, habitat restoration, ecological restoration, wildlife corridors, endangered species biology, threatened species, systematic conservation planning, conservation planning, population viability analysis, minimum viable population, wildlife conservation, biodiversity conservation, species recovery+class/research/plan, conservation science/research, ecology conservation, wildlife biology (!zoology guard), terrestrial ecology+class/lab/research, landscape ecology+class/lab/research, population ecology+class/lab/research/conservation.
+- `ecologyconservationCallouts(tier:)` 4/3/3: "those species aren't going to save themselves." / "no one saves ecosystems by scrolling." / "CLOSE THIS. biodiversity loss doesn't pause while you scroll."
+- 2 templates: "Write a conservation biology report — species management, habitat restoration, or wildlife corridor design" (60 min) + "Study conservation ecology — restoration ecology, biodiversity conservation, or landscape ecology" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: 40 new tests (4 keyword routing + 1 false-positive + 3 callout pool tests per domain × 5 + 1 count guard ≥629)
+- SuggestedSessionTemplatesTests: count guard ≥629 added in CalloutManagerTests
+
+**Template catalog: 619 → 629**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- Brace balance: CalloutManager.swift 365/365 ✓, CalloutMessages.swift 675/675 ✓
+- Template count: 629 confirmed (SuggestedTemplate( occurrences: 629)
+- `nanotechnology` fires at line 1230, BEFORE `materialscience` (1254). "quantum dots AFM imaging nanotechnology lab" → nanotechnology ✓; "polymer science phase diagram materials science exam" → materialscience ✓
+- `appliedlinguistics` fires at line 707, BEFORE `linguistics` (725). "second language acquisition applied linguistics class" → appliedlinguistics ✓; "phonology phonetics sociolinguistics linguistics exam" → linguistics ✓
+- `radiobiology` fires at line 4075, AFTER `biophysics` (4007), BEFORE `geneticcounseling` (next). "DNA damage ionizing radiation radiobiology lab" → radiobiology ✓; "ARRT radiographic positioning radiologic technology" → radiologictechnology ✓
+- `translationstudies` fires at line 3453, BEFORE `language` (3463). "literary translation Trados translation class" → translationstudies ✓; "translate spanish vocabulary duolingo" → language ✓
+- `ecologyconservation` fires at line 3378, BEFORE `environmentaljustice` (3383+). "conservation biology habitat restoration wildlife corridors" → ecologyconservation ✓; "environmental science climate change sustainability" → enviro ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `toxicogenomics` — gene expression under toxic exposure, TOXCAST, AhR pathway (distinct from toxicology/molecularbiology)
+  - `drugdiscovery` — lead optimization, high-throughput screening, ADMET, medicinal chemistry research (distinct from pharmacy's dispensing focus)
+  - `astrobiology` — extremophiles, SETI science, planetary habitability, prebiotic chemistry (distinct from astronomy's observational focus)
+  - `developmentalbiology` — embryology in research context, morphogen gradients, Hox genes, fate mapping, organogenesis (distinct from premed's clinical embryology)
+  - `materialscharacterization` — XRD, SEM/TEM, spectroscopy (IR/Raman/UV-Vis), thermal analysis in research context (distinct from nanotechnology's fabrication focus)
+- Template count: 629 → 639 after next 5-domain batch
+- CalloutManagerTests: ~2970+ after next batch
+
 ## Run 357 (automated) — 2026-07-16 — 5 new keyword domains: paleontology, experimentalphysics, informationscience, socialepidemiology, cognitiveneuroscience (609→619 templates)
 
 ### What shipped

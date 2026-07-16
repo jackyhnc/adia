@@ -685,15 +685,36 @@ public final class CalloutManager {
             || (word("lakoff") && (lower.contains("linguistics") || lower.contains("metaphor") || lower.contains("class") || lower.contains("cognitive") || lower.contains("paper"))) {
             return "cognitivelinguistics"
         }
+        // appliedlinguistics — positioned AFTER cognitivelinguistics and BEFORE linguistics so
+        // second language acquisition research, language pedagogy, and applied linguistic analysis
+        // route here rather than the structural/theoretical linguistics pool.
+        // "applied linguistics" and "second language acquisition" removed from linguistics branch.
+        if lower.contains("applied linguistics") || lower.contains("second language acquisition")
+            || lower.contains("l2 acquisition") || lower.contains("l1 acquisition")
+            || (lower.contains("discourse analysis") && (lower.contains("applied") || lower.contains("language") || lower.contains("class") || lower.contains("course") || lower.contains("assignment") || lower.contains("research")))
+            || lower.contains("language pedagogy") || lower.contains("language teaching method")
+            || lower.contains("language policy") || lower.contains("language planning")
+            || lower.contains("language assessment") || lower.contains("language testing")
+            || lower.contains("language acquisition research") || lower.contains("language acquisition theory")
+            || (lower.contains("interlanguage") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("analysis")))
+            || (lower.contains("multilingualism") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("analysis")))
+            || lower.contains("heritage language") && (lower.contains("class") || lower.contains("course") || lower.contains("research"))
+            || lower.contains("language socialization") || lower.contains("translanguaging")
+            || (word("sla") && (lower.contains("class") || lower.contains("course") || lower.contains("theory") || lower.contains("research")))
+            || lower.contains("applied linguistics class") || lower.contains("applied linguistics course")
+            || lower.contains("applied linguistics program") || lower.contains("applied linguistics exam")
+            || lower.contains("applied linguistics major") || lower.contains("applied linguistics degree") {
+            return "appliedlinguistics"
+        }
         // linguistics — positioned before studying so "linguistics exam", "phonetics class",
         // and language-science assignments don't fall through to studying.
         // Language learning (vocabulary, conjugation, Duolingo) stays in the language branch below.
+        // "applied linguistics" and "second language acquisition" now owned by appliedlinguistics above.
         if word("linguistics") || word("linguist") || word("linguistic")
             || word("phonology") || word("phonetics") || word("phoneme") || word("phonemes")
             || lower.contains("sociolinguistics") || lower.contains("psycholinguistics")
             || lower.contains("computational linguistics") || lower.contains("corpus linguistics")
-            || lower.contains("language acquisition") || lower.contains("second language acquisition")
-            || lower.contains("applied linguistics") || lower.contains("historical linguistics")
+            || lower.contains("language acquisition") || lower.contains("historical linguistics")
             || lower.contains("discourse analysis") || lower.contains("language documentation")
             || lower.contains("language endangerment") || lower.contains("language typology")
             || lower.contains("linguistic analysis") || lower.contains("linguistic theory")
@@ -1182,10 +1203,36 @@ public final class CalloutManager {
             || lower.contains("industrial safety exam") || lower.contains("industrial safety program") {
             return "industrialsafety"
         }
-        // materialscience — positioned AFTER industrialsafety and BEFORE engineering.
+        // nanotechnology — positioned BEFORE materialscience so nanotechnology research, nanomaterials
+        // synthesis, nanoscale imaging, and nano-device work route here with dedicated callout messages.
+        // "nanomaterials" and "nanotechnology" with class/course/exam context owned here;
+        // MEMS stays in materialscience; NEMS routed here (nano-scale electromechanical).
+        if word("nanotechnology") || word("nanotechnologist") || word("nanoscience")
+            || lower.contains("nanomaterial") || lower.contains("nanomaterials")
+            || (lower.contains("nanoscale") && (lower.contains("class") || lower.contains("lab") || lower.contains("research") || lower.contains("imaging") || lower.contains("synthesis") || lower.contains("fabrication")))
+            || lower.contains("nanofabrication") || lower.contains("nano-fabrication")
+            || lower.contains("quantum dot") || lower.contains("quantum dots")
+            || lower.contains("carbon nanotube") || lower.contains("carbon nanotubes")
+            || (word("graphene") && (lower.contains("class") || lower.contains("lab") || lower.contains("research") || lower.contains("synthesis") || lower.contains("characterization")))
+            || (word("nems") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("fabrication") || lower.contains("research")))
+            || (lower.contains("atomic force microscopy") && !lower.contains("biophysics"))
+            || lower.contains("afm imaging") || lower.contains("afm characterization")
+            || lower.contains("scanning tunneling microscopy") || lower.contains("stm imaging")
+            || lower.contains("nanomedicine") || lower.contains("nanotoxicology")
+            || (lower.contains("nanophotonics") && (lower.contains("class") || lower.contains("lab") || lower.contains("research")))
+            || (lower.contains("plasmonics") && (lower.contains("class") || lower.contains("lab") || lower.contains("research")))
+            || (lower.contains("self-assembly") && (lower.contains("nano") || lower.contains("molecular machine") || lower.contains("class") || lower.contains("lab")))
+            || lower.contains("nanoparticle") || lower.contains("nanoparticles")
+            || lower.contains("nanostructure") || lower.contains("nanostructures")
+            || lower.contains("nanotechnology class") || lower.contains("nanotechnology course")
+            || lower.contains("nanotechnology exam") || lower.contains("nanotechnology lab")
+            || lower.contains("nanotechnology program") || lower.contains("nanotechnology research") {
+            return "nanotechnology"
+        }
+        // materialscience — positioned AFTER nanotechnology and BEFORE engineering.
         // Catches MSE coursework, metallurgy, polymer science, ceramics (in engineering context),
-        // composite materials, nanomaterials, and phase diagram labs. "ceramics" alone (art context)
-        // NOT matched — requires class/course/exam/lab/engineering qualifier.
+        // composite materials, and phase diagram labs. "nanomaterials"/"nanotechnology" now owned
+        // by nanotechnology above. "ceramics" alone (art context) NOT matched — requires qualifier.
         if lower.contains("materials science") || lower.contains("materials engineering")
             || lower.contains("material science") || lower.contains("material engineering")
             || lower.contains("materials science and engineering")
@@ -1195,8 +1242,6 @@ public final class CalloutManager {
             || lower.contains("polymer chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
             || lower.contains("polymer engineering")
             || (lower.contains("composite materials") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab")))
-            || (lower.contains("nanomaterials") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
-            || (lower.contains("nanotechnology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
             || (lower.contains("crystallography") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
             || (lower.contains("crystal structure") && (lower.contains("class") || lower.contains("course") || lower.contains("lab")))
             || (lower.contains("phase diagram") && (lower.contains("class") || lower.contains("course") || lower.contains("lab")))
@@ -3308,6 +3353,30 @@ public final class CalloutManager {
             || lower.contains("fisheries and wildlife") || lower.contains("wildlife and fisheries") {
             return "aquaticscience"
         }
+        // ecologyconservation — positioned BEFORE environmentaljustice so conservation biology,
+        // restoration ecology, wildlife ecology, and species management coursework route here.
+        // Generic ecology/ecosystem terms stay in enviro below.
+        if lower.contains("conservation biology") || lower.contains("restoration ecology")
+            || lower.contains("wildlife ecology") || lower.contains("wildlife management")
+            || lower.contains("species management") || lower.contains("conservation ecology")
+            || lower.contains("nature reserve") && (lower.contains("management") || lower.contains("class") || lower.contains("research"))
+            || lower.contains("conservation genetics") || lower.contains("conservation genomics")
+            || lower.contains("rewilding") || lower.contains("re-wilding")
+            || lower.contains("habitat restoration") || lower.contains("ecological restoration")
+            || lower.contains("wildlife corridor") || lower.contains("wildlife corridors")
+            || lower.contains("endangered species biology") || lower.contains("threatened species")
+            || lower.contains("systematic conservation planning") || lower.contains("conservation planning")
+            || lower.contains("population viability analysis") || lower.contains("minimum viable population")
+            || lower.contains("wildlife conservation") || lower.contains("biodiversity conservation")
+            || (lower.contains("species recovery") && (lower.contains("class") || lower.contains("research") || lower.contains("plan")))
+            || lower.contains("conservation science") || lower.contains("conservation research")
+            || lower.contains("ecology conservation") || lower.contains("conservation ecology class")
+            || lower.contains("wildlife biology") && !lower.contains("zoology")
+            || lower.contains("terrestrial ecology") && (lower.contains("class") || lower.contains("lab") || lower.contains("research"))
+            || lower.contains("landscape ecology") && (lower.contains("class") || lower.contains("lab") || lower.contains("research"))
+            || lower.contains("population ecology") && (lower.contains("class") || lower.contains("lab") || lower.contains("research") || lower.contains("conservation")) {
+            return "ecologyconservation"
+        }
         // environmentaljustice — positioned BEFORE environmentalpolicy so EJ analysis, environmental
         // racism research, cumulative burden studies, and EJ-specific policy work route here.
         // Generic environmental policy/science falls through to environmentalpolicy/enviro below.
@@ -3361,6 +3430,27 @@ public final class CalloutManager {
             || lower.contains("field report") && (lower.contains("ecology") || lower.contains("environment"))
             || lower.contains("env sci") || lower.contains("envi sci") {
             return "enviro"
+        }
+        // translationstudies — positioned BEFORE language so literary translation, CAT tools,
+        // and translation studies coursework route here. Generic "translate this" / bare word("translation")
+        // stays in language below. Court/conference interpreting stays in interpreting branch above.
+        // "translational research" (biomedical) fires much earlier so no conflict.
+        if lower.contains("translation studies") || lower.contains("translation theory")
+            || lower.contains("translation research") || lower.contains("translation scholarship")
+            || lower.contains("literary translation") || lower.contains("literary translator")
+            || lower.contains("translator training") || lower.contains("translation quality assessment")
+            || lower.contains("translation pedagogy") || lower.contains("translation class")
+            || lower.contains("translation course") || lower.contains("translation program")
+            || lower.contains("translation exam") || lower.contains("translation major")
+            || lower.contains("translation degree")
+            || lower.contains("cat tool") || lower.contains("cat tools")
+            || word("trados") || word("memoq") || word("omegat") || word("wordfast")
+            || (lower.contains("localization") && (lower.contains("class") || lower.contains("course") || lower.contains("project") || lower.contains("assignment") || lower.contains("translation")))
+            || lower.contains("l10n class") || lower.contains("l10n project")
+            || (lower.contains("subtitling") && (lower.contains("translation") || lower.contains("class") || lower.contains("project")))
+            || (lower.contains("post-editing") && (lower.contains("translation") || lower.contains("machine translation")))
+            || lower.contains("machine translation quality") || lower.contains("mt post-editing") {
+            return "translationstudies"
         }
         if word("spanish") || word("french") || word("japanese") || word("mandarin")
             || word("german") || word("italian") || word("portuguese") || word("korean")
@@ -3960,6 +4050,29 @@ public final class CalloutManager {
             || lower.contains("biophysical methods") && (lower.contains("class") || lower.contains("lab"))
             || lower.contains("optical tweezers") && (lower.contains("biophysics") || lower.contains("class") || lower.contains("lab")) {
             return "biophysics"
+        }
+        // radiobiology — positioned AFTER biophysics and BEFORE geneticcounseling so DNA damage
+        // from ionizing radiation, radiation cell biology, and radiobiology coursework route here.
+        // Clinical radiation dosimetry stays in radiologictechnology/nuclearmedtech.
+        // Radiation safety/protection stays in healthphysics.
+        if lower.contains("radiobiology") || lower.contains("radio-biology")
+            || lower.contains("radiation biology") || lower.contains("radiation cell biology")
+            || (lower.contains("dna damage") && (lower.contains("radiation") || lower.contains("radiobiology")))
+            || (lower.contains("dna repair") && (lower.contains("radiation") || lower.contains("radiobiology")))
+            || lower.contains("radiation-induced") && (lower.contains("dna") || lower.contains("cell") || lower.contains("apoptosis") || lower.contains("mutation") || lower.contains("damage"))
+            || lower.contains("chromosome aberration") && (lower.contains("radiation") || lower.contains("class") || lower.contains("lab"))
+            || (lower.contains("clonogenic assay") && (lower.contains("radiation") || lower.contains("class") || lower.contains("lab")))
+            || (lower.contains("survival curve") && (lower.contains("radiation") || lower.contains("radiobiology")))
+            || lower.contains("relative biological effectiveness") || (word("rbe") && (lower.contains("radiation") || lower.contains("radiobiology") || lower.contains("class")))
+            || lower.contains("linear energy transfer") && (lower.contains("radiation") || lower.contains("class") || lower.contains("lab") || lower.contains("radiobiology"))
+            || lower.contains("radiation sensitizer") || lower.contains("radiosensitizer") || lower.contains("radiosensitivity")
+            || lower.contains("ionizing radiation biology") || lower.contains("radiation oncology biology")
+            || lower.contains("fractionated radiation") && (lower.contains("biology") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("radiobiological") || lower.contains("radiobiology class")
+            || lower.contains("radiobiology course") || lower.contains("radiobiology exam")
+            || lower.contains("radiobiology lab") || lower.contains("radiobiology research")
+            || lower.contains("radiobiology assignment") || lower.contains("radiobiology program") {
+            return "radiobiology"
         }
         // geneticcounseling — positioned AFTER molecularbiology (shares genomics vocabulary) and
         // BEFORE radiologictechnology. Catches ABGC/CGC board prep, prenatal genetics,

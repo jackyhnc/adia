@@ -3995,5 +3995,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Cognitive neuroscience study session completed (at least two neuroimaging methods or cognitive-brain frameworks reviewed, notes updated and saved)",
             preferredDuration: 45 * 60
         ),
+        // nanotechnology
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Complete my nanotechnology lab report or assignment — nanomaterials characterization, nanofabrication, quantum dots, or carbon nanotubes",
+            successCriteria: "Nanotechnology lab report or assignment meaningfully advanced (characterization data analyzed, synthesis results documented, or a key section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for my nanotechnology exam — nanoscale imaging, quantum confinement, nanomaterials properties, or nanofabrication techniques",
+            successCriteria: "Nanotechnology study session completed (at least two nanoscale concepts or characterization methods reviewed, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // appliedlinguistics
+        SuggestedTemplate(
+            icon: "text.bubble.fill",
+            task: "Write my applied linguistics paper — second language acquisition theory, language pedagogy, discourse analysis, or language assessment",
+            successCriteria: "Applied linguistics paper meaningfully advanced (SLA framework applied, language data analyzed, or a key section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study applied linguistics — second language acquisition, language policy, interlanguage theory, or language testing for my class or exam",
+            successCriteria: "Applied linguistics study session completed (at least two SLA theories or language assessment frameworks reviewed, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // radiobiology
+        SuggestedTemplate(
+            icon: "waveform.path",
+            task: "Complete my radiobiology assignment or lab report — DNA damage mechanisms, survival curves, linear energy transfer, or radiation-induced cell death",
+            successCriteria: "Radiobiology assignment meaningfully advanced (radiation effect data analyzed, survival curves plotted, or a key section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study radiobiology — ionizing radiation biology, DNA repair mechanisms, relative biological effectiveness, or fractionated radiation effects",
+            successCriteria: "Radiobiology study session completed (at least two radiation biology mechanisms or dosimetry concepts reviewed, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // translationstudies
+        SuggestedTemplate(
+            icon: "character.book.closed.fill",
+            task: "Work on my literary translation or translation studies project — translate a passage, apply a translation theory, or use CAT tools like Trados or MemoQ",
+            successCriteria: "Translation project meaningfully advanced (at least one passage translated with annotations, a translation theory applied, or a segment completed in CAT tool and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study translation theory or complete my translation studies coursework — equivalence, domestication/foreignization, CAT tools, or localization methods",
+            successCriteria: "Translation studies session completed (at least two translation theories reviewed, a text analyzed, or coursework notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // ecologyconservation
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Write a conservation biology report or complete an ecology lab — species management, habitat restoration, population viability analysis, or wildlife corridor design",
+            successCriteria: "Conservation biology assignment meaningfully advanced (field data analyzed, species management plan drafted, or a key section of the report written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study conservation ecology — restoration ecology, biodiversity conservation, wildlife management, or landscape ecology for my class or exam",
+            successCriteria: "Conservation ecology study session completed (at least two conservation frameworks or species management methods reviewed, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }
