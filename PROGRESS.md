@@ -1,5 +1,70 @@
 # Adia — Build Progress
 
+## Run 354 (automated) — 2026-07-16 — 5 new keyword domains: cryptography, appliedmathematics, historicallinguistics, computationalfinance, globalpoliticaleconomy (579→589 templates)
+
+### What shipped
+
+**5 new keyword domains: cryptography, appliedmathematics, historicallinguistics, computationalfinance, globalpoliticaleconomy**
+
+**New keyword domain — cryptography:**
+- Branch positioned AFTER quantumcomputing (which owns quantum cryptography), BEFORE cloudcomputing; catches cryptography class/course/exam/program/assignment, applied cryptography, cryptanalysis, number theory + crypto context, AES/RSA algorithm, Diffie-Hellman, elliptic curve cryptography, public-key cryptography, symmetric/asymmetric encryption + edu, block/stream cipher + edu, hash function + crypto/edu, digital signature + crypto/edu, cryptographic protocol + edu, one-time pad, vigenere cipher.
+- Guard: "cryptography lab" stays in cybersecurity (fires at ~line 156 well before the new cryptography branch).
+- `cryptographyCallouts(tier:)` 4/3/3: "those cipher algorithms aren't going to analyze themselves." / "no one cracks cryptography by scrolling." / "CLOSE THIS. AES won't implement itself."
+- 2 templates: "Study cryptography concepts — AES/RSA, public-key encryption, Diffie-Hellman…" (60 min, lock.fill) + "Complete a cryptography assignment — implement a cipher, analyze an encryption protocol…" (60 min, doc.text.fill)
+
+**New keyword domain — appliedmathematics:**
+- Branch positioned AFTER astronomy and BEFORE mathematics; catches applied mathematics/math/maths, computational mathematics/math, scientific computing class/course/exam/lab, partial differential equations + edu, PDE class/course/exam, ordinary differential equations + edu, ODE class/course/exam, differential equations class/course/exam/problem set/homework, mathematical modeling class/course/exam/assignment, math modeling class/course/exam, finite element method + class/math/applied, finite difference method + class/math.
+- Guard: pure math terms (abstract algebra, topology, linear algebra, number theory, real analysis) stay in mathematics; existing tests "linear algebra problem set on eigenvalues" → mathematics pass.
+- `appliedmathematicsCallouts(tier:)` 4/3/3: "those differential equations aren't going to solve themselves." / "no one passes applied math by scrolling." / "CLOSE THIS. differential equations demand your full attention."
+- 2 templates: "Work through applied mathematics assignment — ODEs, numerical methods, finite element…" (60 min) + "Study applied mathematics — differential equations, scientific computing, PDE…" (45 min)
+
+**New keyword domain — historicallinguistics:**
+- Branch positioned AFTER signlanguage and BEFORE linguistics; catches diachronic linguistics/language, language change + edu/research, proto-language/protolanguage, Grimm's law/grimm law, Verner's law, sound change + edu, etymology class/course/exam, historical phonology + edu, language reconstruction, ancestral/ancestor language, comparative method + linguistics/language, proto-indo-european (guarded: only when "historical linguistics" NOT also present), pie language/reconstruction/phonology, morphological/semantic change + edu.
+- Key guard: `proto-indo-european` only fires historicallinguistics when "historical linguistics" is NOT in the string — "historical linguistics class on proto-indo-european" still → linguistics (existing test preserved).
+- `historicallinguisticsCallouts(tier:)` 4/3/3: "those sound change laws aren't going to memorize themselves." / "no one masters diachronic linguistics by scrolling." / "CLOSE THIS. sound changes won't trace themselves."
+- 2 templates: "Study historical linguistics — sound change laws, proto-language reconstruction, diachronic phonology…" (60 min) + "Complete a historical linguistics assignment — trace sound changes, reconstruct proto-forms…" (45 min)
+
+**New keyword domain — computationalfinance:**
+- Branch positioned AFTER forensicaccounting and BEFORE finance; catches quantitative finance/quant finance, quant analyst + finance/program, financial engineering + edu, algorithmic trading + edu, Black-Scholes/black scholes, Monte Carlo simulation + finance/pricing/option/risk/quant, stochastic calculus + finance/edu, options/option pricing + edu/model, derivatives pricing + edu, financial mathematics, mathematical finance, computational finance, math finance + edu, risk-neutral pricing, portfolio optimization + quant/edu, high frequency trading + algo/strategy.
+- Guard: CFA, DCF, LBO, balance sheets, financial statements still route to finance branch.
+- `computationalfinanceCallouts(tier:)` 4/3/3: "that Black-Scholes model isn't going to derive itself." / "no one becomes a quant by scrolling." / "CLOSE THIS. algorithmic trading strategies won't write themselves."
+- 2 templates: "Work on quant finance assignment — Black-Scholes, Monte Carlo simulation, algorithmic trading…" (60 min) + "Study computational finance — stochastic calculus, options pricing, financial engineering…" (60 min)
+
+**New keyword domain — globalpoliticaleconomy:**
+- Branch positioned AFTER internationalrelations and BEFORE socialscience; catches international/global political economy, comparative political economy, political economy of [X], IPE + edu context, ipe class/course/exam/program/major, political economy class/course/exam/paper/program/major/thesis/research, world systems theory + edu, dependency theory + edu, global governance + political economy/ipe.
+- Guard: bare "political economy" without edu context stays in socialscience; "political science comparative politics IR theory" stays in socialscience.
+- `globalpoliticaleconomyCallouts(tier:)` 4/3/3: "those IPE frameworks aren't going to analyze themselves." / "no one masters IPE by scrolling." / "CLOSE THIS. dependency theory won't explain itself."
+- 2 templates: "Study IPE — world systems theory, dependency theory, comparative political economy…" (60 min) + "Write a political economy paper — apply IPE theory to a case study…" (60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +41 tests (5 keyword routing + 1 false-positive + 3 callout pool tests per domain = 9 each, +1 count guard ≥589)
+- SuggestedSessionTemplatesTests.swift: +11 tests (2 template existence tests per domain + 1 count guard ≥589)
+
+**Template catalog: 579 → 589**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `cryptography` fires AFTER `quantumcomputing` (~226) and BEFORE `cloudcomputing` (~260). "cryptography class AES RSA" → cryptography ✓; "cryptography lab pen test" → cybersecurity ✓ (fires at ~157)
+- `appliedmathematics` fires AFTER `astronomy` (~540) and BEFORE `mathematics` (~570). "differential equations homework" → appliedmathematics ✓; "linear algebra problem set on eigenvalues" → mathematics ✓
+- `historicallinguistics` fires AFTER `signlanguage` (~601) and BEFORE `linguistics` (~673). "diachronic linguistics class" → historicallinguistics ✓; "historical linguistics class on proto-indo-european" → linguistics ✓ (PIE guard: !lower.contains("historical linguistics"))
+- `computationalfinance` fires AFTER `forensicaccounting` (~2224) and BEFORE `finance` (~2260). "quantitative finance Black-Scholes" → computationalfinance ✓; "CFA Level 1 DCF LBO" → finance ✓
+- `globalpoliticaleconomy` fires AFTER `internationalrelations` (~5259) and BEFORE `socialscience` (~5295). "IPE dependency theory world systems class" → globalpoliticaleconomy ✓; "political science comparative politics IR theory" → socialscience ✓
+- Brace balance: CalloutMessages.swift 635/635 ✓, CalloutManager.swift 345/345 ✓
+- Template count: 589 confirmed (SuggestedTemplate( occurrences)
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `geopolitics` — geopolitical analysis, geopolitical risk, geopolitical strategy (separate from IR/socialscience)
+  - `computationalbiology` — bioinformatics already exists, but computational biology class/modeling (separate track)
+  - `philosophyofmind` — philosophy of mind, consciousness studies, qualia, functionalism (separate from philosophy)
+  - `digitalhumanities` — digital humanities class/program, text mining + humanities, distant reading, cultural analytics
+  - `environmentalpolicy` — environmental policy class/exam, climate policy, carbon policy (separate from enviro and policy branches)
+- Template count: 589 → 599 after next 5-domain batch
+- CalloutManagerTests: ~2700+ after next batch
+
 ## Run 353 (automated) — 2026-07-16 — 5 new keyword domains: athletictraining, biomechanics, zoology, militaryscience, healthinformatics (569→579 templates)
 
 ### What shipped
