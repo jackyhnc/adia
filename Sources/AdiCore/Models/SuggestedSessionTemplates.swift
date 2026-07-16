@@ -3540,5 +3540,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "EIS draft or permitting assignment meaningfully advanced (at least one substantive section written or permit application component completed and saved)",
             preferredDuration: 45 * 60
         ),
+        // tesol
+        SuggestedTemplate(
+            icon: "globe",
+            task: "Study for my TESOL or TEFL certification — review second language acquisition theories, lesson planning methods, and assessment strategies",
+            successCriteria: "TESOL/TEFL certification prep meaningfully advanced (at least two topic areas reviewed, practice activities or sample lessons drafted, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Plan and write ESL lesson materials — create a lesson plan, develop activities, or complete my TESOL practicum assignment",
+            successCriteria: "ESL lesson plan or practicum assignment meaningfully advanced (lesson objectives written, at least two activities planned, or assignment section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // specialeducation
+        SuggestedTemplate(
+            icon: "person.crop.circle.badge.checkmark",
+            task: "Study for my special education credential or PRAXIS special education exam — review IDEA/IDEIA, IEP process, disability categories, and inclusion strategies",
+            successCriteria: "Special education exam prep meaningfully advanced (at least two topic areas reviewed, key legal requirements understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write IEP goals and objectives or complete a special education case study assignment for my SPED class",
+            successCriteria: "IEP goals drafted or case study assignment meaningfully advanced (at least two measurable goals written or one case study section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // foodscience
+        SuggestedTemplate(
+            icon: "flame.fill",
+            task: "Study for my food science exam — review food chemistry, food microbiology, food processing, and sensory evaluation concepts",
+            successCriteria: "Food science study session completed (at least two topic areas reviewed, key reactions or processes understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a food science lab report or product development assignment — analyze food chemistry data, sensory evaluation results, or processing parameters",
+            successCriteria: "Food science lab report or assignment meaningfully advanced (data analyzed, results section drafted, or product formulation documented and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // animalwelfare
+        SuggestedTemplate(
+            icon: "pawprint.fill",
+            task: "Study animal welfare science concepts — review IACUC protocols, animal enrichment, zoo management, and welfare legislation for my class or exam",
+            successCriteria: "Animal welfare study session completed (at least two topic areas reviewed, key welfare principles or IACUC requirements understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete an animal welfare or zoo science assignment — write an IACUC protocol, enrichment plan, or wildlife rehabilitation care report",
+            successCriteria: "Animal welfare assignment meaningfully advanced (protocol, plan, or care report section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // epidemiologicalmodeling
+        SuggestedTemplate(
+            icon: "chart.line.uptrend.xyaxis",
+            task: "Build or analyze an epidemiological model — implement a SIR/SEIR compartmental model, estimate R\u{2080}, or complete a disease dynamics assignment",
+            successCriteria: "Epidemic model meaningfully advanced (model implemented or coded, parameters estimated, or assignment section completed and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study mathematical epidemiology concepts — review compartmental models, transmission dynamics, reproduction numbers, and intervention modeling for my class",
+            successCriteria: "Mathematical epidemiology study session completed (at least two modeling concepts reviewed, key equations understood, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

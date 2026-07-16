@@ -340,7 +340,12 @@ extension CalloutManager {
         case "constructionlaw":        return constructionlawCallouts(tier: tier)
         case "healtheconomics":        return healtheconomicsCallouts(tier: tier)
         case "insurancefinance":       return insurancefinanceCallouts(tier: tier)
-        case "environmentalplanning":  return environmentalplanningCallouts(tier: tier)
+        case "environmentalplanning":       return environmentalplanningCallouts(tier: tier)
+        case "tesol":                       return tesolCallouts(tier: tier)
+        case "specialeducation":            return specialeducationCallouts(tier: tier)
+        case "foodscience":                 return foodscienceCallouts(tier: tier)
+        case "animalwelfare":               return animalwelfareCallouts(tier: tier)
+        case "epidemiologicalmodeling":     return epidemiologicalmodelingCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -6481,6 +6486,111 @@ extension CalloutManager {
             "CLOSE THIS. open your environmental planning materials.",
             "CLOSE THIS. environmental review demands your full attention.",
             "CLOSE THIS. the environment can't wait — neither can your assignment."
+        ]
+        }
+    }
+
+    private func tesolCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those language learners need a prepared teacher — close this.",
+            "your TESOL certification prep isn't going to happen by scrolling.",
+            "close this and get back to your ESL lesson planning.",
+            "second language acquisition doesn't study itself — close this.",
+        ]
+        case 2: return [
+            "no one earns their TESOL certification by scrolling.",
+            "close this and open your ESL teaching materials.",
+            "your language learners deserve a teacher who actually studies."
+        ]
+        default: return [
+            "CLOSE THIS. open your TESOL or TEFL study materials.",
+            "CLOSE THIS. your ESL students need a prepared teacher.",
+            "CLOSE THIS. second language acquisition demands your full attention."
+        ]
+        }
+    }
+
+    private func specialeducationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those IEPs aren't going to write themselves.",
+            "your students with disabilities deserve a prepared teacher — close this.",
+            "close this and get back to your special education coursework.",
+            "IDEA compliance doesn't study itself — close this.",
+        ]
+        case 2: return [
+            "no one earns their SPED credential by scrolling.",
+            "close this and open your special education materials.",
+            "your exceptional learners need you focused — close this."
+        ]
+        default: return [
+            "CLOSE THIS. open your special education notes.",
+            "CLOSE THIS. your IEP goals won't write themselves.",
+            "CLOSE THIS. exceptional learners deserve your full attention."
+        ]
+        }
+    }
+
+    private func foodscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that food product isn't going to develop itself.",
+            "close this and get back to your food science coursework.",
+            "food chemistry doesn't analyze itself — close this.",
+            "your food science lab report needs your full attention.",
+        ]
+        case 2: return [
+            "no one masters food science by scrolling.",
+            "close this and open your food science notes.",
+            "that sensory evaluation report won't write itself."
+        ]
+        default: return [
+            "CLOSE THIS. open your food science study materials.",
+            "CLOSE THIS. food microbiology demands your full attention.",
+            "CLOSE THIS. your food science exam won't pass itself."
+        ]
+        }
+    }
+
+    private func animalwelfareCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those animals depend on handlers who actually study — close this.",
+            "your zoo management coursework isn't going to complete itself.",
+            "close this and get back to your animal welfare studies.",
+            "IACUC protocols don't memorize themselves — close this.",
+        ]
+        case 2: return [
+            "no one earns a zoo science credential by scrolling.",
+            "close this and open your animal welfare study materials.",
+            "wildlife rehab patients need prepared rehabilitators — close this."
+        ]
+        default: return [
+            "CLOSE THIS. open your animal welfare materials.",
+            "CLOSE THIS. animal care demands your full attention.",
+            "CLOSE THIS. IACUC compliance won't study itself."
+        ]
+        }
+    }
+
+    private func epidemiologicalmodelingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that SIR model isn't going to code itself.",
+            "close this and get back to your epidemic modeling coursework.",
+            "disease dynamics don't analyze themselves — close this.",
+            "your epidemiological model won't build itself.",
+        ]
+        case 2: return [
+            "no one masters disease modeling by scrolling.",
+            "close this and open your epidemic modeling notes.",
+            "that transmission rate won't estimate itself."
+        ]
+        default: return [
+            "CLOSE THIS. open your disease modeling materials.",
+            "CLOSE THIS. mathematical epidemiology demands your full attention.",
+            "CLOSE THIS. your R\u{2080} won't calculate itself."
         ]
         }
     }

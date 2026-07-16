@@ -16292,4 +16292,204 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast549() {
         #expect(SuggestedSessionTemplates.all.count >= 549, "template catalog must have ≥549 entries after adding 5 new domains (10 templates)")
     }
+
+    // MARK: - tesol
+    @Test func tesolKeywordFromTESOL() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my TESOL certification exam — reviewing second language acquisition and lesson planning")
+        #expect(kw == "tesol", "TESOL certification exam should route to tesol")
+    }
+    @Test func tesolKeywordFromTEFL() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing for my TEFL course assessment and practicum evaluation")
+        #expect(kw == "tesol", "TEFL course assessment should route to tesol")
+    }
+    @Test func tesolKeywordFromESLTeacher() {
+        let kw = CalloutManager.extractTaskKeyword(from: "planning my ESL teacher practicum lesson for English language learners")
+        #expect(kw == "tesol", "ESL teacher practicum English language learners should route to tesol")
+    }
+    @Test func tesolKeywordFromSecondLanguageAcquisition() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing second language acquisition theories for my applied linguistics class")
+        #expect(kw == "tesol", "second language acquisition applied linguistics class should route to tesol")
+    }
+    @Test func tesolFalsePositive_englishComposition() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing my English composition essay on literary analysis")
+        #expect(kw != "tesol", "English composition essay should NOT route to tesol")
+    }
+    @Test @MainActor func tesolCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "tesol", tier: tier)
+            #expect(!msgs.isEmpty, "tesol tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func tesolTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "tesol", tier: 1)
+        #expect(msgs.count >= 4, "tesol tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func tesolTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "tesol", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "tesol tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - specialeducation
+    @Test func specialeducationKeywordFromSpecialEducation() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my special education credential exam — reviewing IDEA and IEP process")
+        #expect(kw == "specialeducation", "special education credential IDEA IEP should route to specialeducation")
+    }
+    @Test func specialeducationKeywordFromSPED() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my SPED class assignment on learning disabilities and inclusion strategies")
+        #expect(kw == "specialeducation", "SPED class assignment learning disabilities inclusion should route to specialeducation")
+    }
+    @Test func specialeducationKeywordFromIEP() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing IEP goals and objectives for my special ed practicum student")
+        #expect(kw == "specialeducation", "IEP goals special ed practicum should route to specialeducation")
+    }
+    @Test func specialeducationKeywordFromExceptionalLearners() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing instructional strategies for exceptional learners in my special education course")
+        #expect(kw == "specialeducation", "exceptional learners special education course should route to specialeducation")
+    }
+    @Test func specialeducationFalsePositive_generalEducation() {
+        let kw = CalloutManager.extractTaskKeyword(from: "creating a lesson plan on differentiated instruction for my education class")
+        #expect(kw == "education" || kw == "specialeducation", "general education lesson plan should route to education or specialeducation, not nil")
+    }
+    @Test @MainActor func specialeducationCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "specialeducation", tier: tier)
+            #expect(!msgs.isEmpty, "specialeducation tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func specialeducationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "specialeducation", tier: 1)
+        #expect(msgs.count >= 4, "specialeducation tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func specialeducationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "specialeducation", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "specialeducation tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - foodscience
+    @Test func foodscienceKeywordFromFoodChemistry() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my food chemistry lab on Maillard reaction and enzyme kinetics")
+        #expect(kw == "foodscience", "food chemistry lab should route to foodscience")
+    }
+    @Test func foodscienceKeywordFromFoodMicrobiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying food microbiology for my food science exam on spoilage organisms")
+        #expect(kw == "foodscience", "food microbiology food science exam should route to foodscience")
+    }
+    @Test func foodscienceKeywordFromSensoryEvaluation() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a sensory evaluation lab report on food texture and flavor profiling")
+        #expect(kw == "foodscience", "sensory evaluation food lab report should route to foodscience")
+    }
+    @Test func foodscienceKeywordFromFoodProductDevelopment() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on food product development for my IFT certification project")
+        #expect(kw == "foodscience", "food product development IFT certification should route to foodscience")
+    }
+    @Test func foodscienceFalsePositive_foodSafety() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying ServSafe food safety manager certification exam material")
+        #expect(kw != "foodscience", "ServSafe food safety certification should NOT route to foodscience")
+    }
+    @Test @MainActor func foodscienceCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "foodscience", tier: tier)
+            #expect(!msgs.isEmpty, "foodscience tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func foodscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "foodscience", tier: 1)
+        #expect(msgs.count >= 4, "foodscience tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func foodscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "foodscience", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "foodscience tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - animalwelfare
+    @Test func animalwelfareKeywordFromIACUC() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing an IACUC protocol for my animal care and use class")
+        #expect(kw == "animalwelfare", "IACUC protocol animal care and use class should route to animalwelfare")
+    }
+    @Test func animalwelfareKeywordFromZooManagement() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing a zoo management assignment on enrichment and captive animal care")
+        #expect(kw == "animalwelfare", "zoo management enrichment captive animal care should route to animalwelfare")
+    }
+    @Test func animalwelfareKeywordFromWildlifeRehab() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying wildlife rehabilitation protocols for my animal welfare science class")
+        #expect(kw == "animalwelfare", "wildlife rehabilitation animal welfare science class should route to animalwelfare")
+    }
+    @Test func animalwelfareKeywordFromAnimalWelfareScience() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing animal welfare science principles and AWA compliance for my zoo studies exam")
+        #expect(kw == "animalwelfare", "animal welfare science AWA compliance zoo studies exam should route to animalwelfare")
+    }
+    @Test func animalwelfareFalsePositive_veterinaryMedicine() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for NAVLE and reviewing veterinary surgery cases")
+        #expect(kw == "veterinary", "NAVLE veterinary surgery should route to veterinary, not animalwelfare")
+    }
+    @Test @MainActor func animalwelfareCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "animalwelfare", tier: tier)
+            #expect(!msgs.isEmpty, "animalwelfare tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func animalwelfareTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "animalwelfare", tier: 1)
+        #expect(msgs.count >= 4, "animalwelfare tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func animalwelfareTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "animalwelfare", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "animalwelfare tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - epidemiologicalmodeling
+    @Test func epidemiologicalmodelingKeywordFromSIRModel() {
+        let kw = CalloutManager.extractTaskKeyword(from: "implementing a SIR model to simulate disease spread for my mathematical epidemiology class")
+        #expect(kw == "epidemiologicalmodeling", "SIR model disease spread mathematical epidemiology class should route to epidemiologicalmodeling")
+    }
+    @Test func epidemiologicalmodelingKeywordFromSEIR() {
+        let kw = CalloutManager.extractTaskKeyword(from: "building a SEIR compartmental model and estimating the basic reproduction number")
+        #expect(kw == "epidemiologicalmodeling", "SEIR compartmental model basic reproduction number should route to epidemiologicalmodeling")
+    }
+    @Test func epidemiologicalmodelingKeywordFromEpidemicModeling() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my epidemic modeling assignment on transmission dynamics and pandemic modeling")
+        #expect(kw == "epidemiologicalmodeling", "epidemic modeling transmission dynamics pandemic modeling should route to epidemiologicalmodeling")
+    }
+    @Test func epidemiologicalmodelingKeywordFromMathematicalEpidemiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying mathematical epidemiology — reviewing disease dynamics and compartmental models")
+        #expect(kw == "epidemiologicalmodeling", "mathematical epidemiology disease dynamics compartmental models should route to epidemiologicalmodeling")
+    }
+    @Test func epidemiologicalmodelingFalsePositive_generalEpidemiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying epidemiology — reviewing outbreak investigation and disease surveillance methods")
+        #expect(kw == "epidemiology" || kw == "epidemiologicalmodeling", "general epidemiology outbreak investigation should route to epidemiology")
+    }
+    @Test @MainActor func epidemiologicalmodelingCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "epidemiologicalmodeling", tier: tier)
+            #expect(!msgs.isEmpty, "epidemiologicalmodeling tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func epidemiologicalmodelingTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "epidemiologicalmodeling", tier: 1)
+        #expect(msgs.count >= 4, "epidemiologicalmodeling tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func epidemiologicalmodelingTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "epidemiologicalmodeling", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "epidemiologicalmodeling tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: tesol/specialeducation/foodscience/animalwelfare/epidemiologicalmodeling)
+    @Test func suggestedTemplatesCountAtLeast559() {
+        #expect(SuggestedSessionTemplates.all.count >= 559, "template catalog must have ≥559 entries after adding 5 new domains (10 templates)")
+    }
 }

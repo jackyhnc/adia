@@ -1,5 +1,73 @@
 # Adia — Build Progress
 
+## Run 352 (automated) — 2026-07-16 — 5 new keyword domains: tesol, specialeducation, foodscience, animalwelfare, epidemiologicalmodeling (549→559 templates)
+
+### What shipped
+
+**5 new keyword domains: tesol, specialeducation, foodscience, animalwelfare, epidemiologicalmodeling**
+
+**New keyword domain — tesol:**
+- Branch positioned BEFORE `education`; catches TESOL/TEFL certification, ESL/ELL teacher practicum, English language teaching, second language acquisition, CELTA program/cert, EFL/ELT class/course, applied linguistics+teaching context.
+- Guard: "English composition class" stays in studying/essay; bare "English teacher" without ESL/TESOL context stays in education.
+- `tesolCallouts(tier:)` 4/3/3: "those language learners need a prepared teacher — close this." / "no one earns their TESOL certification by scrolling." / "CLOSE THIS. open your TESOL or TEFL study materials."
+- 2 templates: "Study for my TESOL or TEFL certification…" (60 min, globe) + "Plan and write ESL lesson materials…" (45 min, doc.text.fill)
+
+**New keyword domain — specialeducation:**
+- Branch positioned AFTER `tesol`, BEFORE `education`; catches special education/special ed teacher/class/program, SPED credential/class/exam, individuals with disabilities education, IDEIA, exceptional learners, IEP writing/development/goals, learning disabilities class, 504 plan, inclusion classroom, response to intervention, praxis special education, individualized education program/plan.
+- `specialeducationCallouts(tier:)` 4/3/3: "those IEPs aren't going to write themselves." / "no one earns their SPED credential by scrolling." / "CLOSE THIS. open your special education notes."
+- 2 templates: "Study for my special education credential or PRAXIS…" (60 min) + "Write IEP goals and objectives or complete a SPED case study…" (45 min)
+
+**New keyword domain — foodscience:**
+- Branch positioned BEFORE `nutrition`; catches food chemistry/microbiology/processing/engineering+class/lab/exam, sensory evaluation+food/class, IFT exam/class, food product development, food preservation+class/tech, food packaging+design/science, food science degree/major/program/class/exam/lab, food technologist/scientist.
+- Guard: "food safety" stays in foodsafety (fires much earlier); "nutrition plan"/"meal prep" stay in fitness; bare "food science" without edu-program context falls through to nutrition.
+- `foodscienceCallouts(tier:)` 4/3/3: "that food product isn't going to develop itself." / "no one masters food science by scrolling." / "CLOSE THIS. open your food science study materials."
+- 2 templates: "Study for my food science exam…" (60 min) + "Complete a food science lab report or product development assignment…" (45 min)
+
+**New keyword domain — animalwelfare:**
+- Branch positioned BEFORE `veterinarytechnology`; catches animal welfare science/law/act, animal care and use, IACUC, zoo management/science/studies/biology, zookeeper, zoological studies/science, wildlife rehabilitation/care/rescue, shelter medicine, animal shelter management, humane education, animal ethics, AWA compliance, animal enrichment+zoo/shelter/welfare, captive animal management/care, AZA accreditation/certification.
+- Guard: "animal science"/"animal behavior" in a DVM/vet-school context stays in veterinary; NAVLE stays in veterinary.
+- `animalwelfareCallouts(tier:)` 4/3/3: "those animals depend on handlers who actually study — close this." / "no one earns a zoo science credential by scrolling." / "CLOSE THIS. open your animal welfare materials."
+- 2 templates: "Study animal welfare science concepts — IACUC protocols, enrichment, zoo management…" (60 min) + "Complete an animal welfare or zoo science assignment…" (45 min)
+
+**New keyword domain — epidemiologicalmodeling:**
+- Branch positioned BEFORE `epidemiology`; catches SIR/SEIR/SIS/SEIRD/SIRD model, compartmental model+disease/epidemic/class, disease modeling, epidemic modeling, epidemiological model/modeling, infectious disease model, mathematical/computational epidemiology, disease transmission dynamics, reproductive number+model/class, basic/effective reproduction number, agent-based model+disease/epi, network epidemiology, pandemic modeling, stochastic epidemic, transmission rate+model/class, disease dynamics class/course.
+- Guard: general epidemiology (outbreak investigation, disease surveillance) stays in epidemiology (fires after).
+- `epidemiologicalmodelingCallouts(tier:)` 4/3/3: "that SIR model isn't going to code itself." / "no one masters disease modeling by scrolling." / "CLOSE THIS. your R₀ won't calculate itself."
+- 2 templates: "Build or analyze an epidemiological model — SIR/SEIR, R₀…" (60 min) + "Study mathematical epidemiology concepts…" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +41 tests (8 per domain: 4 keyword routing + 1 false-positive + 3 callout tier tests; 1 count guard ≥559)
+- SuggestedSessionTemplatesTests.swift: +11 tests (2 domain template existence tests per domain + 1 count guard ≥559)
+
+**Template catalog: 549 → 559**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by structural inspection.
+- Brace balance: CalloutManager.swift 330/330 ✓, CalloutMessages.swift 605/605 ✓, CalloutManagerTests.swift 4913/4913 ✓, SuggestedSessionTemplatesTests.swift 1434/1434 ✓
+- Template count verified: `grep -c 'SuggestedTemplate(' SuggestedSessionTemplates.swift` = 559 ✓
+- Callout pool function count: 300 (was 295 + 5 new) ✓
+- Ordering checks:
+  - `tesol` (line 2320) fires BEFORE `specialeducation` (2342) BEFORE `education` (2366) ✓
+  - `foodscience` (line 2753) fires BEFORE `nutrition` (2765) ✓
+  - `animalwelfare` (line 3141) fires BEFORE `veterinarytechnology` (3157) ✓
+  - `epidemiologicalmodeling` (line 4660) fires BEFORE `epidemiology` (4686) ✓
+- Dispatch cases added for all 5 new domains in taskAwareCallouts ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `healthinformatics` — split from healthcareadmin; CPHIMS exam, HL7/FHIR standards, health data interoperability, clinical informatics as primary degree
+  - `biomechanics` — split from kinesiology; biomechanical analysis lab, gait analysis research, motion capture + research context, joint kinetics/kinematics class (need to remove word("biomechanics") from kinesiology first)
+  - `zoology` — split from veterinary; zoology degree/class/program/exam, comparative zoology, invertebrate/vertebrate zoology, taxonomic classification (need to remove word("zoology") from veterinary)
+  - `militaryscience` — ROTC class/lab, military science class/course/exam, leadership lab, tactics class, military history class
+  - `athletictraining` — ATC credential, BOC exam, athletic training class/program/clinical, taping and bracing lab, sport injury evaluation (distinct from personaltraining/kinesiology)
+- Template catalog: 559 → 569 after next 5-domain batch
+- CalloutManagerTests: ~2771 + 40 = ~2811 after next batch
+
+---
+
 ## Run 351 (automated) — 2026-07-16 — 5 new keyword domains: animalassistedtherapy, constructionlaw, healtheconomics, insurancefinance, environmentalplanning (539→549 templates)
 
 ### What shipped

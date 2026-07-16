@@ -2301,6 +2301,46 @@ public final class CalloutManager {
             || word("taxes") || lower.contains("tax return") || word("invoice") || word("invoices") {
             return "budget"
         }
+        // tesol — positioned BEFORE education so TESOL/TEFL certification prep, ESL/ELL
+        // teaching practicums, and second-language-acquisition coursework route here rather than
+        // the generic education pool. "English class" for native speakers stays in studying.
+        if lower.contains("tesol") || lower.contains("tefl")
+            || lower.contains("esl teacher") || lower.contains("ell teacher")
+            || lower.contains("esl practicum") || lower.contains("esl student teaching")
+            || lower.contains("english language teaching") || lower.contains("english language learner")
+            || lower.contains("second language acquisition") || lower.contains("second language teaching")
+            || lower.contains("english as a second language") || lower.contains("english as an additional language")
+            || word("celta") && (lower.contains("class") || lower.contains("cert") || lower.contains("exam") || lower.contains("course") || lower.contains("teach") || lower.contains("program"))
+            || lower.contains("elt program") || lower.contains("elt class") || lower.contains("elt course")
+            || lower.contains("applied linguistics") && (lower.contains("teach") || lower.contains("esl") || lower.contains("tesol") || lower.contains("language acquisition"))
+            || lower.contains("teaching english") && (lower.contains("abroad") || lower.contains("foreign language") || lower.contains("second language") || lower.contains("learners") || lower.contains("esl") || lower.contains("ell"))
+            || lower.contains("efl teaching") || lower.contains("efl class") || lower.contains("efl course")
+            || lower.contains("language acquisition class") || lower.contains("language acquisition course")
+            || lower.contains("language acquisition exam") || lower.contains("language acquisition program") {
+            return "tesol"
+        }
+        // specialeducation — positioned AFTER tesol and BEFORE education so SPED teacher
+        // credentialing, IEP writing, and IDEA/IDEIA coursework get a dedicated pool.
+        // Bare "lesson plan" and "classroom management" stay in education (fires after this).
+        if lower.contains("special education") || lower.contains("special ed ")
+            || word("sped") && (lower.contains("class") || lower.contains("teacher") || lower.contains("credential") || lower.contains("cert") || lower.contains("program") || lower.contains("teach") || lower.contains("notes") || lower.contains("exam") || lower.contains("practicum"))
+            || lower.contains("special ed teacher") || lower.contains("special ed class")
+            || lower.contains("special ed program") || lower.contains("special ed credential")
+            || lower.contains("special ed certification")
+            || lower.contains("individuals with disabilities education")
+            || word("ideia") || lower.contains("idea act") && lower.contains("special")
+            || lower.contains("exceptional learners") || lower.contains("exceptional children")
+            || lower.contains("learning disabilities class") || lower.contains("learning disabilities course")
+            || lower.contains("504 plan") || lower.contains("section 504") && (lower.contains("class") || lower.contains("course") || lower.contains("education"))
+            || lower.contains("inclusion classroom") || lower.contains("inclusion teaching")
+            || lower.contains("response to intervention") && (lower.contains("class") || lower.contains("course") || lower.contains("special") || lower.contains("sped") || lower.contains("teach"))
+            || lower.contains("autism spectrum") && (lower.contains("class") || lower.contains("teach") || lower.contains("student") || lower.contains("iep") || lower.contains("education"))
+            || lower.contains("iep writing") || lower.contains("iep development") || lower.contains("iep goals")
+            || lower.contains("praxis special education") || lower.contains("praxis sped")
+            || lower.contains("adapted curriculum") || lower.contains("disability studies class")
+            || lower.contains("individualized education program") || lower.contains("individualized education plan") {
+            return "specialeducation"
+        }
         // education — positioned before tutor so lesson planning, curriculum development, and
         // teaching certification tasks route here rather than the generic tutoring/coaching pool.
         if lower.contains("lesson plan") || word("curriculum")
@@ -2691,6 +2731,27 @@ public final class CalloutManager {
             || word("calories") {
             return "fitness"
         }
+        // foodscience — positioned BEFORE nutrition so food science degree/program and
+        // IFT-track coursework route here rather than the generic dietetics pool.
+        // "food safety" stays in foodsafety (fires much earlier); "nutrition plan"/"meal prep"
+        // stay in fitness; bare "food science" without edu-program context remains in nutrition.
+        if lower.contains("food chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("food microbiology") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("food processing") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("technology") || lower.contains("exam"))
+            || lower.contains("food engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("sensory evaluation") && (lower.contains("class") || lower.contains("course") || lower.contains("food") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("sensory science") && (lower.contains("food") || lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || word("ift") && (lower.contains("exam") || lower.contains("certification") || lower.contains("class") || lower.contains("food science") || lower.contains("food technology"))
+            || lower.contains("food product development") || lower.contains("food product design")
+            || lower.contains("food preservation") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("technology"))
+            || lower.contains("food packaging") && (lower.contains("class") || lower.contains("course") || lower.contains("design") || lower.contains("science"))
+            || lower.contains("food analysis lab") || lower.contains("food analysis class")
+            || lower.contains("food science degree") || lower.contains("food science major")
+            || lower.contains("food science program") || lower.contains("food science class")
+            || lower.contains("food science exam") || lower.contains("food science lab")
+            || lower.contains("food technologist") || lower.contains("food scientist") {
+            return "foodscience"
+        }
         // nutrition/dietetics — positioned after fitness so "nutrition plan" and "meal prep"
         // stay in fitness; catches professional/clinical dietetics terms not covered there.
         if word("dietitian") || word("dietician") || word("nutritionist")
@@ -3057,6 +3118,27 @@ public final class CalloutManager {
             || lower.contains("feedlot management") || lower.contains("feed formulation class")
             || (lower.contains("farm management") && (lower.contains("livestock") || lower.contains("animal") || lower.contains("production"))) {
             return "animalhusbandry"
+        }
+        // animalwelfare — positioned BEFORE veterinarytechnology and veterinary so zoo
+        // management, IACUC protocol, and wildlife rehabilitation tasks get a dedicated pool.
+        // "animal science" and "animal behavior" in a DVM/vet-school context stay in veterinary.
+        if lower.contains("animal welfare") || lower.contains("animal care and use")
+            || lower.contains("iacuc") || lower.contains("institutional animal care")
+            || lower.contains("zoo management") || word("zookeeper")
+            || lower.contains("zoo science") || lower.contains("zoo studies")
+            || lower.contains("zoo biology") || lower.contains("zoo animal") && (lower.contains("class") || lower.contains("care") || lower.contains("management") || lower.contains("welfare"))
+            || lower.contains("zoological studies") || lower.contains("zoological science")
+            || lower.contains("wildlife rehabilitation") || lower.contains("wildlife rehab")
+            || lower.contains("wildlife care") || lower.contains("wildlife rescue")
+            || lower.contains("shelter medicine") || lower.contains("animal shelter management")
+            || lower.contains("humane education") || lower.contains("animal ethics")
+            || lower.contains("animal welfare science") || lower.contains("animal welfare law")
+            || lower.contains("animal welfare act") || lower.contains("awa compliance")
+            || lower.contains("animal enrichment") && (lower.contains("zoo") || lower.contains("shelter") || lower.contains("welfare") || lower.contains("class") || lower.contains("program"))
+            || lower.contains("captive animal management") || lower.contains("captive animal care")
+            || lower.contains("aza accreditation") || lower.contains("aza certification")
+            || lower.contains("zoo program") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("degree")) {
+            return "animalwelfare"
         }
         // veterinarytechnology — positioned BEFORE veterinary so vet tech programs, VTNE exam
         // prep, and veterinary technician school tasks get a dedicated pool separate from the
@@ -4556,6 +4638,26 @@ public final class CalloutManager {
             || lower.contains("poisoning mechanisms") || lower.contains("toxic dose")
                 && (lower.contains("class") || lower.contains("course") || lower.contains("toxicology")) {
             return "toxicology"
+        }
+        // epidemiologicalmodeling — positioned BEFORE epidemiology so mathematical/computational
+        // epidemic modeling, SIR/SEIR compartmental models, and disease transmission dynamics
+        // coursework get a dedicated pool. General epidemiology tasks stay in the branch below.
+        if lower.contains("sir model") || lower.contains("seir model") || lower.contains("sis model")
+            || lower.contains("seird model") || lower.contains("sird model")
+            || lower.contains("compartmental model") && (lower.contains("disease") || lower.contains("epidemic") || lower.contains("infect") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("disease modeling") || lower.contains("epidemic modeling")
+            || lower.contains("epidemiological model") || lower.contains("epidemiological modeling")
+            || lower.contains("infectious disease model") || lower.contains("disease transmission model")
+            || lower.contains("mathematical epidemiology") || lower.contains("computational epidemiology")
+            || lower.contains("disease transmission dynamics") || lower.contains("epidemic dynamics class")
+            || lower.contains("reproductive number") && (lower.contains("model") || lower.contains("disease") || lower.contains("epi") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("basic reproduction number") || lower.contains("effective reproduction number")
+            || lower.contains("agent-based model") && (lower.contains("disease") || lower.contains("epidemic") || lower.contains("infect") || lower.contains("epi"))
+            || lower.contains("network epidemiology") || lower.contains("pandemic modeling")
+            || lower.contains("stochastic epidemic") || lower.contains("stochastic disease model")
+            || lower.contains("transmission rate") && (lower.contains("model") || lower.contains("epi") || lower.contains("disease") || lower.contains("class"))
+            || lower.contains("disease dynamics class") || lower.contains("disease dynamics course") {
+            return "epidemiologicalmodeling"
         }
         // epidemiology — positioned BEFORE publicheath so graduate-level epidemiology research,
         // outbreak investigation coursework, disease surveillance assignments, and epi methods

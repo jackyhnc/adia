@@ -4356,4 +4356,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 549,
                 "catalog should have ≥549 templates after animalassistedtherapy/constructionlaw/healtheconomics/insurancefinance/environmentalplanning additions (10 templates)")
     }
+
+    // MARK: - tesol
+    @Test func tesolTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("TESOL") || $0.localizedCaseInsensitiveContains("TEFL") || $0.localizedCaseInsensitiveContains("second language acquisition")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("certification") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        let hasLesson = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("ESL") || $0.localizedCaseInsensitiveContains("TESOL") || $0.localizedCaseInsensitiveContains("lesson")) &&
+            ($0.localizedCaseInsensitiveContains("lesson plan") || $0.localizedCaseInsensitiveContains("practicum") || $0.localizedCaseInsensitiveContains("material") || $0.localizedCaseInsensitiveContains("activities"))
+        }
+        #expect(hasStudy, "catalog must include a TESOL/TEFL certification study template")
+        #expect(hasLesson, "catalog must include an ESL lesson planning or practicum template")
+    }
+
+    // MARK: - specialeducation
+    @Test func specialeducationTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("special education") || $0.localizedCaseInsensitiveContains("SPED") || $0.localizedCaseInsensitiveContains("PRAXIS special")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("credential") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        let hasIEP = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("IEP") || $0.localizedCaseInsensitiveContains("special ed") || $0.localizedCaseInsensitiveContains("SPED")) &&
+            ($0.localizedCaseInsensitiveContains("IEP") || $0.localizedCaseInsensitiveContains("goals") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("case study"))
+        }
+        #expect(hasStudy, "catalog must include a special education credential study template")
+        #expect(hasIEP, "catalog must include an IEP writing or SPED assignment template")
+    }
+
+    // MARK: - foodscience
+    @Test func foodscienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("food science") || $0.localizedCaseInsensitiveContains("food chemistry") || $0.localizedCaseInsensitiveContains("food microbiology")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        let hasLab = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("food science") || $0.localizedCaseInsensitiveContains("sensory evaluation") || $0.localizedCaseInsensitiveContains("food chemistry")) &&
+            ($0.localizedCaseInsensitiveContains("lab report") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("product development"))
+        }
+        #expect(hasStudy, "catalog must include a food science exam study template")
+        #expect(hasLab, "catalog must include a food science lab report or assignment template")
+    }
+
+    // MARK: - animalwelfare
+    @Test func animalwelfareTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("animal welfare") || $0.localizedCaseInsensitiveContains("IACUC") || $0.localizedCaseInsensitiveContains("zoo management")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("concepts") || $0.localizedCaseInsensitiveContains("class"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("animal welfare") || $0.localizedCaseInsensitiveContains("IACUC") || $0.localizedCaseInsensitiveContains("zoo") || $0.localizedCaseInsensitiveContains("wildlife")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("protocol") || $0.localizedCaseInsensitiveContains("plan") || $0.localizedCaseInsensitiveContains("report"))
+        }
+        #expect(hasStudy, "catalog must include an animal welfare science study template")
+        #expect(hasAssignment, "catalog must include an IACUC/zoo/wildlife assignment template")
+    }
+
+    // MARK: - epidemiologicalmodeling
+    @Test func epidemiologicalmodelingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasModel = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("SIR") || $0.localizedCaseInsensitiveContains("SEIR") || $0.localizedCaseInsensitiveContains("epidemiological model") || $0.localizedCaseInsensitiveContains("compartmental model")) &&
+            ($0.localizedCaseInsensitiveContains("build") || $0.localizedCaseInsensitiveContains("implement") || $0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("estimate"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("mathematical epidemiology") || $0.localizedCaseInsensitiveContains("compartmental model") || $0.localizedCaseInsensitiveContains("disease dynamics")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("class"))
+        }
+        #expect(hasModel, "catalog must include an epidemic model implementation template")
+        #expect(hasStudy, "catalog must include a mathematical epidemiology study template")
+    }
+
+    // MARK: - Count guard (batch: tesol/specialeducation/foodscience/animalwelfare/epidemiologicalmodeling)
+    @Test func catalogHasAtLeastFiveHundredFiftyNineTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 559,
+                "catalog should have ≥559 templates after tesol/specialeducation/foodscience/animalwelfare/epidemiologicalmodeling additions (10 templates)")
+    }
 }
