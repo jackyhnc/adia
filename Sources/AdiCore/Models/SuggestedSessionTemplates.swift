@@ -4645,5 +4645,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "ChE study session completed (at least two topic areas reviewed with governing equations, constitutive relations, and sample problems worked through)",
             preferredDuration: 60 * 60
         ),
+        // oceanography
+        SuggestedTemplate(
+            icon: "water.waves",
+            task: "Study oceanography for my exam — review ocean circulation, thermohaline conveyor, physical and chemical oceanography, Ekman transport, and geostrophic flow",
+            successCriteria: "Oceanography study session completed (at least two major topics reviewed with diagrams, governing equations, and key oceanographic concepts summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "water.waves",
+            task: "Complete my oceanography lab or assignment — analyze ocean circulation data, plot sea surface temperature, interpret salinity profiles, or work through physical oceanography problems",
+            successCriteria: "Oceanography assignment completed (ocean data interpreted, circulation patterns identified, and lab write-up or problem solutions documented and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // geochemistry
+        SuggestedTemplate(
+            icon: "mountain.2.fill",
+            task: "Study geochemistry for my exam — review isotope geochemistry, trace-element analysis, geochemical modeling, and fluid-rock interaction",
+            successCriteria: "Geochemistry study session completed (at least two topics reviewed with geochemical equations, isotope ratio concepts, and trace-element interpretation summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "mountain.2.fill",
+            task: "Complete my geochemistry lab or assignment — analyze isotope ratio data, interpret XRF or ICP-MS results, apply geochemical modeling, or work through trace-element problem sets",
+            successCriteria: "Geochemistry assignment completed (geochemical data analyzed, isotope or element ratios calculated and interpreted, and lab report or problem solutions documented)",
+            preferredDuration: 45 * 60
+        ),
+        // thermodynamics
+        SuggestedTemplate(
+            icon: "flame.fill",
+            task: "Work through my thermodynamics problem set — Rankine cycle, Carnot efficiency, steam tables, Otto or Diesel cycle, refrigeration systems, or entropy and enthalpy calculations",
+            successCriteria: "Thermodynamics problem set completed (at least 5 problems solved with cycle diagrams, steam-table lookups, or entropy/enthalpy calculations clearly documented)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "flame.fill",
+            task: "Study thermodynamics for my exam — review Rankine and Carnot cycles, steam tables, laws of thermodynamics, refrigeration cycles, and heat-engine efficiency",
+            successCriteria: "Thermodynamics study session completed (at least two cycle types reviewed with T-s/P-v diagrams, governing equations, and sample problems worked through in notes)",
+            preferredDuration: 60 * 60
+        ),
+        // radiologyrotation
+        SuggestedTemplate(
+            icon: "xray",
+            task: "Complete my radiology reading room session — interpret CT, MRI, or plain film radiographs, write up radiology reports, and review cases with my attending",
+            successCriteria: "Radiology reading session completed (at least 5 cases reviewed, key findings identified on each image, and radiology report or interpretation notes written up)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "xray",
+            task: "Study radiology for my rotation exam — review systematic image interpretation, CT and MRI anatomy, common radiologic findings, and normal vs. abnormal patterns",
+            successCriteria: "Radiology study session completed (at least two imaging modalities reviewed with systematic interpretation framework, normal landmarks identified, and key pathology patterns noted)",
+            preferredDuration: 45 * 60
+        ),
+        // anesthesiology
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Study anesthesiology for my rotation or CRNA exam — review anesthetic pharmacology, volatile agents, airway management, regional anesthesia, and MAC values",
+            successCriteria: "Anesthesiology study session completed (at least two topics reviewed with drug mechanisms, pharmacokinetic parameters, dosing principles, and clinical pearls summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Complete my anesthesiology assignment or case prep — review anesthetic agents, pre-op assessment, intraoperative monitoring, or airway management protocols",
+            successCriteria: "Anesthesiology assignment completed (case or topic reviewed with anesthetic plan, drug selection rationale, monitoring parameters, and key clinical considerations documented)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

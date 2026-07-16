@@ -763,16 +763,43 @@ public final class CalloutManager {
             || lower.contains("international phonetic alphabet") {
             return "linguistics"
         }
+        // oceanography — positioned BEFORE marinebiology so dedicated oceanography class/lab/exam
+        // tasks route here rather than the marine biology pool. Bare "ocean" NOT matched alone.
+        // Physical, chemical, biological, and geological oceanography all covered here.
+        // word("oceanography"/"oceanographer") and "oceanography class/course/exam" removed from
+        // marinebiology (below) and owned here.
+        if word("oceanography") || word("oceanographer") || word("oceanographers")
+            || lower.contains("oceanography class") || lower.contains("oceanography course")
+            || lower.contains("oceanography exam") || lower.contains("oceanography lab")
+            || lower.contains("oceanography notes") || lower.contains("oceanography textbook")
+            || lower.contains("oceanography program") || lower.contains("oceanography major")
+            || lower.contains("oceanography assignment") || lower.contains("oceanography homework")
+            || lower.contains("physical oceanography") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("chemical oceanography") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("biological oceanography") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("geological oceanography") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("ocean circulation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("oceanography"))
+            || lower.contains("thermohaline circulation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("ocean currents") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("oceanography"))
+            || lower.contains("sea surface temperature") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("oceanography"))
+            || lower.contains("ekman transport") && (lower.contains("class") || lower.contains("course") || lower.contains("oceanography"))
+            || lower.contains("geostrophic flow") && (lower.contains("class") || lower.contains("course") || lower.contains("ocean"))
+            || lower.contains("ocean salinity") && (lower.contains("class") || lower.contains("course") || lower.contains("oceanography"))
+            || lower.contains("tidal forcing") && (lower.contains("class") || lower.contains("oceanography"))
+            || lower.contains("ocean stratification") && (lower.contains("class") || lower.contains("oceanography")) {
+            return "oceanography"
+        }
         // marinebiology — positioned before studying so "marine biology exam" and
         // "oceanography lab" don't fall through via word("exam") or word("lab").
         // Bare word("biology") stays in studying for generic "biology exam" tasks.
+        // word("oceanography"/"oceanographer") and "oceanography class/course/exam" now owned
+        // by the oceanography branch above.
         if lower.contains("marine biology") || lower.contains("marine biologist")
             || lower.contains("marine biologists")
             || lower.contains("marine ecology") || lower.contains("marine ecologist")
             || lower.contains("marine science") || lower.contains("marine sciences")
             || lower.contains("marine life") || lower.contains("marine organisms")
             || lower.contains("marine mammal") || lower.contains("marine mammals")
-            || word("oceanography") || word("oceanographer") || word("oceanographers")
             || lower.contains("ocean science") || lower.contains("ocean sciences")
             || lower.contains("coastal ecology") || lower.contains("aquatic ecology")
             || lower.contains("aquatic biology") || lower.contains("freshwater ecology")
@@ -784,8 +811,7 @@ public final class CalloutManager {
             || word("benthic") || word("pelagic") || word("littoral")
             || lower.contains("marine lab") || lower.contains("marine biology class")
             || lower.contains("marine biology course") || lower.contains("marine biology exam")
-            || lower.contains("marine biology homework") || lower.contains("oceanography class")
-            || lower.contains("oceanography course") || lower.contains("oceanography exam") {
+            || lower.contains("marine biology homework") {
             return "marinebiology"
         }
         // experimentalphysics — positioned BEFORE the studying branch (which catches word("physics"))
@@ -1005,16 +1031,44 @@ public final class CalloutManager {
             || lower.contains("paleontology notes") || lower.contains("paleontology assignment") {
             return "paleontology"
         }
+        // geochemistry — positioned BEFORE geology; isotope geochemistry, trace-element and
+        // major-element geochemical analysis, fluid-rock interaction, and geochemical modeling.
+        // word("geochemistry") removed from geology (below) and owned here.
+        // Bare "mass spectrometry" stays in proteomics/molecularbiology (earlier).
+        if lower.contains("geochemistry class") || lower.contains("geochemistry course")
+            || lower.contains("geochemistry exam") || lower.contains("geochemistry lab")
+            || lower.contains("geochemistry notes") || lower.contains("geochemistry program")
+            || lower.contains("geochemistry major") || lower.contains("geochemistry assignment")
+            || lower.contains("geochemistry textbook") || lower.contains("geochemistry homework")
+            || lower.contains("isotope geochemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("isotope ratio") && (lower.contains("class") || lower.contains("geochemistry") || lower.contains("geochemical"))
+            || lower.contains("trace element") && (lower.contains("class") || lower.contains("geochemistry") || lower.contains("geochemical") || lower.contains("rock") || lower.contains("mineral"))
+            || lower.contains("major element") && (lower.contains("class") || lower.contains("geochemistry") || lower.contains("geochemical"))
+            || lower.contains("geochemical analysis") && (lower.contains("class") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("geochemical modeling") && (lower.contains("class") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("xrf") && (lower.contains("class") || lower.contains("geochemistry") || lower.contains("geochemical") || lower.contains("rock") || lower.contains("mineral"))
+            || lower.contains("icp-ms") && (lower.contains("class") || lower.contains("geochemistry") || lower.contains("geochemical") || lower.contains("rock") || lower.contains("mineral"))
+            || lower.contains("radiogenic isotope") && (lower.contains("class") || lower.contains("geochemistry") || lower.contains("lab"))
+            || lower.contains("stable isotope") && (lower.contains("geochemistry") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("rock chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("mineral chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("geochemistry"))
+            || lower.contains("fluid-rock interaction") && (lower.contains("class") || lower.contains("geochemistry") || lower.contains("lab"))
+            || lower.contains("hydrothermal geochemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("marine geochemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || word("geochemistry") || word("geochemist") || word("geochemists") {
+            return "geochemistry"
+        }
         // geology — positioned before engineering so "geology lab" and earth-science field tasks
         // don't fall through to engineering or research via word("lab").
         // "geography" alone does NOT fire here (stays in studying/socialscience).
         // "gis mapping" / "gis analysis" now owned by geospatial branch above.
         // "paleontology" / "fossil record" now owned by paleontology branch above.
+        // word("geochemistry") now owned by geochemistry branch above.
         if word("geology") || word("geologist") || word("geological") || word("geologists")
             || word("mineralogy") || word("petrology") || word("sedimentology")
             || word("stratigraphy") || word("stratigraphic") || word("geomorphology")
             || word("hydrogeology") || word("seismology") || word("volcanology")
-            || word("geophysics") || word("geochemistry")
+            || word("geophysics")
             || lower.contains("earth science") || lower.contains("earth sciences")
             || word("geoscience") || word("geosciences")
             || lower.contains("plate tectonics") || lower.contains("tectonic plates")
@@ -1601,6 +1655,34 @@ public final class CalloutManager {
             || lower.contains("thermodynamics exam") && lower.contains("chemical")
             || lower.contains("fluid mechanics class") && lower.contains("chemical") {
             return "chemicalengineering"
+        }
+        // thermodynamics — positioned AFTER chemicalengineering (which owns "thermodynamics class chemical")
+        // and BEFORE engineering. Catches standalone engineering/applied thermodynamics class/exam.
+        // "chemical thermodynamics" → physicalchemistry (earlier). "thermodynamics lab" → experimentalphysics (earlier).
+        // "thermodynamics class chemical" → chemicalengineering (immediately above). Bare "entropy"
+        // or "enthalpy" without class/thermo context NOT matched.
+        if lower.contains("thermodynamics class") && !lower.contains("chemical")
+            || lower.contains("thermodynamics course") && !lower.contains("chemical")
+            || lower.contains("thermodynamics exam") && !lower.contains("chemical")
+            || lower.contains("thermodynamics notes") && !lower.contains("chemical")
+            || lower.contains("thermodynamics problem set") && !lower.contains("chemical")
+            || lower.contains("thermodynamics homework") && !lower.contains("chemical")
+            || lower.contains("thermodynamics textbook") && !lower.contains("chemical")
+            || lower.contains("thermodynamics assignment") && !lower.contains("chemical")
+            || lower.contains("engineering thermodynamics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem set") || lower.contains("hw"))
+            || lower.contains("applied thermodynamics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("rankine cycle") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("thermo") || lower.contains("engineering"))
+            || lower.contains("carnot cycle") && (lower.contains("class") || lower.contains("thermo") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("heat engine") && (lower.contains("class") || lower.contains("thermo") || lower.contains("exam") || lower.contains("cycle"))
+            || lower.contains("otto cycle") && (lower.contains("class") || lower.contains("thermo") || lower.contains("exam"))
+            || lower.contains("diesel cycle") && (lower.contains("class") || lower.contains("thermo") || lower.contains("exam"))
+            || lower.contains("steam tables") && (lower.contains("class") || lower.contains("thermo") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("refrigeration cycle") && (lower.contains("class") || lower.contains("thermo") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("second law of thermodynamics") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("first law of thermodynamics") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("entropy") && lower.contains("thermo") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("enthalpy") && lower.contains("thermo") && (lower.contains("class") || lower.contains("exam")) {
+            return "thermodynamics"
         }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
@@ -4873,6 +4955,31 @@ public final class CalloutManager {
             || lower.contains("genetic risk assessment") && (lower.contains("class") || lower.contains("course") || lower.contains("counseling")) {
             return "geneticcounseling"
         }
+        // radiologyrotation — positioned BEFORE radiologictechnology so medical-student/resident
+        // radiology rotation tasks (PACS, image interpretation, reading room) route here rather
+        // than to the tech-school ARRT pool. Bare "radiology" stays in studying.
+        // "interventional radiology rotation" already in radiologictechnology; body-site rotations caught here.
+        if lower.contains("radiology reading room") || lower.contains("reading room radiology")
+            || lower.contains("pacs system") && (lower.contains("radiology") || lower.contains("rotation") || lower.contains("class") || lower.contains("imaging"))
+            || lower.contains("radiology rotation") && !lower.contains("arrt") && !lower.contains("radiography program")
+            || lower.contains("neuroradiology rotation") || lower.contains("neuroradiology reading")
+            || lower.contains("musculoskeletal radiology") && (lower.contains("rotation") || lower.contains("class") || lower.contains("course") || lower.contains("reading"))
+            || lower.contains("abdominal radiology") && (lower.contains("rotation") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("chest radiology") && (lower.contains("rotation") || lower.contains("class") || lower.contains("course") || lower.contains("reading"))
+            || lower.contains("pediatric radiology") && (lower.contains("rotation") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("breast radiology") && (lower.contains("rotation") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("emergency radiology") && (lower.contains("rotation") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("radiology residency") && (lower.contains("reading") || lower.contains("rotation") || lower.contains("report") || lower.contains("case") || lower.contains("attending"))
+            || lower.contains("radiology clerkship") || lower.contains("radiology elective")
+            || lower.contains("image interpretation") && (lower.contains("radiology") || lower.contains("rotation") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("radiograph interpretation") && (lower.contains("class") || lower.contains("course") || lower.contains("rotation"))
+            || lower.contains("ct interpretation") && (lower.contains("class") || lower.contains("course") || lower.contains("rotation") || lower.contains("radiology"))
+            || lower.contains("mri interpretation") && (lower.contains("class") || lower.contains("course") || lower.contains("rotation") || lower.contains("radiology"))
+            || lower.contains("radiology report") && (lower.contains("rotation") || lower.contains("write") || lower.contains("dictate") || lower.contains("attending"))
+            || lower.contains("dictate radiology") || lower.contains("dictating radiology")
+            || lower.contains("radiology attending") || lower.contains("radiology fellow") {
+            return "radiologyrotation"
+        }
         // radiologictechnology — positioned AFTER molecularbiology and BEFORE healthcareadmin so
         // ARRT exam prep, radiographic positioning, and diagnostic imaging coursework route here.
         // Bare "radiology" or "x-ray" stays in studying for generic mentions; compound program terms fire here.
@@ -5377,6 +5484,34 @@ public final class CalloutManager {
             || lower.contains("physiology major") || lower.contains("physiology degree")
             || lower.contains("physiology program") || lower.contains("physiology textbook class") {
             return "physiology"
+        }
+        // anesthesiology — positioned AFTER physiology and BEFORE premed so CRNA program,
+        // anesthesiology rotation, and anesthetic pharmacology tasks route here.
+        // "anesthesia" alone without class/rotation/CRNA context stays in premed.
+        // "pharmacology of anesthetics" routes here because anesthesia fires before pharmacology (above).
+        if lower.contains("anesthesiology rotation") || lower.contains("anesthesiology clerkship")
+            || lower.contains("anesthesiology elective") || lower.contains("anesthesiology residency")
+            || lower.contains("anesthesiology class") || lower.contains("anesthesiology course")
+            || lower.contains("anesthesiology exam") || lower.contains("anesthesiology notes")
+            || lower.contains("anesthesiology program") || lower.contains("anesthesiology assignment")
+            || word("crna") || lower.contains("crna program") || lower.contains("crna school")
+            || lower.contains("crna exam") || lower.contains("crna class") || lower.contains("crna course")
+            || lower.contains("nurse anesthesia") || lower.contains("anesthesia nursing")
+            || lower.contains("anesthesia rotation") || lower.contains("anesthesia clerkship")
+            || lower.contains("anesthesia class") || lower.contains("anesthesia course") && !lower.contains("pharmacology")
+            || lower.contains("anesthetic pharmacology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("rotation"))
+            || lower.contains("volatile anesthetic") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("inhalation anesthetic") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("intravenous anesthetic") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("regional anesthesia") && (lower.contains("class") || lower.contains("course") || lower.contains("rotation") || lower.contains("exam"))
+            || lower.contains("spinal anesthesia") && (lower.contains("class") || lower.contains("course") || lower.contains("rotation"))
+            || lower.contains("epidural anesthesia") && (lower.contains("class") || lower.contains("course") || lower.contains("rotation"))
+            || lower.contains("anesthesia machine") && (lower.contains("class") || lower.contains("course") || lower.contains("rotation") || lower.contains("lab"))
+            || lower.contains("airway management") && (lower.contains("anesthesia") || lower.contains("crna") || lower.contains("rotation") || lower.contains("class"))
+            || lower.contains("mac monitoring") && (lower.contains("anesthesia") || lower.contains("class") || lower.contains("rotation"))
+            || lower.contains("gas laws") && (lower.contains("anesthesia") || lower.contains("crna") || lower.contains("class"))
+            || word("anesthesiology") || word("anesthesiologist") || word("anesthesiologists") {
+            return "anesthesiology"
         }
         if word("anatomy") || word("physiology") || word("biochemistry")
             || word("pharmacology") || word("pathology") || word("histology")

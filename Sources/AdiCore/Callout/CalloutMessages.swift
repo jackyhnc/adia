@@ -426,6 +426,11 @@ extension CalloutManager {
         case "materialstesting":           return materialstestingCallouts(tier: tier)
         case "biomedicalengineering":      return biomedicalengineeringCallouts(tier: tier)
         case "chemicalengineering":        return chemicalengineeringCallouts(tier: tier)
+        case "oceanography":               return oceanographyCallouts(tier: tier)
+        case "geochemistry":               return geochemistryCallouts(tier: tier)
+        case "thermodynamics":             return thermodynamicsCallouts(tier: tier)
+        case "radiologyrotation":          return radiologyrotationCallouts(tier: tier)
+        case "anesthesiology":             return anesthesiologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -8351,6 +8356,111 @@ extension CalloutManager {
             "CLOSE THIS. open your chemical engineering textbook.",
             "CLOSE THIS. transport phenomena won't study itself.",
             "CLOSE THIS. your ChE exam won't pass itself."
+        ]
+        }
+    }
+
+    private func oceanographyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those ocean circulation problems aren't going to solve themselves.",
+            "close this and get back to your oceanography work.",
+            "thermohaline circulation won't study itself — close this.",
+            "your oceanography exam is coming. close this and study."
+        ]
+        case 2: return [
+            "no one masters ocean dynamics by scrolling.",
+            "close this and open your oceanography textbook.",
+            "those ocean current equations won't work themselves out — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your oceanography notes.",
+            "CLOSE THIS. physical oceanography won't study itself.",
+            "CLOSE THIS. your oceanography exam won't pass itself."
+        ]
+        }
+    }
+
+    private func geochemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those trace-element analyses aren't going to run themselves.",
+            "close this and get back to your geochemistry work.",
+            "isotope geochemistry won't study itself — close this.",
+            "your geochemistry exam is coming. close this."
+        ]
+        case 2: return [
+            "no one masters isotope ratios by scrolling.",
+            "close this and open your geochemistry textbook.",
+            "those geochemical calculations won't do themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your geochemistry lab notes.",
+            "CLOSE THIS. isotope geochemistry won't study itself.",
+            "CLOSE THIS. your geochemistry exam won't pass itself."
+        ]
+        }
+    }
+
+    private func thermodynamicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Rankine cycle problems aren't going to solve themselves.",
+            "close this and get back to your thermodynamics work.",
+            "entropy and enthalpy won't review themselves — close this.",
+            "your thermodynamics exam is coming. close this and study."
+        ]
+        case 2: return [
+            "no one passes thermodynamics by scrolling.",
+            "close this and open your thermo textbook.",
+            "those steam-table calculations won't do themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your thermodynamics notes.",
+            "CLOSE THIS. Carnot and Rankine cycles won't study themselves.",
+            "CLOSE THIS. your thermo exam won't pass itself."
+        ]
+        }
+    }
+
+    private func radiologyrotationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those radiology cases aren't going to read themselves.",
+            "close this and get back to your radiology reading.",
+            "those images need your interpretation — close this.",
+            "your attending is waiting. close this and get back to radiology."
+        ]
+        case 2: return [
+            "no one learns image interpretation by scrolling.",
+            "close this and open your PACS cases.",
+            "those radiographs won't read themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your radiology cases.",
+            "CLOSE THIS. those images need your interpretation.",
+            "CLOSE THIS. your radiology reading isn't going to do itself."
+        ]
+        }
+    }
+
+    private func anesthesiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those anesthesia concepts aren't going to study themselves.",
+            "close this and get back to your anesthesiology work.",
+            "volatile anesthetics and MAC won't review themselves — close this.",
+            "your anesthesiology exam is coming. close this and study."
+        ]
+        case 2: return [
+            "no one masters anesthetic pharmacology by scrolling.",
+            "close this and open your anesthesiology notes.",
+            "those airway management concepts won't review themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your anesthesiology textbook.",
+            "CLOSE THIS. anesthetic pharmacology won't study itself.",
+            "CLOSE THIS. your anesthesiology exam won't pass itself."
         ]
         }
     }

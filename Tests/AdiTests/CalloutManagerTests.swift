@@ -19409,4 +19409,158 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast721() {
         #expect(SuggestedSessionTemplates.all.count >= 721, "template catalog must have ≥721 entries after mechanicalengineering/nuclearengineering/materialstesting/biomedicalengineering/chemicalengineering (10 templates)")
     }
+
+    // MARK: - oceanography keyword routing
+    @Test func oceanographyClassRoutesOceanography() {
+        #expect(CalloutManager.extractTaskKeyword(from: "oceanography class exam") == "oceanography")
+    }
+    @Test func physicalOceanographyLabRoutesOceanography() {
+        #expect(CalloutManager.extractTaskKeyword(from: "physical oceanography lab course") == "oceanography")
+    }
+    @Test func thermohalineCirculationClassRoutesOceanography() {
+        #expect(CalloutManager.extractTaskKeyword(from: "thermohaline circulation class exam") == "oceanography")
+    }
+    @Test func wordOceanographyRoutesOceanography() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying oceanography for exam") == "oceanography")
+    }
+    @Test func marineExamStaysMarinebiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "marine biology exam coral reef") == "marinebiology")
+    }
+    @Test @MainActor func oceanographyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "oceanography", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "oceanography", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "oceanography", tier: 3).isEmpty)
+    }
+    @Test @MainActor func oceanographyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "oceanography", tier: 1).count >= 4)
+    }
+    @Test @MainActor func oceanographyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "oceanography", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - geochemistry keyword routing
+    @Test func geochemistryClassRoutesGeochemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geochemistry class exam") == "geochemistry")
+    }
+    @Test func isotopeGeochemistryLabRoutesGeochemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "isotope geochemistry lab course") == "geochemistry")
+    }
+    @Test func traceElementGeochemistryRoutesGeochemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "trace element geochemistry class rock mineral") == "geochemistry")
+    }
+    @Test func wordGeochemistryRoutesGeochemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying geochemistry for my exam") == "geochemistry")
+    }
+    @Test func geologyExamStaysGeology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geology lab rock identification") == "geology")
+    }
+    @Test @MainActor func geochemistryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "geochemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "geochemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "geochemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func geochemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "geochemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func geochemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "geochemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - thermodynamics keyword routing
+    @Test func thermodynamicsClassRoutesThermodynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "thermodynamics class problem set") == "thermodynamics")
+    }
+    @Test func rankineCycleExamRoutesThermodynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "Rankine cycle exam engineering") == "thermodynamics")
+    }
+    @Test func steamTablesClassRoutesThermodynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "steam tables class engineering exam") == "thermodynamics")
+    }
+    @Test func engineeringThermodynamicsClassRoutesThermodynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "engineering thermodynamics class") == "thermodynamics")
+    }
+    @Test func thermodynamicsWithChemicalRoutesChE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "thermodynamics class chemical engineering") == "chemicalengineering")
+    }
+    @Test @MainActor func thermodynamicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "thermodynamics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "thermodynamics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "thermodynamics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func thermodynamicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "thermodynamics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func thermodynamicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "thermodynamics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - radiologyrotation keyword routing
+    @Test func radiologyReadingRoomRoutesRadiologyRotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "radiology reading room session") == "radiologyrotation")
+    }
+    @Test func radiologyRotationRoutesRadiologyRotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "radiology rotation CT interpretation") == "radiologyrotation")
+    }
+    @Test func radiologyResidencyRoutesRadiologyRotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "radiology residency reading rotation cases") == "radiologyrotation")
+    }
+    @Test func ctInterpretationRadiologyRoutesRadiologyRotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "CT interpretation radiology class") == "radiologyrotation")
+    }
+    @Test @MainActor func radiologyrotationCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "radiologyrotation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "radiologyrotation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "radiologyrotation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func radiologyrotationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "radiologyrotation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func radiologyrotationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "radiologyrotation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - anesthesiology keyword routing
+    @Test func crnaExamRoutesAnesthesiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "CRNA exam study anesthetic pharmacology") == "anesthesiology")
+    }
+    @Test func anesthesiologyRotationRoutesAnesthesiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "anesthesiology rotation notes") == "anesthesiology")
+    }
+    @Test func volatileAnestheticClassRoutesAnesthesiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "volatile anesthetic pharmacology class exam") == "anesthesiology")
+    }
+    @Test func wordAnesthesiologistRoutesAnesthesiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "studying as an anesthesiologist") == "anesthesiology")
+    }
+    @Test @MainActor func anesthesiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "anesthesiology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "anesthesiology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "anesthesiology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func anesthesiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "anesthesiology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func anesthesiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "anesthesiology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: oceanography/geochemistry/thermodynamics/radiologyrotation/anesthesiology)
+    @Test func calloutTemplatesCountAtLeast731() {
+        #expect(SuggestedSessionTemplates.all.count >= 731, "template catalog must have ≥731 entries after oceanography/geochemistry/thermodynamics/radiologyrotation/anesthesiology (10 templates)")
+    }
 }
