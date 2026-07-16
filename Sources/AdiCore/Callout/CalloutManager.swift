@@ -3625,6 +3625,34 @@ public final class CalloutManager {
             || lower.contains("fisheries and wildlife") || lower.contains("wildlife and fisheries") {
             return "aquaticscience"
         }
+        // ecology — positioned BEFORE ecologyconservation so general ecology class/coursework
+        // routes here. Conservation-specific terms (restoration ecology, conservation biology,
+        // wildlife management) fall through to ecologyconservation below.
+        // "ecology" alone without class/lab/course/exam context falls through to enviro.
+        if lower.contains("ecology class") || lower.contains("ecology course")
+            || lower.contains("ecology exam") || lower.contains("ecology lab")
+            || lower.contains("ecology notes") || lower.contains("ecology textbook")
+            || lower.contains("ecology assignment") || lower.contains("ecology lecture")
+            || lower.contains("ecology problem set") || lower.contains("ecology homework")
+            || lower.contains("community ecology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("ecosystem ecology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("food web") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam") || lower.contains("lab") || lower.contains("assignment"))
+            || lower.contains("food chain") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("trophic level") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("ecological niche") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("biome") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam") || lower.contains("assignment") || lower.contains("lab"))
+            || lower.contains("ecosystem dynamics") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam"))
+            || lower.contains("species diversity") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("carrying capacity") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("predator-prey") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam") || lower.contains("model"))
+            || lower.contains("interspecific competition") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam"))
+            || lower.contains("intraspecific competition") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam"))
+            || lower.contains("symbiosis") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("nutrient cycling") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam"))
+            || lower.contains("primary productivity") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("ecological succession") && (lower.contains("class") || lower.contains("ecology") || lower.contains("exam")) {
+            return "ecology"
+        }
         // ecologyconservation — positioned BEFORE environmentaljustice so conservation biology,
         // restoration ecology, wildlife ecology, and species management coursework route here.
         // Generic ecology/ecosystem terms stay in enviro below.
@@ -4507,6 +4535,33 @@ public final class CalloutManager {
             || lower.contains("analytical chemistry notes") || lower.contains("analytical chemistry problem set") {
             return "analyticalchemistry"
         }
+        // chemicalkinetics — positioned AFTER analyticalchemistry and BEFORE nuclearchemistry.
+        // Catches dedicated chemical kinetics and reaction dynamics coursework distinct from
+        // general physical chemistry. "rate law" without class context stays in studying.
+        // "Arrhenius equation" in PChem context stays in physicalchemistry (fires earlier).
+        if lower.contains("chemical kinetics class") || lower.contains("chemical kinetics course")
+            || lower.contains("chemical kinetics exam") || lower.contains("chemical kinetics lab")
+            || lower.contains("chemical kinetics notes") || lower.contains("chemical kinetics problem set")
+            || lower.contains("reaction kinetics class") || lower.contains("reaction kinetics course")
+            || lower.contains("reaction kinetics exam") || lower.contains("reaction kinetics lab")
+            || lower.contains("kinetics problem set") && (lower.contains("chemistry") || lower.contains("chem") || lower.contains("reaction"))
+            || lower.contains("rate law") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("chem") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("reaction order") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("chem") || lower.contains("exam"))
+            || lower.contains("rate constant") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("chem") || lower.contains("exam") || lower.contains("kinetics"))
+            || lower.contains("arrhenius equation") && (lower.contains("class") || lower.contains("kinetics") || lower.contains("exam"))
+            || lower.contains("activation energy") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("kinetics") || lower.contains("exam"))
+            || lower.contains("integrated rate law") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("chem") || lower.contains("exam"))
+            || lower.contains("half-life kinetics") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("chem"))
+            || lower.contains("collision theory") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("chem") || lower.contains("exam"))
+            || lower.contains("transition state theory") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("kinetics"))
+            || lower.contains("reaction mechanism") && (lower.contains("kinetics") || lower.contains("class") || lower.contains("chemistry"))
+            || lower.contains("first-order kinetics") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("exam"))
+            || lower.contains("second-order kinetics") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("exam"))
+            || lower.contains("zero-order kinetics") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("exam"))
+            || lower.contains("pseudo-first-order") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("kinetics"))
+            || lower.contains("michaelis-menten kinetics") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("kinetics")) {
+            return "chemicalkinetics"
+        }
         // nuclearchemistry — positioned AFTER analyticalchemistry and BEFORE drugdiscovery.
         // Catches nuclear chemistry coursework: radioactive decay, half-life, nuclear equations,
         // fission and fusion in a chemistry class context. "nuclear medicine tech" stays in
@@ -4578,6 +4633,33 @@ public final class CalloutManager {
             || lower.contains("polymer chemistry exam") || lower.contains("polymer chemistry lab")
             || lower.contains("polymer chemistry notes") || lower.contains("polymer chemistry program") {
             return "polymerchemistry"
+        }
+        // computationalchemistry — positioned AFTER polymerchemistry and BEFORE drugdiscovery.
+        // Catches computational quantum chemistry and molecular simulation coursework: DFT,
+        // ab initio, molecular dynamics, GAUSSIAN/Schrödinger. "molecular modeling" without
+        // chemistry class context stays in bioinformatics or computational biology (fires earlier).
+        if lower.contains("computational chemistry") || lower.contains("computational chemist")
+            || lower.contains("computational chemistry class") || lower.contains("computational chemistry course")
+            || lower.contains("computational chemistry exam") || lower.contains("computational chemistry lab")
+            || lower.contains("computational chemistry assignment") || lower.contains("computational chemistry program")
+            || lower.contains("quantum chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment") || lower.contains("computation"))
+            || lower.contains("quantum chemistry class") || lower.contains("quantum chemistry course")
+            || lower.contains("quantum chemistry exam") || lower.contains("quantum chemistry notes")
+            || lower.contains("density functional theory") || lower.contains("dft calculation") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("chem") || lower.contains("research"))
+            || lower.contains("ab initio") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("calculation") || lower.contains("method"))
+            || lower.contains("molecular dynamics simulation") && (lower.contains("class") || lower.contains("course") || lower.contains("chemistry") || lower.contains("chem"))
+            || lower.contains("md simulation") && (lower.contains("chemistry") || lower.contains("chem") || lower.contains("class") || lower.contains("protein"))
+            || lower.contains("molecular mechanics") && (lower.contains("class") || lower.contains("course") || lower.contains("chemistry") || lower.contains("chem"))
+            || lower.contains("gaussian") && (lower.contains("chemistry") || lower.contains("calculation") || lower.contains("dft") || lower.contains("ab initio") || lower.contains("class"))
+            || lower.contains("schrödinger") && (lower.contains("chemistry") || lower.contains("class") || lower.contains("drug") || lower.contains("molecular"))
+            || lower.contains("molpro") && (lower.contains("chemistry") || lower.contains("class") || lower.contains("calculation"))
+            || lower.contains("orca software") && (lower.contains("chemistry") || lower.contains("class") || lower.contains("dft") || lower.contains("calculation"))
+            || lower.contains("basis set") && (lower.contains("chemistry") || lower.contains("class") || lower.contains("dft") || lower.contains("quantum") || lower.contains("calculation"))
+            || lower.contains("coupled cluster") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("calculation"))
+            || lower.contains("hartree-fock") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("calculation") || lower.contains("method"))
+            || lower.contains("potential energy surface") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("calculation"))
+            || lower.contains("force field") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("chem") || lower.contains("simulation")) {
+            return "computationalchemistry"
         }
         // drugdiscovery — positioned AFTER biochemistry and BEFORE biophysics. Catches lead
         // optimization, high-throughput screening, ADMET, and medicinal chemistry research
@@ -5126,6 +5208,57 @@ public final class CalloutManager {
             || lower.contains("thalamus") && (lower.contains("class") || lower.contains("lab") || lower.contains("anatomy") || lower.contains("exam"))
             || lower.contains("hypothalamus") && (lower.contains("class") || lower.contains("lab") || lower.contains("anatomy") || lower.contains("exam")) {
             return "neuroanatomy"
+        }
+        // pharmacology — positioned BEFORE physiology and premed to catch dedicated pharmacology
+        // class/lab work. Bare word("pharmacology") stays in premed (MCAT context fires after).
+        // "pharmacy" routes to pharmacy branch much earlier.
+        if lower.contains("pharmacology class") || lower.contains("pharmacology course")
+            || lower.contains("pharmacology exam") || lower.contains("pharmacology lab")
+            || lower.contains("pharmacology notes") || lower.contains("pharmacology textbook")
+            || lower.contains("pharmacology assignment") || lower.contains("pharmacology lecture")
+            || lower.contains("pharmacology problem set") || lower.contains("pharmacology homework")
+            || lower.contains("pharmacokinetics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("assignment"))
+            || lower.contains("pharmacodynamics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("drug receptor") && (lower.contains("class") || lower.contains("course") || lower.contains("pharmacology") || lower.contains("exam"))
+            || lower.contains("drug-receptor") && (lower.contains("class") || lower.contains("course") || lower.contains("pharmacology") || lower.contains("exam"))
+            || lower.contains("receptor binding") && (lower.contains("class") || lower.contains("pharmacology") || lower.contains("exam") || lower.contains("assay"))
+            || lower.contains("dose-response") && (lower.contains("class") || lower.contains("pharmacology") || lower.contains("exam") || lower.contains("curve"))
+            || lower.contains("drug metabolism") && (lower.contains("class") || lower.contains("pharmacology") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("drug toxicity") && (lower.contains("class") || lower.contains("pharmacology") || lower.contains("exam") || lower.contains("study"))
+            || lower.contains("agonist") && (lower.contains("pharmacology") || lower.contains("class") || lower.contains("receptor") || lower.contains("exam"))
+            || lower.contains("antagonist") && (lower.contains("pharmacology") || lower.contains("class") || lower.contains("receptor") || lower.contains("exam"))
+            || lower.contains("therapeutic index") && (lower.contains("class") || lower.contains("pharmacology") || lower.contains("exam"))
+            || lower.contains("bioavailability") && (lower.contains("class") || lower.contains("pharmacology") || lower.contains("exam") || lower.contains("drug"))
+            || lower.contains("drug distribution") && (lower.contains("class") || lower.contains("pharmacology") || lower.contains("exam"))
+            || lower.contains("drug excretion") && (lower.contains("class") || lower.contains("pharmacology") || lower.contains("exam"))
+            || lower.contains("pharmacology major") || lower.contains("pharmacology degree")
+            || lower.contains("clinical pharmacology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "pharmacology"
+        }
+        // physiology — positioned AFTER pharmacology and BEFORE premed to catch dedicated physiology
+        // class/lab work. Bare word("physiology") stays in premed (MCAT context fires after).
+        if lower.contains("physiology class") || lower.contains("physiology course")
+            || lower.contains("physiology exam") || lower.contains("physiology lab")
+            || lower.contains("physiology notes") || lower.contains("physiology textbook")
+            || lower.contains("physiology assignment") || lower.contains("physiology lecture")
+            || lower.contains("physiology problem set") || lower.contains("physiology homework")
+            || lower.contains("human physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("study"))
+            || lower.contains("organ systems physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("cell physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("cardiovascular physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("respiratory physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("renal physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("gastrointestinal physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("endocrine physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("neurophysiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("musculoskeletal physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("exercise physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("notes"))
+            || lower.contains("membrane potential") && (lower.contains("physiology") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("action potential") && (lower.contains("physiology") || lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("homeostasis") && (lower.contains("physiology") || lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("physiology major") || lower.contains("physiology degree")
+            || lower.contains("physiology program") || lower.contains("physiology textbook class") {
+            return "physiology"
         }
         if word("anatomy") || word("physiology") || word("biochemistry")
             || word("pharmacology") || word("pathology") || word("histology")

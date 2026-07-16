@@ -19080,4 +19080,176 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast701() {
         #expect(SuggestedSessionTemplates.all.count >= 701, "template catalog must have ≥701 entries after parasitology/embryology/histology/pathology/neuroanatomy (10 templates)")
     }
+
+    // MARK: - chemicalkinetics keyword tests
+    @Test func chemicalkineticsKeywordFromRateLawClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work through my rate law class problem set for chemical kinetics") == "chemicalkinetics")
+    }
+    @Test func chemicalkineticsKeywordFromArrheniusEquation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solve Arrhenius equation problems for my kinetics exam") == "chemicalkinetics")
+    }
+    @Test func chemicalkineticsKeywordFromReactionOrderClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "determine reaction order for my chemistry class exam") == "chemicalkinetics")
+    }
+    @Test func chemicalkineticsKeywordFromChemicalKineticsClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study chemical kinetics class integrated rate laws") == "chemicalkinetics")
+    }
+    @Test func chemicalkineticsKeywordFromActivationEnergyChemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "calculate activation energy for my chemistry exam") == "chemicalkinetics")
+    }
+    @Test @MainActor func chemicalkineticsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "chemicalkinetics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "chemicalkinetics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "chemicalkinetics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func chemicalkineticsATier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "chemicalkinetics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func chemicalkineticsATier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "chemicalkinetics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+    @Test func chemicalkineticsDoesNotFire_ArrheniusWithoutContext() {
+        // "arrhenius" without chemistry/kinetics/class context should not match chemicalkinetics
+        #expect(CalloutManager.extractTaskKeyword(from: "arrhenius") != "chemicalkinetics")
+    }
+
+    // MARK: - computationalchemistry keyword tests
+    @Test func computationalchemistryKeywordFromDFTCalculation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "run a DFT calculation for my computational chemistry assignment") == "computationalchemistry")
+    }
+    @Test func computationalchemistryKeywordFromAbInitioClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study ab initio methods for my computational chemistry class") == "computationalchemistry")
+    }
+    @Test func computationalchemistryKeywordFromMolecularDynamicsChemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "set up a molecular dynamics simulation for my chemistry class") == "computationalchemistry")
+    }
+    @Test func computationalchemistryKeywordFromComputationalChemistryClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work through my computational chemistry course problem set") == "computationalchemistry")
+    }
+    @Test func computationalchemistryKeywordFromGaussianChemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "submit a Gaussian DFT chemistry calculation for my research") == "computationalchemistry")
+    }
+    @Test @MainActor func computationalchemistryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalchemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalchemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalchemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func computationalchemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computationalchemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func computationalchemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computationalchemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - ecology keyword tests
+    @Test func ecologyKeywordFromEcologyClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my ecology class exam on community ecology") == "ecology")
+    }
+    @Test func ecologyKeywordFromFoodWebClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "diagram a food web for my ecology lab assignment") == "ecology")
+    }
+    @Test func ecologyKeywordFromTrophicLevelEcology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review trophic levels for my ecology exam") == "ecology")
+    }
+    @Test func ecologyKeywordFromCommunityEcologyClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work through community ecology concepts for my exam") == "ecology")
+    }
+    @Test func ecologyKeywordFromPredatorPreyEcologyModel() {
+        #expect(CalloutManager.extractTaskKeyword(from: "model predator-prey dynamics for my ecology class") == "ecology")
+    }
+    @Test @MainActor func ecologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "ecology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "ecology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "ecology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func ecologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "ecology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func ecologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "ecology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - pharmacology keyword tests
+    @Test func pharmacologyKeywordFromPharmacologyClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my pharmacology class exam on drug mechanisms") == "pharmacology")
+    }
+    @Test func pharmacologyKeywordFromPharmacokinetics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review pharmacokinetics for my pharmacology course exam") == "pharmacology")
+    }
+    @Test func pharmacologyKeywordFromDrugReceptorClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze drug receptor binding for my pharmacology class") == "pharmacology")
+    }
+    @Test func pharmacologyKeywordFromPharmacodynamicsClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work through pharmacodynamics problems for my class assignment") == "pharmacology")
+    }
+    @Test func pharmacologyKeywordFromDoseResponsePharmacology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "interpret a dose-response curve for my pharmacology exam") == "pharmacology")
+    }
+    @Test func pharmacologyKeywordStaysInPremedForMCAT() {
+        // bare "pharmacology" without class context routes to premed (MCAT)
+        #expect(CalloutManager.extractTaskKeyword(from: "review pharmacology for the MCAT") == "premed")
+    }
+    @Test @MainActor func pharmacologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "pharmacology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "pharmacology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "pharmacology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func pharmacologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "pharmacology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func pharmacologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "pharmacology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - physiology keyword tests
+    @Test func physiologyKeywordFromPhysiologyClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my human physiology class exam on organ systems") == "physiology")
+    }
+    @Test func physiologyKeywordFromCardiovascularPhysiologyClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review cardiovascular physiology for my class exam") == "physiology")
+    }
+    @Test func physiologyKeywordFromRenalPhysiologyClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work through renal physiology for my physiology course") == "physiology")
+    }
+    @Test func physiologyKeywordFromActionPotentialPhysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study action potential for my physiology class exam") == "physiology")
+    }
+    @Test func physiologyKeywordFromExercisePhysiologyClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review exercise physiology for my course notes and exam") == "physiology")
+    }
+    @Test func physiologyKeywordStaysInPremedForMCAT() {
+        // bare "physiology" without class context routes to premed (MCAT)
+        #expect(CalloutManager.extractTaskKeyword(from: "review physiology for the MCAT") == "premed")
+    }
+    @Test @MainActor func physiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "physiology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "physiology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "physiology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func physiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "physiology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func physiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "physiology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: chemicalkinetics/computationalchemistry/ecology/pharmacology/physiology)
+    @Test func suggestedTemplatesCountAtLeast709() {
+        #expect(SuggestedSessionTemplates.all.count >= 709, "template catalog must have ≥709 entries after chemicalkinetics/computationalchemistry/ecology/pharmacology/physiology (10 templates)")
+    }
 }

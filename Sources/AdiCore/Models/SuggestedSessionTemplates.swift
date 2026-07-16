@@ -4515,5 +4515,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Neuroanatomy practice session completed (at least 12 cranial nerves, major brain regions, or spinal cord tracts identified with functions, origins, and pathways documented)",
             preferredDuration: 45 * 60
         ),
+        // chemicalkinetics
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Work through my chemical kinetics problem set — derive integrated rate laws, solve Arrhenius equation problems, determine reaction orders, and calculate rate constants from experimental data",
+            successCriteria: "Chemical kinetics problem set completed (at least five rate law problems solved with correct integrated rate expressions, activation energy calculated, and reaction order determined)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Study chemical kinetics for my chemistry exam — review rate laws, reaction orders, Arrhenius equation, collision theory, transition state theory, and integrated rate expressions",
+            successCriteria: "Chemical kinetics study session completed (rate law derivations reviewed, Arrhenius equation practiced, and key mechanism concepts summarized with notes saved)",
+            preferredDuration: 45 * 60
+        ),
+        // computationalchemistry
+        SuggestedTemplate(
+            icon: "cpu.fill",
+            task: "Run and analyze my computational chemistry calculation — set up a DFT or ab initio job in GAUSSIAN or ORCA, optimize a molecular geometry, and interpret the output for my assignment",
+            successCriteria: "Computational chemistry calculation completed (input file submitted, geometry optimization converged, output analyzed, and key results such as energy, geometry, or spectra documented)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cpu.fill",
+            task: "Study computational chemistry methods for my exam — review density functional theory, ab initio methods, basis sets, molecular dynamics, and force field molecular mechanics",
+            successCriteria: "Computational chemistry study session completed (DFT approximations reviewed, basis set selection criteria summarized, and key computational methods compared with notes saved)",
+            preferredDuration: 45 * 60
+        ),
+        // ecology
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Study ecology for my exam — review community ecology, ecosystem dynamics, trophic levels, food webs, species interactions, nutrient cycling, and ecological succession",
+            successCriteria: "Ecology study session completed (at least two major ecological concepts reviewed with diagrams, species interaction types explained, and trophic structure summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Complete my ecology lab or assignment — analyze food web data, model predator-prey dynamics, calculate species diversity indices, or write an ecological succession field observation report",
+            successCriteria: "Ecology assignment completed (data analyzed or field observations documented, ecological concepts applied, and lab report or assignment write-up completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // pharmacology
+        SuggestedTemplate(
+            icon: "pills.fill",
+            task: "Study pharmacology for my exam — review drug receptor mechanisms, pharmacokinetics, pharmacodynamics, dose-response relationships, agonists and antagonists, and drug metabolism",
+            successCriteria: "Pharmacology study session completed (at least two drug class mechanisms reviewed with receptor binding, pharmacokinetic parameters, and therapeutic index concepts summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "pills.fill",
+            task: "Work through my pharmacology assignment — analyze dose-response curves, classify receptor types, compare pharmacokinetic profiles, or complete drug mechanism case studies",
+            successCriteria: "Pharmacology assignment completed (drug mechanisms explained, pharmacokinetic or pharmacodynamic calculations performed, and case study questions answered with receptor concepts applied)",
+            preferredDuration: 45 * 60
+        ),
+        // physiology
+        SuggestedTemplate(
+            icon: "heart.fill",
+            task: "Study physiology for my exam — review cardiovascular, respiratory, renal, endocrine, and gastrointestinal physiology, organ system regulation, and homeostatic mechanisms",
+            successCriteria: "Physiology study session completed (at least two organ systems reviewed with regulatory mechanisms, feedback loops described, and key physiological parameters summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "heart.fill",
+            task: "Complete my physiology lab or assignment — analyze physiological data, interpret action potentials or membrane transport, work through organ system case studies, or complete physiology problem sets",
+            successCriteria: "Physiology assignment completed (physiological data interpreted, organ system mechanisms applied, and lab report or problem set answers documented and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

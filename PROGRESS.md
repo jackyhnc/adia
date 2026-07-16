@@ -17332,3 +17332,80 @@ None. Swift toolchain unavailable on Linux container.
   - `materialstesting` — tensile/compressive testing, Charpy impact, materials testing lab (class context for mechanical engineering labs)
 - Template count: 691 → 701 after next 5-domain batch
 - CalloutManagerTests: ~19065+ lines after next batch
+
+---
+
+## Run — 2026-07-16
+
+### Task
+Added 5 new keyword domains with callout pools, templates, and tests:
+- chemicalkinetics
+- computationalchemistry
+- ecology
+- pharmacology
+- physiology
+
+### What shipped
+
+**New keyword domain — chemicalkinetics:**
+- Branch positioned AFTER analyticalchemistry (line 4508), BEFORE nuclearchemistry.
+- Catches: chemical kinetics class/course/exam/lab/notes/problem set, reaction kinetics class/course/exam/lab, rate law (class/chemistry context), reaction order (class/chemistry/exam), rate constant (class/chemistry/kinetics/exam), Arrhenius equation (class/kinetics/exam), activation energy (class/chemistry/kinetics/exam), integrated rate law, half-life kinetics (chemistry context), collision theory, transition state theory, reaction mechanism (kinetics context), first/second/zero-order kinetics, pseudo-first-order, Michaelis-Menten kinetics (class context).
+- `chemicalkineticsCallouts(tier:)` 4/3/3: "those rate laws aren't going to derive themselves." / "no one masters kinetics by scrolling." / "CLOSE THIS. activation energy problems won't solve themselves."
+- 2 templates: "Work through my chemical kinetics problem set" (60 min) + "Study chemical kinetics for my chemistry exam" (45 min)
+
+**New keyword domain — computationalchemistry:**
+- Branch positioned AFTER polymerchemistry (line 4580), BEFORE drugdiscovery.
+- Catches: computational chemistry class/course/exam/lab/assignment/program, quantum chemistry (class/course/exam/computation context), DFT calculation (class/chemistry context), ab initio (class/chemistry/calculation/method context), molecular dynamics simulation (class/chemistry context), MD simulation (chemistry/class context), molecular mechanics (class/chemistry context), GAUSSIAN (chemistry/calculation/DFT/ab initio/class context), Schrödinger (chemistry/class/drug/molecular context), MOLPRO (chemistry/class/calculation), ORCA software (chemistry/DFT/class context), basis set (chemistry/DFT/quantum/class context), coupled cluster (class/chemistry/calculation), Hartree-Fock (class/chemistry/calculation/method), potential energy surface (class/chemistry/calculation), force field (class/chemistry/simulation).
+- `computationalchemistryCallouts(tier:)` 4/3/3: "those DFT calculations aren't going to run themselves." / "no one masters quantum chemistry by scrolling." / "CLOSE THIS. DFT calculations don't run while you scroll."
+- 2 templates: "Run and analyze my computational chemistry calculation" (60 min) + "Study computational chemistry methods for my exam" (45 min)
+
+**New keyword domain — ecology:**
+- Branch positioned BEFORE ecologyconservation (after aquaticscience), so general ecology class/coursework routes here. Conservation-specific terms (restoration ecology, conservation biology) fall through to ecologyconservation. "ecology" alone without class/lab/course/exam context falls through to enviro.
+- Catches: ecology class/course/exam/lab/notes/textbook/assignment/lecture/problem set/homework, community ecology (class/course/exam/lab context), ecosystem ecology (class/course/exam/lab context), food web (class/ecology/exam/lab/assignment context), food chain (class/ecology/exam/lab), trophic level (class/ecology/exam/lab), ecological niche (class/ecology/exam/assignment), biome (class/ecology/exam/assignment/lab), ecosystem dynamics (class/ecology/exam), species diversity (class/ecology/exam/lab), carrying capacity (class/ecology/exam/lab), predator-prey (class/ecology/exam/model), interspecific competition, intraspecific competition, symbiosis (class/ecology/exam/lab), nutrient cycling (class/ecology/exam), primary productivity (class/ecology/exam/lab), ecological succession (class/ecology/exam).
+- `ecologyCallouts(tier:)` 4/3/3: "those food webs aren't going to diagram themselves." / "no one masters ecosystems by scrolling." / "CLOSE THIS. ecosystem dynamics don't review themselves."
+- 2 templates: "Study ecology for my exam" (60 min) + "Complete my ecology lab or assignment" (45 min)
+
+**New keyword domain — pharmacology:**
+- Branch positioned BEFORE physiology and premed. Bare word("pharmacology") stays in premed (MCAT context). "pharmacy" routes to pharmacy branch much earlier.
+- Catches: pharmacology class/course/exam/lab/notes/textbook/assignment/lecture/problem set/homework, pharmacokinetics (class/course/exam/lab/assignment context), pharmacodynamics (class/course/exam/assignment), drug receptor (class/course/pharmacology/exam), drug-receptor (class/pharmacology/exam), receptor binding (class/pharmacology/exam/assay), dose-response (class/pharmacology/exam/curve), drug metabolism (class/pharmacology/exam/lab), drug toxicity (class/pharmacology/exam/study), agonist (pharmacology/class/receptor/exam), antagonist (pharmacology/class/receptor/exam), therapeutic index (class/pharmacology/exam), bioavailability (class/pharmacology/exam/drug), drug distribution (class/pharmacology/exam), drug excretion (class/pharmacology/exam), pharmacology major/degree, clinical pharmacology (class/course/exam).
+- False-positive guard: bare "pharmacology" without class context stays in premed for MCAT.
+- `pharmacologyCallouts(tier:)` 4/3/3: "those drug mechanisms aren't going to memorize themselves." / "no one masters receptor pharmacology by scrolling." / "CLOSE THIS. drug mechanisms don't review themselves."
+- 2 templates: "Study pharmacology for my exam" (60 min) + "Work through my pharmacology assignment" (45 min)
+
+**New keyword domain — physiology:**
+- Branch positioned AFTER pharmacology, BEFORE premed. Bare word("physiology") stays in premed (MCAT context).
+- Catches: physiology class/course/exam/lab/notes/textbook/assignment/lecture/problem set/homework, human physiology (class/course/exam/lab/study context), organ systems physiology (class/course/exam), cell physiology (class/course/exam/lab), cardiovascular physiology (class/course/exam/lab), respiratory physiology (class/course/exam/lab), renal physiology (class/course/exam/lab), gastrointestinal physiology (class/course/exam/lab), endocrine physiology (class/course/exam/lab), neurophysiology (class/course/exam/lab), musculoskeletal physiology (class/course/exam/lab), exercise physiology (class/course/exam/lab/notes), membrane potential (physiology/class/exam), action potential (physiology/class/exam/lab), homeostasis (physiology/class/exam/lab), physiology major/degree/program.
+- False-positive guard: bare "physiology" without class context stays in premed for MCAT.
+- `physiologyCallouts(tier:)` 4/3/3: "those organ systems aren't going to review themselves." / "no one masters organ physiology by scrolling." / "CLOSE THIS. organ system functions don't review themselves."
+- 2 templates: "Study physiology for my exam" (60 min) + "Complete my physiology lab or assignment" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +172 lines (~10 tests per domain × 5 domains + count guard = 51 new @Test functions)
+- SuggestedSessionTemplatesTests.swift: +81 lines (2 presence tests per domain × 5 domains + count guard = 11 new @Test functions)
+
+**Template catalog: 699 → 709**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `ecology` fires at line 3654, BEFORE ecologyconservation (3678). "ecology class exam" → ecology ✓; "conservation biology" → ecologyconservation ✓
+- `chemicalkinetics` fires at line 4563, AFTER analyticalchemistry (4508), BEFORE nuclearchemistry (4587). "rate law class chemistry exam" → chemicalkinetics ✓; "nuclear chemistry" → nuclearchemistry ✓
+- `computationalchemistry` fires at line 4662, AFTER polymerchemistry (4580), BEFORE drugdiscovery (4687). "DFT calculation chemistry class" → computationalchemistry ✓
+- `pharmacology` fires at line 5236, BEFORE physiology (5261), BEFORE premed (5273). "pharmacokinetics class exam" → pharmacology ✓; "pharmacology MCAT" → premed ✓
+- `physiology` fires at line 5261, AFTER pharmacology (5236), BEFORE premed (5273). "cardiovascular physiology class exam" → physiology ✓; "physiology MCAT" → premed ✓
+- Brace balance verified: all modified files balanced (open = close) ✓
+- Template count: 709 confirmed by programmatic count (grep -c "SuggestedTemplate:")
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `materialstesting` — tensile/compressive testing, Charpy impact, materials testing lab (class context for mechanical engineering labs) — distinguish from materialscience
+  - `thermodynamics` — thermodynamics class (distinct from physical chemistry's thermo coverage), ideal gas law, entropy, enthalpy, Gibbs free energy (class context)
+  - `biochemistrylab` — dedicated biochemistry lab class (enzyme kinetics lab, SDS-PAGE, protein assay — more specific than molecularbiology)
+  - `anesthesiology` — anesthesiology rotation/course, gas laws in anesthesia context, pharmacology of anesthetic agents
+  - `radiologyrotation` — radiology reading room, PACS system, radiology residency, imaging interpretation class
+  - `oceanography` — oceanography class, physical/chemical/biological oceanography, ocean currents, thermohaline circulation (distinct from marinebiology/aquaticscience)
+  - `geochemistry` — geochemistry class, isotope geochemistry, rock/mineral chemistry (distinct from geology)
+- Template count: 709 → 719 after next 5-domain batch
+- CalloutManagerTests: ~19400+ lines after next batch

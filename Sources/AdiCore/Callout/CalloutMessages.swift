@@ -416,6 +416,11 @@ extension CalloutManager {
         case "histology":                  return histologyCallouts(tier: tier)
         case "pathology":                  return pathologyCallouts(tier: tier)
         case "neuroanatomy":               return neuroanatomyCallouts(tier: tier)
+        case "chemicalkinetics":           return chemicalkineticsCallouts(tier: tier)
+        case "computationalchemistry":     return computationalchemistryCallouts(tier: tier)
+        case "ecology":                    return ecologyCallouts(tier: tier)
+        case "pharmacology":               return pharmacologyCallouts(tier: tier)
+        case "physiology":                 return physiologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -8131,6 +8136,111 @@ extension CalloutManager {
             "CLOSE THIS. open your neuroanatomy textbook.",
             "CLOSE THIS. cranial nerve functions won't memorize themselves.",
             "CLOSE THIS. your neuroanatomy exam won't pass itself."
+        ]
+        }
+    }
+
+    private func chemicalkineticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those rate laws aren't going to derive themselves.",
+            "close this and get back to your chemical kinetics work.",
+            "your Arrhenius problem set won't finish itself — close this.",
+            "reaction order doesn't determine itself while you scroll — close this.",
+        ]
+        case 2: return [
+            "no one masters kinetics by scrolling.",
+            "close this and open your chemical kinetics notes.",
+            "those integrated rate laws won't solve themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your chemical kinetics textbook.",
+            "CLOSE THIS. activation energy problems won't solve themselves.",
+            "CLOSE THIS. your kinetics exam won't pass itself."
+        ]
+        }
+    }
+
+    private func computationalchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those DFT calculations aren't going to run themselves.",
+            "close this and get back to your computational chemistry work.",
+            "your molecular dynamics simulation won't set up itself — close this.",
+            "ab initio methods don't compute while you scroll — close this.",
+        ]
+        case 2: return [
+            "no one masters quantum chemistry by scrolling.",
+            "close this and open your computational chemistry assignment.",
+            "those GAUSSIAN outputs won't analyze themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your computational chemistry software.",
+            "CLOSE THIS. DFT calculations don't run while you scroll.",
+            "CLOSE THIS. your computational chemistry problem set won't finish itself."
+        ]
+        }
+    }
+
+    private func ecologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those food webs aren't going to diagram themselves.",
+            "close this and get back to your ecology work.",
+            "trophic levels and community dynamics won't review themselves — close this.",
+            "your ecology exam is coming and you're scrolling — close this.",
+        ]
+        case 2: return [
+            "no one masters ecosystems by scrolling.",
+            "close this and open your ecology textbook.",
+            "those predator-prey models won't analyze themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your ecology notes.",
+            "CLOSE THIS. ecosystem dynamics don't review themselves.",
+            "CLOSE THIS. your ecology exam won't pass itself."
+        ]
+        }
+    }
+
+    private func pharmacologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those drug mechanisms aren't going to memorize themselves.",
+            "close this and get back to your pharmacology work.",
+            "pharmacokinetics and dose-response curves won't review themselves — close this.",
+            "your pharmacology exam is coming and you're here — close this.",
+        ]
+        case 2: return [
+            "no one masters receptor pharmacology by scrolling.",
+            "close this and open your pharmacology textbook.",
+            "those agonist and antagonist mechanisms won't learn themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your pharmacology notes.",
+            "CLOSE THIS. drug mechanisms don't review themselves.",
+            "CLOSE THIS. your pharmacology exam won't pass itself."
+        ]
+        }
+    }
+
+    private func physiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those organ systems aren't going to review themselves.",
+            "close this and get back to your physiology work.",
+            "action potentials and homeostasis won't study themselves — close this.",
+            "your physiology exam is coming and you're scrolling — close this.",
+        ]
+        case 2: return [
+            "no one masters organ physiology by scrolling.",
+            "close this and open your physiology textbook.",
+            "those cardiovascular and renal systems won't review themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your physiology notes.",
+            "CLOSE THIS. organ system functions don't review themselves.",
+            "CLOSE THIS. your physiology exam won't pass itself."
         ]
         }
     }
