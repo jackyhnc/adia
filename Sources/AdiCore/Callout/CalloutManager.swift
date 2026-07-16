@@ -670,6 +670,21 @@ public final class CalloutManager {
             || (lower.contains("semantic change") && (lower.contains("class") || lower.contains("course") || lower.contains("linguistics"))) {
             return "historicallinguistics"
         }
+        // cognitivelinguistics — positioned AFTER historicallinguistics and BEFORE linguistics so
+        // cognitive grammar, construction grammar, conceptual metaphor theory, and frame semantics
+        // route here. Generic linguistics terms (phonology, discourse, sociolinguistics) stay below.
+        if lower.contains("cognitive linguistics") || lower.contains("cognitive grammar")
+            || lower.contains("construction grammar") || lower.contains("conceptual metaphor theory")
+            || lower.contains("conceptual metaphor") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("analysis") || lower.contains("theory"))
+            || lower.contains("frame semantics") || lower.contains("fillmore") && (lower.contains("semantics") || lower.contains("linguistics") || lower.contains("frame"))
+            || lower.contains("cognitive semantics") || lower.contains("mental spaces") && (lower.contains("linguistics") || lower.contains("class") || lower.contains("blending"))
+            || lower.contains("blending theory") && (lower.contains("linguistics") || lower.contains("class") || lower.contains("metaphor") || lower.contains("conceptual"))
+            || lower.contains("conceptual blending") || lower.contains("image schema") || lower.contains("image schemas")
+            || lower.contains("embodied meaning") || lower.contains("embodied cognition") && (lower.contains("linguistics") || lower.contains("language") || lower.contains("class"))
+            || (word("langacker") && (lower.contains("linguistics") || lower.contains("grammar") || lower.contains("class") || lower.contains("course") || lower.contains("paper")))
+            || (word("lakoff") && (lower.contains("linguistics") || lower.contains("metaphor") || lower.contains("class") || lower.contains("cognitive") || lower.contains("paper"))) {
+            return "cognitivelinguistics"
+        }
         // linguistics — positioned before studying so "linguistics exam", "phonetics class",
         // and language-science assignments don't fall through to studying.
         // Language learning (vocabulary, conjugation, Duolingo) stays in the language branch below.
@@ -3223,6 +3238,22 @@ public final class CalloutManager {
             || lower.contains("fisheries and wildlife") || lower.contains("wildlife and fisheries") {
             return "aquaticscience"
         }
+        // environmentaljustice — positioned BEFORE environmentalpolicy so EJ analysis, environmental
+        // racism research, cumulative burden studies, and EJ-specific policy work route here.
+        // Generic environmental policy/science falls through to environmentalpolicy/enviro below.
+        if lower.contains("environmental justice") || lower.contains("environmental racism")
+            || lower.contains("cumulative environmental burden") || lower.contains("cumulative exposure burden")
+            || lower.contains("ej mapping") || word("ejscreen") || lower.contains("ej analysis")
+            || lower.contains("environmental health disparity") || lower.contains("environmental health disparities")
+            || lower.contains("fence-line communit") || lower.contains("fenceline communit")
+            || lower.contains("sacrifice zone") || lower.contains("sacrifice zones")
+            || lower.contains("just transition") && (lower.contains("environmental") || lower.contains("climate") || lower.contains("class") || lower.contains("course") || lower.contains("paper"))
+            || lower.contains("environmental justice class") || lower.contains("environmental justice course")
+            || lower.contains("environmental justice exam") || lower.contains("environmental justice paper")
+            || lower.contains("environmental justice analysis") || lower.contains("environmental justice research")
+            || lower.contains("environmental justice policy") || lower.contains("environmental justice program") {
+            return "environmentaljustice"
+        }
         // environmentalpolicy — positioned BEFORE enviro so environmental policy and climate policy
         // with academic/analysis context route here. Generic "environmental policy" and
         // "climate policy" without class/analysis qualifiers still fall through to enviro below.
@@ -4633,6 +4664,29 @@ public final class CalloutManager {
             || lower.contains("vagal tone") && (lower.contains("class") || lower.contains("training") || lower.contains("therapy")) {
             return "polyvagaltheory"
         }
+        // schoolcounseling — positioned AFTER polyvagaltheory and BEFORE socialwork so school
+        // counselors, CACREP programs, career counseling class, and student affairs coursework
+        // route here. Generic "counseling" stays in the therapy branch (fires later).
+        if lower.contains("school counselor") || lower.contains("school counseling")
+            || word("cacrep") || lower.contains("cacrep program") || lower.contains("cacrep class")
+            || lower.contains("cacrep accredited") || lower.contains("cacrep internship")
+            || lower.contains("guidance counselor") || lower.contains("guidance counseling")
+            || lower.contains("career counseling class") || lower.contains("career counseling course")
+            || lower.contains("career counseling exam") || lower.contains("career counseling program")
+            || lower.contains("career counseling assignment") || lower.contains("career development class")
+            || lower.contains("career development course") || lower.contains("career development theory")
+            || lower.contains("college counseling class") || lower.contains("college counseling course")
+            || lower.contains("college counseling program") || lower.contains("academic counseling class")
+            || lower.contains("student affairs class") || lower.contains("student affairs course")
+            || lower.contains("student affairs program") || lower.contains("student affairs practicum")
+            || lower.contains("student development theory") || lower.contains("higher education counseling")
+            || lower.contains("academic advising class") || lower.contains("academic advising course")
+            || lower.contains("school counseling practicum") || lower.contains("school counseling internship")
+            || lower.contains("school counseling licensure") || lower.contains("counseling licensure class")
+            || lower.contains("counseling program") && (lower.contains("school") || lower.contains("cacrep") || lower.contains("guidance"))
+            || lower.contains("counseling class") && (lower.contains("school") || lower.contains("guidance") || lower.contains("student affairs")) {
+            return "schoolcounseling"
+        }
         // socialwork — positioned before therapy so social-work-specific tasks (case management,
         // child welfare, community resources) route here instead of to therapist callouts.
         // "social work" is owned here; "social work" in the therapy branch is removed.
@@ -5191,6 +5245,40 @@ public final class CalloutManager {
             || lower.contains("grit theory") && (lower.contains("psych") || lower.contains("class") || lower.contains("paper"))
             || lower.contains("self-determination theory") && (lower.contains("psych") || lower.contains("class") || lower.contains("paper") || lower.contains("course")) {
             return "positivepsychology"
+        }
+        // cognitivepsychology — positioned BEFORE psychology so working memory, attention,
+        // information processing, and cognitive load research route here with a specific pool.
+        // "cognitive psychology" itself still routes to psychology (fires below) as a fallback
+        // for bare mentions; explicit research/class terms with memory/attention context route here.
+        if lower.contains("working memory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("research") || lower.contains("paper") || lower.contains("lab"))
+            || lower.contains("cognitive load theory") || lower.contains("cognitive load") && (lower.contains("class") || lower.contains("research") || lower.contains("paper") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("attention and perception") || lower.contains("selective attention") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("exam"))
+            || lower.contains("information processing model") && (lower.contains("psych") || lower.contains("class") || lower.contains("cogniti"))
+            || lower.contains("baddeley") && (lower.contains("model") || lower.contains("class") || lower.contains("memory") || lower.contains("working"))
+            || lower.contains("attention research") && (lower.contains("psych") || lower.contains("cognitive") || lower.contains("class"))
+            || lower.contains("cognitive processes") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("research"))
+            || lower.contains("perceptual learning") && (lower.contains("class") || lower.contains("psych") || lower.contains("cognitive"))
+            || lower.contains("memory research") && (lower.contains("psych") || lower.contains("cognitive") || lower.contains("class"))
+            || lower.contains("cognitive aging") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("psych"))
+            || lower.contains("dual-process theory") && (lower.contains("psych") || lower.contains("cognitive") || lower.contains("class") || lower.contains("paper"))
+            || lower.contains("dual process theory") && (lower.contains("psych") || lower.contains("cognitive") || lower.contains("class") || lower.contains("paper")) {
+            return "cognitivepsychology"
+        }
+        // developmentalpsychology — positioned BEFORE psychology so child development, lifespan
+        // development, Vygotsky, Erikson, and Kohlberg coursework route here. Bare "Piaget" and
+        // "developmental psychology" without child/lifespan context still fall through to psychology.
+        if lower.contains("child development") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("research") || lower.contains("milestone") || lower.contains("theory") || lower.contains("assignment"))
+            || lower.contains("lifespan development") || lower.contains("life-span development")
+            || lower.contains("infant development") || lower.contains("toddler development")
+            || lower.contains("adolescent development") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("psych") || lower.contains("paper"))
+            || lower.contains("vygotsky") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("paper") || lower.contains("development") || lower.contains("theory") || lower.contains("zpd") || lower.contains("scaffolding"))
+            || lower.contains("zone of proximal development")
+            || lower.contains("erikson") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("paper") || lower.contains("stage") || lower.contains("development") || lower.contains("identity"))
+            || lower.contains("kohlberg") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("paper") || lower.contains("moral") || lower.contains("development"))
+            || lower.contains("developmental milestone") || lower.contains("developmental milestones")
+            || lower.contains("early childhood development") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("program") || lower.contains("theory"))
+            || lower.contains("developmental stages") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("paper") || lower.contains("exam")) {
+            return "developmentalpsychology"
         }
         // psychology — positioned after publicheath and all clinical health branches above.
         // "educational psychology" fires in the education branch first; clinical/counseling

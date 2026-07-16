@@ -3865,5 +3865,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Environmental policy study session completed (at least two policy instruments or frameworks reviewed, key tradeoffs understood, notes updated and saved)",
             preferredDuration: 45 * 60
         ),
+        // cognitivelinguistics
+        SuggestedTemplate(
+            icon: "text.bubble.fill",
+            task: "Write a cognitive linguistics analysis — apply conceptual metaphor theory, frame semantics, or construction grammar to a language phenomenon",
+            successCriteria: "Cognitive linguistics analysis meaningfully advanced (theoretical framework applied, linguistic evidence analyzed, or a key section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study cognitive linguistics — review Lakoff's metaphor theory, Langacker's cognitive grammar, Fillmore's frame semantics, or conceptual blending for my class or exam",
+            successCriteria: "Cognitive linguistics study session completed (at least two frameworks reviewed, key concepts understood, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // environmentaljustice
+        SuggestedTemplate(
+            icon: "leaf.circle.fill",
+            task: "Write an environmental justice paper — analyze cumulative environmental burdens, environmental racism, EJ mapping, or just transition policy",
+            successCriteria: "Environmental justice paper meaningfully advanced (EJ framework applied, case evidence incorporated, or a key section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study environmental justice concepts — review EJ frameworks, sacrifice zone cases, EJSCREEN methodology, or environmental health disparities for my class or exam",
+            successCriteria: "Environmental justice study session completed (at least two EJ concepts or cases reviewed, key frameworks understood, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // schoolcounseling
+        SuggestedTemplate(
+            icon: "person.2.fill",
+            task: "Complete my school counseling practicum notes or CACREP-based case conceptualization for my supervised hours",
+            successCriteria: "Practicum notes or case conceptualization completed and saved (client goals documented, interventions recorded, or progress section drafted)",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for my school counseling licensure exam or complete a school counseling or student affairs coursework assignment",
+            successCriteria: "Study session completed (at least two counseling theories or career development models reviewed, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // cognitivepsychology
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study cognitive psychology — review working memory models, attention and perception, cognitive load theory, or information processing for my class or exam",
+            successCriteria: "Cognitive psychology study session completed (at least two cognitive models reviewed, key distinctions understood, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a cognitive psychology paper or complete a cognitive research methods assignment — working memory, selective attention, dual-process theory, or cognitive aging",
+            successCriteria: "Cognitive psychology paper or assignment meaningfully advanced (research question framed, evidence reviewed, or a key section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // developmentalpsychology
+        SuggestedTemplate(
+            icon: "figure.and.child.holdinghands",
+            task: "Study developmental psychology — review Vygotsky's ZPD, Erikson's psychosocial stages, Kohlberg's moral development, or lifespan developmental milestones for my class or exam",
+            successCriteria: "Developmental psychology study session completed (at least two theorists or developmental stages reviewed, key distinctions understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a developmental psychology paper — analyze child development theory, lifespan stages, zone of proximal development, or adolescent identity formation",
+            successCriteria: "Developmental psychology paper meaningfully advanced (theoretical lens applied, developmental evidence cited, or a key section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

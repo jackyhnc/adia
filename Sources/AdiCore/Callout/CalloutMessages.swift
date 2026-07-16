@@ -366,6 +366,11 @@ extension CalloutManager {
         case "philosophyofmind":           return philosophyofmindCallouts(tier: tier)
         case "digitalhumanities":          return digitalhumanitiesCallouts(tier: tier)
         case "environmentalpolicy":        return environmentalpolicyCallouts(tier: tier)
+        case "cognitivelinguistics":       return cognitivelinguisticsCallouts(tier: tier)
+        case "environmentaljustice":       return environmentaljusticeCallouts(tier: tier)
+        case "schoolcounseling":           return schoolcounselingCallouts(tier: tier)
+        case "cognitivepsychology":        return cognitivepsychologyCallouts(tier: tier)
+        case "developmentalpsychology":    return developmentalpsychologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -7031,6 +7036,111 @@ extension CalloutManager {
             "CLOSE THIS. open your environmental policy materials.",
             "CLOSE THIS. climate policy analysis demands your full attention.",
             "CLOSE THIS. your carbon policy paper won't write itself."
+        ]
+        }
+    }
+
+    private func cognitivelinguisticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that cognitive grammar analysis isn't going to write itself.",
+            "close this and get back to your cognitive linguistics work.",
+            "conceptual metaphors won't map themselves — close this.",
+            "frame semantics won't analyze itself — close this.",
+        ]
+        case 2: return [
+            "no one masters cognitive linguistics by scrolling.",
+            "close this and open your cognitive linguistics notes.",
+            "construction grammar won't study itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your cognitive linguistics materials.",
+            "CLOSE THIS. Lakoff and Langacker demand your full attention.",
+            "CLOSE THIS. conceptual blending theory won't explain itself."
+        ]
+        }
+    }
+
+    private func environmentaljusticeCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that environmental justice analysis isn't going to write itself.",
+            "close this and get back to your EJ coursework.",
+            "cumulative environmental burdens won't document themselves — close this.",
+            "environmental racism won't address itself by scrolling — close this.",
+        ]
+        case 2: return [
+            "no one advances environmental justice by scrolling.",
+            "close this and open your EJ materials.",
+            "your sacrifice zone analysis won't finish itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your environmental justice materials.",
+            "CLOSE THIS. environmental health disparities demand your full attention.",
+            "CLOSE THIS. your EJ paper won't write itself."
+        ]
+        }
+    }
+
+    private func schoolcounselingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those counseling case notes aren't going to write themselves.",
+            "close this and get back to your school counseling work.",
+            "your students need you focused — close this.",
+            "your CACREP practicum notes won't write themselves — close this.",
+        ]
+        case 2: return [
+            "no one becomes a school counselor by scrolling.",
+            "close this and open your counseling materials.",
+            "career development theory won't study itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your school counseling notes.",
+            "CLOSE THIS. your counseling licensure exam won't pass itself.",
+            "CLOSE THIS. student affairs theory demands your full attention."
+        ]
+        }
+    }
+
+    private func cognitivepsychologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that working memory research isn't going to write itself.",
+            "close this and get back to your cognitive psychology work.",
+            "cognitive load is real — and so is your assignment.",
+            "selective attention won't study itself — close this.",
+        ]
+        case 2: return [
+            "no one masters cognitive psych by scrolling.",
+            "close this and open your cognitive psychology notes.",
+            "information processing won't happen on its own — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your cognitive psychology materials.",
+            "CLOSE THIS. working memory has limits — use them wisely.",
+            "CLOSE THIS. Baddeley's model won't review itself."
+        ]
+        }
+    }
+
+    private func developmentalpsychologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those developmental milestones aren't going to memorize themselves.",
+            "close this and get back to your developmental psychology work.",
+            "Vygotsky didn't discover the ZPD by scrolling.",
+            "your child development assignment won't finish itself — close this.",
+        ]
+        case 2: return [
+            "no one masters lifespan development by scrolling.",
+            "close this and open your developmental psych notes.",
+            "Erikson's stages won't study themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your developmental psychology materials.",
+            "CLOSE THIS. child development theory demands your full attention.",
+            "CLOSE THIS. Kohlberg's moral stages won't memorize themselves."
         ]
         }
     }

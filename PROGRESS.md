@@ -1,5 +1,72 @@
 # Adia — Build Progress
 
+## Run 356 (automated) — 2026-07-16 — 5 new keyword domains: cognitivelinguistics, environmentaljustice, schoolcounseling, cognitivepsychology, developmentalpsychology (599→609 templates)
+
+### What shipped
+
+**5 new keyword domains: cognitivelinguistics, environmentaljustice, schoolcounseling, cognitivepsychology, developmentalpsychology**
+
+**New keyword domain — cognitivelinguistics:**
+- Branch positioned AFTER historicallinguistics (671) and BEFORE linguistics (704); cognitive linguistics and its specific frameworks (conceptual metaphor, frame semantics, construction grammar) get a dedicated pool rather than falling into the generic linguistics pool.
+- Catches: cognitive linguistics, cognitive grammar, construction grammar, conceptual metaphor theory/conceptual metaphor+class, frame semantics, Fillmore+semantics/frame, cognitive semantics, mental spaces+blending, blending theory+linguistics, conceptual blending, image schema/schemas, embodied meaning, embodied cognition+linguistics, Langacker+class, Lakoff+metaphor/class.
+- `cognitivelinguisticsCallouts(tier:)` 4/3/3: "that cognitive grammar analysis isn't going to write itself." / "no one masters cognitive linguistics by scrolling." / "CLOSE THIS. Lakoff and Langacker demand your full attention."
+- 2 templates: "Write a cognitive linguistics analysis" (60 min) + "Study cognitive linguistics — Lakoff's metaphor theory, Langacker's cognitive grammar, Fillmore's frame semantics" (45 min)
+
+**New keyword domain — environmentaljustice:**
+- Branch positioned BEFORE environmentalpolicy (3277) and enviro (3293); EJ analysis, sacrifice zone research, and cumulative burden studies get a dedicated pool rather than generic environmental pool.
+- Catches: environmental justice, environmental racism, cumulative environmental/exposure burden, EJ mapping, EJSCREEN, fence-line communities, sacrifice zones, just transition+environmental/class/climate/paper context, environmental health disparities, environmental justice class/course/exam/paper/analysis/research/program.
+- `environmentaljusticeCallouts(tier:)` 4/3/3: "that environmental justice analysis isn't going to write itself." / "no one advances environmental justice by scrolling." / "CLOSE THIS. environmental health disparities demand your full attention."
+- 2 templates: "Write an environmental justice paper" (60 min) + "Study environmental justice concepts" (45 min)
+
+**New keyword domain — schoolcounseling:**
+- Branch positioned AFTER polyvagaltheory (4635) and BEFORE socialwork (4702); school counselor training, CACREP programs, career counseling class, and student affairs coursework route here instead of the generic therapy pool.
+- Catches: school counselor, school counseling, CACREP, guidance counselor, career counseling class/course/exam/program, career development class/course/theory, college counseling class, student affairs class/course/program/practicum, student development theory, academic advising class, school counseling practicum/internship/licensure; also "counseling program" with school/cacrep/guidance context.
+- `schoolcounselingCallouts(tier:)` 4/3/3: "those counseling case notes aren't going to write themselves." / "no one becomes a school counselor by scrolling." / "CLOSE THIS. your counseling licensure exam won't pass itself."
+- 2 templates: "Complete my school counseling practicum notes or CACREP-based case conceptualization" (45 min) + "Study for school counseling licensure or complete school counseling coursework" (60 min)
+
+**New keyword domain — cognitivepsychology:**
+- Branch positioned BEFORE developmentalpsychology and psychology (5265 → 5281 → 5306); working memory research, cognitive load, selective attention, and information processing tasks get a specific pool.
+- Catches: working memory+class/research, cognitive load theory, cognitive load+class/research/assignment, attention and perception, selective attention+class, information processing model+psych/cognitive, Baddeley+model/memory, attention research+cognitive/psych, cognitive processes+class, perceptual learning+class, memory research+psych/cognitive, cognitive aging+class, dual-process theory+psych/cognitive.
+- Guard: bare "cognitive psychology class exam" without research-specific terms stays in psychology branch below.
+- `cognitivepsychologyCallouts(tier:)` 4/3/3: "that working memory research isn't going to write itself." / "no one masters cognitive psych by scrolling." / "CLOSE THIS. Baddeley's model won't review itself."
+- 2 templates: "Study cognitive psychology — working memory, attention, information processing, cognitive load" (45 min) + "Write a cognitive psychology paper or research methods assignment" (60 min)
+
+**New keyword domain — developmentalpsychology:**
+- Branch positioned BEFORE psychology (5281 → 5306); child development, lifespan development, and key theorists get a dedicated pool.
+- Catches: child development+class/milestone/theory, lifespan development, infant/toddler development, adolescent development+class, Vygotsky+class/development/zpd, zone of proximal development, Erikson+class/stage/identity, Kohlberg+class/moral, developmental milestones, early childhood development+class, developmental stages+class.
+- Guard: bare "Piaget" without child/lifespan context stays in psychology branch.
+- `developmentalpsychologyCallouts(tier:)` 4/3/3: "those developmental milestones aren't going to memorize themselves." / "no one masters lifespan development by scrolling." / "CLOSE THIS. Kohlberg's moral stages won't memorize themselves."
+- 2 templates: "Study developmental psychology — Vygotsky, Erikson, Kohlberg, lifespan developmental milestones" (60 min) + "Write a developmental psychology paper — child development theory, lifespan stages" (60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: ~40 new tests (4 keyword routing + 1 false-positive + 3 callout pool tests per domain × 5 + 1 count guard ≥609)
+- SuggestedSessionTemplates count guard: ≥609
+
+**Template catalog: 599 → 609**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `cognitivelinguistics` fires at line 686, AFTER `historicallinguistics` (671) and BEFORE `linguistics` (704). "conceptual metaphor theory for my cognitive linguistics class" → cognitivelinguistics ✓; "phonology and morphology for my general linguistics exam" → linguistics ✓
+- `environmentaljustice` fires at line 3255, BEFORE `environmentalpolicy` (3277) and `enviro` (3293). "environmental justice paper on cumulative environmental burdens" → environmentaljustice ✓; "environmental science climate change ecosystem" → enviro ✓
+- `schoolcounseling` fires at line 4688, BEFORE `socialwork` (4702). "school counseling practicum CACREP hours" → schoolcounseling ✓; "therapy session notes treatment plan" → therapy ✓
+- `cognitivepsychology` fires at line 5265, BEFORE `developmentalpsychology` (5281) and `psychology` (5306). "working memory research Baddeley's model cognitive psychology class" → cognitivepsychology ✓; "cognitive psychology for my general psychology exam" → psychology ✓
+- `developmentalpsychology` fires at line 5281, BEFORE `psychology` (5306). "Vygotsky's ZPD and scaffolding development theory" → developmentalpsychology ✓; "Piaget and Freud for my general psychology exam" → psychology ✓
+- Brace balance: CalloutManager.swift 355/355 ✓, CalloutMessages.swift 655/655 ✓
+- Template count: 609 confirmed (SuggestedTemplate( occurrences)
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `paleontology` — fossil record analysis, taphonomy, paleontology class (currently in geology branch; worth splitting for a dedicated pool)
+  - `socialepidemiology` — social determinants of health, health disparities research (distinct from epidemiology's disease modeling focus)
+  - `informationscience` — information science degree, LIS program, information architecture (distinct from library science's cataloging focus)
+  - `experimentalphysics` — physics lab reports, optics/mechanics experiments, experimental design + physics context
+  - `cognitiveneuroscience` — fMRI/EEG study design, BOLD signal, neuroimaging analysis (distinct from neuroscience's general biology focus)
+- Template count: 609 → 619 after next 5-domain batch
+- CalloutManagerTests: ~2890+ after next batch
+
 ## Run 355 (automated) — 2026-07-16 — 5 new keyword domains: geopolitics, computationalbiology, philosophyofmind, digitalhumanities, environmentalpolicy (589→599 templates)
 
 ### What shipped
