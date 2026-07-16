@@ -17050,3 +17050,74 @@ None. Swift toolchain unavailable on Linux container.
   - `computationalfinance` — quantitative finance, algorithmic trading, Black-Scholes, Monte Carlo + finance, financial engineering
 - Template count: 661 → 671 after next 5-domain batch
 - CalloutManagerTests: ~18409 lines + ~200 lines = ~18600 after next batch
+
+---
+
+## Run 362 (automated) — 2026-07-16 — 5 new keyword domains: electrochemistry, polymerchemistry, maternalhealth, globalhealthpolicy, processengineering (661→671 templates)
+
+### What shipped
+
+**5 new keyword domains: electrochemistry, polymerchemistry, maternalhealth, globalhealthpolicy, processengineering**
+
+**New keyword domain — electrochemistry:**
+- Branch positioned AFTER nuclearchemistry, BEFORE drugdiscovery. Bare "oxidation"/"reduction" NOT matched.
+- Catches: electrochemistry/electrochemical cell/galvanic cell/voltaic cell/electrolytic cell, Nernst equation+chemistry/class context, cyclic voltammetry+chemistry/lab/class, linear sweep voltammetry+chemistry context, chronoamperometry+chemistry context, electrode potential+class/chemistry, standard reduction potential+class/chemistry, electrochemical series+class/chemistry, electrolysis class/course/exam, electroplating class/lab, Faraday's law+electrochemistry/electrolysis context, half-cell+class/chemistry, electrochemical impedance+class/lab/chemistry.
+- `electrochemistryCallouts(tier:)` 4/3/3: "that electrochemistry problem set isn't going to solve itself." / "no one masters electrochemistry by scrolling." / "CLOSE THIS. open your electrochemistry textbook."
+- 2 templates: "Work through my electrochemistry problem set — galvanic cells, Nernst equation, electrode potentials, electrolysis, or cyclic voltammetry" (60 min) + "Study electrochemistry for my exam — review electrochemical cells, Nernst equation, standard reduction potentials, electrolytic cells, and Faraday's laws" (45 min)
+
+**New keyword domain — polymerchemistry:**
+- Branch positioned AFTER electrochemistry, BEFORE drugdiscovery. "polymer" alone in materials context fires materialscience earlier.
+- Catches: polymer chemistry/science class/course/exam/program/notes, polymer physics class/course/exam, polymerization reaction+chemistry/class/lab context, degree of polymerization+class/chemistry, molar mass distribution/molecular weight distribution+polymer/chemistry/class, polydispersity index+polymer/class/chemistry, addition/condensation/free radical/chain-growth/step-growth/ring-opening polymerization+class/chemistry context, polymer characterization class/course/lab/exam.
+- `polymerchemistryCallouts(tier:)` 4/3/3: "that polymer chemistry problem set isn't going to solve itself." / "no one masters polymer chemistry by scrolling." / "CLOSE THIS. open your polymer chemistry textbook."
+- 2 templates: "Work through my polymer chemistry problem set — polymerization reactions, molecular weight distribution, polydispersity index, or chain-growth mechanisms" (60 min) + "Study polymer chemistry for my exam — review addition and condensation polymerization, molar mass distribution, polydispersity, and polymer characterization" (45 min)
+
+**New keyword domain — maternalhealth:**
+- Branch positioned AFTER midwifery, BEFORE palliativecare. Midwifery charting/notes already owned above; "birth plan" owned by midwifery.
+- Catches: maternal health class/course/exam/program/notes/assignment, maternal mortality class/course/exam/paper/research, maternal-fetal medicine class/course/exam/program, obstetric nursing class/course/exam/notes, OB nursing class/course/exam/notes, perinatal nursing class/course/exam/notes, maternal-newborn nursing class/course, prenatal care class/course/exam/assignment, intrapartum/postpartum nursing class/course, postpartum care class/course, obstetrics class/course/exam/assignment, obstetrics and gynecology/OB-GYN+class/course/exam/rotation/assignment.
+- `maternalhealthCallouts(tier:)` 4/3/3: "that maternal health assignment isn't going to write itself." / "no one masters maternal health by scrolling." / "CLOSE THIS. open your maternal health textbook."
+- 2 templates: "Complete my maternal health or OB nursing assignment — obstetric nursing care plans, prenatal care protocols, maternal-fetal assessment, or postpartum nursing notes" (60 min) + "Study maternal health for my OB nursing exam — review prenatal care, intrapartum nursing, postpartum care, maternal mortality, or obstetric complications" (45 min)
+
+**New keyword domain — globalhealthpolicy:**
+- Branch positioned AFTER publichealthnutrition, BEFORE environmentalhealth. Bare "global health" NOT matched — requires policy/governance/law/diplomacy qualifier or explicit class context.
+- Catches: global health policy/international health policy, global health governance/diplomacy, global health law+class/exam/program, health systems strengthening+class/course/policy/exam/assignment, universal health coverage+policy/class/course/assignment/paper, UHC policy/class/course, global burden of disease+class/course/exam/paper/assignment, Lancet Commission+class/course/paper/assignment, WHO policy+class/course/exam/assignment, global health financing+class/policy/paper, global health security+class/policy/paper/exam, international health regulations+class/exam/assignment, global health equity+class/policy/paper, SDG health+class/policy/paper/target.
+- `globalhealthpolicyCallouts(tier:)` 4/3/3: "that global health policy paper isn't going to write itself." / "no one masters global health policy by scrolling." / "CLOSE THIS. open your global health policy materials."
+- 2 templates: "Work on my global health policy paper or assignment — health systems strengthening, universal health coverage, global burden of disease, or international health regulations" (60 min) + "Study global health policy for my exam — review health systems strengthening, UHC frameworks, WHO governance, global health financing, and SDG health targets" (45 min)
+
+**New keyword domain — processengineering:**
+- Branch positioned AFTER healthphysics, BEFORE engineering. "heat transfer" alone fires engineering; only catch with unit-ops/reactor/process context.
+- Catches: unit operations+class/course/lab/exam/chemical, reactor design+class/course/chemical/exam/lab, chemical reaction engineering+class/course/exam/notes, transport phenomena+class/course/exam/chemical/notes, process control+chemical/che/class or engineering class/course, mass and energy balance+class/course/chemical/exam, mass/energy balance+chemical or unit ops+class and engineering context, process simulation+class/chemical/lab, Aspen Plus, Aspen HYSYS, HYSYS+class/simulation/chemical/process, distillation column design+class/lab/chemical, heat exchanger design+class/lab/chemical, chemical process engineering/design/simulation/control, PFR/CSTR+class/reactor/design/chemical, plug flow reactor/CSTR, P&ID+class/chemical/process, process flow diagram+class/chemical/engineering.
+- `processengineeringCallouts(tier:)` 4/3/3: "that unit operations problem set isn't going to solve itself." / "no one masters process engineering by scrolling." / "CLOSE THIS. open your unit operations textbook."
+- 2 templates: "Work through my unit operations or chemical process engineering problem set — mass and energy balances, reactor design, transport phenomena, or distillation" (75 min) + "Study process engineering for my exam — review unit operations, reactor design (PFR/CSTR), transport phenomena, mass and energy balances, and process control" (60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +41 tests (8 per domain + 1 count guard ≥671)
+- SuggestedSessionTemplatesTests.swift: +11 tests (2 per domain + 1 count guard ≥671)
+
+**Template catalog: 661 → 671**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `electrochemistry` fires AFTER nuclearchemistry (4361 vs 4314), BEFORE drugdiscovery. "electrochemistry galvanic cell Nernst equation" → electrochemistry ✓; "nuclear chemistry radioactive decay" → nuclearchemistry ✓
+- `polymerchemistry` fires AFTER electrochemistry (4387 vs 4361), BEFORE drugdiscovery. "polymer chemistry polymerization free radical" → polymerchemistry ✓; "orgo NMR reaction mechanism" → organicchemistry ✓
+- `maternalhealth` fires AFTER midwifery (4979 vs 4874), BEFORE palliativecare. "obstetric nursing class prenatal care" → maternalhealth ✓; "midwifery prenatal charting notes" → midwifery ✓
+- `globalhealthpolicy` fires AFTER publichealthnutrition (5585 vs 5537), BEFORE environmentalhealth. "global health policy UHC frameworks" → globalhealthpolicy ✓; "community nutrition WIC class" → publichealthnutrition ✓
+- `processengineering` fires AFTER healthphysics (1392 vs 1367), BEFORE engineering (now 1421). "unit operations Aspen Plus chemical engineering" → processengineering ✓; "solidworks mechanical engineering" → engineering ✓
+- Brace balance: all files balanced (open = close) ✓
+- Template count: 671 confirmed by programmatic count (grep -c "preferredDuration:")
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `environmentalsciencelab` — field ecology labs, water quality testing in env sci context (separate from environmentalhealth)
+  - `computationalbiologybioinformatics` — already exists? check; if not: sequence alignment, phylogenetics, BLAST, genome assembly class
+  - `civilengineering` — structural engineering class, geotechnical engineering, surveying, concrete/steel design (separate from generic engineering)
+  - `aerospacengineering` — aerodynamics, propulsion, orbital mechanics, flight dynamics (separate from generic engineering)
+  - `electricalengineering` — circuits class, electromagnetics, digital/analog electronics, signal processing (separate from generic engineering)
+  - `urbanplanning` — land use planning, zoning law, urban design studio, transportation planning
+  - `internationalrelations` — IR theory, foreign policy analysis, geopolitics class, realist/liberal IR
+  - `constitutionallaw` — con law class, judicial review, equal protection, first amendment
+  - `criminallaw` — criminal law class, mens rea, actus reus, sentencing, criminal procedure
+- Template count: 671 → 681 after next 5-domain batch
+- CalloutManagerTests: ~18584 lines + ~200 lines = ~18780 after next batch
