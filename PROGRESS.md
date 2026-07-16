@@ -17496,3 +17496,75 @@ None. Swift toolchain unavailable on Linux container.
   - `geochemistry` — geochemistry class, isotope geochemistry, rock/mineral chemistry (distinct from geology)
 - Template count: 709 → 719 after next 5-domain batch
 - CalloutManagerTests: ~19400+ lines after next batch
+
+---
+
+## Run 367 (automated) — 2026-07-16 — 5 new keyword domains: oceanography, geochemistry, thermodynamics, radiologyrotation, anesthesiology (721→731 templates)
+
+### What shipped
+
+**5 new keyword domains: oceanography, geochemistry, thermodynamics, radiologyrotation, anesthesiology**
+
+**New keyword domain — oceanography:**
+- Branch positioned BEFORE marinebiology (line 766). word("oceanography"/"oceanographer"/"oceanographers") + "oceanography class/course/exam" removed from marinebiology and owned here.
+- Catches: word("oceanography"/"oceanographer"/"oceanographers"), oceanography class/course/exam/lab/notes/textbook/program/major/assignment/homework, physical/chemical/biological/geological oceanography+class/lab, ocean circulation+class/oceanography, thermohaline circulation+class/exam, ocean currents+class/oceanography, sea surface temperature+class/oceanography, Ekman transport+class/oceanography, geostrophic flow+class/ocean, ocean salinity/stratification+class/oceanography, tidal forcing+class/oceanography.
+- marinebiology updated to remove oceanography-owned terms.
+- `oceanographyCallouts(tier:)` 4/3/3: "those ocean circulation problems aren't going to solve themselves." / "no one masters ocean dynamics by scrolling." / "CLOSE THIS. open your oceanography notes."
+- 2 templates: "Study oceanography for my exam — review ocean circulation, thermohaline conveyor, physical and chemical oceanography, Ekman transport, and geostrophic flow" (60 min) + "Complete my oceanography lab or assignment" (45 min)
+
+**New keyword domain — geochemistry:**
+- Branch positioned BEFORE geology. word("geochemistry"/"geochemist"/"geochemists") removed from geology and owned here.
+- Catches: geochemistry class/course/exam/lab/notes/program/major/assignment/textbook/homework, isotope geochemistry+class/exam, isotope ratio+class/geochemistry, trace element+class/geochemistry/rock/mineral, major element+class/geochemistry, geochemical analysis/modeling+class/lab, XRF+class/geochemistry/rock/mineral, ICP-MS+class/geochemistry/rock/mineral, radiogenic/stable isotope+class/geochemistry, rock/mineral chemistry+class, fluid-rock interaction+class/geochemistry, hydrothermal/marine geochemistry+class, word("geochemistry"/"geochemist").
+- geology updated to remove `word("geochemistry")`.
+- `geochemistryCallouts(tier:)` 4/3/3: "those trace-element analyses aren't going to run themselves." / "no one masters isotope ratios by scrolling." / "CLOSE THIS. open your geochemistry lab notes."
+- 2 templates: "Study geochemistry for my exam" (60 min) + "Complete my geochemistry lab or assignment" (45 min)
+
+**New keyword domain — thermodynamics:**
+- Branch positioned AFTER chemicalengineering, BEFORE engineering. "thermodynamics class/course/exam" WITHOUT "chemical" context fires here; WITH "chemical" stays in chemicalengineering above.
+- Catches: thermodynamics class/course/exam/notes/problem set/homework/textbook/assignment (all !chemical guard), engineering/applied thermodynamics+class/exam, Rankine/Carnot/Otto/Diesel cycle+class/thermo/exam, heat engine+class/thermo/cycle, steam tables+class/thermo/engineering, refrigeration cycle+class/thermo/engineering, first/second law of thermodynamics+class/engineering, entropy/enthalpy+thermo+class/exam.
+- `thermodynamicsCallouts(tier:)` 4/3/3: "those Rankine cycle problems aren't going to solve themselves." / "no one passes thermodynamics by scrolling." / "CLOSE THIS. Carnot and Rankine cycles won't study themselves."
+- 2 templates: "Work through my thermodynamics problem set — Rankine cycle, Carnot efficiency, steam tables, Otto or Diesel cycle" (60 min) + "Study thermodynamics for my exam" (60 min)
+
+**New keyword domain — radiologyrotation:**
+- Branch positioned BEFORE radiologictechnology. Catches medical-student/resident radiology rotation tasks; ARRT tech-school context stays in radiologictechnology.
+- Catches: radiology reading room, PACS system+radiology/rotation, radiology rotation+!arrt/!radiography-program guard, neuroradiology/MSK/abdominal/chest/pediatric/breast/ER radiology rotation, radiology residency+reading/rotation/report, radiology clerkship/elective, image/radiograph/CT/MRI interpretation+class/rotation/radiology, radiology report+rotation/write/dictate/attending, radiology attending/fellow.
+- `radiologyrotationCallouts(tier:)` 4/3/3: "those radiology cases aren't going to read themselves." / "no one learns image interpretation by scrolling." / "CLOSE THIS. open your radiology cases."
+- 2 templates: "Complete my radiology reading room session — interpret CT, MRI, or plain film radiographs" (60 min) + "Study radiology for my rotation exam" (45 min)
+
+**New keyword domain — anesthesiology:**
+- Branch positioned AFTER physiology, BEFORE premed. word("anesthesiologist"/"anesthesiologists") fires here; bare "anesthesia" without class/CRNA/rotation context stays in premed.
+- Catches: word("anesthesiologist"/"anesthesiology"), CRNA+program/exam/class/school, nurse anesthesia/anesthesia nursing, anesthesiology/anesthesia rotation/clerkship/elective/residency, anesthesiology/anesthesia class/course/exam/notes/program, anesthetic pharmacology+class/rotation, volatile/inhalation/IV anesthetic+class, regional/spinal/epidural anesthesia+class/rotation, anesthesia machine+class/rotation/lab, airway management+anesthesia/crna/rotation/class, MAC monitoring+anesthesia/class, gas laws+anesthesia/crna/class.
+- `anesthesiologyCallouts(tier:)` 4/3/3: "those anesthesia concepts aren't going to study themselves." / "no one masters anesthetic pharmacology by scrolling." / "CLOSE THIS. open your anesthesiology textbook."
+- 2 templates: "Study anesthesiology for my rotation or CRNA exam" (60 min) + "Complete my anesthesiology assignment or case prep" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +58 tests (7-9 per domain + count guard ≥731)
+- SuggestedSessionTemplatesTests.swift: +12 tests (2 per domain + count guard ≥731)
+
+**Template catalog: 721 → 731**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `oceanography` fires at line 790, BEFORE marinebiology (815). "oceanography class exam" → oceanography ✓; "marine biology coral reef" → marinebiology ✓; word("oceanographer") → oceanography ✓
+- `geochemistry` fires at line 1059, BEFORE geology (1082). "geochemistry class exam" → geochemistry ✓; "geology lab rock identification" → geology ✓; word("geochemist") → geochemistry ✓
+- `thermodynamics` fires at line 1685, AFTER chemicalengineering (1657), BEFORE engineering (1703). "thermodynamics class problem set" → thermodynamics ✓; "thermodynamics class chemical engineering" → chemicalengineering ✓
+- `radiologyrotation` fires at line 4981, BEFORE radiologictechnology (5004). "radiology reading room" → radiologyrotation ✓; "radiologic technologist ARRT" → radiologictechnology ✓
+- `anesthesiology` fires at line 5514, AFTER physiology (5486), BEFORE premed (5526). "CRNA exam anesthetic pharmacology" → anesthesiology ✓; "pharmacology MCAT" → premed ✓
+- Brace balance: CalloutManager.swift 415/415 ✓; CalloutMessages+SuggestedSessionTemplates 781/781 ✓
+- Template count: 731 confirmed by programmatic count (grep -c "preferredDuration:")
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `structuralbiology` — X-ray crystallography, cryo-EM, protein structure determination, PDB, SAXS (distinct from molecularbiology)
+  - `biochemistrylab` — SDS-PAGE, Western blot, protein purification, column chromatography (more specific than biochemistry branch)
+  - `clinicalneurology` — neurology ward, neurology rotation, neurological exam, EEG interpretation, lumbar puncture (medical student level)
+  - `dermatologyrotation` — dermatology reading, skin biopsy interpretation, derm rotation, dermoscopy
+  - `psychiatryrotation` — psychiatry rotation, mental status exam, DSM-5 case formulation, inpatient psychiatry notes
+  - `surgeryrotation` — surgery clerkship, OR scrubbing in, surgical notes, operative report writing
+  - `pediatricsrotation` — pediatrics clerkship, developmental milestones in clinical context, pediatric exam
+  - `internalmedicine` — internal medicine clerkship, H&P write-up, SOAP notes, medicine rounds
+- Template count: 731 → 741 after next 5-domain batch
+- CalloutManagerTests: ~19900+ lines after next batch
