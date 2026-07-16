@@ -16914,3 +16914,72 @@ None. Swift toolchain unavailable on Linux container.
   - `appliedmathematics` — applied math class/program, numerical analysis, differential equations class, linear algebra class, partial differential equations (separate from statistics and physics)
 - Template count: 569 → 579 after next 5-domain batch
 - CalloutManagerTests: ~2619 + 41 = ~2660 after next batch
+
+---
+
+## Run 360 (automated) — 2026-07-16 — 5 new keyword domains: organicchemistry, botany, operationsresearch, internalaudit, healthcarequality (642→652 templates)
+
+### What shipped
+
+**5 new keyword domains: organicchemistry, botany, operationsresearch, internalaudit, healthcarequality**
+
+**New keyword domain — organicchemistry:**
+- Branch positioned AFTER biochemistry, BEFORE drugdiscovery. "pharmaceutical chemistry" stays in pharmacy; "MCAT chemistry" stays in premed. Bare "chemistry" NOT matched.
+- Catches: word("orgo"), organic chemistry/chem, NMR spectroscopy/spectrum, HNMR/CNMR/1H NMR/13C NMR/proton NMR, reaction mechanism (guard: not enzyme mechanism), synthesis planning/route, synthetic route (guard: not biosynthetic), retrosynthesis/retrosynthetic, stereochemistry+organic context, chirality/chiral center/molecule (guard: not biophysics), enantiomer, diastereomer, carbocation, carbanion, SN1/SN2/E1/E2 reactions, elimination reaction+organic/class, aldol condensation/reaction, Diels-Alder, Grignard reagent/reaction, functional group analysis+organic, organic lab report, organic chemistry lab, Fischer projection, Woodward-Hoffmann, MCAT organic/orgo.
+- `organicchemistryCallouts(tier:)` 4/3/3: "your reaction mechanism isn't going to draw itself." / "no one passes orgo by scrolling." / "CLOSE THIS. open your orgo textbook."
+- 2 templates: "Complete my organic chemistry problem set — reaction mechanisms, SN1/SN2/E1/E2, aldol condensation, Diels-Alder, or Grignard reagents" (60 min) + "Study organic chemistry for my exam — review NMR spectroscopy, stereochemistry, synthesis planning, or retrosynthetic analysis" (45 min)
+
+**New keyword domain — botany:**
+- Branch positioned AFTER agriculturalscience, BEFORE geographyearthed. "plant science" in horticulturescience fires earlier; "naturopathic botany" stays in naturopathicmedicine.
+- Catches: word(botany/botanist/botanical), plant biology class/course/exam/lab/program/notes, plant physiology+edu context, plant ecology+edu context, plant taxonomy, plant systematics, plant anatomy+edu, plant morphology+edu, plant genetics+edu, herbarium+class/lab/specimen/study, word(ethnobotany/ethnobotanist), plant pathology+edu, mycology+class/course/exam/lab/fungi, phytochemistry+class/lab, algae+class/biology/lab/course.
+- `botanyCallouts(tier:)` 4/3/3: "those plants aren't going to study themselves." / "no one masters plant biology by scrolling." / "CLOSE THIS. open your plant biology textbook."
+- 2 templates: "Complete my botany lab report or assignment — plant taxonomy, plant physiology, herbarium specimens, or plant ecology fieldwork" (45 min) + "Study plant biology for my botany exam — review plant anatomy, plant systematics, ethnobotany, or plant pathology" (45 min)
+
+**New keyword domain — operationsresearch:**
+- Branch positioned AFTER appliedmathematics, BEFORE mathematics. Distinct from supplychain (logistics) and appliedmathematics (numerics). "game theory algorithm" in code fires first; bare "simulation" NOT matched.
+- Catches: operations research, management science+edu context, word(INFORMS)+edu, linear programming+class/exam, integer programming+class, simplex method+class, transportation problem+OR/optimization, network flow+OR/optimization, queueing/queuing theory+class, stochastic/deterministic optimization+class, OR model+class, discrete event simulation+OR, dynamic programming+OR/optimization class.
+- `operationsresearchCallouts(tier:)` 4/3/3: "that linear program won't solve itself." / "no one solves OR problems by scrolling." / "CLOSE THIS. open your operations research textbook."
+- 2 templates: "Work on my operations research problem set — linear programming, integer programming, network flow models, or queueing theory" (60 min) + "Study operations research for my exam — review linear programming, simplex method, transportation models, or stochastic optimization" (45 min)
+
+**New keyword domain — internalaudit:**
+- Branch positioned AFTER accounting, BEFORE forensicaccounting. Distinct from forensicaccounting (fraud) and qualitymanagement (ISO). "CISA" stays in informationassurance. Bare "CIA" NOT matched alone.
+- Catches: internal audit/auditing/auditor, internal controls class/course/exam/assignment/testing, CIA exam/cert+audit context, IIA standard/cert/program, SOX audit, Sarbanes-Oxley audit, sox compliance+audit, audit planning class/course/exam, IT audit class/course/program/cert, COBIT+audit/class, risk-based audit, audit report writing+class, audit sampling+class, control testing+class/audit, audit engagement+class.
+- `internalauditCallouts(tier:)` 4/3/3: "that audit report isn't going to write itself." / "no one passes the CIA exam by scrolling." / "CLOSE THIS. open your internal audit materials."
+- 2 templates: "Study for the CIA certification exam — review IIA standards, internal controls, risk-based audit, audit planning, or control testing" (60 min) + "Complete my internal audit assignment — write an audit report, test internal controls, review SOX compliance, or analyze audit findings" (45 min)
+
+**New keyword domain — healthcarequality:**
+- Branch positioned AFTER healthinformatics, BEFORE healthcareadmin. Distinct from qualitymanagement (industrial ISO/ASQ) and healthcareadmin. "six sigma in manufacturing" stays in qualitymanagement.
+- Catches: healthcare quality improvement, patient safety class/course/exam/program/assignment/project, word(CPHQ)/CPHQ exam/cert, quality improvement+healthcare/hospital/clinical/patient, QI project+health/clinical/hospital, lean healthcare/in healthcare/hospital, six sigma in healthcare/hospital, PDSA cycle+health/clinical/hospital/quality, Joint Commission+class/accreditation/survey, TJC survey/accreditation+class, NCQA standards+class/exam, root cause analysis+clinical/healthcare/hospital/patient, sentinel/never event+class, healthcare accreditation+class.
+- `healthcarequalityCallouts(tier:)` 4/3/3: "that quality improvement project isn't going to plan itself." / "no one passes the CPHQ by scrolling." / "CLOSE THIS. open your healthcare quality materials."
+- 2 templates: "Study for the CPHQ exam — review patient safety principles, quality improvement tools, Joint Commission standards, or healthcare accreditation" (60 min) + "Complete my healthcare quality improvement project — write a QI proposal, analyze patient safety data, apply PDSA cycles, or prepare a root cause analysis" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +41 tests (8 per domain + 1 count guard ≥652)
+- SuggestedSessionTemplatesTests.swift: +12 tests (2 per domain + 1 count guard ≥652)
+
+**Template catalog: 642 → 652 (actual count: 653)**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `operationsresearch` fires AFTER `appliedmathematics` (629 vs 610 range) and BEFORE `mathematics`. "operations research linear programming simplex" → operationsresearch ✓; "CPIM APICS logistics" → supplychain ✓
+- `botany` fires AFTER `agriculturalscience` (932 vs 889) and BEFORE `geographyearthed`. "botany lab plant taxonomy herbarium" → botany ✓; "plant science horticulture program" → horticulturescience ✓
+- `internalaudit` fires AFTER `accounting` (2526 vs 2461) and BEFORE `forensicaccounting`. "internal audit CIA exam IIA standards" → internalaudit ✓; "forensic accounting CFE exam ACFE" → forensicaccounting ✓
+- `organicchemistry` fires AFTER `biochemistry` (4216 vs 4120) and BEFORE `drugdiscovery`. "orgo SN2 reaction mechanisms organic chemistry" → organicchemistry ✓; "pharmacokinetics NAPLEX pharmacy" → pharmacy ✓
+- `healthcarequality` fires AFTER `healthinformatics` (4562 vs 4443) and BEFORE `healthcareadmin`. "CPHQ patient safety Joint Commission" → healthcarequality ✓; "CQE ASQ ISO 9001" → qualitymanagement ✓
+- Brace balance verified: CalloutManager.swift 375/375 ✓, CalloutMessages.swift 695/695 ✓
+- Template count: 653 confirmed by programmatic count
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `analyticalchemistry` — HPLC, GC-MS, titration, chromatography, spectrophotometry, gravimetric analysis (separate from biochemistry/organicchemistry)
+  - `physicalchemistry` — thermodynamics of reactions, kinetics, quantum chemistry for chemists, statistical mechanics (separate from organicchemistry and experimentalphysics)
+  - `inorganicchemistry` — coordination chemistry, crystal field theory, ligand field, transition metals, main group chemistry, d-block/f-block elements
+  - `nursinganesthesia` — CRNA programs, NBCRNA exam, nurse anesthesia class/rotation, anesthesia pharmacology (separate from dentalanesthesia)
+  - `veterinarytechnologyadvanced` — LVT/CVT clinical skills, veterinary technology boards (already has veterinarytechnology — skip if overlap)
+  - Better candidate: `petrochemical` or `chemicalengineeringlab` — distinct from chemistry and engineering
+  - Better candidate: `publichealth` sub-domains like `globalhealthpolicy`, `healthpromotion`
+- Template count: 652 → 662 after next 5-domain batch
+- CalloutManagerTests: ~2855 + 41 = ~2896 after next batch

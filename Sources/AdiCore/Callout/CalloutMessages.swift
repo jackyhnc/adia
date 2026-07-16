@@ -386,6 +386,11 @@ extension CalloutManager {
         case "toxicogenomics":             return toxicogenomicsCallouts(tier: tier)
         case "developmentalbiology":       return developmentalbiology_Callouts(tier: tier)
         case "drugdiscovery":              return drugdiscoveryCallouts(tier: tier)
+        case "organicchemistry":           return organicchemistryCallouts(tier: tier)
+        case "botany":                     return botanyCallouts(tier: tier)
+        case "operationsresearch":         return operationsresearchCallouts(tier: tier)
+        case "internalaudit":              return internalauditCallouts(tier: tier)
+        case "healthcarequality":          return healthcarequalityCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -7471,6 +7476,111 @@ extension CalloutManager {
             "CLOSE THIS. open your drug discovery data.",
             "CLOSE THIS. lead optimization doesn't happen by scrolling.",
             "CLOSE THIS. high-throughput screening needs you at the bench, not the feed."
+        ]
+        }
+    }
+
+    private func organicchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your reaction mechanism isn't going to draw itself.",
+            "close this and get back to your orgo problem set.",
+            "your synthesis route won't plan itself — close this.",
+            "organic chemistry demands your full focus — close this.",
+        ]
+        case 2: return [
+            "no one passes orgo by scrolling.",
+            "close this and open your orgo notes.",
+            "your retrosynthesis won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your orgo textbook.",
+            "CLOSE THIS. SN2 doesn't happen by itself — neither does your studying.",
+            "CLOSE THIS. your mechanisms aren't going to appear while you scroll."
+        ]
+        }
+    }
+
+    private func botanyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those plants aren't going to study themselves.",
+            "close this and get back to your botany work.",
+            "your plant taxonomy won't classify itself — close this.",
+            "botany demands your full focus — close this.",
+        ]
+        case 2: return [
+            "no one masters plant biology by scrolling.",
+            "close this and open your botany notes.",
+            "your plant physiology lab won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your plant biology textbook.",
+            "CLOSE THIS. the herbarium isn't going to identify itself.",
+            "CLOSE THIS. plant taxonomy waits for no one."
+        ]
+        }
+    }
+
+    private func operationsresearchCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that linear program won't solve itself.",
+            "close this and get back to your operations research work.",
+            "your OR model isn't going to optimize itself — close this.",
+            "operations research demands your full attention — close this.",
+        ]
+        case 2: return [
+            "no one solves OR problems by scrolling.",
+            "close this and open your OR notes.",
+            "your queueing model won't analyze itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your operations research textbook.",
+            "CLOSE THIS. the simplex method doesn't run itself.",
+            "CLOSE THIS. stochastic optimization needs you focused."
+        ]
+        }
+    }
+
+    private func internalauditCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that audit report isn't going to write itself.",
+            "close this and get back to your internal audit work.",
+            "your control testing won't complete itself — close this.",
+            "audit prep demands your full focus — close this.",
+        ]
+        case 2: return [
+            "no one passes the CIA exam by scrolling.",
+            "close this and open your audit notes.",
+            "your audit planning won't do itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your internal audit materials.",
+            "CLOSE THIS. controls don't test themselves.",
+            "CLOSE THIS. the CIA exam won't prep itself while you scroll."
+        ]
+        }
+    }
+
+    private func healthcarequalityCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that quality improvement project isn't going to plan itself.",
+            "close this and get back to your healthcare quality work.",
+            "your CPHQ prep won't complete itself — close this.",
+            "patient safety demands your full focus — close this.",
+        ]
+        case 2: return [
+            "no one passes the CPHQ by scrolling.",
+            "close this and open your quality improvement notes.",
+            "your root cause analysis won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your healthcare quality materials.",
+            "CLOSE THIS. quality indicators won't review themselves.",
+            "CLOSE THIS. patient safety is too important for scrolling."
         ]
         }
     }

@@ -4842,4 +4842,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 619,
                 "catalog should have ≥619 templates after paleontology/experimentalphysics/informationscience/socialepidemiology/cognitiveneuroscience additions (10 templates)")
     }
+
+    // MARK: - organicchemistry
+    @Test func organicchemistryTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasProblemSet = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("organic chemistry") || $0.localizedCaseInsensitiveContains("orgo") || $0.localizedCaseInsensitiveContains("SN1") || $0.localizedCaseInsensitiveContains("reaction mechanism")) &&
+            ($0.localizedCaseInsensitiveContains("problem set") || $0.localizedCaseInsensitiveContains("lab") || $0.localizedCaseInsensitiveContains("complete"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("organic chemistry") || $0.localizedCaseInsensitiveContains("orgo") || $0.localizedCaseInsensitiveContains("NMR") || $0.localizedCaseInsensitiveContains("stereochemistry")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        #expect(hasProblemSet, "catalog must include an organic chemistry problem set template")
+        #expect(hasStudy, "catalog must include an organic chemistry study template")
+    }
+
+    // MARK: - botany
+    @Test func botanyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasLab = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("botany") || $0.localizedCaseInsensitiveContains("plant taxonomy") || $0.localizedCaseInsensitiveContains("plant biology") || $0.localizedCaseInsensitiveContains("herbarium")) &&
+            ($0.localizedCaseInsensitiveContains("lab") || $0.localizedCaseInsensitiveContains("complete") || $0.localizedCaseInsensitiveContains("assignment"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("botany") || $0.localizedCaseInsensitiveContains("plant biology") || $0.localizedCaseInsensitiveContains("plant anatomy")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        #expect(hasLab, "catalog must include a botany lab/assignment template")
+        #expect(hasStudy, "catalog must include a botany study template")
+    }
+
+    // MARK: - operationsresearch
+    @Test func operationsresearchTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasProblemSet = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("operations research") || $0.localizedCaseInsensitiveContains("linear programming") || $0.localizedCaseInsensitiveContains("queueing")) &&
+            ($0.localizedCaseInsensitiveContains("problem set") || $0.localizedCaseInsensitiveContains("work on") || $0.localizedCaseInsensitiveContains("network flow"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("operations research") || $0.localizedCaseInsensitiveContains("simplex") || $0.localizedCaseInsensitiveContains("linear programming")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        #expect(hasProblemSet, "catalog must include an operations research problem set template")
+        #expect(hasStudy, "catalog must include an operations research study template")
+    }
+
+    // MARK: - internalaudit
+    @Test func internalauditTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("CIA") || $0.localizedCaseInsensitiveContains("IIA") || $0.localizedCaseInsensitiveContains("internal audit")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("certification"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("internal audit") || $0.localizedCaseInsensitiveContains("SOX") || $0.localizedCaseInsensitiveContains("audit report")) &&
+            ($0.localizedCaseInsensitiveContains("complete") || $0.localizedCaseInsensitiveContains("write") || $0.localizedCaseInsensitiveContains("assignment"))
+        }
+        #expect(hasExam, "catalog must include an internal audit exam study template")
+        #expect(hasAssignment, "catalog must include an internal audit assignment template")
+    }
+
+    // MARK: - healthcarequality
+    @Test func healthcarequalityTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("CPHQ") || $0.localizedCaseInsensitiveContains("patient safety") || $0.localizedCaseInsensitiveContains("Joint Commission")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("certification"))
+        }
+        let hasProject = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("healthcare quality") || $0.localizedCaseInsensitiveContains("quality improvement") || $0.localizedCaseInsensitiveContains("PDSA")) &&
+            ($0.localizedCaseInsensitiveContains("complete") || $0.localizedCaseInsensitiveContains("project") || $0.localizedCaseInsensitiveContains("write"))
+        }
+        #expect(hasExam, "catalog must include a healthcare quality exam study template")
+        #expect(hasProject, "catalog must include a healthcare quality project template")
+    }
+
+    // MARK: - Count guard (batch: organicchemistry/botany/operationsresearch/internalaudit/healthcarequality)
+    @Test func catalogHasAtLeastSixHundredFiftyTwoTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 652,
+                "catalog should have ≥652 templates after organicchemistry/botany/operationsresearch/internalaudit/healthcarequality additions (10 templates)")
+    }
 }

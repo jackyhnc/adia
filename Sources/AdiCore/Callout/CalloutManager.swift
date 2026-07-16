@@ -607,6 +607,27 @@ public final class CalloutManager {
             || (lower.contains("finite difference method") && (lower.contains("class") || lower.contains("course") || lower.contains("math"))) {
             return "appliedmathematics"
         }
+        // operationsresearch — positioned AFTER appliedmathematics and BEFORE mathematics.
+        // Catches OR/MS coursework: linear programming, integer programming, queueing theory,
+        // and simulation distinct from supplychain (logistics) and appliedmathematics (numerics).
+        // "game theory algorithm" in code fires first; bare "simulation" NOT matched alone.
+        if lower.contains("operations research")
+            || lower.contains("management science") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program"))
+            || word("informs") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("or"))
+            || lower.contains("linear programming") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("problem"))
+            || lower.contains("integer programming") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("simplex method") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("transportation problem") && (lower.contains("or") || lower.contains("class") || lower.contains("course") || lower.contains("optimization"))
+            || lower.contains("network flow") && (lower.contains("or") || lower.contains("class") || lower.contains("course") || lower.contains("optimization"))
+            || lower.contains("queueing theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("queuing theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("stochastic optimization") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("deterministic optimization") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("or model") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("discrete event simulation") && (lower.contains("class") || lower.contains("course") || lower.contains("or"))
+            || lower.contains("dynamic programming") && (lower.contains("or") || lower.contains("optimization class") || lower.contains("optimization course")) {
+            return "operationsresearch"
+        }
         // mathematics — positioned before studying so number theory, proof writing, and
         // advanced topics (topology, abstract algebra) don't fall through to studying.
         // word("algebra") and word("calculus") are in studying for generic "algebra exam"
@@ -887,6 +908,28 @@ public final class CalloutManager {
             || lower.contains("agricultural extension") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("exam"))
             || lower.contains("cooperative extension class") || lower.contains("extension agriculture") {
             return "agriculturalscience"
+        }
+        // botany — positioned AFTER agriculturalscience and BEFORE geographyearthed.
+        // Catches plant biology, botany coursework, herbarium science, and mycology in
+        // academic context. "plant science" in horticulturescience fires earlier.
+        // "naturopathic botany" stays in naturopathicmedicine (fires much earlier).
+        if word("botany") || word("botanist") || word("botanical")
+            || lower.contains("plant biology class") || lower.contains("plant biology course")
+            || lower.contains("plant biology exam") || lower.contains("plant biology lab")
+            || lower.contains("plant biology program") || lower.contains("plant biology notes")
+            || lower.contains("plant physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("plant ecology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("plant taxonomy") || lower.contains("plant systematics")
+            || lower.contains("plant anatomy") && (lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("plant morphology") && (lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("plant genetics") && (lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("herbarium") && (lower.contains("class") || lower.contains("lab") || lower.contains("specimen") || lower.contains("study"))
+            || word("ethnobotany") || word("ethnobotanist")
+            || lower.contains("plant pathology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("mycology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("fungi"))
+            || lower.contains("phytochemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("algae") && (lower.contains("class") || lower.contains("biology") || lower.contains("lab") || lower.contains("course")) {
+            return "botany"
         }
         // geographyearthed — positioned BEFORE geology so AP Human/Physical Geography and world
         // geography coursework gets a dedicated pool. GIS tools stay in geospatial (fires earlier).
@@ -2459,6 +2502,28 @@ public final class CalloutManager {
             || lower.contains("accounting software") || lower.contains("bookkeeping class")
             || lower.contains("bookkeeping course") || lower.contains("bookkeeping exam") {
             return "accounting"
+        }
+        // internalaudit — positioned AFTER accounting and BEFORE forensicaccounting.
+        // Catches CIA certification, IIA standards, internal controls, and SOX audit prep
+        // distinct from forensicaccounting (fraud investigation) and qualitymanagement (ISO).
+        // "CISA" stays in informationassurance (fires much earlier). Bare "CIA" NOT matched alone.
+        if lower.contains("internal audit") || lower.contains("internal auditing")
+            || lower.contains("internal auditor") || lower.contains("internal controls class")
+            || lower.contains("internal controls course") || lower.contains("internal controls exam")
+            || lower.contains("internal controls assignment") || lower.contains("internal control testing")
+            || (word("cia") || lower.contains("cia exam") || lower.contains("cia certification") || lower.contains("cia cert")) && (lower.contains("audit") || lower.contains("iia") || lower.contains("internal"))
+            || lower.contains("iia standard") || lower.contains("iia certification") || lower.contains("iia program")
+            || lower.contains("sox audit") || lower.contains("sarbanes-oxley audit")
+            || lower.contains("sox compliance") && lower.contains("audit")
+            || lower.contains("audit planning class") || lower.contains("audit planning course") || lower.contains("audit planning exam")
+            || lower.contains("it audit class") || lower.contains("it audit course") || lower.contains("it audit program") || lower.contains("it audit cert")
+            || lower.contains("cobit") && (lower.contains("audit") || lower.contains("class") || lower.contains("course") || lower.contains("cert"))
+            || lower.contains("risk-based audit") || lower.contains("risk based audit")
+            || lower.contains("audit report writing") && (lower.contains("class") || lower.contains("course"))
+            || lower.contains("audit sampling") && (lower.contains("class") || lower.contains("course"))
+            || lower.contains("control testing") && (lower.contains("class") || lower.contains("course") || lower.contains("audit"))
+            || lower.contains("audit engagement") && (lower.contains("class") || lower.contains("course")) {
+            return "internalaudit"
         }
         // forensicaccounting — positioned before finance so fraud investigation, CFE exam,
         // and financial forensics tasks route here rather than the generic finance pool.
@@ -4119,6 +4184,37 @@ public final class CalloutManager {
             || lower.contains("biochemistry textbook") || lower.contains("lehninger") {
             return "biochemistry"
         }
+        // organicchemistry — positioned AFTER biochemistry and BEFORE drugdiscovery.
+        // Catches orgo, reaction mechanisms, NMR, synthesis planning, and stereochemistry
+        // coursework. "pharmaceutical chemistry" stays in pharmacy (fires earlier).
+        // "MCAT chemistry" stays in premed (fires earlier). Bare "chemistry" NOT matched.
+        if word("orgo")
+            || lower.contains("organic chemistry") || lower.contains("organic chem")
+            || lower.contains("nmr spectroscopy") || lower.contains("nmr spectrum")
+            || word("hnmr") || word("cnmr") || lower.contains("13c nmr")
+            || lower.contains("1h nmr") || lower.contains("proton nmr") || lower.contains("carbon nmr")
+            || lower.contains("reaction mechanism") && !lower.contains("enzyme mechanism")
+            || lower.contains("synthesis planning") || lower.contains("synthesis route") && !lower.contains("biosynthesis")
+            || lower.contains("synthetic route") && !lower.contains("biosynthetic")
+            || lower.contains("retrosynthesis") || lower.contains("retrosynthetic")
+            || lower.contains("stereochemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("orgo") || lower.contains("organic"))
+            || lower.contains("chirality") && !lower.contains("biophysics")
+            || lower.contains("chiral center") || lower.contains("chiral molecule")
+            || lower.contains("enantiomer") || lower.contains("diastereomer")
+            || lower.contains("carbocation") || lower.contains("carbanion")
+            || lower.contains("sn1 reaction") || lower.contains("sn2 reaction")
+            || lower.contains("e1 reaction") || lower.contains("e2 reaction")
+            || lower.contains("elimination reaction") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("class"))
+            || lower.contains("aldol condensation") || lower.contains("aldol reaction")
+            || lower.contains("diels-alder") || lower.contains("diels alder")
+            || lower.contains("grignard reagent") || lower.contains("grignard reaction")
+            || lower.contains("functional group analysis") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("class"))
+            || lower.contains("organic lab report") || lower.contains("organic chemistry lab")
+            || lower.contains("fischer projection")
+            || lower.contains("woodward-hoffmann") || lower.contains("woodward hoffmann")
+            || lower.contains("mcat organic") || lower.contains("mcat orgo") {
+            return "organicchemistry"
+        }
         // drugdiscovery — positioned AFTER biochemistry and BEFORE biophysics. Catches lead
         // optimization, high-throughput screening, ADMET, and medicinal chemistry research
         // distinct from pharmacy's dispensing focus. Bare "drug" NOT matched.
@@ -4441,6 +4537,29 @@ public final class CalloutManager {
             || lower.contains("health informatics course") || lower.contains("health informatics exam")
             || lower.contains("clinical decision support") && (lower.contains("class") || lower.contains("course") || lower.contains("informatics")) {
             return "healthinformatics"
+        }
+        // healthcarequality — positioned AFTER healthinformatics and BEFORE healthcareadmin.
+        // Catches CPHQ prep, patient safety, and quality improvement in healthcare settings
+        // distinct from qualitymanagement (industrial ISO/ASQ) and healthcareadmin (admin ops).
+        // "six sigma in manufacturing" stays in qualitymanagement (fires much earlier).
+        if lower.contains("healthcare quality improvement") || lower.contains("health care quality improvement")
+            || lower.contains("patient safety class") || lower.contains("patient safety course")
+            || lower.contains("patient safety exam") || lower.contains("patient safety program")
+            || lower.contains("patient safety assignment") || lower.contains("patient safety project")
+            || word("cphq") || lower.contains("cphq exam") || lower.contains("cphq cert")
+            || lower.contains("quality improvement") && (lower.contains("healthcare") || lower.contains("hospital") || lower.contains("clinical") || lower.contains("patient"))
+            || lower.contains("qi project") && (lower.contains("health") || lower.contains("clinical") || lower.contains("hospital"))
+            || lower.contains("lean healthcare") || lower.contains("lean in healthcare") || lower.contains("lean hospital")
+            || lower.contains("six sigma in healthcare") || lower.contains("six sigma healthcare") || lower.contains("six sigma hospital")
+            || lower.contains("pdsa cycle") && (lower.contains("health") || lower.contains("clinical") || lower.contains("hospital") || lower.contains("quality"))
+            || lower.contains("joint commission") && (lower.contains("class") || lower.contains("course") || lower.contains("accreditation") || lower.contains("survey"))
+            || lower.contains("tjc survey") || lower.contains("tjc accreditation") && lower.contains("class")
+            || lower.contains("ncqa standards") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("root cause analysis") && (lower.contains("clinical") || lower.contains("healthcare") || lower.contains("hospital") || lower.contains("patient"))
+            || lower.contains("sentinel event") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("never event") && (lower.contains("class") || lower.contains("course") || lower.contains("healthcare") || lower.contains("patient"))
+            || lower.contains("healthcare accreditation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "healthcarequality"
         }
         // healthcareadmin — positioned after molecularbiology and before premed so healthcare
         // administration, health informatics, and HIM certification prep route here.

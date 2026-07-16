@@ -4125,5 +4125,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Drug discovery study session completed (at least two concepts reviewed, notes updated and saved)",
             preferredDuration: 45 * 60
         ),
+        // organicchemistry
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Complete my organic chemistry problem set — reaction mechanisms, SN1/SN2/E1/E2, aldol condensation, Diels-Alder, or Grignard reagents",
+            successCriteria: "Organic chemistry problem set meaningfully advanced (at least one mechanism drawn correctly or a section of the lab report written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study organic chemistry for my exam — review NMR spectroscopy, stereochemistry, synthesis planning, or retrosynthetic analysis",
+            successCriteria: "Orgo study session completed (at least two reaction types or mechanisms reviewed, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // botany
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Complete my botany lab report or assignment — plant taxonomy, plant physiology, herbarium specimens, or plant ecology fieldwork",
+            successCriteria: "Botany assignment meaningfully advanced (at least one plant identification or physiological analysis completed and written up)",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study plant biology for my botany exam — review plant anatomy, plant systematics, ethnobotany, or plant pathology",
+            successCriteria: "Botany study session completed (at least two plant biology topics reviewed, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // operationsresearch
+        SuggestedTemplate(
+            icon: "chart.bar.fill",
+            task: "Work on my operations research problem set — linear programming, integer programming, network flow models, or queueing theory",
+            successCriteria: "Operations research problem set meaningfully advanced (at least one LP/IP model formulated and solved, or a queueing analysis written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study operations research for my exam — review linear programming, simplex method, transportation models, or stochastic optimization",
+            successCriteria: "OR study session completed (at least two OR techniques reviewed with worked examples, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // internalaudit
+        SuggestedTemplate(
+            icon: "checkmark.seal.fill",
+            task: "Study for the CIA certification exam — review IIA standards, internal controls, risk-based audit, audit planning, or control testing",
+            successCriteria: "CIA exam study session completed (at least two IIA standard domains reviewed, practice questions attempted and notes updated)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my internal audit assignment — write an audit report, test internal controls, review SOX compliance, or analyze audit findings",
+            successCriteria: "Internal audit assignment meaningfully advanced (at least one audit procedure documented or a section of the report written and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // healthcarequality
+        SuggestedTemplate(
+            icon: "heart.text.square.fill",
+            task: "Study for the CPHQ exam — review patient safety principles, quality improvement tools, Joint Commission standards, or healthcare accreditation",
+            successCriteria: "CPHQ study session completed (at least two quality domains reviewed, practice questions attempted and notes updated)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my healthcare quality improvement project — write a QI proposal, analyze patient safety data, apply PDSA cycles, or prepare a root cause analysis",
+            successCriteria: "Healthcare quality project meaningfully advanced (at least one QI tool applied, data analyzed, or a section of the project written and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }
