@@ -4255,5 +4255,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Nuclear chemistry study session completed (at least two nuclear concepts reviewed with worked examples and notes saved)",
             preferredDuration: 45 * 60
         ),
+        // electrochemistry
+        SuggestedTemplate(
+            icon: "bolt.circle.fill",
+            task: "Work through my electrochemistry problem set — galvanic cells, Nernst equation, electrode potentials, electrolysis, or cyclic voltammetry",
+            successCriteria: "Electrochemistry problem set completed (at least three problems solved with cell diagrams or half-reactions worked out and notes saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "bolt.circle.fill",
+            task: "Study electrochemistry for my exam — review electrochemical cells, Nernst equation, standard reduction potentials, electrolytic cells, and Faraday's laws",
+            successCriteria: "Electrochemistry study session completed (galvanic and electrolytic cells understood, Nernst equation practiced, notes saved)",
+            preferredDuration: 45 * 60
+        ),
+        // polymerchemistry
+        SuggestedTemplate(
+            icon: "link.circle.fill",
+            task: "Work through my polymer chemistry problem set — polymerization reactions, molecular weight distribution, polydispersity index, or chain-growth mechanisms",
+            successCriteria: "Polymer chemistry problem set completed (at least three problems solved with polymerization mechanisms drawn and notes saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "link.circle.fill",
+            task: "Study polymer chemistry for my exam — review addition and condensation polymerization, molar mass distribution, polydispersity, and polymer characterization",
+            successCriteria: "Polymer chemistry study session completed (at least two polymerization types reviewed with mechanisms and notes saved)",
+            preferredDuration: 45 * 60
+        ),
+        // maternalhealth
+        SuggestedTemplate(
+            icon: "heart.text.square.fill",
+            task: "Complete my maternal health or OB nursing assignment — obstetric nursing care plans, prenatal care protocols, maternal-fetal assessment, or postpartum nursing notes",
+            successCriteria: "Maternal health assignment completed (care plan or assessment written, at least two maternal health concepts applied with sources cited)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "heart.text.square.fill",
+            task: "Study maternal health for my OB nursing exam — review prenatal care, intrapartum nursing, postpartum care, maternal mortality, or obstetric complications",
+            successCriteria: "Maternal health study session completed (at least three OB nursing topics reviewed with clinical rationales and notes saved)",
+            preferredDuration: 45 * 60
+        ),
+        // globalhealthpolicy
+        SuggestedTemplate(
+            icon: "globe.americas.fill",
+            task: "Work on my global health policy paper or assignment — health systems strengthening, universal health coverage, global burden of disease, or international health regulations",
+            successCriteria: "Global health policy work completed (at least two policy frameworks analyzed, paper section drafted or outline completed with citations saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "globe.americas.fill",
+            task: "Study global health policy for my exam — review health systems strengthening, UHC frameworks, WHO governance, global health financing, and SDG health targets",
+            successCriteria: "Global health policy study session completed (at least two global health frameworks reviewed with key concepts and examples noted)",
+            preferredDuration: 45 * 60
+        ),
+        // processengineering
+        SuggestedTemplate(
+            icon: "gearshape.2.fill",
+            task: "Work through my unit operations or chemical process engineering problem set — mass and energy balances, reactor design, transport phenomena, or distillation",
+            successCriteria: "Process engineering problem set completed (at least three problems solved with unit ops calculations and Aspen Plus results or hand calculations saved)",
+            preferredDuration: 75 * 60
+        ),
+        SuggestedTemplate(
+            icon: "gearshape.2.fill",
+            task: "Study process engineering for my exam — review unit operations, reactor design (PFR/CSTR), transport phenomena, mass and energy balances, and process control",
+            successCriteria: "Process engineering study session completed (at least two unit operations topics reviewed with worked examples and notes saved)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

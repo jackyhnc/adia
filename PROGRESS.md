@@ -16983,3 +16983,70 @@ None. Swift toolchain unavailable on Linux container.
   - Better candidate: `publichealth` sub-domains like `globalhealthpolicy`, `healthpromotion`
 - Template count: 652 → 662 after next 5-domain batch
 - CalloutManagerTests: ~2855 + 41 = ~2896 after next batch
+
+---
+
+## Run 361 (automated) — 2026-07-16 — 5 new keyword domains: nursinganesthesia, physicalchemistry, inorganicchemistry, analyticalchemistry, nuclearchemistry (652→661 templates)
+
+### What shipped
+
+**5 new keyword domains: nursinganesthesia, physicalchemistry, inorganicchemistry, analyticalchemistry, nuclearchemistry**
+
+**New keyword domain — nursinganesthesia:**
+- Branch positioned AFTER nursepractitioner, BEFORE nursing so CRNA/NBCRNA/nurse anesthesia programs get a dedicated pool instead of falling into the broader nursing pool.
+- Catches: nurse anesthesia/anesthetist/anesthesiologist, word(crna), crna program/school/exam/rotation/clinical/boards, nbcrna exam/boards, dnap/msna program, anesthesia pharmacology+nursing/crna context.
+- `nursinganesthesiaCallouts(tier:)` 4/3/3: "that CRNA exam isn't going to study itself." / "no one passes the NBCRNA by scrolling." / "CLOSE THIS. open your nurse anesthesia materials."
+- 2 templates: "Study for the NBCRNA exam or CRNA school coursework..." (60 min) + "Complete my nurse anesthesia clinical notes..." (45 min)
+
+**New keyword domain — physicalchemistry:**
+- Branch positioned AFTER biochemistry, BEFORE inorganicchemistry/organicchemistry.
+- Catches: physical chemistry/pchem/p-chem, quantum chemistry (guarded against quantum computing/physics class), chemical thermodynamics+chemistry context, chemical kinetics+chemistry/class context, Gibbs energy+chemistry/class, partition function+chemistry, statistical thermodynamics+chemistry, Schrödinger equation (guarded against quantum computing), wave function+chemistry/class, molecular orbital+chemistry/class.
+- `physicalchemistryCallouts(tier:)` 4/3/3: "that pchem problem set isn't going to solve itself." / "no one masters pchem by scrolling." / "CLOSE THIS. open your pchem textbook."
+- 2 templates: "Work through my physical chemistry problem set — Gibbs energy, chemical kinetics..." (60 min) + "Study physical chemistry for my exam..." (45 min)
+
+**New keyword domain — inorganicchemistry:**
+- Branch positioned AFTER physicalchemistry, BEFORE organicchemistry.
+- Catches: inorganic chemistry/chem, coordination chemistry/compound, crystal field theory/splitting, ligand field theory/ligand field, d-block+chemistry context, transition metal+chemistry context, organometallic chemistry, spectrochemical series, Jahn-Teller, CFSE, point group+chemistry/symmetry/character table.
+- `inorganicchemistryCallouts(tier:)` 4/3/3: "those coordination complexes aren't going to study themselves." / "no one masters coordination chemistry by scrolling." / "CLOSE THIS. open your inorganic chemistry textbook."
+- 2 templates: "Complete my inorganic chemistry problem set — coordination complexes, crystal field theory..." (60 min) + "Study inorganic chemistry for my exam..." (45 min)
+
+**New keyword domain — analyticalchemistry:**
+- Branch positioned AFTER organicchemistry, BEFORE drugdiscovery.
+- Catches: analytical/analytic chemistry, HPLC+chemistry/class/lab context, high-performance liquid chromatography, GC-MS+chemistry context, gas chromatography+chemistry/class, mass spectrometry+analytical/chemistry/class, acid-base titration/titration class, gravimetric analysis+chemistry/class, potentiometry+chemistry/class, ICP-MS+chemistry/class, atomic absorption+chemistry/class.
+- `analyticalchemistryCallouts(tier:)` 4/3/3: "that HPLC method isn't going to validate itself." / "no one masters analytical chemistry by scrolling." / "CLOSE THIS. open your analytical chemistry notes."
+- 2 templates: "Complete my analytical chemistry lab report or problem set — HPLC, GC-MS, titration..." (60 min) + "Study analytical chemistry for my exam..." (45 min)
+
+**New keyword domain — nuclearchemistry:**
+- Branch positioned AFTER analyticalchemistry, BEFORE drugdiscovery.
+- Catches: nuclear chemistry/chem, radioactive decay+class/chemistry/nuclear context, half-life+chemistry/nuclear/calculation context, nuclear equation+chemistry/class, nuclear fission+chemistry context, alpha/beta/gamma decay+chemistry/nuclear/class, nuclear chemistry class/course.
+- `nuclearchemistryCallouts(tier:)` 4/3/3: "those radioactive decay equations aren't going to solve themselves." / "no one masters nuclear chemistry by scrolling." / "CLOSE THIS. open your nuclear chemistry textbook."
+- 2 templates: "Work through my nuclear chemistry problem set — radioactive decay, half-life calculations..." (45 min) + "Study nuclear chemistry for my exam..." (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +41 tests (8 per domain + 1 count guard ≥661)
+- SuggestedSessionTemplatesTests.swift: +11 tests (2 per domain + 1 count guard ≥661)
+
+**Template catalog: 652 → 661**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `nursinganesthesia` fires AFTER nursepractitioner, BEFORE nursing. "nurse anesthesia CRNA exam" → nursinganesthesia ✓; "NP Family Nurse Practitioner" → nursepractitioner ✓
+- `physicalchemistry` fires AFTER biochemistry, BEFORE inorganicchemistry. "pchem Gibbs energy chemical kinetics" → physicalchemistry ✓; "biochemistry enzyme kinetics" → biochemistry ✓
+- `inorganicchemistry` fires AFTER physicalchemistry, BEFORE organicchemistry. "inorganic chemistry crystal field theory ligand field" → inorganicchemistry ✓; "orgo SN2 reaction mechanisms" → organicchemistry ✓
+- `analyticalchemistry` fires AFTER organicchemistry, BEFORE drugdiscovery. "analytical chemistry HPLC GC-MS lab" → analyticalchemistry ✓; "orgo NMR spectroscopy" → organicchemistry ✓
+- `nuclearchemistry` fires AFTER analyticalchemistry, BEFORE drugdiscovery. "nuclear chemistry radioactive decay half-life" → nuclearchemistry ✓; "nuclear physics quantum mechanics" → experimentalphysics ✓
+- Brace balance verified: all files balanced (open = close)
+- Template count: 661 confirmed by programmatic count (grep -c "preferredDuration:")
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `electrochemistry` — electrochemical cells, Nernst equation, galvanic/electrolytic cells, cyclic voltammetry, electrochemistry class
+  - `polymerchemistry` — polymer science, polymerization reactions, molar mass distribution, polymer physics class
+  - `globalhealthpolicy` — global health policy, international health policy, global health governance, SDG health targets
+  - `historicallinguistics` — diachronic linguistics, language change, etymology, proto-languages, historical reconstruction
+  - `computationalfinance` — quantitative finance, algorithmic trading, Black-Scholes, Monte Carlo + finance, financial engineering
+- Template count: 661 → 671 after next 5-domain batch
+- CalloutManagerTests: ~18409 lines + ~200 lines = ~18600 after next batch

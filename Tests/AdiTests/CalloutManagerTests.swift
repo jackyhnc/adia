@@ -18406,4 +18406,179 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast661() {
         #expect(SuggestedSessionTemplates.all.count >= 661, "template catalog must have ≥661 entries after nursinganesthesia/physicalchemistry/inorganicchemistry/analyticalchemistry/nuclearchemistry (10 templates)")
     }
+
+    // MARK: - electrochemistry
+    @Test func electrochemistryKeywordFromGalvanicCell() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study galvanic cell and electrode potential for electrochemistry class") == "electrochemistry")
+    }
+    @Test func electrochemistryKeywordFromNernstEquation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice the nernst equation problems for my electrochemistry exam") == "electrochemistry")
+    }
+    @Test func electrochemistryKeywordFromCyclicVoltammetry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "run cyclic voltammetry lab for chemistry course") == "electrochemistry")
+    }
+    @Test func electrochemistryKeywordFromElectrolysisClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study electrolysis class and faraday's law problems") == "electrochemistry")
+    }
+    @Test func electrochemistryFalsePositive_physicalchemistry() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study chemical kinetics and gibbs energy for pchem exam")
+        #expect(kw == "physicalchemistry", "pchem context must stay in physicalchemistry, not electrochemistry; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func electrochemistryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "electrochemistry", tier: 1).isEmpty, "electrochemistry tier 1 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "electrochemistry", tier: 2).isEmpty, "electrochemistry tier 2 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "electrochemistry", tier: 3).isEmpty, "electrochemistry tier 3 must be non-empty")
+    }
+    @Test @MainActor func electrochemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "electrochemistry", tier: 1)
+        #expect(msgs.count >= 4, "electrochemistry tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func electrochemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "electrochemistry", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "electrochemistry tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - polymerchemistry
+    @Test func polymerchemistryKeywordFromPolymerizationReaction() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study polymerization reaction mechanisms for polymer chemistry class") == "polymerchemistry")
+    }
+    @Test func polymerchemistryKeywordFromPolydispersityIndex() {
+        #expect(CalloutManager.extractTaskKeyword(from: "calculate polydispersity index for polymer chemistry exam") == "polymerchemistry")
+    }
+    @Test func polymerchemistryKeywordFromFreeRadicalPolymerization() {
+        #expect(CalloutManager.extractTaskKeyword(from: "practice free radical polymerization mechanisms for chemistry course") == "polymerchemistry")
+    }
+    @Test func polymerchemistryKeywordFromPolymerScienceClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my polymer science class exam") == "polymerchemistry")
+    }
+    @Test func polymerchemistryFalsePositive_materialscience() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study phase diagram and thin film deposition for materials science MSE class")
+        #expect(kw == "materialscience", "materials science context must stay in materialscience, not polymerchemistry; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func polymerchemistryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "polymerchemistry", tier: 1).isEmpty, "polymerchemistry tier 1 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "polymerchemistry", tier: 2).isEmpty, "polymerchemistry tier 2 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "polymerchemistry", tier: 3).isEmpty, "polymerchemistry tier 3 must be non-empty")
+    }
+    @Test @MainActor func polymerchemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "polymerchemistry", tier: 1)
+        #expect(msgs.count >= 4, "polymerchemistry tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func polymerchemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "polymerchemistry", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "polymerchemistry tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - maternalhealth
+    @Test func maternalhealthKeywordFromObstetricNursingClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study obstetric nursing class exam content for OB rotation") == "maternalhealth")
+    }
+    @Test func maternalhealthKeywordFromMaternalMortality() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my maternal mortality research paper for class") == "maternalhealth")
+    }
+    @Test func maternalhealthKeywordFromPrenatalCareClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review prenatal care class notes for midterm exam") == "maternalhealth")
+    }
+    @Test func maternalhealthKeywordFromObstetricsClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my obstetrics class exam this week") == "maternalhealth")
+    }
+    @Test func maternalhealthFalsePositive_midwifery() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write prenatal charting notes and postpartum notes for midwifery")
+        #expect(kw == "midwifery", "midwifery charting context must stay in midwifery, not maternalhealth; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func maternalhealthCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "maternalhealth", tier: 1).isEmpty, "maternalhealth tier 1 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "maternalhealth", tier: 2).isEmpty, "maternalhealth tier 2 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "maternalhealth", tier: 3).isEmpty, "maternalhealth tier 3 must be non-empty")
+    }
+    @Test @MainActor func maternalhealthTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "maternalhealth", tier: 1)
+        #expect(msgs.count >= 4, "maternalhealth tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func maternalhealthTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "maternalhealth", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "maternalhealth tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - globalhealthpolicy
+    @Test func globalhealthpolicyKeywordFromGlobalHealthPolicy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my global health policy paper on UHC frameworks") == "globalhealthpolicy")
+    }
+    @Test func globalhealthpolicyKeywordFromHealthSystemsStrengthening() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study health systems strengthening class for my global health program") == "globalhealthpolicy")
+    }
+    @Test func globalhealthpolicyKeywordFromUniversalHealthCoverage() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze universal health coverage policy for my assignment") == "globalhealthpolicy")
+    }
+    @Test func globalhealthpolicyKeywordFromGlobalBurdenOfDisease() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review global burden of disease course materials for exam") == "globalhealthpolicy")
+    }
+    @Test func globalhealthpolicyFalsePositive_epidemiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study epidemiology outbreak investigation and disease surveillance class")
+        #expect(kw == "epidemiology", "epidemiology context must stay in epidemiology, not globalhealthpolicy; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func globalhealthpolicyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "globalhealthpolicy", tier: 1).isEmpty, "globalhealthpolicy tier 1 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "globalhealthpolicy", tier: 2).isEmpty, "globalhealthpolicy tier 2 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "globalhealthpolicy", tier: 3).isEmpty, "globalhealthpolicy tier 3 must be non-empty")
+    }
+    @Test @MainActor func globalhealthpolicyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "globalhealthpolicy", tier: 1)
+        #expect(msgs.count >= 4, "globalhealthpolicy tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func globalhealthpolicyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "globalhealthpolicy", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "globalhealthpolicy tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - processengineering
+    @Test func processengineeringKeywordFromUnitOperations() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my unit operations chemical engineering problem set") == "processengineering")
+    }
+    @Test func processengineeringKeywordFromReactorDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study reactor design class for my chemical engineering exam") == "processengineering")
+    }
+    @Test func processengineeringKeywordFromAspenPlus() {
+        #expect(CalloutManager.extractTaskKeyword(from: "run my Aspen Plus process simulation for the distillation design") == "processengineering")
+    }
+    @Test func processengineeringKeywordFromTransportPhenomena() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work through transport phenomena class problem set for chemical engineering") == "processengineering")
+    }
+    @Test func processengineeringFalsePositive_engineering() {
+        let kw = CalloutManager.extractTaskKeyword(from: "work on my mechanical engineering solidworks CAD design project")
+        #expect(kw == "engineering", "general engineering context must stay in engineering, not processengineering; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func processengineeringCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "processengineering", tier: 1).isEmpty, "processengineering tier 1 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "processengineering", tier: 2).isEmpty, "processengineering tier 2 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "processengineering", tier: 3).isEmpty, "processengineering tier 3 must be non-empty")
+    }
+    @Test @MainActor func processengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "processengineering", tier: 1)
+        #expect(msgs.count >= 4, "processengineering tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func processengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "processengineering", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "processengineering tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: electrochemistry/polymerchemistry/maternalhealth/globalhealthpolicy/processengineering)
+    @Test func suggestedTemplatesCountAtLeast671() {
+        #expect(SuggestedSessionTemplates.all.count >= 671, "template catalog must have ≥671 entries after electrochemistry/polymerchemistry/maternalhealth/globalhealthpolicy/processengineering (10 templates)")
+    }
 }

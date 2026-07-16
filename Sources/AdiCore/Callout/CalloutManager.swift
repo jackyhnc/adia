@@ -1366,6 +1366,31 @@ public final class CalloutManager {
             || lower.contains("environmental radiation class") || lower.contains("environmental radiation course") {
             return "healthphysics"
         }
+        // processengineering — positioned BEFORE engineering so chemical process engineering
+        // coursework (unit operations, reactor design, transport phenomena, Aspen Plus) routes to
+        // a specialized pool rather than the generic engineering pool. "heat transfer" alone fires
+        // engineering below; only catch it here with unit-ops/reactor/process context.
+        if lower.contains("unit operations") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam") || lower.contains("notes") || lower.contains("chemical"))
+            || lower.contains("reactor design") && (lower.contains("class") || lower.contains("course") || lower.contains("chemical") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("chemical reaction engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("notes"))
+            || lower.contains("transport phenomena") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("chemical") || lower.contains("notes"))
+            || lower.contains("process control") && (lower.contains("chemical") || lower.contains("che") || lower.contains("class") || lower.contains("engineering class") || lower.contains("engineering course"))
+            || lower.contains("mass and energy balance") && (lower.contains("class") || lower.contains("course") || lower.contains("chemical") || lower.contains("exam"))
+            || lower.contains("mass balance") && (lower.contains("chemical") || lower.contains("unit ops") || lower.contains("class") || lower.contains("course") && lower.contains("engineering"))
+            || lower.contains("energy balance") && (lower.contains("chemical") || lower.contains("unit ops") || lower.contains("class") && lower.contains("engineering"))
+            || lower.contains("process simulation") && (lower.contains("class") || lower.contains("course") || lower.contains("chemical") || lower.contains("lab"))
+            || lower.contains("aspen plus") || lower.contains("aspen hysys") || word("hysys") && (lower.contains("class") || lower.contains("simulation") || lower.contains("chemical") || lower.contains("process"))
+            || lower.contains("distillation column") && (lower.contains("design") || lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("chemical"))
+            || lower.contains("heat exchanger design") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("chemical"))
+            || lower.contains("chemical process engineering") || lower.contains("chemical process design")
+            || lower.contains("chemical process simulation") || lower.contains("chemical process control")
+            || word("pfr") && (lower.contains("class") || lower.contains("reactor") || lower.contains("design") || lower.contains("chemical"))
+            || word("cstr") && (lower.contains("class") || lower.contains("reactor") || lower.contains("design") || lower.contains("chemical"))
+            || lower.contains("plug flow reactor") || lower.contains("continuous stirred tank reactor")
+            || lower.contains("piping and instrumentation diagram") || lower.contains("p&id") && (lower.contains("class") || lower.contains("chemical") || lower.contains("process"))
+            || lower.contains("process flow diagram") && (lower.contains("class") || lower.contains("course") || lower.contains("chemical") || lower.contains("engineering")) {
+            return "processengineering"
+        }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
         if word("solidworks") || lower.contains("fusion 360") || word("ansys")
@@ -4313,6 +4338,54 @@ public final class CalloutManager {
             || lower.contains("nuclear chemistry notes") || lower.contains("nuclear chemistry problem set") {
             return "nuclearchemistry"
         }
+        // electrochemistry — positioned AFTER nuclearchemistry and BEFORE drugdiscovery. Catches
+        // electrochemical cells, Nernst equation, galvanic/electrolytic cells, cyclic voltammetry,
+        // and electrode potential coursework. Bare "oxidation" or "reduction" NOT matched.
+        if lower.contains("electrochemistry") || lower.contains("electrochemistry class")
+            || lower.contains("electrochemistry course") || lower.contains("electrochemistry exam")
+            || lower.contains("electrochemistry lab") || lower.contains("electrochemistry notes")
+            || lower.contains("electrochemical cell") || lower.contains("galvanic cell")
+            || lower.contains("voltaic cell") || lower.contains("electrolytic cell")
+            || lower.contains("nernst equation") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("exam") || lower.contains("electrochemistry"))
+            || lower.contains("cyclic voltammetry") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("chemistry"))
+            || lower.contains("linear sweep voltammetry") && (lower.contains("class") || lower.contains("lab") || lower.contains("chemistry"))
+            || lower.contains("chronoamperometry") && (lower.contains("class") || lower.contains("lab") || lower.contains("chemistry"))
+            || lower.contains("electrode potential") && (lower.contains("class") || lower.contains("course") || lower.contains("chemistry"))
+            || lower.contains("standard reduction potential") && (lower.contains("class") || lower.contains("course") || lower.contains("chemistry"))
+            || lower.contains("electrochemical series") && (lower.contains("class") || lower.contains("course") || lower.contains("chemistry"))
+            || lower.contains("electrolysis class") || lower.contains("electrolysis course") || lower.contains("electrolysis exam")
+            || lower.contains("electroplating class") || lower.contains("electroplating course") || lower.contains("electroplating lab")
+            || lower.contains("faraday's law") && (lower.contains("electrochemistry") || lower.contains("class") || lower.contains("electrolysis"))
+            || lower.contains("half-cell") && (lower.contains("class") || lower.contains("course") || lower.contains("chemistry"))
+            || lower.contains("electrochemical impedance") && (lower.contains("class") || lower.contains("lab") || lower.contains("chemistry")) {
+            return "electrochemistry"
+        }
+        // polymerchemistry — positioned AFTER electrochemistry and BEFORE drugdiscovery. Catches
+        // polymer science coursework, polymerization reactions, molecular weight distribution, and
+        // polymer characterization labs. "polymer" alone in materials context fires materialscience earlier.
+        if lower.contains("polymer chemistry") || lower.contains("polymer science class")
+            || lower.contains("polymer science course") || lower.contains("polymer science exam")
+            || lower.contains("polymer science program") || lower.contains("polymer science notes")
+            || lower.contains("polymer physics class") || lower.contains("polymer physics course")
+            || lower.contains("polymer physics exam") || lower.contains("polymer physics notes")
+            || lower.contains("polymerization reaction") && (lower.contains("class") || lower.contains("course") || lower.contains("chemistry") || lower.contains("lab"))
+            || lower.contains("degree of polymerization") && (lower.contains("class") || lower.contains("course") || lower.contains("chemistry"))
+            || lower.contains("molar mass distribution") && (lower.contains("class") || lower.contains("polymer") || lower.contains("chemistry"))
+            || lower.contains("molecular weight distribution") && (lower.contains("polymer") || lower.contains("chemistry") || lower.contains("class"))
+            || lower.contains("polydispersity index") && (lower.contains("class") || lower.contains("polymer") || lower.contains("chemistry"))
+            || lower.contains("addition polymerization") && (lower.contains("class") || lower.contains("course") || lower.contains("chemistry"))
+            || lower.contains("condensation polymerization") && (lower.contains("class") || lower.contains("course") || lower.contains("chemistry"))
+            || lower.contains("free radical polymerization") && (lower.contains("class") || lower.contains("course") || lower.contains("chemistry"))
+            || lower.contains("chain-growth polymerization") && (lower.contains("class") || lower.contains("course") || lower.contains("chemistry"))
+            || lower.contains("step-growth polymerization") && (lower.contains("class") || lower.contains("course") || lower.contains("chemistry"))
+            || lower.contains("ring-opening polymerization") && (lower.contains("class") || lower.contains("course") || lower.contains("chemistry"))
+            || lower.contains("polymer characterization class") || lower.contains("polymer characterization course")
+            || lower.contains("polymer characterization lab") || lower.contains("polymer characterization exam")
+            || lower.contains("polymer chemistry class") || lower.contains("polymer chemistry course")
+            || lower.contains("polymer chemistry exam") || lower.contains("polymer chemistry lab")
+            || lower.contains("polymer chemistry notes") || lower.contains("polymer chemistry program") {
+            return "polymerchemistry"
+        }
         // drugdiscovery — positioned AFTER biochemistry and BEFORE biophysics. Catches lead
         // optimization, high-throughput screening, ADMET, and medicinal chemistry research
         // distinct from pharmacy's dispensing focus. Bare "drug" NOT matched.
@@ -4872,6 +4945,38 @@ public final class CalloutManager {
             || lower.contains("obstetric notes") && lower.contains("midwif")
             || lower.contains("midwifery care") && lower.contains("plan") {
             return "midwifery"
+        }
+        // maternalhealth — positioned AFTER midwifery and BEFORE palliativecare. Catches maternal
+        // health class/course, maternal mortality coursework, OB nursing class, prenatal care class,
+        // perinatal nursing, and maternal-fetal medicine programs. Midwifery-specific charting/notes
+        // already owned above; "birth plan" owned by midwifery.
+        if lower.contains("maternal health class") || lower.contains("maternal health course")
+            || lower.contains("maternal health exam") || lower.contains("maternal health program")
+            || lower.contains("maternal health notes") || lower.contains("maternal health assignment")
+            || lower.contains("maternal mortality class") || lower.contains("maternal mortality course")
+            || lower.contains("maternal mortality assignment") || lower.contains("maternal mortality exam")
+            || lower.contains("maternal mortality paper") || lower.contains("maternal mortality research")
+            || lower.contains("maternal-fetal medicine class") || lower.contains("maternal-fetal medicine course")
+            || lower.contains("maternal-fetal medicine exam") || lower.contains("maternal-fetal medicine program")
+            || lower.contains("maternal fetal medicine class") || lower.contains("maternal fetal medicine course")
+            || lower.contains("obstetric nursing class") || lower.contains("obstetric nursing course")
+            || lower.contains("obstetric nursing exam") || lower.contains("obstetric nursing notes")
+            || lower.contains("ob nursing class") || lower.contains("ob nursing course")
+            || lower.contains("ob nursing exam") || lower.contains("ob nursing notes")
+            || lower.contains("perinatal nursing class") || lower.contains("perinatal nursing course")
+            || lower.contains("perinatal nursing exam") || lower.contains("perinatal nursing notes")
+            || lower.contains("maternal-newborn nursing class") || lower.contains("maternal-newborn nursing course")
+            || lower.contains("maternal newborn nursing class") || lower.contains("maternal newborn nursing course")
+            || lower.contains("prenatal care class") || lower.contains("prenatal care course")
+            || lower.contains("prenatal care exam") || lower.contains("prenatal care assignment")
+            || lower.contains("intrapartum nursing class") || lower.contains("intrapartum nursing course")
+            || lower.contains("postpartum nursing class") || lower.contains("postpartum nursing course")
+            || lower.contains("postpartum care class") || lower.contains("postpartum care course")
+            || lower.contains("obstetrics class") || lower.contains("obstetrics course")
+            || lower.contains("obstetrics exam") || lower.contains("obstetrics assignment")
+            || (lower.contains("obstetrics and gynecology") || lower.contains("ob/gyn") || lower.contains("ob-gyn"))
+                && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("rotation") || lower.contains("assignment")) {
+            return "maternalhealth"
         }
         // palliativecare — positioned BEFORE forensicnursing and nursing so CHPN exam prep,
         // hospice nursing, end-of-life care, and palliative medicine clinical tasks route here.
@@ -5455,6 +5560,29 @@ public final class CalloutManager {
             || lower.contains("community dietitian") || lower.contains("community dietetics")
             || lower.contains("population nutrition") || lower.contains("global nutrition") {
             return "publichealthnutrition"
+        }
+        // globalhealthpolicy — positioned AFTER publichealthnutrition and BEFORE environmentalhealth.
+        // Catches global health policy, international health policy, global health governance,
+        // health systems strengthening, and UHC policy. Bare "global health" NOT matched —
+        // requires a policy/governance/law/diplomacy qualifier or explicit class context.
+        if lower.contains("global health policy") || lower.contains("international health policy")
+            || lower.contains("global health governance") || lower.contains("global health diplomacy")
+            || lower.contains("global health law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program"))
+            || lower.contains("health systems strengthening") && (lower.contains("class") || lower.contains("course") || lower.contains("policy") || lower.contains("exam") || lower.contains("program") || lower.contains("assignment"))
+            || lower.contains("universal health coverage") && (lower.contains("policy") || lower.contains("class") || lower.contains("course") || lower.contains("assignment") || lower.contains("paper"))
+            || lower.contains("uhc policy") || lower.contains("uhc class") || lower.contains("uhc course")
+            || lower.contains("global burden of disease") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("assignment"))
+            || lower.contains("lancet commission") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("assignment"))
+            || lower.contains("who policy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("global health financing") && (lower.contains("class") || lower.contains("course") || lower.contains("policy") || lower.contains("paper"))
+            || lower.contains("global health security") && (lower.contains("class") || lower.contains("course") || lower.contains("policy") || lower.contains("paper") || lower.contains("exam"))
+            || lower.contains("international health regulations") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("global health equity") && (lower.contains("class") || lower.contains("course") || lower.contains("policy") || lower.contains("paper"))
+            || lower.contains("sdg health") && (lower.contains("class") || lower.contains("course") || lower.contains("policy") || lower.contains("paper") || lower.contains("target"))
+            || lower.contains("global health policy class") || lower.contains("global health policy course")
+            || lower.contains("global health policy exam") || lower.contains("global health policy paper")
+            || lower.contains("global health policy program") || lower.contains("global health policy assignment") {
+            return "globalhealthpolicy"
         }
         // environmentalhealth — positioned AFTER publichealthnutrition and BEFORE publicheath.
         // Catches REHS exam prep, sanitarian certification, food inspection class, environmental

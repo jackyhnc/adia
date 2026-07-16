@@ -396,6 +396,11 @@ extension CalloutManager {
         case "inorganicchemistry":         return inorganicchemistryCallouts(tier: tier)
         case "analyticalchemistry":        return analyticalchemistryCallouts(tier: tier)
         case "nuclearchemistry":           return nuclearchemistryCallouts(tier: tier)
+        case "electrochemistry":           return electrochemistryCallouts(tier: tier)
+        case "polymerchemistry":           return polymerchemistryCallouts(tier: tier)
+        case "maternalhealth":             return maternalhealthCallouts(tier: tier)
+        case "globalhealthpolicy":         return globalhealthpolicyCallouts(tier: tier)
+        case "processengineering":         return processengineeringCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -7691,6 +7696,111 @@ extension CalloutManager {
             "CLOSE THIS. open your nuclear chemistry textbook.",
             "CLOSE THIS. radioactive isotopes don't study themselves.",
             "CLOSE THIS. decay series don't resolve while you scroll."
+        ]
+        }
+    }
+
+    private func electrochemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that electrochemistry problem set isn't going to solve itself.",
+            "close this and get back to your electrochemistry work.",
+            "the Nernst equation won't balance itself — close this.",
+            "electrochemical cells don't build themselves — focus.",
+        ]
+        case 2: return [
+            "no one masters electrochemistry by scrolling.",
+            "close this and open your electrochemistry notes.",
+            "your electrode potentials won't calculate themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your electrochemistry textbook.",
+            "CLOSE THIS. galvanic cells don't study themselves.",
+            "CLOSE THIS. cyclic voltammetry won't run while you scroll."
+        ]
+        }
+    }
+
+    private func polymerchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that polymer chemistry problem set isn't going to solve itself.",
+            "close this and get back to your polymer chemistry work.",
+            "polymerization reactions won't diagram themselves — close this.",
+            "polymer science demands your full focus — close this.",
+        ]
+        case 2: return [
+            "no one masters polymer chemistry by scrolling.",
+            "close this and open your polymer science notes.",
+            "your molecular weight distributions won't calculate themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your polymer chemistry textbook.",
+            "CLOSE THIS. polymerization mechanisms don't study themselves.",
+            "CLOSE THIS. polymer characterization won't happen while you scroll."
+        ]
+        }
+    }
+
+    private func maternalhealthCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that maternal health assignment isn't going to write itself.",
+            "close this and get back to your OB nursing work.",
+            "maternal-fetal medicine won't study itself — close this.",
+            "your obstetrics coursework needs your full attention — close this.",
+        ]
+        case 2: return [
+            "no one masters maternal health by scrolling.",
+            "close this and open your OB nursing notes.",
+            "your prenatal care materials won't review themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your maternal health textbook.",
+            "CLOSE THIS. obstetric nursing doesn't study itself.",
+            "CLOSE THIS. maternal health notes won't read while you scroll."
+        ]
+        }
+    }
+
+    private func globalhealthpolicyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that global health policy paper isn't going to write itself.",
+            "close this and get back to your global health policy work.",
+            "health systems strengthening won't study itself — close this.",
+            "global health governance demands your full focus — close this.",
+        ]
+        case 2: return [
+            "no one masters global health policy by scrolling.",
+            "close this and open your global health policy notes.",
+            "your UHC policy framework won't analyze itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your global health policy materials.",
+            "CLOSE THIS. health systems don't strengthen while you scroll.",
+            "CLOSE THIS. global health governance won't study itself."
+        ]
+        }
+    }
+
+    private func processengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that unit operations problem set isn't going to solve itself.",
+            "close this and get back to your process engineering work.",
+            "reactor design won't happen while you scroll — close this.",
+            "your mass and energy balances need your full focus — close this.",
+        ]
+        case 2: return [
+            "no one masters process engineering by scrolling.",
+            "close this and open your unit operations notes.",
+            "Aspen Plus won't simulate itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your unit operations textbook.",
+            "CLOSE THIS. reactor design doesn't happen while you scroll.",
+            "CLOSE THIS. transport phenomena won't solve itself."
         ]
         }
     }
