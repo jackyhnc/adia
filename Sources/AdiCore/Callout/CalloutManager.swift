@@ -539,9 +539,27 @@ public final class CalloutManager {
             || lower.contains("economics problem set") || lower.contains("econ problem set") {
             return "economics"
         }
+        // astrobiology — positioned BEFORE astronomy so extremophiles, prebiotic chemistry, SETI
+        // science, and planetary habitability research route here rather than to astronomy's
+        // observational pool. word("astrobiology") removed from astronomy branch and owned here.
+        if word("astrobiology") || word("astrobiologist") || word("astrobiologists")
+            || lower.contains("extremophile") || lower.contains("extremophiles")
+            || lower.contains("prebiotic chemistry") || lower.contains("prebiotic molecule")
+            || lower.contains("origin of life") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("research") || lower.contains("exam"))
+            || lower.contains("planetary habitability") || lower.contains("habitable zone") && (lower.contains("class") || lower.contains("research") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("biosignature") || lower.contains("biosignatures")
+            || word("panspermia")
+            || (word("seti") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("project") || lower.contains("science")))
+            || lower.contains("hydrothermal vent") && (lower.contains("origin") || lower.contains("life") || lower.contains("class") || lower.contains("research"))
+            || lower.contains("astrobiology class") || lower.contains("astrobiology course")
+            || lower.contains("astrobiology exam") || lower.contains("astrobiology lab")
+            || lower.contains("astrobiology research") || lower.contains("astrobiology program") {
+            return "astrobiology"
+        }
         // astronomy — positioned before studying so "astrophysics homework" and "astronomy exam"
         // don't fall through to the generic studying pool via word("exam").
         // Bare word("physics") stays in studying; compound celestial/cosmological terms route here.
+        // word("astrobiology") now owned by astrobiology branch above.
         if word("astronomy") || word("astronomer") || word("astronomers")
             || word("astrophysics") || word("astrophysicist") || word("astrophysicists")
             || lower.contains("celestial mechanics") || word("cosmology") || word("cosmologist")
@@ -553,7 +571,7 @@ public final class CalloutManager {
             || lower.contains("radio astronomy") || lower.contains("astronomical observation")
             || lower.contains("astronomical imaging") || lower.contains("astronomical data")
             || word("observatory") || word("planetarium")
-            || word("astrobiology") || lower.contains("star formation")
+            || lower.contains("star formation")
             || lower.contains("galaxy formation") || lower.contains("galaxy evolution")
             || lower.contains("dark matter") || lower.contains("dark energy")
             || lower.contains("cosmological") || lower.contains("astr class")
@@ -1252,6 +1270,33 @@ public final class CalloutManager {
             || (lower.contains("thin film") && lower.contains("lab") && lower.contains("material"))
             || (word("mse") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))) {
             return "materialscience"
+        }
+        // materialscharacterization — positioned AFTER materialscience so XRD, SEM/TEM,
+        // spectroscopy (FTIR/Raman/UV-Vis), and thermal analysis in materials research context
+        // route here. nanotechnology-specific AFM/STM are already owned above; fabrication stays
+        // in nanotechnology. Bare "spectroscopy" or "microscopy" without materials context NOT matched.
+        if lower.contains("x-ray diffraction") || lower.contains("xrd analysis") || lower.contains("xrd pattern")
+            || lower.contains("powder diffraction") || lower.contains("bragg's law") && (lower.contains("class") || lower.contains("lab") || lower.contains("materials"))
+            || (lower.contains("scanning electron microscopy") && !lower.contains("nanotechnology") && (lower.contains("materials") || lower.contains("class") || lower.contains("lab") || lower.contains("characterization")))
+            || lower.contains("sem imaging") && (lower.contains("material") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("sem/edx") || lower.contains("sem/eds") || lower.contains("sem analysis") && lower.contains("material")
+            || (lower.contains("transmission electron microscopy") && (lower.contains("materials") || lower.contains("class") || lower.contains("lab") || lower.contains("characterization")))
+            || lower.contains("tem imaging") && (lower.contains("material") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("ftir spectroscopy") || lower.contains("infrared spectroscopy") && (lower.contains("material") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("raman spectroscopy") && !lower.contains("biophysics")
+            || lower.contains("uv-vis spectroscopy") && (lower.contains("material") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("thermogravimetric analysis") || word("tga") && (lower.contains("material") || lower.contains("class") || lower.contains("lab") || lower.contains("thermal"))
+            || lower.contains("differential scanning calorimetry") || word("dsc") && (lower.contains("material") || lower.contains("thermal") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("dynamic mechanical analysis") || word("dma") && (lower.contains("material") || lower.contains("polymer") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("nanoindentation") && !lower.contains("nanotechnology")
+            || lower.contains("hardness testing") && (lower.contains("material") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("contact angle") && (lower.contains("material") || lower.contains("surface") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("bet surface area") || lower.contains("porosimetry") && (lower.contains("material") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("materials characterization") || lower.contains("material characterization")
+            || lower.contains("characterization lab") && (lower.contains("material") || lower.contains("polymer") || lower.contains("composite"))
+            || lower.contains("materials characterization class") || lower.contains("materials characterization course")
+            || lower.contains("materials characterization exam") || lower.contains("materials characterization lab") {
+            return "materialscharacterization"
         }
         // healthphysics — positioned BEFORE engineering so medical/health physics, radiation
         // protection coursework, and CHP/ABHP board prep route here rather than to the
@@ -4009,6 +4054,53 @@ public final class CalloutManager {
             || lower.contains("pcr protocol") || lower.contains("pcr result") || lower.contains("run pcr") {
             return "molecularbiology"
         }
+        // toxicogenomics — positioned AFTER molecularbiology and BEFORE developmentalbiology.
+        // Catches gene expression under toxic exposure, AhR pathway, TOXCAST research, and
+        // omics-level toxicology. "toxicology" alone routes to toxicology branch (far below).
+        // "transcriptomics" without tox context stays in molecularbiology/bioinformatics.
+        if word("toxicogenomics") || word("toxicogenomic")
+            || lower.contains("toxicogenomics class") || lower.contains("toxicogenomics course")
+            || lower.contains("toxicogenomics exam") || lower.contains("toxicogenomics lab")
+            || lower.contains("toxicogenomics research") || lower.contains("toxicogenomics program")
+            || lower.contains("toxcast") || lower.contains("tox21") && (lower.contains("class") || lower.contains("research") || lower.contains("data") || lower.contains("toxicology"))
+            || lower.contains("ahr pathway") || lower.contains("aryl hydrocarbon receptor") && (lower.contains("tox") || lower.contains("class") || lower.contains("research") || lower.contains("gene") || lower.contains("expression"))
+            || lower.contains("gene expression") && (lower.contains("toxic") || lower.contains("toxicant") || lower.contains("toxicology") || lower.contains("toxicogenomics") || lower.contains("xenobiotic"))
+            || lower.contains("transcriptomics") && (lower.contains("toxicology") || lower.contains("toxicant") || lower.contains("toxic") || lower.contains("exposure"))
+            || lower.contains("epigenetic toxicology") || lower.contains("epigenomic toxicology")
+            || lower.contains("toxicant-induced") && (lower.contains("gene") || lower.contains("expression") || lower.contains("epigenetic"))
+            || lower.contains("dose-response") && (lower.contains("gene expression") || lower.contains("transcriptomics") || lower.contains("genomics") || lower.contains("toxicogenomics"))
+            || lower.contains("omics") && (lower.contains("toxicology") || lower.contains("toxicant") || lower.contains("toxic exposure"))
+            || lower.contains("oxidative stress") && (lower.contains("gene expression") || lower.contains("transcriptomics") || lower.contains("genomic") || lower.contains("toxicogenomics"))
+            || lower.contains("toxicological pathway") && (lower.contains("omics") || lower.contains("genomics") || lower.contains("gene"))
+            || lower.contains("adverse outcome pathway") && (lower.contains("class") || lower.contains("research") || lower.contains("omics")) {
+            return "toxicogenomics"
+        }
+        // developmentalbiology — positioned AFTER toxicogenomics and BEFORE biochemistry.
+        // Catches embryology in research context, morphogen gradients, Hox genes, fate mapping,
+        // and organogenesis at the research/coursework level. Clinical embryology in premed
+        // context stays in premed; CRISPR gene editing stays in molecularbiology.
+        if word("developmentalbiology") || lower.contains("developmental biology class")
+            || lower.contains("developmental biology course") || lower.contains("developmental biology exam")
+            || lower.contains("developmental biology lab") || lower.contains("developmental biology research")
+            || lower.contains("developmental biology program") || lower.contains("developmental biology major")
+            || lower.contains("developmental biology notes") || lower.contains("developmental biology textbook")
+            || lower.contains("morphogen gradient") || lower.contains("morphogen gradients")
+            || word("morphogenesis") && (lower.contains("class") || lower.contains("research") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("hox gene") || lower.contains("hox genes") || lower.contains("hox cluster")
+            || lower.contains("fate mapping") || lower.contains("cell fate specification") && (lower.contains("class") || lower.contains("research") || lower.contains("lab"))
+            || lower.contains("organogenesis") && (lower.contains("class") || lower.contains("research") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("somitogenesis") || lower.contains("segmentation") && (lower.contains("developmental") || lower.contains("embryo") || lower.contains("class"))
+            || lower.contains("gastrulation") && (lower.contains("class") || lower.contains("research") || lower.contains("lab"))
+            || lower.contains("neural tube") && (lower.contains("class") || lower.contains("research") || lower.contains("lab") || lower.contains("development"))
+            || lower.contains("limb bud") && (lower.contains("class") || lower.contains("research") || lower.contains("development"))
+            || lower.contains("developmental gene regulation") || lower.contains("gene regulatory network") && lower.contains("developmental")
+            || lower.contains("zebrafish") && (lower.contains("developmental") || lower.contains("embryo") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("drosophila") && (lower.contains("developmental") || lower.contains("embryo") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("wolpert") && lower.contains("developmental") || lower.contains("gilbert developmental biology")
+            || lower.contains("wnt signaling") && (lower.contains("developmental") || lower.contains("class") || lower.contains("research"))
+            || lower.contains("notch signaling") && (lower.contains("developmental") || lower.contains("class") || lower.contains("research")) {
+            return "developmentalbiology"
+        }
         // biochemistry — positioned AFTER molecularbiology and BEFORE geneticcounseling.
         // Catches biochemistry lab/course work with specific enzyme-kinetics and assay terms.
         // Bare word("biochemistry") alone stays in premed (MCAT context); compound lab terms fire here.
@@ -4026,6 +4118,31 @@ public final class CalloutManager {
             || lower.contains("metabolic pathway analysis") && !lower.contains("bioinformatics")
             || lower.contains("biochemistry textbook") || lower.contains("lehninger") {
             return "biochemistry"
+        }
+        // drugdiscovery — positioned AFTER biochemistry and BEFORE biophysics. Catches lead
+        // optimization, high-throughput screening, ADMET, and medicinal chemistry research
+        // distinct from pharmacy's dispensing focus. Bare "drug" NOT matched.
+        if lower.contains("drug discovery") || lower.contains("drug development research")
+            || lower.contains("lead optimization") || lower.contains("lead compound") && (lower.contains("drug") || lower.contains("class") || lower.contains("research"))
+            || lower.contains("high-throughput screening") || lower.contains("high throughput screening")
+            || word("hts") && (lower.contains("drug") || lower.contains("screen") || lower.contains("assay") || lower.contains("class") || lower.contains("research"))
+            || lower.contains("admet") || lower.contains("adme") && (lower.contains("drug") || lower.contains("class") || lower.contains("research") || lower.contains("prediction"))
+            || lower.contains("medicinal chemistry research") || lower.contains("medicinal chemistry class")
+            || lower.contains("medicinal chemistry course") || lower.contains("medicinal chemistry exam")
+            || lower.contains("medicinal chemistry lab") || lower.contains("medicinal chemistry program")
+            || lower.contains("structure-activity relationship") || lower.contains("structure activity relationship") || word("sar") && (lower.contains("drug") || lower.contains("compound") || lower.contains("class") || lower.contains("medicinal"))
+            || lower.contains("pharmacophore") && (lower.contains("drug") || lower.contains("class") || lower.contains("research") || lower.contains("model"))
+            || lower.contains("target identification") && (lower.contains("drug") || lower.contains("class") || lower.contains("research"))
+            || lower.contains("hit to lead") || lower.contains("hit-to-lead")
+            || lower.contains("fragment-based drug") || lower.contains("fragment based drug")
+            || lower.contains("virtual screening") && (lower.contains("drug") || lower.contains("compound") || lower.contains("class") || lower.contains("research"))
+            || lower.contains("drug candidate") && (lower.contains("research") || lower.contains("class") || lower.contains("optimization"))
+            || lower.contains("clinical candidate") && (lower.contains("drug") || lower.contains("research"))
+            || word("qsar") && (lower.contains("drug") || lower.contains("class") || lower.contains("model") || lower.contains("research"))
+            || lower.contains("drug discovery class") || lower.contains("drug discovery course")
+            || lower.contains("drug discovery exam") || lower.contains("drug discovery lab")
+            || lower.contains("drug discovery research") || lower.contains("drug discovery program") {
+            return "drugdiscovery"
         }
         // biophysics — positioned AFTER biochemistry (which catches protein-assay, enzyme-kinetics,
         // and spectrophotometry terms) and BEFORE geneticcounseling. Catches biophysics class/lab

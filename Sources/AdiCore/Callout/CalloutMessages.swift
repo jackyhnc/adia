@@ -381,6 +381,11 @@ extension CalloutManager {
         case "radiobiology":               return radiobiologyCallouts(tier: tier)
         case "translationstudies":         return translationstudiesCallouts(tier: tier)
         case "ecologyconservation":        return ecologyconservationCallouts(tier: tier)
+        case "astrobiology":               return astrobiologyCallouts(tier: tier)
+        case "materialscharacterization":  return materialscharacterizationCallouts(tier: tier)
+        case "toxicogenomics":             return toxicogenomicsCallouts(tier: tier)
+        case "developmentalbiology":       return developmentalbiology_Callouts(tier: tier)
+        case "drugdiscovery":              return drugdiscoveryCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -7361,6 +7366,111 @@ extension CalloutManager {
             "CLOSE THIS. open your conservation biology materials.",
             "CLOSE THIS. biodiversity loss doesn't pause while you scroll.",
             "CLOSE THIS. the species you're studying need you focused."
+        ]
+        }
+    }
+
+    private func astrobiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "extremophiles aren't going to study themselves.",
+            "close this and get back to your astrobiology work.",
+            "planetary habitability won't analyze itself — close this.",
+            "your astrobiology assignment demands your full attention — close this.",
+        ]
+        case 2: return [
+            "no one finds life in the universe by scrolling.",
+            "close this and open your astrobiology notes.",
+            "your prebiotic chemistry work won't finish itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your astrobiology materials.",
+            "CLOSE THIS. the universe isn't going to search itself.",
+            "CLOSE THIS. biosignatures don't detect themselves — neither does your degree."
+        ]
+        }
+    }
+
+    private func materialscharacterizationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those XRD patterns aren't going to analyze themselves.",
+            "close this and get back to your materials characterization work.",
+            "the SEM images won't interpret themselves — close this.",
+            "your materials characterization lab report demands your attention — close this.",
+        ]
+        case 2: return [
+            "no one characterizes materials by scrolling.",
+            "close this and open your characterization data.",
+            "your Raman spectra won't assign themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your characterization data.",
+            "CLOSE THIS. XRD peaks don't index themselves.",
+            "CLOSE THIS. your SEM data is waiting — so is your degree."
+        ]
+        }
+    }
+
+    private func toxicogenomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those gene expression profiles aren't going to analyze themselves.",
+            "close this and get back to your toxicogenomics work.",
+            "the AhR pathway won't map itself — close this.",
+            "your toxicogenomics assignment demands your full attention — close this.",
+        ]
+        case 2: return [
+            "no one masters toxicogenomics by scrolling.",
+            "close this and open your toxicogenomics data.",
+            "your TOXCAST analysis won't complete itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your toxicogenomics dataset.",
+            "CLOSE THIS. gene expression under toxic exposure doesn't analyze itself.",
+            "CLOSE THIS. your omics data is waiting — and so is your deadline."
+        ]
+        }
+    }
+
+    private func developmentalbiology_Callouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those morphogen gradients aren't going to analyze themselves.",
+            "close this and get back to your developmental biology work.",
+            "Hox genes won't study themselves — close this.",
+            "your developmental biology assignment demands your full attention — close this.",
+        ]
+        case 2: return [
+            "no one masters developmental biology by scrolling.",
+            "close this and open your developmental biology notes.",
+            "your fate mapping analysis won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your developmental biology materials.",
+            "CLOSE THIS. embryos don't study themselves — neither do you while scrolling.",
+            "CLOSE THIS. organogenesis doesn't wait — neither should your studying."
+        ]
+        }
+    }
+
+    private func drugdiscoveryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that lead compound isn't going to optimize itself.",
+            "close this and get back to your drug discovery work.",
+            "your ADMET analysis won't complete itself — close this.",
+            "your drug discovery assignment demands your full attention — close this.",
+        ]
+        case 2: return [
+            "no one discovers drugs by scrolling.",
+            "close this and open your medicinal chemistry notes.",
+            "your SAR analysis won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your drug discovery data.",
+            "CLOSE THIS. lead optimization doesn't happen by scrolling.",
+            "CLOSE THIS. high-throughput screening needs you at the bench, not the feed."
         ]
         }
     }

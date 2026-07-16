@@ -1,5 +1,70 @@
 # Adia — Build Progress
 
+## Run 359 (automated) — 2026-07-16 — 5 new keyword domains: astrobiology, materialscharacterization, toxicogenomics, developmentalbiology, drugdiscovery (629→639 templates)
+
+### What shipped
+
+**5 new keyword domains: astrobiology, materialscharacterization, toxicogenomics, developmentalbiology, drugdiscovery**
+
+**New keyword domain — astrobiology:**
+- Branch positioned BEFORE astronomy; `word("astrobiology")` removed from astronomy branch and owned here.
+- Catches: word(astrobiology/astrobiologist/astrobiologists), extremophile/extremophiles, prebiotic chemistry/molecules, origin of life+class/lab/research/exam context, planetary habitability, habitable zone+class/research/lab/exam context, biosignature/biosignatures, panspermia, SETI+class/course/research/project/science context, hydrothermal vent+origin/life/class/research, astrobiology class/course/exam/lab/research/program.
+- `astrobiologyCallouts(tier:)` 4/3/3: "extremophiles aren't going to study themselves." / "no one finds life in the universe by scrolling." / "CLOSE THIS. the universe isn't going to search itself."
+- 2 templates: "Complete my astrobiology assignment — extremophiles, planetary habitability, biosignatures, prebiotic chemistry, or SETI science" (60 min) + "Study astrobiology — origin of life, habitable zones, biosignatures, or extremophile biology for my class or exam" (45 min)
+
+**New keyword domain — materialscharacterization:**
+- Branch positioned AFTER materialscience, BEFORE healthphysics. Nanotechnology-specific AFM/STM stay in nanotechnology; materials science bulk/composites stay in materialscience.
+- Catches: XRD/x-ray diffraction/xrd pattern/powder diffraction/bragg's law+materials, SEM imaging+materials/class/lab/characterization, SEM/EDX/EDS/SEM analysis+material, TEM imaging+materials/class/lab/characterization, FTIR/infrared spectroscopy+materials/class/lab, Raman spectroscopy (no biophysics), UV-Vis+materials/class/lab, thermogravimetric analysis/TGA+material/thermal/class, differential scanning calorimetry/DSC+material/thermal/class, dynamic mechanical analysis/DMA+material/polymer/class, nanoindentation (no nanotechnology), hardness testing+materials/class/lab, contact angle+material/surface/class, BET surface area, porosimetry+material/class, materials characterization class/course/exam/lab/characterization lab+material/polymer/composite.
+- `materialscharacterizationCallouts(tier:)` 4/3/3: "those XRD patterns aren't going to analyze themselves." / "no one characterizes materials by scrolling." / "CLOSE THIS. XRD peaks don't index themselves."
+- 2 templates: "Analyze and write up my materials characterization data — XRD patterns, SEM/TEM images, FTIR or Raman spectra, or thermal analysis results" (60 min) + "Study materials characterization techniques — XRD, SEM/TEM, spectroscopy, or thermal analysis for my class or exam" (45 min)
+
+**New keyword domain — toxicogenomics:**
+- Branch positioned AFTER molecularbiology, BEFORE developmentalbiology. Generic "toxicology" routes to toxicology branch much later; bare "transcriptomics" stays in molecularbiology/bioinformatics.
+- Catches: word(toxicogenomics/toxicogenomic), toxicogenomics class/course/exam/lab/research/program, TOXCAST, tox21+class/research/data/toxicology, AhR pathway/aryl hydrocarbon receptor+tox/class/research/gene/expression, gene expression+toxic/toxicant/toxicology/toxicogenomics/xenobiotic, transcriptomics+toxicology/toxicant/toxic/exposure, epigenetic/epigenomic toxicology, toxicant-induced+gene/expression/epigenetic, dose-response+gene expression/transcriptomics/genomics/toxicogenomics, omics+toxicology/toxicant/toxic exposure, oxidative stress+gene expression/transcriptomics/genomic/toxicogenomics, toxicological pathway+omics/genomics/gene, adverse outcome pathway+class/research/omics.
+- `toxicogenomicsCallouts(tier:)` 4/3/3: "those gene expression profiles aren't going to analyze themselves." / "no one masters toxicogenomics by scrolling." / "CLOSE THIS. gene expression under toxic exposure doesn't analyze itself."
+- 2 templates: "Analyze my toxicogenomics data — gene expression under toxic exposure, AhR pathway, TOXCAST dataset, or omics-level toxicology assignment" (60 min) + "Study toxicogenomics — gene expression profiling under toxic exposure, dose-response genomics, or adverse outcome pathways for my class or exam" (45 min)
+
+**New keyword domain — developmentalbiology:**
+- Branch positioned AFTER toxicogenomics, BEFORE biochemistry. Clinical embryology in premed context stays in premed; CRISPR gene editing stays in molecularbiology.
+- Catches: developmental biology class/course/exam/lab/research/program/major/notes/textbook, morphogen gradient/s, morphogenesis+class/research/lab/course, hox gene/hox genes/hox cluster, fate mapping, cell fate specification+class/research/lab, organogenesis+class/research/lab/course, somitogenesis, gastrulation+class/research/lab, neural tube+class/research/lab/development, limb bud+class/research/development, developmental gene regulation, gene regulatory network+developmental, zebrafish/drosophila+developmental/embryo/class/lab, wolpert+developmental/gilbert developmental biology, wnt/notch signaling+developmental+class/research.
+- `developmentalbiology_Callouts(tier:)` 4/3/3: "those morphogen gradients aren't going to analyze themselves." / "no one masters developmental biology by scrolling." / "CLOSE THIS. embryos don't study themselves — neither do you while scrolling."
+- 2 templates: "Complete my developmental biology assignment — morphogen gradients, Hox genes, fate mapping, organogenesis, or zebrafish/drosophila embryo analysis" (60 min) + "Study developmental biology — morphogenesis, cell fate specification, Hox genes, gastrulation, or gene regulatory networks for my class or exam" (45 min)
+
+**New keyword domain — drugdiscovery:**
+- Branch positioned AFTER biochemistry, BEFORE biophysics. Pharmacy's dispensing/NAPLEX focus stays in pharmacy; pharmacology+MCAT stays in premed. Bare "drug" NOT matched.
+- Catches: drug discovery, drug development research, lead optimization, lead compound+drug/class/research, high-throughput screening/HTS+drug/screen/assay/class/research, ADMET/ADME+drug/class/research/prediction, medicinal chemistry class/course/exam/lab/program/research, structure-activity relationship/SAR+drug/compound/class/medicinal, pharmacophore+drug/class/research/model, target identification+drug/class/research, hit-to-lead, fragment-based drug discovery, virtual screening+drug/compound/class/research, drug candidate+research/class/optimization, clinical candidate+drug/research, QSAR+drug/class/model/research, drug discovery class/course/exam/lab/research/program.
+- `drugdiscoveryCallouts(tier:)` 4/3/3: "that lead compound isn't going to optimize itself." / "no one discovers drugs by scrolling." / "CLOSE THIS. lead optimization doesn't happen by scrolling."
+- 2 templates: "Work on my drug discovery assignment — lead optimization, ADMET analysis, structure-activity relationships, or virtual screening for a medicinal chemistry project" (60 min) + "Study drug discovery and medicinal chemistry — lead optimization, high-throughput screening, ADMET, pharmacophore modeling, or SAR for my class or exam" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: 40 new tests (4 keyword routing + 1 false-positive + 3 callout pool tests per domain × 5 + 1 count guard ≥639); 3038 → 3078 total
+
+**Template catalog: 629 → 639**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- Brace balance: CalloutManager.swift 370/370 ✓, CalloutMessages.swift 685/685 ✓, SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 639 confirmed (SuggestedTemplate( occurrences: 639)
+- `astrobiology` fires BEFORE `astronomy` ✓; word("astrobiology") removed from astronomy branch ✓
+- `materialscharacterization` fires AFTER `materialscience` and BEFORE `healthphysics` ✓
+- `toxicogenomics` fires AFTER `molecularbiology` and BEFORE `developmentalbiology` ✓
+- `developmentalbiology` fires AFTER `toxicogenomics` and BEFORE `biochemistry` ✓
+- `drugdiscovery` fires AFTER `biochemistry` and BEFORE `biophysics` ✓
+- All 5 case statements in CalloutMessages.swift wired to private functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `syntheticbiology` — BioBrick parts, genetic circuits, metabolic engineering, iGEM (distinct from molecularbiology's cloning focus)
+  - `proteomics` — mass spectrometry-based proteomics, 2D-PAGE, protein identification workflows (distinct from molecularbiology's Western blot)
+  - `metabolomics` — NMR-based metabolomics, LC-MS metabolite profiling, metabolic flux analysis (distinct from biochemistry's enzyme kinetics)
+  - `systemsbiology` — ODE models of biological networks, flux balance analysis, network motifs, Boolean network models (distinct from computationalbiology's population-level focus)
+  - `electrophysiology` — patch clamp, action potential recording, single-unit recording, local field potentials, extracellular recording
+- Template count: 639 → 649 after next 5-domain batch
+- CalloutManagerTests: ~3118+ after next batch
+
 ## Run 358 (automated) — 2026-07-16 — 5 new keyword domains: nanotechnology, appliedlinguistics, radiobiology, translationstudies, ecologyconservation (619→629 templates)
 
 ### What shipped

@@ -17826,4 +17826,184 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast629() {
         #expect(SuggestedSessionTemplates.all.count >= 629, "template catalog must have ≥629 entries after nanotechnology/appliedlinguistics/radiobiology/translationstudies/ecologyconservation (10 templates)")
     }
+
+    // MARK: - astrobiology keyword routing
+    @Test func astrobiology_extremophiles() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study extremophiles and their role in astrobiology and origin of life research for class")
+        #expect(kw == "astrobiology", "extremophiles / astrobiology / origin of life class should route to astrobiology")
+    }
+    @Test func astrobiology_biosignatures() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyze biosignatures and planetary habitability for my astrobiology exam")
+        #expect(kw == "astrobiology", "biosignatures / planetary habitability / astrobiology exam should route to astrobiology")
+    }
+    @Test func astrobiology_prebiotic() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my prebiotic chemistry lab report on the origin of life")
+        #expect(kw == "astrobiology", "prebiotic chemistry / origin of life lab should route to astrobiology")
+    }
+    @Test func astrobiology_falsePositive_astronomy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study stellar evolution and galaxy formation for my astronomy exam")
+        #expect(kw == "astronomy", "stellar evolution / galaxy formation / astronomy exam should stay in astronomy")
+    }
+    @Test @MainActor func astrobiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "astrobiology", tier: tier)
+            #expect(!msgs.isEmpty, "astrobiology tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func astrobiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "astrobiology", tier: 1)
+        #expect(msgs.count >= 4, "astrobiology tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func astrobiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "astrobiology", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "astrobiology tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - materialscharacterization keyword routing
+    @Test func materialscharacterization_xrd() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyze xrd patterns and perform x-ray diffraction analysis for my materials characterization lab")
+        #expect(kw == "materialscharacterization", "XRD / x-ray diffraction / materials characterization lab should route to materialscharacterization")
+    }
+    @Test func materialscharacterization_semRaman() {
+        let kw = CalloutManager.extractTaskKeyword(from: "interpret sem imaging and raman spectroscopy data for my materials science lab report")
+        #expect(kw == "materialscharacterization", "SEM imaging / raman spectroscopy / materials lab should route to materialscharacterization")
+    }
+    @Test func materialscharacterization_thermal() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my thermogravimetric analysis and differential scanning calorimetry lab report")
+        #expect(kw == "materialscharacterization", "thermogravimetric analysis / differential scanning calorimetry lab should route to materialscharacterization")
+    }
+    @Test func materialscharacterization_falsePositive_materialscience() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my materials science and engineering metallurgy phase diagram class assignment")
+        #expect(kw == "materialscience", "metallurgy / phase diagram / materials science class should stay in materialscience")
+    }
+    @Test @MainActor func materialscharacterizationCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "materialscharacterization", tier: tier)
+            #expect(!msgs.isEmpty, "materialscharacterization tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func materialscharacterizationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "materialscharacterization", tier: 1)
+        #expect(msgs.count >= 4, "materialscharacterization tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func materialscharacterizationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "materialscharacterization", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "materialscharacterization tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - toxicogenomics keyword routing
+    @Test func toxicogenomics_geneExpression() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyze gene expression changes under toxic exposure using toxicogenomics methods for my research")
+        #expect(kw == "toxicogenomics", "gene expression / toxic exposure / toxicogenomics research should route to toxicogenomics")
+    }
+    @Test func toxicogenomics_toxcast() {
+        let kw = CalloutManager.extractTaskKeyword(from: "work with the TOXCAST database to study AhR pathway activation for my toxicogenomics class")
+        #expect(kw == "toxicogenomics", "TOXCAST / AhR pathway / toxicogenomics class should route to toxicogenomics")
+    }
+    @Test func toxicogenomics_omics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my transcriptomics analysis of toxicant-induced epigenetic changes for my omics toxicology assignment")
+        #expect(kw == "toxicogenomics", "transcriptomics / toxicant-induced / omics toxicology should route to toxicogenomics")
+    }
+    @Test func toxicogenomics_falsePositive_molecularbiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "run pcr protocol and analyze western blot results for my molecular biology lab")
+        #expect(kw == "molecularbiology", "PCR / western blot / molecular biology lab should stay in molecularbiology")
+    }
+    @Test @MainActor func toxicogenomicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "toxicogenomics", tier: tier)
+            #expect(!msgs.isEmpty, "toxicogenomics tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func toxicogenomicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "toxicogenomics", tier: 1)
+        #expect(msgs.count >= 4, "toxicogenomics tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func toxicogenomicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "toxicogenomics", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "toxicogenomics tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - developmentalbiology keyword routing
+    @Test func developmentalbiology_hoxGenes() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study hox genes and morphogen gradients in developmental biology class")
+        #expect(kw == "developmentalbiology", "hox genes / morphogen gradients / developmental biology class should route to developmentalbiology")
+    }
+    @Test func developmentalbiology_fateMappingOrganogenesis() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my developmental biology lab on fate mapping and organogenesis using zebrafish embryos")
+        #expect(kw == "developmentalbiology", "fate mapping / organogenesis / zebrafish embryos / developmental biology lab should route to developmentalbiology")
+    }
+    @Test func developmentalbiology_gastrulation() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write a report on gastrulation and neural tube development for my developmental biology course")
+        #expect(kw == "developmentalbiology", "gastrulation / neural tube development / developmental biology course should route to developmentalbiology")
+    }
+    @Test func developmentalbiology_falsePositive_premed() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study embryology and dissection for my MCAT premed anatomy lab")
+        #expect(kw == "premed", "embryology / MCAT / premed anatomy lab should stay in premed")
+    }
+    @Test @MainActor func developmentalbiology_CalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "developmentalbiology", tier: tier)
+            #expect(!msgs.isEmpty, "developmentalbiology tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func developmentalbiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "developmentalbiology", tier: 1)
+        #expect(msgs.count >= 4, "developmentalbiology tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func developmentalbiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "developmentalbiology", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "developmentalbiology tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - drugdiscovery keyword routing
+    @Test func drugdiscovery_leadOptimization() {
+        let kw = CalloutManager.extractTaskKeyword(from: "work on lead optimization and structure-activity relationships for my drug discovery research project")
+        #expect(kw == "drugdiscovery", "lead optimization / SAR / drug discovery research should route to drugdiscovery")
+    }
+    @Test func drugdiscovery_admet() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyze ADMET properties and perform virtual screening for my medicinal chemistry drug discovery class")
+        #expect(kw == "drugdiscovery", "ADMET / virtual screening / medicinal chemistry drug discovery class should route to drugdiscovery")
+    }
+    @Test func drugdiscovery_hts() {
+        let kw = CalloutManager.extractTaskKeyword(from: "design a high-throughput screening assay for drug candidate identification in my drug discovery lab")
+        #expect(kw == "drugdiscovery", "high-throughput screening / drug candidate / drug discovery lab should route to drugdiscovery")
+    }
+    @Test func drugdiscovery_falsePositive_pharmacy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study pharmacology drug dosing and dispensing for my pharmacy NAPLEX exam")
+        #expect(kw == "pharmacy", "pharmacology / NAPLEX / pharmacy exam should stay in pharmacy")
+    }
+    @Test @MainActor func drugdiscoveryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "drugdiscovery", tier: tier)
+            #expect(!msgs.isEmpty, "drugdiscovery tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func drugdiscoveryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "drugdiscovery", tier: 1)
+        #expect(msgs.count >= 4, "drugdiscovery tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func drugdiscoveryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "drugdiscovery", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "drugdiscovery tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: astrobiology/materialscharacterization/toxicogenomics/developmentalbiology/drugdiscovery)
+    @Test func suggestedTemplatesCountAtLeast639() {
+        #expect(SuggestedSessionTemplates.all.count >= 639, "template catalog must have ≥639 entries after astrobiology/materialscharacterization/toxicogenomics/developmentalbiology/drugdiscovery (10 templates)")
+    }
 }

@@ -4060,5 +4060,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Conservation ecology study session completed (at least two conservation frameworks or species management methods reviewed, notes updated and saved)",
             preferredDuration: 45 * 60
         ),
+        // astrobiology
+        SuggestedTemplate(
+            icon: "sparkles",
+            task: "Complete my astrobiology assignment — extremophiles, planetary habitability, biosignatures, prebiotic chemistry, or SETI science",
+            successCriteria: "Astrobiology assignment meaningfully advanced (at least one key concept analyzed, lab data reviewed, or a section of the report written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study astrobiology — origin of life, habitable zones, biosignatures, or extremophile biology for my class or exam",
+            successCriteria: "Astrobiology study session completed (at least two topics reviewed, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // materialscharacterization
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Analyze and write up my materials characterization data — XRD patterns, SEM/TEM images, FTIR or Raman spectra, or thermal analysis results",
+            successCriteria: "Materials characterization report meaningfully advanced (data analyzed, spectra assigned, or a key section of the lab report written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study materials characterization techniques — XRD, SEM/TEM, spectroscopy, or thermal analysis for my class or exam",
+            successCriteria: "Materials characterization study session completed (at least two techniques reviewed, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // toxicogenomics
+        SuggestedTemplate(
+            icon: "chart.bar.fill",
+            task: "Analyze my toxicogenomics data — gene expression under toxic exposure, AhR pathway, TOXCAST dataset, or omics-level toxicology assignment",
+            successCriteria: "Toxicogenomics assignment meaningfully advanced (data analyzed, pathways annotated, or a key section of the report written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study toxicogenomics — gene expression profiling under toxic exposure, dose-response genomics, or adverse outcome pathways for my class or exam",
+            successCriteria: "Toxicogenomics study session completed (at least two concepts reviewed, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // developmentalbiology
+        SuggestedTemplate(
+            icon: "circle.hexagongrid.fill",
+            task: "Complete my developmental biology assignment — morphogen gradients, Hox genes, fate mapping, organogenesis, or zebrafish/drosophila embryo analysis",
+            successCriteria: "Developmental biology assignment meaningfully advanced (at least one key mechanism analyzed or a section of the lab report written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study developmental biology — morphogenesis, cell fate specification, Hox genes, gastrulation, or gene regulatory networks for my class or exam",
+            successCriteria: "Developmental biology study session completed (at least two developmental mechanisms reviewed, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // drugdiscovery
+        SuggestedTemplate(
+            icon: "pills.fill",
+            task: "Work on my drug discovery assignment — lead optimization, ADMET analysis, structure-activity relationships, or virtual screening for a medicinal chemistry project",
+            successCriteria: "Drug discovery assignment meaningfully advanced (at least one SAR analysis completed, docking results reviewed, or a section of the report written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study drug discovery and medicinal chemistry — lead optimization, high-throughput screening, ADMET, pharmacophore modeling, or SAR for my class or exam",
+            successCriteria: "Drug discovery study session completed (at least two concepts reviewed, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }
