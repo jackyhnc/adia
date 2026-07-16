@@ -1,5 +1,54 @@
 # Adia — Build Progress
 
+## Run 349 (automated) — 2026-07-16 — 3 new keyword domains: nursepractitioner, mortuaryscience, polyvagaltheory (513→519 templates)
+
+### What shipped
+
+**New keyword domain — nursepractitioner:**
+- Branch positioned AFTER `emergencynursing`, BEFORE `nursing`; catches nurse practitioner, FNP/PMHNP/AGPCNP/WHNP/ACNP credentials, FNP-BC/PMHNP-BC/FNP-C certs, AANP cert/exam, ANCC FNP/PMHNP, NP program/school/class/exam/rotation/clinical/practicum/residency/notes/coursework/degree, DNP program+NP context, clinical nurse specialist (CNS), advanced practice nursing/nurse, APRN program/exam/cert/class/course/notes.
+- `nursepractitionerCallouts(tier:)` 4/3/3: "those AANP prep questions aren't going to answer themselves." / "no one earns their FNP-BC by scrolling." / "CLOSE THIS. open your NP study materials."
+- 2 templates: "Study for the AANP or ANCC FNP-BC certification exam…" (90 min, stethoscope) + "Write up my NP clinical rotation SOAP notes…" (30 min)
+
+**New keyword domain — mortuaryscience:**
+- Branch positioned BEFORE `forensicscience`; catches mortuary science school/program/class/exam, funeral service program/class/school/exam, funeral director program/school/exam/class, NBE+funeral/embalm/mortuar context, NBFE exam/board, ABFSE, embalming class/course/lab/technique, restorative art+mortuar/funeral context, thanatology/death studies class, cremation technology/class.
+- `mortuaryscienceCallouts(tier:)` 4/3/3: "your NBE prep isn't going to happen by scrolling." / "no one passes the NBE by scrolling." / "CLOSE THIS. open your mortuary science notes."
+- 2 templates: "Study for the NBE (National Board Examination)…" (90 min) + "Complete my mortuary science class assignment…" (45 min)
+
+**New keyword domain — polyvagaltheory:**
+- Branch positioned AFTER `behavioranalysis`, BEFORE `socialwork`; catches polyvagal theory/class/course/training/cert/therapy, somatic experiencing+class/training/cert/program/notes, internal family systems+class/training/cert/therapy, IFS therapy training/parts work/cert/program, parts work therapy/training, somatic therapy training/cert/class/course/program, autonomic/nervous system regulation+polyvagal/somatic/therapy-training context, vagal tone+class/training/therapy.
+- `polyvagaltheoryCallouts(tier:)` 4/3/3: "your polyvagal theory notes aren't going to write themselves." / "no one masters somatic therapy by scrolling." / "CLOSE THIS. open your somatic therapy training notes."
+- 2 templates: "Study polyvagal theory concepts, somatic experiencing modules, or IFS therapy principles…" (60 min) + "Write up my somatic therapy session notes, IFS parts work reflection…" (45 min)
+
+**Cleanup:** Removed duplicate `midwifery` and `naturopathicmedicine` artifacts that were erroneously scaffolded (both domains already existed). No duplicate function definitions remain.
+
+**New tests:**
+- CalloutManagerTests.swift: +25 tests (8 per new domain + 1 count guard ≥519)
+- SuggestedSessionTemplatesTests.swift: +8 tests (2 per new domain + 1 count guard ≥519)
+
+**Template catalog: 513 → 519**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by structural inspection.
+- Brace balance: CalloutManager.swift 310/310 ✓, CalloutMessages.swift 564/564 ✓, SuggestedSessionTemplates.swift 5/5 ✓, CalloutManagerTests.swift 4705/4705 ✓, SuggestedSessionTemplatesTests.swift 1350/1350 ✓
+- Template count verified: `grep -c 'SuggestedTemplate(' SuggestedSessionTemplates.swift` = 519 ✓
+- No duplicate function definitions (nursepractitionerCallouts, mortuaryscienceCallouts, polyvagaltheoryCallouts each appear exactly once)
+- `nursepractitioner` fires AFTER `emergencynursing`, BEFORE `nursing`: "FNP-BC AANP exam primary care" → nursepractitioner ✓; "nursing class pharmacology" → nursing ✓
+- `mortuaryscience` fires BEFORE `forensicscience`: "NBE embalming restorative art" → mortuaryscience ✓
+- `polyvagaltheory` fires AFTER `behavioranalysis`, BEFORE `socialwork`: "polyvagal theory somatic experiencing training" → polyvagaltheory ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `homeopathy` — homeopathic medicine, CCH certification, homeopathic prescribing, Hahnemann/miasm/repertory context (homeopathy is mentioned in naturopathicmedicine branch but could have its own dedicated pool)
+  - `tibetanmedicine` — Sowa Rigpa, Tibetan medicine theory, TTM program, men-tsee-khang
+  - `dentalspecialties` — orthodontics/oral surgery/endodontics/periodontics residency programs (separate from existing dentistry branch)
+  - `speechlanguagepathology` expanded — verify speechpathology covers CF (Clinical Fellowship), ASHA PRAXIS, SLP-A, CFY (clinical fellowship year)
+  - `veterinaryspecialties` — DACVIM/DACVS board, veterinary residency, specialty vet (separate from existing veterinary branch)
+- Template catalog: 519 → 529 after next 5-domain batch
+- CalloutManagerTests.swift: ~2578 tests currently; +40 = ~2618 after next batch
+
 ## Run 348 (automated) — 2026-07-15 — 5 new keyword domains: architecturaldesign, historicpreservation, sustainabledesign, exhibitdesign, lightingdesign (495→505 templates)
 
 ### What shipped
