@@ -411,6 +411,11 @@ extension CalloutManager {
         case "genetics":                   return geneticsCallouts(tier: tier)
         case "microbiology":               return microbiologyCallouts(tier: tier)
         case "immunology":                 return immunologyCallouts(tier: tier)
+        case "parasitology":               return parasitologyCallouts(tier: tier)
+        case "embryology":                 return embryologyCallouts(tier: tier)
+        case "histology":                  return histologyCallouts(tier: tier)
+        case "pathology":                  return pathologyCallouts(tier: tier)
+        case "neuroanatomy":               return neuroanatomyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -8021,6 +8026,111 @@ extension CalloutManager {
             "CLOSE THIS. open your immunology notes.",
             "CLOSE THIS. innate and adaptive immunity won't review themselves.",
             "CLOSE THIS. your immunology exam won't pass itself."
+        ]
+        }
+    }
+
+    private func parasitologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those parasites aren't going to identify themselves.",
+            "close this and get back to your parasitology work.",
+            "helminth identification doesn't happen while you scroll — close this.",
+            "your parasitology lab report won't write itself — close this.",
+        ]
+        case 2: return [
+            "no one identifies parasites by scrolling.",
+            "close this and open your parasitology notes.",
+            "those protozoa won't classify themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your parasitology textbook.",
+            "CLOSE THIS. parasite life cycles won't memorize themselves.",
+            "CLOSE THIS. your parasitology exam won't pass itself."
+        ]
+        }
+    }
+
+    private func embryologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those embryology diagrams aren't going to study themselves.",
+            "close this and get back to your embryology work.",
+            "germ layers and organogenesis won't review themselves — close this.",
+            "your embryology exam is coming and you're here — close this.",
+        ]
+        case 2: return [
+            "no one masters embryology by scrolling.",
+            "close this and open your embryology notes.",
+            "those developmental stages won't memorize themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your embryology textbook.",
+            "CLOSE THIS. organogenesis doesn't review itself.",
+            "CLOSE THIS. your embryology exam won't pass itself."
+        ]
+        }
+    }
+
+    private func histologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those tissue slides aren't going to identify themselves.",
+            "close this and get back to your histology work.",
+            "H&E staining patterns won't memorize themselves — close this.",
+            "your histology practical is coming and you're here — close this.",
+        ]
+        case 2: return [
+            "no one identifies tissues by scrolling.",
+            "close this and open your histology slides.",
+            "those epithelial types won't classify themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your histology notes.",
+            "CLOSE THIS. tissue identification doesn't happen while you scroll.",
+            "CLOSE THIS. your histology practical won't pass itself."
+        ]
+        }
+    }
+
+    private func pathologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those pathology slides aren't going to analyze themselves.",
+            "close this and get back to your pathology work.",
+            "disease mechanisms won't review themselves — close this.",
+            "gross and microscopic pathology won't study themselves while you scroll — close this.",
+        ]
+        case 2: return [
+            "no one masters pathology by scrolling.",
+            "close this and open your pathology notes.",
+            "those disease processes won't learn themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your pathology textbook.",
+            "CLOSE THIS. pathogenesis doesn't review itself.",
+            "CLOSE THIS. your pathology exam won't pass itself."
+        ]
+        }
+    }
+
+    private func neuroanatomyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those cranial nerves aren't going to memorize themselves.",
+            "close this and get back to your neuroanatomy work.",
+            "brain regions and neural pathways won't review themselves — close this.",
+            "your neuroanatomy exam is coming and you're scrolling — close this.",
+        ]
+        case 2: return [
+            "no one maps the brain by scrolling.",
+            "close this and open your neuroanatomy notes.",
+            "those neural tracts won't trace themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your neuroanatomy textbook.",
+            "CLOSE THIS. cranial nerve functions won't memorize themselves.",
+            "CLOSE THIS. your neuroanatomy exam won't pass itself."
         ]
         }
     }

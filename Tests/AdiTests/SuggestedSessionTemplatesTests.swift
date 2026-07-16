@@ -5242,9 +5242,84 @@ struct SuggestedSessionTemplatesTests {
         #expect(hasWork, "catalog must include an immunology work template")
     }
 
-    // MARK: - Count guard (batch: aerospacengineering/electricalengineering/genetics/microbiology/immunology)
-    @Test func catalogHasAtLeastSixHundredNinetyOneTemplates() {
-        #expect(SuggestedSessionTemplates.all.count >= 691,
-                "catalog should have ≥691 templates after aerospacengineering/electricalengineering/genetics/microbiology/immunology additions (10 templates)")
+    // MARK: - parasitology templates
+    @Test func catalogHasParasitologyTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasLab = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("parasitology") || $0.localizedCaseInsensitiveContains("helminth") || $0.localizedCaseInsensitiveContains("protozoa") || $0.localizedCaseInsensitiveContains("parasite")) &&
+            ($0.localizedCaseInsensitiveContains("lab") || $0.localizedCaseInsensitiveContains("report") || $0.localizedCaseInsensitiveContains("assignment"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("parasitology") || $0.localizedCaseInsensitiveContains("helminth") || $0.localizedCaseInsensitiveContains("parasite")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasLab, "catalog must include a parasitology lab/assignment template")
+        #expect(hasStudy, "catalog must include a parasitology study template")
+    }
+
+    // MARK: - embryology templates
+    @Test func catalogHasEmbryologyTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("embryology") || $0.localizedCaseInsensitiveContains("organogenesis") || $0.localizedCaseInsensitiveContains("germ layer")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        let hasWork = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("embryology") || $0.localizedCaseInsensitiveContains("developmental")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("work"))
+        }
+        #expect(hasStudy, "catalog must include an embryology study template")
+        #expect(hasWork, "catalog must include an embryology work template")
+    }
+
+    // MARK: - histology templates
+    @Test func catalogHasHistologyTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasPractice = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("histology") || $0.localizedCaseInsensitiveContains("tissue") || $0.localizedCaseInsensitiveContains("H&E")) &&
+            ($0.localizedCaseInsensitiveContains("slide") || $0.localizedCaseInsensitiveContains("identification") || $0.localizedCaseInsensitiveContains("practice"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("histology") || $0.localizedCaseInsensitiveContains("epithelial") || $0.localizedCaseInsensitiveContains("tissue")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("practical"))
+        }
+        #expect(hasPractice, "catalog must include a histology practice/slide template")
+        #expect(hasStudy, "catalog must include a histology study template")
+    }
+
+    // MARK: - pathology templates
+    @Test func catalogHasPathologyTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("pathology") || $0.localizedCaseInsensitiveContains("histopathology") || $0.localizedCaseInsensitiveContains("disease mechanisms")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        let hasWork = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("pathology") || $0.localizedCaseInsensitiveContains("gross") || $0.localizedCaseInsensitiveContains("histopathology")) &&
+            ($0.localizedCaseInsensitiveContains("lab") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("work"))
+        }
+        #expect(hasStudy, "catalog must include a pathology study template")
+        #expect(hasWork, "catalog must include a pathology lab/work template")
+    }
+
+    // MARK: - neuroanatomy templates
+    @Test func catalogHasNeuroanatomyTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("neuroanatomy") || $0.localizedCaseInsensitiveContains("cranial nerve") || $0.localizedCaseInsensitiveContains("brain region")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        let hasPractice = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("neuroanatomy") || $0.localizedCaseInsensitiveContains("cranial nerve") || $0.localizedCaseInsensitiveContains("neural pathway")) &&
+            ($0.localizedCaseInsensitiveContains("identification") || $0.localizedCaseInsensitiveContains("practice") || $0.localizedCaseInsensitiveContains("label") || $0.localizedCaseInsensitiveContains("map"))
+        }
+        #expect(hasStudy, "catalog must include a neuroanatomy study template")
+        #expect(hasPractice, "catalog must include a neuroanatomy practice/identification template")
+    }
+
+    // MARK: - Count guard (batch: parasitology/embryology/histology/pathology/neuroanatomy)
+    @Test func catalogHasAtLeastSevenHundredOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 701,
+                "catalog should have ≥701 templates after parasitology/embryology/histology/pathology/neuroanatomy additions (10 templates)")
     }
 }

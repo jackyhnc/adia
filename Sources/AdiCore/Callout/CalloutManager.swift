@@ -5012,6 +5012,121 @@ public final class CalloutManager {
             || lower.contains("elisa") && (lower.contains("immunology") || lower.contains("immune") || lower.contains("antibody")) {
             return "immunology"
         }
+        // parasitology — positioned BEFORE premed to catch dedicated parasitology class/lab work.
+        // Bare word("parasite") without class context stays in studying (too broad).
+        // "malaria MCAT" stays in premed (fires after). "molecular parasitology" stays in molecularbiology (earlier).
+        if lower.contains("parasitology class") || lower.contains("parasitology course")
+            || lower.contains("parasitology exam") || lower.contains("parasitology lab")
+            || lower.contains("parasitology notes") || lower.contains("parasitology textbook")
+            || lower.contains("parasitology assignment") || lower.contains("parasitology lab report")
+            || lower.contains("helminthology") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("protozoology") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("parasite identification") && (lower.contains("class") || lower.contains("lab") || lower.contains("parasitology"))
+            || lower.contains("protozoa identification") && (lower.contains("class") || lower.contains("lab"))
+            || lower.contains("helminth") && (lower.contains("class") || lower.contains("lab") || lower.contains("parasitology") || lower.contains("identification"))
+            || lower.contains("malaria life cycle") && (lower.contains("class") || lower.contains("lab") || lower.contains("parasitology") || lower.contains("exam"))
+            || lower.contains("plasmodium") && (lower.contains("class") || lower.contains("lab") || lower.contains("parasitology") || lower.contains("life cycle"))
+            || lower.contains("trypanosoma") && (lower.contains("class") || lower.contains("lab") || lower.contains("parasitology"))
+            || lower.contains("giardia") && (lower.contains("class") || lower.contains("lab") || lower.contains("parasitology") || lower.contains("identification"))
+            || lower.contains("ascaris") && (lower.contains("class") || lower.contains("lab") || lower.contains("parasitology"))
+            || lower.contains("tapeworm") && (lower.contains("class") || lower.contains("lab") || lower.contains("parasitology") || lower.contains("identification"))
+            || lower.contains("roundworm") && (lower.contains("class") || lower.contains("lab") || lower.contains("parasitology") || lower.contains("identification"))
+            || lower.contains("nematode") && (lower.contains("class") || lower.contains("lab") || lower.contains("parasitology") || lower.contains("identification"))
+            || lower.contains("trematode") && (lower.contains("class") || lower.contains("lab") || lower.contains("parasitology") || lower.contains("identification"))
+            || lower.contains("cestode") && (lower.contains("class") || lower.contains("lab") || lower.contains("parasitology") || lower.contains("identification"))
+            || lower.contains("parasitic disease") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("parasite biology") && (lower.contains("class") || lower.contains("course") || lower.contains("lab")) {
+            return "parasitology"
+        }
+        // embryology — positioned BEFORE premed so embryology class/lab work routes here.
+        // Bare word("embryology") stays in premed for MCAT context (fires after).
+        // "gastrulation" in developmentalbiology class context stays in developmentalbiology (earlier).
+        if lower.contains("embryology class") || lower.contains("embryology course")
+            || lower.contains("embryology exam") || lower.contains("embryology lab")
+            || lower.contains("embryology notes") || lower.contains("embryology textbook")
+            || lower.contains("embryology assignment") || lower.contains("embryology lecture")
+            || lower.contains("neurulation") && (lower.contains("class") || lower.contains("lab") || lower.contains("embryology") || lower.contains("exam"))
+            || lower.contains("organogenesis") && (lower.contains("class") || lower.contains("lab") || lower.contains("embryology") || lower.contains("exam"))
+            || lower.contains("extraembryonic membranes") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("fetal development") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("embryonic development") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("germ layers") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("embryology"))
+            || lower.contains("somite development") && (lower.contains("class") || lower.contains("lab") || lower.contains("embryology"))
+            || lower.contains("primitive streak") && (lower.contains("class") || lower.contains("lab") || lower.contains("embryology") || lower.contains("exam"))
+            || lower.contains("blastulation") && (lower.contains("class") || lower.contains("lab") || lower.contains("embryology") || lower.contains("exam"))
+            || lower.contains("cleavage division") && (lower.contains("class") || lower.contains("lab") || lower.contains("embryology"))
+            || lower.contains("placental development") && (lower.contains("class") || lower.contains("lab") || lower.contains("embryology") || lower.contains("exam"))
+            || lower.contains("teratology") && (lower.contains("class") || lower.contains("lab") || lower.contains("embryology") || lower.contains("exam"))
+            || lower.contains("developmental embryology") {
+            return "embryology"
+        }
+        // histology — positioned BEFORE premed so histology class/lab work routes here.
+        // Bare word("histology") stays in premed for MCAT context (fires after).
+        if lower.contains("histology class") || lower.contains("histology course")
+            || lower.contains("histology exam") || lower.contains("histology lab")
+            || lower.contains("histology notes") || lower.contains("histology slide")
+            || lower.contains("histology assignment") || lower.contains("histology practical")
+            || lower.contains("histology textbook") || lower.contains("histology lecture")
+            || lower.contains("tissue identification") && (lower.contains("class") || lower.contains("lab") || lower.contains("histology") || lower.contains("microscope"))
+            || lower.contains("h&e staining") && (lower.contains("class") || lower.contains("lab") || lower.contains("histology"))
+            || lower.contains("hematoxylin and eosin") && (lower.contains("class") || lower.contains("lab") || lower.contains("histology"))
+            || lower.contains("hematoxylin eosin") && (lower.contains("class") || lower.contains("lab") || lower.contains("histology"))
+            || lower.contains("histological section") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("microscopic anatomy") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("epithelial tissue") && (lower.contains("class") || lower.contains("lab") || lower.contains("histology") || lower.contains("identification"))
+            || lower.contains("connective tissue histology")
+            || lower.contains("smooth muscle histology")
+            || lower.contains("cardiac muscle histology")
+            || lower.contains("bone histology") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("histopathology lab") && !lower.contains("pathology class")
+            || lower.contains("tissue staining") && (lower.contains("class") || lower.contains("lab") || lower.contains("histology")) {
+            return "histology"
+        }
+        // pathology — positioned BEFORE premed so pathology class/lab work routes here.
+        // Bare word("pathology") stays in premed for MCAT context (fires after).
+        if lower.contains("pathology class") || lower.contains("pathology course")
+            || lower.contains("pathology exam") || lower.contains("pathology lab")
+            || lower.contains("pathology notes") || lower.contains("pathology assignment")
+            || lower.contains("pathology lecture") || lower.contains("pathology textbook")
+            || lower.contains("gross pathology") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("slide"))
+            || lower.contains("microscopic pathology") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("histopathology") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("pathology"))
+            || lower.contains("pathology slide") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("disease mechanisms") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("autopsy") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("pathology"))
+            || lower.contains("pathogenesis") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam") || lower.contains("pathology"))
+            || lower.contains("surgical pathology") && (lower.contains("class") || lower.contains("course") || lower.contains("rotation") || lower.contains("notes"))
+            || lower.contains("forensic pathology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("clinical pathology") && (lower.contains("class") || lower.contains("course") || lower.contains("rotation"))
+            || lower.contains("pathology report") && (lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("neoplasia") && (lower.contains("class") || lower.contains("pathology") || lower.contains("exam"))
+            || lower.contains("inflammation pathology") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam")) {
+            return "pathology"
+        }
+        // neuroanatomy — positioned BEFORE premed so neuroanatomy class/lab work routes here.
+        // "action potential" and general neuroscience stay in neuroscience (much earlier).
+        if lower.contains("neuroanatomy class") || lower.contains("neuroanatomy course")
+            || lower.contains("neuroanatomy exam") || lower.contains("neuroanatomy lab")
+            || lower.contains("neuroanatomy notes") || lower.contains("neuroanatomy assignment")
+            || lower.contains("neuroanatomy dissection") || lower.contains("neuroanatomy textbook")
+            || lower.contains("brain regions") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("anatomy") || lower.contains("neuroanatomy"))
+            || lower.contains("spinal cord anatomy") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("cranial nerves") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("anatomy") || lower.contains("identify"))
+            || lower.contains("neural pathways") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("anatomy"))
+            || lower.contains("brainstem anatomy") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("cortical mapping") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("anatomy"))
+            || lower.contains("limbic system") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("anatomy"))
+            || lower.contains("cerebellum anatomy") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("basal ganglia") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("anatomy"))
+            || lower.contains("neural tracts") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("anatomy"))
+            || lower.contains("brain atlas") && (lower.contains("class") || lower.contains("lab") || lower.contains("anatomy"))
+            || lower.contains("dermatome") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("anatomy"))
+            || lower.contains("forebrain") && (lower.contains("class") || lower.contains("lab") || lower.contains("anatomy") || lower.contains("exam"))
+            || lower.contains("hindbrain") && (lower.contains("class") || lower.contains("lab") || lower.contains("anatomy") || lower.contains("exam"))
+            || lower.contains("thalamus") && (lower.contains("class") || lower.contains("lab") || lower.contains("anatomy") || lower.contains("exam"))
+            || lower.contains("hypothalamus") && (lower.contains("class") || lower.contains("lab") || lower.contains("anatomy") || lower.contains("exam")) {
+            return "neuroanatomy"
+        }
         if word("anatomy") || word("physiology") || word("biochemistry")
             || word("pharmacology") || word("pathology") || word("histology")
             || word("microbiology") || word("immunology") || word("embryology")

@@ -4450,5 +4450,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Immunology work session completed (assignment written or problem set answered with key immune mechanisms explained and saved)",
             preferredDuration: 45 * 60
         ),
+        // parasitology
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Complete my parasitology lab report or assignment — parasite identification, helminth morphology, protozoa classification, life cycle diagrams, or microscopic exam of specimens",
+            successCriteria: "Parasitology lab work completed (lab report written or parasite identification documented with morphology descriptions, life cycle stages, and conclusions saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Study parasitology for my exam — review protozoa and helminth classification, parasite life cycles, disease mechanisms, host-parasite interactions, and clinical manifestations",
+            successCriteria: "Parasitology study session completed (at least two major parasite groups reviewed with notes, life cycle diagrams, and key identification criteria saved)",
+            preferredDuration: 45 * 60
+        ),
+        // embryology
+        SuggestedTemplate(
+            icon: "circle.grid.cross.fill",
+            task: "Study embryology for my exam — review germ layer formation, organogenesis, neurulation, extraembryonic membranes, fetal development stages, and teratology",
+            successCriteria: "Embryology study session completed (at least two developmental stages reviewed with notes, diagrams, and key events in organogenesis documented and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "circle.grid.cross.fill",
+            task: "Work through my embryology assignment — draw and label developmental stages, explain organogenesis sequences, analyze teratogen effects, or complete embryology case studies",
+            successCriteria: "Embryology assignment completed (diagrams labeled, developmental sequences explained, and case studies answered with key embryological concepts documented)",
+            preferredDuration: 45 * 60
+        ),
+        // histology
+        SuggestedTemplate(
+            icon: "magnifyingglass.circle.fill",
+            task: "Practice histology slide identification — identify tissue types, epithelial classifications, connective tissue variants, H&E staining patterns, and organ-specific histology",
+            successCriteria: "Histology practice session completed (at least 10 slides or tissue types reviewed with identification criteria, H&E stain characteristics, and key distinguishing features documented)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "magnifyingglass.circle.fill",
+            task: "Study histology for my practical exam — review epithelial tissue types, connective tissues, muscle histology, bone histology, and organ-specific microscopic anatomy",
+            successCriteria: "Histology study session completed (at least two tissue categories reviewed with staining patterns, identification criteria, and distinguishing microscopic features saved)",
+            preferredDuration: 45 * 60
+        ),
+        // pathology
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Study pathology for my exam — review disease mechanisms, gross and microscopic pathology, neoplasia, inflammation, cellular injury, and organ-system pathological changes",
+            successCriteria: "Pathology study session completed (at least two pathological processes reviewed with mechanisms, gross and microscopic findings, and clinical correlations documented)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Work through my pathology lab or assignment — analyze pathology slides, write up gross pathology findings, review histopathology cases, or complete pathology case studies",
+            successCriteria: "Pathology work session completed (slides analyzed or case studies answered with gross and microscopic findings, disease mechanisms, and diagnostic criteria documented)",
+            preferredDuration: 45 * 60
+        ),
+        // neuroanatomy
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study neuroanatomy for my exam — review brain regions, cranial nerves, spinal cord anatomy, neural pathways, brainstem anatomy, limbic system, and basal ganglia",
+            successCriteria: "Neuroanatomy study session completed (at least two major brain regions or neural systems reviewed with location, function, pathway connections, and clinical relevance documented)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Practice neuroanatomy identification — label brain atlas diagrams, identify cranial nerve functions, trace spinal cord tracts, or map neural pathways from origin to termination",
+            successCriteria: "Neuroanatomy practice session completed (at least 12 cranial nerves, major brain regions, or spinal cord tracts identified with functions, origins, and pathways documented)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }
