@@ -743,6 +743,36 @@ public final class CalloutManager {
             || lower.contains("geo class") && !lower.contains("geoscience") && !lower.contains("geology") {
             return "geographyearthed"
         }
+        // waterresources — positioned BEFORE geology so water resources engineering, hydraulics,
+        // and stormwater design tasks get a dedicated pool instead of routing to geology via
+        // "hydrology". "hydrology" as a bare word still fires geology; only fires here when paired
+        // with engineering/design/class context. "water treatment" in chemistry context stays here.
+        if lower.contains("water resources engineering") || lower.contains("water resources management")
+            || lower.contains("water resources class") || lower.contains("water resources course")
+            || lower.contains("water resources exam") || lower.contains("water resources program")
+            || lower.contains("hydraulics class") || lower.contains("hydraulics course")
+            || lower.contains("hydraulics lab") || lower.contains("hydraulics exam")
+            || lower.contains("hydraulic engineering") || lower.contains("hydraulic design")
+            || lower.contains("stormwater management") && !lower.contains("landscape")
+            || lower.contains("stormwater engineering") || lower.contains("stormwater design")
+            || lower.contains("flood control engineering") || lower.contains("flood modeling class")
+            || lower.contains("groundwater engineering") || lower.contains("groundwater modeling class")
+            || lower.contains("groundwater modeling course") || lower.contains("groundwater hydrology class")
+            || lower.contains("water treatment engineering") || lower.contains("water treatment class")
+            || lower.contains("water treatment course") || lower.contains("water treatment exam")
+            || lower.contains("water supply engineering") || lower.contains("water supply class")
+            || lower.contains("water supply design") || lower.contains("drinking water treatment class")
+            || lower.contains("drinking water engineering") || lower.contains("water distribution class")
+            || lower.contains("wastewater treatment class") || lower.contains("wastewater engineering")
+            || lower.contains("wastewater design") || lower.contains("water quality engineering")
+            || lower.contains("sanitary engineering") || lower.contains("water infrastructure class")
+            || lower.contains("dam design") && (lower.contains("class") || lower.contains("course"))
+            || lower.contains("irrigation engineering") || lower.contains("irrigation design class")
+            || lower.contains("hydrology class") || lower.contains("hydrology course")
+            || lower.contains("hydrology lab") || lower.contains("hydrology exam")
+            || lower.contains("applied hydrology") || lower.contains("engineering hydrology") {
+            return "waterresources"
+        }
         // geology — positioned before engineering so "geology lab" and earth-science field tasks
         // don't fall through to engineering or research via word("lab").
         // "geography" alone does NOT fire here (stays in studying/socialscience).
@@ -3441,6 +3471,30 @@ public final class CalloutManager {
             || lower.contains("biochemistry textbook") || lower.contains("lehninger") {
             return "biochemistry"
         }
+        // biophysics — positioned AFTER biochemistry (which catches protein-assay, enzyme-kinetics,
+        // and spectrophotometry terms) and BEFORE geneticcounseling. Catches biophysics class/lab
+        // with a class/course/lab/exam/assignment guard to avoid stealing bare "thermodynamics"
+        // from physics or engineering. "membrane potential" without biophysics context stays in
+        // neuroscience; "ion channel" without biophysics class stays in neuroscience.
+        if word("biophysics") || word("biophysicist")
+            || lower.contains("biophysics class") || lower.contains("biophysics course")
+            || lower.contains("biophysics lab") || lower.contains("biophysics exam")
+            || lower.contains("biophysics assignment") || lower.contains("biophysics report")
+            || lower.contains("biophysics major") || lower.contains("biophysics degree")
+            || lower.contains("biophysics program") || lower.contains("biophysics textbook")
+            || lower.contains("biophysics problem set") || lower.contains("biophysics homework")
+            || lower.contains("biological physics") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("thermodynamics of living systems") || lower.contains("thermodynamics of biological")
+            || lower.contains("membrane potential") && (lower.contains("biophysics") || lower.contains("physics class") || lower.contains("physics course") || lower.contains("physics lab"))
+            || lower.contains("ion channel kinetics") && (lower.contains("biophysics") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("single molecule biophysics") || lower.contains("single-molecule biophysics")
+            || lower.contains("force spectroscopy") && (lower.contains("class") || lower.contains("lab") || lower.contains("biophysics"))
+            || lower.contains("atomic force microscopy") && (lower.contains("biophysics") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("protein folding biophysics") || lower.contains("biophysical journal")
+            || lower.contains("biophysical methods") && (lower.contains("class") || lower.contains("lab"))
+            || lower.contains("optical tweezers") && (lower.contains("biophysics") || lower.contains("class") || lower.contains("lab")) {
+            return "biophysics"
+        }
         // geneticcounseling — positioned AFTER molecularbiology (shares genomics vocabulary) and
         // BEFORE radiologictechnology. Catches ABGC/CGC board prep, prenatal genetics,
         // hereditary cancer counseling, and genomic counseling coursework.
@@ -4577,6 +4631,30 @@ public final class CalloutManager {
             || word("hypothalamus") || word("amygdala") || word("cerebellum") {
             return "neuroscience"
         }
+        // psychopharmacology — positioned AFTER neuroscience (which catches neuroimaging/synaptic
+        // terms) and BEFORE clinicalpsychology. Catches psychopharmacology class/exam and
+        // neuropsychopharmacology coursework. "pharmacology" alone stays in pharmacy.
+        // "psychiatric medication" in a clinical context stays in clinicalpsychology/therapy.
+        if word("psychopharmacology") || word("neuropsychopharmacology")
+            || lower.contains("psychopharmacology class") || lower.contains("psychopharmacology course")
+            || lower.contains("psychopharmacology exam") || lower.contains("psychopharmacology paper")
+            || lower.contains("psychopharmacology assignment") || lower.contains("psychopharmacology major")
+            || lower.contains("psychopharmacology program") || lower.contains("psychopharmacology textbook")
+            || lower.contains("psychopharmacology lab") || lower.contains("psychopharmacology homework")
+            || lower.contains("neuropsychopharmacology class") || lower.contains("neuropsychopharmacology course")
+            || lower.contains("neuropsychopharmacology exam") || lower.contains("neuropsychopharmacology paper")
+            || lower.contains("pharmacology of mental disorders") || lower.contains("pharmacology of psychiatric")
+            || lower.contains("pharmacology of mood disorders") || lower.contains("pharmacology of anxiety")
+            || lower.contains("psychiatric pharmacology class") || lower.contains("psychiatric pharmacology course")
+            || lower.contains("psychiatric pharmacology exam") || lower.contains("psychiatric drugs class")
+            || lower.contains("psychiatric drugs course") || lower.contains("psychiatric drugs exam")
+            || lower.contains("drug action in the brain") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("antidepressant mechanism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("antipsychotic pharmacology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("psychotropic medication") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("medication mechanism") && (lower.contains("psych") || lower.contains("psychiatry") || lower.contains("mental health")) && (lower.contains("class") || lower.contains("course")) {
+            return "psychopharmacology"
+        }
         // clinicalpsychology — positioned BEFORE psychology so doctoral-level clinical training
         // (APPIC internship match, neuropsychological assessment, psychotherapy practicum) routes
         // to a dedicated pool. EPPP is in forensicpsychology; this covers broader clinical training.
@@ -5281,6 +5359,49 @@ public final class CalloutManager {
             || (lower.contains("nuisance") && (lower.contains("torts class") || lower.contains("torts course") || lower.contains("tort law")))
             || (lower.contains("respondeat superior") && (lower.contains("class") || lower.contains("law"))) {
             return "tortlaw"
+        }
+        // mediationarbitration — positioned AFTER tortlaw and BEFORE legal. Catches ADR/mediation/
+        // arbitration as a study domain. "conflict resolution" alone stays generic;
+        // "negotiation" alone stays in business/meeting.
+        if lower.contains("alternative dispute resolution") || lower.contains("adr class")
+            || lower.contains("adr course") || lower.contains("adr exam") || lower.contains("adr program")
+            || lower.contains("adr certification") || lower.contains("adr training")
+            || lower.contains("mediation class") || lower.contains("mediation course")
+            || lower.contains("mediation exam") || lower.contains("mediation training")
+            || lower.contains("mediation certification") || lower.contains("mediation program")
+            || lower.contains("mediator certification") || lower.contains("mediator training")
+            || lower.contains("mediator program") || lower.contains("mediator class")
+            || lower.contains("arbitration class") || lower.contains("arbitration course")
+            || lower.contains("arbitration exam") || lower.contains("arbitration law class")
+            || lower.contains("arbitration law course") || lower.contains("arbitration training")
+            || lower.contains("arbitration certification") || lower.contains("arbitration certification program")
+            || lower.contains("dispute resolution class") || lower.contains("dispute resolution course")
+            || lower.contains("dispute resolution program") || lower.contains("dispute resolution exam")
+            || lower.contains("dispute resolution certification") || lower.contains("conflict resolution class")
+            || lower.contains("conflict resolution course") || lower.contains("conflict resolution program")
+            || lower.contains("conflict resolution exam") || lower.contains("conflict resolution cert")
+            || lower.contains("negotiation class") && (lower.contains("adr") || lower.contains("mediation") || lower.contains("dispute") || lower.contains("law") || lower.contains("legal"))
+            || lower.contains("mcle mediation") || lower.contains("mediation mcle")
+            || lower.contains("family mediation class") || lower.contains("divorce mediation class")
+            || lower.contains("jams arbitration class") || lower.contains("aaa arbitration class") {
+            return "mediationarbitration"
+        }
+        // sportslaw — positioned AFTER mediationarbitration and BEFORE legal so sports-law class,
+        // NCAA compliance, and athlete representation route here. "sports psychology" stays in
+        // kinesiology; "sports analytics" stays in sportsanalytics; bare "sports" stays generic.
+        if lower.contains("sports law") || lower.contains("sport law")
+            || lower.contains("ncaa compliance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("officer") || lower.contains("program"))
+            || lower.contains("athlete contract") && (lower.contains("class") || lower.contains("course") || lower.contains("law") || lower.contains("legal"))
+            || lower.contains("sports agent") && (lower.contains("class") || lower.contains("course") || lower.contains("law") || lower.contains("legal") || lower.contains("certification"))
+            || lower.contains("sports management law") || lower.contains("sports management legal")
+            || lower.contains("collective bargaining") && (lower.contains("sports") || lower.contains("athlete") || lower.contains("nba") || lower.contains("nfl") || lower.contains("mlb") || lower.contains("nhl"))
+            || lower.contains("sports governance") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("legal"))
+            || lower.contains("athlete representation") && (lower.contains("law") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("sports liability") && (lower.contains("class") || lower.contains("course") || lower.contains("law"))
+            || lower.contains("title ix") && (lower.contains("sports") || lower.contains("athletics") || lower.contains("class") || lower.contains("course") || lower.contains("law"))
+            || lower.contains("professional sports law") || lower.contains("sports industry law")
+            || lower.contains("esports law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "sportslaw"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")

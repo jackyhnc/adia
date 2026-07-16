@@ -331,6 +331,11 @@ extension CalloutManager {
         case "homeopathy":             return homeopathyCallouts(tier: tier)
         case "recreationaltherapy":    return recreationaltherapyCallouts(tier: tier)
         case "tibetanmedicine":        return tibetanmedicineCallouts(tier: tier)
+        case "waterresources":         return waterresourcesCallouts(tier: tier)
+        case "biophysics":             return biophysicsCallouts(tier: tier)
+        case "psychopharmacology":     return psychopharmacologyCallouts(tier: tier)
+        case "mediationarbitration":   return mediationarbitrationCallouts(tier: tier)
+        case "sportslaw":              return sportslawCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -6261,6 +6266,111 @@ extension CalloutManager {
             "CLOSE THIS. open your Tibetan medicine study materials.",
             "CLOSE THIS. Sowa Rigpa demands your full attention.",
             "CLOSE THIS. your patients deserve a focused Tibetan medicine practitioner."
+        ]
+        }
+    }
+
+    private func waterresourcesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those hydraulic calculations aren't going to solve themselves.",
+            "close this and get back to your water resources work.",
+            "stormwater doesn't design itself — close this.",
+            "your water engineering assignment needs you focused."
+        ]
+        case 2: return [
+            "no one passes water resources engineering by scrolling.",
+            "close this and open your hydrology notes.",
+            "those stormwater plans won't write themselves."
+        ]
+        default: return [
+            "CLOSE THIS. open your water resources engineering work.",
+            "CLOSE THIS. hydraulics demands your full attention.",
+            "CLOSE THIS. the watershed won't model itself."
+        ]
+        }
+    }
+
+    private func biophysicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those biophysics problems aren't going to solve themselves.",
+            "close this and get back to your biophysics lab.",
+            "membrane potentials don't derive themselves — close this.",
+            "your biophysics exam is not going to study for itself."
+        ]
+        case 2: return [
+            "no one masters biophysics by scrolling.",
+            "close this and open your biophysics notes.",
+            "the physics of life won't reveal itself while you scroll."
+        ]
+        default: return [
+            "CLOSE THIS. open your biophysics problem set.",
+            "CLOSE THIS. biophysics demands your full attention.",
+            "CLOSE THIS. protein folding waits for no one."
+        ]
+        }
+    }
+
+    private func psychopharmacologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those drug mechanisms aren't going to memorize themselves.",
+            "close this and get back to your psychopharmacology notes.",
+            "neurotransmitters don't explain themselves — close this.",
+            "your psychopharmacology exam needs your full attention."
+        ]
+        case 2: return [
+            "no one masters psychopharmacology by scrolling.",
+            "close this and open your pharmacology notes.",
+            "those receptor mechanisms won't learn themselves."
+        ]
+        default: return [
+            "CLOSE THIS. open your psychopharmacology textbook.",
+            "CLOSE THIS. drug-brain interactions demand your full attention.",
+            "CLOSE THIS. psychiatric pharmacology won't study itself."
+        ]
+        }
+    }
+
+    private func mediationarbitrationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those mediation skills aren't going to develop themselves.",
+            "close this and get back to your ADR coursework.",
+            "disputes don't resolve themselves — neither will your assignment.",
+            "your arbitration exam needs you focused."
+        ]
+        case 2: return [
+            "no one becomes a skilled mediator by scrolling.",
+            "close this and open your dispute resolution notes.",
+            "that arbitration brief won't write itself."
+        ]
+        default: return [
+            "CLOSE THIS. open your mediation and arbitration materials.",
+            "CLOSE THIS. ADR demands your full attention.",
+            "CLOSE THIS. conflict resolution starts with closing this."
+        ]
+        }
+    }
+
+    private func sportslawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those sports contracts aren't going to analyze themselves.",
+            "close this and get back to your sports law assignment.",
+            "NCAA compliance doesn't study itself — close this.",
+            "your sports law exam needs your full focus."
+        ]
+        case 2: return [
+            "no one passes sports law by scrolling.",
+            "close this and open your sports law notes.",
+            "that athlete contract analysis won't write itself."
+        ]
+        default: return [
+            "CLOSE THIS. open your sports law materials.",
+            "CLOSE THIS. sports governance demands your full attention.",
+            "CLOSE THIS. the locker room doesn't need you — your textbook does."
         ]
         }
     }

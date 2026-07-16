@@ -4194,4 +4194,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 529,
                 "catalog should have ≥529 templates after virtualreality/clinicalresearch/homeopathy/recreationaltherapy/tibetanmedicine additions (10 templates)")
     }
+
+    // MARK: - waterresources
+    @Test func waterresourcesTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasEngineering = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("hydraulics") || $0.localizedCaseInsensitiveContains("stormwater") || $0.localizedCaseInsensitiveContains("hydrology")) &&
+            ($0.localizedCaseInsensitiveContains("problem") || $0.localizedCaseInsensitiveContains("engineering") || $0.localizedCaseInsensitiveContains("water resources"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("water treatment") || $0.localizedCaseInsensitiveContains("water distribution") || $0.localizedCaseInsensitiveContains("hydraulic design") || $0.localizedCaseInsensitiveContains("wastewater")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("design"))
+        }
+        #expect(hasEngineering, "catalog must include a water resources engineering problem set template")
+        #expect(hasAssignment, "catalog must include a water treatment or hydraulic design assignment template")
+    }
+
+    // MARK: - biophysics
+    @Test func biophysicsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasProblemSet = tasks.contains {
+            $0.localizedCaseInsensitiveContains("biophysics") &&
+            ($0.localizedCaseInsensitiveContains("problem") || $0.localizedCaseInsensitiveContains("thermodynamics") || $0.localizedCaseInsensitiveContains("membrane"))
+        }
+        let hasLabReport = tasks.contains {
+            $0.localizedCaseInsensitiveContains("biophysics") &&
+            ($0.localizedCaseInsensitiveContains("lab") || $0.localizedCaseInsensitiveContains("report") || $0.localizedCaseInsensitiveContains("assignment"))
+        }
+        #expect(hasProblemSet, "catalog must include a biophysics problem set template")
+        #expect(hasLabReport, "catalog must include a biophysics lab or assignment template")
+    }
+
+    // MARK: - psychopharmacology
+    @Test func psychopharmacologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("psychopharmacology") || $0.localizedCaseInsensitiveContains("neuropsychopharmacology")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("drug") || $0.localizedCaseInsensitiveContains("receptor"))
+        }
+        let hasPaper = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("psychopharmacology") || $0.localizedCaseInsensitiveContains("psychiatric drug")) &&
+            ($0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("mechanism"))
+        }
+        #expect(hasStudy, "catalog must include a psychopharmacology study template")
+        #expect(hasPaper, "catalog must include a psychopharmacology paper or assignment template")
+    }
+
+    // MARK: - mediationarbitration
+    @Test func mediationarbitrationTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("mediation") || $0.localizedCaseInsensitiveContains("arbitration") || $0.localizedCaseInsensitiveContains("ADR") || $0.localizedCaseInsensitiveContains("dispute resolution")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("certification") || $0.localizedCaseInsensitiveContains("principles"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("mediation") || $0.localizedCaseInsensitiveContains("arbitration") || $0.localizedCaseInsensitiveContains("dispute resolution")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("brief") || $0.localizedCaseInsensitiveContains("case"))
+        }
+        #expect(hasStudy, "catalog must include an ADR/mediation exam prep template")
+        #expect(hasAssignment, "catalog must include a mediation or arbitration assignment template")
+    }
+
+    // MARK: - sportslaw
+    @Test func sportslawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("sports law") &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("NCAA") || $0.localizedCaseInsensitiveContains("contract"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("sports law") || $0.localizedCaseInsensitiveContains("sports governance") || $0.localizedCaseInsensitiveContains("athlete contract")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("case") || $0.localizedCaseInsensitiveContains("memo"))
+        }
+        #expect(hasStudy, "catalog must include a sports law study/exam template")
+        #expect(hasAssignment, "catalog must include a sports law assignment or analysis template")
+    }
+
+    // MARK: - Count guard (batch: waterresources/biophysics/psychopharmacology/mediationarbitration/sportslaw)
+    @Test func catalogHasAtLeastFiveHundredThirtyNineTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 539,
+                "catalog should have ≥539 templates after waterresources/biophysics/psychopharmacology/mediationarbitration/sportslaw additions (10 templates)")
+    }
 }

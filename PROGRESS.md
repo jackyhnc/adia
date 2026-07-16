@@ -16187,3 +16187,66 @@ None. Swift toolchain unavailable on Linux container.
   - `tibetanmedicine` or `homeopathy` — alternative medicine not covered by ayurvedic/acupuncture
 - Template count: 513 → 523 after next 5-domain batch
 - CalloutManagerTests: ~2578 + 40 = ~2618 after next batch
+
+---
+
+## Run — 2026-07-16 (batch: waterresources/biophysics/psychopharmacology/mediationarbitration/sportslaw)
+
+### What shipped
+
+**5 new keyword domains: waterresources, biophysics, psychopharmacology, mediationarbitration, sportslaw**
+
+**New keyword domain — waterresources:**
+- Branch positioned BEFORE `geology` (which already caught bare "hydrology"); catches hydraulics class/lab/exam, stormwater engineering/management, water treatment class/exam, hydrology class/lab/exam (with class/course context), wastewater engineering, groundwater engineering class, water distribution/supply class, sanitary engineering, flood control engineering, irrigation engineering, drinking water treatment class.
+- `waterresourcesCallouts(tier:)` 4/3/3: "those hydraulic calculations aren't going to solve themselves." / "no one passes water resources engineering by scrolling." / "CLOSE THIS. open your water resources engineering work."
+- 2 templates: "Solve water resources engineering problem sets — hydraulics, stormwater, or hydrology calculations" (60 min) + "Complete a water treatment, water distribution, or hydraulic design assignment" (45 min)
+
+**New keyword domain — biophysics:**
+- Branch positioned AFTER `biochemistry` (which owns protein assay / enzyme kinetics) and BEFORE `geneticcounseling`. Catches word("biophysics"/"biophysicist"), biophysics class/lab/exam/textbook/homework, biological physics+edu context, thermodynamics of living systems, membrane potential+biophysics/physics class context, single-molecule biophysics, force spectroscopy, optical tweezers+class/lab. False-positive guards: "membrane potential" in neuroscience class stays in neuroscience; "Bradford protein assay" stays in biochemistry.
+- `biophysicsCallouts(tier:)` 4/3/3: "those biophysics problems aren't going to solve themselves." / "no one masters biophysics by scrolling." / "CLOSE THIS. open your biophysics problem set."
+- 2 templates: "Work through biophysics problem sets — thermodynamics of living systems, membrane potential, protein kinetics" (60 min) + "Write a biophysics lab report or assignment on single-molecule methods or force spectroscopy" (45 min)
+
+**New keyword domain — psychopharmacology:**
+- Branch positioned AFTER `neuroscience` and BEFORE `clinicalpsychology`. Catches word("psychopharmacology"/"neuropsychopharmacology"), psychopharmacology class/exam/paper/program/textbook, pharmacology of mental/psychiatric disorders, psychiatric pharmacology class/exam, neuropsychopharmacology class/exam, antidepressant/antipsychotic mechanism+class/exam, psychotropic medication+class/exam, drug action in brain+class context. False-positive guard: bare "pharmacology class" stays in pharmacy.
+- `psychopharmacologyCallouts(tier:)` 4/3/3: "those drug mechanisms aren't going to memorize themselves." / "no one masters psychopharmacology by scrolling." / "CLOSE THIS. open your psychopharmacology textbook."
+- 2 templates: "Study psychopharmacology — review drug mechanisms, receptor pharmacology, neurotransmitter systems" (60 min) + "Write a psychopharmacology paper or assignment on psychiatric drug mechanisms or clinical applications" (45 min)
+
+**New keyword domain — mediationarbitration:**
+- Branch positioned AFTER `tortlaw` and BEFORE `legal`. Catches alternative dispute resolution, ADR class/exam/program/cert, mediation class/cert/training/program, mediator cert/training, arbitration class/law/training, dispute resolution class/exam/cert, conflict resolution class/program/cert/exam, negotiation+adr/mediation/law context, MCLE mediation, family/divorce mediation class, JAMS/AAA arbitration class. False-positive: bare "negotiation strategy business plan" does NOT fire.
+- `mediationarbitrationCallouts(tier:)` 4/3/3: "those mediation skills aren't going to develop themselves." / "no one becomes a skilled mediator by scrolling." / "CLOSE THIS. open your mediation and arbitration materials."
+- 2 templates: "Study ADR principles and prepare for my mediation or arbitration certification exam" (60 min) + "Complete a mediation training assignment, write an arbitration brief, or prepare a dispute resolution case analysis" (45 min)
+
+**New keyword domain — sportslaw:**
+- Branch positioned AFTER `mediationarbitration` and BEFORE `legal`. Catches sports law, sport law, NCAA compliance+class/exam/officer, athlete contract+law/class, sports agent+law/class/cert, sports management law, collective bargaining+sports/athlete context, sports governance+law/class, athlete representation+law/class, sports liability+class/law, Title IX+sports/athletics/class, professional/esports law+class. False-positive: "sports psychology research paper" does NOT fire.
+- `sportslawCallouts(tier:)` 4/3/3: "those sports contracts aren't going to analyze themselves." / "no one passes sports law by scrolling." / "CLOSE THIS. open your sports law materials."
+- 2 templates: "Study sports law concepts — NCAA compliance, athlete contracts, sports governance, Title IX" (60 min) + "Complete a sports law assignment — analyze an athlete contract, write a sports governance memo, or work through a case study" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +45 tests (9 per domain + 1 count guard ≥539)
+- SuggestedSessionTemplatesTests.swift: +12 tests (2 per domain + 2 count guards ≥529/≥539)
+
+**Template catalog: 529 → 539**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `waterresources` fires BEFORE `geology` (inserted before geology block). "hydraulics class pipe flow problem sets" → waterresources ✓; "studying hydrology and groundwater in geology lab on aquifer systems" → geology ✓ (the false-positive test guards this)
+- `biophysics` fires AFTER `biochemistry`. "bradford protein assay biochemistry lab" → biochemistry ✓; "biophysics class problem sets membrane potential" → biophysics ✓
+- `psychopharmacology` fires AFTER `neuroscience`, BEFORE `clinicalpsychology`. "pharmacokinetics drug metabolism pharmacology class" → pharmacy ✓; "psychopharmacology class exam antidepressant mechanisms" → psychopharmacology ✓
+- `mediationarbitration` fires AFTER `tortlaw`, BEFORE `legal`. "alternative dispute resolution ADR course exam" → mediationarbitration ✓; "bare negotiation strategy business plan" → NOT mediationarbitration ✓
+- `sportslaw` fires AFTER `mediationarbitration`, BEFORE `legal`. "sports law athlete contracts NCAA compliance" → sportslaw ✓; "sports psychology research paper" → NOT sportslaw ✓
+- Brace balance verified: CalloutMessages.swift 584/584 ✓, CalloutManager.swift 320/320 ✓
+- Template count: 539 confirmed by programmatic count
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `speechlanguagepathology` — already covered by `speechpathology`
+  - `educationalleadership` — school administration, principal preparation, EdD program, ISLLC standards (separate from education/physed)
+  - `healthequity` — health disparities, social determinants of health, DEI in medicine (separate from publicheath)
+  - `climatelaw` — climate litigation, carbon law, Paris Agreement enforcement (separate from environmentallaw which covers NEPA/CERCLA)
+  - `neurolaw` — law and neuroscience, criminal culpability and brain science, forensic neuropsychology in court (separate from forensicpsychology)
+  - `medicalhumanities` — narrative medicine, medicine and literature, history of medicine, medical ethics and humanities
+- Template count: 539 → 549 after next 5-domain batch
+- CalloutManagerTests: ~2623 + 45 = ~2668 after next batch

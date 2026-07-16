@@ -15884,4 +15884,212 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast529() {
         #expect(SuggestedSessionTemplates.all.count >= 529, "template catalog must have ≥529 entries after adding 5 new domains (10 templates)")
     }
+
+    // MARK: - waterresources
+    @Test func waterresourcesKeywordFromHydraulicsClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "solving hydraulics class problem sets on pipe flow and channel design")
+        #expect(kw == "waterresources", "hydraulics class problem sets should route to waterresources")
+    }
+    @Test func waterresourcesKeywordFromStormwaterEngineering() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing a stormwater engineering design assignment for my water resources course")
+        #expect(kw == "waterresources", "stormwater engineering design water resources course should route to waterresources")
+    }
+    @Test func waterresourcesKeywordFromWaterTreatmentClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a lab report on water treatment class coagulation and flocculation")
+        #expect(kw == "waterresources", "water treatment class lab report should route to waterresources")
+    }
+    @Test func waterresourcesKeywordFromHydrologyClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my hydrology class exam on runoff and watershed modeling")
+        #expect(kw == "waterresources", "hydrology class exam runoff watershed modeling should route to waterresources")
+    }
+    @Test func waterresourcesKeywordFromWastewaterEngineering() {
+        let kw = CalloutManager.extractTaskKeyword(from: "finishing a wastewater engineering design report for my environmental engineering course")
+        #expect(kw == "waterresources", "wastewater engineering design report should route to waterresources")
+    }
+    @Test func waterresourcesFalsePositive_bareGeologyHydrology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying hydrology and groundwater in my geology lab on aquifer systems")
+        #expect(kw == "geology", "hydrology in geology lab context should route to geology not waterresources")
+    }
+    @Test @MainActor func waterresourcesCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "waterresources", tier: tier)
+            #expect(!msgs.isEmpty, "waterresources tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func waterresourcesTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "waterresources", tier: 1)
+        #expect(msgs.count >= 4, "waterresources tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func waterresourcesTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "waterresources", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "waterresources tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - biophysics
+    @Test func biophysicsKeywordFromBiophysicsClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working through biophysics class problem sets on membrane potential and ion channels")
+        #expect(kw == "biophysics", "biophysics class problem sets membrane potential should route to biophysics")
+    }
+    @Test func biophysicsKeywordFromBiophysicsLab() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing up my biophysics lab report on single-molecule force spectroscopy")
+        #expect(kw == "biophysics", "biophysics lab report single-molecule force spectroscopy should route to biophysics")
+    }
+    @Test func biophysicsKeywordFromBiologicalPhysics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying thermodynamics of living systems for my biological physics course exam")
+        #expect(kw == "biophysics", "thermodynamics of living systems biological physics course exam should route to biophysics")
+    }
+    @Test func biophysicsKeywordFromBiophysicsExam() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing for my biophysics exam on protein folding thermodynamics")
+        #expect(kw == "biophysics", "biophysics exam protein folding thermodynamics should route to biophysics")
+    }
+    @Test func biophysicsFalsePositive_bareProteinBiochemistry() {
+        let kw = CalloutManager.extractTaskKeyword(from: "running a Bradford protein assay for my biochemistry lab experiment")
+        #expect(kw == "biochemistry", "bradford protein assay biochemistry lab should route to biochemistry not biophysics")
+    }
+    @Test func biophysicsFalsePositive_bareMembraneNeuroscience() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying membrane potential and action potential generation in my neuroscience class")
+        #expect(kw == "neuroscience", "membrane potential action potential neuroscience class should route to neuroscience not biophysics")
+    }
+    @Test @MainActor func biophysicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "biophysics", tier: tier)
+            #expect(!msgs.isEmpty, "biophysics tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func biophysicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "biophysics", tier: 1)
+        #expect(msgs.count >= 4, "biophysics tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func biophysicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "biophysics", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "biophysics tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - psychopharmacology
+    @Test func psychopharmacologyKeywordFromPsychopharmacologyClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my psychopharmacology class exam on antidepressant mechanisms")
+        #expect(kw == "psychopharmacology", "psychopharmacology class exam antidepressant mechanisms should route to psychopharmacology")
+    }
+    @Test func psychopharmacologyKeywordFromNeuropsychopharmacology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a neuropsychopharmacology paper on dopamine receptor pharmacology")
+        #expect(kw == "psychopharmacology", "neuropsychopharmacology paper dopamine receptor pharmacology should route to psychopharmacology")
+    }
+    @Test func psychopharmacologyKeywordFromPharmacologyOfMentalDisorders() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing pharmacology of mental disorders for my neuroscience and psychiatry class")
+        #expect(kw == "psychopharmacology", "pharmacology of mental disorders neuroscience psychiatry class should route to psychopharmacology")
+    }
+    @Test func psychopharmacologyKeywordFromPsychiatricPharmacologyExam() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing for my psychiatric pharmacology exam covering antipsychotic and mood stabilizer mechanisms")
+        #expect(kw == "psychopharmacology", "psychiatric pharmacology exam antipsychotic mood stabilizer should route to psychopharmacology")
+    }
+    @Test func psychopharmacologyFalsePositive_barePharmacologyClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying pharmacokinetics and drug metabolism for my pharmacology class")
+        #expect(kw == "pharmacy", "pharmacokinetics drug metabolism pharmacology class should route to pharmacy not psychopharmacology")
+    }
+    @Test @MainActor func psychopharmacologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "psychopharmacology", tier: tier)
+            #expect(!msgs.isEmpty, "psychopharmacology tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func psychopharmacologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "psychopharmacology", tier: 1)
+        #expect(msgs.count >= 4, "psychopharmacology tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func psychopharmacologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "psychopharmacology", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "psychopharmacology tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - mediationarbitration
+    @Test func mediationarbitrationKeywordFromMediationClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing a role-play exercise for my mediation class certification program")
+        #expect(kw == "mediationarbitration", "mediation class certification program role-play should route to mediationarbitration")
+    }
+    @Test func mediationarbitrationKeywordFromADR() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing alternative dispute resolution principles for my ADR course exam")
+        #expect(kw == "mediationarbitration", "alternative dispute resolution ADR course exam should route to mediationarbitration")
+    }
+    @Test func mediationarbitrationKeywordFromArbitrationClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing an arbitration brief for my arbitration law class assignment")
+        #expect(kw == "mediationarbitration", "arbitration brief arbitration law class assignment should route to mediationarbitration")
+    }
+    @Test func mediationarbitrationKeywordFromDisputeResolutionProgram() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying dispute resolution techniques for my conflict resolution certification program")
+        #expect(kw == "mediationarbitration", "dispute resolution conflict resolution certification program should route to mediationarbitration")
+    }
+    @Test func mediationarbitrationFalsePositive_bareNegotiationBusiness() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my negotiation strategy and business plan presentation")
+        #expect(kw != "mediationarbitration", "bare negotiation strategy business plan should NOT route to mediationarbitration")
+    }
+    @Test @MainActor func mediationarbitrationCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "mediationarbitration", tier: tier)
+            #expect(!msgs.isEmpty, "mediationarbitration tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func mediationarbitrationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "mediationarbitration", tier: 1)
+        #expect(msgs.count >= 4, "mediationarbitration tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func mediationarbitrationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "mediationarbitration", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "mediationarbitration tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - sportslaw
+    @Test func sportslawKeywordFromSportsLaw() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying sports law and athlete contracts for my sports management law class exam")
+        #expect(kw == "sportslaw", "sports law athlete contracts sports management law class exam should route to sportslaw")
+    }
+    @Test func sportslawKeywordFromNCAA() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing NCAA compliance rules and eligibility requirements for my sports law course")
+        #expect(kw == "sportslaw", "NCAA compliance rules eligibility sports law course should route to sportslaw")
+    }
+    @Test func sportslawKeywordFromTitleIXSports() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a paper on Title IX sports law and gender equity in athletics for my law class")
+        #expect(kw == "sportslaw", "title ix sports law gender equity athletics law class should route to sportslaw")
+    }
+    @Test func sportslawKeywordFromCollectiveBargainingSports() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyzing collective bargaining agreements in sports for my sports law assignment")
+        #expect(kw == "sportslaw", "collective bargaining agreements sports sports law assignment should route to sportslaw")
+    }
+    @Test func sportslawFalsePositive_sportsPsychology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my sports psychology research paper on athlete motivation")
+        #expect(kw != "sportslaw", "sports psychology research paper athlete motivation should NOT route to sportslaw")
+    }
+    @Test @MainActor func sportslawCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "sportslaw", tier: tier)
+            #expect(!msgs.isEmpty, "sportslaw tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func sportslawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "sportslaw", tier: 1)
+        #expect(msgs.count >= 4, "sportslaw tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func sportslawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "sportslaw", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "sportslaw tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: waterresources/biophysics/psychopharmacology/mediationarbitration/sportslaw)
+    @Test func suggestedTemplatesCountAtLeast539() {
+        #expect(SuggestedSessionTemplates.all.count >= 539, "template catalog must have ≥539 entries after adding 5 new domains (10 templates)")
+    }
 }

@@ -3410,5 +3410,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Assignment or case write-up meaningfully advanced (at least one diagnostic principle applied, notes written and saved)",
             preferredDuration: 45 * 60
         ),
+        // waterresources
+        SuggestedTemplate(
+            icon: "drop.triangle.fill",
+            task: "Solve water resources engineering problem sets — hydraulics, stormwater, or hydrology calculations",
+            successCriteria: "Engineering problem set meaningfully advanced (at least three problems attempted with work shown, calculations saved or written up)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a water treatment, water distribution, or hydraulic design assignment for my water resources class",
+            successCriteria: "Assignment meaningfully advanced (design calculations or written sections completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // biophysics
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work through biophysics problem sets — thermodynamics of living systems, membrane potential calculations, or protein kinetics",
+            successCriteria: "Biophysics problem set meaningfully advanced (at least three problems worked through with derivations shown and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a biophysics lab report or complete a biophysics assignment on single-molecule methods or force spectroscopy",
+            successCriteria: "Lab report or assignment meaningfully advanced (methods and results sections drafted or calculations completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // psychopharmacology
+        SuggestedTemplate(
+            icon: "brain.filled.head.profile",
+            task: "Study psychopharmacology — review drug mechanisms, receptor pharmacology, and neurotransmitter systems for my class or exam",
+            successCriteria: "Psychopharmacology study session completed (at least two drug classes or receptor mechanisms reviewed, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a psychopharmacology paper or complete an assignment on psychiatric drug mechanisms, side effects, or clinical applications",
+            successCriteria: "Assignment meaningfully advanced (at least one drug class analyzed in detail, key concepts written up and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // mediationarbitration
+        SuggestedTemplate(
+            icon: "person.2.fill",
+            task: "Study alternative dispute resolution (ADR) principles and prepare for my mediation or arbitration certification exam",
+            successCriteria: "ADR exam prep meaningfully advanced (at least two topic areas reviewed, practice scenarios considered, and notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a mediation training assignment, write an arbitration brief, or prepare a dispute resolution case analysis",
+            successCriteria: "ADR work meaningfully advanced (case analysis written or assignment section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // sportslaw
+        SuggestedTemplate(
+            icon: "figure.run",
+            task: "Study sports law concepts — review NCAA compliance, athlete contracts, sports governance, and Title IX for my class or exam",
+            successCriteria: "Sports law study session completed (at least two topic areas reviewed, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a sports law assignment — analyze an athlete contract, write a sports governance memo, or work through a case study",
+            successCriteria: "Sports law assignment meaningfully advanced (case analysis written or memo section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }
