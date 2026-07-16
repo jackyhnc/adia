@@ -1,5 +1,78 @@
 # Adia — Build Progress
 
+## Run 364 (automated) — 2026-07-16 — 5 new keyword domains: parasitology, embryology, histology, pathology, neuroanatomy (691→701 templates)
+
+### What shipped
+
+**5 new keyword domains: parasitology, embryology, histology, pathology, neuroanatomy**
+
+**New keyword domain — parasitology:**
+- Branch positioned BEFORE premed; "malaria MCAT" stays in premed.
+- Catches: parasitology class/course/exam/lab/notes/textbook/assignment/lab-report, helminthology+class/lab/exam, protozoology+class/lab/exam, parasite identification+class/lab, protozoa identification+class/lab, helminth+class/lab/identification, malaria life cycle+class/lab/exam, Plasmodium+class/lab/life cycle, Trypanosoma+class/lab, Giardia+class/lab/identification, Ascaris+class/lab, tapeworm/roundworm/nematode/trematode/cestode+class/lab/identification, parasitic disease+class/course/lab/exam, parasite biology+class/course/lab.
+- `parasitologyCallouts(tier:)` 4/3/3: "those parasites aren't going to identify themselves." / "no one identifies parasites by scrolling." / "CLOSE THIS. open your parasitology textbook."
+- 2 templates: "Complete my parasitology lab report or assignment" (60 min) + "Study parasitology for my exam" (45 min)
+
+**New keyword domain — embryology:**
+- Branch positioned BEFORE premed; bare word("embryology") stays in premed for MCAT context.
+- Catches: embryology class/course/exam/lab/notes/textbook/assignment/lecture, neurulation+class/lab/exam, organogenesis+class/lab/exam, extraembryonic membranes+class/lab/exam, fetal development+class/course/exam/lab, embryonic development+class/course/exam/lab, germ layers+class/lab/exam, somite development+class/lab, primitive streak+class/lab/exam, blastulation+class/lab/exam, cleavage division+class/lab, placental development+class/lab/exam, teratology+class/lab/exam, developmental embryology.
+- `embryologyCallouts(tier:)` 4/3/3: "those embryology diagrams aren't going to study themselves." / "no one masters embryology by scrolling." / "CLOSE THIS. open your embryology textbook."
+- 2 templates: "Study embryology for my exam" (60 min) + "Work through my embryology assignment" (45 min)
+
+**New keyword domain — histology:**
+- Branch positioned BEFORE premed; bare word("histology") stays in premed for MCAT context.
+- Catches: histology class/course/exam/lab/notes/slide/assignment/practical/textbook/lecture, tissue identification+class/lab/histology, H&E staining+class/lab/histology, hematoxylin and eosin+class/lab/histology, histological section+class/lab/exam, microscopic anatomy+class/course/lab/exam, epithelial tissue+class/lab/histology/identification, connective tissue histology, smooth muscle histology, cardiac muscle histology, bone histology+class/lab/exam, histopathology lab (!pathology class), tissue staining+class/lab/histology.
+- `histologyCallouts(tier:)` 4/3/3: "those tissue slides aren't going to identify themselves." / "no one identifies tissues by scrolling." / "CLOSE THIS. open your histology notes."
+- 2 templates: "Practice histology slide identification" (60 min) + "Study histology for my practical exam" (45 min)
+
+**New keyword domain — pathology:**
+- Branch positioned BEFORE premed; bare word("pathology") stays in premed for MCAT context.
+- Catches: pathology class/course/exam/lab/notes/assignment/lecture/textbook, gross pathology+class/lab/exam/slide, microscopic pathology+class/lab/exam, histopathology+class/lab/exam/pathology, pathology slide+class/lab/exam, disease mechanisms+class/course/lab/exam, autopsy+class/course/lab/pathology, pathogenesis+class/course/lab/exam/pathology, surgical pathology+class/rotation/notes, forensic pathology+class/exam, clinical pathology+class/rotation, pathology report+class/lab, neoplasia+class/pathology/exam, inflammation pathology+class/lab/exam.
+- `pathologyCallouts(tier:)` 4/3/3: "those pathology slides aren't going to analyze themselves." / "no one masters pathology by scrolling." / "CLOSE THIS. open your pathology textbook."
+- 2 templates: "Study pathology for my exam" (60 min) + "Work through my pathology lab or assignment" (45 min)
+
+**New keyword domain — neuroanatomy:**
+- Branch positioned BEFORE premed; "action potential" and general neuroscience stay in neuroscience (earlier).
+- Catches: neuroanatomy class/course/exam/lab/notes/assignment/dissection/textbook, brain regions+class/lab/exam/anatomy, spinal cord anatomy+class/lab/exam, cranial nerves+class/lab/exam/anatomy/identify, neural pathways+class/lab/exam/anatomy, brainstem anatomy+class/lab/exam, cortical mapping+class/lab/exam, limbic system+class/lab/exam/anatomy, cerebellum anatomy+class/lab/exam, basal ganglia+class/lab/exam/anatomy, neural tracts+class/lab/exam/anatomy, brain atlas+class/lab/anatomy, dermatome+class/lab/exam/anatomy, forebrain/hindbrain/thalamus/hypothalamus+class/lab/anatomy/exam.
+- `neuroanatomyCallouts(tier:)` 4/3/3: "those cranial nerves aren't going to memorize themselves." / "no one maps the brain by scrolling." / "CLOSE THIS. open your neuroanatomy textbook."
+- 2 templates: "Study neuroanatomy for my exam" (60 min) + "Practice neuroanatomy identification" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: 49 new tests (4 keyword routing + 1 false-positive + 3 callout pool tests per domain × 5 + neuroanatomy gets 5 keyword tests + 1 count guard ≥701)
+- SuggestedSessionTemplatesTests.swift: 11 new tests (2 per domain + 1 count guard ≥701)
+
+**Template catalog: 691 → 701**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- Brace balance: CalloutManager.swift 400/400 ✓, CalloutMessages.swift 745/745 ✓, SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 701 confirmed (grep -c "preferredDuration:" = 701) ✓
+- `parasitology` fires at line 5015, BEFORE premed (5130) ✓
+- `embryology` fires at line 5040, BEFORE premed ✓
+- `histology` fires at line 5062, BEFORE premed ✓
+- `pathology` fires at line 5084, BEFORE premed ✓
+- `neuroanatomy` fires at line 5105, BEFORE premed ✓
+- "malaria MCAT" → premed (bare MCAT context, no parasitology class) ✓
+- bare word("embryology"/"histology"/"pathology") without class context stays in premed ✓
+- All 5 case statements in CalloutMessages.swift wired to private functions ✓
+- `speechpathology` (line 115) is a separate pre-existing domain, no conflict with `pathology` ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `computationalchemistry` — DFT, molecular dynamics simulation, GAUSSIAN, Schrödinger, ab initio calculation
+  - `chemicalkinetics` — rate law, Arrhenius equation, reaction order class (separate from organicchemistry)
+  - `materialstesting` — tensile/compressive testing, Charpy impact, materials testing lab
+  - `mechanicalengineering` — machine design, manufacturing, dynamics, vibrations (separate from generic engineering)
+  - `nuclearengineering` — nuclear reactor class, neutron physics, thermal hydraulics, reactor safety
+  - `environmentalengineering` — water/wastewater treatment, air pollution, environmental modeling
+  - `pharmacology` — pharmacology class (currently bare word in premed), drug mechanisms, receptor pharmacology
+  - `physiology` — physiology class (currently bare word in premed), organ system physiology, physiology lab
+  - `biochemistry` — biochemistry class (currently bare word in premed), metabolism, enzyme kinetics, biochemistry lab
+- Template count: 701 → 711 after next 5-domain batch
+- CalloutManagerTests: ~19083 lines after this run, +~200 lines next run
+
 ## Run 363 (automated) — 2026-07-16 — 5 new keyword domains: civilengineering, syntheticbiology, proteomics, metabolomics, electrophysiology (671→681 templates)
 
 ### What shipped
