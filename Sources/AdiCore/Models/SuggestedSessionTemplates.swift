@@ -3670,5 +3670,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Climate law assignment meaningfully advanced (regulation analyzed, treaty critiqued, or climate finance research section completed and saved)",
             preferredDuration: 45 * 60
         ),
+        // athletictraining
+        SuggestedTemplate(
+            icon: "figure.run",
+            task: "Study athletic training concepts — review therapeutic modalities, taping and bracing techniques, or sport injury evaluation protocols for my ATC coursework or exam",
+            successCriteria: "Athletic training study session completed (at least two modalities, techniques, or injury protocols reviewed, key concepts understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my athletic training program assignment — write up a sport injury evaluation, document a therapeutic modality treatment plan, or complete a taping lab report",
+            successCriteria: "Athletic training assignment meaningfully advanced (injury evaluation documented, treatment plan written, or lab report section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // biomechanics
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Analyze biomechanics data — process motion capture results, interpret force plate data, or complete a gait analysis or kinematic analysis report for class",
+            successCriteria: "Biomechanics analysis meaningfully advanced (data processed, key kinematic or kinetic variables calculated, interpretation written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study biomechanics concepts — review joint kinetics, kinematics, electromyography, or motion analysis methods for my biomechanics class or exam",
+            successCriteria: "Biomechanics study session completed (at least two biomechanical principles or analysis methods reviewed, key equations or concepts understood, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // zoology
+        SuggestedTemplate(
+            icon: "pawprint.fill",
+            task: "Study zoology concepts — review animal taxonomy, invertebrate or vertebrate zoology, morphology, or comparative zoology for my class or exam",
+            successCriteria: "Zoology study session completed (at least two taxonomic groups or zoological concepts reviewed, key identifications or principles understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a zoology lab report or assignment — write up a taxonomic classification exercise, animal morphology observation, or field zoology analysis",
+            successCriteria: "Zoology assignment meaningfully advanced (classification completed, morphology described, or field observation written and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // militaryscience
+        SuggestedTemplate(
+            icon: "shield.fill",
+            task: "Complete my military science or ROTC coursework — study leadership doctrine, review tactics class material, or prepare for an ROTC lab or leadership assessment",
+            successCriteria: "Military science study session completed (leadership doctrine or tactics material reviewed, key concepts understood, lab prep or coursework notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a military science paper or ROTC assignment — analyze a leadership case study, complete a military tactics assignment, or write up a cadet training reflection",
+            successCriteria: "Military science assignment meaningfully advanced (case study analyzed, tactics assignment drafted, or reflection written and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // healthinformatics
+        SuggestedTemplate(
+            icon: "chart.bar.xaxis",
+            task: "Study health informatics concepts — review HL7 FHIR standards, health data interoperability, clinical decision support systems, or CPHIMS exam material for my program",
+            successCriteria: "Health informatics study session completed (at least two interoperability standards or informatics concepts reviewed, key terms understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a health informatics assignment — analyze a FHIR implementation case, design a clinical data exchange workflow, or write up a health IT interoperability analysis",
+            successCriteria: "Health informatics assignment meaningfully advanced (FHIR case analyzed, workflow designed, or interoperability analysis section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

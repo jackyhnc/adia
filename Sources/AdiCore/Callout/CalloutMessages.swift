@@ -351,6 +351,11 @@ extension CalloutManager {
         case "healthequity":                return healthequityCallouts(tier: tier)
         case "neurolaw":                    return neurolawCallouts(tier: tier)
         case "climatelaw":                  return climatelawCallouts(tier: tier)
+        case "athletictraining":            return athletictrainingCallouts(tier: tier)
+        case "biomechanics":               return biomechanicsCallouts(tier: tier)
+        case "zoology":                    return zoologyCallouts(tier: tier)
+        case "militaryscience":            return militaryscienceCallouts(tier: tier)
+        case "healthinformatics":          return healthinformaticsCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -6701,6 +6706,111 @@ extension CalloutManager {
             "CLOSE THIS. open your climate law notes.",
             "CLOSE THIS. carbon market law demands your full attention.",
             "CLOSE THIS. climate treaties won't interpret themselves."
+        ]
+        }
+    }
+
+    private func athletictrainingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those therapeutic modalities aren't going to study themselves.",
+            "close this and get back to your athletic training coursework.",
+            "your athletes need a trainer who actually studies — close this.",
+            "taping techniques don't learn themselves — close this.",
+        ]
+        case 2: return [
+            "no one earns their ATC credential by scrolling.",
+            "close this and open your athletic training materials.",
+            "sport injury evaluation won't memorize itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your athletic training notes.",
+            "CLOSE THIS. your ATC exam won't pass itself.",
+            "CLOSE THIS. certified athletic trainers earn it — close this and study."
+        ]
+        }
+    }
+
+    private func biomechanicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those force plate results aren't going to analyze themselves.",
+            "close this and get back to your biomechanics lab.",
+            "joint kinetics won't calculate themselves — close this.",
+            "motion capture data doesn't process itself — close this.",
+        ]
+        case 2: return [
+            "no one masters biomechanics by scrolling.",
+            "close this and open your biomechanics analysis.",
+            "gait lab data won't interpret itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your biomechanics lab work.",
+            "CLOSE THIS. kinematic analysis demands your full attention.",
+            "CLOSE THIS. force plates don't read themselves."
+        ]
+        }
+    }
+
+    private func zoologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those taxonomic classifications aren't going to memorize themselves.",
+            "close this and get back to your zoology coursework.",
+            "invertebrate zoology won't study itself — close this.",
+            "animal morphology doesn't describe itself — close this.",
+        ]
+        case 2: return [
+            "no one passes their zoology exam by scrolling.",
+            "close this and open your zoology study materials.",
+            "taxonomic keys won't unlock themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your zoology notes.",
+            "CLOSE THIS. species identification demands your full attention.",
+            "CLOSE THIS. zoologists know their taxa — close this and study."
+        ]
+        }
+    }
+
+    private func militaryscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those leadership lab requirements aren't going to complete themselves.",
+            "close this and get back to your military science coursework.",
+            "ROTC tactics don't study themselves — close this.",
+            "cadet leadership doesn't develop itself — close this.",
+        ]
+        case 2: return [
+            "no one earns their commission by scrolling.",
+            "close this and open your military science materials.",
+            "military tactics won't memorize themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your ROTC class notes.",
+            "CLOSE THIS. military leaders lead — close this and study.",
+            "CLOSE THIS. your cadet program demands your full attention."
+        ]
+        }
+    }
+
+    private func healthinformaticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those FHIR standards aren't going to implement themselves.",
+            "close this and get back to your health informatics coursework.",
+            "HL7 interoperability won't study itself — close this.",
+            "health data exchange doesn't configure itself — close this.",
+        ]
+        case 2: return [
+            "no one passes the CPHIMS exam by scrolling.",
+            "close this and open your health informatics materials.",
+            "clinical decision support won't build itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your health informatics notes.",
+            "CLOSE THIS. FHIR implementation demands your full attention.",
+            "CLOSE THIS. health data won't interoperate itself."
         ]
         }
     }

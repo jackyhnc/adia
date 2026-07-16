@@ -4518,4 +4518,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 569,
                 "catalog should have ≥569 templates after educationalleadership/medicalhumanities/healthequity/neurolaw/climatelaw additions (10 templates)")
     }
+
+    // MARK: - athletictraining
+    @Test func athletictrainingTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("athletic training") || $0.localizedCaseInsensitiveContains("ATC") || $0.localizedCaseInsensitiveContains("therapeutic modalities")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("concepts") || $0.localizedCaseInsensitiveContains("coursework"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("athletic training") || $0.localizedCaseInsensitiveContains("taping") || $0.localizedCaseInsensitiveContains("injury evaluation")) &&
+            ($0.localizedCaseInsensitiveContains("complete") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("lab report") || $0.localizedCaseInsensitiveContains("write"))
+        }
+        #expect(hasStudy, "catalog must include an athletic training study template")
+        #expect(hasAssignment, "catalog must include an athletic training assignment or lab template")
+    }
+
+    // MARK: - biomechanics
+    @Test func biomechanicsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAnalysis = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("biomechanics") || $0.localizedCaseInsensitiveContains("force plate") || $0.localizedCaseInsensitiveContains("motion capture") || $0.localizedCaseInsensitiveContains("kinematic")) &&
+            ($0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("data") || $0.localizedCaseInsensitiveContains("lab") || $0.localizedCaseInsensitiveContains("report"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("biomechanics") || $0.localizedCaseInsensitiveContains("joint kinetics") || $0.localizedCaseInsensitiveContains("kinematics")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("concepts") || $0.localizedCaseInsensitiveContains("class"))
+        }
+        #expect(hasAnalysis, "catalog must include a biomechanics data analysis template")
+        #expect(hasStudy, "catalog must include a biomechanics study template")
+    }
+
+    // MARK: - zoology
+    @Test func zoologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("zoology") || $0.localizedCaseInsensitiveContains("taxonomy") || $0.localizedCaseInsensitiveContains("invertebrate") || $0.localizedCaseInsensitiveContains("vertebrate")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("concepts") || $0.localizedCaseInsensitiveContains("class"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("zoology") || $0.localizedCaseInsensitiveContains("taxonomic") || $0.localizedCaseInsensitiveContains("morphology")) &&
+            ($0.localizedCaseInsensitiveContains("lab report") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("write") || $0.localizedCaseInsensitiveContains("complete"))
+        }
+        #expect(hasStudy, "catalog must include a zoology study template")
+        #expect(hasAssignment, "catalog must include a zoology lab or assignment template")
+    }
+
+    // MARK: - militaryscience
+    @Test func militaryscienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("military science") || $0.localizedCaseInsensitiveContains("ROTC") || $0.localizedCaseInsensitiveContains("leadership doctrine") || $0.localizedCaseInsensitiveContains("cadet")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("coursework") || $0.localizedCaseInsensitiveContains("prepare"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("military science") || $0.localizedCaseInsensitiveContains("ROTC") || $0.localizedCaseInsensitiveContains("military tactics") || $0.localizedCaseInsensitiveContains("cadet")) &&
+            ($0.localizedCaseInsensitiveContains("write") || $0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("analyze"))
+        }
+        #expect(hasStudy, "catalog must include a military science study or coursework template")
+        #expect(hasAssignment, "catalog must include a military science paper or assignment template")
+    }
+
+    // MARK: - healthinformatics
+    @Test func healthinformaticsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("health informatics") || $0.localizedCaseInsensitiveContains("FHIR") || $0.localizedCaseInsensitiveContains("HL7") || $0.localizedCaseInsensitiveContains("interoperability")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("concepts") || $0.localizedCaseInsensitiveContains("program"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("health informatics") || $0.localizedCaseInsensitiveContains("FHIR") || $0.localizedCaseInsensitiveContains("interoperability") || $0.localizedCaseInsensitiveContains("clinical decision support")) &&
+            ($0.localizedCaseInsensitiveContains("complete") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("design"))
+        }
+        #expect(hasStudy, "catalog must include a health informatics study template")
+        #expect(hasAssignment, "catalog must include a health informatics assignment or analysis template")
+    }
+
+    // MARK: - Count guard (batch: athletictraining/biomechanics/zoology/militaryscience/healthinformatics)
+    @Test func catalogHasAtLeastFiveHundredSeventyNineTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 579,
+                "catalog should have ≥579 templates after athletictraining/biomechanics/zoology/militaryscience/healthinformatics additions (10 templates)")
+    }
 }

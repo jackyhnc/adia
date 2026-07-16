@@ -1,5 +1,76 @@
 # Adia — Build Progress
 
+## Run 353 (automated) — 2026-07-16 — 5 new keyword domains: athletictraining, biomechanics, zoology, militaryscience, healthinformatics (569→579 templates)
+
+### What shipped
+
+**5 new keyword domains: athletictraining, biomechanics, zoology, militaryscience, healthinformatics**
+
+**New keyword domain — athletictraining:**
+- Branch positioned AFTER exercisescience/sportsmedicine, BEFORE kinesiology; catches athletic trainer/certified athletic trainer, athletic training program/major/degree/school/class/course, pre-athletic training, therapeutic modalities+athletic/ATC/class/lab context, taping and bracing, athletic training room, sport/sports injury evaluation+class/lab, NATA exam/certification, secondary/collegiate athletic training.
+- Compound clinical/BOC/CAATE terms stay in sportsmedicine (fires earlier); generic "athletic training" context stays in kinesiology (fires after).
+- `athletictrainingCallouts(tier:)` 4/3/3: "those therapeutic modalities aren't going to study themselves." / "no one earns their ATC credential by scrolling." / "CLOSE THIS. your ATC exam won't pass itself."
+- 2 templates: "Study athletic training concepts…" (60 min, figure.run) + "Complete my athletic training program assignment…" (45 min, doc.text.fill)
+
+**New keyword domain — biomechanics:**
+- Branch positioned BEFORE kinesiology; catches word(biomechanics/biomechanist/biomechanical), biomechanics lab/class/course/exam/program/major/research, sports/clinical/movement biomechanics, motion capture+class/lab/research/analysis context, joint kinetics/kinematics, kinematic/kinetic analysis+class/lab/research, force plate+class/lab/research/biomechanics, 3D motion analysis, electromyography+class/lab/biomechanics/research, gait biomechanics, gait lab+class/research/biomechanics.
+- word("biomechanics") removed from kinesiology branch.
+- `biomechanicsCallouts(tier:)` 4/3/3: "those force plate results aren't going to analyze themselves." / "no one masters biomechanics by scrolling." / "CLOSE THIS. kinematic analysis demands your full attention."
+- 2 templates: "Analyze biomechanics data…" (60 min, waveform.path.ecg) + "Study biomechanics concepts…" (45 min, doc.text.fill)
+
+**New keyword domain — zoology:**
+- Branch positioned BEFORE veterinary; catches word(zoology/zoologist/zoologists/zoological), zoology class/course/exam/program/major/degree/lab/notes, invertebrate/vertebrate zoology, comparative/field zoology, animal taxonomy+class/lab/zoology/animal, taxonomic classification+class/lab/zoology/animal, animal morphology+class/lab/course/exam, word(entomology/entomologist), entomology class/course/lab/exam, wildlife biology+class/course/exam/program/major.
+- word("zoology") removed from veterinary branch.
+- `zoologyCallouts(tier:)` 4/3/3: "those taxonomic classifications aren't going to memorize themselves." / "no one passes their zoology exam by scrolling." / "CLOSE THIS. species identification demands your full attention."
+- 2 templates: "Study zoology concepts…" (60 min, pawprint.fill) + "Complete a zoology lab report or assignment…" (45 min, doc.text.fill)
+
+**New keyword domain — militaryscience:**
+- Branch positioned BEFORE militarystudies; catches military science class/course/lab/program/exam/notes, rotc lab/leadership, rotc program+class/course/lab/train context, leadership development lab+rotc/military/cadet, cadet training/leadership class, cadet program+class/course/exam/lab/train, army/navy/air force rotc class/course, military tactics class/course, military leadership class (without "studies" guard).
+- Military history, war studies, veterans studies, ASVAB stay in militarystudies.
+- `militaryscienceCallouts(tier:)` 4/3/3: "those leadership lab requirements aren't going to complete themselves." / "no one earns their commission by scrolling." / "CLOSE THIS. military leaders lead — close this and study."
+- 2 templates: "Complete my military science or ROTC coursework…" (60 min, shield.fill) + "Write a military science paper or ROTC assignment…" (45 min, doc.text.fill)
+
+**New keyword domain — healthinformatics:**
+- Branch positioned BEFORE healthcareadmin; catches word(cphims)+exam/cert, hl7 fhir, fhir standards/interface/class/course/implementation, hl7 interface/class/standards/course/exam, health data interoperability/exchange, health information exchange+class/course/program/exam/hie, health informatics+degree/major/program/class/course/exam, clinical informatics+degree/major/program/class/course/exam, biomedical/bio-medical informatics, medical/nursing informatics+class/course/program/exam, clinical decision support+class/course/informatics.
+- "Healthcare administration" and RHIA/RHIT credentials stay in healthcareadmin (fires after).
+- `healthinformaticsCallouts(tier:)` 4/3/3: "those FHIR standards aren't going to implement themselves." / "no one passes the CPHIMS exam by scrolling." / "CLOSE THIS. FHIR implementation demands your full attention."
+- 2 templates: "Study health informatics concepts…" (60 min, chart.bar.xaxis) + "Complete a health informatics assignment…" (45 min, doc.text.fill)
+
+**New tests:**
+- CalloutManagerTests.swift: +40 tests (8 per domain: 4 keyword routing + 1 false-positive + 3 callout tier tests; 2 count guards ≥569/≥579)
+- SuggestedSessionTemplatesTests.swift: +12 tests (2 domain template existence tests per domain + 2 count guards ≥569/≥579)
+
+**Template catalog: 569 → 579**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by structural inspection.
+- Brace balance: CalloutManager.swift 340/340 ✓, CalloutMessages.swift 625/625 ✓, CalloutManagerTests.swift 5015/5015 ✓, SuggestedSessionTemplatesTests.swift 1476/1476 ✓
+- Template count verified: `grep -c 'SuggestedTemplate(' SuggestedSessionTemplates.swift` = 579 ✓
+- Callout pool function count: 305 (was 300 + 5 new) ✓
+- Ordering checks:
+  - `athletictraining` (line 2643) fires BEFORE `biomechanics` (2662) BEFORE `kinesiology` (2677) ✓
+  - `zoology` (line 3239) fires BEFORE `veterinary` (3253) ✓
+  - `healthinformatics` (line 3968) fires BEFORE `healthcareadmin` (3988) ✓
+  - `militaryscience` (line 5192) fires BEFORE `militarystudies` (5213) ✓
+- word("biomechanics") removed from kinesiology branch ✓
+- word("zoology") removed from veterinary branch ✓
+- Dispatch cases added for all 5 new domains in taskAwareCallouts ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `geochemistry` — split from geology; geochemical analysis, stable/radiogenic isotopes, mass spectrometry in geochemistry context, ICPMS, geochemistry lab/class
+  - `hydrology` — split from waterresources; watershed analysis, streamflow gauging, hydrograph analysis, SWAT model, groundwater model, hydrological cycle class
+  - `anesthesiology` — split from healthcareadmin/premed; anesthesiologist assistant program, AA school/exam/program, NCCAA exam, anesthesia pharmacology class, clinical anesthesia rotation
+  - `dentalimplantology` — split from dental; implant placement class, osseointegration class, implant prosthetics lab, ITI/AO implant course
+  - `cyberlaw` — digital law, internet law, computer fraud law, CFAA class, data privacy law, GDPR law class, cybersecurity law class (distinct from cybersecurity skills)
+- Template catalog: 579 → 589 after next 5-domain batch
+- CalloutManagerTests: ~16893 + 40 = ~16933 (approx) after next batch
+
+---
+
 ## Run 352 (automated) — 2026-07-16 — 5 new keyword domains: tesol, specialeducation, foodscience, animalwelfare, epidemiologicalmodeling (549→559 templates)
 
 ### What shipped

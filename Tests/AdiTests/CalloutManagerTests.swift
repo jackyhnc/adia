@@ -16688,8 +16688,206 @@ struct CalloutManagerTests {
         #expect(msgs.contains { $0.contains("CLOSE THIS") }, "climatelaw tier 3 must contain CLOSE THIS")
     }
 
-    // MARK: - Count guard (batch: educationalleadership/medicalhumanities/healthequity/neurolaw/climatelaw)
+    // MARK: - athletictraining
+    @Test func athletictrainingKeywordFromATC() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my certified athletic trainer exam and reviewing therapeutic modalities for the ATC credential")
+        #expect(kw == "athletictraining", "certified athletic trainer ATC credential exam should route to athletictraining")
+    }
+    @Test func athletictrainingKeywordFromTapingLab() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my taping and bracing lab report for athletic training class")
+        #expect(kw == "athletictraining", "taping and bracing lab athletic training class should route to athletictraining")
+    }
+    @Test func athletictrainingKeywordFromProgram() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my athletic training program coursework and injury evaluation class")
+        #expect(kw == "athletictraining", "athletic training program coursework should route to athletictraining")
+    }
+    @Test func athletictrainingKeywordFromModalities() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying therapeutic modalities for my athletic training class — ultrasound, TENS, and cryotherapy")
+        #expect(kw == "athletictraining", "therapeutic modalities athletic training class should route to athletictraining")
+    }
+    @Test func athletictrainingFalsePositive_sportsmedClinical() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing up my clinical athletic training hours for BOC certification documentation")
+        #expect(kw == "sportsmedicine" || kw == "athletictraining", "clinical athletic training BOC should stay in sportsmedicine or athletictraining")
+    }
+    @Test @MainActor func athletictrainingCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "athletictraining", tier: tier)
+            #expect(!msgs.isEmpty, "athletictraining tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func athletictrainingTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "athletictraining", tier: 1)
+        #expect(msgs.count >= 4, "athletictraining tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func athletictrainingTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "athletictraining", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "athletictraining tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - biomechanics
+    @Test func biomechanicsKeywordFromForceplate() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyzing force plate data from my biomechanics lab — vertical ground reaction forces and impulse")
+        #expect(kw == "biomechanics", "force plate data biomechanics lab should route to biomechanics")
+    }
+    @Test func biomechanicsKeywordFromMotionCapture() {
+        let kw = CalloutManager.extractTaskKeyword(from: "processing motion capture data for my biomechanics research project on gait analysis")
+        #expect(kw == "biomechanics", "motion capture biomechanics research gait analysis should route to biomechanics")
+    }
+    @Test func biomechanicsKeywordFromJointKinetics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying joint kinetics and kinematics for my biomechanics exam")
+        #expect(kw == "biomechanics", "joint kinetics kinematics biomechanics exam should route to biomechanics")
+    }
+    @Test func biomechanicsKeywordFromWord() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my biomechanics major coursework — kinematic analysis lab report")
+        #expect(kw == "biomechanics", "biomechanics major kinematic analysis lab report should route to biomechanics")
+    }
+    @Test func biomechanicsFalsePositive_kinesiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying exercise physiology and strength training methods for my kinesiology exam")
+        #expect(kw == "kinesiology", "exercise physiology kinesiology exam should route to kinesiology, not biomechanics")
+    }
+    @Test @MainActor func biomechanicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "biomechanics", tier: tier)
+            #expect(!msgs.isEmpty, "biomechanics tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func biomechanicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "biomechanics", tier: 1)
+        #expect(msgs.count >= 4, "biomechanics tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func biomechanicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "biomechanics", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "biomechanics tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - zoology
+    @Test func zoologyKeywordFromWord() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my zoology exam — invertebrate zoology identification and taxonomy")
+        #expect(kw == "zoology", "zoology exam invertebrate identification should route to zoology")
+    }
+    @Test func zoologyKeywordFromEntomology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my entomology lab report — insect morphology and taxonomic classification")
+        #expect(kw == "zoology", "entomology lab insect morphology should route to zoology")
+    }
+    @Test func zoologyKeywordFromTaxonomy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on animal taxonomy and taxonomic classification exercises for my zoology class")
+        #expect(kw == "zoology", "animal taxonomy zoology class should route to zoology")
+    }
+    @Test func zoologyKeywordFromWildlifeBiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying wildlife biology concepts for my wildlife biology major program")
+        #expect(kw == "zoology", "wildlife biology major program should route to zoology")
+    }
+    @Test func zoologyFalsePositive_veterinary() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for the NAVLE and reviewing small animal medicine for vet school")
+        #expect(kw == "veterinary", "NAVLE small animal vet school should route to veterinary, not zoology")
+    }
+    @Test @MainActor func zoologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "zoology", tier: tier)
+            #expect(!msgs.isEmpty, "zoology tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func zoologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "zoology", tier: 1)
+        #expect(msgs.count >= 4, "zoology tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func zoologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "zoology", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "zoology tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - militaryscience
+    @Test func militaryscienceKeywordFromROTCLab() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing for my ROTC leadership lab and reviewing cadet training requirements")
+        #expect(kw == "militaryscience", "ROTC leadership lab cadet training should route to militaryscience")
+    }
+    @Test func militaryscienceKeywordFromMilitaryScienceClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my military science class — reviewing leadership doctrine and tactics course material")
+        #expect(kw == "militaryscience", "military science class leadership doctrine should route to militaryscience")
+    }
+    @Test func militaryscienceKeywordFromArmyROTC() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my army rotc course assignment on small unit tactics and leadership")
+        #expect(kw == "militaryscience", "army rotc course assignment should route to militaryscience")
+    }
+    @Test func militaryscienceKeywordFromTacticsClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my military tactics class final exam — maneuver warfare and decision-making")
+        #expect(kw == "militaryscience", "military tactics class exam should route to militaryscience")
+    }
+    @Test func militaryscienceFalsePositive_militarystudies() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying military history of World War II and counterinsurgency strategy for my defense studies program")
+        #expect(kw == "militarystudies", "military history counterinsurgency defense studies should route to militarystudies, not militaryscience")
+    }
+    @Test @MainActor func militaryscienceCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "militaryscience", tier: tier)
+            #expect(!msgs.isEmpty, "militaryscience tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func militaryscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "militaryscience", tier: 1)
+        #expect(msgs.count >= 4, "militaryscience tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func militaryscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "militaryscience", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "militaryscience tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - healthinformatics
+    @Test func healthinformaticsKeywordFromFHIR() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying FHIR standards and HL7 FHIR implementation for my health informatics class")
+        #expect(kw == "healthinformatics", "FHIR standards HL7 health informatics class should route to healthinformatics")
+    }
+    @Test func healthinformaticsKeywordFromCPHIMS() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing for the CPHIMS exam and reviewing health data interoperability concepts")
+        #expect(kw == "healthinformatics", "CPHIMS exam health data interoperability should route to healthinformatics")
+    }
+    @Test func healthinformaticsKeywordFromDegree() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my health informatics degree program assignment on clinical decision support systems")
+        #expect(kw == "healthinformatics", "health informatics degree program clinical decision support should route to healthinformatics")
+    }
+    @Test func healthinformaticsKeywordFromInteroperability() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying biomedical informatics and health data exchange protocols for my informatics exam")
+        #expect(kw == "healthinformatics", "biomedical informatics health data exchange informatics exam should route to healthinformatics")
+    }
+    @Test func healthinformaticsFalsePositive_healthcareadmin() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for the RHIA exam and reviewing health information management and hospital administration")
+        #expect(kw == "healthcareadmin", "RHIA exam health information management hospital administration should route to healthcareadmin, not healthinformatics")
+    }
+    @Test @MainActor func healthinformaticsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "healthinformatics", tier: tier)
+            #expect(!msgs.isEmpty, "healthinformatics tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func healthinformaticsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "healthinformatics", tier: 1)
+        #expect(msgs.count >= 4, "healthinformatics tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func healthinformaticsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "healthinformatics", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "healthinformatics tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: athletictraining/biomechanics/zoology/militaryscience/healthinformatics)
     @Test func suggestedTemplatesCountAtLeast569() {
         #expect(SuggestedSessionTemplates.all.count >= 569, "template catalog must have ≥569 entries after adding 5 new domains (10 templates)")
+    }
+    @Test func suggestedTemplatesCountAtLeast579() {
+        #expect(SuggestedSessionTemplates.all.count >= 579, "template catalog must have ≥579 entries after athletictraining/biomechanics/zoology/militaryscience/healthinformatics (10 templates)")
     }
 }

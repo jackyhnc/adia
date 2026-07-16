@@ -2623,9 +2623,49 @@ public final class CalloutManager {
             || lower.contains("exercise science school") || lower.contains("exercise science notes") {
             return "exercisescience"
         }
-        // kinesiology — positioned before fitness so biomechanics, exercise physiology,
+        // athletictraining — positioned AFTER exercisescience/sportsmedicine, BEFORE kinesiology
+        // so ATC-credential prep, therapeutic-modalities class, and taping labs route here.
+        // Compound clinical/BOC/CAATE terms already caught by sportsmedicine (fires earlier).
+        // "exercise physiology" and generic "athletic training" context stay in kinesiology.
+        if lower.contains("athletic trainer") || lower.contains("certified athletic trainer")
+            || lower.contains("athletic training program") || lower.contains("athletic training major")
+            || lower.contains("athletic training degree") || lower.contains("athletic training school")
+            || lower.contains("athletic training class") || lower.contains("athletic training course")
+            || lower.contains("pre-athletic training") || lower.contains("pre athletic training")
+            || lower.contains("therapeutic modalities") && (lower.contains("athletic") || lower.contains("atc") || lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("taping and bracing") || lower.contains("bracing and taping")
+            || lower.contains("athletic training room")
+            || lower.contains("sport injury evaluation") && (lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("sports injury evaluation") && (lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("nata exam") || lower.contains("nata certification")
+            || lower.contains("athletic training certification") && !lower.contains("clinical")
+            || lower.contains("secondary school athletic training") || lower.contains("collegiate athletic training") {
+            return "athletictraining"
+        }
+        // biomechanics — positioned BEFORE kinesiology so biomechanical analysis labs, motion
+        // capture research, and joint-kinetics coursework route to a dedicated pool.
+        // word("biomechanics") removed from kinesiology below.
+        if word("biomechanics") || word("biomechanist") || word("biomechanical")
+            || lower.contains("biomechanics lab") || lower.contains("biomechanics class")
+            || lower.contains("biomechanics course") || lower.contains("biomechanics exam")
+            || lower.contains("biomechanics program") || lower.contains("biomechanics major")
+            || lower.contains("biomechanics research") || lower.contains("sports biomechanics")
+            || lower.contains("clinical biomechanics") || lower.contains("movement biomechanics")
+            || lower.contains("motion capture") && (lower.contains("class") || lower.contains("lab") || lower.contains("research") || lower.contains("analysis") || lower.contains("biomechanics"))
+            || lower.contains("joint kinetics") || lower.contains("joint kinematics")
+            || lower.contains("kinematic analysis") && (lower.contains("class") || lower.contains("lab") || lower.contains("research"))
+            || lower.contains("kinetic analysis") && (lower.contains("class") || lower.contains("lab") || lower.contains("research"))
+            || lower.contains("force plate") && (lower.contains("class") || lower.contains("lab") || lower.contains("research") || lower.contains("biomechanics"))
+            || lower.contains("3d motion analysis") || lower.contains("three-dimensional motion analysis")
+            || lower.contains("electromyography") && (lower.contains("class") || lower.contains("lab") || lower.contains("biomechanics") || lower.contains("research"))
+            || lower.contains("gait biomechanics") || lower.contains("gait lab") && (lower.contains("class") || lower.contains("research") || lower.contains("biomechanics")) {
+            return "biomechanics"
+        }
+        // kinesiology — positioned before fitness so exercise physiology,
         // and physical therapy professional terms route here rather than the generic fitness pool.
-        if word("kinesiology") || word("biomechanics") || word("kinesiologist")
+        // word("biomechanics") now caught by biomechanics branch above.
+        // "athletic training" compound academic terms now caught by athletictraining branch above.
+        if word("kinesiology") || word("kinesiologist")
             || lower.contains("exercise physiology") || lower.contains("sports science")
             || lower.contains("sport science") || lower.contains("cscs exam")
             || lower.contains("nsca exam") || lower.contains("motor control")
@@ -3179,12 +3219,32 @@ public final class CalloutManager {
             || lower.contains("vet tech license") || lower.contains("vet tech certification") {
             return "veterinarytechnology"
         }
+        // zoology — positioned BEFORE veterinary so zoology degree/program tasks, taxonomic
+        // classification work, and entomology route to a dedicated pool rather than the vet pool.
+        // word("zoology") removed from veterinary below; "animal science" stays in veterinary.
+        if word("zoology") || word("zoologist") || word("zoologists") || word("zoological")
+            || lower.contains("zoology class") || lower.contains("zoology course")
+            || lower.contains("zoology exam") || lower.contains("zoology program")
+            || lower.contains("zoology major") || lower.contains("zoology degree")
+            || lower.contains("zoology lab") || lower.contains("zoology notes")
+            || lower.contains("invertebrate zoology") || lower.contains("vertebrate zoology")
+            || lower.contains("comparative zoology") || lower.contains("field zoology")
+            || lower.contains("animal taxonomy") && (lower.contains("class") || lower.contains("lab") || lower.contains("zoology") || lower.contains("animal"))
+            || lower.contains("taxonomic classification") && (lower.contains("class") || lower.contains("lab") || lower.contains("zoology") || lower.contains("animal"))
+            || lower.contains("animal morphology") && (lower.contains("class") || lower.contains("lab") || lower.contains("course") || lower.contains("exam"))
+            || word("entomology") || word("entomologist")
+            || lower.contains("entomology class") || lower.contains("entomology course")
+            || lower.contains("entomology lab") || lower.contains("entomology exam")
+            || lower.contains("wildlife biology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program") || lower.contains("major")) {
+            return "zoology"
+        }
         // veterinary — positioned before premed so "veterinary clinical rotation", "dissection"
         // in a vet-school context, and animal anatomy tasks route here, not to premed.
+        // word("zoology") now caught by zoology branch above.
         if word("veterinary") || word("veterinarian") || lower.contains("vet school")
             || lower.contains("vet medicine") || lower.contains("veterinary medicine")
             || lower.contains("animal science") || word("navle")
-            || lower.contains("animal behavior") || word("zoology")
+            || lower.contains("animal behavior")
             || lower.contains("comparative anatomy") || lower.contains("large animal")
             || lower.contains("small animal") || lower.contains("veterinary pathology")
             || lower.contains("animal physiology") || lower.contains("veterinary surgery")
@@ -3885,6 +3945,27 @@ public final class CalloutManager {
             || lower.contains("decontamination class") && lower.contains("sterile")
             || lower.contains("tray assembly class") || lower.contains("instrument tray class") {
             return "centralsterile"
+        }
+        // healthinformatics — positioned BEFORE healthcareadmin so CPHIMS exam prep, HL7/FHIR
+        // interoperability coursework, and health informatics degree programs route to a dedicated pool.
+        // "healthcare administration" and "health information management" (RHIA/RHIT) stay in healthcareadmin.
+        if word("cphims") || lower.contains("cphims exam") || lower.contains("cphims certification")
+            || lower.contains("hl7 fhir") || lower.contains("hl7/fhir") || lower.contains("fhir standards")
+            || lower.contains("fhir interface") || lower.contains("fhir class") || lower.contains("fhir course")
+            || lower.contains("fhir implementation") || lower.contains("hl7 interface") || lower.contains("hl7 class")
+            || lower.contains("hl7 standards") || lower.contains("hl7 course") || lower.contains("hl7 exam")
+            || lower.contains("health data interoperability") || lower.contains("health data exchange")
+            || lower.contains("health information exchange") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("exam") || lower.contains("hie"))
+            || lower.contains("health informatics") && (lower.contains("degree") || lower.contains("major") || lower.contains("program") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("clinical informatics") && (lower.contains("degree") || lower.contains("major") || lower.contains("program") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("biomedical informatics") || lower.contains("bio-medical informatics")
+            || lower.contains("medical informatics") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("exam"))
+            || lower.contains("nursing informatics") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("exam"))
+            || lower.contains("health informatics program") || lower.contains("health informatics degree")
+            || lower.contains("health informatics major") || lower.contains("health informatics class")
+            || lower.contains("health informatics course") || lower.contains("health informatics exam")
+            || lower.contains("clinical decision support") && (lower.contains("class") || lower.contains("course") || lower.contains("informatics")) {
+            return "healthinformatics"
         }
         // healthcareadmin — positioned after molecularbiology and before premed so healthcare
         // administration, health informatics, and HIM certification prep route here.
@@ -5092,6 +5173,23 @@ public final class CalloutManager {
             || lower.contains("incarceration") || word("victimology")
             || lower.contains("crime prevention") || lower.contains("crime analysis") {
             return "criminaljustice"
+        }
+        // militaryscience — positioned BEFORE militarystudies so formal ROTC coursework, military
+        // science department classes, and leadership-lab assignments route to a dedicated pool.
+        // "military history", war studies, veterans studies, and ASVAB stay in militarystudies.
+        if lower.contains("military science class") || lower.contains("military science course")
+            || lower.contains("military science lab") || lower.contains("military science program")
+            || lower.contains("military science exam") || lower.contains("military science notes")
+            || lower.contains("rotc lab") || lower.contains("rotc leadership")
+            || lower.contains("rotc program") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("train"))
+            || lower.contains("leadership development lab") && (lower.contains("rotc") || lower.contains("military") || lower.contains("cadet"))
+            || lower.contains("cadet training class") || lower.contains("cadet leadership class")
+            || lower.contains("cadet program") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("train"))
+            || lower.contains("army rotc class") || lower.contains("navy rotc class") || lower.contains("air force rotc class")
+            || lower.contains("army rotc course") || lower.contains("navy rotc course") || lower.contains("air force rotc course")
+            || lower.contains("military tactics class") || lower.contains("military tactics course")
+            || lower.contains("military leadership class") && !lower.contains("studies") {
+            return "militaryscience"
         }
         // militarystudies — positioned after criminaljustice and before socialscience so military
         // history, ROTC, and defense-studies tasks don't fall through to socialscience or history pools.
