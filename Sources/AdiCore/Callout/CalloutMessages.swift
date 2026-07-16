@@ -356,6 +356,11 @@ extension CalloutManager {
         case "zoology":                    return zoologyCallouts(tier: tier)
         case "militaryscience":            return militaryscienceCallouts(tier: tier)
         case "healthinformatics":          return healthinformaticsCallouts(tier: tier)
+        case "cryptography":               return cryptographyCallouts(tier: tier)
+        case "appliedmathematics":         return appliedmathematicsCallouts(tier: tier)
+        case "historicallinguistics":      return historicallinguisticsCallouts(tier: tier)
+        case "computationalfinance":       return computationalfinanceCallouts(tier: tier)
+        case "globalpoliticaleconomy":     return globalpoliticaleconomyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -6811,6 +6816,111 @@ extension CalloutManager {
             "CLOSE THIS. open your health informatics notes.",
             "CLOSE THIS. FHIR implementation demands your full attention.",
             "CLOSE THIS. health data won't interoperate itself."
+        ]
+        }
+    }
+
+    private func cryptographyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those cipher algorithms aren't going to analyze themselves.",
+            "close this and get back to your cryptography coursework.",
+            "public-key cryptography won't study itself — close this.",
+            "RSA won't break itself — close this and study.",
+        ]
+        case 2: return [
+            "no one cracks cryptography by scrolling.",
+            "close this and open your crypto notes.",
+            "your cipher schemes won't design themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your cryptography materials.",
+            "CLOSE THIS. secure systems require focused study.",
+            "CLOSE THIS. AES won't implement itself."
+        ]
+        }
+    }
+
+    private func appliedmathematicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those differential equations aren't going to solve themselves.",
+            "close this and get back to your applied math coursework.",
+            "PDEs won't model themselves — close this.",
+            "numerical methods won't converge on their own — close this.",
+        ]
+        case 2: return [
+            "no one passes applied math by scrolling.",
+            "close this and open your mathematical modeling notes.",
+            "your ODE problem sets won't finish themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your applied mathematics notes.",
+            "CLOSE THIS. differential equations demand your full attention.",
+            "CLOSE THIS. math modeling won't do itself."
+        ]
+        }
+    }
+
+    private func historicallinguisticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those sound change laws aren't going to memorize themselves.",
+            "close this and get back to your historical linguistics coursework.",
+            "proto-languages won't reconstruct themselves — close this.",
+            "Grimm's Law won't apply itself — close this.",
+        ]
+        case 2: return [
+            "no one masters diachronic linguistics by scrolling.",
+            "close this and open your historical linguistics notes.",
+            "language reconstruction won't happen on its own — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your historical linguistics materials.",
+            "CLOSE THIS. proto-Indo-European demands your full attention.",
+            "CLOSE THIS. sound changes won't trace themselves."
+        ]
+        }
+    }
+
+    private func computationalfinanceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that Black-Scholes model isn't going to derive itself.",
+            "close this and get back to your quantitative finance coursework.",
+            "your Monte Carlo simulation won't run itself — close this.",
+            "stochastic calculus won't study itself — close this.",
+        ]
+        case 2: return [
+            "no one becomes a quant by scrolling.",
+            "close this and open your financial engineering notes.",
+            "options pricing models won't build themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your quant finance materials.",
+            "CLOSE THIS. financial mathematics demands your full attention.",
+            "CLOSE THIS. algorithmic trading strategies won't write themselves."
+        ]
+        }
+    }
+
+    private func globalpoliticaleconomyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those IPE frameworks aren't going to analyze themselves.",
+            "close this and get back to your political economy coursework.",
+            "global political economy won't study itself — close this.",
+            "world systems theory won't write itself — close this.",
+        ]
+        case 2: return [
+            "no one masters IPE by scrolling.",
+            "close this and open your political economy notes.",
+            "comparative political economy won't analyze itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your IPE study materials.",
+            "CLOSE THIS. political economy demands your full attention.",
+            "CLOSE THIS. dependency theory won't explain itself."
         ]
         }
     }

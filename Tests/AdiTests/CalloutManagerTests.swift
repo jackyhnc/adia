@@ -16890,4 +16890,204 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast579() {
         #expect(SuggestedSessionTemplates.all.count >= 579, "template catalog must have ≥579 entries after athletictraining/biomechanics/zoology/militaryscience/healthinformatics (10 templates)")
     }
+
+    // MARK: - cryptography
+    @Test func cryptographyKeywordFromClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my cryptography class — reviewing AES, RSA, and public-key encryption")
+        #expect(kw == "cryptography", "cryptography class with AES/RSA should route to cryptography")
+    }
+    @Test func cryptographyKeywordFromApplied() {
+        let kw = CalloutManager.extractTaskKeyword(from: "applied cryptography assignment on elliptic curve cryptography and digital signatures")
+        #expect(kw == "cryptography", "applied cryptography elliptic curve assignment should route to cryptography")
+    }
+    @Test func cryptographyKeywordFromNumberTheory() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying number theory for rsa and public-key encryption — modular arithmetic and prime factorization")
+        #expect(kw == "cryptography", "number theory for rsa/encryption should route to cryptography")
+    }
+    @Test func cryptographyKeywordFromDiffieHellman() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working through my cryptography exam prep on Diffie-Hellman key exchange and hash functions")
+        #expect(kw == "cryptography", "cryptography exam with Diffie-Hellman should route to cryptography")
+    }
+    @Test func cryptographyFalsePositive_cybersecurity() {
+        let kw = CalloutManager.extractTaskKeyword(from: "penetration testing lab on network forensics and cryptography lab exercise")
+        #expect(kw == "cybersecurity", "pen testing network forensics cryptography lab should route to cybersecurity, not cryptography")
+    }
+    @Test @MainActor func cryptographyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "cryptography", tier: tier)
+            #expect(!msgs.isEmpty, "cryptography tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func cryptographyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "cryptography", tier: 1)
+        #expect(msgs.count >= 4, "cryptography tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func cryptographyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "cryptography", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "cryptography tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - appliedmathematics
+    @Test func appliedmathematicsKeywordFromAppliedMath() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my applied mathematics problem set on numerical methods and finite element analysis")
+        #expect(kw == "appliedmathematics", "applied mathematics problem set should route to appliedmathematics")
+    }
+    @Test func appliedmathematicsKeywordFromDiffEq() {
+        let kw = CalloutManager.extractTaskKeyword(from: "solving my differential equations homework — systems of ODEs and Laplace transforms")
+        #expect(kw == "appliedmathematics", "differential equations homework should route to appliedmathematics")
+    }
+    @Test func appliedmathematicsKeywordFromPDE() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying partial differential equations for my applied math class — heat equation and wave equation")
+        #expect(kw == "appliedmathematics", "partial differential equations applied math class should route to appliedmathematics")
+    }
+    @Test func appliedmathematicsKeywordFromScientificComputing() {
+        let kw = CalloutManager.extractTaskKeyword(from: "scientific computing exam prep on finite difference methods and numerical stability")
+        #expect(kw == "appliedmathematics", "scientific computing exam should route to appliedmathematics")
+    }
+    @Test func appliedmathematicsFalsePositive_mathematics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "linear algebra problem set on eigenvalues and eigenvectors — abstract algebra proofs")
+        #expect(kw == "mathematics", "linear algebra abstract algebra proofs should route to mathematics, not appliedmathematics")
+    }
+    @Test @MainActor func appliedmathematicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "appliedmathematics", tier: tier)
+            #expect(!msgs.isEmpty, "appliedmathematics tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func appliedmathematicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "appliedmathematics", tier: 1)
+        #expect(msgs.count >= 4, "appliedmathematics tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func appliedmathematicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "appliedmathematics", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "appliedmathematics tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - historicallinguistics
+    @Test func historicallinguisticsKeywordFromDiachronic() {
+        let kw = CalloutManager.extractTaskKeyword(from: "diachronic linguistics class assignment on language change and grammaticalization")
+        #expect(kw == "historicallinguistics", "diachronic linguistics class should route to historicallinguistics")
+    }
+    @Test func historicallinguisticsKeywordFromGrimmsLaw() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying Grimm's Law and Verner's Law for my historical phonology course")
+        #expect(kw == "historicallinguistics", "Grimm's Law historical phonology course should route to historicallinguistics")
+    }
+    @Test func historicallinguisticsKeywordFromProtoLanguage() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a paper on proto-language reconstruction and language change in Indo-European")
+        #expect(kw == "historicallinguistics", "proto-language reconstruction paper should route to historicallinguistics")
+    }
+    @Test func historicallinguisticsKeywordFromEtymology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "etymology class exam prep — tracing word origins and semantic change")
+        #expect(kw == "historicallinguistics", "etymology class semantic change should route to historicallinguistics")
+    }
+    @Test func historicallinguisticsFalsePositive_linguistics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "historical linguistics class on proto-indo-european")
+        #expect(kw == "linguistics", "historical linguistics class (bare phrase) should route to linguistics, not historicallinguistics")
+    }
+    @Test @MainActor func historicallinguisticsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "historicallinguistics", tier: tier)
+            #expect(!msgs.isEmpty, "historicallinguistics tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func historicallinguisticsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "historicallinguistics", tier: 1)
+        #expect(msgs.count >= 4, "historicallinguistics tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func historicallinguisticsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "historicallinguistics", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "historicallinguistics tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - computationalfinance
+    @Test func computationalfinanceKeywordFromQuantFinance() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying quantitative finance — Black-Scholes model and options pricing for my financial engineering class")
+        #expect(kw == "computationalfinance", "quantitative finance Black-Scholes financial engineering should route to computationalfinance")
+    }
+    @Test func computationalfinanceKeywordFromBlackScholes() {
+        let kw = CalloutManager.extractTaskKeyword(from: "deriving the Black-Scholes PDE for my computational finance assignment")
+        #expect(kw == "computationalfinance", "Black-Scholes computational finance assignment should route to computationalfinance")
+    }
+    @Test func computationalfinanceKeywordFromMonteCarlo() {
+        let kw = CalloutManager.extractTaskKeyword(from: "implementing a Monte Carlo simulation for option pricing in my quant finance course")
+        #expect(kw == "computationalfinance", "Monte Carlo simulation option pricing quant finance should route to computationalfinance")
+    }
+    @Test func computationalfinanceKeywordFromAlgoTrading() {
+        let kw = CalloutManager.extractTaskKeyword(from: "building an algorithmic trading strategy for my financial engineering class project")
+        #expect(kw == "computationalfinance", "algorithmic trading financial engineering class should route to computationalfinance")
+    }
+    @Test func computationalfinanceFalsePositive_finance() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for the CFA Level 1 exam — DCF valuation and LBO modeling")
+        #expect(kw == "finance", "CFA Level 1 DCF LBO should route to finance, not computationalfinance")
+    }
+    @Test @MainActor func computationalfinanceCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "computationalfinance", tier: tier)
+            #expect(!msgs.isEmpty, "computationalfinance tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func computationalfinanceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "computationalfinance", tier: 1)
+        #expect(msgs.count >= 4, "computationalfinance tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func computationalfinanceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "computationalfinance", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "computationalfinance tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - globalpoliticaleconomy
+    @Test func globalpoliticaleconomyKeywordFromIPE() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying international political economy (IPE) — dependency theory and world systems for my class")
+        #expect(kw == "globalpoliticaleconomy", "IPE dependency theory world systems class should route to globalpoliticaleconomy")
+    }
+    @Test func globalpoliticaleconomyKeywordFromIPEClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my ipe class paper on global political economy and trade regimes")
+        #expect(kw == "globalpoliticaleconomy", "ipe class global political economy paper should route to globalpoliticaleconomy")
+    }
+    @Test func globalpoliticaleconomyKeywordFromComparative() {
+        let kw = CalloutManager.extractTaskKeyword(from: "comparative political economy exam prep — varieties of capitalism and developmental states")
+        #expect(kw == "globalpoliticaleconomy", "comparative political economy exam should route to globalpoliticaleconomy")
+    }
+    @Test func globalpoliticaleconomyKeywordFromPoliticalEconomyClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "political economy class assignment on the political economy of trade and global governance")
+        #expect(kw == "globalpoliticaleconomy", "political economy class on trade and global governance should route to globalpoliticaleconomy")
+    }
+    @Test func globalpoliticaleconomyFalsePositive_socialscience() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying political science — comparative politics and international relations theory")
+        #expect(kw == "socialscience", "political science comparative politics IR theory without IPE context should route to socialscience")
+    }
+    @Test @MainActor func globalpoliticaleconomyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "globalpoliticaleconomy", tier: tier)
+            #expect(!msgs.isEmpty, "globalpoliticaleconomy tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func globalpoliticaleconomyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "globalpoliticaleconomy", tier: 1)
+        #expect(msgs.count >= 4, "globalpoliticaleconomy tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func globalpoliticaleconomyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "globalpoliticaleconomy", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "globalpoliticaleconomy tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: cryptography/appliedmathematics/historicallinguistics/computationalfinance/globalpoliticaleconomy)
+    @Test func suggestedTemplatesCountAtLeast589() {
+        #expect(SuggestedSessionTemplates.all.count >= 589, "template catalog must have ≥589 entries after cryptography/appliedmathematics/historicallinguistics/computationalfinance/globalpoliticaleconomy (10 templates)")
+    }
 }

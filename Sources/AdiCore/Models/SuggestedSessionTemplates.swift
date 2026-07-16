@@ -3735,5 +3735,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Health informatics assignment meaningfully advanced (FHIR case analyzed, workflow designed, or interoperability analysis section completed and saved)",
             preferredDuration: 45 * 60
         ),
+        // cryptography
+        SuggestedTemplate(
+            icon: "lock.fill",
+            task: "Study cryptography concepts — review AES and RSA algorithms, public-key cryptography, Diffie-Hellman key exchange, or number theory for my cryptography class or exam",
+            successCriteria: "Cryptography study session completed (at least two cipher schemes or protocols reviewed, key mathematical properties understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a cryptography assignment — implement a cipher, analyze an encryption protocol, solve number theory problems, or write up a cryptographic security analysis",
+            successCriteria: "Cryptography assignment meaningfully advanced (cipher implemented or analyzed, protocol security evaluated, or problem set section completed and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // appliedmathematics
+        SuggestedTemplate(
+            icon: "function",
+            task: "Work through my applied mathematics assignment — solve differential equations, numerical methods problems, or a mathematical modeling problem set",
+            successCriteria: "Applied math assignment meaningfully advanced (at least one ODE/PDE problem solved or numerical method implemented, work shown and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study applied mathematics concepts — review differential equations, scientific computing methods, finite element analysis, or mathematical modeling techniques for my class or exam",
+            successCriteria: "Applied math study session completed (at least two methods or techniques reviewed, key algorithms or solution approaches understood, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // historicallinguistics
+        SuggestedTemplate(
+            icon: "text.book.closed.fill",
+            task: "Study historical linguistics — review sound change laws (Grimm's Law, Verner's Law), proto-language reconstruction, diachronic phonology, or etymology for my class or exam",
+            successCriteria: "Historical linguistics study session completed (at least two change laws or reconstruction principles reviewed, key patterns understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a historical linguistics assignment — trace sound changes, reconstruct proto-language forms, analyze semantic drift, or write a diachronic analysis paper",
+            successCriteria: "Historical linguistics assignment meaningfully advanced (sound changes traced, proto-forms reconstructed, or paper section drafted and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // computationalfinance
+        SuggestedTemplate(
+            icon: "chart.line.uptrend.xyaxis",
+            task: "Work on my quantitative finance assignment — derive the Black-Scholes model, build a Monte Carlo simulation for options pricing, or implement an algorithmic trading strategy",
+            successCriteria: "Quant finance assignment meaningfully advanced (model derived, simulation coded or running, or strategy logic implemented and tested)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study computational finance concepts — review stochastic calculus, options pricing, financial engineering models, or risk-neutral pricing for my quantitative finance program",
+            successCriteria: "Computational finance study session completed (at least two models or pricing methods reviewed, key formulas understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // globalpoliticaleconomy
+        SuggestedTemplate(
+            icon: "globe",
+            task: "Study international political economy (IPE) — review world systems theory, dependency theory, comparative political economy, or global governance frameworks for my class or exam",
+            successCriteria: "IPE study session completed (at least two frameworks or theoretical perspectives reviewed, key arguments understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a political economy paper or assignment — analyze a global economic governance issue, apply IPE theory to a case study, or critique dependency theory arguments",
+            successCriteria: "Political economy assignment meaningfully advanced (theoretical framework applied, case study analyzed, or argument section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

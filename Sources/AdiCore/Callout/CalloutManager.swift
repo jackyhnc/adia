@@ -224,6 +224,32 @@ public final class CalloutManager {
             || (lower.contains("quantum mechanics") && (lower.contains("computing") || lower.contains("programming") || lower.contains("algorithm"))) {
             return "quantumcomputing"
         }
+        // cryptography — positioned AFTER quantumcomputing (which owns quantum cryptography) and
+        // BEFORE cloudcomputing. Catches number-theory-based crypto, AES/RSA algorithm classes,
+        // elliptic-curve and public-key coursework, and applied cryptography programs.
+        // "cryptography lab" stays in cybersecurity (fires earlier); bare "cryptography" without
+        // edu context NOT matched here.
+        if lower.contains("cryptography class") || lower.contains("cryptography course")
+            || lower.contains("cryptography exam") || lower.contains("cryptography program")
+            || lower.contains("cryptography assignment") || lower.contains("cryptography textbook")
+            || lower.contains("cryptography major") || lower.contains("cryptography degree")
+            || lower.contains("applied cryptography") || lower.contains("introduction to cryptography")
+            || lower.contains("cryptanalysis class") || lower.contains("cryptanalysis course") || lower.contains("cryptanalysis exam")
+            || (lower.contains("number theory") && (lower.contains("crypto") || lower.contains("rsa") || lower.contains("encryption") || lower.contains("cipher")))
+            || lower.contains("aes algorithm") || lower.contains("rsa algorithm") || lower.contains("rsa encryption")
+            || lower.contains("diffie-hellman") || lower.contains("diffie hellman")
+            || lower.contains("elliptic curve cryptography") || lower.contains("elliptic curve crypto")
+            || lower.contains("public key cryptography") || lower.contains("public-key cryptography")
+            || (lower.contains("symmetric encryption") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("asymmetric encryption") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("block cipher") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("crypto")))
+            || (lower.contains("stream cipher") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("crypto")))
+            || (lower.contains("hash function") && (lower.contains("crypto") || lower.contains("class") || lower.contains("course")))
+            || (lower.contains("digital signature") && (lower.contains("class") || lower.contains("course") || lower.contains("crypto")))
+            || (lower.contains("cryptographic protocol") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || lower.contains("one-time pad") || lower.contains("vigenere cipher") {
+            return "cryptography"
+        }
         // cloudcomputing — positioned AFTER quantumcomputing and BEFORE gamedev.
         // Catches AWS/Azure/GCP certification prep, cloud architecture/DevOps coursework, and
         // Terraform/Kubernetes class. "aws" alone NOT matched — requires cloud/cert/class context
@@ -539,6 +565,30 @@ public final class CalloutManager {
             || lower.contains("astrophysics homework") || lower.contains("astrophysics exam") {
             return "astronomy"
         }
+        // appliedmathematics — positioned AFTER astronomy and BEFORE mathematics so "applied math",
+        // "applied mathematics", differential-equations classes, scientific computing, and PDE
+        // coursework route here. Pure math terms (abstract algebra, topology, number theory,
+        // linear algebra, real analysis) stay in the mathematics branch.
+        if lower.contains("applied mathematics") || lower.contains("applied math")
+            || lower.contains("applied maths")
+            || lower.contains("computational mathematics") || lower.contains("computational math")
+            || lower.contains("scientific computing class") || lower.contains("scientific computing course")
+            || lower.contains("scientific computing exam") || lower.contains("scientific computing lab")
+            || (lower.contains("partial differential equations") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment") || lower.contains("problem set") || lower.contains("homework")))
+            || lower.contains("pde class") || lower.contains("pde course") || lower.contains("pde exam")
+            || (lower.contains("ordinary differential equations") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || lower.contains("ode class") || lower.contains("ode course") || lower.contains("ode exam")
+            || lower.contains("differential equations class") || lower.contains("differential equations course")
+            || lower.contains("differential equations exam") || lower.contains("differential equations problem set")
+            || lower.contains("differential equations homework")
+            || lower.contains("mathematical modeling class") || lower.contains("mathematical modeling course")
+            || lower.contains("mathematical modeling exam") || lower.contains("mathematical modeling assignment")
+            || lower.contains("math modeling class") || lower.contains("math modeling course")
+            || lower.contains("math modeling exam")
+            || (lower.contains("finite element method") && (lower.contains("class") || lower.contains("course") || lower.contains("math") || lower.contains("applied")))
+            || (lower.contains("finite difference method") && (lower.contains("class") || lower.contains("course") || lower.contains("math"))) {
+            return "appliedmathematics"
+        }
         // mathematics — positioned before studying so number theory, proof writing, and
         // advanced topics (topology, abstract algebra) don't fall through to studying.
         // word("algebra") and word("calculus") are in studying for generic "algebra exam"
@@ -599,6 +649,26 @@ public final class CalloutManager {
             || lower.contains("asl interpreter") || lower.contains("sign language interpreter")
             || (lower.contains("interpreter training") && (lower.contains("sign") || lower.contains("asl") || lower.contains("deaf"))) {
             return "signlanguage"
+        }
+        // historicallinguistics — positioned AFTER signlanguage and BEFORE linguistics so
+        // diachronic, reconstruction, and etymology coursework routes here.
+        // "historical linguistics" as a phrase stays in the linguistics branch (preserves existing routing).
+        if lower.contains("diachronic linguistics") || lower.contains("diachronic language")
+            || (lower.contains("language change") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("research") || lower.contains("paper") || lower.contains("assignment")))
+            || lower.contains("proto-language") || lower.contains("protolanguage")
+            || lower.contains("grimm's law") || lower.contains("grimms law") || lower.contains("grimm law")
+            || lower.contains("verner's law") || lower.contains("verners law")
+            || (lower.contains("sound change") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("linguistics")))
+            || lower.contains("etymology class") || lower.contains("etymology course") || lower.contains("etymology exam")
+            || (lower.contains("historical phonology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || lower.contains("language reconstruction")
+            || lower.contains("ancestral language") || lower.contains("ancestor language")
+            || (lower.contains("comparative method") && (lower.contains("linguistics") || lower.contains("language")))
+            || (lower.contains("proto-indo-european") && !lower.contains("historical linguistics"))
+            || lower.contains("pie language") || lower.contains("pie reconstruction") || lower.contains("pie phonology")
+            || (lower.contains("morphological change") && (lower.contains("class") || lower.contains("course") || lower.contains("linguistics")))
+            || (lower.contains("semantic change") && (lower.contains("class") || lower.contains("course") || lower.contains("linguistics"))) {
+            return "historicallinguistics"
         }
         // linguistics — positioned before studying so "linguistics exam", "phonetics class",
         // and language-science assignments don't fall through to studying.
@@ -2222,6 +2292,27 @@ public final class CalloutManager {
             || lower.contains("embezzlement investigation") || lower.contains("embezzlement detection")
             || lower.contains("forensic cpa") || lower.contains("litigation support accounting") {
             return "forensicaccounting"
+        }
+        // computationalfinance — positioned AFTER forensicaccounting and BEFORE finance so
+        // quantitative-finance, financial-engineering, and algorithmic-trading coursework route here.
+        // Generic finance terms (DCF, LBO, CFA, balance sheets) still route to finance below.
+        if lower.contains("quantitative finance") || lower.contains("quant finance")
+            || lower.contains("quant analyst") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("finance"))
+            || (lower.contains("financial engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program") || lower.contains("degree") || lower.contains("major")))
+            || (lower.contains("algorithmic trading") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("project") || lower.contains("strategy")))
+            || lower.contains("black-scholes") || lower.contains("black scholes")
+            || (lower.contains("monte carlo simulation") && (lower.contains("finance") || lower.contains("pricing") || lower.contains("option") || lower.contains("risk") || lower.contains("quant")))
+            || (lower.contains("stochastic calculus") && (lower.contains("finance") || lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("options pricing") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("model")))
+            || (lower.contains("option pricing") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("model")))
+            || (lower.contains("derivatives pricing") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || lower.contains("financial mathematics") || lower.contains("mathematical finance")
+            || lower.contains("computational finance")
+            || (lower.contains("math finance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program")))
+            || lower.contains("risk-neutral pricing") || lower.contains("risk neutral pricing")
+            || (lower.contains("portfolio optimization") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("quant")))
+            || (lower.contains("high frequency trading") && (lower.contains("class") || lower.contains("course") || lower.contains("algo") || lower.contains("strategy"))) {
+            return "computationalfinance"
         }
         // finance — positioned before budget so professional exam/analysis terms (CPA, CFA, DCF, LBO,
         // financial modeling, balance sheet) route here instead of the generic budget/financial branch.
@@ -5257,6 +5348,25 @@ public final class CalloutManager {
             || lower.contains("liberalism") && (lower.contains("ir") || lower.contains("international relations") || lower.contains("class") || lower.contains("course"))
             || lower.contains("constructivism") && (lower.contains("ir") || lower.contains("international relations") || lower.contains("class") || lower.contains("course")) {
             return "internationalrelations"
+        }
+        // globalpoliticaleconomy — positioned AFTER internationalrelations and BEFORE socialscience.
+        // Catches IPE coursework, comparative political economy, and global political economy.
+        // Bare "political economy" without edu context stays in socialscience.
+        if lower.contains("international political economy")
+            || lower.contains("global political economy")
+            || lower.contains("comparative political economy")
+            || lower.contains("political economy of")
+            || (word("ipe") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("program") || lower.contains("major") || lower.contains("paper") || lower.contains("thesis")))
+            || lower.contains("ipe class") || lower.contains("ipe course") || lower.contains("ipe exam")
+            || lower.contains("ipe program") || lower.contains("ipe major")
+            || lower.contains("political economy class") || lower.contains("political economy course")
+            || lower.contains("political economy exam") || lower.contains("political economy paper")
+            || lower.contains("political economy program") || lower.contains("political economy major")
+            || lower.contains("political economy thesis") || lower.contains("political economy research")
+            || (lower.contains("world systems theory") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("exam")))
+            || (lower.contains("dependency theory") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("exam")))
+            || (lower.contains("global governance") && (lower.contains("political economy") || lower.contains("ipe"))) {
+            return "globalpoliticaleconomy"
         }
         // socialscience — positioned after criminaljustice (which now owns criminology/criminal justice)
         // and before legal (LSAT is pre-law, not a bar-exam term). "social work" routes to socialwork.

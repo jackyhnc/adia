@@ -4599,4 +4599,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 579,
                 "catalog should have ≥579 templates after athletictraining/biomechanics/zoology/militaryscience/healthinformatics additions (10 templates)")
     }
+
+    // MARK: - cryptography
+    @Test func cryptographyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("cryptography") || $0.localizedCaseInsensitiveContains("AES") || $0.localizedCaseInsensitiveContains("RSA") || $0.localizedCaseInsensitiveContains("cipher")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("exam"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("cryptography") || $0.localizedCaseInsensitiveContains("cipher") || $0.localizedCaseInsensitiveContains("encryption")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("implement") || $0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("complete"))
+        }
+        #expect(hasStudy, "catalog must include a cryptography study template")
+        #expect(hasAssignment, "catalog must include a cryptography assignment template")
+    }
+
+    // MARK: - appliedmathematics
+    @Test func appliedmathematicsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("applied mathematics") || $0.localizedCaseInsensitiveContains("applied math") || $0.localizedCaseInsensitiveContains("differential equations") || $0.localizedCaseInsensitiveContains("numerical methods")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("problem set") || $0.localizedCaseInsensitiveContains("work through") || $0.localizedCaseInsensitiveContains("solve"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("applied mathematics") || $0.localizedCaseInsensitiveContains("applied math") || $0.localizedCaseInsensitiveContains("differential equations") || $0.localizedCaseInsensitiveContains("scientific computing")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("exam"))
+        }
+        #expect(hasAssignment, "catalog must include an applied math problem set template")
+        #expect(hasStudy, "catalog must include an applied math study template")
+    }
+
+    // MARK: - historicallinguistics
+    @Test func historicallinguisticsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("historical linguistics") || $0.localizedCaseInsensitiveContains("sound change") || $0.localizedCaseInsensitiveContains("Grimm") || $0.localizedCaseInsensitiveContains("diachronic") || $0.localizedCaseInsensitiveContains("proto-language")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("exam"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("historical linguistics") || $0.localizedCaseInsensitiveContains("sound change") || $0.localizedCaseInsensitiveContains("proto-language") || $0.localizedCaseInsensitiveContains("diachronic")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("complete") || $0.localizedCaseInsensitiveContains("trace") || $0.localizedCaseInsensitiveContains("write"))
+        }
+        #expect(hasStudy, "catalog must include a historical linguistics study template")
+        #expect(hasAssignment, "catalog must include a historical linguistics assignment template")
+    }
+
+    // MARK: - computationalfinance
+    @Test func computationalfinanceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("Black-Scholes") || $0.localizedCaseInsensitiveContains("Monte Carlo") || $0.localizedCaseInsensitiveContains("quantitative finance") || $0.localizedCaseInsensitiveContains("algorithmic trading") || $0.localizedCaseInsensitiveContains("computational finance")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("implement") || $0.localizedCaseInsensitiveContains("build") || $0.localizedCaseInsensitiveContains("work on"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("quantitative finance") || $0.localizedCaseInsensitiveContains("financial engineering") || $0.localizedCaseInsensitiveContains("stochastic calculus") || $0.localizedCaseInsensitiveContains("computational finance")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("program"))
+        }
+        #expect(hasAssignment, "catalog must include a computational finance assignment template")
+        #expect(hasStudy, "catalog must include a computational finance study template")
+    }
+
+    // MARK: - globalpoliticaleconomy
+    @Test func globalpoliticaleconomyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("international political economy") || $0.localizedCaseInsensitiveContains("IPE") || $0.localizedCaseInsensitiveContains("global political economy") || $0.localizedCaseInsensitiveContains("world systems")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("exam"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("political economy") || $0.localizedCaseInsensitiveContains("IPE")) &&
+            ($0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("write") || $0.localizedCaseInsensitiveContains("analyze"))
+        }
+        #expect(hasStudy, "catalog must include a global political economy study template")
+        #expect(hasAssignment, "catalog must include a global political economy assignment template")
+    }
+
+    // MARK: - Count guard (batch: cryptography/appliedmathematics/historicallinguistics/computationalfinance/globalpoliticaleconomy)
+    @Test func catalogHasAtLeastFiveHundredEightyNineTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 589,
+                "catalog should have ≥589 templates after cryptography/appliedmathematics/historicallinguistics/computationalfinance/globalpoliticaleconomy additions (10 templates)")
+    }
 }
