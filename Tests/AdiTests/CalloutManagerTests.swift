@@ -19252,4 +19252,161 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast709() {
         #expect(SuggestedSessionTemplates.all.count >= 709, "template catalog must have ≥709 entries after chemicalkinetics/computationalchemistry/ecology/pharmacology/physiology (10 templates)")
     }
+
+    // MARK: - mechanicalengineering keyword routing
+    @Test func mechanicalEngineeringClassRoutesME() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mechanical engineering class problem set") == "mechanicalengineering")
+    }
+    @Test func machineDesignClassRoutesME() {
+        #expect(CalloutManager.extractTaskKeyword(from: "machine design class exam") == "mechanicalengineering")
+    }
+    @Test func vibrationsClassRoutesME() {
+        #expect(CalloutManager.extractTaskKeyword(from: "vibrations class exam homework") == "mechanicalengineering")
+    }
+    @Test func kinematicsExamRoutesME() {
+        #expect(CalloutManager.extractTaskKeyword(from: "kinematics exam review for class") == "mechanicalengineering")
+    }
+    @Test func staticsClassRoutesME() {
+        #expect(CalloutManager.extractTaskKeyword(from: "statics class problem set") == "mechanicalengineering")
+    }
+    @Test func staticsDoesNotMatchElectrostatics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "electrostatics class problem set") != "mechanicalengineering")
+    }
+    @Test @MainActor func mechanicalengineeringCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "mechanicalengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "mechanicalengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "mechanicalengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func mechanicalengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "mechanicalengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func mechanicalengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "mechanicalengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - nuclearengineering keyword routing
+    @Test func nuclearEngineeringClassRoutesNuclear() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nuclear engineering class problem set") == "nuclearengineering")
+    }
+    @Test func reactorPhysicsClassRoutesNuclear() {
+        #expect(CalloutManager.extractTaskKeyword(from: "reactor physics class exam") == "nuclearengineering")
+    }
+    @Test func neutronTransportLabRoutesNuclear() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neutron transport lab course") == "nuclearengineering")
+    }
+    @Test func thermalHydraulicsClassRoutesNuclear() {
+        #expect(CalloutManager.extractTaskKeyword(from: "thermal hydraulics class problem") == "nuclearengineering")
+    }
+    @Test @MainActor func nuclearengineeringCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "nuclearengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nuclearengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nuclearengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func nuclearengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nuclearengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func nuclearengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nuclearengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - materialstesting keyword routing
+    @Test func tensileTestLabRoutesMatTest() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tensile test lab report data") == "materialstesting")
+    }
+    @Test func charpyImpactRoutesMatTest() {
+        #expect(CalloutManager.extractTaskKeyword(from: "charpy impact test results") == "materialstesting")
+    }
+    @Test func hardnessTestClassRoutesMatTest() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hardness test class lab") == "materialstesting")
+    }
+    @Test func stressStrainCurveLabRoutesMatTest() {
+        #expect(CalloutManager.extractTaskKeyword(from: "stress-strain curve lab exam") == "materialstesting")
+    }
+    @Test func materialstestingLabRoutesMatTest() {
+        #expect(CalloutManager.extractTaskKeyword(from: "materials testing lab report") == "materialstesting")
+    }
+    @Test @MainActor func materialstestingCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "materialstesting", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "materialstesting", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "materialstesting", tier: 3).isEmpty)
+    }
+    @Test @MainActor func materialstestingTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "materialstesting", tier: 1).count >= 4)
+    }
+    @Test @MainActor func materialstestingTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "materialstesting", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - biomedicalengineering keyword routing
+    @Test func biomedicalEngineeringClassRoutesBME() {
+        #expect(CalloutManager.extractTaskKeyword(from: "biomedical engineering class assignment") == "biomedicalengineering")
+    }
+    @Test func biomechanicsClassRoutesBME() {
+        #expect(CalloutManager.extractTaskKeyword(from: "biomechanics class exam") == "biomedicalengineering")
+    }
+    @Test func biomaterialsLabRoutesBME() {
+        #expect(CalloutManager.extractTaskKeyword(from: "biomaterials lab course") == "biomedicalengineering")
+    }
+    @Test func medicalDeviceDesignClassRoutesBME() {
+        #expect(CalloutManager.extractTaskKeyword(from: "medical device design class project") == "biomedicalengineering")
+    }
+    @Test @MainActor func biomedicalengineeringCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "biomedicalengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "biomedicalengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "biomedicalengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func biomedicalengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "biomedicalengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func biomedicalengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "biomedicalengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - chemicalengineering keyword routing
+    @Test func chemicalEngineeringClassRoutesChE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "chemical engineering class problem set") == "chemicalengineering")
+    }
+    @Test func transportPhenomenaClassRoutesChE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "transport phenomena class exam") == "chemicalengineering")
+    }
+    @Test func unitOperationsLabRoutesChE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "unit operations lab course") == "chemicalengineering")
+    }
+    @Test func massTransferClassRoutesChE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mass transfer class exam") == "chemicalengineering")
+    }
+    @Test func heatTransferClassRoutesChE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "heat transfer class lab") == "chemicalengineering")
+    }
+    @Test @MainActor func chemicalengineeringCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "chemicalengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "chemicalengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "chemicalengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func chemicalengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "chemicalengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func chemicalengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "chemicalengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: mechanicalengineering/nuclearengineering/materialstesting/biomedicalengineering/chemicalengineering)
+    @Test func calloutTemplatesCountAtLeast721() {
+        #expect(SuggestedSessionTemplates.all.count >= 721, "template catalog must have ≥721 entries after mechanicalengineering/nuclearengineering/materialstesting/biomedicalengineering/chemicalengineering (10 templates)")
+    }
 }

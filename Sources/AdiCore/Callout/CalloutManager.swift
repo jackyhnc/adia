@@ -1485,9 +1485,127 @@ public final class CalloutManager {
             || lower.contains("surveying class") || lower.contains("surveying course") || lower.contains("surveying exam") || lower.contains("surveying lab") {
             return "civilengineering"
         }
+        // mechanicalengineering — BEFORE engineering; machine design, vibrations, kinematics,
+        // statics, and dynamics coursework. "mechanical engineering" in generic text still falls
+        // through to engineering; only specific ME coursework routes here.
+        if lower.contains("mechanical engineering class") || lower.contains("mechanical engineering course")
+            || lower.contains("mechanical engineering exam") || lower.contains("mechanical engineering lab")
+            || lower.contains("mechanical engineering notes") || lower.contains("mechanical engineering program")
+            || lower.contains("mechanical engineering major") || lower.contains("mechanical engineering degree")
+            || lower.contains("mechanical engineering assignment") || lower.contains("mechanical engineering project")
+            || lower.contains("machine design class") || lower.contains("machine design course")
+            || lower.contains("machine design exam") || lower.contains("machine design lab")
+            || lower.contains("manufacturing processes class") || lower.contains("manufacturing processes course")
+            || lower.contains("manufacturing processes exam") || lower.contains("manufacturing processes lab")
+            || lower.contains("manufacturing processes assignment")
+            || lower.contains("mechanical vibrations") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("vibrations class") || lower.contains("vibrations course") || lower.contains("vibrations exam")
+            || lower.contains("kinematics class") || lower.contains("kinematics course") || lower.contains("kinematics exam")
+            || lower.contains("mechanism design class") || lower.contains("mechanism design course") || lower.contains("mechanism design exam")
+            || lower.contains("statics class") && !lower.contains("electrostatics")
+            || lower.contains("statics course") && !lower.contains("electrostatics")
+            || lower.contains("statics exam") && !lower.contains("electrostatics")
+            || lower.contains("dynamics class") && lower.contains("mechanical")
+            || lower.contains("dynamics course") && lower.contains("mechanical")
+            || lower.contains("dynamics exam") && lower.contains("mechanical")
+            || lower.contains("tribology class") || lower.contains("tribology course") || lower.contains("tribology exam")
+            || lower.contains("engineering mechanics class") || lower.contains("engineering mechanics course") || lower.contains("engineering mechanics exam") {
+            return "mechanicalengineering"
+        }
+        // nuclearengineering — BEFORE engineering; reactor physics, neutron transport, thermal hydraulics.
+        // Bare "nuclear" NOT matched (nuclearmedtech already handles nuclear medicine; nuclear chemistry
+        // stays in nuclearchemistry). "fission/fusion" require engineering/reactor/class context.
+        if lower.contains("nuclear engineering class") || lower.contains("nuclear engineering course")
+            || lower.contains("nuclear engineering exam") || lower.contains("nuclear engineering lab")
+            || lower.contains("nuclear engineering notes") || lower.contains("nuclear engineering program")
+            || lower.contains("nuclear engineering major") || lower.contains("nuclear engineering degree")
+            || lower.contains("nuclear engineering assignment") || lower.contains("nuclear engineering project")
+            || lower.contains("nuclear reactor class") || lower.contains("nuclear reactor course")
+            || lower.contains("nuclear reactor design") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("reactor physics class") || lower.contains("reactor physics course") || lower.contains("reactor physics exam")
+            || lower.contains("neutron physics class") || lower.contains("neutron physics course") || lower.contains("neutron physics exam")
+            || lower.contains("neutron transport") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("thermal hydraulics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("nuclear power class") || lower.contains("nuclear power course")
+            || lower.contains("reactor safety class") || lower.contains("reactor safety course") || lower.contains("reactor safety exam")
+            || lower.contains("nuclear fuel") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("nuclear criticality") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("analysis"))
+            || lower.contains("mcnp") && (lower.contains("class") || lower.contains("simulation") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("nuclear waste management class") || lower.contains("nuclear waste management course")
+            || lower.contains("fission class") || lower.contains("fission course") || lower.contains("fission exam")
+            || lower.contains("fusion reactor") && (lower.contains("class") || lower.contains("course") || lower.contains("engineering")) {
+            return "nuclearengineering"
+        }
+        // materialstesting — BEFORE engineering; tensile/compressive/Charpy/hardness/fatigue testing lab.
+        // Bare "materials" stays in materialscience or engineering. Characterization stays in
+        // materialscharacterization (earlier). "impact test" requires materials context.
+        if lower.contains("tensile test") && (lower.contains("class") || lower.contains("lab") || lower.contains("course") || lower.contains("report") || lower.contains("data") || lower.contains("exam"))
+            || lower.contains("compressive test") && (lower.contains("class") || lower.contains("lab") || lower.contains("course") || lower.contains("report") || lower.contains("exam"))
+            || lower.contains("charpy test") || lower.contains("charpy impact")
+            || lower.contains("hardness test") && (lower.contains("class") || lower.contains("lab") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("rockwell hardness") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("test"))
+            || lower.contains("brinell hardness") && (lower.contains("class") || lower.contains("lab") || lower.contains("test"))
+            || lower.contains("vickers hardness") && (lower.contains("class") || lower.contains("lab") || lower.contains("test"))
+            || lower.contains("fatigue test") && (lower.contains("class") || lower.contains("lab") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("fatigue testing lab") || lower.contains("materials testing lab")
+            || lower.contains("materials testing class") || lower.contains("materials testing course") || lower.contains("materials testing exam")
+            || lower.contains("stress-strain") && (lower.contains("class") || lower.contains("lab") || lower.contains("test") || lower.contains("curve") || lower.contains("exam"))
+            || lower.contains("stress strain") && (lower.contains("class") || lower.contains("lab") || lower.contains("test") || lower.contains("exam"))
+            || lower.contains("yield strength") && (lower.contains("class") || lower.contains("lab") || lower.contains("test") || lower.contains("exam"))
+            || lower.contains("ultimate tensile strength") && (lower.contains("class") || lower.contains("lab") || lower.contains("test"))
+            || lower.contains("fracture toughness") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("test"))
+            || lower.contains("creep test") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("materials"))
+            || lower.contains("impact test") && lower.contains("materials") && (lower.contains("class") || lower.contains("lab") || lower.contains("course")) {
+            return "materialstesting"
+        }
+        // biomedicalengineering — BEFORE engineering; biomechanics, biomaterials, bioinstrumentation,
+        // medical device design. "biomedical engineering" removed from generic engineering below.
+        if lower.contains("biomedical engineering class") || lower.contains("biomedical engineering course")
+            || lower.contains("biomedical engineering exam") || lower.contains("biomedical engineering lab")
+            || lower.contains("biomedical engineering notes") || lower.contains("biomedical engineering program")
+            || lower.contains("biomedical engineering major") || lower.contains("biomedical engineering degree")
+            || lower.contains("biomedical engineering assignment") || lower.contains("biomedical engineering project")
+            || word("bme") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab")) && lower.contains("engineering")
+            || lower.contains("biomechanics class") || lower.contains("biomechanics course")
+            || lower.contains("biomechanics exam") || lower.contains("biomechanics lab")
+            || lower.contains("biomaterials class") || lower.contains("biomaterials course")
+            || lower.contains("biomaterials exam") || lower.contains("biomaterials lab")
+            || lower.contains("bioinstrumentation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("medical device design") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("project"))
+            || lower.contains("medical imaging class") || lower.contains("medical imaging course") || lower.contains("medical imaging exam")
+            || lower.contains("tissue engineering class") || lower.contains("tissue engineering course") || lower.contains("tissue engineering exam")
+            || lower.contains("biosignal processing") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("physiological modeling") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("rehabilitation engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("project")) {
+            return "biomedicalengineering"
+        }
+        // chemicalengineering — BEFORE engineering; transport phenomena, unit operations, mass
+        // transfer, reaction engineering. Reactor-simulation tools (CSTR/PFR/Aspen) already owned
+        // by processengineering. "chemical engineering" removed from generic engineering below.
+        if lower.contains("chemical engineering class") || lower.contains("chemical engineering course")
+            || lower.contains("chemical engineering exam") || lower.contains("chemical engineering lab")
+            || lower.contains("chemical engineering notes") || lower.contains("chemical engineering program")
+            || lower.contains("chemical engineering major") || lower.contains("chemical engineering degree")
+            || lower.contains("chemical engineering assignment") || lower.contains("chemical engineering project")
+            || lower.contains("transport phenomena") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("hw") || lower.contains("assignment"))
+            || lower.contains("unit operations class") || lower.contains("unit operations course")
+            || lower.contains("unit operations exam") || lower.contains("unit operations lab")
+            || lower.contains("mass transfer class") || lower.contains("mass transfer course")
+            || lower.contains("mass transfer exam") || lower.contains("mass transfer lab")
+            || lower.contains("reaction engineering class") || lower.contains("reaction engineering course") || lower.contains("reaction engineering exam")
+            || lower.contains("chemical reaction engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("heat transfer class") || lower.contains("heat transfer course")
+            || lower.contains("heat transfer exam") || lower.contains("heat transfer lab")
+            || lower.contains("thermodynamics class") && lower.contains("chemical")
+            || lower.contains("thermodynamics course") && lower.contains("chemical")
+            || lower.contains("thermodynamics exam") && lower.contains("chemical")
+            || lower.contains("fluid mechanics class") && lower.contains("chemical") {
+            return "chemicalengineering"
+        }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
-        // "civil engineering" now owned by civilengineering branch above.
+        // "civil engineering" → civilengineering; "mechanical/biomedical/chemical engineering" →
+        // dedicated branches above. Generic mechanical/chemical/biomedical text still catches here.
         if word("solidworks") || lower.contains("fusion 360") || word("ansys")
             || word("microcontroller") || word("arduino") || lower.contains("raspberry pi")
             || word("pcb") || lower.contains("circuit board") || lower.contains("circuit diagram")

@@ -4580,5 +4580,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Physiology assignment completed (physiological data interpreted, organ system mechanisms applied, and lab report or problem set answers documented and saved)",
             preferredDuration: 45 * 60
         ),
+        // mechanicalengineering
+        SuggestedTemplate(
+            icon: "gearshape.2.fill",
+            task: "Complete my mechanical engineering problem set — solve machine design problems, dynamics equations, vibrations analysis, kinematics, statics, or mechanism design",
+            successCriteria: "ME problem set completed (at least 5 problems solved with free body diagrams, dynamics equations, or design calculations documented and verified)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "gearshape.2.fill",
+            task: "Study mechanical engineering for my exam — review dynamics, statics, vibrations, kinematics, machine design, and manufacturing processes",
+            successCriteria: "ME study session complete (at least two topics reviewed with equations, diagrams, and example problems worked through in notes)",
+            preferredDuration: 60 * 60
+        ),
+        // nuclearengineering
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work through my nuclear engineering problem set — neutron transport, reactor physics, thermal hydraulics, criticality calculations, or nuclear fuel cycle",
+            successCriteria: "Nuclear engineering problem set completed (at least 4 problems solved with neutron balance equations, criticality conditions, or thermal hydraulic calculations documented)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study nuclear engineering for my exam — review reactor physics, neutron transport, thermal hydraulics, nuclear fuel design, and reactor safety",
+            successCriteria: "Nuclear engineering study session completed (reactor physics concepts reviewed, key equations noted, and sample problems worked through with criticality and neutron flux concepts)",
+            preferredDuration: 45 * 60
+        ),
+        // materialstesting
+        SuggestedTemplate(
+            icon: "hammer.fill",
+            task: "Complete my materials testing lab — analyze tensile test data, plot stress-strain curves, calculate yield strength and ultimate tensile strength, or interpret Charpy impact results",
+            successCriteria: "Materials testing lab report completed (stress-strain curve plotted, material properties calculated from test data, Charpy or hardness results tabulated and written up)",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "hammer.fill",
+            task: "Study materials testing for my exam — review tensile and compressive testing, hardness tests, Charpy impact, fatigue testing, and fracture toughness concepts",
+            successCriteria: "Materials testing study session completed (testing methods reviewed, key equations and mechanical property definitions noted, and sample data interpretation problems worked through)",
+            preferredDuration: 45 * 60
+        ),
+        // biomedicalengineering
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Complete my biomedical engineering assignment — biomechanics analysis, biomaterials selection, medical device design, bioinstrumentation, or biosignal processing",
+            successCriteria: "BME assignment completed (design parameters documented, biomechanical or material analysis performed, and results written up with engineering calculations)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Study biomedical engineering for my exam — review biomechanics, biomaterials, tissue engineering, medical device design, and physiological modeling",
+            successCriteria: "BME study session completed (at least two topics reviewed with equations, design principles, and clinical application examples noted)",
+            preferredDuration: 60 * 60
+        ),
+        // chemicalengineering
+        SuggestedTemplate(
+            icon: "flask.fill",
+            task: "Work through my chemical engineering problem set — transport phenomena, unit operations, mass transfer, heat transfer, or reaction engineering",
+            successCriteria: "ChE problem set completed (at least 5 problems solved with material and energy balances, transport equations, or reaction rate calculations documented)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "flask.fill",
+            task: "Study chemical engineering for my exam — review transport phenomena, unit operations, mass transfer, thermodynamics, heat transfer, and reaction engineering",
+            successCriteria: "ChE study session completed (at least two topic areas reviewed with governing equations, constitutive relations, and sample problems worked through)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

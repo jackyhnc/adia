@@ -5403,4 +5403,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 709,
                 "catalog should have ≥709 templates after chemicalkinetics/computationalchemistry/ecology/pharmacology/physiology additions (10 templates)")
     }
+
+    // MARK: - mechanicalengineering templates
+    @Test func catalogHasMechanicalEngineeringTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasProblemSet = tasks.contains {
+            $0.localizedCaseInsensitiveContains("mechanical engineering") &&
+            ($0.localizedCaseInsensitiveContains("problem set") || $0.localizedCaseInsensitiveContains("dynamics") || $0.localizedCaseInsensitiveContains("machine design"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("mechanical engineering") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasProblemSet, "catalog must include a mechanical engineering problem set template")
+        #expect(hasStudy, "catalog must include a mechanical engineering study template")
+    }
+
+    // MARK: - nuclearengineering templates
+    @Test func catalogHasNuclearEngineeringTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasProblemSet = tasks.contains {
+            $0.localizedCaseInsensitiveContains("nuclear engineering") &&
+            ($0.localizedCaseInsensitiveContains("problem set") || $0.localizedCaseInsensitiveContains("neutron") || $0.localizedCaseInsensitiveContains("reactor"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("nuclear engineering") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasProblemSet, "catalog must include a nuclear engineering problem set template")
+        #expect(hasStudy, "catalog must include a nuclear engineering study template")
+    }
+
+    // MARK: - materialstesting templates
+    @Test func catalogHasMaterialsTestingTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasLab = tasks.contains {
+            $0.localizedCaseInsensitiveContains("materials testing") &&
+            ($0.localizedCaseInsensitiveContains("lab") || $0.localizedCaseInsensitiveContains("tensile") || $0.localizedCaseInsensitiveContains("stress-strain"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("materials testing") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasLab, "catalog must include a materials testing lab template")
+        #expect(hasStudy, "catalog must include a materials testing study template")
+    }
+
+    // MARK: - biomedicalengineering templates
+    @Test func catalogHasBiomedicalEngineeringTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasAssignment = tasks.contains {
+            $0.localizedCaseInsensitiveContains("biomedical engineering") &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("biomechanics") || $0.localizedCaseInsensitiveContains("biomaterials"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("biomedical engineering") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasAssignment, "catalog must include a biomedical engineering assignment template")
+        #expect(hasStudy, "catalog must include a biomedical engineering study template")
+    }
+
+    // MARK: - chemicalengineering templates
+    @Test func catalogHasChemicalEngineeringTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasProblemSet = tasks.contains {
+            $0.localizedCaseInsensitiveContains("chemical engineering") &&
+            ($0.localizedCaseInsensitiveContains("problem set") || $0.localizedCaseInsensitiveContains("transport phenomena") || $0.localizedCaseInsensitiveContains("unit operations"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("chemical engineering") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasProblemSet, "catalog must include a chemical engineering problem set template")
+        #expect(hasStudy, "catalog must include a chemical engineering study template")
+    }
+
+    // MARK: - Count guard (batch: mechanicalengineering/nuclearengineering/materialstesting/biomedicalengineering/chemicalengineering)
+    @Test func catalogHasAtLeastSevenHundredTwentyOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 721,
+                "catalog should have ≥721 templates after mechanicalengineering/nuclearengineering/materialstesting/biomedicalengineering/chemicalengineering additions (10 templates)")
+    }
 }

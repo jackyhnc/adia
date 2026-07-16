@@ -1,5 +1,92 @@
 # Adia — Build Progress
 
+## Run 366 (automated) — 2026-07-16 — 5 new keyword domains: mechanicalengineering, nuclearengineering, materialstesting, biomedicalengineering, chemicalengineering (711→721 templates)
+
+### What shipped
+
+**5 new keyword domains: mechanicalengineering, nuclearengineering, materialstesting, biomedicalengineering, chemicalengineering**
+
+**New keyword domain — mechanicalengineering:**
+- Branch positioned BEFORE engineering; specific ME coursework (ME class/course/exam, machine design, vibrations, kinematics, statics, mechanism design) routes here.
+- Catches: mechanical engineering class/course/exam/lab/notes/program/major/degree/assignment/project, machine design class/course/exam/lab, manufacturing processes class/course/exam/lab/assignment, mechanical vibrations+class/course/exam, vibrations class/course/exam, kinematics class/course/exam, mechanism design class/course/exam, statics class/course/exam (!electrostatics guard), dynamics class/course/exam+mechanical, tribology class/course/exam, engineering mechanics class/course/exam.
+- `mechanicalengineeringCallouts(tier:)` 4/3/3: "your machine design problems aren't going to solve themselves." / "no one passes dynamics by scrolling." / "CLOSE THIS. open your mechanics textbook."
+- 2 templates: "Complete my mechanical engineering problem set" (60 min) + "Study mechanical engineering for my exam" (60 min)
+
+**New keyword domain — nuclearengineering:**
+- Branch positioned BEFORE engineering; bare "nuclear" NOT matched (nuclear medicine stays in nuclearmedtech, nuclear chemistry stays in nuclearchemistry).
+- Catches: nuclear engineering class/course/exam/lab/notes/program/major/degree/assignment/project, nuclear reactor class/course/design, reactor physics class/course/exam, neutron physics class/course/exam, neutron transport+class/course/exam/lab, thermal hydraulics+class/course/exam/lab, nuclear power class/course, reactor safety class/course/exam, nuclear fuel+class/course/exam/design, nuclear criticality+class/course/exam/analysis, MCNP+class/simulation/lab, fission class/course/exam, fusion reactor+class/course/engineering.
+- `nuclearengineeringCallouts(tier:)` 4/3/3: "those reactor physics equations aren't going to solve themselves." / "no one masters reactor physics by scrolling." / "CLOSE THIS. open your nuclear engineering notes."
+- 2 templates: "Work through my nuclear engineering problem set" (60 min) + "Study nuclear engineering for my exam" (45 min)
+
+**New keyword domain — materialstesting:**
+- Branch positioned BEFORE engineering; bare "materials" stays in materialscience. materialscharacterization (XRD/SEM/TEM) handled by an earlier branch.
+- Catches: tensile test+class/lab/report/data/exam, compressive test+class/lab/report/exam, charpy test, charpy impact, hardness test+class/lab/exam, Rockwell/Brinell/Vickers hardness+class/lab/test, fatigue test+class/lab/exam, fatigue testing lab, materials testing lab/class/course/exam, stress-strain+class/lab/test/curve/exam, stress strain+class/lab/test/exam, yield strength+class/lab/test/exam, ultimate tensile strength+class/lab/test, fracture toughness+class/lab/exam/test, creep test+class/lab/exam/materials, impact test+materials+class/lab/course.
+- `materialstestingCallouts(tier:)` 4/3/3: "those test specimens aren't going to analyze themselves." / "no one passes materials testing by scrolling." / "CLOSE THIS. open your materials testing lab report."
+- 2 templates: "Complete my materials testing lab" (45 min) + "Study materials testing for my exam" (45 min)
+
+**New keyword domain — biomedicalengineering:**
+- Branch positioned BEFORE engineering; "biomedical engineering" removed conceptually from generic engineering (specific BME coursework now routes here).
+- Catches: biomedical engineering class/course/exam/lab/notes/program/major/degree/assignment/project, BME+class/course/exam/lab+engineering guard, biomechanics class/course/exam/lab, biomaterials class/course/exam/lab, bioinstrumentation+class/course/exam/lab, medical device design+class/course/exam/project, medical imaging class/course/exam, tissue engineering class/course/exam, biosignal processing+class/course/exam/lab, physiological modeling+class/course/exam/lab, rehabilitation engineering+class/course/exam/project.
+- `biomedicalengineeringCallouts(tier:)` 4/3/3: "your biomechanics problem set isn't going to solve itself." / "no one passes biomechanics by scrolling." / "CLOSE THIS. open your biomedical engineering notes."
+- 2 templates: "Complete my biomedical engineering assignment" (60 min) + "Study biomedical engineering for my exam" (60 min)
+
+**New keyword domain — chemicalengineering:**
+- Branch positioned BEFORE engineering; reactor simulation tools (CSTR/PFR/Aspen) already owned by processengineering.
+- Catches: chemical engineering class/course/exam/lab/notes/program/major/degree/assignment/project, transport phenomena+class/course/exam/hw/assignment, unit operations class/course/exam/lab, mass transfer class/course/exam/lab, reaction engineering class/course/exam, chemical reaction engineering+class/course/exam, heat transfer class/course/exam/lab, thermodynamics+chemical+class/course/exam, fluid mechanics+chemical+class.
+- `chemicalengineeringCallouts(tier:)` 4/3/3: "those transport phenomena problems aren't going to solve themselves." / "no one masters transport phenomena by scrolling." / "CLOSE THIS. open your chemical engineering textbook."
+- 2 templates: "Work through my chemical engineering problem set" (60 min) + "Study chemical engineering for my exam" (60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: 50 new tests (4-5 keyword routing + 1 false-positive + 3 callout pool tests per domain × 5 + 1 count guard ≥721)
+- SuggestedSessionTemplatesTests.swift: 12 new tests (2 per domain + 1 count guard ≥721)
+
+**Template catalog: 711 → 721**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- Brace balance: CalloutManager.swift 410/410 ✓, CalloutMessages.swift 765/765 ✓, SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 721 confirmed (grep -c "preferredDuration:" = 721) ✓
+- `mechanicalengineering` fires at line 1488, BEFORE engineering (1621) ✓
+- `nuclearengineering` fires at line 1514, BEFORE engineering ✓
+- `materialstesting` fires at line 1538, BEFORE engineering ✓
+- `biomedicalengineering` fires at line 1560, BEFORE engineering ✓
+- `chemicalengineering` fires at line 1581, BEFORE engineering ✓
+- "electrostatics class" does NOT route to mechanicalengineering (!electrostatics guard) ✓
+- "nuclear medicine" stays in nuclearmedtech (earlier branch) ✓
+- All 5 case statements in CalloutMessages.swift wired to private functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `thermodynamicsengineering` — thermodynamics class without chemical context (standalone ME/physics thermo class)
+  - `mechatronics` — PLC, control systems engineering, embedded systems lab, sensor/actuator integration
+  - `industrialengineering` — IE class, work study, ergonomics+IE, facilities layout, production planning
+  - `chemicalprocesssafety` — process safety management, HAZOP, PSM audit, Layer of Protection Analysis
+  - `forensicengineering` — failure analysis class, fracture analysis, accident reconstruction+engineering
+- Template count: 721 → 731 after next 5-domain batch
+- CalloutManagerTests: ~19400+ lines, +~200 lines next run
+
+---
+
+## Run 365 (automated) — 2026-07-16 — 5 new keyword domains: chemicalkinetics, computationalchemistry, ecology, pharmacology, physiology (701→711 templates)
+
+### What shipped
+
+5 new keyword domains added (PROGRESS.md was not updated for this run).
+- chemicalkinetics, computationalchemistry, ecology, pharmacology, physiology
+- 10 new templates (701→711)
+- 45+ new tests added to CalloutManagerTests.swift and SuggestedSessionTemplatesTests.swift
+
+### Verification
+Reviewed by code inspection (commit 21c8fbf).
+
+### Next agent should
+See Run 366 above.
+
+---
+
 ## Run 364 (automated) — 2026-07-16 — 5 new keyword domains: parasitology, embryology, histology, pathology, neuroanatomy (691→701 templates)
 
 ### What shipped

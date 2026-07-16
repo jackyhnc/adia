@@ -421,6 +421,11 @@ extension CalloutManager {
         case "ecology":                    return ecologyCallouts(tier: tier)
         case "pharmacology":               return pharmacologyCallouts(tier: tier)
         case "physiology":                 return physiologyCallouts(tier: tier)
+        case "mechanicalengineering":      return mechanicalengineeringCallouts(tier: tier)
+        case "nuclearengineering":         return nuclearengineeringCallouts(tier: tier)
+        case "materialstesting":           return materialstestingCallouts(tier: tier)
+        case "biomedicalengineering":      return biomedicalengineeringCallouts(tier: tier)
+        case "chemicalengineering":        return chemicalengineeringCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -8241,6 +8246,111 @@ extension CalloutManager {
             "CLOSE THIS. open your physiology notes.",
             "CLOSE THIS. organ system functions don't review themselves.",
             "CLOSE THIS. your physiology exam won't pass itself."
+        ]
+        }
+    }
+
+    private func mechanicalengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your machine design problems aren't going to solve themselves.",
+            "close this and get back to your ME problem set.",
+            "dynamics and kinematics won't work themselves out — close this.",
+            "your mechanical engineering exam is coming. close this and study."
+        ]
+        case 2: return [
+            "no one passes dynamics by scrolling.",
+            "close this and open your ME textbook.",
+            "those machine design calculations won't do themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your mechanics textbook.",
+            "CLOSE THIS. dynamics and statics won't study themselves.",
+            "CLOSE THIS. your ME exam won't solve itself."
+        ]
+        }
+    }
+
+    private func nuclearengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those reactor physics equations aren't going to solve themselves.",
+            "close this and get back to your nuclear engineering work.",
+            "neutron transport and criticality won't study themselves — close this.",
+            "your nuclear engineering exam is coming. close this."
+        ]
+        case 2: return [
+            "no one masters reactor physics by scrolling.",
+            "close this and open your nuclear engineering textbook.",
+            "those criticality calculations won't do themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your nuclear engineering notes.",
+            "CLOSE THIS. reactor physics won't study itself.",
+            "CLOSE THIS. your nuclear exam won't pass itself."
+        ]
+        }
+    }
+
+    private func materialstestingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those test specimens aren't going to analyze themselves.",
+            "close this and get back to your materials testing lab.",
+            "stress-strain curves won't plot themselves — close this.",
+            "your Charpy impact data won't interpret itself. close this."
+        ]
+        case 2: return [
+            "no one passes materials testing by scrolling.",
+            "close this and open your lab report.",
+            "those tensile test results won't write themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your materials testing lab report.",
+            "CLOSE THIS. your stress-strain curve won't plot itself.",
+            "CLOSE THIS. those specimens need your analysis, not your scrolling."
+        ]
+        }
+    }
+
+    private func biomedicalengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your biomechanics problem set isn't going to solve itself.",
+            "close this and get back to your BME work.",
+            "medical device design won't happen while you're scrolling — close this.",
+            "your biomedical engineering exam is coming. close this and study."
+        ]
+        case 2: return [
+            "no one passes biomechanics by scrolling.",
+            "close this and open your BME textbook.",
+            "those bioinstrumentation problems won't solve themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your biomedical engineering notes.",
+            "CLOSE THIS. biomaterials and biomechanics won't study themselves.",
+            "CLOSE THIS. your BME exam won't pass itself."
+        ]
+        }
+    }
+
+    private func chemicalengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those transport phenomena problems aren't going to solve themselves.",
+            "close this and get back to your ChE problem set.",
+            "unit operations and mass transfer won't work themselves out — close this.",
+            "your chemical engineering exam is coming. close this and study."
+        ]
+        case 2: return [
+            "no one masters transport phenomena by scrolling.",
+            "close this and open your ChE textbook.",
+            "those heat and mass transfer calculations won't do themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your chemical engineering textbook.",
+            "CLOSE THIS. transport phenomena won't study itself.",
+            "CLOSE THIS. your ChE exam won't pass itself."
         ]
         }
     }
