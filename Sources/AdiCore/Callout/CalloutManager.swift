@@ -1252,6 +1252,22 @@ public final class CalloutManager {
             || lower.contains("computational class") || lower.contains("computational course") {
             return "computationalscience"
         }
+        // computationalbiology — positioned BEFORE bioinformatics so systems biology,
+        // mathematical biology, and biological modeling with class/course context route here.
+        // Generic "computational biology" stays in bioinformatics; class context fires here first.
+        if lower.contains("computational biology class") || lower.contains("computational biology course")
+            || lower.contains("computational biology exam") || lower.contains("computational biology assignment")
+            || lower.contains("computational biology program") || lower.contains("computational biology major")
+            || lower.contains("systems biology") || lower.contains("mathematical biology")
+            || lower.contains("population dynamics model") || lower.contains("population dynamics class")
+            || lower.contains("population dynamics course") || lower.contains("population dynamics exam")
+            || lower.contains("biological modeling") || lower.contains("biological simulation")
+            || lower.contains("network biology") || lower.contains("biological network analysis")
+            || (lower.contains("gene regulatory network") && (lower.contains("class") || lower.contains("model")))
+            || (lower.contains("regulatory network") && lower.contains("biolog") && lower.contains("model"))
+            || (lower.contains("protein interaction network") && lower.contains("class")) {
+            return "computationalbiology"
+        }
         // bioinformatics — positioned after datascience (ML tools may co-occur) and before ux
         // so sequence analysis, genomics, and computational-biology pipelines route here.
         // Bare "biology" stays in studying; "biomedical engineering" stays in engineering above.
@@ -1714,6 +1730,21 @@ public final class CalloutManager {
             || lower.contains("ctsa program") || lower.contains("tl1 program")
             || lower.contains("clinical translational") || lower.contains("translational pharmacology") {
             return "translationalresearch"
+        }
+        // digitalhumanities — positioned BEFORE research so digital humanities projects,
+        // text mining, distant reading, and cultural analytics tasks route here rather than
+        // the generic research pool. Bare "digital" alone is NOT matched.
+        if lower.contains("digital humanities") || lower.contains("humanities computing")
+            || lower.contains("computational humanities") || lower.contains("distant reading")
+            || lower.contains("cultural analytics") || lower.contains("spatial humanities")
+            || lower.contains("digital history class") || lower.contains("digital history course")
+            || lower.contains("digital history program") || lower.contains("digital history exam")
+            || (lower.contains("text mining") && (lower.contains("humanities") || lower.contains("literary") || lower.contains("historical") || lower.contains("corpus")))
+            || lower.contains("digital archives class") || lower.contains("digital archive project")
+            || (lower.contains("network analysis") && (lower.contains("humanities") || lower.contains("literary") || lower.contains("historical text")))
+            || (lower.contains("corpus analysis") && (lower.contains("humanities") || lower.contains("literary")))
+            || (lower.contains("topic modeling") && (lower.contains("humanities") || lower.contains("literary") || lower.contains("historical"))) {
+            return "digitalhumanities"
         }
         if word("research") || word("lab")
             || lower.contains("case study") || lower.contains("case studies")
@@ -3191,6 +3222,28 @@ public final class CalloutManager {
             || lower.contains("aquatic invasive species") || lower.contains("aquatic systems")
             || lower.contains("fisheries and wildlife") || lower.contains("wildlife and fisheries") {
             return "aquaticscience"
+        }
+        // environmentalpolicy — positioned BEFORE enviro so environmental policy and climate policy
+        // with academic/analysis context route here. Generic "environmental policy" and
+        // "climate policy" without class/analysis qualifiers still fall through to enviro below.
+        if lower.contains("environmental policy class") || lower.contains("environmental policy course")
+            || lower.contains("environmental policy exam") || lower.contains("environmental policy paper")
+            || lower.contains("environmental policy assignment") || lower.contains("environmental policy program")
+            || lower.contains("environmental policy major") || lower.contains("environmental policy analysis")
+            || lower.contains("environmental policy research") || lower.contains("environmental policy thesis")
+            || lower.contains("climate policy class") || lower.contains("climate policy course")
+            || lower.contains("climate policy exam") || lower.contains("climate policy paper")
+            || lower.contains("climate policy analysis") || lower.contains("climate policy research")
+            || lower.contains("climate policy thesis") || lower.contains("carbon policy")
+            || lower.contains("environmental regulation class") || lower.contains("environmental regulation course")
+            || lower.contains("environmental regulation exam")
+            || lower.contains("emissions trading class") || lower.contains("cap-and-trade class")
+            || lower.contains("carbon tax class") || lower.contains("carbon tax assignment")
+            || (lower.contains("climate legislation") && (lower.contains("class") || lower.contains("course") || lower.contains("paper")))
+            || lower.contains("environmental governance class") || lower.contains("environmental governance course")
+            || lower.contains("climate adaptation policy") || lower.contains("climate mitigation policy")
+            || lower.contains("green new deal class") || lower.contains("green new deal course") {
+            return "environmentalpolicy"
         }
         // enviro — environmental science, ecology, sustainability; positioned after fitness/nutrition.
         if lower.contains("environmental science") || lower.contains("environmental studies")
@@ -5368,6 +5421,21 @@ public final class CalloutManager {
             || (lower.contains("global governance") && (lower.contains("political economy") || lower.contains("ipe"))) {
             return "globalpoliticaleconomy"
         }
+        // geopolitics — positioned AFTER globalpoliticaleconomy and BEFORE socialscience.
+        // Catches geopolitical analysis, risk assessment, and strategy tasks. Note: "geopolitics
+        // class/course/exam" already fires internationalrelations above; this branch handles
+        // standalone analytical/research contexts without requiring edu-context qualifiers.
+        if lower.contains("geopolitical analysis") || lower.contains("geopolitical risk")
+            || lower.contains("geopolitical strategy") || lower.contains("geopolitical competition")
+            || lower.contains("geopolitical rivalry") || lower.contains("geopolitical landscape")
+            || lower.contains("geopolitical forecast") || lower.contains("geopolitical assessment")
+            || lower.contains("geopolitical tension") || lower.contains("geopolitical dynamics")
+            || lower.contains("geopolitical power") || lower.contains("geopolitical implications")
+            || lower.contains("geopolitical conflict") || lower.contains("geopolitics paper")
+            || lower.contains("geopolitics assignment") || lower.contains("geopolitics thesis")
+            || lower.contains("geopolitics research") || lower.contains("geopolitics essay") {
+            return "geopolitics"
+        }
         // socialscience — positioned after criminaljustice (which now owns criminology/criminal justice)
         // and before legal (LSAT is pre-law, not a bar-exam term). "social work" routes to socialwork.
         // "public administration" now has its own branch below (fires between theology and policy).
@@ -5405,6 +5473,27 @@ public final class CalloutManager {
             || lower.contains("hellenistic") && lower.contains("class") {
             return "classicalstudies"
         }
+        // philosophyofmind — positioned BEFORE philosophy so consciousness studies, qualia,
+        // and phenomenology of mind tasks route here rather than the general philosophy pool.
+        // "philosophy of mind" combined with "cogsci"/"cognitive science" fires cognitivescience above.
+        // Guard: bare "theory of mind" in developmental psych (autism/ToM context) routes to psychology.
+        if lower.contains("philosophy of mind")
+            || lower.contains("consciousness studies") || lower.contains("study of consciousness")
+            || word("qualia") || lower.contains("phenomenal consciousness")
+            || lower.contains("hard problem of consciousness")
+            || lower.contains("philosophy of consciousness")
+            || lower.contains("mind-body problem") || lower.contains("mind body problem")
+            || (word("phenomenology") && (lower.contains("philosophy") || lower.contains("phil of mind") || lower.contains("consciousness") || lower.contains("class")))
+            || (word("functionalism") && (lower.contains("philosophy") || lower.contains("mind")))
+            || (lower.contains("mental state") && lower.contains("philosophy"))
+            || (word("intentionality") && lower.contains("philosophy"))
+            || (word("physicalism") && lower.contains("philosophy"))
+            || (word("dualism") && lower.contains("mind") && (lower.contains("philosophy") || lower.contains("class") || lower.contains("paper")))
+            || (lower.contains("folk psychology") && (lower.contains("philosophy") || lower.contains("class")))
+            || (lower.contains("zombie") && lower.contains("philosophy") && !lower.contains("game"))
+            || (lower.contains("theory of mind") && lower.contains("philosophy")) {
+            return "philosophyofmind"
+        }
         // philosophy — positioned after socialscience (shared "political philosophy" territory)
         // and before legal so "ethics paper" and "philosophical argument" don't fall to legal.
         if word("philosophy") || word("philosophical") || word("philosopher")
@@ -5413,7 +5502,7 @@ public final class CalloutManager {
             || word("hegel") || word("hegelian")
             || word("metaphysics") || word("epistemology") || word("ontology")
             || lower.contains("moral philosophy") || lower.contains("political philosophy")
-            || lower.contains("philosophy of mind") || lower.contains("philosophy of science")
+            || lower.contains("philosophy of science")
             || lower.contains("ethics paper") || lower.contains("ethics essay")
             || lower.contains("thought experiment") || lower.contains("thought experiments")
             || lower.contains("argument analysis") || lower.contains("philosophical argument")

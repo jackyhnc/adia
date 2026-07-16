@@ -1,5 +1,71 @@
 # Adia — Build Progress
 
+## Run 355 (automated) — 2026-07-16 — 5 new keyword domains: geopolitics, computationalbiology, philosophyofmind, digitalhumanities, environmentalpolicy (589→599 templates)
+
+### What shipped
+
+**5 new keyword domains: geopolitics, computationalbiology, philosophyofmind, digitalhumanities, environmentalpolicy**
+
+**New keyword domain — geopolitics:**
+- Branch positioned AFTER globalpoliticaleconomy (5422) and BEFORE socialscience (5450); "geopolitics class/course/exam" already fires internationalrelations (5403), so this branch catches standalone analytical/research contexts.
+- Catches: geopolitical analysis/risk/strategy/competition/rivalry/landscape/forecast/assessment/tension/dynamics/power/implications/conflict, geopolitics paper/assignment/thesis/research/essay.
+- `geopoliticsCallouts(tier:)` 4/3/3: "that geopolitical analysis isn't going to write itself." / "no one becomes a geopolitics expert by scrolling." / "CLOSE THIS. open your geopolitics materials."
+- 2 templates: "Write a geopolitical analysis" (60 min, globe.europe.africa.fill) + "Complete a geopolitics assignment or research paper" (45 min, doc.text.fill)
+
+**New keyword domain — computationalbiology:**
+- Branch positioned BEFORE bioinformatics (1289) at line 1255; keeps bioinformatics for genomics/proteomics/sequence pipelines.
+- Catches: computational biology class/course/exam/assignment/program/major, systems biology, mathematical biology, population dynamics model/class/course/exam, biological modeling/simulation, network biology, biological network analysis, gene regulatory network+class/model.
+- `computationalbiologyCallouts(tier:)` 4/3/3: "those biological models aren't going to build themselves." / "no one masters computational biology by scrolling." / "CLOSE THIS. open your computational biology tools."
+- 2 templates: "Work on a computational biology project" (60 min) + "Study computational biology concepts" (45 min)
+
+**New keyword domain — philosophyofmind:**
+- Branch positioned BEFORE philosophy (5514) at line 5495; "philosophy of mind" removed from philosophy branch (which now only fires for "philosophy of science", Kant, Plato, etc.).
+- Catches: philosophy of mind, consciousness studies, qualia, phenomenal consciousness, hard problem of consciousness, philosophy of consciousness, mind-body problem, phenomenology+philosophy/class/consciousness, functionalism+philosophy/mind, mental state+philosophy, intentionality+philosophy, physicalism+philosophy, dualism+mind+context, folk psychology+context, zombie+philosophy, theory of mind+philosophy.
+- `philosophyofmindCallouts(tier:)` 4/3/3: "consciousness won't study itself — close this." / "no one solves the mind-body problem by scrolling." / "CLOSE THIS. open your philosophy of mind materials."
+- 2 templates: "Write a philosophy of mind paper" (60 min) + "Study philosophy of mind concepts" (45 min)
+
+**New keyword domain — digitalhumanities:**
+- Branch positioned BEFORE research (1753) at line 1733; catches DH-specific terms before the generic "research/lab/data analysis" pool.
+- Catches: digital humanities, humanities computing, computational humanities, distant reading, cultural analytics, spatial humanities, digital history class/course/program/exam, text mining+humanities/literary/historical/corpus, digital archives class/project, network analysis+humanities/literary context, corpus analysis+humanities/literary, topic modeling+humanities/literary/historical.
+- `digitalhumanitiesCallouts(tier:)` 4/3/3: "those texts aren't going to mine themselves." / "no one masters digital humanities by scrolling." / "CLOSE THIS. open your digital humanities project."
+- 2 templates: "Work on a digital humanities project" (60 min) + "Study digital humanities methods" (45 min)
+
+**New keyword domain — environmentalpolicy:**
+- Branch positioned BEFORE enviro (3262) at line 3222; "environmental policy" and "climate policy" without class/analysis qualifiers still fall through to enviro.
+- Catches: environmental policy class/course/exam/paper/assignment/program/major/analysis/research/thesis, climate policy class/course/exam/paper/analysis/research/thesis, carbon policy, environmental regulation class/course/exam, emissions trading class, cap-and-trade class, carbon tax class/assignment, climate legislation+class/course/paper, environmental governance class/course, climate adaptation policy, climate mitigation policy, green new deal class/course.
+- `environmentalpolicyCallouts(tier:)` 4/3/3: "that environmental policy paper isn't going to write itself." / "no one shapes climate policy by scrolling." / "CLOSE THIS. open your environmental policy materials."
+- 2 templates: "Write an environmental policy paper" (60 min, leaf.fill) + "Study environmental policy concepts" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +41 tests (4 keyword routing + 3 callout pool tests per domain × 5 + 1 count guard ≥599)
+- SuggestedSessionTemplatesTests.swift: +11 tests (2 template existence tests per domain × 5 + 1 count guard ≥599)
+
+**Template catalog: 589 → 599**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `computationalbiology` fires at line 1269, BEFORE `bioinformatics` at 1289. "systems biology ODE model assignment" → computationalbiology ✓; "RNA-seq BLAST genomics pipeline" → bioinformatics ✓
+- `digitalhumanities` fires at line 1747, BEFORE `research` at 1753. "digital humanities text mining corpus class" → digitalhumanities ✓; "qualitative data case study" → research ✓
+- `environmentalpolicy` fires at line 3246, BEFORE `enviro` at 3262. "environmental policy class assignment carbon tax" → environmentalpolicy ✓; "environmental science climate change ecosystem" → enviro ✓
+- `geopolitics` fires at line 5437, AFTER `globalpoliticaleconomy` (5422) and BEFORE `socialscience` (5450). "geopolitical analysis paper" → geopolitics ✓; "geopolitics class exam IR theory" → internationalrelations ✓ (fires at 5403)
+- `philosophyofmind` fires at line 5495, BEFORE `philosophy` at 5514. "philosophy of mind qualia paper" → philosophyofmind ✓; "Kant moral philosophy deontology" → philosophy ✓
+- "philosophy of mind" removed from philosophy branch; philosophyofmind branch fires first.
+- Brace balance: CalloutManager.swift 350/350 ✓, CalloutMessages.swift 645/645 ✓
+- Template count: 599 confirmed (SuggestedTemplate( occurrences)
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `geospatialanalysis` — GIS analysis, spatial analysis, ArcGIS, QGIS, remote sensing class (separate from geospatial mapping which exists)
+  - `cognitivelinguistics` — cognitive linguistics, construction grammar, prototype theory, frame semantics (separate from linguistics)
+  - `developmentalpsychology` — child development, Piaget/Vygotsky, lifespan development, developmental psych class (separate from psychology)
+  - `healthpromotion` — health behavior, CHES exam, community health education, health communication (separate from publicheath)
+  - `publichealth_informatics` — or expand healthinformatics with population health, EHR analytics (already have healthinformatics branch)
+- Template count: 599 → 609 after next 5-domain batch
+- CalloutManagerTests: ~2800+ after next batch
+
 ## Run 354 (automated) — 2026-07-16 — 5 new keyword domains: cryptography, appliedmathematics, historicallinguistics, computationalfinance, globalpoliticaleconomy (579→589 templates)
 
 ### What shipped

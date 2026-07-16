@@ -361,6 +361,11 @@ extension CalloutManager {
         case "historicallinguistics":      return historicallinguisticsCallouts(tier: tier)
         case "computationalfinance":       return computationalfinanceCallouts(tier: tier)
         case "globalpoliticaleconomy":     return globalpoliticaleconomyCallouts(tier: tier)
+        case "geopolitics":                return geopoliticsCallouts(tier: tier)
+        case "computationalbiology":       return computationalbiologyCallouts(tier: tier)
+        case "philosophyofmind":           return philosophyofmindCallouts(tier: tier)
+        case "digitalhumanities":          return digitalhumanitiesCallouts(tier: tier)
+        case "environmentalpolicy":        return environmentalpolicyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -6921,6 +6926,111 @@ extension CalloutManager {
             "CLOSE THIS. open your IPE study materials.",
             "CLOSE THIS. political economy demands your full attention.",
             "CLOSE THIS. dependency theory won't explain itself."
+        ]
+        }
+    }
+
+    private func geopoliticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that geopolitical analysis isn't going to write itself.",
+            "close this and get back to your geopolitics work.",
+            "great power competition doesn't wait for you to stop scrolling.",
+            "your geopolitical risk assessment won't finish itself — close this.",
+        ]
+        case 2: return [
+            "no one becomes a geopolitics expert by scrolling.",
+            "close this and open your geopolitical analysis notes.",
+            "the geopolitical landscape won't map itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your geopolitics materials.",
+            "CLOSE THIS. geopolitical analysis demands your full attention.",
+            "CLOSE THIS. your geopolitical risk report won't write itself."
+        ]
+        }
+    }
+
+    private func computationalbiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those biological models aren't going to build themselves.",
+            "close this and get back to your computational biology work.",
+            "systems biology won't model itself — close this.",
+            "your population dynamics assignment won't finish itself — close this.",
+        ]
+        case 2: return [
+            "no one masters computational biology by scrolling.",
+            "close this and open your biological modeling code.",
+            "mathematical biology won't solve itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your computational biology tools.",
+            "CLOSE THIS. biological network analysis demands your full attention.",
+            "CLOSE THIS. your systems biology model won't run itself."
+        ]
+        }
+    }
+
+    private func philosophyofmindCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "consciousness won't study itself — close this.",
+            "close this and get back to your philosophy of mind coursework.",
+            "the hard problem of consciousness is hard — scrolling makes it harder.",
+            "your qualia paper won't write itself — close this.",
+        ]
+        case 2: return [
+            "no one solves the mind-body problem by scrolling.",
+            "close this and open your philosophy of mind notes.",
+            "phenomenal consciousness demands your full attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your philosophy of mind materials.",
+            "CLOSE THIS. consciousness studies require you to be conscious of your focus.",
+            "CLOSE THIS. your mind-body problem paper won't write itself."
+        ]
+        }
+    }
+
+    private func digitalhumanitiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those texts aren't going to mine themselves.",
+            "close this and get back to your digital humanities project.",
+            "distant reading requires actual reading — close this.",
+            "your cultural analytics project won't finish itself — close this.",
+        ]
+        case 2: return [
+            "no one masters digital humanities by scrolling.",
+            "close this and open your DH tools.",
+            "that corpus won't analyze itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your digital humanities project.",
+            "CLOSE THIS. text mining requires you to open the texts.",
+            "CLOSE THIS. your humanities computing assignment won't do itself."
+        ]
+        }
+    }
+
+    private func environmentalpolicyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that environmental policy paper isn't going to write itself.",
+            "close this and get back to your climate policy work.",
+            "carbon policy won't analyze itself — close this.",
+            "your environmental governance assignment won't finish itself — close this.",
+        ]
+        case 2: return [
+            "no one shapes climate policy by scrolling.",
+            "close this and open your environmental policy notes.",
+            "climate legislation won't analyze itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your environmental policy materials.",
+            "CLOSE THIS. climate policy analysis demands your full attention.",
+            "CLOSE THIS. your carbon policy paper won't write itself."
         ]
         }
     }

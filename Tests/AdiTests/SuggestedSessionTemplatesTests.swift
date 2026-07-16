@@ -4680,4 +4680,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 589,
                 "catalog should have ≥589 templates after cryptography/appliedmathematics/historicallinguistics/computationalfinance/globalpoliticaleconomy additions (10 templates)")
     }
+
+    // MARK: - geopolitics
+    @Test func geopoliticsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAnalysis = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("geopolitical analysis") || $0.localizedCaseInsensitiveContains("geopolitical risk") || $0.localizedCaseInsensitiveContains("great power competition") || $0.localizedCaseInsensitiveContains("geopolitical strategy")) &&
+            ($0.localizedCaseInsensitiveContains("write") || $0.localizedCaseInsensitiveContains("assess") || $0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("analysis"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("geopolitic") || $0.localizedCaseInsensitiveContains("geopolitical")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("research") || $0.localizedCaseInsensitiveContains("complete"))
+        }
+        #expect(hasAnalysis, "catalog must include a geopolitical analysis template")
+        #expect(hasAssignment, "catalog must include a geopolitics assignment template")
+    }
+
+    // MARK: - computationalbiology
+    @Test func computationalbiologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasProject = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("computational biology") || $0.localizedCaseInsensitiveContains("systems biology") || $0.localizedCaseInsensitiveContains("population dynamics") || $0.localizedCaseInsensitiveContains("biological network")) &&
+            ($0.localizedCaseInsensitiveContains("project") || $0.localizedCaseInsensitiveContains("build") || $0.localizedCaseInsensitiveContains("simulate") || $0.localizedCaseInsensitiveContains("work on") || $0.localizedCaseInsensitiveContains("model"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("computational biology") || $0.localizedCaseInsensitiveContains("systems biology") || $0.localizedCaseInsensitiveContains("mathematical biology")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("exam"))
+        }
+        #expect(hasProject, "catalog must include a computational biology project template")
+        #expect(hasStudy, "catalog must include a computational biology study template")
+    }
+
+    // MARK: - philosophyofmind
+    @Test func philosophyofmindTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPaper = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("philosophy of mind") || $0.localizedCaseInsensitiveContains("qualia") || $0.localizedCaseInsensitiveContains("consciousness") || $0.localizedCaseInsensitiveContains("mind-body")) &&
+            ($0.localizedCaseInsensitiveContains("write") || $0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("argue"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("philosophy of mind") || $0.localizedCaseInsensitiveContains("consciousness") || $0.localizedCaseInsensitiveContains("functionalism") || $0.localizedCaseInsensitiveContains("qualia")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("exam"))
+        }
+        #expect(hasPaper, "catalog must include a philosophy of mind paper template")
+        #expect(hasStudy, "catalog must include a philosophy of mind study template")
+    }
+
+    // MARK: - digitalhumanities
+    @Test func digitalhumanitiesTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasProject = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("digital humanities") || $0.localizedCaseInsensitiveContains("text mining") || $0.localizedCaseInsensitiveContains("topic modeling") || $0.localizedCaseInsensitiveContains("cultural analytics") || $0.localizedCaseInsensitiveContains("distant reading")) &&
+            ($0.localizedCaseInsensitiveContains("project") || $0.localizedCaseInsensitiveContains("work on") || $0.localizedCaseInsensitiveContains("run") || $0.localizedCaseInsensitiveContains("build"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("digital humanities") || $0.localizedCaseInsensitiveContains("distant reading") || $0.localizedCaseInsensitiveContains("humanities computing") || $0.localizedCaseInsensitiveContains("corpus analysis")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("methods"))
+        }
+        #expect(hasProject, "catalog must include a digital humanities project template")
+        #expect(hasStudy, "catalog must include a digital humanities study template")
+    }
+
+    // MARK: - environmentalpolicy
+    @Test func environmentalpolicyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPaper = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("environmental policy") || $0.localizedCaseInsensitiveContains("climate policy") || $0.localizedCaseInsensitiveContains("carbon tax") || $0.localizedCaseInsensitiveContains("climate legislation") || $0.localizedCaseInsensitiveContains("cap-and-trade")) &&
+            ($0.localizedCaseInsensitiveContains("write") || $0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("evaluate"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("environmental policy") || $0.localizedCaseInsensitiveContains("climate policy") || $0.localizedCaseInsensitiveContains("carbon market") || $0.localizedCaseInsensitiveContains("environmental regulation")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("exam"))
+        }
+        #expect(hasPaper, "catalog must include an environmental policy paper template")
+        #expect(hasStudy, "catalog must include an environmental policy study template")
+    }
+
+    // MARK: - Count guard (batch: geopolitics/computationalbiology/philosophyofmind/digitalhumanities/environmentalpolicy)
+    @Test func catalogHasAtLeastFiveHundredNinetyNineTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 599,
+                "catalog should have ≥599 templates after geopolitics/computationalbiology/philosophyofmind/digitalhumanities/environmentalpolicy additions (10 templates)")
+    }
 }

@@ -3800,5 +3800,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Political economy assignment meaningfully advanced (theoretical framework applied, case study analyzed, or argument section drafted and saved)",
             preferredDuration: 60 * 60
         ),
+        // geopolitics
+        SuggestedTemplate(
+            icon: "globe.europe.africa.fill",
+            task: "Write a geopolitical analysis — assess geopolitical risk, analyze great power competition, or evaluate geopolitical strategy in a regional context",
+            successCriteria: "Geopolitical analysis meaningfully advanced (risk factors identified, strategic dynamics analyzed, or argument section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a geopolitics assignment or research paper — analyze geopolitical tensions, map rivalry dynamics, or evaluate a geopolitical forecast",
+            successCriteria: "Geopolitics assignment meaningfully advanced (key arguments articulated, evidence incorporated, or analysis section drafted and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // computationalbiology
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Work on a computational biology project — build a systems biology model, simulate population dynamics, or analyze a biological network",
+            successCriteria: "Computational biology project meaningfully advanced (model coded or running, simulation output generated, or network analysis section completed and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study computational biology concepts — review systems biology, mathematical biology, biological network analysis, or ODE modeling for my class or exam",
+            successCriteria: "Computational biology study session completed (at least two modeling approaches reviewed, key concepts understood, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // philosophyofmind
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Write a philosophy of mind paper — argue a position on consciousness, qualia, the mind-body problem, functionalism, or phenomenal experience",
+            successCriteria: "Philosophy of mind paper meaningfully advanced (thesis stated, key argument laid out with supporting evidence, or a section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study philosophy of mind — review consciousness theories, qualia, the hard problem, functionalism, or phenomenology for my class or exam",
+            successCriteria: "Philosophy of mind study session completed (at least two theories or positions reviewed, key distinctions understood, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // digitalhumanities
+        SuggestedTemplate(
+            icon: "doc.richtext.fill",
+            task: "Work on a digital humanities project — run text mining or topic modeling on a corpus, build a network analysis of historical texts, or develop a cultural analytics workflow",
+            successCriteria: "Digital humanities project meaningfully advanced (analysis pipeline running, initial results reviewed, or findings section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study digital humanities methods — review distant reading, corpus analysis, spatial humanities, or digital archive tools for my class or project",
+            successCriteria: "Digital humanities study session completed (at least two methods reviewed, tool or technique practiced, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // environmentalpolicy
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Write an environmental policy paper — analyze climate legislation, evaluate a carbon tax or cap-and-trade scheme, or assess environmental governance frameworks",
+            successCriteria: "Environmental policy paper meaningfully advanced (policy analyzed, argument structured, or a key section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study environmental policy concepts — review climate policy instruments, environmental regulation, carbon markets, or climate adaptation frameworks for my class or exam",
+            successCriteria: "Environmental policy study session completed (at least two policy instruments or frameworks reviewed, key tradeoffs understood, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

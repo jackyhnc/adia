@@ -17090,4 +17090,184 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast589() {
         #expect(SuggestedSessionTemplates.all.count >= 589, "template catalog must have ≥589 entries after cryptography/appliedmathematics/historicallinguistics/computationalfinance/globalpoliticaleconomy (10 templates)")
     }
+
+    // MARK: - geopolitics
+    @Test func geopoliticsKeywordFromGeopoliticalAnalysis() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a geopolitical analysis of US-China rivalry for my international security paper")
+        #expect(kw == "geopolitics", "geopolitical analysis paper should route to geopolitics")
+    }
+    @Test func geopoliticsKeywordFromGeopoliticalRisk() {
+        let kw = CalloutManager.extractTaskKeyword(from: "assessing geopolitical risk for my regional economics research assignment")
+        #expect(kw == "geopolitics", "geopolitical risk assignment should route to geopolitics")
+    }
+    @Test func geopoliticsKeywordFromGeopoliticalStrategy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyzing geopolitical strategy — great power competition and geopolitical rivalry in my research thesis")
+        #expect(kw == "geopolitics", "geopolitical strategy thesis should route to geopolitics")
+    }
+    @Test func geopoliticsFalsePositive_internationalrelations() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my geopolitics class exam — IR theory and foreign policy frameworks")
+        #expect(kw == "internationalrelations", "geopolitics class exam with IR context should route to internationalrelations")
+    }
+    @Test @MainActor func geopoliticsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "geopolitics", tier: tier)
+            #expect(!msgs.isEmpty, "geopolitics tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func geopoliticsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "geopolitics", tier: 1)
+        #expect(msgs.count >= 4, "geopolitics tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func geopoliticsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "geopolitics", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "geopolitics tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - computationalbiology
+    @Test func computationalbiologyKeywordFromSystemsBiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my systems biology assignment — building an ODE model of gene regulatory networks")
+        #expect(kw == "computationalbiology", "systems biology ODE model assignment should route to computationalbiology")
+    }
+    @Test func computationalbiologyKeywordFromMathematicalBiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying mathematical biology — population dynamics modeling and biological simulation for my class")
+        #expect(kw == "computationalbiology", "mathematical biology population dynamics class should route to computationalbiology")
+    }
+    @Test func computationalbiologyKeywordFromCompBioClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing a computational biology assignment on network biology and biological network analysis")
+        #expect(kw == "computationalbiology", "computational biology assignment with network biology should route to computationalbiology")
+    }
+    @Test func computationalbiologyFalsePositive_bioinformatics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "running RNA-seq bioinformatics pipeline — BLAST alignment and variant calling on genomics data")
+        #expect(kw == "bioinformatics", "RNA-seq BLAST genomics pipeline should route to bioinformatics, not computationalbiology")
+    }
+    @Test @MainActor func computationalbiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "computationalbiology", tier: tier)
+            #expect(!msgs.isEmpty, "computationalbiology tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func computationalbiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "computationalbiology", tier: 1)
+        #expect(msgs.count >= 4, "computationalbiology tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func computationalbiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "computationalbiology", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "computationalbiology tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - philosophyofmind
+    @Test func philosophyofmindKeywordFromPhilOfMind() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a philosophy of mind paper on qualia and phenomenal consciousness")
+        #expect(kw == "philosophyofmind", "philosophy of mind paper on qualia should route to philosophyofmind")
+    }
+    @Test func philosophyofmindKeywordFromConsciousnessStudies() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying consciousness studies — the hard problem of consciousness and physicalism vs dualism in philosophy class")
+        #expect(kw == "philosophyofmind", "consciousness studies hard problem class should route to philosophyofmind")
+    }
+    @Test func philosophyofmindKeywordFromMindBody() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyzing the mind-body problem and functionalism in philosophy — writing my final paper")
+        #expect(kw == "philosophyofmind", "mind-body problem functionalism philosophy paper should route to philosophyofmind")
+    }
+    @Test func philosophyofmindFalsePositive_philosophy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying Kant's moral philosophy — deontology and ethics paper for my philosophy course")
+        #expect(kw == "philosophy", "Kant moral philosophy deontology should route to philosophy, not philosophyofmind")
+    }
+    @Test @MainActor func philosophyofmindCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "philosophyofmind", tier: tier)
+            #expect(!msgs.isEmpty, "philosophyofmind tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func philosophyofmindTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "philosophyofmind", tier: 1)
+        #expect(msgs.count >= 4, "philosophyofmind tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func philosophyofmindTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "philosophyofmind", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "philosophyofmind tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - digitalhumanities
+    @Test func digitalhumanitiesKeywordFromDigitalHumanities() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my digital humanities project — text mining a corpus of Victorian novels for my DH class")
+        #expect(kw == "digitalhumanities", "digital humanities text mining corpus class should route to digitalhumanities")
+    }
+    @Test func digitalhumanitiesKeywordFromDistantReading() {
+        let kw = CalloutManager.extractTaskKeyword(from: "doing distant reading and cultural analytics on a historical corpus for my humanities computing assignment")
+        #expect(kw == "digitalhumanities", "distant reading cultural analytics humanities computing should route to digitalhumanities")
+    }
+    @Test func digitalhumanitiesKeywordFromTopicModeling() {
+        let kw = CalloutManager.extractTaskKeyword(from: "running topic modeling on historical texts for my spatial humanities digital history project")
+        #expect(kw == "digitalhumanities", "topic modeling historical texts spatial humanities should route to digitalhumanities")
+    }
+    @Test func digitalhumanitiesFalsePositive_research() {
+        let kw = CalloutManager.extractTaskKeyword(from: "doing research — collecting qualitative data and analyzing datasets for my case study")
+        #expect(kw == "research", "generic research data analysis case study should route to research, not digitalhumanities")
+    }
+    @Test @MainActor func digitalhumanitiesCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "digitalhumanities", tier: tier)
+            #expect(!msgs.isEmpty, "digitalhumanities tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func digitalhumanitiesTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "digitalhumanities", tier: 1)
+        #expect(msgs.count >= 4, "digitalhumanities tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func digitalhumanitiesTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "digitalhumanities", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "digitalhumanities tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - environmentalpolicy
+    @Test func environmentalpolicyKeywordFromEnvPolicyClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my environmental policy class assignment on cap-and-trade and carbon tax schemes")
+        #expect(kw == "environmentalpolicy", "environmental policy class assignment on carbon tax should route to environmentalpolicy")
+    }
+    @Test func environmentalpolicyKeywordFromClimatePolicyAnalysis() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a climate policy analysis paper — evaluating climate adaptation policy and climate legislation for my course")
+        #expect(kw == "environmentalpolicy", "climate policy analysis paper adaptation legislation should route to environmentalpolicy")
+    }
+    @Test func environmentalpolicyKeywordFromCarbonPolicy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying carbon policy and environmental governance — emissions trading and environmental regulation exam prep")
+        #expect(kw == "environmentalpolicy", "carbon policy environmental governance exam prep should route to environmentalpolicy")
+    }
+    @Test func environmentalpolicyFalsePositive_enviro() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying environmental science — climate change, ecosystem ecology, and sustainability")
+        #expect(kw == "enviro", "environmental science climate change ecosystem sustainability should route to enviro, not environmentalpolicy")
+    }
+    @Test @MainActor func environmentalpolicyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "environmentalpolicy", tier: tier)
+            #expect(!msgs.isEmpty, "environmentalpolicy tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func environmentalpolicyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "environmentalpolicy", tier: 1)
+        #expect(msgs.count >= 4, "environmentalpolicy tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func environmentalpolicyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "environmentalpolicy", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "environmentalpolicy tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: geopolitics/computationalbiology/philosophyofmind/digitalhumanities/environmentalpolicy)
+    @Test func suggestedTemplatesCountAtLeast599() {
+        #expect(SuggestedSessionTemplates.all.count >= 599, "template catalog must have ≥599 entries after geopolitics/computationalbiology/philosophyofmind/digitalhumanities/environmentalpolicy (10 templates)")
+    }
 }
