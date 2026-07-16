@@ -3345,5 +3345,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Assignment or session notes meaningfully advanced (key concepts documented, reflection written, or assignment section completed and saved)",
             preferredDuration: 45 * 60
         ),
+        // virtualreality
+        SuggestedTemplate(
+            icon: "visionpro",
+            task: "Build and test a VR or AR scene in my XR development project using Unity XR or Unreal Engine",
+            successCriteria: "VR/AR scene meaningfully advanced (at least one scene element built or interaction scripted, project saved and tested in the headset or simulator)",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for my virtual reality or augmented reality development class and complete a practical assignment",
+            successCriteria: "XR class work meaningfully advanced (concepts reviewed, assignment section completed or code committed and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // clinicalresearch
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Study for the ACRP or SOCRA clinical research certification exam — review GCP principles, regulatory requirements, and trial operations",
+            successCriteria: "Exam prep meaningfully advanced (at least two topic areas reviewed, practice questions attempted, and notes updated and saved)",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.plaintext.fill",
+            task: "Review a clinical trial protocol, draft CRF completion guidelines, or complete a clinical research class assignment",
+            successCriteria: "Clinical research work meaningfully advanced (protocol reviewed or assignment section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // homeopathy
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Study homeopathic materia medica, practice remedy selection, or prepare for the CCH certification exam",
+            successCriteria: "Homeopathy study session completed (at least two remedies or miasmatic concepts reviewed, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Work through a homeopathic case analysis, write a case report, or study classical prescribing principles",
+            successCriteria: "Homeopathic case work meaningfully advanced (case analysis written or at least one prescribing principle studied and notes saved)",
+            preferredDuration: 45 * 60
+        ),
+        // recreationaltherapy
+        SuggestedTemplate(
+            icon: "figure.outdoor.cycle",
+            task: "Study for the NCTRC CTRS certification exam — review therapeutic recreation practice areas and facilitation techniques",
+            successCriteria: "CTRS exam prep meaningfully advanced (at least two topic areas reviewed, practice questions attempted, and notes updated and saved)",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write up my recreational therapy session notes, treatment plan, or complete a TR program assignment",
+            successCriteria: "TR clinical documentation or assignment meaningfully advanced (session notes drafted or treatment plan section completed and saved)",
+            preferredDuration: 30 * 60
+        ),
+        // tibetanmedicine
+        SuggestedTemplate(
+            icon: "drop.fill",
+            task: "Study Tibetan medicine theory — review Sowa Rigpa principles, the Gyushi, the three humors (loong, tripa, beken), or Tibetan herbal formulas",
+            successCriteria: "Tibetan medicine study session completed (at least one chapter or concept area reviewed, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my Tibetan medicine class assignment or write up a patient case analysis using TTM diagnostic principles",
+            successCriteria: "Assignment or case write-up meaningfully advanced (at least one diagnostic principle applied, notes written and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

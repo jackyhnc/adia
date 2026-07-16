@@ -1,5 +1,74 @@
 # Adia — Build Progress
 
+## Run 350 (automated) — 2026-07-16 — 5 new keyword domains: virtualreality, clinicalresearch, homeopathy, recreationaltherapy, tibetanmedicine (519→529 templates)
+
+### What shipped
+
+**5 new keyword domains: virtualreality, clinicalresearch, homeopathy, recreationaltherapy, tibetanmedicine**
+
+**New keyword domain — virtualreality:**
+- Branch positioned BEFORE `gamedev`; catches VR/AR/XR development/project/class/course/app, virtual reality development/class, augmented reality development/class, mixed reality+edu context, openxr, oculus/meta quest development, hololens, webxr, spatial computing+dev context, unity vr/xr/ar, unreal vr/ar/xr, metaverse development/class, vr/ar/xr scene, ar filter/overlay.
+- Guard: bare "unity"/"godot"/"unreal engine" alone stay in gamedev (fire before the `unity vr` compound terms).
+- `virtualrealityCallouts(tier:)` 4/3/3: "your VR scene isn't going to build itself." / "no one ships a VR app by watching reels." / "CLOSE THIS. open your VR project."
+- 2 templates: "Build and test a VR or AR scene in my XR development project…" (90 min, visionpro) + "Study for my virtual reality or augmented reality development class…" (60 min, doc.text.fill)
+
+**New keyword domain — clinicalresearch:**
+- Branch positioned BEFORE `translationalresearch`; catches clinical research coordinator/CRC, clinical research associate/CRA, CRC/CRA certification/class/exam/training, ACRP+edu context, SOCRA, GCP training/certification/class/exam, good clinical practice+edu, clinical trial protocol+write context, study monitoring+clinical, CTMS+training/clinical, case report form+clinical/trial context, clinical data management+edu context, investigational drug+edu, site monitoring visit, clinical operations class.
+- Guard: bare "IRB" stays in bioethics (fires much earlier in the chain).
+- `clinicalresearchCallouts(tier:)` 4/3/3: "your CRC certification prep isn't going to happen by scrolling." / "no one passes the ACRP exam by scrolling." / "CLOSE THIS. open your clinical research materials."
+- 2 templates: "Study for the ACRP or SOCRA clinical research certification exam…" (90 min, cross.case.fill) + "Review a clinical trial protocol, draft CRF completion guidelines…" (45 min, doc.plaintext.fill)
+
+**New keyword domain — homeopathy:**
+- Branch positioned AFTER `naturopathicmedicine` (which catches "homeopathy class/course/exam"), BEFORE `integrativemedicine`; catches word("homeopathy"), homeopathic prescribing/remedy/remedies/medicine/treatment/case/potency/dilution, CCH certification/exam, cch+homeopath, miasm/miasms/miasmatic, constitutional remedy+homeopath context, hahnemann+homeopath context, repertory+homeopath/remedy context, homeopathic repertory, kent's repertory, simillimum, like cures like, homeopathic materia medica.
+- "homeopathy class/course/exam" stays in naturopathicmedicine (fires earlier); this branch owns standalone homeopathic practice and CCH certification.
+- `homeopathyCallouts(tier:)` 4/3/3: "those homeopathic remedies aren't going to learn themselves." / "no one earns their CCH by scrolling." / "CLOSE THIS. open your homeopathic materia medica."
+- 2 templates: "Study homeopathic materia medica, practice remedy selection, or prepare for the CCH certification exam" (60 min, leaf.fill) + "Work through a homeopathic case analysis or study classical prescribing principles" (45 min, doc.text.fill)
+
+**New keyword domain — recreationaltherapy:**
+- Branch positioned AFTER `occupationaltherapy`, BEFORE `massagetherapy`; catches recreational therapy/therapist, word("ctrs"), nctrc, therapeutic recreation, recreator, tr class/course/exam/program/internship/fieldwork/clinical/notes+context, recreation therapy+class/program/exam, adaptive/therapeutic recreation/leisure, activity therapy+edu context, leisure education+edu context, diversional therapy, equine-assisted therapy+recreation, aquatic therapy+recreation, recreational therapy certification/licensure.
+- Guard: "music therapy"/"art therapy" explicitly excluded from recreation therapy catch; "equine-assisted therapy" and "aquatic therapy" only match with recreation context.
+- `recreationaltherapyCallouts(tier:)` 4/3/3: "your CTRS exam prep isn't going to happen by scrolling." / "no one passes the NCTRC exam by scrolling." / "CLOSE THIS. open your recreational therapy study materials."
+- 2 templates: "Study for the NCTRC CTRS certification exam — review therapeutic recreation practice areas…" (90 min, figure.outdoor.cycle) + "Write up my recreational therapy session notes, treatment plan, or complete a TR assignment" (30 min, doc.text.fill)
+
+**New keyword domain — tibetanmedicine:**
+- Branch positioned AFTER `ayurvedic`, BEFORE `podiatry`; catches tibetan medicine/medical, sowa rigpa, ttm program/class/course/exam/certification, men-tsee-khang, amchi+medicine/tibetan/class/exam, gyushi, four tantras+tibetan context, tibetan pharmacology/herbal medicine/medical astrology/medical theory/medical school/program, loong/tripa/beken+tibetan/medicine context.
+- Guard: bare "Tibet" as geography, "Tibetan Buddhist history/culture", "religion class" NOT matched.
+- `tibetanmedicineCallouts(tier:)` 4/3/3: "those Tibetan medicine concepts aren't going to memorize themselves." / "no one masters Tibetan medicine by scrolling." / "CLOSE THIS. open your Tibetan medicine study materials."
+- 2 templates: "Study Tibetan medicine theory — review Sowa Rigpa principles, the Gyushi, three humors…" (60 min, drop.fill) + "Complete my Tibetan medicine class assignment or write a patient case analysis using TTM diagnostic principles" (45 min, doc.text.fill)
+
+**New tests:**
+- CalloutManagerTests.swift: +43 tests (8-9 per domain + 1 count guard ≥529); ~2618 → ~2661
+- SuggestedSessionTemplatesTests.swift: +11 tests (2 domain existence tests per domain + 1 count guard ≥529)
+
+**Template catalog: 519 → 529**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by structural inspection.
+- Brace balance: CalloutManager.swift 315/315 ✓, CalloutMessages.swift 574/574 ✓, CalloutManagerTests.swift 4758/4758 ✓, SuggestedSessionTemplatesTests.swift 1371/1371 ✓
+- Template count verified: `grep -c 'SuggestedTemplate(' SuggestedSessionTemplates.swift` = 529 ✓
+- No duplicate function definitions (virtualrealityCallouts, clinicalresearchCallouts, homeopathyCallouts, recreationaltherapyCallouts, tibetanmedicineCallouts each appear exactly once)
+- Ordering checks:
+  - `virtualreality` (line 381) fires BEFORE `gamedev` (line 393) ✓; bare "unity" test checks it stays in gamedev ✓
+  - `clinicalresearch` (line 1567) fires BEFORE `translationalresearch` (line 1579) ✓
+  - `homeopathy` (line 3315) fires AFTER `naturopathicmedicine` (line 3296) ✓; "homeopathy class" → naturopathicmedicine, standalone "homeopathic prescribing" → homeopathy ✓
+  - `recreationaltherapy` (line 4243) fires AFTER `occupationaltherapy` (line 4220), BEFORE `massagetherapy` (line 4259) ✓
+  - `tibetanmedicine` (line 3072) fires AFTER `ayurvedic` (line 3054), BEFORE `podiatry` (line 3087) ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `animalassistedtherapy` — AAT/AAI, therapy dog certification, CAAHTT, equine-assisted therapy as primary discipline, canine-assisted therapy
+  - `constructionlaw` — construction contract law, AIA contract class, surety/bonding class, construction lien law
+  - `healtheconomics` — pharmacoeconomics, cost-effectiveness analysis, health technology assessment, QALY, ICER
+  - `insurancefinance` — insurance underwriting, actuarial exam (if actuarial branch is too narrow), P&C insurance class, life/health insurance licensing exam
+  - `environmentalplanning` — EIS, NEPA compliance, environmental permitting, CEQA, land-use planning+environmental
+- Template catalog: 529 → 539 after next 5-domain batch
+- CalloutManagerTests: ~2661 + 40 = ~2701 after next batch
+
+---
+
 ## Run 349 (automated) — 2026-07-16 — 3 new keyword domains: nursepractitioner, mortuaryscience, polyvagaltheory (513→519 templates)
 
 ### What shipped

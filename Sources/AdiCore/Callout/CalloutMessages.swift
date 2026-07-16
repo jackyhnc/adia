@@ -326,6 +326,11 @@ extension CalloutManager {
         case "nursepractitioner":      return nursepractitionerCallouts(tier: tier)
         case "mortuaryscience":        return mortuaryscienceCallouts(tier: tier)
         case "polyvagaltheory":        return polyvagaltheoryCallouts(tier: tier)
+        case "virtualreality":         return virtualrealityCallouts(tier: tier)
+        case "clinicalresearch":       return clinicalresearchCallouts(tier: tier)
+        case "homeopathy":             return homeopathyCallouts(tier: tier)
+        case "recreationaltherapy":    return recreationaltherapyCallouts(tier: tier)
+        case "tibetanmedicine":        return tibetanmedicineCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -6151,6 +6156,111 @@ extension CalloutManager {
             "CLOSE THIS. open your somatic therapy training notes.",
             "CLOSE THIS. your certification program requires your focus.",
             "CLOSE THIS. your clients deserve a regulated, trained practitioner."
+        ]
+        }
+    }
+
+    private func virtualrealityCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your VR scene isn't going to build itself.",
+            "close this and open your XR project.",
+            "nobody ships an AR app by scrolling.",
+            "that immersive experience won't develop itself."
+        ]
+        case 2: return [
+            "no one ships a VR app by watching reels.",
+            "close this and get back to your virtual reality project.",
+            "your XR deadline is real — close this."
+        ]
+        default: return [
+            "CLOSE THIS. open your VR project.",
+            "CLOSE THIS. your AR build is waiting.",
+            "CLOSE THIS. the metaverse isn't going to populate itself."
+        ]
+        }
+    }
+
+    private func clinicalresearchCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your CRC certification prep isn't going to happen by scrolling.",
+            "close this and get back to your clinical trial study materials.",
+            "GCP doesn't memorize itself — close this.",
+            "those clinical research protocols won't review themselves."
+        ]
+        case 2: return [
+            "no one passes the ACRP exam by scrolling.",
+            "close this and get back to your clinical research notes.",
+            "your study protocol isn't going to write itself."
+        ]
+        default: return [
+            "CLOSE THIS. open your clinical research materials.",
+            "CLOSE THIS. GCP compliance doesn't happen by scrolling.",
+            "CLOSE THIS. your clinical trial career starts with this prep."
+        ]
+        }
+    }
+
+    private func homeopathyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those homeopathic remedies aren't going to learn themselves.",
+            "close this and get back to your materia medica.",
+            "classical homeopathy takes real study — close this.",
+            "your CCH exam prep isn't going to happen by scrolling."
+        ]
+        case 2: return [
+            "no one earns their CCH by scrolling.",
+            "close this and get back to your homeopathic case work.",
+            "Hahnemann didn't write the Organon by browsing."
+        ]
+        default: return [
+            "CLOSE THIS. open your homeopathic materia medica.",
+            "CLOSE THIS. your remedy selection work is waiting.",
+            "CLOSE THIS. classical homeopathy demands your full attention."
+        ]
+        }
+    }
+
+    private func recreationaltherapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your CTRS exam prep isn't going to happen by scrolling.",
+            "those TR session notes won't write themselves.",
+            "close this and get back to your therapeutic recreation materials.",
+            "your clients deserve a focused recreational therapist — close this."
+        ]
+        case 2: return [
+            "no one passes the NCTRC exam by scrolling.",
+            "close this and get back to your TR program work.",
+            "your adaptive recreation plans won't write themselves."
+        ]
+        default: return [
+            "CLOSE THIS. open your recreational therapy study materials.",
+            "CLOSE THIS. your CTRS prep is waiting.",
+            "CLOSE THIS. your clients deserve your focused attention."
+        ]
+        }
+    }
+
+    private func tibetanmedicineCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Tibetan medicine concepts aren't going to memorize themselves.",
+            "close this and get back to your Sowa Rigpa studies.",
+            "the Gyushi won't study itself — close this.",
+            "your Tibetan medicine program demands your focus."
+        ]
+        case 2: return [
+            "no one masters Tibetan medicine by scrolling.",
+            "close this and get back to your TTM coursework.",
+            "your Tibetan herbal medicine notes won't write themselves."
+        ]
+        default: return [
+            "CLOSE THIS. open your Tibetan medicine study materials.",
+            "CLOSE THIS. Sowa Rigpa demands your full attention.",
+            "CLOSE THIS. your patients deserve a focused Tibetan medicine practitioner."
         ]
         }
     }

@@ -4113,4 +4113,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 519,
                 "catalog should have ≥519 templates after nursepractitioner/mortuaryscience/polyvagaltheory additions (6 templates)")
     }
+
+    // MARK: - virtualreality
+    @Test func virtualrealityTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasBuild = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("VR") || $0.localizedCaseInsensitiveContains("AR") || $0.localizedCaseInsensitiveContains("XR") || $0.localizedCaseInsensitiveContains("virtual reality")) &&
+            ($0.localizedCaseInsensitiveContains("build") || $0.localizedCaseInsensitiveContains("scene") || $0.localizedCaseInsensitiveContains("project"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("virtual reality") || $0.localizedCaseInsensitiveContains("augmented reality") || $0.localizedCaseInsensitiveContains("XR")) &&
+            ($0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("course") || $0.localizedCaseInsensitiveContains("assignment"))
+        }
+        #expect(hasBuild, "catalog must include a VR/AR/XR scene build template")
+        #expect(hasStudy, "catalog must include a virtual/augmented reality class or course template")
+    }
+
+    // MARK: - clinicalresearch
+    @Test func clinicalresearchTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("ACRP") || $0.localizedCaseInsensitiveContains("SOCRA") || $0.localizedCaseInsensitiveContains("clinical research")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("certification"))
+        }
+        let hasWork = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("clinical trial") || $0.localizedCaseInsensitiveContains("clinical research") || $0.localizedCaseInsensitiveContains("CRF") || $0.localizedCaseInsensitiveContains("protocol")) &&
+            ($0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("draft"))
+        }
+        #expect(hasExam, "catalog must include an ACRP/SOCRA exam or clinical research certification template")
+        #expect(hasWork, "catalog must include a clinical trial protocol or CRF assignment template")
+    }
+
+    // MARK: - homeopathy
+    @Test func homeopathyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("homeopathic") || $0.localizedCaseInsensitiveContains("materia medica") || $0.localizedCaseInsensitiveContains("CCH")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("remedy"))
+        }
+        let hasCase = tasks.contains {
+            $0.localizedCaseInsensitiveContains("homeopathic") &&
+            ($0.localizedCaseInsensitiveContains("case") || $0.localizedCaseInsensitiveContains("analysis") || $0.localizedCaseInsensitiveContains("prescribing"))
+        }
+        #expect(hasStudy, "catalog must include a homeopathic materia medica or CCH exam template")
+        #expect(hasCase, "catalog must include a homeopathic case analysis or prescribing template")
+    }
+
+    // MARK: - recreationaltherapy
+    @Test func recreationaltherapyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("NCTRC") || $0.localizedCaseInsensitiveContains("CTRS") || $0.localizedCaseInsensitiveContains("therapeutic recreation")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("certification"))
+        }
+        let hasNotes = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("recreational therapy") || $0.localizedCaseInsensitiveContains("TR")) &&
+            ($0.localizedCaseInsensitiveContains("notes") || $0.localizedCaseInsensitiveContains("treatment plan") || $0.localizedCaseInsensitiveContains("assignment"))
+        }
+        #expect(hasExam, "catalog must include a NCTRC/CTRS exam or therapeutic recreation certification template")
+        #expect(hasNotes, "catalog must include a recreational therapy session notes or TR assignment template")
+    }
+
+    // MARK: - tibetanmedicine
+    @Test func tibetanmedicineTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("Tibetan medicine") || $0.localizedCaseInsensitiveContains("Sowa Rigpa") || $0.localizedCaseInsensitiveContains("Gyushi")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("principles"))
+        }
+        let hasCase = tasks.contains {
+            $0.localizedCaseInsensitiveContains("Tibetan medicine") &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("case") || $0.localizedCaseInsensitiveContains("class"))
+        }
+        #expect(hasStudy, "catalog must include a Tibetan medicine theory study template")
+        #expect(hasCase, "catalog must include a Tibetan medicine class or case analysis template")
+    }
+
+    // MARK: - Count guard (batch: virtualreality/clinicalresearch/homeopathy/recreationaltherapy/tibetanmedicine)
+    @Test func catalogHasAtLeastFiveHundredTwentyNineTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 529,
+                "catalog should have ≥529 templates after virtualreality/clinicalresearch/homeopathy/recreationaltherapy/tibetanmedicine additions (10 templates)")
+    }
 }

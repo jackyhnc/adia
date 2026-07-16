@@ -15676,4 +15676,212 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast519() {
         #expect(SuggestedSessionTemplates.all.count >= 519, "template catalog must have ≥519 entries after adding nursepractitioner/mortuaryscience/polyvagaltheory (6 templates)")
     }
+
+    // MARK: - virtualreality
+    @Test func virtualrealityKeywordFromVRDevelopment() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my vr development project in Unity XR for class")
+        #expect(kw == "virtualreality", "vr development unity xr class should route to virtualreality")
+    }
+    @Test func virtualrealityKeywordFromARProject() {
+        let kw = CalloutManager.extractTaskKeyword(from: "building an ar project with ARKit and completing my augmented reality course assignment")
+        #expect(kw == "virtualreality", "ar project augmented reality course assignment should route to virtualreality")
+    }
+    @Test func virtualrealityKeywordFromOpenXR() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying openxr runtime and finishing my XR class project")
+        #expect(kw == "virtualreality", "openxr xr class project should route to virtualreality")
+    }
+    @Test func virtualrealityKeywordFromMetaverse() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my metaverse development class project")
+        #expect(kw == "virtualreality", "metaverse development class project should route to virtualreality")
+    }
+    @Test func virtualrealityFiresBeforeGamedev() {
+        let kw = CalloutManager.extractTaskKeyword(from: "building a unity vr scene for my virtual reality course")
+        #expect(kw == "virtualreality", "unity vr virtual reality course should fire virtualreality before gamedev")
+    }
+    @Test func virtualrealityFalsePositive_bareUnity() {
+        let kw = CalloutManager.extractTaskKeyword(from: "building a game in unity with godot for my game dev class")
+        #expect(kw == "gamedev", "bare unity without vr/ar/xr context should stay in gamedev")
+    }
+    @Test @MainActor func virtualrealityCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "virtualreality", tier: tier)
+            #expect(!msgs.isEmpty, "virtualreality tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func virtualrealityTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "virtualreality", tier: 1)
+        #expect(msgs.count >= 4, "virtualreality tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func virtualrealityTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "virtualreality", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "virtualreality tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - clinicalresearch
+    @Test func clinicalresearchKeywordFromCRC() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my CRC certification exam and reviewing GCP requirements")
+        #expect(kw == "clinicalresearch", "crc certification exam gcp should route to clinicalresearch")
+    }
+    @Test func clinicalresearchKeywordFromACRP() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing for the ACRP exam with clinical research training materials")
+        #expect(kw == "clinicalresearch", "acrp exam clinical research training should route to clinicalresearch")
+    }
+    @Test func clinicalresearchKeywordFromGCP() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my GCP training certification module for my clinical research class")
+        #expect(kw == "clinicalresearch", "gcp training certification clinical research class should route to clinicalresearch")
+    }
+    @Test func clinicalresearchKeywordFromSOCRA() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for the SOCRA certification and reviewing clinical trial protocol notes")
+        #expect(kw == "clinicalresearch", "socra certification clinical trial protocol notes should route to clinicalresearch")
+    }
+    @Test func clinicalresearchFiresBeforeTranslationalresearch() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing my clinical research class assignment on site monitoring visits and GCP compliance")
+        #expect(kw == "clinicalresearch", "clinical research class site monitoring gcp compliance should fire clinicalresearch before translationalresearch")
+    }
+    @Test @MainActor func clinicalresearchCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "clinicalresearch", tier: tier)
+            #expect(!msgs.isEmpty, "clinicalresearch tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func clinicalresearchTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "clinicalresearch", tier: 1)
+        #expect(msgs.count >= 4, "clinicalresearch tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func clinicalresearchTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "clinicalresearch", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "clinicalresearch tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - homeopathy
+    @Test func homeopathyKeywordFromHomeopathicPrescribing() {
+        let kw = CalloutManager.extractTaskKeyword(from: "practicing homeopathic prescribing and studying classical remedy selection")
+        #expect(kw == "homeopathy", "homeopathic prescribing classical remedy selection should route to homeopathy")
+    }
+    @Test func homeopathyKeywordFromCCH() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for the CCH certification exam and reviewing homeopathic materia medica")
+        #expect(kw == "homeopathy", "cch certification homeopathic materia medica should route to homeopathy")
+    }
+    @Test func homeopathyKeywordFromMiasm() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working through miasmatic theory and constitutional remedy selection in classical homeopathy")
+        #expect(kw == "homeopathy", "miasmatic theory constitutional remedy classical homeopathy should route to homeopathy")
+    }
+    @Test func homeopathyKeywordFromSimillimum() {
+        let kw = CalloutManager.extractTaskKeyword(from: "researching the simillimum and studying like cures like principles")
+        #expect(kw == "homeopathy", "simillimum like cures like should route to homeopathy")
+    }
+    @Test func homeopathyFiresAfterNaturopathicmedicine() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying homeopathic prescribing and remedy selection for my practice")
+        #expect(kw == "homeopathy", "homeopathic prescribing remedy selection should route to homeopathy not naturopathicmedicine")
+    }
+    @Test @MainActor func homeopathyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "homeopathy", tier: tier)
+            #expect(!msgs.isEmpty, "homeopathy tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func homeopathyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "homeopathy", tier: 1)
+        #expect(msgs.count >= 4, "homeopathy tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func homeopathyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "homeopathy", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "homeopathy tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - recreationaltherapy
+    @Test func recreationaltherapyKeywordFromCTRS() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for the CTRS certification exam and reviewing therapeutic recreation domains")
+        #expect(kw == "recreationaltherapy", "ctrs certification therapeutic recreation domains should route to recreationaltherapy")
+    }
+    @Test func recreationaltherapyKeywordFromNCTRC() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing for the NCTRC exam and completing my TR program fieldwork documentation")
+        #expect(kw == "recreationaltherapy", "nctrc exam tr program fieldwork should route to recreationaltherapy")
+    }
+    @Test func recreationaltherapyKeywordFromTherapeuticRecreation() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing session notes for my therapeutic recreation clinical placement")
+        #expect(kw == "recreationaltherapy", "therapeutic recreation clinical placement notes should route to recreationaltherapy")
+    }
+    @Test func recreationaltherapyKeywordFromAdaptiveRecreation() {
+        let kw = CalloutManager.extractTaskKeyword(from: "developing an adaptive recreation program plan for my TR class assignment")
+        #expect(kw == "recreationaltherapy", "adaptive recreation tr class assignment should route to recreationaltherapy")
+    }
+    @Test func recreationaltherapyFiresAfterOccupationaltherapy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my recreational therapy TR program internship notes and treatment plan")
+        #expect(kw == "recreationaltherapy", "recreational therapy tr program internship notes should fire recreationaltherapy after occupationaltherapy")
+    }
+    @Test @MainActor func recreationaltherapyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "recreationaltherapy", tier: tier)
+            #expect(!msgs.isEmpty, "recreationaltherapy tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func recreationaltherapyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "recreationaltherapy", tier: 1)
+        #expect(msgs.count >= 4, "recreationaltherapy tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func recreationaltherapyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "recreationaltherapy", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "recreationaltherapy tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - tibetanmedicine
+    @Test func tibetanmedicineKeywordFromTibetanMedicine() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying tibetan medicine theory and the three humors for my TTM program exam")
+        #expect(kw == "tibetanmedicine", "tibetan medicine three humors ttm program exam should route to tibetanmedicine")
+    }
+    @Test func tibetanmedicineKeywordFromSowaRigpa() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working through my sowa rigpa coursework and reviewing Tibetan herbal medicine formulas")
+        #expect(kw == "tibetanmedicine", "sowa rigpa tibetan herbal medicine formulas should route to tibetanmedicine")
+    }
+    @Test func tibetanmedicineKeywordFromGyushi() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reading the gyushi and studying tibetan medical theory for my class assignment")
+        #expect(kw == "tibetanmedicine", "gyushi tibetan medical theory class assignment should route to tibetanmedicine")
+    }
+    @Test func tibetanmedicineKeywordFromMenTseeKhang() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my men-tsee-khang training module on tibetan medicine diagnostics")
+        #expect(kw == "tibetanmedicine", "men-tsee-khang tibetan medicine diagnostics should route to tibetanmedicine")
+    }
+    @Test func tibetanmedicineFiresAfterAyurvedic() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying tibetan medicine principles of loong and tripa for my TTM certification")
+        #expect(kw == "tibetanmedicine", "tibetan medicine loong tripa ttm certification should fire tibetanmedicine after ayurvedic")
+    }
+    @Test func tibetanmedicineFalsePositive_bareHistoryClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a paper on Tibetan Buddhist history and culture for my religion class")
+        #expect(kw != "tibetanmedicine", "tibetan buddhist history culture religion class should NOT route to tibetanmedicine")
+    }
+    @Test @MainActor func tibetanmedicineCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "tibetanmedicine", tier: tier)
+            #expect(!msgs.isEmpty, "tibetanmedicine tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func tibetanmedicineTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "tibetanmedicine", tier: 1)
+        #expect(msgs.count >= 4, "tibetanmedicine tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func tibetanmedicineTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "tibetanmedicine", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "tibetanmedicine tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: virtualreality/clinicalresearch/homeopathy/recreationaltherapy/tibetanmedicine)
+    @Test func suggestedTemplatesCountAtLeast529() {
+        #expect(SuggestedSessionTemplates.all.count >= 529, "template catalog must have ≥529 entries after adding 5 new domains (10 templates)")
+    }
 }

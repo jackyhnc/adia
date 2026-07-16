@@ -350,6 +350,36 @@ public final class CalloutManager {
             || lower.contains("proof of stake") && (lower.contains("class") || lower.contains("course") || lower.contains("blockchain")) {
             return "blockchain"
         }
+        // virtualreality — positioned BEFORE gamedev so VR/AR/XR development tasks route here
+        // rather than to the generic game-dev pool. Bare word("unity") alone stays in gamedev;
+        // only fires when explicitly combined with VR/AR/XR context.
+        if lower.contains("vr development") || lower.contains("ar development")
+            || lower.contains("xr development") || lower.contains("vr project")
+            || lower.contains("ar project") || lower.contains("xr project")
+            || lower.contains("vr app") || lower.contains("ar app") || lower.contains("xr app")
+            || lower.contains("virtual reality development") || lower.contains("virtual reality project")
+            || lower.contains("virtual reality app") || lower.contains("virtual reality class")
+            || lower.contains("virtual reality course") || lower.contains("virtual reality program")
+            || lower.contains("augmented reality development") || lower.contains("augmented reality class")
+            || lower.contains("augmented reality project") || lower.contains("augmented reality app")
+            || lower.contains("mixed reality") && (lower.contains("class") || lower.contains("course") || lower.contains("project") || lower.contains("development") || lower.contains("app"))
+            || lower.contains("openxr") || lower.contains("open xr")
+            || lower.contains("oculus development") || lower.contains("meta quest development")
+            || lower.contains("quest development") && lower.contains("vr")
+            || lower.contains("hololens") || lower.contains("holo lens")
+            || lower.contains("webxr") || lower.contains("web xr")
+            || lower.contains("spatial computing") && (lower.contains("class") || lower.contains("course") || lower.contains("project") || lower.contains("development"))
+            || lower.contains("immersive experience development") || lower.contains("immersive application")
+            || lower.contains("unity vr") || lower.contains("unity xr") || lower.contains("unity ar")
+            || lower.contains("unreal vr") || lower.contains("unreal ar") || lower.contains("unreal xr")
+            || lower.contains("vr class") || lower.contains("vr course") || lower.contains("vr exam")
+            || lower.contains("ar class") || lower.contains("ar course") || lower.contains("xr class")
+            || lower.contains("vr scene") || lower.contains("ar scene") || lower.contains("vr game")
+            || lower.contains("ar filter") || lower.contains("ar overlay")
+            || lower.contains("metaverse development") || lower.contains("metaverse class")
+            || lower.contains("metaverse project") || lower.contains("metaverse course") {
+            return "virtualreality"
+        }
         // gamedev — positioned before code so Unity/Godot/engine terms don't fall through to code.
         // "game plan" is not matched because no specific tool name or game-dev phrase fires.
         if word("unity") || word("godot") || lower.contains("unreal engine")
@@ -1509,6 +1539,32 @@ public final class CalloutManager {
             || lower.contains("business school")
             || lower.contains("management class") || lower.contains("management course") {
             return "business"
+        }
+        // clinicalresearch — positioned BEFORE translationalresearch so CRC/CRA/GCP study tasks
+        // route here. "IRB" alone stays in bioethics (fires much earlier).
+        if lower.contains("clinical research coordinator") || lower.contains("clinical research associate")
+            || lower.contains("crc certification") || lower.contains("crc class") || lower.contains("crc exam")
+            || lower.contains("crc program") || lower.contains("crc training")
+            || lower.contains("cra certification") || lower.contains("cra class") || lower.contains("cra exam")
+            || lower.contains("cra training") || lower.contains("clinical research class")
+            || lower.contains("clinical research course") || lower.contains("clinical research exam")
+            || lower.contains("clinical research program") || lower.contains("clinical research training")
+            || lower.contains("clinical research certification") || lower.contains("clinical research notes")
+            || lower.contains("clinical research assignment")
+            || word("acrp") && (lower.contains("class") || lower.contains("exam") || lower.contains("certification") || lower.contains("training") || lower.contains("study"))
+            || word("socra") || lower.contains("socra exam") || lower.contains("socra certification")
+            || lower.contains("gcp training") || lower.contains("gcp certification") || lower.contains("gcp class")
+            || lower.contains("gcp exam") || lower.contains("good clinical practice") && (lower.contains("class") || lower.contains("training") || lower.contains("certification"))
+            || lower.contains("clinical trial protocol") && (lower.contains("class") || lower.contains("course") || lower.contains("review") || lower.contains("notes") || lower.contains("write"))
+            || lower.contains("study monitoring") && lower.contains("clinical")
+            || lower.contains("ctms") && (lower.contains("class") || lower.contains("training") || lower.contains("clinical"))
+            || lower.contains("case report form") && (lower.contains("clinical") || lower.contains("trial") || lower.contains("class"))
+            || lower.contains("clinical data management") && (lower.contains("class") || lower.contains("course") || lower.contains("training") || lower.contains("certification"))
+            || lower.contains("investigational drug") && (lower.contains("class") || lower.contains("course") || lower.contains("study"))
+            || lower.contains("site monitoring visit") || lower.contains("clinical monitoring visit")
+            || lower.contains("clinical operations class") || lower.contains("clinical operations course")
+            || lower.contains("regulatory affairs clinical") || lower.contains("informed consent clinical") {
+            return "clinicalresearch"
         }
         // translationalresearch — positioned BEFORE research so "translational research" and
         // "bench to bedside" route here before word("research") catches them first.
@@ -2997,6 +3053,24 @@ public final class CalloutManager {
             || lower.contains("dinacharya") || lower.contains("rasayana") {
             return "ayurvedic"
         }
+        // tibetanmedicine — positioned AFTER ayurvedic and BEFORE podiatry; catches Sowa Rigpa
+        // study, TTM programs, men-tsee-khang training, and Tibetan medical classics.
+        // Bare "Tibet" as geography or "Tibetan history/Buddhism" do NOT fire here.
+        if lower.contains("tibetan medicine") || lower.contains("tibetan medical")
+            || lower.contains("sowa rigpa") || lower.contains("sowa-rigpa")
+            || lower.contains("ttm program") || lower.contains("ttm class") || lower.contains("ttm course")
+            || lower.contains("ttm exam") || lower.contains("ttm certification")
+            || lower.contains("men-tsee-khang") || lower.contains("menteekang") || lower.contains("men tsee khang")
+            || word("amchi") && (lower.contains("medicine") || lower.contains("tibetan") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("gyushi") || lower.contains("four tantras") && lower.contains("tibetan")
+            || lower.contains("tibetan pharmacology") || lower.contains("tibetan herbal medicine")
+            || lower.contains("tibetan medical astrology") || lower.contains("tibetan medical theory")
+            || lower.contains("tibetan medical school") || lower.contains("tibetan medical program")
+            || lower.contains("loong") && (lower.contains("tibetan") || lower.contains("medicine") || lower.contains("tripa"))
+            || lower.contains("tripa") && (lower.contains("tibetan") || lower.contains("medicine") || lower.contains("loong"))
+            || lower.contains("beken") && (lower.contains("tibetan") || lower.contains("medicine")) {
+            return "tibetanmedicine"
+        }
         // podiatry — positioned after acupuncture and before dentallab so DPM programs,
         // APMLE board prep, and foot/ankle surgery coursework route here.
         if word("podiatry") || word("podiatrist") || word("podiatrists")
@@ -3220,6 +3294,25 @@ public final class CalloutManager {
             || lower.contains("scnm") || lower.contains("ncnm")
             || lower.contains("cnm naturo") || word("aanp") && lower.contains("naturo") {
             return "naturopathicmedicine"
+        }
+        // homeopathy — positioned AFTER naturopathicmedicine (which catches "homeopathy class/course/exam"),
+        // BEFORE integrativemedicine. Catches homeopathic prescribing, remedy selection, and standalone
+        // homeopathic study not already routed by the naturopathic branch.
+        if word("homeopathy") || lower.contains("homeopathic prescribing")
+            || lower.contains("homeopathic remedy") || lower.contains("homeopathic remedies")
+            || lower.contains("homeopathic medicine") || lower.contains("homeopathic treatment")
+            || lower.contains("homeopathic case") || lower.contains("case analysis homeopathy")
+            || lower.contains("classical homeopathy") || lower.contains("cch certification")
+            || lower.contains("cch exam") || word("cch") && (lower.contains("homeopath") || lower.contains("certification") && lower.contains("homeopath"))
+            || lower.contains("miasm") || lower.contains("miasms") || lower.contains("miasmatic")
+            || lower.contains("constitutional remedy") && lower.contains("homeopath")
+            || lower.contains("homeopathic potency") || lower.contains("homeopathic dilution")
+            || lower.contains("hahnemann") && lower.contains("homeopath")
+            || lower.contains("repertory") && (lower.contains("homeopath") || lower.contains("remedy"))
+            || lower.contains("homeopathic repertory") || lower.contains("kent's repertory")
+            || lower.contains("simillimum") || lower.contains("like cures like")
+            || lower.contains("homeopathic materia medica") {
+            return "homeopathy"
         }
         // integrativemedicine — positioned AFTER pharmacy (shared pharmacology/therapeutics
         // context) and BEFORE medicalbilling. Catches integrative/functional medicine specialty
@@ -4125,6 +4218,29 @@ public final class CalloutManager {
             || lower.contains("ot school") || lower.contains("ot program")
             || lower.contains("ot class") || lower.contains("ot exam") {
             return "occupationaltherapy"
+        }
+        // recreationaltherapy — positioned AFTER occupationaltherapy and BEFORE massagetherapy.
+        // Catches CTRS/NCTRC certification, therapeutic recreation, and adaptive recreation.
+        // "activity therapy" and "leisure" in general context stay in studying/other branches.
+        if lower.contains("recreational therapy") || lower.contains("recreational therapist")
+            || lower.contains("recreational therapists") || word("ctrs")
+            || lower.contains("nctrc") || lower.contains("nctrc exam") || lower.contains("nctrc certification")
+            || lower.contains("therapeutic recreation") || lower.contains("recreator")
+            || lower.contains("tr class") || lower.contains("tr course") || lower.contains("tr exam")
+            || lower.contains("tr program") || lower.contains("tr internship")
+            || lower.contains("tr fieldwork") || lower.contains("tr clinical")
+            || lower.contains("tr notes") && (lower.contains("therapy") || lower.contains("recreation") || lower.contains("client"))
+            || lower.contains("recreation therapy") && !(lower.contains("music therapy") || lower.contains("art therapy"))
+            || lower.contains("recreation therapist") || lower.contains("recreation therapy class")
+            || lower.contains("recreation therapy program") || lower.contains("recreation therapy exam")
+            || lower.contains("adaptive recreation") || lower.contains("adaptive leisure")
+            || lower.contains("activity therapy") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("clinical"))
+            || lower.contains("leisure education") && (lower.contains("class") || lower.contains("course") || lower.contains("client") || lower.contains("program"))
+            || lower.contains("diversional therapy") || lower.contains("therapeutic leisure")
+            || lower.contains("equine-assisted therapy") && lower.contains("recreation")
+            || lower.contains("aquatic therapy") && lower.contains("recreation")
+            || lower.contains("recreational therapy certification") || lower.contains("recreational therapy licensure") {
+            return "recreationaltherapy"
         }
         // massagetherapy — positioned AFTER occupationaltherapy and BEFORE speecharts.
         // Catches LMT coursework, MBLEx exam prep, and hands-on technique study.
