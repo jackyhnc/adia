@@ -1,5 +1,70 @@
 # Adia — Build Progress
 
+## Run 357 (automated) — 2026-07-16 — 5 new keyword domains: paleontology, experimentalphysics, informationscience, socialepidemiology, cognitiveneuroscience (609→619 templates)
+
+### What shipped
+
+**5 new keyword domains: paleontology, experimentalphysics, informationscience, socialepidemiology, cognitiveneuroscience**
+
+**New keyword domain — paleontology:**
+- Branch positioned BEFORE geology; `word("paleontology")`, `word("paleontologist")`, `lower.contains("fossil record")` removed from geology and owned here.
+- Catches: word(paleontology/paleontologist/paleontologists/paleobiologist/paleobiology), fossil record/records, taphonomy, paleoecology/paleoecologist, trace fossil/fossils, paleobotany/paleobotanist, paleoanthropology/paleoanthropologist, prehistoric life/organisms, cambrian explosion/period, paleozoic/mesozoic/cenozoic era, dinosaur with class/course/research/paper/exam/lab, invertebrate/vertebrate paleontology, micropaleontology, biostratigraphy, paleontology class/course/exam/lab/notes/assignment.
+- `paleontologyCallouts(tier:)` 4/3/3: "those fossils aren't going to analyze themselves." / "no one masters paleontology by scrolling." / "CLOSE THIS. the cambrian explosion happened faster than you're working."
+- 2 templates: "Analyze fossil evidence and complete my paleontology lab report or field notes" (60 min) + "Study for my paleontology exam — fossil record, geologic time periods" (45 min)
+
+**New keyword domain — experimentalphysics:**
+- Branch positioned BEFORE studying (which catches bare `word("physics")`), AFTER marinebiology (729).
+- Catches: physics lab, optics lab, mechanics lab, thermodynamics lab, electromagnetism lab, waves lab, modern physics lab, quantum mechanics class/course/exam, quantum physics class/course/exam, classical mechanics class/course/exam, experimental physics, physics experiment/experiments, lab report with physics/optics/mechanics/electro context, pendulum/projectile motion/free fall/friction/Coulomb/Ohm/Snell/diffraction/interference/lens lab, spectroscopy lab (non-chem guard), physics report, computational/theoretical physics with class/course/lab/exam guards.
+- `experimentalphysicsCallouts(tier:)` 4/3/3: "that physics lab report isn't going to write itself." / "no one passes experimental physics by scrolling." / "CLOSE THIS. Feynman didn't scroll through his physics."
+- 2 templates: "Write my physics lab report on optics/mechanics/electromagnetism/thermodynamics" (60 min) + "Complete my quantum mechanics or classical mechanics problem set" (60 min)
+
+**New keyword domain — informationscience:**
+- Branch positioned BEFORE libraryscience (2755). "information architecture" stays in UX (fires far earlier). "library and information science"/"MLIS"/"cataloging" stay in libraryscience.
+- Catches: information science class/course/program/degree/major/exam/school/assignment, asis&t / asist with edu context, information retrieval class/course/exam/lab, information organization class/course, digital curation class/course/exam/program, knowledge management class/course/exam/program, information literacy class/course, taxonomy class with information/library/data/knowledge context, metadata class with information/digital/data context, ontology class with information/knowledge/data context.
+- `informationscienceCallouts(tier:)` 4/3/3: "that information retrieval assignment isn't going to complete itself." / "no one masters information science by scrolling." / "CLOSE THIS. knowledge management starts with managing your own focus."
+- 2 templates: "Complete my information science assignment — information retrieval, knowledge management, digital curation" (45 min) + "Study for my information science exam or complete coursework on information retrieval, metadata, or digital curation" (45 min)
+
+**New keyword domain — socialepidemiology:**
+- Branch positioned BEFORE epidemiologicalmodeling (5072) and epidemiology. General disease surveillance/outbreak investigation stays in epidemiology. Generic health inequities without epi context stays in publicheath.
+- Catches: social epidemiology, social determinants of health/disease, SDoH with edu context, health disparities research/class/course/exam/paper, health inequities/inequalities class/course, social gradient of health, socioeconomic determinants with health/class/paper context, social epidemiology class/course/exam/paper, life-course epidemiology, neighborhood effects on health, structural determinants with health/disease/class context.
+- `socialepidemiologyCallouts(tier:)` 4/3/3: "those health disparities won't research themselves." / "no one advances health equity by scrolling." / "CLOSE THIS. social determinants of health deserve serious study."
+- 2 templates: "Write a social epidemiology paper — analyze social determinants, health disparities, or health inequities" (60 min) + "Study social epidemiology concepts — SDoH, health disparities, social gradient, life-course epidemiology" (45 min)
+
+**New keyword domain — cognitiveneuroscience:**
+- Branch positioned BEFORE neuroscience (5272). "cognitive neuroscience" removed from neuroscience branch (which previously matched it at line 5234/old numbering). Bare "neuroscience" and general neurobiology terms stay in neuroscience.
+- Catches: cognitive neuroscience/neuroscientist, fmri, BOLD signal/response, EEG study/research/analysis, ERP study/research/analysis, event-related potential, neuroimaging analysis/study/research/data, brain imaging with research/lab/class/exam/analysis context, VBM/voxel-based morphometry, resting-state/task-based fMRI, functional connectivity with class/research/fmri/brain/analysis context, DTI with brain/white matter/neuroimaging/class/research context, cognitive neuroscience class/course/exam/paper/research/major, affective neuroscience, social neuroscience, developmental neuroscience with edu/research context.
+- `cognitiveneuroscienceCallouts(tier:)` 4/3/3: "that fMRI analysis isn't going to run itself." / "no one masters cognitive neuroscience by scrolling." / "CLOSE THIS. the brain you're studying is the one letting you scroll — use it."
+- 2 templates: "Analyze my fMRI or EEG data — BOLD signal, functional connectivity, or event-related potentials" (60 min) + "Study cognitive neuroscience — fMRI methodology, BOLD signal, EEG/ERP study design, or neuroimaging analysis" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: ~40 new tests (4 keyword routing + 1 false-positive + 3 callout pool tests per domain × 5 + 1 count guard ≥619)
+- SuggestedSessionTemplatesTests.swift: 5 domain template existence tests + 1 count guard ≥619
+
+**Template catalog: 609 → 619**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `experimentalphysics` fires at line 756, BEFORE `studying` (766). "write my physics lab report on optics" → experimentalphysics ✓; "study physics for my general exam" → studying (bare word("physics") in studying) ✓
+- `paleontology` fires at line 924, BEFORE `geology` (946). "analyze fossil records taphonomy paleontology lab" → paleontology ✓; "study stratigraphy mineralogy geology exam" → geology ✓
+- `informationscience` fires at line 2740, BEFORE `libraryscience` (2755). "information retrieval class assignment" → informationscience ✓; "library science cataloging reference services" → libraryscience ✓
+- `socialepidemiology` fires at line 5052, BEFORE `epidemiologicalmodeling` (5072). "social determinants of health disparities research" → socialepidemiology ✓; "outbreak investigation epi curve epidemiology class" → epidemiology ✓
+- `cognitiveneuroscience` fires at line 5251, BEFORE `neuroscience` (5272). "fMRI BOLD signal cognitive neuroscience research" → cognitiveneuroscience ✓; "synaptic transmission action potential neuroscience exam" → neuroscience ✓
+- Brace balance: CalloutManager.swift 360/360 ✓, CalloutMessages.swift 665/665 ✓
+- Template count: 619 confirmed (SuggestedTemplate( occurrences)
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `nanotechnology` — nanomaterials synthesis, nanoscale imaging, NEMS/MEMS class (distinct from materialscience's engineering focus)
+  - `appliedlinguistics` — SLA theory, language pedagogy, discourse analysis in applied context (distinct from linguistics branch's structural analysis)
+  - `radiobiology` — DNA damage from radiation, radiation cell biology, dosimetry biology (distinct from radiologictechnology's patient-imaging focus)
+  - `translationinterpretation` — court interpreting, conference interpreting, literary translation, CAT tools (distinct from TESOL/language branches)
+  - `ecologyconservation` — conservation biology, restoration ecology, species management, wildlife ecology (distinct from enviro's policy focus and marinebiology)
+- Template count: 619 → 629 after next 5-domain batch
+- CalloutManagerTests: ~2930+ after next batch
+
 ## Run 356 (automated) — 2026-07-16 — 5 new keyword domains: cognitivelinguistics, environmentaljustice, schoolcounseling, cognitivepsychology, developmentalpsychology (599→609 templates)
 
 ### What shipped
