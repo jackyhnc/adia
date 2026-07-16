@@ -3306,5 +3306,44 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Training assignment meaningfully advanced (at least one policy area studied or report writing exercise completed and saved)",
             preferredDuration: 45 * 60
         ),
+        // nursepractitioner
+        SuggestedTemplate(
+            icon: "stethoscope",
+            task: "Study for the AANP or ANCC FNP-BC certification exam — review pharmacology, diagnostics, and primary care clinical guidelines",
+            successCriteria: "Exam prep meaningfully advanced (at least two clinical topic areas reviewed, practice questions attempted, and notes updated and saved)",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write up my NP clinical rotation SOAP notes or patient encounter summaries",
+            successCriteria: "At least two patient encounter summaries or SOAP notes drafted, reviewed for clinical accuracy, and saved in the working document",
+            preferredDuration: 30 * 60
+        ),
+        // mortuaryscience
+        SuggestedTemplate(
+            icon: "building.columns.fill",
+            task: "Study for the NBE (National Board Examination) — review embalming science, funeral service law, and restorative art",
+            successCriteria: "NBE prep meaningfully advanced (at least two subject areas reviewed, practice questions attempted, notes updated and saved)",
+            preferredDuration: 90 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my mortuary science class assignment or review embalming techniques, restorative art, or funeral home operations",
+            successCriteria: "Mortuary science assignment meaningfully advanced (at least one topic area studied, key procedures or regulations reviewed, and notes saved)",
+            preferredDuration: 45 * 60
+        ),
+        // polyvagaltheory
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study polyvagal theory concepts, somatic experiencing modules, or IFS therapy principles for my training program",
+            successCriteria: "Somatic therapy training study session completed (at least one module or concept area reviewed, notes updated, and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write up my somatic therapy session notes, IFS parts work reflection, or polyvagal theory assignment",
+            successCriteria: "Assignment or session notes meaningfully advanced (key concepts documented, reflection written, or assignment section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

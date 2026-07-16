@@ -15554,4 +15554,126 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast513() {
         #expect(SuggestedSessionTemplates.all.count >= 513, "template catalog must have ≥513 entries after adding socialentrepreneurship/yogapilates/ayurvedic/positivepsychology/policeacademy (10 templates)")
     }
+
+    // MARK: - nursepractitioner
+    @Test func nursepractitionerKeywordFromNursePractitioner() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my nurse practitioner board exam and AANP certification")
+        #expect(kw == "nursepractitioner", "nurse practitioner board exam AANP should route to nursepractitioner")
+    }
+    @Test func nursepractitionerKeywordFromFNP() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing for my FNP-BC exam — reviewing pharmacology and primary care guidelines")
+        #expect(kw == "nursepractitioner", "FNP-BC exam pharmacology primary care should route to nursepractitioner")
+    }
+    @Test func nursepractitionerKeywordFromNPProgram() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my NP program clinical rotation notes and patient encounter summaries")
+        #expect(kw == "nursepractitioner", "NP program clinical rotation notes should route to nursepractitioner")
+    }
+    @Test func nursepractitionerKeywordFromAdvancedPracticeNursing() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working through my advanced practice nursing coursework for ANCC certification")
+        #expect(kw == "nursepractitioner", "advanced practice nursing ANCC certification should route to nursepractitioner")
+    }
+    @Test func nursepractitionerFiresBeforeNursing() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing SOAP notes for my NP class clinical rotation as a nurse practitioner student")
+        #expect(kw == "nursepractitioner", "NP class clinical rotation nurse practitioner student should fire nursepractitioner before nursing")
+    }
+    @Test @MainActor func nursepractitionerCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "nursepractitioner", tier: tier)
+            #expect(!msgs.isEmpty, "nursepractitioner tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func nursepractitionerTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "nursepractitioner", tier: 1)
+        #expect(msgs.count >= 4, "nursepractitioner tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func nursepractitionerTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "nursepractitioner", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "nursepractitioner tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - mortuaryscience
+    @Test func mortuaryscienceKeywordFromMortuaryScience() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying mortuary science for my NBE board exam and embalming class")
+        #expect(kw == "mortuaryscience", "mortuary science NBE board exam embalming class should route to mortuaryscience")
+    }
+    @Test func mortuaryscienceKeywordFromNBEExam() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing for the NBE funeral embalming board exam — reviewing restorative art")
+        #expect(kw == "mortuaryscience", "NBE funeral embalming board exam restorative art should route to mortuaryscience")
+    }
+    @Test func mortuaryscienceKeywordFromFuneralServiceProgram() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my funeral service program assignment on embalming techniques and funeral law")
+        #expect(kw == "mortuaryscience", "funeral service program embalming techniques should route to mortuaryscience")
+    }
+    @Test func mortuaryscienceKeywordFromEmbalmingLab() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing notes from my embalming lab and mortuary school coursework")
+        #expect(kw == "mortuaryscience", "embalming lab mortuary school coursework should route to mortuaryscience")
+    }
+    @Test func mortuaryscienceFiresBeforeForensicscience() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying mortuary science thanatology class for funeral director school exam")
+        #expect(kw == "mortuaryscience", "mortuary science thanatology class funeral director school exam should fire mortuaryscience before forensicscience")
+    }
+    @Test @MainActor func mortuaryscienceCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "mortuaryscience", tier: tier)
+            #expect(!msgs.isEmpty, "mortuaryscience tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func mortuaryscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "mortuaryscience", tier: 1)
+        #expect(msgs.count >= 4, "mortuaryscience tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func mortuaryscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "mortuaryscience", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "mortuaryscience tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - polyvagaltheory
+    @Test func polyvagaltheoryKeywordFromPolyvagalTheory() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying polyvagal theory for my somatic therapy training class")
+        #expect(kw == "polyvagaltheory", "polyvagal theory somatic therapy training class should route to polyvagaltheory")
+    }
+    @Test func polyvagaltheoryKeywordFromSomaticExperiencing() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my somatic experiencing training certification module on trauma resolution")
+        #expect(kw == "polyvagaltheory", "somatic experiencing training certification module should route to polyvagaltheory")
+    }
+    @Test func polyvagaltheoryKeywordFromIFS() {
+        let kw = CalloutManager.extractTaskKeyword(from: "working on my internal family systems therapy training level 1 certification")
+        #expect(kw == "polyvagaltheory", "internal family systems therapy training level 1 certification should route to polyvagaltheory")
+    }
+    @Test func polyvagaltheoryKeywordFromSomaticTherapyClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing notes from my somatic therapy class on nervous system regulation and vagal tone training")
+        #expect(kw == "polyvagaltheory", "somatic therapy class nervous system regulation vagal tone training should route to polyvagaltheory")
+    }
+    @Test func polyvagaltheoryFiresBeforeSocialwork() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reviewing polyvagal theory notes and parts work therapy training for my certification program")
+        #expect(kw == "polyvagaltheory", "polyvagal theory parts work therapy training certification should fire polyvagaltheory before socialwork")
+    }
+    @Test @MainActor func polyvagaltheoryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "polyvagaltheory", tier: tier)
+            #expect(!msgs.isEmpty, "polyvagaltheory tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func polyvagaltheoryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "polyvagaltheory", tier: 1)
+        #expect(msgs.count >= 4, "polyvagaltheory tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func polyvagaltheoryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "polyvagaltheory", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "polyvagaltheory tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: nursepractitioner/mortuaryscience/polyvagaltheory)
+    @Test func suggestedTemplatesCountAtLeast519() {
+        #expect(SuggestedSessionTemplates.all.count >= 519, "template catalog must have ≥519 entries after adding nursepractitioner/mortuaryscience/polyvagaltheory (6 templates)")
+    }
 }

@@ -3827,6 +3827,28 @@ public final class CalloutManager {
             || lower.contains("resuscitation nursing") || lower.contains("rapid assessment nurse") {
             return "emergencynursing"
         }
+        // nursepractitioner — positioned AFTER emergencynursing and BEFORE nursing so FNP,
+        // PMHNP, AGPCNP, DNP (NP track), and AANP/ANCC certification prep gets a dedicated pool.
+        // General nursing tasks stay in the nursing branch below.
+        if lower.contains("nurse practitioner") || lower.contains("nurse practitioners")
+            || word("fnp") || word("pmhnp") || word("agpcnp") || word("whnp") || word("acnp")
+            || lower.contains("fnp-bc") || lower.contains("pmhnp-bc") || lower.contains("fnp-c") || lower.contains("pmhnp-c")
+            || lower.contains("aanp cert") || lower.contains("aanp exam") || lower.contains("aanp certification")
+            || lower.contains("ancc fnp") || lower.contains("ancc pmhnp")
+            || lower.contains("ancc exam") && (lower.contains("np") || lower.contains("nurse practitioner"))
+            || lower.contains("ancc certification") && (lower.contains("np") || lower.contains("nurse practitioner"))
+            || lower.contains("np program") || lower.contains("np school") || lower.contains("np class")
+            || lower.contains("np course") || lower.contains("np exam") || lower.contains("np rotation")
+            || lower.contains("np clinical") || lower.contains("np practicum") || lower.contains("np residency")
+            || lower.contains("np notes") || lower.contains("np coursework") || lower.contains("np degree")
+            || lower.contains("dnp program") && lower.contains("np")
+            || lower.contains("dnp school") && lower.contains("np")
+            || lower.contains("clinical nurse specialist") || word("cns") && (lower.contains("nurse") || lower.contains("clinical nurse"))
+            || lower.contains("advanced practice nursing") || lower.contains("advanced practice nurse")
+            || lower.contains("aprn program") || lower.contains("aprn exam") || lower.contains("aprn certification")
+            || lower.contains("aprn class") || lower.contains("aprn course") || lower.contains("aprn notes") {
+            return "nursepractitioner"
+        }
         if word("nursing") || lower.contains("care plan") || lower.contains("care plans")
             || lower.contains("nursing notes") || lower.contains("nursing assessment")
             || lower.contains("nursing theory") || lower.contains("nursing diagnosis")
@@ -4039,6 +4061,25 @@ public final class CalloutManager {
             || lower.contains("behavior therapy class") || lower.contains("behavior therapy course")
             || lower.contains("behavior tech") || lower.contains("behaviour tech") {
             return "behavioranalysis"
+        }
+        // polyvagaltheory — positioned AFTER behavioranalysis and BEFORE socialwork so polyvagal
+        // theory coursework, somatic experiencing certification, and IFS therapy training route here.
+        // Generic somatic or therapy terms stay in the therapy branch below.
+        if lower.contains("polyvagal theory") || lower.contains("polyvagal class") || lower.contains("polyvagal course")
+            || lower.contains("polyvagal training") || lower.contains("polyvagal certification")
+            || lower.contains("polyvagal exam") || lower.contains("polyvagal program")
+            || lower.contains("polyvagal therapy") || lower.contains("polyvagal nervous system")
+            || lower.contains("somatic experiencing") && (lower.contains("class") || lower.contains("course") || lower.contains("training") || lower.contains("cert") || lower.contains("program") || lower.contains("practition") || lower.contains("level") || lower.contains("module") || lower.contains("notes"))
+            || lower.contains("internal family systems") && (lower.contains("class") || lower.contains("course") || lower.contains("training") || lower.contains("cert") || lower.contains("program") || lower.contains("therapy") || lower.contains("level") || lower.contains("practition"))
+            || word("ifs") && (lower.contains("therapy training") || lower.contains("parts work") || lower.contains("trailhead") || lower.contains("ifs cert") || lower.contains("ifs program"))
+            || lower.contains("parts work therapy") || lower.contains("parts work training")
+            || lower.contains("somatic therapy training") || lower.contains("somatic therapy certification")
+            || lower.contains("somatic therapy class") || lower.contains("somatic therapy course")
+            || lower.contains("somatic therapy program")
+            || lower.contains("autonomic nervous system regulation") && (lower.contains("class") || lower.contains("course") || lower.contains("training") || lower.contains("therapy") || lower.contains("cert"))
+            || lower.contains("nervous system regulation") && (lower.contains("polyvagal") || lower.contains("somatic") || lower.contains("therapy training"))
+            || lower.contains("vagal tone") && (lower.contains("class") || lower.contains("training") || lower.contains("therapy")) {
+            return "polyvagaltheory"
         }
         // socialwork — positioned before therapy so social-work-specific tasks (case management,
         // child welfare, community resources) route here instead of to therapist callouts.
@@ -4532,6 +4573,27 @@ public final class CalloutManager {
             || lower.contains("forensic psychology course") || lower.contains("forensic psychology exam")
             || lower.contains("forensic psychology program") || lower.contains("forensic psychology major") {
             return "forensicpsychology"
+        }
+        // mortuaryscience — positioned BEFORE forensicscience so mortuary science school,
+        // NBE exam prep, and funeral service education route here, not to forensic-science pools.
+        if lower.contains("mortuary science") || lower.contains("mortuary school")
+            || lower.contains("mortuary program") || lower.contains("mortuary class")
+            || lower.contains("mortuary course") || lower.contains("mortuary exam")
+            || lower.contains("mortuary student") || lower.contains("mortuary college")
+            || lower.contains("mortuary degree") || lower.contains("mortuary education")
+            || lower.contains("funeral service") && (lower.contains("program") || lower.contains("class") || lower.contains("school") || lower.contains("exam") || lower.contains("education") || lower.contains("student") || lower.contains("degree") || lower.contains("course"))
+            || lower.contains("funeral director program") || lower.contains("funeral director school")
+            || lower.contains("funeral director exam") || lower.contains("funeral director class")
+            || word("nbe") && (lower.contains("mortuar") || lower.contains("funeral") || lower.contains("embalm"))
+            || lower.contains("nbfe exam") || lower.contains("nbfe board")
+            || word("abfse")
+            || lower.contains("embalming class") || lower.contains("embalming course")
+            || lower.contains("embalming lab") || lower.contains("embalming technique")
+            || lower.contains("restorative art") && (lower.contains("mortuar") || lower.contains("funeral") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("thanatology class") || lower.contains("thanatology course")
+            || lower.contains("thanatology program") || lower.contains("death studies class")
+            || lower.contains("cremation technology") || lower.contains("cremation class") {
+            return "mortuaryscience"
         }
         // forensicscience — positioned BEFORE criminaljustice so crime-lab, DNA analysis,
         // and forensic-science coursework route here. "forensic accounting" is owned by its own

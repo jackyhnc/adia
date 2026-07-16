@@ -323,6 +323,9 @@ extension CalloutManager {
         case "ayurvedic":              return ayurvedicCallouts(tier: tier)
         case "positivepsychology":     return positivepsychologyCallouts(tier: tier)
         case "policeacademy":          return policeacademyCallouts(tier: tier)
+        case "nursepractitioner":      return nursepractitionerCallouts(tier: tier)
+        case "mortuaryscience":        return mortuaryscienceCallouts(tier: tier)
+        case "polyvagaltheory":        return polyvagaltheoryCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -6085,6 +6088,69 @@ extension CalloutManager {
             "CLOSE THIS. open your law enforcement training materials.",
             "CLOSE THIS. your police exam prep is real.",
             "CLOSE THIS. the academy expects you prepared — start now."
+        ]
+        }
+    }
+
+    private func nursepractitionerCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those AANP prep questions aren't going to answer themselves.",
+            "your NP clinical notes aren't going to write themselves.",
+            "your patients need a prepared nurse practitioner — close this.",
+            "FNP board prep doesn't happen by scrolling."
+        ]
+        case 2: return [
+            "no one earns their FNP-BC by scrolling.",
+            "close this and get back to your NP coursework.",
+            "your NP certification won't come from this screen."
+        ]
+        default: return [
+            "CLOSE THIS. open your NP study materials.",
+            "CLOSE THIS. your AANP exam is real.",
+            "CLOSE THIS. your patients deserve a prepared provider."
+        ]
+        }
+    }
+
+    private func mortuaryscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that NBE exam prep isn't going to do itself.",
+            "those embalming techniques aren't going to study themselves.",
+            "families deserve a prepared funeral service professional — close this.",
+            "mortuary science board prep doesn't happen by scrolling."
+        ]
+        case 2: return [
+            "no one passes the NBE by scrolling.",
+            "close this and get back to your mortuary science coursework.",
+            "your funeral service license won't come from this screen."
+        ]
+        default: return [
+            "CLOSE THIS. open your mortuary science notes.",
+            "CLOSE THIS. your NBE exam is real.",
+            "CLOSE THIS. those families deserve your focus."
+        ]
+        }
+    }
+
+    private func polyvagaltheoryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your polyvagal theory notes aren't going to write themselves.",
+            "somatic experiencing training takes real focus — close this.",
+            "your clients deserve a trained practitioner — close this.",
+            "IFS certification prep doesn't happen by scrolling."
+        ]
+        case 2: return [
+            "no one masters somatic therapy by scrolling.",
+            "close this and get back to your somatic training notes.",
+            "your polyvagal theory coursework won't complete itself."
+        ]
+        default: return [
+            "CLOSE THIS. open your somatic therapy training notes.",
+            "CLOSE THIS. your certification program requires your focus.",
+            "CLOSE THIS. your clients deserve a regulated, trained practitioner."
         ]
         }
     }

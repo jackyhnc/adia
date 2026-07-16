@@ -4062,4 +4062,55 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 513,
                 "catalog should have ≥513 templates after socialentrepreneurship/yogapilates/ayurvedic/positivepsychology/policeacademy additions (10 templates)")
     }
+
+    // MARK: - nursepractitioner
+    @Test func nursepractitionerTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("AANP") || $0.localizedCaseInsensitiveContains("FNP") || $0.localizedCaseInsensitiveContains("nurse practitioner")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("certification"))
+        }
+        let hasNotes = tasks.contains {
+            $0.localizedCaseInsensitiveContains("NP clinical") || $0.localizedCaseInsensitiveContains("SOAP notes") &&
+            $0.localizedCaseInsensitiveContains("NP")
+        }
+        #expect(hasExam, "catalog must include an NP board exam or certification template")
+        #expect(hasNotes, "catalog must include an NP clinical notes or SOAP notes template")
+    }
+
+    // MARK: - mortuaryscience
+    @Test func mortuaryscienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasExam = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("NBE") || $0.localizedCaseInsensitiveContains("mortuary")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("board"))
+        }
+        let hasAssignment = tasks.contains {
+            $0.localizedCaseInsensitiveContains("mortuary science") &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("embalming"))
+        }
+        #expect(hasExam, "catalog must include an NBE or mortuary science board exam template")
+        #expect(hasAssignment, "catalog must include a mortuary science class or embalming template")
+    }
+
+    // MARK: - polyvagaltheory
+    @Test func polyvagaltheoryTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("polyvagal") || $0.localizedCaseInsensitiveContains("somatic experiencing") || $0.localizedCaseInsensitiveContains("IFS")) &&
+            ($0.localizedCaseInsensitiveContains("training") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("module"))
+        }
+        let hasNotes = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("somatic therapy") || $0.localizedCaseInsensitiveContains("IFS") || $0.localizedCaseInsensitiveContains("polyvagal")) &&
+            ($0.localizedCaseInsensitiveContains("notes") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("reflection"))
+        }
+        #expect(hasStudy, "catalog must include a polyvagal theory or somatic experiencing training template")
+        #expect(hasNotes, "catalog must include a somatic therapy notes or polyvagal assignment template")
+    }
+
+    // MARK: - Count guard (nursepractitioner/mortuaryscience/polyvagaltheory)
+    @Test func catalogHasAtLeastFiveHundredNineteenTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 519,
+                "catalog should have ≥519 templates after nursepractitioner/mortuaryscience/polyvagaltheory additions (6 templates)")
+    }
 }
