@@ -18581,4 +18581,179 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast671() {
         #expect(SuggestedSessionTemplates.all.count >= 671, "template catalog must have ≥671 entries after electrochemistry/polymerchemistry/maternalhealth/globalhealthpolicy/processengineering (10 templates)")
     }
+
+    // MARK: - civilengineering
+    @Test func civilengineeringKeywordFromStructuralAnalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work through my structural analysis class problem set for civil engineering") == "civilengineering")
+    }
+    @Test func civilengineeringKeywordFromGeotechnical() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my geotechnical engineering lab report on soil mechanics") == "civilengineering")
+    }
+    @Test func civilengineeringKeywordFromReinforcedConcrete() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study reinforced concrete design for my civil engineering exam") == "civilengineering")
+    }
+    @Test func civilengineeringKeywordFromSurveyingClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prepare for my surveying class exam and field lab") == "civilengineering")
+    }
+    @Test func civilengineeringFalsePositive_engineering() {
+        let kw = CalloutManager.extractTaskKeyword(from: "design my arduino circuit board for my electrical engineering project")
+        #expect(kw == "engineering", "general engineering context must stay in engineering; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func civilengineeringCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "civilengineering", tier: 1).isEmpty, "civilengineering tier 1 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "civilengineering", tier: 2).isEmpty, "civilengineering tier 2 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "civilengineering", tier: 3).isEmpty, "civilengineering tier 3 must be non-empty")
+    }
+    @Test @MainActor func civilengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "civilengineering", tier: 1)
+        #expect(msgs.count >= 4, "civilengineering tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func civilengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "civilengineering", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "civilengineering tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - syntheticbiology
+    @Test func syntheticbiologyKeywordFromGeneticCircuit() {
+        #expect(CalloutManager.extractTaskKeyword(from: "design a genetic circuit for my synthetic biology project") == "syntheticbiology")
+    }
+    @Test func syntheticbiologyKeywordFromIgem() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my iGEM competition project and BioBrick construct design") == "syntheticbiology")
+    }
+    @Test func syntheticbiologyKeywordFromMetabolicEngineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "plan my metabolic engineering synthetic biology pathway") == "syntheticbiology")
+    }
+    @Test func syntheticbiologyKeywordFromBiobrick() {
+        #expect(CalloutManager.extractTaskKeyword(from: "assemble BioBrick parts for my synthetic biology class project") == "syntheticbiology")
+    }
+    @Test func syntheticbiologyFalsePositive_molecularbiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "use CRISPR to knockout the gene in my molecular biology experiment")
+        #expect(kw == "molecularbiology", "CRISPR gene editing must stay in molecularbiology; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func syntheticbiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "syntheticbiology", tier: 1).isEmpty, "syntheticbiology tier 1 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "syntheticbiology", tier: 2).isEmpty, "syntheticbiology tier 2 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "syntheticbiology", tier: 3).isEmpty, "syntheticbiology tier 3 must be non-empty")
+    }
+    @Test @MainActor func syntheticbiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "syntheticbiology", tier: 1)
+        #expect(msgs.count >= 4, "syntheticbiology tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func syntheticbiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "syntheticbiology", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "syntheticbiology tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - proteomics
+    @Test func proteomicsKeywordFromProteomics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze my proteomics dataset from the mass spectrometry run") == "proteomics")
+    }
+    @Test func proteomicsKeywordFromLcMsMs() {
+        #expect(CalloutManager.extractTaskKeyword(from: "interpret my LC-MS/MS protein identification results for the lab report") == "proteomics")
+    }
+    @Test func proteomicsKeywordFromShotgunProteomics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write up my shotgun proteomics experiment results and methods") == "proteomics")
+    }
+    @Test func proteomicsKeywordFrom2dPage() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze my 2D-PAGE gel for protein separation and spot identification") == "proteomics")
+    }
+    @Test func proteomicsFalsePositive_bioinformatics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "run my genomics BLAST alignment and sequence analysis in bioinformatics")
+        #expect(kw == "bioinformatics", "genomics/BLAST without proteomics context must stay in bioinformatics; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func proteomicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "proteomics", tier: 1).isEmpty, "proteomics tier 1 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "proteomics", tier: 2).isEmpty, "proteomics tier 2 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "proteomics", tier: 3).isEmpty, "proteomics tier 3 must be non-empty")
+    }
+    @Test @MainActor func proteomicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "proteomics", tier: 1)
+        #expect(msgs.count >= 4, "proteomics tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func proteomicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "proteomics", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "proteomics tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - metabolomics
+    @Test func metabolomicsKeywordFromMetabolomics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze my metabolomics dataset and identify key metabolite biomarkers") == "metabolomics")
+    }
+    @Test func metabolomicsKeywordFromNmrMetabolomics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "interpret my NMR metabolomics spectra for the lab report") == "metabolomics")
+    }
+    @Test func metabolomicsKeywordFromLcMsMetabolomics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "process my LC-MS metabolomics data and perform pathway enrichment analysis") == "metabolomics")
+    }
+    @Test func metabolomicsKeywordFromMetaboliteProfiling() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my metabolite profiling analysis for the class assignment") == "metabolomics")
+    }
+    @Test func metabolomicsFalsePositive_bioinformatics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "run my RNA-seq transcriptomics pipeline using bioinformatics tools")
+        #expect(kw == "bioinformatics", "transcriptomics without metabolomics context must stay in bioinformatics; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func metabolomicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "metabolomics", tier: 1).isEmpty, "metabolomics tier 1 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "metabolomics", tier: 2).isEmpty, "metabolomics tier 2 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "metabolomics", tier: 3).isEmpty, "metabolomics tier 3 must be non-empty")
+    }
+    @Test @MainActor func metabolomicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "metabolomics", tier: 1)
+        #expect(msgs.count >= 4, "metabolomics tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func metabolomicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "metabolomics", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "metabolomics tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - electrophysiology
+    @Test func electrophysiologyKeywordFromPatchClamp() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze my whole-cell patch clamp recordings from the neuron") == "electrophysiology")
+    }
+    @Test func electrophysiologyKeywordFromSingleUnitRecording() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sort spikes from my single unit recording data in the electrophysiology lab") == "electrophysiology")
+    }
+    @Test func electrophysiologyKeywordFromMea() {
+        #expect(CalloutManager.extractTaskKeyword(from: "process my MEA recording data and analyze neuron firing patterns") == "electrophysiology")
+    }
+    @Test func electrophysiologyKeywordFromVoltageClampLab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my voltage clamp electrophysiology lab report") == "electrophysiology")
+    }
+    @Test func electrophysiologyFalsePositive_neuroscience() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study neuroscience and how action potentials propagate in neurons")
+        #expect(kw == "neuroscience", "bare neuroscience/action potential without recording context must stay in neuroscience; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func electrophysiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "electrophysiology", tier: 1).isEmpty, "electrophysiology tier 1 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "electrophysiology", tier: 2).isEmpty, "electrophysiology tier 2 must be non-empty")
+        #expect(!mgr.taskAwareCallouts(keyword: "electrophysiology", tier: 3).isEmpty, "electrophysiology tier 3 must be non-empty")
+    }
+    @Test @MainActor func electrophysiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "electrophysiology", tier: 1)
+        #expect(msgs.count >= 4, "electrophysiology tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func electrophysiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "electrophysiology", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "electrophysiology tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: civilengineering/syntheticbiology/proteomics/metabolomics/electrophysiology)
+    @Test func suggestedTemplatesCountAtLeast681() {
+        #expect(SuggestedSessionTemplates.all.count >= 681, "template catalog must have ≥681 entries after civilengineering/syntheticbiology/proteomics/metabolomics/electrophysiology (10 templates)")
+    }
 }

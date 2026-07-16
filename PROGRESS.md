@@ -1,5 +1,71 @@
 # Adia — Build Progress
 
+## Run 363 (automated) — 2026-07-16 — 5 new keyword domains: civilengineering, syntheticbiology, proteomics, metabolomics, electrophysiology (671→681 templates)
+
+### What shipped
+
+**5 new keyword domains: civilengineering, syntheticbiology, proteomics, metabolomics, electrophysiology**
+
+**New keyword domain — civilengineering:**
+- Branch positioned BEFORE engineering; "civil engineering" removed from generic engineering branch.
+- Catches: civil engineering class/course/exam/lab/program/major/degree/notes/assignment/project, structural engineering+class/course/exam/lab/design/analysis, geotechnical engineering+class/course/exam/lab/report, soil mechanics+class/course/exam/lab, foundation design+class/course/engineering, reinforced concrete+class/course/design/exam, concrete design+class/course/exam, steel design+class/course/exam, structural analysis+class/course/exam, bridge design+class/course/engineering, truss analysis+class/course/engineering, beam design+class/engineering/structural, seismic design+class/course/engineering, transportation engineering+class/course/exam/design, highway engineering+class/course/design, pavement design+class/course/engineering, traffic engineering+class/course/engineering, word(asce)+class/code/standard/design, surveying class/course/exam/lab.
+- `civilengineeringCallouts(tier:)` 4/3/3: "that structural analysis isn't going to solve itself." / "no one passes the PE exam by scrolling." / "CLOSE THIS. open your structural engineering textbook."
+- 2 templates: "Work through my civil engineering problem set — structural analysis, reinforced concrete design, geotechnical engineering, beam loading, or truss analysis" (60 min) + "Study civil engineering for my exam — review structural analysis, reinforced concrete design, soil mechanics, foundation design, and seismic or transportation engineering" (60 min)
+
+**New keyword domain — syntheticbiology:**
+- Branch positioned AFTER molecularbiology, BEFORE toxicogenomics; CRISPR gene editing stays in molecularbiology; metabolic flux without synthetic context stays in metabolomics/computationalbiology.
+- Catches: synthetic biology/synbio, biobrick/biobricks/biobrick parts, genetic circuit/circuits/gene circuit, metabolic engineering+class/course/research/lab/biology/synthetic/igem, igem, parts registry+biology/synthetic/igem/biobrick, toggle switch+synthetic/genetic/circuit/biology, repressilator, synthetic gene network, gene regulatory network+synthetic, chassis organism, pathway engineering+class/course/research/lab/biology, heterologous expression+class/research/lab, protein engineering+class/course/research/lab/synthetic, directed evolution+class/course/research/lab, dna assembly+class/research/synthetic/lab, golden gate assembly+class/synthetic/research/lab, gibson assembly+class/synthetic/research/lab, synthetic biology class/course/exam/lab/research/program.
+- `syntheticbiologyCallouts(tier:)` 4/3/3: "that genetic circuit isn't going to design itself." / "no one builds genetic circuits by scrolling." / "CLOSE THIS. open your synthetic biology design tool."
+- 2 templates: "Work on my synthetic biology project — design a genetic circuit, build a metabolic pathway, plan an iGEM construct, or assemble BioBrick parts" (60 min) + "Study synthetic biology for my exam — review genetic circuit design, metabolic engineering principles, BioBrick assembly, iGEM project structure, or protein engineering" (45 min)
+
+**New keyword domain — proteomics:**
+- Branch positioned BEFORE bioinformatics; "proteomics" removed from bioinformatics branch.
+- Catches: proteomics/proteomic, mass spectrometry+protein/proteomics/peptide, lc-ms/ms+protein/proteomics/peptide, shotgun proteomics, bottom-up proteomics, top-down proteomics, data-dependent acquisition, dda/dia proteomics, 2d-page/2d page/two-dimensional gel, protein identification+mass spec/proteomics/class/lab, peptide sequencing+mass spec/proteomics/class/lab, tandem mass spectrometry+protein/proteomics/peptide, msms+protein/proteomics/peptide, protein quantification+mass spec/proteomics/class/lab, itraq, tmt labeling+proteomics, label-free quantification+proteomics, maxquant+proteomics, mascot search+proteomics, sequest+protein, protein atlas+class/research/proteomics.
+- `proteomicsCallouts(tier:)` 4/3/3: "those protein spectra aren't going to analyze themselves." / "no one identifies proteins by scrolling." / "CLOSE THIS. open your mass spectrometry data."
+- 2 templates: "Analyze my proteomics data — interpret LC-MS/MS spectra, identify peptides and proteins, perform label-free quantification, or write up my mass spectrometry results" (60 min) + "Study proteomics for my exam — review shotgun proteomics workflows, 2D-PAGE, LC-MS/MS, peptide fragmentation, and protein quantification methods" (45 min)
+
+**New keyword domain — metabolomics:**
+- Branch positioned BEFORE bioinformatics, AFTER proteomics; "metabolomics" removed from bioinformatics branch; metabolic flux analysis without synthetic context catches here too.
+- Catches: metabolomics/metabolomic, metabolite profiling/identification, nmr metabolomics/nmr-based metabolomics, lc-ms metabolomics/metabolomic analysis, metabolome+class/research/lab/analysis, metabolic flux analysis (!systems biology), metabolic flux balance+class/lab/metabolomics, untargeted/targeted metabolomics, nmr spectroscopy+metabolomics/metabolite, mass spectrometry+metabolomics, xcms+metabolomics, metaboanalyst+class/research/lab/metabolomics, metabolomics class/course/exam/lab/research/program.
+- `metabolomicsCallouts(tier:)` 4/3/3: "those metabolite profiles aren't going to analyze themselves." / "no one profiles metabolites by scrolling." / "CLOSE THIS. open your metabolomics data."
+- 2 templates: "Analyze my metabolomics data — interpret NMR or LC-MS metabolite profiles, identify biomarkers, perform metabolic pathway analysis, or write up my metabolomics results" (60 min) + "Study metabolomics for my exam — review NMR-based and LC-MS metabolomics workflows, metabolite annotation, pathway analysis, and metabolic flux analysis methods" (45 min)
+
+**New keyword domain — electrophysiology:**
+- Branch positioned BEFORE cognitiveneuroscience; bare "action potential" without recording context stays in neuroscience.
+- Catches: patch clamp/patch-clamp/whole-cell patch/whole cell patch/perforated patch, voltage clamp+class/lab/recording/electrophysiology, current clamp+class/lab/recording/electrophysiology, action potential recording, action potential analysis+class/lab, single unit recording/single-unit recording, local field potential, field potential+recording/electrophysiology/class/lab, extracellular/intracellular recording, multi-electrode array/multielectrode array, word(mea)+recording/electrophysiology/neuron/cell, spike sorting, spike train+class/lab/analysis/electrophysiology, in vivo/in-vivo recording, in vitro/in vivo electrophysiology, sharp electrode+class/lab/recording, neuron firing+class/lab/recording/electrophysiology, electrophysiology class/course/lab/exam/research/recording, electrophysiological+class/course/lab/research/recording.
+- `electrophysiologyCallouts(tier:)` 4/3/3: "that patch clamp data isn't going to analyze itself." / "no one masters patch clamp by scrolling." / "CLOSE THIS. open your electrophysiology recording."
+- 2 templates: "Analyze my electrophysiology data — sort spikes from a single-unit recording, analyze patch clamp traces, interpret local field potentials, or write up my MEA results" (60 min) + "Study electrophysiology for my exam — review patch clamp techniques, action potential recording, voltage and current clamp, spike sorting, and in vivo recording methods" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: 45 new tests (4 keyword routing + 1 false-positive + 3 callout pool tests per domain × 5 + 1 count guard ≥681)
+- SuggestedSessionTemplatesTests.swift: 12 new tests (2 per domain + 1 count guard ≥681)
+
+**Template catalog: 671 → 681**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- Brace balance: CalloutManager.swift 390/390 ✓, CalloutMessages.swift 725/725 ✓, SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 681 confirmed (preferredDuration: occurrences: 681)
+- `civilengineering` fires BEFORE `engineering` (line 1420 vs 1439) ✓; "civil engineering" removed from generic engineering branch ✓
+- `proteomics` fires BEFORE `bioinformatics` (line 1542 vs 1583) ✓; "proteomics" removed from bioinformatics branch ✓
+- `metabolomics` fires BEFORE `bioinformatics` and AFTER `proteomics` (line 1562 vs 1583 vs 1542) ✓; "metabolomics" removed from bioinformatics branch ✓
+- `syntheticbiology` fires AFTER `molecularbiology` and BEFORE `toxicogenomics` (line 4242 vs 4263) ✓
+- `electrophysiology` fires BEFORE `cognitiveneuroscience` (line 5942 vs 5964) ✓
+- All 5 case statements in CalloutMessages.swift wired to private functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `aerospacengineering` — aerodynamics, propulsion, orbital mechanics, flight dynamics (separate from generic engineering)
+  - `electricalengineering` — circuits class, electromagnetics, digital/analog electronics, signal processing (separate from generic engineering)
+  - `mechanicalengineering` — machine design, manufacturing, dynamics, vibrations (separate from generic engineering)
+  - `nuclearengineering` — nuclear reactor class, neutron physics, thermal hydraulics, reactor safety, radiation shielding design
+  - `environmentalengineering` — water/wastewater treatment, air pollution control, environmental modeling (AFTER waterresources/enviroengineering)
+- Template count: 681 → 691 after next 5-domain batch
+- CalloutManagerTests: ~18584 + 200 lines (45 added this run) → ~18829 lines after this run, +200 next
+
 ## Run 359 (automated) — 2026-07-16 — 5 new keyword domains: astrobiology, materialscharacterization, toxicogenomics, developmentalbiology, drugdiscovery (629→639 templates)
 
 ### What shipped

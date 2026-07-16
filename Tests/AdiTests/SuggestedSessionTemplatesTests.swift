@@ -5085,4 +5085,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 671,
                 "catalog should have ≥671 templates after electrochemistry/polymerchemistry/maternalhealth/globalhealthpolicy/processengineering additions (10 templates)")
     }
+
+    // MARK: - civilengineering templates
+    @Test func catalogHasCivilengineeringTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasProblemSet = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("civil engineering") || $0.localizedCaseInsensitiveContains("structural analysis") || $0.localizedCaseInsensitiveContains("reinforced concrete") || $0.localizedCaseInsensitiveContains("geotechnical")) &&
+            ($0.localizedCaseInsensitiveContains("problem set") || $0.localizedCaseInsensitiveContains("work through"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("civil engineering") || $0.localizedCaseInsensitiveContains("structural") || $0.localizedCaseInsensitiveContains("geotechnical")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasProblemSet, "catalog must include a civil engineering problem set template")
+        #expect(hasStudy, "catalog must include a civil engineering study template")
+    }
+
+    // MARK: - syntheticbiology templates
+    @Test func catalogHasSyntheticbiologyTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasProject = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("synthetic biology") || $0.localizedCaseInsensitiveContains("genetic circuit") || $0.localizedCaseInsensitiveContains("iGEM") || $0.localizedCaseInsensitiveContains("BioBrick")) &&
+            ($0.localizedCaseInsensitiveContains("project") || $0.localizedCaseInsensitiveContains("work on") || $0.localizedCaseInsensitiveContains("design"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("synthetic biology") || $0.localizedCaseInsensitiveContains("genetic circuit") || $0.localizedCaseInsensitiveContains("metabolic engineering")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasProject, "catalog must include a synthetic biology project template")
+        #expect(hasStudy, "catalog must include a synthetic biology study template")
+    }
+
+    // MARK: - proteomics templates
+    @Test func catalogHasProteomicsTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasAnalysis = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("proteomics") || $0.localizedCaseInsensitiveContains("LC-MS/MS") || $0.localizedCaseInsensitiveContains("mass spectrometry")) &&
+            ($0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("interpret") || $0.localizedCaseInsensitiveContains("write up"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("proteomics") || $0.localizedCaseInsensitiveContains("shotgun proteomics") || $0.localizedCaseInsensitiveContains("2D-PAGE")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasAnalysis, "catalog must include a proteomics data analysis template")
+        #expect(hasStudy, "catalog must include a proteomics study template")
+    }
+
+    // MARK: - metabolomics templates
+    @Test func catalogHasMetabolomicsTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasAnalysis = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("metabolomics") || $0.localizedCaseInsensitiveContains("metabolite") || $0.localizedCaseInsensitiveContains("NMR")) &&
+            ($0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("interpret") || $0.localizedCaseInsensitiveContains("write up"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("metabolomics") || $0.localizedCaseInsensitiveContains("metabolite") || $0.localizedCaseInsensitiveContains("metabolic flux")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasAnalysis, "catalog must include a metabolomics data analysis template")
+        #expect(hasStudy, "catalog must include a metabolomics study template")
+    }
+
+    // MARK: - electrophysiology templates
+    @Test func catalogHasElectrophysiologyTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasAnalysis = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("electrophysiology") || $0.localizedCaseInsensitiveContains("patch clamp") || $0.localizedCaseInsensitiveContains("MEA") || $0.localizedCaseInsensitiveContains("recording")) &&
+            ($0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("sort") || $0.localizedCaseInsensitiveContains("interpret"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("electrophysiology") || $0.localizedCaseInsensitiveContains("patch clamp") || $0.localizedCaseInsensitiveContains("voltage clamp")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasAnalysis, "catalog must include an electrophysiology data analysis template")
+        #expect(hasStudy, "catalog must include an electrophysiology study template")
+    }
+
+    // MARK: - Count guard (batch: civilengineering/syntheticbiology/proteomics/metabolomics/electrophysiology)
+    @Test func catalogHasAtLeastSixHundredEightyOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 681,
+                "catalog should have ≥681 templates after civilengineering/syntheticbiology/proteomics/metabolomics/electrophysiology additions (10 templates)")
+    }
 }

@@ -401,6 +401,11 @@ extension CalloutManager {
         case "maternalhealth":             return maternalhealthCallouts(tier: tier)
         case "globalhealthpolicy":         return globalhealthpolicyCallouts(tier: tier)
         case "processengineering":         return processengineeringCallouts(tier: tier)
+        case "civilengineering":           return civilengineeringCallouts(tier: tier)
+        case "syntheticbiology":           return syntheticbiologyCallouts(tier: tier)
+        case "proteomics":                 return proteomicsCallouts(tier: tier)
+        case "metabolomics":               return metabolomicsCallouts(tier: tier)
+        case "electrophysiology":          return electrophysiologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -7801,6 +7806,111 @@ extension CalloutManager {
             "CLOSE THIS. open your unit operations textbook.",
             "CLOSE THIS. reactor design doesn't happen while you scroll.",
             "CLOSE THIS. transport phenomena won't solve itself."
+        ]
+        }
+    }
+
+    private func civilengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that structural analysis isn't going to solve itself.",
+            "close this and get back to your civil engineering work.",
+            "reinforced concrete doesn't design itself — close this.",
+            "your geotechnical problem set needs your full focus — close this.",
+        ]
+        case 2: return [
+            "no one passes the PE exam by scrolling.",
+            "close this and open your civil engineering notes.",
+            "beams don't analyze themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your structural engineering textbook.",
+            "CLOSE THIS. geotechnical design doesn't happen while you scroll.",
+            "CLOSE THIS. your concrete design won't finish itself."
+        ]
+        }
+    }
+
+    private func syntheticbiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that genetic circuit isn't going to design itself.",
+            "close this and get back to your synthetic biology work.",
+            "your iGEM project won't build itself — close this.",
+            "metabolic engineering doesn't happen while you scroll — close this.",
+        ]
+        case 2: return [
+            "no one builds genetic circuits by scrolling.",
+            "close this and open your synthetic biology notes.",
+            "BioBrick parts won't assemble themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your synthetic biology design tool.",
+            "CLOSE THIS. genetic circuits don't wire themselves.",
+            "CLOSE THIS. your metabolic pathway won't engineer itself."
+        ]
+        }
+    }
+
+    private func proteomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those protein spectra aren't going to analyze themselves.",
+            "close this and get back to your proteomics work.",
+            "your mass spec data won't interpret itself — close this.",
+            "LC-MS/MS results don't analyze themselves — close this.",
+        ]
+        case 2: return [
+            "no one identifies proteins by scrolling.",
+            "close this and open your proteomics data analysis.",
+            "your peptide identification won't finish itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your mass spectrometry data.",
+            "CLOSE THIS. proteomics data won't analyze while you scroll.",
+            "CLOSE THIS. those spectra won't interpret themselves."
+        ]
+        }
+    }
+
+    private func metabolomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those metabolite profiles aren't going to analyze themselves.",
+            "close this and get back to your metabolomics work.",
+            "your NMR data won't interpret itself — close this.",
+            "LC-MS metabolomics doesn't happen while you scroll — close this.",
+        ]
+        case 2: return [
+            "no one profiles metabolites by scrolling.",
+            "close this and open your metabolomics dataset.",
+            "your metabolic flux analysis won't finish itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your metabolomics data.",
+            "CLOSE THIS. metabolite profiles won't analyze while you scroll.",
+            "CLOSE THIS. your metabolome won't map itself."
+        ]
+        }
+    }
+
+    private func electrophysiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that patch clamp data isn't going to analyze itself.",
+            "close this and get back to your electrophysiology work.",
+            "neurons fire — you should too. close this.",
+            "your action potential recording won't interpret itself — close this.",
+        ]
+        case 2: return [
+            "no one masters patch clamp by scrolling.",
+            "close this and open your electrophysiology data.",
+            "spike sorting won't finish itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your electrophysiology recording.",
+            "CLOSE THIS. patch clamp data doesn't analyze while you scroll.",
+            "CLOSE THIS. your MEA data won't sort itself."
         ]
         }
     }

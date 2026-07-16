@@ -4320,5 +4320,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Process engineering study session completed (at least two unit operations topics reviewed with worked examples and notes saved)",
             preferredDuration: 60 * 60
         ),
+        // civilengineering
+        SuggestedTemplate(
+            icon: "building.columns.fill",
+            task: "Work through my civil engineering problem set — structural analysis, reinforced concrete design, geotechnical engineering, beam loading, or truss analysis",
+            successCriteria: "Civil engineering problem set completed (at least three problems solved with structural calculations, load diagrams, or geotechnical analysis saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "building.columns.fill",
+            task: "Study civil engineering for my exam — review structural analysis, reinforced concrete design, soil mechanics, foundation design, and seismic or transportation engineering",
+            successCriteria: "Civil engineering study session completed (at least two structural or geotechnical topics reviewed with worked examples and notes saved)",
+            preferredDuration: 60 * 60
+        ),
+        // syntheticbiology
+        SuggestedTemplate(
+            icon: "circle.hexagongrid.fill",
+            task: "Work on my synthetic biology project — design a genetic circuit, build a metabolic pathway, plan an iGEM construct, or assemble BioBrick parts",
+            successCriteria: "Synthetic biology work completed (genetic circuit designed or BioBrick construct planned, at least one design iteration documented with rationale saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "circle.hexagongrid.fill",
+            task: "Study synthetic biology for my exam — review genetic circuit design, metabolic engineering principles, BioBrick assembly, iGEM project structure, or protein engineering",
+            successCriteria: "Synthetic biology study session completed (at least two synbio topics reviewed with design logic and examples noted)",
+            preferredDuration: 45 * 60
+        ),
+        // proteomics
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Analyze my proteomics data — interpret LC-MS/MS spectra, identify peptides and proteins, perform label-free quantification, or write up my mass spectrometry results",
+            successCriteria: "Proteomics analysis completed (protein identification list generated or quantification results interpreted, results documented with at least two validation checks)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Study proteomics for my exam — review shotgun proteomics workflows, 2D-PAGE, LC-MS/MS, peptide fragmentation, and protein quantification methods",
+            successCriteria: "Proteomics study session completed (at least two MS-based proteomics techniques reviewed with experimental workflow and notes saved)",
+            preferredDuration: 45 * 60
+        ),
+        // metabolomics
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Analyze my metabolomics data — interpret NMR or LC-MS metabolite profiles, identify biomarkers, perform metabolic pathway analysis, or write up my metabolomics results",
+            successCriteria: "Metabolomics analysis completed (at least five metabolites annotated or pathway enrichment analysis documented with results saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study metabolomics for my exam — review NMR-based and LC-MS metabolomics workflows, metabolite annotation, pathway analysis, and metabolic flux analysis methods",
+            successCriteria: "Metabolomics study session completed (at least two metabolomics analytical platforms reviewed with workflow steps and notes saved)",
+            preferredDuration: 45 * 60
+        ),
+        // electrophysiology
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Analyze my electrophysiology data — sort spikes from a single-unit recording, analyze patch clamp traces, interpret local field potentials, or write up my MEA results",
+            successCriteria: "Electrophysiology analysis completed (at least one recording session analyzed, spike sorted or trace interpreted, key results documented and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Study electrophysiology for my exam — review patch clamp techniques, action potential recording, voltage and current clamp, spike sorting, and in vivo recording methods",
+            successCriteria: "Electrophysiology study session completed (at least two recording techniques reviewed with principles, protocols, and notes saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

@@ -1391,14 +1391,43 @@ public final class CalloutManager {
             || lower.contains("process flow diagram") && (lower.contains("class") || lower.contains("course") || lower.contains("chemical") || lower.contains("engineering")) {
             return "processengineering"
         }
+        // civilengineering — positioned BEFORE engineering so structural, geotechnical, and
+        // transportation engineering coursework routes here. "civil engineering" removed from
+        // engineering branch below. "solidworks/CAD" stays in engineering.
+        if lower.contains("civil engineering class") || lower.contains("civil engineering course")
+            || lower.contains("civil engineering exam") || lower.contains("civil engineering lab")
+            || lower.contains("civil engineering program") || lower.contains("civil engineering major")
+            || lower.contains("civil engineering degree") || lower.contains("civil engineering notes")
+            || lower.contains("civil engineering assignment") || lower.contains("civil engineering project")
+            || lower.contains("structural engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("design") || lower.contains("analysis"))
+            || lower.contains("geotechnical engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("report"))
+            || lower.contains("soil mechanics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("foundation design") && (lower.contains("class") || lower.contains("course") || lower.contains("engineering"))
+            || lower.contains("reinforced concrete") && (lower.contains("class") || lower.contains("course") || lower.contains("design") || lower.contains("exam"))
+            || lower.contains("concrete design") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("steel design") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("structural analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("bridge design") && (lower.contains("class") || lower.contains("course") || lower.contains("engineering"))
+            || lower.contains("truss analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("engineering"))
+            || lower.contains("beam design") && (lower.contains("class") || lower.contains("engineering") || lower.contains("structural"))
+            || lower.contains("seismic design") && (lower.contains("class") || lower.contains("course") || lower.contains("engineering"))
+            || lower.contains("transportation engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("highway engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("design"))
+            || lower.contains("pavement design") && (lower.contains("class") || lower.contains("course") || lower.contains("engineering"))
+            || lower.contains("traffic engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("engineering"))
+            || word("asce") && (lower.contains("class") || lower.contains("code") || lower.contains("standard") || lower.contains("design"))
+            || lower.contains("surveying class") || lower.contains("surveying course") || lower.contains("surveying exam") || lower.contains("surveying lab") {
+            return "civilengineering"
+        }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
+        // "civil engineering" now owned by civilengineering branch above.
         if word("solidworks") || lower.contains("fusion 360") || word("ansys")
             || word("microcontroller") || word("arduino") || lower.contains("raspberry pi")
             || word("pcb") || lower.contains("circuit board") || lower.contains("circuit diagram")
             || lower.contains("circuit design")
             || lower.contains("mechanical engineering") || lower.contains("electrical engineering")
-            || lower.contains("civil engineering") || lower.contains("chemical engineering")
+            || lower.contains("chemical engineering")
             || lower.contains("biomedical engineering") || lower.contains("aerospace engineering")
             || lower.contains("computer engineering")
             || lower.contains("finite element") || word("fea")
@@ -1489,12 +1518,56 @@ public final class CalloutManager {
             || (lower.contains("protein interaction network") && lower.contains("class")) {
             return "computationalbiology"
         }
+        // proteomics — positioned BEFORE bioinformatics so mass-spectrometry based protein
+        // identification, 2D-PAGE, and shotgun proteomics route to a dedicated pool.
+        // Bare "proteomics" removed from bioinformatics branch below.
+        if lower.contains("proteomics") || lower.contains("proteomic")
+            || lower.contains("mass spectrometry") && (lower.contains("protein") || lower.contains("proteomics") || lower.contains("peptide"))
+            || lower.contains("lc-ms/ms") && (lower.contains("protein") || lower.contains("proteomics") || lower.contains("peptide"))
+            || lower.contains("shotgun proteomics") || lower.contains("bottom-up proteomics")
+            || lower.contains("top-down proteomics") || lower.contains("data-dependent acquisition")
+            || lower.contains("dda proteomics") || lower.contains("dia proteomics")
+            || lower.contains("2d-page") || lower.contains("2d page") || lower.contains("two-dimensional gel")
+            || lower.contains("protein identification") && (lower.contains("mass spec") || lower.contains("proteomics") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("peptide sequencing") && (lower.contains("mass spec") || lower.contains("proteomics") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("tandem mass spectrometry") && (lower.contains("protein") || lower.contains("proteomics") || lower.contains("peptide"))
+            || lower.contains("msms") && (lower.contains("protein") || lower.contains("proteomics") || lower.contains("peptide"))
+            || lower.contains("protein quantification") && (lower.contains("mass spec") || lower.contains("proteomics") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("itraq") || lower.contains("tmtlabeling") || lower.contains("tmt labeling") && lower.contains("proteomics")
+            || lower.contains("label-free quantification") && lower.contains("proteomics")
+            || lower.contains("maxquant") && lower.contains("proteomics")
+            || lower.contains("mascot search") && lower.contains("proteomics")
+            || lower.contains("sequest") && lower.contains("protein")
+            || lower.contains("protein atlas") && (lower.contains("class") || lower.contains("research") || lower.contains("proteomics")) {
+            return "proteomics"
+        }
+        // metabolomics — positioned BEFORE bioinformatics so NMR-based metabolomics, LC-MS
+        // metabolite profiling, and metabolic flux analysis route here.
+        // Bare "metabolomics" removed from bioinformatics branch below.
+        if lower.contains("metabolomics") || lower.contains("metabolomic")
+            || lower.contains("metabolite profiling") || lower.contains("metabolite identification")
+            || lower.contains("nmr metabolomics") || lower.contains("nmr-based metabolomics")
+            || lower.contains("lc-ms metabolomics") || lower.contains("metabolomic analysis")
+            || lower.contains("metabolome") && (lower.contains("class") || lower.contains("research") || lower.contains("lab") || lower.contains("analysis"))
+            || lower.contains("metabolic flux analysis") && !lower.contains("systems biology")
+            || lower.contains("metabolic flux balance") && (lower.contains("class") || lower.contains("lab") || lower.contains("metabolomics"))
+            || lower.contains("untargeted metabolomics") || lower.contains("targeted metabolomics")
+            || lower.contains("nmr spectroscopy") && (lower.contains("metabolomics") || lower.contains("metabolite"))
+            || lower.contains("mass spectrometry") && lower.contains("metabolomics")
+            || lower.contains("met-xcms") || lower.contains("xcms") && lower.contains("metabolomics")
+            || lower.contains("metaboanalyst") && (lower.contains("class") || lower.contains("research") || lower.contains("lab") || lower.contains("metabolomics"))
+            || lower.contains("metabolomics class") || lower.contains("metabolomics course")
+            || lower.contains("metabolomics exam") || lower.contains("metabolomics lab")
+            || lower.contains("metabolomics research") || lower.contains("metabolomics program") {
+            return "metabolomics"
+        }
         // bioinformatics — positioned after datascience (ML tools may co-occur) and before ux
         // so sequence analysis, genomics, and computational-biology pipelines route here.
         // Bare "biology" stays in studying; "biomedical engineering" stays in engineering above.
+        // "proteomics" and "metabolomics" now owned by dedicated branches above.
         if lower.contains("bioinformatics") || lower.contains("computational biology")
-            || lower.contains("genomics") || lower.contains("proteomics")
-            || lower.contains("transcriptomics") || lower.contains("metabolomics")
+            || lower.contains("genomics")
+            || lower.contains("transcriptomics")
             || lower.contains("sequence analysis") || lower.contains("sequence alignment")
             || lower.contains("multiple sequence alignment")
             || lower.contains("blast search") || lower.contains("blast alignment")
@@ -4144,6 +4217,30 @@ public final class CalloutManager {
             || lower.contains("pcr protocol") || lower.contains("pcr result") || lower.contains("run pcr") {
             return "molecularbiology"
         }
+        // syntheticbiology — positioned AFTER molecularbiology and BEFORE toxicogenomics so
+        // BioBrick assembly, genetic circuit design, iGEM, and metabolic engineering in a synthetic
+        // context route here. "CRISPR gene editing" stays in molecularbiology; "metabolic flux
+        // balance analysis" without synthetic context stays in metabolomics/computationalbiology.
+        if lower.contains("synthetic biology") || lower.contains("synbio")
+            || lower.contains("biobrick") || lower.contains("biobricks") || lower.contains("biobrick parts")
+            || lower.contains("genetic circuit") || lower.contains("genetic circuits") || lower.contains("gene circuit")
+            || lower.contains("metabolic engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("lab") || lower.contains("biology") || lower.contains("synthetic") || lower.contains("igem"))
+            || lower.contains("igem") || lower.contains("ige m") && lower.contains("competition")
+            || lower.contains("parts registry") && (lower.contains("biology") || lower.contains("synthetic") || lower.contains("igem") || lower.contains("biobrick"))
+            || lower.contains("toggle switch") && (lower.contains("synthetic") || lower.contains("genetic") || lower.contains("circuit") || lower.contains("biology"))
+            || lower.contains("repressilator") || lower.contains("synthetic gene network") || lower.contains("gene regulatory network") && lower.contains("synthetic")
+            || lower.contains("chassis organism") || lower.contains("chassis strain") && (lower.contains("synthetic") || lower.contains("engineering"))
+            || lower.contains("pathway engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("lab") || lower.contains("biology"))
+            || lower.contains("heterologous expression") && (lower.contains("class") || lower.contains("research") || lower.contains("lab"))
+            || lower.contains("protein engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("lab") || lower.contains("synthetic"))
+            || lower.contains("directed evolution") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("lab"))
+            || lower.contains("dna assembly") && (lower.contains("class") || lower.contains("research") || lower.contains("synthetic") || lower.contains("lab"))
+            || lower.contains("golden gate assembly") || lower.contains("gibson assembly") && (lower.contains("class") || lower.contains("synthetic") || lower.contains("research") || lower.contains("lab"))
+            || lower.contains("synthetic biology class") || lower.contains("synthetic biology course")
+            || lower.contains("synthetic biology exam") || lower.contains("synthetic biology lab")
+            || lower.contains("synthetic biology research") || lower.contains("synthetic biology program") {
+            return "syntheticbiology"
+        }
         // toxicogenomics — positioned AFTER molecularbiology and BEFORE developmentalbiology.
         // Catches gene expression under toxic exposure, AhR pathway, TOXCAST research, and
         // omics-level toxicology. "toxicology" alone routes to toxicology branch (far below).
@@ -5821,6 +5918,28 @@ public final class CalloutManager {
             || lower.contains("philosophy of mind") && (lower.contains("cogsci") || lower.contains("cognitive science"))
             || lower.contains("computational mind") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
             return "cognitivescience"
+        }
+        // electrophysiology — positioned BEFORE cognitiveneuroscience so patch clamp, action
+        // potential recording, and MEA data analysis route here. Bare "action potential" stays
+        // in neuroscience; compound recording/patch terms fire here first.
+        if lower.contains("patch clamp") || lower.contains("patch-clamp") || lower.contains("whole-cell patch")
+            || lower.contains("whole cell patch") || lower.contains("perforated patch")
+            || lower.contains("voltage clamp") && (lower.contains("class") || lower.contains("lab") || lower.contains("recording") || lower.contains("electrophysiology"))
+            || lower.contains("current clamp") && (lower.contains("class") || lower.contains("lab") || lower.contains("recording") || lower.contains("electrophysiology"))
+            || lower.contains("action potential recording") || lower.contains("action potential analysis") && (lower.contains("class") || lower.contains("lab"))
+            || lower.contains("single unit recording") || lower.contains("single-unit recording")
+            || lower.contains("local field potential") || lower.contains("field potential") && (lower.contains("recording") || lower.contains("electrophysiology") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("extracellular recording") || lower.contains("intracellular recording")
+            || lower.contains("multi-electrode array") || lower.contains("multielectrode array") || word("mea") && (lower.contains("recording") || lower.contains("electrophysiology") || lower.contains("neuron") || lower.contains("cell"))
+            || lower.contains("spike sorting") || lower.contains("spike train") && (lower.contains("class") || lower.contains("lab") || lower.contains("analysis") || lower.contains("electrophysiology"))
+            || lower.contains("in vivo recording") || lower.contains("in-vivo recording") || lower.contains("in vitro electrophysiology") || lower.contains("in vivo electrophysiology")
+            || lower.contains("sharp electrode") && (lower.contains("class") || lower.contains("lab") || lower.contains("recording"))
+            || lower.contains("neuron firing") && (lower.contains("class") || lower.contains("lab") || lower.contains("recording") || lower.contains("electrophysiology"))
+            || lower.contains("electrophysiology class") || lower.contains("electrophysiology course")
+            || lower.contains("electrophysiology lab") || lower.contains("electrophysiology exam")
+            || lower.contains("electrophysiology research") || lower.contains("electrophysiology recording")
+            || lower.contains("electrophysiological") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("research") || lower.contains("recording")) {
+            return "electrophysiology"
         }
         // cognitiveneuroscience — positioned BEFORE neuroscience so fMRI/EEG study design, BOLD
         // signal analysis, and neuroimaging coursework get a dedicated pool. "cognitive neuroscience"
