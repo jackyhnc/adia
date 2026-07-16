@@ -1,5 +1,75 @@
 # Adia — Build Progress
 
+## Run 351 (automated) — 2026-07-16 — 5 new keyword domains: animalassistedtherapy, constructionlaw, healtheconomics, insurancefinance, environmentalplanning (539→549 templates)
+
+### What shipped
+
+**5 new keyword domains: animalassistedtherapy, constructionlaw, healtheconomics, insurancefinance, environmentalplanning**
+
+**New keyword domain — animalassistedtherapy:**
+- Branch positioned AFTER `recreationaltherapy`, BEFORE `massagetherapy`; catches animal-assisted therapy/intervention (AAT/AAI), therapy dog handling/certification, canine-assisted therapy, equine-assisted psychotherapy/learning (without recreation context), pet therapy, pet-assisted therapy, CAAHTT, Pet Partners+therapy, animal-assisted certification/program.
+- Guard: "equine-assisted therapy" WITH "recreation" context stays in recreationaltherapy.
+- `animalassistedtherapyCallouts(tier:)` 4/3/3: "those therapy animal handling skills aren't going to practice themselves." / "no one earns their therapy dog certification by scrolling." / "CLOSE THIS. open your animal-assisted therapy materials."
+- 2 templates: "Study for AAT/AAI certification…" (60 min, pawprint.fill) + "Complete my therapy animal class assignment or session observation report" (30 min, doc.text.fill)
+
+**New keyword domain — constructionlaw:**
+- Branch positioned AFTER `sportslaw`, BEFORE `legal`; catches construction law, AIA contract, surety bond/law/bonding class, mechanics lien/construction lien, payment bond+construction, performance bond+construction, construction defect/dispute/litigation, subcontractor claims+construction.
+- Guard: "construction management" and "construction technology" both fire far earlier in the chain.
+- `constructionlawCallouts(tier:)` 4/3/3: "those AIA contract clauses aren't going to memorize themselves." / "no one masters construction law by scrolling." / "CLOSE THIS. open your construction law materials."
+- 2 templates: "Study construction law concepts — AIA contracts, mechanics liens, payment bonds…" (60 min, building.columns.fill) + "Complete a construction law assignment — analyze a contract dispute or lien analysis" (45 min, doc.text.fill)
+
+**New keyword domain — healtheconomics:**
+- Branch positioned AFTER `certifiedfinancialplanner`, BEFORE `statistics`; catches health economics/economist, pharmacoeconomics, QALY, ICER+health/cost/effectiveness, HTA+health context, economic evaluation+health/drug/clinical/medical context, cost-effectiveness analysis+health, cost-benefit analysis+health, burden of disease, willingness to pay+health.
+- Routes to healtheconomics BEFORE the generic economics branch (which still lists "health economics" but fires later).
+- `healtheconomicsCallouts(tier:)` 4/3/3: "those QALY calculations aren't going to run themselves." / "no one masters health economics by scrolling." / "CLOSE THIS. healthcare resources are finite — so is your study time."
+- 2 templates: "Study health economics concepts — QALY, ICER, CEA, HTA frameworks…" (60 min, chart.bar.xaxis) + "Complete a pharmacoeconomics or HTA assignment" (45 min, doc.text.fill)
+
+**New keyword domain — insurancefinance:**
+- Branch positioned AFTER `behavioraleconomics`, BEFORE `budget`; catches insurance underwriting, P&C/property-and-casualty insurance class/cert, CPCU designation, LOMA program/exam/designation, AINS+insurance, life/health insurance licensing, insurance licensing/state exam, insurance principles class, risk and insurance class, reinsurance+edu context.
+- Guard: "title insurance" stays in realestate (fires much earlier); bare "insurance" NOT matched.
+- `insurancefinanceCallouts(tier:)` 4/3/3: "those underwriting concepts aren't going to learn themselves." / "no one earns their insurance designation by scrolling." / "CLOSE THIS. your CPCU or LOMA exam won't pass itself."
+- 2 templates: "Study for insurance licensing exam or CPCU/LOMA designation…" (60 min, shield.fill) + "Complete insurance principles or risk and insurance class assignment" (45 min, doc.text.fill)
+
+**New keyword domain — environmentalplanning:**
+- Branch positioned AFTER `urbanplanning`, BEFORE `realestate`; catches environmental impact statement/assessment (EIS/EIA), EIS/EIA+environmental/planning context, NEPA compliance/class/course/exam/training/review process, CEQA, SEPA+environmental/planning, environmental permitting+edu context, environmental review+class/process/planning, environmental planning (!law/legislation), land use planning+environmental, EIS preparation/writing/scoping, cumulative impact assessment, environmental scoping, mitigation monitoring.
+- Guard: "environmental law" stays in environmentallaw; "environmental science" stays in enviro; "environmental engineering" stays in enviroengineering.
+- `environmentalplanningCallouts(tier:)` 4/3/3: "that EIS isn't going to write itself." / "no one masters environmental planning by scrolling." / "CLOSE THIS. the environment can't wait — neither can your assignment."
+- 2 templates: "Study NEPA and CEQA environmental review processes — EIS/EIA, scoping, mitigation…" (60 min, leaf.fill) + "Draft sections of an EIS or complete an environmental permitting assignment" (45 min, doc.text.fill)
+
+**New tests:**
+- CalloutManagerTests.swift: +45 tests (8-9 per domain: 4 keyword routing + 1 false-positive + 3 callout tier tests; 1 count guard ≥549)
+- SuggestedSessionTemplatesTests.swift: +11 tests (2 domain template existence tests per domain + 1 count guard ≥549)
+
+**Template catalog: 539 → 549**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by structural inspection.
+- Brace balance: CalloutManager.swift 325/325 ✓, CalloutMessages.swift 594/594 ✓, CalloutManagerTests.swift 4862/4862 ✓, SuggestedSessionTemplatesTests.swift 1413/1413 ✓
+- Template count verified: `grep -c 'SuggestedTemplate(' SuggestedSessionTemplates.swift` = 549 ✓
+- Callout pool function count: 294 (was 289 + 5 new) ✓
+- Ordering checks:
+  - `healtheconomics` (line 469) fires BEFORE `statistics` (485) and `economics` (497) ✓
+  - `environmentalplanning` (1325) fires AFTER `urbanplanning` (1305), BEFORE `realestate` (1345) ✓
+  - `insurancefinance` (2296) fires AFTER `behavioraleconomics` (2277), BEFORE `budget` (2302) ✓
+  - `animalassistedtherapy` (4372) fires AFTER `recreationaltherapy` (4353), BEFORE `massagetherapy` (4388) ✓
+  - `constructionlaw` (5494) fires AFTER `sportslaw` (5479), BEFORE `legal` (5504) ✓
+- Dispatch cases added for all 5 new domains in taskAwareCallouts ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates (not yet covered):
+  - `animalwelfare` — animal welfare science, animal care and use, IACUC protocol, zoo management class, wildlife rehabilitation
+  - `dentalradiology` — dental radiography/radiology, DANB RHS exam, radiographic positioning+dental context
+  - `healthinformatics` — health informatics (as primary field, not EHR class), CAHIMS, HL7/FHIR training class
+  - `biomechanics` — biomechanical analysis, gait lab, motion capture+research, joint kinetics/kinematics class (vs kinesiology which catches broader)
+  - `epidemiologicalmodeling` — compartmental models, SIR/SEIR, disease modeling class, R₀, reproductive number+class context
+- Template catalog: 549 → 559 after next 5-domain batch
+- CalloutManagerTests: ~2750 + 40 = ~2790 after next batch
+
+---
+
 ## Run 350 (automated) — 2026-07-16 — 5 new keyword domains: virtualreality, clinicalresearch, homeopathy, recreationaltherapy, tibetanmedicine (519→529 templates)
 
 ### What shipped

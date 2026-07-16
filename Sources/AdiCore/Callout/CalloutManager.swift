@@ -451,6 +451,23 @@ public final class CalloutManager {
             || lower.contains("series 65") || lower.contains("series 66") {
             return "certifiedfinancialplanner"
         }
+        // healtheconomics — positioned AFTER certifiedfinancialplanner and BEFORE statistics so
+        // pharmacoeconomics, HTA, QALY, and ICER study tasks route to a dedicated pool rather than
+        // the generic economics branch (which also lists "health economics" but fires later).
+        if lower.contains("health economics") || lower.contains("health economist")
+            || lower.contains("pharmacoeconomics") || lower.contains("pharmacoeconomist")
+            || lower.contains("cost-effectiveness analysis") && (lower.contains("health") || lower.contains("drug") || lower.contains("clinical") || lower.contains("medical"))
+            || lower.contains("cost effectiveness analysis") && (lower.contains("health") || lower.contains("drug") || lower.contains("clinical") || lower.contains("medical"))
+            || lower.contains("health technology assessment") || word("hta") && (lower.contains("health") || lower.contains("technology assessment") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || word("qaly") || lower.contains("qualys") && lower.contains("health")
+            || word("icer") && (lower.contains("health") || lower.contains("cost") || lower.contains("effectiveness") || lower.contains("ratio"))
+            || lower.contains("economic evaluation") && (lower.contains("health") || lower.contains("healthcare") || lower.contains("drug") || lower.contains("clinical") || lower.contains("medical"))
+            || lower.contains("cost-benefit analysis") && (lower.contains("health") || lower.contains("healthcare") || lower.contains("medical") || lower.contains("clinical"))
+            || lower.contains("burden of disease") || lower.contains("disease burden") && (lower.contains("class") || lower.contains("research") || lower.contains("analysis"))
+            || lower.contains("willingness to pay") && (lower.contains("health") || lower.contains("healthcare") || lower.contains("drug") || lower.contains("medical"))
+            || lower.contains("medical cost-effectiveness") || lower.contains("drug cost-effectiveness") {
+            return "healtheconomics"
+        }
         // statistics — positioned before studying so professional stats tools/methods (R, SPSS,
         // STATA, regression analysis, ANOVA) route here. Bare word("statistics") and word("stats")
         // stay in studying so "study statistics for my exam" still routes to studying.
@@ -1286,6 +1303,26 @@ public final class CalloutManager {
             || lower.contains("smart cities") || lower.contains("sustainable urbanism")
             || lower.contains("urban infrastructure") || lower.contains("land use analysis") {
             return "urbanplanning"
+        }
+        // environmentalplanning — positioned AFTER urbanplanning and BEFORE realestate.
+        // Catches EIS/EIA preparation, NEPA/CEQA compliance coursework, and environmental
+        // permitting classes. "environmental law" and bare word("nepa") stay in environmentallaw
+        // (fires much later). "environmental science" stays in enviro. "environmental engineering"
+        // stays in enviroengineering.
+        if lower.contains("environmental impact statement") || lower.contains("environmental impact assessment")
+            || word("eis") && (lower.contains("environmental") || lower.contains("class") || lower.contains("preparation") || lower.contains("review") || lower.contains("planning"))
+            || word("eia") && (lower.contains("environmental") || lower.contains("assessment") || lower.contains("class") || lower.contains("planning"))
+            || lower.contains("nepa compliance") || lower.contains("nepa class") || lower.contains("nepa course") || lower.contains("nepa exam") || lower.contains("nepa training") || lower.contains("nepa review process")
+            || word("ceqa")
+            || word("sepa") && (lower.contains("environmental") || lower.contains("planning") || lower.contains("compliance") || lower.contains("class"))
+            || lower.contains("environmental permitting") || lower.contains("environmental permit") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("application") || lower.contains("planning"))
+            || lower.contains("environmental review") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("process") || lower.contains("planning"))
+            || lower.contains("environmental planning") && !lower.contains("law") && !lower.contains("legislation")
+            || lower.contains("land use planning") && lower.contains("environmental")
+            || lower.contains("eis preparation") || lower.contains("eis writing") || lower.contains("eis scoping")
+            || lower.contains("cumulative impact assessment") || lower.contains("environmental scoping")
+            || lower.contains("mitigation monitoring") {
+            return "environmentalplanning"
         }
         // realestate — positioned before business so "real estate investment", property management,
         // and licensing/appraisal prep route here rather than the generic business pool.
@@ -2238,6 +2275,25 @@ public final class CalloutManager {
             || lower.contains("behavioral science class") || lower.contains("behavioral science course")
             || lower.contains("behavioral science exam") {
             return "behavioraleconomics"
+        }
+        // insurancefinance — positioned AFTER behavioraleconomics and BEFORE budget.
+        // Catches CPCU/LOMA/AINS designation prep, insurance licensing exams, underwriting
+        // coursework, and P&C insurance classes. "title insurance" stays in realestate (fires earlier).
+        // Bare "insurance" alone NOT matched — requires specific professional/educational context.
+        if lower.contains("insurance underwriting")
+            || lower.contains("property and casualty") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("certification") || lower.contains("license") || lower.contains("insurance"))
+            || lower.contains("p&c insurance") || lower.contains("p & c insurance")
+            || word("cpcu")
+            || lower.contains("loma program") || lower.contains("loma exam") || lower.contains("loma designation") || lower.contains("loma certification")
+            || word("ains") && (lower.contains("insurance") || lower.contains("designation") || lower.contains("certification") || lower.contains("exam"))
+            || lower.contains("life insurance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("licensing") || lower.contains("license exam") || lower.contains("certification"))
+            || lower.contains("health insurance") && (lower.contains("licensing") || lower.contains("license exam") || lower.contains("class") || lower.contains("course") || lower.contains("certification"))
+            || lower.contains("insurance licensing") || lower.contains("insurance license exam") || lower.contains("insurance state exam")
+            || lower.contains("insurance principles") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("insurance regulation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("risk and insurance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("reinsurance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("study") || lower.contains("assignment")) {
+            return "insurancefinance"
         }
         if word("budget") || word("budgeting") || word("budgets")
             || word("spreadsheet") || word("spreadsheets")
@@ -4296,6 +4352,25 @@ public final class CalloutManager {
             || lower.contains("recreational therapy certification") || lower.contains("recreational therapy licensure") {
             return "recreationaltherapy"
         }
+        // animalassistedtherapy — positioned AFTER recreationaltherapy, BEFORE massagetherapy.
+        // Catches AAT/AAI certification, therapy dog handling, equine-assisted psychotherapy,
+        // and canine-assisted therapy as primary disciplines.
+        // "equine-assisted therapy" WITH "recreation" context stays in recreationaltherapy above.
+        if lower.contains("animal-assisted therapy") || lower.contains("animal assisted therapy")
+            || lower.contains("animal-assisted intervention") || lower.contains("animal assisted intervention")
+            || lower.contains("therapy dog") || lower.contains("therapy dogs")
+            || lower.contains("canine-assisted therapy") || lower.contains("canine assisted therapy")
+            || lower.contains("therapy animal") || lower.contains("therapy animals")
+            || lower.contains("pet therapy") || lower.contains("pet-assisted therapy")
+            || lower.contains("equine-assisted psychotherapy") || lower.contains("equine assisted psychotherapy")
+            || lower.contains("equine-assisted learning") && !lower.contains("recreation")
+            || lower.contains("animal-facilitated therapy") || lower.contains("animal facilitated therapy")
+            || lower.contains("caahtt") || lower.contains("pet partners") && lower.contains("therapy")
+            || lower.contains("animal assisted") && (lower.contains("class") || lower.contains("certification") || lower.contains("program") || lower.contains("intervention"))
+            || word("aat") && (lower.contains("therapy") || lower.contains("animal") || lower.contains("certification"))
+            || word("aai") && (lower.contains("therapy") || lower.contains("animal") || lower.contains("certification")) {
+            return "animalassistedtherapy"
+        }
         // massagetherapy — positioned AFTER occupationaltherapy and BEFORE speecharts.
         // Catches LMT coursework, MBLEx exam prep, and hands-on technique study.
         // "therapy notes" stays in the therapy branch above; massage claims hands-on technique terms.
@@ -5402,6 +5477,21 @@ public final class CalloutManager {
             || lower.contains("professional sports law") || lower.contains("sports industry law")
             || lower.contains("esports law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
             return "sportslaw"
+        }
+        // constructionlaw — positioned AFTER sportslaw, BEFORE legal.
+        // Catches AIA contracts, mechanics liens, surety bonds, and construction dispute coursework.
+        // "construction management" and "construction technology" both fire far earlier in the chain.
+        if lower.contains("construction law")
+            || lower.contains("construction contract law") || lower.contains("aia contract") || lower.contains("aia document")
+            || lower.contains("surety bond") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("law") || lower.contains("construction"))
+            || lower.contains("surety law") || lower.contains("surety bonding class")
+            || lower.contains("mechanics lien") || lower.contains("mechanic's lien") || lower.contains("construction lien")
+            || lower.contains("payment bond") && (lower.contains("construction") || lower.contains("class") || lower.contains("law"))
+            || lower.contains("performance bond") && lower.contains("construction")
+            || lower.contains("construction defect") || lower.contains("construction claim") && (lower.contains("law") || lower.contains("class") || lower.contains("legal") || lower.contains("analysis"))
+            || lower.contains("construction dispute") || lower.contains("construction litigation")
+            || lower.contains("construction delay claim") || lower.contains("subcontractor claims") && lower.contains("construction") {
+            return "constructionlaw"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")

@@ -3475,5 +3475,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Sports law assignment meaningfully advanced (case analysis written or memo section completed and saved)",
             preferredDuration: 45 * 60
         ),
+        // animalassistedtherapy
+        SuggestedTemplate(
+            icon: "pawprint.fill",
+            task: "Study for animal-assisted therapy (AAT/AAI) certification — review protocols, ethics, handling techniques, and best practices",
+            successCriteria: "AAT/AAI certification prep meaningfully advanced (at least two topic areas reviewed, handling protocols studied, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my therapy animal handling class assignment or write up an AAT session observation report",
+            successCriteria: "Assignment or observation report meaningfully advanced (key sections drafted or one full observation write-up completed and saved)",
+            preferredDuration: 30 * 60
+        ),
+        // constructionlaw
+        SuggestedTemplate(
+            icon: "building.columns.fill",
+            task: "Study construction law concepts — AIA contracts, mechanics liens, payment bonds, surety, and construction claims for my class or exam",
+            successCriteria: "Construction law study session completed (at least two topic areas reviewed, key contract clauses or lien rules understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a construction law assignment — analyze a contract dispute, draft a mechanics lien analysis, or work through a construction defect claim",
+            successCriteria: "Construction law assignment meaningfully advanced (dispute analysis written or lien/claim section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // healtheconomics
+        SuggestedTemplate(
+            icon: "chart.bar.xaxis",
+            task: "Study health economics concepts — QALY calculations, ICER ratios, cost-effectiveness analysis, and health technology assessment frameworks",
+            successCriteria: "Health economics study session completed (at least two analytical frameworks reviewed, sample calculations worked through, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete a pharmacoeconomics or health technology assessment assignment for my health economics class",
+            successCriteria: "Assignment meaningfully advanced (cost-effectiveness model built or written analysis section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // insurancefinance
+        SuggestedTemplate(
+            icon: "shield.fill",
+            task: "Study for my insurance licensing exam or CPCU/LOMA designation — review underwriting principles, policy provisions, and coverage concepts",
+            successCriteria: "Insurance exam prep meaningfully advanced (at least two topic areas reviewed, practice questions attempted, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my insurance principles or risk and insurance class assignment — analyze a policy, underwriting case, or coverage scenario",
+            successCriteria: "Assignment meaningfully advanced (policy analysis written or underwriting case section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // environmentalplanning
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Study NEPA and CEQA environmental review processes — review EIS/EIA requirements, scoping, alternatives analysis, and mitigation measures",
+            successCriteria: "Environmental planning study session completed (at least two regulatory frameworks reviewed, key procedural steps understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Draft sections of an environmental impact statement (EIS) or complete an environmental permitting assignment for my planning class",
+            successCriteria: "EIS draft or permitting assignment meaningfully advanced (at least one substantive section written or permit application component completed and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

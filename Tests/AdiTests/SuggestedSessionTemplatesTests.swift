@@ -4275,4 +4275,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 539,
                 "catalog should have ≥539 templates after waterresources/biophysics/psychopharmacology/mediationarbitration/sportslaw additions (10 templates)")
     }
+
+    // MARK: - animalassistedtherapy
+    @Test func animalassistedtherapyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasCert = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("animal-assisted") || $0.localizedCaseInsensitiveContains("AAT") || $0.localizedCaseInsensitiveContains("therapy dog") || $0.localizedCaseInsensitiveContains("AAI")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("certification") || $0.localizedCaseInsensitiveContains("protocol"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("therapy animal") || $0.localizedCaseInsensitiveContains("AAT") || $0.localizedCaseInsensitiveContains("animal-assisted") || $0.localizedCaseInsensitiveContains("therapy dog")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("report") || $0.localizedCaseInsensitiveContains("class"))
+        }
+        #expect(hasCert, "catalog must include an AAT/AAI certification study template")
+        #expect(hasAssignment, "catalog must include an animal-assisted therapy assignment or class template")
+    }
+
+    // MARK: - constructionlaw
+    @Test func constructionlawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("construction law") &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("AIA") || $0.localizedCaseInsensitiveContains("lien") || $0.localizedCaseInsensitiveContains("bond"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("construction law") || $0.localizedCaseInsensitiveContains("mechanics lien") || $0.localizedCaseInsensitiveContains("construction defect")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("draft") || $0.localizedCaseInsensitiveContains("memo"))
+        }
+        #expect(hasStudy, "catalog must include a construction law study template")
+        #expect(hasAssignment, "catalog must include a construction law assignment or analysis template")
+    }
+
+    // MARK: - healtheconomics
+    @Test func healtheconomicsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("health economics") || $0.localizedCaseInsensitiveContains("QALY") || $0.localizedCaseInsensitiveContains("ICER") || $0.localizedCaseInsensitiveContains("cost-effectiveness")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("concepts") || $0.localizedCaseInsensitiveContains("framework"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("pharmacoeconomics") || $0.localizedCaseInsensitiveContains("health technology assessment") || $0.localizedCaseInsensitiveContains("health economics")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("model"))
+        }
+        #expect(hasStudy, "catalog must include a health economics study template")
+        #expect(hasAssignment, "catalog must include a pharmacoeconomics or HTA assignment template")
+    }
+
+    // MARK: - insurancefinance
+    @Test func insurancefinanceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("insurance") && ($0.localizedCaseInsensitiveContains("licensing") || $0.localizedCaseInsensitiveContains("CPCU") || $0.localizedCaseInsensitiveContains("LOMA") || $0.localizedCaseInsensitiveContains("underwriting"))) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("designation"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("insurance") && ($0.localizedCaseInsensitiveContains("underwriting") || $0.localizedCaseInsensitiveContains("policy") || $0.localizedCaseInsensitiveContains("risk"))) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("case"))
+        }
+        #expect(hasStudy, "catalog must include an insurance licensing/CPCU exam study template")
+        #expect(hasAssignment, "catalog must include an insurance class assignment template")
+    }
+
+    // MARK: - environmentalplanning
+    @Test func environmentalplanningTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("NEPA") || $0.localizedCaseInsensitiveContains("CEQA") || $0.localizedCaseInsensitiveContains("environmental review") || $0.localizedCaseInsensitiveContains("EIS")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("process") || $0.localizedCaseInsensitiveContains("requirements"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("environmental impact statement") || $0.localizedCaseInsensitiveContains("EIS") || $0.localizedCaseInsensitiveContains("environmental permitting")) &&
+            ($0.localizedCaseInsensitiveContains("draft") || $0.localizedCaseInsensitiveContains("complete") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("planning class"))
+        }
+        #expect(hasStudy, "catalog must include a NEPA/CEQA environmental review study template")
+        #expect(hasAssignment, "catalog must include an EIS/environmental permitting assignment template")
+    }
+
+    // MARK: - Count guard (batch: animalassistedtherapy/constructionlaw/healtheconomics/insurancefinance/environmentalplanning)
+    @Test func catalogHasAtLeastFiveHundredFortyNineTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 549,
+                "catalog should have ≥549 templates after animalassistedtherapy/constructionlaw/healtheconomics/insurancefinance/environmentalplanning additions (10 templates)")
+    }
 }

@@ -336,6 +336,11 @@ extension CalloutManager {
         case "psychopharmacology":     return psychopharmacologyCallouts(tier: tier)
         case "mediationarbitration":   return mediationarbitrationCallouts(tier: tier)
         case "sportslaw":              return sportslawCallouts(tier: tier)
+        case "animalassistedtherapy":  return animalassistedtherapyCallouts(tier: tier)
+        case "constructionlaw":        return constructionlawCallouts(tier: tier)
+        case "healtheconomics":        return healtheconomicsCallouts(tier: tier)
+        case "insurancefinance":       return insurancefinanceCallouts(tier: tier)
+        case "environmentalplanning":  return environmentalplanningCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -6371,6 +6376,111 @@ extension CalloutManager {
             "CLOSE THIS. open your sports law materials.",
             "CLOSE THIS. sports governance demands your full attention.",
             "CLOSE THIS. the locker room doesn't need you — your textbook does."
+        ]
+        }
+    }
+
+    private func animalassistedtherapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those therapy animal handling skills aren't going to practice themselves.",
+            "close this and get back to your animal-assisted therapy coursework.",
+            "your AAT certification prep needs your full attention.",
+            "therapy animals depend on handlers who actually study — close this."
+        ]
+        case 2: return [
+            "no one earns their therapy dog certification by scrolling.",
+            "close this and open your AAT study materials.",
+            "your clients need a prepared handler — close this."
+        ]
+        default: return [
+            "CLOSE THIS. open your animal-assisted therapy materials.",
+            "CLOSE THIS. therapy animals deserve prepared handlers.",
+            "CLOSE THIS. your AAT exam prep won't happen by scrolling."
+        ]
+        }
+    }
+
+    private func constructionlawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those AIA contract clauses aren't going to memorize themselves.",
+            "close this and get back to your construction law assignment.",
+            "construction disputes don't resolve themselves — neither will your coursework.",
+            "your construction law exam needs your full attention."
+        ]
+        case 2: return [
+            "no one masters construction law by scrolling.",
+            "close this and open your construction law notes.",
+            "that lien claim analysis won't write itself."
+        ]
+        default: return [
+            "CLOSE THIS. open your construction law materials.",
+            "CLOSE THIS. construction contracts demand your full attention.",
+            "CLOSE THIS. the job site can wait — your law exam can't."
+        ]
+        }
+    }
+
+    private func healtheconomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those QALY calculations aren't going to run themselves.",
+            "close this and get back to your health economics assignment.",
+            "ICER ratios don't compute themselves — close this.",
+            "your health economics exam needs your full attention."
+        ]
+        case 2: return [
+            "no one masters health economics by scrolling.",
+            "close this and open your health economics notes.",
+            "that cost-effectiveness analysis won't write itself."
+        ]
+        default: return [
+            "CLOSE THIS. open your health economics materials.",
+            "CLOSE THIS. pharmacoeconomics demands your full attention.",
+            "CLOSE THIS. healthcare resources are finite — so is your study time."
+        ]
+        }
+    }
+
+    private func insurancefinanceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those underwriting concepts aren't going to learn themselves.",
+            "close this and get back to your insurance coursework.",
+            "your insurance licensing exam needs your full attention.",
+            "CPCU candidates don't pass by scrolling — close this."
+        ]
+        case 2: return [
+            "no one earns their insurance designation by scrolling.",
+            "close this and open your insurance study materials.",
+            "those policy provisions won't memorize themselves."
+        ]
+        default: return [
+            "CLOSE THIS. open your insurance licensing materials.",
+            "CLOSE THIS. underwriting demands your full attention.",
+            "CLOSE THIS. your CPCU or LOMA exam won't pass itself."
+        ]
+        }
+    }
+
+    private func environmentalplanningCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that EIS isn't going to write itself.",
+            "close this and get back to your environmental planning coursework.",
+            "CEQA compliance doesn't study itself — close this.",
+            "your environmental review assignment needs your full attention."
+        ]
+        case 2: return [
+            "no one masters environmental planning by scrolling.",
+            "close this and open your NEPA or CEQA study materials.",
+            "that environmental impact assessment won't draft itself."
+        ]
+        default: return [
+            "CLOSE THIS. open your environmental planning materials.",
+            "CLOSE THIS. environmental review demands your full attention.",
+            "CLOSE THIS. the environment can't wait — neither can your assignment."
         ]
         }
     }
