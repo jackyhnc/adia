@@ -406,6 +406,11 @@ extension CalloutManager {
         case "proteomics":                 return proteomicsCallouts(tier: tier)
         case "metabolomics":               return metabolomicsCallouts(tier: tier)
         case "electrophysiology":          return electrophysiologyCallouts(tier: tier)
+        case "aerospacengineering":        return aerospacengineeringCallouts(tier: tier)
+        case "electricalengineering":      return electricalengineeringCallouts(tier: tier)
+        case "genetics":                   return geneticsCallouts(tier: tier)
+        case "microbiology":               return microbiologyCallouts(tier: tier)
+        case "immunology":                 return immunologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -7911,6 +7916,111 @@ extension CalloutManager {
             "CLOSE THIS. open your electrophysiology recording.",
             "CLOSE THIS. patch clamp data doesn't analyze while you scroll.",
             "CLOSE THIS. your MEA data won't sort itself."
+        ]
+        }
+    }
+
+    private func aerospacengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that aerodynamics problem set isn't going to solve itself.",
+            "close this and get back to your aerospace engineering work.",
+            "your orbital mechanics homework won't finish itself — close this.",
+            "spacecraft don't design themselves while you scroll — close this.",
+        ]
+        case 2: return [
+            "no one gets to orbit by scrolling.",
+            "close this and open your aerospace engineering notes.",
+            "your propulsion problem set won't finish itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your aerospace engineering textbook.",
+            "CLOSE THIS. aerodynamics doesn't happen while you scroll.",
+            "CLOSE THIS. your orbital mechanics won't solve itself."
+        ]
+        }
+    }
+
+    private func electricalengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that circuits problem set isn't going to solve itself.",
+            "close this and get back to your electrical engineering work.",
+            "your EE lab report won't write itself — close this.",
+            "those circuit analysis problems won't solve themselves — close this.",
+        ]
+        case 2: return [
+            "no one masters circuits by scrolling.",
+            "close this and open your electrical engineering notes.",
+            "your Kirchhoff's law problems won't finish themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your electrical engineering textbook.",
+            "CLOSE THIS. circuits don't analyze while you scroll.",
+            "CLOSE THIS. your signal processing problems won't solve themselves."
+        ]
+        }
+    }
+
+    private func geneticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those genetics problems aren't going to solve themselves.",
+            "close this and get back to your genetics work.",
+            "your Hardy-Weinberg problems won't finish themselves — close this.",
+            "Mendel didn't discover inheritance by scrolling — close this.",
+        ]
+        case 2: return [
+            "no one masters Mendelian genetics by scrolling.",
+            "close this and open your genetics textbook.",
+            "those Punnett squares won't fill themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your genetics notes.",
+            "CLOSE THIS. population genetics doesn't happen while you scroll.",
+            "CLOSE THIS. your genetics problem set won't solve itself."
+        ]
+        }
+    }
+
+    private func microbiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those bacteria aren't going to identify themselves.",
+            "close this and get back to your microbiology work.",
+            "your microbiology lab report won't write itself — close this.",
+            "gram stains don't read themselves while you scroll — close this.",
+        ]
+        case 2: return [
+            "no one masters microbiology by scrolling.",
+            "close this and open your microbiology textbook.",
+            "those culture plates won't analyze themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your microbiology notes.",
+            "CLOSE THIS. bacterial identification doesn't happen while you scroll.",
+            "CLOSE THIS. your microbiology lab won't complete itself."
+        ]
+        }
+    }
+
+    private func immunologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your immune system isn't going to study itself.",
+            "close this and get back to your immunology work.",
+            "those T cell activation pathways won't memorize themselves — close this.",
+            "antigen presentation doesn't study itself while you scroll — close this.",
+        ]
+        case 2: return [
+            "no one masters the immune system by scrolling.",
+            "close this and open your immunology textbook.",
+            "those antibody structure diagrams won't learn themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your immunology notes.",
+            "CLOSE THIS. innate and adaptive immunity won't review themselves.",
+            "CLOSE THIS. your immunology exam won't pass itself."
         ]
         }
     }

@@ -4385,5 +4385,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Electrophysiology study session completed (at least two recording techniques reviewed with principles, protocols, and notes saved)",
             preferredDuration: 45 * 60
         ),
+        // aerospacengineering
+        SuggestedTemplate(
+            icon: "airplane",
+            task: "Work on my aerospace engineering assignment — aerodynamics, propulsion, orbital mechanics, spacecraft design, gas dynamics, or compressible flow problems",
+            successCriteria: "Aerospace engineering work session completed (at least three problems solved or one design analysis written up with key results documented and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "airplane",
+            task: "Study aerospace engineering for my exam — review aerodynamics principles, propulsion systems, orbital mechanics, flight dynamics, and compressible flow concepts",
+            successCriteria: "Aerospace engineering study session completed (at least two major topic areas reviewed with notes, diagrams, and key formulas saved)",
+            preferredDuration: 45 * 60
+        ),
+        // electricalengineering
+        SuggestedTemplate(
+            icon: "bolt",
+            task: "Work on my electrical engineering problem set — circuit analysis, Kirchhoff's laws, op-amps, digital electronics, signal processing, or electromagnetic fields",
+            successCriteria: "EE problem set session completed (at least three circuit problems solved or one lab analysis written up with results documented and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "bolt",
+            task: "Study electrical engineering for my exam — review circuit analysis, Thevenin/Norton equivalents, op-amp circuits, signal processing, and electromagnetic field theory",
+            successCriteria: "Electrical engineering study session completed (at least two major topic areas reviewed with notes, circuit diagrams, and key methods saved)",
+            preferredDuration: 45 * 60
+        ),
+        // genetics
+        SuggestedTemplate(
+            icon: "dna",
+            task: "Work through my genetics problem set — Punnett squares, Hardy-Weinberg equilibrium, genetic linkage, pedigree analysis, or population genetics problems",
+            successCriteria: "Genetics problem set session completed (at least five genetics problems solved with solutions and reasoning documented and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "dna",
+            task: "Study genetics for my exam — review Mendelian inheritance, Hardy-Weinberg equilibrium, genetic linkage, sex-linked traits, epistasis, and population genetics",
+            successCriteria: "Genetics study session completed (at least two major topic areas reviewed with notes, practice problems, and key concepts saved)",
+            preferredDuration: 45 * 60
+        ),
+        // microbiology
+        SuggestedTemplate(
+            icon: "microbe",
+            task: "Complete my microbiology lab report or assignment — gram staining, bacterial identification, aseptic technique, culture plate analysis, or zone of inhibition interpretation",
+            successCriteria: "Microbiology lab work completed (lab report written or bacterial identification documented with observations, results, and conclusions saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "microbe",
+            task: "Study microbiology for my exam — review gram staining, bacterial culture methods, microbial growth, bacteriology, virology, and clinical microbiology concepts",
+            successCriteria: "Microbiology study session completed (at least two major topic areas reviewed with notes, diagrams, and key identification criteria saved)",
+            preferredDuration: 45 * 60
+        ),
+        // immunology
+        SuggestedTemplate(
+            icon: "cross.vial.fill",
+            task: "Study immunology for my exam — review innate and adaptive immunity, B/T cell activation, antigen presentation, antibody structure, complement system, and hypersensitivity reactions",
+            successCriteria: "Immunology study session completed (at least two immunity pathways reviewed with notes, diagrams, and key mechanisms documented and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.vial.fill",
+            task: "Work through my immunology assignment or problem set — immune cell functions, MHC pathways, cytokine signaling, autoimmunity mechanisms, or immunology case studies",
+            successCriteria: "Immunology work session completed (assignment written or problem set answered with key immune mechanisms explained and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

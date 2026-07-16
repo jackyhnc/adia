@@ -1391,6 +1391,72 @@ public final class CalloutManager {
             || lower.contains("process flow diagram") && (lower.contains("class") || lower.contains("course") || lower.contains("chemical") || lower.contains("engineering")) {
             return "processengineering"
         }
+        // aerospacengineering — positioned BEFORE civilengineering and engineering so aerodynamics,
+        // propulsion, orbital mechanics, and aerospace coursework route here. "aviation" (FAA/pilot)
+        // stays in the aviation branch (earlier). Bare "thermodynamics" stays in engineering.
+        if lower.contains("aerospace engineering class") || lower.contains("aerospace engineering course")
+            || lower.contains("aerospace engineering exam") || lower.contains("aerospace engineering lab")
+            || lower.contains("aerospace engineering notes") || lower.contains("aerospace engineering program")
+            || lower.contains("aerospace engineering major") || lower.contains("aerospace engineering degree")
+            || lower.contains("aerospace engineering assignment") || lower.contains("aerospace engineering project")
+            || lower.contains("aerodynamics class") || lower.contains("aerodynamics course")
+            || lower.contains("aerodynamics lab") || lower.contains("aerodynamics exam")
+            || lower.contains("propulsion class") || lower.contains("propulsion course")
+            || lower.contains("propulsion lab") || lower.contains("propulsion exam")
+            || lower.contains("rocket propulsion") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("jet propulsion") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("orbital mechanics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework"))
+            || lower.contains("flight dynamics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("flight mechanics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("astrodynamics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework"))
+            || lower.contains("spacecraft design") && (lower.contains("class") || lower.contains("course") || lower.contains("project") || lower.contains("lab"))
+            || lower.contains("aircraft design") && (lower.contains("class") || lower.contains("course") || lower.contains("project") || lower.contains("lab"))
+            || lower.contains("aeronautics class") || lower.contains("aeronautics course") || lower.contains("aeronautics exam")
+            || lower.contains("hypersonic") && (lower.contains("class") || lower.contains("course") || lower.contains("flow") || lower.contains("lab"))
+            || lower.contains("supersonic flow") && (lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("gas dynamics") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("wind tunnel") && (lower.contains("class") || lower.contains("lab") || lower.contains("aerospace") || lower.contains("test"))
+            || lower.contains("orbit determination") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("satellite design") && (lower.contains("class") || lower.contains("course") || lower.contains("project"))
+            || lower.contains("compressible flow") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("aiaa") && (lower.contains("class") || lower.contains("design") || lower.contains("project") || lower.contains("competition")) {
+            return "aerospacengineering"
+        }
+        // electricalengineering — positioned AFTER aerospacengineering and BEFORE civilengineering/engineering
+        // so circuits class, electromagnetic fields, signal processing, and EE coursework route here.
+        // "electrical engineering" removed from engineering branch below (now owned here).
+        // Electrician licensing (journeyman, NEC code) stays in electricaltechnology (earlier).
+        if lower.contains("electrical engineering class") || lower.contains("electrical engineering course")
+            || lower.contains("electrical engineering exam") || lower.contains("electrical engineering lab")
+            || lower.contains("electrical engineering notes") || lower.contains("electrical engineering program")
+            || lower.contains("electrical engineering major") || lower.contains("electrical engineering degree")
+            || lower.contains("electrical engineering assignment") || lower.contains("electrical engineering project")
+            || lower.contains("ee class") && !lower.contains("see class") || lower.contains("ee course") || lower.contains("ee exam") || lower.contains("ee lab")
+            || lower.contains("circuit analysis class") || lower.contains("circuit analysis course")
+            || lower.contains("circuit analysis exam") || lower.contains("circuit analysis lab")
+            || lower.contains("electric circuit") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("electrical circuit") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("kirchhoff") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("law"))
+            || lower.contains("thevenin") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("equivalent"))
+            || lower.contains("norton equivalent") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("op-amp") && (lower.contains("class") || lower.contains("lab") || lower.contains("circuit") || lower.contains("exam"))
+            || lower.contains("operational amplifier") && (lower.contains("class") || lower.contains("lab") || lower.contains("circuit"))
+            || lower.contains("digital electronics class") || lower.contains("digital electronics course") || lower.contains("digital electronics lab")
+            || lower.contains("analog electronics class") || lower.contains("analog electronics course") || lower.contains("analog electronics lab")
+            || lower.contains("digital signal processing") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("signal processing class") || lower.contains("signal processing course") || lower.contains("signal processing exam")
+            || word("fpga") && (lower.contains("class") || lower.contains("lab") || lower.contains("course") || lower.contains("design") || lower.contains("project"))
+            || word("vhdl") && (lower.contains("class") || lower.contains("lab") || lower.contains("course") || lower.contains("design"))
+            || word("verilog") && (lower.contains("class") || lower.contains("lab") || lower.contains("course") || lower.contains("design"))
+            || lower.contains("power electronics") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("electric machines class") || lower.contains("electric machines course") || lower.contains("electric machines lab")
+            || lower.contains("electromagnetic fields") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("maxwell's equations") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("microelectronics class") || lower.contains("microelectronics course") || lower.contains("microelectronics lab")
+            || lower.contains("semiconductor devices class") || lower.contains("semiconductor devices course")
+            || lower.contains("ee lab report") || lower.contains("electrical engineering report") {
+            return "electricalengineering"
+        }
         // civilengineering — positioned BEFORE engineering so structural, geotechnical, and
         // transportation engineering coursework routes here. "civil engineering" removed from
         // engineering branch below. "solidworks/CAD" stays in engineering.
@@ -1426,10 +1492,8 @@ public final class CalloutManager {
             || word("microcontroller") || word("arduino") || lower.contains("raspberry pi")
             || word("pcb") || lower.contains("circuit board") || lower.contains("circuit diagram")
             || lower.contains("circuit design")
-            || lower.contains("mechanical engineering") || lower.contains("electrical engineering")
-            || lower.contains("chemical engineering")
-            || lower.contains("biomedical engineering") || lower.contains("aerospace engineering")
-            || lower.contains("computer engineering")
+            || lower.contains("mechanical engineering") || lower.contains("chemical engineering")
+            || lower.contains("biomedical engineering") || lower.contains("computer engineering")
             || lower.contains("finite element") || word("fea")
             || lower.contains("heat transfer") || lower.contains("fluid dynamics")
             || lower.contains("fluid mechanics") || lower.contains("thermodynamics")
@@ -4288,6 +4352,38 @@ public final class CalloutManager {
             || lower.contains("notch signaling") && (lower.contains("developmental") || lower.contains("class") || lower.contains("research")) {
             return "developmentalbiology"
         }
+        // genetics — positioned AFTER developmentalbiology and BEFORE biochemistry so classical
+        // genetics (Mendelian, Hardy-Weinberg, pedigree analysis, population genetics) routes here.
+        // "molecular genetics" stays in molecularbiology (earlier). Bare word("genetics") without
+        // specific classical context stays in premed for MCAT usage.
+        if lower.contains("genetics class") || lower.contains("genetics course")
+            || lower.contains("genetics exam") || lower.contains("genetics lab")
+            || lower.contains("genetics notes") || lower.contains("genetics problem set")
+            || lower.contains("genetics textbook") || lower.contains("genetics assignment")
+            || lower.contains("mendelian genetics") || lower.contains("mendel's law") || lower.contains("mendelian inheritance")
+            || lower.contains("punnett square") && (lower.contains("class") || lower.contains("exam") || lower.contains("genetics") || lower.contains("homework"))
+            || lower.contains("hardy-weinberg") && (lower.contains("class") || lower.contains("exam") || lower.contains("genetics") || lower.contains("equilibrium"))
+            || lower.contains("hardy weinberg") && (lower.contains("class") || lower.contains("exam") || lower.contains("genetics"))
+            || lower.contains("genetic linkage") && (lower.contains("class") || lower.contains("exam") || lower.contains("map") || lower.contains("analysis"))
+            || lower.contains("chromosomal mapping") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam"))
+            || lower.contains("dihybrid cross") || lower.contains("monohybrid cross")
+            || lower.contains("test cross") && (lower.contains("genetics") || lower.contains("class"))
+            || lower.contains("inheritance pattern") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam"))
+            || lower.contains("sex-linked") && (lower.contains("genetics") || lower.contains("class") || lower.contains("trait") || lower.contains("inheritance"))
+            || lower.contains("x-linked") && (lower.contains("genetics") || lower.contains("class") || lower.contains("trait") || lower.contains("inheritance"))
+            || lower.contains("epistasis") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam"))
+            || lower.contains("allele frequency") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam"))
+            || lower.contains("gene mapping") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam"))
+            || lower.contains("population genetics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("genetic drift") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam"))
+            || lower.contains("gene flow") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam") || lower.contains("population"))
+            || lower.contains("quantitative genetics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("qtl analysis") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam"))
+            || lower.contains("linkage disequilibrium") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam"))
+            || lower.contains("gwas") && (lower.contains("class") || lower.contains("genetics") || lower.contains("study"))
+            || lower.contains("genome-wide association") && (lower.contains("class") || lower.contains("genetics")) {
+            return "genetics"
+        }
         // biochemistry — positioned AFTER molecularbiology and BEFORE geneticcounseling.
         // Catches biochemistry lab/course work with specific enzyme-kinetics and assay terms.
         // Bare word("biochemistry") alone stays in premed (MCAT context); compound lab terms fire here.
@@ -4867,6 +4963,54 @@ public final class CalloutManager {
             || lower.contains("disability studies") && (lower.contains("medicine") || lower.contains("health"))
             && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("program")) {
             return "medicalhumanities"
+        }
+        // microbiology — positioned BEFORE premed to catch dedicated microbiology class/lab work.
+        // Bare word("microbiology") stays in premed for MCAT context (premed branch fires after).
+        // "molecular microbiology" and PCR protocols stay in molecularbiology (much earlier).
+        if lower.contains("microbiology class") || lower.contains("microbiology course")
+            || lower.contains("microbiology exam") || lower.contains("microbiology lab")
+            || lower.contains("microbiology notes") || lower.contains("microbiology textbook")
+            || lower.contains("microbiology lab report") || lower.contains("microbiology assignment")
+            || lower.contains("gram stain") && (lower.contains("class") || lower.contains("lab") || lower.contains("bacteria") || lower.contains("microbiology") || lower.contains("gram-positive") || lower.contains("gram-negative"))
+            || lower.contains("bacterial culture") && (lower.contains("class") || lower.contains("lab") || lower.contains("microbiology"))
+            || lower.contains("culture plate") && (lower.contains("class") || lower.contains("lab") || lower.contains("microbiology"))
+            || lower.contains("streak plate") && (lower.contains("class") || lower.contains("lab") || lower.contains("microbiology") || lower.contains("bacteria"))
+            || lower.contains("aseptic technique") && (lower.contains("class") || lower.contains("lab") || lower.contains("microbiology"))
+            || lower.contains("broth dilution") && (lower.contains("class") || lower.contains("lab") || lower.contains("microbiology") || lower.contains("bacteria"))
+            || lower.contains("microbial growth") && (lower.contains("class") || lower.contains("lab") || lower.contains("curve"))
+            || lower.contains("bacterial identification") && (lower.contains("class") || lower.contains("lab") || lower.contains("microbiology"))
+            || lower.contains("zone of inhibition") && (lower.contains("class") || lower.contains("lab") || lower.contains("microbiology") || lower.contains("bacteria"))
+            || lower.contains("petri dish") && (lower.contains("class") || lower.contains("lab") || lower.contains("microbiology") || lower.contains("bacteria"))
+            || lower.contains("microorganism") && (lower.contains("class") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("bacteriology class") || lower.contains("bacteriology course") || lower.contains("bacteriology lab") || lower.contains("bacteriology exam")
+            || lower.contains("virology class") || lower.contains("virology course") || lower.contains("virology exam")
+            || lower.contains("mycology class") || lower.contains("mycology course") || lower.contains("mycology exam") {
+            return "microbiology"
+        }
+        // immunology — positioned BEFORE premed to catch dedicated immunology class/lab work.
+        // Bare word("immunology") stays in premed for MCAT context (premed branch fires after).
+        // "flow cytometry" in general research context stays in molecularbiology (much earlier).
+        if lower.contains("immunology class") || lower.contains("immunology course")
+            || lower.contains("immunology exam") || lower.contains("immunology lab")
+            || lower.contains("immunology notes") || lower.contains("immunology textbook")
+            || lower.contains("immunology assignment") || lower.contains("immunology lecture")
+            || lower.contains("innate immunity") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("mechanism"))
+            || lower.contains("adaptive immunity") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("mechanism"))
+            || lower.contains("b cell activation") || lower.contains("t cell activation")
+            || lower.contains("t-cell activation") || lower.contains("b-cell activation")
+            || lower.contains("antibody structure") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("antigen presentation") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("complement system") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("cytokine signaling") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("mhc class") && (lower.contains("immunology") || lower.contains("class") || lower.contains("exam") || lower.contains("presentation"))
+            || lower.contains("hla") && (lower.contains("immunology") || lower.contains("typing") || lower.contains("haplotype"))
+            || lower.contains("autoimmune disease") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam") || lower.contains("mechanism"))
+            || lower.contains("hypersensitivity reaction") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("lymphocyte development") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("immunoglobulin") && (lower.contains("class") || lower.contains("immunology") || lower.contains("structure"))
+            || lower.contains("flow cytometry") && (lower.contains("immunology") || lower.contains("immune cell"))
+            || lower.contains("elisa") && (lower.contains("immunology") || lower.contains("immune") || lower.contains("antibody")) {
+            return "immunology"
         }
         if word("anatomy") || word("physiology") || word("biochemistry")
             || word("pharmacology") || word("pathology") || word("histology")

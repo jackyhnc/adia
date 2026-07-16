@@ -17187,3 +17187,75 @@ None. Swift toolchain unavailable on Linux container.
   - `criminallaw` — criminal law class, mens rea, actus reus, sentencing, criminal procedure
 - Template count: 671 → 681 after next 5-domain batch
 - CalloutManagerTests: ~18584 lines + ~200 lines = ~18780 after next batch
+
+---
+
+## Run 364 (automated) — 2026-07-16 — 5 new keyword domains: aerospacengineering, electricalengineering, genetics, microbiology, immunology (681→691 templates)
+
+### What shipped
+
+**5 new keyword domains: aerospacengineering, electricalengineering, genetics, microbiology, immunology**
+
+**New keyword domain — aerospacengineering:**
+- Branch positioned BEFORE civilengineering and engineering. "aviation" (FAA/pilot) stays in aviation branch (earlier). Bare "thermodynamics" stays in engineering.
+- Catches: aerospace engineering class/course/exam/lab/notes/program/major/degree/assignment/project, aerodynamics class/lab/exam, propulsion class/course/lab/exam, rocket/jet propulsion+class/lab/design, orbital mechanics+class/course/exam, flight dynamics+class/course/exam/lab, flight mechanics+class/course/exam, astrodynamics+class/course/exam, spacecraft/aircraft design+class/course/project, aeronautics class/course/exam, hypersonic+class/flow/lab, supersonic flow+class/lab, gas dynamics+class/lab/exam, wind tunnel+class/lab/aerospace, orbit determination+class, satellite design+class/project, compressible flow+class/lab/exam, AIAA+class/design/project/competition.
+- "aerospace engineering" removed from generic engineering branch.
+- `aerospacengineeringCallouts(tier:)` 4/3/3: "that aerodynamics problem set isn't going to solve itself." / "no one gets to orbit by scrolling." / "CLOSE THIS. open your aerospace engineering textbook."
+- 2 templates: "Work on my aerospace engineering assignment" (60 min) + "Study aerospace engineering for my exam" (45 min)
+
+**New keyword domain — electricalengineering:**
+- Branch positioned AFTER aerospacengineering, BEFORE civilengineering. "electrical engineering" removed from generic engineering branch. Electrician licensing stays in electricaltechnology (earlier).
+- Catches: electrical engineering class/course/exam/lab/notes/program/major/degree/assignment/project/report, EE class/course/exam/lab, circuit analysis+class/lab/exam, electric/electrical circuit+class/lab/exam, Kirchhoff+class/lab/exam, Thevenin+class/lab/exam, Norton equivalent+class/lab, op-amp+class/lab/circuit, operational amplifier+class/lab/circuit, digital/analog electronics class/course/lab, digital signal processing+class/course/exam/lab, signal processing class/course/exam, FPGA/VHDL/Verilog+class/lab/course/design, power electronics+class/course/lab/exam, electric machines class/course/lab, electromagnetic fields+class/course/exam/lab, Maxwell's equations+class/course/exam, microelectronics+class/course/lab, semiconductor devices class/course, EE lab report.
+- `electricalengineeringCallouts(tier:)` 4/3/3: "that circuits problem set isn't going to solve itself." / "no one masters circuits by scrolling." / "CLOSE THIS. open your electrical engineering textbook."
+- 2 templates: "Work on my electrical engineering problem set" (60 min) + "Study electrical engineering for my exam" (45 min)
+
+**New keyword domain — genetics:**
+- Branch positioned AFTER developmentalbiology, BEFORE biochemistry. "molecular genetics" stays in molecularbiology. Bare word("genetics") without specific classical context stays in premed.
+- Catches: genetics class/course/exam/lab/notes/problem-set/textbook/assignment, Mendelian genetics/mendel's law/mendelian inheritance, Punnett square+class/exam/genetics, Hardy-Weinberg+class/exam/genetics/equilibrium, genetic linkage+class/exam/map, chromosomal mapping+class/genetics, dihybrid/monohybrid cross, test cross+genetics/class, inheritance pattern+class/genetics/exam, sex-linked/x-linked+genetics/class/trait, epistasis+class/genetics/exam, allele frequency+class/genetics/exam, gene mapping+class/genetics, population genetics+class/course/exam, genetic drift+class/genetics/exam, gene flow+class/genetics/population, quantitative genetics+class/course/exam, QTL analysis+class/genetics/exam, linkage disequilibrium+class/genetics/exam, GWAS+class/genetics/study, genome-wide association+class/genetics.
+- `geneticsCallouts(tier:)` 4/3/3: "those genetics problems aren't going to solve themselves." / "no one masters Mendelian genetics by scrolling." / "CLOSE THIS. open your genetics notes."
+- 2 templates: "Work through my genetics problem set" (60 min) + "Study genetics for my exam" (45 min)
+
+**New keyword domain — microbiology:**
+- Branch positioned BEFORE premed (after medicalhumanities). Bare word("microbiology") stays in premed for MCAT context. "molecular microbiology"/PCR stays in molecularbiology (earlier).
+- Catches: microbiology class/course/exam/lab/notes/textbook/lab-report/assignment, gram stain+class/lab/bacteria, bacterial culture+class/lab, culture plate+class/lab/microbiology, streak plate+class/lab/bacteria, aseptic technique+class/lab, broth dilution+class/lab/bacteria, microbial growth+class/lab/curve, bacterial identification+class/lab, zone of inhibition+class/lab/bacteria, petri dish+class/lab/bacteria, microorganism+class/lab/course, bacteriology/virology/mycology class/course/lab/exam.
+- `microbiologyCallouts(tier:)` 4/3/3: "those bacteria aren't going to identify themselves." / "no one masters microbiology by scrolling." / "CLOSE THIS. open your microbiology textbook."
+- 2 templates: "Complete my microbiology lab report or assignment" (60 min) + "Study microbiology for my exam" (45 min)
+
+**New keyword domain — immunology:**
+- Branch positioned AFTER microbiology, BEFORE premed. Bare word("immunology") stays in premed for MCAT context. "flow cytometry" in general research stays in molecularbiology.
+- Catches: immunology class/course/exam/lab/notes/textbook/assignment/lecture, innate/adaptive immunity+class/course/exam, B/T cell activation, antibody structure+class/immunology/exam, antigen presentation+class/immunology, complement system+class/immunology/exam, cytokine signaling+class/immunology, MHC class+immunology/class/exam, HLA+immunology/typing/haplotype, autoimmune disease+class/immunology/exam, hypersensitivity reaction+class/immunology/exam, lymphocyte development+class/immunology/exam, immunoglobulin+class/immunology, flow cytometry+immunology/immune cell, ELISA+immunology/immune/antibody.
+- `immunologyCallouts(tier:)` 4/3/3: "your immune system isn't going to study itself." / "no one masters the immune system by scrolling." / "CLOSE THIS. open your immunology textbook."
+- 2 templates: "Study immunology for my exam" (60 min) + "Work through my immunology assignment" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +46 tests (9 per domain + 1 count guard ≥691)
+- SuggestedSessionTemplatesTests.swift: +12 tests (2 per domain + 1 count guard ≥691)
+
+**Template catalog: 681 → 691**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `aerospacengineering` fires at line 1423, BEFORE civilengineering (1486) and engineering (1503). "aerodynamics class" → aerospacengineering ✓; "aviation FAA exam" → aviation ✓
+- `electricalengineering` fires at line 1458, BEFORE civilengineering (1486) and engineering (1503). "circuit analysis class" → electricalengineering ✓; "journeyman electrician NEC exam" → electricaltechnology ✓
+- `genetics` fires at line 4385, AFTER developmentalbiology (4353), BEFORE biochemistry (4403). "Hardy-Weinberg genetics exam" → genetics ✓; "PCR protocol molecular cloning" → molecularbiology ✓
+- `microbiology` fires at line 4988, AFTER medicalhumanities (4965), BEFORE premed (5025). "microbiology lab gram stain" → microbiology ✓; "microbiology MCAT" → premed ✓
+- `immunology` fires at line 5013, AFTER microbiology (4988), BEFORE premed (5025). "immunology class innate immunity" → immunology ✓; "immunology USMLE Step 1" → premed ✓
+- "electrical engineering" and "aerospace engineering" removed from generic engineering branch ✓
+- Brace balance verified: all modified files balanced (open = close) ✓
+- Template count: 691 confirmed by programmatic count (grep -c "preferredDuration:")
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `parasitology` — helminthology, protozoa, parasitology class/lab/exam
+  - `embryology` — embryology class (currently in premed as bare word), gastrulation in embryo context (already in developmentalbiology), extraembryonic membranes
+  - `histology` — histology class (currently in premed as bare word), tissue identification, H&E staining
+  - `pathology` — pathology class (currently in premed as bare word), gross/microscopic pathology, histopathology lab
+  - `neuroanatomy` — neuroanatomy class, brain regions, spinal cord anatomy, cranial nerves
+  - `computationalchemistry` — DFT, molecular dynamics simulation, GAUSSIAN, Schrödinger, ab initio calculation
+  - `chemicalkinetics` — rate law, Arrhenius equation, reaction order class (separate from organicchemistry)
+  - `materialstesting` — tensile/compressive testing, Charpy impact, materials testing lab (class context for mechanical engineering labs)
+- Template count: 691 → 701 after next 5-domain batch
+- CalloutManagerTests: ~19065+ lines after next batch

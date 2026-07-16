@@ -5166,4 +5166,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 681,
                 "catalog should have ≥681 templates after civilengineering/syntheticbiology/proteomics/metabolomics/electrophysiology additions (10 templates)")
     }
+
+    // MARK: - aerospacengineering templates
+    @Test func catalogHasAerospacengineeringTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasWork = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("aerospace") || $0.localizedCaseInsensitiveContains("aerodynamics") || $0.localizedCaseInsensitiveContains("orbital") || $0.localizedCaseInsensitiveContains("propulsion")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("problem") || $0.localizedCaseInsensitiveContains("design"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("aerospace") || $0.localizedCaseInsensitiveContains("aerodynamics") || $0.localizedCaseInsensitiveContains("orbital") || $0.localizedCaseInsensitiveContains("propulsion")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasWork, "catalog must include an aerospace engineering work template")
+        #expect(hasStudy, "catalog must include an aerospace engineering study template")
+    }
+
+    // MARK: - electricalengineering templates
+    @Test func catalogHasElectricalengineeringTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasWork = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("electrical engineering") || $0.localizedCaseInsensitiveContains("circuit") || $0.localizedCaseInsensitiveContains("Kirchhoff") || $0.localizedCaseInsensitiveContains("op-amp")) &&
+            ($0.localizedCaseInsensitiveContains("problem") || $0.localizedCaseInsensitiveContains("set") || $0.localizedCaseInsensitiveContains("analysis") || $0.localizedCaseInsensitiveContains("lab"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("electrical engineering") || $0.localizedCaseInsensitiveContains("circuit") || $0.localizedCaseInsensitiveContains("signal processing") || $0.localizedCaseInsensitiveContains("Thevenin")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasWork, "catalog must include an electrical engineering work template")
+        #expect(hasStudy, "catalog must include an electrical engineering study template")
+    }
+
+    // MARK: - genetics templates
+    @Test func catalogHasGeneticsTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasWork = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("genetics") || $0.localizedCaseInsensitiveContains("Punnett") || $0.localizedCaseInsensitiveContains("Hardy-Weinberg") || $0.localizedCaseInsensitiveContains("pedigree")) &&
+            ($0.localizedCaseInsensitiveContains("problem") || $0.localizedCaseInsensitiveContains("set") || $0.localizedCaseInsensitiveContains("work"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("genetics") || $0.localizedCaseInsensitiveContains("Mendelian") || $0.localizedCaseInsensitiveContains("Hardy-Weinberg") || $0.localizedCaseInsensitiveContains("population genetics")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasWork, "catalog must include a genetics work template")
+        #expect(hasStudy, "catalog must include a genetics study template")
+    }
+
+    // MARK: - microbiology templates
+    @Test func catalogHasMicrobiologyTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasLab = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("microbiology") || $0.localizedCaseInsensitiveContains("gram stain") || $0.localizedCaseInsensitiveContains("bacterial") || $0.localizedCaseInsensitiveContains("bacteriology")) &&
+            ($0.localizedCaseInsensitiveContains("lab") || $0.localizedCaseInsensitiveContains("report") || $0.localizedCaseInsensitiveContains("assignment"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("microbiology") || $0.localizedCaseInsensitiveContains("bacteriology") || $0.localizedCaseInsensitiveContains("virology")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasLab, "catalog must include a microbiology lab/assignment template")
+        #expect(hasStudy, "catalog must include a microbiology study template")
+    }
+
+    // MARK: - immunology templates
+    @Test func catalogHasImmunologyTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("immunology") || $0.localizedCaseInsensitiveContains("immunity") || $0.localizedCaseInsensitiveContains("T cell") || $0.localizedCaseInsensitiveContains("antibody")) &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        let hasWork = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("immunology") || $0.localizedCaseInsensitiveContains("immune") || $0.localizedCaseInsensitiveContains("cytokine") || $0.localizedCaseInsensitiveContains("MHC")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("problem") || $0.localizedCaseInsensitiveContains("work"))
+        }
+        #expect(hasStudy, "catalog must include an immunology study template")
+        #expect(hasWork, "catalog must include an immunology work template")
+    }
+
+    // MARK: - Count guard (batch: aerospacengineering/electricalengineering/genetics/microbiology/immunology)
+    @Test func catalogHasAtLeastSixHundredNinetyOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 691,
+                "catalog should have ≥691 templates after aerospacengineering/electricalengineering/genetics/microbiology/immunology additions (10 templates)")
+    }
 }

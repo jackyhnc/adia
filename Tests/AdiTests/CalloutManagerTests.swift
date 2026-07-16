@@ -18756,4 +18756,169 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast681() {
         #expect(SuggestedSessionTemplates.all.count >= 681, "template catalog must have ≥681 entries after civilengineering/syntheticbiology/proteomics/metabolomics/electrophysiology (10 templates)")
     }
+
+    // MARK: - aerospacengineering
+    @Test func aerospacengineeringKeywordFromAerodynamicsClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my aerodynamics class problem set on lift and drag coefficients") == "aerospacengineering")
+    }
+    @Test func aerospacengineeringKeywordFromOrbitalMechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my orbital mechanics exam — Hohmann transfers and orbit determination") == "aerospacengineering")
+    }
+    @Test func aerospacengineeringKeywordFromPropulsionCourse() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my propulsion course homework on rocket nozzle design") == "aerospacengineering")
+    }
+    @Test func aerospacengineeringKeywordFromAerospaceEngExam() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my aerospace engineering exam tomorrow") == "aerospacengineering")
+    }
+    @Test func aerospacengineeringFalsePositive_aviation() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study for my FAA private pilot exam and review airspace rules")
+        #expect(kw == "aviation", "FAA pilot exam must stay in aviation; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func aerospacengineeringCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "aerospacengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "aerospacengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "aerospacengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func aerospacengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "aerospacengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func aerospacengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "aerospacengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - electricalengineering
+    @Test func electricalengineeringKeywordFromCircuitsClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my circuit analysis class problem set — Thevenin and Norton equivalents") == "electricalengineering")
+    }
+    @Test func electricalengineeringKeywordFromEEExam() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my electrical engineering exam on electromagnetic fields and Maxwell's equations") == "electricalengineering")
+    }
+    @Test func electricalengineeringKeywordFromFPGALab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my FPGA lab design using Verilog for the EE course") == "electricalengineering")
+    }
+    @Test func electricalengineeringKeywordFromSignalProcessingClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete my digital signal processing class assignment on FFT") == "electricalengineering")
+    }
+    @Test func electricalengineeringFalsePositive_electricaltech() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study for my journeyman electrician exam — NEC code questions")
+        #expect(kw == "electricaltechnology", "journeyman electrician exam must stay in electricaltechnology; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func electricalengineeringCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "electricalengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "electricalengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "electricalengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func electricalengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "electricalengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func electricalengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "electricalengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - genetics
+    @Test func geneticsKeywordFromPunnettSquare() {
+        #expect(CalloutManager.extractTaskKeyword(from: "work on my genetics homework — Punnett squares for dihybrid crosses") == "genetics")
+    }
+    @Test func geneticsKeywordFromHardyWeinberg() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study Hardy-Weinberg equilibrium for my genetics exam tomorrow") == "genetics")
+    }
+    @Test func geneticsKeywordFromPopulationGenetics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my population genetics class problem set on allele frequency and genetic drift") == "genetics")
+    }
+    @Test func geneticsKeywordFromMendelianInheritance() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review Mendelian inheritance and sex-linked traits for my genetics class") == "genetics")
+    }
+    @Test func geneticsFalsePositive_molecularbiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "run a PCR protocol for molecular genetics cloning experiment")
+        #expect(kw == "molecularbiology", "PCR protocol cloning must stay in molecularbiology; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func geneticsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "genetics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "genetics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "genetics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func geneticsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "genetics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func geneticsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "genetics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - microbiology
+    @Test func microbiologyKeywordFromGramStainLab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write up my microbiology lab report on gram staining unknown bacteria") == "microbiology")
+    }
+    @Test func microbiologyKeywordFromBacterialCulture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze bacterial culture plates from my microbiology class and write up results") == "microbiology")
+    }
+    @Test func microbiologyKeywordFromMicrobiologyExam() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my microbiology exam on bacteriology and virology") == "microbiology")
+    }
+    @Test func microbiologyKeywordFromStreakPlate() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complete the streak plate lab exercise for microbiology class") == "microbiology")
+    }
+    @Test func microbiologyFalsePositive_premed() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study microbiology for the MCAT")
+        #expect(kw == "premed", "bare MCAT microbiology must stay in premed; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func microbiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "microbiology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "microbiology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "microbiology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func microbiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "microbiology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func microbiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "microbiology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - immunology
+    @Test func immunologyKeywordFromImmunologyClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for my immunology class exam on innate and adaptive immunity") == "immunology")
+    }
+    @Test func immunologyKeywordFromTCellActivation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review T cell activation and antigen presentation pathways for my immunology exam") == "immunology")
+    }
+    @Test func immunologyKeywordFromComplementSystem() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finish my immunology assignment on complement system and hypersensitivity reactions") == "immunology")
+    }
+    @Test func immunologyKeywordFromAntibodyStructure() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study antibody structure and immunoglobulin classes for my immunology course") == "immunology")
+    }
+    @Test func immunologyFalsePositive_premed() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study immunology for USMLE Step 1")
+        #expect(kw == "premed", "bare USMLE immunology must stay in premed; got \(kw ?? "nil")")
+    }
+    @Test @MainActor func immunologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "immunology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "immunology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "immunology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func immunologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "immunology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func immunologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "immunology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: aerospacengineering/electricalengineering/genetics/microbiology/immunology)
+    @Test func suggestedTemplatesCountAtLeast691() {
+        #expect(SuggestedSessionTemplates.all.count >= 691, "template catalog must have ≥691 entries after aerospacengineering/electricalengineering/genetics/microbiology/immunology (10 templates)")
+    }
 }
