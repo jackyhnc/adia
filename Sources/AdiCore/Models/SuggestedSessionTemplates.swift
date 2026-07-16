@@ -3605,5 +3605,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Mathematical epidemiology study session completed (at least two modeling concepts reviewed, key equations understood, notes updated and saved)",
             preferredDuration: 45 * 60
         ),
+        // educationalleadership
+        SuggestedTemplate(
+            icon: "person.badge.key.fill",
+            task: "Complete my educational leadership coursework — review ISLLC or PSEL standards, principal preparation theory, or school administration concepts for my EdD program or certificate",
+            successCriteria: "Educational leadership study session completed (at least two standards or concepts reviewed, key leadership frameworks understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write an educational leadership assignment — develop a school improvement plan, analyze an administrative case study, or draft a reflective leadership paper",
+            successCriteria: "Educational leadership assignment meaningfully advanced (school improvement plan section drafted, case study analysis written, or reflective paper section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // medicalhumanities
+        SuggestedTemplate(
+            icon: "book.closed.fill",
+            task: "Read and analyze a medical humanities text — close-read an illness narrative, explore the history of medicine, or analyze medicine in literature for my class or paper",
+            successCriteria: "Medical humanities reading session completed (text meaningfully engaged, key themes or arguments identified, notes or annotations updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a medical humanities paper or response — analyze a patient narrative, connect narrative medicine theory to clinical practice, or examine a historical medical ethics case",
+            successCriteria: "Medical humanities paper meaningfully advanced (analysis drafted, argument developed, or response section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // healthequity
+        SuggestedTemplate(
+            icon: "heart.text.square.fill",
+            task: "Study health equity concepts — review social determinants of health, health disparities frameworks, structural racism in healthcare, and equity-centered policy for my class or research",
+            successCriteria: "Health equity study session completed (at least two SDOH frameworks or disparity topics reviewed, key concepts understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a health equity paper or assignment — analyze health disparities data, apply SDOH frameworks, or develop a health equity intervention proposal",
+            successCriteria: "Health equity assignment meaningfully advanced (analysis drafted, disparity data interpreted, or intervention proposal section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // neurolaw
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study law and neuroscience concepts — review brain imaging evidence in court, adolescent culpability, criminal responsibility, and neuroethics for my class or seminar",
+            successCriteria: "Neurolaw study session completed (at least two neuroscience-and-law topics reviewed, key cases or frameworks understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a neurolaw paper or assignment — analyze how fMRI evidence affects criminal sentencing, evaluate neuroscience testimony standards, or examine adolescent brain and culpability doctrine",
+            successCriteria: "Neurolaw assignment meaningfully advanced (analysis drafted, legal standards evaluated, or argument section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // climatelaw
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Study climate law and international environmental agreements — review the Paris Agreement, carbon markets, emissions trading systems, and climate treaty frameworks for my class or exam",
+            successCriteria: "Climate law study session completed (at least two treaty or carbon market frameworks reviewed, key legal obligations understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a climate law assignment — analyze a carbon market regulation, critique international climate agreements, or research climate finance legal frameworks",
+            successCriteria: "Climate law assignment meaningfully advanced (regulation analyzed, treaty critiqued, or climate finance research section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

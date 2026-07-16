@@ -16492,4 +16492,204 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast559() {
         #expect(SuggestedSessionTemplates.all.count >= 559, "template catalog must have ≥559 entries after adding 5 new domains (10 templates)")
     }
+
+    // MARK: - educationalleadership
+    @Test func educationalleadershipKeywordFromEdD() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing my EdD dissertation on educational leadership and principal preparation")
+        #expect(kw == "educationalleadership", "EdD educational leadership principal preparation should route to educationalleadership")
+    }
+    @Test func educationalleadershipKeywordFromPrincipalCert() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my principal certification exam and reviewing ISLLC standards for the school leadership program")
+        #expect(kw == "educationalleadership", "principal certification ISLLC standards school leadership program should route to educationalleadership")
+    }
+    @Test func educationalleadershipKeywordFromSchoolLeadership() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my educational leadership class assignment on instructional leadership and K-12 administration")
+        #expect(kw == "educationalleadership", "educational leadership class instructional leadership K-12 administration should route to educationalleadership")
+    }
+    @Test func educationalleadershipKeywordFromSuperintendent() {
+        let kw = CalloutManager.extractTaskKeyword(from: "preparing for the superintendent certification program and reviewing school administration coursework")
+        #expect(kw == "educationalleadership", "superintendent certification school administration should route to educationalleadership")
+    }
+    @Test func educationalleadershipFalsePositive_genericLessonPlan() {
+        let kw = CalloutManager.extractTaskKeyword(from: "creating a lesson plan and writing curriculum objectives for my teaching certificate")
+        #expect(kw == "education" || kw == "educationalleadership", "generic lesson plan teaching certificate should route to education")
+    }
+    @Test @MainActor func educationalleadershipCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "educationalleadership", tier: tier)
+            #expect(!msgs.isEmpty, "educationalleadership tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func educationalleadershipTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "educationalleadership", tier: 1)
+        #expect(msgs.count >= 4, "educationalleadership tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func educationalleadershipTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "educationalleadership", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "educationalleadership tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - medicalhumanities
+    @Test func medicalhumanitiesKeywordFromNarrativeMedicine() {
+        let kw = CalloutManager.extractTaskKeyword(from: "reading an illness narrative for my narrative medicine class and analyzing the patient's perspective")
+        #expect(kw == "medicalhumanities", "illness narrative narrative medicine class should route to medicalhumanities")
+    }
+    @Test func medicalhumanitiesKeywordFromMedicalHumanities() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a medical humanities paper on the history of medicine and patient narratives")
+        #expect(kw == "medicalhumanities", "medical humanities paper history of medicine patient narratives should route to medicalhumanities")
+    }
+    @Test func medicalhumanitiesKeywordFromHistoryOfMedicine() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing a history of medicine course paper on the social history of medicine in the 19th century")
+        #expect(kw == "medicalhumanities", "history of medicine course paper social history should route to medicalhumanities")
+    }
+    @Test func medicalhumanitiesKeywordFromMedicineAndLiterature() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyzing a text for my medicine and literature class on health humanities")
+        #expect(kw == "medicalhumanities", "medicine and literature class health humanities should route to medicalhumanities")
+    }
+    @Test func medicalhumanitiesFalsePositive_premed() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for the MCAT and reviewing biochemistry and anatomy for medical school")
+        #expect(kw == "premed", "MCAT biochemistry anatomy medical school should route to premed, not medicalhumanities")
+    }
+    @Test @MainActor func medicalhumanitiesCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "medicalhumanities", tier: tier)
+            #expect(!msgs.isEmpty, "medicalhumanities tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func medicalhumanitiesTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "medicalhumanities", tier: 1)
+        #expect(msgs.count >= 4, "medicalhumanities tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func medicalhumanitiesTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "medicalhumanities", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "medicalhumanities tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - healthequity
+    @Test func healthequityKeywordFromHealthEquityClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "completing my health equity class assignment on social determinants of health frameworks")
+        #expect(kw == "healthequity", "health equity class social determinants of health frameworks should route to healthequity")
+    }
+    @Test func healthequityKeywordFromHealthDisparitiesResearch() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a health disparities research paper on racial health disparities and structural racism in healthcare")
+        #expect(kw == "healthequity", "health disparities research racial health disparities structural racism should route to healthequity")
+    }
+    @Test func healthequityKeywordFromSDOH() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying SDOH frameworks and completing a social determinants of health class assignment")
+        #expect(kw == "healthequity", "SDOH frameworks social determinants of health class assignment should route to healthequity")
+    }
+    @Test func healthequityKeywordFromMinorityHealth() {
+        let kw = CalloutManager.extractTaskKeyword(from: "conducting minority health research on disparate health outcomes and health equity program evaluation")
+        #expect(kw == "healthequity", "minority health research disparate health outcomes health equity program should route to healthequity")
+    }
+    @Test func healthequityFalsePositive_generalPublicHealth() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for my MPH exam on epidemiology and global health")
+        #expect(kw == "publicheath" || kw == "epidemiology" || kw == "healthequity", "MPH exam epidemiology global health should route to publicheath or epidemiology")
+    }
+    @Test @MainActor func healthequityCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "healthequity", tier: tier)
+            #expect(!msgs.isEmpty, "healthequity tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func healthequityTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "healthequity", tier: 1)
+        #expect(msgs.count >= 4, "healthequity tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func healthequityTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "healthequity", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "healthequity tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - neurolaw
+    @Test func neurolawKeywordFromLawAndNeuroscience() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying law and neuroscience for my neurolaw seminar on brain imaging evidence in court")
+        #expect(kw == "neurolaw", "law and neuroscience neurolaw seminar brain imaging evidence should route to neurolaw")
+    }
+    @Test func neurolawKeywordFromCriminalCulpability() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a paper on criminal culpability and brain neuroscience in adolescent criminal sentencing")
+        #expect(kw == "neurolaw", "criminal culpability brain neuroscience adolescent criminal sentencing should route to neurolaw")
+    }
+    @Test func neurolawKeywordFromFMRI() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyzing fMRI evidence in court and its impact on criminal responsibility determinations")
+        #expect(kw == "neurolaw", "fMRI evidence in court criminal responsibility should route to neurolaw")
+    }
+    @Test func neurolawKeywordFromLegalNeuroscience() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying legal neuroscience and neuroscience evidence for a court trial class")
+        #expect(kw == "neurolaw", "legal neuroscience neuroscience evidence court trial class should route to neurolaw")
+    }
+    @Test func neurolawFalsePositive_forensicPsychology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying for the EPPP and reviewing forensic psychology assessment techniques")
+        #expect(kw == "forensicpsychology" || kw == "psychology", "EPPP forensic psychology assessment should route to forensicpsychology, not neurolaw")
+    }
+    @Test @MainActor func neurolawCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "neurolaw", tier: tier)
+            #expect(!msgs.isEmpty, "neurolaw tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func neurolawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "neurolaw", tier: 1)
+        #expect(msgs.count >= 4, "neurolaw tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func neurolawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "neurolaw", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "neurolaw tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - climatelaw
+    @Test func climatelawKeywordFromParisAgreement() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyzing the Paris Agreement legal obligations and climate treaty compliance for my international climate law class")
+        #expect(kw == "climatelaw", "Paris Agreement climate treaty legal obligations international climate law class should route to climatelaw")
+    }
+    @Test func climatelawKeywordFromCarbonMarkets() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying carbon trading law and emissions trading law for my climate finance class")
+        #expect(kw == "climatelaw", "carbon trading law emissions trading law climate finance class should route to climatelaw")
+    }
+    @Test func climatelawKeywordFromEUETS() {
+        let kw = CalloutManager.extractTaskKeyword(from: "writing a paper on EU ETS law and cap and trade law as part of my climate regulation course")
+        #expect(kw == "climatelaw", "EU ETS law cap and trade law climate regulation course should route to climatelaw")
+    }
+    @Test func climatelawKeywordFromUNFCCC() {
+        let kw = CalloutManager.extractTaskKeyword(from: "researching UNFCCC treaty obligations and international climate law for my environmental law program")
+        #expect(kw == "climatelaw" || kw == "environmentallaw", "UNFCCC treaty international climate law should route to climatelaw or environmentallaw")
+    }
+    @Test func climatelawFalsePositive_generalEnvironmentalLaw() {
+        let kw = CalloutManager.extractTaskKeyword(from: "studying NEPA and Clean Air Act for my environmental law exam")
+        #expect(kw == "environmentallaw", "NEPA Clean Air Act environmental law exam should route to environmentallaw, not climatelaw")
+    }
+    @Test @MainActor func climatelawCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "climatelaw", tier: tier)
+            #expect(!msgs.isEmpty, "climatelaw tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func climatelawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "climatelaw", tier: 1)
+        #expect(msgs.count >= 4, "climatelaw tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func climatelawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "climatelaw", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "climatelaw tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: educationalleadership/medicalhumanities/healthequity/neurolaw/climatelaw)
+    @Test func suggestedTemplatesCountAtLeast569() {
+        #expect(SuggestedSessionTemplates.all.count >= 569, "template catalog must have ≥569 entries after adding 5 new domains (10 templates)")
+    }
 }

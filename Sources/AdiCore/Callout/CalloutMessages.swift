@@ -346,6 +346,11 @@ extension CalloutManager {
         case "foodscience":                 return foodscienceCallouts(tier: tier)
         case "animalwelfare":               return animalwelfareCallouts(tier: tier)
         case "epidemiologicalmodeling":     return epidemiologicalmodelingCallouts(tier: tier)
+        case "educationalleadership":       return educationalleadershipCallouts(tier: tier)
+        case "medicalhumanities":           return medicalhumanitiesCallouts(tier: tier)
+        case "healthequity":                return healthequityCallouts(tier: tier)
+        case "neurolaw":                    return neurolawCallouts(tier: tier)
+        case "climatelaw":                  return climatelawCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -6591,6 +6596,111 @@ extension CalloutManager {
             "CLOSE THIS. open your disease modeling materials.",
             "CLOSE THIS. mathematical epidemiology demands your full attention.",
             "CLOSE THIS. your R\u{2080} won't calculate itself."
+        ]
+        }
+    }
+
+    private func educationalleadershipCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those principals don't lead themselves — close this.",
+            "your EdD dissertation isn't going to write itself.",
+            "close this and get back to your school leadership coursework.",
+            "ISLLC standards won't memorize themselves — close this.",
+        ]
+        case 2: return [
+            "no one earns their principal certification by scrolling.",
+            "close this and open your educational leadership materials.",
+            "your school won't lead itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your educational leadership notes.",
+            "CLOSE THIS. your principal exam won't pass itself.",
+            "CLOSE THIS. educational leaders lead. close this and be one."
+        ]
+        }
+    }
+
+    private func medicalhumanitiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those illness narratives aren't going to read themselves.",
+            "close this and get back to your medical humanities coursework.",
+            "the history of medicine won't study itself — close this.",
+            "narrative medicine demands presence — close this.",
+        ]
+        case 2: return [
+            "no one masters medical humanities by scrolling.",
+            "close this and open your narrative medicine materials.",
+            "medicine and literature won't analyze themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your medical humanities notes.",
+            "CLOSE THIS. illness narratives deserve your full attention.",
+            "CLOSE THIS. the history of medicine won't write itself."
+        ]
+        }
+    }
+
+    private func healthequityCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "health disparities won't analyze themselves — close this.",
+            "close this and get back to your health equity coursework.",
+            "your community deserves an advocate who actually studies.",
+            "those SDOH frameworks aren't going to read themselves.",
+        ]
+        case 2: return [
+            "no one achieves health equity by scrolling.",
+            "close this and open your health equity study materials.",
+            "health justice demands your full attention — close this."
+        ]
+        default: return [
+            "CLOSE THIS. open your health equity materials.",
+            "CLOSE THIS. structural disparities won't close themselves.",
+            "CLOSE THIS. your health equity research deserves your full attention."
+        ]
+        }
+    }
+
+    private func neurolawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that brain-imaging evidence isn't going to analyze itself.",
+            "close this and get back to your neurolaw coursework.",
+            "criminal culpability and neuroscience won't study themselves.",
+            "those fMRI court cases don't read themselves — close this.",
+        ]
+        case 2: return [
+            "no one masters neurolaw by scrolling.",
+            "close this and open your law and neuroscience materials.",
+            "the brain's legal implications won't study themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your neurolaw study materials.",
+            "CLOSE THIS. law and neuroscience demands your full attention.",
+            "CLOSE THIS. brain science in court won't understand itself."
+        ]
+        }
+    }
+
+    private func climatelawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those carbon market regulations aren't going to read themselves.",
+            "close this and get back to your climate law coursework.",
+            "the Paris Agreement won't analyze itself — close this.",
+            "climate treaties don't interpret themselves — close this.",
+        ]
+        case 2: return [
+            "no one masters climate law by scrolling.",
+            "close this and open your climate law study materials.",
+            "the planet's legal framework won't study itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your climate law notes.",
+            "CLOSE THIS. carbon market law demands your full attention.",
+            "CLOSE THIS. climate treaties won't interpret themselves."
         ]
         }
     }

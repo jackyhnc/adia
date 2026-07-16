@@ -16388,3 +16388,65 @@ None. Swift toolchain unavailable on Linux container.
   - `medicalhumanities` — narrative medicine, medicine and literature, history of medicine, medical ethics and humanities
 - Template count: 539 → 549 after next 5-domain batch
 - CalloutManagerTests: ~2623 + 45 = ~2668 after next batch
+
+---
+
+## Run — 2026-07-16 (batch: educationalleadership/medicalhumanities/healthequity/neurolaw/climatelaw)
+
+### What shipped
+
+**5 new keyword domains: educationalleadership, medicalhumanities, healthequity, neurolaw, climatelaw**
+
+**New keyword domain — educationalleadership:**
+- Branch positioned AFTER `specialeducation`, BEFORE `education`; catches educational leadership class/course/program/degree/major/doctorate, school leadership class/program, principal preparation/certification/licensure/credential/exam/program/class/course, superintendent certification/preparation/program/exam, K-12 administration/leadership, instructional leadership class/course/program/degree, ISLLC standards, PSEL standards, EdD in education/leadership/educational, education doctorate + leadership context, educational administration class/course/program/exam.
+- `educationalleadershipCallouts(tier:)` 4/3/3: "those principals don't lead themselves — close this." / "no one earns their principal certification by scrolling." / "CLOSE THIS. open your educational leadership notes."
+- 2 templates: "Complete my educational leadership coursework — review ISLLC or PSEL standards…" (60 min) + "Write an educational leadership assignment — develop a school improvement plan…" (45 min)
+
+**New keyword domain — medicalhumanities:**
+- Branch positioned AFTER `healthcareadmin`, BEFORE `premed`; catches narrative medicine (bare "narrative medicine"), medical humanities class/course/program/research/seminar, health humanities + edu context, history of medicine + edu context, medicine and literature / literature and medicine, illness narrative + edu context, patient narrative + edu context, social/cultural history of medicine, history of public health/nursing + edu context, medicine and film + edu context, disability studies + medicine/health + edu context.
+- `medicalhumanitiesCallouts(tier:)` 4/3/3: "those illness narratives aren't going to read themselves." / "no one masters medical humanities by scrolling." / "CLOSE THIS. open your medical humanities notes."
+- 2 templates: "Read and analyze a medical humanities text — close-read an illness narrative…" (45 min) + "Write a medical humanities paper or response…" (45 min)
+
+**New keyword domain — healthequity:**
+- Branch positioned AFTER `communityhealth`, BEFORE `publicheath`; catches health equity class/course/program/research/certificate/curriculum/assignment/seminar/concentration/training, health disparities class/course/research/paper/assignment/seminar/program, social determinants of health class/course/assignment/research, SDOH class/course/research/framework, structural racism + health/medicine/healthcare, racial/ethnic health disparities, health equity and social justice, health inequity + edu context, minority health class/course/research/program, health justice + edu context, DEI in medicine/healthcare/health, implicit bias in healthcare/medicine, disparate health outcomes + edu context.
+- `healthequityCallouts(tier:)` 4/3/3: "health disparities won't analyze themselves — close this." / "no one achieves health equity by scrolling." / "CLOSE THIS. open your health equity materials."
+- 2 templates: "Study health equity concepts — review social determinants of health, health disparities frameworks…" (60 min) + "Write a health equity paper or assignment…" (45 min)
+
+**New keyword domain — neurolaw:**
+- Branch positioned AFTER `tortlaw`, BEFORE `mediationarbitration`; catches neurolaw/neuro-law, law and neuroscience / neuroscience and law, neuroscience in court/courtroom, brain imaging + law/court/legal/evidence/trial, fMRI evidence/in court/legal, brain-based lie detection, brain fingerprinting, criminal culpability + brain/neuroscience, criminal responsibility + brain/neuroscience, adolescent brain + law/criminal/court/sentencing/culpability, juvenile culpability + brain/neuroscience, insanity defense + neuroscience/brain, diminished capacity + neuroscience/brain, legal neuroscience, cognitive neuroscience + law, neuroscience evidence + edu/court context, neuroscience and criminal justice + edu context, neuroethics + law/legal/court.
+- `neurolawCallouts(tier:)` 4/3/3: "that brain-imaging evidence isn't going to analyze itself." / "no one masters neurolaw by scrolling." / "CLOSE THIS. open your neurolaw study materials."
+- 2 templates: "Study law and neuroscience concepts — review brain imaging evidence in court…" (60 min) + "Write a neurolaw paper or assignment…" (45 min)
+
+**New keyword domain — climatelaw:**
+- Branch positioned AFTER `environmentallaw` (which owns NEPA/CERCLA/Clean-Air-Act/"climate change law"/"climate litigation"), BEFORE `familylaw`; focuses on international climate treaty and carbon-market legal coursework NOT already in environmentallaw: Paris Agreement + legal context, international climate law/agreement/treaty + edu context, carbon trading/market law + edu context, emissions trading law/scheme + legal context, EU ETS + legal context, cap and trade law/class, carbon credits/offset law, climate finance law/class, green bond law/regulation + edu context, Kyoto Protocol law/class, UNFCCC + legal context, climate treaty + legal context, net zero law/regulation class, climate disclosure law/regulation + edu context.
+- `climatelawCallouts(tier:)` 4/3/3: "those carbon market regulations aren't going to read themselves." / "no one masters climate law by scrolling." / "CLOSE THIS. open your climate law notes."
+- 2 templates: "Study climate law and international environmental agreements — review the Paris Agreement, carbon markets…" (60 min) + "Write a climate law assignment — analyze a carbon market regulation…" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +41 tests (8 per domain + 1 count guard ≥569)
+- SuggestedSessionTemplatesTests.swift: +11 tests (2 per domain + 1 count guard ≥569)
+
+**Template catalog: 559 → 569**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `educationalleadership` fires AFTER `specialeducation` (2342 vs 2365) and BEFORE `education` (2389). "EdD educational leadership principal preparation" → educationalleadership ✓; "lesson plan teaching certificate" → education ✓
+- `medicalhumanities` fires AFTER `healthcareadmin` (3907 vs 3926) and BEFORE `premed` (3938). "narrative medicine illness narrative class" → medicalhumanities ✓; "MCAT biochemistry anatomy" → premed ✓
+- `healthequity` fires AFTER `communityhealth` (4744 vs 4771) and BEFORE `publicheath` (4791). "health equity class SDOH framework" → healthequity ✓; "MPH exam epidemiology global health" → publicheath/epidemiology ✓
+- `climatelaw` fires AFTER `environmentallaw` (5416 vs 5438) and BEFORE `familylaw` (5455). "Paris Agreement law international climate treaty" → climatelaw ✓; "NEPA Clean Air Act environmental law exam" → environmentallaw ✓
+- `neurolaw` fires AFTER `tortlaw` (5629 vs 5651) and BEFORE `mediationarbitration` (5677). "law and neuroscience brain imaging evidence court" → neurolaw ✓; "EPPP forensic psychology" → forensicpsychology ✓
+- Brace balance verified: CalloutMessages.swift 615/615 ✓, CalloutManager.swift 335/335 ✓
+- Template count: 569 confirmed by programmatic count
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `globalpoliticaleconomy` — political economy class, IPE, international political economy
+  - `cryptography` — cryptography class/course (separate from cybersecurity cert prep), number theory + crypto, AES/RSA algorithms in class context
+  - `computationalfinance` — algorithmic trading, quantitative finance, financial engineering, Black-Scholes, Monte Carlo simulation + finance
+  - `historicallinguistics` — diachronic linguistics, language change, etymology, proto-languages (separate from linguistics branch)
+  - `appliedmathematics` — applied math class/program, numerical analysis, differential equations class, linear algebra class, partial differential equations (separate from statistics and physics)
+- Template count: 569 → 579 after next 5-domain batch
+- CalloutManagerTests: ~2619 + 41 = ~2660 after next batch

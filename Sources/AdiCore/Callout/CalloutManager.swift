@@ -2341,6 +2341,29 @@ public final class CalloutManager {
             || lower.contains("individualized education program") || lower.contains("individualized education plan") {
             return "specialeducation"
         }
+        // educationalleadership — positioned AFTER specialeducation and BEFORE education so
+        // principal preparation, superintendent certification, and EdD programs get a dedicated pool.
+        // Generic "lesson plan"/"curriculum" stays in education (fires after this).
+        if lower.contains("educational leadership") || lower.contains("school leadership")
+            || lower.contains("educational administration") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("exam") || lower.contains("degree") || lower.contains("major"))
+            || lower.contains("school administration") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("principal") || lower.contains("superintendent"))
+            || lower.contains("principal preparation") || lower.contains("principal certification")
+            || lower.contains("principal licensure") || lower.contains("principal credential")
+            || lower.contains("principal exam") && (lower.contains("class") || lower.contains("principal") || lower.contains("certification") || lower.contains("program") || lower.contains("study"))
+            || lower.contains("principal program") || lower.contains("principal class") || lower.contains("principal course")
+            || lower.contains("building principal") || lower.contains("school principal") && (lower.contains("class") || lower.contains("program") || lower.contains("exam") || lower.contains("prep") || lower.contains("leadership"))
+            || lower.contains("superintendent certification") || lower.contains("superintendent preparation")
+            || lower.contains("superintendent program") || lower.contains("superintendent exam")
+            || lower.contains("k-12 administration") || lower.contains("k-12 leadership")
+            || lower.contains("school administrator") && (lower.contains("class") || lower.contains("program") || lower.contains("exam") || lower.contains("leadership") || lower.contains("coursework"))
+            || lower.contains("instructional leadership class") || lower.contains("instructional leadership course")
+            || lower.contains("instructional leadership program") || lower.contains("instructional leadership degree")
+            || lower.contains("isllc standards") || lower.contains("psel standards")
+            || lower.contains("edd in education") || lower.contains("edd in leadership")
+            || lower.contains("edd in educational") || lower.contains("education doctorate") && lower.contains("leadership")
+            || lower.contains("educational leadership major") || lower.contains("educational leadership doctorate") {
+            return "educationalleadership"
+        }
         // education — positioned before tutor so lesson planning, curriculum development, and
         // teaching certification tasks route here rather than the generic tutoring/coaching pool.
         if lower.contains("lesson plan") || word("curriculum")
@@ -3883,6 +3906,25 @@ public final class CalloutManager {
             || lower.contains("hipaa compliance class") || lower.contains("hipaa certification") {
             return "healthcareadmin"
         }
+        // medicalhumanities — positioned AFTER healthcareadmin and BEFORE premed so narrative medicine,
+        // history of medicine, and medicine-and-literature coursework get a dedicated pool rather than
+        // the MCAT/anatomy/pre-med pool. "medical school" alone still routes to premed (fires after).
+        if lower.contains("narrative medicine") || lower.contains("medical humanities")
+            || lower.contains("health humanities") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("paper") || lower.contains("research"))
+            || lower.contains("history of medicine") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("research") || lower.contains("essay"))
+            || lower.contains("medicine and literature") || lower.contains("literature and medicine")
+            || lower.contains("medicine in literature") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("study"))
+            || lower.contains("arts in medicine") && (lower.contains("class") || lower.contains("course") || lower.contains("program"))
+            || lower.contains("illness narrative") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("write") || lower.contains("analyze"))
+            || lower.contains("patient narrative") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("write") || lower.contains("humanities"))
+            || lower.contains("social history of medicine") || lower.contains("cultural history of medicine")
+            || lower.contains("history of public health") && (lower.contains("class") || lower.contains("course") || lower.contains("paper"))
+            || lower.contains("history of nursing") && (lower.contains("class") || lower.contains("course") || lower.contains("paper"))
+            || lower.contains("medicine and film") && (lower.contains("class") || lower.contains("course") || lower.contains("paper"))
+            || lower.contains("disability studies") && (lower.contains("medicine") || lower.contains("health"))
+            && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("program")) {
+            return "medicalhumanities"
+        }
         if word("anatomy") || word("physiology") || word("biochemistry")
             || word("pharmacology") || word("pathology") || word("histology")
             || word("microbiology") || word("immunology") || word("embryology")
@@ -4701,6 +4743,33 @@ public final class CalloutManager {
             || lower.contains("community health advocate") || lower.contains("patient navigator") {
             return "communityhealth"
         }
+        // healthequity — positioned BEFORE publicheath so course/program/research-specific health equity
+        // and disparities terms get a dedicated pool. Bare "health equity" or "health disparities" alone
+        // stay in publicheath (fires after this). Requires educational context for compound terms.
+        if lower.contains("health equity class") || lower.contains("health equity course")
+            || lower.contains("health equity program") || lower.contains("health equity research")
+            || lower.contains("health equity certificate") || lower.contains("health equity curriculum")
+            || lower.contains("health equity assignment") || lower.contains("health equity seminar")
+            || lower.contains("health equity concentration") || lower.contains("health equity training")
+            || lower.contains("health disparities class") || lower.contains("health disparities course")
+            || lower.contains("health disparities research") || lower.contains("health disparities paper")
+            || lower.contains("health disparities assignment") || lower.contains("health disparities seminar")
+            || lower.contains("health disparities program")
+            || lower.contains("social determinants of health class") || lower.contains("social determinants of health course")
+            || lower.contains("social determinants of health assignment") || lower.contains("social determinants of health research")
+            || lower.contains("sdoh class") || lower.contains("sdoh course") || lower.contains("sdoh research") || lower.contains("sdoh framework")
+            || lower.contains("structural racism") && (lower.contains("health") || lower.contains("medicine") || lower.contains("healthcare"))
+            || lower.contains("racial health disparities") || lower.contains("ethnic health disparities")
+            || lower.contains("health equity and social justice") || lower.contains("social justice and health")
+            || lower.contains("health inequity") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("paper") || lower.contains("assignment"))
+            || lower.contains("minority health class") || lower.contains("minority health course")
+            || lower.contains("minority health research") || lower.contains("minority health program")
+            || lower.contains("health justice") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("research") || lower.contains("paper"))
+            || lower.contains("dei in medicine") || lower.contains("dei in healthcare") || lower.contains("dei in health")
+            || lower.contains("implicit bias in healthcare") || lower.contains("implicit bias in medicine")
+            || lower.contains("disparate health outcomes") && (lower.contains("class") || lower.contains("research") || lower.contains("paper") || lower.contains("analysis")) {
+            return "healthequity"
+        }
         // publicheath — positioned after therapy (clinical context) and before socialscience.
         // Catches MPH programs, epidemiology, community/global health, outbreak investigation,
         // and population health. "health policy" stays in the policy branch.
@@ -5346,6 +5415,28 @@ public final class CalloutManager {
             || lower.contains("epa regulation class") || lower.contains("epa law") {
             return "environmentallaw"
         }
+        // climatelaw — positioned AFTER environmentallaw (which owns NEPA/CERCLA/Clean-Air-Act/
+        // "climate change law"/"climate litigation") so international climate treaty and carbon-market
+        // legal coursework gets a dedicated pool. Focuses on Paris Agreement, carbon trading law,
+        // emissions trading systems, and international climate finance that environmentallaw doesn't cover.
+        if lower.contains("paris agreement") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("legal") || lower.contains("compliance") || lower.contains("treaty") || lower.contains("analysis"))
+            || lower.contains("paris accord") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("legal"))
+            || lower.contains("international climate law") || lower.contains("international climate agreement")
+            || lower.contains("international climate treaty") && (lower.contains("class") || lower.contains("course") || lower.contains("law") || lower.contains("legal"))
+            || lower.contains("carbon trading law") || lower.contains("carbon market law") || lower.contains("carbon market class") || lower.contains("carbon market regulation")
+            || lower.contains("emissions trading law") || lower.contains("emissions trading scheme") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("legal"))
+            || lower.contains("eu ets") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("legal") || lower.contains("regulation"))
+            || lower.contains("cap and trade law") || lower.contains("cap-and-trade law") || lower.contains("cap and trade class")
+            || lower.contains("carbon credits law") || lower.contains("carbon offset law") || lower.contains("carbon offset regulation")
+            || lower.contains("climate finance law") || lower.contains("climate finance class") || lower.contains("climate finance regulation")
+            || lower.contains("green bond law") || lower.contains("green bond regulation") && (lower.contains("class") || lower.contains("course") || lower.contains("legal"))
+            || lower.contains("kyoto protocol law") || lower.contains("kyoto protocol class") || lower.contains("kyoto protocol legal")
+            || lower.contains("unfccc") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("legal") || lower.contains("treaty"))
+            || lower.contains("climate treaty") && (lower.contains("law") || lower.contains("class") || lower.contains("legal") || lower.contains("analysis"))
+            || lower.contains("net zero law") || lower.contains("net-zero law") || lower.contains("net zero regulation class")
+            || lower.contains("climate disclosure law") || lower.contains("climate disclosure regulation") && (lower.contains("class") || lower.contains("course") || lower.contains("legal")) {
+            return "climatelaw"
+        }
         // familylaw — positioned BEFORE the general legal branch so divorce, custody, adoption,
         // and domestic-relations coursework routes here rather than generic bar-exam callouts.
         if lower.contains("family law") || lower.contains("family lawyer")
@@ -5536,6 +5627,28 @@ public final class CalloutManager {
             || (lower.contains("nuisance") && (lower.contains("torts class") || lower.contains("torts course") || lower.contains("tort law")))
             || (lower.contains("respondeat superior") && (lower.contains("class") || lower.contains("law"))) {
             return "tortlaw"
+        }
+        // neurolaw — positioned AFTER tortlaw and BEFORE mediationarbitration. Catches the intersection
+        // of law and neuroscience (brain imaging in court, adolescent culpability, criminal responsibility).
+        // "forensicpsychology" owns EPPP/psychometric assessment; "criminaljustice" owns criminology.
+        // Bare "neuroscience"/"brain" alone stay in neuroscience (fires much earlier).
+        if lower.contains("neurolaw") || lower.contains("neuro-law")
+            || lower.contains("law and neuroscience") || lower.contains("neuroscience and law")
+            || lower.contains("neuroscience in court") || lower.contains("neuroscience in the courtroom")
+            || lower.contains("brain imaging") && (lower.contains("law") || lower.contains("court") || lower.contains("legal") || lower.contains("evidence") || lower.contains("trial"))
+            || lower.contains("fmri evidence") || lower.contains("fmri in court") || lower.contains("fmri legal")
+            || lower.contains("brain-based lie detection") || lower.contains("brain fingerprinting")
+            || lower.contains("criminal culpability") && (lower.contains("brain") || lower.contains("neuroscience") || lower.contains("neuro"))
+            || lower.contains("criminal responsibility") && (lower.contains("brain") || lower.contains("neuroscience"))
+            || lower.contains("adolescent brain") && (lower.contains("law") || lower.contains("criminal") || lower.contains("court") || lower.contains("sentencing") || lower.contains("culpability"))
+            || lower.contains("juvenile culpability") && (lower.contains("brain") || lower.contains("neuroscience"))
+            || lower.contains("insanity defense") && (lower.contains("neuroscience") || lower.contains("brain"))
+            || lower.contains("diminished capacity") && (lower.contains("neuroscience") || lower.contains("brain"))
+            || lower.contains("legal neuroscience") || lower.contains("cognitive neuroscience") && lower.contains("law")
+            || lower.contains("neuroscience evidence") && (lower.contains("court") || lower.contains("trial") || lower.contains("legal") || lower.contains("class"))
+            || lower.contains("neuroscience and criminal justice") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("research"))
+            || lower.contains("neuroethics") && (lower.contains("law") || lower.contains("legal") || lower.contains("court")) {
+            return "neurolaw"
         }
         // mediationarbitration — positioned AFTER tortlaw and BEFORE legal. Catches ADR/mediation/
         // arbitration as a study domain. "conflict resolution" alone stays generic;

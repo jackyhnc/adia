@@ -4437,4 +4437,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 559,
                 "catalog should have ≥559 templates after tesol/specialeducation/foodscience/animalwelfare/epidemiologicalmodeling additions (10 templates)")
     }
+
+    // MARK: - educationalleadership
+    @Test func educationalleadershipTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("educational leadership") || $0.localizedCaseInsensitiveContains("ISLLC") || $0.localizedCaseInsensitiveContains("PSEL") || $0.localizedCaseInsensitiveContains("principal")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("complete") || $0.localizedCaseInsensitiveContains("coursework"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("educational leadership") || $0.localizedCaseInsensitiveContains("school improvement") || $0.localizedCaseInsensitiveContains("principal") || $0.localizedCaseInsensitiveContains("leadership")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("plan") || $0.localizedCaseInsensitiveContains("write"))
+        }
+        #expect(hasStudy, "catalog must include an educational leadership study or coursework template")
+        #expect(hasAssignment, "catalog must include an educational leadership assignment or paper template")
+    }
+
+    // MARK: - medicalhumanities
+    @Test func medicalhumanitiesTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasReading = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("medical humanities") || $0.localizedCaseInsensitiveContains("narrative medicine") || $0.localizedCaseInsensitiveContains("history of medicine") || $0.localizedCaseInsensitiveContains("illness narrative")) &&
+            ($0.localizedCaseInsensitiveContains("read") || $0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("explore") || $0.localizedCaseInsensitiveContains("class"))
+        }
+        let hasWriting = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("medical humanities") || $0.localizedCaseInsensitiveContains("narrative medicine") || $0.localizedCaseInsensitiveContains("patient narrative") || $0.localizedCaseInsensitiveContains("health humanities")) &&
+            ($0.localizedCaseInsensitiveContains("write") || $0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("response") || $0.localizedCaseInsensitiveContains("analyze"))
+        }
+        #expect(hasReading, "catalog must include a medical humanities reading or analysis template")
+        #expect(hasWriting, "catalog must include a medical humanities writing or paper template")
+    }
+
+    // MARK: - healthequity
+    @Test func healthequityTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("health equity") || $0.localizedCaseInsensitiveContains("health disparities") || $0.localizedCaseInsensitiveContains("social determinants")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("concepts") || $0.localizedCaseInsensitiveContains("class"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("health equity") || $0.localizedCaseInsensitiveContains("health disparities") || $0.localizedCaseInsensitiveContains("SDOH")) &&
+            ($0.localizedCaseInsensitiveContains("write") || $0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("analyze"))
+        }
+        #expect(hasStudy, "catalog must include a health equity study template")
+        #expect(hasAssignment, "catalog must include a health equity paper or assignment template")
+    }
+
+    // MARK: - neurolaw
+    @Test func neurolawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("neurolaw") || $0.localizedCaseInsensitiveContains("law and neuroscience") || $0.localizedCaseInsensitiveContains("brain imaging") || $0.localizedCaseInsensitiveContains("criminal culpability")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("concepts") || $0.localizedCaseInsensitiveContains("class"))
+        }
+        let hasWriting = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("neurolaw") || $0.localizedCaseInsensitiveContains("neuroscience") || $0.localizedCaseInsensitiveContains("fMRI") || $0.localizedCaseInsensitiveContains("adolescent brain")) &&
+            ($0.localizedCaseInsensitiveContains("write") || $0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("analyze"))
+        }
+        #expect(hasStudy, "catalog must include a neurolaw study template")
+        #expect(hasWriting, "catalog must include a neurolaw paper or assignment template")
+    }
+
+    // MARK: - climatelaw
+    @Test func climatelawTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("climate law") || $0.localizedCaseInsensitiveContains("Paris Agreement") || $0.localizedCaseInsensitiveContains("carbon market") || $0.localizedCaseInsensitiveContains("emissions trading")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("exam"))
+        }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("climate law") || $0.localizedCaseInsensitiveContains("carbon market") || $0.localizedCaseInsensitiveContains("climate finance") || $0.localizedCaseInsensitiveContains("climate agreement")) &&
+            ($0.localizedCaseInsensitiveContains("write") || $0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("research"))
+        }
+        #expect(hasStudy, "catalog must include a climate law study template")
+        #expect(hasAssignment, "catalog must include a climate law assignment or research template")
+    }
+
+    // MARK: - Count guard (batch: educationalleadership/medicalhumanities/healthequity/neurolaw/climatelaw)
+    @Test func catalogHasAtLeastFiveHundredSixtyNineTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 569,
+                "catalog should have ≥569 templates after educationalleadership/medicalhumanities/healthequity/neurolaw/climatelaw additions (10 templates)")
+    }
 }
