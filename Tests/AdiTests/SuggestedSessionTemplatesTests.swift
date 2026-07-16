@@ -4761,4 +4761,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 599,
                 "catalog should have ≥599 templates after geopolitics/computationalbiology/philosophyofmind/digitalhumanities/environmentalpolicy additions (10 templates)")
     }
+
+    // MARK: - paleontology
+    @Test func paleontologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasLab = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("paleontology") || $0.localizedCaseInsensitiveContains("fossil") || $0.localizedCaseInsensitiveContains("taphonomy") || $0.localizedCaseInsensitiveContains("biostratigraphy")) &&
+            ($0.localizedCaseInsensitiveContains("lab") || $0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("report") || $0.localizedCaseInsensitiveContains("field notes"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("paleontology") || $0.localizedCaseInsensitiveContains("fossil record") || $0.localizedCaseInsensitiveContains("invertebrate paleontology") || $0.localizedCaseInsensitiveContains("trace fossil")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("exam"))
+        }
+        #expect(hasLab, "catalog must include a paleontology lab/analysis template")
+        #expect(hasStudy, "catalog must include a paleontology study template")
+    }
+
+    // MARK: - experimentalphysics
+    @Test func experimentalphysicsTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasLab = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("physics lab") || $0.localizedCaseInsensitiveContains("optics") || $0.localizedCaseInsensitiveContains("electromagnetism") || $0.localizedCaseInsensitiveContains("mechanics") || $0.localizedCaseInsensitiveContains("thermodynamics lab")) &&
+            ($0.localizedCaseInsensitiveContains("lab report") || $0.localizedCaseInsensitiveContains("write") || $0.localizedCaseInsensitiveContains("analyze"))
+        }
+        let hasProblemSet = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("quantum mechanics") || $0.localizedCaseInsensitiveContains("classical mechanics") || $0.localizedCaseInsensitiveContains("physics")) &&
+            ($0.localizedCaseInsensitiveContains("problem set") || $0.localizedCaseInsensitiveContains("coursework") || $0.localizedCaseInsensitiveContains("class"))
+        }
+        #expect(hasLab, "catalog must include an experimental physics lab report template")
+        #expect(hasProblemSet, "catalog must include a physics problem set template")
+    }
+
+    // MARK: - informationscience
+    @Test func informationscienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasAssignment = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("information science") || $0.localizedCaseInsensitiveContains("information retrieval") || $0.localizedCaseInsensitiveContains("digital curation") || $0.localizedCaseInsensitiveContains("knowledge management")) &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("complete") || $0.localizedCaseInsensitiveContains("coursework"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("information science") || $0.localizedCaseInsensitiveContains("information retrieval") || $0.localizedCaseInsensitiveContains("metadata")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("course"))
+        }
+        #expect(hasAssignment, "catalog must include an information science assignment template")
+        #expect(hasStudy, "catalog must include an information science study template")
+    }
+
+    // MARK: - socialepidemiology
+    @Test func socialepidemiologyTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasPaper = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("social epidemiology") || $0.localizedCaseInsensitiveContains("social determinants") || $0.localizedCaseInsensitiveContains("health disparities") || $0.localizedCaseInsensitiveContains("health inequities")) &&
+            ($0.localizedCaseInsensitiveContains("write") || $0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("analyze"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("social epidemiology") || $0.localizedCaseInsensitiveContains("social determinants") || $0.localizedCaseInsensitiveContains("health disparities") || $0.localizedCaseInsensitiveContains("SDoH")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("concepts"))
+        }
+        #expect(hasPaper, "catalog must include a social epidemiology paper template")
+        #expect(hasStudy, "catalog must include a social epidemiology study template")
+    }
+
+    // MARK: - cognitiveneuroscience
+    @Test func cognitiveneuroscienceTemplatesExist() {
+        let tasks = SuggestedSessionTemplates.all.map { $0.task }
+        let hasData = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("fmri") || $0.localizedCaseInsensitiveContains("eeg") || $0.localizedCaseInsensitiveContains("bold signal") || $0.localizedCaseInsensitiveContains("neuroimaging") || $0.localizedCaseInsensitiveContains("cognitive neuroscience")) &&
+            ($0.localizedCaseInsensitiveContains("analyze") || $0.localizedCaseInsensitiveContains("data") || $0.localizedCaseInsensitiveContains("research"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("cognitive neuroscience") || $0.localizedCaseInsensitiveContains("fmri") || $0.localizedCaseInsensitiveContains("eeg") || $0.localizedCaseInsensitiveContains("neuroimaging")) &&
+            ($0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review") || $0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("class"))
+        }
+        #expect(hasData, "catalog must include a cognitive neuroscience data analysis template")
+        #expect(hasStudy, "catalog must include a cognitive neuroscience study template")
+    }
+
+    // MARK: - Count guard (batch: paleontology/experimentalphysics/informationscience/socialepidemiology/cognitiveneuroscience)
+    @Test func catalogHasAtLeastSixHundredNineteenTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 619,
+                "catalog should have ≥619 templates after paleontology/experimentalphysics/informationscience/socialepidemiology/cognitiveneuroscience additions (10 templates)")
+    }
 }

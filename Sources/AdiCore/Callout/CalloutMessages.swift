@@ -371,6 +371,11 @@ extension CalloutManager {
         case "schoolcounseling":           return schoolcounselingCallouts(tier: tier)
         case "cognitivepsychology":        return cognitivepsychologyCallouts(tier: tier)
         case "developmentalpsychology":    return developmentalpsychologyCallouts(tier: tier)
+        case "paleontology":               return paleontologyCallouts(tier: tier)
+        case "experimentalphysics":        return experimentalphysicsCallouts(tier: tier)
+        case "informationscience":         return informationscienceCallouts(tier: tier)
+        case "socialepidemiology":         return socialepidemiologyCallouts(tier: tier)
+        case "cognitiveneuroscience":      return cognitiveneuroscienceCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -7141,6 +7146,111 @@ extension CalloutManager {
             "CLOSE THIS. open your developmental psychology materials.",
             "CLOSE THIS. child development theory demands your full attention.",
             "CLOSE THIS. Kohlberg's moral stages won't memorize themselves."
+        ]
+        }
+    }
+
+    private func paleontologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those fossils aren't going to analyze themselves.",
+            "close this and get back to your paleontology work.",
+            "taphonomy won't study itself — close this.",
+            "the fossil record doesn't care about your feed — close this.",
+        ]
+        case 2: return [
+            "no one masters paleontology by scrolling.",
+            "close this and open your paleontology notes.",
+            "prehistoric life deserves your full attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your paleontology materials.",
+            "CLOSE THIS. fossil analysis demands your full attention.",
+            "CLOSE THIS. the cambrian explosion happened faster than you're working."
+        ]
+        }
+    }
+
+    private func experimentalphysicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that physics lab report isn't going to write itself.",
+            "close this and get back to your physics experiment.",
+            "your optics data won't analyze itself — close this.",
+            "experimental results don't interpret themselves — close this.",
+        ]
+        case 2: return [
+            "no one passes experimental physics by scrolling.",
+            "close this and open your physics lab report.",
+            "your quantum mechanics problem set won't finish itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your physics lab report.",
+            "CLOSE THIS. your experimental data demands analysis.",
+            "CLOSE THIS. Feynman didn't scroll through his physics."
+        ]
+        }
+    }
+
+    private func informationscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that information retrieval assignment isn't going to complete itself.",
+            "close this and get back to your information science work.",
+            "knowledge management won't organize itself — close this.",
+            "your information science coursework demands your attention — close this.",
+        ]
+        case 2: return [
+            "no one masters information science by scrolling.",
+            "close this and open your information science notes.",
+            "your digital curation assignment won't finish itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your information science materials.",
+            "CLOSE THIS. information retrieval theory demands your full attention.",
+            "CLOSE THIS. knowledge management starts with managing your own focus."
+        ]
+        }
+    }
+
+    private func socialepidemiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those health disparities won't research themselves.",
+            "close this and get back to your social epidemiology work.",
+            "social determinants of health don't study themselves — close this.",
+            "your health disparities paper won't write itself — close this.",
+        ]
+        case 2: return [
+            "no one advances health equity by scrolling.",
+            "close this and open your social epi materials.",
+            "your SDoH analysis won't finish itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your social epidemiology notes.",
+            "CLOSE THIS. health disparities research demands your full attention.",
+            "CLOSE THIS. social determinants of health deserve serious study."
+        ]
+        }
+    }
+
+    private func cognitiveneuroscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that fMRI analysis isn't going to run itself.",
+            "close this and get back to your cognitive neuroscience work.",
+            "BOLD signal won't interpret itself — close this.",
+            "your neuroimaging data demands attention — close this.",
+        ]
+        case 2: return [
+            "no one masters cognitive neuroscience by scrolling.",
+            "close this and open your cognitive neuroscience notes.",
+            "your EEG analysis won't finish itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your cognitive neuroscience materials.",
+            "CLOSE THIS. fMRI data analysis demands your full attention.",
+            "CLOSE THIS. the brain you're studying is the one letting you scroll — use it."
         ]
         }
     }

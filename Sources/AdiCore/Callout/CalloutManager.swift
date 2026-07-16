@@ -728,6 +728,33 @@ public final class CalloutManager {
             || lower.contains("oceanography course") || lower.contains("oceanography exam") {
             return "marinebiology"
         }
+        // experimentalphysics — positioned BEFORE the studying branch (which catches word("physics"))
+        // so physics lab reports, optics experiments, and mechanics labs get a dedicated pool instead
+        // of the generic studying pool. Bare word("physics") alone still falls through to studying.
+        // "health physics" stays in healthphysics (fires later; "health physics class" contains
+        // compound "health physics" which doesn't need word("physics") alone).
+        if lower.contains("physics lab") || lower.contains("optics lab") || lower.contains("mechanics lab")
+            || lower.contains("thermodynamics lab") || lower.contains("electromagnetism lab")
+            || lower.contains("electricity and magnetism lab") || lower.contains("waves lab")
+            || lower.contains("modern physics lab") || lower.contains("quantum mechanics class")
+            || lower.contains("quantum mechanics course") || lower.contains("quantum mechanics exam")
+            || lower.contains("quantum physics class") || lower.contains("quantum physics course")
+            || lower.contains("quantum physics exam")
+            || lower.contains("classical mechanics class") || lower.contains("classical mechanics course")
+            || lower.contains("classical mechanics exam")
+            || lower.contains("experimental physics") || lower.contains("physics experiment")
+            || lower.contains("physics experiments") || lower.contains("lab report") && (lower.contains("physics") || lower.contains("optics") || lower.contains("mechanics") || lower.contains("electro"))
+            || lower.contains("pendulum lab") || lower.contains("projectile motion lab")
+            || lower.contains("free fall lab") || lower.contains("friction lab")
+            || lower.contains("coulomb's law lab") || lower.contains("ohm's law lab")
+            || lower.contains("snell's law lab") || lower.contains("diffraction lab")
+            || lower.contains("interference pattern lab") || lower.contains("lens lab")
+            || lower.contains("spectroscopy lab") && !(lower.contains("biochem") || lower.contains("chem class") || lower.contains("biophysics"))
+            || lower.contains("physics report") || lower.contains("physics lab report")
+            || lower.contains("computational physics") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("theoretical physics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "experimentalphysics"
+        }
         if word("study") || word("studying") || word("exam") || word("quiz") || word("test")
             || word("midterm") || word("midterms") || word("finals") || word("notes")
             || word("flashcard") || word("flashcards") || word("lecture")
@@ -875,10 +902,32 @@ public final class CalloutManager {
             || lower.contains("applied hydrology") || lower.contains("engineering hydrology") {
             return "waterresources"
         }
+        // paleontology — positioned BEFORE geology so fossil-record analysis, taphonomy, and
+        // paleobiology coursework get a dedicated pool. "soil mechanics" stays in geology.
+        // "paleontology" and "fossil record" removed from geology branch below.
+        if word("paleontology") || word("paleontologist") || word("paleontologists")
+            || word("paleobiologist") || word("paleobiology")
+            || lower.contains("fossil record") || lower.contains("fossil records")
+            || word("taphonomy") || word("paleoecology") || word("paleoecologist")
+            || lower.contains("trace fossil") || lower.contains("trace fossils")
+            || word("paleobotany") || word("paleobotanist")
+            || word("paleoanthropology") || word("paleoanthropologist")
+            || lower.contains("prehistoric life") || lower.contains("prehistoric organisms")
+            || lower.contains("cambrian explosion") || lower.contains("cambrian period")
+            || lower.contains("paleozoic era") || lower.contains("mesozoic era") || lower.contains("cenozoic era")
+            || lower.contains("dinosaur") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("paper") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("invertebrate paleontology") || lower.contains("vertebrate paleontology")
+            || lower.contains("micropaleontology") || lower.contains("biostratigraphy")
+            || lower.contains("paleontology class") || lower.contains("paleontology course")
+            || lower.contains("paleontology exam") || lower.contains("paleontology lab")
+            || lower.contains("paleontology notes") || lower.contains("paleontology assignment") {
+            return "paleontology"
+        }
         // geology — positioned before engineering so "geology lab" and earth-science field tasks
         // don't fall through to engineering or research via word("lab").
         // "geography" alone does NOT fire here (stays in studying/socialscience).
         // "gis mapping" / "gis analysis" now owned by geospatial branch above.
+        // "paleontology" / "fossil record" now owned by paleontology branch above.
         if word("geology") || word("geologist") || word("geological") || word("geologists")
             || word("mineralogy") || word("petrology") || word("sedimentology")
             || word("stratigraphy") || word("stratigraphic") || word("geomorphology")
@@ -891,7 +940,6 @@ public final class CalloutManager {
             || lower.contains("mineral identification") || lower.contains("mineral analysis")
             || lower.contains("geological survey") || lower.contains("geologic map")
             || lower.contains("geological map") || lower.contains("geologic cross section")
-            || word("paleontology") || word("paleontologist") || lower.contains("fossil record")
             || word("asbog")
             || lower.contains("soil mechanics")
             || lower.contains("hydrology") {
@@ -2668,6 +2716,28 @@ public final class CalloutManager {
             || lower.contains("sports management program") || lower.contains("sports management major")
             || lower.contains("sports management exam") || lower.contains("sports management assignment") {
             return "sportsmanagement"
+        }
+        // informationscience — positioned BEFORE libraryscience so information science degrees,
+        // knowledge management coursework, and information retrieval classes get a dedicated pool.
+        // "library and information science" / "MLIS" / cataloging stay in libraryscience below.
+        // "information architecture" stays in the UX branch (fires far earlier).
+        if lower.contains("information science class") || lower.contains("information science course")
+            || lower.contains("information science program") || lower.contains("information science degree")
+            || lower.contains("information science major") || lower.contains("information science exam")
+            || lower.contains("information science school") || lower.contains("information science assignment")
+            || lower.contains("asis&t") || lower.contains("asist") && (lower.contains("class") || lower.contains("conference") || lower.contains("paper") || lower.contains("research"))
+            || lower.contains("information retrieval class") || lower.contains("information retrieval course")
+            || lower.contains("information retrieval exam") || lower.contains("information retrieval lab")
+            || lower.contains("information organization class") || lower.contains("information organization course")
+            || lower.contains("digital curation class") || lower.contains("digital curation course")
+            || lower.contains("digital curation exam") || lower.contains("digital curation program")
+            || lower.contains("knowledge management class") || lower.contains("knowledge management course")
+            || lower.contains("knowledge management exam") || lower.contains("knowledge management program")
+            || lower.contains("information literacy class") || lower.contains("information literacy course")
+            || lower.contains("taxonomy class") && (lower.contains("information") || lower.contains("library") || lower.contains("data") || lower.contains("knowledge"))
+            || lower.contains("metadata class") && (lower.contains("information") || lower.contains("digital") || lower.contains("data"))
+            || lower.contains("ontology class") && (lower.contains("information") || lower.contains("knowledge") || lower.contains("data")) {
+            return "informationscience"
         }
         // libraryscience — positioned after physed and before tutor so LIS/MLIS programs,
         // cataloging, archival work, and reference services route here.
@@ -4960,6 +5030,27 @@ public final class CalloutManager {
                 && (lower.contains("class") || lower.contains("course") || lower.contains("toxicology")) {
             return "toxicology"
         }
+        // socialepidemiology — positioned BEFORE epidemiologicalmodeling and epidemiology so social
+        // determinants of health, health disparities research, and social-structural analyses of
+        // population health get a dedicated pool. "disease surveillance"/"outbreak investigation"
+        // stay in epidemiology. "health inequities" without epi context stays in publicheath.
+        if lower.contains("social epidemiology") || lower.contains("social determinants of health")
+            || lower.contains("social determinants of disease")
+            || lower.contains("sdoh") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("assignment") || lower.contains("research"))
+            || lower.contains("health disparities research") || lower.contains("health disparity research")
+            || lower.contains("health disparities class") || lower.contains("health disparities course")
+            || lower.contains("health disparities exam") || lower.contains("health disparities paper")
+            || lower.contains("health inequities class") || lower.contains("health inequities course")
+            || lower.contains("health inequalities class") || lower.contains("health inequalities course")
+            || lower.contains("social gradient of health") || lower.contains("social gradient health")
+            || lower.contains("socioeconomic determinants") && (lower.contains("health") || lower.contains("class") || lower.contains("course") || lower.contains("paper"))
+            || lower.contains("social epidemiology class") || lower.contains("social epidemiology course")
+            || lower.contains("social epidemiology exam") || lower.contains("social epidemiology paper")
+            || lower.contains("life course epidemiology") || lower.contains("life-course epidemiology")
+            || lower.contains("neighborhood effects on health") || lower.contains("structural determinants")
+                && (lower.contains("health") || lower.contains("disease") || lower.contains("class") || lower.contains("course")) {
+            return "socialepidemiology"
+        }
         // epidemiologicalmodeling — positioned BEFORE epidemiology so mathematical/computational
         // epidemic modeling, SIR/SEIR compartmental models, and disease transmission dynamics
         // coursework get a dedicated pool. General epidemiology tasks stay in the branch below.
@@ -5118,7 +5209,8 @@ public final class CalloutManager {
         }
         // cognitivescience — positioned BEFORE neuroscience so cognitive science/cogsci
         // interdisciplinary programs (mind, brain, computation, language) get a dedicated pool.
-        // "cognitive neuroscience" stays in neuroscience (below). Bare "cognitive" alone NOT matched.
+        // "cognitive neuroscience" now owned by cognitiveneuroscience (fires between this and neuroscience).
+        // Bare "cognitive" alone NOT matched.
         if lower.contains("cognitive science") || word("cogsci")
             || lower.contains("cognitive systems") || lower.contains("cognitive science class")
             || lower.contains("cognitive science course") || lower.contains("cognitive science exam")
@@ -5136,11 +5228,34 @@ public final class CalloutManager {
             || lower.contains("computational mind") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
             return "cognitivescience"
         }
+        // cognitiveneuroscience — positioned BEFORE neuroscience so fMRI/EEG study design, BOLD
+        // signal analysis, and neuroimaging coursework get a dedicated pool. "cognitive neuroscience"
+        // removed from neuroscience branch below. Bare "neuroscience" stays in neuroscience.
+        if lower.contains("cognitive neuroscience") || lower.contains("cognitive neuroscientist")
+            || lower.contains("fmri") || lower.contains("bold signal") || lower.contains("bold response")
+            || lower.contains("eeg study") || lower.contains("eeg research") || lower.contains("eeg analysis")
+            || lower.contains("erp study") || lower.contains("erp research") || lower.contains("erp analysis")
+            || lower.contains("event-related potential") || lower.contains("event related potential")
+            || lower.contains("neuroimaging analysis") || lower.contains("neuroimaging study")
+            || lower.contains("neuroimaging research") || lower.contains("neuroimaging data")
+            || lower.contains("brain imaging") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("research") || lower.contains("lab") || lower.contains("analysis"))
+            || lower.contains("voxel-based morphometry") || lower.contains("vbm analysis")
+            || lower.contains("resting state fmri") || lower.contains("task-based fmri")
+            || lower.contains("functional connectivity") && (lower.contains("class") || lower.contains("research") || lower.contains("fmri") || lower.contains("brain") || lower.contains("analysis"))
+            || lower.contains("diffusion tensor imaging") || word("dti") && (lower.contains("brain") || lower.contains("white matter") || lower.contains("neuroimaging") || lower.contains("class") || lower.contains("research"))
+            || lower.contains("cognitive neuroscience class") || lower.contains("cognitive neuroscience course")
+            || lower.contains("cognitive neuroscience exam") || lower.contains("cognitive neuroscience paper")
+            || lower.contains("cognitive neuroscience research") || lower.contains("cognitive neuroscience major")
+            || lower.contains("affective neuroscience") || lower.contains("social neuroscience")
+            || lower.contains("developmental neuroscience") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("exam")) {
+            return "cognitiveneuroscience"
+        }
         // neuroscience — positioned BEFORE psychology so brain/neuron-biology terms get a
         // dedicated pool. "neural network" (ML) stays in datascience (fires much earlier).
+        // "cognitive neuroscience" now owned by cognitiveneuroscience branch above.
         if word("neuroscience") || word("neuroscientist") || word("neurobiology") || word("neurobiologist")
             || word("neuroanatomy") || word("neuropathology") || word("neuropharmacology")
-            || lower.contains("cognitive neuroscience") || lower.contains("behavioral neuroscience")
+            || lower.contains("behavioral neuroscience")
             || lower.contains("computational neuroscience") || lower.contains("systems neuroscience")
             || lower.contains("action potential") || lower.contains("synaptic transmission")
             || word("neurotransmitter") || word("synapse") || word("synaptic")

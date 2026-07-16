@@ -3930,5 +3930,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Developmental psychology paper meaningfully advanced (theoretical lens applied, developmental evidence cited, or a key section drafted and saved)",
             preferredDuration: 60 * 60
         ),
+        // paleontology
+        SuggestedTemplate(
+            icon: "magnifyingglass",
+            task: "Analyze fossil evidence and complete my paleontology lab report or field notes — taphonomy, biostratigraphy, or paleobiology",
+            successCriteria: "Paleontology lab report or field notes meaningfully advanced (fossil evidence interpreted, taphonomic or stratigraphic analysis documented, or a key section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for my paleontology exam — review the fossil record, geologic time periods, invertebrate or vertebrate paleontology, or trace fossils",
+            successCriteria: "Paleontology study session completed (at least two time periods, fossil types, or taphonomic concepts reviewed, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // experimentalphysics
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Write my physics lab report — analyze experimental data from optics, mechanics, electromagnetism, or thermodynamics lab",
+            successCriteria: "Physics lab report meaningfully advanced (data analyzed, graphs produced, error analysis included, or a key section — introduction, methods, results, or discussion — drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path",
+            task: "Complete my quantum mechanics or classical mechanics problem set for my physics class",
+            successCriteria: "Physics problem set meaningfully advanced (at least three problems attempted with work shown, or a full problem section completed and checked)",
+            preferredDuration: 60 * 60
+        ),
+        // informationscience
+        SuggestedTemplate(
+            icon: "folder.fill",
+            task: "Complete my information science assignment — information retrieval, knowledge management, digital curation, or information organization",
+            successCriteria: "Information science assignment meaningfully advanced (retrieval model applied, knowledge structure documented, or a key section drafted and saved)",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study for my information science exam or complete coursework on information retrieval, metadata, or digital curation",
+            successCriteria: "Information science study session completed (at least two frameworks or retrieval models reviewed, key concepts understood, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // socialepidemiology
+        SuggestedTemplate(
+            icon: "heart.text.clipboard.fill",
+            task: "Write a social epidemiology paper — analyze social determinants of health, health disparities, or health inequities in a population",
+            successCriteria: "Social epidemiology paper meaningfully advanced (SDoH framework applied, disparity evidence cited, or a key section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study social epidemiology concepts — social determinants of health, health disparities research, the social gradient of health, or life-course epidemiology",
+            successCriteria: "Social epidemiology study session completed (at least two SDoH frameworks or health disparity concepts reviewed, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // cognitiveneuroscience
+        SuggestedTemplate(
+            icon: "brain",
+            task: "Analyze my fMRI or EEG data for my cognitive neuroscience research project — BOLD signal, functional connectivity, or event-related potentials",
+            successCriteria: "Cognitive neuroscience data analysis meaningfully advanced (neuroimaging pipeline run, ERP waveforms plotted, or a key results section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Study cognitive neuroscience — review fMRI methodology, BOLD signal, EEG/ERP study design, or neuroimaging analysis for my class or exam",
+            successCriteria: "Cognitive neuroscience study session completed (at least two neuroimaging methods or cognitive-brain frameworks reviewed, notes updated and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

@@ -17466,4 +17466,184 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast609() {
         #expect(SuggestedSessionTemplates.all.count >= 609, "template catalog must have ≥609 entries after cognitivelinguistics/environmentaljustice/schoolcounseling/cognitivepsychology/developmentalpsychology (10 templates)")
     }
+
+    // MARK: - paleontology keyword routing
+    @Test func paleontology_fossilRecord() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyze fossil records and write a paleontology lab report on taphonomy")
+        #expect(kw == "paleontology", "fossil record / taphonomy / paleontology lab should route to paleontology")
+    }
+    @Test func paleontology_word() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study invertebrate paleontology and the cambrian explosion for my exam")
+        #expect(kw == "paleontology", "word('paleontology') with exam context should route to paleontology")
+    }
+    @Test func paleontology_tracesFossil() {
+        let kw = CalloutManager.extractTaskKeyword(from: "identify trace fossils in my paleontology course field notes")
+        #expect(kw == "paleontology", "trace fossils should route to paleontology")
+    }
+    @Test func paleontology_falsePositive_geology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study stratigraphy and mineralogy for my geology exam")
+        #expect(kw == "geology", "stratigraphy/mineralogy without paleontology context should stay in geology")
+    }
+    @Test @MainActor func paleontologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "paleontology", tier: tier)
+            #expect(!msgs.isEmpty, "paleontology tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func paleontologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "paleontology", tier: 1)
+        #expect(msgs.count >= 4, "paleontology tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func paleontologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "paleontology", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "paleontology tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - experimentalphysics keyword routing
+    @Test func experimentalphysics_labReport() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write my physics lab report on optics — lenses and diffraction")
+        #expect(kw == "experimentalphysics", "physics lab report on optics should route to experimentalphysics")
+    }
+    @Test func experimentalphysics_quantumMechanicsClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my quantum mechanics problem set for physics class")
+        #expect(kw == "experimentalphysics", "quantum mechanics class/problem set should route to experimentalphysics")
+    }
+    @Test func experimentalphysics_mechanicsLab() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyze data from my mechanics lab and complete the free fall experiment report")
+        #expect(kw == "experimentalphysics", "mechanics lab / free fall lab report should route to experimentalphysics")
+    }
+    @Test func experimentalphysics_falsePositive_studyingPhysics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study physics for my general exam")
+        #expect(kw == "studying", "bare 'study physics' without lab/experiment context should stay in studying")
+    }
+    @Test @MainActor func experimentalphysicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "experimentalphysics", tier: tier)
+            #expect(!msgs.isEmpty, "experimentalphysics tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func experimentalphysicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "experimentalphysics", tier: 1)
+        #expect(msgs.count >= 4, "experimentalphysics tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func experimentalphysicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "experimentalphysics", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "experimentalphysics tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - informationscience keyword routing
+    @Test func informationscience_retrievalClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my information retrieval class assignment on indexing and search algorithms")
+        #expect(kw == "informationscience", "information retrieval class should route to informationscience")
+    }
+    @Test func informationscience_knowledgeManagement() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study for my knowledge management course exam")
+        #expect(kw == "informationscience", "knowledge management course exam should route to informationscience")
+    }
+    @Test func informationscience_digitalCuration() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my digital curation program assignment on metadata schemas")
+        #expect(kw == "informationscience", "digital curation program assignment should route to informationscience")
+    }
+    @Test func informationscience_falsePositive_libraryCataloging() {
+        let kw = CalloutManager.extractTaskKeyword(from: "practice cataloging and reference services for my library science class")
+        #expect(kw == "libraryscience", "library science cataloging/reference services should stay in libraryscience")
+    }
+    @Test @MainActor func informationscienceCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "informationscience", tier: tier)
+            #expect(!msgs.isEmpty, "informationscience tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func informationscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "informationscience", tier: 1)
+        #expect(msgs.count >= 4, "informationscience tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func informationscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "informationscience", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "informationscience tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - socialepidemiology keyword routing
+    @Test func socialepidemiology_socialDeterminants() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write a paper on social determinants of health and health disparities research")
+        #expect(kw == "socialepidemiology", "social determinants of health / health disparities research should route to socialepidemiology")
+    }
+    @Test func socialepidemiology_socialEpi() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study social epidemiology and the social gradient of health for my class")
+        #expect(kw == "socialepidemiology", "social epidemiology / social gradient should route to socialepidemiology")
+    }
+    @Test func socialepidemiology_sdoh() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my SDoH assignment on neighborhood effects on health outcomes")
+        #expect(kw == "socialepidemiology", "SDoH assignment / neighborhood effects on health should route to socialepidemiology")
+    }
+    @Test func socialepidemiology_falsePositive_epidemiology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyze outbreak investigation data for my epidemiology class using epi curves")
+        #expect(kw == "epidemiology", "outbreak investigation / epi curve should stay in epidemiology")
+    }
+    @Test @MainActor func socialepidemiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "socialepidemiology", tier: tier)
+            #expect(!msgs.isEmpty, "socialepidemiology tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func socialepidemiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "socialepidemiology", tier: 1)
+        #expect(msgs.count >= 4, "socialepidemiology tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func socialepidemiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "socialepidemiology", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "socialepidemiology tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - cognitiveneuroscience keyword routing
+    @Test func cognitiveneuroscience_fmri() {
+        let kw = CalloutManager.extractTaskKeyword(from: "analyze my fMRI data — BOLD signal and functional connectivity for my cognitive neuroscience research")
+        #expect(kw == "cognitiveneuroscience", "fMRI / BOLD signal / cognitive neuroscience should route to cognitiveneuroscience")
+    }
+    @Test func cognitiveneuroscience_eeg() {
+        let kw = CalloutManager.extractTaskKeyword(from: "process EEG analysis and event-related potential data for my cognitive neuroscience class")
+        #expect(kw == "cognitiveneuroscience", "EEG analysis / ERP / cognitive neuroscience class should route to cognitiveneuroscience")
+    }
+    @Test func cognitiveneuroscience_neuroimagingStudy() {
+        let kw = CalloutManager.extractTaskKeyword(from: "design a neuroimaging study on affective neuroscience for my research lab")
+        #expect(kw == "cognitiveneuroscience", "neuroimaging study / affective neuroscience should route to cognitiveneuroscience")
+    }
+    @Test func cognitiveneuroscience_falsePositive_neuroscience() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study synaptic transmission and action potentials for my neuroscience exam")
+        #expect(kw == "neuroscience", "synaptic transmission / action potentials without imaging context should stay in neuroscience")
+    }
+    @Test @MainActor func cognitiveneuroscienceCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "cognitiveneuroscience", tier: tier)
+            #expect(!msgs.isEmpty, "cognitiveneuroscience tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func cognitiveneuroscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "cognitiveneuroscience", tier: 1)
+        #expect(msgs.count >= 4, "cognitiveneuroscience tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func cognitiveneuroscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "cognitiveneuroscience", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "cognitiveneuroscience tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: paleontology/experimentalphysics/informationscience/socialepidemiology/cognitiveneuroscience)
+    @Test func suggestedTemplatesCountAtLeast619() {
+        #expect(SuggestedSessionTemplates.all.count >= 619, "template catalog must have ≥619 entries after paleontology/experimentalphysics/informationscience/socialepidemiology/cognitiveneuroscience (10 templates)")
+    }
 }
