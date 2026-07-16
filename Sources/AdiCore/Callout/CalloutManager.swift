@@ -2549,6 +2549,34 @@ public final class CalloutManager {
             || lower.contains("educational leadership major") || lower.contains("educational leadership doctorate") {
             return "educationalleadership"
         }
+        // instructionaldesign — positioned BEFORE education so ID&T program coursework, e-learning
+        // authoring tools, ADDIE model, and LMS design tasks route to a dedicated pool. Generic
+        // teacher lesson plans / instructional materials stay in education.
+        if lower.contains("addie model") || lower.contains("addie process") || lower.contains("addie framework")
+            || lower.contains("e-learning design") || lower.contains("elearning design")
+            || lower.contains("e-learning development") || lower.contains("elearning development")
+            || lower.contains("e-learning course") || lower.contains("elearning course")
+            || lower.contains("e-learning authoring") || lower.contains("elearning authoring")
+            || lower.contains("instructional design program") || lower.contains("instructional design degree")
+            || lower.contains("instructional design major") || lower.contains("instructional design class")
+            || lower.contains("instructional design course") || lower.contains("instructional design exam")
+            || lower.contains("instructional design assignment") || lower.contains("instructional design certification")
+            || lower.contains("instructional technology program") || lower.contains("instructional technology degree")
+            || lower.contains("instructional technology class") || lower.contains("instructional technology course")
+            || lower.contains("instructional systems design") || lower.contains("idt program") || lower.contains("idt degree")
+            || lower.contains("articulate storyline") || lower.contains("adobe captivate") || lower.contains("lectora inspire")
+            || lower.contains("rise 360") || lower.contains("storyline 360")
+            || lower.contains("lms design") || lower.contains("lms development") || lower.contains("lms course design")
+            || lower.contains("moodle course design") || lower.contains("canvas lms design") || lower.contains("blackboard course design")
+            || lower.contains("ispi") && (lower.contains("certification") || lower.contains("exam") || lower.contains("class"))
+            || lower.contains("sam model") && (lower.contains("design") || lower.contains("elearning") || lower.contains("class"))
+            || lower.contains("cognitive task analysis") && (lower.contains("design") || lower.contains("class") || lower.contains("id"))
+            || lower.contains("rapid prototyping") && (lower.contains("elearning") || lower.contains("e-learning") || lower.contains("instructional"))
+            || lower.contains("storyboard") && (lower.contains("elearning") || lower.contains("e-learning") || lower.contains("instructional design") || lower.contains("course design"))
+            || lower.contains("learning experience design") || lower.contains("lxd") && lower.contains("design")
+            || lower.contains("performance improvement") && (lower.contains("ispi") || lower.contains("instructional") || lower.contains("class") || lower.contains("id program")) {
+            return "instructionaldesign"
+        }
         // education — positioned before tutor so lesson planning, curriculum development, and
         // teaching certification tasks route here rather than the generic tutoring/coaching pool.
         if lower.contains("lesson plan") || word("curriculum")
@@ -5395,6 +5423,62 @@ public final class CalloutManager {
             || lower.contains("developmental stages") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("paper") || lower.contains("exam")) {
             return "developmentalpsychology"
         }
+        // socialpsychology — positioned AFTER developmentalpsychology and BEFORE psychology so
+        // social influence, conformity, obedience, bystander effect, group dynamics, and social
+        // cognition research route here. Bare "social psychology" still falls to psychology;
+        // research-specific and experiment-specific terms with social context fire here.
+        if lower.contains("social influence") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("paper") || lower.contains("research") || lower.contains("exam"))
+            || lower.contains("conformity") && (lower.contains("psych") || lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("research") || lower.contains("social"))
+            || lower.contains("obedience") && (lower.contains("psych") || lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("social"))
+            || lower.contains("milgram experiment") || lower.contains("milgram study")
+            || lower.contains("milgram") && (lower.contains("psych") || lower.contains("class") || lower.contains("obedience") || lower.contains("social"))
+            || lower.contains("zimbardo") && (lower.contains("psych") || lower.contains("class") || lower.contains("experiment") || lower.contains("prison") || lower.contains("social"))
+            || lower.contains("stanford prison experiment")
+            || lower.contains("bystander effect") && (lower.contains("psych") || lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("social"))
+            || lower.contains("bystander apathy")
+            || lower.contains("social cognition") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("paper") || lower.contains("research"))
+            || lower.contains("attitude formation") && (lower.contains("psych") || lower.contains("class") || lower.contains("social"))
+            || lower.contains("attitude change") && (lower.contains("psych") || lower.contains("class") || lower.contains("social") || lower.contains("persuasion"))
+            || lower.contains("group dynamics") && (lower.contains("psych") || lower.contains("class") || lower.contains("course") || lower.contains("social") || lower.contains("exam"))
+            || lower.contains("groupthink") && (lower.contains("psych") || lower.contains("class") || lower.contains("social"))
+            || lower.contains("social identity theory") && (lower.contains("psych") || lower.contains("class") || lower.contains("course") || lower.contains("paper"))
+            || lower.contains("intergroup") && (lower.contains("psych") || lower.contains("class") || lower.contains("course") || lower.contains("social"))
+            || lower.contains("prejudice") && (lower.contains("social psychology") || (lower.contains("psych") && (lower.contains("class") || lower.contains("paper") || lower.contains("social"))))
+            || lower.contains("stereotyping") && (lower.contains("psych") || lower.contains("class") || lower.contains("course") || lower.contains("social"))
+            || lower.contains("attribution theory") && (lower.contains("psych") || lower.contains("class") || lower.contains("social"))
+            || lower.contains("social norms") && (lower.contains("psych") || lower.contains("class") || lower.contains("research") || lower.contains("social psychology"))
+            || lower.contains("social psychology class") || lower.contains("social psychology course")
+            || lower.contains("social psychology exam") || lower.contains("social psychology paper")
+            || lower.contains("social psychology research") || lower.contains("social psychology assignment")
+            || lower.contains("social psych class") || lower.contains("social psych course")
+            || lower.contains("social psych exam") || lower.contains("social psych research") {
+            return "socialpsychology"
+        }
+        // neuropsychology — positioned AFTER socialpsychology and BEFORE psychology so
+        // clinical neuropsychology, neuropsychological assessment, brain-behavior relationships,
+        // and cognitive rehabilitation route here. "cognitive neuroscience" fires far earlier;
+        // "forensic psychology" owns EPPP when combined with forensic context.
+        if lower.contains("clinical neuropsychology") || lower.contains("neuropsychological assessment")
+            || lower.contains("neuropsychological testing") || lower.contains("neuropsychological evaluation")
+            || lower.contains("neuropsychological battery") || lower.contains("neuropsychological exam")
+            || lower.contains("neuropsychological report") || lower.contains("neuropsychological rehabilitation")
+            || lower.contains("neuropsychology class") || lower.contains("neuropsychology course")
+            || lower.contains("neuropsychology program") || lower.contains("neuropsychology degree")
+            || lower.contains("neuropsychology major") || lower.contains("neuropsychology exam")
+            || lower.contains("neuropsychology internship") || lower.contains("neuropsychology residency")
+            || lower.contains("brain-behavior") && (lower.contains("class") || lower.contains("course") || lower.contains("relationship") || lower.contains("research") || lower.contains("psych"))
+            || lower.contains("cognitive rehabilitation") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("neuro"))
+            || lower.contains("eppp") && (lower.contains("neuro") || lower.contains("neuropsych"))
+            || lower.contains("tcn") && (lower.contains("neuro") || lower.contains("neuropsych") || lower.contains("board"))
+            || lower.contains("aacn") && (lower.contains("neuro") || lower.contains("certification") || lower.contains("neuropsych"))
+            || lower.contains("ins") && lower.contains("neuropsychology")
+            || lower.contains("neuropsychology board") || lower.contains("board certified neuropsychologist")
+            || lower.contains("halstead-reitan") || lower.contains("luria-nebraska")
+            || lower.contains("wais") && (lower.contains("neuro") || lower.contains("psych") || lower.contains("assessment"))
+            || lower.contains("wms") && (lower.contains("neuro") || lower.contains("psych") || lower.contains("assessment") || lower.contains("memory"))
+            || lower.contains("neurocognitive") && (lower.contains("class") || lower.contains("assessment") || lower.contains("psych") || lower.contains("rehabilitation")) {
+            return "neuropsychology"
+        }
         // psychology — positioned after publicheath and all clinical health branches above.
         // "educational psychology" fires in the education branch first; clinical/counseling
         // terms fire in therapy/socialwork above. This catches academic and research psych.
@@ -6022,6 +6106,30 @@ public final class CalloutManager {
             || lower.contains("law school criminal law") || lower.contains("law school crim law") {
             return "criminallaw"
         }
+        // contractlaw — positioned AFTER criminallaw and BEFORE civilprocedure so 1L contracts
+        // class, UCC Article 2, offer/acceptance, and consideration doctrine route here. Bare
+        // "contract"/"contracts" alone NOT matched to avoid false-positives with business contracts.
+        if lower.contains("contracts class") || lower.contains("contracts course")
+            || lower.contains("contracts exam") || lower.contains("contracts paper") || lower.contains("contracts outline")
+            || lower.contains("contract law class") || lower.contains("contract law course")
+            || lower.contains("contract law exam") || lower.contains("contract law paper")
+            || lower.contains("contract law assignment") || lower.contains("contract law clinic")
+            || lower.contains("k class") && lower.contains("law school")
+            || lower.contains("ucc article 2") || (lower.contains("ucc") && (lower.contains("contracts") || (lower.contains("class") && lower.contains("law"))))
+            || lower.contains("offer and acceptance") && (lower.contains("class") || lower.contains("law") || lower.contains("contracts"))
+            || lower.contains("consideration") && (lower.contains("contracts class") || lower.contains("contract law") || lower.contains("1l contracts"))
+            || lower.contains("promissory estoppel") && (lower.contains("class") || lower.contains("law") || lower.contains("contracts"))
+            || lower.contains("breach of contract") && (lower.contains("law class") || lower.contains("contracts class") || lower.contains("contract law"))
+            || lower.contains("restatement of contracts") || lower.contains("restatement second of contracts")
+            || lower.contains("bilateral contract") && (lower.contains("class") || lower.contains("law") || lower.contains("contracts"))
+            || lower.contains("unilateral contract") && (lower.contains("class") || lower.contains("law") || lower.contains("contracts"))
+            || lower.contains("anticipatory repudiation") && (lower.contains("class") || lower.contains("law") || lower.contains("contracts"))
+            || lower.contains("statute of frauds") && (lower.contains("contracts") || lower.contains("1l") || lower.contains("law school"))
+            || lower.contains("contract remedies") && (lower.contains("class") || lower.contains("law") || lower.contains("course"))
+            || lower.contains("expectation damages") && (lower.contains("contracts") || lower.contains("class") || lower.contains("law"))
+            || lower.contains("1l contracts") || lower.contains("first year contracts") || lower.contains("law school contracts") {
+            return "contractlaw"
+        }
         // civilprocedure — positioned AFTER criminallaw and BEFORE legal so civ pro class, FRCP
         // study, and civil procedure exam tasks route here. Bare "pleading"/"jurisdiction"/"discovery"
         // NOT matched alone — those stay in legal.
@@ -6049,6 +6157,32 @@ public final class CalloutManager {
             || lower.contains("federal civil procedure")
             || (lower.contains("standing") && lower.contains("civil procedure class")) {
             return "civilprocedure"
+        }
+        // propertylaw — positioned AFTER civilprocedure and BEFORE constitutionallaw so 1L real
+        // property class, estates in land, adverse possession, and landlord-tenant law route here.
+        // "real estate" for agents/appraisers stays in realestate (fires far earlier).
+        if lower.contains("property law class") || lower.contains("property law course")
+            || lower.contains("property law exam") || lower.contains("property law paper")
+            || lower.contains("property law assignment") || lower.contains("property law clinic")
+            || lower.contains("real property class") || lower.contains("real property course")
+            || lower.contains("real property exam") || lower.contains("real property paper")
+            || lower.contains("real property law") || lower.contains("real property doctrine")
+            || lower.contains("1l property") || lower.contains("law school property") || lower.contains("first year property class")
+            || lower.contains("estates in land") && (lower.contains("class") || lower.contains("law") || lower.contains("property"))
+            || lower.contains("future interests") && (lower.contains("class") || lower.contains("law") || lower.contains("property") || lower.contains("course"))
+            || lower.contains("adverse possession") && (lower.contains("class") || lower.contains("law") || lower.contains("property"))
+            || lower.contains("easement") && (lower.contains("property class") || lower.contains("property law") || lower.contains("property course") || lower.contains("real property"))
+            || lower.contains("covenant running with the land") || (lower.contains("covenant") && (lower.contains("property class") || lower.contains("property law")))
+            || lower.contains("landlord-tenant law") || lower.contains("landlord tenant law")
+            || (lower.contains("landlord") && lower.contains("tenant") && (lower.contains("law class") || lower.contains("property class") || lower.contains("law course")))
+            || lower.contains("takings clause") && (lower.contains("class") || lower.contains("law") || lower.contains("property"))
+            || lower.contains("eminent domain") && (lower.contains("class") || lower.contains("law") || lower.contains("property"))
+            || lower.contains("recording acts") && (lower.contains("class") || lower.contains("law") || lower.contains("property"))
+            || lower.contains("chain of title") && (lower.contains("class") || lower.contains("law") || lower.contains("property"))
+            || lower.contains("fee simple") && (lower.contains("class") || lower.contains("law") || lower.contains("property") || lower.contains("course"))
+            || lower.contains("life estate") && (lower.contains("class") || lower.contains("law") || lower.contains("property") || lower.contains("course"))
+            || lower.contains("rule against perpetuities") {
+            return "propertylaw"
         }
         // constitutionallaw — positioned AFTER civilprocedure and BEFORE legal so con law class,
         // First Amendment analysis, and constitutional law exam tasks route here. Bare

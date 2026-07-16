@@ -16784,3 +16784,64 @@ None. Swift toolchain unavailable on Linux container.
   - `appliedmathematics` — applied math class/program, numerical analysis, differential equations class, linear algebra class, partial differential equations (separate from statistics and physics)
 - Template count: 569 → 579 after next 5-domain batch
 - CalloutManagerTests: ~2619 + 41 = ~2660 after next batch
+
+---
+
+## Run — 2026-07-16 (batch: socialpsychology/neuropsychology/instructionaldesign/contractlaw/propertylaw)
+
+### What shipped
+Added 5 new keyword domains to Adia's callout/focus detection system.
+
+**New keyword domain — socialpsychology:**
+- Branch positioned AFTER `developmentalpsychology`, BEFORE `psychology`; catches social influence + class/course/psych/paper/research/exam context, Milgram experiment/study, Zimbardo + psych/class/experiment/prison/social, bystander effect + class/course/psych/research/paper/exam, social psychology class/course/exam/paper, social psych class/exam.
+- `socialpsychologyCallouts(tier:)` 4/3/3: "social influence works on you too — close this." / "no one masters social psychology by scrolling." / "CLOSE THIS. open your social psychology materials."
+- 2 templates: "Study social psychology — review social influence theories, group dynamics, and attitude change…" (60 min) + "Write a social psychology paper or assignment — analyze an experiment or theory…" (60 min)
+
+**New keyword domain — neuropsychology:**
+- Branch positioned AFTER `socialpsychology`, BEFORE `psychology`; catches clinical neuropsychology, neuropsychological assessment/testing/evaluation, neuropsychology class/course, brain-behavior + class/course/relationship/research/psych, cognitive rehabilitation + class/course/psych/neuro, Halstead-Reitan, Luria-Nebraska, WAIS + neuro/psych/assessment, neurocognitive + class/assessment/psych/rehabilitation.
+- `neuropsychologyCallouts(tier:)` 4/3/3: "those neuropsychological assessments aren't going to study themselves — close this." / "no one masters neuropsychology by scrolling." / "CLOSE THIS. open your neuropsychology notes."
+- 2 templates: "Study clinical neuropsychology — review neuropsychological assessment batteries and brain-behavior relationships…" (60 min) + "Write a neuropsychology case report or assignment…" (45 min)
+
+**New keyword domain — instructionaldesign:**
+- Branch positioned AFTER `educationalleadership`, BEFORE `education`; catches ADDIE model/process/framework, e-learning/elearning design or development, instructional design program/degree/class/course, Articulate Storyline, Adobe Captivate, Lectora Inspire, Rise 360, Storyline 360, LMS design/development/course design, storyboard + elearning/e-learning/instructional design/course design, learning experience design.
+- `instructionaldesignCallouts(tier:)` 4/3/3: "that e-learning module won't design itself — close this." / "no one masters instructional design by scrolling." / "CLOSE THIS. open your instructional design project."
+- 2 templates: "Design an e-learning module — apply the ADDIE model or similar framework…" (60 min) + "Complete my instructional design program assignment — review e-learning development tools…" (45 min)
+
+**New keyword domain — contractlaw:**
+- Branch positioned AFTER `criminallaw`, BEFORE `civilprocedure`; catches contracts class/course, contract law class/course, UCC Article 2 + contracts/class/course/1L/law school, offer and acceptance + 1L/law school/contracts/class, promissory estoppel + contracts/law/1L/class, Restatement of Contracts/Restatement Second of Contracts, anticipatory repudiation + contracts/law/class/1L, statute of frauds + contracts/1L/law school, 1L contracts/first year contracts/law school contracts.
+- `contractlawCallouts(tier:)` 4/3/3: "those contracts hypotheticals won't brief themselves — close this." / "no one passes 1L contracts by scrolling." / "CLOSE THIS. open your contracts outline."
+- 2 templates: "Study contracts law — review offer and acceptance, consideration, promissory estoppel…" (60 min) + "Write a contracts law outline or brief cases for contracts class…" (60 min)
+
+**New keyword domain — propertylaw:**
+- Branch positioned AFTER `civilprocedure`, BEFORE `constitutionallaw`; catches property law class/real property class, 1L property/law school property, estates in land + class/law/1L/property/real property, future interests + class/law/1L/property/real property, adverse possession + class/law/1L/property/real property, landlord-tenant law/landlord tenant law, rule against perpetuities.
+- `propertylawCallouts(tier:)` 4/3/3: "those property hypotheticals won't brief themselves — close this." / "no one masters 1L property by scrolling." / "CLOSE THIS. open your property law outline."
+- 2 templates: "Study real property law — review estates in land, future interests, adverse possession…" (60 min) + "Write a property law outline or brief cases for real property class…" (60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +41 tests (8 per domain × 5 + 1 count guard ≥629)
+- Template count guard updated to ≥629
+
+**Template catalog: 619 → 629**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `socialpsychology` fires AFTER `developmentalpsychology` and BEFORE `psychology`. "social psychology class Milgram experiment" → socialpsychology ✓; "general psychology intro class" → psychology ✓
+- `neuropsychology` fires AFTER `socialpsychology` and BEFORE `psychology`. "clinical neuropsychology neuropsychological assessment" → neuropsychology ✓; "cognitive psychology class" → psychology ✓
+- `instructionaldesign` fires AFTER `educationalleadership` and BEFORE `education`. "ADDIE model e-learning course design" → instructionaldesign ✓; "lesson plan teaching certificate" → education ✓
+- `contractlaw` fires AFTER `criminallaw` and BEFORE `civilprocedure`. "1L contracts class UCC Article 2 offer and acceptance" → contractlaw ✓; "criminal law mens rea" → criminallaw ✓
+- `propertylaw` fires AFTER `civilprocedure` and BEFORE `constitutionallaw`. "1L real property estates in land adverse possession" → propertylaw ✓; "civil procedure pleadings discovery" → civilprocedure ✓
+- Brace balance verified: CalloutMessages.swift 675/675 ✓, CalloutManager.swift 365/365 ✓
+- Template count: 629 confirmed by programmatic count
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `schoolpsychology` — school psychology program, NASP standards, psychoeducational assessment, school-based mental health (separate from educationalpsychology and neuropsychology)
+  - `commerciallaw` — commercial law class, sales under UCC, secured transactions, negotiable instruments, bankruptcy basics (law school 2L/3L courses)
+  - `musiccomposition` — music composition class/course, counterpoint, orchestration, music theory composition, film scoring (separate from musictheory)
+  - `textanalysis` — digital humanities, computational text analysis, distant reading, corpus linguistics + text analysis, NLP methods + literature/humanities
+  - `cognitivedevelopment` — cognitive development class/course, Piaget + class/developmental/cognitive, Vygotsky ZPD + class/cognitive, cognitive developmental psychology (separate from developmentalpsychology)
+- Template count: 629 → 639 after next 5-domain batch
+- CalloutManagerTests: ~3047 + 41 = ~3088 after next batch

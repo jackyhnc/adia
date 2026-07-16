@@ -3995,5 +3995,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Cognitive neuroscience study session completed (at least two neuroimaging methods or cognitive-brain frameworks reviewed, notes updated and saved)",
             preferredDuration: 45 * 60
         ),
+        // socialpsychology
+        SuggestedTemplate(
+            icon: "person.2.fill",
+            task: "Study social psychology — review social influence, conformity, obedience, bystander effect, attitude formation, and group dynamics for my class or exam",
+            successCriteria: "Social psychology study session completed (at least two major theories or phenomena reviewed, key experiments and findings understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a social psychology paper — analyze social influence, prejudice, stereotyping, group dynamics, or social cognition using empirical research",
+            successCriteria: "Social psychology paper meaningfully advanced (thesis stated, empirical evidence incorporated, or a key section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // neuropsychology
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study clinical neuropsychology — review neuropsychological assessment methods, brain-behavior relationships, cognitive rehabilitation, or EPPP exam material",
+            successCriteria: "Neuropsychology study session completed (at least two assessment methods or brain-behavior frameworks reviewed, key concepts understood, notes updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a neuropsychology case report or complete a neuropsychological assessment assignment for my clinical program",
+            successCriteria: "Neuropsychology assignment meaningfully advanced (case conceptualization drafted, assessment findings documented, or a key section completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // instructionaldesign
+        SuggestedTemplate(
+            icon: "desktopcomputer",
+            task: "Design an e-learning module or online course — work through ADDIE analysis, write learning objectives, build a storyboard in Articulate Storyline or Captivate",
+            successCriteria: "Instructional design work meaningfully advanced (needs analysis drafted, storyboard section built, or learning objectives written and saved in the authoring tool)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Complete my instructional design program assignment — apply ADDIE or SAM model, write a design document, or evaluate an existing e-learning course",
+            successCriteria: "Instructional design assignment meaningfully advanced (model applied, design document section drafted, or course evaluation completed and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // contractlaw
+        SuggestedTemplate(
+            icon: "doc.plaintext.fill",
+            task: "Study contracts law — review offer and acceptance, consideration, promissory estoppel, UCC Article 2, breach and remedies for my 1L contracts class or exam",
+            successCriteria: "Contracts study session completed (at least two doctrines or cases reviewed, key rules understood, notes or outline updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a contracts law outline or exam answer — analyze offer and acceptance, consideration doctrine, breach, or expectation damages in a fact pattern",
+            successCriteria: "Contracts assignment meaningfully advanced (doctrine analyzed, rule applied to facts, or outline section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // propertylaw
+        SuggestedTemplate(
+            icon: "house.fill",
+            task: "Study real property law — review estates in land, future interests, adverse possession, easements, landlord-tenant, and the rule against perpetuities for my 1L class",
+            successCriteria: "Property law study session completed (at least two doctrines or estates reviewed, key rules understood, notes or outline updated and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "doc.text.fill",
+            task: "Write a property law outline or work through a real property exam answer — analyze adverse possession, future interests, easement creation, or eminent domain",
+            successCriteria: "Property law assignment meaningfully advanced (doctrine analyzed, rule applied to facts, or outline section drafted and saved)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

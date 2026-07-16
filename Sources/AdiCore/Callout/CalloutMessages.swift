@@ -376,6 +376,11 @@ extension CalloutManager {
         case "informationscience":         return informationscienceCallouts(tier: tier)
         case "socialepidemiology":         return socialepidemiologyCallouts(tier: tier)
         case "cognitiveneuroscience":      return cognitiveneuroscienceCallouts(tier: tier)
+        case "socialpsychology":           return socialpsychologyCallouts(tier: tier)
+        case "neuropsychology":            return neuropsychologyCallouts(tier: tier)
+        case "instructionaldesign":        return instructionaldesignCallouts(tier: tier)
+        case "contractlaw":                return contractlawCallouts(tier: tier)
+        case "propertylaw":                return propertylawCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -7251,6 +7256,111 @@ extension CalloutManager {
             "CLOSE THIS. open your cognitive neuroscience materials.",
             "CLOSE THIS. fMRI data analysis demands your full attention.",
             "CLOSE THIS. the brain you're studying is the one letting you scroll — use it."
+        ]
+        }
+    }
+
+    private func socialpsychologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "social influence works on you too — close this.",
+            "Milgram didn't study obedience by scrolling.",
+            "your social psychology assignment won't finish itself — close this.",
+            "group dynamics won't analyze themselves — close this.",
+        ]
+        case 2: return [
+            "no one masters social psychology by scrolling.",
+            "close this and open your social psych notes.",
+            "the bystander effect is real — don't wait for someone else to make you focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your social psychology materials.",
+            "CLOSE THIS. Zimbardo would call this situation-driven distraction. Beat it.",
+            "CLOSE THIS. attitude change starts with closing this tab."
+        ]
+        }
+    }
+
+    private func neuropsychologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those neuropsychological reports aren't going to write themselves.",
+            "close this and get back to your neuropsychology work.",
+            "brain-behavior relationships won't study themselves — close this.",
+            "your neuropsychological assessment notes won't review themselves — close this.",
+        ]
+        case 2: return [
+            "no one passes the EPPP or TCN board by scrolling.",
+            "close this and open your neuropsychology notes.",
+            "cognitive rehabilitation doesn't happen by watching others work — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your neuropsychology materials.",
+            "CLOSE THIS. neuropsychological assessment demands your full attention.",
+            "CLOSE THIS. the brain you're studying is the one letting you scroll — use it."
+        ]
+        }
+    }
+
+    private func instructionaldesignCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that e-learning course isn't going to design itself.",
+            "close this and get back to your instructional design work.",
+            "your ADDIE analysis won't complete itself — close this.",
+            "learners are waiting for the course you're not building — close this.",
+        ]
+        case 2: return [
+            "no one becomes an instructional designer by scrolling.",
+            "close this and open Storyline or your ID project.",
+            "your storyboard won't draw itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your instructional design project.",
+            "CLOSE THIS. your e-learning course demands your full attention.",
+            "CLOSE THIS. great learning design starts with designing, not browsing."
+        ]
+        }
+    }
+
+    private func contractlawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those contracts outlines aren't going to write themselves.",
+            "close this and get back to your contracts class.",
+            "offer, acceptance, consideration — none of it studies itself.",
+            "your contracts exam is going to test you whether you study or not — close this.",
+        ]
+        case 2: return [
+            "no one passes contracts by scrolling.",
+            "close this and open your contracts outline.",
+            "Hadley v Baxendale won't read itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your contracts notes.",
+            "CLOSE THIS. your UCC study guide demands your full attention.",
+            "CLOSE THIS. contract law doesn't scroll into your memory."
+        ]
+        }
+    }
+
+    private func propertylawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those property law outlines aren't going to write themselves.",
+            "close this and get back to your property law class.",
+            "adverse possession won't study itself — close this.",
+            "estates in land don't become clear by scrolling — close this.",
+        ]
+        case 2: return [
+            "no one masters real property by scrolling.",
+            "close this and open your property law notes.",
+            "the rule against perpetuities won't make sense if you never study it — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your real property notes.",
+            "CLOSE THIS. property law outlines demand your full attention.",
+            "CLOSE THIS. future interests won't future-proof you if you don't study them."
         ]
         }
     }

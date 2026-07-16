@@ -17646,4 +17646,184 @@ struct CalloutManagerTests {
     @Test func suggestedTemplatesCountAtLeast619() {
         #expect(SuggestedSessionTemplates.all.count >= 619, "template catalog must have ≥619 entries after paleontology/experimentalphysics/informationscience/socialepidemiology/cognitiveneuroscience (10 templates)")
     }
+
+    // MARK: - socialpsychology keyword routing
+    @Test func socialpsychology_milgramObedience() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write a paper on the Milgram experiment and obedience to authority in social psychology class")
+        #expect(kw == "socialpsychology", "Milgram experiment / obedience / social psychology class should route to socialpsychology")
+    }
+    @Test func socialpsychology_bystanderEffect() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study the bystander effect and social influence for my social psych exam")
+        #expect(kw == "socialpsychology", "bystander effect / social influence / social psych exam should route to socialpsychology")
+    }
+    @Test func socialpsychology_groupDynamics() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my social psychology assignment on group dynamics and groupthink")
+        #expect(kw == "socialpsychology", "group dynamics / groupthink / social psychology assignment should route to socialpsychology")
+    }
+    @Test func socialpsychology_falsePositive_generalPsych() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study for my psychology exam on Freud Skinner and personality theory")
+        #expect(kw == "psychology", "personality theory / Freud / Skinner without social context should stay in psychology")
+    }
+    @Test @MainActor func socialpsychologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "socialpsychology", tier: tier)
+            #expect(!msgs.isEmpty, "socialpsychology tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func socialpsychologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "socialpsychology", tier: 1)
+        #expect(msgs.count >= 4, "socialpsychology tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func socialpsychologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "socialpsychology", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "socialpsychology tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - neuropsychology keyword routing
+    @Test func neuropsychology_assessment() {
+        let kw = CalloutManager.extractTaskKeyword(from: "complete my neuropsychological assessment report for my clinical neuropsychology practicum")
+        #expect(kw == "neuropsychology", "neuropsychological assessment / clinical neuropsychology should route to neuropsychology")
+    }
+    @Test func neuropsychology_brainBehavior() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study brain-behavior relationships and cognitive rehabilitation for my neuropsychology class")
+        #expect(kw == "neuropsychology", "brain-behavior relationships / cognitive rehabilitation / neuropsychology class should route to neuropsychology")
+    }
+    @Test func neuropsychology_board() {
+        let kw = CalloutManager.extractTaskKeyword(from: "prep for the neuropsychology board exam — review Halstead-Reitan and WAIS assessment")
+        #expect(kw == "neuropsychology", "neuropsychology board exam / Halstead-Reitan / WAIS assessment should route to neuropsychology")
+    }
+    @Test func neuropsychology_falsePositive_psychology() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write a psychology paper on abnormal psychology and cognitive behavior therapy")
+        #expect(kw == "psychology", "abnormal psychology / CBT paper without neuropsychological assessment context should stay in psychology")
+    }
+    @Test @MainActor func neuropsychologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "neuropsychology", tier: tier)
+            #expect(!msgs.isEmpty, "neuropsychology tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func neuropsychologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "neuropsychology", tier: 1)
+        #expect(msgs.count >= 4, "neuropsychology tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func neuropsychologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "neuropsychology", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "neuropsychology tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - instructionaldesign keyword routing
+    @Test func instructionaldesign_addie() {
+        let kw = CalloutManager.extractTaskKeyword(from: "apply the ADDIE model to my instructional design class assignment on learning objectives")
+        #expect(kw == "instructionaldesign", "ADDIE model / instructional design class should route to instructionaldesign")
+    }
+    @Test func instructionaldesign_elearning() {
+        let kw = CalloutManager.extractTaskKeyword(from: "build an e-learning course in Articulate Storyline for my instructional technology program")
+        #expect(kw == "instructionaldesign", "e-learning / Articulate Storyline / instructional technology program should route to instructionaldesign")
+    }
+    @Test func instructionaldesign_storyboard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "create a storyboard for an elearning module as part of my instructional design degree")
+        #expect(kw == "instructionaldesign", "storyboard / elearning module / instructional design degree should route to instructionaldesign")
+    }
+    @Test func instructionaldesign_falsePositive_education() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write a lesson plan on differentiated instruction and create assessment rubrics for my education class")
+        #expect(kw == "education", "lesson plan / differentiated instruction / education class without ID-specific context should stay in education")
+    }
+    @Test @MainActor func instructionaldesignCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "instructionaldesign", tier: tier)
+            #expect(!msgs.isEmpty, "instructionaldesign tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func instructionaldesignTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "instructionaldesign", tier: 1)
+        #expect(msgs.count >= 4, "instructionaldesign tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func instructionaldesignTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "instructionaldesign", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "instructionaldesign tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - contractlaw keyword routing
+    @Test func contractlaw_contractsClass() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study for my 1L contracts class exam — review offer and acceptance consideration and promissory estoppel")
+        #expect(kw == "contractlaw", "1L contracts class / offer and acceptance / consideration should route to contractlaw")
+    }
+    @Test func contractlaw_ucc() {
+        let kw = CalloutManager.extractTaskKeyword(from: "work through UCC Article 2 problems for my contracts course")
+        #expect(kw == "contractlaw", "UCC Article 2 / contracts course should route to contractlaw")
+    }
+    @Test func contractlaw_remedies() {
+        let kw = CalloutManager.extractTaskKeyword(from: "outline contract remedies and expectation damages for law school contracts")
+        #expect(kw == "contractlaw", "contract remedies / expectation damages / law school contracts should route to contractlaw")
+    }
+    @Test func contractlaw_falsePositive_businessContracts() {
+        let kw = CalloutManager.extractTaskKeyword(from: "draft a vendor contract and negotiate terms for my startup's business deal")
+        #expect(kw != "contractlaw", "drafting a business vendor contract without law school class context should not route to contractlaw")
+    }
+    @Test @MainActor func contractlawCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "contractlaw", tier: tier)
+            #expect(!msgs.isEmpty, "contractlaw tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func contractlawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "contractlaw", tier: 1)
+        #expect(msgs.count >= 4, "contractlaw tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func contractlawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "contractlaw", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "contractlaw tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - propertylaw keyword routing
+    @Test func propertylaw_adversePossession() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study adverse possession and estates in land for my 1L property law class")
+        #expect(kw == "propertylaw", "adverse possession / estates in land / 1L property law class should route to propertylaw")
+    }
+    @Test func propertylaw_futureInterests() {
+        let kw = CalloutManager.extractTaskKeyword(from: "work through future interests problems and the rule against perpetuities for my real property course")
+        #expect(kw == "propertylaw", "future interests / rule against perpetuities / real property course should route to propertylaw")
+    }
+    @Test func propertylaw_landlordTenant() {
+        let kw = CalloutManager.extractTaskKeyword(from: "outline landlord-tenant law and easements for my law school property exam")
+        #expect(kw == "propertylaw", "landlord-tenant law / easements / law school property exam should route to propertylaw")
+    }
+    @Test func propertylaw_falsePositive_realEstate() {
+        let kw = CalloutManager.extractTaskKeyword(from: "study for the real estate license exam and MLS database review")
+        #expect(kw == "realestate", "real estate license exam / MLS should stay in realestate")
+    }
+    @Test @MainActor func propertylawCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        for tier in 1...3 {
+            let msgs = mgr.taskAwareCallouts(keyword: "propertylaw", tier: tier)
+            #expect(!msgs.isEmpty, "propertylaw tier \(tier) must return messages")
+        }
+    }
+    @Test @MainActor func propertylawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "propertylaw", tier: 1)
+        #expect(msgs.count >= 4, "propertylaw tier 1 must have ≥4 messages")
+    }
+    @Test @MainActor func propertylawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        let msgs = mgr.taskAwareCallouts(keyword: "propertylaw", tier: 3)
+        #expect(msgs.contains { $0.contains("CLOSE THIS") }, "propertylaw tier 3 must contain CLOSE THIS")
+    }
+
+    // MARK: - Count guard (batch: socialpsychology/neuropsychology/instructionaldesign/contractlaw/propertylaw)
+    @Test func suggestedTemplatesCountAtLeast629() {
+        #expect(SuggestedSessionTemplates.all.count >= 629, "template catalog must have ≥629 entries after socialpsychology/neuropsychology/instructionaldesign/contractlaw/propertylaw (10 templates)")
+    }
 }
