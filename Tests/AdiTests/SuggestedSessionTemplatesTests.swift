@@ -6621,4 +6621,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast941() {
         #expect(SuggestedSessionTemplates.all.count >= 941, "template catalog must have ≥941 entries after softwareengineering/humancomputerinteraction/machinelearning/distributedsystems/computersecurity additions")
     }
+    // MARK: - programminglanguages templates
+    @Test func programmingLanguagesStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("programming languages") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func programmingLanguagesAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("programming languages") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - compilerdesign templates
+    @Test func compilerDesignStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("compiler design") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func compilerDesignAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("compiler design") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - computergraphics templates
+    @Test func computerGraphicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computer graphics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func computerGraphicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computer graphics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - embeddedsystems templates
+    @Test func embeddedSystemsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("embedded systems") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func embeddedSystemsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("embedded systems") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - formalverification templates
+    @Test func formalVerificationStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("formal verification") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func formalVerificationAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("formal verification") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥951)
+    @Test func templateCountAtLeast951() {
+        #expect(SuggestedSessionTemplates.all.count >= 951, "template catalog must have ≥951 entries after programminglanguages/compilerdesign/computergraphics/embeddedsystems/formalverification additions")
+    }
 }

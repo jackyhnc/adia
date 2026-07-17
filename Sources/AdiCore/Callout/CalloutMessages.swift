@@ -536,6 +536,11 @@ extension CalloutManager {
         case "machinelearning":            return machinelearningCallouts(tier: tier)
         case "distributedsystems":         return distributedsystemsCallouts(tier: tier)
         case "computersecurity":           return computersecurityCallouts(tier: tier)
+        case "programminglanguages":       return programminglanguagesCallouts(tier: tier)
+        case "compilerdesign":             return compilerdesignCallouts(tier: tier)
+        case "computergraphics":           return computergraphicsCallouts(tier: tier)
+        case "embeddedsystems":            return embeddedsystemsCallouts(tier: tier)
+        case "formalverification":         return formalverificationCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -10771,6 +10776,111 @@ extension CalloutManager {
             "CLOSE THIS. open your computer security textbook.",
             "CLOSE THIS. those secure coding and vulnerability analysis problems won't solve themselves.",
             "CLOSE THIS. your computer security exam won't study itself."
+        ]
+        }
+    }
+
+    private func programminglanguagesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those type inference proofs won't write themselves.",
+            "your programming languages exam doesn't care that you're scrolling.",
+            "get back to your PL theory work.",
+            "close this and open your programming languages textbook.",
+        ]
+        case 2: return [
+            "no one masters programming languages theory by scrolling.",
+            "close this and work on your PL assignment.",
+            "those lambda calculus reductions and type system rules need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your programming languages textbook.",
+            "CLOSE THIS. those operational semantics and type inference derivations won't solve themselves.",
+            "CLOSE THIS. your PL exam won't study itself."
+        ]
+        }
+    }
+
+    private func compilerdesignCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that parser won't write itself.",
+            "your compilers exam doesn't care that you're scrolling.",
+            "get back to your compiler design work.",
+            "close this and open your compilers textbook.",
+        ]
+        case 2: return [
+            "no one masters compiler design by scrolling.",
+            "close this and work on your compilers assignment.",
+            "those lexer rules and code generation passes need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your compilers textbook.",
+            "CLOSE THIS. those parsing algorithms and register allocation problems won't solve themselves.",
+            "CLOSE THIS. your compilers exam won't study itself."
+        ]
+        }
+    }
+
+    private func computergraphicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those ray tracing equations won't derive themselves.",
+            "your computer graphics exam doesn't care that you're scrolling.",
+            "get back to your graphics work.",
+            "close this and open your computer graphics textbook.",
+        ]
+        case 2: return [
+            "no one masters computer graphics by scrolling.",
+            "close this and work on your graphics assignment.",
+            "those rasterization and shader problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your computer graphics textbook.",
+            "CLOSE THIS. those rendering pipeline and 3D transform problems won't solve themselves.",
+            "CLOSE THIS. your computer graphics exam won't study itself."
+        ]
+        }
+    }
+
+    private func embeddedsystemsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that interrupt handler won't write itself.",
+            "your embedded systems exam doesn't care that you're scrolling.",
+            "get back to your embedded systems work.",
+            "close this and open your embedded systems textbook.",
+        ]
+        case 2: return [
+            "no one masters embedded systems by scrolling.",
+            "close this and work on your embedded assignment.",
+            "those RTOS scheduling and microcontroller problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your embedded systems textbook.",
+            "CLOSE THIS. those interrupt service routines and device driver problems won't solve themselves.",
+            "CLOSE THIS. your embedded systems exam won't study itself."
+        ]
+        }
+    }
+
+    private func formalverificationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Hoare triples won't verify themselves.",
+            "your formal verification exam doesn't care that you're scrolling.",
+            "get back to your formal methods work.",
+            "close this and open your formal verification textbook.",
+        ]
+        case 2: return [
+            "no one masters formal verification by scrolling.",
+            "close this and work on your formal methods assignment.",
+            "those model checking and theorem proving problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your formal verification textbook.",
+            "CLOSE THIS. those temporal logic formulas and Hoare logic proofs won't verify themselves.",
+            "CLOSE THIS. your formal verification exam won't study itself."
         ]
         }
     }

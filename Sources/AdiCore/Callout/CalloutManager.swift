@@ -643,6 +643,109 @@ public final class CalloutManager {
             || lower.contains("byzantine fault") && (lower.contains("class") || lower.contains("exam") || lower.contains("distributed")) {
             return "distributedsystems"
         }
+        // programminglanguages — positioned BEFORE code so PL theory class/exam terms route here.
+        // Bare language names (python, java, etc.) and generic "programming" stay in code.
+        if lower.contains("programming languages class") || lower.contains("programming languages course") || lower.contains("programming languages exam")
+            || lower.contains("programming languages homework") || lower.contains("programming languages assignment") || lower.contains("programming languages textbook")
+            || lower.contains("programming languages notes") && lower.contains("class")
+            || lower.contains("type system") && (lower.contains("class") || lower.contains("exam") || lower.contains("programming language") || lower.contains("pl "))
+            || lower.contains("type inference") && (lower.contains("class") || lower.contains("exam") || lower.contains("programming language"))
+            || lower.contains("lambda calculus") && (lower.contains("class") || lower.contains("exam") || lower.contains("programming language") || lower.contains("pl "))
+            || lower.contains("formal semantics") && (lower.contains("class") || lower.contains("exam") || lower.contains("programming language"))
+            || lower.contains("operational semantics") && (lower.contains("class") || lower.contains("exam") || lower.contains("programming language"))
+            || lower.contains("denotational semantics") && (lower.contains("class") || lower.contains("exam") || lower.contains("programming language"))
+            || lower.contains("pl theory class") || lower.contains("pl theory course") || lower.contains("pl theory exam")
+            || lower.contains("language design class") || lower.contains("language design course") || lower.contains("language design exam")
+            || lower.contains("programming paradigm") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("functional programming") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("homework"))
+            || lower.contains("logic programming") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("type theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("programming language") || lower.contains("pl ")) {
+            return "programminglanguages"
+        }
+        // compilerdesign — positioned BEFORE code so compiler construction class/exam terms route here.
+        // Generic "compiler" without class context stays in code.
+        if lower.contains("compiler design class") || lower.contains("compiler design course") || lower.contains("compiler design exam")
+            || lower.contains("compiler design homework") || lower.contains("compiler design assignment") || lower.contains("compiler design textbook")
+            || lower.contains("compiler construction class") || lower.contains("compiler construction course") || lower.contains("compiler construction exam")
+            || lower.contains("compilers class") || lower.contains("compilers course") || lower.contains("compilers exam")
+            || lower.contains("lexical analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("compiler"))
+            || lower.contains("lexer") && (lower.contains("class") || lower.contains("exam") || lower.contains("compiler"))
+            || lower.contains("tokenization") && (lower.contains("class") || lower.contains("exam") || lower.contains("compiler"))
+            || lower.contains("parsing") && (lower.contains("class") || lower.contains("exam") || lower.contains("compiler"))
+            || lower.contains("abstract syntax tree") && (lower.contains("class") || lower.contains("exam") || lower.contains("compiler"))
+            || lower.contains("ast construction") && (lower.contains("class") || lower.contains("compiler"))
+            || lower.contains("code generation") && (lower.contains("class") || lower.contains("exam") || lower.contains("compiler"))
+            || lower.contains("register allocation") && (lower.contains("class") || lower.contains("exam") || lower.contains("compiler"))
+            || lower.contains("intermediate representation") && (lower.contains("class") || lower.contains("exam") || lower.contains("compiler"))
+            || lower.contains("ir generation") && (lower.contains("class") || lower.contains("compiler"))
+            || lower.contains("ssa form") && (lower.contains("class") || lower.contains("exam") || lower.contains("compiler"))
+            || lower.contains("compiler optimization") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("dataflow analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("compiler"))
+            || lower.contains("control flow graph") && (lower.contains("class") || lower.contains("exam") || lower.contains("compiler")) {
+            return "compilerdesign"
+        }
+        // computergraphics — positioned BEFORE code so computer graphics class/exam terms route here.
+        // Bare "graphics" or "rendering" without class context stays in code/design.
+        if lower.contains("computer graphics class") || lower.contains("computer graphics course") || lower.contains("computer graphics exam")
+            || lower.contains("computer graphics homework") || lower.contains("computer graphics assignment") || lower.contains("computer graphics textbook")
+            || lower.contains("computer graphics lab") || lower.contains("computer graphics project")
+            || lower.contains("ray tracing") && (lower.contains("class") || lower.contains("exam") || lower.contains("computer graphics"))
+            || lower.contains("rasterization") && (lower.contains("class") || lower.contains("exam") || lower.contains("computer graphics"))
+            || lower.contains("opengl") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("homework"))
+            || lower.contains("vulkan") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("computer graphics"))
+            || lower.contains("shader") && (lower.contains("class") || lower.contains("exam") || lower.contains("computer graphics"))
+            || lower.contains("glsl") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("3d transform") && (lower.contains("class") || lower.contains("exam") || lower.contains("computer graphics"))
+            || lower.contains("homogeneous coordinate") && (lower.contains("class") || lower.contains("exam") || lower.contains("computer graphics"))
+            || lower.contains("rendering pipeline") && (lower.contains("class") || lower.contains("exam") || lower.contains("computer graphics"))
+            || lower.contains("global illumination") && (lower.contains("class") || lower.contains("exam") || lower.contains("computer graphics"))
+            || lower.contains("texture mapping") && (lower.contains("class") || lower.contains("exam") || lower.contains("computer graphics"))
+            || lower.contains("clipping algorithm") && (lower.contains("class") || lower.contains("exam") || lower.contains("computer graphics"))
+            || lower.contains("bresenham") && (lower.contains("class") || lower.contains("exam") || lower.contains("computer graphics")) {
+            return "computergraphics"
+        }
+        // embeddedsystems — positioned BEFORE code so embedded systems class/exam terms route here.
+        // Bare "microcontroller" or hardware mentions without class context fall through to code.
+        if lower.contains("embedded systems class") || lower.contains("embedded systems course") || lower.contains("embedded systems exam")
+            || lower.contains("embedded systems homework") || lower.contains("embedded systems assignment") || lower.contains("embedded systems textbook")
+            || lower.contains("embedded systems lab") || lower.contains("embedded systems project")
+            || lower.contains("embedded software") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("microcontroller") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("homework") || lower.contains("lab"))
+            || lower.contains("rtos") && (lower.contains("class") || lower.contains("exam") || lower.contains("embedded") || lower.contains("course"))
+            || lower.contains("real-time operating system") && (lower.contains("class") || lower.contains("exam") || lower.contains("embedded"))
+            || lower.contains("interrupt handling") && (lower.contains("class") || lower.contains("exam") || lower.contains("embedded"))
+            || lower.contains("interrupt service routine") && (lower.contains("class") || lower.contains("exam") || lower.contains("embedded"))
+            || lower.contains("memory-mapped i/o") && (lower.contains("class") || lower.contains("exam") || lower.contains("embedded"))
+            || lower.contains("bare metal") && (lower.contains("class") || lower.contains("exam") || lower.contains("embedded"))
+            || lower.contains("firmware") && (lower.contains("class") || lower.contains("exam") || lower.contains("embedded"))
+            || lower.contains("device driver") && (lower.contains("class") || lower.contains("exam") || lower.contains("embedded"))
+            || lower.contains("hardware-software interface") && (lower.contains("class") || lower.contains("exam") || lower.contains("embedded"))
+            || lower.contains("pwm") && (lower.contains("class") || lower.contains("exam") || lower.contains("embedded"))
+            || lower.contains("spi protocol") && (lower.contains("class") || lower.contains("exam") || lower.contains("embedded"))
+            || lower.contains("i2c protocol") && (lower.contains("class") || lower.contains("exam") || lower.contains("embedded")) {
+            return "embeddedsystems"
+        }
+        // formalverification — positioned BEFORE code so formal methods/verification class/exam terms
+        // route here. Bare "model checking" or "temporal logic" without class context falls through.
+        if lower.contains("formal verification class") || lower.contains("formal verification course") || lower.contains("formal verification exam")
+            || lower.contains("formal verification homework") || lower.contains("formal verification assignment") || lower.contains("formal verification textbook")
+            || lower.contains("formal methods class") || lower.contains("formal methods course") || lower.contains("formal methods exam")
+            || lower.contains("formal methods homework") || lower.contains("formal methods assignment")
+            || lower.contains("model checking") && (lower.contains("class") || lower.contains("exam") || lower.contains("formal") || lower.contains("verification"))
+            || lower.contains("hoare logic") && (lower.contains("class") || lower.contains("exam") || lower.contains("verification"))
+            || lower.contains("hoare triple") && (lower.contains("class") || lower.contains("exam") || lower.contains("verification"))
+            || lower.contains("program verification") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("temporal logic") && (lower.contains("class") || lower.contains("exam") || lower.contains("formal") || lower.contains("verification"))
+            || lower.contains("ltl") && lower.contains("temporal") && (lower.contains("class") || lower.contains("exam") || lower.contains("verification"))
+            || lower.contains("ctl") && lower.contains("temporal") && (lower.contains("class") || lower.contains("exam") || lower.contains("verification"))
+            || lower.contains("theorem proving") && (lower.contains("class") || lower.contains("exam") || lower.contains("formal"))
+            || lower.contains("proof assistant") && (lower.contains("class") || lower.contains("exam") || lower.contains("formal"))
+            || lower.contains("coq") && (lower.contains("class") || lower.contains("exam") || lower.contains("formal") || lower.contains("proof"))
+            || lower.contains("isabelle") && (lower.contains("class") || lower.contains("exam") || lower.contains("formal") || lower.contains("proof"))
+            || lower.contains("z notation") && (lower.contains("class") || lower.contains("exam") || lower.contains("formal"))
+            || lower.contains("alloy") && lower.contains("formal") && (lower.contains("class") || lower.contains("exam")) {
+            return "formalverification"
+        }
         if word("code") || word("coding") || word("programming") || word("bug") || word("feature") || word("function")
             || word("leetcode") || word("hackerrank") || word("codeforces") || word("codewars")
             || word("algorithm") || word("algorithms") || lower.contains("data structure")

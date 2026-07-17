@@ -6075,5 +6075,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Computer security assignment completed (exploit analysis, secure coding fix, vulnerability assessment, access control policy, or authentication analysis completed with attack steps, root cause, mitigation applied, and solution saved to file)",
             preferredDuration: 45 * 60
         ),
+        // programminglanguages
+        SuggestedTemplate(
+            icon: "character.cursor.ibeam",
+            task: "Study programming languages theory for my exam — review type systems and type inference, lambda calculus and reduction rules, operational and denotational semantics, formal grammars, programming paradigms (functional, logic, imperative), and language design principles",
+            successCriteria: "PL theory study session completed (at least two topics reviewed with type derivation trees, lambda calculus reduction examples, operational semantics rules, and formal grammar productions summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "character.cursor.ibeam",
+            task: "Work on my programming languages assignment — derive types using inference rules, reduce lambda calculus expressions, construct formal semantics for a small language, prove type safety properties, or implement an interpreter for a given language specification",
+            successCriteria: "PL assignment completed (type derivation, lambda calculus reduction, formal semantics construction, type safety proof, or interpreter implementation completed with derivation trees, reduction sequences, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // compilerdesign
+        SuggestedTemplate(
+            icon: "chevron.left.forwardslash.chevron.right",
+            task: "Study compiler design for my exam — review lexical analysis and tokenization, top-down and bottom-up parsing, abstract syntax tree construction, semantic analysis, intermediate representations, code generation, register allocation, and compiler optimization passes",
+            successCriteria: "Compilers study session completed (at least two phases reviewed with lexer rules, parsing table construction, AST examples, IR generation steps, and register allocation strategy summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chevron.left.forwardslash.chevron.right",
+            task: "Work on my compiler design assignment — implement a lexer or parser for a given grammar, build an AST from parse output, generate intermediate representation code, apply dataflow analysis, or implement a register allocator or optimization pass",
+            successCriteria: "Compilers assignment completed (lexer/parser implementation, AST construction, IR generation, dataflow analysis, or register allocation completed with grammar rules satisfied, test cases passing, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // computergraphics
+        SuggestedTemplate(
+            icon: "cube.transparent",
+            task: "Study computer graphics for my exam — review the rendering pipeline, rasterization and ray tracing algorithms, 3D transformations and homogeneous coordinates, shading models (Phong, Blinn-Phong), texture mapping, clipping algorithms, and global illumination",
+            successCriteria: "Computer graphics study session completed (at least two topics reviewed with pipeline stage diagrams, ray-triangle intersection derivation, transformation matrix derivations, shading model equations, and clipping algorithm steps summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cube.transparent",
+            task: "Work on my computer graphics assignment — implement a ray tracer with reflection and refraction, write vertex and fragment shaders in GLSL, apply 3D transformation matrices to a scene, implement texture mapping, or build a rasterizer for a set of triangles",
+            successCriteria: "Computer graphics assignment completed (ray tracer, shader implementation, transformation pipeline, texture mapping, or rasterizer completed with rendered output saved, transformation matrices verified, and code saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // embeddedsystems
+        SuggestedTemplate(
+            icon: "cpu",
+            task: "Study embedded systems for my exam — review microcontroller architecture, interrupt handling and ISRs, RTOS scheduling (preemptive, round-robin, priority-based), memory-mapped I/O, device drivers, communication protocols (SPI, I2C, UART), and real-time constraints",
+            successCriteria: "Embedded systems study session completed (at least two topics reviewed with ISR entry/exit sequence, RTOS scheduling algorithm diagrams, memory map layout, communication protocol timing diagrams, and real-time deadline analysis summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cpu",
+            task: "Work on my embedded systems assignment — implement an interrupt-driven device driver, configure an RTOS task scheduler, write bare-metal firmware for a microcontroller peripheral, implement SPI or I2C communication, or analyze real-time scheduling feasibility",
+            successCriteria: "Embedded systems assignment completed (ISR implementation, RTOS task setup, peripheral firmware, communication protocol driver, or scheduling analysis completed with timing verified, hardware interaction confirmed, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // formalverification
+        SuggestedTemplate(
+            icon: "checkmark.seal.fill",
+            task: "Study formal verification for my exam — review Hoare logic and Hoare triples, weakest precondition calculus, temporal logic (LTL and CTL), model checking algorithms, theorem proving techniques, and the use of proof assistants like Coq or Isabelle",
+            successCriteria: "Formal verification study session completed (at least two topics reviewed with Hoare triple examples, wp-calculus derivations, LTL/CTL formula translations, model checking algorithm steps, and at least one Coq or Isabelle proof sketch summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "checkmark.seal.fill",
+            task: "Work on my formal verification assignment — prove program correctness using Hoare logic, derive weakest preconditions for a program, write LTL or CTL specifications for a system, run model checking on a finite-state model, or construct a machine-checked proof in Coq or Isabelle",
+            successCriteria: "Formal verification assignment completed (Hoare logic proof, wp derivation, temporal logic specification, model checking run, or proof assistant proof completed with all proof obligations discharged, counterexamples ruled out, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }
