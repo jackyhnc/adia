@@ -2102,6 +2102,27 @@ public final class CalloutManager {
             || lower.contains("computational class") || lower.contains("computational course") {
             return "computationalscience"
         }
+        // systemsbiology — positioned BEFORE computationalbiology so specific systems-biology
+        // wet-lab and modeling signals (flux balance analysis, Boolean networks, genome-scale
+        // metabolic models, systems pharmacology) route here. Bare "systems biology" stays in
+        // computationalbiology which catches it for generic class context.
+        if lower.contains("systems biology class") || lower.contains("systems biology course")
+            || lower.contains("systems biology exam") || lower.contains("systems biology lab")
+            || lower.contains("systems biology homework") || lower.contains("systems biology assignment")
+            || lower.contains("systems biology research") || lower.contains("systems biology textbook")
+            || lower.contains("flux balance analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("model") || lower.contains("metabolic") || lower.contains("fba"))
+            || lower.contains("fba model") && (lower.contains("class") || lower.contains("metabolic") || lower.contains("biology"))
+            || lower.contains("boolean network") && (lower.contains("class") || lower.contains("course") || lower.contains("model") || lower.contains("biology") || lower.contains("gene"))
+            || lower.contains("boolean gene network") || lower.contains("gene boolean network")
+            || lower.contains("genome-scale metabolic model") || lower.contains("genome scale metabolic model")
+            || lower.contains("genome-scale model") && (lower.contains("biology") || lower.contains("class") || lower.contains("metabolic"))
+            || lower.contains("cobra toolbox") && (lower.contains("biology") || lower.contains("class") || lower.contains("model"))
+            || lower.contains("systems pharmacology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("research") || lower.contains("model"))
+            || lower.contains("metabolic flux") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("analysis") || lower.contains("model"))
+            || lower.contains("network motif") && (lower.contains("systems") || lower.contains("biology") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("gene circuit") && (lower.contains("class") || lower.contains("model") || lower.contains("design") || lower.contains("biology") || lower.contains("systems")) {
+            return "systemsbiology"
+        }
         // computationalbiology — positioned BEFORE bioinformatics so systems biology,
         // mathematical biology, and biological modeling with class/course context route here.
         // Generic "computational biology" stays in bioinformatics; class context fires here first.
@@ -4183,6 +4204,25 @@ public final class CalloutManager {
             || lower.contains("lincoln-peterson") && (lower.contains("ecology") || lower.contains("class") || lower.contains("lab")) {
             return "ecologicalfieldwork"
         }
+        // ecophysiology — positioned BEFORE ecology so dedicated ecophysiology class/research
+        // signals (thermal performance curves, metabolic rate scaling, water potential,
+        // desiccation tolerance, physiological ecology coursework) route here. Generic
+        // "ecology class" and field ecology tasks fall through to ecology/ecologicalfieldwork.
+        if lower.contains("ecophysiology") || lower.contains("eco-physiology")
+            || lower.contains("physiological ecology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("research") || lower.contains("lab"))
+            || lower.contains("environmental physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("thermal performance curve") && (lower.contains("class") || lower.contains("ecology") || lower.contains("physiology") || lower.contains("exam"))
+            || lower.contains("thermal tolerance") && (lower.contains("class") || lower.contains("ecology") || lower.contains("physiology") || lower.contains("exam"))
+            || lower.contains("metabolic rate") && (lower.contains("temperature") || lower.contains("scaling") || lower.contains("ecology") || lower.contains("class") || lower.contains("physiology"))
+            || lower.contains("metabolic scaling") && (lower.contains("ecology") || lower.contains("class") || lower.contains("physiology"))
+            || lower.contains("water potential") && (lower.contains("ecology") || lower.contains("class") || lower.contains("physiology") || lower.contains("exam") || lower.contains("plant"))
+            || lower.contains("desiccation tolerance") && (lower.contains("class") || lower.contains("ecology") || lower.contains("physiology"))
+            || lower.contains("osmotic stress") && (lower.contains("class") || lower.contains("ecology") || lower.contains("physiology") || lower.contains("exam"))
+            || lower.contains("ectotherm") && (lower.contains("class") || lower.contains("physiology") || lower.contains("ecology") || lower.contains("exam"))
+            || lower.contains("endotherm") && (lower.contains("class") || lower.contains("physiology") || lower.contains("ecology") || lower.contains("exam"))
+            || lower.contains("stress physiology") && (lower.contains("class") || lower.contains("ecology") || lower.contains("biology") || lower.contains("exam")) {
+            return "ecophysiology"
+        }
         // ecology — positioned BEFORE ecologyconservation so general ecology class/coursework
         // routes here. Conservation-specific terms (restoration ecology, conservation biology,
         // wildlife management) fall through to ecologyconservation below.
@@ -5874,6 +5914,29 @@ public final class CalloutManager {
             || lower.contains("virology major") || lower.contains("virology program") {
             return "virology"
         }
+        // microbiologylab — positioned BEFORE clinicalmicrobiology and microbiology so specific
+        // microbiology-lab-practical signals (disk diffusion, Kirby-Bauer, CFU counting, serial
+        // dilution, unknown-bacteria identification) route here. Generic "microbiology class/exam"
+        // and clinical rotation work fall through to clinicalmicrobiology/microbiology below.
+        if lower.contains("microbiology lab practical") || lower.contains("microbiology lab practicum")
+            || lower.contains("microbiology lab quiz") || lower.contains("microbiology lab unknown")
+            || lower.contains("microbiology unknown") && (lower.contains("lab") || lower.contains("identify") || lower.contains("report"))
+            || lower.contains("unknown bacteria") && (lower.contains("lab") || lower.contains("identify") || lower.contains("microbiology") || lower.contains("identification"))
+            || lower.contains("disk diffusion") && (lower.contains("lab") || lower.contains("class") || lower.contains("microbiology") || lower.contains("antibiotic") || lower.contains("test"))
+            || lower.contains("kirby-bauer") && (lower.contains("lab") || lower.contains("class") || lower.contains("microbiology") || lower.contains("antibiotic"))
+            || lower.contains("kirby bauer") && (lower.contains("lab") || lower.contains("class") || lower.contains("microbiology") || lower.contains("antibiotic"))
+            || lower.contains("plate count") && (lower.contains("lab") || lower.contains("microbiology") || lower.contains("bacteria") || lower.contains("class"))
+            || lower.contains("colony count") && (lower.contains("lab") || lower.contains("microbiology") || lower.contains("bacteria") || lower.contains("class"))
+            || lower.contains("serial dilution") && (lower.contains("lab") || lower.contains("microbiology") || lower.contains("bacteria") || lower.contains("class"))
+            || lower.contains("viable count") && (lower.contains("lab") || lower.contains("microbiology") || lower.contains("bacteria"))
+            || lower.contains("colony forming unit") && (lower.contains("lab") || lower.contains("class") || lower.contains("microbiology") || lower.contains("count"))
+            || lower.contains("cfu") && (lower.contains("lab") || lower.contains("microbiology") || lower.contains("count") || lower.contains("bacteria") || lower.contains("plate"))
+            || lower.contains("most probable number") && (lower.contains("lab") || lower.contains("microbiology") || lower.contains("class"))
+            || lower.contains("mpn method") && (lower.contains("lab") || lower.contains("microbiology") || lower.contains("class"))
+            || lower.contains("agar preparation") && (lower.contains("lab") || lower.contains("microbiology") || lower.contains("class"))
+            || lower.contains("microbiology agar") && (lower.contains("lab") || lower.contains("class") || lower.contains("prepare") || lower.contains("preparation")) {
+            return "microbiologylab"
+        }
         // clinicalmicrobiology — positioned AFTER virology and BEFORE microbiology so clinical lab
         // rotation work (culture interpretation, antibiogram reading, infection control) routes to a
         // dedicated pool rather than the general microbiology course pool.
@@ -6132,6 +6195,47 @@ public final class CalloutManager {
             || lower.contains("admet") && (lower.contains("class") || lower.contains("course") || lower.contains("drug design") || lower.contains("medicinal") || lower.contains("chemistry"))
             || lower.contains("scaffold hopping") && (lower.contains("class") || lower.contains("drug") || lower.contains("medicinal") || lower.contains("chemistry")) {
             return "medicinalchemistry"
+        }
+        // plantphysiology — positioned BEFORE physiology so plant-specific physiology signals
+        // (stomatal conductance, phytohormones, xylem/phloem transport, source-sink dynamics)
+        // route here. Generic "physiology class" falls through to the physiology branch below.
+        if lower.contains("plant physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("notes") || lower.contains("textbook") || lower.contains("assignment") || lower.contains("study"))
+            || lower.contains("stomatal conductance") && (lower.contains("class") || lower.contains("physiology") || lower.contains("plant") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("stomatal aperture") && (lower.contains("class") || lower.contains("physiology") || lower.contains("plant"))
+            || lower.contains("phytohormone") && (lower.contains("class") || lower.contains("physiology") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("auxin") && (lower.contains("plant physiology") || lower.contains("phytohormone") || lower.contains("class") && (lower.contains("plant") || lower.contains("physiology")))
+            || lower.contains("gibberellin") && (lower.contains("class") || lower.contains("physiology") || lower.contains("plant") || lower.contains("hormone"))
+            || lower.contains("cytokinin") && (lower.contains("class") || lower.contains("physiology") || lower.contains("plant") || lower.contains("hormone"))
+            || lower.contains("abscisic acid") && (lower.contains("class") || lower.contains("plant") || lower.contains("physiology") || lower.contains("hormone"))
+            || lower.contains("ethylene") && (lower.contains("plant") && (lower.contains("class") || lower.contains("physiology") || lower.contains("lab") || lower.contains("hormone")))
+            || lower.contains("xylem transport") && (lower.contains("class") || lower.contains("physiology") || lower.contains("plant") || lower.contains("lab"))
+            || lower.contains("phloem transport") && (lower.contains("class") || lower.contains("physiology") || lower.contains("plant") || lower.contains("lab"))
+            || lower.contains("source-sink") && (lower.contains("class") || lower.contains("plant") || lower.contains("physiology") || lower.contains("transport"))
+            || lower.contains("apoplast") && (lower.contains("class") || lower.contains("physiology") || lower.contains("plant"))
+            || lower.contains("symplast") && (lower.contains("class") || lower.contains("physiology") || lower.contains("plant"))
+            || lower.contains("plant water relations") && (lower.contains("class") || lower.contains("physiology") || lower.contains("exam"))
+            || lower.contains("photosynthesis rate") && (lower.contains("class") || lower.contains("physiology") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("plant growth regulator") && (lower.contains("class") || lower.contains("physiology") || lower.contains("lab") || lower.contains("exam")) {
+            return "plantphysiology"
+        }
+        // animalphysiology — positioned BEFORE physiology so comparative and animal-physiology
+        // signals (osmoregulation, thermoregulation, countercurrent exchange, gas exchange)
+        // route here. Generic "physiology class" falls through to physiology below.
+        if lower.contains("animal physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("notes") || lower.contains("textbook") || lower.contains("assignment") || lower.contains("study"))
+            || lower.contains("comparative physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("vertebrate physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("invertebrate physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("osmoregulation") && (lower.contains("class") || lower.contains("physiology") || lower.contains("animal") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("thermoregulation") && (lower.contains("class") || lower.contains("physiology") || lower.contains("animal") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("countercurrent exchange") && (lower.contains("class") || lower.contains("physiology") || lower.contains("animal") || lower.contains("lab"))
+            || lower.contains("countercurrent multiplier") && (lower.contains("class") || lower.contains("physiology") || lower.contains("lab"))
+            || lower.contains("gas exchange") && (lower.contains("class") && (lower.contains("physiology") || lower.contains("animal") || lower.contains("respiratory") || lower.contains("lung") || lower.contains("gill")))
+            || lower.contains("ion regulation") && (lower.contains("class") || lower.contains("physiology") || lower.contains("animal") || lower.contains("exam"))
+            || lower.contains("aquatic physiology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("animal"))
+            || lower.contains("integumentary physiology") && (lower.contains("class") || lower.contains("physiology") || lower.contains("animal"))
+            || lower.contains("animal physiology class") || lower.contains("animal physiology exam")
+            || lower.contains("comparative animal physiology") {
+            return "animalphysiology"
         }
         // physiology — positioned AFTER pharmacology and BEFORE premed to catch dedicated physiology
         // class/lab work. Bare word("physiology") stays in premed (MCAT context fires after).

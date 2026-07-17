@@ -5295,5 +5295,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Stratigraphy assignment completed (stratigraphic column drawn or sections correlated with unit descriptions, boundaries, and depositional environment interpretations — saved to file)",
             preferredDuration: 45 * 60
         ),
+        // systemsbiology
+        SuggestedTemplate(
+            icon: "network",
+            task: "Work on my systems biology modeling assignment — build a genome-scale metabolic model, run flux balance analysis, construct a Boolean gene-regulatory network, or analyze metabolic flux distributions",
+            successCriteria: "Systems biology assignment completed (model built or FBA simulation run with flux distributions analyzed, results interpreted, and findings documented — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "network",
+            task: "Study systems biology for my exam — review flux balance analysis, Boolean network modeling, genome-scale metabolic models, network motifs, and systems pharmacology principles",
+            successCriteria: "Systems biology study session completed (at least two modeling frameworks reviewed with key concepts, example networks, and interpretation notes summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // microbiologylab
+        SuggestedTemplate(
+            icon: "testtube.2",
+            task: "Work through my microbiology lab — perform disk diffusion or Kirby-Bauer antibiotic sensitivity testing, count colonies from a serial dilution, or identify an unknown bacterium using biochemical tests",
+            successCriteria: "Microbiology lab completed (colony counts recorded or unknown bacterium identified with biochemical test results documented and lab report written — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "testtube.2",
+            task: "Study for my microbiology lab practical — review CFU counting methods, serial dilution calculations, Gram staining interpretation, disk diffusion zone-of-inhibition reading, and unknown-bacteria identification flowcharts",
+            successCriteria: "Microbiology lab practical study completed (all major lab techniques reviewed with key protocols, calculation examples, and identification charts summarized and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // ecophysiology
+        SuggestedTemplate(
+            icon: "thermometer.sun",
+            task: "Study ecophysiology for my exam — review thermal performance curves, metabolic rate scaling, water potential and desiccation tolerance, ectotherm vs endotherm strategies, and physiological ecology frameworks",
+            successCriteria: "Ecophysiology study session completed (at least two physiological ecology topics reviewed with key concepts, equations, and organism examples summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "thermometer.sun",
+            task: "Work on my ecophysiology assignment — analyze thermal performance data, model metabolic rate vs temperature, interpret osmotic stress experiments, or write up a physiological ecology case study",
+            successCriteria: "Ecophysiology assignment completed (analysis written up or case study drafted with data interpretation, physiological mechanisms explained, and conclusions documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // plantphysiology
+        SuggestedTemplate(
+            icon: "leaf",
+            task: "Study plant physiology for my exam — review phytohormone signaling (auxin, gibberellin, cytokinin, ABA), stomatal conductance, xylem and phloem transport, water potential, and source-sink dynamics",
+            successCriteria: "Plant physiology study session completed (at least two topics reviewed with hormone pathways, transport mechanisms, and key equations summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "leaf",
+            task: "Work on my plant physiology assignment — analyze stomatal conductance data, trace xylem and phloem transport pathways, apply water potential calculations, or write up a phytohormone signaling problem",
+            successCriteria: "Plant physiology assignment completed (problem solved or lab report written with transport mechanisms, hormone effects, and calculations documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // animalphysiology
+        SuggestedTemplate(
+            icon: "pawprint",
+            task: "Study animal physiology for my exam — review osmoregulation, thermoregulation strategies, countercurrent exchange, gas exchange in gills and lungs, ion regulation, and comparative vertebrate physiology",
+            successCriteria: "Animal physiology study session completed (at least two physiological systems reviewed with mechanisms, comparative examples, and key equations summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "pawprint",
+            task: "Work on my animal physiology assignment — analyze osmoregulation data across species, model thermoregulation strategies, apply countercurrent exchange principles, or write up a comparative physiology case study",
+            successCriteria: "Animal physiology assignment completed (analysis written up or case study drafted with physiological mechanisms explained, comparative data interpreted, and conclusions documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

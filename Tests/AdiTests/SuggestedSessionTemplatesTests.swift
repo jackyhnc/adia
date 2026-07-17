@@ -6157,8 +6157,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func stratigraphyAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("stratigraphy") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥821)
-    @Test func templateCountAtLeast821() {
-        #expect(SuggestedSessionTemplates.all.count >= 821, "template catalog must have ≥821 entries after geophysics/mineralogy/petrology/hydrogeology/stratigraphy additions")
+    // MARK: - systemsbiology templates
+    @Test func systemsbiologyModelingTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("systems biology") && $0.task.lowercased().contains("flux balance") })
+    }
+    @Test func systemsbiologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("systems biology") && $0.task.lowercased().contains("exam") })
+    }
+    // MARK: - microbiologylab templates
+    @Test func microbiologylabPracticalTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("microbiology") && $0.task.lowercased().contains("disk diffusion") })
+    }
+    @Test func microbiologylabStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("microbiology") && $0.task.lowercased().contains("lab practical") })
+    }
+    // MARK: - ecophysiology templates
+    @Test func ecophysiologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("ecophysiology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func ecophysiologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("ecophysiology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - plantphysiology templates
+    @Test func plantphysiologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("plant physiology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func plantphysiologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("plant physiology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - animalphysiology templates
+    @Test func animalphysiologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("animal physiology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func animalphysiologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("animal physiology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥831)
+    @Test func templateCountAtLeast831() {
+        #expect(SuggestedSessionTemplates.all.count >= 831, "template catalog must have ≥831 entries after systemsbiology/microbiologylab/ecophysiology/plantphysiology/animalphysiology additions")
     }
 }

@@ -476,6 +476,11 @@ extension CalloutManager {
         case "petrology":                  return petrologyCallouts(tier: tier)
         case "hydrogeology":               return hydrogeologyCallouts(tier: tier)
         case "stratigraphy":               return stratigraphyCallouts(tier: tier)
+        case "systemsbiology":             return systemsbiologyCallouts(tier: tier)
+        case "microbiologylab":            return microbiologylabCallouts(tier: tier)
+        case "ecophysiology":              return ecophysiologyCallouts(tier: tier)
+        case "plantphysiology":            return plantphysiologyCallouts(tier: tier)
+        case "animalphysiology":           return animalphysiologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -9451,6 +9456,111 @@ extension CalloutManager {
             "CLOSE THIS. open your stratigraphy notes.",
             "CLOSE THIS. those stratigraphic sections won't correlate themselves.",
             "CLOSE THIS. your stratigraphy exam won't study itself."
+        ]
+        }
+    }
+
+    private func systemsbiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that metabolic network model won't build itself.",
+            "close this and get back to your systems biology.",
+            "those flux balance calculations won't run themselves. close this.",
+            "your systems biology assignment won't do itself. close this."
+        ]
+        case 2: return [
+            "no one masters systems biology by scrolling.",
+            "close this and open your systems biology notes.",
+            "that gene regulatory network won't model itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your systems biology textbook.",
+            "CLOSE THIS. those genome-scale models won't run themselves.",
+            "CLOSE THIS. your systems biology exam won't study itself."
+        ]
+        }
+    }
+
+    private func microbiologylabCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those plates won't count themselves.",
+            "close this and get back to your microbiology lab.",
+            "that unknown bacteria won't identify itself. close this.",
+            "your microbiology lab report won't write itself. close this."
+        ]
+        case 2: return [
+            "no one aces microbiology lab by scrolling.",
+            "close this and open your microbiology lab notebook.",
+            "those CFU counts need your attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your microbiology lab manual.",
+            "CLOSE THIS. that disk diffusion result won't interpret itself.",
+            "CLOSE THIS. your microbiology lab practical won't study itself."
+        ]
+        }
+    }
+
+    private func ecophysiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those thermal performance curves won't analyze themselves.",
+            "close this and get back to your ecophysiology.",
+            "that metabolic rate data won't write up itself. close this.",
+            "your ecophysiology assignment won't do itself. close this."
+        ]
+        case 2: return [
+            "no one masters ecophysiology by scrolling.",
+            "close this and open your ecophysiology notes.",
+            "those osmoregulation mechanisms need reviewing — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your ecophysiology textbook.",
+            "CLOSE THIS. those physiological ecology problems won't solve themselves.",
+            "CLOSE THIS. your ecophysiology exam won't study itself."
+        ]
+        }
+    }
+
+    private func plantphysiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those phytohormone pathways won't memorize themselves.",
+            "close this and get back to your plant physiology.",
+            "that stomatal conductance problem won't do itself. close this.",
+            "your plant physiology exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters plant physiology by scrolling.",
+            "close this and open your plant physiology textbook.",
+            "that xylem transport problem needs your focus — now."
+        ]
+        default: return [
+            "CLOSE THIS. open your plant physiology notes.",
+            "CLOSE THIS. those phloem loading mechanisms won't explain themselves.",
+            "CLOSE THIS. your plant physiology exam won't study itself."
+        ]
+        }
+    }
+
+    private func animalphysiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those osmoregulation mechanisms won't write themselves.",
+            "close this and get back to your animal physiology.",
+            "that countercurrent exchange problem won't do itself. close this.",
+            "your animal physiology exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters animal physiology by scrolling.",
+            "close this and open your animal physiology textbook.",
+            "those thermoregulation pathways need reviewing — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your animal physiology notes.",
+            "CLOSE THIS. those comparative physiology problems won't solve themselves.",
+            "CLOSE THIS. your animal physiology exam won't study itself."
         ]
         }
     }

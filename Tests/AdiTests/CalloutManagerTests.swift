@@ -21078,8 +21078,163 @@ struct CalloutManagerTests {
         #expect(CalloutManager.extractTaskKeyword(from: "geology exam study review tonight") == "geology")
     }
 
-    // MARK: - Count guard (batch: geophysics/mineralogy/petrology/hydrogeology/stratigraphy)
-    @Test func calloutTemplatesCountAtLeast821() {
-        #expect(SuggestedSessionTemplates.all.count >= 821, "template catalog must have ≥821 entries after geophysics/mineralogy/petrology/hydrogeology/stratigraphy additions (10 templates)")
+    // MARK: - systemsbiology routing
+    @Test func systemsBiologyClassRoutesSystemsbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "systems biology class assignment due") == "systemsbiology")
+    }
+    @Test func fluxBalanceAnalysisRoutesSystemsbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "flux balance analysis metabolic model class") == "systemsbiology")
+    }
+    @Test func booleanNetworkModelRoutesSystemsbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "boolean network model gene circuit biology") == "systemsbiology")
+    }
+    @Test func genomeScaleModelRoutesSystemsbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "genome-scale metabolic model class assignment") == "systemsbiology")
+    }
+    @Test func systemsPharmacologyRoutesSystemsbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "systems pharmacology class exam research") == "systemsbiology")
+    }
+    @Test @MainActor func systemsbiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "systemsbiology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "systemsbiology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "systemsbiology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func systemsbiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "systemsbiology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func systemsbiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "systemsbiology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - microbiologylab routing
+    @Test func microbiologyLabPracticalRoutesMicrobiologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "microbiology lab practical study review") == "microbiologylab")
+    }
+    @Test func diskDiffusionLabRoutesMicrobiologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "disk diffusion antibiotic sensitivity lab microbiology") == "microbiologylab")
+    }
+    @Test func kirbyBauerLabRoutesMicrobiologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "kirby-bauer test microbiology lab class") == "microbiologylab")
+    }
+    @Test func cfuCountLabRoutesMicrobiologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "colony forming unit cfu count microbiology lab") == "microbiologylab")
+    }
+    @Test func unknownBacteriaLabRoutesMicrobiologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "unknown bacteria identification lab microbiology report") == "microbiologylab")
+    }
+    @Test @MainActor func microbiologylabCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "microbiologylab", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "microbiologylab", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "microbiologylab", tier: 3).isEmpty)
+    }
+    @Test @MainActor func microbiologylabTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "microbiologylab", tier: 1).count >= 4)
+    }
+    @Test @MainActor func microbiologylabTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "microbiologylab", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - ecophysiology routing
+    @Test func ecophysiologyClassRoutesEcophysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ecophysiology class assignment due") == "ecophysiology")
+    }
+    @Test func physiologicalEcologyRoutesEcophysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "physiological ecology class exam research") == "ecophysiology")
+    }
+    @Test func thermalPerformanceCurveRoutesEcophysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "thermal performance curve ecology class exam") == "ecophysiology")
+    }
+    @Test func metabolicRateTemperatureRoutesEcophysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "metabolic rate temperature scaling ecology class") == "ecophysiology")
+    }
+    @Test func desiccationToleranceRoutesEcophysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "desiccation tolerance ecology physiology class") == "ecophysiology")
+    }
+    @Test @MainActor func ecophysiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "ecophysiology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "ecophysiology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "ecophysiology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func ecophysiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "ecophysiology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func ecophysiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "ecophysiology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - plantphysiology routing
+    @Test func plantPhysiologyClassRoutesPlantphysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "plant physiology class exam study") == "plantphysiology")
+    }
+    @Test func stomataConductanceRoutesPlantphysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "stomatal conductance plant physiology class lab") == "plantphysiology")
+    }
+    @Test func phytohormoneRoutesPlantphysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "phytohormone class physiology plant lab") == "plantphysiology")
+    }
+    @Test func xylemTransportRoutesPlantphysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "xylem transport plant physiology class") == "plantphysiology")
+    }
+    @Test func plantWaterRelationsRoutesPlantphysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "plant water relations physiology exam class") == "plantphysiology")
+    }
+    @Test @MainActor func plantphysiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "plantphysiology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "plantphysiology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "plantphysiology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func plantphysiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "plantphysiology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func plantphysiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "plantphysiology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - animalphysiology routing
+    @Test func animalPhysiologyClassRoutesAnimalphysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "animal physiology class exam study tonight") == "animalphysiology")
+    }
+    @Test func osmoregulationRoutesAnimalphysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "osmoregulation animal physiology class exam") == "animalphysiology")
+    }
+    @Test func countercurrentExchangeRoutesAnimalphysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "countercurrent exchange physiology animal class lab") == "animalphysiology")
+    }
+    @Test func comparativePhysiologyRoutesAnimalphysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "comparative physiology vertebrate class exam") == "animalphysiology")
+    }
+    @Test func thermoregulationAnimalRoutesAnimalphysiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "thermoregulation animal physiology exam class") == "animalphysiology")
+    }
+    @Test @MainActor func animalphysiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "animalphysiology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "animalphysiology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "animalphysiology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func animalphysiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "animalphysiology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func animalphysiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "animalphysiology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: systemsbiology/microbiologylab/ecophysiology/plantphysiology/animalphysiology)
+    @Test func calloutTemplatesCountAtLeast831() {
+        #expect(SuggestedSessionTemplates.all.count >= 831, "template catalog must have ≥831 entries after systemsbiology/microbiologylab/ecophysiology/plantphysiology/animalphysiology additions (10 templates)")
     }
 }
