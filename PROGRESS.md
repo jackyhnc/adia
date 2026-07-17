@@ -1,5 +1,76 @@
 # Adia — Build Progress
 
+## Run 382 (automated) — 2026-07-17 — 5 new keyword domains: radioastronomy/astrochemistry/nuclearphysics/plasmaphysics/computationalfluidynamics (901→911 templates)
+
+### What shipped
+
+**5 new keyword domains: radioastronomy, astrochemistry, nuclearphysics, plasmaphysics, computationalfluidynamics**
+
+**New keyword domain — radioastronomy:**
+- Branch positioned BEFORE astronomy (after planetaryscience). Bare "radio astronomy" without class/exam context still routes to astronomy.
+- Catches: radio astronomy class/course/exam/homework/notes/lab, radio telescope+class/course/exam/project/lab, vlbi+class/exam/astronomy/imaging, very long baseline interferometry+class/exam/astronomy, pulsar timing+class/course/exam/astronomy, pulsar class/exam, aperture synthesis+class/course/exam/astronomy/radio, interferometric imaging+class/exam/astronomy/radio, 21cm line+class/exam/astronomy/radio, 21-cm line+class/exam/astronomy, synchrotron radiation+class/course/exam/astronomy/radio, radio continuum+class/exam/astronomy, radio emission+class/exam/astronomy.
+- `radioastronomyCallouts(tier:)` 4/3/3: "those radio telescope observations won't analyze themselves." / "no one masters radio astronomy by scrolling." / "CLOSE THIS. open your radio astronomy textbook."
+- 2 templates: "Study radio astronomy for my exam…" (60 min) + "Work on my radio astronomy assignment…" (45 min)
+
+**New keyword domain — astrochemistry:**
+- Branch positioned BEFORE astronomy (after radioastronomy). word("astrochemistry"), word("astrochemist") owned here.
+- Catches: word("astrochemistry"/"astrochemist"), astrochemistry class/course/exam/homework/notes/lab, interstellar medium chemistry+class/course/exam, ism chemistry+class/exam/astrochemistry, molecular cloud+class/course/exam/astrochemistry/chemistry, interstellar molecule+class/exam/chemistry/astrochemistry, interstellar molecules+class/exam/chemistry, chemical evolution+astronomy/astrochemistry/interstellar/class/exam, protostellar chemistry+class/exam, circumstellar chemistry+class/exam, interstellar ice+class/exam/chemistry/astrochemistry.
+- `astrochemistryCallouts(tier:)` 4/3/3: "those interstellar medium chemistry problems won't solve themselves." / "no one masters astrochemistry by scrolling." / "CLOSE THIS. open your astrochemistry textbook."
+- 2 templates: "Study astrochemistry for my exam…" (60 min) + "Work on my astrochemistry assignment…" (45 min)
+
+**New keyword domain — nuclearphysics:**
+- Branch positioned BEFORE optics/experimentalphysics (after classicalmechanics). "nuclear fusion + plasma" stays in plasmaphysics.
+- Catches: nuclear physics class/course/exam/homework/notes/problem, nuclear engineering class/course/exam, nuclear reaction+class/course/exam/physics, nuclear reactions+class/exam/physics, nuclear decay+class/course/exam/physics, radioactive decay+class/course/exam/physics/nuclear, nuclear fission+class/exam/physics, fission+class+nuclear, fission+exam+nuclear, nuclear fusion+class/exam/physics (without plasma), nuclear structure+class/course/exam/physics, nuclear binding energy+class/exam/nuclear/physics, nuclear shell model+class/exam/physics, radioactivity+class/exam/nuclear/physics, alpha/beta/gamma decay+class/exam/nuclear/physics, half-life+class/nuclear/exam/physics (not biology/chem).
+- `nuclearphysicsCallouts(tier:)` 4/3/3: "those nuclear reactions won't balance themselves." / "no one masters nuclear physics by scrolling." / "CLOSE THIS. open your nuclear physics textbook."
+- 2 templates: "Study nuclear physics for my exam…" (60 min) + "Work on my nuclear physics problem set…" (45 min)
+
+**New keyword domain — plasmaphysics:**
+- Branch positioned BEFORE optics/experimentalphysics (after nuclearphysics). "nuclear fusion + plasma" owned here.
+- Catches: plasma physics class/course/exam/homework/notes/problem, magnetohydrodynamics class/course/exam, mhd class/course/exam/equations+class/exam/plasma, tokamak+class/course/exam/physics/plasma, plasma confinement+class/exam/physics, debye length+class/exam/plasma/physics, debye shielding+class/exam/plasma, plasma oscillation+class/exam/plasma/physics, plasma frequency+class/exam/plasma/physics, magnetic confinement+class/exam/plasma/fusion, inertial confinement+class/exam/plasma/fusion, fusion plasma+class/exam/physics, nuclear fusion+plasma, alfvén/alfven wave+class/exam/plasma, stellarator+class/exam/plasma/physics.
+- `plasmaphysicsCallouts(tier:)` 4/3/3: "those MHD equations won't solve themselves." / "no one masters plasma physics by scrolling." / "CLOSE THIS. open your plasma physics textbook."
+- 2 templates: "Study plasma physics for my exam…" (60 min) + "Work on my plasma physics problem set…" (45 min)
+
+**New keyword domain — computationalfluidynamics:**
+- Branch positioned BEFORE engineering (after thermodynamics). Bare "fluid dynamics" stays in engineering. "fluid mechanics class chemical" stays in chemicalengineering.
+- Catches: computational fluid dynamics class/course/exam/homework/problem, cfd class/course/exam/homework/problem/simulation+class/course/exam, navier-stokes/navier stokes+cfd/computational/numerical+class/exam, finite volume method/methods+class/exam/cfd/fluid, turbulence modeling/model+class/exam/cfd/computational, reynolds-averaged+class/exam/cfd, rans equations+class/exam/cfd, large eddy simulation+class/exam/cfd, les simulation+class/exam/cfd, ansys fluent+class/course/exam/project, openfoam+class/course/exam/cfd/project, computational aerodynamics+class/exam/course.
+- `computationalfluidynamicsCallouts(tier:)` 4/3/3: "that CFD simulation won't converge itself." / "no one masters CFD by scrolling." / "CLOSE THIS. open your computational fluid dynamics textbook."
+- 2 templates: "Study computational fluid dynamics for my exam…" (60 min) + "Work on my CFD assignment…" (60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +5×(5 routing + 3 callout pool tests) + 2 false-positive guards + count guard ≥911
+- SuggestedSessionTemplatesTests.swift: +5×2 template existence tests + count guard ≥911
+
+**Template catalog: 901 → 911**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `radioastronomy` fires at line 707, BEFORE astronomy (line 750) ✓
+- `astrochemistry` fires at line 725, BEFORE astronomy (line 750) ✓
+- `nuclearphysics` fires at line 1321, BEFORE optics (line 1365) ✓
+- `plasmaphysics` fires at line 1346, BEFORE optics (line 1365) ✓
+- `computationalfluidynamics` fires at line 2529, BEFORE engineering (line 2547) ✓
+- Brace balance: CalloutManager.swift 0 ✓; CalloutMessages.swift 0 ✓; SuggestedSessionTemplates.swift 0 ✓
+- Template count: 911 confirmed (grep -c "preferredDuration:" = 911) ✓
+- 5 new dispatch cases in taskAwareCallouts switch ✓
+- 5 new private callout pool functions ✓
+- "nuclear fusion + plasma" cross-capture guard: routes to plasmaphysics, not nuclearphysics ✓
+- Bare "radio astronomy" (no class/exam) stays in astronomy ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `geochemistry` — geochemistry class/course/exam (isotope geochemistry+class, trace element+class/geochemistry, REE+class/geochemistry, geochemical survey+class, stable isotope+class/geochemistry — distinct from geology/chemistry)
+  - `hydrology` — hydrology class/course/exam (hydrological cycle+class, streamflow analysis+class, flood frequency+class/hydrology, watershed hydrology+class/exam, hydrograph analysis+class — distinct from hydrogeology which focuses on groundwater)
+  - `climatology` — climatology class/course/exam (climate model+class/exam, radiative forcing+class/climatology, paleoclimate+class/climatology, climate sensitivity+class/exam, ENSO+class/climatology — distinct from atmosphericscience which catches meteorology broadly)
+  - `photochemistry` — photochemistry class/course/exam (photochemical reaction+class/exam, excited state+class/photochemistry, Jablonski diagram+class/exam, quantum yield+class/photochemistry — distinct from physicalchemistry)
+  - `electromagnetictheory` — electromagnetic theory class/course/exam (Maxwell's equations+class/exam/electromagnetic theory, electromagnetic wave+class/theory, electrodynamics class, gauge invariance+class/electromagnetic — distinct from electromagnetism which catches lab/experiment work)
+- Template count: 911 → 921 after next 5-domain batch
+- CalloutManagerTests: ~23000+ lines after next batch
+
+---
+
 ## Run 381 (automated) — 2026-07-17 — 5 new keyword domains: cosmology/planetaryscience/particlephysics/statisticalmechanics/environmentalchemistry (891→901 templates)
 
 ### What shipped
