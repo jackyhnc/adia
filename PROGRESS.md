@@ -1,5 +1,77 @@
 # Adia — Build Progress
 
+## Run 371 (automated) — 2026-07-17 — 5 new keyword domains: astronomylab/geologylab/environmentalscience/anthropology/sociology (771→781 templates)
+
+### What shipped
+
+**5 new keyword domains: astronomylab, geologylab, environmentalscience, anthropology, sociology**
+
+**New keyword domain — astronomylab:**
+- Branch positioned BEFORE astronomy so specific observational/lab signals (telescope observation, star charts, light curves, magnitude measurements, astronomical calculations, observing runs) get a dedicated pool.
+- Generic "astronomy lab/class/course" still routes to astronomy (fires after).
+- `astronomylabCallouts(tier:)` 4/3/3: "those star charts aren't going to plot themselves." / "no one learns observational astronomy by scrolling." / "CLOSE THIS. open your astronomy lab notebook."
+- 2 templates: "Complete my observational astronomy lab…" (60 min) + "Prepare for my astronomy observing session…" (30 min)
+
+**New keyword domain — geologylab:**
+- Branch positioned BEFORE geology so rock/mineral identification, thin section analysis, and field geology lab reports get a dedicated pool.
+- Generic word("geology") still routes to geology (fires after).
+- `geologylabCallouts(tier:)` 4/3/3: "that geology lab report isn't going to write itself." / "no one passes geology lab by scrolling." / "CLOSE THIS. open your geology lab notebook."
+- 2 templates: "Complete my geology lab report…" (60 min) + "Prepare for my geology lab…" (30 min)
+
+**New keyword domain — environmentalscience:**
+- Branch positioned BEFORE environmentalpolicy so env sci coursework (earth systems, biogeochemical cycles, environmental monitoring class) gets a dedicated pool.
+- "environmental policy" still routes to environmentalpolicy; "environmental health" still routes to environmentalhealth.
+- `environmentalscienceCallouts(tier:)` 4/3/3: "those earth systems problems aren't going to solve themselves." / "no one masters environmental science by scrolling." / "CLOSE THIS. open your environmental science textbook."
+- 2 templates: "Complete my environmental science assignment or lab…" (60 min) + "Study environmental science for my exam…" (45 min)
+
+**New keyword domain — anthropology:**
+- Branch positioned BEFORE socialscience; intercepts word("anthropology"), cultural/physical/linguistic/biological anthropology, ethnography, participant observation, archaeology class/course, paleoanthropology.
+- Previously all anthropology inputs went to generic socialscience pool.
+- `anthropologyCallouts(tier:)` 4/3/3: "that ethnography isn't going to write itself." / "no one masters anthropology by scrolling." / "CLOSE THIS. open your anthropology textbook."
+- 2 templates: "Write my anthropology paper or ethnography…" (60 min) + "Study anthropology for my exam…" (45 min)
+
+**New keyword domain — sociology:**
+- Branch positioned BEFORE socialscience; catches compound sociology terms (sociological theory, symbolic interactionism, structural functionalism, conflict theory + class, social stratification + class, sociology class/course/exam/major).
+- Bare word("sociology") still routes to studying (appropriate for generic study inputs).
+- `sociologyCallouts(tier:)` 4/3/3: "that sociological analysis isn't going to write itself." / "no one masters sociology by scrolling." / "CLOSE THIS. open your sociology textbook."
+- 2 templates: "Write my sociology paper…" (60 min) + "Study sociology for my exam…" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +47 @Test functions (5-6 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 + 1 count guard ≥781)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence tests per domain × 5 + 1 count guard ≥781)
+
+**Template catalog: 771 → 781**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `astronomylab` fires BEFORE astronomy (line 579 < 596) ✓
+- `geologylab` fires BEFORE geology (line 1099 < 1116) ✓
+- `environmentalscience` fires BEFORE environmentalpolicy ✓
+- `anthropology` fires BEFORE socialscience ✓
+- `sociology` fires BEFORE socialscience (after anthropology) ✓
+- Brace balance: CalloutManager.swift 440/440 ✓; CalloutMessages.swift 825/825 ✓
+- Template count: 781 confirmed (grep -c "preferredDuration:" = 781) ✓
+- "geology stratigraphy petrology" → geology (not geologylab) ✓
+- "astronomy class homework" → astronomy (not astronomylab) ✓
+- "environmental policy class analysis" → environmentalpolicy (not environmentalscience) ✓
+- "sociology" (bare word) → studying (not sociology domain) ✓
+- All 5 case statements in CalloutMessages.swift wired to private functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `astrophysics` — dedicated astrophysics research/course signals more specific than what astronomy catches (stellar evolution research, cosmology research, general relativistic astrophysics, galactic dynamics, active galactic nuclei — without class/course qualifiers that already go to astronomy)
+  - `atmosphericscience` — atmospheric science / meteorology class (distinct from weather/climate in enviro; signals: synoptic meteorology, atmospheric dynamics, mesoscale meteorology, troposphere/stratosphere class, NWP, GCM model)
+  - `marinebiologylab` — marine biology lab class (plankton tow, dissection of marine organisms, marine invertebrate lab, benthic survey, oceanographic sampling)
+  - `ecologicalfieldwork` — ecological fieldwork and field lab (transect sampling, quadrat surveys, mark-recapture, biodiversity survey, species richness analysis in class/lab context)
+  - `computationalchemistry` — computational chemistry coursework (DFT calculations, molecular dynamics, quantum chemistry software, Gaussian/VASP/ORCA, potential energy surface)
+- Template count: 781 → 791 after next 5-domain batch
+- CalloutManagerTests: ~20700+ lines after next batch
+
+---
+
 ## Run 370 (automated) — 2026-07-17 — 5 new keyword domains: emergencymedicinerotation/virology/clinicalmicrobiology/medicinalchemistry/cellandmolecularbiology (751→761 templates)
 
 ### What shipped
