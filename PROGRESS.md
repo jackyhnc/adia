@@ -1,5 +1,71 @@
 # Adia — Build Progress
 
+## Run 384 (automated) — 2026-07-17 — 5 new CS keyword domains: operatingsystems/algorithms/databasesystems/computernetworks/computervision (921→931 templates)
+
+### What shipped
+
+**5 new keyword domains: operatingsystems, algorithms, databasesystems, computernetworks, computervision**
+
+All positioned BEFORE `code` branch so class/exam context routes to specialist callout pools.
+
+**New keyword domain — operatingsystems:**
+- Catches: operating systems class/course/exam, process scheduling + class/exam/os, virtual memory + class/exam/os, memory management + class/exam/os, file system + class/exam/os/kernel, kernel programming/development/module, system call + class/exam/os, deadlock + class/exam/os/prevention/detection, thread/process synchronization + class/exam/os, semaphore/mutex + class/exam/os/synchronization, page replacement + class/exam/os, demand paging + class/exam/os, cpu scheduling + class/exam/os, round robin + scheduling/os class/exam, xv6/pintos/nachos os.
+- `operatingsystemsCallouts(tier:)` 4/3/3: "those process scheduling algorithms won't learn themselves." / "no one masters operating systems by scrolling." / "CLOSE THIS. open your operating systems textbook."
+- 2 templates: study-for-exam (process scheduling, virtual memory, file systems, deadlock, synchronization, 60 min) + assignment (implement scheduler, simulate page replacement, kernel module, 45 min)
+
+**New keyword domain — algorithms:**
+- Catches: algorithms class/course/exam, algorithm design + class/exam, algorithm analysis + class/exam, algorithms homework/assignment/problem set, computational complexity + class/exam, NP-completeness + class/exam/proof/reduction, NP-hard + class/exam, graph algorithm + class/exam/homework, dynamic programming + class/exam/homework/assignment/problem set, divide and conquer + class/exam/homework, greedy algorithm + class/exam/proof, amortized/randomized/approximation analysis + class/exam, CLRS + class/homework/exam, intro/introduction to algorithms + class/exam, design and analysis of algorithms. Bare "algorithm" or "algorithms" alone stays in code.
+- `algorithmsCallouts(tier:)` 4/3/3: "those algorithm proofs won't write themselves." / "no one masters algorithms by scrolling." / "CLOSE THIS. open your algorithms textbook."
+- 2 templates: study-for-exam (DP, divide and conquer, greedy, graph algorithms, NP-completeness, amortized analysis, 60 min) + problem set (correctness proofs, complexity analysis, DP solution, graph algorithm, NP reduction, 60 min)
+
+**New keyword domain — databasesystems:**
+- Catches: database systems class/course/exam, database class/course/exam (guarded from firebase/nosql), database design/management class/exam, database homework/assignment + sql/relational/schema, sql class/course/exam, er diagram + class/exam/design, entity relationship + class/exam/diagram/model, relational model/database + class/exam, normalization + class/exam/database/schema, query optimization + class/exam/database, transaction management + class/exam/database, ACID + class/exam/database, dbms class/course/exam, database indexing + class/exam, b-tree + database/class/index, stored procedure + class/exam, postgresql/mysql + class/course/exam/assignment. Bare "sql" alone stays in code.
+- `databasesystemsCallouts(tier:)` 4/3/3: "those database design problems won't solve themselves." / "no one masters database systems by scrolling." / "CLOSE THIS. open your database systems textbook."
+- 2 templates: study-for-exam (relational model, ER diagrams, SQL, normalization, query optimization, ACID, indexing, B-trees, 60 min) + assignment (ER diagram, SQL queries, normalization, transaction analysis, stored procedures, 45 min)
+
+**New keyword domain — computernetworks:**
+- Catches: computer networks class/course/exam, networking class/course/exam (social networking guarded, career networking guarded), networking homework/assignment/lab, tcp/ip + class/exam, network protocols + class/exam, socket programming + class/exam/homework/assignment, data communications + class/exam, osi model/layers + class/exam, routing protocol + class/exam/homework, ip addressing + class/exam/subnet, subnetting + class/exam/homework, network/transport layer + class/exam/protocol, wireshark + class/lab/assignment, packet analysis + class/exam/network, network simulation + class/exam, computer communication + class/exam.
+- `computernetworksCallouts(tier:)` 4/3/3: "those network protocol problems won't solve themselves." / "no one masters computer networks by scrolling." / "CLOSE THIS. open your computer networks textbook."
+- 2 templates: study-for-exam (OSI model, TCP/IP, routing, IP addressing, subnetting, transport layer, 60 min) + assignment (socket program, Wireshark analysis, subnetting, network simulation, TCP trace, 45 min)
+
+**New keyword domain — computervision:**
+- Catches: computer vision class/course/exam/homework/assignment/project/textbook, opencv + class/project/assignment, image processing class/course/exam/homework/assignment/project, object detection/recognition + class/exam/project/assignment, image segmentation + class/exam/project, feature extraction + class/exam/project/vision/image, convolutional neural network + class/course/exam/project/assignment (NLP guarded), image classification + class/exam/project, semantic segmentation + class/exam/project, optical flow + class/exam/project/vision, stereo vision + class/exam/project, depth estimation + class/exam/project/vision, point cloud + class/exam/project/vision, structure from motion + class/exam/project, yolo + class/project/detection/assignment/vision.
+- `computervisionCallouts(tier:)` 4/3/3: "those image processing algorithms won't implement themselves." / "no one masters computer vision by scrolling." / "CLOSE THIS. open your computer vision textbook."
+- 2 templates: study-for-exam (image filtering, edge detection, feature extraction, optical flow, stereo vision, object detection, CNNs, 60 min) + project (object detector with OpenCV/PyTorch, image classifier, semantic segmentation, optical flow, stereo depth, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +48 @Test functions (5 routing + 3 callout pool tests per domain × 5 + 1 false-positive guard per domain × 5 + 1 count guard ≥931)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 per domain × 5 + 1 count guard ≥931)
+
+**Template catalog: 921 → 931**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `operatingsystems` fires at line 444, BEFORE `code` (line 557) ✓. "operating systems class exam" → operatingsystems ✓; bare "write an operating system" → code ✓
+- `algorithms` fires at line 468, BEFORE `code` (line 557) ✓. "algorithms class exam" → algorithms ✓; bare "implement an algorithm for sorting" → code ✓
+- `databasesystems` fires at line 495, BEFORE `code` (line 557) ✓. "database systems class exam" → databasesystems ✓; bare "write a sql query" → code ✓
+- `computernetworks` fires at line 521, BEFORE `code` (line 557) ✓. "computer networks class exam" → computernetworks ✓; "career networking course" → NOT computernetworks ✓
+- `computervision` fires at line 544, BEFORE `code` (line 557) ✓. "computer vision class exam" → computervision ✓; opencv + project → computervision ✓
+- Brace balance: CalloutManager.swift 0 ✓; CalloutMessages.swift 0 ✓; SuggestedSessionTemplates.swift 0 ✓
+- Template count: 931 confirmed (grep -c "preferredDuration:" = 931) ✓
+- 5 new switch cases in taskAwareCallouts ✓
+- 5 new private callout pool functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered as specific sub-domains:
+  - `softwareengineering` — software engineering class/course/exam, software design patterns + class, UML class diagrams + class/exam, software requirements + class, agile methods + class/course/exam, software testing class/exam, SOLID principles + class/exam — distinct from generic `code`
+  - `humancomputerinteraction` — HCI class/course/exam, usability testing + class/exam, user study + class/exam, prototyping + class/hci/exam, accessibility + class/hci/exam, cognitive walkthrough + class/exam — distinct from `ux`
+  - `machinelearing` — machine learning class/course/exam, gradient descent + class/exam, linear regression + class/exam, SVM + class/exam, decision tree + class/exam, cross-validation + class/exam — distinct from `artificialintelligence` (which fires on "AI" broadly) and `datascience`
+  - `distributedystems` — distributed systems class/course/exam, consensus protocol + class/exam, CAP theorem + class/exam, fault tolerance + class/exam, Paxos/Raft + class/exam, MapReduce + class/exam
+  - `computersecurity` — computer security class/course/exam (more focused than cybersecurity which routes on "network security" broadly), buffer overflow + class/exam, memory safety + class/exam, software vulnerability + class/exam, reverse engineering + class/exam
+- Template count: 931 → 941 after next 5-domain batch
+- Test counts: CalloutManagerTests ~23800 lines, SuggestedSessionTemplatesTests ~6600 lines
+
+---
+
 ## Run 383 (automated) — 2026-07-17 — 5 new keyword domains: hydrology/glaciology/climatology/photochemistry/electromagnetictheory (911→921 templates)
 
 ### What shipped
