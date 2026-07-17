@@ -1,5 +1,76 @@
 # Adia — Build Progress
 
+## Run 373 (automated) — 2026-07-17 — 5 new keyword domains: astrophysics/atmosphericchemistry/optics/electromagnetism/neuroimaging (801→811 templates)
+
+### What shipped
+
+**5 new keyword domains: astrophysics, atmosphericchemistry, optics, electromagnetism, neuroimaging**
+
+**New keyword domain — astrophysics:**
+- Branch positioned BEFORE astronomy; owns word("astrophysics"/"astrophysicist"/"astrophysicists") removed from astronomy branch. Also owns astrophysics class/course/exam/homework.
+- Catches research-level signals: cosmological simulations, N-body simulation, stellar evolution/structure research, galactic dynamics, AGN feedback/research, gravitational wave data/analysis, LIGO data/signal, interstellar medium research, quasar+research/data, black hole accretion, neutron star merger, supernova research, computational/numerical astrophysics.
+- `astrophysicsCallouts(tier:)` 4/3/3: "those gravitational waves won't analyze themselves." / "no one masters astrophysics by scrolling." / "CLOSE THIS. open your astrophysics notes."
+- 2 templates: "Work through my astrophysics problem set…" (60 min) + "Study astrophysics for my exam…" (60 min)
+
+**New keyword domain — atmosphericchemistry:**
+- Branch positioned BEFORE atmosphericscience; catches research-level atmospheric chemistry WITHOUT class/course/exam/lab/homework/notes guard.
+- Catches: ozone depletion+research/mechanism, aerosol chemistry+research/analysis/modeling, tropospheric oxidation/photochemistry, stratospheric ozone+research/chemistry, OH radical+chemistry/atmospheric, VOC/NOx chemistry+atmospheric, photochemical smog+research/mechanism, air quality modeling+chemistry/atmospheric, atmospheric composition+research/chemistry, reactive nitrogen/halocarbon/sulfur chemistry+atmospheric, bare "atmospheric chemistry" (without class context).
+- "atmospheric chemistry class/course/exam/lab" still routes to atmosphericscience (fires after).
+- `atmosphericchemistryCallouts(tier:)` 4/3/3: "that ozone depletion mechanism won't write itself." / "no one masters atmospheric chemistry by scrolling." / "CLOSE THIS. open your atmospheric chemistry research."
+- 2 templates: "Analyze my atmospheric chemistry data…" (60 min) + "Work through my atmospheric chemistry problem set…" (45 min)
+
+**New keyword domain — optics:**
+- Branch positioned BEFORE experimentalphysics; catches optics/photonics class-context signals. "optics lab" stays in experimentalphysics (no class qualifier needed).
+- Catches: optics/photonics+class/course/exam/homework, laser physics+class/exam, wave/geometric/Fourier/nonlinear/quantum optics+class/exam, optical fiber+class/exam, diffraction grating+class/problem, physical optics+class/exam, photonic device+class/design.
+- `opticsCallouts(tier:)` 4/3/3: "those wave equations won't solve themselves." / "no one masters optics by scrolling." / "CLOSE THIS. open your optics notes."
+- 2 templates: "Work through my optics problem set…" (60 min) + "Study optics or photonics for my exam…" (60 min)
+
+**New keyword domain — electromagnetism:**
+- Branch positioned BEFORE electricalengineering; catches physics E&M class signals. Removes maxwell's equations+class and electromagnetic fields+class from electricalengineering (now owned here).
+- Catches: Gauss's/Ampere's/Faraday's law+class/problem, Maxwell's equations+class/problem, electromagnetic fields+class/exam, electrostatics/magnetostatics class/exam, electromagnetic waves+class/problem, electricity and magnetism class/exam, E&M class/problem, electromagnetism class/course/exam/homework/notes.
+- `electromagnetismCallouts(tier:)` 4/3/3: "those Maxwell's equations won't solve themselves." / "no one masters electromagnetism by scrolling." / "CLOSE THIS. open your electromagnetism notes."
+- 2 templates: "Work through my electromagnetism problem set…" (60 min) + "Study electromagnetism for my exam…" (60 min)
+
+**New keyword domain — neuroimaging:**
+- Branch positioned BEFORE cognitiveneuroscience; catches tool-specific neuroimaging pipeline signals. Broad fMRI/BOLD/VBM signals remain in cognitiveneuroscience.
+- Catches: neuroimaging class/course/lab/exam, fMRI class/lab, SPM+brain/imaging context, FSL+brain/imaging/DTI context, FreeSurfer+brain/cortex/segmentation, nilearn, nipype, AFNI+brain/fMRI, tractography+brain/white matter/fiber/DTI, connectome+brain/network, MRI/fMRI preprocessing, brain/cortical parcellation, ROI analysis+brain/fMRI, atlas registration+brain/MRI, structural MRI+class/research, diffusion weighted imaging.
+- `neuroimagingCallouts(tier:)` 4/3/3: "that fMRI pipeline won't run itself." / "no one masters neuroimaging by scrolling." / "CLOSE THIS. open your neuroimaging analysis."
+- 2 templates: "Run my neuroimaging analysis pipeline…" (60 min) + "Work on my neuroimaging class assignment…" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +60 @Test functions (5-6 routing tests per domain + 3 callout pool tests per domain × 5 + 1 count guard ≥811)
+- SuggestedSessionTemplatesTests.swift: +12 @Test functions (2 template existence tests per domain × 5 + count guard ≥811)
+
+**Template catalog: 801 → 811**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `astrophysics` fires BEFORE astronomy (line 632 < 657) ✓
+- `atmosphericchemistry` fires BEFORE atmosphericscience (line 4159 < 4186) ✓
+- `optics` fires BEFORE experimentalphysics (line 995 < 1022) ✓
+- `electromagnetism` fires BEFORE electricalengineering (line 1697 < 1731) ✓
+- `neuroimaging` fires BEFORE cognitiveneuroscience (line 7376 < 7398) ✓
+- word("astrophysics") removed from astronomy branch ✓
+- maxwell's equations+class / electromagnetic fields+class removed from electricalengineering ✓
+- "atmospheric chemistry class exam" → atmosphericscience (class/course/exam guard in atmosphericchemistry blocks it) ✓
+- "optics lab report" → experimentalphysics (no class qualifier → falls through optics branch) ✓
+- Brace balance: CalloutManager.swift 455/455 ✓; CalloutMessages.swift 855/855 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 811 confirmed (grep -c "preferredDuration:" = 811) ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `astrophysicsresearch` (finer-grained: stellar spectroscopy analysis, photometric redshift, gravitational lensing research — if astrophysics pool needs further subdivision)
+  - `materialscience` — materials science class/course/exam (XRD analysis+class, TEM/SEM imaging+class, tensile testing+class, materials characterization+class, crystal structure+class/materials, phase diagram+class/materials, corrosion+class/materials, polymer characterization+class)
+  - `chemicalengineering2` — specific unit ops class/course signals not caught by existing chemicalengineering (mass transfer class, heat transfer class without "engineering" qualifier, separation processes class, fluid mechanics+engineering class)
+  - `nuclearengineering` — nuclear reactor physics class/exam, neutron transport+class, nuclear fuel cycle+class, radiation shielding+class, nuclear engineering class
+  - `environmentalengineering` — environmental engineering class/course/exam (wastewater treatment+class, stormwater management+class, environmental remediation+class)
+- Template count: 811 → 821 after next 5-domain batch
+
+---
+
 ## Run 372 (automated) — 2026-07-17 — 5 new keyword domains: atmosphericscience/ecologicalfieldwork/quantummechanics/solidstatephysics/classicalmechanics (791→801 templates)
 
 ### What shipped
