@@ -6274,4 +6274,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast851() {
         #expect(SuggestedSessionTemplates.all.count >= 851, "template catalog must have ≥851 entries after geriatricrotation/neurochemistry/psychobiologyclass/abnormalpsychology/healthpsychology additions")
     }
+    // MARK: - linearalgebra templates
+    @Test func linearalgebraStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("linear algebra") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func linearalgebraAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("linear algebra") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - differentialequations templates
+    @Test func differentialequationsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("differential equations") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func differentialequationsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("differential equations") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - neuropsychology templates
+    @Test func neuropsychologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neuropsychology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func neuropsychologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neuropsychology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - developmentalpsych templates
+    @Test func developmentalpsychStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("developmental psychology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func developmentalpsychAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("developmental psychology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - militarymedicine templates
+    @Test func militarymedicineStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("tccc") && $0.task.lowercased().contains("march") })
+    }
+    @Test func militarymedicineAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("combat medicine") && $0.task.lowercased().contains("tccc") })
+    }
+    // MARK: - Count guard (≥861)
+    @Test func templateCountAtLeast861() {
+        #expect(SuggestedSessionTemplates.all.count >= 861, "template catalog must have ≥861 entries after linearalgebra/differentialequations/neuropsychology/developmentalpsych/militarymedicine additions")
+    }
 }

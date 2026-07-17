@@ -5490,5 +5490,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Health psychology assignment completed (biopsychosocial analysis or coping/PNI case written with psychological, biological, and social factors documented with evidence-based health implications — saved to file)",
             preferredDuration: 45 * 60
         ),
+        // linearalgebra
+        SuggestedTemplate(
+            icon: "function",
+            task: "Study linear algebra for my exam — review eigenvectors and eigenvalues, matrix decompositions (LU, QR, SVD), vector spaces, linear independence, span and basis, linear transformations, and diagonalization",
+            successCriteria: "Linear algebra study session completed (at least two topics reviewed with key theorems, worked examples, and conceptual explanations of eigenvectors, matrix factorizations, or vector spaces summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "function",
+            task: "Work on my linear algebra problem set — solve eigenvalue problems, compute LU or QR decompositions, prove linear independence, find null space or column space, apply Gram-Schmidt orthogonalization, or diagonalize a matrix",
+            successCriteria: "Linear algebra problem set completed (eigenvalue/eigenvector problems, matrix decompositions, or vector space proofs solved with all steps shown and answers verified — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // differentialequations
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Study differential equations for my exam — review separation of variables, integrating factor method, Laplace transforms, first- and second-order ODEs, systems of ODEs, Fourier series, and the heat and wave equations",
+            successCriteria: "Differential equations study session completed (at least two ODE/PDE methods reviewed with solution steps, worked examples, and key formulas for Laplace transforms or Fourier series summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Work on my differential equations problem set — solve first- or second-order ODEs using separation of variables or integrating factors, apply Laplace transforms, analyze systems of ODEs, or solve a heat/wave PDE with Fourier series",
+            successCriteria: "Differential equations problem set completed (ODEs or PDEs solved with all integration steps, boundary conditions applied, and Laplace or Fourier methods demonstrated — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // neuropsychology
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study neuropsychology for my exam — review neuropsychological assessment batteries (Wechsler, Trail Making Test, Stroop), executive function models, memory assessment, cortical functions and lateralization, and neuropsychological rehabilitation",
+            successCriteria: "Neuropsychology study session completed (at least two assessment approaches reviewed with key test batteries, scoring principles, cortical function correlates, and clinical interpretation summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Work on my neuropsychology assignment — interpret neuropsychological test results, apply executive function assessment frameworks, analyze a cortical lesion case, complete a neuropsychological battery overview, or write up a neuropsych report",
+            successCriteria: "Neuropsychology assignment completed (test interpretation or case analysis written with assessment battery results, executive function findings, cortical correlates, and clinical implications documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // developmentalpsych
+        SuggestedTemplate(
+            icon: "figure.and.child.holdinghands",
+            task: "Study developmental psychology for my exam — review Piaget's cognitive stages (sensorimotor through formal operational), attachment theory (Bowlby and Ainsworth), theory of mind, infant cognition, and object permanence",
+            successCriteria: "Developmental psychology study session completed (at least two developmental topics reviewed with Piaget stage criteria, attachment patterns, theory of mind milestones, and key theorists' contributions summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "figure.and.child.holdinghands",
+            task: "Work on my developmental psychology assignment — apply Piaget's cognitive stage theory to a case, analyze Strange Situation attachment classifications, evaluate theory of mind research, or write up infant cognition findings",
+            successCriteria: "Developmental psychology assignment completed (Piaget stage analysis or attachment classification applied with theoretical framework, supporting evidence, and developmental implications documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // militarymedicine
+        SuggestedTemplate(
+            icon: "cross.case",
+            task: "Study tactical combat casualty care (TCCC) — review the MARCH algorithm, care-under-fire protocols, tactical field care, tourniquet application and hemorrhage control, airway management in the field, and casualty evacuation procedures",
+            successCriteria: "TCCC study session completed (MARCH algorithm phases reviewed, care-under-fire and tactical field care protocols, hemorrhage control and airway management steps, and casualty evacuation procedures summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.case",
+            task: "Complete my combat medicine training tasks — write up a TCCC case scenario using MARCH, document tourniquet and hemorrhage control technique steps, review prolonged field care protocols, or practice a tactical medicine scenario",
+            successCriteria: "Combat medicine training task completed (TCCC case write-up or protocol documentation finished with MARCH phases, hemorrhage control priorities, airway and hypothermia management, and casualty care steps documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

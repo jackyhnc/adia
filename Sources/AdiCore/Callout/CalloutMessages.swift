@@ -491,6 +491,11 @@ extension CalloutManager {
         case "psychobiologyclass":         return psychobiologyclassCallouts(tier: tier)
         case "abnormalpsychology":         return abnormalpsychologyCallouts(tier: tier)
         case "healthpsychology":           return healthpsychologyCallouts(tier: tier)
+        case "linearalgebra":              return linearalgebraCallouts(tier: tier)
+        case "differentialequations":      return differentialequationsCallouts(tier: tier)
+        case "neuropsychology":            return neuropsychologyCallouts(tier: tier)
+        case "developmentalpsych":         return developmentalpsychCallouts(tier: tier)
+        case "militarymedicine":           return militarymedicineCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -9781,6 +9786,111 @@ extension CalloutManager {
             "CLOSE THIS. open your health psychology notes.",
             "CLOSE THIS. those biopsychosocial case studies won't write themselves.",
             "CLOSE THIS. your health psychology exam won't study itself."
+        ]
+        }
+    }
+
+    private func linearalgebraCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those eigenvectors won't find themselves.",
+            "close this and get back to your linear algebra.",
+            "that matrix decomposition problem won't solve itself. close this.",
+            "your linear algebra exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters linear algebra by scrolling.",
+            "close this and open your linear algebra textbook.",
+            "those vector space proofs need working through — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your linear algebra notes.",
+            "CLOSE THIS. those eigenvectors won't find themselves.",
+            "CLOSE THIS. your linear algebra exam won't study itself."
+        ]
+        }
+    }
+
+    private func differentialequationsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those ODEs won't solve themselves.",
+            "close this and get back to your differential equations.",
+            "that Laplace transform problem won't do itself. close this.",
+            "your diff eq exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters differential equations by scrolling.",
+            "close this and open your diff eq textbook.",
+            "those separation of variables problems need working through — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your differential equations notes.",
+            "CLOSE THIS. those ODEs won't solve themselves.",
+            "CLOSE THIS. your differential equations exam won't study itself."
+        ]
+        }
+    }
+
+    private func neuropsychologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those neuropsychological assessment methods won't learn themselves.",
+            "close this and get back to your neuropsychology work.",
+            "that executive function assessment won't study itself. close this.",
+            "your neuropsychology exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters neuropsychology by scrolling.",
+            "close this and open your neuropsychology textbook.",
+            "those cortical function and assessment battery concepts need reviewing — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your neuropsychology notes.",
+            "CLOSE THIS. those neuropsychological batteries won't memorize themselves.",
+            "CLOSE THIS. your neuropsychology exam won't study itself."
+        ]
+        }
+    }
+
+    private func developmentalpsychCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Piaget stages won't memorize themselves.",
+            "close this and get back to your developmental psychology work.",
+            "that attachment theory paper won't write itself. close this.",
+            "your developmental psych exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters developmental psychology by scrolling.",
+            "close this and open your developmental psych textbook.",
+            "those Piaget stages and attachment frameworks need reviewing — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your developmental psychology notes.",
+            "CLOSE THIS. those Piaget stages won't memorize themselves.",
+            "CLOSE THIS. your developmental psych exam won't study itself."
+        ]
+        }
+    }
+
+    private func militarymedicineCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that TCCC protocol won't memorize itself.",
+            "close this and get back to your combat medicine training.",
+            "that MARCH algorithm won't study itself. close this.",
+            "your tactical medicine exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one aces combat medicine by scrolling.",
+            "close this and open your TCCC training materials.",
+            "those hemorrhage control and field care protocols need reviewing — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your tactical medicine notes.",
+            "CLOSE THIS. that MARCH algorithm won't memorize itself.",
+            "CLOSE THIS. your combat casualty care exam won't study itself."
         ]
         }
     }

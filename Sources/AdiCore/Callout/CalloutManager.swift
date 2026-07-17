@@ -701,6 +701,54 @@ public final class CalloutManager {
             || lower.contains("dynamic programming") && (lower.contains("or") || lower.contains("optimization class") || lower.contains("optimization course")) {
             return "operationsresearch"
         }
+        // linearalgebra — positioned BEFORE mathematics so "linear algebra class/exam" routes
+        // to a dedicated pool with eigenvector, matrix decomposition, and vector space context.
+        // Bare "linear algebra" in mathematics catches it as a fallback for non-class mentions.
+        if (lower.contains("linear algebra") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("hw") || lower.contains("problem set") || lower.contains("notes") || lower.contains("textbook") || lower.contains("assignment") || lower.contains("quiz")))
+            || (lower.contains("matrix algebra") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem")))
+            || lower.contains("eigenvector") || lower.contains("eigenvalue")
+            || (lower.contains("linear transformation") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra") || lower.contains("matrix")))
+            || (lower.contains("vector space") && (lower.contains("class") || lower.contains("linear algebra") || lower.contains("exam") || lower.contains("basis")))
+            || (lower.contains("null space") && (lower.contains("class") || lower.contains("linear algebra") || lower.contains("exam")))
+            || (lower.contains("column space") && (lower.contains("class") || lower.contains("linear algebra") || lower.contains("exam")))
+            || lower.contains("gram-schmidt") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra"))
+            || (lower.contains("singular value decomposition") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra")))
+            || lower.contains("svd") && lower.contains("linear algebra")
+            || (lower.contains("lu decomposition") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra")))
+            || (lower.contains("qr decomposition") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra")))
+            || (lower.contains("row reduction") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra")))
+            || (lower.contains("gaussian elimination") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra")))
+            || (lower.contains("diagonalization") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra")))
+            || (lower.contains("linear independence") && (lower.contains("class") || lower.contains("linear algebra") || lower.contains("exam"))) {
+            return "linearalgebra"
+        }
+        // differentialequations — positioned BEFORE mathematics so ODE/PDE coursework (Laplace
+        // transforms, separation of variables, Fourier series) routes to a dedicated pool.
+        // Bare "differential equations" in mathematics catches it as a fallback.
+        if lower.contains("differential equations class") || lower.contains("differential equations course")
+            || lower.contains("differential equations exam") || lower.contains("differential equations homework")
+            || lower.contains("differential equations problem set") || lower.contains("differential equations textbook")
+            || lower.contains("differential equations notes") || lower.contains("differential equations assignment")
+            || lower.contains("ode class") || lower.contains("ode course") || lower.contains("ode exam") || lower.contains("ode homework")
+            || lower.contains("pde class") || lower.contains("pde course") || lower.contains("pde exam")
+            || (lower.contains("ordinary differential equation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("solve")))
+            || (lower.contains("partial differential equation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("solve")))
+            || (lower.contains("laplace transform") && (lower.contains("class") || lower.contains("exam") || lower.contains("ode") || lower.contains("differential")))
+            || (lower.contains("separation of variables") && (lower.contains("class") || lower.contains("exam") || lower.contains("ode") || lower.contains("differential equation")))
+            || (lower.contains("integrating factor") && (lower.contains("class") || lower.contains("exam") || lower.contains("ode")))
+            || lower.contains("first-order ode") || lower.contains("first order ode")
+            || lower.contains("second-order ode") || lower.contains("second order ode")
+            || (lower.contains("homogeneous equation") && (lower.contains("class") || lower.contains("ode") || lower.contains("differential")))
+            || (lower.contains("characteristic equation") && (lower.contains("ode") || lower.contains("differential") || lower.contains("class")))
+            || lower.contains("system of odes") || lower.contains("system of differential equations")
+            || (lower.contains("fourier series") && (lower.contains("class") || lower.contains("ode") || lower.contains("pde") || lower.contains("differential equation") || lower.contains("exam")))
+            || (lower.contains("heat equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("pde") || lower.contains("differential")))
+            || (lower.contains("wave equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("pde") || lower.contains("differential")))
+            || (lower.contains("euler's method") && (lower.contains("class") || lower.contains("ode") || lower.contains("exam")))
+            || (lower.contains("eulers method") && (lower.contains("class") || lower.contains("ode") || lower.contains("exam")))
+            || (lower.contains("runge-kutta") && (lower.contains("class") || lower.contains("ode") || lower.contains("differential"))) {
+            return "differentialequations"
+        }
         // mathematics — positioned before studying so number theory, proof writing, and
         // advanced topics (topology, abstract algebra) don't fall through to studying.
         // word("algebra") and word("calculus") are in studying for generic "algebra exam"
@@ -7827,6 +7875,29 @@ public final class CalloutManager {
             || lower.contains("medication mechanism") && (lower.contains("psych") || lower.contains("psychiatry") || lower.contains("mental health")) && (lower.contains("class") || lower.contains("course")) {
             return "psychopharmacology"
         }
+        // neuropsychology — positioned BEFORE clinicalpsychology so neuropsychology COURSEWORK
+        // (class, exam, course context) routes here. Bare "neuropsychological assessment/testing"
+        // without class/exam context continues to clinicalpsychology (clinical work setting).
+        if lower.contains("neuropsychology class") || lower.contains("neuropsychology course")
+            || lower.contains("neuropsychology exam") || lower.contains("neuropsychology textbook")
+            || lower.contains("neuropsychology notes") || lower.contains("neuropsychology assignment")
+            || lower.contains("neuropsychology program") || lower.contains("neuropsychology major")
+            || (lower.contains("neuropsychological assessment") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("study")))
+            || (lower.contains("neuropsychological testing") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("neuropsychological evaluation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("executive function assessment") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neuropsych")))
+            || (lower.contains("executive function") && (lower.contains("neuropsych") || lower.contains("class") && lower.contains("assessment")))
+            || (lower.contains("memory assessment") && lower.contains("class") && !lower.contains("clinical rotation") && !lower.contains("clinical work"))
+            || (lower.contains("cortical function") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neuropsych")))
+            || (lower.contains("neuropsychological battery") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("wechsler") && (lower.contains("class") || lower.contains("neuropsych") || lower.contains("assessment class") || lower.contains("course")))
+            || (lower.contains("trail making test") && (lower.contains("class") || lower.contains("neuropsych") || lower.contains("exam")))
+            || (lower.contains("stroop test") && (lower.contains("class") || lower.contains("neuropsych") || lower.contains("exam")))
+            || (lower.contains("wisconsin card sorting") && (lower.contains("class") || lower.contains("neuropsych") || lower.contains("exam")))
+            || (lower.contains("digit span") && (lower.contains("class") || lower.contains("neuropsych") || lower.contains("assessment")))
+            || lower.contains("neuropsychological rehabilitation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "neuropsychology"
+        }
         // clinicalpsychology — positioned BEFORE psychology so doctoral-level clinical training
         // (APPIC internship match, neuropsychological assessment, psychotherapy practicum) routes
         // to a dedicated pool. EPPP is in forensicpsychology; this covers broader clinical training.
@@ -7936,6 +8007,30 @@ public final class CalloutManager {
             || lower.contains("dual-process theory") && (lower.contains("psych") || lower.contains("cognitive") || lower.contains("class") || lower.contains("paper"))
             || lower.contains("dual process theory") && (lower.contains("psych") || lower.contains("cognitive") || lower.contains("class") || lower.contains("paper")) {
             return "cognitivepsychology"
+        }
+        // developmentalpsych — positioned BEFORE developmentalpsychology so Piaget stage class
+        // terms, attachment theory class, infant cognition class, and stage-name coursework route
+        // to a more specific pool. Generic child development and lifespan terms stay in
+        // developmentalpsychology below.
+        if lower.contains("developmental psychology class") || lower.contains("developmental psychology course")
+            || lower.contains("developmental psychology exam") || lower.contains("developmental psychology textbook")
+            || lower.contains("developmental psychology notes") || lower.contains("developmental psychology assignment")
+            || lower.contains("developmental psychology major") || lower.contains("developmental psychology program")
+            || lower.contains("developmental psych class") || lower.contains("developmental psych course")
+            || lower.contains("developmental psych exam") || lower.contains("developmental psych notes")
+            || (lower.contains("piaget") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("stage") || lower.contains("developmental") || lower.contains("psych") || lower.contains("assignment") || lower.contains("paper")))
+            || lower.contains("sensorimotor stage") || lower.contains("preoperational stage")
+            || lower.contains("concrete operational") || lower.contains("formal operational")
+            || lower.contains("piaget's stages") || lower.contains("piagets stages") || lower.contains("piaget stages")
+            || (lower.contains("attachment theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("psych") || lower.contains("developmental") || lower.contains("paper")))
+            || (lower.contains("infant cognition") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("research")))
+            || (lower.contains("object permanence") && (lower.contains("class") || lower.contains("exam") || lower.contains("psych") || lower.contains("developmental")))
+            || (lower.contains("secure attachment") && (lower.contains("class") || lower.contains("exam") || lower.contains("psych") || lower.contains("theory")))
+            || (lower.contains("bowlby") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("attachment") || lower.contains("developmental")))
+            || (lower.contains("ainsworth") && (lower.contains("class") || lower.contains("psych") || lower.contains("attachment") || lower.contains("developmental")))
+            || (lower.contains("strange situation") && (lower.contains("class") || lower.contains("psych") || lower.contains("developmental") || lower.contains("attachment")))
+            || lower.contains("theory of mind") && (lower.contains("class") || lower.contains("developmental") || lower.contains("psych") || lower.contains("exam")) {
+            return "developmentalpsych"
         }
         // developmentalpsychology — positioned BEFORE psychology so child development, lifespan
         // development, Vygotsky, Erikson, and Kohlberg coursework route here. Bare "Piaget" and
@@ -8129,6 +8224,29 @@ public final class CalloutManager {
             || lower.contains("incarceration") || word("victimology")
             || lower.contains("crime prevention") || lower.contains("crime analysis") {
             return "criminaljustice"
+        }
+        // militarymedicine — positioned BEFORE militaryscience so tactical combat casualty care
+        // (TCCC), MARCH algorithm, combat medicine class, and military medical training route to
+        // a dedicated pool. ROTC coursework and military science stay in militaryscience below.
+        if lower.contains("tccc") && !lower.contains("code") && !lower.contains("tcp")
+            || lower.contains("tactical combat casualty care")
+            || lower.contains("combat medicine") && (lower.contains("class") || lower.contains("course") || lower.contains("training") || lower.contains("exam") || lower.contains("rotation"))
+            || lower.contains("military medicine") && (lower.contains("class") || lower.contains("course") || lower.contains("training") || lower.contains("exam") || lower.contains("rotation") || lower.contains("program") || lower.contains("notes"))
+            || lower.contains("march algorithm") || lower.contains("march mnemonic") && lower.contains("medical")
+            || lower.contains("care under fire") && (lower.contains("medical") || lower.contains("tccc") || lower.contains("combat") || lower.contains("tactical"))
+            || lower.contains("tactical field care") || lower.contains("tactical evacuation care")
+            || lower.contains("casevac") && (lower.contains("medical") || lower.contains("care") || lower.contains("class") || lower.contains("training"))
+            || lower.contains("medevac") && lower.contains("class") && (lower.contains("medical") || lower.contains("training") || lower.contains("protocol"))
+            || lower.contains("combat casualty care") || lower.contains("combat trauma care")
+            || lower.contains("field medicine") && (lower.contains("class") || lower.contains("course") || lower.contains("training") || lower.contains("combat") || lower.contains("military"))
+            || lower.contains("military trauma") && (lower.contains("class") || lower.contains("course") || lower.contains("training") || lower.contains("care"))
+            || lower.contains("tourniquet application") && (lower.contains("combat") || lower.contains("military") || lower.contains("tccc") || lower.contains("tactical"))
+            || lower.contains("hemorrhage control") && (lower.contains("combat") || lower.contains("military") || lower.contains("tccc") || lower.contains("tactical"))
+            || lower.contains("tactical medicine") && (lower.contains("class") || lower.contains("course") || lower.contains("training") || lower.contains("exam"))
+            || lower.contains("military medical officer") && (lower.contains("rotation") || lower.contains("training") || lower.contains("class"))
+            || lower.contains("austere medicine") && (lower.contains("military") || lower.contains("combat") || lower.contains("field") || lower.contains("class"))
+            || lower.contains("prolonged field care") && (lower.contains("military") || lower.contains("tccc") || lower.contains("combat")) {
+            return "militarymedicine"
         }
         // militaryscience — positioned BEFORE militarystudies so formal ROTC coursework, military
         // science department classes, and leadership-lab assignments route to a dedicated pool.

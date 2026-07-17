@@ -21557,4 +21557,164 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast851() {
         #expect(SuggestedSessionTemplates.all.count >= 851, "template catalog must have ≥851 entries after geriatricrotation/neurochemistry/psychobiologyclass/abnormalpsychology/healthpsychology additions (10 templates)")
     }
+
+    // MARK: - linearalgebra routing
+    @Test func linearAlgebraClassRoutesLinearalgebra() {
+        #expect(CalloutManager.extractTaskKeyword(from: "linear algebra class exam problem set tonight") == "linearalgebra")
+    }
+    @Test func eigenvectorRoutesLinearalgebra() {
+        #expect(CalloutManager.extractTaskKeyword(from: "find eigenvectors and eigenvalues of this matrix") == "linearalgebra")
+    }
+    @Test func gramSchmidtRoutesLinearalgebra() {
+        #expect(CalloutManager.extractTaskKeyword(from: "gram-schmidt orthogonalization linear algebra class exam") == "linearalgebra")
+    }
+    @Test func vectorSpaceClassRoutesLinearalgebra() {
+        #expect(CalloutManager.extractTaskKeyword(from: "vector space basis and dimension linear algebra class") == "linearalgebra")
+    }
+    @Test func svdLinearAlgebraRoutesLinearalgebra() {
+        #expect(CalloutManager.extractTaskKeyword(from: "singular value decomposition linear algebra class exam") == "linearalgebra")
+    }
+    @Test @MainActor func linearalgebraCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "linearalgebra", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "linearalgebra", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "linearalgebra", tier: 3).isEmpty)
+    }
+    @Test @MainActor func linearalgebraTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "linearalgebra", tier: 1).count >= 4)
+    }
+    @Test @MainActor func linearalgebraTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "linearalgebra", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - differentialequations routing
+    @Test func diffEqClassRoutesDifferentialequations() {
+        #expect(CalloutManager.extractTaskKeyword(from: "differential equations class exam homework tonight") == "differentialequations")
+    }
+    @Test func laplaceTransformRoutesDifferentialequations() {
+        #expect(CalloutManager.extractTaskKeyword(from: "laplace transform class ode differential equations exam") == "differentialequations")
+    }
+    @Test func separationOfVariablesRoutesDifferentialequations() {
+        #expect(CalloutManager.extractTaskKeyword(from: "separation of variables class differential equation ode exam") == "differentialequations")
+    }
+    @Test func secondOrderOdeRoutesDifferentialequations() {
+        #expect(CalloutManager.extractTaskKeyword(from: "second-order ode problem set homework tonight") == "differentialequations")
+    }
+    @Test func heatEquationPdeRoutesDifferentialequations() {
+        #expect(CalloutManager.extractTaskKeyword(from: "heat equation pde class differential equations exam") == "differentialequations")
+    }
+    @Test @MainActor func differentialequationsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "differentialequations", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "differentialequations", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "differentialequations", tier: 3).isEmpty)
+    }
+    @Test @MainActor func differentialequationsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "differentialequations", tier: 1).count >= 4)
+    }
+    @Test @MainActor func differentialequationsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "differentialequations", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - neuropsychology routing
+    @Test func neuropsychologyClassRoutesNeuropsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neuropsychology class exam notes tonight") == "neuropsychology")
+    }
+    @Test func neuropsychologicalAssessmentClassRoutesNeuropsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neuropsychological assessment class course exam study") == "neuropsychology")
+    }
+    @Test func executiveFunctionAssessmentRoutesNeuropsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "executive function assessment class neuropsych exam") == "neuropsychology")
+    }
+    @Test func wechslerClassRoutesNeuropsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "wechsler class neuropsychology assessment course") == "neuropsychology")
+    }
+    @Test func trailMakingTestRoutesNeuropsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "trail making test class neuropsych exam") == "neuropsychology")
+    }
+    @Test @MainActor func neuropsychologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "neuropsychology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "neuropsychology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "neuropsychology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func neuropsychologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "neuropsychology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func neuropsychologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "neuropsychology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - developmentalpsych routing
+    @Test func developmentalPsychClassRoutesDevelopmentalpsych() {
+        #expect(CalloutManager.extractTaskKeyword(from: "developmental psychology class exam notes tonight") == "developmentalpsych")
+    }
+    @Test func piagetStagesRoutesDevelopmentalpsych() {
+        #expect(CalloutManager.extractTaskKeyword(from: "piaget stages class developmental psychology exam paper") == "developmentalpsych")
+    }
+    @Test func attachmentTheoryClassRoutesDevelopmentalpsych() {
+        #expect(CalloutManager.extractTaskKeyword(from: "attachment theory class developmental psychology exam bowlby") == "developmentalpsych")
+    }
+    @Test func sensorimoterStageRoutesDevelopmentalpsych() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sensorimotor stage piaget cognitive developmental exam") == "developmentalpsych")
+    }
+    @Test func infantCognitionClassRoutesDevelopmentalpsych() {
+        #expect(CalloutManager.extractTaskKeyword(from: "infant cognition class developmental psychology course research") == "developmentalpsych")
+    }
+    @Test @MainActor func developmentalpsychCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "developmentalpsych", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "developmentalpsych", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "developmentalpsych", tier: 3).isEmpty)
+    }
+    @Test @MainActor func developmentalpsychTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "developmentalpsych", tier: 1).count >= 4)
+    }
+    @Test @MainActor func developmentalpsychTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "developmentalpsych", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - militarymedicine routing
+    @Test func tcccRoutesMilitarymedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tccc tactical combat casualty care training exam") == "militarymedicine")
+    }
+    @Test func marchAlgorithmRoutesMilitarymedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "march algorithm medical mnemonic combat medicine training") == "militarymedicine")
+    }
+    @Test func combatMedicineClassRoutesMilitarymedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "combat medicine class course training exam military") == "militarymedicine")
+    }
+    @Test func tacticalFieldCareRoutesMilitarymedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tactical field care tccc combat casualty protocol") == "militarymedicine")
+    }
+    @Test func hemorrhageControlCombatRoutesMilitarymedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hemorrhage control combat military tccc tactical training") == "militarymedicine")
+    }
+    @Test @MainActor func militarymedicineCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "militarymedicine", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "militarymedicine", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "militarymedicine", tier: 3).isEmpty)
+    }
+    @Test @MainActor func militarymedcineTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "militarymedicine", tier: 1).count >= 4)
+    }
+    @Test @MainActor func militarymedicineTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "militarymedicine", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: linearalgebra/differentialequations/neuropsychology/developmentalpsych/militarymedicine)
+    @Test func calloutTemplatesCountAtLeast861() {
+        #expect(SuggestedSessionTemplates.all.count >= 861, "template catalog must have ≥861 entries after linearalgebra/differentialequations/neuropsychology/developmentalpsych/militarymedicine additions (10 templates)")
+    }
 }
