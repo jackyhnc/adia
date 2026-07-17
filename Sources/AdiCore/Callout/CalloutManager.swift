@@ -749,6 +749,96 @@ public final class CalloutManager {
             || (lower.contains("runge-kutta") && (lower.contains("class") || lower.contains("ode") || lower.contains("differential"))) {
             return "differentialequations"
         }
+        // complexanalysis — positioned BEFORE mathematics so complex analysis COURSEWORK
+        // (Cauchy-Riemann, contour integrals, residue theorem, conformal mappings) routes to a
+        // dedicated pool. Bare "complex analysis" stays in mathematics as a broader fallback.
+        if (lower.contains("complex analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("notes") || lower.contains("textbook") || lower.contains("assignment") || lower.contains("problem set")))
+            || (lower.contains("complex variables") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework")))
+            || (lower.contains("cauchy-riemann") && (lower.contains("class") || lower.contains("exam") || lower.contains("complex")))
+            || (lower.contains("cauchy riemann") && (lower.contains("class") || lower.contains("exam") || lower.contains("complex")))
+            || (lower.contains("contour integration") && (lower.contains("class") || lower.contains("exam") || lower.contains("complex")))
+            || (lower.contains("contour integral") && (lower.contains("class") || lower.contains("exam") || lower.contains("complex")))
+            || (lower.contains("residue theorem") && (lower.contains("class") || lower.contains("exam") || lower.contains("complex")))
+            || (lower.contains("cauchy's integral formula") && (lower.contains("class") || lower.contains("exam") || lower.contains("complex")))
+            || (lower.contains("cauchys integral formula") && (lower.contains("class") || lower.contains("exam") || lower.contains("complex")))
+            || (lower.contains("analytic function") && (lower.contains("class") || lower.contains("exam") || lower.contains("complex analysis")))
+            || (lower.contains("holomorphic function") && (lower.contains("class") || lower.contains("exam") || lower.contains("complex")))
+            || (lower.contains("meromorphic function") && (lower.contains("class") || lower.contains("exam") || lower.contains("complex")))
+            || (lower.contains("conformal mapping") && (lower.contains("class") || lower.contains("exam") || lower.contains("complex")))
+            || (lower.contains("laurent series") && (lower.contains("class") || lower.contains("exam") || lower.contains("complex")))
+            || (lower.contains("riemann surface") && (lower.contains("class") || lower.contains("exam") || lower.contains("complex"))) {
+            return "complexanalysis"
+        }
+        // realanalysis — positioned BEFORE mathematics so real analysis COURSEWORK (epsilon-delta,
+        // metric spaces, Lebesgue integration, measure theory) routes to a dedicated pool.
+        // Bare "real analysis" / "measure theory" stay in mathematics as broader fallbacks.
+        if (lower.contains("real analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("notes") || lower.contains("textbook") || lower.contains("assignment") || lower.contains("problem set")))
+            || (lower.contains("epsilon-delta") && (lower.contains("class") || lower.contains("exam") || lower.contains("real analysis") || lower.contains("proof")))
+            || (lower.contains("epsilon delta") && (lower.contains("class") || lower.contains("exam") || lower.contains("real analysis") || lower.contains("proof")))
+            || (lower.contains("metric space") && (lower.contains("class") || lower.contains("exam") || lower.contains("real analysis")))
+            || (lower.contains("uniform convergence") && (lower.contains("class") || lower.contains("exam") || lower.contains("real analysis")))
+            || (lower.contains("lebesgue integration") && (lower.contains("class") || lower.contains("exam") || lower.contains("real analysis")))
+            || (lower.contains("lebesgue integral") && (lower.contains("class") || lower.contains("exam") || lower.contains("real analysis") || lower.contains("measure")))
+            || (lower.contains("measure theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("real analysis")))
+            || (lower.contains("cauchy sequence") && (lower.contains("class") || lower.contains("exam") || lower.contains("real analysis")))
+            || (lower.contains("heine-borel") && (lower.contains("class") || lower.contains("exam") || lower.contains("real analysis")))
+            || (lower.contains("bolzano-weierstrass") && (lower.contains("class") || lower.contains("exam") || lower.contains("real analysis")))
+            || (lower.contains("point-set topology") && (lower.contains("class") || lower.contains("exam") || lower.contains("real analysis"))) {
+            return "realanalysis"
+        }
+        // discretemath — positioned BEFORE mathematics so discrete mathematics COURSEWORK
+        // (graph theory proofs, combinatorics class, propositional logic, proof by induction)
+        // routes to a dedicated pool. Generic "discrete mathematics" mention stays in mathematics.
+        if (lower.contains("discrete math") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("hw") || lower.contains("problem set") || lower.contains("notes") || lower.contains("textbook") || lower.contains("assignment")))
+            || (lower.contains("discrete mathematics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("problem set") || lower.contains("assignment")))
+            || (lower.contains("graph theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("proof") || lower.contains("discrete")))
+            || (lower.contains("combinatorics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("discrete")))
+            || (lower.contains("propositional logic") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("discrete")))
+            || (lower.contains("proof by induction") && (lower.contains("class") || lower.contains("discrete") || lower.contains("exam")))
+            || (lower.contains("mathematical induction") && (lower.contains("class") || lower.contains("discrete") || lower.contains("exam")))
+            || (lower.contains("pigeonhole principle") && (lower.contains("class") || lower.contains("exam") || lower.contains("discrete")))
+            || (lower.contains("inclusion-exclusion") && (lower.contains("class") || lower.contains("exam") || lower.contains("discrete") || lower.contains("combinatorics")))
+            || (lower.contains("recurrence relation") && (lower.contains("class") || lower.contains("exam") || lower.contains("discrete") || lower.contains("combinatorics")))
+            || (lower.contains("boolean algebra") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("discrete"))) {
+            return "discretemath"
+        }
+        // probabilitytheory — positioned BEFORE mathematics so rigorous probability COURSEWORK
+        // (sigma-algebras, random variables, CLT, law of large numbers) routes to a dedicated
+        // pool. "Probability theory" without class context stays in mathematics fallback.
+        if (lower.contains("probability theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("notes") || lower.contains("textbook") || lower.contains("assignment") || lower.contains("problem set")))
+            || (lower.contains("sigma-algebra") && (lower.contains("class") || lower.contains("exam") || lower.contains("probability")))
+            || (lower.contains("sigma algebra") && (lower.contains("class") || lower.contains("exam") || lower.contains("probability")))
+            || (lower.contains("random variable") && (lower.contains("probability theory") || (lower.contains("class") && lower.contains("probability"))))
+            || (lower.contains("moment generating function") && (lower.contains("class") || lower.contains("exam") || lower.contains("probability")))
+            || (lower.contains("central limit theorem") && (lower.contains("class") || lower.contains("exam") || lower.contains("probability theory")))
+            || (lower.contains("law of large numbers") && (lower.contains("class") || lower.contains("exam") || lower.contains("probability")))
+            || (lower.contains("probability measure") && (lower.contains("class") || lower.contains("exam") || lower.contains("probability theory")))
+            || (lower.contains("stochastic process") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("probability theory")))
+            || (lower.contains("characteristic function") && (lower.contains("probability") && (lower.contains("class") || lower.contains("exam")))) {
+            return "probabilitytheory"
+        }
+        // numericalanalysis — positioned BEFORE mathematics so numerical analysis COURSEWORK
+        // (floating-point, Newton's method, numerical integration, finite differences) routes to
+        // a dedicated pool. "Numerical analysis"/"numerical methods" without class context falls
+        // back to mathematics.
+        if (lower.contains("numerical analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("notes") || lower.contains("textbook") || lower.contains("assignment") || lower.contains("problem set")))
+            || (lower.contains("numerical methods") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("assignment")))
+            || (lower.contains("floating-point") && (lower.contains("class") || lower.contains("numerical") || lower.contains("exam")))
+            || (lower.contains("floating point") && (lower.contains("numerical") && (lower.contains("class") || lower.contains("exam"))))
+            || (lower.contains("newton's method") && (lower.contains("class") || lower.contains("numerical") || lower.contains("exam")))
+            || (lower.contains("newtons method") && (lower.contains("class") || lower.contains("numerical") || lower.contains("exam")))
+            || (lower.contains("bisection method") && (lower.contains("class") || lower.contains("numerical") || lower.contains("exam")))
+            || (lower.contains("numerical integration") && (lower.contains("class") || lower.contains("exam") || lower.contains("numerical")))
+            || (lower.contains("gaussian quadrature") && (lower.contains("class") || lower.contains("exam") || lower.contains("numerical")))
+            || (lower.contains("finite difference") && (lower.contains("class") || lower.contains("numerical") || lower.contains("exam")))
+            || (lower.contains("finite element method") && (lower.contains("class") || lower.contains("exam") || lower.contains("numerical")))
+            || (lower.contains("interpolation") && (lower.contains("numerical") && (lower.contains("class") || lower.contains("exam"))))
+            || (lower.contains("spline interpolation") && (lower.contains("class") || lower.contains("exam") || lower.contains("numerical")))
+            || (lower.contains("runge-kutta") && (lower.contains("numerical") || (lower.contains("class") && lower.contains("numerical"))))
+            || (lower.contains("truncation error") && (lower.contains("class") || lower.contains("numerical") || lower.contains("exam")))
+            || (lower.contains("round-off error") && (lower.contains("class") || lower.contains("numerical") || lower.contains("exam"))) {
+            return "numericalanalysis"
+        }
         // mathematics — positioned before studying so number theory, proof writing, and
         // advanced topics (topology, abstract algebra) don't fall through to studying.
         // word("algebra") and word("calculus") are in studying for generic "algebra exam"

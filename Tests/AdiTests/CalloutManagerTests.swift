@@ -21717,4 +21717,164 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast861() {
         #expect(SuggestedSessionTemplates.all.count >= 861, "template catalog must have ≥861 entries after linearalgebra/differentialequations/neuropsychology/developmentalpsych/militarymedicine additions (10 templates)")
     }
+
+    // MARK: - complexanalysis routing
+    @Test func complexAnalysisClassRoutesComplexanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complex analysis class exam problem set tonight") == "complexanalysis")
+    }
+    @Test func cauchyRiemannRoutesComplexanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cauchy-riemann equations class complex analysis exam") == "complexanalysis")
+    }
+    @Test func residueTheoremRoutesComplexanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "residue theorem class complex analysis exam homework") == "complexanalysis")
+    }
+    @Test func contourIntegrationRoutesComplexanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "contour integration class complex analysis exam") == "complexanalysis")
+    }
+    @Test func laurentSeriesRoutesComplexanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "laurent series complex analysis class exam") == "complexanalysis")
+    }
+    @Test @MainActor func complexanalysisCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "complexanalysis", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "complexanalysis", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "complexanalysis", tier: 3).isEmpty)
+    }
+    @Test @MainActor func complexanalysisTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "complexanalysis", tier: 1).count >= 4)
+    }
+    @Test @MainActor func complexanalysisTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "complexanalysis", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - realanalysis routing
+    @Test func realAnalysisClassRoutesRealanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "real analysis class exam problem set tonight") == "realanalysis")
+    }
+    @Test func epsilonDeltaRoutesRealanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "epsilon-delta proof class real analysis exam") == "realanalysis")
+    }
+    @Test func metricSpaceRoutesRealanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "metric space class real analysis exam homework") == "realanalysis")
+    }
+    @Test func uniformConvergenceRoutesRealanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "uniform convergence class real analysis exam") == "realanalysis")
+    }
+    @Test func lebesgueIntegrationRoutesRealanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "lebesgue integration class real analysis exam") == "realanalysis")
+    }
+    @Test @MainActor func realanalysisCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "realanalysis", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "realanalysis", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "realanalysis", tier: 3).isEmpty)
+    }
+    @Test @MainActor func realanalysisTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "realanalysis", tier: 1).count >= 4)
+    }
+    @Test @MainActor func realanalysisTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "realanalysis", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - discretemath routing
+    @Test func discreteMathClassRoutesDiscretemath() {
+        #expect(CalloutManager.extractTaskKeyword(from: "discrete math class exam problem set tonight") == "discretemath")
+    }
+    @Test func graphTheoryClassRoutesDiscretemath() {
+        #expect(CalloutManager.extractTaskKeyword(from: "graph theory class exam proof discrete math") == "discretemath")
+    }
+    @Test func combinatoricsClassRoutesDiscretemath() {
+        #expect(CalloutManager.extractTaskKeyword(from: "combinatorics class exam discrete math homework") == "discretemath")
+    }
+    @Test func propositionalLogicClassRoutesDiscretemath() {
+        #expect(CalloutManager.extractTaskKeyword(from: "propositional logic class discrete math exam") == "discretemath")
+    }
+    @Test func proofByInductionClassRoutesDiscretemath() {
+        #expect(CalloutManager.extractTaskKeyword(from: "proof by induction class discrete math exam") == "discretemath")
+    }
+    @Test @MainActor func discretemathCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "discretemath", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "discretemath", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "discretemath", tier: 3).isEmpty)
+    }
+    @Test @MainActor func discretemathTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "discretemath", tier: 1).count >= 4)
+    }
+    @Test @MainActor func discretemathTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "discretemath", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - probabilitytheory routing
+    @Test func probabilityTheoryClassRoutesProbabilitytheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "probability theory class exam homework tonight") == "probabilitytheory")
+    }
+    @Test func sigmaAlgebraRoutesProbabilitytheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sigma-algebra class probability exam homework") == "probabilitytheory")
+    }
+    @Test func centralLimitTheoremRoutesProbabilitytheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "central limit theorem class probability theory exam") == "probabilitytheory")
+    }
+    @Test func momentGeneratingFunctionRoutesProbabilitytheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "moment generating function class probability exam") == "probabilitytheory")
+    }
+    @Test func lawOfLargeNumbersRoutesProbabilitytheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "law of large numbers class probability theory exam") == "probabilitytheory")
+    }
+    @Test @MainActor func probabilitytheoryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "probabilitytheory", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "probabilitytheory", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "probabilitytheory", tier: 3).isEmpty)
+    }
+    @Test @MainActor func probabilitytheoryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "probabilitytheory", tier: 1).count >= 4)
+    }
+    @Test @MainActor func probabilitytheoryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "probabilitytheory", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - numericalanalysis routing
+    @Test func numericalAnalysisClassRoutesNumericalanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "numerical analysis class exam homework tonight") == "numericalanalysis")
+    }
+    @Test func numericalMethodsClassRoutesNumericalanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "numerical methods class exam homework assignment") == "numericalanalysis")
+    }
+    @Test func newtonsMethodNumericalRoutesNumericalanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "newton's method class numerical analysis exam") == "numericalanalysis")
+    }
+    @Test func finiteDifferenceRoutesNumericalanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finite difference class numerical analysis exam") == "numericalanalysis")
+    }
+    @Test func gaussianQuadratureRoutesNumericalanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "gaussian quadrature class numerical analysis exam") == "numericalanalysis")
+    }
+    @Test @MainActor func numericalanalysisCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "numericalanalysis", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "numericalanalysis", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "numericalanalysis", tier: 3).isEmpty)
+    }
+    @Test @MainActor func numericalanalysisTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "numericalanalysis", tier: 1).count >= 4)
+    }
+    @Test @MainActor func numericalanalysisTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "numericalanalysis", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: complexanalysis/realanalysis/discretemath/probabilitytheory/numericalanalysis)
+    @Test func calloutTemplatesCountAtLeast871() {
+        #expect(SuggestedSessionTemplates.all.count >= 871, "template catalog must have ≥871 entries after complexanalysis/realanalysis/discretemath/probabilitytheory/numericalanalysis additions (10 templates)")
+    }
 }

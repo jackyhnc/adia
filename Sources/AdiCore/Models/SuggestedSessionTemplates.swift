@@ -5555,5 +5555,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Combat medicine training task completed (TCCC case write-up or protocol documentation finished with MARCH phases, hemorrhage control priorities, airway and hypothermia management, and casualty care steps documented — saved to file)",
             preferredDuration: 45 * 60
         ),
+        // complexanalysis
+        SuggestedTemplate(
+            icon: "function",
+            task: "Study complex analysis for my exam — review Cauchy-Riemann equations, contour integration, residue theorem, Cauchy's integral formula, analytic and holomorphic functions, Laurent series, and conformal mappings",
+            successCriteria: "Complex analysis study session completed (at least two topics reviewed with Cauchy-Riemann conditions, residue theorem applications, contour integration techniques, and key theorems summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "function",
+            task: "Work on my complex analysis problem set — compute contour integrals using residues, verify Cauchy-Riemann equations, apply Cauchy's integral formula, classify singularities, or construct conformal mappings",
+            successCriteria: "Complex analysis problem set completed (contour integrals, residue calculations, or conformal mapping problems solved with full working shown and answers verified — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // realanalysis
+        SuggestedTemplate(
+            icon: "function",
+            task: "Study real analysis for my exam — review epsilon-delta definitions, metric spaces, Cauchy sequences, uniform convergence, compactness (Heine-Borel), Lebesgue integration, and measure theory foundations",
+            successCriteria: "Real analysis study session completed (at least two topics reviewed with epsilon-delta proofs, metric space properties, convergence criteria, and Lebesgue integration concepts summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "function",
+            task: "Work on my real analysis problem set — write epsilon-delta proofs, prove convergence in metric spaces, apply Heine-Borel compactness, demonstrate uniform convergence, or work through Lebesgue integration problems",
+            successCriteria: "Real analysis problem set completed (epsilon-delta proofs or metric space/convergence problems solved with rigorous justification at each step — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // discretemath
+        SuggestedTemplate(
+            icon: "network",
+            task: "Study discrete math for my exam — review proof by induction, graph theory fundamentals, combinatorics (permutations/combinations), propositional logic, pigeonhole principle, recurrence relations, and inclusion-exclusion",
+            successCriteria: "Discrete math study session completed (at least two topics reviewed with proof techniques, graph theory properties, combinatorial formulas, and logic rules summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "network",
+            task: "Work on my discrete math problem set — write proofs by induction, solve graph theory problems, apply combinatorics counting techniques, evaluate propositional logic expressions, or solve recurrence relations",
+            successCriteria: "Discrete math problem set completed (induction proofs, graph theory or combinatorics problems solved with clear logical steps and verified answers — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // probabilitytheory
+        SuggestedTemplate(
+            icon: "chart.bar",
+            task: "Study probability theory for my exam — review sigma-algebras, random variables, expectation and variance, conditional probability, moment generating functions, central limit theorem, and law of large numbers",
+            successCriteria: "Probability theory study session completed (at least two topics reviewed with measure-theoretic definitions, random variable properties, CLT conditions, and key theorems summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.bar",
+            task: "Work on my probability theory problem set — derive moment generating functions, prove convergence theorems, compute conditional expectations, work with sigma-algebras, or apply the central limit theorem",
+            successCriteria: "Probability theory problem set completed (measure-theoretic probability problems solved with rigorous derivations, convergence arguments, or CLT applications documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // numericalanalysis
+        SuggestedTemplate(
+            icon: "number",
+            task: "Study numerical analysis for my exam — review floating-point arithmetic, Newton's method, bisection method, numerical integration (Gaussian quadrature, Simpson's rule), finite differences, interpolation, and error analysis",
+            successCriteria: "Numerical analysis study session completed (at least two methods reviewed with algorithm steps, convergence rates, error bounds, and floating-point considerations summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "number",
+            task: "Work on my numerical analysis problem set — implement Newton's method or bisection, compute numerical integrals, apply finite difference schemes, construct interpolating polynomials, or analyze truncation and round-off error",
+            successCriteria: "Numerical analysis problem set completed (root-finding, integration, or interpolation problems solved with algorithm steps, error estimates, and numerical results documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

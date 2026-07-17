@@ -6313,4 +6313,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast861() {
         #expect(SuggestedSessionTemplates.all.count >= 861, "template catalog must have ≥861 entries after linearalgebra/differentialequations/neuropsychology/developmentalpsych/militarymedicine additions")
     }
+    // MARK: - complexanalysis templates
+    @Test func complexanalysisStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("complex analysis") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func complexanalysisAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("complex analysis") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - realanalysis templates
+    @Test func realanalysisStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("real analysis") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func realanalysisAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("real analysis") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - discretemath templates
+    @Test func discretemathStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("discrete math") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func discretemathAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("discrete math") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - probabilitytheory templates
+    @Test func probabilitytheoryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("probability theory") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func probabilitytheoryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("probability theory") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - numericalanalysis templates
+    @Test func numericalanalysisStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("numerical analysis") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func numericalanalysisAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("numerical analysis") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - Count guard (≥871)
+    @Test func templateCountAtLeast871() {
+        #expect(SuggestedSessionTemplates.all.count >= 871, "template catalog must have ≥871 entries after complexanalysis/realanalysis/discretemath/probabilitytheory/numericalanalysis additions")
+    }
 }

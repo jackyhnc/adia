@@ -496,6 +496,11 @@ extension CalloutManager {
         case "neuropsychology":            return neuropsychologyCallouts(tier: tier)
         case "developmentalpsych":         return developmentalpsychCallouts(tier: tier)
         case "militarymedicine":           return militarymedicineCallouts(tier: tier)
+        case "complexanalysis":            return complexanalysisCallouts(tier: tier)
+        case "realanalysis":               return realanalysisCallouts(tier: tier)
+        case "discretemath":               return discretemathCallouts(tier: tier)
+        case "probabilitytheory":          return probabilitytheoryCallouts(tier: tier)
+        case "numericalanalysis":          return numericalanalysisCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -9891,6 +9896,111 @@ extension CalloutManager {
             "CLOSE THIS. open your tactical medicine notes.",
             "CLOSE THIS. that MARCH algorithm won't memorize itself.",
             "CLOSE THIS. your combat casualty care exam won't study itself."
+        ]
+        }
+    }
+
+    private func complexanalysisCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Cauchy-Riemann equations won't solve themselves.",
+            "close this and get back to your complex analysis work.",
+            "that contour integral won't compute itself. close this.",
+            "your complex analysis exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters complex analysis by scrolling.",
+            "close this and open your complex analysis notes.",
+            "those residue theorem problems need your attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your complex analysis textbook.",
+            "CLOSE THIS. those Cauchy-Riemann equations won't solve themselves.",
+            "CLOSE THIS. your complex analysis exam won't study itself."
+        ]
+        }
+    }
+
+    private func realanalysisCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those epsilon-delta proofs won't write themselves.",
+            "close this and get back to your real analysis work.",
+            "that metric space problem won't solve itself. close this.",
+            "your real analysis exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters real analysis by scrolling.",
+            "close this and open your real analysis notes.",
+            "those Lebesgue integration problems need your full attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your real analysis textbook.",
+            "CLOSE THIS. those epsilon-delta proofs won't write themselves.",
+            "CLOSE THIS. your real analysis exam won't study itself."
+        ]
+        }
+    }
+
+    private func discretemathCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those combinatorics problems won't solve themselves.",
+            "close this and get back to your discrete math work.",
+            "that graph theory proof won't write itself. close this.",
+            "your discrete math exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters discrete math by scrolling.",
+            "close this and open your discrete math notes.",
+            "those proof-by-induction problems need your attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your discrete math textbook.",
+            "CLOSE THIS. those combinatorics problems won't solve themselves.",
+            "CLOSE THIS. your discrete math exam won't study itself."
+        ]
+        }
+    }
+
+    private func probabilitytheoryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those probability theory proofs won't write themselves.",
+            "close this and get back to your probability theory work.",
+            "that sigma-algebra problem won't solve itself. close this.",
+            "your probability theory exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters probability theory by scrolling.",
+            "close this and open your probability theory notes.",
+            "those central limit theorem derivations need your attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your probability theory textbook.",
+            "CLOSE THIS. those sigma-algebra problems won't solve themselves.",
+            "CLOSE THIS. your probability theory exam won't study itself."
+        ]
+        }
+    }
+
+    private func numericalanalysisCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those numerical methods won't implement themselves.",
+            "close this and get back to your numerical analysis work.",
+            "that finite difference problem won't solve itself. close this.",
+            "your numerical analysis exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters numerical analysis by scrolling.",
+            "close this and open your numerical analysis notes.",
+            "those floating-point and interpolation problems need your attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your numerical analysis textbook.",
+            "CLOSE THIS. those numerical methods won't implement themselves.",
+            "CLOSE THIS. your numerical analysis exam won't study itself."
         ]
         }
     }
