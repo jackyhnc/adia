@@ -1,5 +1,88 @@
 # Adia — Build Progress
 
+## Run 374 (automated) — 2026-07-17 — 5 new keyword domains: geophysics/mineralogy/petrology/hydrogeology/stratigraphy (811→821 templates)
+
+### What shipped
+
+**5 new keyword domains: geophysics, mineralogy, petrology, hydrogeology, stratigraphy**
+
+**New keyword domain — geophysics:**
+- Branch positioned BEFORE geologylab and geology; word("geophysics") removed from geology branch.
+- Catches: word("geophysics"/"geophysicist"/"geophysicists"), geophysics class/course/exam/homework/problem set, seismic reflection/refraction, seismic survey+data/analysis/interpretation, gravity survey+geophysics/class/data, magnetic survey+geophysics/class/data, geophysical survey/exploration/inversion/data, well logging+geophysics/class, borehole geophysics, resistivity survey+class/geophysics, induced polarization+geophysics/class, GPR survey+class, electromagnetic survey+geophysics/class, potential field+geophysics/class.
+- `geophysicsCallouts(tier:)` 4/3/3: "that seismic section won't interpret itself." / "no one masters geophysics by scrolling." / "CLOSE THIS. open your geophysics notes."
+- 2 templates: "Work through my geophysics problem set…" (60 min) + "Study geophysics for my exam…" (60 min)
+
+**New keyword domain — mineralogy:**
+- Branch positioned BEFORE geologylab and geology; word("mineralogy") removed from geology branch.
+- "crystallography class/exam" stays in materialscience (fires later); "crystal structure class" also stays in materialscience. Only mineralogy-qualified crystal terms are caught here.
+- Catches: word("mineralogy"/"mineralogist"/"mineralogical"), mineralogy class/course/exam/homework/lab/assignment/problem set, optical mineralogy, crystal system+class/mineralogy/lab/exam, Mohs hardness+class/mineralogy/lab, cleavage+mineralogy, birefringence+mineralogy, refractive index+mineralogy/mineral, mineral properties+class/lab/mineralogy, XRD analysis+mineralogy/geology+mineral context, mineral chemistry+mineralogy.
+- `mineralogyCallouts(tier:)` 4/3/3: "those minerals won't identify themselves." / "no one masters mineralogy by scrolling." / "CLOSE THIS. open your mineralogy notes."
+- 2 templates: "Study mineralogy for my exam…" (60 min) + "Complete my mineralogy lab or assignment…" (45 min)
+
+**New keyword domain — petrology:**
+- Branch positioned BEFORE geologylab and geology; word("petrology") removed from geology branch.
+- "petrographic lab" stays in geologylab (fires after); only non-lab petrographic context caught here.
+- Catches: word("petrology"/"petrologist"/"petrologic"/"petrological"), petrology class/course/exam/homework/assignment/problem set, igneous/metamorphic/sedimentary petrology, petrographic analysis (non-lab context), petrographic description, igneous/metamorphic/sedimentary rock classification+class/exam/petrology, P-T path+petrology/metamorphic/class, geothermobarometry+class/petrology, Bowen's reaction series+class/exam/petrology, volcanic/plutonic rock+petrology/class/exam, metamorphic facies+class/exam/petrology.
+- `petrologyCallouts(tier:)` 4/3/3: "that rock classification won't do itself." / "no one masters petrology by scrolling." / "CLOSE THIS. open your petrology notes."
+- 2 templates: "Study petrology for my exam…" (60 min) + "Complete my petrology assignment…" (60 min)
+
+**New keyword domain — hydrogeology:**
+- Branch positioned BEFORE geologylab and geology; word("hydrogeology") removed from geology branch.
+- Catches: word("hydrogeology"/"hydrogeologist"/"hydrogeological"), hydrogeology class/course/exam/homework/assignment/problem set, groundwater flow+class/model/analysis/hydrogeology, groundwater modeling/contamination+class, Darcy's law+class/problem/groundwater/hydrogeology, aquifer analysis/test+class/hydrogeology, pumping test+class/hydrogeology/well, well hydraulics+class/hydrogeology, vadose zone+class/hydrogeology, Theis equation+class/hydrogeology, MODFLOW+class/groundwater/hydrogeology, hydraulic conductivity+class/hydrogeology/exam.
+- `hydrogeologyCallouts(tier:)` 4/3/3: "that groundwater model won't run itself." / "no one masters hydrogeology by scrolling." / "CLOSE THIS. open your hydrogeology notes."
+- 2 templates: "Work through my hydrogeology problem set…" (60 min) + "Study hydrogeology for my exam…" (60 min)
+
+**New keyword domain — stratigraphy:**
+- Branch positioned BEFORE geologylab and geology; word("stratigraphy")/word("stratigraphic") removed from geology branch.
+- Catches: word("stratigraphy"/"stratigraphic"/"stratigrapher"), stratigraphy class/course/exam/homework/assignment/problem set, lithostratigraphy, biostratigraphy, sequence stratigraphy, chronostratigraphy, chemostratigraphy, magnetostratigraphy, stratigraphic column+class/exam/correlation, stratigraphic correlation/section/succession/record, unconformity+stratigraphy/class/exam/geology, unconformities+stratigraphy/class/exam, Walther's law+class/stratigraphy, systems tract+stratigraphy/class/sequence, transgression/regression+stratigraphy/sea level/sequence.
+- `stratigraphyCallouts(tier:)` 4/3/3: "that stratigraphic column won't draw itself." / "no one masters stratigraphy by scrolling." / "CLOSE THIS. open your stratigraphy notes."
+- 2 templates: "Study stratigraphy for my exam…" (60 min) + "Complete my stratigraphy assignment…" (45 min)
+
+**Geology branch update:**
+- Removed from geology: word("geophysics"), word("mineralogy"), word("petrology"), word("stratigraphy"), word("stratigraphic"), word("hydrogeology")
+- Kept in geology: word("sedimentology"), word("geomorphology"), word("seismology"), word("volcanology"), all `lower.contains()` conditions
+- "geology exam" still routes to geology ✓
+
+**New tests:**
+- CalloutManagerTests.swift: +46 @Test functions (5 routing tests per domain × 5 + 3 callout pool tests per domain × 5 + 1 geology false-positive guard + 1 count guard ≥821)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence tests per domain × 5 + 1 count guard ≥821)
+
+**Template catalog: 811 → 821**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `geophysics` fires BEFORE geologylab (line 1264 < 1371) ✓
+- `mineralogy` fires BEFORE geologylab (line 1287 < 1371) ✓
+- `petrology` fires BEFORE geologylab (line 1311 < 1371) ✓
+- `hydrogeology` fires BEFORE geologylab (line 1332 < 1371) ✓
+- `stratigraphy` fires BEFORE geologylab (line 1353 < 1371) ✓
+- All 5 fire BEFORE geology (line 1397) ✓
+- word("geophysics") removed from geology branch ✓
+- word("mineralogy") removed from geology branch ✓
+- word("petrology") removed from geology branch ✓
+- word("hydrogeology") removed from geology branch ✓
+- word("stratigraphy")/word("stratigraphic") removed from geology branch ✓
+- Brace balance: CalloutManager.swift 460/460 ✓; CalloutMessages.swift 865/865 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 821 confirmed (grep -c "preferredDuration:" = 821) ✓
+- 5 new dispatch cases in taskAwareCallouts switch ✓
+- "petrographic lab" → geologylab (fires after petrology branch; petrology only catches non-lab petrographic context) ✓
+- "crystallography class" → materialscience (fires after mineralogy; mineralogy only catches crystal terms with mineralogy qualifier) ✓
+- "geology exam" → geology (word("geology") still in geology branch) ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `seismology` — seismology class/course/exam (seismogram analysis, earthquake location, S/P wave, fault mechanism, body wave/surface wave, seismograph station, teleseismic events — currently routes to geology via word("seismology"))
+  - `volcanology` — volcanology class/course/exam (magma eruption dynamics, pyroclastic flow, lahar+class, volcanic hazard assessment, tephra analysis, caldera formation — currently routes to geology via word("volcanology"))
+  - `geomorphology` — geomorphology class/course/exam (fluvial/glacial/aeolian geomorphology, landform analysis, DEM analysis+class, hillslope process+class, drainage basin analysis — currently routes to geology via word("geomorphology"))
+  - `sedimentology` — sedimentology class/course/exam (grain size analysis+class, sedimentary structure+class, fluvial/deltaic/turbidite facies+class, sedimentary basin analysis — currently routes to geology via word("sedimentology"))
+  - `structuralgeology` — structural geology class/course/exam (fault analysis, fold geometry, stress field, stereonet analysis, kinematic indicators, shear zone analysis)
+- Template count: 821 → 831 after next 5-domain batch
+
+---
+
 ## Run 373 (automated) — 2026-07-17 — 5 new keyword domains: astrophysics/atmosphericchemistry/optics/electromagnetism/neuroimaging (801→811 templates)
 
 ### What shipped

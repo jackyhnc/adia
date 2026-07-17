@@ -20918,8 +20918,168 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "neuroimaging", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (batch: astrophysics/atmosphericchemistry/optics/electromagnetism/neuroimaging)
-    @Test func calloutTemplatesCountAtLeast811() {
-        #expect(SuggestedSessionTemplates.all.count >= 811, "template catalog must have ≥811 entries after astrophysics/atmosphericchemistry/optics/electromagnetism/neuroimaging additions (10 templates)")
+    // MARK: - geophysics routing
+    @Test func geophysicsClassRoutesGeophysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geophysics class problem set due") == "geophysics")
+    }
+    @Test func seismicReflectionRoutesGeophysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "interpret seismic reflection profile data") == "geophysics")
+    }
+    @Test func gravityAnomalyRoutesGeophysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "model gravity survey anomaly geophysics data") == "geophysics")
+    }
+    @Test func magneticSurveyRoutesGeophysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze magnetic survey data geophysics class") == "geophysics")
+    }
+    @Test func geophysicsExamRoutesGeophysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study geophysics for exam review seismic methods") == "geophysics")
+    }
+    @Test @MainActor func geophysicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "geophysics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "geophysics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "geophysics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func geophysicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "geophysics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func geophysicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "geophysics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - mineralogy routing
+    @Test func mineralogyClassRoutesMineralogy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mineralogy class exam tonight") == "mineralogy")
+    }
+    @Test func opticalMineralogyRoutesMineralogy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study optical mineralogy for lab") == "mineralogy")
+    }
+    @Test func crystalSystemClassRoutesMineralogy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "review crystal system mineralogy exam prep") == "mineralogy")
+    }
+    @Test func mohsHardnessLabRoutesMineralogy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mohs hardness mineralogy lab test") == "mineralogy")
+    }
+    @Test func mineralogyExamRoutesMineralogy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mineralogy exam prep crystal properties") == "mineralogy")
+    }
+    @Test @MainActor func mineralogyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "mineralogy", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "mineralogy", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "mineralogy", tier: 3).isEmpty)
+    }
+    @Test @MainActor func mineralogyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "mineralogy", tier: 1).count >= 4)
+    }
+    @Test @MainActor func mineralogyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "mineralogy", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - petrology routing
+    @Test func petrologyClassRoutesPetrology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "petrology class assignment due tomorrow") == "petrology")
+    }
+    @Test func igneousPetrologyRoutesPetrology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study igneous petrology rock classification") == "petrology")
+    }
+    @Test func metamorphicPetrologyRoutesPetrology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "metamorphic petrology p-t path problem") == "petrology")
+    }
+    @Test func bowensReactionSeriesRoutesPetrology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bowen's reaction series petrology exam") == "petrology")
+    }
+    @Test func petrologyExamRoutesPetrology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "petrology exam review metamorphic facies") == "petrology")
+    }
+    @Test @MainActor func petrologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "petrology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "petrology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "petrology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func petrologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "petrology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func petrologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "petrology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - hydrogeology routing
+    @Test func hydrogeologyClassRoutesHydrogeology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hydrogeology class problem set") == "hydrogeology")
+    }
+    @Test func darcysLawClassRoutesHydrogeology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "apply darcy's law groundwater flow class") == "hydrogeology")
+    }
+    @Test func aquiferTestRoutesHydrogeology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "aquifer test analysis hydrogeology exam") == "hydrogeology")
+    }
+    @Test func pumpingTestRoutesHydrogeology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pumping test well hydraulics hydrogeology") == "hydrogeology")
+    }
+    @Test func hydrogeologyExamRoutesHydrogeology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study hydrogeology for exam darcy groundwater") == "hydrogeology")
+    }
+    @Test @MainActor func hydrogeologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "hydrogeology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "hydrogeology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "hydrogeology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func hydrogeologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "hydrogeology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func hydrogeologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "hydrogeology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - stratigraphy routing
+    @Test func stratigraphyClassRoutesStratigraphy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "stratigraphy class assignment due") == "stratigraphy")
+    }
+    @Test func lithostratigraphyRoutesStratigraphy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "lithostratigraphy section correlation report") == "stratigraphy")
+    }
+    @Test func sequenceStratigraphyRoutesStratigraphy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sequence stratigraphy systems tract exam") == "stratigraphy")
+    }
+    @Test func stratigraphicCorrelationRoutesStratigraphy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "stratigraphic correlation two sections class") == "stratigraphy")
+    }
+    @Test func unconformityGeologyRoutesStratigraphy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "identify unconformity geology class exam") == "stratigraphy")
+    }
+    @Test @MainActor func stratigraphyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "stratigraphy", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "stratigraphy", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "stratigraphy", tier: 3).isEmpty)
+    }
+    @Test @MainActor func stratigraphyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "stratigraphy", tier: 1).count >= 4)
+    }
+    @Test @MainActor func stratigraphyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "stratigraphy", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Geology false-positive guard (geology exam still routes to geology)
+    @Test func geologyExamStillRoutesGeology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geology exam study review tonight") == "geology")
+    }
+
+    // MARK: - Count guard (batch: geophysics/mineralogy/petrology/hydrogeology/stratigraphy)
+    @Test func calloutTemplatesCountAtLeast821() {
+        #expect(SuggestedSessionTemplates.all.count >= 821, "template catalog must have ≥821 entries after geophysics/mineralogy/petrology/hydrogeology/stratigraphy additions (10 templates)")
     }
 }

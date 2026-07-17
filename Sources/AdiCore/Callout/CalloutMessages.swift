@@ -471,6 +471,11 @@ extension CalloutManager {
         case "optics":                     return opticsCallouts(tier: tier)
         case "electromagnetism":           return electromagnetismCallouts(tier: tier)
         case "neuroimaging":               return neuroimagingCallouts(tier: tier)
+        case "geophysics":                 return geophysicsCallouts(tier: tier)
+        case "mineralogy":                 return mineralogyCallouts(tier: tier)
+        case "petrology":                  return petrologyCallouts(tier: tier)
+        case "hydrogeology":               return hydrogeologyCallouts(tier: tier)
+        case "stratigraphy":               return stratigraphyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -9341,6 +9346,111 @@ extension CalloutManager {
             "CLOSE THIS. open your neuroimaging analysis.",
             "CLOSE THIS. those fMRI images won't preprocess themselves.",
             "CLOSE THIS. your brain imaging project won't finish itself."
+        ]
+        }
+    }
+
+    private func geophysicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that seismic section won't interpret itself.",
+            "close this and get back to your geophysics.",
+            "those gravity anomalies won't model themselves. close this.",
+            "your geophysics problem set won't do itself. close this."
+        ]
+        case 2: return [
+            "no one masters geophysics by scrolling.",
+            "close this and open your geophysics textbook.",
+            "those seismic profiles need your analysis — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your geophysics notes.",
+            "CLOSE THIS. those seismic waves won't model themselves.",
+            "CLOSE THIS. your geophysics exam won't study itself."
+        ]
+        }
+    }
+
+    private func mineralogyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those minerals won't identify themselves.",
+            "close this and get back to your mineralogy.",
+            "that crystal system chart won't study itself. close this.",
+            "your mineralogy exam won't pass itself. close this."
+        ]
+        case 2: return [
+            "no one masters mineralogy by scrolling.",
+            "close this and open your mineralogy textbook.",
+            "those crystal properties need memorizing — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your mineralogy notes.",
+            "CLOSE THIS. those mineral properties won't learn themselves.",
+            "CLOSE THIS. your mineralogy exam won't study itself."
+        ]
+        }
+    }
+
+    private func petrologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that rock classification won't do itself.",
+            "close this and get back to your petrology.",
+            "those thin sections won't describe themselves. close this.",
+            "your petrology problem set won't do itself. close this."
+        ]
+        case 2: return [
+            "no one masters petrology by scrolling.",
+            "close this and open your petrology textbook.",
+            "those igneous and metamorphic rocks need your analysis — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your petrology notes.",
+            "CLOSE THIS. those petrographic descriptions won't write themselves.",
+            "CLOSE THIS. your petrology exam won't study itself."
+        ]
+        }
+    }
+
+    private func hydrogeologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that groundwater model won't run itself.",
+            "close this and get back to your hydrogeology.",
+            "those aquifer tests won't analyze themselves. close this.",
+            "your hydrogeology problem set won't do itself. close this."
+        ]
+        case 2: return [
+            "no one masters hydrogeology by scrolling.",
+            "close this and open your hydrogeology textbook.",
+            "those pumping tests need analysis — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your hydrogeology notes.",
+            "CLOSE THIS. those Darcy flow equations won't solve themselves.",
+            "CLOSE THIS. your hydrogeology exam won't study itself."
+        ]
+        }
+    }
+
+    private func stratigraphyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that stratigraphic column won't draw itself.",
+            "close this and get back to your stratigraphy.",
+            "those unconformities won't map themselves. close this.",
+            "your stratigraphy problem set won't do itself. close this."
+        ]
+        case 2: return [
+            "no one masters stratigraphy by scrolling.",
+            "close this and open your stratigraphy textbook.",
+            "that sequence stratigraphy won't interpret itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your stratigraphy notes.",
+            "CLOSE THIS. those stratigraphic sections won't correlate themselves.",
+            "CLOSE THIS. your stratigraphy exam won't study itself."
         ]
         }
     }

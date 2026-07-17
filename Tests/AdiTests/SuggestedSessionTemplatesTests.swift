@@ -6122,8 +6122,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func neuroimagingAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neuroimaging") && $0.task.lowercased().contains("bold") })
     }
-    // MARK: - Count guard (≥811)
-    @Test func templateCountAtLeast811() {
-        #expect(SuggestedSessionTemplates.all.count >= 811, "template catalog must have ≥811 entries after astrophysics/atmosphericchemistry/optics/electromagnetism/neuroimaging additions")
+    // MARK: - geophysics templates
+    @Test func geophysicsProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("geophysics") && $0.task.lowercased().contains("problem set") })
+    }
+    @Test func geophysicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("geophysics") && $0.task.lowercased().contains("exam") })
+    }
+    // MARK: - mineralogy templates
+    @Test func mineralogyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mineralogy") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func mineralogyLabTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mineralogy") && $0.task.lowercased().contains("lab") })
+    }
+    // MARK: - petrology templates
+    @Test func petrologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("petrology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func petrologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("petrology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - hydrogeology templates
+    @Test func hydrogeologyProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("hydrogeology") && $0.task.lowercased().contains("problem set") })
+    }
+    @Test func hydrogeologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("hydrogeology") && $0.task.lowercased().contains("exam") })
+    }
+    // MARK: - stratigraphy templates
+    @Test func stratigraphyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("stratigraphy") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func stratigraphyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("stratigraphy") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥821)
+    @Test func templateCountAtLeast821() {
+        #expect(SuggestedSessionTemplates.all.count >= 821, "template catalog must have ≥821 entries after geophysics/mineralogy/petrology/hydrogeology/stratigraphy additions")
     }
 }

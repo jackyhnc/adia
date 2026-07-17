@@ -5230,5 +5230,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Neuroimaging assignment completed (analysis written up or lab report drafted with methods, results, and interpretation documented — saved to file)",
             preferredDuration: 45 * 60
         ),
+        // geophysics
+        SuggestedTemplate(
+            icon: "waveform.path",
+            task: "Work through my geophysics problem set — interpret seismic reflection profiles, model gravity anomalies, analyze magnetic survey data, or apply resistivity inversion methods",
+            successCriteria: "Geophysics problem set completed (at least two problems solved with seismic, gravity, or magnetic data analysis documented — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path",
+            task: "Study geophysics for my exam — review seismic methods, gravity and magnetic surveys, electrical resistivity, well logging, and geophysical inversion theory",
+            successCriteria: "Geophysics study session completed (at least two survey methods reviewed with key equations, data examples, and interpretation notes summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // mineralogy
+        SuggestedTemplate(
+            icon: "diamond",
+            task: "Study mineralogy for my exam — review crystal systems, mineral optical properties, Mohs hardness, cleavage and fracture, streak tests, and common silicate and oxide mineral groups",
+            successCriteria: "Mineralogy study session completed (at least two mineral groups reviewed with identifying properties, crystal habits, and optical characteristics summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "diamond",
+            task: "Complete my mineralogy lab or assignment — identify unknown minerals using optical properties, describe crystal symmetry and habit, or work through a crystallographic problem set",
+            successCriteria: "Mineralogy assignment completed (minerals identified with supporting observations or crystallography problems worked — identification sheet or lab report saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // petrology
+        SuggestedTemplate(
+            icon: "mountain.2",
+            task: "Study petrology for my exam — review igneous, metamorphic, and sedimentary rock classification, Bowen's reaction series, metamorphic facies, and petrographic description methods",
+            successCriteria: "Petrology study session completed (at least two rock types reviewed with classification criteria, formation environments, and key minerals summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "mountain.2",
+            task: "Complete my petrology assignment — write a petrographic description of an igneous or metamorphic rock, classify a sample using a TAS or QAP diagram, or work through a P-T path problem",
+            successCriteria: "Petrology assignment completed (rock description written or classification diagram applied with mineral assemblage and textural observations documented — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // hydrogeology
+        SuggestedTemplate(
+            icon: "drop.triangle",
+            task: "Work through my hydrogeology problem set — apply Darcy's law, analyze pumping test data, calculate aquifer transmissivity and storativity, or use the Theis equation for well hydraulics",
+            successCriteria: "Hydrogeology problem set completed (at least two problems solved with groundwater flow calculations and aquifer parameters derived — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "drop.triangle",
+            task: "Study hydrogeology for my exam — review groundwater flow equations, Darcy's law, aquifer types, pumping test analysis, groundwater contamination transport, and MODFLOW modeling concepts",
+            successCriteria: "Hydrogeology study session completed (at least two topics reviewed with key equations, aquifer diagrams, and example problem solutions summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // stratigraphy
+        SuggestedTemplate(
+            icon: "square.3.layers.3d",
+            task: "Study stratigraphy for my exam — review lithostratigraphy, biostratigraphy, sequence stratigraphy, Walther's law, stratigraphic correlation methods, and unconformity types",
+            successCriteria: "Stratigraphy study session completed (at least two stratigraphic concepts reviewed with key principles, correlation methods, and example sections summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "square.3.layers.3d",
+            task: "Complete my stratigraphy assignment — draw a stratigraphic column, correlate two or more sections, apply sequence stratigraphy concepts, or identify unconformities in a rock record",
+            successCriteria: "Stratigraphy assignment completed (stratigraphic column drawn or sections correlated with unit descriptions, boundaries, and depositional environment interpretations — saved to file)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

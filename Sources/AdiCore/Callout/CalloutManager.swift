@@ -1238,6 +1238,120 @@ public final class CalloutManager {
             || word("geochemistry") || word("geochemist") || word("geochemists") {
             return "geochemistry"
         }
+        // geophysics — positioned BEFORE geologylab and geology so geophysics class/exam and
+        // seismic/gravity/magnetic survey coursework get a dedicated pool.
+        // word("geophysics") removed from the geology branch.
+        if word("geophysics") || word("geophysicist") || word("geophysicists")
+            || lower.contains("geophysics class") || lower.contains("geophysics course")
+            || lower.contains("geophysics exam") || lower.contains("geophysics homework")
+            || lower.contains("geophysics lab") && (lower.contains("class") || lower.contains("course"))
+            || lower.contains("geophysics program") || lower.contains("geophysics problem set")
+            || lower.contains("seismic reflection") || lower.contains("seismic refraction")
+            || lower.contains("seismic survey") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("data") || lower.contains("analysis") || lower.contains("interpretation"))
+            || lower.contains("seismic data") && (lower.contains("analysis") || lower.contains("interpretation") || lower.contains("processing") || lower.contains("geophysics"))
+            || lower.contains("gravity survey") && (lower.contains("class") || lower.contains("geophysics") || lower.contains("analysis") || lower.contains("data"))
+            || lower.contains("magnetic survey") && (lower.contains("class") || lower.contains("geophysics") || lower.contains("analysis") || lower.contains("data"))
+            || lower.contains("geophysical survey") || lower.contains("geophysical exploration")
+            || lower.contains("geophysical inversion") || lower.contains("geophysical data")
+            || lower.contains("well logging") && (lower.contains("geophysics") || lower.contains("class") || lower.contains("formation"))
+            || lower.contains("borehole geophysics") || lower.contains("downhole logging")
+            || lower.contains("resistivity survey") && (lower.contains("class") || lower.contains("geophysics") || lower.contains("analysis"))
+            || lower.contains("induced polarization") && (lower.contains("geophysics") || lower.contains("class") || lower.contains("survey"))
+            || lower.contains("ground penetrating radar") && (lower.contains("class") || lower.contains("survey") || lower.contains("analysis") || lower.contains("geophysics"))
+            || lower.contains("gpr survey") && (lower.contains("class") || lower.contains("geophysics") || lower.contains("analysis"))
+            || lower.contains("electromagnetic survey") && (lower.contains("geophysics") || lower.contains("class") || lower.contains("data"))
+            || lower.contains("potential field") && (lower.contains("geophysics") || lower.contains("class") || lower.contains("data")) {
+            return "geophysics"
+        }
+        // mineralogy — positioned BEFORE geologylab and geology so mineralogy class/exam and
+        // crystal-optical work get a dedicated pool.
+        // word("mineralogy") removed from the geology branch.
+        // "crystallography class/exam" stays in materialscience (fires later); "crystal structure class" also
+        // stays in materialscience. Only mineralogy-qualified crystal terms are caught here.
+        if word("mineralogy") || word("mineralogist") || word("mineralogists") || word("mineralogical")
+            || lower.contains("mineralogy class") || lower.contains("mineralogy course")
+            || lower.contains("mineralogy exam") || lower.contains("mineralogy homework")
+            || lower.contains("mineralogy lab") && (lower.contains("class") || lower.contains("course"))
+            || lower.contains("mineralogy assignment") || lower.contains("mineralogy problem set")
+            || lower.contains("optical mineralogy")
+            || lower.contains("crystal system") && (lower.contains("class") || lower.contains("mineralogy") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("crystal systems") && (lower.contains("class") || lower.contains("mineralogy") || lower.contains("lab"))
+            || lower.contains("mohs hardness") && (lower.contains("class") || lower.contains("mineralogy") || lower.contains("lab"))
+            || lower.contains("cleavage") && lower.contains("mineralogy")
+            || lower.contains("birefringence") && (lower.contains("mineralogy") || lower.contains("optic") && lower.contains("mineral"))
+            || lower.contains("refractive index") && (lower.contains("mineralogy") || lower.contains("mineral"))
+            || lower.contains("mineral properties") && (lower.contains("class") || lower.contains("lab") || lower.contains("mineralogy"))
+            || lower.contains("x-ray diffraction") && (lower.contains("mineralogy") || lower.contains("geology") && lower.contains("mineral"))
+            || lower.contains("xrd analysis") && (lower.contains("mineralogy") || lower.contains("geology") && lower.contains("mineral"))
+            || lower.contains("mineral chemistry") && lower.contains("mineralogy") {
+            return "mineralogy"
+        }
+        // petrology — positioned BEFORE geologylab and geology so petrology class/exam and
+        // rock-type analysis coursework get a dedicated pool.
+        // word("petrology") removed from the geology branch.
+        // "petrographic lab" stays in geologylab (fires after). Only non-lab petrographic
+        // context is caught here to avoid stealing from geologylab.
+        if word("petrology") || word("petrologist") || word("petrologists") || word("petrologic") || word("petrological")
+            || lower.contains("petrology class") || lower.contains("petrology course")
+            || lower.contains("petrology exam") || lower.contains("petrology homework")
+            || lower.contains("petrology assignment") || lower.contains("petrology problem set")
+            || lower.contains("igneous petrology") || lower.contains("metamorphic petrology")
+            || lower.contains("sedimentary petrology") || lower.contains("igneous and metamorphic petrology")
+            || lower.contains("petrographic analysis") && !lower.contains("lab")
+            || lower.contains("petrographic description")
+            || lower.contains("igneous rock classification") && (lower.contains("class") || lower.contains("exam") || lower.contains("petrology"))
+            || lower.contains("metamorphic rock classification") && (lower.contains("class") || lower.contains("exam") || lower.contains("petrology"))
+            || lower.contains("sedimentary rock classification") && (lower.contains("class") || lower.contains("exam") || lower.contains("petrology"))
+            || lower.contains("p-t path") && (lower.contains("petrology") || lower.contains("metamorphic") || lower.contains("class"))
+            || lower.contains("geothermobarometry") && (lower.contains("class") || lower.contains("petrology"))
+            || lower.contains("bowen's reaction series") && (lower.contains("class") || lower.contains("exam") || lower.contains("petrology"))
+            || lower.contains("volcanic rock") && (lower.contains("petrology") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("plutonic rock") && (lower.contains("petrology") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("metamorphic facies") && (lower.contains("class") || lower.contains("exam") || lower.contains("petrology")) {
+            return "petrology"
+        }
+        // hydrogeology — positioned BEFORE geologylab and geology so hydrogeology class/exam and
+        // groundwater analysis coursework get a dedicated pool.
+        // word("hydrogeology") removed from the geology branch.
+        if word("hydrogeology") || word("hydrogeologist") || word("hydrogeologists") || word("hydrogeological")
+            || lower.contains("hydrogeology class") || lower.contains("hydrogeology course")
+            || lower.contains("hydrogeology exam") || lower.contains("hydrogeology homework")
+            || lower.contains("hydrogeology assignment") || lower.contains("hydrogeology problem set")
+            || lower.contains("groundwater flow") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("model") || lower.contains("analysis") || lower.contains("hydrogeology"))
+            || lower.contains("groundwater modeling") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("hydrogeology"))
+            || lower.contains("groundwater contamination") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("hydrogeology"))
+            || lower.contains("darcy's law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem") || lower.contains("groundwater") || lower.contains("hydrogeology"))
+            || lower.contains("aquifer analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("hydrogeology"))
+            || lower.contains("aquifer test") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("analysis") || lower.contains("hydrogeology"))
+            || lower.contains("pumping test") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("hydrogeology") || lower.contains("well"))
+            || lower.contains("well hydraulics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("hydrogeology"))
+            || lower.contains("vadose zone") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("hydrogeology"))
+            || lower.contains("theis equation") && (lower.contains("class") || lower.contains("hydrogeology") || lower.contains("exam"))
+            || lower.contains("modflow") && (lower.contains("class") || lower.contains("course") || lower.contains("groundwater") || lower.contains("hydrogeology"))
+            || lower.contains("hydraulic conductivity") && (lower.contains("class") || lower.contains("hydrogeology") || lower.contains("exam") || lower.contains("problem")) {
+            return "hydrogeology"
+        }
+        // stratigraphy — positioned BEFORE geologylab and geology so stratigraphy class/exam and
+        // sequence-stratigraphy coursework get a dedicated pool.
+        // word("stratigraphy") and word("stratigraphic") removed from the geology branch.
+        if word("stratigraphy") || word("stratigraphic") || word("stratigrapher") || word("stratigraphers")
+            || lower.contains("stratigraphy class") || lower.contains("stratigraphy course")
+            || lower.contains("stratigraphy exam") || lower.contains("stratigraphy homework")
+            || lower.contains("stratigraphy assignment") || lower.contains("stratigraphy problem set")
+            || lower.contains("lithostratigraphy") || lower.contains("biostratigraphy")
+            || lower.contains("sequence stratigraphy") || lower.contains("chronostratigraphy")
+            || lower.contains("chemostratigraphy") || lower.contains("magnetostratigraphy")
+            || lower.contains("stratigraphic column") && (lower.contains("class") || lower.contains("exam") || lower.contains("stratigraphy") || lower.contains("correlation") || lower.contains("draw"))
+            || lower.contains("stratigraphic correlation") || lower.contains("stratigraphic section")
+            || lower.contains("stratigraphic succession") || lower.contains("stratigraphic record")
+            || lower.contains("unconformity") && (lower.contains("stratigraphy") || lower.contains("class") || lower.contains("exam") || lower.contains("geology"))
+            || lower.contains("unconformities") && (lower.contains("stratigraphy") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("walther's law") && (lower.contains("class") || lower.contains("stratigraphy") || lower.contains("exam"))
+            || lower.contains("systems tract") && (lower.contains("stratigraphy") || lower.contains("class") || lower.contains("exam") || lower.contains("sequence"))
+            || lower.contains("transgression") && (lower.contains("stratigraphy") || lower.contains("sea level") || lower.contains("sequence"))
+            || lower.contains("regression") && (lower.contains("stratigraphy") || lower.contains("sea level") || lower.contains("sequence")) {
+            return "stratigraphy"
+        }
         // geologylab — positioned BEFORE geology so specific geology lab tasks (rock/mineral
         // identification, thin section analysis, geologic field mapping reports) get a dedicated pool.
         // Generic "geology lab" without specific lab-activity context still routes to geology (fires after).
@@ -1262,11 +1376,14 @@ public final class CalloutManager {
         // "gis mapping" / "gis analysis" now owned by geospatial branch above.
         // "paleontology" / "fossil record" now owned by paleontology branch above.
         // word("geochemistry") now owned by geochemistry branch above.
+        // word("geophysics") now owned by geophysics branch above.
+        // word("mineralogy") now owned by mineralogy branch above.
+        // word("petrology") now owned by petrology branch above.
+        // word("hydrogeology") now owned by hydrogeology branch above.
+        // word("stratigraphy")/word("stratigraphic") now owned by stratigraphy branch above.
         if word("geology") || word("geologist") || word("geological") || word("geologists")
-            || word("mineralogy") || word("petrology") || word("sedimentology")
-            || word("stratigraphy") || word("stratigraphic") || word("geomorphology")
-            || word("hydrogeology") || word("seismology") || word("volcanology")
-            || word("geophysics")
+            || word("sedimentology") || word("geomorphology")
+            || word("seismology") || word("volcanology")
             || lower.contains("earth science") || lower.contains("earth sciences")
             || word("geoscience") || word("geosciences")
             || lower.contains("plate tectonics") || lower.contains("tectonic plates")
