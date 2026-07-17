@@ -6582,4 +6582,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast931() {
         #expect(SuggestedSessionTemplates.all.count >= 931, "template catalog must have ≥931 entries after operatingsystems/algorithms/databasesystems/computernetworks/computervision additions")
     }
+    // MARK: - softwareengineering templates
+    @Test func softwareEngineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("software engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func softwareEngineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("software engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - humancomputerinteraction templates
+    @Test func hciStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("human-computer interaction") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func hciAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("hci") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - machinelearning templates
+    @Test func machineLearningStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("machine learning") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func machineLearningAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("machine learning") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - distributedsystems templates
+    @Test func distributedSystemsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("distributed systems") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func distributedSystemsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("distributed systems") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - computersecurity templates
+    @Test func computerSecurityStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computer security") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func computerSecurityAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computer security") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥941)
+    @Test func templateCountAtLeast941() {
+        #expect(SuggestedSessionTemplates.all.count >= 941, "template catalog must have ≥941 entries after softwareengineering/humancomputerinteraction/machinelearning/distributedsystems/computersecurity additions")
+    }
 }

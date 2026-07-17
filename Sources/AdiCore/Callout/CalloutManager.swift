@@ -127,6 +127,21 @@ public final class CalloutManager {
         if word("presentation") || word("presentations") || word("slides") || word("deck") || word("powerpoint") || word("keynote") {
             return "presentation"
         }
+        // computersecurity — positioned BEFORE cybersecurity to catch "computer security class/exam"
+        // before the broad "security exam" catch in cybersecurity fires. Only explicit academic terms.
+        if lower.contains("computer security class") || lower.contains("computer security course") || lower.contains("computer security exam")
+            || lower.contains("computer security homework") || lower.contains("computer security assignment") || lower.contains("computer security textbook")
+            || lower.contains("computer security notes") && lower.contains("class")
+            || lower.contains("buffer overflow") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("memory safety") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("software vulnerability") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("secure coding") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("application security class") || lower.contains("application security course") || lower.contains("application security exam")
+            || lower.contains("memory corruption") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("return-oriented programming") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("stack smashing") && (lower.contains("class") || lower.contains("exam")) {
+            return "computersecurity"
+        }
         // cybersecurity — positioned before code so pen-test/hacking tools (Metasploit, Kali,
         // Wireshark) and cert prep terms (Security+, CEH, OSCP) don't fall through to generic code.
         // "security" alone is NOT matched to avoid false positives like "social security paper".
@@ -542,6 +557,91 @@ public final class CalloutManager {
             || lower.contains("structure from motion") && (lower.contains("class") || lower.contains("exam") || lower.contains("project"))
             || word("yolo") && (lower.contains("class") || lower.contains("project") || lower.contains("detection") || lower.contains("assignment") || lower.contains("vision")) {
             return "computervision"
+        }
+        // softwareengineering — positioned BEFORE code so SE class/exam, design patterns class,
+        // UML class/exam, and SOLID principles class terms route here. Bare "software project"
+        // or "code review" without explicit class/exam context stays in code.
+        if lower.contains("software engineering class") || lower.contains("software engineering course") || lower.contains("software engineering exam")
+            || lower.contains("software engineering homework") || lower.contains("software engineering assignment") || lower.contains("software engineering textbook")
+            || lower.contains("software engineering notes") && lower.contains("class")
+            || lower.contains("software engineering lecture") || lower.contains("software engineering lab")
+            || lower.contains("software design patterns") && (lower.contains("class") || lower.contains("exam") || lower.contains("textbook"))
+            || lower.contains("design patterns class") || lower.contains("design patterns course") || lower.contains("design patterns exam")
+            || lower.contains("uml class diagram") || lower.contains("uml diagram") && (lower.contains("class") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("uml class") || lower.contains("uml course") || lower.contains("uml exam")
+            || lower.contains("solid principles") && (lower.contains("class") || lower.contains("exam") || lower.contains("software"))
+            || lower.contains("agile methods") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("agile methodology") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("requirements engineering") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("software requirements") && (lower.contains("class") || lower.contains("exam") || lower.contains("analysis"))
+            || lower.contains("software testing class") || lower.contains("software testing course") || lower.contains("software testing exam")
+            || lower.contains("software quality") && (lower.contains("class") || lower.contains("exam") || lower.contains("assurance"))
+            || lower.contains("software process") && (lower.contains("class") || lower.contains("exam") || lower.contains("model"))
+            || lower.contains("object-oriented design") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("object oriented design") && (lower.contains("class") || lower.contains("exam") || lower.contains("course")) {
+            return "softwareengineering"
+        }
+        // humancomputerinteraction — positioned BEFORE code. Distinct from ux (which fires on
+        // "user experience" broadly). Catches HCI class/exam, usability testing, cognitive walkthrough.
+        // Bare "interaction design" or "accessibility" without HCI/class context stays in ux.
+        if lower.contains("human computer interaction") || lower.contains("human-computer interaction")
+            || word("hci") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment") || lower.contains("homework") || lower.contains("project") || lower.contains("lab") || lower.contains("textbook"))
+            || lower.contains("hci class") || lower.contains("hci course") || lower.contains("hci exam")
+            || lower.contains("usability testing") && (lower.contains("class") || lower.contains("exam") || lower.contains("hci") || lower.contains("study"))
+            || lower.contains("cognitive walkthrough") && (lower.contains("class") || lower.contains("exam") || lower.contains("hci"))
+            || lower.contains("heuristic evaluation") && (lower.contains("class") || lower.contains("exam") || lower.contains("hci"))
+            || lower.contains("think aloud") && (lower.contains("class") || lower.contains("exam") || lower.contains("hci"))
+            || lower.contains("think-aloud") && (lower.contains("class") || lower.contains("exam") || lower.contains("hci"))
+            || lower.contains("affinity diagram") && (lower.contains("class") || lower.contains("hci"))
+            || lower.contains("interaction design class") || lower.contains("interaction design course") || lower.contains("interaction design exam")
+            || lower.contains("user study") && (lower.contains("class") || lower.contains("hci") || lower.contains("exam"))
+            || lower.contains("nielsen") && lower.contains("heuristic") && (lower.contains("class") || lower.contains("exam") || lower.contains("hci")) {
+            return "humancomputerinteraction"
+        }
+        // machinelearning — positioned BEFORE code (and before datascience) so ML class/exam terms
+        // with explicit academic context route here. Bare "machine learning" or "gradient descent"
+        // without class/exam context falls through to datascience (which fires much later).
+        if lower.contains("machine learning class") || lower.contains("machine learning course") || lower.contains("machine learning exam")
+            || lower.contains("machine learning homework") || lower.contains("machine learning assignment") || lower.contains("machine learning textbook")
+            || lower.contains("machine learning lecture") || lower.contains("machine learning lab") || lower.contains("machine learning problem set")
+            || lower.contains("gradient descent") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning"))
+            || lower.contains("linear regression") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning")) && !lower.contains("finance") && !lower.contains("econom")
+            || lower.contains("logistic regression") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning"))
+            || lower.contains("support vector machine") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning"))
+            || lower.contains("svm") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning"))
+            || lower.contains("decision tree") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning"))
+            || lower.contains("random forest") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning"))
+            || lower.contains("cross-validation") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning"))
+            || lower.contains("cross validation") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning"))
+            || lower.contains("bias-variance") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning"))
+            || lower.contains("overfitting") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning"))
+            || lower.contains("regularization") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning"))
+            || lower.contains("k-means") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning"))
+            || lower.contains("backpropagation") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning"))
+            || lower.contains("feature engineering") && (lower.contains("class") || lower.contains("exam") || lower.contains("machine learning")) {
+            return "machinelearning"
+        }
+        // distributedsystems — positioned BEFORE code so distributed systems class/exam terms
+        // route here. Bare "distributed" without explicit class/exam context stays in code.
+        if lower.contains("distributed systems class") || lower.contains("distributed systems course") || lower.contains("distributed systems exam")
+            || lower.contains("distributed systems homework") || lower.contains("distributed systems assignment") || lower.contains("distributed systems textbook")
+            || lower.contains("distributed systems notes") && lower.contains("class")
+            || lower.contains("distributed computing class") || lower.contains("distributed computing course") || lower.contains("distributed computing exam")
+            || lower.contains("consensus protocol") && (lower.contains("class") || lower.contains("exam") || lower.contains("distributed"))
+            || lower.contains("consensus algorithm") && (lower.contains("class") || lower.contains("exam") || lower.contains("distributed"))
+            || lower.contains("cap theorem") && (lower.contains("class") || lower.contains("exam") || lower.contains("distributed"))
+            || lower.contains("fault tolerance") && (lower.contains("class") || lower.contains("exam") || lower.contains("distributed"))
+            || word("paxos") && (lower.contains("class") || lower.contains("exam") || lower.contains("distributed") || lower.contains("consensus"))
+            || word("raft") && (lower.contains("class") || lower.contains("exam") || lower.contains("distributed") || lower.contains("consensus"))
+            || lower.contains("mapreduce") && (lower.contains("class") || lower.contains("exam") || lower.contains("distributed"))
+            || lower.contains("two-phase commit") && (lower.contains("class") || lower.contains("exam") || lower.contains("distributed"))
+            || lower.contains("distributed transaction") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("replication") && (lower.contains("class") || lower.contains("exam") || lower.contains("distributed"))
+            || lower.contains("eventual consistency") && (lower.contains("class") || lower.contains("exam") || lower.contains("distributed"))
+            || lower.contains("consistency model") && (lower.contains("class") || lower.contains("exam") || lower.contains("distributed"))
+            || lower.contains("leader election") && (lower.contains("class") || lower.contains("exam") || lower.contains("distributed"))
+            || lower.contains("byzantine fault") && (lower.contains("class") || lower.contains("exam") || lower.contains("distributed")) {
+            return "distributedsystems"
         }
         if word("code") || word("coding") || word("programming") || word("bug") || word("feature") || word("function")
             || word("leetcode") || word("hackerrank") || word("codeforces") || word("codewars")

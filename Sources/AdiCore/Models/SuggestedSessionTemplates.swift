@@ -6010,5 +6010,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Computer vision project completed (object detector, image classifier, segmentation model, optical flow computation, or depth estimator implemented and tested with sample images, evaluation metrics, and code saved to file)",
             preferredDuration: 60 * 60
         ),
+        // softwareengineering
+        SuggestedTemplate(
+            icon: "hammer.fill",
+            task: "Study software engineering for my exam — review UML class diagrams, design patterns (GoF), SOLID principles, agile methodologies, software requirements engineering, software testing strategies, and the software development lifecycle",
+            successCriteria: "Software engineering study session completed (at least two topics reviewed with UML diagram notation, design pattern structure diagrams, SOLID principle examples, and agile/waterfall lifecycle stages summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "hammer.fill",
+            task: "Work on my software engineering assignment — draw UML class and sequence diagrams, apply design patterns to a system design, write software requirements specifications, or analyze a software architecture against SOLID principles",
+            successCriteria: "Software engineering assignment completed (UML diagrams, design pattern application, requirements specification, or architecture analysis completed with design rationale, pattern roles labeled, and all diagrams saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // humancomputerinteraction
+        SuggestedTemplate(
+            icon: "hand.tap.fill",
+            task: "Study human-computer interaction for my exam — review usability heuristics, cognitive walkthroughs, think-aloud protocols, affinity diagrams, Fitts's law, mental models, user-centered design, and accessibility guidelines",
+            successCriteria: "HCI study session completed (at least two topics reviewed with Nielsen heuristics listed, cognitive walkthrough steps explained, Fitts's law formula, and UCD process stages summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "hand.tap.fill",
+            task: "Work on my HCI assignment — conduct a heuristic evaluation, plan or analyze a think-aloud usability study, build an affinity diagram from user research data, or apply cognitive walkthrough to a prototype",
+            successCriteria: "HCI assignment completed (heuristic evaluation, usability study plan, affinity diagram, or cognitive walkthrough completed with findings documented, severity ratings assigned, and results saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // machinelearning
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study machine learning for my exam — review supervised and unsupervised learning, gradient descent, linear and logistic regression, SVMs, decision trees, random forests, bias-variance tradeoff, regularization, and cross-validation",
+            successCriteria: "Machine learning study session completed (at least two algorithms reviewed with cost function derivations, update rules, geometric intuitions, and cross-validation procedures summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Work on my machine learning assignment — implement a classifier or regressor from scratch, tune hyperparameters with cross-validation, analyze bias-variance tradeoff, or apply regularization and evaluate model performance",
+            successCriteria: "Machine learning assignment completed (classifier/regressor implementation, hyperparameter tuning, bias-variance analysis, or regularization experiment completed with training/validation curves, metrics, and code saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // distributedsystems
+        SuggestedTemplate(
+            icon: "network.badge.shield.half.filled",
+            task: "Study distributed systems for my exam — review consensus protocols (Paxos, Raft), the CAP theorem, fault tolerance, replication strategies, eventual consistency, distributed transactions, leader election, and Byzantine fault tolerance",
+            successCriteria: "Distributed systems study session completed (at least two topics reviewed with Paxos/Raft protocol phases, CAP theorem proof sketch, replication strategies, and 2PC/3PC steps summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "network.badge.shield.half.filled",
+            task: "Work on my distributed systems assignment — implement a Raft leader election, simulate a Byzantine fault scenario, analyze CAP theorem tradeoffs for a given system, or design a replication and consistency strategy",
+            successCriteria: "Distributed systems assignment completed (Raft implementation, Byzantine fault simulation, CAP analysis, or replication design completed with correctness arguments, failure scenarios handled, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // computersecurity
+        SuggestedTemplate(
+            icon: "lock.shield.fill",
+            task: "Study computer security for my exam — review buffer overflows and stack smashing, return-oriented programming, memory safety techniques, software vulnerability classes, secure coding practices, access control models, and authentication mechanisms",
+            successCriteria: "Computer security study session completed (at least two vulnerability classes reviewed with attack mechanics, memory layout diagrams, mitigation techniques like ASLR/stack canaries/DEP, and secure coding countermeasures summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "lock.shield.fill",
+            task: "Work on my computer security assignment — analyze a buffer overflow exploit, implement a secure coding fix, perform a software vulnerability analysis, apply access control policies, or assess authentication mechanism weaknesses",
+            successCriteria: "Computer security assignment completed (exploit analysis, secure coding fix, vulnerability assessment, access control policy, or authentication analysis completed with attack steps, root cause, mitigation applied, and solution saved to file)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

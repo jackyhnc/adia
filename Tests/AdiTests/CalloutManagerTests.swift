@@ -22898,4 +22898,164 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast931() {
         #expect(SuggestedSessionTemplates.all.count >= 931, "template catalog must have ≥931 entries after operatingsystems/algorithms/databasesystems/computernetworks/computervision additions (10 templates)")
     }
+
+    // MARK: - softwareengineering routing
+    @Test func softwareEngineeringClassRoutesSoftwareengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "software engineering class exam homework tonight") == "softwareengineering")
+    }
+    @Test func umlClassRoutesSoftwareengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "uml class diagram exam assignment software engineering") == "softwareengineering")
+    }
+    @Test func designPatternsClassRoutesSoftwareengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "design patterns class exam software engineering textbook") == "softwareengineering")
+    }
+    @Test func solidPrinciplesClassRoutesSoftwareengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solid principles class exam software engineering") == "softwareengineering")
+    }
+    @Test func softwareTestingClassRoutesSoftwareengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "software testing class exam course assignment") == "softwareengineering")
+    }
+    @Test @MainActor func softwareengineeringCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "softwareengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "softwareengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "softwareengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func softwareengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "softwareengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func softwareengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "softwareengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - humancomputerinteraction routing
+    @Test func hciClassRoutesHumancomputerinteraction() {
+        #expect(CalloutManager.extractTaskKeyword(from: "human computer interaction class exam homework") == "humancomputerinteraction")
+    }
+    @Test func hciKeywordRoutesHumancomputerinteraction() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hci class exam assignment project") == "humancomputerinteraction")
+    }
+    @Test func usabilityTestingHciRoutesHumancomputerinteraction() {
+        #expect(CalloutManager.extractTaskKeyword(from: "usability testing hci class study exam") == "humancomputerinteraction")
+    }
+    @Test func cognitiveWalkthroughClassRoutesHumancomputerinteraction() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cognitive walkthrough class hci exam") == "humancomputerinteraction")
+    }
+    @Test func heuristicEvaluationHciRoutesHumancomputerinteraction() {
+        #expect(CalloutManager.extractTaskKeyword(from: "heuristic evaluation hci class exam") == "humancomputerinteraction")
+    }
+    @Test @MainActor func humancomputerinteractionCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "humancomputerinteraction", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "humancomputerinteraction", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "humancomputerinteraction", tier: 3).isEmpty)
+    }
+    @Test @MainActor func humancomputerinteractionTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "humancomputerinteraction", tier: 1).count >= 4)
+    }
+    @Test @MainActor func humancomputerinteractionTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "humancomputerinteraction", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - machinelearning routing
+    @Test func machineLearningClassRoutesMachinelearning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "machine learning class exam homework tonight") == "machinelearning")
+    }
+    @Test func svmClassRoutesMachinelearning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "svm class exam machine learning assignment") == "machinelearning")
+    }
+    @Test func gradientDescentClassRoutesMachinelearning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "gradient descent class exam machine learning") == "machinelearning")
+    }
+    @Test func crossValidationMlRoutesMachinelearning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cross-validation machine learning class exam") == "machinelearning")
+    }
+    @Test func decisionTreeMlClassRoutesMachinelearning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "decision tree machine learning class exam") == "machinelearning")
+    }
+    @Test @MainActor func machinelearningCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "machinelearning", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "machinelearning", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "machinelearning", tier: 3).isEmpty)
+    }
+    @Test @MainActor func machinelearningTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "machinelearning", tier: 1).count >= 4)
+    }
+    @Test @MainActor func machinelearningTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "machinelearning", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - distributedsystems routing
+    @Test func distributedSystemsClassRoutesDistributedsystems() {
+        #expect(CalloutManager.extractTaskKeyword(from: "distributed systems class exam homework tonight") == "distributedsystems")
+    }
+    @Test func capTheoremDistributedRoutesDistributedsystems() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cap theorem distributed systems class exam") == "distributedsystems")
+    }
+    @Test func paxosDistributedRoutesDistributedsystems() {
+        #expect(CalloutManager.extractTaskKeyword(from: "paxos distributed systems class exam consensus") == "distributedsystems")
+    }
+    @Test func raftDistributedRoutesDistributedsystems() {
+        #expect(CalloutManager.extractTaskKeyword(from: "raft consensus distributed systems class exam") == "distributedsystems")
+    }
+    @Test func eventualConsistencyDistributedRoutesDistributedsystems() {
+        #expect(CalloutManager.extractTaskKeyword(from: "eventual consistency distributed systems class exam") == "distributedsystems")
+    }
+    @Test @MainActor func distributedsystemsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "distributedsystems", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "distributedsystems", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "distributedsystems", tier: 3).isEmpty)
+    }
+    @Test @MainActor func distributedsystemsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "distributedsystems", tier: 1).count >= 4)
+    }
+    @Test @MainActor func distributedsystemsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "distributedsystems", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - computersecurity routing
+    @Test func computerSecurityClassRoutesComputersecurity() {
+        #expect(CalloutManager.extractTaskKeyword(from: "computer security class exam homework tonight") == "computersecurity")
+    }
+    @Test func bufferOverflowClassRoutesComputersecurity() {
+        #expect(CalloutManager.extractTaskKeyword(from: "buffer overflow class exam course computer security") == "computersecurity")
+    }
+    @Test func memorySafetyClassRoutesComputersecurity() {
+        #expect(CalloutManager.extractTaskKeyword(from: "memory safety class exam course") == "computersecurity")
+    }
+    @Test func secureCodingClassRoutesComputersecurity() {
+        #expect(CalloutManager.extractTaskKeyword(from: "secure coding class exam course") == "computersecurity")
+    }
+    @Test func softwareVulnerabilityClassRoutesComputersecurity() {
+        #expect(CalloutManager.extractTaskKeyword(from: "software vulnerability class exam course") == "computersecurity")
+    }
+    @Test @MainActor func computersecurityCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "computersecurity", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computersecurity", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computersecurity", tier: 3).isEmpty)
+    }
+    @Test @MainActor func computersecurityTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computersecurity", tier: 1).count >= 4)
+    }
+    @Test @MainActor func computersecurityTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computersecurity", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: softwareengineering/humancomputerinteraction/machinelearning/distributedsystems/computersecurity)
+    @Test func calloutTemplatesCountAtLeast941() {
+        #expect(SuggestedSessionTemplates.all.count >= 941, "template catalog must have ≥941 entries after softwareengineering/humancomputerinteraction/machinelearning/distributedsystems/computersecurity additions (10 templates)")
+    }
 }

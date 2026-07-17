@@ -531,6 +531,11 @@ extension CalloutManager {
         case "databasesystems":            return databasesystemsCallouts(tier: tier)
         case "computernetworks":           return computernetworksCallouts(tier: tier)
         case "computervision":             return computervisionCallouts(tier: tier)
+        case "softwareengineering":        return softwareengineeringCallouts(tier: tier)
+        case "humancomputerinteraction":   return humancomputerinteractionCallouts(tier: tier)
+        case "machinelearning":            return machinelearningCallouts(tier: tier)
+        case "distributedsystems":         return distributedsystemsCallouts(tier: tier)
+        case "computersecurity":           return computersecurityCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -10661,6 +10666,111 @@ extension CalloutManager {
             "CLOSE THIS. open your computer vision textbook.",
             "CLOSE THIS. those convolutional network and feature extraction problems won't solve themselves.",
             "CLOSE THIS. your computer vision exam won't study itself."
+        ]
+        }
+    }
+
+    private func softwareengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those UML diagrams won't draw themselves.",
+            "your software engineering exam doesn't care that you're scrolling.",
+            "get back to your SE work.",
+            "close this and open your software engineering textbook.",
+        ]
+        case 2: return [
+            "no one passes software engineering by scrolling.",
+            "close this and work on your SE assignment.",
+            "those design patterns and requirements won't study themselves."
+        ]
+        default: return [
+            "CLOSE THIS. open your software engineering textbook.",
+            "CLOSE THIS. those SOLID principles and design patterns won't learn themselves.",
+            "CLOSE THIS. your software engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func humancomputerinteractionCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that usability study won't run itself.",
+            "your HCI exam doesn't care that you're scrolling.",
+            "get back to your HCI work.",
+            "close this and open your HCI textbook.",
+        ]
+        case 2: return [
+            "no one masters human-computer interaction by scrolling.",
+            "close this and work on your HCI assignment.",
+            "those cognitive walkthroughs and heuristic evaluations need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your HCI textbook.",
+            "CLOSE THIS. those usability studies and interaction design problems won't solve themselves.",
+            "CLOSE THIS. your HCI exam won't study itself."
+        ]
+        }
+    }
+
+    private func machinelearningCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those gradient descent derivations won't work themselves out.",
+            "your machine learning exam doesn't care that you're scrolling.",
+            "get back to your ML work.",
+            "close this and open your machine learning textbook.",
+        ]
+        case 2: return [
+            "no one masters machine learning by scrolling.",
+            "close this and work on your ML assignment.",
+            "those SVM and cross-validation problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your machine learning textbook.",
+            "CLOSE THIS. those bias-variance tradeoffs and regularization problems won't solve themselves.",
+            "CLOSE THIS. your machine learning exam won't study itself."
+        ]
+        }
+    }
+
+    private func distributedsystemsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those consensus protocol proofs won't write themselves.",
+            "your distributed systems exam doesn't care that you're scrolling.",
+            "get back to your distributed systems work.",
+            "close this and open your distributed systems textbook.",
+        ]
+        case 2: return [
+            "no one masters distributed systems by scrolling.",
+            "close this and work on your distributed systems assignment.",
+            "those CAP theorem and fault tolerance problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your distributed systems textbook.",
+            "CLOSE THIS. those Paxos and Raft consensus problems won't solve themselves.",
+            "CLOSE THIS. your distributed systems exam won't study itself."
+        ]
+        }
+    }
+
+    private func computersecurityCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those buffer overflow exploits won't analyze themselves.",
+            "your computer security exam doesn't care that you're scrolling.",
+            "get back to your computer security work.",
+            "close this and open your computer security textbook.",
+        ]
+        case 2: return [
+            "no one masters computer security by scrolling.",
+            "close this and work on your security assignment.",
+            "those memory safety and software vulnerability problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your computer security textbook.",
+            "CLOSE THIS. those secure coding and vulnerability analysis problems won't solve themselves.",
+            "CLOSE THIS. your computer security exam won't study itself."
         ]
         }
     }
