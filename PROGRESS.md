@@ -19090,3 +19090,72 @@ None. Swift toolchain unavailable on Linux container.
   - `computerarchitecture` — computer architecture class (pipeline stages + class/exam, branch prediction + class/exam, cache hierarchy + class/exam/architecture, memory hierarchy + class/exam, out-of-order execution + class/exam — distinct from operatingsystems)
 - Template count: 951 → 961 after next 5-domain batch
 - CalloutManagerTests: ~23500+ lines after next batch
+
+---
+
+## Run 387 (automated) — 2026-07-17 — 5 new CS keyword domains: computationtheory/softwarearchitecture/informationretrieval/naturallanguageprocessing/computerarchitecture (951→961 templates)
+
+### What shipped
+
+**5 new keyword domains: computationtheory, softwarearchitecture, informationretrieval, naturallanguageprocessing, computerarchitecture**
+
+**New keyword domain — computationtheory:**
+- Branch positioned BEFORE code (after formalverification). Bare "DFA" or "Turing machine" without class/automata/computation context falls through.
+- Catches: theory of computation class/course/exam/homework/assignment/textbook, automata theory/class/course/exam, automata class/course/exam, DFA/NFA + class/exam/automata/computation, pushdown automaton + class/exam/computation, context-free grammar + class/exam/computation, Turing machine + class/exam/computation, decidability/halting problem/computability theory + class/exam, P vs NP + class/exam/computation/complexity, complexity class + class/exam/computation/theory, NP-completeness/NP-hardness + class/exam/computation, reduction + class/exam + computation/np/decidability.
+- `computationtheoryCallouts(tier:)` 4/3/3: "that Turing machine won't design itself." / "no one masters theory of computation by scrolling." / "CLOSE THIS. those DFA constructions and NP-completeness reductions won't prove themselves."
+- 2 templates: "Study theory of computation for my exam…" (60 min) + "Work on my theory of computation assignment…" (60 min)
+
+**New keyword domain — softwarearchitecture:**
+- Branch positioned BEFORE code (after computationtheory). Bare "microservices" or "architecture" without class context falls through.
+- Catches: software architecture class/course/exam/homework/assignment/textbook/notes, software architecture pattern + class/exam/course, microservices/event-driven/hexagonal/clean/layered architecture + class/exam, CQRS + class/architecture/exam, event sourcing + class/architecture/exam, domain-driven design + class/exam/course, DDD + architecture + class/exam, architectural pattern + class/exam/course, system design class/course/exam/homework/assignment.
+- `softwarearchitectureCallouts(tier:)` 4/3/3: "that system design won't architect itself." / "no one masters software architecture by scrolling." / "CLOSE THIS. those architectural patterns and system design problems won't solve themselves."
+- 2 templates: "Study software architecture for my exam…" (60 min) + "Work on my software architecture assignment…" (60 min)
+
+**New keyword domain — informationretrieval:**
+- Branch positioned BEFORE code (after softwarearchitecture). Bare "search" or "indexing" without class/IR context falls through.
+- Catches: information retrieval class/course/exam/homework/assignment/textbook/notes, TF-IDF/inverted index/BM25/document ranking/query expansion/relevance feedback + class/exam/ir/information retrieval, precision and recall/nDCG/web search + class/exam/ir/information retrieval, crawler + class/exam/information retrieval.
+- `informationretrievalCallouts(tier:)` 4/3/3: "that inverted index won't build itself." / "no one masters information retrieval by scrolling." / "CLOSE THIS. those document ranking and query expansion problems won't solve themselves."
+- 2 templates: "Study information retrieval for my exam…" (60 min) + "Work on my information retrieval assignment…" (60 min)
+
+**New keyword domain — naturallanguageprocessing:**
+- Branch positioned BEFORE code (after informationretrieval). Bare "sentiment analysis" or "tokenization" without NLP context falls through to machinelearning or code.
+- Catches: natural language processing/NLP class/course/exam/homework/assignment/textbook, tokenization + nlp + class/exam, NER/named entity recognition + class/exam/nlp, sentiment analysis + class/exam/nlp, POS tagging/part-of-speech tagging + class/exam/nlp, dependency parsing + class/exam/nlp, transformer + nlp + class/exam, language model + nlp + class/exam, word embedding/word2vec + class/exam/nlp, text classification + class/exam/nlp, coreference resolution/machine translation + class/exam/nlp.
+- `naturallanguageprocessingCallouts(tier:)` 4/3/3: "those NLP models won't train themselves." / "no one masters NLP by scrolling." / "CLOSE THIS. those named entity recognition and dependency parsing problems won't solve themselves."
+- 2 templates: "Study natural language processing for my exam…" (60 min) + "Work on my NLP assignment…" (60 min)
+
+**New keyword domain — computerarchitecture:**
+- Branch positioned BEFORE code (after naturallanguageprocessing). Bare "pipeline" or "cache" without class/architecture context falls through.
+- Catches: computer architecture/organization class/course/exam/homework/assignment/textbook/lab/notes, pipeline stage/branch prediction/cache hierarchy/memory hierarchy/out-of-order execution/instruction-level parallelism/superscalar/cache coherence + class/exam/architecture, RISC + class/exam/architecture/computer org, CISC/ISA design/Tomasulo/TLB/virtual memory + class/exam/architecture.
+- `computerarchitectureCallouts(tier:)` 4/3/3: "that pipeline won't design itself." / "no one masters computer architecture by scrolling." / "CLOSE THIS. those pipeline stages and cache coherence problems won't solve themselves."
+- 2 templates: "Study computer architecture for my exam…" (60 min) + "Work on my computer architecture assignment…" (60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +45 @Test functions (5 routing × 5 domains + 3 callout pool tests × 5 domains + 1 count guard ≥961)
+- SuggestedSessionTemplatesTests.swift: +12 @Test functions (2 existence × 5 domains + 1 count guard ≥961 + prior ≥951 guard retained)
+
+**Template catalog: 951 → 961**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `computationtheory` fires at line 769, BEFORE code (line 863) ✓. "theory of computation class exam" → computationtheory ✓; bare "DFA" without class → code ✓
+- `softwarearchitecture` fires at line 789, BEFORE code (line 863) ✓. "software architecture class exam" → softwarearchitecture ✓; bare "microservices" → code ✓
+- `informationretrieval` fires at line 806, BEFORE code (line 863) ✓. "information retrieval class exam" → informationretrieval ✓; bare "search" → code ✓
+- `naturallanguageprocessing` fires at line 828, BEFORE code (line 863) ✓. "nlp class exam" → naturallanguageprocessing ✓; bare "sentiment analysis" → machinelearning ✓
+- `computerarchitecture` fires at line 850, BEFORE code (line 863) ✓. "computer architecture class exam" → computerarchitecture ✓; bare "pipeline" → code ✓
+- Brace balance: CalloutManager.swift 530/530 ✓; CalloutMessages.swift 1005/1005 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 961 confirmed (grep -c "preferredDuration:" = 961) ✓
+- 5 new dispatch cases in taskAwareCallouts switch ✓
+- 5 new private callout pool functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `atmosphericscience` — atmospheric science class (meteorology/climatology/synoptic class, weather analysis+class, atmospheric dynamics+class, radiosonde analysis+class, mesoscale convection+class — distinct from meteorology)
+  - `oceanography` — oceanography class/course/exam (thermohaline circulation+class, upwelling+oceanography+class, ENSO+oceanography+class, marine chemistry+class — distinct from marinebiologyresearch)
+  - `environmentalchemistry` — environmental chemistry class/course/exam (contaminant fate+class, water quality chemistry+class, Henry's law+class/environmental — distinct from biochemistry/chemistry)
+  - `quantummechanics` — quantum mechanics class/course/exam (Schrödinger equation+class, wave function+class/exam, quantum harmonic oscillator+class, perturbation theory+class/quantum — distinct from physics)
+  - `classicalmechanics` — classical mechanics class/course/exam (Lagrangian/Hamiltonian mechanics+class, Hamilton's equations+class, variational principle+class — distinct from physics)
+- Template count: 961 → 971 after next 5-domain batch
+- CalloutManagerTests: ~23500+ lines after next batch
