@@ -18211,3 +18211,66 @@ None. Swift toolchain unavailable on Linux container.
   - `animalphysiology` — animal physiology class (gas exchange, osmoregulation, thermoregulation, countercurrent exchange, endocrine physiology — distinct from human physiology)
 - Template count: 791 → 801 after next 5-domain batch
 - CalloutManagerTests: ~21400+ lines after next batch
+
+---
+
+## Run 374 — 2026-07-17
+
+### Task
+5 new keyword domains — systemsbiology / microbiologylab / ecophysiology / plantphysiology / animalphysiology (821→831 templates)
+
+### What shipped
+**New keyword domain — systemsbiology:**
+- Branch positioned BEFORE computationalbiology. Catches: "systems biology class/course/exam/lab/homework/assignment/research/textbook", "flux balance analysis" + (class/course/exam/model/metabolic/fba), "fba model" + (class/metabolic/biology), "boolean network" + (class/course/model/biology/gene), "genome-scale metabolic model", "genome-scale model" + (biology/class/metabolic), "cobra toolbox" + (biology/class/model), "systems pharmacology" + (class/course/exam/research/model), "metabolic flux" + (class/course/exam/analysis/model), "network motif" + (systems/biology/class/exam), "gene circuit" + (class/model/design/biology/systems).
+- Bare "systems biology" (without class context) still routes to computationalbiology.
+- `systemsbiologyCallouts(tier:)` 4/3/3: "that metabolic network model won't build itself." / "no one masters systems biology by scrolling." / "CLOSE THIS. open your systems biology textbook."
+- 2 templates: "Work on my systems biology modeling assignment — build a genome-scale metabolic model, run flux balance analysis, construct a Boolean gene-regulatory network, or analyze metabolic flux distributions" (60 min) + "Study systems biology for my exam — review flux balance analysis, Boolean network modeling, genome-scale metabolic models, network motifs, and systems pharmacology principles" (60 min)
+
+**New keyword domain — microbiologylab:**
+- Branch positioned BEFORE clinicalmicrobiology and microbiology. Catches: "microbiology lab practical/practicum/quiz/unknown", "microbiology unknown" + (lab/identify/report), "unknown bacteria" + (lab/identify/microbiology/identification), "disk diffusion" + (lab/class/microbiology/antibiotic/test), "kirby-bauer/kirby bauer" + (lab/class/microbiology/antibiotic), "plate count" + (lab/microbiology/bacteria/class), "colony count" + (lab/microbiology/bacteria/class), "serial dilution" + (lab/microbiology/bacteria/class), "viable count" + (lab/microbiology/bacteria), "colony forming unit/cfu" + (lab/class/microbiology/count), "most probable number/mpn method" + (lab/microbiology/class), "agar preparation" + (lab/microbiology/class), "microbiology agar" + (lab/class/prepare/preparation).
+- `microbiologylabCallouts(tier:)` 4/3/3: "those plates won't count themselves." / "no one aces microbiology lab by scrolling." / "CLOSE THIS. open your microbiology lab manual."
+- 2 templates: "Work through my microbiology lab — perform disk diffusion or Kirby-Bauer antibiotic sensitivity testing…" (45 min) + "Study for my microbiology lab practical — review CFU counting methods, serial dilution calculations…" (45 min)
+
+**New keyword domain — ecophysiology:**
+- Branch positioned BEFORE ecology (after ecologicalfieldwork). Catches: "ecophysiology"/"eco-physiology", "physiological ecology" + (class/course/exam/research/lab), "environmental physiology" + (class/course/exam/lab), "thermal performance curve" + (class/ecology/physiology/exam), "thermal tolerance" + (class/ecology/physiology/exam), "metabolic rate" + (temperature/scaling/ecology/class/physiology), "metabolic scaling" + (ecology/class/physiology), "water potential" + (ecology/class/physiology/exam/plant), "desiccation tolerance" + (class/ecology/physiology), "osmotic stress" + (class/ecology/physiology/exam), "ectotherm/endotherm" + (class/physiology/ecology/exam), "stress physiology" + (class/ecology/biology/exam).
+- `ecophysiologyCallouts(tier:)` 4/3/3: "those thermal performance curves won't analyze themselves." / "no one masters ecophysiology by scrolling." / "CLOSE THIS. open your ecophysiology textbook."
+- 2 templates: "Study ecophysiology for my exam — review thermal performance curves, metabolic rate scaling…" (60 min) + "Work on my ecophysiology assignment — analyze thermal performance data…" (45 min)
+
+**New keyword domain — plantphysiology:**
+- Branch positioned BEFORE animalphysiology and physiology. Catches: "plant physiology" + (class/course/exam/lab/notes/textbook/assignment/study), "stomatal conductance/aperture" + (class/physiology/plant/lab/exam), "phytohormone" + (class/physiology/lab/exam), "auxin" + (plant physiology/phytohormone/class+plant/class+physiology), "gibberellin/cytokinin/abscisic acid" + (class/physiology/plant/hormone), "ethylene" + plant + (class/physiology/lab/hormone), "xylem/phloem transport" + (class/physiology/plant/lab), "source-sink" + (class/plant/physiology/transport), "apoplast/symplast" + (class/physiology/plant), "plant water relations" + (class/physiology/exam), "photosynthesis rate" + (class/physiology/lab/exam), "plant growth regulator" + (class/physiology/lab/exam).
+- `plantphysiologyCallouts(tier:)` 4/3/3: "those phytohormone pathways won't memorize themselves." / "no one masters plant physiology by scrolling." / "CLOSE THIS. open your plant physiology notes."
+- 2 templates: "Study plant physiology for my exam — review phytohormone signaling…" (60 min) + "Work on my plant physiology assignment — analyze stomatal conductance data…" (45 min)
+
+**New keyword domain — animalphysiology:**
+- Branch positioned BEFORE physiology (after plantphysiology). Catches: "animal physiology" + (class/course/exam/lab/notes/textbook/assignment/study), "comparative physiology" + (class/course/exam/lab), "vertebrate/invertebrate physiology" + (class/course/exam/lab), "osmoregulation" + (class/physiology/animal/exam/lab), "thermoregulation" + (class/physiology/animal/exam/lab), "countercurrent exchange" + (class/physiology/animal/lab), "countercurrent multiplier" + (class/physiology/lab), "gas exchange" + class + (physiology/animal/respiratory/lung/gill), "ion regulation" + (class/physiology/animal/exam), "aquatic physiology" + (class/course/exam/animal), "integumentary physiology" + (class/physiology/animal), "animal physiology class/exam", "comparative animal physiology".
+- `animalphysiologyCallouts(tier:)` 4/3/3: "those osmoregulation mechanisms won't write themselves." / "no one masters animal physiology by scrolling." / "CLOSE THIS. open your animal physiology notes."
+- 2 templates: "Study animal physiology for my exam — review osmoregulation, thermoregulation strategies, countercurrent exchange…" (60 min) + "Work on my animal physiology assignment — analyze osmoregulation data…" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +46 @Test functions (5 routing + 3 callout pool tests per domain + 1 count guard ≥831)
+- SuggestedSessionTemplatesTests.swift: +11 tests (2 per domain + count guard ≥831)
+
+**Template catalog: 821 → 831**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `systemsbiology` fires at line 2124, BEFORE computationalbiology (line 2140). "flux balance analysis metabolic model class" → systemsbiology ✓; bare "systems biology" alone still routes to computationalbiology ✓
+- `microbiologylab` fires at line 5938, BEFORE clinicalmicrobiology (5956) and microbiology (5979). "disk diffusion antibiotic lab" → microbiologylab ✓; "microbiology class exam" → microbiology ✓
+- `ecophysiology` fires at line 4224, BEFORE ecology (4252). "thermal performance curve ecology class" → ecophysiology ✓; "ecology class" → ecology ✓
+- `plantphysiology` fires at line 6219, BEFORE animalphysiology (6238) and physiology (6263). "stomatal conductance plant physiology class" → plantphysiology ✓; "physiology class" → physiology ✓
+- `animalphysiology` fires at line 6238, BEFORE physiology (6263). "osmoregulation animal physiology class" → animalphysiology ✓; "physiology class" → physiology ✓
+- Brace balance: CalloutManager.swift 465/465 ✓; CalloutMessages.swift 875/875 ✓
+- Template count: 831 confirmed (grep -c "preferredDuration:" = 831)
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `neurologylab` — clinical neurology rotation/lab work (EEG interpretation, nerve conduction studies, lumbar puncture, neurological exam documentation — distinct from neuroscience coursework)
+  - `embryology` — embryology class (germ layer derivatives, organogenesis, limb bud development, teratology, Carnegie stages — distinct from developmentalbiology)
+  - `cellsignaling` — cell signaling class (receptor tyrosine kinases, MAPK cascade, PI3K-Akt, Wnt/β-catenin, Notch, Hedgehog — distinct from cellbiology which catches general cell bio)
+  - `humangeneticsclass` — human genetics coursework (pedigree analysis, Hardy-Weinberg, linkage analysis, chromosomal abnormalities, OMIM disorders — distinct from genetics which covers general Mendelian genetics)
+  - `developmentalpsych` — developmental psychology (Piaget stages, Erikson, attachment theory, infant cognition, lifespan development — distinct from general psych)
+- Template count: 831 → 841 after next 5-domain batch
+- CalloutManagerTests: ~21700+ lines after next batch
