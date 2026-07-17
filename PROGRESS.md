@@ -19021,3 +19021,72 @@ None. Swift toolchain unavailable on Linux container.
   - `classicalmechanics` — classical mechanics class/course/exam (Lagrangian mechanics+class, Hamiltonian mechanics+class, Hamilton's equations+class, variational principle+class, canonical transformation+class/exam — distinct from physics which catches broad mechanics terms)
 - Template count: 891 → 901 after next 5-domain batch
 - CalloutManagerTests: ~22224+ lines after next batch
+
+---
+
+## Run 386 (automated) — 2026-07-17 — 5 new CS keyword domains: programminglanguages/compilerdesign/computergraphics/embeddedsystems/formalverification (941→951 templates)
+
+### What shipped
+
+**5 new keyword domains: programminglanguages, compilerdesign, computergraphics, embeddedsystems, formalverification**
+
+**New keyword domain — programminglanguages:**
+- Branch positioned BEFORE code (after distributedsystems). Bare language names and generic "programming" stay in code.
+- Catches: programming languages class/course/exam/homework/assignment/textbook/notes, type system + class/exam/programming language/pl, type inference + class/exam/programming language, lambda calculus + class/exam/programming language/pl, formal semantics/operational semantics/denotational semantics + class/exam/programming language, pl theory class/course/exam, language design class/course/exam, programming paradigm + class/exam/course, functional programming + class/exam/course/homework, logic programming + class/exam/course, type theory + class/exam/programming language/pl.
+- `programminglanguagesCallouts(tier:)` 4/3/3: "those type inference proofs won't write themselves." / "no one masters programming languages theory by scrolling." / "CLOSE THIS. open your programming languages textbook."
+- 2 templates: "Study programming languages theory for my exam — type systems, lambda calculus, operational/denotational semantics, formal grammars, paradigms" (60 min) + "Work on my programming languages assignment — type derivations, lambda calculus reductions, formal semantics, type safety proofs, interpreter" (60 min)
+
+**New keyword domain — compilerdesign:**
+- Branch positioned BEFORE code (after programminglanguages). Generic "compiler" without class context stays in code.
+- Catches: compiler design/construction/compilers + class/course/exam/homework/assignment/textbook, lexical analysis/lexer/tokenization + class/exam/compiler, parsing + class/exam/compiler, abstract syntax tree + class/exam/compiler, code generation + class/exam/compiler, register allocation + class/exam/compiler, intermediate representation/IR generation + class/exam/compiler, SSA form + class/exam/compiler, compiler optimization + class/exam/course, dataflow analysis + class/exam/compiler, control flow graph + class/exam/compiler.
+- `compilerdesignCallouts(tier:)` 4/3/3: "that parser won't write itself." / "no one masters compiler design by scrolling." / "CLOSE THIS. open your compilers textbook."
+- 2 templates: "Study compiler design for my exam — lexical analysis, parsing, AST construction, semantic analysis, IR, code generation, register allocation, optimization" (60 min) + "Work on my compiler design assignment — implement lexer/parser, build AST, generate IR, apply dataflow analysis, implement register allocator" (60 min)
+
+**New keyword domain — computergraphics:**
+- Branch positioned BEFORE code (after compilerdesign). Bare "graphics" or "rendering" without class context stays in code/design.
+- Catches: computer graphics + class/course/exam/homework/assignment/textbook/lab/project, ray tracing + class/exam/computer graphics, rasterization + class/exam/computer graphics, opengl + class/exam/course/homework, vulkan + class/exam/course/computer graphics, shader + class/exam/computer graphics, glsl + class/exam/course, 3d transform + class/exam/computer graphics, homogeneous coordinate + class/exam/computer graphics, rendering pipeline + class/exam/computer graphics, global illumination + class/exam/computer graphics, texture mapping + class/exam/computer graphics, clipping algorithm + class/exam/computer graphics, bresenham + class/exam/computer graphics.
+- `computergraphicsCallouts(tier:)` 4/3/3: "those ray tracing equations won't derive themselves." / "no one masters computer graphics by scrolling." / "CLOSE THIS. open your computer graphics textbook."
+- 2 templates: "Study computer graphics for my exam — rendering pipeline, rasterization, ray tracing, 3D transforms, shading models, texture mapping, clipping, global illumination" (60 min) + "Work on my computer graphics assignment — ray tracer, shaders, transformations, texture mapping, or rasterizer" (60 min)
+
+**New keyword domain — embeddedsystems:**
+- Branch positioned BEFORE code (after computergraphics). Bare hardware mentions without class context fall through to code.
+- Catches: embedded systems/software + class/course/exam/homework/assignment/textbook/lab/project, microcontroller + class/exam/course/homework/lab, rtos + class/exam/embedded/course, real-time operating system + class/exam/embedded, interrupt handling/ISR + class/exam/embedded, memory-mapped i/o + class/exam/embedded, bare metal + class/exam/embedded, firmware + class/exam/embedded, device driver + class/exam/embedded, hardware-software interface + class/exam/embedded, PWM/SPI/I2C + class/exam/embedded.
+- `embeddedsystemsCallouts(tier:)` 4/3/3: "that interrupt handler won't write itself." / "no one masters embedded systems by scrolling." / "CLOSE THIS. open your embedded systems textbook."
+- 2 templates: "Study embedded systems for my exam — microcontroller architecture, ISRs, RTOS scheduling, memory-mapped I/O, device drivers, SPI/I2C/UART, real-time constraints" (60 min) + "Work on my embedded systems assignment — interrupt-driven driver, RTOS tasks, bare-metal firmware, communication protocol, scheduling feasibility" (60 min)
+
+**New keyword domain — formalverification:**
+- Branch positioned BEFORE code (after embeddedsystems). Bare "model checking" or "temporal logic" without class/formal context falls through.
+- Catches: formal verification/methods + class/course/exam/homework/assignment/textbook, model checking + class/exam/formal/verification, hoare logic/hoare triple + class/exam/verification, program verification + class/exam/course, temporal logic + class/exam/formal/verification, LTL/CTL + temporal + class/exam/verification, theorem proving + class/exam/formal, proof assistant + class/exam/formal, coq/isabelle + class/exam/formal/proof, Z notation + class/exam/formal, alloy + formal + class/exam.
+- `formalverificationCallouts(tier:)` 4/3/3: "those Hoare triples won't verify themselves." / "no one masters formal verification by scrolling." / "CLOSE THIS. open your formal verification textbook."
+- 2 templates: "Study formal verification for my exam — Hoare logic, wp-calculus, temporal logic LTL/CTL, model checking, theorem proving, Coq/Isabelle" (60 min) + "Work on my formal verification assignment — Hoare logic proof, wp derivation, LTL/CTL specification, model checking, Coq/Isabelle proof" (60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +43 @Test functions (5 routing × 5 + 3 callout pool tests × 5 + 1 count guard ≥951)
+- SuggestedSessionTemplatesTests.swift: +12 @Test functions (2 template existence × 5 + 1 count guard ≥951 + existing ≥941 stays)
+
+**Template catalog: 941 → 951**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `programminglanguages` fires at line 663, BEFORE code (line 760) ✓. "programming languages class exam" → programminglanguages ✓; bare "python" or "programming" → code ✓
+- `compilerdesign` fires at line 685, BEFORE code (line 760) ✓. "compiler design class exam" → compilerdesign ✓; bare "compiler" without class context → code ✓
+- `computergraphics` fires at line 705, BEFORE code (line 760) ✓. "computer graphics class exam" → computergraphics ✓; bare "graphics" → code/design ✓
+- `embeddedsystems` fires at line 726, BEFORE code (line 760) ✓. "embedded systems class exam" → embeddedsystems ✓; bare "microcontroller" without class → code ✓
+- `formalverification` fires at line 747, BEFORE code (line 760) ✓. "formal methods class exam" → formalverification ✓; bare "model checking" without class/formal → falls through ✓
+- Brace balance: CalloutManager.swift 525/525 ✓; CalloutMessages.swift 995/995 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 951 confirmed (grep -c "preferredDuration:" = 951) ✓
+- 5 new dispatch cases in taskAwareCallouts switch ✓
+- 5 new private callout pool functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered (CS sub-domains still available):
+  - `computationtheory` — theory of computation class (DFA/NFA/PDA automata + class/exam, Turing machine + class/exam, decidability + class/exam, computability + class/exam, P vs NP + class/exam, complexity classes + class/exam/theory — distinct from algorithms which catches generic algorithm terms)
+  - `softwarearchitecture` — software architecture class (microservices + class/architecture/exam, event-driven architecture + class/exam, CQRS + class/architecture/exam, hexagonal architecture + class/exam, software architecture patterns + class/exam — distinct from softwareengineering which catches design patterns broadly)
+  - `informationretrieval` — information retrieval class (TF-IDF + class/exam/IR, inverted index + class/exam/IR, BM25 + class/exam/IR, document ranking + class/exam/IR, information retrieval class/course/exam — distinct from datascience)
+  - `naturallanguageprocessing` — NLP class (tokenization + NLP + class/exam, named entity recognition + class/exam/NLP, sentiment analysis + class/exam/NLP, transformer + class/exam/NLP, language model + class/exam/NLP — distinct from machinelearning and artificialintelligence)
+  - `computerarchitecture` — computer architecture class (pipeline stages + class/exam, branch prediction + class/exam, cache hierarchy + class/exam/architecture, memory hierarchy + class/exam, out-of-order execution + class/exam — distinct from operatingsystems)
+- Template count: 951 → 961 after next 5-domain batch
+- CalloutManagerTests: ~23500+ lines after next batch
