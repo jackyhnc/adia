@@ -20224,4 +20224,179 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast771() {
         #expect(SuggestedSessionTemplates.all.count >= 771, "template catalog must have ≥771 entries after biochemistry2/physicalchemistrylab/organicchemistrylab/immunologycourse/neurobiologylab (10 templates)")
     }
+
+    // MARK: - astronomylab
+    @Test func observingRunAstronomyRoutesAstronomylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "observing run telescope observatory astronomy") == "astronomylab")
+    }
+    @Test func starChartLabRoutesAstronomylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "plot star chart astronomy lab class") == "astronomylab")
+    }
+    @Test func telescopeObservationLabRoutesAstronomylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "telescope observation lab report data") == "astronomylab")
+    }
+    @Test func lightCurveAstronomyLabRoutesAstronomylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "light curve astronomy lab variable star") == "astronomylab")
+    }
+    @Test func astronomicalCalculationsLabRoutesAstronomylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "astronomical calculations lab astronomy class") == "astronomylab")
+    }
+    @Test func genericAstronomyClassStaysAstronomy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "astronomy class homework problem set") == "astronomy")
+    }
+    @Test @MainActor func astronomylabCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "astronomylab", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "astronomylab", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "astronomylab", tier: 3).isEmpty)
+    }
+    @Test @MainActor func astronomylabTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "astronomylab", tier: 1).count >= 4)
+    }
+    @Test @MainActor func astronomylabTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "astronomylab", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - geologylab
+    @Test func geologyLabRockRoutesGeologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geology lab rock identification class report") == "geologylab")
+    }
+    @Test func thinSectionMicroscopyRoutesGeologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "thin section microscopy geology lab class") == "geologylab")
+    }
+    @Test func fieldGeologyLabRoutesGeologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "field geology lab report mapping class") == "geologylab")
+    }
+    @Test func mineralIdentificationLabRoutesGeologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mineral identification lab geology class") == "geologylab")
+    }
+    @Test func igneoussedimentaryMetamorphicLabRoutesGeologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "igneous rock lab sedimentary metamorphic identification") == "geologylab")
+    }
+    @Test func genericGeologyWordStaysGeology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geology stratigraphy petrology") == "geology")
+    }
+    @Test @MainActor func geologylabCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "geologylab", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "geologylab", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "geologylab", tier: 3).isEmpty)
+    }
+    @Test @MainActor func geologylabTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "geologylab", tier: 1).count >= 4)
+    }
+    @Test @MainActor func geologylabTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "geologylab", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - environmentalscience
+    @Test func envSciClassRoutesEnvironmentalscience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "environmental science class exam notes") == "environmentalscience")
+    }
+    @Test func earthSystemsClassRoutesEnvironmentalscience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "earth systems class assignment lab") == "environmentalscience")
+    }
+    @Test func biogeochemicalCycleExamRoutesEnvironmentalscience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "biogeochemical cycle class exam review") == "environmentalscience")
+    }
+    @Test func carbonCycleEnvSciRoutesEnvironmentalscience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "carbon cycle environmental science course") == "environmentalscience")
+    }
+    @Test func environmentalMonitoringLabRoutesEnvironmentalscience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "environmental monitoring lab class course") == "environmentalscience")
+    }
+    @Test func environmentalPolicyClassStaysEnvironmentalpolicy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "environmental policy class analysis paper") == "environmentalpolicy")
+    }
+    @Test @MainActor func environmentalscienceCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentalscience", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentalscience", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentalscience", tier: 3).isEmpty)
+    }
+    @Test @MainActor func environmentalscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "environmentalscience", tier: 1).count >= 4)
+    }
+    @Test @MainActor func environmentalscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "environmentalscience", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - anthropology
+    @Test func wordAnthropologyRoutesAnthropology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "anthropology paper field work cultural") == "anthropology")
+    }
+    @Test func culturalAnthropologyRoutesAnthropology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cultural anthropology class participant observation") == "anthropology")
+    }
+    @Test func ethnographyRoutesAnthropology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ethnography fieldwork research write-up") == "anthropology")
+    }
+    @Test func physicalAnthropologyRoutesAnthropology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "physical anthropology class biological exam") == "anthropology")
+    }
+    @Test func paleoanthropologyRoutesAnthropology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "paleoanthropology course human evolution") == "anthropology")
+    }
+    @Test func archaeologyClassRoutesAnthropology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "archaeology class course exam assignment") == "anthropology")
+    }
+    @Test @MainActor func anthropologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "anthropology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "anthropology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "anthropology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func anthropologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "anthropology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func anthropologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "anthropology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - sociology
+    @Test func sociologicalTheoryRoutesSociology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sociological theory class paper conflict") == "sociology")
+    }
+    @Test func symbolicInteractionismRoutesSociology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "symbolic interactionism course paper analysis") == "sociology")
+    }
+    @Test func structuralFunctionalismRoutesSociology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "structural functionalism class essay write") == "sociology")
+    }
+    @Test func sociologyClassRoutesSociology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sociology class assignment paper") == "sociology")
+    }
+    @Test func socialStratificationClassRoutesSociology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "social stratification sociology class course") == "sociology")
+    }
+    @Test func bareWordSociologyStaysStudying() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sociology") == "studying")
+    }
+    @Test @MainActor func sociologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "sociology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "sociology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "sociology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func sociologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "sociology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func sociologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "sociology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: astronomylab/geologylab/environmentalscience/anthropology/sociology)
+    @Test func calloutTemplatesCountAtLeast781() {
+        #expect(SuggestedSessionTemplates.all.count >= 781, "template catalog must have ≥781 entries after astronomylab/geologylab/environmentalscience/anthropology/sociology additions (10 templates)")
+    }
 }

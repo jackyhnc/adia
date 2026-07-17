@@ -556,6 +556,28 @@ public final class CalloutManager {
             || lower.contains("astrobiology research") || lower.contains("astrobiology program") {
             return "astrobiology"
         }
+        // astronomylab — positioned BEFORE astronomy so specific observational/lab astronomy tasks
+        // (telescope observation sessions, star charts, light curve analysis) get a dedicated pool.
+        // Generic "astronomy lab", "astronomy class" still route to astronomy (fires after).
+        if lower.contains("observing run") && (lower.contains("astronomy") || lower.contains("telescope") || lower.contains("observatory") || lower.contains("lab"))
+            || lower.contains("star chart") && (lower.contains("lab") || lower.contains("astronomy") || lower.contains("class") || lower.contains("plot") || lower.contains("draw"))
+            || lower.contains("star charts") && (lower.contains("lab") || lower.contains("astronomy") || lower.contains("class"))
+            || lower.contains("telescope observation") && (lower.contains("lab") || lower.contains("report") || lower.contains("session") || lower.contains("data"))
+            || lower.contains("telescope observations") && (lower.contains("lab") || lower.contains("report"))
+            || lower.contains("magnitude measurement") && (lower.contains("astronomy") || lower.contains("lab") || lower.contains("telescope"))
+            || lower.contains("stellar magnitude") && (lower.contains("lab") || lower.contains("astronomy") || lower.contains("measure") || lower.contains("calculate"))
+            || lower.contains("light curve") && (lower.contains("astronomy") || lower.contains("lab") || lower.contains("telescope") || lower.contains("variable star"))
+            || lower.contains("light curves") && (lower.contains("astronomy") || lower.contains("lab") || lower.contains("telescope"))
+            || lower.contains("celestial coordinates") && (lower.contains("lab") || lower.contains("astronomy") || lower.contains("class") || lower.contains("calculate"))
+            || lower.contains("astronomical calculations") && (lower.contains("lab") || lower.contains("astronomy") || lower.contains("class"))
+            || lower.contains("observatory session") && (lower.contains("astronomy") || lower.contains("lab") || lower.contains("report"))
+            || lower.contains("observatory report") && (lower.contains("astronomy") || lower.contains("lab"))
+            || lower.contains("sky survey") && (lower.contains("astronomy") || lower.contains("lab") || lower.contains("telescope"))
+            || lower.contains("stellar spectrum") && (lower.contains("lab") || lower.contains("astronomy") || lower.contains("measure"))
+            || lower.contains("spectrograph lab") && (lower.contains("astronomy") || lower.contains("stellar") || lower.contains("spec"))
+            || lower.contains("photometry lab") && (lower.contains("astronomy") || lower.contains("stellar") || lower.contains("ccd")) {
+            return "astronomylab"
+        }
         // astronomy — positioned before studying so "astrophysics homework" and "astronomy exam"
         // don't fall through to the generic studying pool via word("exam").
         // Bare word("physics") stays in studying; compound celestial/cosmological terms route here.
@@ -1057,6 +1079,24 @@ public final class CalloutManager {
             || lower.contains("marine geochemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
             || word("geochemistry") || word("geochemist") || word("geochemists") {
             return "geochemistry"
+        }
+        // geologylab — positioned BEFORE geology so specific geology lab tasks (rock/mineral
+        // identification, thin section analysis, geologic field mapping reports) get a dedicated pool.
+        // Generic "geology lab" without specific lab-activity context still routes to geology (fires after).
+        if lower.contains("geology lab") && (lower.contains("rock") || lower.contains("mineral") || lower.contains("thin section") || lower.contains("field") || lower.contains("class") || lower.contains("report") || lower.contains("sample"))
+            || lower.contains("rock identification lab") || lower.contains("mineral identification lab")
+            || lower.contains("thin section") && (lower.contains("geology") || lower.contains("lab") || lower.contains("mineralogy") || lower.contains("petrology") || lower.contains("microscopy"))
+            || lower.contains("geologic field") && (lower.contains("lab") || lower.contains("report") || lower.contains("class") || lower.contains("mapping") || lower.contains("camp"))
+            || lower.contains("geology field lab") || lower.contains("geology field report")
+            || lower.contains("field geology") && (lower.contains("lab") || lower.contains("report") || lower.contains("mapping") || lower.contains("class"))
+            || lower.contains("rock cycle lab") || lower.contains("rock sample lab")
+            || lower.contains("mineral sample lab") || lower.contains("petrographic") && (lower.contains("lab") || lower.contains("class") || lower.contains("report") || lower.contains("microscope"))
+            || lower.contains("hand specimen") && (lower.contains("geology") || lower.contains("lab") || lower.contains("mineral") || lower.contains("rock") || lower.contains("identify"))
+            || lower.contains("geologic map lab") || lower.contains("geologic cross section lab")
+            || lower.contains("rock and mineral lab") || lower.contains("minerals and rocks lab")
+            || lower.contains("rock identification class") || lower.contains("mineral identification class")
+            || lower.contains("igneous rock lab") || lower.contains("sedimentary rock lab") || lower.contains("metamorphic rock lab") {
+            return "geologylab"
         }
         // geology — positioned before engineering so "geology lab" and earth-science field tasks
         // don't fall through to engineering or research via word("lab").
@@ -3892,6 +3932,30 @@ public final class CalloutManager {
             || lower.contains("environmental justice analysis") || lower.contains("environmental justice research")
             || lower.contains("environmental justice policy") || lower.contains("environmental justice program") {
             return "environmentaljustice"
+        }
+        // environmentalscience — positioned BEFORE environmentalpolicy so env sci coursework
+        // (earth systems, biogeochemical cycles, environmental monitoring class) gets a dedicated pool.
+        // "environmental policy" routes to environmentalpolicy (fires after); "environmental health"
+        // routes to environmentalhealth (fires much later).
+        if lower.contains("environmental science class") || lower.contains("environmental science course")
+            || lower.contains("environmental science exam") || lower.contains("environmental science lab")
+            || lower.contains("environmental science major") || lower.contains("environmental science program")
+            || lower.contains("environmental science notes") || lower.contains("environmental science assignment")
+            || lower.contains("environmental science degree") || lower.contains("environmental science homework")
+            || lower.contains("environmental science textbook") || lower.contains("environmental science lecture")
+            || lower.contains("env sci class") || lower.contains("env sci course") || lower.contains("env sci exam")
+            || lower.contains("envi sci class") || lower.contains("envi sci course") || lower.contains("envi sci exam")
+            || lower.contains("earth systems") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("assignment"))
+            || lower.contains("earth systems science") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("biogeochemical cycle") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("biogeochemical cycles") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("carbon cycle") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("environmental science") || lower.contains("env sci"))
+            || lower.contains("nitrogen cycle") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("environmental science"))
+            || lower.contains("watershed science") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("environmental monitoring") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("environmental sampling") && (lower.contains("class") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("environmental data analysis") && (lower.contains("class") || lower.contains("lab") || lower.contains("course")) {
+            return "environmentalscience"
         }
         // environmentalpolicy — positioned BEFORE enviro so environmental policy and climate policy
         // with academic/analysis context route here. Generic "environmental policy" and
@@ -7372,6 +7436,51 @@ public final class CalloutManager {
             || lower.contains("geopolitics assignment") || lower.contains("geopolitics thesis")
             || lower.contains("geopolitics research") || lower.contains("geopolitics essay") {
             return "geopolitics"
+        }
+        // anthropology — positioned BEFORE socialscience so cultural/physical/linguistic/biological
+        // anthropology coursework gets a dedicated callout pool instead of the generic socialscience pool.
+        // word("anthropology") is currently caught by socialscience — intercepting here first gives it
+        // friend-like anthropology-specific messages.
+        if word("anthropology") || word("anthropologist") || word("anthropological") || word("anthropologists")
+            || lower.contains("cultural anthropology") || lower.contains("physical anthropology")
+            || lower.contains("linguistic anthropology") || lower.contains("biological anthropology")
+            || lower.contains("medical anthropology") || lower.contains("urban anthropology")
+            || lower.contains("forensic anthropology") && !lower.contains("forensic science")
+            || lower.contains("social anthropology") || lower.contains("applied anthropology")
+            || lower.contains("archaeological fieldwork")
+            || lower.contains("archaeology class") || lower.contains("archaeology course")
+            || lower.contains("archaeology exam") || lower.contains("archaeology assignment")
+            || lower.contains("ethnography") || lower.contains("ethnographic research")
+            || lower.contains("participant observation") && (lower.contains("anthropology") || lower.contains("ethnography") || lower.contains("field") || lower.contains("class"))
+            || lower.contains("kinship systems") && (lower.contains("anthropology") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("cross-cultural") && (lower.contains("class") || lower.contains("course") || lower.contains("anthropology") || lower.contains("study"))
+            || lower.contains("paleoanthropology") || lower.contains("paleoanthropologist")
+            || lower.contains("anthropology major") || lower.contains("anthropology program")
+            || lower.contains("anthropology class") || lower.contains("anthropology course")
+            || lower.contains("anthropology exam") || lower.contains("anthropology notes") {
+            return "anthropology"
+        }
+        // sociology — positioned BEFORE socialscience so sociological theory, structural analysis,
+        // and sociology coursework gets a dedicated callout pool. Bare word("sociology") routes to
+        // studying (fires much earlier); compound sociology terms without bare study-words route here.
+        if word("sociological") || word("sociologist") || word("sociologists")
+            || lower.contains("sociological theory") || lower.contains("sociological analysis")
+            || lower.contains("sociological perspective") || lower.contains("sociological framework")
+            || lower.contains("symbolic interactionism") || lower.contains("structural functionalism")
+            || lower.contains("conflict theory") && (lower.contains("class") || lower.contains("sociology") || lower.contains("course") || lower.contains("paper") || lower.contains("essay"))
+            || lower.contains("social stratification") && (lower.contains("class") || lower.contains("course") || lower.contains("sociology") || lower.contains("paper"))
+            || lower.contains("social inequality") && (lower.contains("class") || lower.contains("course") || lower.contains("sociology") || lower.contains("paper"))
+            || lower.contains("sociology major") || lower.contains("sociology program")
+            || lower.contains("sociology class") || lower.contains("sociology course")
+            || lower.contains("sociology exam") || lower.contains("sociology assignment")
+            || lower.contains("sociology notes") || lower.contains("sociology paper")
+            || lower.contains("sociology of religion") || lower.contains("sociology of education")
+            || lower.contains("sociology of the family") || lower.contains("urban sociology")
+            || lower.contains("rural sociology") || lower.contains("race and ethnicity") && (lower.contains("sociology") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("gender and society") && (lower.contains("sociology") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("deviance and crime") && (lower.contains("class") || lower.contains("sociology") || lower.contains("course"))
+            || lower.contains("social mobility") && (lower.contains("sociology") || lower.contains("class") || lower.contains("course")) {
+            return "sociology"
         }
         // socialscience — positioned after criminaljustice (which now owns criminology/criminal justice)
         // and before legal (LSAT is pre-law, not a bar-exam term). "social work" routes to socialwork.

@@ -5889,4 +5889,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 771,
                 "catalog should have ≥771 templates after biochemistry2/physicalchemistrylab/organicchemistrylab/immunologycourse/neurobiologylab additions (10 templates)")
     }
+
+    // MARK: - astronomylab templates
+    @Test func catalogHasAstronomylabTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasLab = tasks.contains {
+            $0.localizedCaseInsensitiveContains("astronomy") &&
+            ($0.localizedCaseInsensitiveContains("star chart") || $0.localizedCaseInsensitiveContains("telescope") || $0.localizedCaseInsensitiveContains("light curve") || $0.localizedCaseInsensitiveContains("observational"))
+        }
+        let hasPrep = tasks.contains {
+            $0.localizedCaseInsensitiveContains("astronomy") &&
+            ($0.localizedCaseInsensitiveContains("prepare") || $0.localizedCaseInsensitiveContains("observing session") || $0.localizedCaseInsensitiveContains("pre-lab"))
+        }
+        #expect(hasLab, "catalog must include an astronomy observational lab template")
+        #expect(hasPrep, "catalog must include an astronomy lab prep template")
+    }
+
+    // MARK: - geologylab templates
+    @Test func catalogHasGeologylabTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasLab = tasks.contains {
+            $0.localizedCaseInsensitiveContains("geology lab") &&
+            ($0.localizedCaseInsensitiveContains("rock") || $0.localizedCaseInsensitiveContains("mineral") || $0.localizedCaseInsensitiveContains("thin section"))
+        }
+        let hasPrep = tasks.contains {
+            $0.localizedCaseInsensitiveContains("geology lab") &&
+            ($0.localizedCaseInsensitiveContains("prepare") || $0.localizedCaseInsensitiveContains("pre-lab") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        #expect(hasLab, "catalog must include a geology lab report template")
+        #expect(hasPrep, "catalog must include a geology lab prep template")
+    }
+
+    // MARK: - environmentalscience templates
+    @Test func catalogHasEnvironmentalscienceTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasAssignment = tasks.contains {
+            $0.localizedCaseInsensitiveContains("environmental science") &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("biogeochemical") || $0.localizedCaseInsensitiveContains("lab"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("environmental science") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        #expect(hasAssignment, "catalog must include an environmental science assignment template")
+        #expect(hasStudy, "catalog must include an environmental science study template")
+    }
+
+    // MARK: - anthropology templates
+    @Test func catalogHasAnthropologyTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasPaper = tasks.contains {
+            $0.localizedCaseInsensitiveContains("anthropology") &&
+            ($0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("ethnography") || $0.localizedCaseInsensitiveContains("write"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("anthropology") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        #expect(hasPaper, "catalog must include an anthropology paper/ethnography template")
+        #expect(hasStudy, "catalog must include an anthropology study template")
+    }
+
+    // MARK: - sociology templates
+    @Test func catalogHasSociologyTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasPaper = tasks.contains {
+            $0.localizedCaseInsensitiveContains("sociology") &&
+            ($0.localizedCaseInsensitiveContains("paper") || $0.localizedCaseInsensitiveContains("theory") || $0.localizedCaseInsensitiveContains("write"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("sociology") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        #expect(hasPaper, "catalog must include a sociology paper/analysis template")
+        #expect(hasStudy, "catalog must include a sociology study template")
+    }
+
+    // MARK: - Count guard (batch: astronomylab/geologylab/environmentalscience/anthropology/sociology)
+    @Test func catalogHasAtLeastSevenHundredEightyOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 781,
+                "catalog should have ≥781 templates after astronomylab/geologylab/environmentalscience/anthropology/sociology additions (10 templates)")
+    }
 }

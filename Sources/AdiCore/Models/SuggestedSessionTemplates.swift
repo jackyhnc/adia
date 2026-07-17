@@ -4970,5 +4970,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Neurobiology lab prep completed (pre-lab questions answered, experimental protocol reviewed, relevant background on electrophysiology or imaging technique summarized and saved)",
             preferredDuration: 30 * 60
         ),
+        // astronomylab
+        SuggestedTemplate(
+            icon: "star.fill",
+            task: "Complete my observational astronomy lab — plot star charts, analyze telescope data, calculate stellar magnitudes, measure light curves, or write up my astronomical observation report",
+            successCriteria: "Astronomy lab completed (star chart plotted or telescope data analyzed, calculations shown, and lab report section or observation write-up completed and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "star.fill",
+            task: "Prepare for my astronomy observing session — review celestial coordinate systems, telescope operation, stellar classification, magnitude calculations, or pre-lab questions for my observatory session",
+            successCriteria: "Astronomy lab prep completed (pre-lab questions answered, coordinate systems or telescope procedures reviewed, and observing targets or sky chart prepared and saved)",
+            preferredDuration: 30 * 60
+        ),
+        // geologylab
+        SuggestedTemplate(
+            icon: "mountain.2.fill",
+            task: "Complete my geology lab report — identify rock and mineral specimens, analyze thin sections under the microscope, interpret geologic cross sections, or write up my field geology observations",
+            successCriteria: "Geology lab report completed (rock or mineral identifications documented, thin section observations or field data recorded, and lab report section written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "mountain.2.fill",
+            task: "Prepare for my geology lab — review rock identification techniques, mineral properties and cleavage, thin section petrography, geologic map reading, or pre-lab questions for my geology field lab",
+            successCriteria: "Geology lab prep completed (pre-lab questions answered, key rock and mineral properties reviewed, and relevant geologic terminology or identification criteria documented and saved)",
+            preferredDuration: 30 * 60
+        ),
+        // environmentalscience
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Complete my environmental science assignment or lab — analyze biogeochemical cycles, earth systems data, environmental sampling results, or write up an environmental monitoring report",
+            successCriteria: "Environmental science assignment completed (data analyzed or report section written, biogeochemical cycle or earth systems concept fully explained, and work saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Study environmental science for my exam — review earth systems, biogeochemical cycles (carbon, nitrogen, phosphorus), ecosystem services, and environmental monitoring methods",
+            successCriteria: "Environmental science study session completed (at least two earth systems or biogeochemical cycles reviewed with key processes, drivers, and environmental significance summarized and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // anthropology
+        SuggestedTemplate(
+            icon: "person.3.fill",
+            task: "Write my anthropology paper or ethnography — analyze cultural practices, kinship systems, ritual behavior, or complete a participant observation write-up for my anthropology class",
+            successCriteria: "Anthropology writing completed (at least one section drafted with thesis, ethnographic or analytical evidence, and anthropological theory applied — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "person.3.fill",
+            task: "Study anthropology for my exam — review cultural anthropology theories, physical anthropology concepts, ethnographic methods, kinship systems, and key theorists (Boas, Mead, Geertz, Lévi-Strauss)",
+            successCriteria: "Anthropology study session completed (at least two theoretical frameworks or key anthropologists reviewed with core concepts, methods, and examples summarized and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // sociology
+        SuggestedTemplate(
+            icon: "network",
+            task: "Write my sociology paper — apply a sociological theory (conflict, functionalism, symbolic interactionism), analyze social stratification or inequality, or complete a sociological analysis for class",
+            successCriteria: "Sociology paper section completed (thesis stated, sociological theory applied with examples, and at least one body paragraph drafted with evidence and analysis — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "network",
+            task: "Study sociology for my exam — review sociological theories, social structures and stratification, deviance and social control, and key thinkers (Marx, Durkheim, Weber, Goffman, Parsons)",
+            successCriteria: "Sociology study session completed (at least two sociological theories or key thinkers reviewed with core arguments, concepts, and real-world applications summarized and saved)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

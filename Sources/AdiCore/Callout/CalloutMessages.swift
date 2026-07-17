@@ -451,6 +451,11 @@ extension CalloutManager {
         case "organicchemistrylab":        return organicchemistrylabCallouts(tier: tier)
         case "immunologycourse":           return immunologycourseCallouts(tier: tier)
         case "neurobiologylab":            return neurobiologylabCallouts(tier: tier)
+        case "astronomylab":               return astronomylabCallouts(tier: tier)
+        case "geologylab":                 return geologylabCallouts(tier: tier)
+        case "environmentalscience":       return environmentalscienceCallouts(tier: tier)
+        case "anthropology":               return anthropologyCallouts(tier: tier)
+        case "sociology":                  return sociologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -8901,6 +8906,111 @@ extension CalloutManager {
             "CLOSE THIS. open your neurobiology lab notebook.",
             "CLOSE THIS. that patch clamp data needs analysis.",
             "CLOSE THIS. your neurobiology lab work won't do itself."
+        ]
+        }
+    }
+
+    private func astronomylabCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those star charts aren't going to plot themselves.",
+            "close this and get back to your observational astronomy lab.",
+            "your telescope data won't analyze itself. close this.",
+            "those astronomical calculations won't do themselves. close this."
+        ]
+        case 2: return [
+            "no one learns observational astronomy by scrolling.",
+            "close this and open your astronomy lab notebook.",
+            "that stellar spectrum won't analyze itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your astronomy lab notebook.",
+            "CLOSE THIS. those light curves need analysis.",
+            "CLOSE THIS. your observational astronomy lab won't do itself."
+        ]
+        }
+    }
+
+    private func geologylabCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that geology lab report isn't going to write itself.",
+            "close this and get back to your geology lab.",
+            "those rock samples won't identify themselves. close this.",
+            "that thin section won't analyze itself. close this."
+        ]
+        case 2: return [
+            "no one passes geology lab by scrolling.",
+            "close this and open your geology lab notebook.",
+            "those rock specimens need your attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your geology lab notebook.",
+            "CLOSE THIS. those thin sections need analysis.",
+            "CLOSE THIS. your geology field report won't write itself."
+        ]
+        }
+    }
+
+    private func environmentalscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those earth systems problems aren't going to solve themselves.",
+            "close this and get back to your environmental science.",
+            "your biogeochemical cycle notes won't write themselves. close this.",
+            "that environmental data won't analyze itself. close this."
+        ]
+        case 2: return [
+            "no one masters environmental science by scrolling.",
+            "close this and open your environmental science notes.",
+            "that carbon cycle diagram won't study itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your environmental science textbook.",
+            "CLOSE THIS. those earth systems concepts need your attention.",
+            "CLOSE THIS. your environmental science exam won't study itself."
+        ]
+        }
+    }
+
+    private func anthropologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that ethnography isn't going to write itself.",
+            "close this and get back to your anthropology.",
+            "those kinship systems won't memorize themselves. close this.",
+            "that field observation report won't write itself. close this."
+        ]
+        case 2: return [
+            "no one masters anthropology by scrolling.",
+            "close this and open your anthropology notes.",
+            "that cultural analysis won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your anthropology textbook.",
+            "CLOSE THIS. those ethnographic field notes need your attention.",
+            "CLOSE THIS. your anthropology exam won't study itself."
+        ]
+        }
+    }
+
+    private func sociologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that sociological analysis isn't going to write itself.",
+            "close this and get back to your sociology.",
+            "those social theory frameworks won't memorize themselves. close this.",
+            "that sociology paper won't write itself. close this."
+        ]
+        case 2: return [
+            "no one masters sociology by scrolling.",
+            "close this and open your sociology notes.",
+            "that structural functionalism essay won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your sociology textbook.",
+            "CLOSE THIS. those social theory concepts need your attention.",
+            "CLOSE THIS. your sociology exam won't study itself."
         ]
         }
     }
