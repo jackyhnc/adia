@@ -5620,5 +5620,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Numerical analysis problem set completed (root-finding, integration, or interpolation problems solved with algorithm steps, error estimates, and numerical results documented — saved to file)",
             preferredDuration: 45 * 60
         ),
+        // statisticalmethods
+        SuggestedTemplate(
+            icon: "chart.bar.xaxis",
+            task: "Study applied statistics for my exam — review experimental design, ANOVA, Bayesian inference, nonparametric methods, and time series analysis",
+            successCriteria: "Applied statistics study session completed (at least two methods reviewed with design principles, test assumptions, Bayesian updating rules, or nonparametric procedures summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.bar.xaxis",
+            task: "Work on my statistical methods assignment — apply design of experiments, run ANOVA or nonparametric tests, or derive Bayesian posterior distributions",
+            successCriteria: "Statistical methods assignment completed (experimental design, ANOVA table, Bayesian derivation, or nonparametric test results documented with interpretations — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // topology
+        SuggestedTemplate(
+            icon: "circle.dashed",
+            task: "Study topology for my exam — review open and closed sets, compactness, connectedness, homeomorphisms, homotopy, and quotient spaces",
+            successCriteria: "Topology study session completed (at least two topics reviewed with definitions, theorems, and proof strategies for compactness, connectedness, and homeomorphisms summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "circle.dashed",
+            task: "Work on my topology problem set — prove compactness or connectedness, construct homeomorphisms, analyze open and closed sets, or work with quotient spaces",
+            successCriteria: "Topology problem set completed (compactness proofs, homeomorphism constructions, or quotient space arguments written with rigorous justification at each step — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // abstractalgebra
+        SuggestedTemplate(
+            icon: "square.grid.3x3",
+            task: "Study abstract algebra for my exam — review group theory, ring theory, field theory, Galois theory, homomorphisms, isomorphism theorems, and Sylow theorems",
+            successCriteria: "Abstract algebra study session completed (at least two topics reviewed with group/ring/field definitions, key theorems, and proof strategies for isomorphism and Sylow theorems summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "square.grid.3x3",
+            task: "Work on my abstract algebra problem set — prove group isomorphisms, classify quotient groups, apply Sylow theorems, or work with ring and field extensions",
+            successCriteria: "Abstract algebra problem set completed (group theory proofs, isomorphism arguments, Sylow calculations, or ring/field extension problems solved with rigorous justification — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // seismology
+        SuggestedTemplate(
+            icon: "waveform.path",
+            task: "Study seismology for my exam — review seismic waves (P/S/surface), earthquake location methods, focal mechanisms, seismogram analysis, and seismograph station networks",
+            successCriteria: "Seismology study session completed (at least two topics reviewed with wave propagation properties, location algorithm steps, focal mechanism interpretation, and seismogram reading techniques summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path",
+            task: "Work through my seismology problem set — locate earthquakes from arrival times, interpret focal mechanisms, analyze seismograms, or apply seismic wave theory",
+            successCriteria: "Seismology problem set completed (earthquake location calculations, focal mechanism analysis, seismogram interpretation, or wave propagation problems solved and documented — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // volcanology
+        SuggestedTemplate(
+            icon: "flame",
+            task: "Study volcanology for my exam — review magma eruption dynamics, pyroclastic flows, lahars, volcanic hazard assessment, tephra deposits, and caldera formation",
+            successCriteria: "Volcanology study session completed (at least two topics reviewed with eruption styles, volcanic product classifications, hazard zones, and process mechanisms summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "flame",
+            task: "Work on my volcanology assignment — analyze pyroclastic flow deposits, assess volcanic hazards, interpret tephra stratigraphy, or model eruption dynamics",
+            successCriteria: "Volcanology assignment completed (volcanic hazard assessment, pyroclastic deposit analysis, tephra interpretation, or eruption dynamics calculations documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

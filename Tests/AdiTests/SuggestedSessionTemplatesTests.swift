@@ -6352,4 +6352,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast871() {
         #expect(SuggestedSessionTemplates.all.count >= 871, "template catalog must have ≥871 entries after complexanalysis/realanalysis/discretemath/probabilitytheory/numericalanalysis additions")
     }
+    // MARK: - statisticalmethods templates
+    @Test func statisticalmethodsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("applied statistics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func statisticalmethodsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("statistical methods") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - topology templates
+    @Test func topologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("topology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func topologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("topology") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - abstractalgebra templates
+    @Test func abstractalgebraStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("abstract algebra") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func abstractalgebraAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("abstract algebra") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - seismology templates
+    @Test func seismologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("seismology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func seismologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("seismology") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - volcanology templates
+    @Test func volcanologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("volcanology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func volcanologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("volcanology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥881)
+    @Test func templateCountAtLeast881() {
+        #expect(SuggestedSessionTemplates.all.count >= 881, "template catalog must have ≥881 entries after statisticalmethods/topology/abstractalgebra/seismology/volcanology additions")
+    }
 }

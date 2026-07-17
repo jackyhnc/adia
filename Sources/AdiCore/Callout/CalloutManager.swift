@@ -520,6 +520,23 @@ public final class CalloutManager {
             || lower.contains("biostats class") || lower.contains("biostats course") || lower.contains("biostats exam") {
             return "biostatistics"
         }
+        // statisticalmethods — positioned AFTER biostatistics and BEFORE statistics so applied
+        // statistics coursework (applied statistics class, statistical methods, design of
+        // experiments, Bayesian statistics, nonparametric methods, time series analysis)
+        // routes to a dedicated pool. Generic stats tools (SPSS, STATA, bare regression) stay
+        // in statistics (fires after).
+        if (lower.contains("applied statistics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("assignment") || lower.contains("problem set")))
+            || (lower.contains("statistical methods") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("assignment")))
+            || (lower.contains("design of experiments") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("statistics") || lower.contains("assignment")))
+            || (lower.contains("experimental design") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("statistics") || lower.contains("assignment")))
+            || (lower.contains("bayesian statistics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework")))
+            || (lower.contains("bayesian inference") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("nonparametric statistics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("nonparametric methods") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("multivariate statistics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("time series analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("statistics") || lower.contains("exam"))) {
+            return "statisticalmethods"
+        }
         // statistics — positioned before studying so professional stats tools/methods (R, SPSS,
         // STATA, regression analysis, ANOVA) route here. Bare word("statistics") and word("stats")
         // stay in studying so "study statistics for my exam" still routes to studying.
@@ -838,6 +855,42 @@ public final class CalloutManager {
             || (lower.contains("truncation error") && (lower.contains("class") || lower.contains("numerical") || lower.contains("exam")))
             || (lower.contains("round-off error") && (lower.contains("class") || lower.contains("numerical") || lower.contains("exam"))) {
             return "numericalanalysis"
+        }
+        // topology — positioned BEFORE mathematics so topology coursework (open/closed sets,
+        // compactness, connectedness, homeomorphisms, homotopy, quotient spaces) routes to a
+        // dedicated pool. Bare word("topology") without class context falls through to mathematics.
+        if lower.contains("topology class") || lower.contains("topology course")
+            || lower.contains("topology exam") || lower.contains("topology homework")
+            || lower.contains("topology assignment") || lower.contains("topology problem set")
+            || lower.contains("topology textbook") || lower.contains("topology notes")
+            || (lower.contains("point-set topology") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("open set") && lower.contains("topology") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("closed set") && lower.contains("topology") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("compactness") && lower.contains("topology") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("connectedness") && lower.contains("topology") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("homeomorphism") && (lower.contains("class") || lower.contains("topology") || lower.contains("exam")))
+            || (lower.contains("homeomorphisms") && (lower.contains("class") || lower.contains("topology") || lower.contains("exam")))
+            || (lower.contains("homotopy") && lower.contains("topology") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("quotient space") && (lower.contains("topology") || (lower.contains("class") && lower.contains("topolog"))))
+            || (lower.contains("metric topology") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("topological space") && (lower.contains("class") || lower.contains("exam"))) {
+            return "topology"
+        }
+        // abstractalgebra — positioned BEFORE mathematics so abstract algebra coursework
+        // (group/ring/field theory class, Galois theory, homomorphisms, isomorphism theorems,
+        // Sylow theorems) routes to a dedicated pool. Bare "abstract algebra" without class
+        // context falls through to mathematics.
+        if (lower.contains("abstract algebra") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("assignment") || lower.contains("problem set") || lower.contains("textbook") || lower.contains("notes")))
+            || (lower.contains("group theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("assignment")))
+            || (lower.contains("ring theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("assignment")))
+            || (lower.contains("field theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("algebra") || lower.contains("abstract")) && !lower.contains("magnetic field") && !lower.contains("electric field"))
+            || (lower.contains("galois theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("assignment")))
+            || (lower.contains("homomorphism") && (lower.contains("class") || lower.contains("exam") || lower.contains("abstract") || lower.contains("algebra")))
+            || (lower.contains("isomorphism theorem") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("sylow theorem") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("normal subgroup") && (lower.contains("class") || lower.contains("exam") || lower.contains("algebra")))
+            || (lower.contains("quotient group") && (lower.contains("class") || lower.contains("exam") || lower.contains("algebra"))) {
+            return "abstractalgebra"
         }
         // mathematics — positioned before studying so number theory, proof writing, and
         // advanced topics (topology, abstract algebra) don't fall through to studying.
@@ -1490,6 +1543,44 @@ public final class CalloutManager {
             || lower.contains("regression") && (lower.contains("stratigraphy") || lower.contains("sea level") || lower.contains("sequence")) {
             return "stratigraphy"
         }
+        // seismology — positioned BEFORE geologylab and geology so seismology class/exam,
+        // seismogram analysis, and earthquake seismology tasks route to a dedicated pool.
+        // word("seismology") removed from geology branch below.
+        if word("seismology") || word("seismologist") || word("seismologists")
+            || lower.contains("seismology class") || lower.contains("seismology course")
+            || lower.contains("seismology exam") || lower.contains("seismology homework")
+            || lower.contains("seismology assignment") || lower.contains("seismology problem set")
+            || (lower.contains("seismogram analysis") && (lower.contains("class") || lower.contains("seismology") || lower.contains("exam")))
+            || (lower.contains("earthquake location") && (lower.contains("class") || lower.contains("seismology") || lower.contains("exam")))
+            || (lower.contains("s wave") && (lower.contains("seismology") || (lower.contains("class") && lower.contains("seismic"))))
+            || (lower.contains("p wave") && (lower.contains("seismology") || (lower.contains("class") && lower.contains("seismic"))))
+            || lower.contains("body wave seismology") || lower.contains("surface wave seismology")
+            || (lower.contains("fault mechanism") && (lower.contains("class") || lower.contains("seismology") || lower.contains("seismic")))
+            || (lower.contains("focal mechanism") && (lower.contains("class") || lower.contains("seismology") || lower.contains("seismic")))
+            || (lower.contains("seismograph") && (lower.contains("class") || lower.contains("seismology") || lower.contains("station")))
+            || (lower.contains("teleseismic") && (lower.contains("class") || lower.contains("seismology")))
+            || lower.contains("earthquake seismology") || lower.contains("engineering seismology") {
+            return "seismology"
+        }
+        // volcanology — positioned BEFORE geologylab and geology so volcanology class/exam
+        // and volcanic process tasks route to a dedicated pool.
+        // word("volcanology") removed from geology branch below.
+        if word("volcanology") || word("volcanologist") || word("volcanologists")
+            || lower.contains("volcanology class") || lower.contains("volcanology course")
+            || lower.contains("volcanology exam") || lower.contains("volcanology homework")
+            || lower.contains("volcanology assignment") || lower.contains("volcanology problem set")
+            || (lower.contains("magma eruption") && (lower.contains("class") || lower.contains("volcanology") || lower.contains("exam")))
+            || (lower.contains("pyroclastic flow") && (lower.contains("class") || lower.contains("volcanology") || lower.contains("exam")))
+            || (lower.contains("lahar") && (lower.contains("class") || lower.contains("volcanology") || lower.contains("exam")))
+            || (lower.contains("volcanic hazard") && (lower.contains("class") || lower.contains("volcanology") || lower.contains("assessment")))
+            || (lower.contains("tephra analysis") && (lower.contains("class") || lower.contains("volcanology") || lower.contains("exam")))
+            || (lower.contains("caldera formation") && (lower.contains("class") || lower.contains("volcanology") || lower.contains("exam")))
+            || (lower.contains("lava flow") && lower.contains("volcanology"))
+            || (lower.contains("volcanic arc") && (lower.contains("class") || lower.contains("volcanology") || lower.contains("exam")))
+            || (lower.contains("phreatomagmatic") && (lower.contains("class") || lower.contains("volcanology") || lower.contains("exam")))
+            || (lower.contains("eruption dynamics") && (lower.contains("class") || lower.contains("volcanology") || lower.contains("exam"))) {
+            return "volcanology"
+        }
         // geologylab — positioned BEFORE geology so specific geology lab tasks (rock/mineral
         // identification, thin section analysis, geologic field mapping reports) get a dedicated pool.
         // Generic "geology lab" without specific lab-activity context still routes to geology (fires after).
@@ -1519,9 +1610,10 @@ public final class CalloutManager {
         // word("petrology") now owned by petrology branch above.
         // word("hydrogeology") now owned by hydrogeology branch above.
         // word("stratigraphy")/word("stratigraphic") now owned by stratigraphy branch above.
+        // word("seismology") now owned by seismology branch above.
+        // word("volcanology") now owned by volcanology branch above.
         if word("geology") || word("geologist") || word("geological") || word("geologists")
             || word("sedimentology") || word("geomorphology")
-            || word("seismology") || word("volcanology")
             || lower.contains("earth science") || lower.contains("earth sciences")
             || word("geoscience") || word("geosciences")
             || lower.contains("plate tectonics") || lower.contains("tectonic plates")

@@ -501,6 +501,11 @@ extension CalloutManager {
         case "discretemath":               return discretemathCallouts(tier: tier)
         case "probabilitytheory":          return probabilitytheoryCallouts(tier: tier)
         case "numericalanalysis":          return numericalanalysisCallouts(tier: tier)
+        case "statisticalmethods":         return statisticalmethodsCallouts(tier: tier)
+        case "topology":                   return topologyCallouts(tier: tier)
+        case "abstractalgebra":            return abstractalgebraCallouts(tier: tier)
+        case "seismology":                 return seismologyCallouts(tier: tier)
+        case "volcanology":                return volcanologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -10001,6 +10006,111 @@ extension CalloutManager {
             "CLOSE THIS. open your numerical analysis textbook.",
             "CLOSE THIS. those numerical methods won't implement themselves.",
             "CLOSE THIS. your numerical analysis exam won't study itself."
+        ]
+        }
+    }
+
+    private func statisticalmethodsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that ANOVA won't run itself.",
+            "those statistical methods won't apply themselves.",
+            "your applied statistics assignment is waiting.",
+            "you can't derive a Bayesian posterior by watching this."
+        ]
+        case 2: return [
+            "no one masters statistical methods by scrolling.",
+            "close this and open your statistics textbook.",
+            "those experimental design problems need your attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your applied statistics notes.",
+            "CLOSE THIS. those statistical methods won't apply themselves.",
+            "CLOSE THIS. your statistics exam won't study itself."
+        ]
+        }
+    }
+
+    private func topologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those open and closed sets won't classify themselves.",
+            "compactness proofs don't write themselves.",
+            "your topology assignment is waiting.",
+            "you can't prove homeomorphism by watching this."
+        ]
+        case 2: return [
+            "no one masters topology by scrolling.",
+            "close this and open your topology textbook.",
+            "those compactness and connectedness proofs need your attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your topology notes.",
+            "CLOSE THIS. those topology proofs won't write themselves.",
+            "CLOSE THIS. your topology exam won't study itself."
+        ]
+        }
+    }
+
+    private func abstractalgebraCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those group theory proofs won't write themselves.",
+            "the isomorphism theorems aren't going to study themselves.",
+            "your abstract algebra assignment is waiting.",
+            "you can't prove Sylow's theorem by watching this."
+        ]
+        case 2: return [
+            "no one masters abstract algebra by scrolling.",
+            "close this and open your algebra textbook.",
+            "those group and ring theory problems need your attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your abstract algebra notes.",
+            "CLOSE THIS. those algebra proofs won't write themselves.",
+            "CLOSE THIS. your abstract algebra exam won't study itself."
+        ]
+        }
+    }
+
+    private func seismologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that seismogram won't interpret itself.",
+            "those earthquake location problems won't solve themselves.",
+            "your seismology assignment is waiting.",
+            "you can't analyze focal mechanisms by watching this."
+        ]
+        case 2: return [
+            "no one masters seismology by scrolling.",
+            "close this and open your seismology notes.",
+            "those seismic wave and focal mechanism problems need your attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your seismology textbook.",
+            "CLOSE THIS. those seismograms won't analyze themselves.",
+            "CLOSE THIS. your seismology exam won't study itself."
+        ]
+        }
+    }
+
+    private func volcanologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that volcanic hazard assessment won't do itself.",
+            "those pyroclastic flow problems won't solve themselves.",
+            "your volcanology assignment is waiting.",
+            "you can't model eruption dynamics by watching this."
+        ]
+        case 2: return [
+            "no one masters volcanology by scrolling.",
+            "close this and open your volcanology notes.",
+            "those eruption dynamics and volcanic hazard problems need your attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your volcanology textbook.",
+            "CLOSE THIS. those volcanic processes won't analyze themselves.",
+            "CLOSE THIS. your volcanology exam won't study itself."
         ]
         }
     }
