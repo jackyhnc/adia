@@ -18472,3 +18472,67 @@ None. Swift toolchain unavailable on Linux container.
   - `numericalanalysis` — numerical analysis class (floating-point arithmetic, Newton's method, numerical integration, finite difference methods, interpolation — distinct from appliedmathematics)
 - Template count: 861 → 871 after next 5-domain batch
 - CalloutManagerTests: ~22700+ lines after next batch
+
+---
+
+## Run 378 (automated) — 2026-07-17 — 5 new keyword domains: complexanalysis/realanalysis/discretemath/probabilitytheory/numericalanalysis (861→871 templates)
+
+### What shipped
+
+**5 new keyword domains: complexanalysis, realanalysis, discretemath, probabilitytheory, numericalanalysis**
+
+**New keyword domain — complexanalysis:**
+- Branch positioned BEFORE mathematics. Catches: "complex analysis class/course/exam/homework/notes/textbook/assignment/problem set", "complex variables class/course/exam", Cauchy-Riemann equations + class/exam/complex, contour integration/integral + class/exam/complex, residue theorem + class/exam/complex, Cauchy's integral formula + class/exam, analytic function + class/exam/complex analysis, holomorphic/meromorphic function + class/exam/complex, conformal mapping + class/exam/complex, Laurent series + class/exam/complex, Riemann surface + class/exam/complex.
+- `complexanalysisCallouts(tier:)` 4/3/3: "those Cauchy-Riemann equations won't solve themselves." / "no one masters complex analysis by scrolling." / "CLOSE THIS. open your complex analysis textbook."
+- 2 templates: "Study complex analysis for my exam — Cauchy-Riemann equations, contour integration, residue theorem, analytic and holomorphic functions, Laurent series, conformal mappings" (60 min) + "Work on my complex analysis problem set — compute contour integrals, verify Cauchy-Riemann equations, apply Cauchy's integral formula, classify singularities, construct conformal mappings" (45 min)
+
+**New keyword domain — realanalysis:**
+- Branch positioned BEFORE mathematics. Catches: "real analysis class/course/exam/homework/notes/textbook/assignment/problem set", epsilon-delta + class/exam/real analysis/proof, metric space + class/exam/real analysis, uniform convergence + class/exam/real analysis, Lebesgue integration/integral + class/exam/real analysis/measure, measure theory + class/course/exam/real analysis, Cauchy sequence + class/exam/real analysis, Heine-Borel + class/exam/real analysis, Bolzano-Weierstrass + class/exam/real analysis, point-set topology + class/exam/real analysis.
+- `realanalysisCallouts(tier:)` 4/3/3: "those epsilon-delta proofs won't write themselves." / "no one masters real analysis by scrolling." / "CLOSE THIS. open your real analysis textbook."
+- 2 templates: "Study real analysis for my exam — epsilon-delta, metric spaces, Cauchy sequences, uniform convergence, Heine-Borel, Lebesgue integration, measure theory" (60 min) + "Work on my real analysis problem set — epsilon-delta proofs, metric space convergence, Lebesgue integration problems" (45 min)
+
+**New keyword domain — discretemath:**
+- Branch positioned BEFORE mathematics. Catches: "discrete math class/course/exam/homework/hw/problem set/notes/textbook/assignment", "discrete mathematics class/course/exam/homework/problem set/assignment", graph theory + class/course/exam/proof/discrete, combinatorics + class/course/exam/homework/discrete, propositional logic + class/course/exam/discrete, proof by induction + class/discrete/exam, mathematical induction + class/discrete/exam, pigeonhole principle + class/exam/discrete, inclusion-exclusion + class/exam/discrete/combinatorics, recurrence relation + class/exam/discrete/combinatorics, boolean algebra + class/course/exam/discrete.
+- `discretemathCallouts(tier:)` 4/3/3: "those combinatorics problems won't solve themselves." / "no one masters discrete math by scrolling." / "CLOSE THIS. open your discrete math textbook."
+- 2 templates: "Study discrete math for my exam — proof by induction, graph theory, combinatorics, propositional logic, pigeonhole principle, recurrence relations, inclusion-exclusion" (60 min) + "Work on my discrete math problem set — proofs by induction, graph theory problems, combinatorics counting, propositional logic, recurrence relations" (45 min)
+
+**New keyword domain — probabilitytheory:**
+- Branch positioned BEFORE mathematics. Catches: "probability theory class/course/exam/homework/notes/textbook/assignment/problem set", sigma-algebra + class/exam/probability, random variable + probability theory/(class + probability), moment generating function + class/exam/probability, central limit theorem + class/exam/probability theory, law of large numbers + class/exam/probability, probability measure + class/exam/probability theory, stochastic process + class/course/exam/probability theory, characteristic function + probability + class/exam.
+- `probabilitytheoryCallouts(tier:)` 4/3/3: "those probability theory proofs won't write themselves." / "no one masters probability theory by scrolling." / "CLOSE THIS. open your probability theory textbook."
+- 2 templates: "Study probability theory for my exam — sigma-algebras, random variables, expectation/variance, CLT, law of large numbers, moment generating functions, stochastic processes" (60 min) + "Work on my probability theory problem set — derive MGFs, prove convergence theorems, compute conditional expectations, apply CLT" (45 min)
+
+**New keyword domain — numericalanalysis:**
+- Branch positioned BEFORE mathematics. Catches: "numerical analysis class/course/exam/homework/notes/textbook/assignment/problem set", "numerical methods class/course/exam/homework/assignment", floating-point + class/numerical/exam, Newton's method + class/numerical/exam, bisection method + class/numerical/exam, numerical integration + class/exam/numerical, Gaussian quadrature + class/exam/numerical, finite difference + class/numerical/exam, finite element method + class/exam/numerical, interpolation + numerical + class/exam, spline interpolation + class/exam/numerical, Runge-Kutta + numerical/(class + numerical), truncation error + class/numerical/exam, round-off error + class/numerical/exam.
+- `numericalanalysisCallouts(tier:)` 4/3/3: "those numerical methods won't implement themselves." / "no one masters numerical analysis by scrolling." / "CLOSE THIS. open your numerical analysis textbook."
+- 2 templates: "Study numerical analysis for my exam — floating-point arithmetic, Newton's method, bisection, numerical integration, finite differences, interpolation, error analysis" (60 min) + "Work on my numerical analysis problem set — root-finding, numerical integrals, finite difference schemes, interpolating polynomials, truncation/round-off error" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +41 @Test functions (5 routing + 3 callout pool tests per domain × 5 + 1 count guard ≥871) → 21880 lines total
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 per domain × 5 + 1 count guard ≥871) → 6355 lines total
+
+**Template catalog: 861 → 871**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `complexanalysis` fires at line 752, BEFORE mathematics (line 867) ✓. "complex analysis class exam" → complexanalysis ✓; "complexity analysis algorithm" → NOT complexanalysis (needs "complex analysis" verbatim) ✓
+- `realanalysis` fires at line 772, BEFORE mathematics (line 867) ✓. "real analysis class exam" → realanalysis ✓; "real analysis proof" (no class) → NOT realanalysis ✓
+- `discretemath` fires at line 789, BEFORE mathematics (line 867) ✓. "discrete math class exam" → discretemath ✓; "discrete mathematics is interesting" (no class) → NOT discretemath ✓
+- `probabilitytheory` fires at line 805, BEFORE mathematics (line 867) ✓. "probability theory class exam" → probabilitytheory ✓
+- `numericalanalysis` fires at line 820, BEFORE mathematics (line 867) ✓. "numerical analysis class exam" → numericalanalysis ✓
+- Brace balance: CalloutManager.swift 485/485 ✓; CalloutMessages.swift 915/915 ✓
+- Template count: 871 confirmed (grep -c "preferredDuration:" = 871) ✓
+- 5 new dispatch cases in taskAwareCallouts switch ✓
+- 5 new private callout pool functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `sportsmedicine` — sports medicine rotation/clinic (musculoskeletal injury assessment+rotation/clinic, concussion management+rotation/clinic, return-to-play protocol+rotation, sports injury case+rotation/clinical — distinct from physicaltherapy and orthopedics)
+  - `palliativecare` — palliative care rotation/class (goals of care conversation+rotation, comfort measures class, palliative care assessment+rotation/patient, hospice class/rotation, symptom management+palliative/rotation, advance directive discussion+rotation/class)
+  - `abstractalgebra` — abstract algebra class (group theory class, ring theory class, field theory class, Galois theory class, homomorphism+class/exam, isomorphism theorem+class/exam — distinct from mathematics which catches these broadly)
+  - `topology` — point-set topology class (open/closed sets+class, compactness+class/topology/exam, connectedness+class/topology/exam, homeomorphism+class/exam, homotopy+class/topology/exam — distinct from mathematics which catches word("topology"))
+  - `statisticalmethods` — applied statistics class beyond what statistics catches (ANOVA class, regression analysis class, hypothesis testing class, confidence interval class — when paired with "statistics class/course/exam" context more specific than generic "statistics")
+- Template count: 871 → 881 after next 5-domain batch
+- CalloutManagerTests: ~22000+ lines after next batch
