@@ -6196,4 +6196,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast831() {
         #expect(SuggestedSessionTemplates.all.count >= 831, "template catalog must have ≥831 entries after systemsbiology/microbiologylab/ecophysiology/plantphysiology/animalphysiology additions")
     }
+    // MARK: - cellsignaling templates
+    @Test func cellsignalingStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cell signaling") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func cellsignalingAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cell signaling") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - humangeneticsclass templates
+    @Test func humangeneticsclassStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("human genetics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func humangeneticsclassAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("human genetics") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - immunogenetics templates
+    @Test func immunogeneticsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("immunogenetics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func immunogeneticsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("immunogenetics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - neurologylab templates
+    @Test func neurologylabPracticalTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neurology lab") && $0.task.lowercased().contains("eeg") })
+    }
+    @Test func neurologylabStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neurology lab") && $0.task.lowercased().contains("practical") })
+    }
+    // MARK: - socialpsychology templates
+    @Test func socialpsychologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("social psychology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func socialpsychologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("social psychology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥841)
+    @Test func templateCountAtLeast841() {
+        #expect(SuggestedSessionTemplates.all.count >= 841, "template catalog must have ≥841 entries after cellsignaling/humangeneticsclass/immunogenetics/neurologylab/socialpsychology additions")
+    }
 }

@@ -4959,6 +4959,35 @@ public final class CalloutManager {
             || lower.contains("medical lab class") || lower.contains("clinical laboratory tech") {
             return "medicallabscience"
         }
+        // cellsignaling — positioned BEFORE cellandmolecularbiology to catch dedicated cell signaling
+        // coursework (RTK, MAPK, Wnt, Notch, Hedgehog, JAK-STAT, GPCR). "cell signaling" with
+        // class/exam context routes here; generic cell biology stays in cellandmolecularbiology.
+        if lower.contains("cell signaling class") || lower.contains("cell signaling course")
+            || lower.contains("cell signaling exam") || lower.contains("cell signaling textbook")
+            || lower.contains("cell signaling notes") || lower.contains("cell signaling assignment")
+            || lower.contains("cell signaling lecture") || lower.contains("cell signaling pathway")
+            || lower.contains("cell signaling major") || lower.contains("cell signaling problem set")
+            || lower.contains("receptor tyrosine kinase") && (lower.contains("class") || lower.contains("signaling") || lower.contains("exam") || lower.contains("pathway"))
+            || lower.contains("mapk cascade") && (lower.contains("class") || lower.contains("signaling") || lower.contains("exam"))
+            || lower.contains("mapk pathway") && (lower.contains("class") || lower.contains("signaling") || lower.contains("exam"))
+            || lower.contains("erk signaling") && (lower.contains("class") || lower.contains("exam") || lower.contains("pathway"))
+            || lower.contains("erk pathway") && (lower.contains("class") || lower.contains("signaling") || lower.contains("exam"))
+            || lower.contains("pi3k-akt") && (lower.contains("class") || lower.contains("signaling") || lower.contains("exam") || lower.contains("pathway"))
+            || lower.contains("pi3k akt") && (lower.contains("class") || lower.contains("signaling") || lower.contains("exam") || lower.contains("pathway"))
+            || lower.contains("mtor signaling") && (lower.contains("class") || lower.contains("exam") || lower.contains("pathway"))
+            || lower.contains("mtor pathway") && (lower.contains("class") || lower.contains("signaling") || lower.contains("exam"))
+            || lower.contains("wnt signaling") && (lower.contains("class") || lower.contains("exam") || lower.contains("pathway"))
+            || lower.contains("notch signaling") && (lower.contains("class") || lower.contains("exam") || lower.contains("pathway"))
+            || lower.contains("hedgehog signaling") && (lower.contains("class") || lower.contains("exam") || lower.contains("pathway"))
+            || lower.contains("jak-stat") && (lower.contains("class") || lower.contains("signaling") || lower.contains("exam") || lower.contains("pathway"))
+            || lower.contains("jak stat") && (lower.contains("class") || lower.contains("signaling") || lower.contains("exam") || lower.contains("pathway"))
+            || lower.contains("gpcr") && (lower.contains("class") || lower.contains("signaling") || lower.contains("exam") || lower.contains("pathway"))
+            || lower.contains("g protein-coupled receptor") && (lower.contains("class") || lower.contains("signaling") || lower.contains("exam"))
+            || lower.contains("second messenger") && (lower.contains("cell signaling") || lower.contains("signaling exam") || lower.contains("signaling class"))
+            || lower.contains("camp signaling") && (lower.contains("class") || lower.contains("exam") || lower.contains("pathway"))
+            || lower.contains("kinase pathway") && (lower.contains("class") || lower.contains("signaling") || lower.contains("cell") || lower.contains("exam")) {
+            return "cellsignaling"
+        }
         // cellandmolecularbiology — positioned BEFORE molecularbiology so cell biology class/lab work
         // (microscopy, cell division, organelle function) gets a dedicated pool. Bare "cell biology"
         // without class context, and "molecular biology", stay in molecularbiology (fires after).
@@ -5122,6 +5151,30 @@ public final class CalloutManager {
             || lower.contains("macroevolution") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
             || lower.contains("microevolution") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
             return "evolutionarybiology"
+        }
+        // humangeneticsclass — positioned BEFORE genetics to catch human genetics coursework
+        // (pedigree analysis, chromosomal disorders, OMIM, copy number variation). Generic
+        // Mendelian genetics and population genetics stay in genetics (fires after).
+        if lower.contains("human genetics class") || lower.contains("human genetics course")
+            || lower.contains("human genetics exam") || lower.contains("human genetics major")
+            || lower.contains("human genetics notes") || lower.contains("human genetics textbook")
+            || lower.contains("human genetics assignment") || lower.contains("human genetics problem set")
+            || lower.contains("human genetics lecture") || lower.contains("human genetics program")
+            || lower.contains("pedigree analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("genetics") || lower.contains("assignment") || lower.contains("human"))
+            || lower.contains("pedigree chart") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("chromosomal disorder") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam") || lower.contains("human"))
+            || lower.contains("chromosomal abnormality") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam"))
+            || lower.contains("trisomy") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam") || lower.contains("human"))
+            || lower.contains("monosomy") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam"))
+            || lower.contains("lod score") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam") || lower.contains("linkage"))
+            || lower.contains("genomic imprinting") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam"))
+            || lower.contains("copy number variation") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam"))
+            || lower.contains("chromosomal microarray") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("inborn error") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam") || lower.contains("metabolism"))
+            || word("omim") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam") || lower.contains("disease") || lower.contains("disorder"))
+            || lower.contains("genetic testing") && (lower.contains("class") || lower.contains("exam") || lower.contains("human genetics") || lower.contains("human"))
+            || lower.contains("deletion syndrome") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam")) {
+            return "humangeneticsclass"
         }
         // genetics — positioned AFTER developmentalbiology and BEFORE biochemistry so classical
         // genetics (Mendelian, Hardy-Weinberg, pedigree analysis, population genetics) routes here.
@@ -5998,6 +6051,27 @@ public final class CalloutManager {
             || lower.contains("immunological memory") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam")) {
             return "immunologycourse"
         }
+        // immunogenetics — positioned BEFORE immunology to catch HLA typing, MHC, transplant
+        // immunology, and autoimmune genetics coursework. Bare immunology and immunology class
+        // stay in immunology (fires after).
+        if lower.contains("immunogenetics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("notes") || lower.contains("textbook") || lower.contains("assignment"))
+            || lower.contains("hla typing") && (lower.contains("class") || lower.contains("genetics") || lower.contains("immunology") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("hla haplotype") && (lower.contains("class") || lower.contains("exam") || lower.contains("genetics") || lower.contains("immunology"))
+            || lower.contains("hla-a") && (lower.contains("class") || lower.contains("exam") || lower.contains("immunogenetics") || lower.contains("genetics"))
+            || lower.contains("hla-b") && (lower.contains("class") || lower.contains("exam") || lower.contains("immunogenetics") || lower.contains("genetics"))
+            || lower.contains("hla-dr") && (lower.contains("class") || lower.contains("exam") || lower.contains("immunogenetics") || lower.contains("genetics"))
+            || lower.contains("mhc class i") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam"))
+            || lower.contains("mhc class ii") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam"))
+            || lower.contains("histocompatibility") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam") || lower.contains("immunology"))
+            || lower.contains("transplant immunology") && (lower.contains("class") || lower.contains("exam") || lower.contains("genetics") || lower.contains("course"))
+            || lower.contains("transplantation immunology") && (lower.contains("class") || lower.contains("exam") || lower.contains("genetics"))
+            || lower.contains("graft rejection") && (lower.contains("class") || lower.contains("exam") || lower.contains("immunology") || lower.contains("genetics"))
+            || lower.contains("allograft") && (lower.contains("class") || lower.contains("genetics") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("xenograft") && (lower.contains("class") || lower.contains("genetics") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("autoimmune genetics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("immunogenetics class") || lower.contains("immunogenetics course") || lower.contains("immunogenetics exam") {
+            return "immunogenetics"
+        }
         // immunology — positioned BEFORE premed to catch dedicated immunology class/lab work.
         // Bare word("immunology") stays in premed for MCAT context (premed branch fires after).
         // "flow cytometry" in general research context stays in molecularbiology (much earlier).
@@ -6327,6 +6401,26 @@ public final class CalloutManager {
             || lower.contains("biochemistry lab report") || lower.contains("biochem lab report")
             || lower.contains("biochemistry lab notebook") || lower.contains("biochem lab notebook") {
             return "biochemistrylab"
+        }
+        // neurologylab — positioned BEFORE clinicalneurology to catch neurology lab/teaching
+        // sessions (EEG lab, nerve conduction study, cranial nerve exam practicum). Rotation and
+        // ward tasks stay in clinicalneurology (fires after).
+        if lower.contains("nerve conduction study") && (lower.contains("class") || lower.contains("lab") || lower.contains("neurology") || lower.contains("exam") || lower.contains("assignment") || lower.contains("report"))
+            || lower.contains("nerve conduction velocity") && (lower.contains("class") || lower.contains("lab") || lower.contains("neurology") || lower.contains("exam"))
+            || lower.contains("ncv test") && (lower.contains("class") || lower.contains("lab") || lower.contains("neurology"))
+            || lower.contains("nerve conduction lab") || lower.contains("ncs lab") && lower.contains("neurology")
+            || lower.contains("eeg lab") && (lower.contains("class") || lower.contains("recording") || lower.contains("teaching") || lower.contains("neurology") || lower.contains("assignment") || lower.contains("report"))
+            || lower.contains("eeg recording") && (lower.contains("class") || lower.contains("lab") || lower.contains("teaching") || lower.contains("neurology"))
+            || lower.contains("neurology lab practical") || lower.contains("neurology lab practicum")
+            || lower.contains("neurology lab report") || lower.contains("neurology lab notebook")
+            || lower.contains("clinical neurology lab") && (lower.contains("class") || lower.contains("exam") || lower.contains("teaching") || lower.contains("practical"))
+            || lower.contains("clinical neurophysiology") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("teaching"))
+            || lower.contains("cranial nerve examination") && (lower.contains("class") || lower.contains("lab") || lower.contains("teaching") || lower.contains("neurology") || lower.contains("practice") || lower.contains("practical"))
+            || lower.contains("cranial nerve testing") && (lower.contains("class") || lower.contains("lab") || lower.contains("teaching") || lower.contains("neurology"))
+            || lower.contains("neurological examination") && (lower.contains("lab") || lower.contains("teaching") || lower.contains("practice") || lower.contains("practical"))
+            || lower.contains("reflex testing") && (lower.contains("class") || lower.contains("lab") || lower.contains("neurology") || lower.contains("teaching") || lower.contains("exam"))
+            || lower.contains("neurology lab") && (lower.contains("class") || lower.contains("course") || lower.contains("teaching") || lower.contains("practical")) {
+            return "neurologylab"
         }
         // clinicalneurology — positioned AFTER neuroanatomy and anesthesiology and BEFORE premed
         // so neurology-rotation/ward tasks route here. "neuroanatomy class" stays in neuroanatomy
@@ -7728,6 +7822,32 @@ public final class CalloutManager {
             || lower.contains("grit theory") && (lower.contains("psych") || lower.contains("class") || lower.contains("paper"))
             || lower.contains("self-determination theory") && (lower.contains("psych") || lower.contains("class") || lower.contains("paper") || lower.contains("course")) {
             return "positivepsychology"
+        }
+        // socialpsychology — positioned BEFORE cognitivepsychology and psychology to catch
+        // social psychology coursework (attitude change, conformity, bystander effect, cognitive
+        // dissonance, attribution theory). Bare "social psychology" stays in psychology (fires after).
+        if lower.contains("social psychology class") || lower.contains("social psychology course")
+            || lower.contains("social psychology exam") || lower.contains("social psychology textbook")
+            || lower.contains("social psychology notes") || lower.contains("social psychology assignment")
+            || lower.contains("social psychology major") || lower.contains("social psychology problem set")
+            || lower.contains("social cognition") && (lower.contains("class") || lower.contains("exam") || lower.contains("psychology") || lower.contains("course"))
+            || lower.contains("attitude formation") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam") || lower.contains("social"))
+            || lower.contains("attitude change") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam") || lower.contains("social"))
+            || lower.contains("group dynamics") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam") || lower.contains("social"))
+            || lower.contains("conformity") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam") || lower.contains("social"))
+            || lower.contains("obedience") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam") || lower.contains("milgram") || lower.contains("social"))
+            || lower.contains("bystander effect") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam") || lower.contains("social"))
+            || lower.contains("cognitive dissonance") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam") || lower.contains("social"))
+            || lower.contains("social influence") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam") || lower.contains("social psychology"))
+            || lower.contains("attribution theory") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam") || lower.contains("social"))
+            || lower.contains("fundamental attribution error") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam"))
+            || lower.contains("social identity theory") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam"))
+            || lower.contains("stereotyping") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam") || lower.contains("social psychology"))
+            || lower.contains("prejudice") && (lower.contains("class") || lower.contains("social psychology") || lower.contains("exam") || lower.contains("psychology"))
+            || lower.contains("ingroup bias") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam") || lower.contains("social"))
+            || lower.contains("ingroup") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam") || lower.contains("social"))
+            || lower.contains("persuasion") && (lower.contains("class") || lower.contains("social psychology") || lower.contains("exam") || lower.contains("psychology course")) {
+            return "socialpsychology"
         }
         // cognitivepsychology — positioned BEFORE psychology so working memory, attention,
         // information processing, and cognitive load research route here with a specific pool.

@@ -5360,5 +5360,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Animal physiology assignment completed (analysis written up or case study drafted with physiological mechanisms explained, comparative data interpreted, and conclusions documented — saved to file)",
             preferredDuration: 45 * 60
         ),
+        // cellsignaling
+        SuggestedTemplate(
+            icon: "arrow.triangle.branch",
+            task: "Study cell signaling for my exam — review receptor tyrosine kinase pathways, MAPK/ERK cascade, PI3K-Akt-mTOR, Wnt/β-catenin, Notch, Hedgehog, and JAK-STAT signaling mechanisms",
+            successCriteria: "Cell signaling study session completed (at least two signaling pathways reviewed with receptor, effectors, downstream targets, and biological outcomes summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "arrow.triangle.branch",
+            task: "Work through my cell signaling assignment — diagram a MAPK cascade, trace a GPCR second-messenger pathway, analyze Wnt or Notch signaling crosstalk, or complete a kinase pathway problem set",
+            successCriteria: "Cell signaling assignment completed (pathway diagram drawn or problem set worked with receptor activation, signal propagation, and cellular response documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // humangeneticsclass
+        SuggestedTemplate(
+            icon: "person.2.badge.gearshape",
+            task: "Study human genetics for my exam — review pedigree analysis, chromosomal disorders, Hardy-Weinberg equilibrium, genomic imprinting, copy number variation, and OMIM disease inheritance patterns",
+            successCriteria: "Human genetics study session completed (at least two topics reviewed with inheritance patterns, chromosomal mechanisms, and example disorders summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "person.2.badge.gearshape",
+            task: "Work on my human genetics problem set — draw and interpret pedigree charts, apply Hardy-Weinberg to a population genetics problem, classify a chromosomal disorder, or analyze a copy number variation case",
+            successCriteria: "Human genetics problem set completed (pedigrees drawn or problems worked with inheritance mode, genotype frequencies, or chromosomal mechanism explained — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // immunogenetics
+        SuggestedTemplate(
+            icon: "shield.lefthalf.filled",
+            task: "Study immunogenetics for my exam — review HLA typing, MHC class I and II pathways, histocompatibility principles, transplant immunology, graft rejection mechanisms, and autoimmune genetics",
+            successCriteria: "Immunogenetics study session completed (at least two topics reviewed with HLA/MHC structure, antigen presentation, transplant rejection mechanisms, and clinical implications summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "shield.lefthalf.filled",
+            task: "Work on my immunogenetics assignment — analyze HLA haplotype data, interpret graft rejection mechanisms, classify MHC class I vs II antigen presentation, or write up a transplant immunology case study",
+            successCriteria: "Immunogenetics assignment completed (HLA analysis or transplant case written up with MHC pathways, rejection mechanisms, and immunological principles documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // neurologylab
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Complete my neurology lab work — interpret EEG recordings, analyze nerve conduction study results, practice cranial nerve examination, or write up my neurology lab report",
+            successCriteria: "Neurology lab completed (EEG or NCS results interpreted, cranial nerve findings documented, or lab report written with clinical neurophysiology findings explained — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Study for my neurology lab practical — review nerve conduction velocity interpretation, EEG waveform recognition, cranial nerve exam technique, and reflex testing for the neurology practicum",
+            successCriteria: "Neurology lab practical prep completed (NCS interpretation, EEG waveforms, cranial nerve exam steps, and reflex testing methods reviewed and summarized — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // socialpsychology
+        SuggestedTemplate(
+            icon: "person.3",
+            task: "Study social psychology for my exam — review attitude formation and change, social influence, conformity, obedience, bystander effect, cognitive dissonance, attribution theory, and social identity theory",
+            successCriteria: "Social psychology study session completed (at least two social psych topics reviewed with key theories, classic experiments, and real-world applications summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "person.3",
+            task: "Work on my social psychology assignment — apply attribution theory to a case study, analyze the Milgram or Asch experiments, write up a cognitive dissonance scenario, or complete a persuasion and attitude change analysis",
+            successCriteria: "Social psychology assignment completed (theory applied or experiment analyzed with key social psych mechanisms, influencing variables, and implications documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

@@ -481,6 +481,11 @@ extension CalloutManager {
         case "ecophysiology":              return ecophysiologyCallouts(tier: tier)
         case "plantphysiology":            return plantphysiologyCallouts(tier: tier)
         case "animalphysiology":           return animalphysiologyCallouts(tier: tier)
+        case "cellsignaling":              return cellsignalingCallouts(tier: tier)
+        case "humangeneticsclass":         return humangeneticsclassCallouts(tier: tier)
+        case "immunogenetics":             return immunogeneticsCallouts(tier: tier)
+        case "neurologylab":               return neurologylabCallouts(tier: tier)
+        case "socialpsychology":           return socialpsychologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -9540,6 +9545,111 @@ extension CalloutManager {
             "CLOSE THIS. open your plant physiology notes.",
             "CLOSE THIS. those phloem loading mechanisms won't explain themselves.",
             "CLOSE THIS. your plant physiology exam won't study itself."
+        ]
+        }
+    }
+
+    private func cellsignalingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those signaling cascades won't map themselves.",
+            "close this and get back to your cell signaling work.",
+            "that MAPK pathway problem won't solve itself. close this.",
+            "your cell signaling exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters cell signaling by scrolling.",
+            "close this and open your cell signaling textbook.",
+            "those receptor tyrosine kinase pathways need reviewing — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your cell signaling notes.",
+            "CLOSE THIS. those kinase cascades won't diagram themselves.",
+            "CLOSE THIS. your cell signaling exam won't study itself."
+        ]
+        }
+    }
+
+    private func humangeneticsclassCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those pedigree charts won't draw themselves.",
+            "close this and get back to your human genetics work.",
+            "that chromosomal disorder problem won't do itself. close this.",
+            "your human genetics exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters human genetics by scrolling.",
+            "close this and open your human genetics textbook.",
+            "those pedigree analysis problems need your focus — now."
+        ]
+        default: return [
+            "CLOSE THIS. open your human genetics notes.",
+            "CLOSE THIS. those chromosomal disorder cases won't analyze themselves.",
+            "CLOSE THIS. your human genetics exam won't study itself."
+        ]
+        }
+    }
+
+    private func immunogeneticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those HLA haplotypes won't memorize themselves.",
+            "close this and get back to your immunogenetics work.",
+            "that transplant immunology problem won't do itself. close this.",
+            "your immunogenetics exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters immunogenetics by scrolling.",
+            "close this and open your immunogenetics textbook.",
+            "those MHC class I and II pathways need reviewing — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your immunogenetics notes.",
+            "CLOSE THIS. those HLA typing concepts won't review themselves.",
+            "CLOSE THIS. your immunogenetics exam won't study itself."
+        ]
+        }
+    }
+
+    private func neurologylabCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that nerve conduction study won't write itself.",
+            "close this and get back to your neurology lab work.",
+            "those EEG lab results won't analyze themselves. close this.",
+            "your neurology lab report won't write itself. close this."
+        ]
+        case 2: return [
+            "no one aces neurology lab by scrolling.",
+            "close this and open your neurology lab notebook.",
+            "that cranial nerve examination needs your practice — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your neurology lab manual.",
+            "CLOSE THIS. those nerve conduction results won't interpret themselves.",
+            "CLOSE THIS. your neurology lab practical won't study itself."
+        ]
+        }
+    }
+
+    private func socialpsychologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those social cognition theories won't study themselves.",
+            "close this and get back to your social psychology work.",
+            "that attribution theory problem won't do itself. close this.",
+            "your social psychology exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters social psychology by scrolling.",
+            "close this and open your social psychology textbook.",
+            "those attitude change and persuasion concepts need reviewing — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your social psychology notes.",
+            "CLOSE THIS. those group dynamics theories won't memorize themselves.",
+            "CLOSE THIS. your social psychology exam won't study itself."
         ]
         }
     }

@@ -21237,4 +21237,164 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast831() {
         #expect(SuggestedSessionTemplates.all.count >= 831, "template catalog must have ≥831 entries after systemsbiology/microbiologylab/ecophysiology/plantphysiology/animalphysiology additions (10 templates)")
     }
+
+    // MARK: - cellsignaling routing
+    @Test func cellSignalingClassRoutesCellsignaling() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cell signaling class exam notes") == "cellsignaling")
+    }
+    @Test func receptorTyrosineKinaseRoutesCellsignaling() {
+        #expect(CalloutManager.extractTaskKeyword(from: "receptor tyrosine kinase signaling pathway class") == "cellsignaling")
+    }
+    @Test func mapkCascadeRoutesCellsignaling() {
+        #expect(CalloutManager.extractTaskKeyword(from: "MAPK cascade signaling class exam") == "cellsignaling")
+    }
+    @Test func wntSignalingRoutesCellsignaling() {
+        #expect(CalloutManager.extractTaskKeyword(from: "wnt signaling class pathway exam") == "cellsignaling")
+    }
+    @Test func jakStatRoutesCellsignaling() {
+        #expect(CalloutManager.extractTaskKeyword(from: "jak-stat class signaling pathway") == "cellsignaling")
+    }
+    @Test @MainActor func cellsignalingCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "cellsignaling", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "cellsignaling", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "cellsignaling", tier: 3).isEmpty)
+    }
+    @Test @MainActor func cellsignalingTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "cellsignaling", tier: 1).count >= 4)
+    }
+    @Test @MainActor func cellsignalingTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "cellsignaling", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - humangeneticsclass routing
+    @Test func humanGeneticsClassRoutesHumangeneticsclass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "human genetics class exam notes tonight") == "humangeneticsclass")
+    }
+    @Test func pedigreeAnalysisRoutesHumangeneticsclass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pedigree analysis class genetics exam assignment") == "humangeneticsclass")
+    }
+    @Test func chromosomalDisorderRoutesHumangeneticsclass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "chromosomal disorder class genetics human exam") == "humangeneticsclass")
+    }
+    @Test func trisomyRoutesHumangeneticsclass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "trisomy class human genetics exam") == "humangeneticsclass")
+    }
+    @Test func omimRoutesHumangeneticsclass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "OMIM class genetics disease exam") == "humangeneticsclass")
+    }
+    @Test @MainActor func humangeneticsclassCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "humangeneticsclass", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "humangeneticsclass", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "humangeneticsclass", tier: 3).isEmpty)
+    }
+    @Test @MainActor func humangeneticsclassTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "humangeneticsclass", tier: 1).count >= 4)
+    }
+    @Test @MainActor func humangeneticsclassTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "humangeneticsclass", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - immunogenetics routing
+    @Test func immunogeneticsClassRoutesImmunogenetics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "immunogenetics class exam notes") == "immunogenetics")
+    }
+    @Test func hlaTypingRoutesImmunogenetics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "HLA typing class genetics immunology exam") == "immunogenetics")
+    }
+    @Test func transplantImmunologyRoutesImmunogenetics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "transplant immunology class genetics exam") == "immunogenetics")
+    }
+    @Test func histocompatibilityRoutesImmunogenetics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "histocompatibility class genetics immunology exam") == "immunogenetics")
+    }
+    @Test func graftRejectionRoutesImmunogenetics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "graft rejection class immunology genetics exam") == "immunogenetics")
+    }
+    @Test @MainActor func immunogeneticsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "immunogenetics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "immunogenetics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "immunogenetics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func immunogeneticsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "immunogenetics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func immunogeneticsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "immunogenetics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - neurologylab routing
+    @Test func nerveCondStudyRoutesNeurologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nerve conduction study class neurology exam lab") == "neurologylab")
+    }
+    @Test func eegLabRoutesNeurologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "eeg lab class neurology recording assignment") == "neurologylab")
+    }
+    @Test func cranialNerveExamRoutesNeurologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cranial nerve examination class lab teaching neurology") == "neurologylab")
+    }
+    @Test func neurologyLabPracticalRoutesNeurologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neurology lab practical class") == "neurologylab")
+    }
+    @Test func reflexTestingRoutesNeurologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "reflex testing class lab neurology teaching exam") == "neurologylab")
+    }
+    @Test @MainActor func neurologylabCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "neurologylab", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "neurologylab", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "neurologylab", tier: 3).isEmpty)
+    }
+    @Test @MainActor func neurologylabTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "neurologylab", tier: 1).count >= 4)
+    }
+    @Test @MainActor func neurologylabTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "neurologylab", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - socialpsychology routing
+    @Test func socialPsychClassRoutesSocialpsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "social psychology class exam notes tonight") == "socialpsychology")
+    }
+    @Test func bystanderEffectRoutesSocialpsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bystander effect class psychology exam social") == "socialpsychology")
+    }
+    @Test func cognitiveDissonanceRoutesSocialpsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cognitive dissonance class psychology exam social") == "socialpsychology")
+    }
+    @Test func attributionTheoryRoutesSocialpsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "attribution theory class psychology exam social") == "socialpsychology")
+    }
+    @Test func conformityRoutesSocialpsychology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "conformity class social psychology exam Asch") == "socialpsychology")
+    }
+    @Test @MainActor func socialpsychologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "socialpsychology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "socialpsychology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "socialpsychology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func socialpsychologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "socialpsychology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func socialpsychologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "socialpsychology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: cellsignaling/humangeneticsclass/immunogenetics/neurologylab/socialpsychology)
+    @Test func calloutTemplatesCountAtLeast841() {
+        #expect(SuggestedSessionTemplates.all.count >= 841, "template catalog must have ≥841 entries after cellsignaling/humangeneticsclass/immunogenetics/neurologylab/socialpsychology additions (10 templates)")
+    }
 }
