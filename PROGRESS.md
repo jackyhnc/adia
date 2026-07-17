@@ -1,5 +1,76 @@
 # Adia — Build Progress
 
+## Run 372 (automated) — 2026-07-17 — 5 new keyword domains: atmosphericscience/ecologicalfieldwork/quantummechanics/solidstatephysics/classicalmechanics (791→801 templates)
+
+### What shipped
+
+**5 new keyword domains: atmosphericscience, ecologicalfieldwork, quantummechanics, solidstatephysics, classicalmechanics**
+
+**New keyword domain — atmosphericscience:**
+- Branch positioned BEFORE environmentalscience so atmospheric science/meteorology coursework gets a dedicated pool.
+- Catches: atmospheric science class/course/exam/notes/major/program, synoptic/mesoscale meteorology+class/course/exam, atmospheric dynamics/thermodynamics+class/exam, NWP and GCM model+class/meteorology, tropospheric/stratospheric chemistry+class, meteorology class/course/exam/lab/notes/homework/major.
+- `atmosphericscienceCallouts(tier:)` 4/3/3: "those synoptic maps aren't going to analyze themselves." / "no one masters atmospheric science by scrolling." / "CLOSE THIS. open your atmospheric science notes."
+- 2 templates: "Study atmospheric science for my exam…" (60 min) + "Complete my meteorology or atmospheric science assignment…" (45 min)
+
+**New keyword domain — ecologicalfieldwork:**
+- Branch positioned BEFORE ecology so field ecology lab work (transect, quadrat, mark-recapture) gets a dedicated pool.
+- Generic "ecology class/course/exam" still routes to ecology (fires after).
+- Catches: transect sampling/survey+class/lab/ecology, quadrat survey/sampling+class/ecology/field, mark-recapture+class/ecology/field, species richness+class/ecology/field/lab, biodiversity survey/index+class/ecology, Shannon diversity+class/ecology/lab, field ecology lab/report, ecological sampling+class/field, population estimate+ecology/class/lab, Lincoln-Peterson+ecology/class.
+- `ecologicalfieldworkCallouts(tier:)` 4/3/3: "those transect data aren't going to analyze themselves." / "no one learns field ecology by scrolling." / "CLOSE THIS. open your field ecology lab notebook."
+- 2 templates: "Analyze my field ecology data…" (60 min) + "Prepare for my ecological fieldwork lab…" (30 min)
+
+**New keyword domain — quantummechanics:**
+- Branch positioned BEFORE experimentalphysics (and after marinebiology2) so QM coursework gets a dedicated pool. "quantum mechanics + computing/programming/algorithm" stays in quantumcomputing (fires much earlier).
+- Catches: quantum mechanics/physics class/course/exam/notes/lab/homework/problem, wave function+class/exam/quantum, Schrödinger equation+class/exam/quantum, Hamiltonian operator+class/exam/quantum, bra-ket notation+class/exam/quantum, quantum tunneling/harmonic oscillator/particle-in-a-box/superposition/entanglement+class/exam, uncertainty principle+class/exam/quantum, perturbation theory+quantum/class, variational method+quantum/class.
+- `quantummechanicsCallouts(tier:)` 4/3/3: "that wave function won't solve itself." / "no one masters quantum mechanics by scrolling." / "CLOSE THIS. open your quantum mechanics notes."
+- 2 templates: "Work through my quantum mechanics problem set…" (60 min) + "Study quantum mechanics for my exam…" (60 min)
+
+**New keyword domain — solidstatephysics:**
+- Branch positioned AFTER quantummechanics, BEFORE experimentalphysics so condensed matter/solid state coursework gets a dedicated pool.
+- Catches: solid state physics / condensed matter class/course/exam, crystal lattice/band structure/Brillouin zone/Bloch's theorem+class/physics, phonon+class/solid state/condensed matter, Fermi level+class/solid state, semiconductor physics+class/lab, superconductivity+class/solid state, magnetic ordering/ferromagnetism+class/solid state.
+- `solidstatephysicsCallouts(tier:)` 4/3/3: "that band structure diagram won't draw itself." / "no one masters solid state physics by scrolling." / "CLOSE THIS. open your solid state physics notes."
+- 2 templates: "Study solid state physics for my exam…" (60 min) + "Work through my condensed matter or solid state physics problem set…" (60 min)
+
+**New keyword domain — classicalmechanics:**
+- Branch positioned AFTER solidstatephysics, BEFORE experimentalphysics so analytical/classical mechanics coursework gets a dedicated pool.
+- Catches: classical/analytical mechanics class/course/exam/notes/homework, Lagrangian/Hamiltonian mechanics/dynamics+class/exam/problem, rigid body dynamics/rotation+class/exam/mechanics, generalized coordinates/Euler-Lagrange+class/exam/mechanics, moment of inertia tensor+class/mechanics, central force problem+class/mechanics, Poisson brackets/action principle+class/mechanics.
+- `classicalmechanicsCallouts(tier:)` 4/3/3: "that Lagrangian won't set up itself." / "no one masters classical mechanics by scrolling." / "CLOSE THIS. open your classical mechanics notes."
+- 2 templates: "Work through my classical mechanics problem set…" (60 min) + "Study classical mechanics for my exam…" (60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +55 @Test functions (6 routing tests + 3 callout pool tests per domain × 5 + false-positive guard for quantummechanics + ecologicalfieldwork + 1 count guard ≥801)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence tests per domain × 5 + 1 count guard ≥801)
+
+**Template catalog: 791 → 801**
+
+*(Note: Run 372 also includes the previously uncommitted biostatistics/marinebiology2/moleculargeneticslab/evolutionarybiology/biochemistry3 batch from commit a8f0ffc which brought templates 781→791 but didn't have a PROGRESS.md entry.)*
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `atmosphericscience` fires BEFORE environmentalscience (line ~4097 < ~4121) ✓
+- `ecologicalfieldwork` fires BEFORE ecology (line ~4002 < ~4030) ✓
+- `quantummechanics` fires BEFORE experimentalphysics (line ~910 < ~978) ✓
+- `solidstatephysics` fires AFTER quantummechanics, BEFORE experimentalphysics ✓
+- `classicalmechanics` fires AFTER solidstatephysics, BEFORE experimentalphysics ✓
+- `quantum mechanics + computing` stays in quantumcomputing (fires at line ~225, long before quantummechanics at ~910) ✓
+- `ecology class exam` → ecology (not ecologicalfieldwork): no transect/quadrat/mark-recapture terms → falls through ✓
+- Brace balance: CalloutManager.swift 450/450 ✓; CalloutMessages.swift 845/845 ✓
+- Template count: 801 confirmed (grep -c "preferredDuration:" = 801) ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `astrophysics` — research-level astrophysics signals without class/course qualifiers (stellar evolution research, cosmological simulations, galactic dynamics, AGN research, gravitational wave data analysis). Requires care: word("astrophysics") is currently in astronomy branch so astrophysics domain must be inserted BEFORE astronomy and word("astrophysics") removed from astronomy's condition.
+  - `atmosphericchemistry` — atmospheric chemistry research (ozone depletion mechanisms, aerosol chemistry research, tropospheric oxidation without class context)
+  - `neuroimaging` — fMRI data analysis class/lab, BOLD signal processing, SPM/FSL software+class, voxel-based morphometry, DTI tractography+class, neuroimaging class/course/lab
+  - `optics` — optics/photonics class (geometric optics class, wave optics class, diffraction/interference+optics class, laser physics class, photonics class — without overlapping physics lab terms in experimentalphysics)
+  - `electromagnetism` — E&M class (Gauss's law class, Ampere's law class, Maxwell's equations class, electromagnetic wave class, E&M problem set)
+- Template count: 801 → 811 after next 5-domain batch
+
+---
+
 ## Run 371 (automated) — 2026-07-17 — 5 new keyword domains: astronomylab/geologylab/environmentalscience/anthropology/sociology (771→781 templates)
 
 ### What shipped

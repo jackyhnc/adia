@@ -6051,4 +6051,44 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 791,
                 "catalog should have ≥791 templates after biostatistics/marinebiology2/moleculargeneticslab/evolutionarybiology/biochemistry3 additions (10 templates)")
     }
+
+    // MARK: - atmosphericscience templates
+    @Test func atmosphericscienceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("atmospheric science") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func atmosphericscienceAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("meteorology") && $0.task.lowercased().contains("assignment") || $0.task.lowercased().contains("atmospheric science") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - ecologicalfieldwork templates
+    @Test func ecologicalfieldworkAnalysisTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("transect") && $0.task.lowercased().contains("ecology") })
+    }
+    @Test func ecologicalfieldworkPrepTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("quadrat") && $0.task.lowercased().contains("ecology") })
+    }
+    // MARK: - quantummechanics templates
+    @Test func quantummechanicsProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("quantum mechanics") && $0.task.lowercased().contains("problem set") })
+    }
+    @Test func quantummechanicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("quantum mechanics") && $0.task.lowercased().contains("exam") })
+    }
+    // MARK: - solidstatephysics templates
+    @Test func solidstatephysicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("solid state physics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func solidstatephysicsProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("condensed matter") || $0.task.lowercased().contains("solid state physics") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - classicalmechanics templates
+    @Test func classicalmechanicsProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("classical mechanics") && $0.task.lowercased().contains("problem set") })
+    }
+    @Test func classicalmechanicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("classical mechanics") && $0.task.lowercased().contains("exam") })
+    }
+    // MARK: - Count guard (≥801)
+    @Test func templateCountAtLeast801() {
+        #expect(SuggestedSessionTemplates.all.count >= 801, "template catalog must have ≥801 entries")
+    }
 }

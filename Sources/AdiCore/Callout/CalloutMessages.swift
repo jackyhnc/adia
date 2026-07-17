@@ -461,6 +461,11 @@ extension CalloutManager {
         case "moleculargeneticslab":       return moleculargeneticslabCallouts(tier: tier)
         case "evolutionarybiology":        return evolutionarybiologyCallouts(tier: tier)
         case "biochemistry3":              return biochemistry3Callouts(tier: tier)
+        case "atmosphericscience":         return atmosphericscienceCallouts(tier: tier)
+        case "ecologicalfieldwork":        return ecologicalfieldworkCallouts(tier: tier)
+        case "quantummechanics":           return quantummechanicsCallouts(tier: tier)
+        case "solidstatephysics":          return solidstatephysicsCallouts(tier: tier)
+        case "classicalmechanics":         return classicalmechanicsCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -9121,6 +9126,111 @@ extension CalloutManager {
             "CLOSE THIS. open your biochemistry notes.",
             "CLOSE THIS. those cofactor mechanisms need your attention.",
             "CLOSE THIS. your biochemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func atmosphericscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those synoptic maps aren't going to analyze themselves.",
+            "close this and get back to your atmospheric science.",
+            "your weather model won't run itself. close this.",
+            "that atmospheric dynamics problem set won't do itself. close this."
+        ]
+        case 2: return [
+            "no one masters atmospheric science by scrolling.",
+            "close this and open your meteorology textbook.",
+            "those NWP models won't study themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your atmospheric science notes.",
+            "CLOSE THIS. those synoptic charts need your analysis.",
+            "CLOSE THIS. your meteorology exam won't study itself."
+        ]
+        }
+    }
+
+    private func ecologicalfieldworkCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those transect data aren't going to analyze themselves.",
+            "close this and get back to your field ecology work.",
+            "your species richness survey won't write itself. close this.",
+            "that mark-recapture analysis won't do itself. close this."
+        ]
+        case 2: return [
+            "no one learns field ecology by scrolling.",
+            "close this and open your field ecology lab notebook.",
+            "those quadrat samples need analysis — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your field ecology lab notebook.",
+            "CLOSE THIS. those transect data need your analysis.",
+            "CLOSE THIS. your biodiversity survey won't write itself."
+        ]
+        }
+    }
+
+    private func quantummechanicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that wave function won't solve itself.",
+            "close this and get back to your quantum mechanics.",
+            "those Schrödinger equations won't work themselves out. close this.",
+            "your quantum mechanics problem set won't do itself. close this."
+        ]
+        case 2: return [
+            "no one masters quantum mechanics by scrolling.",
+            "close this and open your quantum mechanics textbook.",
+            "those wave functions need solving — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your quantum mechanics notes.",
+            "CLOSE THIS. those Hamiltonians won't solve themselves.",
+            "CLOSE THIS. your quantum mechanics exam won't study itself."
+        ]
+        }
+    }
+
+    private func solidstatephysicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that band structure diagram won't draw itself.",
+            "close this and get back to your solid state physics.",
+            "those Brillouin zone problems won't solve themselves. close this.",
+            "your condensed matter problem set won't do itself. close this."
+        ]
+        case 2: return [
+            "no one masters solid state physics by scrolling.",
+            "close this and open your condensed matter textbook.",
+            "those crystal lattice problems need solving — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your solid state physics notes.",
+            "CLOSE THIS. those phonon dispersion curves won't plot themselves.",
+            "CLOSE THIS. your condensed matter exam won't study itself."
+        ]
+        }
+    }
+
+    private func classicalmechanicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that Lagrangian won't set up itself.",
+            "close this and get back to your classical mechanics.",
+            "those Euler-Lagrange equations won't solve themselves. close this.",
+            "your analytical mechanics problem set won't do itself. close this."
+        ]
+        case 2: return [
+            "no one masters classical mechanics by scrolling.",
+            "close this and open your mechanics textbook.",
+            "those generalized coordinates won't solve themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your classical mechanics notes.",
+            "CLOSE THIS. those rigid body dynamics problems won't solve themselves.",
+            "CLOSE THIS. your mechanics exam won't study itself."
         ]
         }
     }

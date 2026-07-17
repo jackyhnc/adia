@@ -20579,4 +20579,189 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast791() {
         #expect(SuggestedSessionTemplates.all.count >= 791, "template catalog must have ≥791 entries after biostatistics/marinebiology2/moleculargeneticslab/evolutionarybiology/biochemistry3 additions (10 templates)")
     }
+
+    // MARK: - atmosphericscience
+    @Test func synopticMeteorologyCourseRoutesAtmosSci() {
+        #expect(CalloutManager.extractTaskKeyword(from: "synoptic meteorology class notes exam") == "atmosphericscience")
+    }
+    @Test func mesoscaleMeteoRoutesAtmosSci() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mesoscale meteorology class exam notes") == "atmosphericscience")
+    }
+    @Test func atmosphericDynamicsClassRoutesAtmosSci() {
+        #expect(CalloutManager.extractTaskKeyword(from: "atmospheric dynamics class exam") == "atmosphericscience")
+    }
+    @Test func nwpModelClassRoutesAtmosSci() {
+        #expect(CalloutManager.extractTaskKeyword(from: "numerical weather prediction class course model") == "atmosphericscience")
+    }
+    @Test func meteorologyClassRoutesAtmosSci() {
+        #expect(CalloutManager.extractTaskKeyword(from: "meteorology class exam notes review") == "atmosphericscience")
+    }
+    @Test func atmosphericScienceExamRoutesAtmosSci() {
+        #expect(CalloutManager.extractTaskKeyword(from: "atmospheric science exam study") == "atmosphericscience")
+    }
+    @Test @MainActor func atmosphericscienceCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "atmosphericscience", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "atmosphericscience", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "atmosphericscience", tier: 3).isEmpty)
+    }
+    @Test @MainActor func atmosphericscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "atmosphericscience", tier: 1).count >= 4)
+    }
+    @Test @MainActor func atmosphericscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "atmosphericscience", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - ecologicalfieldwork
+    @Test func transectSamplingRoutesEcoField() {
+        #expect(CalloutManager.extractTaskKeyword(from: "transect sampling ecology field lab class") == "ecologicalfieldwork")
+    }
+    @Test func quadratSurveyRoutesEcoField() {
+        #expect(CalloutManager.extractTaskKeyword(from: "quadrat survey ecology field class lab") == "ecologicalfieldwork")
+    }
+    @Test func markRecaptureRoutesEcoField() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mark-recapture population ecology field class") == "ecologicalfieldwork")
+    }
+    @Test func speciesRichnessRoutesEcoField() {
+        #expect(CalloutManager.extractTaskKeyword(from: "species richness biodiversity field ecology class") == "ecologicalfieldwork")
+    }
+    @Test func shannonDiversityRoutesEcoField() {
+        #expect(CalloutManager.extractTaskKeyword(from: "shannon diversity index ecology field lab") == "ecologicalfieldwork")
+    }
+    @Test func fieldEcologyLabRoutesEcoField() {
+        #expect(CalloutManager.extractTaskKeyword(from: "field ecology lab report write") == "ecologicalfieldwork")
+    }
+    @Test func ecologyClassNotEcoField() {
+        // bare ecology class (not field sampling) should route to ecology, not ecologicalfieldwork
+        let kw = CalloutManager.extractTaskKeyword(from: "ecology class exam notes")
+        #expect(kw == "ecology", "bare ecology class should route to ecology not ecologicalfieldwork")
+    }
+    @Test @MainActor func ecologicalfieldworkCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "ecologicalfieldwork", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "ecologicalfieldwork", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "ecologicalfieldwork", tier: 3).isEmpty)
+    }
+    @Test @MainActor func ecologicalfieldworkTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "ecologicalfieldwork", tier: 1).count >= 4)
+    }
+    @Test @MainActor func ecologicalfieldworkTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "ecologicalfieldwork", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - quantummechanics
+    @Test func quantumMechanicsClassRoutesQM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "quantum mechanics class exam notes") == "quantummechanics")
+    }
+    @Test func schrodingerEquationClassRoutesQM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "schrodinger equation quantum class exam") == "quantummechanics")
+    }
+    @Test func waveFunctionClassRoutesQM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "wave function quantum class exam") == "quantummechanics")
+    }
+    @Test func quantumHarmonicOscillatorRoutesQM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "quantum harmonic oscillator class problem") == "quantummechanics")
+    }
+    @Test func particleInBoxRoutesQM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "particle in a box quantum physics class") == "quantummechanics")
+    }
+    @Test func perturbationTheoryQuantumRoutesQM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "perturbation theory quantum class exam") == "quantummechanics")
+    }
+    @Test func quantumComputingDoesNotRouteQM() {
+        // quantum mechanics + computing stays in quantumcomputing
+        let kw = CalloutManager.extractTaskKeyword(from: "quantum mechanics computing algorithm class")
+        #expect(kw != "quantummechanics", "quantum mechanics + computing should stay in quantumcomputing")
+    }
+    @Test @MainActor func quantummechanicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "quantummechanics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "quantummechanics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "quantummechanics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func quantummechanicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "quantummechanics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func quantummechanicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "quantummechanics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - solidstatephysics
+    @Test func solidStatePhysicsClassRoutesSolid() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solid state physics class exam notes") == "solidstatephysics")
+    }
+    @Test func condensedMatterClassRoutesSolid() {
+        #expect(CalloutManager.extractTaskKeyword(from: "condensed matter physics class exam") == "solidstatephysics")
+    }
+    @Test func crystalLatticeClassRoutesSolid() {
+        #expect(CalloutManager.extractTaskKeyword(from: "crystal lattice solid state class exam") == "solidstatephysics")
+    }
+    @Test func bandStructureClassRoutesSolid() {
+        #expect(CalloutManager.extractTaskKeyword(from: "band structure solid state physics class") == "solidstatephysics")
+    }
+    @Test func brillouinZoneClassRoutesSolid() {
+        #expect(CalloutManager.extractTaskKeyword(from: "brillouin zone physics class exam") == "solidstatephysics")
+    }
+    @Test func superconductivitySolidStateRoutesSolid() {
+        #expect(CalloutManager.extractTaskKeyword(from: "superconductivity solid state physics class") == "solidstatephysics")
+    }
+    @Test @MainActor func solidstatephysicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "solidstatephysics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "solidstatephysics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "solidstatephysics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func solidstatephysicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "solidstatephysics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func solidstatephysicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "solidstatephysics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - classicalmechanics
+    @Test func classicalMechanicsClassRoutesCM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "classical mechanics class exam notes") == "classicalmechanics")
+    }
+    @Test func lagrangianMechanicsClassRoutesCM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "lagrangian mechanics class exam problem") == "classicalmechanics")
+    }
+    @Test func hamiltonianMechanicsClassRoutesCM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hamiltonian mechanics class exam problem") == "classicalmechanics")
+    }
+    @Test func rigidBodyDynamicsClassRoutesCM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "rigid body dynamics mechanics class exam") == "classicalmechanics")
+    }
+    @Test func eulerLagrangeClassRoutesCM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "euler-lagrange mechanics class problem") == "classicalmechanics")
+    }
+    @Test func analyticalMechanicsClassRoutesCM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analytical mechanics class course exam") == "classicalmechanics")
+    }
+    @Test @MainActor func classicalmechanicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "classicalmechanics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "classicalmechanics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "classicalmechanics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func classicalmechanicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "classicalmechanics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func classicalmechanicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "classicalmechanics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: atmosphericscience/ecologicalfieldwork/quantummechanics/solidstatephysics/classicalmechanics)
+    @Test func calloutTemplatesCountAtLeast801() {
+        #expect(SuggestedSessionTemplates.all.count >= 801, "template catalog must have ≥801 entries after atmosphericscience/ecologicalfieldwork/quantummechanics/solidstatephysics/classicalmechanics additions (10 templates)")
+    }
 }

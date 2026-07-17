@@ -5100,5 +5100,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Biochemistry cofactor problem set completed (at least two pathway problems worked with steps, cofactors, and biochemical significance documented — saved to file)",
             preferredDuration: 45 * 60
         ),
+        // atmosphericscience
+        SuggestedTemplate(
+            icon: "cloud.bolt",
+            task: "Study atmospheric science for my exam — review synoptic meteorology, atmospheric dynamics, boundary layer processes, thermodynamic diagrams, NWP model fundamentals, and mesoscale weather systems",
+            successCriteria: "Atmospheric science study session completed (at least two topics reviewed with key concepts, equations, and examples summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cloud.bolt",
+            task: "Complete my meteorology or atmospheric science assignment — analyze synoptic weather maps, interpret sounding data, work through atmospheric dynamics problems, or write up my NWP model analysis",
+            successCriteria: "Atmospheric science assignment completed (weather map analysis or dynamics problem solved, with interpretation documented and saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // ecologicalfieldwork
+        SuggestedTemplate(
+            icon: "leaf",
+            task: "Analyze my field ecology data — process transect or quadrat survey results, calculate species richness and diversity indices, perform mark-recapture population estimates, and write up my field ecology lab report",
+            successCriteria: "Field ecology data analysis completed (diversity indices calculated or population estimates written up, methods and results documented and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "leaf",
+            task: "Prepare for my ecological fieldwork lab — review transect and quadrat sampling methods, mark-recapture techniques, biodiversity indices (Shannon, Simpson), and species identification keys",
+            successCriteria: "Field ecology lab prep completed (sampling methods reviewed, biodiversity index formulas documented, and pre-lab questions answered and saved)",
+            preferredDuration: 30 * 60
+        ),
+        // quantummechanics
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work through my quantum mechanics problem set — solve wave function problems, apply the Schrödinger equation, work out energy eigenvalues for particle-in-a-box or harmonic oscillator, or practice bra-ket notation",
+            successCriteria: "Quantum mechanics problem set completed (at least two problems solved with wave functions, operators, or energy levels derived and checked — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study quantum mechanics for my exam — review postulates of quantum mechanics, operators and observables, uncertainty principle, quantum tunneling, perturbation theory, and angular momentum",
+            successCriteria: "Quantum mechanics study session completed (at least two topics reviewed with key concepts, equations, and problem-solving strategies summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // solidstatephysics
+        SuggestedTemplate(
+            icon: "square.grid.3x3.fill",
+            task: "Study solid state physics for my exam — review crystal lattice structures, reciprocal lattice and Brillouin zones, band theory, phonons, Fermi level and electron distribution, and semiconductor physics",
+            successCriteria: "Solid state physics study completed (at least two topics reviewed with key concepts, diagrams, and equations summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "square.grid.3x3.fill",
+            task: "Work through my condensed matter or solid state physics problem set — solve band structure problems, calculate phonon dispersion relations, or analyze Fermi surfaces and semiconductor carrier densities",
+            successCriteria: "Solid state physics problem set completed (at least two problems worked with crystal structure or band theory analysis documented — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // classicalmechanics
+        SuggestedTemplate(
+            icon: "gyroscope",
+            task: "Work through my classical mechanics problem set — set up Lagrangians, derive equations of motion using Euler-Lagrange, solve central force problems, or analyze rigid body rotation with inertia tensors",
+            successCriteria: "Classical mechanics problem set completed (at least two problems solved with Lagrangian/Hamiltonian formulation, equations of motion derived and checked — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "gyroscope",
+            task: "Study classical mechanics for my exam — review Lagrangian and Hamiltonian formulations, generalized coordinates, constraints, rigid body dynamics, and canonical transformations",
+            successCriteria: "Classical mechanics study session completed (at least two topics reviewed with key concepts, formulas, and problem strategies summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }
