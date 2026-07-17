@@ -17568,3 +17568,73 @@ None. Swift toolchain unavailable on Linux container.
   - `internalmedicine` — internal medicine clerkship, H&P write-up, SOAP notes, medicine rounds
 - Template count: 731 → 741 after next 5-domain batch
 - CalloutManagerTests: ~19900+ lines after next batch
+
+---
+
+## Run 368 (automated) — 2026-07-17 — 5 new keyword domains: structuralbiology/biochemistrylab/clinicalneurology/dermatologyrotation/psychiatryrotation (731→741 templates)
+
+### What shipped
+
+**5 new keyword domains: structuralbiology, biochemistrylab, clinicalneurology, dermatologyrotation, psychiatryrotation**
+
+**New keyword domain — structuralbiology:**
+- Branch positioned AFTER anesthesiology, BEFORE premed. "crystallography class" in materialscience context stays in materialscience (fires at ~line 1360); "protein purification/western blot" stays in molecularbiology (fires at ~line 4494).
+- Catches: structural biology class/course/lab/research, cryo-EM/cryo-electron microscopy, cryo em, protein structure determination/prediction, protein data bank/PDB structure/PDB database, SAXS (small-angle x-ray scattering in biology/protein/structural context), protein crystallization (lab/class/structural context), protein NMR, NMR spectroscopy+protein/structural/biology, homology modeling+protein/structural/biology, protein folding+class/research/structural/biology/lab, AlphaFold+protein/research/structural/class, structural genomics.
+- `structuralbiologyCallouts(tier:)` 4/3/3: "those protein structures aren't going to determine themselves." / "no one resolves protein structures by scrolling." / "CLOSE THIS. open your structural biology tools."
+- 2 templates: "Work on my structural biology research — analyze cryo-EM data, interpret protein structures in the PDB, run homology models" (60 min) + "Study structural biology for my class or exam — review cryo-EM, X-ray crystallography, protein NMR, SAXS" (45 min)
+
+**New keyword domain — biochemistrylab:**
+- Branch positioned AFTER structuralbiology, BEFORE premed. Bare word("biochemistry") without lab context stays in premed for MCAT. "western blot/protein purification" stays in molecularbiology (fires much earlier).
+- Catches: SDS-PAGE/SDS PAGE/SDS polyacrylamide, Bradford/BCA/Lowry assay, protein assay+lab/biochemistry/class, enzyme kinetics lab/class/course, Michaelis-Menten+lab/class/biochemistry/experiment, column chromatography+lab/class/biochemistry, affinity chromatography+lab/class/biochemistry, size exclusion chromatography+lab/class/biochemistry, ion exchange chromatography+lab/class/biochemistry, HPLC+biochemistry/protein/biochem lab, biochemistry lab+class/course/report/notebook/experiment/practical/assignment, biochemistry lab report/notebook, biochemistry experiment/practical.
+- `biochemistrylabCallouts(tier:)` 4/3/3: "those biochemistry lab results aren't going to write themselves." / "no one passes biochemistry lab by scrolling." / "CLOSE THIS. open your biochemistry lab notebook."
+- 2 templates: "Complete my biochemistry lab report or notebook — SDS-PAGE or enzyme kinetics results, column chromatography data, or protein assay analysis" (60 min) + "Study biochemistry lab techniques for my exam or practical — SDS-PAGE, enzyme kinetics, Bradford/BCA assays, column chromatography" (45 min)
+
+**New keyword domain — clinicalneurology:**
+- Branch positioned AFTER biochemistrylab, BEFORE premed. "neuroanatomy class" stays in neuroanatomy (fires earlier). Bare "neurology" alone stays in premed.
+- Catches: neurology rotation/clerkship/elective/ward/rounds/attending/consult, neuro rotation/clerkship/rounds/attending/consult, neurology residency+reading/notes/rotation/case, neurological exam+rotation/ward/class/clinical, EEG interpretation+rotation/class/neurology/clinical, lumbar puncture+rotation/class/neurology/clinical, neurological assessment+ward/rotation/clinical, neurology case+rotation/write/presentation/ward, neuro case+rotation/write/presentation/ward.
+- `clinicalneurologyCallouts(tier:)` 4/3/3: "those neurology cases aren't going to read themselves." / "no one becomes a neurologist by scrolling." / "CLOSE THIS. open your neurology case notes."
+- 2 templates: "Complete my neurology rotation work — write up neuro case notes, prepare for rounds, review neurological exam findings, or study EEG interpretation" (60 min) + "Study neurology for my rotation exam — review neurological exam technique, common neurological syndromes, EEG interpretation, neuro imaging patterns" (45 min)
+
+**New keyword domain — dermatologyrotation:**
+- Branch positioned AFTER clinicalneurology, BEFORE premed. Bare "dermatology" alone stays in premed.
+- Catches: dermatology rotation/clerkship/elective/reading/rounds/attending/residency+reading/notes/rotation, derm rotation/clerkship/elective/reading/rounds/attending, skin biopsy+rotation/class/dermatology/derm/interpretation, dermoscopy+rotation/class/dermatology/study, derm notes, dermatology notes+rotation, dermatology case+rotation/write/presentation, lesion classification+dermatology/derm/rotation/class, word(dermatologist)+rotation/notes/studying/rounds.
+- `dermatologyrotationCallouts(tier:)` 4/3/3: "those skin lesions aren't going to classify themselves." / "no one learns dermoscopy by scrolling." / "CLOSE THIS. open your dermatology case notes."
+- 2 templates: "Complete my dermatology rotation work — review skin lesion cases, practice dermoscopy pattern recognition, write up derm case notes" (45 min) + "Study dermatology for my rotation exam — review skin lesion classification, ABCDE melanoma criteria, dermoscopy patterns, common inflammatory conditions" (45 min)
+
+**New keyword domain — psychiatryrotation:**
+- Branch positioned AFTER dermatologyrotation, BEFORE premed. Bare "psychiatry" alone stays in premed. "psychology" stays in psychology (fires much earlier).
+- Catches: psychiatry rotation/clerkship/elective/ward/rounds/attending/residency+reading/notes/rotation, psych rotation/clerkship/rounds/attending, inpatient psychiatry, psychiatry notes+rotation, mental status exam+rotation/class/psychiatry/psych/clinical, DSM-5 case/formulation/DSM5 case, psychiatric formulation/case formulation, psychiatric assessment+rotation/ward/clinical, psychiatry case+rotation/write/presentation, mood disorder case+rotation/psychiatry/psych.
+- `psychiatryrotationCallouts(tier:)` 4/3/3: "those psychiatric cases aren't going to formulate themselves." / "no one masters the DSM-5 by scrolling." / "CLOSE THIS. open your psychiatry case notes."
+- 2 templates: "Complete my psychiatry rotation work — write psychiatric case formulations, document mental status exams, prepare DSM-5 differential diagnoses" (45 min) + "Study psychiatry for my rotation exam — review DSM-5 diagnostic criteria, mental status exam components, biopsychosocial model" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +40 @Test functions (8 per domain + 1 count guard ≥741) → 3486 total
+- SuggestedSessionTemplatesTests.swift: +12 tests (2 per domain + 1 count guard ≥741) → 575 total
+
+**Template catalog: 731 → 741**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `structuralbiology` fires at line 5516, AFTER anesthesiology (5513), BEFORE premed (5619). "cryo-EM protein structure" → structuralbiology ✓; "crystallography class materials" → materialscience (line ~1360) ✓; "western blot biochemistry" → molecularbiology (line ~4494) ✓
+- `biochemistrylab` fires at line 5534, AFTER structuralbiology (5516), BEFORE premed (5619). "SDS-PAGE biochemistry lab" → biochemistrylab ✓; "biochemistry MCAT" → premed ✓
+- `clinicalneurology` fires at line 5553, AFTER biochemistrylab (5534), BEFORE premed (5619). "neurology rotation case notes" → clinicalneurology ✓; "neuroanatomy class" → neuroanatomy (fires earlier) ✓; bare "neurology" → premed ✓
+- `dermatologyrotation` fires at line 5571, AFTER clinicalneurology (5553), BEFORE premed (5619). "derm rotation dermoscopy" → dermatologyrotation ✓; "dermatology MCAT" → premed ✓
+- `psychiatryrotation` fires at line 5589, AFTER dermatologyrotation (5571), BEFORE premed (5619). "psychiatry rotation case formulation" → psychiatryrotation ✓; "DSM-5 case formulation" → psychiatryrotation ✓; bare "psychiatry" → premed ✓; "psychology" → psychology (much earlier) ✓
+- Brace balance: CalloutManager.swift 420/420 ✓; CalloutMessages.swift 785/785 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 741 confirmed by programmatic count (grep -c "preferredDuration:")
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `surgeryrotation` — surgery clerkship, OR scrubbing in, surgical notes, operative report writing
+  - `pediatricsrotation` — pediatrics clerkship, developmental milestones in clinical context, pediatric exam
+  - `internalmedicine` — internal medicine clerkship, H&P write-up, SOAP notes, medicine rounds
+  - `obgynrotation` — OB/GYN clerkship, obstetrics rotation, labor and delivery, gynecology notes
+  - `familymedicine` — family medicine clerkship, continuity clinic, family medicine rotation
+  - `emergencymedicinerotation` — EM rotation, emergency medicine clerkship, EM shift notes
+  - `biochemistry2` — advanced biochemistry (signal transduction, lipid metabolism, nucleotide metabolism — more specific than biochemistrylab)
+  - `cellandmolecularbiology` — cell biology lab (distinct from molecular biology; focuses on microscopy, cell division, organelle function)
+- Template count: 741 → 751 after next 5-domain batch
+- CalloutManagerTests: ~19950+ lines after next batch
