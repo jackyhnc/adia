@@ -1,5 +1,77 @@
 # Adia — Build Progress
 
+## Run 383 (automated) — 2026-07-17 — 5 new keyword domains: hydrology/glaciology/climatology/photochemistry/electromagnetictheory (911→921 templates)
+
+### What shipped
+
+**5 new keyword domains: hydrology, glaciology, climatology, photochemistry, electromagnetictheory**
+
+**New keyword domain — hydrology:**
+- Branch positioned BEFORE waterresources. Bare "hydrology" (no class/exam/science context) still falls to geology.
+- Catches: hydrology class/course/exam/lab/notes/homework/assignment/textbook, applied hydrology, engineering hydrology, watershed hydrology+class/exam, hydrological cycle+class/exam, streamflow analysis+class/exam, flood frequency+class/hydrology/exam, hydrograph+class/exam/hydrology, unit hydrograph+class/exam, baseflow+class/hydrology/exam, evapotranspiration+class/hydrology/exam, precipitation analysis+class/hydrology, infiltration rate+class/hydrology, rational method+class/hydrology/runoff, runoff analysis+class/hydrology, surface water hydrology, groundwater hydrology class, fluvial hydrology+class/exam, statistical hydrology+class/exam.
+- `hydrologyCallouts(tier:)` 4/3/3: "those streamflow calculations won't do themselves." / "no one masters hydrology by scrolling." / "CLOSE THIS. open your hydrology textbook."
+- 2 templates: "Study hydrology for my exam…" (60 min) + "Work on my hydrology assignment…" (45 min)
+
+**New keyword domain — glaciology:**
+- Branch positioned BEFORE structuralgeology/geologylab/geology. Bare "glacier" (no class/glaciology context) stays in geology.
+- Catches: glaciology class/course/exam/lab/notes/homework/assignment/textbook, word("glaciology"/"glaciologist"), glacier dynamics+class/exam, ice sheet+class/exam/dynamics, ice sheets+class/exam/glaciology, ice core+class/exam/analysis, ice cores+class/exam/glaciology, glacier mass balance+class/exam, glacial landform/landforms+class/exam, glacial erosion/deposition+class/exam, ice flow+class/glaciology, subglacial+class/exam/glaciology, cryosphere+class/exam/glaciology, permafrost+class/exam/glaciology/cryosphere, sea ice+class/glaciology/exam/cryosphere.
+- `glaciologyCallouts(tier:)` 4/3/3: "those ice sheet calculations won't do themselves." / "no one masters glaciology by scrolling." / "CLOSE THIS. open your glaciology textbook."
+- 2 templates: "Study glaciology for my exam…" (60 min) + "Work on my glaciology assignment…" (45 min)
+
+**New keyword domain — climatology:**
+- Branch positioned BEFORE atmosphericscience. Meteorology/atmospheric dynamics stays in atmosphericscience.
+- Catches: climatology class/course/exam/lab/notes/homework/assignment/textbook, word("climatology"/"climatologist"), climate model/models+class/exam/course, radiative forcing+class/climatology/exam, paleoclimate+class/climatology/exam, climate sensitivity+class/exam/climatology, ENSO+class/climatology/climate, El Niño/El Nino+class/climatology/exam, climate feedback+class/exam/climatology, Hadley cell+class/climatology/exam, Hadley circulation+class/climatology/exam, global energy balance+class/exam/climatology, climate change class/course, climate change exam+science, climate science class/course/exam/notes, ice age+class/climatology/exam, Milankovitch+class/climatology/exam, albedo feedback+class/climatology/exam.
+- `climatologyCallouts(tier:)` 4/3/3: "those climate model equations won't run themselves." / "no one masters climatology by scrolling." / "CLOSE THIS. open your climatology textbook."
+- 2 templates: "Study climatology for my exam…" (60 min) + "Work on my climatology assignment…" (45 min)
+
+**New keyword domain — photochemistry:**
+- Branch positioned BEFORE physicalchemistry. pchem/quantum chemistry (without photo context) stay in physicalchemistry.
+- Catches: photochemistry class/course/exam/lab/notes/homework/assignment/textbook, word("photochemistry"/"photochemist"), photochemical reaction/reactions+class/exam, excited state/states+class/photochemistry/exam, Jablonski diagram+class/exam/photochemistry, word("jablonski")+class/photochemistry/exam, quantum yield+class/photochemistry/exam, singlet/triplet state+class/photochemistry/exam, fluorescence spectroscopy+class/photochemistry/lab, phosphorescence+class/photochemistry/exam, photoexcitation+class/photochemistry/exam, photolysis+class/photochemistry/exam, photosensitizer+class/photochemistry/exam, energy transfer+class/photochemistry/förster, Förster/Forster resonance+class/photochemistry/exam, intersystem crossing+class/photochemistry/exam.
+- `photochemistryCallouts(tier:)` 4/3/3: "those excited state transitions won't derive themselves." / "no one masters photochemistry by scrolling." / "CLOSE THIS. open your photochemistry textbook."
+- 2 templates: "Study photochemistry for my exam…" (60 min) + "Work on my photochemistry assignment…" (45 min)
+
+**New keyword domain — electromagnetictheory:**
+- Branch positioned BEFORE electromagnetism. Standard E&M physics (Gauss/Ampere/Faraday+class) falls to electromagnetism below.
+- Catches: electromagnetic theory class/course/exam/homework/notes/problem, electrodynamics class/course/exam/homework/notes/problem set, Griffiths electrodynamics+class/exam/course/problem, Jackson electrodynamics+class/exam/course/problem, gauge invariance+class/electromagnetic/electrodynamics/exam, vector potential+class/electromagnetic theory/electrodynamics/exam, radiation reaction+class/electrodynamics/electromagnetic, Larmor radiation+class/electrodynamics/exam, multipole expansion+class/electrodynamics/electromagnetic/exam, retarded potential+class/electrodynamics/exam, relativistic electrodynamics+class/course/exam, electromagnetic field tensor+class/exam/electrodynamics.
+- `electromagnetictheoryCallouts(tier:)` 4/3/3: "those electrodynamics problems won't solve themselves." / "no one masters electromagnetic theory by scrolling." / "CLOSE THIS. open your electrodynamics textbook."
+- 2 templates: "Study electromagnetic theory for my exam…" (60 min) + "Work on my electromagnetic theory problem set…" (60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +5×(5 routing + 3 callout pool tests) + 2 false-positive guards + count guard ≥921
+- SuggestedSessionTemplatesTests.swift: +5×2 template existence tests + count guard ≥921
+
+**Template catalog: 911 → 921**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `hydrology` fires at line 1533, BEFORE waterresources (line 1563) ✓
+- `glaciology` fires at line 1826, BEFORE structuralgeology (line 1841) ✓
+- `electromagnetictheory` fires at line 2304, BEFORE electromagnetism (line 2329) ✓
+- `climatology` fires at line 4904, BEFORE atmosphericscience (line 4930) ✓
+- `photochemistry` fires at line 5926, BEFORE physicalchemistry (line 5952) ✓
+- Brace balance: CalloutManager.swift 0 ✓; CalloutMessages.swift 0 ✓; SuggestedSessionTemplates.swift 0 ✓; CalloutManagerTests.swift 0 ✓; SuggestedSessionTemplatesTests.swift 0 ✓
+- Template count: 921 confirmed (grep -c "preferredDuration:" = 921) ✓
+- 5 new dispatch cases in taskAwareCallouts switch ✓
+- 5 new private callout pool functions ✓
+- Bare "hydrology" (no class/exam context) stays in geology ✓
+- "electrodynamics class" routes to electromagnetictheory, not electromagnetism ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `geophysics` already exists; check next unexplored sub-domains
+  - `tectonophysics` — tectonophysics class/course/exam, fault mechanics, seismotectonics, rupture dynamics (distinct from seismology which focuses on wave propagation)
+  - `quantumoptics` — quantum optics class/course/exam, coherent states, squeezed light, cavity QED, photon statistics (distinct from optics which covers geometrical/classical wave optics)
+  - `biophysics` — biophysics class/course/exam, membrane potential, protein folding thermodynamics, fluorescence microscopy in biophysics context (distinct from biology/biochemistry)
+  - `astroinformatics` — astroinformatics class/course/exam, astronomical data analysis, FITS files, Python astronomy, AstroML (distinct from datascience which is generic ML/DS)
+  - `radiobiology` — radiobiology class/course/exam, radiation biology, DNA damage by ionizing radiation, LET, dose-response curves (distinct from nuclearphysics which is physics-focused)
+- Template count: 921 → 931 after next 5-domain batch
+- CalloutManagerTests: ~23000+ lines after next batch
+
+---
+
 ## Run 382 (automated) — 2026-07-17 — 5 new keyword domains: radioastronomy/astrochemistry/nuclearphysics/plasmaphysics/computationalfluidynamics (901→911 templates)
 
 ### What shipped
