@@ -1,5 +1,78 @@
 # Adia — Build Progress
 
+## Run 370 (automated) — 2026-07-17 — 5 new keyword domains: emergencymedicinerotation/virology/clinicalmicrobiology/medicinalchemistry/cellandmolecularbiology (751→761 templates)
+
+### What shipped
+
+**5 new keyword domains: emergencymedicinerotation, virology, clinicalmicrobiology, medicinalchemistry, cellandmolecularbiology**
+
+**New keyword domain — emergencymedicinerotation:**
+- Branch positioned AFTER familymedicine, BEFORE premed. Bare "emergency medicine" without rotation/clerkship context stays in premed.
+- Catches: emergency medicine rotation/clerkship/elective, EM rotation/clerkship/elective, EM shift notes/write, emergency medicine shift notes/write, EM/emergency medicine rounds+rotation/clerkship/attending, EM/emergency medicine attending, EM/emergency medicine case+rotation/clerkship/write/presentation, EM/emergency medicine notes+rotation/clerkship/write/shift, emergency medicine shelf, EM shelf, NBME emergency medicine/em.
+- `emergencymedicinerotationCallouts(tier:)` 4/3/3: "those shift notes aren't going to write themselves." / "no one becomes an EM physician by scrolling." / "CLOSE THIS. open your emergency medicine notes."
+- 2 templates: "Complete my emergency medicine rotation work — write shift notes…" (60 min) + "Study emergency medicine for my clerkship shelf exam…" (60 min)
+
+**New keyword domain — virology:**
+- Branch positioned BEFORE microbiology (after medicalhumanities). Previously "virology class/course/exam" routed to microbiology; now virology gets its own dedicated pool.
+- Catches: virology class/course/exam/lab/notes/textbook/assignment/lecture, viral replication+class/course/exam/lab/virology/cycle, viral pathogenesis+class/course/exam/lab/virology, viral life cycle+class/course/exam/lab/virology, SARS-CoV-2+class/course/virology/exam/lab, HIV replication+class/course/virology/exam/lab, influenza virus+class/course/virology/exam/lab, viral protein+virology/class/exam/lab, virus structure+class/course/exam/virology, bacteriophage+class/course/exam/virology/lab, viral tropism+class/course/exam/virology, viral vector+class/course/virology/exam/lab, virology major/program.
+- `virologyCallouts(tier:)` 4/3/3: "those viral replication cycles aren't going to memorize themselves." / "no one masters virology by scrolling." / "CLOSE THIS. open your virology textbook."
+- 2 templates: "Complete my virology assignment or lab…" (60 min) + "Study virology for my exam…" (45 min)
+
+**New keyword domain — clinicalmicrobiology:**
+- Branch positioned AFTER virology, BEFORE microbiology. Catches clinical lab rotation work distinct from general microbiology coursework.
+- Catches: clinical microbiology+lab/rotation/class/course/exam, microbiology lab rotation/rotation, antibiogram+class/lab/rotation/microbiology/interpretation/read, culture interpretation+microbiology/lab/rotation/clinical, culture results+microbiology/lab/clinical/rotation, susceptibility testing+microbiology/lab/class/clinical, minimum inhibitory concentration+microbiology/lab/clinical/class, MIC testing+microbiology/lab/clinical, infection control+microbiology/lab/class/rotation/clinical, nosocomial infection+class/lab/microbiology/clinical, blood/urine/wound culture+microbiology/lab/clinical/class.
+- `clinicalmicrobiologyCallouts(tier:)` 4/3/3: "those culture results aren't going to interpret themselves." / "no one masters clinical microbiology by scrolling." / "CLOSE THIS. open your clinical microbiology lab."
+- 2 templates: "Complete my clinical microbiology lab work…" (45 min) + "Study clinical microbiology for my exam…" (45 min)
+
+**New keyword domain — medicinalchemistry:**
+- Branch positioned AFTER pharmacology, BEFORE physiology. "pharmacology" and "pharmacy" branches fire earlier.
+- Catches: medicinal chemistry+class/course/exam/lab/notes/assignment/lecture/program, drug design+class/course/exam/medicinal/chemistry/problem set, structure-activity relationship+class/course/exam/medicinal/drug, SAR analysis+class/medicinal/drug/chemistry, lead optimization+class/course/drug/chemistry/medicinal, lead compound+class/course/drug/optimization/medicinal, pharmacophore+class/course/exam/model/medicinal/drug design, prodrug+class/course/exam/design/medicinal/chemistry, bioisostere+class/medicinal/drug/chemistry, Lipinski+class/drug/medicinal/chemistry, ADMET+class/course/drug design/medicinal/chemistry, scaffold hopping+class/drug/medicinal/chemistry.
+- `medicinalchemistryCallouts(tier:)` 4/3/3: "those SAR analyses aren't going to write themselves." / "no one designs drugs by scrolling." / "CLOSE THIS. open your medicinal chemistry textbook."
+- 2 templates: "Complete my medicinal chemistry assignment…" (60 min) + "Study medicinal chemistry for my exam…" (60 min)
+
+**New keyword domain — cellandmolecularbiology:**
+- Branch positioned BEFORE molecularbiology (molecularbiology already caught bare "cell biology"; cellandmolecularbiology captures class/lab/exam specific signals first).
+- Catches: cell biology class/course/exam/lab/notes/assignment/lecture/textbook, cell division+class/lab/exam/cell biology, mitosis+class/lab/exam/cell biology/cell cycle, meiosis+class/lab/exam/cell biology/cell cycle, organelle function+class/lab/exam/cell biology, cell organelle+class/lab/exam, cytoskeleton+class/lab/exam/cell biology, cell cycle+class/lab/exam/cell biology, cell signaling+class/lab/exam/cell biology, membrane biology+class/lab/exam, fluorescence microscopy+class/lab/cell biology, confocal microscopy+class/lab/cell biology, cell biology major/program/degree.
+- `cellandmolecularbiologyCallouts(tier:)` 4/3/3: "those cell biology problems aren't going to solve themselves." / "no one masters cell biology by scrolling." / "CLOSE THIS. open your cell biology textbook."
+- 2 templates: "Complete my cell biology lab or assignment…" (60 min) + "Study cell biology for my exam…" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +47 @Test functions (5-6 keyword routing + 1 false-positive + 3 callout pool tests per domain × 5 + 1 count guard ≥761)
+- SuggestedSessionTemplatesTests.swift: +11 tests (2 per domain + 1 count guard ≥761)
+
+**Template catalog: 751 → 761**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `cellandmolecularbiology` fires at line 4509, BEFORE molecularbiology (4532) ✓
+- `virology` fires at line 5315, BEFORE clinicalmicrobiology (5333), BEFORE microbiology (5356) ✓
+- `clinicalmicrobiology` fires at line 5333, BEFORE microbiology (5356) ✓
+- `medicinalchemistry` fires at line 5539, AFTER pharmacology (5522), BEFORE physiology ✓
+- `emergencymedicinerotation` fires at line 5802, AFTER familymedicine (5784), BEFORE premed (5814) ✓
+- Brace balance: CalloutManager.swift 430/430 ✓; CalloutMessages.swift 805/805 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 761 confirmed (grep -c "preferredDuration:" = 761) ✓
+- "emergency medicine MCAT study" → premed (not emergencymedicinerotation) ✓
+- "virology class" now routes to virology domain (not microbiology) ✓
+- All 5 case statements in CalloutMessages.swift wired to private functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `biochemistry2` — advanced biochemistry (signal transduction, lipid metabolism, nucleotide metabolism — distinct from biochemistrylab)
+  - `immunologycourse` — advanced immunology class with specific signals (T-reg cells, complement cascade, immunotherapy mechanisms — more specific signals than generic immunology)
+  - `neurobiologylab` — neurobiology lab class (patch clamp training, neural tracing, neurobiology lab reports — distinct from electrophysiology research)
+  - `organicchemistrylab` — orgo lab specifically (distillation, recrystallization, TLC, NMR spectra interpretation lab reports — distinct from organicchemistry lecture)
+  - `physicalchemistrylab` — pchem lab (thermodynamics experiments, spectroscopy lab, quantum chemistry lab — distinct from pchem lecture)
+  - `environmentalscience` — environmental science class (distinct from environmentalpolicy/environmentallaw/environmentalengineering)
+  - `geologylab` — geology lab (rock/mineral identification, thin section, field geology — distinct from generic geology)
+  - `astronomylab` — astronomy lab or observational astronomy (telescope use, astronomical calculations, star charts)
+- Template count: 761 → 771 after next 5-domain batch
+- CalloutManagerTests: ~20400+ lines after next batch
+
+---
+
 ## Run 366 (automated) — 2026-07-16 — 5 new keyword domains: mechanicalengineering, nuclearengineering, materialstesting, biomedicalengineering, chemicalengineering (711→721 templates)
 
 ### What shipped
