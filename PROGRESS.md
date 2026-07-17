@@ -1,5 +1,74 @@
 # Adia — Build Progress
 
+## Run 385 (automated) — 2026-07-17 — 5 new CS keyword domains: softwareengineering/humancomputerinteraction/machinelearning/distributedsystems/computersecurity (931→941 templates)
+
+### What shipped
+
+**5 new keyword domains: softwareengineering, humancomputerinteraction, machinelearning, distributedsystems, computersecurity**
+
+**New keyword domain — computersecurity:**
+- Positioned BEFORE `cybersecurity` (line 130) to intercept "computer security class/exam" before the broad "security exam" catch fires.
+- Catches: computer security class/course/exam/homework/assignment/textbook, buffer overflow + class/exam/course, memory safety + class/exam/course, software vulnerability + class/exam/course, secure coding + class/exam/course, application security class/exam, memory corruption + class/exam/course, return-oriented programming + class/exam, stack smashing + class/exam.
+- `computersecurityCallouts(tier:)` 4/3/3: "those buffer overflow exploits won't analyze themselves." / "no one masters computer security by scrolling." / "CLOSE THIS. open your computer security textbook."
+- 2 templates: study-for-exam (buffer overflows, stack smashing, ROP, memory safety, secure coding, access control, authentication, 60 min) + assignment (exploit analysis, secure coding fix, vulnerability assessment, access control policy, authentication analysis, 45 min)
+
+**New keyword domain — softwareengineering:**
+- Positioned BEFORE `code` (line 657). Bare "software project" or "code review" without class/exam context stays in code.
+- Catches: software engineering class/course/exam/homework/assignment/textbook/lecture/lab, software design patterns + class/exam/textbook, design patterns class/exam, UML class diagram / UML diagram + class/exam, UML class/course/exam, SOLID principles + class/exam/software, agile methods/methodology + class/exam/course, requirements engineering + class/exam/course, software requirements + class/exam/analysis, software testing class/exam/course, software quality + class/exam/assurance, software process + class/exam/model, object-oriented design + class/exam/course.
+- `softwareengineeringCallouts(tier:)` 4/3/3: "those UML diagrams won't draw themselves." / "no one passes software engineering by scrolling." / "CLOSE THIS. open your software engineering textbook."
+- 2 templates: study-for-exam (UML, design patterns, SOLID, agile, requirements, testing, SDLC, 60 min) + assignment (UML diagrams, design patterns, requirements spec, architecture analysis, 45 min)
+
+**New keyword domain — humancomputerinteraction:**
+- Positioned BEFORE `code`. Distinct from `ux` (which fires on "user experience" broadly). Bare "interaction design" without HCI/class context stays in ux.
+- Catches: human computer interaction / human-computer interaction (any), HCI + class/course/exam/assignment/homework/project/lab/textbook, HCI class/course/exam, usability testing + class/exam/hci/study, cognitive walkthrough + class/exam/hci, heuristic evaluation + class/exam/hci, think aloud/think-aloud + class/exam/hci, affinity diagram + class/hci, interaction design class/course/exam, user study + class/hci/exam, Nielsen heuristics + class/exam/hci.
+- `humancomputerinteractionCallouts(tier:)` 4/3/3: "that usability study won't run itself." / "no one masters human-computer interaction by scrolling." / "CLOSE THIS. open your HCI textbook."
+- 2 templates: study-for-exam (heuristics, cognitive walkthrough, think-aloud, affinity diagrams, Fitts's law, UCD, accessibility, 60 min) + assignment (heuristic evaluation, usability study, affinity diagram, cognitive walkthrough, 45 min)
+
+**New keyword domain — machinelearning:**
+- Positioned BEFORE `code` (and therefore before `datascience` which is much later). Bare "machine learning" or "gradient descent" without class/exam context falls through to `datascience`.
+- Catches: machine learning class/course/exam/homework/assignment/textbook/lecture/lab/problem set, gradient descent + class/exam/machine learning, linear regression + class/exam/machine learning (finance/economics guarded), logistic regression + class/exam/machine learning, support vector machine + class/exam/machine learning, SVM + class/exam/machine learning, decision tree + class/exam/machine learning, random forest + class/exam/machine learning, cross-validation/cross validation + class/exam/machine learning, bias-variance + class/exam/machine learning, overfitting + class/exam/machine learning, regularization + class/exam/machine learning, k-means + class/exam/machine learning, backpropagation + class/exam/machine learning, feature engineering + class/exam/machine learning.
+- `machinelearningCallouts(tier:)` 4/3/3: "those gradient descent derivations won't work themselves out." / "no one masters machine learning by scrolling." / "CLOSE THIS. open your machine learning textbook."
+- 2 templates: study-for-exam (supervised/unsupervised learning, gradient descent, linear/logistic regression, SVM, decision trees, bias-variance, regularization, cross-validation, 60 min) + assignment (classifier/regressor implementation, hyperparameter tuning, bias-variance analysis, regularization experiment, 60 min)
+
+**New keyword domain — distributedsystems:**
+- Positioned BEFORE `code`. Bare "distributed" without class/exam context stays in code.
+- Catches: distributed systems class/course/exam/homework/assignment/textbook, distributed computing class/course/exam, consensus protocol + class/exam/distributed, consensus algorithm + class/exam/distributed, CAP theorem + class/exam/distributed, fault tolerance + class/exam/distributed, Paxos + class/exam/distributed/consensus, Raft + class/exam/distributed/consensus, MapReduce + class/exam/distributed, two-phase commit + class/exam/distributed, distributed transaction + class/exam, replication + class/exam/distributed, eventual consistency + class/exam/distributed, consistency model + class/exam/distributed, leader election + class/exam/distributed, Byzantine fault + class/exam/distributed.
+- `distributedsystemsCallouts(tier:)` 4/3/3: "those consensus protocol proofs won't write themselves." / "no one masters distributed systems by scrolling." / "CLOSE THIS. open your distributed systems textbook."
+- 2 templates: study-for-exam (Paxos, Raft, CAP theorem, fault tolerance, replication, eventual consistency, distributed transactions, leader election, Byzantine fault, 60 min) + assignment (Raft implementation, Byzantine fault simulation, CAP analysis, replication design, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +50 @Test functions (5 routing tests + 3 callout pool tests per domain × 5 domains + 1 false-negative/guard per domain where applicable + 1 count guard ≥941)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 per domain × 5 + 1 count guard ≥941)
+
+**Template catalog: 931 → 941**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `computersecurity` fires at line 143, BEFORE `cybersecurity` (line 172) ✓. "computer security class exam" → computersecurity ✓; "buffer overflow class exam" → computersecurity ✓; "penetration testing" → cybersecurity ✓
+- `softwareengineering` fires at line 582, BEFORE `code` (line 657) ✓. "software engineering class exam" → softwareengineering ✓; "design patterns class exam" → softwareengineering ✓; bare "write software" → code ✓
+- `humancomputerinteraction` fires at line 599, BEFORE `code` (line 657) ✓. "human computer interaction class" → humancomputerinteraction ✓; "hci class exam" → humancomputerinteraction ✓; bare "user experience" → ux (fires earlier) ✓
+- `machinelearning` fires at line 622, BEFORE `code` (line 657) ✓. "machine learning class exam" → machinelearning ✓; bare "machine learning project" → datascience (fires much later) ✓
+- `distributedsystems` fires at line 644, BEFORE `code` (line 657) ✓. "distributed systems class exam" → distributedsystems ✓; bare "distributed system build" → code ✓
+- Brace balance: CalloutManager.swift 0 ✓; CalloutMessages.swift 0 ✓; SuggestedSessionTemplates.swift 0 ✓
+- Template count: 941 confirmed (grep -c "preferredDuration:" = 941) ✓
+- 5 new switch cases in taskAwareCallouts ✓
+- 5 new private callout pool functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `biomedicalengineering` — biomedical engineering class/course/exam, biomechanics + class/exam, medical devices + class/exam, biomaterials + class/exam, biomedical instrumentation + class/exam, tissue engineering + class/exam
+  - `chemicalengineering` — chemical engineering class/course/exam, reaction kinetics + class/exam, mass transfer + class/exam, thermodynamics + class/exam/chem eng, process design + class/exam, unit operations + class/exam, ChE exam
+  - `civilengineering` — civil engineering class/course/exam, structural analysis + class/exam, concrete design + class/exam, geotechnical + class/exam, transportation engineering + class/exam, FE exam civil
+  - `electricalengineering` — electrical engineering class/course/exam, circuit analysis + class/exam, signals and systems + class/exam, power systems + class/exam, digital electronics + class/exam, FE exam EE
+  - `mechanicalengineering` — mechanical engineering class/course/exam, thermodynamics + class/exam/ME, fluid mechanics + class/exam/ME, heat transfer + class/exam/ME, dynamics + class/exam/ME, FE exam ME
+- Template count: 941 → 951 after next 5-domain batch
+- Test counts: CalloutManagerTests.swift ~13600 lines, SuggestedSessionTemplatesTests.swift ~7000 lines
+
+---
+
 ## Run 384 (automated) — 2026-07-17 — 5 new CS keyword domains: operatingsystems/algorithms/databasesystems/computernetworks/computervision (921→931 templates)
 
 ### What shipped
