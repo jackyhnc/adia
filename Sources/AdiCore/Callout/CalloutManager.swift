@@ -892,6 +892,34 @@ public final class CalloutManager {
             || (lower.contains("quotient group") && (lower.contains("class") || lower.contains("exam") || lower.contains("algebra"))) {
             return "abstractalgebra"
         }
+        // functionalanalysis — positioned BEFORE mathematics so functional analysis coursework
+        // (Banach/Hilbert spaces, operator theory, spectral theory, Fourier analysis) routes to a
+        // dedicated pool. Bare "functional analysis" without class context falls through to mathematics.
+        if (lower.contains("functional analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("assignment") || lower.contains("problem set") || lower.contains("textbook") || lower.contains("notes")))
+            || (lower.contains("banach space") && (lower.contains("class") || lower.contains("exam") || lower.contains("functional")))
+            || (lower.contains("hilbert space") && (lower.contains("class") || lower.contains("exam") || lower.contains("functional")))
+            || (lower.contains("operator theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("functional")))
+            || (lower.contains("spectral theory") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("fourier analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("functional")))
+            || (lower.contains("bounded operator") && (lower.contains("class") || lower.contains("exam") || lower.contains("functional")))
+            || (lower.contains("compact operator") && (lower.contains("class") || lower.contains("exam") || lower.contains("functional")))
+            || (lower.contains("normed space") && (lower.contains("class") || lower.contains("exam") || lower.contains("functional"))) {
+            return "functionalanalysis"
+        }
+        // differentialgeometry — positioned BEFORE mathematics so differential geometry coursework
+        // (Riemannian manifolds, curvature, geodesics, differential forms, manifolds) routes to a
+        // dedicated pool. Bare "differential geometry" without class context falls through to mathematics.
+        if (lower.contains("differential geometry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("assignment") || lower.contains("problem set") || lower.contains("textbook") || lower.contains("notes")))
+            || (lower.contains("riemannian manifold") && (lower.contains("class") || lower.contains("exam") || lower.contains("differential")))
+            || (lower.contains("riemannian geometry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("geodesic") && lower.contains("differential geometry") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("curvature") && lower.contains("differential geometry") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("differential form") && (lower.contains("class") || lower.contains("differential geometry") || lower.contains("exam")))
+            || (lower.contains("manifold") && lower.contains("differential geometry") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("covariant derivative") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("christoffel symbol") && (lower.contains("class") || lower.contains("exam"))) {
+            return "differentialgeometry"
+        }
         // mathematics — positioned before studying so number theory, proof writing, and
         // advanced topics (topology, abstract algebra) don't fall through to studying.
         // word("algebra") and word("calculus") are in studying for generic "algebra exam"
@@ -917,6 +945,8 @@ public final class CalloutManager {
             || lower.contains("field theory") && !lower.contains("magnetic field")
             || lower.contains("galois theory") || lower.contains("category theory")
             || lower.contains("algebraic topology") || lower.contains("differential geometry") {
+            // functionalanalysis and differentialgeometry with class context are caught ABOVE in
+            // their dedicated branches; bare uses without class context fall through to here.
             return "mathematics"
         }
         // interpreting — positioned BEFORE signlanguage so RID certification, court/medical/legal
@@ -1581,6 +1611,58 @@ public final class CalloutManager {
             || (lower.contains("eruption dynamics") && (lower.contains("class") || lower.contains("volcanology") || lower.contains("exam"))) {
             return "volcanology"
         }
+        // geomorphology — positioned BEFORE geologylab and geology so geomorphology class/exam,
+        // landform analysis, and fluvial/glacial/aeolian geomorphology tasks route to a dedicated pool.
+        // word("geomorphology") removed from geology branch below.
+        if word("geomorphology") || word("geomorphologist") || word("geomorphologists")
+            || lower.contains("geomorphology class") || lower.contains("geomorphology course")
+            || lower.contains("geomorphology exam") || lower.contains("geomorphology homework")
+            || lower.contains("geomorphology assignment") || lower.contains("geomorphology problem set")
+            || (lower.contains("fluvial geomorphology") && (lower.contains("class") || lower.contains("exam") || lower.contains("assignment")))
+            || (lower.contains("glacial geomorphology") && (lower.contains("class") || lower.contains("exam") || lower.contains("assignment")))
+            || (lower.contains("aeolian geomorphology") && (lower.contains("class") || lower.contains("exam") || lower.contains("assignment")))
+            || (lower.contains("landform analysis") && (lower.contains("class") || lower.contains("geomorphology") || lower.contains("exam")))
+            || (lower.contains("dem analysis") && (lower.contains("class") || lower.contains("geomorphology") || lower.contains("exam")))
+            || (lower.contains("hillslope process") && (lower.contains("class") || lower.contains("geomorphology") || lower.contains("exam")))
+            || (lower.contains("drainage basin analysis") && (lower.contains("class") || lower.contains("geomorphology") || lower.contains("exam")))
+            || (lower.contains("channel morphology") && (lower.contains("class") || lower.contains("geomorphology") || lower.contains("exam")))
+            || (lower.contains("tectonic geomorphology") && (lower.contains("class") || lower.contains("exam") || lower.contains("geomorphology"))) {
+            return "geomorphology"
+        }
+        // sedimentology — positioned BEFORE geologylab and geology so sedimentology class/exam,
+        // grain size analysis, and sedimentary facies tasks route to a dedicated pool.
+        // word("sedimentology") removed from geology branch below.
+        if word("sedimentology") || word("sedimentologist") || word("sedimentologists")
+            || lower.contains("sedimentology class") || lower.contains("sedimentology course")
+            || lower.contains("sedimentology exam") || lower.contains("sedimentology homework")
+            || lower.contains("sedimentology assignment") || lower.contains("sedimentology problem set")
+            || (lower.contains("grain size analysis") && (lower.contains("class") || lower.contains("sedimentology") || lower.contains("exam")))
+            || (lower.contains("sedimentary structure") && (lower.contains("class") || lower.contains("sedimentology") || lower.contains("exam")))
+            || (lower.contains("fluvial facies") && (lower.contains("class") || lower.contains("sedimentology") || lower.contains("exam")))
+            || (lower.contains("deltaic facies") && (lower.contains("class") || lower.contains("sedimentology") || lower.contains("exam")))
+            || (lower.contains("turbidite facies") && (lower.contains("class") || lower.contains("sedimentology") || lower.contains("exam")))
+            || (lower.contains("sedimentary basin analysis") && (lower.contains("class") || lower.contains("sedimentology") || lower.contains("exam")))
+            || (lower.contains("sediment transport") && (lower.contains("class") || lower.contains("sedimentology") || lower.contains("exam")))
+            || (lower.contains("provenance analysis") && (lower.contains("class") || lower.contains("sedimentology") || lower.contains("exam")))
+            || lower.contains("clastic sedimentology") || lower.contains("carbonate sedimentology") {
+            return "sedimentology"
+        }
+        // structuralgeology — positioned BEFORE geologylab and geology so structural geology
+        // class/exam, fault analysis, fold geometry, and stereonet analysis route to a dedicated pool.
+        if lower.contains("structural geology class") || lower.contains("structural geology course")
+            || lower.contains("structural geology exam") || lower.contains("structural geology homework")
+            || lower.contains("structural geology assignment") || lower.contains("structural geology problem set")
+            || lower.contains("structural geology lab") || lower.contains("structural geology notes")
+            || (lower.contains("fault analysis") && (lower.contains("class") || lower.contains("structural geology") || lower.contains("exam")))
+            || (lower.contains("fold geometry") && (lower.contains("class") || lower.contains("structural geology") || lower.contains("exam")))
+            || (lower.contains("stereonet analysis") && (lower.contains("class") || lower.contains("structural geology") || lower.contains("exam")))
+            || (lower.contains("stress field") && (lower.contains("class") || lower.contains("structural geology") || lower.contains("geology")) && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("kinematic indicator") && (lower.contains("class") || lower.contains("structural geology") || lower.contains("exam")))
+            || (lower.contains("shear zone") && (lower.contains("class") || lower.contains("structural geology") || lower.contains("exam")))
+            || (lower.contains("deformation mechanism") && (lower.contains("class") || lower.contains("structural geology") || lower.contains("exam")))
+            || (lower.contains("strain analysis") && (lower.contains("class") || lower.contains("structural geology") || lower.contains("exam"))) {
+            return "structuralgeology"
+        }
         // geologylab — positioned BEFORE geology so specific geology lab tasks (rock/mineral
         // identification, thin section analysis, geologic field mapping reports) get a dedicated pool.
         // Generic "geology lab" without specific lab-activity context still routes to geology (fires after).
@@ -1612,8 +1694,9 @@ public final class CalloutManager {
         // word("stratigraphy")/word("stratigraphic") now owned by stratigraphy branch above.
         // word("seismology") now owned by seismology branch above.
         // word("volcanology") now owned by volcanology branch above.
+        // word("geomorphology") now owned by geomorphology branch above.
+        // word("sedimentology") now owned by sedimentology branch above.
         if word("geology") || word("geologist") || word("geological") || word("geologists")
-            || word("sedimentology") || word("geomorphology")
             || lower.contains("earth science") || lower.contains("earth sciences")
             || word("geoscience") || word("geosciences")
             || lower.contains("plate tectonics") || lower.contains("tectonic plates")

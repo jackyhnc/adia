@@ -18612,3 +18612,74 @@ None. Swift toolchain unavailable on Linux container.
   - `differentialgeometry` — differential geometry class (Riemannian manifold+class/exam, curvature+differential geometry/class/exam, geodesic+class/differential geometry — distinct from mathematics which catches "differential geometry" broadly)
 - Template count: 881 → 891 after next 5-domain batch
 - CalloutManagerTests: ~22000+ lines after next batch
+
+---
+
+## Run 380 (automated) — 2026-07-17 — 5 new keyword domains: geomorphology/sedimentology/structuralgeology/functionalanalysis/differentialgeometry (881→891 templates)
+
+### What shipped
+
+**5 new keyword domains: geomorphology, sedimentology, structuralgeology, functionalanalysis, differentialgeometry**
+
+**New keyword domain — geomorphology:**
+- Branch positioned BEFORE geologylab and geology (after volcanology). word("geomorphology"/"geomorphologist"/"geomorphologists") removed from geology branch.
+- Catches: word("geomorphology"/"geomorphologist"/"geomorphologists"), geomorphology class/course/exam/homework/assignment/problem set, fluvial/glacial/aeolian geomorphology + class/exam/assignment, landform analysis + class/geomorphology/exam, DEM analysis + class/geomorphology/exam, hillslope process + class/geomorphology/exam, drainage basin analysis + class/geomorphology/exam, channel morphology + class/geomorphology/exam, tectonic geomorphology + class/exam/geomorphology.
+- `geomorphologyCallouts(tier:)` 4/3/3: "those landforms won't analyze themselves." / "no one masters geomorphology by scrolling." / "CLOSE THIS. open your geomorphology textbook."
+- 2 templates: "Study geomorphology for my exam — fluvial/glacial/aeolian geomorphology, landform analysis, hillslope processes, drainage basin morphology, DEM analysis" (60 min) + "Work on my geomorphology assignment — analyze landforms from DEMs, interpret fluvial or glacial processes, characterize drainage basin morphology" (45 min)
+
+**New keyword domain — sedimentology:**
+- Branch positioned BEFORE geologylab and geology (after geomorphology). word("sedimentology"/"sedimentologist"/"sedimentologists") removed from geology branch.
+- Catches: word("sedimentology"/"sedimentologist"/"sedimentologists"), sedimentology class/course/exam/homework/assignment/problem set, grain size analysis + class/sedimentology/exam, sedimentary structure + class/sedimentology/exam, fluvial/deltaic/turbidite facies + class/sedimentology/exam, sedimentary basin analysis + class/sedimentology/exam, sediment transport + class/sedimentology/exam, provenance analysis + class/sedimentology/exam, clastic sedimentology, carbonate sedimentology.
+- `sedimentologyCallouts(tier:)` 4/3/3: "those sedimentary structures won't describe themselves." / "no one masters sedimentology by scrolling." / "CLOSE THIS. open your sedimentology textbook."
+- 2 templates: "Study sedimentology for my exam — grain size analysis, sedimentary structures, fluvial/deltaic/turbidite facies, sediment transport, provenance analysis" (60 min) + "Work on my sedimentology assignment — interpret sedimentary structures, classify grain sizes, analyze facies associations" (45 min)
+
+**New keyword domain — structuralgeology:**
+- Branch positioned BEFORE geologylab and geology (after sedimentology).
+- Catches: structural geology class/course/exam/homework/assignment/problem set/lab/notes, fault analysis + class/structural geology/exam, fold geometry + class/structural geology/exam, stereonet analysis + class/structural geology/exam, stress field + class/structural geology/exam, kinematic indicator + class/structural geology/exam, shear zone + class/structural geology/exam, deformation mechanism + class/structural geology/exam, strain analysis + class/structural geology/exam.
+- `structuralgeologyCallouts(tier:)` 4/3/3: "those fault geometries won't work themselves out." / "no one masters structural geology by scrolling." / "CLOSE THIS. open your structural geology textbook."
+- 2 templates: "Study structural geology for my exam — fault analysis, fold geometry, stereonet analysis, stress and strain fields, kinematic indicators, deformation mechanisms" (60 min) + "Work on my structural geology problem set — plot stereonets, analyze fault kinematics, interpret fold geometry, determine stress orientations" (45 min)
+
+**New keyword domain — functionalanalysis:**
+- Branch positioned BEFORE mathematics (after abstractalgebra). Bare "functional analysis" without class context falls through to mathematics as before.
+- Catches: functional analysis + class/course/exam/homework/assignment/problem set/textbook/notes, Banach space + class/exam/functional, Hilbert space + class/exam/functional, operator theory + class/course/exam/functional, spectral theory + class/exam, Fourier analysis + class/course/exam/functional, bounded/compact operator + class/exam/functional, normed space + class/exam/functional.
+- `functionalanalysisCallouts(tier:)` 4/3/3: "those Banach space proofs won't write themselves." / "no one masters functional analysis by scrolling." / "CLOSE THIS. open your functional analysis textbook."
+- 2 templates: "Study functional analysis for my exam — Banach and Hilbert spaces, bounded and compact operators, spectral theory, Fourier analysis, open mapping theorem" (60 min) + "Work on my functional analysis problem set — prove properties of Banach/Hilbert spaces, analyze bounded operators, apply spectral theory" (45 min)
+
+**New keyword domain — differentialgeometry:**
+- Branch positioned BEFORE mathematics (after functionalanalysis). Bare "differential geometry" without class context falls through to mathematics as before.
+- Catches: differential geometry + class/course/exam/homework/assignment/problem set/textbook/notes, Riemannian manifold + class/exam/differential, Riemannian geometry + class/course/exam, geodesic + differential geometry + class/exam, curvature + differential geometry + class/exam, differential form + class/differential geometry/exam, manifold + differential geometry + class/exam, covariant derivative + class/exam, Christoffel symbol + class/exam.
+- `differentialgeometryCallouts(tier:)` 4/3/3: "those Riemannian manifold problems won't solve themselves." / "no one masters differential geometry by scrolling." / "CLOSE THIS. open your differential geometry textbook."
+- 2 templates: "Study differential geometry for my exam — Riemannian manifolds, curvature tensors, geodesics, differential forms, covariant derivatives, Christoffel symbols" (60 min) + "Work on my differential geometry problem set — compute Christoffel symbols, derive geodesic equations, calculate curvature tensors, work with differential forms" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +43 @Test functions (5 routing + 3 callout pool tests per domain × 5 + 2 false-positive guards + 1 count guard ≥891)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 per domain × 5 + 1 count guard ≥891)
+
+**Template catalog: 881 → 891**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `functionalanalysis` fires at line 907, BEFORE mathematics (line 950) ✓. "functional analysis class exam" → functionalanalysis ✓; bare "functional analysis" → mathematics ✓
+- `differentialgeometry` fires at line 921, BEFORE mathematics (line 950) ✓. "differential geometry class exam" → differentialgeometry ✓; bare "differential geometry" → mathematics ✓
+- `geomorphology` fires at line 1630, BEFORE geologylab (line 1682) and geology (line 1710) ✓. "geomorphology class exam" → geomorphology ✓
+- `sedimentology` fires at line 1648, BEFORE geologylab (line 1682) and geology (line 1710) ✓. "sedimentology class exam" → sedimentology ✓
+- `structuralgeology` fires at line 1664, BEFORE geologylab (line 1682) and geology (line 1710) ✓. "structural geology class exam" → structuralgeology ✓
+- word("geomorphology") removed from geology branch; ownership comment added ✓
+- word("sedimentology") removed from geology branch; ownership comment added ✓
+- Brace balance: CalloutManager.swift 495/495 ✓; CalloutMessages.swift 935/935 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 891 confirmed (grep -c "preferredDuration:" = 891) ✓
+- 5 new dispatch cases in taskAwareCallouts switch ✓
+- 5 new private callout pool functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `atmosphericscience` — atmospheric science class (meteorology/climatology/synoptic class, weather analysis+class, atmospheric dynamics+class, radiosonde analysis+class, mesoscale convection+class — distinct from meteorology which catches broad weather terms)
+  - `oceanography` — oceanography class/course/exam (ocean circulation, thermohaline circulation+class, upwelling+oceanography+class, ENSO+oceanography+class, marine chemistry+class, bathymetry+class — distinct from marinebiologyresearch)
+  - `environmentalchemistry` — environmental chemistry class/course/exam (contaminant fate+class, water quality chemistry+class, atmospheric chemistry+class, soil chemistry+class, Henry's law+class/environmental/exam — distinct from biochemistry/chemistry)
+  - `quantummechanics` — quantum mechanics class/course/exam (Schrödinger equation+class, wave function+class/exam, quantum harmonic oscillator+class, spin-orbit coupling+class/exam, perturbation theory+class/quantum — distinct from physics which catches broad quantum terms)
+  - `classicalmechanics` — classical mechanics class/course/exam (Lagrangian mechanics+class, Hamiltonian mechanics+class, Hamilton's equations+class, variational principle+class, canonical transformation+class/exam — distinct from physics which catches broad mechanics terms)
+- Template count: 891 → 901 after next 5-domain batch
+- CalloutManagerTests: ~22224+ lines after next batch

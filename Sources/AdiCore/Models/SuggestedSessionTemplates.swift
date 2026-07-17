@@ -5685,5 +5685,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Volcanology assignment completed (volcanic hazard assessment, pyroclastic deposit analysis, tephra interpretation, or eruption dynamics calculations documented — saved to file)",
             preferredDuration: 45 * 60
         ),
+        // geomorphology
+        SuggestedTemplate(
+            icon: "mountain.2",
+            task: "Study geomorphology for my exam — review fluvial, glacial, and aeolian geomorphology, landform analysis, hillslope processes, drainage basin morphology, and DEM analysis",
+            successCriteria: "Geomorphology study session completed (at least two process domains reviewed with landform types, driving mechanisms, and morphometric analysis techniques summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "mountain.2",
+            task: "Work on my geomorphology assignment — analyze landforms from DEMs, interpret fluvial or glacial processes, characterize drainage basin morphology, or map hillslope processes",
+            successCriteria: "Geomorphology assignment completed (landform analysis, DEM interpretation, drainage basin characterization, or process mapping documented with observations and conclusions — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // sedimentology
+        SuggestedTemplate(
+            icon: "square.stack.3d.down.right",
+            task: "Study sedimentology for my exam — review grain size analysis, sedimentary structures, fluvial/deltaic/turbidite facies, sediment transport, and provenance analysis",
+            successCriteria: "Sedimentology study session completed (at least two facies or processes reviewed with grain size classification, sedimentary structure interpretation, and transport mechanisms summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "square.stack.3d.down.right",
+            task: "Work on my sedimentology assignment — interpret sedimentary structures, classify grain sizes, analyze facies associations, or write up sedimentary basin analysis",
+            successCriteria: "Sedimentology assignment completed (sedimentary structure interpretation, facies analysis, grain size classification, or basin analysis documented with evidence and conclusions — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // structuralgeology
+        SuggestedTemplate(
+            icon: "arrow.triangle.branch",
+            task: "Study structural geology for my exam — review fault analysis, fold geometry, stereonet analysis, stress and strain fields, kinematic indicators, and deformation mechanisms",
+            successCriteria: "Structural geology study session completed (at least two topics reviewed with fault/fold classifications, stereonet plotting steps, kinematic indicators, and deformation mechanism descriptions summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "arrow.triangle.branch",
+            task: "Work on my structural geology problem set — plot stereonets, analyze fault kinematics, interpret fold geometry, determine stress orientations, or characterize shear zones",
+            successCriteria: "Structural geology problem set completed (stereonet plots, fault kinematic analysis, fold interpretation, or stress/strain calculations completed with labeled diagrams and written conclusions — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // functionalanalysis
+        SuggestedTemplate(
+            icon: "function",
+            task: "Study functional analysis for my exam — review Banach and Hilbert spaces, bounded and compact operators, spectral theory, Fourier analysis, and the open mapping and closed graph theorems",
+            successCriteria: "Functional analysis study session completed (at least two topics reviewed with space definitions, key theorems such as Hahn-Banach or spectral theorem, and proof strategies summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "function",
+            task: "Work on my functional analysis problem set — prove properties of Banach/Hilbert spaces, analyze bounded operators, apply spectral theory, or derive Fourier analysis results",
+            successCriteria: "Functional analysis problem set completed (space proofs, operator analysis, spectral calculations, or Fourier problems solved with rigorous justification at each step — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // differentialgeometry
+        SuggestedTemplate(
+            icon: "circle.and.line.horizontal",
+            task: "Study differential geometry for my exam — review Riemannian manifolds, curvature tensors, geodesics, differential forms, covariant derivatives, and Christoffel symbols",
+            successCriteria: "Differential geometry study session completed (at least two topics reviewed with manifold definitions, curvature formulas, geodesic equations, and differential form operations summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "circle.and.line.horizontal",
+            task: "Work on my differential geometry problem set — compute Christoffel symbols, derive geodesic equations, calculate curvature tensors, or work with differential forms on manifolds",
+            successCriteria: "Differential geometry problem set completed (Christoffel symbol calculations, geodesic derivations, curvature tensor computations, or differential form problems solved with all steps shown — saved to file)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

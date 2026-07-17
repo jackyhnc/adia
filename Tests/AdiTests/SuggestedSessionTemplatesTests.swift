@@ -6391,4 +6391,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast881() {
         #expect(SuggestedSessionTemplates.all.count >= 881, "template catalog must have ≥881 entries after statisticalmethods/topology/abstractalgebra/seismology/volcanology additions")
     }
+    // MARK: - geomorphology templates
+    @Test func geomorphologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("geomorphology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func geomorphologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("geomorphology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - sedimentology templates
+    @Test func sedimentologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("sedimentology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func sedimentologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("sedimentology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - structuralgeology templates
+    @Test func structuralGeologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("structural geology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func structuralGeologyProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("structural geology") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - functionalanalysis templates
+    @Test func functionalAnalysisStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("functional analysis") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func functionalAnalysisProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("functional analysis") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - differentialgeometry templates
+    @Test func differentialGeometryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("differential geometry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func differentialGeometryProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("differential geometry") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - Count guard (≥891)
+    @Test func templateCountAtLeast891() {
+        #expect(SuggestedSessionTemplates.all.count >= 891, "template catalog must have ≥891 entries after geomorphology/sedimentology/structuralgeology/functionalanalysis/differentialgeometry additions")
+    }
 }

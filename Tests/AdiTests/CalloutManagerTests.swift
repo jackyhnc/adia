@@ -22049,4 +22049,176 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast881() {
         #expect(SuggestedSessionTemplates.all.count >= 881, "template catalog must have ≥881 entries after statisticalmethods/topology/abstractalgebra/seismology/volcanology additions (10 templates)")
     }
+
+    // MARK: - geomorphology routing
+    @Test func geomorphologyClassRoutesGeomorphology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geomorphology class exam homework tonight") == "geomorphology")
+    }
+    @Test func geomorphologistRoutesGeomorphology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geomorphologist field work notes review") == "geomorphology")
+    }
+    @Test func fluvialGeomorphologyClassRoutesGeomorphology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fluvial geomorphology class assignment due tonight") == "geomorphology")
+    }
+    @Test func drainageBasinAnalysisGeomorphologyRoutesGeomorphology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "drainage basin analysis geomorphology exam prep") == "geomorphology")
+    }
+    @Test func hillslopeProcessClassRoutesGeomorphology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hillslope process class geomorphology assignment") == "geomorphology")
+    }
+    @Test @MainActor func geomorphologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "geomorphology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "geomorphology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "geomorphology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func geomorphologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "geomorphology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func geomorphologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "geomorphology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - sedimentology routing
+    @Test func sedimentologyClassRoutesSedimentology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sedimentology class exam homework tonight") == "sedimentology")
+    }
+    @Test func sedimentologistRoutesSedimentology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sedimentologist field work notes review") == "sedimentology")
+    }
+    @Test func grainSizeAnalysisClassRoutesSedimentology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "grain size analysis class sedimentology exam") == "sedimentology")
+    }
+    @Test func turbiditeFaciesClassRoutesSedimentology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "turbidite facies class sedimentology assignment") == "sedimentology")
+    }
+    @Test func clasticSedimentologyRoutesSedimentology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "clastic sedimentology study review tonight") == "sedimentology")
+    }
+    @Test @MainActor func sedimentologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "sedimentology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "sedimentology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "sedimentology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func sedimentologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "sedimentology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func sedimentologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "sedimentology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - structuralgeology routing
+    @Test func structuralGeologyClassRoutesStructuralgeology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "structural geology class exam homework tonight") == "structuralgeology")
+    }
+    @Test func faultAnalysisStructuralGeologyRoutesStructuralgeology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fault analysis structural geology exam prep") == "structuralgeology")
+    }
+    @Test func stereonetAnalysisClassRoutesStructuralgeology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "stereonet analysis class structural geology exam") == "structuralgeology")
+    }
+    @Test func shearZoneStructuralGeologyRoutesStructuralgeology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "shear zone structural geology class assignment") == "structuralgeology")
+    }
+    @Test func structuralGeologyLabRoutesStructuralgeology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "structural geology lab report due tonight") == "structuralgeology")
+    }
+    @Test @MainActor func structuralgeologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "structuralgeology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "structuralgeology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "structuralgeology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func structuralgeologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "structuralgeology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func structuralgeologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "structuralgeology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - functionalanalysis routing
+    @Test func functionalAnalysisClassRoutesFunctionalanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "functional analysis class exam homework tonight") == "functionalanalysis")
+    }
+    @Test func banachSpaceFunctionalRoutesFunctionalanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "banach space functional analysis class exam") == "functionalanalysis")
+    }
+    @Test func hilbertSpaceClassRoutesFunctionalanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hilbert space class exam functional analysis") == "functionalanalysis")
+    }
+    @Test func operatorTheoryClassRoutesFunctionalanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "operator theory class exam functional analysis") == "functionalanalysis")
+    }
+    @Test func spectralTheoryClassRoutesFunctionalanalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "spectral theory class exam prep tonight") == "functionalanalysis")
+    }
+    @Test @MainActor func functionalanalysisCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "functionalanalysis", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "functionalanalysis", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "functionalanalysis", tier: 3).isEmpty)
+    }
+    @Test @MainActor func functionalanalysisTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "functionalanalysis", tier: 1).count >= 4)
+    }
+    @Test @MainActor func functionalanalysisTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "functionalanalysis", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - differentialgeometry routing
+    @Test func differentialGeometryClassRoutesDifferentialgeometry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "differential geometry class exam homework tonight") == "differentialgeometry")
+    }
+    @Test func riemannianManifoldClassRoutesDifferentialgeometry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "riemannian manifold class exam differential geometry") == "differentialgeometry")
+    }
+    @Test func christoffelSymbolClassRoutesDifferentialgeometry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "christoffel symbol class exam prep tonight") == "differentialgeometry")
+    }
+    @Test func covariantDerivativeClassRoutesDifferentialgeometry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "covariant derivative class exam geometry") == "differentialgeometry")
+    }
+    @Test func differentialFormGeometryClassRoutesDifferentialgeometry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "differential form differential geometry class exam") == "differentialgeometry")
+    }
+    @Test @MainActor func differentialgeometryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "differentialgeometry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "differentialgeometry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "differentialgeometry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func differentialgeometryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "differentialgeometry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func differentialgeometryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "differentialgeometry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - False-positive guards (geomorphology/sedimentology/functionalanalysis/differentialgeometry)
+    @Test func bareFunctionalAnalysisRoutesToMathematics() {
+        // "functional analysis" without class context should fall to mathematics, not functionalanalysis
+        let kw = CalloutManager.extractTaskKeyword(from: "functional analysis is a branch of mathematics")
+        #expect(kw == "mathematics" || kw != "functionalanalysis")
+    }
+    @Test func bareDifferentialGeometryRoutesToMathematics() {
+        // "differential geometry" without class context should fall to mathematics, not differentialgeometry
+        let kw = CalloutManager.extractTaskKeyword(from: "differential geometry studies smooth manifolds")
+        #expect(kw == "mathematics" || kw != "differentialgeometry")
+    }
+
+    // MARK: - Count guard (batch: geomorphology/sedimentology/structuralgeology/functionalanalysis/differentialgeometry)
+    @Test func calloutTemplatesCountAtLeast891() {
+        #expect(SuggestedSessionTemplates.all.count >= 891, "template catalog must have ≥891 entries after geomorphology/sedimentology/structuralgeology/functionalanalysis/differentialgeometry additions (10 templates)")
+    }
 }

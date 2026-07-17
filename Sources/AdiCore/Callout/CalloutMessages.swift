@@ -506,6 +506,11 @@ extension CalloutManager {
         case "abstractalgebra":            return abstractalgebraCallouts(tier: tier)
         case "seismology":                 return seismologyCallouts(tier: tier)
         case "volcanology":                return volcanologyCallouts(tier: tier)
+        case "geomorphology":              return geomorphologyCallouts(tier: tier)
+        case "sedimentology":              return sedimentologyCallouts(tier: tier)
+        case "structuralgeology":          return structuralgeologyCallouts(tier: tier)
+        case "functionalanalysis":         return functionalanalysisCallouts(tier: tier)
+        case "differentialgeometry":       return differentialgeometryCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -10111,6 +10116,111 @@ extension CalloutManager {
             "CLOSE THIS. open your volcanology textbook.",
             "CLOSE THIS. those volcanic processes won't analyze themselves.",
             "CLOSE THIS. your volcanology exam won't study itself."
+        ]
+        }
+    }
+
+    private func geomorphologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those landforms won't analyze themselves.",
+            "your geomorphology assignment is sitting there waiting.",
+            "fluvial processes don't study themselves — get back to it.",
+            "you can't map hillslope processes by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters geomorphology by scrolling.",
+            "close this and open your geomorphology notes.",
+            "those drainage basin and landform problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your geomorphology textbook.",
+            "CLOSE THIS. those landform processes won't analyze themselves.",
+            "CLOSE THIS. your geomorphology exam won't study itself."
+        ]
+        }
+    }
+
+    private func sedimentologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those sedimentary structures won't describe themselves.",
+            "your sedimentology assignment is waiting.",
+            "grain size analysis doesn't do itself — get back to it.",
+            "you can't interpret facies by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters sedimentology by scrolling.",
+            "close this and open your sedimentology notes.",
+            "those facies and sediment transport problems need your attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your sedimentology textbook.",
+            "CLOSE THIS. those sedimentary structures won't interpret themselves.",
+            "CLOSE THIS. your sedimentology exam won't study itself."
+        ]
+        }
+    }
+
+    private func structuralgeologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those fault geometries won't work themselves out.",
+            "your structural geology assignment is waiting.",
+            "stereonet analysis doesn't do itself — get back to it.",
+            "you can't interpret fold geometry by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters structural geology by scrolling.",
+            "close this and open your structural geology notes.",
+            "those fault analysis and strain problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your structural geology textbook.",
+            "CLOSE THIS. those deformation mechanisms won't analyze themselves.",
+            "CLOSE THIS. your structural geology exam won't study itself."
+        ]
+        }
+    }
+
+    private func functionalanalysisCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Banach space proofs won't write themselves.",
+            "your functional analysis assignment is waiting.",
+            "operator theory doesn't study itself — get back to it.",
+            "you can't prove the spectral theorem by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters functional analysis by scrolling.",
+            "close this and open your functional analysis notes.",
+            "those Hilbert space and operator theory problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your functional analysis textbook.",
+            "CLOSE THIS. those Banach space theorems won't prove themselves.",
+            "CLOSE THIS. your functional analysis exam won't study itself."
+        ]
+        }
+    }
+
+    private func differentialgeometryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Riemannian manifold problems won't solve themselves.",
+            "your differential geometry assignment is waiting.",
+            "geodesics don't compute themselves — get back to it.",
+            "you can't derive Christoffel symbols by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters differential geometry by scrolling.",
+            "close this and open your differential geometry notes.",
+            "those curvature and manifold problems need your attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your differential geometry textbook.",
+            "CLOSE THIS. those Riemannian manifolds won't analyze themselves.",
+            "CLOSE THIS. your differential geometry exam won't study itself."
         ]
         }
     }
