@@ -17638,3 +17638,73 @@ None. Swift toolchain unavailable on Linux container.
   - `cellandmolecularbiology` — cell biology lab (distinct from molecular biology; focuses on microscopy, cell division, organelle function)
 - Template count: 741 → 751 after next 5-domain batch
 - CalloutManagerTests: ~19950+ lines after next batch
+
+---
+
+## Run 369 (automated) — 2026-07-17 — 5 new keyword domains: surgeryrotation/pediatricsrotation/internalmedicine/obgynrotation/familymedicine (741→751 templates)
+
+### What shipped
+
+**5 new keyword domains: surgeryrotation, pediatricsrotation, internalmedicine, obgynrotation, familymedicine**
+
+**New keyword domain — surgeryrotation:**
+- Branch positioned AFTER psychiatryrotation, BEFORE premed. Bare "surgery" alone stays in premed.
+- Catches: surgery/surgical rotation/clerkship/elective/rounds/attending/ward, scrub in/scrubbing in, operative report (rotation/clerkship/surgery/write context), surgical notes (rotation/clerkship/write context), pre-op/post-op notes, surgical/surgery case (rotation/clerkship/presentation), surgery/surgical residency (reading/notes/rotation/case), surgery/surgical shelf, NBME surgery.
+- `surgeryrotationCallouts(tier:)` 4/3/3: "those operative notes aren't going to write themselves." / "no one becomes a surgeon by scrolling." / "CLOSE THIS. open your surgical notes."
+- 2 templates: "Complete my surgery rotation work — write operative notes or H&Ps…" (60 min) + "Study surgery for my clerkship shelf exam…" (60 min)
+
+**New keyword domain — pediatricsrotation:**
+- Branch positioned AFTER surgeryrotation, BEFORE premed. Bare "pediatrics" alone stays in premed.
+- Catches: pediatrics/peds/pediatric rotation/clerkship/elective/rounds/attending/ward, developmental milestones (rotation/class/peds/pediatric/clinical context), pediatric exam (rotation/clinical/clerkship), pediatric/peds case (rotation/write/presentation), pediatrics/peds notes (rotation/write), pediatrics residency (reading/notes/rotation), peds/pediatrics shelf, NBME pediatrics/peds.
+- `pediatricsrotationCallouts(tier:)` 4/3/3: "those pediatric cases aren't going to write themselves." / "no one masters developmental milestones by scrolling." / "CLOSE THIS. open your pediatrics case notes."
+- 2 templates: "Complete my pediatrics rotation work…" (45 min) + "Study pediatrics for my clerkship shelf exam…" (45 min)
+
+**New keyword domain — internalmedicine:**
+- Branch positioned AFTER pediatricsrotation, BEFORE premed. "internal medicine" without clerkship/rotation context stays in premed.
+- Catches: internal medicine/IM/medicine clerkship/rotation, IM/internal medicine/medicine rounds (rotation/clerkship/attending/notes context), IM attending/ward/elective, H&P write-up/history and physical (write/rotation/clerkship/notes), SOAP notes (rotation/clerkship/internal medicine/IM/ward), internal medicine/IM case (rotation/write/presentation), IM/internal medicine shelf, medicine shelf (rotation/clerkship/NBME context).
+- `internalMedicineCallouts(tier:)` 4/3/3: "that H&P isn't going to write itself." / "no one passes the medicine shelf by scrolling." / "CLOSE THIS. open your internal medicine notes."
+- 2 templates: "Complete my internal medicine rotation work — write H&Ps or SOAP notes…" (60 min) + "Study internal medicine for my clerkship shelf exam…" (60 min)
+
+**New keyword domain — obgynrotation:**
+- Branch positioned AFTER internalmedicine, BEFORE premed. Bare "obstetrics"/"gynecology" stays in premed.
+- Catches: OB/GYN/ob-gyn/obgyn/obstetrics/gynecology rotation/clerkship, labor and delivery rotation/notes (rotation/clerkship/write context), L&D rotation/notes (rotation/write/clerkship), OB/GYN/obgyn rounds/attending, OB/GYN/obgyn notes (rotation/write), gynecology case (rotation/write/presentation), OB/GYN/obgyn shelf, NBME ob/gyn/obgyn.
+- `obgynrotationCallouts(tier:)` 4/3/3: "those OB/GYN notes aren't going to write themselves." / "no one masters labor and delivery by scrolling." / "CLOSE THIS. open your OB/GYN rotation notes."
+- 2 templates: "Complete my OB/GYN rotation work — write labor and delivery notes…" (45 min) + "Study OB/GYN for my clerkship shelf exam…" (45 min)
+
+**New keyword domain — familymedicine:**
+- Branch positioned AFTER obgynrotation, BEFORE premed. Bare "family medicine" without rotation/clerkship context stays in premed.
+- Catches: family medicine/FM clerkship/rotation/elective/clinic (rotation/clerkship/notes context), FM clinic (rotation/clerkship/notes context), FM/family medicine rounds/attending, family medicine/FM notes (rotation/write/clerkship), continuity clinic (rotation/clerkship/family/FM context), family medicine/FM case (rotation/write/presentation), FM/family medicine shelf, NBME family medicine.
+- `familymedicineCallouts(tier:)` 4/3/3: "those family medicine notes aren't going to write themselves." / "no one passes the FM shelf by scrolling." / "CLOSE THIS. open your family medicine rotation notes."
+- 2 templates: "Complete my family medicine rotation work — write continuity clinic notes…" (45 min) + "Study family medicine for my clerkship shelf exam…" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +42 @Test functions (8-9 per domain + count guard ≥751) → 3528 total
+- SuggestedSessionTemplatesTests.swift: +6 tests (1 per domain + count guard ≥751) → 581 total
+
+**Template catalog: 741 → 751**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `surgeryrotation` fires at line 5609, AFTER psychiatryrotation (5590), BEFORE premed (5708). "surgery rotation operative report" → surgeryrotation ✓; "surgery MCAT" → premed ✓
+- `pediatricsrotation` fires at line 5629, AFTER surgeryrotation (5609), BEFORE premed (5708). "peds clerkship developmental milestones" → pediatricsrotation ✓; bare "pediatrics" → premed ✓
+- `internalmedicine` fires at line 5649, AFTER pediatricsrotation (5629), BEFORE premed (5708). "IM rotation H&P SOAP notes" → internalmedicine ✓; bare "internal medicine" → premed ✓
+- `obgynrotation` fires at line 5669, AFTER internalmedicine (5649), BEFORE premed (5708). "OB/GYN clerkship labor and delivery" → obgynrotation ✓; bare "obstetrics" → premed ✓
+- `familymedicine` fires at line 5689, AFTER obgynrotation (5669), BEFORE premed (5708). "FM rotation continuity clinic" → familymedicine ✓; bare "family medicine" → premed ✓
+- Brace balance: CalloutManager.swift 425/425 ✓; CalloutMessages.swift 795/795 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 751 confirmed by programmatic count (grep -c "preferredDuration:")
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `emergencymedicinerotation` — EM rotation, EM clerkship, emergency medicine shift notes, EM shelf
+  - `biochemistry2` — advanced biochemistry (signal transduction, lipid metabolism, nucleotide metabolism)
+  - `cellandmolecularbiology` — cell biology lab (microscopy, cell division, organelle function)
+  - `medicinalchemistry` — medicinal chemistry class, drug design, SAR (structure-activity relationship), pharmacy school context
+  - `toxicology` — toxicology class, poison control, drug overdose management (class/course context, distinct from pharmacology)
+  - `clinicalmicrobiology` — microbiology lab rotation, clinical microbiology, culture interpretation, antibiogram, infection control (distinct from microbiology class)
+  - `virology` — virology class/course (distinct from microbiology; viral replication cycles, specific viral pathogens)
+  - `immunologycourse` — immunology class/course (T-cell/B-cell signaling, complement, specific immune pathways — more specific than generic immunology)
+- Template count: 751 → 761 after next 5-domain batch
+- CalloutManagerTests: ~20000+ lines after next batch
