@@ -5815,5 +5815,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Environmental chemistry assignment completed (contaminant transport model, water quality analysis, Henry's law calculations, or aquatic pollutant assessment documented with methods and results — saved to file)",
             preferredDuration: 45 * 60
         ),
+        // radioastronomy
+        SuggestedTemplate(
+            icon: "antenna.radiowaves.left.and.right",
+            task: "Study radio astronomy for my exam — review radio telescope design, aperture synthesis, VLBI, pulsar timing, 21cm line observations, synchrotron radiation, and interferometric imaging",
+            successCriteria: "Radio astronomy study session completed (at least two topics reviewed with telescope principles, interferometry theory, pulsar timing methods, and emission mechanisms summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "antenna.radiowaves.left.and.right",
+            task: "Work on my radio astronomy assignment — reduce VLBI data, analyze pulsar timing residuals, construct aperture synthesis maps, or interpret radio continuum emission",
+            successCriteria: "Radio astronomy assignment completed (data reduction pipeline, timing analysis, aperture synthesis map, or emission interpretation documented with methods and results — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // astrochemistry
+        SuggestedTemplate(
+            icon: "sparkles",
+            task: "Study astrochemistry for my exam — review interstellar medium chemistry, molecular cloud composition, chemical evolution, interstellar molecules, and protostellar chemistry",
+            successCriteria: "Astrochemistry study session completed (at least two topics reviewed with ISM chemistry mechanisms, molecular cloud abundances, chemical network reactions, and observational signatures summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "sparkles",
+            task: "Work on my astrochemistry assignment — analyze interstellar molecular abundances, model chemical networks in molecular clouds, or interpret spectral line data for ISM chemistry",
+            successCriteria: "Astrochemistry assignment completed (molecular abundance analysis, chemical network model, or ISM spectral line interpretation documented with methods and conclusions — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // nuclearphysics
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study nuclear physics for my exam — review nuclear structure, radioactive decay, alpha/beta/gamma decay, nuclear reactions, fission and fusion energetics, and the nuclear shell model",
+            successCriteria: "Nuclear physics study session completed (at least two topics reviewed with binding energy calculations, decay chain derivations, nuclear reaction Q-values, and shell model descriptions summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work on my nuclear physics problem set — calculate radioactive decay chains, determine Q-values for nuclear reactions, analyze fission or fusion energetics, or apply the nuclear shell model",
+            successCriteria: "Nuclear physics problem set completed (decay chain calculations, Q-value determinations, fission/fusion energy analysis, or shell model applications solved with all steps shown — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // plasmaphysics
+        SuggestedTemplate(
+            icon: "bolt.horizontal",
+            task: "Study plasma physics for my exam — review Debye shielding, plasma oscillations, MHD equations, magnetic confinement in tokamaks and stellarators, Alfvén waves, and fusion plasma behavior",
+            successCriteria: "Plasma physics study session completed (at least two topics reviewed with Debye length derivations, MHD equation structures, confinement principles, and Alfvén wave properties summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "bolt.horizontal",
+            task: "Work on my plasma physics problem set — derive Debye shielding lengths, solve MHD equilibrium equations, analyze tokamak confinement, or model plasma wave propagation",
+            successCriteria: "Plasma physics problem set completed (Debye length derivation, MHD equilibrium solution, confinement analysis, or wave propagation calculation completed with all steps shown — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // computationalfluidynamics
+        SuggestedTemplate(
+            icon: "wind",
+            task: "Study computational fluid dynamics for my exam — review Navier-Stokes equations, finite volume methods, turbulence modeling (RANS, LES), boundary layer theory, and CFD simulation workflow",
+            successCriteria: "CFD study session completed (at least two topics reviewed with NS equation discretization, finite volume schemes, turbulence model closures, and simulation setup principles summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "wind",
+            task: "Work on my CFD assignment — discretize Navier-Stokes equations using finite volume methods, set up turbulence models, run flow simulations in OpenFOAM or ANSYS Fluent, or analyze convergence",
+            successCriteria: "CFD assignment completed (NS discretization, turbulence model setup, simulation results, or convergence analysis documented with mesh details, boundary conditions, and post-processing results — saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

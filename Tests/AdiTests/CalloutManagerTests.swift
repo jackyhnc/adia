@@ -22389,8 +22389,175 @@ struct CalloutManagerTests {
         #expect(kw == "physicalchemistry" || kw != "statisticalmechanics")
     }
 
-    // MARK: - Count guard (batch: cosmology/planetaryscience/particlephysics/statisticalmechanics/environmentalchemistry)
-    @Test func calloutTemplatesCountAtLeast901() {
-        #expect(SuggestedSessionTemplates.all.count >= 901, "template catalog must have ≥901 entries after cosmology/planetaryscience/particlephysics/statisticalmechanics/environmentalchemistry additions (10 templates)")
+    // MARK: - radioastronomy routing
+    @Test func radioAstronomyClassRoutesRadioastronomy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "radio astronomy class exam homework tonight") == "radioastronomy")
+    }
+    @Test func vlbiClassRoutesRadioastronomy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "vlbi imaging class exam astronomy") == "radioastronomy")
+    }
+    @Test func pulsarTimingClassRoutesRadioastronomy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pulsar timing class exam astronomy project") == "radioastronomy")
+    }
+    @Test func apertureSynthesisClassRoutesRadioastronomy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "aperture synthesis class radio astronomy exam") == "radioastronomy")
+    }
+    @Test func radioTelescopeClassRoutesRadioastronomy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "radio telescope class exam lab project") == "radioastronomy")
+    }
+    @Test @MainActor func radioastronomyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "radioastronomy", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "radioastronomy", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "radioastronomy", tier: 3).isEmpty)
+    }
+    @Test @MainActor func radioastronomyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "radioastronomy", tier: 1).count >= 4)
+    }
+    @Test @MainActor func radioastronomyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "radioastronomy", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - astrochemistry routing
+    @Test func astrochemistryClassRoutesAstrochemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "astrochemistry class exam homework tonight") == "astrochemistry")
+    }
+    @Test func interstellarMediumChemistryClassRoutesAstrochemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "interstellar medium chemistry class exam review") == "astrochemistry")
+    }
+    @Test func molecularCloudAstrochemistryRoutesAstrochemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "molecular cloud astrochemistry class exam") == "astrochemistry")
+    }
+    @Test func interstellarMoleculeChemistryRoutesAstrochemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "interstellar molecules class chemistry exam astrochemistry") == "astrochemistry")
+    }
+    @Test func bareAstrochemistryWordRoutesAstrochemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "astrochemistry problem set homework tonight") == "astrochemistry")
+    }
+    @Test @MainActor func astrochemistryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "astrochemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "astrochemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "astrochemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func astrochemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "astrochemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func astrochemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "astrochemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - nuclearphysics routing
+    @Test func nuclearPhysicsClassRoutesNuclearphysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nuclear physics class exam homework tonight") == "nuclearphysics")
+    }
+    @Test func radioactiveDecayClassRoutesNuclearphysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "radioactive decay class nuclear physics exam") == "nuclearphysics")
+    }
+    @Test func nuclearFissionClassRoutesNuclearphysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nuclear fission class exam physics problem set") == "nuclearphysics")
+    }
+    @Test func alphaDecayClassRoutesNuclearphysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "alpha decay class nuclear physics exam prep") == "nuclearphysics")
+    }
+    @Test func nuclearShellModelClassRoutesNuclearphysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nuclear shell model class exam physics") == "nuclearphysics")
+    }
+    @Test @MainActor func nuclearphysicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "nuclearphysics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nuclearphysics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nuclearphysics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func nuclearphysicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nuclearphysics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func nuclearphysicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nuclearphysics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - plasmaphysics routing
+    @Test func plasmaPhysicsClassRoutesPlasmaphysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "plasma physics class exam homework tonight") == "plasmaphysics")
+    }
+    @Test func mhdClassRoutesPlasmaphysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mhd class exam plasma physics problem") == "plasmaphysics")
+    }
+    @Test func tokamakClassRoutesPlasmaphysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tokamak class plasma physics exam confinement") == "plasmaphysics")
+    }
+    @Test func magnetohydrodynamicsClassRoutesPlasmaphysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "magnetohydrodynamics class exam physics") == "plasmaphysics")
+    }
+    @Test func debyeLengthClassRoutesPlasmaphysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "debye length class plasma physics exam") == "plasmaphysics")
+    }
+    @Test @MainActor func plasmaphysicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "plasmaphysics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "plasmaphysics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "plasmaphysics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func plasmaphysicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "plasmaphysics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func plasmaphysicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "plasmaphysics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - computationalfluidynamics routing
+    @Test func cfdClassRoutesComputationalfluidynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cfd class exam homework tonight") == "computationalfluidynamics")
+    }
+    @Test func computationalFluidDynamicsClassRoutesComputationalfluidynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "computational fluid dynamics class exam review") == "computationalfluidynamics")
+    }
+    @Test func navierStokesNumericalClassRoutesComputationalfluidynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "navier-stokes numerical computational cfd class exam") == "computationalfluidynamics")
+    }
+    @Test func turbulenceModelingCfdClassRoutesComputationalfluidynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "turbulence modeling cfd class exam computational") == "computationalfluidynamics")
+    }
+    @Test func openfoamClassRoutesComputationalfluidynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "openfoam class cfd course project exam") == "computationalfluidynamics")
+    }
+    @Test @MainActor func computationalfluidynamicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalfluidynamics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalfluidynamics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalfluidynamics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func computationalfluidynamicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computationalfluidynamics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func computationalfluidynamicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computationalfluidynamics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - False-positive guards (radioastronomy/astrochemistry/nuclearphysics/plasmaphysics/computationalfluidynamics)
+    @Test func bareRadioAstronomyRoutesToAstronomy() {
+        // "study radio astronomy" without class/exam context should stay in astronomy
+        let kw = CalloutManager.extractTaskKeyword(from: "study radio astronomy tonight")
+        #expect(kw == "astronomy" || kw != "radioastronomy")
+    }
+    @Test func nuclearFusionPlasmaCrossCapture() {
+        // "nuclear fusion + plasma" should route to plasmaphysics, not nuclearphysics
+        let kw = CalloutManager.extractTaskKeyword(from: "nuclear fusion plasma physics class exam")
+        #expect(kw == "plasmaphysics" || kw != "nuclearphysics")
+    }
+
+    // MARK: - Count guard (batch: radioastronomy/astrochemistry/nuclearphysics/plasmaphysics/computationalfluidynamics)
+    @Test func calloutTemplatesCountAtLeast911() {
+        #expect(SuggestedSessionTemplates.all.count >= 911, "template catalog must have ≥911 entries after radioastronomy/astrochemistry/nuclearphysics/plasmaphysics/computationalfluidynamics additions (10 templates)")
     }
 }

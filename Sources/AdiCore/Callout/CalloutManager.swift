@@ -686,6 +686,44 @@ public final class CalloutManager {
             || lower.contains("planetary interior") && (lower.contains("class") || lower.contains("exam") || lower.contains("planetary science")) {
             return "planetaryscience"
         }
+        // radioastronomy — positioned BEFORE astronomy so radio astronomy class/exam,
+        // radio telescope work, VLBI, pulsar timing, and interferometric imaging coursework
+        // route to a dedicated pool. Bare "radio astronomy" without class context stays in astronomy.
+        if lower.contains("radio astronomy class") || lower.contains("radio astronomy course")
+            || lower.contains("radio astronomy exam") || lower.contains("radio astronomy homework")
+            || lower.contains("radio astronomy notes") || lower.contains("radio astronomy lab")
+            || lower.contains("radio telescope") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("project") || lower.contains("lab"))
+            || lower.contains("vlbi") && (lower.contains("class") || lower.contains("exam") || lower.contains("astronomy") || lower.contains("imaging"))
+            || lower.contains("very long baseline interferometry") && (lower.contains("class") || lower.contains("exam") || lower.contains("astronomy"))
+            || lower.contains("pulsar timing") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("astronomy"))
+            || lower.contains("pulsar class") || lower.contains("pulsars class") || lower.contains("pulsar exam")
+            || lower.contains("aperture synthesis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("astronomy") || lower.contains("radio"))
+            || lower.contains("interferometric imaging") && (lower.contains("class") || lower.contains("exam") || lower.contains("astronomy") || lower.contains("radio"))
+            || lower.contains("21cm line") && (lower.contains("class") || lower.contains("exam") || lower.contains("astronomy") || lower.contains("radio"))
+            || lower.contains("21-cm line") && (lower.contains("class") || lower.contains("exam") || lower.contains("astronomy"))
+            || lower.contains("synchrotron radiation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("astronomy") || lower.contains("radio"))
+            || lower.contains("radio continuum") && (lower.contains("class") || lower.contains("exam") || lower.contains("astronomy"))
+            || lower.contains("radio emission") && (lower.contains("class") || lower.contains("exam") || lower.contains("astronomy")) {
+            return "radioastronomy"
+        }
+        // astrochemistry — positioned BEFORE astronomy so astrochemistry class/exam,
+        // interstellar medium chemistry, molecular cloud chemistry, and chemical evolution
+        // coursework route to a dedicated pool.
+        if word("astrochemistry") || word("astrochemist")
+            || lower.contains("astrochemistry class") || lower.contains("astrochemistry course")
+            || lower.contains("astrochemistry exam") || lower.contains("astrochemistry homework")
+            || lower.contains("astrochemistry notes") || lower.contains("astrochemistry lab")
+            || lower.contains("interstellar medium chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("ism chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("astrochemistry"))
+            || lower.contains("molecular cloud") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("astrochemistry") || lower.contains("chemistry"))
+            || lower.contains("interstellar molecule") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("astrochemistry"))
+            || lower.contains("interstellar molecules") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry"))
+            || lower.contains("chemical evolution") && (lower.contains("astronomy") || lower.contains("astrochemistry") || lower.contains("interstellar") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("protostellar chemistry") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("circumstellar chemistry") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("interstellar ice") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("astrochemistry")) {
+            return "astrochemistry"
+        }
         // astronomy — positioned before studying so "astronomy exam" doesn't fall through to
         // the generic studying pool via word("exam"). Bare word("physics") stays in studying;
         // compound celestial/cosmological terms route here.
@@ -1255,6 +1293,57 @@ public final class CalloutManager {
             || lower.contains("poisson brackets") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("mechanics"))
             || lower.contains("action principle") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("mechanics") || lower.contains("physics")) {
             return "classicalmechanics"
+        }
+        // nuclearphysics — positioned BEFORE optics/experimentalphysics so nuclear physics
+        // class/exam, radioactive decay, fission/fusion energetics, and nuclear structure
+        // coursework route to a dedicated pool. "nuclear fusion + plasma" stays in plasmaphysics.
+        if lower.contains("nuclear physics class") || lower.contains("nuclear physics course")
+            || lower.contains("nuclear physics exam") || lower.contains("nuclear physics homework")
+            || lower.contains("nuclear physics notes") || lower.contains("nuclear physics problem")
+            || lower.contains("nuclear engineering class") || lower.contains("nuclear engineering course")
+            || lower.contains("nuclear engineering exam")
+            || lower.contains("nuclear reaction") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("physics"))
+            || lower.contains("nuclear reactions") && (lower.contains("class") || lower.contains("exam") || lower.contains("physics"))
+            || lower.contains("nuclear decay") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("physics"))
+            || lower.contains("radioactive decay") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("physics") || lower.contains("nuclear"))
+            || lower.contains("nuclear fission") && (lower.contains("class") || lower.contains("exam") || lower.contains("physics"))
+            || lower.contains("fission") && lower.contains("class") && lower.contains("nuclear")
+            || lower.contains("fission") && lower.contains("exam") && lower.contains("nuclear")
+            || lower.contains("nuclear fusion") && (lower.contains("class") || lower.contains("exam") || lower.contains("physics")) && !lower.contains("plasma")
+            || lower.contains("nuclear structure") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("physics"))
+            || lower.contains("nuclear binding energy") && (lower.contains("class") || lower.contains("exam") || lower.contains("nuclear") || lower.contains("physics"))
+            || lower.contains("nuclear shell model") && (lower.contains("class") || lower.contains("exam") || lower.contains("physics"))
+            || lower.contains("radioactivity") && (lower.contains("class") || lower.contains("exam") || lower.contains("nuclear") || lower.contains("physics"))
+            || lower.contains("alpha decay") && (lower.contains("class") || lower.contains("exam") || lower.contains("nuclear") || lower.contains("physics"))
+            || lower.contains("beta decay") && (lower.contains("class") || lower.contains("exam") || lower.contains("nuclear") || lower.contains("physics"))
+            || lower.contains("gamma decay") && (lower.contains("class") || lower.contains("exam") || lower.contains("nuclear") || lower.contains("physics"))
+            || lower.contains("half-life") && (lower.contains("class") || lower.contains("nuclear") || lower.contains("exam") || lower.contains("physics")) && !lower.contains("biology") && !lower.contains("chem") {
+            return "nuclearphysics"
+        }
+        // plasmaphysics — positioned BEFORE optics/experimentalphysics so plasma physics
+        // class/exam, MHD, tokamak confinement, and fusion plasma coursework route to a
+        // dedicated pool. "nuclear fusion + plasma" owned here; bare "fusion" stays in nuclearphysics.
+        if lower.contains("plasma physics class") || lower.contains("plasma physics course")
+            || lower.contains("plasma physics exam") || lower.contains("plasma physics homework")
+            || lower.contains("plasma physics notes") || lower.contains("plasma physics problem")
+            || lower.contains("magnetohydrodynamics class") || lower.contains("magnetohydrodynamics course")
+            || lower.contains("magnetohydrodynamics exam")
+            || lower.contains("mhd class") || lower.contains("mhd course") || lower.contains("mhd exam")
+            || lower.contains("mhd equations") && (lower.contains("class") || lower.contains("exam") || lower.contains("plasma"))
+            || lower.contains("tokamak") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("physics") || lower.contains("plasma"))
+            || lower.contains("plasma confinement") && (lower.contains("class") || lower.contains("exam") || lower.contains("physics"))
+            || lower.contains("debye length") && (lower.contains("class") || lower.contains("exam") || lower.contains("plasma") || lower.contains("physics"))
+            || lower.contains("debye shielding") && (lower.contains("class") || lower.contains("exam") || lower.contains("plasma"))
+            || lower.contains("plasma oscillation") && (lower.contains("class") || lower.contains("exam") || lower.contains("plasma") || lower.contains("physics"))
+            || lower.contains("plasma frequency") && (lower.contains("class") || lower.contains("exam") || lower.contains("plasma") || lower.contains("physics"))
+            || lower.contains("magnetic confinement") && (lower.contains("class") || lower.contains("exam") || lower.contains("plasma") || lower.contains("fusion"))
+            || lower.contains("inertial confinement") && (lower.contains("class") || lower.contains("exam") || lower.contains("plasma") || lower.contains("fusion"))
+            || lower.contains("fusion plasma") && (lower.contains("class") || lower.contains("exam") || lower.contains("physics"))
+            || lower.contains("nuclear fusion") && lower.contains("plasma")
+            || lower.contains("alfvén wave") && (lower.contains("class") || lower.contains("exam") || lower.contains("plasma"))
+            || lower.contains("alfven wave") && (lower.contains("class") || lower.contains("exam") || lower.contains("plasma"))
+            || lower.contains("stellarator") && (lower.contains("class") || lower.contains("exam") || lower.contains("plasma") || lower.contains("physics")) {
+            return "plasmaphysics"
         }
         // optics — positioned BEFORE experimentalphysics so optics/photonics class work routes
         // to a dedicated pool. "optics lab" stays in experimentalphysics (no class qualifier needed).
@@ -2413,6 +2502,31 @@ public final class CalloutManager {
             || lower.contains("entropy") && lower.contains("thermo") && (lower.contains("class") || lower.contains("exam"))
             || lower.contains("enthalpy") && lower.contains("thermo") && (lower.contains("class") || lower.contains("exam")) {
             return "thermodynamics"
+        }
+        // computationalfluidynamics — positioned BEFORE engineering so CFD class/exam,
+        // Navier-Stokes numerical methods, finite volume methods, and turbulence modeling
+        // coursework route to a dedicated pool. Bare "fluid dynamics" stays in engineering.
+        // "fluid mechanics class chemical" stays in chemicalengineering (fires earlier).
+        if lower.contains("computational fluid dynamics class") || lower.contains("computational fluid dynamics course")
+            || lower.contains("computational fluid dynamics exam") || lower.contains("computational fluid dynamics homework")
+            || lower.contains("computational fluid dynamics problem")
+            || lower.contains("cfd class") || lower.contains("cfd course") || lower.contains("cfd exam")
+            || lower.contains("cfd homework") || lower.contains("cfd problem")
+            || lower.contains("cfd simulation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("navier-stokes") && (lower.contains("cfd") || lower.contains("computational") || lower.contains("numerical")) && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("navier stokes") && (lower.contains("cfd") || lower.contains("computational") || lower.contains("numerical")) && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("finite volume method") && (lower.contains("class") || lower.contains("exam") || lower.contains("cfd") || lower.contains("fluid"))
+            || lower.contains("finite volume methods") && (lower.contains("class") || lower.contains("exam") || lower.contains("cfd") || lower.contains("fluid"))
+            || lower.contains("turbulence modeling") && (lower.contains("class") || lower.contains("exam") || lower.contains("cfd") || lower.contains("computational"))
+            || lower.contains("turbulence model") && (lower.contains("class") || lower.contains("exam") || lower.contains("cfd") || lower.contains("computational"))
+            || lower.contains("reynolds-averaged") && (lower.contains("class") || lower.contains("exam") || lower.contains("cfd"))
+            || lower.contains("rans equations") && (lower.contains("class") || lower.contains("exam") || lower.contains("cfd"))
+            || lower.contains("large eddy simulation") && (lower.contains("class") || lower.contains("exam") || lower.contains("cfd"))
+            || lower.contains("les simulation") && (lower.contains("class") || lower.contains("exam") || lower.contains("cfd"))
+            || lower.contains("ansys fluent") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("project"))
+            || lower.contains("openfoam") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("cfd") || lower.contains("project"))
+            || lower.contains("computational aerodynamics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course")) {
+            return "computationalfluidynamics"
         }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").

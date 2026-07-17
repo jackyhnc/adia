@@ -516,6 +516,11 @@ extension CalloutManager {
         case "particlephysics":            return particlephysicsCallouts(tier: tier)
         case "statisticalmechanics":       return statisticalmechanicsCallouts(tier: tier)
         case "environmentalchemistry":     return environmentalchemistryCallouts(tier: tier)
+        case "radioastronomy":             return radioastronomyCallouts(tier: tier)
+        case "astrochemistry":             return astrochemistryCallouts(tier: tier)
+        case "nuclearphysics":             return nuclearphysicsCallouts(tier: tier)
+        case "plasmaphysics":              return plasmaphysicsCallouts(tier: tier)
+        case "computationalfluidynamics":  return computationalfluidynamicsCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -10331,6 +10336,111 @@ extension CalloutManager {
             "CLOSE THIS. open your environmental chemistry textbook.",
             "CLOSE THIS. those contaminant transport problems won't solve themselves.",
             "CLOSE THIS. your environmental chemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func radioastronomyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those radio telescope observations won't analyze themselves.",
+            "your radio astronomy assignment is waiting.",
+            "VLBI data doesn't reduce itself — get back to it.",
+            "you can't master pulsar timing by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters radio astronomy by scrolling.",
+            "close this and open your radio astronomy notes.",
+            "those aperture synthesis and interferometry problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your radio astronomy textbook.",
+            "CLOSE THIS. those VLBI data won't reduce themselves.",
+            "CLOSE THIS. your radio astronomy exam won't study itself."
+        ]
+        }
+    }
+
+    private func astrochemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those interstellar medium chemistry problems won't solve themselves.",
+            "your astrochemistry assignment is waiting.",
+            "molecular cloud chemistry doesn't unravel itself — get back to it.",
+            "you can't master astrochemistry by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters astrochemistry by scrolling.",
+            "close this and open your astrochemistry notes.",
+            "those interstellar molecule and chemical evolution problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your astrochemistry textbook.",
+            "CLOSE THIS. those interstellar chemistry problems won't solve themselves.",
+            "CLOSE THIS. your astrochemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func nuclearphysicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those nuclear reactions won't balance themselves.",
+            "your nuclear physics assignment is waiting.",
+            "radioactive decay doesn't calculate itself — get back to it.",
+            "you can't master nuclear physics by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters nuclear physics by scrolling.",
+            "close this and open your nuclear physics notes.",
+            "those decay chains and fission problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your nuclear physics textbook.",
+            "CLOSE THIS. those nuclear reaction calculations won't do themselves.",
+            "CLOSE THIS. your nuclear physics exam won't study itself."
+        ]
+        }
+    }
+
+    private func plasmaphysicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those MHD equations won't solve themselves.",
+            "your plasma physics assignment is waiting.",
+            "Debye shielding doesn't derive itself — get back to it.",
+            "you can't master plasma physics by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters plasma physics by scrolling.",
+            "close this and open your plasma physics notes.",
+            "those MHD and tokamak confinement problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your plasma physics textbook.",
+            "CLOSE THIS. those MHD equations won't solve themselves.",
+            "CLOSE THIS. your plasma physics exam won't study itself."
+        ]
+        }
+    }
+
+    private func computationalfluidynamicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that CFD simulation won't converge itself.",
+            "your computational fluid dynamics assignment is waiting.",
+            "Navier-Stokes doesn't discretize itself — get back to it.",
+            "you can't master CFD by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters CFD by scrolling.",
+            "close this and open your CFD notes.",
+            "those Navier-Stokes and turbulence modeling problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your computational fluid dynamics textbook.",
+            "CLOSE THIS. that CFD simulation won't set itself up.",
+            "CLOSE THIS. your CFD exam won't study itself."
         ]
         }
     }

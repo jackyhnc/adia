@@ -6465,8 +6465,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func environmentalChemistryAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("environmental chemistry") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥901)
-    @Test func templateCountAtLeast901() {
-        #expect(SuggestedSessionTemplates.all.count >= 901, "template catalog must have ≥901 entries after cosmology/planetaryscience/particlephysics/statisticalmechanics/environmentalchemistry additions")
+    // MARK: - radioastronomy templates
+    @Test func radioAstronomyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("radio astronomy") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func radioAstronomyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("radio astronomy") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - astrochemistry templates
+    @Test func astrochemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("astrochemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func astrochemistryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("astrochemistry") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - nuclearphysics templates
+    @Test func nuclearPhysicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("nuclear physics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func nuclearPhysicsProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("nuclear physics") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - plasmaphysics templates
+    @Test func plasmaPhysicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("plasma physics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func plasmaPhysicsProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("plasma physics") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - computationalfluidynamics templates
+    @Test func cfdStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computational fluid dynamics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func cfdAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cfd") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥911)
+    @Test func templateCountAtLeast911() {
+        #expect(SuggestedSessionTemplates.all.count >= 911, "template catalog must have ≥911 entries after radioastronomy/astrochemistry/nuclearphysics/plasmaphysics/computationalfluidynamics additions")
     }
 }
