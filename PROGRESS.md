@@ -18408,3 +18408,67 @@ None. Swift toolchain unavailable on Linux container.
   - `palliativecare` — palliative care rotation/class (goals of care conversation+rotation, comfort measures class, palliative care assessment+rotation/patient, hospice class/rotation, symptom management+palliative/rotation, advance directive discussion+rotation/class)
 - Template count: 851 → 861 after next 5-domain batch
 - CalloutManagerTests: ~23700+ lines after next batch
+
+---
+
+## Run 377 (automated) — 2026-07-17 — 5 new keyword domains: linearalgebra/differentialequations/neuropsychology/developmentalpsych/militarymedicine (851→861 templates)
+
+### What shipped
+
+**5 new keyword domains: linearalgebra, differentialequations, neuropsychology, developmentalpsych, militarymedicine**
+
+**New keyword domain — linearalgebra:**
+- Branch positioned BEFORE mathematics. Catches: "linear algebra class/course/exam/homework/problem set/notes/textbook/assignment/quiz", "matrix algebra class/course/exam/problem", eigenvector, eigenvalue, linear transformation + class/exam/matrix, vector space + class/linear algebra/exam/basis, null space/column space + class/linear algebra/exam, Gram-Schmidt + class/exam/linear algebra, SVD + linear algebra, singular value decomposition + class/exam/linear algebra, LU/QR decomposition + class/exam/linear algebra, row reduction/Gaussian elimination + class/exam/linear algebra, diagonalization + class/exam/linear algebra, linear independence + class/linear algebra/exam.
+- `linearalgebraCallouts(tier:)` 4/3/3: "those eigenvectors won't find themselves." / "no one masters linear algebra by scrolling." / "CLOSE THIS. open your linear algebra notes."
+- 2 templates: "Study linear algebra for my exam — eigenvectors/eigenvalues, LU/QR/SVD decompositions, vector spaces, linear independence, span/basis, linear transformations, diagonalization" (60 min) + "Work on my linear algebra problem set — eigenvalue problems, matrix decompositions, Gram-Schmidt, null/column space, linear independence proofs" (45 min)
+
+**New keyword domain — differentialequations:**
+- Branch positioned BEFORE mathematics (after linearalgebra). Catches: "differential equations class/course/exam/homework/problem set/textbook/notes/assignment", "ODE class/course/exam/homework", "PDE class/course/exam", ordinary/partial differential equation + class/course/exam/homework/solve, Laplace transform + class/exam/ode/differential, separation of variables + class/exam/ode, integrating factor + class/exam/ode, first/second-order ODE, homogeneous equation + class/ode/differential, characteristic equation + ode/differential/class, system of ODEs, system of differential equations, Fourier series + class/ode/pde/differential equation/exam, heat/wave equation + class/exam/pde/differential, Euler's/Runge-Kutta method + class/ode/exam.
+- `differentialequationsCallouts(tier:)` 4/3/3: "those ODEs won't solve themselves." / "no one masters differential equations by scrolling." / "CLOSE THIS. open your differential equations notes."
+- 2 templates: "Study differential equations for my exam — separation of variables, integrating factor, Laplace transforms, first- and second-order ODEs, systems of ODEs, Fourier series, heat and wave equations" (60 min) + "Work on my differential equations problem set — solve ODEs using separation/integrating factors, apply Laplace transforms, analyze systems of ODEs, solve heat/wave PDE with Fourier series" (45 min)
+
+**New keyword domain — neuropsychology:**
+- Branch positioned BEFORE clinicalpsychology. Catches: "neuropsychology class/course/exam/textbook/notes/assignment/program/major", neuropsychological assessment/testing/evaluation + class/course/exam/study, executive function assessment + class/course/exam/neuropsych, executive function + neuropsych class + assessment, memory assessment + class (not clinical rotation), cortical function + class/course/exam/neuropsych, neuropsychological battery + class/course/exam, Wechsler + class/neuropsych/assessment class, Trail Making Test + class/neuropsych/exam, Stroop test + class/neuropsych/exam, Wisconsin Card Sorting + class/neuropsych/exam, digit span + class/neuropsych/assessment, neuropsychological rehabilitation + class/course/exam.
+- `neuropsychologyCallouts(tier:)` 4/3/3: "those neuropsychological assessment methods won't learn themselves." / "no one masters neuropsychology by scrolling." / "CLOSE THIS. open your neuropsychology notes."
+- 2 templates: "Study neuropsychology for my exam — neuropsychological assessment batteries (Wechsler, TMT, Stroop), executive function models, memory assessment, cortical functions and lateralization, neuropsychological rehabilitation" (60 min) + "Work on my neuropsychology assignment — interpret test results, apply executive function assessment frameworks, analyze cortical lesion case, write neuropsych report" (45 min)
+
+**New keyword domain — developmentalpsych:**
+- Branch positioned BEFORE developmentalpsychology. Catches more SPECIFIC developmental psych class terms: "developmental psychology class/course/exam/textbook/notes/assignment/major/program", "developmental psych class/course/exam/notes", Piaget + class/course/exam/stage/developmental/psych/assignment/paper, sensorimotor/preoperational stage, concrete/formal operational, Piaget's stages, attachment theory + class/course/exam/psych/developmental/paper, infant cognition + class/course/exam/research, object permanence + class/exam/psych/developmental, secure attachment + class/exam/psych/theory, Bowlby + class/course/psych/attachment/developmental, Ainsworth + class/psych/attachment/developmental, Strange Situation + class/psych/developmental/attachment, theory of mind + class/developmental/psych/exam.
+- `developmentalpsychCallouts(tier:)` 4/3/3: "those Piaget stages won't memorize themselves." / "no one masters developmental psychology by scrolling." / "CLOSE THIS. open your developmental psychology notes."
+- 2 templates: "Study developmental psychology for my exam — Piaget's cognitive stages (sensorimotor through formal operational), attachment theory (Bowlby and Ainsworth), theory of mind, infant cognition, object permanence" (60 min) + "Work on my developmental psychology assignment — apply Piaget's cognitive stage theory, analyze Strange Situation attachment classifications, evaluate theory of mind research, write up infant cognition findings" (45 min)
+
+**New keyword domain — militarymedicine:**
+- Branch positioned BEFORE militaryscience. Catches: TCCC (not code/tcp), tactical combat casualty care, combat medicine + class/course/training/exam/rotation, military medicine + class/course/training/exam/rotation/program/notes, MARCH algorithm, march mnemonic + medical, care under fire + medical/tccc/combat/tactical, tactical field care, tactical evacuation care, CASEVAC + medical/care/class/training, MEDEVAC + class + medical/training/protocol, combat casualty/trauma care, field medicine + class/course/training/combat/military, military trauma + class/course/training/care, tourniquet application + combat/military/tccc/tactical, hemorrhage control + combat/military/tccc/tactical, tactical medicine + class/course/training/exam, military medical officer + rotation/training/class, austere medicine + military/combat/field/class, prolonged field care + military/tccc/combat.
+- `militarymedicineCallouts(tier:)` 4/3/3: "that TCCC protocol won't memorize itself." / "no one aces combat medicine by scrolling." / "CLOSE THIS. open your tactical medicine notes."
+- 2 templates: "Study tactical combat casualty care (TCCC) — MARCH algorithm, care-under-fire, tactical field care, tourniquet/hemorrhage control, airway management, casualty evacuation" (60 min) + "Complete my combat medicine training tasks — write up TCCC case using MARCH, document hemorrhage control and tourniquet steps, review prolonged field care protocols" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +41 @Test functions (5 routing + 3 callout pool tests per domain + 1 count guard ≥861)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 per domain + 1 count guard ≥861)
+
+**Template catalog: 851 → 861**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `linearalgebra` fires at line 723, BEFORE mathematics (line 777) ✓. "linear algebra class exam" → linearalgebra ✓; "number theory proof" → mathematics ✓
+- `differentialequations` fires at line 750, BEFORE mathematics (line 777) ✓. "differential equations class exam" → differentialequations ✓; "abstract algebra" → mathematics ✓
+- `neuropsychology` fires at line 7899, BEFORE clinicalpsychology (line ~7913). "neuropsychology class exam" → neuropsychology ✓; "APPIC internship match psych" → clinicalpsychology ✓
+- `developmentalpsych` fires at line 8033, BEFORE developmentalpsychology (line 8049). "developmental psychology class piaget exam" → developmentalpsych ✓; "child development lifespan" → developmentalpsychology ✓
+- `militarymedicine` fires at line 8249, BEFORE militaryscience (~8264). "tccc combat medicine training" → militarymedicine ✓; "military science class rotc" → militaryscience ✓
+- Brace balance: CalloutManager.swift 480/480 ✓; CalloutMessages.swift 905/905 ✓
+- Template count: 861 confirmed (grep -c "preferredDuration:" = 861)
+- 5 new dispatch cases in taskAwareCallouts switch ✓
+- 5 new private callout pool functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `complexanalysis` — complex analysis class (Cauchy-Riemann equations, contour integration, residue theorem, analytic functions, conformal mappings — distinct from mathematics which catches "complex analysis" broadly)
+  - `realanalysis` — real analysis class (epsilon-delta proofs, metric spaces, uniform convergence, Lebesgue integration, measure theory — distinct from mathematics which catches "real analysis" broadly)
+  - `discretemath` — discrete mathematics class (graph theory proofs, combinatorics class, propositional logic class, proof by induction class — distinct from mathematics broad catch)
+  - `probabilitytheory` — probability theory class (sigma-algebras, random variables, expectation, conditional probability, CLT, law of large numbers — distinct from statistics which catches applied prob/stats)
+  - `numericalanalysis` — numerical analysis class (floating-point arithmetic, Newton's method, numerical integration, finite difference methods, interpolation — distinct from appliedmathematics)
+- Template count: 861 → 871 after next 5-domain batch
+- CalloutManagerTests: ~22700+ lines after next batch
