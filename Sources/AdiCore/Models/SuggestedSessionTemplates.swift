@@ -5165,5 +5165,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Classical mechanics study session completed (at least two topics reviewed with key concepts, formulas, and problem strategies summarized and saved)",
             preferredDuration: 60 * 60
         ),
+        // astrophysics
+        SuggestedTemplate(
+            icon: "sparkles",
+            task: "Work through my astrophysics problem set — solve stellar evolution equations, compute orbital mechanics, analyze cosmological models, or work through N-body gravitational dynamics problems",
+            successCriteria: "Astrophysics problem set completed (at least two problems solved with astrophysical derivations checked — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "sparkles",
+            task: "Study astrophysics for my exam — review stellar structure and evolution, galaxy formation, dark matter and dark energy, gravitational waves, and cosmological models",
+            successCriteria: "Astrophysics study session completed (at least two topics reviewed with key concepts, equations, and physical interpretations summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // atmosphericchemistry
+        SuggestedTemplate(
+            icon: "smoke",
+            task: "Analyze my atmospheric chemistry data — model ozone depletion mechanisms, aerosol chemistry reactions, tropospheric oxidation pathways, or VOC photochemical cycles",
+            successCriteria: "Atmospheric chemistry analysis completed (reaction mechanisms or model results documented, chemical pathways explained and saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "smoke",
+            task: "Work through my atmospheric chemistry problem set — ozone photolysis cycles, OH radical reaction rates, stratospheric halogen chemistry, or air quality modeling",
+            successCriteria: "Atmospheric chemistry problem set completed (at least two reaction mechanisms or rate calculations worked out and documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // optics
+        SuggestedTemplate(
+            icon: "rays",
+            task: "Work through my optics problem set — solve wave interference and diffraction problems, apply Snell's law and Fresnel equations, analyze Fabry-Pérot cavities, or calculate optical fiber modes",
+            successCriteria: "Optics problem set completed (at least two problems solved with wave optics or geometric optics analysis checked — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "rays",
+            task: "Study optics or photonics for my exam — review wave optics, interference, diffraction, Fourier optics, laser fundamentals, optical fibers, and nonlinear optics concepts",
+            successCriteria: "Optics study session completed (at least two topics reviewed with key equations, diagrams, and physical interpretations summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // electromagnetism
+        SuggestedTemplate(
+            icon: "bolt.circle",
+            task: "Work through my electromagnetism problem set — apply Gauss's law, Ampere's law, Faraday's law, and Maxwell's equations to solve electric and magnetic field problems",
+            successCriteria: "Electromagnetism problem set completed (at least two problems solved with field equations derived and boundary conditions applied — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "bolt.circle",
+            task: "Study electromagnetism for my exam — review Maxwell's equations, electrostatics, magnetostatics, electromagnetic waves, and boundary conditions in dielectrics and conductors",
+            successCriteria: "Electromagnetism study session completed (at least two topics reviewed with key equations, physical interpretations, and example problems summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // neuroimaging
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Run my neuroimaging analysis pipeline — preprocess fMRI data with FSL or SPM, perform motion correction and normalization, run first-level GLM analysis, or process DTI tractography",
+            successCriteria: "Neuroimaging analysis completed (preprocessing pipeline run, key outputs checked for quality, and results directory organized and documented)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Work on my neuroimaging class assignment — analyze BOLD signal data, interpret brain connectivity maps, review fMRI study design, or write up my neuroimaging lab report",
+            successCriteria: "Neuroimaging assignment completed (analysis written up or lab report drafted with methods, results, and interpretation documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

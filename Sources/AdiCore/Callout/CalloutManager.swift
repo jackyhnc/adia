@@ -604,12 +604,39 @@ public final class CalloutManager {
             || lower.contains("photometry lab") && (lower.contains("astronomy") || lower.contains("stellar") || lower.contains("ccd")) {
             return "astronomylab"
         }
-        // astronomy — positioned before studying so "astrophysics homework" and "astronomy exam"
-        // don't fall through to the generic studying pool via word("exam").
-        // Bare word("physics") stays in studying; compound celestial/cosmological terms route here.
+        // astrophysics — positioned BEFORE astronomy to intercept research-level astrophysical
+        // signals and bare word("astrophysics"). word("astrophysics"/"astrophysicist"/
+        // "astrophysicists") removed from astronomy and owned here. "astrophysics class/course/
+        // exam/homework" also owned here so astrophysics inputs always reach this dedicated pool.
+        if word("astrophysics") || word("astrophysicist") || word("astrophysicists")
+            || lower.contains("cosmological simulation") || lower.contains("cosmological simulations")
+            || lower.contains("n-body simulation") || lower.contains("nbody simulation")
+            || lower.contains("n-body problem") && (lower.contains("astrophysics") || lower.contains("stellar") || lower.contains("orbital") || lower.contains("gravity"))
+            || lower.contains("stellar evolution research") || lower.contains("stellar structure research")
+            || lower.contains("stellar population synthesis") || lower.contains("stellar population model")
+            || lower.contains("galactic dynamics") || lower.contains("galaxy dynamics")
+            || lower.contains("active galactic nuclei") || lower.contains("active galactic nucleus")
+            || lower.contains("agn feedback") || lower.contains("agn research") || lower.contains("agn jet")
+            || lower.contains("gravitational wave") && (lower.contains("data") || lower.contains("analysis") || lower.contains("detection") || lower.contains("signal") || lower.contains("research"))
+            || lower.contains("gravitational waves") && (lower.contains("data") || lower.contains("analysis") || lower.contains("detection") || lower.contains("merger"))
+            || lower.contains("ligo data") || lower.contains("ligo analysis") || lower.contains("ligo signal")
+            || lower.contains("interstellar medium") && (lower.contains("research") || lower.contains("analysis") || lower.contains("simulation") || lower.contains("astrophysics"))
+            || lower.contains("quasar") && (lower.contains("research") || lower.contains("analysis") || lower.contains("data") || lower.contains("spectra") || lower.contains("astrophysics"))
+            || lower.contains("black hole accretion") || lower.contains("accretion disk") && (lower.contains("astrophysics") || lower.contains("black hole") || lower.contains("neutron star"))
+            || lower.contains("neutron star merger") || lower.contains("neutron star binary")
+            || lower.contains("supernova simulation") || lower.contains("supernova research")
+            || lower.contains("numerical astrophysics") || lower.contains("computational astrophysics")
+            || lower.contains("astrophysics class") || lower.contains("astrophysics course")
+            || lower.contains("astrophysics homework") || lower.contains("astrophysics exam")
+            || lower.contains("astrophysics problem set") || lower.contains("astrophysics research") {
+            return "astrophysics"
+        }
+        // astronomy — positioned before studying so "astronomy exam" doesn't fall through to
+        // the generic studying pool via word("exam"). Bare word("physics") stays in studying;
+        // compound celestial/cosmological terms route here.
         // word("astrobiology") now owned by astrobiology branch above.
+        // word("astrophysics"/"astrophysicist"/"astrophysicists") now owned by astrophysics above.
         if word("astronomy") || word("astronomer") || word("astronomers")
-            || word("astrophysics") || word("astrophysicist") || word("astrophysicists")
             || lower.contains("celestial mechanics") || word("cosmology") || word("cosmologist")
             || lower.contains("observational astronomy") || lower.contains("stellar physics")
             || lower.contains("stellar evolution") || lower.contains("stellar structure")
@@ -626,9 +653,7 @@ public final class CalloutManager {
             || lower.contains("astr course") || lower.contains("astr lab")
             || lower.contains("astr homework") || lower.contains("astronomy class")
             || lower.contains("astronomy course") || lower.contains("astronomy lab")
-            || lower.contains("astronomy homework") || lower.contains("astronomy exam")
-            || lower.contains("astrophysics class") || lower.contains("astrophysics course")
-            || lower.contains("astrophysics homework") || lower.contains("astrophysics exam") {
+            || lower.contains("astronomy homework") || lower.contains("astronomy exam") {
             return "astronomy"
         }
         // appliedmathematics — positioned AFTER astronomy and BEFORE mathematics so "applied math",
@@ -949,6 +974,25 @@ public final class CalloutManager {
             || lower.contains("poisson brackets") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("mechanics"))
             || lower.contains("action principle") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("mechanics") || lower.contains("physics")) {
             return "classicalmechanics"
+        }
+        // optics — positioned BEFORE experimentalphysics so optics/photonics class work routes
+        // to a dedicated pool. "optics lab" stays in experimentalphysics (no class qualifier needed).
+        if word("optics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("problem set") || lower.contains("notes"))
+            || word("photonics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("project") || lower.contains("homework"))
+            || lower.contains("laser physics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("wave optics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("geometric optics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("fourier optics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("nonlinear optics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("quantum optics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("optical fiber") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("notes"))
+            || lower.contains("optical fibers") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("diffraction grating") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem") || lower.contains("optics"))
+            || lower.contains("physical optics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("optics class") || lower.contains("optics course") || lower.contains("optics exam") || lower.contains("optics homework")
+            || lower.contains("photonics class") || lower.contains("photonics course") || lower.contains("photonics exam")
+            || lower.contains("photonic device") && (lower.contains("class") || lower.contains("course") || lower.contains("design") || lower.contains("exam")) {
+            return "optics"
         }
         // experimentalphysics — positioned BEFORE the studying branch (which catches word("physics"))
         // so physics lab reports, optics experiments, and mechanics labs get a dedicated pool instead
@@ -1630,10 +1674,33 @@ public final class CalloutManager {
             || lower.contains("aiaa") && (lower.contains("class") || lower.contains("design") || lower.contains("project") || lower.contains("competition")) {
             return "aerospacengineering"
         }
+        // electromagnetism — positioned BEFORE electricalengineering so physics E&M courses
+        // (Gauss/Ampere/Faraday/Maxwell in a physics context) get a dedicated pool. EE-specific
+        // signals (circuits, FPGA, signal processing) remain in electricalengineering.
+        // "maxwell's equations+class" and "electromagnetic fields+class/exam" owned here;
+        // those lines removed from electricalengineering below.
+        if lower.contains("gauss's law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem") || lower.contains("homework"))
+            || lower.contains("ampere's law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem") || lower.contains("homework"))
+            || lower.contains("faraday's law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem") || lower.contains("homework"))
+            || lower.contains("maxwell's equations") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem") || lower.contains("homework"))
+            || lower.contains("electromagnetic fields") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem") || lower.contains("homework"))
+            || lower.contains("electrostatics class") || lower.contains("electrostatics course") || lower.contains("electrostatics exam")
+            || lower.contains("magnetostatics class") || lower.contains("magnetostatics course") || lower.contains("magnetostatics exam")
+            || lower.contains("electromagnetic wave") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("electromagnetic waves") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("electricity and magnetism class") || lower.contains("electricity and magnetism course") || lower.contains("electricity and magnetism exam")
+            || lower.contains("e&m class") || lower.contains("e&m course") || lower.contains("e&m exam") || lower.contains("e&m problem")
+            || lower.contains("em class") && (lower.contains("physics") || lower.contains("fields") || lower.contains("waves")) || lower.contains("em course") && (lower.contains("physics") || lower.contains("fields"))
+            || lower.contains("electromagnetism class") || lower.contains("electromagnetism course")
+            || lower.contains("electromagnetism exam") || lower.contains("electromagnetism homework")
+            || lower.contains("electromagnetism problem set") || lower.contains("electromagnetism notes") {
+            return "electromagnetism"
+        }
         // electricalengineering — positioned AFTER aerospacengineering and BEFORE civilengineering/engineering
-        // so circuits class, electromagnetic fields, signal processing, and EE coursework route here.
+        // so circuits class, signal processing, and EE coursework route here.
         // "electrical engineering" removed from engineering branch below (now owned here).
         // Electrician licensing (journeyman, NEC code) stays in electricaltechnology (earlier).
+        // "maxwell's equations+class" and "electromagnetic fields+class" owned by electromagnetism above.
         if lower.contains("electrical engineering class") || lower.contains("electrical engineering course")
             || lower.contains("electrical engineering exam") || lower.contains("electrical engineering lab")
             || lower.contains("electrical engineering notes") || lower.contains("electrical engineering program")
@@ -1658,8 +1725,6 @@ public final class CalloutManager {
             || word("verilog") && (lower.contains("class") || lower.contains("lab") || lower.contains("course") || lower.contains("design"))
             || lower.contains("power electronics") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
             || lower.contains("electric machines class") || lower.contains("electric machines course") || lower.contains("electric machines lab")
-            || lower.contains("electromagnetic fields") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
-            || lower.contains("maxwell's equations") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
             || lower.contains("microelectronics class") || lower.contains("microelectronics course") || lower.contains("microelectronics lab")
             || lower.contains("semiconductor devices class") || lower.contains("semiconductor devices course")
             || lower.contains("ee lab report") || lower.contains("electrical engineering report") {
@@ -4068,6 +4133,30 @@ public final class CalloutManager {
             || lower.contains("environmental justice analysis") || lower.contains("environmental justice research")
             || lower.contains("environmental justice policy") || lower.contains("environmental justice program") {
             return "environmentaljustice"
+        }
+        // atmosphericchemistry — positioned BEFORE atmosphericscience to intercept research-level
+        // atmospheric chemistry signals. Class/course/exam contexts for atmospheric chemistry
+        // still route to atmosphericscience below. Bare "atmospheric chemistry" without
+        // class/course/exam/lab/homework context is owned here for research-focused tasks.
+        if lower.contains("ozone depletion") && (lower.contains("research") || lower.contains("mechanism") || lower.contains("chemistry") || lower.contains("analysis"))
+            || lower.contains("ozone layer") && (lower.contains("research") || lower.contains("chemistry") || lower.contains("photolysis"))
+            || lower.contains("aerosol chemistry") && (lower.contains("research") || lower.contains("analysis") || lower.contains("modeling") || lower.contains("simulation"))
+            || lower.contains("tropospheric oxidation") || lower.contains("tropospheric photochemistry")
+            || lower.contains("stratospheric ozone") && (lower.contains("research") || lower.contains("chemistry") || lower.contains("depletion") || lower.contains("reaction"))
+            || lower.contains("oh radical") && (lower.contains("chemistry") || lower.contains("atmospheric") || lower.contains("reaction") || lower.contains("oxidation"))
+            || lower.contains("voc chemistry") && (lower.contains("atmospheric") || lower.contains("research") || lower.contains("reaction"))
+            || lower.contains("volatile organic compound") && (lower.contains("chemistry") || lower.contains("atmospheric") || lower.contains("reaction"))
+            || lower.contains("nox chemistry") && (lower.contains("atmospheric") || lower.contains("reaction") || lower.contains("research"))
+            || lower.contains("photochemical smog") && (lower.contains("research") || lower.contains("chemistry") || lower.contains("mechanism") || lower.contains("modeling"))
+            || lower.contains("air quality modeling") && (lower.contains("chemistry") || lower.contains("atmospheric") || lower.contains("research"))
+            || lower.contains("atmospheric chemistry research") || lower.contains("atmospheric chemistry modeling")
+            || lower.contains("atmospheric chemistry simulation") || lower.contains("atmospheric chemistry analysis")
+            || lower.contains("atmospheric composition") && (lower.contains("research") || lower.contains("chemistry") || lower.contains("analysis") || lower.contains("modeling"))
+            || lower.contains("reactive nitrogen") && (lower.contains("atmospheric") || lower.contains("chemistry") || lower.contains("research"))
+            || lower.contains("halocarbon") && (lower.contains("chemistry") || lower.contains("atmospheric") || lower.contains("research"))
+            || lower.contains("sulfur chemistry") && (lower.contains("atmospheric") || lower.contains("research") || lower.contains("reaction"))
+            || lower.contains("atmospheric chemistry") && !(lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("homework") || lower.contains("notes")) {
+            return "atmosphericchemistry"
         }
         // atmosphericscience — positioned BEFORE environmentalscience so atmospheric science/
         // meteorology coursework (synoptic meteorology, atmospheric dynamics, mesoscale met)
@@ -7262,6 +7351,29 @@ public final class CalloutManager {
             || lower.contains("electrophysiology research") || lower.contains("electrophysiology recording")
             || lower.contains("electrophysiological") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("research") || lower.contains("recording")) {
             return "electrophysiology"
+        }
+        // neuroimaging — positioned BEFORE cognitiveneuroscience to intercept specific
+        // neuroimaging-software and pipeline signals (SPM, FSL, FreeSurfer, nilearn, nipype,
+        // tractography, connectome). Broad fMRI/BOLD/VBM signals remain in cognitiveneuroscience.
+        if lower.contains("neuroimaging class") || lower.contains("neuroimaging course")
+            || lower.contains("neuroimaging lab") || lower.contains("neuroimaging exam")
+            || lower.contains("neuroimaging homework") || lower.contains("neuroimaging assignment")
+            || lower.contains("fmri class") || lower.contains("fmri course") || lower.contains("fmri lab")
+            || lower.contains("fmri analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("homework"))
+            || lower.contains("spm") && (lower.contains("brain") || lower.contains("imaging") || lower.contains("neuroimaging") || lower.contains("fmri") || lower.contains("statistical parametric"))
+            || lower.contains("fsl") && (lower.contains("brain") || lower.contains("imaging") || lower.contains("neuroimaging") || lower.contains("fmri") || lower.contains("dti") || lower.contains("fmrib"))
+            || lower.contains("freesurfer") && (lower.contains("brain") || lower.contains("cortex") || lower.contains("segmentation") || lower.contains("parcellation") || lower.contains("neuroimaging"))
+            || lower.contains("nilearn") || lower.contains("nipype")
+            || lower.contains("afni") && (lower.contains("brain") || lower.contains("fmri") || lower.contains("imaging") || lower.contains("analysis"))
+            || lower.contains("tractography") && (lower.contains("brain") || lower.contains("white matter") || lower.contains("fiber") || lower.contains("dti") || lower.contains("class") || lower.contains("research") || lower.contains("analysis"))
+            || lower.contains("connectome") && (lower.contains("brain") || lower.contains("network") || lower.contains("analysis") || lower.contains("class") || lower.contains("research") || lower.contains("mapping"))
+            || lower.contains("mri preprocessing") || lower.contains("fmri preprocessing")
+            || lower.contains("brain parcellation") || lower.contains("cortical parcellation")
+            || lower.contains("roi analysis") && (lower.contains("brain") || lower.contains("fmri") || lower.contains("neuroimaging") || lower.contains("imaging"))
+            || lower.contains("atlas registration") && (lower.contains("brain") || lower.contains("neuroimaging") || lower.contains("mri"))
+            || lower.contains("structural mri") && (lower.contains("class") || lower.contains("research") || lower.contains("analysis") || lower.contains("neuroimaging"))
+            || lower.contains("diffusion weighted imaging") || lower.contains("dwi analysis") && (lower.contains("brain") || lower.contains("white matter")) {
+            return "neuroimaging"
         }
         // cognitiveneuroscience — positioned BEFORE neuroscience so fMRI/EEG study design, BOLD
         // signal analysis, and neuroimaging coursework get a dedicated pool. "cognitive neuroscience"

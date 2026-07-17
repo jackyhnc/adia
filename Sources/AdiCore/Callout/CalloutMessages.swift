@@ -466,6 +466,11 @@ extension CalloutManager {
         case "quantummechanics":           return quantummechanicsCallouts(tier: tier)
         case "solidstatephysics":          return solidstatephysicsCallouts(tier: tier)
         case "classicalmechanics":         return classicalmechanicsCallouts(tier: tier)
+        case "astrophysics":               return astrophysicsCallouts(tier: tier)
+        case "atmosphericchemistry":       return atmosphericchemistryCallouts(tier: tier)
+        case "optics":                     return opticsCallouts(tier: tier)
+        case "electromagnetism":           return electromagnetismCallouts(tier: tier)
+        case "neuroimaging":               return neuroimagingCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -9231,6 +9236,111 @@ extension CalloutManager {
             "CLOSE THIS. open your classical mechanics notes.",
             "CLOSE THIS. those rigid body dynamics problems won't solve themselves.",
             "CLOSE THIS. your mechanics exam won't study itself."
+        ]
+        }
+    }
+
+    private func astrophysicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those gravitational waves won't analyze themselves.",
+            "close this and get back to your astrophysics.",
+            "that stellar evolution model won't run itself. close this.",
+            "your astrophysics problem set won't do itself. close this."
+        ]
+        case 2: return [
+            "no one masters astrophysics by scrolling.",
+            "close this and open your astrophysics textbook.",
+            "those cosmological simulations won't run themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your astrophysics notes.",
+            "CLOSE THIS. those N-body simulations won't run themselves.",
+            "CLOSE THIS. your astrophysics exam won't study itself."
+        ]
+        }
+    }
+
+    private func atmosphericchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that ozone depletion mechanism won't write itself.",
+            "close this and get back to your atmospheric chemistry.",
+            "those aerosol reactions won't analyze themselves. close this.",
+            "your atmospheric chemistry research won't do itself. close this."
+        ]
+        case 2: return [
+            "no one masters atmospheric chemistry by scrolling.",
+            "close this and open your atmospheric chemistry notes.",
+            "those tropospheric reactions need your analysis — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your atmospheric chemistry research.",
+            "CLOSE THIS. those OH radical reactions won't model themselves.",
+            "CLOSE THIS. your atmospheric chemistry analysis won't write itself."
+        ]
+        }
+    }
+
+    private func opticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those wave equations won't solve themselves.",
+            "close this and get back to your optics.",
+            "that diffraction problem won't do itself. close this.",
+            "your optics problem set won't solve itself. close this."
+        ]
+        case 2: return [
+            "no one masters optics by scrolling.",
+            "close this and open your optics textbook.",
+            "those interference patterns won't calculate themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your optics notes.",
+            "CLOSE THIS. those lens equations won't solve themselves.",
+            "CLOSE THIS. your optics exam won't study itself."
+        ]
+        }
+    }
+
+    private func electromagnetismCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Maxwell's equations won't solve themselves.",
+            "close this and get back to your E&M.",
+            "that Gauss's law problem won't do itself. close this.",
+            "your electromagnetism problem set won't solve itself. close this."
+        ]
+        case 2: return [
+            "no one masters electromagnetism by scrolling.",
+            "close this and open your E&M textbook.",
+            "those field equations need solving — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your electromagnetism notes.",
+            "CLOSE THIS. those Maxwell's equations won't solve themselves.",
+            "CLOSE THIS. your E&M exam won't study itself."
+        ]
+        }
+    }
+
+    private func neuroimagingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that fMRI pipeline won't run itself.",
+            "close this and get back to your neuroimaging.",
+            "those brain scans won't analyze themselves. close this.",
+            "your neuroimaging analysis won't do itself. close this."
+        ]
+        case 2: return [
+            "no one masters neuroimaging by scrolling.",
+            "close this and open your neuroimaging pipeline.",
+            "that connectome won't map itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your neuroimaging analysis.",
+            "CLOSE THIS. those fMRI images won't preprocess themselves.",
+            "CLOSE THIS. your brain imaging project won't finish itself."
         ]
         }
     }

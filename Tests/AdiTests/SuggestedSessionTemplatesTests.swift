@@ -6087,8 +6087,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func classicalmechanicsStudyTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("classical mechanics") && $0.task.lowercased().contains("exam") })
     }
-    // MARK: - Count guard (≥801)
-    @Test func templateCountAtLeast801() {
-        #expect(SuggestedSessionTemplates.all.count >= 801, "template catalog must have ≥801 entries")
+    // MARK: - astrophysics templates
+    @Test func astrophysicsProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("astrophysics") && $0.task.lowercased().contains("problem set") })
+    }
+    @Test func astrophysicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("astrophysics") && $0.task.lowercased().contains("exam") })
+    }
+    // MARK: - atmosphericchemistry templates
+    @Test func atmosphericChemistryAnalysisTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("atmospheric chemistry") && $0.task.lowercased().contains("ozone") })
+    }
+    @Test func atmosphericChemistryProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("atmospheric chemistry") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - optics templates
+    @Test func opticsProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("optics") && $0.task.lowercased().contains("problem set") })
+    }
+    @Test func opticsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("optics") && $0.task.lowercased().contains("exam") })
+    }
+    // MARK: - electromagnetism templates
+    @Test func electromagnetismProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("electromagnetism") && $0.task.lowercased().contains("problem set") })
+    }
+    @Test func electromagnetismStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("electromagnetism") && $0.task.lowercased().contains("exam") })
+    }
+    // MARK: - neuroimaging templates
+    @Test func neuroimagingPipelineTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neuroimaging") && $0.task.lowercased().contains("fsl") })
+    }
+    @Test func neuroimagingAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neuroimaging") && $0.task.lowercased().contains("bold") })
+    }
+    // MARK: - Count guard (≥811)
+    @Test func templateCountAtLeast811() {
+        #expect(SuggestedSessionTemplates.all.count >= 811, "template catalog must have ≥811 entries after astrophysics/atmosphericchemistry/optics/electromagnetism/neuroimaging additions")
     }
 }
