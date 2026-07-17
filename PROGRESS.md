@@ -18536,3 +18536,79 @@ None. Swift toolchain unavailable on Linux container.
   - `statisticalmethods` — applied statistics class beyond what statistics catches (ANOVA class, regression analysis class, hypothesis testing class, confidence interval class — when paired with "statistics class/course/exam" context more specific than generic "statistics")
 - Template count: 871 → 881 after next 5-domain batch
 - CalloutManagerTests: ~22000+ lines after next batch
+
+---
+
+## Run 379 (automated) — 2026-07-17 — 5 new keyword domains: statisticalmethods/topology/abstractalgebra/seismology/volcanology (871→881 templates)
+
+### What shipped
+
+**5 new keyword domains: statisticalmethods, topology, abstractalgebra, seismology, volcanology**
+
+**New keyword domain — statisticalmethods:**
+- Branch positioned AFTER biostatistics and BEFORE statistics; catches applied statistics class/course/exam/homework/assignment/problem set, statistical methods class/course/exam/homework/assignment, design of experiments class/course/exam/statistics/assignment, experimental design class/course/exam/statistics/assignment, Bayesian statistics class/course/exam/homework, Bayesian inference class/course/exam, nonparametric statistics class/course/exam, nonparametric methods class/course/exam, multivariate statistics class/course/exam, time series analysis class/course/statistics/exam.
+- `statisticalmethodsCallouts(tier:)` 4/3/3: "that ANOVA won't run itself." / "no one masters statistical methods by scrolling." / "CLOSE THIS. open your applied statistics notes."
+- 2 templates: "Study applied statistics for my exam…" (60 min) + "Work on my statistical methods assignment…" (45 min)
+
+**New keyword domain — topology:**
+- Branch positioned BEFORE mathematics; catches topology class/course/exam/homework/assignment/problem set/textbook/notes, point-set topology+class/exam, open/closed set+topology+class/exam, compactness+topology+class/exam, connectedness+topology+class/exam, homeomorphism+class/topology/exam, homotopy+topology+class/exam, quotient space+topology/class+topolog, metric topology+class/exam, topological space+class/exam.
+- Bare word("topology") without class context still falls through to mathematics.
+- `topologyCallouts(tier:)` 4/3/3: "those open and closed sets won't classify themselves." / "no one masters topology by scrolling." / "CLOSE THIS. open your topology notes."
+- 2 templates: "Study topology for my exam…" (60 min) + "Work on my topology problem set…" (45 min)
+
+**New keyword domain — abstractalgebra:**
+- Branch positioned BEFORE mathematics (after topology); catches abstract algebra+class/course/exam/homework/assignment/problem set/textbook/notes, group theory+class/course/exam/homework/assignment, ring theory+class/course/exam/homework/assignment, field theory+class/course/exam/algebra/abstract (not magnetic/electric field), Galois theory+class/course/exam/homework/assignment, homomorphism+class/exam/abstract/algebra, isomorphism theorem+class/exam, Sylow theorem+class/exam, normal subgroup+class/exam/algebra, quotient group+class/exam/algebra.
+- Bare "abstract algebra" without class context still falls through to mathematics.
+- `abstractalgebraCallouts(tier:)` 4/3/3: "those group theory proofs won't write themselves." / "no one masters abstract algebra by scrolling." / "CLOSE THIS. open your abstract algebra notes."
+- 2 templates: "Study abstract algebra for my exam…" (60 min) + "Work on my abstract algebra problem set…" (45 min)
+
+**New keyword domain — seismology:**
+- Branch positioned BEFORE geologylab and geology; word("seismology") removed from geology branch.
+- Catches: word("seismology"/"seismologist"/"seismologists"), seismology class/course/exam/homework/assignment/problem set, seismogram analysis+class/seismology/exam, earthquake location+class/seismology/exam, S/P wave+seismology/seismic class, body/surface wave seismology, fault mechanism+class/seismology/seismic, focal mechanism+class/seismology/seismic, seismograph+class/seismology/station, teleseismic+class/seismology, earthquake seismology, engineering seismology.
+- `seismologyCallouts(tier:)` 4/3/3: "that seismogram won't interpret itself." / "no one masters seismology by scrolling." / "CLOSE THIS. open your seismology textbook."
+- 2 templates: "Study seismology for my exam…" (60 min) + "Work through my seismology problem set…" (60 min)
+
+**New keyword domain — volcanology:**
+- Branch positioned BEFORE geologylab and geology (after seismology); word("volcanology") removed from geology branch.
+- Catches: word("volcanology"/"volcanologist"/"volcanologists"), volcanology class/course/exam/homework/assignment/problem set, magma eruption+class/volcanology/exam, pyroclastic flow+class/volcanology/exam, lahar+class/volcanology/exam, volcanic hazard+class/volcanology/assessment, tephra analysis+class/volcanology/exam, caldera formation+class/volcanology/exam, lava flow+volcanology, volcanic arc+class/volcanology/exam, phreatomagmatic+class/volcanology/exam, eruption dynamics+class/volcanology/exam.
+- `volcanologyCallouts(tier:)` 4/3/3: "that volcanic hazard assessment won't do itself." / "no one masters volcanology by scrolling." / "CLOSE THIS. open your volcanology textbook."
+- 2 templates: "Study volcanology for my exam…" (60 min) + "Work on my volcanology assignment…" (45 min)
+
+**Geology branch update:**
+- Removed from geology: word("seismology"), word("volcanology")
+- Kept in geology: word("sedimentology"), word("geomorphology"), all lower.contains() conditions
+- Added ownership comment lines: "word("seismology") now owned by seismology branch above." + "word("volcanology") now owned by volcanology branch above."
+
+**New tests:**
+- CalloutManagerTests.swift: +43 @Test functions (5 routing + 3 callout pool tests per domain × 5 + 2 false-positive guards + 1 count guard ≥881) → ~21923 lines total
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 per domain × 5 + 1 count guard ≥881) → ~6366 lines total
+
+**Template catalog: 871 → 881**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `statisticalmethods` fires at line 538, BEFORE statistics (line 554) ✓. "applied statistics class exam" → statisticalmethods ✓; generic "statistics class" → NOT statisticalmethods ✓
+- `topology` fires at line 877, BEFORE mathematics (line 920) ✓. "topology class exam" → topology ✓; bare "topology" → NOT topology (falls to mathematics) ✓
+- `abstractalgebra` fires at line 893, BEFORE mathematics (line 920) ✓. "abstract algebra class exam" → abstractalgebra ✓; bare "abstract algebra" → NOT abstractalgebra (falls to mathematics) ✓
+- `seismology` fires at line 1563, BEFORE geologylab (line 1600) and geology (line 1627) ✓. "seismology class exam" → seismology ✓
+- `volcanology` fires at line 1582, BEFORE geologylab (line 1600) and geology (line 1627) ✓. "volcanology class exam" → volcanology ✓
+- word("seismology") removed from geology branch; ownership comment added ✓
+- word("volcanology") removed from geology branch; ownership comment added ✓
+- "magnetic field theory physics homework" → NOT abstractalgebra (field theory guard) ✓
+- Brace balance: CalloutManager.swift 0 ✓; CalloutMessages.swift 0 ✓; SuggestedSessionTemplates.swift 0 ✓
+- Template count: 881 confirmed (grep -c "preferredDuration:" = 881) ✓
+- 5 new dispatch cases in taskAwareCallouts switch ✓
+- 5 new private callout pool functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `geomorphology` — geomorphology class/course/exam (fluvial/glacial/aeolian geomorphology, landform analysis, DEM analysis+class, hillslope process+class, drainage basin analysis — currently routes to geology via word("geomorphology"))
+  - `sedimentology` — sedimentology class/course/exam (grain size analysis+class, sedimentary structure+class, fluvial/deltaic/turbidite facies+class, sedimentary basin analysis — currently routes to geology via word("sedimentology"))
+  - `structuralgeology` — structural geology class/course/exam (fault analysis, fold geometry, stress field, stereonet analysis, kinematic indicators, shear zone analysis)
+  - `functionanalysis` — functional analysis class (Banach/Hilbert space+class/exam, operator theory+class/exam, Fourier analysis+class/functional, spectral theory+class/exam — distinct from mathematics)
+  - `differentialgeometry` — differential geometry class (Riemannian manifold+class/exam, curvature+differential geometry/class/exam, geodesic+class/differential geometry — distinct from mathematics which catches "differential geometry" broadly)
+- Template count: 881 → 891 after next 5-domain batch
+- CalloutManagerTests: ~22000+ lines after next batch
