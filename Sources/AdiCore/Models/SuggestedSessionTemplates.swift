@@ -5425,5 +5425,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Social psychology assignment completed (theory applied or experiment analyzed with key social psych mechanisms, influencing variables, and implications documented — saved to file)",
             preferredDuration: 45 * 60
         ),
+        // geriatricrotation
+        SuggestedTemplate(
+            icon: "person.and.background.dotted",
+            task: "Complete geriatric rotation tasks — write up a comprehensive geriatric assessment (CGA), document a polypharmacy review, assess fall risk and frailty in patients, or write a geriatric ward note",
+            successCriteria: "Geriatric rotation task completed (CGA write-up, polypharmacy review, or ward note finished with functional status, frailty score, medication list, and clinical plan documented — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "person.and.background.dotted",
+            task: "Study for geriatric rotation — review frailty syndrome and assessment tools, delirium vs. dementia differentiation, age-related pharmacokinetics, comprehensive geriatric assessment components, and fall prevention",
+            successCriteria: "Geriatric rotation study completed (frailty, delirium/dementia, CGA components, age-related pharmacokinetics, and fall risk topics reviewed with key clinical points summarized and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // neurochemistry
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study neurochemistry for my exam — review neurotransmitter synthesis and degradation, monoamine pathways (dopamine, serotonin, norepinephrine), synaptic vesicle cycling, GABA/glutamate balance, and neuropeptide signaling",
+            successCriteria: "Neurochemistry study session completed (at least two neurotransmitter systems reviewed with synthesis pathways, degradation enzymes, receptor types, and clinical pharmacology implications summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Work through my neurochemistry assignment — trace the dopamine or serotonin synthesis pathway, map catecholamine biosynthesis, analyze MAO inhibitor mechanisms, or diagram synaptic vesicle cycling steps",
+            successCriteria: "Neurochemistry assignment completed (neurotransmitter pathway traced or MAO mechanism analyzed with all enzymatic steps, cofactors, and pharmacological relevance documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // psychobiologyclass
+        SuggestedTemplate(
+            icon: "brain",
+            task: "Study biopsychology for my exam — review brain structure and function, hemispheric lateralization, hormones and behavior, genetics and behavior, sensation and perception, and neurobiological bases of emotion",
+            successCriteria: "Biopsychology study session completed (at least two topics reviewed with brain-behavior relationships, cortical functions, lateralization evidence, and hormonal/genetic influences summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain",
+            task: "Work on my biological psychology assignment — map cortical functions and lobes, analyze a case study on brain lesion and behavior, compare hemispheric specialization evidence, or trace a hormones-and-behavior pathway",
+            successCriteria: "Biological psychology assignment completed (brain-behavior analysis or case study written with cortical regions, lateralization, and neurobiological mechanisms documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // abnormalpsychology
+        SuggestedTemplate(
+            icon: "list.clipboard",
+            task: "Study abnormal psychology for my exam — review DSM-5 criteria for anxiety, mood, psychotic, and personality disorders, etiology models, case conceptualization frameworks, and differential diagnosis principles",
+            successCriteria: "Abnormal psychology study session completed (at least two disorder categories reviewed with DSM criteria, etiology, prevalence, and differential diagnosis points summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "list.clipboard",
+            task: "Work on my abnormal psychology assignment — apply DSM-5 diagnostic criteria to a case vignette, write a case conceptualization, analyze disorder etiology, or compare differential diagnoses for a clinical scenario",
+            successCriteria: "Abnormal psychology assignment completed (DSM criteria applied and case conceptualization or differential diagnosis written with etiological factors, symptom presentation, and diagnostic rationale documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // healthpsychology
+        SuggestedTemplate(
+            icon: "heart.text.clipboard",
+            task: "Study health psychology for my exam — review the biopsychosocial model, psychoneuroimmunology, stress and health pathways, pain psychology, illness behavior, and coping mechanisms for chronic illness",
+            successCriteria: "Health psychology study session completed (at least two topics reviewed with biopsychosocial framework, PNI mechanisms, stress-health links, and coping strategies summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "heart.text.clipboard",
+            task: "Work on my health psychology assignment — apply the biopsychosocial model to a patient case, analyze coping strategies and health outcomes, write a psychoneuroimmunology summary, or evaluate a placebo effect study",
+            successCriteria: "Health psychology assignment completed (biopsychosocial analysis or coping/PNI case written with psychological, biological, and social factors documented with evidence-based health implications — saved to file)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

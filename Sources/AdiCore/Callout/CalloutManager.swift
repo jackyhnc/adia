@@ -7319,6 +7319,26 @@ public final class CalloutManager {
             || lower.contains("clinical fellowship") && lower.contains("speech") {
             return "speechpathology"
         }
+        // geriatricrotation — positioned BEFORE gerontology to catch clinical geriatric rotation,
+        // geriatric ward/clinic tasks, and comprehensive geriatric assessment write-ups. Course-level
+        // "geriatric medicine class/course/exam" stays in gerontology (fires after).
+        if lower.contains("geriatric rotation") || lower.contains("geriatric medicine rotation")
+            || lower.contains("geriatric ward") || lower.contains("geriatric clinic")
+            || lower.contains("geriatric fellowship") || lower.contains("geriatric residency")
+            || lower.contains("comprehensive geriatric assessment") || lower.contains("geriatric assessment") && (lower.contains("rotation") || lower.contains("clinical") || lower.contains("ward") || lower.contains("attending") || lower.contains("patient") || lower.contains("write-up") || lower.contains("note"))
+            || lower.contains("cga") && (lower.contains("geriatric") || lower.contains("rotation") || lower.contains("patient") || lower.contains("write") || lower.contains("complete"))
+            || lower.contains("polypharmacy") && (lower.contains("geriatric") || lower.contains("rotation") || lower.contains("patient") || lower.contains("review") || lower.contains("medication"))
+            || lower.contains("frailty syndrome") || lower.contains("frailty assessment") && (lower.contains("geriatric") || lower.contains("patient") || lower.contains("rotation") || lower.contains("clinical"))
+            || lower.contains("frailty scale") && (lower.contains("geriatric") || lower.contains("rotation") || lower.contains("patient"))
+            || lower.contains("geriatric patient") && (lower.contains("rotation") || lower.contains("ward") || lower.contains("clinic") || lower.contains("note") || lower.contains("write") || lower.contains("assessment"))
+            || lower.contains("delirium management") && (lower.contains("geriatric") || lower.contains("rotation") || lower.contains("patient") || lower.contains("ward"))
+            || lower.contains("dementia management") && (lower.contains("rotation") || lower.contains("clinical") || lower.contains("patient") || lower.contains("ward") || lower.contains("attending"))
+            || lower.contains("age-related pharmacokinetics") || lower.contains("geriatric pharmacokinetics")
+            || lower.contains("medication reconciliation") && (lower.contains("geriatric") || lower.contains("rotation") || lower.contains("patient"))
+            || lower.contains("fall risk assessment") && (lower.contains("geriatric") || lower.contains("rotation") || lower.contains("patient") || lower.contains("ward"))
+            || lower.contains("geriatric fall risk") || lower.contains("fall prevention") && (lower.contains("geriatric") || lower.contains("rotation") || lower.contains("patient")) {
+            return "geriatricrotation"
+        }
         // gerontology — positioned BEFORE publicheath so aging-science coursework, geriatrics,
         // and eldercare study tasks get a dedicated pool instead of falling to publicheath.
         // Bare "aging" is NOT matched (too generic: "aging wine", "aging process" in biology).
@@ -7712,6 +7732,56 @@ public final class CalloutManager {
             || lower.contains("developmental neuroscience") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("exam")) {
             return "cognitiveneuroscience"
         }
+        // neurochemistry — positioned BEFORE neuroscience to catch specific neurochemistry coursework
+        // (neurotransmitter synthesis/degradation, monoamine pathways, synaptic vesicle cycling).
+        // Bare word("neurotransmitter") stays in neuroscience (fires after) for general context.
+        if word("neurochemistry") || word("neurochemist")
+            || lower.contains("neurochemistry class") || lower.contains("neurochemistry course")
+            || lower.contains("neurochemistry exam") || lower.contains("neurochemistry notes")
+            || lower.contains("neurochemistry textbook") || lower.contains("neurochemistry assignment")
+            || lower.contains("neurochemistry problem set") || lower.contains("neurochemistry homework")
+            || lower.contains("neurotransmitter synthesis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("pathway") || lower.contains("notes"))
+            || lower.contains("neurotransmitter degradation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("pathway") || lower.contains("notes"))
+            || lower.contains("synaptic vesicle cycling") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neurochemistry"))
+            || lower.contains("monoamine pathway") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("notes"))
+            || lower.contains("monoamine oxidase") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("pathway") || lower.contains("neurochemistry"))
+            || lower.contains("catecholamine synthesis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("pathway"))
+            || lower.contains("dopamine synthesis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neurochemistry") || lower.contains("pathway"))
+            || lower.contains("serotonin synthesis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neurochemistry") || lower.contains("pathway"))
+            || lower.contains("gaba synthesis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neurochemistry"))
+            || lower.contains("gaba metabolism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neurochemistry"))
+            || lower.contains("glutamate gaba") && (lower.contains("class") || lower.contains("balance") || lower.contains("exam") || lower.contains("neurochemistry"))
+            || lower.contains("neuropeptide signaling") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neurochemistry"))
+            || lower.contains("acetylcholine synthesis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("pathway") || lower.contains("neurochemistry")) {
+            return "neurochemistry"
+        }
+        // psychobiologyclass — positioned BEFORE neuroscience to catch biopsychology and biological
+        // psychology coursework (behavioral neuroscience class, hemispheric lateralization, hormones
+        // and behavior). Bare "behavioral neuroscience" and "brain and behavior" stay in neuroscience.
+        if lower.contains("biological psychology class") || lower.contains("biological psychology course")
+            || lower.contains("biological psychology exam") || lower.contains("biological psychology textbook")
+            || lower.contains("biological psychology notes") || lower.contains("biological psychology major")
+            || lower.contains("biological psychology assignment") || lower.contains("biological psychology program")
+            || lower.contains("biopsychology class") || lower.contains("biopsychology course")
+            || lower.contains("biopsychology exam") || lower.contains("biopsychology textbook")
+            || lower.contains("biopsychology notes") || lower.contains("biopsychology major")
+            || lower.contains("biopsychology assignment") || lower.contains("biopsychology homework")
+            || lower.contains("physiological psychology class") || lower.contains("physiological psychology course")
+            || lower.contains("physiological psychology exam") || lower.contains("physiological psychology notes")
+            || lower.contains("behavioral neuroscience class") || lower.contains("behavioral neuroscience course")
+            || lower.contains("behavioral neuroscience exam") || lower.contains("behavioral neuroscience notes")
+            || lower.contains("behavioral neuroscience major") || lower.contains("behavioral neuroscience assignment")
+            || lower.contains("hemispheric lateralization") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("biopsychology") || lower.contains("psych"))
+            || lower.contains("hemispheric specialization") && (lower.contains("class") || lower.contains("exam") || lower.contains("biopsychology"))
+            || lower.contains("genetics and behavior") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("biopsychology"))
+            || lower.contains("hormones and behavior") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("biopsychology"))
+            || lower.contains("brain and behavior class") || lower.contains("brain and behavior course")
+            || lower.contains("brain and behavior exam") || lower.contains("brain and behavior notes")
+            || lower.contains("sensation and perception") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("biopsychology") || lower.contains("biological psych"))
+            || lower.contains("neurobiological basis") && (lower.contains("class") || lower.contains("exam") || lower.contains("biopsychology") || lower.contains("behavior"))
+            || lower.contains("biopsychological model") && (lower.contains("class") || lower.contains("exam") || lower.contains("behavior")) {
+            return "psychobiologyclass"
+        }
         // neuroscience — positioned BEFORE psychology so brain/neuron-biology terms get a
         // dedicated pool. "neural network" (ML) stays in datascience (fires much earlier).
         // "cognitive neuroscience" now owned by cognitiveneuroscience branch above.
@@ -7882,6 +7952,57 @@ public final class CalloutManager {
             || lower.contains("early childhood development") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("program") || lower.contains("theory"))
             || lower.contains("developmental stages") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("paper") || lower.contains("exam")) {
             return "developmentalpsychology"
+        }
+        // abnormalpsychology — positioned BEFORE psychology to catch explicit abnormal psychology
+        // coursework (DSM criteria, anxiety/mood/psychotic/personality disorders, case conceptualization).
+        // Bare "abnormal psychology" without class/exam context falls through to psychology.
+        if lower.contains("abnormal psychology class") || lower.contains("abnormal psychology course")
+            || lower.contains("abnormal psychology exam") || lower.contains("abnormal psychology textbook")
+            || lower.contains("abnormal psychology notes") || lower.contains("abnormal psychology assignment")
+            || lower.contains("abnormal psychology major") || lower.contains("abnormal psychology problem set")
+            || lower.contains("abnormal psychology homework") || lower.contains("abnormal psych class")
+            || lower.contains("abnormal psych exam") || lower.contains("abnormal psych course")
+            || lower.contains("dsm") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("criteria") || lower.contains("diagnosis") || lower.contains("diagnostic") || lower.contains("classification") || lower.contains("abnormal"))
+            || lower.contains("dsm-5") && (lower.contains("class") || lower.contains("exam") || lower.contains("diagnosis") || lower.contains("criteria"))
+            || lower.contains("dsm-iv") && (lower.contains("class") || lower.contains("exam") || lower.contains("criteria"))
+            || lower.contains("mental disorder") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("abnormal"))
+            || lower.contains("psychological disorder") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("anxiety disorder") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("abnormal psychology"))
+            || lower.contains("mood disorder") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("abnormal"))
+            || lower.contains("depressive disorder") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("abnormal"))
+            || lower.contains("personality disorder") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("abnormal"))
+            || lower.contains("schizophrenia") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("abnormal") || lower.contains("psych"))
+            || lower.contains("psychotic disorder") && (lower.contains("class") || lower.contains("exam") || lower.contains("abnormal"))
+            || lower.contains("eating disorder") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("abnormal psych"))
+            || lower.contains("ocd") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("abnormal") || lower.contains("psychology"))
+            || lower.contains("ptsd") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("abnormal psych"))
+            || lower.contains("case conceptualization") && (lower.contains("class") || lower.contains("exam") || lower.contains("abnormal") || lower.contains("psychology") || lower.contains("psych"))
+            || lower.contains("differential diagnosis") && (lower.contains("class") || lower.contains("psych") || lower.contains("abnormal") || lower.contains("psychology exam") || lower.contains("psychology course"))
+            || lower.contains("etiology of mental illness") || lower.contains("etiology of psychological disorders")
+            || lower.contains("prevalence of mental disorders") && (lower.contains("class") || lower.contains("exam") || lower.contains("psych")) {
+            return "abnormalpsychology"
+        }
+        // healthpsychology — positioned BEFORE psychology to catch health psychology coursework
+        // (biopsychosocial model, psychoneuroimmunology, pain psychology, illness behavior).
+        // "health behavior change/theory" stays in behavioralhealthpromotion (fires above).
+        if lower.contains("health psychology class") || lower.contains("health psychology course")
+            || lower.contains("health psychology exam") || lower.contains("health psychology textbook")
+            || lower.contains("health psychology notes") || lower.contains("health psychology assignment")
+            || lower.contains("health psychology major") || lower.contains("health psychology problem set")
+            || lower.contains("health psychology homework") || lower.contains("health psych class")
+            || lower.contains("health psych exam") || lower.contains("health psych course")
+            || lower.contains("biopsychosocial model") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("health") || lower.contains("psych") || lower.contains("patient") || lower.contains("paper"))
+            || lower.contains("biopsychosocial") && (lower.contains("class") || lower.contains("exam") || lower.contains("health psychology") || lower.contains("assignment"))
+            || lower.contains("psychoneuroimmunology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("research") || lower.contains("paper"))
+            || lower.contains("pain psychology") || lower.contains("psychology of pain") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("health"))
+            || lower.contains("illness behavior") && (lower.contains("class") || lower.contains("health psychology") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("stress and health") && (lower.contains("class") || lower.contains("psychology") || lower.contains("exam") || lower.contains("course") || lower.contains("paper"))
+            || lower.contains("coping mechanisms") && (lower.contains("class") || lower.contains("health") || lower.contains("psych") || lower.contains("exam"))
+            || lower.contains("chronic illness") && (lower.contains("class") || lower.contains("psych") || lower.contains("health psych") || lower.contains("exam") || lower.contains("health psychology"))
+            || lower.contains("somatization") && (lower.contains("class") || lower.contains("psych") || lower.contains("health") || lower.contains("exam"))
+            || lower.contains("psychosomatic") && (lower.contains("class") || lower.contains("health psych") || lower.contains("health psychology") || lower.contains("exam"))
+            || lower.contains("placebo effect") && (lower.contains("class") || lower.contains("psych") || lower.contains("health") || lower.contains("exam") || lower.contains("paper")) {
+            return "healthpsychology"
         }
         // psychology — positioned after publicheath and all clinical health branches above.
         // "educational psychology" fires in the education branch first; clinical/counseling

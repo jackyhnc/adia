@@ -486,6 +486,11 @@ extension CalloutManager {
         case "immunogenetics":             return immunogeneticsCallouts(tier: tier)
         case "neurologylab":               return neurologylabCallouts(tier: tier)
         case "socialpsychology":           return socialpsychologyCallouts(tier: tier)
+        case "geriatricrotation":          return geriatricrotationCallouts(tier: tier)
+        case "neurochemistry":             return neurochemistryCallouts(tier: tier)
+        case "psychobiologyclass":         return psychobiologyclassCallouts(tier: tier)
+        case "abnormalpsychology":         return abnormalpsychologyCallouts(tier: tier)
+        case "healthpsychology":           return healthpsychologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -9671,6 +9676,111 @@ extension CalloutManager {
             "CLOSE THIS. open your animal physiology notes.",
             "CLOSE THIS. those comparative physiology problems won't solve themselves.",
             "CLOSE THIS. your animal physiology exam won't study itself."
+        ]
+        }
+    }
+
+    private func geriatricrotationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that geriatric assessment won't write itself.",
+            "close this and get back to your geriatric rotation work.",
+            "that CGA write-up won't finish itself. close this.",
+            "your geriatric patients need your notes, not this."
+        ]
+        case 2: return [
+            "no one aces geriatrics by scrolling.",
+            "close this and open your geriatric rotation notes.",
+            "that polypharmacy review needs your attention — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your geriatric rotation notes.",
+            "CLOSE THIS. that frailty assessment won't document itself.",
+            "CLOSE THIS. your geriatric rotation write-up won't finish itself."
+        ]
+        }
+    }
+
+    private func neurochemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those neurotransmitter pathways won't map themselves.",
+            "close this and get back to your neurochemistry.",
+            "that monoamine synthesis pathway won't trace itself. close this.",
+            "your neurochemistry exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters neurochemistry by scrolling.",
+            "close this and open your neurochemistry notes.",
+            "those synaptic vesicle cycling steps need reviewing — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your neurochemistry notes.",
+            "CLOSE THIS. those catecholamine pathways won't map themselves.",
+            "CLOSE THIS. your neurochemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func psychobiologyclassCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those brain-behavior mechanisms won't map themselves.",
+            "close this and get back to your biopsychology work.",
+            "that hemispheric lateralization chart won't draw itself. close this.",
+            "your biopsychology exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters biopsychology by scrolling.",
+            "close this and open your biopsychology notes.",
+            "those hormones-and-behavior pathways need reviewing — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your biopsychology notes.",
+            "CLOSE THIS. those brain-behavior links won't memorize themselves.",
+            "CLOSE THIS. your biological psychology exam won't study itself."
+        ]
+        }
+    }
+
+    private func abnormalpsychologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those DSM criteria won't memorize themselves.",
+            "close this and get back to your abnormal psychology work.",
+            "that case conceptualization won't write itself. close this.",
+            "your abnormal psychology exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters abnormal psychology by scrolling.",
+            "close this and open your abnormal psychology textbook.",
+            "those disorder criteria and differential diagnoses need reviewing — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your abnormal psychology notes.",
+            "CLOSE THIS. those DSM criteria won't memorize themselves.",
+            "CLOSE THIS. your abnormal psychology exam won't study itself."
+        ]
+        }
+    }
+
+    private func healthpsychologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that biopsychosocial case study won't write itself.",
+            "close this and get back to your health psychology work.",
+            "those stress-and-health frameworks won't review themselves. close this.",
+            "your health psychology exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters health psychology by scrolling.",
+            "close this and open your health psychology textbook.",
+            "those illness behavior and coping models need reviewing — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your health psychology notes.",
+            "CLOSE THIS. those biopsychosocial case studies won't write themselves.",
+            "CLOSE THIS. your health psychology exam won't study itself."
         ]
         }
     }

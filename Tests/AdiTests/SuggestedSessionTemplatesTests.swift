@@ -6235,4 +6235,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast841() {
         #expect(SuggestedSessionTemplates.all.count >= 841, "template catalog must have ≥841 entries after cellsignaling/humangeneticsclass/immunogenetics/neurologylab/socialpsychology additions")
     }
+    // MARK: - geriatricrotation templates
+    @Test func geriatricrotationClinicalTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("geriatric rotation") && $0.task.lowercased().contains("cga") })
+    }
+    @Test func geriatricrotationStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("geriatric rotation") && $0.task.lowercased().contains("frailty") })
+    }
+    // MARK: - neurochemistry templates
+    @Test func neurochemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neurochemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func neurochemistryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neurochemistry") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - psychobiologyclass templates
+    @Test func psychobiologyclassStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("biopsychology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func psychobiologyclassAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("biological psychology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - abnormalpsychology templates
+    @Test func abnormalpsychologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("abnormal psychology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func abnormalpsychologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("abnormal psychology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - healthpsychology templates
+    @Test func healthpsychologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("health psychology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func healthpsychologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("health psychology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥851)
+    @Test func templateCountAtLeast851() {
+        #expect(SuggestedSessionTemplates.all.count >= 851, "template catalog must have ≥851 entries after geriatricrotation/neurochemistry/psychobiologyclass/abnormalpsychology/healthpsychology additions")
+    }
 }
