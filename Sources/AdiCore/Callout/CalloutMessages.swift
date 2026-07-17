@@ -541,6 +541,11 @@ extension CalloutManager {
         case "computergraphics":           return computergraphicsCallouts(tier: tier)
         case "embeddedsystems":            return embeddedsystemsCallouts(tier: tier)
         case "formalverification":         return formalverificationCallouts(tier: tier)
+        case "computationtheory":          return computationtheoryCallouts(tier: tier)
+        case "softwarearchitecture":       return softwarearchitectureCallouts(tier: tier)
+        case "informationretrieval":       return informationretrievalCallouts(tier: tier)
+        case "naturallanguageprocessing":  return naturallanguageprocessingCallouts(tier: tier)
+        case "computerarchitecture":       return computerarchitectureCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -10881,6 +10886,111 @@ extension CalloutManager {
             "CLOSE THIS. open your formal verification textbook.",
             "CLOSE THIS. those temporal logic formulas and Hoare logic proofs won't verify themselves.",
             "CLOSE THIS. your formal verification exam won't study itself."
+        ]
+        }
+    }
+
+    private func computationtheoryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that Turing machine won't design itself.",
+            "your theory of computation exam doesn't care that you're scrolling.",
+            "get back to your automata and complexity work.",
+            "close this and open your theory of computation textbook.",
+        ]
+        case 2: return [
+            "no one masters theory of computation by scrolling.",
+            "close this and work on your automata assignment.",
+            "those decidability and NP-completeness proofs need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your theory of computation textbook.",
+            "CLOSE THIS. those DFA constructions and NP-completeness reductions won't prove themselves.",
+            "CLOSE THIS. your theory of computation exam won't study itself."
+        ]
+        }
+    }
+
+    private func softwarearchitectureCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that system design won't architect itself.",
+            "your software architecture exam doesn't care that you're scrolling.",
+            "get back to your architecture patterns work.",
+            "close this and open your software architecture textbook.",
+        ]
+        case 2: return [
+            "no one masters software architecture by scrolling.",
+            "close this and work on your architecture assignment.",
+            "those microservices and domain-driven design problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your software architecture textbook.",
+            "CLOSE THIS. those architectural patterns and system design problems won't solve themselves.",
+            "CLOSE THIS. your software architecture exam won't study itself."
+        ]
+        }
+    }
+
+    private func informationretrievalCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that inverted index won't build itself.",
+            "your information retrieval exam doesn't care that you're scrolling.",
+            "get back to your IR work.",
+            "close this and open your information retrieval textbook.",
+        ]
+        case 2: return [
+            "no one masters information retrieval by scrolling.",
+            "close this and work on your IR assignment.",
+            "those TF-IDF and BM25 ranking problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your information retrieval textbook.",
+            "CLOSE THIS. those document ranking and query expansion problems won't solve themselves.",
+            "CLOSE THIS. your information retrieval exam won't study itself."
+        ]
+        }
+    }
+
+    private func naturallanguageprocessingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those NLP models won't train themselves.",
+            "your NLP exam doesn't care that you're scrolling.",
+            "get back to your natural language processing work.",
+            "close this and open your NLP textbook.",
+        ]
+        case 2: return [
+            "no one masters NLP by scrolling.",
+            "close this and work on your NLP assignment.",
+            "those transformer and sequence labeling problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your NLP textbook.",
+            "CLOSE THIS. those named entity recognition and dependency parsing problems won't solve themselves.",
+            "CLOSE THIS. your NLP exam won't study itself."
+        ]
+        }
+    }
+
+    private func computerarchitectureCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that pipeline won't design itself.",
+            "your computer architecture exam doesn't care that you're scrolling.",
+            "get back to your architecture work.",
+            "close this and open your computer architecture textbook.",
+        ]
+        case 2: return [
+            "no one masters computer architecture by scrolling.",
+            "close this and work on your architecture assignment.",
+            "those cache hierarchy and branch prediction problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your computer architecture textbook.",
+            "CLOSE THIS. those pipeline stages and cache coherence problems won't solve themselves.",
+            "CLOSE THIS. your computer architecture exam won't study itself."
         ]
         }
     }

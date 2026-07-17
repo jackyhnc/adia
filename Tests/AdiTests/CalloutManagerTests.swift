@@ -23214,8 +23214,163 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "formalverification", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥951)
-    @Test func calloutTemplatesCountAtLeast951() {
-        #expect(SuggestedSessionTemplates.all.count >= 951, "template catalog must have ≥951 entries after programminglanguages/compilerdesign/computergraphics/embeddedsystems/formalverification additions")
+    // MARK: - computationtheory routing
+    @Test func theoryOfComputationClassRoutesComputationtheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "theory of computation class exam homework tonight") == "computationtheory")
+    }
+    @Test func dfaAutomataClassRoutesComputationtheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "dfa class exam automata construction") == "computationtheory")
+    }
+    @Test func turingMachineClassRoutesComputationtheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "turing machine class exam computation") == "computationtheory")
+    }
+    @Test func npCompletenessClassRoutesComputationtheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "np-completeness class exam computation theory") == "computationtheory")
+    }
+    @Test func decidabilityClassRoutesComputationtheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "decidability class exam theory of computation") == "computationtheory")
+    }
+    @Test @MainActor func computationtheoryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "computationtheory", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computationtheory", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computationtheory", tier: 3).isEmpty)
+    }
+    @Test @MainActor func computationtheoryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computationtheory", tier: 1).count >= 4)
+    }
+    @Test @MainActor func computationtheoryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computationtheory", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - softwarearchitecture routing
+    @Test func softwareArchitectureClassRoutesSoftwarearchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "software architecture class exam homework tonight") == "softwarearchitecture")
+    }
+    @Test func microservicesArchitectureClassRoutesSoftwarearchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "microservices architecture class exam design") == "softwarearchitecture")
+    }
+    @Test func domainDrivenDesignClassRoutesSoftwarearchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "domain-driven design class exam course") == "softwarearchitecture")
+    }
+    @Test func systemDesignClassRoutesSoftwarearchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "system design class exam homework assignment") == "softwarearchitecture")
+    }
+    @Test func hexagonalArchitectureClassRoutesSoftwarearchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hexagonal architecture class exam patterns") == "softwarearchitecture")
+    }
+    @Test @MainActor func softwarearchitectureCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "softwarearchitecture", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "softwarearchitecture", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "softwarearchitecture", tier: 3).isEmpty)
+    }
+    @Test @MainActor func softwarearchitectureTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "softwarearchitecture", tier: 1).count >= 4)
+    }
+    @Test @MainActor func softwarearchitectureTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "softwarearchitecture", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - informationretrieval routing
+    @Test func informationRetrievalClassRoutesInformationretrieval() {
+        #expect(CalloutManager.extractTaskKeyword(from: "information retrieval class exam homework tonight") == "informationretrieval")
+    }
+    @Test func tfIdfClassRoutesInformationretrieval() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tf-idf class exam information retrieval ranking") == "informationretrieval")
+    }
+    @Test func invertedIndexClassRoutesInformationretrieval() {
+        #expect(CalloutManager.extractTaskKeyword(from: "inverted index class exam information retrieval") == "informationretrieval")
+    }
+    @Test func bm25ClassRoutesInformationretrieval() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bm25 class exam ir information retrieval") == "informationretrieval")
+    }
+    @Test func documentRankingClassRoutesInformationretrieval() {
+        #expect(CalloutManager.extractTaskKeyword(from: "document ranking class exam ir") == "informationretrieval")
+    }
+    @Test @MainActor func informationretrievalCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "informationretrieval", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "informationretrieval", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "informationretrieval", tier: 3).isEmpty)
+    }
+    @Test @MainActor func informationretrievalTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "informationretrieval", tier: 1).count >= 4)
+    }
+    @Test @MainActor func informationretrievalTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "informationretrieval", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - naturallanguageprocessing routing
+    @Test func nlpClassRoutesNaturallanguageprocessing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nlp class exam homework assignment tonight") == "naturallanguageprocessing")
+    }
+    @Test func naturalLanguageProcessingClassRoutesNaturallanguageprocessing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "natural language processing class exam course") == "naturallanguageprocessing")
+    }
+    @Test func namedEntityRecognitionClassRoutesNaturallanguageprocessing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "named entity recognition class exam nlp") == "naturallanguageprocessing")
+    }
+    @Test func sentimentAnalysisNlpClassRoutesNaturallanguageprocessing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sentiment analysis class exam nlp") == "naturallanguageprocessing")
+    }
+    @Test func dependencyParsingNlpClassRoutesNaturallanguageprocessing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "dependency parsing class exam nlp") == "naturallanguageprocessing")
+    }
+    @Test @MainActor func naturallanguageprocessingCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "naturallanguageprocessing", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "naturallanguageprocessing", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "naturallanguageprocessing", tier: 3).isEmpty)
+    }
+    @Test @MainActor func naturallanguageprocessingTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "naturallanguageprocessing", tier: 1).count >= 4)
+    }
+    @Test @MainActor func naturallanguageprocessingTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "naturallanguageprocessing", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - computerarchitecture routing
+    @Test func computerArchitectureClassRoutesComputerarchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "computer architecture class exam homework tonight") == "computerarchitecture")
+    }
+    @Test func branchPredictionClassRoutesComputerarchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "branch prediction class exam architecture") == "computerarchitecture")
+    }
+    @Test func cacheHierarchyClassRoutesComputerarchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cache hierarchy class exam architecture") == "computerarchitecture")
+    }
+    @Test func pipelineStageClassRoutesComputerarchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pipeline stage class exam computer architecture") == "computerarchitecture")
+    }
+    @Test func outOfOrderExecutionClassRoutesComputerarchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "out-of-order execution class exam architecture") == "computerarchitecture")
+    }
+    @Test @MainActor func computerarchitectureCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "computerarchitecture", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computerarchitecture", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computerarchitecture", tier: 3).isEmpty)
+    }
+    @Test @MainActor func computerarchitectureTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computerarchitecture", tier: 1).count >= 4)
+    }
+    @Test @MainActor func computerarchitectureTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computerarchitecture", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥961)
+    @Test func calloutTemplatesCountAtLeast961() {
+        #expect(SuggestedSessionTemplates.all.count >= 961, "template catalog must have ≥961 entries after computationtheory/softwarearchitecture/informationretrieval/naturallanguageprocessing/computerarchitecture additions")
     }
 }

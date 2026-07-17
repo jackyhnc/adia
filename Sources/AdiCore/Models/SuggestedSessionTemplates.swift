@@ -6140,5 +6140,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Formal verification assignment completed (Hoare logic proof, wp derivation, temporal logic specification, model checking run, or proof assistant proof completed with all proof obligations discharged, counterexamples ruled out, and solution saved to file)",
             preferredDuration: 60 * 60
         ),
+        // computationtheory
+        SuggestedTemplate(
+            icon: "cpu.fill",
+            task: "Study theory of computation for my exam — review DFA/NFA construction and equivalence, pushdown automata and context-free grammars, Turing machines and decidability, the halting problem, P vs NP, NP-completeness and polynomial reductions",
+            successCriteria: "Theory of computation study session completed (at least two topics reviewed with DFA/NFA state diagrams, CFL pumping lemma examples, Turing machine transitions, decidability proofs, and NP-completeness reduction sketches summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cpu.fill",
+            task: "Work on my theory of computation assignment — construct a DFA or NFA for a regular language, convert NFA to DFA, design a pushdown automaton for a context-free language, write a Turing machine for a decidable language, or prove NP-completeness via polynomial reduction",
+            successCriteria: "Theory of computation assignment completed (DFA/NFA construction, NFA→DFA conversion, PDA design, Turing machine description, or NP-completeness reduction completed with formal definitions, state transition tables, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // softwarearchitecture
+        SuggestedTemplate(
+            icon: "building.columns",
+            task: "Study software architecture for my exam — review architectural patterns (layered, microservices, event-driven, hexagonal, clean), domain-driven design, CQRS, event sourcing, system design trade-offs, and quality attributes (scalability, reliability, maintainability)",
+            successCriteria: "Software architecture study session completed (at least two patterns reviewed with context diagrams, trade-off analysis, DDD building blocks, CQRS command/query separation, and quality attribute scenarios summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "building.columns",
+            task: "Work on my software architecture assignment — design a system using a specified architectural pattern, apply domain-driven design to a bounded context, model a CQRS or event-sourced system, evaluate trade-offs between architectural options, or document an architecture decision record",
+            successCriteria: "Software architecture assignment completed (architecture diagram, DDD context map, CQRS model, trade-off analysis, or ADR completed with component responsibilities, inter-component interfaces, and design rationale documented and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // informationretrieval
+        SuggestedTemplate(
+            icon: "magnifyingglass.circle",
+            task: "Study information retrieval for my exam — review Boolean and vector space retrieval models, TF-IDF weighting, BM25 ranking, inverted index construction, query expansion, relevance feedback, evaluation metrics (precision, recall, nDCG), and web crawling",
+            successCriteria: "Information retrieval study session completed (at least two topics reviewed with TF-IDF derivations, BM25 formula, inverted index posting lists, precision/recall curves, and nDCG calculation examples summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "magnifyingglass.circle",
+            task: "Work on my information retrieval assignment — implement a TF-IDF retrieval system, build an inverted index over a document collection, apply BM25 ranking, compute precision/recall/nDCG for a query set, or implement query expansion with relevance feedback",
+            successCriteria: "Information retrieval assignment completed (TF-IDF system, inverted index, BM25 ranker, evaluation metric computation, or query expansion completed with ranked result lists, evaluation scores computed, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // naturallanguageprocessing
+        SuggestedTemplate(
+            icon: "text.bubble",
+            task: "Study natural language processing for my exam — review tokenization and text normalization, n-gram language models, part-of-speech tagging, named entity recognition, dependency parsing, word embeddings (Word2Vec, GloVe), transformer architectures, and sequence-to-sequence models",
+            successCriteria: "NLP study session completed (at least two topics reviewed with tokenization examples, n-gram probability derivations, POS tagging algorithms, NER sequence labeling, and transformer attention mechanism summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "text.bubble",
+            task: "Work on my NLP assignment — implement a text classifier, build an n-gram language model, apply a POS tagger or NER model, train word embeddings, implement a dependency parser, or analyze a transformer model's attention patterns on a text dataset",
+            successCriteria: "NLP assignment completed (text classifier, language model, POS tagger, NER implementation, word embedding training, or attention analysis completed with evaluation metrics reported, examples demonstrated, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // computerarchitecture
+        SuggestedTemplate(
+            icon: "memorychip",
+            task: "Study computer architecture for my exam — review the instruction pipeline stages (fetch, decode, execute, memory, write-back), hazard detection, branch prediction, out-of-order execution, cache hierarchy and coherence protocols, memory hierarchy, and RISC vs CISC design principles",
+            successCriteria: "Computer architecture study session completed (at least two topics reviewed with pipeline diagrams, hazard detection logic, branch predictor designs, cache coherence protocol states, and memory hierarchy latency tables summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "memorychip",
+            task: "Work on my computer architecture assignment — analyze pipeline hazards in a given instruction sequence, simulate a branch predictor, calculate cache hit rates for a given access pattern, design a cache coherence protocol state machine, or evaluate out-of-order execution on a trace",
+            successCriteria: "Computer architecture assignment completed (hazard analysis, branch predictor simulation, cache hit rate calculation, coherence protocol design, or OOO execution evaluation completed with data path diagrams, timing analysis, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

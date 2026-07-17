@@ -6660,4 +6660,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast951() {
         #expect(SuggestedSessionTemplates.all.count >= 951, "template catalog must have ≥951 entries after programminglanguages/compilerdesign/computergraphics/embeddedsystems/formalverification additions")
     }
+    // MARK: - computationtheory templates
+    @Test func computationTheoryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("theory of computation") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func computationTheoryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("theory of computation") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - softwarearchitecture templates
+    @Test func softwareArchitectureStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("software architecture") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func softwareArchitectureAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("software architecture") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - informationretrieval templates
+    @Test func informationRetrievalStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("information retrieval") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func informationRetrievalAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("information retrieval") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - naturallanguageprocessing templates
+    @Test func naturalLanguageProcessingStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("natural language processing") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func naturalLanguageProcessingAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("nlp") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - computerarchitecture templates
+    @Test func computerArchitectureStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computer architecture") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func computerArchitectureAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computer architecture") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥961)
+    @Test func templateCountAtLeast961() {
+        #expect(SuggestedSessionTemplates.all.count >= 961, "template catalog must have ≥961 entries after computationtheory/softwarearchitecture/informationretrieval/naturallanguageprocessing/computerarchitecture additions")
+    }
 }

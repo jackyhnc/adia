@@ -746,6 +746,109 @@ public final class CalloutManager {
             || lower.contains("alloy") && lower.contains("formal") && (lower.contains("class") || lower.contains("exam")) {
             return "formalverification"
         }
+        // computationtheory — positioned BEFORE code so theory of computation class/exam terms
+        // route here. Bare "DFA" or "Turing machine" without class context falls through to code.
+        if lower.contains("theory of computation class") || lower.contains("theory of computation course") || lower.contains("theory of computation exam")
+            || lower.contains("theory of computation homework") || lower.contains("theory of computation assignment") || lower.contains("theory of computation textbook")
+            || lower.contains("theory of computation notes") && lower.contains("class")
+            || lower.contains("automata theory class") || lower.contains("automata theory course") || lower.contains("automata theory exam")
+            || lower.contains("automata class") || lower.contains("automata course") || lower.contains("automata exam")
+            || lower.contains("dfa") && (lower.contains("class") || lower.contains("exam") || lower.contains("automata") || lower.contains("computation"))
+            || lower.contains("nfa") && (lower.contains("class") || lower.contains("exam") || lower.contains("automata") || lower.contains("computation"))
+            || lower.contains("pushdown automaton") && (lower.contains("class") || lower.contains("exam") || lower.contains("computation"))
+            || lower.contains("context-free grammar") && (lower.contains("class") || lower.contains("exam") || lower.contains("computation"))
+            || lower.contains("turing machine") && (lower.contains("class") || lower.contains("exam") || lower.contains("computation"))
+            || lower.contains("decidability") && (lower.contains("class") || lower.contains("exam") || lower.contains("computation"))
+            || lower.contains("halting problem") && (lower.contains("class") || lower.contains("exam") || lower.contains("computation"))
+            || lower.contains("computability theory") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("p vs np") && (lower.contains("class") || lower.contains("exam") || lower.contains("computation") || lower.contains("complexity"))
+            || lower.contains("complexity class") && (lower.contains("class") || lower.contains("exam") || lower.contains("computation") || lower.contains("theory"))
+            || lower.contains("np-completeness") && (lower.contains("class") || lower.contains("exam") || lower.contains("computation"))
+            || lower.contains("np-hardness") && (lower.contains("class") || lower.contains("exam") || lower.contains("computation"))
+            || lower.contains("reduction") && (lower.contains("class") || lower.contains("exam")) && (lower.contains("computation") || lower.contains("np") || lower.contains("decidability")) {
+            return "computationtheory"
+        }
+        // softwarearchitecture — positioned BEFORE code so software architecture class/exam terms
+        // route here. Bare "microservices" or "architecture" without class context falls through to code.
+        if lower.contains("software architecture class") || lower.contains("software architecture course") || lower.contains("software architecture exam")
+            || lower.contains("software architecture homework") || lower.contains("software architecture assignment") || lower.contains("software architecture textbook")
+            || lower.contains("software architecture notes") && lower.contains("class")
+            || lower.contains("software architecture pattern") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("microservices architecture") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("event-driven architecture") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("cqrs") && (lower.contains("class") || lower.contains("architecture") || lower.contains("exam"))
+            || lower.contains("hexagonal architecture") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("clean architecture") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("layered architecture") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("event sourcing") && (lower.contains("class") || lower.contains("architecture") || lower.contains("exam"))
+            || lower.contains("domain-driven design") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("ddd") && lower.contains("architecture") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("architectural pattern") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("system design class") || lower.contains("system design course") || lower.contains("system design exam")
+            || lower.contains("system design homework") || lower.contains("system design assignment") {
+            return "softwarearchitecture"
+        }
+        // informationretrieval — positioned BEFORE code so IR class/exam terms route here.
+        // Bare "search" or "indexing" without class/IR context falls through to code/datascience.
+        if lower.contains("information retrieval class") || lower.contains("information retrieval course") || lower.contains("information retrieval exam")
+            || lower.contains("information retrieval homework") || lower.contains("information retrieval assignment") || lower.contains("information retrieval textbook")
+            || lower.contains("information retrieval notes") && lower.contains("class")
+            || lower.contains("tf-idf") && (lower.contains("class") || lower.contains("exam") || lower.contains("ir") || lower.contains("information retrieval"))
+            || lower.contains("inverted index") && (lower.contains("class") || lower.contains("exam") || lower.contains("ir") || lower.contains("information retrieval"))
+            || lower.contains("bm25") && (lower.contains("class") || lower.contains("exam") || lower.contains("ir") || lower.contains("information retrieval"))
+            || lower.contains("document ranking") && (lower.contains("class") || lower.contains("exam") || lower.contains("ir") || lower.contains("information retrieval"))
+            || lower.contains("query expansion") && (lower.contains("class") || lower.contains("exam") || lower.contains("ir") || lower.contains("information retrieval"))
+            || lower.contains("relevance feedback") && (lower.contains("class") || lower.contains("exam") || lower.contains("ir") || lower.contains("information retrieval"))
+            || lower.contains("precision and recall") && (lower.contains("class") || lower.contains("exam") || lower.contains("ir") || lower.contains("information retrieval"))
+            || lower.contains("ndcg") && (lower.contains("class") || lower.contains("exam") || lower.contains("ir") || lower.contains("information retrieval"))
+            || lower.contains("web search") && (lower.contains("class") || lower.contains("exam") || lower.contains("ir") || lower.contains("information retrieval"))
+            || lower.contains("crawler") && (lower.contains("class") || lower.contains("exam") || lower.contains("information retrieval")) {
+            return "informationretrieval"
+        }
+        // naturallanguageprocessing — positioned BEFORE code so NLP class/exam terms route here.
+        // Bare "sentiment analysis" or "tokenization" without NLP context falls through to
+        // machinelearning or code.
+        if lower.contains("natural language processing class") || lower.contains("natural language processing course") || lower.contains("natural language processing exam")
+            || lower.contains("natural language processing homework") || lower.contains("natural language processing assignment") || lower.contains("natural language processing textbook")
+            || lower.contains("nlp class") || lower.contains("nlp course") || lower.contains("nlp exam") || lower.contains("nlp homework") || lower.contains("nlp assignment")
+            || lower.contains("tokenization") && lower.contains("nlp") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("named entity recognition") && (lower.contains("class") || lower.contains("exam") || lower.contains("nlp"))
+            || lower.contains("ner") && (lower.contains("class") || lower.contains("exam") || lower.contains("nlp"))
+            || lower.contains("sentiment analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("nlp"))
+            || lower.contains("part-of-speech tagging") && (lower.contains("class") || lower.contains("exam") || lower.contains("nlp"))
+            || lower.contains("pos tagging") && (lower.contains("class") || lower.contains("exam") || lower.contains("nlp"))
+            || lower.contains("dependency parsing") && (lower.contains("class") || lower.contains("exam") || lower.contains("nlp"))
+            || lower.contains("transformer") && lower.contains("nlp") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("language model") && lower.contains("nlp") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("word embedding") && (lower.contains("class") || lower.contains("exam") || lower.contains("nlp"))
+            || lower.contains("word2vec") && (lower.contains("class") || lower.contains("exam") || lower.contains("nlp"))
+            || lower.contains("text classification") && (lower.contains("class") || lower.contains("exam") || lower.contains("nlp"))
+            || lower.contains("coreference resolution") && (lower.contains("class") || lower.contains("exam") || lower.contains("nlp"))
+            || lower.contains("machine translation") && (lower.contains("class") || lower.contains("exam") || lower.contains("nlp")) {
+            return "naturallanguageprocessing"
+        }
+        // computerarchitecture — positioned BEFORE code so computer architecture class/exam terms
+        // route here. Bare "pipeline" or "cache" without class context falls through to code.
+        if lower.contains("computer architecture class") || lower.contains("computer architecture course") || lower.contains("computer architecture exam")
+            || lower.contains("computer architecture homework") || lower.contains("computer architecture assignment") || lower.contains("computer architecture textbook")
+            || lower.contains("computer architecture lab") || lower.contains("computer architecture notes")
+            || lower.contains("computer organization class") || lower.contains("computer organization course") || lower.contains("computer organization exam")
+            || lower.contains("pipeline stage") && (lower.contains("class") || lower.contains("exam") || lower.contains("architecture"))
+            || lower.contains("branch prediction") && (lower.contains("class") || lower.contains("exam") || lower.contains("architecture"))
+            || lower.contains("cache hierarchy") && (lower.contains("class") || lower.contains("exam") || lower.contains("architecture"))
+            || lower.contains("memory hierarchy") && (lower.contains("class") || lower.contains("exam") || lower.contains("architecture"))
+            || lower.contains("out-of-order execution") && (lower.contains("class") || lower.contains("exam") || lower.contains("architecture"))
+            || lower.contains("instruction-level parallelism") && (lower.contains("class") || lower.contains("exam") || lower.contains("architecture"))
+            || lower.contains("superscalar") && (lower.contains("class") || lower.contains("exam") || lower.contains("architecture"))
+            || lower.contains("cache coherence") && (lower.contains("class") || lower.contains("exam") || lower.contains("architecture"))
+            || lower.contains("risc") && (lower.contains("class") || lower.contains("exam") || lower.contains("architecture") || lower.contains("computer org"))
+            || lower.contains("cisc") && (lower.contains("class") || lower.contains("exam") || lower.contains("architecture"))
+            || lower.contains("isa design") && (lower.contains("class") || lower.contains("exam") || lower.contains("architecture"))
+            || lower.contains("tomasulo") && (lower.contains("class") || lower.contains("exam") || lower.contains("architecture"))
+            || lower.contains("tlb") && (lower.contains("class") || lower.contains("exam") || lower.contains("architecture"))
+            || lower.contains("virtual memory") && (lower.contains("class") || lower.contains("exam") || lower.contains("architecture")) {
+            return "computerarchitecture"
+        }
         if word("code") || word("coding") || word("programming") || word("bug") || word("feature") || word("function")
             || word("leetcode") || word("hackerrank") || word("codeforces") || word("codewars")
             || word("algorithm") || word("algorithms") || lower.contains("data structure")
