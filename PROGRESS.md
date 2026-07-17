@@ -18274,3 +18274,65 @@ None. Swift toolchain unavailable on Linux container.
   - `developmentalpsych` — developmental psychology (Piaget stages, Erikson, attachment theory, infant cognition, lifespan development — distinct from general psych)
 - Template count: 831 → 841 after next 5-domain batch
 - CalloutManagerTests: ~21700+ lines after next batch
+
+---
+
+## Run 375 (automated) — 2026-07-17 — 5 new keyword domains: cellsignaling/humangeneticsclass/immunogenetics/neurologylab/socialpsychology (841→841 templates, 831→841)
+
+### What shipped
+
+**5 new keyword domains: cellsignaling, humangeneticsclass, immunogenetics, neurologylab, socialpsychology**
+
+**New keyword domain — cellsignaling:**
+- Branch positioned BEFORE cellandmolecularbiology. Catches: "cell signaling class/course/exam/textbook/notes/assignment/lecture/pathway/major/problem set", "receptor tyrosine kinase" + (class/signaling/exam/pathway), "MAPK cascade/pathway" + (class/signaling/exam), "ERK signaling/pathway" + (class/exam/pathway), "PI3K-Akt" + (class/signaling/exam/pathway), "mTOR signaling/pathway" + (class/exam/pathway), "Wnt signaling" + (class/exam/pathway), "Notch signaling" + (class/exam/pathway), "Hedgehog signaling" + (class/exam/pathway), "JAK-STAT" + (class/signaling/exam/pathway), "GPCR"/"G protein-coupled receptor" + (class/signaling/exam), "second messenger" + cell signaling context, "cAMP signaling" + (class/exam/pathway), "kinase pathway" + (class/signaling/cell/exam).
+- `cellsignalingCallouts(tier:)` 4/3/3: "those signaling cascades won't map themselves." / "no one masters cell signaling by scrolling." / "CLOSE THIS. open your cell signaling notes."
+- 2 templates: "Study cell signaling for my exam — RTK pathways, MAPK/ERK, PI3K-Akt-mTOR, Wnt, Notch, Hedgehog, JAK-STAT" (60 min) + "Work through my cell signaling assignment — diagram a MAPK cascade, trace a GPCR second-messenger pathway" (45 min)
+
+**New keyword domain — humangeneticsclass:**
+- Branch positioned BEFORE genetics. Catches: "human genetics class/course/exam/major/notes/textbook/assignment/problem set/lecture/program", "pedigree analysis" + (class/exam/genetics/assignment/human), "pedigree chart" + (class/genetics/exam/assignment), "chromosomal disorder" + (class/genetics/exam/human), "chromosomal abnormality" + (class/genetics/exam), "trisomy" + (class/genetics/exam/human), "monosomy" + (class/genetics/exam), "LOD score" + (class/genetics/exam/linkage), "genomic imprinting" + (class/genetics/exam), "copy number variation" + (class/genetics/exam), "chromosomal microarray" + (class/genetics/exam/lab), "inborn error" + (class/genetics/exam/metabolism), OMIM + (class/genetics/exam/disease), "genetic testing" + (class/exam/human genetics), "deletion syndrome" + (class/genetics/exam).
+- `humangeneticsclassCallouts(tier:)` 4/3/3: "those pedigree charts won't draw themselves." / "no one masters human genetics by scrolling." / "CLOSE THIS. open your human genetics notes."
+- 2 templates: "Study human genetics for my exam — pedigree analysis, chromosomal disorders, Hardy-Weinberg, genomic imprinting, CNV, OMIM" (60 min) + "Work on my human genetics problem set — draw pedigrees, apply Hardy-Weinberg, classify chromosomal disorders" (45 min)
+
+**New keyword domain — immunogenetics:**
+- Branch positioned BEFORE immunology. Catches: "immunogenetics" + (class/course/exam/notes/textbook/assignment), "HLA typing" + (class/genetics/immunology/exam/lab), "HLA haplotype" + (class/exam/genetics), "HLA-A/B/DR" + (class/exam/immunogenetics/genetics), "MHC class I/II" + (class/genetics/exam), "histocompatibility" + (class/genetics/exam/immunology), "transplant immunology" + (class/exam/genetics/course), "graft rejection" + (class/exam/immunology/genetics), "allograft"/"xenograft" + (class/genetics/immunology/exam), "autoimmune genetics" + (class/exam).
+- `immunogeneticsCallouts(tier:)` 4/3/3: "those HLA haplotypes won't memorize themselves." / "no one masters immunogenetics by scrolling." / "CLOSE THIS. open your immunogenetics notes."
+- 2 templates: "Study immunogenetics for my exam — HLA typing, MHC class I and II, histocompatibility, transplant immunology, graft rejection" (60 min) + "Work on my immunogenetics assignment — analyze HLA haplotype data, interpret graft rejection mechanisms" (45 min)
+
+**New keyword domain — neurologylab:**
+- Branch positioned BEFORE clinicalneurology. Catches: "nerve conduction study" + (class/lab/neurology/exam/assignment/report), "nerve conduction velocity" + (class/lab/neurology/exam), "NCV test" + (class/lab/neurology), "nerve conduction lab", "EEG lab" + (class/recording/teaching/neurology/assignment), "EEG recording" + (class/lab/teaching/neurology), "neurology lab practical/practicum/report/notebook", "clinical neurology lab" + (class/exam/teaching/practical), "clinical neurophysiology" + (class/lab/exam/teaching), "cranial nerve examination/testing" + (class/lab/teaching/neurology/practice/practical), "neurological examination" + (lab/teaching/practice/practical), "reflex testing" + (class/lab/neurology/teaching/exam), "neurology lab" + (class/course/teaching/practical).
+- `neurologylabCallouts(tier:)` 4/3/3: "that nerve conduction study won't write itself." / "no one aces neurology lab by scrolling." / "CLOSE THIS. open your neurology lab manual."
+- 2 templates: "Complete my neurology lab work — interpret EEG recordings, analyze nerve conduction study results, practice cranial nerve examination" (60 min) + "Study for my neurology lab practical — NCS interpretation, EEG waveform recognition, cranial nerve exam technique" (45 min)
+
+**New keyword domain — socialpsychology:**
+- Branch positioned BEFORE cognitivepsychology and psychology. Catches: "social psychology class/course/exam/textbook/notes/assignment/major/problem set", "social cognition" + (class/exam/psychology), "attitude formation/change" + (class/psychology/exam/social), "group dynamics" + (class/psychology/exam/social), "conformity" + (class/psychology/exam/social), "obedience" + (class/psychology/exam/Milgram/social), "bystander effect" + (class/psychology/exam/social), "cognitive dissonance" + (class/psychology/exam/social), "social influence" + (class/psychology/exam), "attribution theory" + (class/psychology/exam/social), "fundamental attribution error" + (class/psychology/exam), "social identity theory" + (class/psychology/exam), "stereotyping" + (class/psychology/exam/social psychology), "prejudice" + (class/social psychology/exam/psychology), "ingroup bias" + (class/psychology/exam/social), "persuasion" + (class/social psychology/exam/psychology course).
+- `socialpsychologyCallouts(tier:)` 4/3/3: "those social cognition theories won't study themselves." / "no one masters social psychology by scrolling." / "CLOSE THIS. open your social psychology notes."
+- 2 templates: "Study social psychology for my exam — attitude formation, social influence, conformity, bystander effect, cognitive dissonance, attribution theory" (60 min) + "Work on my social psychology assignment — apply attribution theory, analyze Milgram/Asch experiments" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +41 @Test functions (5 routing + 3 callout pool tests per domain + 1 count guard ≥841) → 3921 total
+- SuggestedSessionTemplatesTests.swift: +11 tests (2 per domain + count guard ≥841) → 657 total
+
+**Template catalog: 831 → 841**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `cellsignaling` fires at line 4989, BEFORE cellandmolecularbiology (4992+). "cell signaling class" → cellsignaling ✓; "cell biology class" → cellandmolecularbiology ✓
+- `humangeneticsclass` fires at line 5177, BEFORE genetics (5180+). "human genetics class pedigree" → humangeneticsclass ✓; "genetics class mendelian" → genetics ✓
+- `immunogenetics` fires at line 6073, BEFORE immunology (6076+). "HLA typing class genetics" → immunogenetics ✓; "immunology class innate" → immunology ✓
+- `neurologylab` fires at line 6423, BEFORE clinicalneurology (6426+). "nerve conduction study lab" → neurologylab ✓; "neurology rotation" → clinicalneurology ✓
+- `socialpsychology` fires at line 7850, BEFORE cognitivepsychology (7853+). "social psychology class" → socialpsychology ✓; "cognitive psychology class" → cognitivepsychology ✓
+- Brace balance: CalloutManager.swift 470/470 ✓; CalloutMessages.swift 885/885 ✓
+- Template count: 841 confirmed (grep -c "preferredDuration:" = 841)
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `abnormalpsychology` — abnormal psychology class (DSM criteria, anxiety/mood/psychotic/personality disorders, case conceptualization — distinct from psychology and clinical psychology)
+  - `healthpsychology` — health psychology class (biopsychosocial model, pain management, illness behavior, health behavior change, psychoneuroimmunology — distinct from psychology and nursing)
+  - `psychobiologyclass` — biological psychology/biopsychology class (behavioral neuroscience, hemispheric lateralization, genetics and behavior, hormones and behavior — distinct from neuroscience coursework)
+  - `geriatricrotation` — geriatric medicine clinical rotation (geriatric assessment, polypharmacy, frailty syndrome, dementia management, fall risk — distinct from gerontology coursework)
+  - `neurochemistry` — neurochemistry class (neurotransmitter synthesis/degradation, synaptic vesicle cycling, monoamine pathways, neuropeptide signaling — distinct from biochemistry and neuroscience)
+- Template count: 841 → 851 after next 5-domain batch
+- CalloutManagerTests: ~22200+ lines after next batch
