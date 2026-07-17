@@ -20049,4 +20049,179 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast761() {
         #expect(SuggestedSessionTemplates.all.count >= 761, "template catalog must have ≥761 entries after emergencymedicinerotation/virology/clinicalmicrobiology/medicinalchemistry/cellandmolecularbiology (10 templates)")
     }
+
+    // MARK: - biochemistry2
+    @Test func advancedBiochemistryClassRoutesBiochemistry2() {
+        #expect(CalloutManager.extractTaskKeyword(from: "advanced biochemistry class signal transduction") == "biochemistry2")
+    }
+    @Test func signalTransductionBiochemistryRoutesBiochemistry2() {
+        #expect(CalloutManager.extractTaskKeyword(from: "signal transduction biochemistry class exam") == "biochemistry2")
+    }
+    @Test func lipidMetabolismBiochemistryRoutesBiochemistry2() {
+        #expect(CalloutManager.extractTaskKeyword(from: "lipid metabolism biochem class fatty acid oxidation") == "biochemistry2")
+    }
+    @Test func nucleotideMetabolismClassRoutesBiochemistry2() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nucleotide metabolism class purine biosynthesis exam") == "biochemistry2")
+    }
+    @Test func ureaCalcBiochemistryRoutesBiochemistry2() {
+        #expect(CalloutManager.extractTaskKeyword(from: "urea cycle biochemistry exam problem set") == "biochemistry2")
+    }
+    @Test func cholesterolBiosynthesisClassRoutesBiochemistry2() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cholesterol biosynthesis class mevalonate pathway") == "biochemistry2")
+    }
+    @Test @MainActor func biochemistry2CalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "biochemistry2", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "biochemistry2", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "biochemistry2", tier: 3).isEmpty)
+    }
+    @Test @MainActor func biochemistry2Tier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "biochemistry2", tier: 1).count >= 4)
+    }
+    @Test @MainActor func biochemistry2Tier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "biochemistry2", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - physicalchemistrylab
+    @Test func pchemLabRoutesPhysicalchemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pchem lab report physical chemistry") == "physicalchemistrylab")
+    }
+    @Test func physicalChemistryLabRoutesPhysicalchemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "physical chemistry lab spectroscopy experiment") == "physicalchemistrylab")
+    }
+    @Test func calorimetryPchemRoutesPhysicalchemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "calorimetry pchem lab bomb calorimetry") == "physicalchemistrylab")
+    }
+    @Test func spectroscopyExperimentPchemRoutesPhysicalchemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "spectroscopy experiment physical chemistry class lab") == "physicalchemistrylab")
+    }
+    @Test func kinmisticsExperimentPchemRoutesPhysicalchemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "kinetics experiment pchem lab class") == "physicalchemistrylab")
+    }
+    @Test func pchemExamStaysPhysicalchemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pchem exam quantum chemistry problem set") == "physicalchemistry")
+    }
+    @Test @MainActor func physicalchemistryLabCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "physicalchemistrylab", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "physicalchemistrylab", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "physicalchemistrylab", tier: 3).isEmpty)
+    }
+    @Test @MainActor func physicalchemistryLabTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "physicalchemistrylab", tier: 1).count >= 4)
+    }
+    @Test @MainActor func physicalchemistryLabTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "physicalchemistrylab", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - organicchemistrylab
+    @Test func orgoLabRoutesOrganicchemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "orgo lab distillation report organic chemistry") == "organicchemistrylab")
+    }
+    @Test func recrystallizationOrgoRoutesOrganicchemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "recrystallization organic chemistry lab class") == "organicchemistrylab")
+    }
+    @Test func tlcOrgoLabRoutesOrganicchemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "TLC orgo lab thin layer chromatography organic") == "organicchemistrylab")
+    }
+    @Test func irSpectrumOrgoRoutesOrganicchemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "IR spectrum organic chemistry lab class") == "organicchemistrylab")
+    }
+    @Test func columnChromatographyOrgoRoutesOrganicchemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "column chromatography organic lab class") == "organicchemistrylab")
+    }
+    @Test func meltingPointOrgoRoutesOrganicchemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "melting point organic chemistry lab class") == "organicchemistrylab")
+    }
+    @Test @MainActor func organicchemistryLabCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "organicchemistrylab", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "organicchemistrylab", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "organicchemistrylab", tier: 3).isEmpty)
+    }
+    @Test @MainActor func organicchemistryLabTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "organicchemistrylab", tier: 1).count >= 4)
+    }
+    @Test @MainActor func organicchemistryLabTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "organicchemistrylab", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - immunologycourse
+    @Test func advancedImmunologyClassRoutesImmunologycourse() {
+        #expect(CalloutManager.extractTaskKeyword(from: "advanced immunology class complement cascade") == "immunologycourse")
+    }
+    @Test func regulatoryTCellRoutesImmunologycourse() {
+        #expect(CalloutManager.extractTaskKeyword(from: "regulatory T cell immunology class exam") == "immunologycourse")
+    }
+    @Test func complementCascadeImmunologyRoutesImmunologycourse() {
+        #expect(CalloutManager.extractTaskKeyword(from: "complement cascade immunology class course") == "immunologycourse")
+    }
+    @Test func immunotherapyMechanismRoutesImmunologycourse() {
+        #expect(CalloutManager.extractTaskKeyword(from: "immunotherapy mechanism class exam checkpoint inhibitor") == "immunologycourse")
+    }
+    @Test func checkpointInhibitorImmunologyRoutesImmunologycourse() {
+        #expect(CalloutManager.extractTaskKeyword(from: "checkpoint inhibitor PD-1 immunology class") == "immunologycourse")
+    }
+    @Test func inflammasomeImmunologyRoutesImmunologycourse() {
+        #expect(CalloutManager.extractTaskKeyword(from: "inflammasome immunology class exam") == "immunologycourse")
+    }
+    @Test func genericImmunologyClassStaysImmunology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "immunology class innate immunity antibody structure") == "immunology")
+    }
+    @Test @MainActor func immunologycourseCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "immunologycourse", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "immunologycourse", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "immunologycourse", tier: 3).isEmpty)
+    }
+    @Test @MainActor func immunologycourseTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "immunologycourse", tier: 1).count >= 4)
+    }
+    @Test @MainActor func immunologycourseTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "immunologycourse", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - neurobiologylab
+    @Test func neurobiologyLabReportRoutesNeurobiologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neurobiology lab report patch clamp class") == "neurobiologylab")
+    }
+    @Test func patchClampNeurobiologyRoutesNeurobiologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "patch clamp neurobiology lab training class") == "neurobiologylab")
+    }
+    @Test func neuralTracingLabRoutesNeurobiologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neural tracing lab neurobiology class") == "neurobiologylab")
+    }
+    @Test func calciumImagingNeurobiologyRoutesNeurobiologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "calcium imaging neurobiology lab class") == "neurobiologylab")
+    }
+    @Test func synapticPhysiologyLabRoutesNeurobiologylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "synaptic physiology neurobiology lab class") == "neurobiologylab")
+    }
+    @Test @MainActor func neurobiologylabCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "neurobiologylab", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "neurobiologylab", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "neurobiologylab", tier: 3).isEmpty)
+    }
+    @Test @MainActor func neurobiologylabTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "neurobiologylab", tier: 1).count >= 4)
+    }
+    @Test @MainActor func neurobiologylabTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "neurobiologylab", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: biochemistry2/physicalchemistrylab/organicchemistrylab/immunologycourse/neurobiologylab)
+    @Test func calloutTemplatesCountAtLeast771() {
+        #expect(SuggestedSessionTemplates.all.count >= 771, "template catalog must have ≥771 entries after biochemistry2/physicalchemistrylab/organicchemistrylab/immunologycourse/neurobiologylab (10 templates)")
+    }
 }

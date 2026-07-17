@@ -17781,3 +17781,73 @@ None. Swift toolchain unavailable on Linux container.
   - `immunologycourse` — immunology class/course (T-cell/B-cell signaling, complement, specific immune pathways — more specific than generic immunology)
 - Template count: 751 → 761 after next 5-domain batch
 - CalloutManagerTests: ~20000+ lines after next batch
+
+---
+
+## Run 371 (automated) — 2026-07-17 — 5 new keyword domains: biochemistry2/physicalchemistrylab/organicchemistrylab/immunologycourse/neurobiologylab (761→771 templates)
+
+### What shipped
+
+**5 new keyword domains: biochemistry2, physicalchemistrylab, organicchemistrylab, immunologycourse, neurobiologylab**
+
+**New keyword domain — biochemistry2:**
+- Branch positioned AFTER genetics, BEFORE biochemistry. Advanced-biochemistry-specific signals; generic "biochemistry class/exam" stays in biochemistry (fires after).
+- Catches: advanced biochemistry class/course/exam/notes/textbook, signal transduction+biochem/class/course/exam, phosphorylation cascade+class/biochem/exam, second messenger+class/biochem/exam, lipid metabolism+class/biochem/course/exam, fatty acid oxidation+class/biochem/exam, fatty acid synthesis+class/biochem/exam, cholesterol biosynthesis+class/biochem/exam, mevalonate pathway+class/biochem, nucleotide metabolism+class/biochem/exam, purine/pyrimidine biosynthesis+class/biochem/exam, nucleotide salvage+class/biochem/exam, urea cycle+biochem/class/exam.
+- `biochemistry2Callouts(tier:)` 4/3/3: "those signal transduction pathways aren't going to study themselves." / "no one masters signal transduction by scrolling." / "CLOSE THIS. open your advanced biochemistry textbook."
+- 2 templates: "Work through my advanced biochemistry problem set — signal transduction pathways, lipid metabolism, fatty acid oxidation, cholesterol biosynthesis, nucleotide metabolism, or urea cycle" (60 min) + "Study advanced biochemistry for my exam — review signal transduction cascades, lipid and nucleotide metabolism pathways, cholesterol biosynthesis, and urea cycle regulation" (60 min)
+
+**New keyword domain — physicalchemistrylab:**
+- Branch positioned AFTER biochemistry, BEFORE physicalchemistry. Intercepts "pchem lab" and "physical chemistry lab" plus specific experiment signals before generic physicalchemistry fires.
+- Catches: pchem lab, p-chem lab, physical chemistry lab, calorimetry+pchem/physical chemistry/class/lab, bomb calorimetry, rotational/vibrational/raman/fluorescence spectroscopy+pchem/physical chemistry/class/lab, spectroscopy experiment+pchem/class, physical chemistry experiment+class/course/pchem, pchem experiment+class/course, kinetics experiment+pchem/physical chemistry/class/lab.
+- `physicalchemistryLabCallouts(tier:)` 4/3/3: "that pchem lab report isn't going to write itself." / "no one masters pchem lab work by scrolling." / "CLOSE THIS. open your pchem lab notebook."
+- 2 templates: "Complete my physical chemistry lab report or notebook — analyze calorimetry data, interpret spectroscopy results, document kinetics experiment results, or write up my pchem lab" (60 min) + "Prepare for my physical chemistry lab — review calorimetry experiment procedure, spectroscopy techniques, kinetics methods, or pre-lab questions for my pchem lab" (45 min)
+
+**New keyword domain — organicchemistrylab:**
+- Branch positioned AFTER organicchemistry, BEFORE analyticalchemistry. Catches specific orgo lab technique signals not already consumed by organicchemistry.
+- Catches: orgo lab, distillation+organic/orgo/lab/class/chemistry, recrystallization+organic/orgo/lab/class/chemistry, thin-layer chromatography/TLC+organic/orgo/lab/class, melting point+organic/orgo/lab/class, IR spectrum/infrared spectrum+organic/orgo/lab/class, column chromatography+organic/orgo/lab/class.
+- `organicchemistrylabCallouts(tier:)` 4/3/3: "that orgo lab report isn't going to write itself." / "no one passes orgo lab by scrolling." / "CLOSE THIS. open your orgo lab notebook."
+- 2 templates: "Complete my organic chemistry lab report — write up my distillation, recrystallization, TLC, column chromatography, or IR/NMR spectroscopy results" (60 min) + "Prepare for my organic chemistry lab — review distillation or recrystallization procedures, TLC technique, melting point determination, or pre-lab questions for my orgo lab" (30 min)
+
+**New keyword domain — immunologycourse:**
+- Branch positioned AFTER microbiology, BEFORE immunology. Catches advanced immunology-specific signals; "immunology class/exam" falls through to immunology (fires after).
+- Catches: advanced immunology class/course/exam/notes/textbook, regulatory T cell/T regulatory cell/Treg cell+class/immunology/exam, complement cascade/pathway+class/immunology/exam, immunotherapy+class/immunology/exam/mechanism, checkpoint inhibitor+class/immunology/exam, PD-1/PD-L1/CTLA-4+class/immunology/exam, NK cell+class/immunology/exam, toll-like receptor+class/immunology/exam, inflammasome+class/immunology/exam, immunological memory+class/immunology/exam.
+- `immunologycourseCallouts(tier:)` 4/3/3: "those immunotherapy mechanisms aren't going to study themselves." / "no one masters advanced immunology by scrolling." / "CLOSE THIS. open your advanced immunology textbook."
+- 2 templates: "Study advanced immunology for my exam — review regulatory T cells, complement cascade, immunotherapy mechanisms, checkpoint inhibitors, NK cell biology, and pattern recognition receptors" (60 min) + "Work through my advanced immunology assignment — analyze T-reg cell suppression, complement pathway activation, immunotherapy case study, or checkpoint inhibitor mechanism" (45 min)
+
+**New keyword domain — neurobiologylab:**
+- Branch positioned AFTER neuroanatomy, BEFORE pharmacology. Catches neurobiology lab-specific session signals; "electrophysiology" in research context stays in electrophysiology (fires much later).
+- Catches: neurobiology lab+class/course/report/notebook/experiment/practical/assignment, patch clamp+class/lab/neurobiology/course/training, whole-cell patch+lab/class/neurobiology, neural tracing+class/lab/neurobiology, in vitro brain slice+class/lab/neurobiology, brain slice preparation+class/lab/neurobiology, calcium imaging+class/lab/neurobiology/neuroscience, synaptic physiology+class/lab/neurobiology, neurobiology lab report/notebook.
+- `neurobiologylabCallouts(tier:)` 4/3/3: "that neurobiology lab report isn't going to write itself." / "no one masters neurobiology lab work by scrolling." / "CLOSE THIS. open your neurobiology lab notebook."
+- 2 templates: "Complete my neurobiology lab report or notebook — write up patch clamp recordings, neural tracing results, calcium imaging data, or brain slice preparation observations" (60 min) + "Prepare for my neurobiology lab — review patch clamp technique, neural tracing protocols, calcium imaging methods, or pre-lab questions for my neurobiology experiment" (30 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +56 @Test functions (5-8 keyword routing + 1 false-positive guard + 3 callout pool tests per domain + count guard ≥771) → 3617 total
+- SuggestedSessionTemplatesTests.swift: +12 tests (2 per domain + 1 count guard ≥771) → 593 total
+
+**Template catalog: 761 → 771**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `biochemistry2` fires BEFORE biochemistry (~line 4636). "signal transduction biochemistry class" → biochemistry2 ✓; "biochemistry class enzyme kinetics" → biochemistry ✓
+- `physicalchemistrylab` fires BEFORE physicalchemistry (~line 4673). "pchem lab spectroscopy experiment" → physicalchemistrylab ✓; "pchem exam quantum chemistry" → physicalchemistry ✓
+- `organicchemistrylab` fires AFTER organicchemistry (~line 4770), BEFORE analyticalchemistry. "orgo lab distillation" → organicchemistrylab ✓; "organic chemistry NMR mechanism" → organicchemistry ✓
+- `immunologycourse` fires BEFORE immunology (~line 5395). "complement cascade immunology class" → immunologycourse ✓; "immunology class innate immunity" → immunology ✓
+- `neurobiologylab` fires AFTER neuroanatomy (~line 5544), BEFORE pharmacology. "patch clamp neurobiology lab" → neurobiologylab ✓; "neuroanatomy class brain regions" → neuroanatomy ✓
+- Brace balance: CalloutManager.swift 435/435 ✓; CalloutMessages.swift 815/815 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 771 confirmed (grep -c "preferredDuration:" = 771)
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `biochemistry3` — cofactor biochemistry, vitamins as coenzymes, porphyrin synthesis, heme biosynthesis, bile acid synthesis (distinct from biochemistry2 lipid/nucleotide/signal focus)
+  - `toxicology` — toxicology class, poison control, drug overdose management (class/course context, distinct from pharmacology)
+  - `geologylab` — geology lab (rock/mineral identification, thin section microscopy, field geology — distinct from generic geology)
+  - `astronomylab` — astronomy lab or observational astronomy (telescope use, astronomical calculations, star charts)
+  - `environmentalscience` — environmental science class (distinct from environmentalpolicy/environmentallaw/environmentalengineering)
+  - `moleculargeneticslab` — molecular genetics lab (gel electrophoresis in genetics context, DNA restriction mapping, karyotype analysis — distinct from molecularbiology)
+  - `evolutionarybiology` — evolution class/course (phylogenetic trees, natural selection mechanisms, speciation, evo-devo — distinct from genetics/ecology)
+  - `marinebiology2` — marine biology lab (plankton identification, ocean field sampling, marine organism dissection — more lab-specific than the generic marinebiology branch)
+- Template count: 771 → 781 after next 5-domain batch
+- CalloutManagerTests: ~20100+ lines after next batch

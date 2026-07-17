@@ -4905,5 +4905,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Cell biology study session completed (at least two cell biology topics reviewed with molecular mechanisms, key proteins, and physiological significance summarized)",
             preferredDuration: 45 * 60
         ),
+        // biochemistry2
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work through my advanced biochemistry problem set — signal transduction pathways, lipid metabolism, fatty acid oxidation, cholesterol biosynthesis, nucleotide metabolism, or urea cycle",
+            successCriteria: "Advanced biochemistry session completed (at least one pathway fully worked through with key enzymes, regulation points, and metabolic significance documented and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study advanced biochemistry for my exam — review signal transduction cascades, lipid and nucleotide metabolism pathways, cholesterol biosynthesis, and urea cycle regulation",
+            successCriteria: "Advanced biochemistry study session completed (at least two metabolic pathways reviewed with key enzymes, regulation, and clinical relevance summarized)",
+            preferredDuration: 60 * 60
+        ),
+        // physicalchemistrylab
+        SuggestedTemplate(
+            icon: "thermometer.medium",
+            task: "Complete my physical chemistry lab report or notebook — analyze calorimetry data, interpret spectroscopy results, document kinetics experiment results, or write up my pchem lab",
+            successCriteria: "Physical chemistry lab session completed (at least one pchem experiment documented with raw data analyzed, calculations shown, graphs produced, and results section written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "thermometer.medium",
+            task: "Prepare for my physical chemistry lab — review calorimetry experiment procedure, spectroscopy techniques, kinetics methods, or pre-lab questions for my pchem lab",
+            successCriteria: "Physical chemistry lab prep completed (pre-lab questions answered, relevant equations and procedures summarized, and expected results or safety notes documented and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // organicchemistrylab
+        SuggestedTemplate(
+            icon: "flask.fill",
+            task: "Complete my organic chemistry lab report — write up my distillation, recrystallization, TLC, column chromatography, or IR/NMR spectroscopy results",
+            successCriteria: "Orgo lab report completed (introduction, procedure summary, results with data analysis and spectra interpreted, discussion with yield and purity assessment written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "flask.fill",
+            task: "Prepare for my organic chemistry lab — review distillation or recrystallization procedures, TLC technique, melting point determination, or pre-lab questions for my orgo lab",
+            successCriteria: "Orgo lab prep completed (pre-lab questions answered, reaction mechanism or procedure summarized, safety hazards identified, and expected observations or calculations documented and saved)",
+            preferredDuration: 30 * 60
+        ),
+        // immunologycourse
+        SuggestedTemplate(
+            icon: "shield.fill",
+            task: "Study advanced immunology for my exam — review regulatory T cells, complement cascade, immunotherapy mechanisms, checkpoint inhibitors, NK cell biology, and pattern recognition receptors",
+            successCriteria: "Advanced immunology study session completed (at least two advanced topics reviewed with molecular mechanisms, signaling pathways, and clinical relevance summarized)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "shield.fill",
+            task: "Work through my advanced immunology assignment — analyze T-reg cell suppression, complement pathway activation, immunotherapy case study, or checkpoint inhibitor mechanism",
+            successCriteria: "Immunology assignment completed (at least one advanced immunology topic fully analyzed with pathway steps, key molecules, and clinical application documented and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // neurobiologylab
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Complete my neurobiology lab report or notebook — write up patch clamp recordings, neural tracing results, calcium imaging data, or brain slice preparation observations",
+            successCriteria: "Neurobiology lab report completed (methods, results with figures, and discussion of electrophysiological or imaging findings written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Prepare for my neurobiology lab — review patch clamp technique, neural tracing protocols, calcium imaging methods, or pre-lab questions for my neurobiology experiment",
+            successCriteria: "Neurobiology lab prep completed (pre-lab questions answered, experimental protocol reviewed, relevant background on electrophysiology or imaging technique summarized and saved)",
+            preferredDuration: 30 * 60
+        ),
     ]
 }

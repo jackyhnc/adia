@@ -446,6 +446,11 @@ extension CalloutManager {
         case "clinicalmicrobiology":       return clinicalmicrobiologyCallouts(tier: tier)
         case "medicinalchemistry":         return medicinalchemistryCallouts(tier: tier)
         case "cellandmolecularbiology":    return cellandmolecularbiologyCallouts(tier: tier)
+        case "biochemistry2":              return biochemistry2Callouts(tier: tier)
+        case "physicalchemistrylab":       return physicalchemistryLabCallouts(tier: tier)
+        case "organicchemistrylab":        return organicchemistrylabCallouts(tier: tier)
+        case "immunologycourse":           return immunologycourseCallouts(tier: tier)
+        case "neurobiologylab":            return neurobiologylabCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -8791,6 +8796,111 @@ extension CalloutManager {
             "CLOSE THIS. open your cell biology textbook.",
             "CLOSE THIS. those cell division mechanisms need your attention.",
             "CLOSE THIS. your cell biology exam won't study itself."
+        ]
+        }
+    }
+
+    private func biochemistry2Callouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those signal transduction pathways aren't going to study themselves.",
+            "close this and get back to your advanced biochemistry.",
+            "your lipid metabolism problem isn't going to solve itself. close this.",
+            "those nucleotide pathways won't memorize themselves. close this."
+        ]
+        case 2: return [
+            "no one masters signal transduction by scrolling.",
+            "close this and open your biochemistry notes.",
+            "that phosphorylation cascade won't learn itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your advanced biochemistry textbook.",
+            "CLOSE THIS. those lipid metabolism pathways need your attention.",
+            "CLOSE THIS. your advanced biochemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func physicalchemistryLabCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that pchem lab report isn't going to write itself.",
+            "close this and get back to your physical chemistry lab.",
+            "your spectroscopy data won't analyze itself. close this.",
+            "that calorimetry lab won't finish itself. close this."
+        ]
+        case 2: return [
+            "no one masters pchem lab work by scrolling.",
+            "close this and open your physical chemistry lab notebook.",
+            "that spectroscopy experiment won't document itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your pchem lab notebook.",
+            "CLOSE THIS. that calorimetry data needs analysis.",
+            "CLOSE THIS. your physical chemistry lab work won't do itself."
+        ]
+        }
+    }
+
+    private func organicchemistrylabCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that orgo lab report isn't going to write itself.",
+            "close this and get back to your organic chemistry lab.",
+            "your recrystallization data won't analyze itself. close this.",
+            "that TLC plate won't document itself. close this."
+        ]
+        case 2: return [
+            "no one passes orgo lab by scrolling.",
+            "close this and open your organic chemistry lab notebook.",
+            "that distillation report won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your orgo lab notebook.",
+            "CLOSE THIS. that IR spectrum needs interpretation.",
+            "CLOSE THIS. your organic chemistry lab work won't do itself."
+        ]
+        }
+    }
+
+    private func immunologycourseCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those immunotherapy mechanisms aren't going to study themselves.",
+            "close this and get back to your immunology.",
+            "that complement cascade won't memorize itself. close this.",
+            "those T-reg cell pathways won't study themselves. close this."
+        ]
+        case 2: return [
+            "no one masters advanced immunology by scrolling.",
+            "close this and open your immunology notes.",
+            "that checkpoint inhibitor mechanism won't study itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your advanced immunology textbook.",
+            "CLOSE THIS. those complement pathways need your attention.",
+            "CLOSE THIS. your immunology exam won't study itself."
+        ]
+        }
+    }
+
+    private func neurobiologylabCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that neurobiology lab report isn't going to write itself.",
+            "close this and get back to your neurobiology lab.",
+            "your patch clamp data won't analyze itself. close this.",
+            "that neural tracing experiment won't document itself. close this."
+        ]
+        case 2: return [
+            "no one masters neurobiology lab work by scrolling.",
+            "close this and open your neurobiology lab notebook.",
+            "that patch clamp recording won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your neurobiology lab notebook.",
+            "CLOSE THIS. that patch clamp data needs analysis.",
+            "CLOSE THIS. your neurobiology lab work won't do itself."
         ]
         }
     }

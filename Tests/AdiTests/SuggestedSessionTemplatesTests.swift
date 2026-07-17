@@ -5808,4 +5808,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 761,
                 "catalog should have ≥761 templates after emergencymedicinerotation/virology/clinicalmicrobiology/medicinalchemistry/cellandmolecularbiology additions (10 templates)")
     }
+
+    // MARK: - biochemistry2 templates
+    @Test func catalogHasBiochemistry2Templates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasProblemSet = tasks.contains {
+            $0.localizedCaseInsensitiveContains("advanced biochemistry") &&
+            ($0.localizedCaseInsensitiveContains("signal transduction") || $0.localizedCaseInsensitiveContains("lipid metabolism") || $0.localizedCaseInsensitiveContains("nucleotide"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("advanced biochemistry") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        #expect(hasProblemSet, "catalog must include an advanced biochemistry problem-set template")
+        #expect(hasStudy, "catalog must include an advanced biochemistry study template")
+    }
+
+    // MARK: - physicalchemistrylab templates
+    @Test func catalogHasPhysicalchemistryLabTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasLab = tasks.contains {
+            $0.localizedCaseInsensitiveContains("physical chemistry lab") &&
+            ($0.localizedCaseInsensitiveContains("report") || $0.localizedCaseInsensitiveContains("calorimetry") || $0.localizedCaseInsensitiveContains("spectroscopy"))
+        }
+        let hasPrep = tasks.contains {
+            $0.localizedCaseInsensitiveContains("physical chemistry lab") &&
+            ($0.localizedCaseInsensitiveContains("prepare") || $0.localizedCaseInsensitiveContains("pre-lab") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        #expect(hasLab, "catalog must include a physical chemistry lab report template")
+        #expect(hasPrep, "catalog must include a physical chemistry lab prep template")
+    }
+
+    // MARK: - organicchemistrylab templates
+    @Test func catalogHasOrganicchemistryLabTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasReport = tasks.contains {
+            $0.localizedCaseInsensitiveContains("organic chemistry lab") &&
+            ($0.localizedCaseInsensitiveContains("report") || $0.localizedCaseInsensitiveContains("distillation") || $0.localizedCaseInsensitiveContains("recrystallization"))
+        }
+        let hasPrep = tasks.contains {
+            $0.localizedCaseInsensitiveContains("organic chemistry lab") &&
+            ($0.localizedCaseInsensitiveContains("prepare") || $0.localizedCaseInsensitiveContains("pre-lab") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        #expect(hasReport, "catalog must include an organic chemistry lab report template")
+        #expect(hasPrep, "catalog must include an organic chemistry lab prep template")
+    }
+
+    // MARK: - immunologycourse templates
+    @Test func catalogHasImmunologycourseTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("advanced immunology") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        let hasAssignment = tasks.contains {
+            $0.localizedCaseInsensitiveContains("immunology") &&
+            ($0.localizedCaseInsensitiveContains("T-reg") || $0.localizedCaseInsensitiveContains("complement") || $0.localizedCaseInsensitiveContains("checkpoint"))
+        }
+        #expect(hasStudy, "catalog must include an advanced immunology study template")
+        #expect(hasAssignment, "catalog must include an advanced immunology assignment template")
+    }
+
+    // MARK: - neurobiologylab templates
+    @Test func catalogHasNeurobiologylabTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasReport = tasks.contains {
+            $0.localizedCaseInsensitiveContains("neurobiology lab") &&
+            ($0.localizedCaseInsensitiveContains("report") || $0.localizedCaseInsensitiveContains("patch clamp") || $0.localizedCaseInsensitiveContains("neural tracing"))
+        }
+        let hasPrep = tasks.contains {
+            $0.localizedCaseInsensitiveContains("neurobiology lab") &&
+            ($0.localizedCaseInsensitiveContains("prepare") || $0.localizedCaseInsensitiveContains("pre-lab") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        #expect(hasReport, "catalog must include a neurobiology lab report template")
+        #expect(hasPrep, "catalog must include a neurobiology lab prep template")
+    }
+
+    // MARK: - Count guard (batch: biochemistry2/physicalchemistrylab/organicchemistrylab/immunologycourse/neurobiologylab)
+    @Test func catalogHasAtLeastSevenHundredSeventyOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 771,
+                "catalog should have ≥771 templates after biochemistry2/physicalchemistrylab/organicchemistrylab/immunologycourse/neurobiologylab additions (10 templates)")
+    }
 }

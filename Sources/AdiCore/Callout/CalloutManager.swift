@@ -4634,6 +4634,25 @@ public final class CalloutManager {
             || lower.contains("genome-wide association") && (lower.contains("class") || lower.contains("genetics")) {
             return "genetics"
         }
+        // biochemistry2 — positioned AFTER genetics and BEFORE biochemistry so advanced biochemistry
+        // topics (signal transduction, lipid metabolism, nucleotide metabolism) in a class/course
+        // context route here. Generic "biochemistry class/exam" stays in biochemistry (fires after).
+        if lower.contains("advanced biochemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("notes") || lower.contains("textbook"))
+            || lower.contains("signal transduction") && (lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("phosphorylation cascade") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("second messenger") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("lipid metabolism") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("fatty acid oxidation") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("fatty acid synthesis") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("cholesterol biosynthesis") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("mevalonate pathway") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem"))
+            || lower.contains("nucleotide metabolism") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("purine biosynthesis") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("pyrimidine biosynthesis") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("nucleotide salvage") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("urea cycle") && (lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("class") || lower.contains("exam")) {
+            return "biochemistry2"
+        }
         // biochemistry — positioned AFTER molecularbiology and BEFORE geneticcounseling.
         // Catches biochemistry lab/course work with specific enzyme-kinetics and assay terms.
         // Bare word("biochemistry") alone stays in premed (MCAT context); compound lab terms fire here.
@@ -4651,6 +4670,24 @@ public final class CalloutManager {
             || lower.contains("metabolic pathway analysis") && !lower.contains("bioinformatics")
             || lower.contains("biochemistry textbook") || lower.contains("lehninger") {
             return "biochemistry"
+        }
+        // physicalchemistrylab — positioned AFTER biochemistry and BEFORE physicalchemistry so
+        // specific pchem lab experiment sessions (calorimetry, spectroscopy lab, kinetics experiments)
+        // route here. "pchem lab" and "physical chemistry lab" are intercepted before physicalchemistry.
+        // Generic "pchem problem set" and "pchem exam" fall through to physicalchemistry (fires after).
+        if lower.contains("pchem lab") || lower.contains("p-chem lab")
+            || lower.contains("physical chemistry lab")
+            || lower.contains("calorimetry") && (lower.contains("pchem") || lower.contains("physical chemistry") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("bomb calorimetry")
+            || lower.contains("rotational spectroscopy") && (lower.contains("pchem") || lower.contains("physical chemistry") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("vibrational spectroscopy") && (lower.contains("pchem") || lower.contains("physical chemistry") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("raman spectroscopy") && (lower.contains("pchem") || lower.contains("physical chemistry") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("fluorescence spectroscopy") && (lower.contains("pchem") || lower.contains("physical chemistry") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("spectroscopy experiment") && (lower.contains("pchem") || lower.contains("physical chemistry") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("physical chemistry experiment") && (lower.contains("class") || lower.contains("course") || lower.contains("pchem") || lower.contains("lab"))
+            || lower.contains("pchem experiment") && (lower.contains("class") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("kinetics experiment") && (lower.contains("pchem") || lower.contains("physical chemistry") || lower.contains("class") || lower.contains("lab")) {
+            return "physicalchemistrylab"
         }
         // physicalchemistry — positioned AFTER biochemistry and BEFORE inorganicchemistry/organicchemistry.
         // Catches pchem, quantum chemistry (for chemists), thermodynamics of reactions, chemical
@@ -4731,6 +4768,22 @@ public final class CalloutManager {
             || lower.contains("woodward-hoffmann") || lower.contains("woodward hoffmann")
             || lower.contains("mcat organic") || lower.contains("mcat orgo") {
             return "organicchemistry"
+        }
+        // organicchemistrylab — positioned AFTER organicchemistry and BEFORE analyticalchemistry
+        // so specific orgo lab technique sessions (distillation, recrystallization, TLC, IR,
+        // lab reports) that weren't intercepted by organicchemistry route here.
+        // "NMR spectroscopy" without lab context stays in organicchemistry (fires before).
+        if lower.contains("orgo lab")
+            || lower.contains("distillation") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("lab") || lower.contains("class") || lower.contains("chemistry"))
+            || lower.contains("recrystallization") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("lab") || lower.contains("class") || lower.contains("chemistry"))
+            || lower.contains("thin-layer chromatography") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("lab") || lower.contains("class"))
+            || lower.contains("thin layer chromatography") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("lab") || lower.contains("class"))
+            || lower.contains("tlc") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("lab") || lower.contains("class") || lower.contains("chemistry"))
+            || lower.contains("melting point") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("lab") || lower.contains("class"))
+            || lower.contains("ir spectrum") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("lab") || lower.contains("class"))
+            || lower.contains("infrared spectrum") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("lab") || lower.contains("class"))
+            || lower.contains("column chromatography") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("lab") || lower.contains("class")) {
+            return "organicchemistrylab"
         }
         // analyticalchemistry — positioned AFTER organicchemistry and BEFORE drugdiscovery.
         // Catches HPLC, GC-MS, titration, chromatography, and spectroscopy in analytical context.
@@ -5355,6 +5408,26 @@ public final class CalloutManager {
             || lower.contains("mycology class") || lower.contains("mycology course") || lower.contains("mycology exam") {
             return "microbiology"
         }
+        // immunologycourse — positioned AFTER microbiology and BEFORE immunology so advanced
+        // immunology-specific signals (T-reg cells, complement cascade, immunotherapy mechanisms)
+        // route here. Generic "immunology class/exam" stays in immunology (fires after).
+        if lower.contains("advanced immunology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("notes") || lower.contains("textbook"))
+            || lower.contains("regulatory t cell") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("t regulatory cell") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("treg cell") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("complement cascade") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("complement pathway") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("immunotherapy") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam") || lower.contains("mechanism") || lower.contains("course"))
+            || lower.contains("checkpoint inhibitor") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam") || lower.contains("mechanism"))
+            || lower.contains("pd-1") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("pd-l1") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("ctla-4") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("nk cell") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("toll-like receptor") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("inflammasome") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam"))
+            || lower.contains("immunological memory") && (lower.contains("class") || lower.contains("immunology") || lower.contains("exam")) {
+            return "immunologycourse"
+        }
         // immunology — positioned BEFORE premed to catch dedicated immunology class/lab work.
         // Bare word("immunology") stays in premed for MCAT context (premed branch fires after).
         // "flow cytometry" in general research context stays in molecularbiology (much earlier).
@@ -5494,6 +5567,21 @@ public final class CalloutManager {
             || lower.contains("thalamus") && (lower.contains("class") || lower.contains("lab") || lower.contains("anatomy") || lower.contains("exam"))
             || lower.contains("hypothalamus") && (lower.contains("class") || lower.contains("lab") || lower.contains("anatomy") || lower.contains("exam")) {
             return "neuroanatomy"
+        }
+        // neurobiologylab — positioned AFTER neuroanatomy and BEFORE pharmacology so neurobiology
+        // lab-specific sessions (patch clamp training, neural tracing, calcium imaging, lab reports)
+        // route here. "electrophysiology" in research context stays in electrophysiology (much later).
+        // "neuroanatomy class" stays in neuroanatomy (fires before).
+        if lower.contains("neurobiology lab") && (lower.contains("class") || lower.contains("course") || lower.contains("report") || lower.contains("notebook") || lower.contains("experiment") || lower.contains("practical") || lower.contains("assignment"))
+            || lower.contains("patch clamp") && (lower.contains("class") || lower.contains("lab") || lower.contains("neurobiology") || lower.contains("course") || lower.contains("training"))
+            || lower.contains("whole-cell patch") && (lower.contains("lab") || lower.contains("class") || lower.contains("neurobiology"))
+            || lower.contains("neural tracing") && (lower.contains("class") || lower.contains("lab") || lower.contains("neurobiology"))
+            || lower.contains("in vitro brain slice") && (lower.contains("class") || lower.contains("lab") || lower.contains("neurobiology"))
+            || lower.contains("brain slice preparation") && (lower.contains("class") || lower.contains("lab") || lower.contains("neurobiology"))
+            || lower.contains("calcium imaging") && (lower.contains("class") || lower.contains("lab") || lower.contains("neurobiology") || lower.contains("neuroscience"))
+            || lower.contains("synaptic physiology") && (lower.contains("class") || lower.contains("lab") || lower.contains("neurobiology"))
+            || lower.contains("neurobiology lab report") || lower.contains("neurobiology lab notebook") {
+            return "neurobiologylab"
         }
         // pharmacology — positioned BEFORE physiology and premed to catch dedicated pharmacology
         // class/lab work. Bare word("pharmacology") stays in premed (MCAT context fires after).
