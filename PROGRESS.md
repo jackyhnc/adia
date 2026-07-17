@@ -1,5 +1,65 @@
 # Adia — Build Progress
 
+## Run 381 (automated) — 2026-07-17 — 5 new keyword domains: cosmology/planetaryscience/particlephysics/statisticalmechanics/environmentalchemistry (891→901 templates)
+
+### What shipped
+
+**5 new keyword domains: cosmology, planetaryscience, particlephysics, statisticalmechanics, environmentalchemistry**
+
+**New keyword domain — cosmology:**
+- Branch positioned BEFORE astronomy; word("cosmology"), word("cosmologist") removed from astronomy branch.
+- Catches: word("cosmology"/"cosmologist"/"cosmologists"), cosmology class/course/exam/homework, Friedmann equations+class/cosmology, cosmic microwave background+class/cosmology, inflationary cosmology, primordial nucleosynthesis+class/cosmology, large-scale structure+class/cosmology.
+- `cosmologyCallouts(tier:)` 4/3/3: "those Friedmann equations won't solve themselves." / "no one masters cosmology by scrolling." / "CLOSE THIS. open your cosmology textbook."
+- 2 templates: "Study cosmology for my exam…" (60 min) + "Work through my cosmology problem set…" (60 min)
+
+**New keyword domain — planetaryscience:**
+- Branch positioned BEFORE astronomy; "planetary science", "planetary formation", word("exoplanet/s") removed from astronomy branch.
+- Catches: planetary science class/course/exam, planetary formation+class/course/exam, exoplanet/s+class/course/exam, solar system formation+class/cosmology, impact cratering+class/planetary science.
+- `planetaryscienceCallouts(tier:)` 4/3/3: "those planetary formation problems won't solve themselves." / "no one masters planetary science by scrolling." / "CLOSE THIS. open your planetary science notes."
+- 2 templates: "Study planetary science for my exam…" (60 min) + "Complete my planetary science assignment…" (60 min)
+
+**New keyword domain — particlephysics:**
+- Branch positioned BEFORE quantummechanics.
+- Catches: particle physics class/course, quantum field theory class, QFT class, standard model+class/course/exam, Feynman diagram+class/course/exam, gauge theory+class/physics, Higgs boson+class/physics.
+- `particlephysicsCallouts(tier:)` 4/3/3: "those Feynman diagrams won't draw themselves." / "no one masters particle physics by scrolling." / "CLOSE THIS. open your particle physics notes."
+- 2 templates: "Study particle physics for my exam…" (60 min) + "Work through my particle physics problem set…" (60 min)
+
+**New keyword domain — statisticalmechanics:**
+- Branch positioned BEFORE thermodynamics.
+- Catches: statistical mechanics class, stat mech class, Boltzmann distribution+class/physics, partition function+physics/stat mech (not chemistry/pchem), canonical ensemble+class/physics, Fermi-Dirac distribution+class/physics, Bose-Einstein distribution+class/physics.
+- `statisticalmechanicsCallouts(tier:)` 4/3/3: "that partition function won't evaluate itself." / "no one masters statistical mechanics by scrolling." / "CLOSE THIS. open your statistical mechanics notes."
+- 2 templates: "Study statistical mechanics for my exam…" (60 min) + "Work through my stat mech problem set…" (60 min)
+
+**New keyword domain — environmentalchemistry:**
+- Branch positioned BEFORE enviro; "environmental chemistry" removed from enviro catch-all.
+- Catches: environmental chemistry class/course, contaminant fate+class/chemistry, water quality chemistry+class/exam, soil chemistry+class/environmental/lab, green chemistry+class/chemistry, aquatic chemistry+class/exam/course.
+- `environmentalchemistryCallouts(tier:)` 4/3/3: "those contaminant fate calculations won't solve themselves." / "no one masters environmental chemistry by scrolling." / "CLOSE THIS. open your environmental chemistry notes."
+- 2 templates: "Study environmental chemistry for my exam…" (60 min) + "Complete my environmental chemistry assignment…" (60 min)
+
+**Astronomy branch update:**
+- Removed from astronomy: word("cosmology"), word("cosmologist"), lower.contains("planetary science"), lower.contains("planetary formation"), word("exoplanet"), word("exoplanets")
+- Kept in astronomy: dark matter, dark energy, stellar evolution, galaxy formation, observational astronomy, orbital mechanics, etc.
+
+**New tests:**
+- CalloutManagerTests.swift: +5×(5 routing + 3 pool) + false-positive guards + count guard ≥901
+- SuggestedSessionTemplatesTests.swift: +5×2 template existence tests + count guard ≥901
+
+**Template catalog: 891 → 901**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- All 5 new `return "domain"` lines confirmed present in CalloutManager.swift ✓
+- All 5 new `case "domain":` lines confirmed present in CalloutMessages.swift ✓
+- `preferredDuration:` count = 901 ✓
+- astronomy branch no longer contains word("cosmology"), word("exoplanet"), "planetary science" ✓
+- enviro branch no longer contains "environmental chemistry" ✓
+
+### Next agent should
+- Add 5 more keyword domains — good candidates: radioastronomy, astrochemistry, biophysics, computationalfluidynamics, materialscience sub-domains (ceramics, polymers)
+- Continue growing template catalog toward 950+
+
+---
+
 ## Run 374 (automated) — 2026-07-17 — 5 new keyword domains: geophysics/mineralogy/petrology/hydrogeology/stratigraphy (811→821 templates)
 
 ### What shipped

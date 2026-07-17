@@ -5750,5 +5750,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Differential geometry problem set completed (Christoffel symbol calculations, geodesic derivations, curvature tensor computations, or differential form problems solved with all steps shown — saved to file)",
             preferredDuration: 45 * 60
         ),
+        // cosmology
+        SuggestedTemplate(
+            icon: "moon.stars",
+            task: "Study cosmology for my exam — review Friedmann equations, Hubble constant, dark matter and dark energy, cosmic microwave background, inflationary cosmology, and large-scale structure",
+            successCriteria: "Cosmology study session completed (at least two topics reviewed with Friedmann equation derivations, CMB features, inflation mechanisms, and large-scale structure descriptions summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "moon.stars",
+            task: "Work on my cosmology problem set — solve Friedmann equations, calculate Hubble parameter evolution, analyze CMB power spectra, or work through primordial nucleosynthesis",
+            successCriteria: "Cosmology problem set completed (Friedmann equation solutions, Hubble evolution calculations, CMB analysis, or nucleosynthesis problems solved with all work shown — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // planetaryscience
+        SuggestedTemplate(
+            icon: "globe",
+            task: "Study planetary science for my exam — review solar system formation, planetary geology, planetary atmospheres, impact cratering, exoplanet characterization, and habitability criteria",
+            successCriteria: "Planetary science study session completed (at least two topics reviewed with formation models, geological processes, atmospheric compositions, and habitability factors summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "globe",
+            task: "Work on my planetary science assignment — analyze planetary geology, characterize exoplanet atmospheres, model solar system formation, or assess planetary habitability",
+            successCriteria: "Planetary science assignment completed (planetary geology analysis, exoplanet characterization, formation model assessment, or habitability evaluation documented with evidence and conclusions — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // particlephysics
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study particle physics for my exam — review the Standard Model, Feynman diagrams, gauge theories, quarks and leptons, weak and strong interactions, and Higgs mechanism",
+            successCriteria: "Particle physics study session completed (at least two topics reviewed with Standard Model particles, Feynman diagram rules, gauge symmetry principles, and interaction descriptions summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work on my particle physics or QFT problem set — draw Feynman diagrams, calculate scattering amplitudes, analyze symmetry breaking, or work through gauge theory problems",
+            successCriteria: "Particle physics problem set completed (Feynman diagrams drawn, amplitudes calculated, symmetry breaking analyzed, or gauge theory problems solved with all steps shown — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // statisticalmechanics
+        SuggestedTemplate(
+            icon: "chart.bar",
+            task: "Study statistical mechanics for my exam — review partition functions, Boltzmann distribution, canonical and grand canonical ensembles, Fermi-Dirac and Bose-Einstein statistics, and phase transitions",
+            successCriteria: "Statistical mechanics study session completed (at least two topics reviewed with ensemble definitions, partition function derivations, distribution functions, and phase transition descriptions summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.bar",
+            task: "Work on my statistical mechanics problem set — evaluate partition functions, derive thermodynamic quantities, analyze Fermi-Dirac or Bose-Einstein distributions, or model phase transitions",
+            successCriteria: "Statistical mechanics problem set completed (partition function evaluations, thermodynamic derivations, quantum statistics calculations, or phase transition analyses completed with all steps shown — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // environmentalchemistry
+        SuggestedTemplate(
+            icon: "leaf.arrow.triangle.circlepath",
+            task: "Study environmental chemistry for my exam — review contaminant fate and transport, water quality chemistry, soil chemistry, Henry's law, green chemistry principles, and aquatic chemistry",
+            successCriteria: "Environmental chemistry study session completed (at least two topics reviewed with fate/transport mechanisms, water quality parameters, soil sorption processes, and Henry's law applications summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "leaf.arrow.triangle.circlepath",
+            task: "Work on my environmental chemistry assignment — model contaminant fate and transport, analyze water quality chemistry, apply Henry's law calculations, or assess pollutant behavior in aquatic systems",
+            successCriteria: "Environmental chemistry assignment completed (contaminant transport model, water quality analysis, Henry's law calculations, or aquatic pollutant assessment documented with methods and results — saved to file)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

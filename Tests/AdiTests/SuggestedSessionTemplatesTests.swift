@@ -6430,4 +6430,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast891() {
         #expect(SuggestedSessionTemplates.all.count >= 891, "template catalog must have ≥891 entries after geomorphology/sedimentology/structuralgeology/functionalanalysis/differentialgeometry additions")
     }
+    // MARK: - cosmology templates
+    @Test func cosmologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cosmology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func cosmologyProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cosmology") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - planetaryscience templates
+    @Test func planetaryScienceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("planetary science") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func planetaryScienceAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("planetary science") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - particlephysics templates
+    @Test func particlePhysicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("particle physics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func particlePhysicsProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("particle physics") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - statisticalmechanics templates
+    @Test func statisticalMechanicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("statistical mechanics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func statisticalMechanicsProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("statistical mechanics") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - environmentalchemistry templates
+    @Test func environmentalChemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("environmental chemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func environmentalChemistryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("environmental chemistry") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥901)
+    @Test func templateCountAtLeast901() {
+        #expect(SuggestedSessionTemplates.all.count >= 901, "template catalog must have ≥901 entries after cosmology/planetaryscience/particlephysics/statisticalmechanics/environmentalchemistry additions")
+    }
 }

@@ -22221,4 +22221,176 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast891() {
         #expect(SuggestedSessionTemplates.all.count >= 891, "template catalog must have ≥891 entries after geomorphology/sedimentology/structuralgeology/functionalanalysis/differentialgeometry additions (10 templates)")
     }
+
+    // MARK: - cosmology routing
+    @Test func cosmologyClassRoutesCosmology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cosmology class exam homework tonight") == "cosmology")
+    }
+    @Test func friedmannEquationClassRoutesCosmology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "friedmann equation class exam cosmology") == "cosmology")
+    }
+    @Test func inflationaryCosmologyRoutesCosmology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "inflationary cosmology review for exam") == "cosmology")
+    }
+    @Test func cosmicMicrowaveBackgroundClassRoutesCosmology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cosmic microwave background analysis class exam") == "cosmology")
+    }
+    @Test func hubbleConstantCosmologyRoutesCosmology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hubble constant cosmology class exam prep") == "cosmology")
+    }
+    @Test @MainActor func cosmologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "cosmology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "cosmology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "cosmology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func cosmologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "cosmology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func cosmologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "cosmology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - planetaryscience routing
+    @Test func planetaryScienceClassRoutesPlanetaryscience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "planetary science class exam homework tonight") == "planetaryscience")
+    }
+    @Test func exoplanetClassRoutesPlanetaryscience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "exoplanet class exam characterization") == "planetaryscience")
+    }
+    @Test func planetaryFormationClassRoutesPlanetaryscience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "planetary formation class exam review") == "planetaryscience")
+    }
+    @Test func solarSystemFormationClassRoutesPlanetaryscience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solar system formation class exam prep") == "planetaryscience")
+    }
+    @Test func impactCrateringClassRoutesPlanetaryscience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "impact cratering class exam planetary geology") == "planetaryscience")
+    }
+    @Test @MainActor func planetaryscienceCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "planetaryscience", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "planetaryscience", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "planetaryscience", tier: 3).isEmpty)
+    }
+    @Test @MainActor func planetaryscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "planetaryscience", tier: 1).count >= 4)
+    }
+    @Test @MainActor func planetaryscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "planetaryscience", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - particlephysics routing
+    @Test func particlePhysicsClassRoutesParticlephysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "particle physics class exam homework tonight") == "particlephysics")
+    }
+    @Test func standardModelClassRoutesParticlephysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "standard model particle physics class exam") == "particlephysics")
+    }
+    @Test func feynmanDiagramClassRoutesParticlephysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "feynman diagram class particle physics exam") == "particlephysics")
+    }
+    @Test func qftClassRoutesParticlephysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "qft class exam homework tonight") == "particlephysics")
+    }
+    @Test func gaugeTheoryClassRoutesParticlephysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "gauge theory class exam particle physics") == "particlephysics")
+    }
+    @Test @MainActor func particlephysicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "particlephysics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "particlephysics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "particlephysics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func particlephysicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "particlephysics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func particlephysicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "particlephysics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - statisticalmechanics routing
+    @Test func statisticalMechanicsClassRoutesStatisticalmechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "statistical mechanics class exam homework tonight") == "statisticalmechanics")
+    }
+    @Test func statMechExamRoutesStatisticalmechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "stat mech exam review tonight") == "statisticalmechanics")
+    }
+    @Test func boltzmannDistributionStatMechRoutesStatisticalmechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "boltzmann distribution stat mech class exam") == "statisticalmechanics")
+    }
+    @Test func canonicalEnsembleClassRoutesStatisticalmechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "canonical ensemble class exam statistical mechanics") == "statisticalmechanics")
+    }
+    @Test func fermiDiracStatMechRoutesStatisticalmechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fermi-dirac distribution stat mech exam prep") == "statisticalmechanics")
+    }
+    @Test @MainActor func statisticalmechanicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "statisticalmechanics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "statisticalmechanics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "statisticalmechanics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func statisticalmechanicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "statisticalmechanics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func statisticalmechanicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "statisticalmechanics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - environmentalchemistry routing
+    @Test func environmentalChemistryClassRoutesEnvironmentalchemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "environmental chemistry class exam homework tonight") == "environmentalchemistry")
+    }
+    @Test func contaminantFateClassRoutesEnvironmentalchemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "contaminant fate class exam environmental chemistry") == "environmentalchemistry")
+    }
+    @Test func waterQualityChemistryClassRoutesEnvironmentalchemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "water quality chemistry class exam review") == "environmentalchemistry")
+    }
+    @Test func aquaticChemistryClassRoutesEnvironmentalchemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "aquatic chemistry class exam prep tonight") == "environmentalchemistry")
+    }
+    @Test func greenChemistryClassRoutesEnvironmentalchemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "green chemistry class exam tonight") == "environmentalchemistry")
+    }
+    @Test @MainActor func environmentalchemistryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentalchemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentalchemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentalchemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func environmentalchemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "environmentalchemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func environmentalchemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "environmentalchemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - False-positive guards (cosmology/planetaryscience/particlephysics/statisticalmechanics)
+    @Test func bareCosmologyWordRoutesToAstronomy() {
+        // "cosmological" adjective without word("cosmology") should stay in astronomy
+        let kw = CalloutManager.extractTaskKeyword(from: "cosmological constant in general relativity")
+        #expect(kw == "astronomy" || kw != "cosmology")
+    }
+    @Test func partitionFunctionChemistryStaysPhysicalchemistry() {
+        // "partition function + chemistry" should stay in physicalchemistry, not statisticalmechanics
+        let kw = CalloutManager.extractTaskKeyword(from: "partition function pchem physical chemistry class")
+        #expect(kw == "physicalchemistry" || kw != "statisticalmechanics")
+    }
+
+    // MARK: - Count guard (batch: cosmology/planetaryscience/particlephysics/statisticalmechanics/environmentalchemistry)
+    @Test func calloutTemplatesCountAtLeast901() {
+        #expect(SuggestedSessionTemplates.all.count >= 901, "template catalog must have ≥901 entries after cosmology/planetaryscience/particlephysics/statisticalmechanics/environmentalchemistry additions (10 templates)")
+    }
 }

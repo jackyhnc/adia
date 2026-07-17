@@ -511,6 +511,11 @@ extension CalloutManager {
         case "structuralgeology":          return structuralgeologyCallouts(tier: tier)
         case "functionalanalysis":         return functionalanalysisCallouts(tier: tier)
         case "differentialgeometry":       return differentialgeometryCallouts(tier: tier)
+        case "cosmology":                  return cosmologyCallouts(tier: tier)
+        case "planetaryscience":           return planetaryscienceCallouts(tier: tier)
+        case "particlephysics":            return particlephysicsCallouts(tier: tier)
+        case "statisticalmechanics":       return statisticalmechanicsCallouts(tier: tier)
+        case "environmentalchemistry":     return environmentalchemistryCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -10221,6 +10226,111 @@ extension CalloutManager {
             "CLOSE THIS. open your differential geometry textbook.",
             "CLOSE THIS. those Riemannian manifolds won't analyze themselves.",
             "CLOSE THIS. your differential geometry exam won't study itself."
+        ]
+        }
+    }
+
+    private func cosmologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Friedmann equations won't solve themselves.",
+            "your cosmology assignment is waiting.",
+            "the universe isn't going to explain itself — get back to it.",
+            "you can't understand dark energy by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters cosmology by scrolling.",
+            "close this and open your cosmology notes.",
+            "those large-scale structure and CMB problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your cosmology textbook.",
+            "CLOSE THIS. those Friedmann equations won't derive themselves.",
+            "CLOSE THIS. your cosmology exam won't study itself."
+        ]
+        }
+    }
+
+    private func planetaryscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those planetary formation problems won't solve themselves.",
+            "your planetary science assignment is waiting.",
+            "exoplanets don't characterize themselves — get back to it.",
+            "you can't model planetary atmospheres by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters planetary science by scrolling.",
+            "close this and open your planetary science notes.",
+            "those solar system formation and exoplanet problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your planetary science textbook.",
+            "CLOSE THIS. those planetary geology problems won't solve themselves.",
+            "CLOSE THIS. your planetary science exam won't study itself."
+        ]
+        }
+    }
+
+    private func particlephysicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Feynman diagrams won't draw themselves.",
+            "your particle physics assignment is waiting.",
+            "the Standard Model won't explain itself — get back to it.",
+            "you can't derive QFT by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters particle physics by scrolling.",
+            "close this and open your particle physics notes.",
+            "those gauge theory and QFT problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your particle physics textbook.",
+            "CLOSE THIS. those Feynman diagrams won't compute themselves.",
+            "CLOSE THIS. your particle physics exam won't study itself."
+        ]
+        }
+    }
+
+    private func statisticalmechanicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those partition functions won't evaluate themselves.",
+            "your statistical mechanics assignment is waiting.",
+            "entropy doesn't maximize itself — get back to it.",
+            "you can't solve ensemble theory by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters statistical mechanics by scrolling.",
+            "close this and open your stat mech notes.",
+            "those Boltzmann distribution and ensemble problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your statistical mechanics textbook.",
+            "CLOSE THIS. those partition functions won't evaluate themselves.",
+            "CLOSE THIS. your stat mech exam won't study itself."
+        ]
+        }
+    }
+
+    private func environmentalchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those contaminant fate problems won't work themselves out.",
+            "your environmental chemistry assignment is waiting.",
+            "pollutant transport doesn't model itself — get back to it.",
+            "you can't master aquatic chemistry by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters environmental chemistry by scrolling.",
+            "close this and open your environmental chemistry notes.",
+            "those water quality and contaminant fate problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your environmental chemistry textbook.",
+            "CLOSE THIS. those contaminant transport problems won't solve themselves.",
+            "CLOSE THIS. your environmental chemistry exam won't study itself."
         ]
         }
     }

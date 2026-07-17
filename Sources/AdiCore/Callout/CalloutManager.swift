@@ -648,17 +648,55 @@ public final class CalloutManager {
             || lower.contains("astrophysics problem set") || lower.contains("astrophysics research") {
             return "astrophysics"
         }
+        // cosmology — positioned BEFORE astronomy so cosmology class/exam, Friedmann equation,
+        // and cosmic structure signals route to a dedicated pool.
+        // word("cosmology")/word("cosmologist") removed from astronomy branch below.
+        if word("cosmology") || word("cosmologist") || word("cosmologists")
+            || lower.contains("cosmology class") || lower.contains("cosmology course")
+            || lower.contains("cosmology exam") || lower.contains("cosmology homework")
+            || lower.contains("cosmology notes") || lower.contains("cosmology problem set")
+            || lower.contains("friedmann equation") && (lower.contains("class") || lower.contains("cosmology") || lower.contains("exam"))
+            || lower.contains("hubble constant") && (lower.contains("class") || lower.contains("cosmology") || lower.contains("exam"))
+            || lower.contains("dark matter") && lower.contains("cosmology")
+            || lower.contains("dark energy") && lower.contains("cosmology")
+            || lower.contains("cosmic microwave background") && (lower.contains("class") || lower.contains("cosmology") || lower.contains("exam") || lower.contains("analysis"))
+            || lower.contains("cmb analysis") && (lower.contains("class") || lower.contains("cosmology") || lower.contains("exam"))
+            || lower.contains("inflationary cosmology")
+            || lower.contains("cosmological inflation") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("primordial nucleosynthesis") && (lower.contains("class") || lower.contains("cosmology") || lower.contains("exam"))
+            || lower.contains("large-scale structure") && lower.contains("cosmology")
+            || lower.contains("large scale structure") && lower.contains("cosmology") {
+            return "cosmology"
+        }
+        // planetaryscience — positioned BEFORE astronomy so planetary science class/exam,
+        // planetary geology, solar system formation, and exoplanet coursework route to a
+        // dedicated pool. "planetary science", "planetary formation", word("exoplanet/s")
+        // removed from astronomy branch below.
+        if lower.contains("planetary science class") || lower.contains("planetary science course")
+            || lower.contains("planetary science exam") || lower.contains("planetary science homework")
+            || lower.contains("planetary science assignment") || lower.contains("planetary science notes")
+            || lower.contains("planetary geology") && (lower.contains("class") || lower.contains("exam") || lower.contains("planetary science"))
+            || lower.contains("planetary formation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || (word("exoplanet") || word("exoplanets")) && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework"))
+            || lower.contains("solar system formation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("planetary atmosphere") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("planetary science"))
+            || lower.contains("planetary atmospheres") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("impact cratering") && (lower.contains("class") || lower.contains("exam") || lower.contains("planetary"))
+            || lower.contains("planetary habitability") && (lower.contains("class") || lower.contains("exam") || lower.contains("planetary science"))
+            || lower.contains("planetary interior") && (lower.contains("class") || lower.contains("exam") || lower.contains("planetary science")) {
+            return "planetaryscience"
+        }
         // astronomy — positioned before studying so "astronomy exam" doesn't fall through to
         // the generic studying pool via word("exam"). Bare word("physics") stays in studying;
         // compound celestial/cosmological terms route here.
         // word("astrobiology") now owned by astrobiology branch above.
         // word("astrophysics"/"astrophysicist"/"astrophysicists") now owned by astrophysics above.
+        // word("cosmology"/"cosmologist") now owned by cosmology branch above.
+        // "planetary science", "planetary formation", word("exoplanet/s") now owned by planetaryscience above.
         if word("astronomy") || word("astronomer") || word("astronomers")
-            || lower.contains("celestial mechanics") || word("cosmology") || word("cosmologist")
+            || lower.contains("celestial mechanics")
             || lower.contains("observational astronomy") || lower.contains("stellar physics")
             || lower.contains("stellar evolution") || lower.contains("stellar structure")
-            || lower.contains("planetary science") || lower.contains("planetary formation")
-            || word("exoplanet") || word("exoplanets")
             || lower.contains("orbital mechanics") || lower.contains("orbital dynamics")
             || lower.contains("radio astronomy") || lower.contains("astronomical observation")
             || lower.contains("astronomical imaging") || lower.contains("astronomical data")
@@ -1128,6 +1166,28 @@ public final class CalloutManager {
             || lower.contains("marine biology lab report") || lower.contains("marine biology lab notebook")
             || lower.contains("ocean biology lab") || lower.contains("marine science lab") {
             return "marinebiology2"
+        }
+        // particlephysics — positioned BEFORE quantummechanics so particle physics class/exam,
+        // Standard Model, and QFT coursework route to a dedicated pool. Bare "quark" or "boson"
+        // without class/particle context NOT matched.
+        if lower.contains("particle physics class") || lower.contains("particle physics course")
+            || lower.contains("particle physics exam") || lower.contains("particle physics homework")
+            || lower.contains("particle physics notes") || lower.contains("particle physics problem")
+            || lower.contains("quantum field theory class") || lower.contains("quantum field theory course")
+            || lower.contains("quantum field theory exam")
+            || lower.contains("qft class") || lower.contains("qft course") || lower.contains("qft exam")
+            || lower.contains("qft homework") || lower.contains("qft problem")
+            || lower.contains("standard model") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("particle physics"))
+            || lower.contains("feynman diagram") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("particle physics") || lower.contains("qft"))
+            || lower.contains("feynman diagrams") && (lower.contains("class") || lower.contains("exam") || lower.contains("particle") || lower.contains("qft"))
+            || lower.contains("gauge theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("particle physics"))
+            || lower.contains("gauge boson") && (lower.contains("class") || lower.contains("exam") || lower.contains("particle physics"))
+            || lower.contains("higgs boson") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("particle physics"))
+            || lower.contains("weak interaction") && (lower.contains("class") || lower.contains("exam") || lower.contains("particle physics"))
+            || lower.contains("strong interaction") && (lower.contains("class") || lower.contains("exam") || lower.contains("particle physics"))
+            || lower.contains("lepton") && (lower.contains("class") || lower.contains("exam") || lower.contains("particle physics"))
+            || lower.contains("quark") && (lower.contains("class") || lower.contains("exam") || lower.contains("particle physics")) {
+            return "particlephysics"
         }
         // quantummechanics — positioned BEFORE experimentalphysics so quantum mechanics and
         // quantum physics coursework gets a dedicated callout pool. "quantum mechanics + computing/
@@ -2304,6 +2364,27 @@ public final class CalloutManager {
             || lower.contains("thermodynamics exam") && lower.contains("chemical")
             || lower.contains("fluid mechanics class") && lower.contains("chemical") {
             return "chemicalengineering"
+        }
+        // statisticalmechanics — positioned BEFORE thermodynamics so statistical mechanics
+        // class/exam and ensemble theory coursework route to a dedicated pool.
+        // "statistical thermodynamics + chemistry/pchem" stays in physicalchemistry (fires earlier).
+        // "partition function + chemistry/pchem" stays in physicalchemistry (fires earlier).
+        if lower.contains("statistical mechanics class") || lower.contains("statistical mechanics course")
+            || lower.contains("statistical mechanics exam") || lower.contains("statistical mechanics homework")
+            || lower.contains("statistical mechanics notes") || lower.contains("statistical mechanics problem")
+            || lower.contains("stat mech class") || lower.contains("stat mech course")
+            || lower.contains("stat mech exam") || lower.contains("stat mech homework")
+            || lower.contains("boltzmann distribution") && (lower.contains("class") || lower.contains("exam") || lower.contains("stat mech") || lower.contains("statistical mechanics"))
+            || lower.contains("partition function") && (lower.contains("physics") || lower.contains("stat mech") || lower.contains("statistical mechanics")) && !lower.contains("chemistry") && !lower.contains("pchem")
+            || lower.contains("canonical ensemble") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("stat mech"))
+            || lower.contains("microcanonical ensemble") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("stat mech"))
+            || lower.contains("grand canonical ensemble") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("stat mech"))
+            || lower.contains("fermi-dirac distribution") && (lower.contains("class") || lower.contains("exam") || lower.contains("stat mech") || lower.contains("statistical mechanics"))
+            || lower.contains("bose-einstein distribution") && (lower.contains("class") || lower.contains("exam") || lower.contains("stat mech") || lower.contains("statistical mechanics"))
+            || lower.contains("maxwell-boltzmann distribution") && (lower.contains("class") || lower.contains("exam") || lower.contains("stat mech"))
+            || lower.contains("entropy") && lower.contains("stat mech")
+            || lower.contains("phase transition") && (lower.contains("stat mech") || lower.contains("statistical mechanics")) {
+            return "statisticalmechanics"
         }
         // thermodynamics — positioned AFTER chemicalengineering (which owns "thermodynamics class chemical")
         // and BEFORE engineering. Catches standalone engineering/applied thermodynamics class/exam.
@@ -4701,10 +4782,29 @@ public final class CalloutManager {
             || lower.contains("green new deal class") || lower.contains("green new deal course") {
             return "environmentalpolicy"
         }
+        // environmentalchemistry — positioned BEFORE enviro so environmental chemistry class/exam
+        // and contaminant fate/transport signals route to a dedicated pool.
+        // "environmental chemistry" removed from enviro branch below.
+        if lower.contains("environmental chemistry class") || lower.contains("environmental chemistry course")
+            || lower.contains("environmental chemistry exam") || lower.contains("environmental chemistry homework")
+            || lower.contains("environmental chemistry lab") || lower.contains("environmental chemistry notes")
+            || lower.contains("environmental chemistry assignment") || lower.contains("environmental chemistry problem set")
+            || lower.contains("contaminant fate") && (lower.contains("class") || lower.contains("exam") || lower.contains("environmental chemistry"))
+            || lower.contains("water quality chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("soil chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("environmental"))
+            || lower.contains("henry's law") && (lower.contains("class") || lower.contains("environmental") || lower.contains("exam") || lower.contains("chemistry"))
+            || lower.contains("environmental organic chemistry")
+            || lower.contains("green chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("pollutant transport") && (lower.contains("class") || lower.contains("exam") || lower.contains("environmental chemistry"))
+            || lower.contains("aquatic chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("atmospheric deposition") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("exam"))
+            || lower.contains("environmental fate") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("exam")) {
+            return "environmentalchemistry"
+        }
         // enviro — environmental science, ecology, sustainability; positioned after fitness/nutrition.
         if lower.contains("environmental science") || lower.contains("environmental studies")
             || lower.contains("environmental policy") || lower.contains("environmental impact")
-            || lower.contains("environmental chemistry") || lower.contains("environmental biology")
+            || lower.contains("environmental biology")
             || word("ecology") || word("ecologist") || lower.contains("field ecology")
             || word("ecosystem") || word("ecosystems") || lower.contains("conservation biology")
             || lower.contains("climate change") || lower.contains("climate science")
