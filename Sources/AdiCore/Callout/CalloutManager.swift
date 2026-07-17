@@ -418,6 +418,131 @@ public final class CalloutManager {
             || word("pygame") || word("phaser") || word("libgdx") || word("gdevelop") {
             return "gamedev"
         }
+        // operatingsystems — positioned BEFORE code so OS class/exam/lab terms route here
+        // rather than to the generic code pool. Bare "operating system" alone stays in code.
+        if lower.contains("operating systems class") || lower.contains("operating systems course") || lower.contains("operating systems exam")
+            || lower.contains("operating system class") || lower.contains("operating system course") || lower.contains("operating system exam")
+            || lower.contains("os class") && (lower.contains("exam") || lower.contains("course") || lower.contains("assignment") || lower.contains("homework") || lower.contains("project"))
+            || lower.contains("os exam") && !lower.contains("pose") && !lower.contains("prose")
+            || lower.contains("operating systems homework") || lower.contains("operating systems assignment") || lower.contains("operating systems lab")
+            || lower.contains("process scheduling") && (lower.contains("class") || lower.contains("exam") || lower.contains("os") || lower.contains("operating"))
+            || lower.contains("virtual memory") && (lower.contains("class") || lower.contains("exam") || lower.contains("os") || lower.contains("operating"))
+            || lower.contains("memory management") && (lower.contains("class") || lower.contains("exam") || lower.contains("os") || lower.contains("operating"))
+            || lower.contains("file system") && (lower.contains("class") || lower.contains("exam") || lower.contains("os") || lower.contains("operating") || lower.contains("kernel"))
+            || lower.contains("kernel programming") || lower.contains("kernel development") || lower.contains("kernel module")
+            || lower.contains("system call") && (lower.contains("class") || lower.contains("exam") || lower.contains("os") || lower.contains("operating") || lower.contains("programming"))
+            || lower.contains("deadlock") && (lower.contains("class") || lower.contains("exam") || lower.contains("os") || lower.contains("operating") || lower.contains("prevention") || lower.contains("detection"))
+            || lower.contains("thread synchronization") && (lower.contains("class") || lower.contains("exam") || lower.contains("os"))
+            || lower.contains("process synchronization") && (lower.contains("class") || lower.contains("exam") || lower.contains("os"))
+            || lower.contains("semaphore") && (lower.contains("class") || lower.contains("exam") || lower.contains("os") || lower.contains("operating") || lower.contains("synchronization"))
+            || lower.contains("mutex") && (lower.contains("class") || lower.contains("exam") || lower.contains("os") || lower.contains("operating") || lower.contains("synchronization"))
+            || lower.contains("page replacement") && (lower.contains("class") || lower.contains("exam") || lower.contains("os") || lower.contains("algorithm"))
+            || lower.contains("demand paging") && (lower.contains("class") || lower.contains("exam") || lower.contains("os"))
+            || lower.contains("cpu scheduling") && (lower.contains("class") || lower.contains("exam") || lower.contains("os") || lower.contains("algorithm"))
+            || lower.contains("round robin") && (lower.contains("scheduling") || lower.contains("os class") || lower.contains("os exam"))
+            || lower.contains("xv6") || lower.contains("pintos") || lower.contains("nachos os") {
+            return "operatingsystems"
+        }
+        // algorithms — positioned BEFORE code so dedicated algorithms class/exam/design terms
+        // route here. Bare word("algorithm") or word("algorithms") alone stays in code.
+        if lower.contains("algorithms class") || lower.contains("algorithms course") || lower.contains("algorithms exam")
+            || lower.contains("algorithm design class") || lower.contains("algorithm design course") || lower.contains("algorithm design exam")
+            || lower.contains("algorithm analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("algorithms homework") || lower.contains("algorithms assignment") || lower.contains("algorithms problem set")
+            || lower.contains("algorithms lab") || lower.contains("algorithms textbook") && lower.contains("class")
+            || lower.contains("computational complexity") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("np-completeness") && (lower.contains("class") || lower.contains("exam") || lower.contains("proof") || lower.contains("reduction"))
+            || lower.contains("np completeness") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("np-hard") && (lower.contains("class") || lower.contains("exam") || lower.contains("proof") || lower.contains("reduction"))
+            || lower.contains("graph algorithm") && (lower.contains("class") || lower.contains("exam") || lower.contains("homework") || lower.contains("assignment"))
+            || lower.contains("dynamic programming") && (lower.contains("class") || lower.contains("exam") || lower.contains("homework") || lower.contains("assignment") || lower.contains("problem set"))
+            || lower.contains("divide and conquer") && (lower.contains("class") || lower.contains("exam") || lower.contains("homework") || lower.contains("algorithm"))
+            || lower.contains("greedy algorithm") && (lower.contains("class") || lower.contains("exam") || lower.contains("homework") || lower.contains("proof"))
+            || lower.contains("amortized analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("algorithm"))
+            || lower.contains("randomized algorithm") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("approximation algorithm") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("clrs") && (lower.contains("class") || lower.contains("homework") || lower.contains("exam") || lower.contains("chapter"))
+            || lower.contains("intro to algorithms") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("introduction to algorithms") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("design and analysis of algorithms") || lower.contains("analysis of algorithms") && lower.contains("class") {
+            return "algorithms"
+        }
+        // databasesystems — positioned BEFORE code so database class/exam/design terms route
+        // here. Bare word("sql") alone stays in code.
+        if lower.contains("database systems class") || lower.contains("database systems course") || lower.contains("database systems exam")
+            || lower.contains("database class") && !lower.contains("firebase") && !lower.contains("nosql")
+            || lower.contains("database course") && !lower.contains("firebase") && !lower.contains("nosql")
+            || lower.contains("database exam")
+            || lower.contains("database design class") || lower.contains("database design course") || lower.contains("database design exam")
+            || lower.contains("database management class") || lower.contains("database management course") || lower.contains("database management exam")
+            || lower.contains("database homework") && (lower.contains("sql") || lower.contains("relational") || lower.contains("schema"))
+            || lower.contains("database assignment") && (lower.contains("sql") || lower.contains("relational") || lower.contains("schema"))
+            || lower.contains("sql class") || lower.contains("sql exam") || lower.contains("sql course")
+            || lower.contains("er diagram") && (lower.contains("class") || lower.contains("exam") || lower.contains("design") || lower.contains("homework"))
+            || lower.contains("entity relationship") && (lower.contains("class") || lower.contains("exam") || lower.contains("diagram") || lower.contains("model"))
+            || lower.contains("relational model") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("relational database") && (lower.contains("class") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("normalization") && (lower.contains("class") || lower.contains("exam") || lower.contains("database") || lower.contains("schema"))
+            || lower.contains("query optimization") && (lower.contains("class") || lower.contains("exam") || lower.contains("database"))
+            || lower.contains("transaction management") && (lower.contains("class") || lower.contains("exam") || lower.contains("database"))
+            || lower.contains("acid properties") && (lower.contains("class") || lower.contains("exam") || lower.contains("database"))
+            || lower.contains("dbms class") || lower.contains("dbms course") || lower.contains("dbms exam")
+            || lower.contains("database indexing") && (lower.contains("class") || lower.contains("exam") || lower.contains("homework"))
+            || lower.contains("b-tree") && (lower.contains("database") || lower.contains("class") || lower.contains("index") || lower.contains("exam"))
+            || lower.contains("stored procedure") && (lower.contains("class") || lower.contains("exam") || lower.contains("database"))
+            || word("postgresql") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment"))
+            || word("mysql") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment")) {
+            return "databasesystems"
+        }
+        // computernetworks — positioned BEFORE code so networking class/exam terms route here.
+        // Bare "network" or "networking" alone does NOT fire — compound context required.
+        if lower.contains("computer networks class") || lower.contains("computer networks course") || lower.contains("computer networks exam")
+            || lower.contains("computer network class") || lower.contains("computer network course") || lower.contains("computer network exam")
+            || lower.contains("networking class") && !lower.contains("social networking")
+            || lower.contains("networking course") && !lower.contains("social networking") && !lower.contains("career networking")
+            || lower.contains("networking exam") && !lower.contains("social")
+            || lower.contains("networking homework") || lower.contains("networking assignment") || lower.contains("networking lab")
+            || lower.contains("tcp/ip") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("homework"))
+            || lower.contains("tcp ip") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("network protocols") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("homework"))
+            || lower.contains("socket programming") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("homework") || lower.contains("assignment"))
+            || lower.contains("data communications") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("osi model") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("layer"))
+            || lower.contains("osi layers") && (lower.contains("class") || lower.contains("exam") || lower.contains("study"))
+            || lower.contains("routing protocol") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("homework"))
+            || lower.contains("ip addressing") && (lower.contains("class") || lower.contains("exam") || lower.contains("homework") || lower.contains("subnet"))
+            || lower.contains("subnetting") && (lower.contains("class") || lower.contains("exam") || lower.contains("homework") || lower.contains("course"))
+            || lower.contains("network layer") && (lower.contains("class") || lower.contains("exam") || lower.contains("protocol"))
+            || lower.contains("transport layer") && (lower.contains("class") || lower.contains("exam") || lower.contains("protocol"))
+            || lower.contains("wireshark") && (lower.contains("class") || lower.contains("lab") || lower.contains("assignment") || lower.contains("homework"))
+            || lower.contains("packet analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("network"))
+            || lower.contains("network simulation") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("computer communication") && (lower.contains("class") || lower.contains("exam") || lower.contains("course")) {
+            return "computernetworks"
+        }
+        // computervision — positioned BEFORE code so CV class/exam and OpenCV project terms
+        // route here. Bare "neural network" stays in artificialintelligence (fires earlier).
+        if lower.contains("computer vision class") || lower.contains("computer vision course") || lower.contains("computer vision exam")
+            || lower.contains("computer vision homework") || lower.contains("computer vision assignment") || lower.contains("computer vision project")
+            || lower.contains("computer vision textbook") || lower.contains("computer vision notes") && lower.contains("class")
+            || word("opencv") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("project") || lower.contains("assignment") || lower.contains("homework"))
+            || lower.contains("image processing class") || lower.contains("image processing course") || lower.contains("image processing exam")
+            || lower.contains("image processing homework") || lower.contains("image processing assignment") || lower.contains("image processing project")
+            || lower.contains("object detection") && (lower.contains("class") || lower.contains("exam") || lower.contains("project") || lower.contains("assignment") || lower.contains("homework"))
+            || lower.contains("object recognition") && (lower.contains("class") || lower.contains("exam") || lower.contains("project") || lower.contains("assignment"))
+            || lower.contains("image segmentation") && (lower.contains("class") || lower.contains("exam") || lower.contains("project") || lower.contains("assignment") || lower.contains("homework"))
+            || lower.contains("feature extraction") && (lower.contains("class") || lower.contains("exam") || lower.contains("project") || lower.contains("vision") || lower.contains("image"))
+            || lower.contains("convolutional neural network") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("project") || lower.contains("assignment")) && !lower.contains("natural language")
+            || lower.contains("image classification") && (lower.contains("class") || lower.contains("exam") || lower.contains("project") || lower.contains("assignment"))
+            || lower.contains("semantic segmentation") && (lower.contains("class") || lower.contains("exam") || lower.contains("project") || lower.contains("assignment"))
+            || lower.contains("optical flow") && (lower.contains("class") || lower.contains("exam") || lower.contains("project") || lower.contains("vision"))
+            || lower.contains("stereo vision") && (lower.contains("class") || lower.contains("exam") || lower.contains("project"))
+            || lower.contains("depth estimation") && (lower.contains("class") || lower.contains("exam") || lower.contains("project") || lower.contains("vision"))
+            || lower.contains("point cloud") && (lower.contains("class") || lower.contains("exam") || lower.contains("project") || lower.contains("vision") || lower.contains("processing"))
+            || lower.contains("structure from motion") && (lower.contains("class") || lower.contains("exam") || lower.contains("project"))
+            || word("yolo") && (lower.contains("class") || lower.contains("project") || lower.contains("detection") || lower.contains("assignment") || lower.contains("vision")) {
+            return "computervision"
+        }
         if word("code") || word("coding") || word("programming") || word("bug") || word("feature") || word("function")
             || word("leetcode") || word("hackerrank") || word("codeforces") || word("codewars")
             || word("algorithm") || word("algorithms") || lower.contains("data structure")

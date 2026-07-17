@@ -526,6 +526,11 @@ extension CalloutManager {
         case "climatology":                return climatologyCallouts(tier: tier)
         case "photochemistry":             return photochemistryCallouts(tier: tier)
         case "electromagnetictheory":      return electromagnetictheoryCallouts(tier: tier)
+        case "operatingsystems":           return operatingsystemsCallouts(tier: tier)
+        case "algorithms":                 return algorithmsCallouts(tier: tier)
+        case "databasesystems":            return databasesystemsCallouts(tier: tier)
+        case "computernetworks":           return computernetworksCallouts(tier: tier)
+        case "computervision":             return computervisionCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -10551,6 +10556,111 @@ extension CalloutManager {
             "CLOSE THIS. open your electrodynamics textbook.",
             "CLOSE THIS. those multipole expansion problems won't solve themselves.",
             "CLOSE THIS. your electromagnetic theory exam won't study itself."
+        ]
+        }
+    }
+
+    private func operatingsystemsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those process scheduling algorithms won't learn themselves.",
+            "your OS exam doesn't care that you're scrolling.",
+            "get back to your operating systems work.",
+            "close this and open your OS textbook.",
+        ]
+        case 2: return [
+            "no one masters operating systems by scrolling.",
+            "close this and work on your OS assignment.",
+            "those virtual memory and scheduling problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your operating systems textbook.",
+            "CLOSE THIS. those deadlock and synchronization problems won't solve themselves.",
+            "CLOSE THIS. your OS exam won't study itself."
+        ]
+        }
+    }
+
+    private func algorithmsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those algorithm proofs won't write themselves.",
+            "your algorithms exam doesn't care that you're scrolling.",
+            "get back to your algorithms work.",
+            "close this and open your algorithms textbook.",
+        ]
+        case 2: return [
+            "no one masters algorithms by scrolling.",
+            "close this and work on your algorithms problem set.",
+            "those dynamic programming and complexity proofs need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your algorithms textbook.",
+            "CLOSE THIS. those NP-completeness and graph algorithm problems won't solve themselves.",
+            "CLOSE THIS. your algorithms exam won't study itself."
+        ]
+        }
+    }
+
+    private func databasesystemsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those database design problems won't solve themselves.",
+            "your database exam doesn't care that you're scrolling.",
+            "get back to your database systems work.",
+            "close this and open your database textbook.",
+        ]
+        case 2: return [
+            "no one masters database systems by scrolling.",
+            "close this and work on your database assignment.",
+            "those normalization and query optimization problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your database systems textbook.",
+            "CLOSE THIS. those ER diagrams and SQL queries won't write themselves.",
+            "CLOSE THIS. your database exam won't study itself."
+        ]
+        }
+    }
+
+    private func computernetworksCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those network protocol problems won't solve themselves.",
+            "your networks exam doesn't care that you're scrolling.",
+            "get back to your computer networks work.",
+            "close this and open your networking textbook.",
+        ]
+        case 2: return [
+            "no one masters computer networks by scrolling.",
+            "close this and work on your networking assignment.",
+            "those TCP/IP and routing protocol problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your computer networks textbook.",
+            "CLOSE THIS. those subnetting and OSI model problems won't solve themselves.",
+            "CLOSE THIS. your networks exam won't study itself."
+        ]
+        }
+    }
+
+    private func computervisionCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those image processing algorithms won't implement themselves.",
+            "your computer vision exam doesn't care that you're scrolling.",
+            "get back to your computer vision work.",
+            "close this and open your computer vision textbook.",
+        ]
+        case 2: return [
+            "no one masters computer vision by scrolling.",
+            "close this and work on your CV assignment.",
+            "those object detection and segmentation problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your computer vision textbook.",
+            "CLOSE THIS. those convolutional network and feature extraction problems won't solve themselves.",
+            "CLOSE THIS. your computer vision exam won't study itself."
         ]
         }
     }

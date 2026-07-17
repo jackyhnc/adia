@@ -6543,4 +6543,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast921() {
         #expect(SuggestedSessionTemplates.all.count >= 921, "template catalog must have ≥921 entries after hydrology/oceanography/climatology/photochemistry/electromagnetictheory additions")
     }
+    // MARK: - operatingsystems templates
+    @Test func operatingSystemsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("operating systems") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func operatingSystemsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("operating systems") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - algorithms templates
+    @Test func algorithmsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("algorithms") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func algorithmsProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("algorithms") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - databasesystems templates
+    @Test func databaseSystemsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("database systems") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func databaseSystemsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("database systems") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - computernetworks templates
+    @Test func computerNetworksStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computer networks") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func computerNetworksAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computer networks") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - computervision templates
+    @Test func computerVisionStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computer vision") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func computerVisionProjectTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computer vision") && $0.task.lowercased().contains("project") })
+    }
+    // MARK: - Count guard (≥931)
+    @Test func templateCountAtLeast931() {
+        #expect(SuggestedSessionTemplates.all.count >= 931, "template catalog must have ≥931 entries after operatingsystems/algorithms/databasesystems/computernetworks/computervision additions")
+    }
 }

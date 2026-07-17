@@ -5945,5 +5945,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Electromagnetic theory problem set completed (retarded potential derivation, multipole computation, radiation analysis, gauge transformation, or relativistic field solution completed with all vector calculus steps shown — saved to file)",
             preferredDuration: 60 * 60
         ),
+        // operatingsystems
+        SuggestedTemplate(
+            icon: "cpu.fill",
+            task: "Study operating systems for my exam — review process scheduling, virtual memory, page replacement algorithms, file systems, system calls, deadlock detection and prevention, synchronization primitives, and the kernel architecture",
+            successCriteria: "Operating systems study session completed (at least two topics reviewed with process scheduling algorithms, virtual memory paging steps, page replacement policies, and synchronization mechanisms summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cpu.fill",
+            task: "Work on my operating systems assignment — implement a process scheduler, simulate virtual memory with page replacement, write a kernel module, analyze deadlock scenarios, or solve synchronization problems using semaphores and mutexes",
+            successCriteria: "Operating systems assignment completed (scheduler implementation, page replacement simulation, kernel module, deadlock analysis, or synchronization solution completed with design decisions, test cases, and results documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // algorithms
+        SuggestedTemplate(
+            icon: "arrow.triangle.branch",
+            task: "Study algorithms for my exam — review dynamic programming, divide and conquer, greedy algorithms, graph algorithms, computational complexity, amortized analysis, NP-completeness, and algorithm correctness proofs",
+            successCriteria: "Algorithms study session completed (at least two topics reviewed with recurrence relations, complexity analysis, graph algorithm steps, and NP-completeness reduction techniques summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "arrow.triangle.branch",
+            task: "Work on my algorithms problem set — prove algorithm correctness, analyze time and space complexity, design a dynamic programming solution, implement a graph algorithm, or write a polynomial-time reduction for NP-completeness",
+            successCriteria: "Algorithms problem set completed (correctness proof, complexity analysis, DP solution, graph algorithm implementation, or NP reduction completed with all steps, invariants, and big-O derivations shown — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // databasesystems
+        SuggestedTemplate(
+            icon: "cylinder.fill",
+            task: "Study database systems for my exam — review relational model, ER diagrams, SQL, normalization, query optimization, transaction management, ACID properties, indexing, and B-tree structures",
+            successCriteria: "Database systems study session completed (at least two topics reviewed with ER diagram notation, normalization forms, SQL query patterns, transaction isolation levels, and B-tree index operations summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cylinder.fill",
+            task: "Work on my database systems assignment — design an ER diagram, write and optimize SQL queries, normalize a schema to 3NF/BCNF, analyze transaction isolation levels, or implement a stored procedure",
+            successCriteria: "Database systems assignment completed (ER diagram, SQL queries, normalization schema, transaction analysis, or stored procedure completed with design rationale, all steps, and test queries shown — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // computernetworks
+        SuggestedTemplate(
+            icon: "network",
+            task: "Study computer networks for my exam — review OSI model, TCP/IP stack, routing protocols, IP addressing and subnetting, transport layer protocols, socket programming, data link layer, and network security fundamentals",
+            successCriteria: "Computer networks study session completed (at least two topics reviewed with OSI layer functions, TCP/IP header fields, routing algorithm steps, subnetting calculations, and socket API calls summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "network",
+            task: "Work on my computer networks assignment — implement a socket program, analyze packet captures in Wireshark, calculate subnets and routing tables, simulate a network topology, or trace TCP connection state machines",
+            successCriteria: "Computer networks assignment completed (socket program, Wireshark analysis, subnet calculation, network simulation, or TCP state trace completed with protocol headers, routing decisions, and results documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // computervision
+        SuggestedTemplate(
+            icon: "camera.fill",
+            task: "Study computer vision for my exam — review image filtering, edge detection, feature extraction, optical flow, stereo vision, object detection architectures, image segmentation, and convolutional neural network fundamentals",
+            successCriteria: "Computer vision study session completed (at least two topics reviewed with convolution kernel math, feature descriptor steps, optical flow equations, and CNN layer operations summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "camera.fill",
+            task: "Work on my computer vision project — implement an object detector with OpenCV or PyTorch, train an image classifier, apply semantic segmentation, compute optical flow, or build a stereo depth estimator",
+            successCriteria: "Computer vision project completed (object detector, image classifier, segmentation model, optical flow computation, or depth estimator implemented and tested with sample images, evaluation metrics, and code saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }
