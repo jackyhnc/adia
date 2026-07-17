@@ -5646,4 +5646,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 741,
                 "catalog should have ≥741 templates after structuralbiology/biochemistrylab/clinicalneurology/dermatologyrotation/psychiatryrotation additions (10 templates)")
     }
+
+    // MARK: - surgeryrotation templates
+    @Test func catalogHasSurgeryRotationTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasRotation = tasks.contains {
+            $0.localizedCaseInsensitiveContains("surgery") &&
+            ($0.localizedCaseInsensitiveContains("rotation") || $0.localizedCaseInsensitiveContains("operative") || $0.localizedCaseInsensitiveContains("clerkship"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("surgery") &&
+            ($0.localizedCaseInsensitiveContains("shelf") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("exam"))
+        }
+        #expect(hasRotation, "catalog must include a surgery rotation template")
+        #expect(hasStudy, "catalog must include a surgery study template")
+    }
+
+    // MARK: - pediatricsrotation templates
+    @Test func catalogHasPediatricsRotationTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasRotation = tasks.contains {
+            $0.localizedCaseInsensitiveContains("pediatric") &&
+            ($0.localizedCaseInsensitiveContains("rotation") || $0.localizedCaseInsensitiveContains("peds") || $0.localizedCaseInsensitiveContains("milestone"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("pediatric") &&
+            ($0.localizedCaseInsensitiveContains("shelf") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("exam"))
+        }
+        #expect(hasRotation, "catalog must include a pediatrics rotation template")
+        #expect(hasStudy, "catalog must include a pediatrics study template")
+    }
+
+    // MARK: - internalmedicine templates
+    @Test func catalogHasInternalMedicineTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasRotation = tasks.contains {
+            $0.localizedCaseInsensitiveContains("internal medicine") &&
+            ($0.localizedCaseInsensitiveContains("rotation") || $0.localizedCaseInsensitiveContains("H&P") || $0.localizedCaseInsensitiveContains("SOAP"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("internal medicine") &&
+            ($0.localizedCaseInsensitiveContains("shelf") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("exam"))
+        }
+        #expect(hasRotation, "catalog must include an internal medicine rotation template")
+        #expect(hasStudy, "catalog must include an internal medicine study template")
+    }
+
+    // MARK: - obgynrotation templates
+    @Test func catalogHasObGynRotationTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasRotation = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("OB/GYN") || $0.localizedCaseInsensitiveContains("obstetric") || $0.localizedCaseInsensitiveContains("gynecol")) &&
+            ($0.localizedCaseInsensitiveContains("rotation") || $0.localizedCaseInsensitiveContains("labor") || $0.localizedCaseInsensitiveContains("delivery"))
+        }
+        let hasStudy = tasks.contains {
+            ($0.localizedCaseInsensitiveContains("OB/GYN") || $0.localizedCaseInsensitiveContains("obstetric") || $0.localizedCaseInsensitiveContains("gynecol")) &&
+            ($0.localizedCaseInsensitiveContains("shelf") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("exam"))
+        }
+        #expect(hasRotation, "catalog must include an OB/GYN rotation template")
+        #expect(hasStudy, "catalog must include an OB/GYN study template")
+    }
+
+    // MARK: - familymedicine templates
+    @Test func catalogHasFamilyMedicineTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasRotation = tasks.contains {
+            $0.localizedCaseInsensitiveContains("family medicine") &&
+            ($0.localizedCaseInsensitiveContains("rotation") || $0.localizedCaseInsensitiveContains("clinic") || $0.localizedCaseInsensitiveContains("continuity"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("family medicine") &&
+            ($0.localizedCaseInsensitiveContains("shelf") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("exam"))
+        }
+        #expect(hasRotation, "catalog must include a family medicine rotation template")
+        #expect(hasStudy, "catalog must include a family medicine study template")
+    }
+
+    // MARK: - Count guard (batch: surgeryrotation/pediatricsrotation/internalmedicine/obgynrotation/familymedicine)
+    @Test func catalogHasAtLeastSevenHundredFiftyOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 751,
+                "catalog should have ≥751 templates after surgeryrotation/pediatricsrotation/internalmedicine/obgynrotation/familymedicine additions (10 templates)")
+    }
 }

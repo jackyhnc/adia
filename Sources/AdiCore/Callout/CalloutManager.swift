@@ -5606,6 +5606,105 @@ public final class CalloutManager {
             || lower.contains("mood disorder case") && (lower.contains("rotation") || lower.contains("psychiatry") || lower.contains("psych")) {
             return "psychiatryrotation"
         }
+        // surgeryrotation — positioned AFTER psychiatryrotation and BEFORE premed so surgery
+        // clerkship, OR tasks, and operative notes route here. Bare "surgery" stays in premed.
+        if lower.contains("surgery rotation") || lower.contains("surgery clerkship")
+            || lower.contains("surgical rotation") || lower.contains("surgical clerkship")
+            || lower.contains("surgery elective") || lower.contains("surgical elective")
+            || lower.contains("surgery rounds") || lower.contains("surgical rounds")
+            || lower.contains("surgery attending") || lower.contains("surgical attending")
+            || lower.contains("surgery ward") || lower.contains("surgical ward")
+            || lower.contains("scrub in") || lower.contains("scrubbing in")
+            || lower.contains("operative report") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("surgery") || lower.contains("write"))
+            || lower.contains("surgical notes") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write"))
+            || lower.contains("pre-op notes") || lower.contains("preop notes")
+            || lower.contains("post-op notes") || lower.contains("postop notes")
+            || lower.contains("surgical case") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("presentation"))
+            || lower.contains("surgery case") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("presentation"))
+            || lower.contains("surgery residency") && (lower.contains("reading") || lower.contains("notes") || lower.contains("rotation") || lower.contains("case"))
+            || lower.contains("surgical residency") && (lower.contains("reading") || lower.contains("notes") || lower.contains("rotation"))
+            || lower.contains("surgery shelf") || lower.contains("surgical shelf")
+            || lower.contains("nbme surgery") || lower.contains("surgery nbme") {
+            return "surgeryrotation"
+        }
+        // pediatricsrotation — positioned AFTER surgeryrotation and BEFORE premed. Bare "pediatrics"
+        // alone stays in premed; NBME/shelf context specific to peds rotation routes here.
+        if lower.contains("pediatrics rotation") || lower.contains("pediatrics clerkship")
+            || lower.contains("peds rotation") || lower.contains("peds clerkship")
+            || lower.contains("pediatric rotation") || lower.contains("pediatric clerkship")
+            || lower.contains("pediatrics elective") || lower.contains("peds elective")
+            || lower.contains("pediatrics rounds") || lower.contains("peds rounds")
+            || lower.contains("pediatrics attending") || lower.contains("peds attending")
+            || lower.contains("pediatrics ward") || lower.contains("peds ward")
+            || lower.contains("pediatric ward") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("notes"))
+            || lower.contains("developmental milestones") && (lower.contains("rotation") || lower.contains("class") || lower.contains("peds") || lower.contains("pediatric") || lower.contains("clinical"))
+            || lower.contains("pediatric exam") && (lower.contains("rotation") || lower.contains("clinical") || lower.contains("clerkship"))
+            || lower.contains("pediatric case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("peds case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("pediatrics notes") && (lower.contains("rotation") || lower.contains("write"))
+            || lower.contains("peds notes") && (lower.contains("rotation") || lower.contains("write"))
+            || lower.contains("pediatrics residency") && (lower.contains("reading") || lower.contains("notes") || lower.contains("rotation"))
+            || lower.contains("peds shelf") || lower.contains("pediatrics shelf")
+            || lower.contains("nbme pediatrics") || lower.contains("nbme peds") {
+            return "pediatricsrotation"
+        }
+        // internalmedicine — positioned AFTER pediatricsrotation and BEFORE premed. "internal medicine"
+        // alone without clerkship/rotation context stays in premed; H&P write-up and SOAP notes
+        // in clinical context route here.
+        if lower.contains("internal medicine clerkship") || lower.contains("internal medicine rotation")
+            || lower.contains("im clerkship") || lower.contains("im rotation")
+            || lower.contains("medicine clerkship") || lower.contains("medicine rotation")
+            || lower.contains("internal medicine rounds") || lower.contains("im rounds")
+            || lower.contains("medicine rounds") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("attending") || lower.contains("notes"))
+            || lower.contains("internal medicine attending") || lower.contains("im attending")
+            || lower.contains("internal medicine ward") || lower.contains("im ward")
+            || lower.contains("internal medicine elective")
+            || lower.contains("h&p write") || lower.contains("h and p write") || lower.contains("history and physical") && (lower.contains("write") || lower.contains("rotation") || lower.contains("clerkship") || lower.contains("notes"))
+            || lower.contains("soap notes") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("internal medicine") || lower.contains("im ") || lower.contains("ward"))
+            || lower.contains("internal medicine case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("im case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("internal medicine notes") && (lower.contains("rotation") || lower.contains("write"))
+            || lower.contains("im shelf") || lower.contains("internal medicine shelf")
+            || lower.contains("medicine shelf") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("nbme")) {
+            return "internalmedicine"
+        }
+        // obgynrotation — positioned AFTER internalmedicine and BEFORE premed. Bare "obstetrics" or
+        // "gynecology" alone stays in premed; OB/GYN clerkship-specific context routes here.
+        if lower.contains("ob/gyn rotation") || lower.contains("ob/gyn clerkship")
+            || lower.contains("obgyn rotation") || lower.contains("obgyn clerkship")
+            || lower.contains("ob-gyn rotation") || lower.contains("ob-gyn clerkship")
+            || lower.contains("obstetrics rotation") || lower.contains("obstetrics clerkship")
+            || lower.contains("gynecology rotation") || lower.contains("gynecology clerkship")
+            || lower.contains("obs rotation") || lower.contains("labor and delivery rotation")
+            || lower.contains("labor and delivery notes") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write"))
+            || lower.contains("l&d rotation") || lower.contains("l&d notes") && (lower.contains("rotation") || lower.contains("write") || lower.contains("clerkship"))
+            || lower.contains("ob/gyn rounds") || lower.contains("obgyn rounds")
+            || lower.contains("ob/gyn attending") || lower.contains("obgyn attending")
+            || lower.contains("ob/gyn notes") && (lower.contains("rotation") || lower.contains("write"))
+            || lower.contains("obgyn notes") && (lower.contains("rotation") || lower.contains("write"))
+            || lower.contains("ob/gyn case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("gynecology case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("ob/gyn shelf") || lower.contains("obgyn shelf")
+            || lower.contains("nbme ob/gyn") || lower.contains("nbme obgyn") {
+            return "obgynrotation"
+        }
+        // familymedicine — positioned AFTER obgynrotation and BEFORE premed. Bare "family medicine"
+        // alone without clerkship/rotation context stays in premed; FM clerkship tasks route here.
+        if lower.contains("family medicine clerkship") || lower.contains("family medicine rotation")
+            || lower.contains("fm clerkship") || lower.contains("fm rotation")
+            || lower.contains("family medicine elective") || lower.contains("family medicine clinic")
+            || lower.contains("fm clinic") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("notes"))
+            || lower.contains("family medicine rounds") || lower.contains("fm rounds")
+            || lower.contains("family medicine attending") || lower.contains("fm attending")
+            || lower.contains("family medicine notes") && (lower.contains("rotation") || lower.contains("write") || lower.contains("clerkship"))
+            || lower.contains("fm notes") && (lower.contains("rotation") || lower.contains("write") || lower.contains("clerkship"))
+            || lower.contains("continuity clinic") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("family") || lower.contains("fm"))
+            || lower.contains("family medicine case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("fm case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("family medicine shelf") || lower.contains("fm shelf")
+            || lower.contains("nbme family medicine") {
+            return "familymedicine"
+        }
         if word("anatomy") || word("physiology") || word("biochemistry")
             || word("pharmacology") || word("pathology") || word("histology")
             || word("microbiology") || word("immunology") || word("embryology")

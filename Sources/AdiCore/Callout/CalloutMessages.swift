@@ -436,6 +436,11 @@ extension CalloutManager {
         case "clinicalneurology":          return clinicalneurologyCallouts(tier: tier)
         case "dermatologyrotation":        return dermatologyrotationCallouts(tier: tier)
         case "psychiatryrotation":         return psychiatryrotationCallouts(tier: tier)
+        case "surgeryrotation":            return surgeryrotationCallouts(tier: tier)
+        case "pediatricsrotation":         return pediatricsrotationCallouts(tier: tier)
+        case "internalmedicine":           return internalMedicineCallouts(tier: tier)
+        case "obgynrotation":              return obgynrotationCallouts(tier: tier)
+        case "familymedicine":             return familymedicineCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -8571,6 +8576,111 @@ extension CalloutManager {
             "CLOSE THIS. open your psychiatry case notes.",
             "CLOSE THIS. those psychiatric formulations need your attention.",
             "CLOSE THIS. your psychiatry rotation won't study itself."
+        ]
+        }
+    }
+
+    private func surgeryrotationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those operative notes aren't going to write themselves.",
+            "close this and get back to your surgery rotation.",
+            "your surgery attending is watching — close this.",
+            "those surgical cases need your full attention. close this."
+        ]
+        case 2: return [
+            "no one becomes a surgeon by scrolling.",
+            "close this and open your surgical notes.",
+            "that operative report won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your surgical notes.",
+            "CLOSE THIS. those operative reports need your attention.",
+            "CLOSE THIS. your surgery rotation won't study itself."
+        ]
+        }
+    }
+
+    private func pediatricsrotationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those pediatric cases aren't going to write themselves.",
+            "close this and get back to your peds rotation.",
+            "your peds attending is waiting — close this.",
+            "those pediatric notes need your focus. close this."
+        ]
+        case 2: return [
+            "no one masters developmental milestones by scrolling.",
+            "close this and open your pediatrics case notes.",
+            "that peds case won't present itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your pediatrics case notes.",
+            "CLOSE THIS. those peds cases need your attention.",
+            "CLOSE THIS. your pediatrics rotation won't study itself."
+        ]
+        }
+    }
+
+    private func internalMedicineCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that H&P isn't going to write itself.",
+            "close this and get back to your medicine rotation.",
+            "your medicine attending is waiting — close this.",
+            "those SOAP notes need your focus. close this."
+        ]
+        case 2: return [
+            "no one passes the medicine shelf by scrolling.",
+            "close this and open your internal medicine notes.",
+            "that H&P won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your internal medicine notes.",
+            "CLOSE THIS. that H&P needs to be written.",
+            "CLOSE THIS. your medicine rotation won't study itself."
+        ]
+        }
+    }
+
+    private func obgynrotationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those OB/GYN notes aren't going to write themselves.",
+            "close this and get back to your OB/GYN rotation.",
+            "your attending is waiting on those L&D notes — close this.",
+            "those gynecology cases need your focus. close this."
+        ]
+        case 2: return [
+            "no one masters labor and delivery by scrolling.",
+            "close this and open your OB/GYN case notes.",
+            "those obstetrics notes won't write themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your OB/GYN rotation notes.",
+            "CLOSE THIS. those L&D cases need your attention.",
+            "CLOSE THIS. your OB/GYN rotation won't study itself."
+        ]
+        }
+    }
+
+    private func familymedicineCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those family medicine notes aren't going to write themselves.",
+            "close this and get back to your FM rotation.",
+            "your family medicine attending is waiting — close this.",
+            "those continuity clinic notes need your focus. close this."
+        ]
+        case 2: return [
+            "no one passes the FM shelf by scrolling.",
+            "close this and open your family medicine notes.",
+            "that clinic note won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your family medicine rotation notes.",
+            "CLOSE THIS. those clinic notes need to be written.",
+            "CLOSE THIS. your FM rotation won't study itself."
         ]
         }
     }

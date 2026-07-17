@@ -19720,4 +19720,167 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast741() {
         #expect(SuggestedSessionTemplates.all.count >= 741, "template catalog must have ≥741 entries after structuralbiology/biochemistrylab/clinicalneurology/dermatologyrotation/psychiatryrotation (10 templates)")
     }
+
+    // MARK: - surgeryrotation
+    @Test func surgeryRotationRoutesSurgeryrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "surgery rotation notes and operative report") == "surgeryrotation")
+    }
+    @Test func surgeryClerkshipRoutesSurgeryrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "surgery clerkship H&P write up") == "surgeryrotation")
+    }
+    @Test func scrubInRoutesSurgeryrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "scrubbing in for my surgery case today") == "surgeryrotation")
+    }
+    @Test func operativeReportRoutesSurgeryrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my operative report for surgery rotation") == "surgeryrotation")
+    }
+    @Test func surgeryShelfRoutesSurgeryrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "surgery shelf exam prep NBME") == "surgeryrotation")
+    }
+    @Test func premedNotSurgeryrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "surgery MCAT study session") == "premed")
+    }
+    @Test @MainActor func surgeryrotationCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "surgeryrotation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "surgeryrotation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "surgeryrotation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func surgeryrotationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "surgeryrotation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func surgeryrotationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "surgeryrotation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - pediatricsrotation
+    @Test func pediatricsRotationRoutesPediatricsrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pediatrics rotation case notes peds") == "pediatricsrotation")
+    }
+    @Test func pedsClerkshipRoutesPediatricsrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "peds clerkship write up case") == "pediatricsrotation")
+    }
+    @Test func developmentalMilestonesRoutesPediatricsrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "developmental milestones peds rotation review") == "pediatricsrotation")
+    }
+    @Test func pedsShelfRoutesPediatricsrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "peds shelf exam practice NBME pediatrics") == "pediatricsrotation")
+    }
+    @Test func pediatricsRoundsRoutesPediatricsrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pediatrics rounds prep attending notes") == "pediatricsrotation")
+    }
+    @Test @MainActor func pediatricsrotationCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "pediatricsrotation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "pediatricsrotation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "pediatricsrotation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func pediatricsrotationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "pediatricsrotation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func pediatricsrotationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "pediatricsrotation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - internalmedicine
+    @Test func internalMedicineClerkshipRoutesInternalmedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "internal medicine clerkship H&P write") == "internalmedicine")
+    }
+    @Test func imRotationRoutesInternalmedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "IM rotation SOAP notes medicine rounds") == "internalmedicine")
+    }
+    @Test func hAndPWriteRoutesInternalmedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "H&P write up for internal medicine rotation") == "internalmedicine")
+    }
+    @Test func soapNotesIMRoutesInternalmedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "SOAP notes internal medicine ward rotation") == "internalmedicine")
+    }
+    @Test func medicineShelfRoutesInternalmedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "internal medicine shelf exam prep") == "internalmedicine")
+    }
+    @Test @MainActor func internalmedicineCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "internalmedicine", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "internalmedicine", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "internalmedicine", tier: 3).isEmpty)
+    }
+    @Test @MainActor func internalmedicineTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "internalmedicine", tier: 1).count >= 4)
+    }
+    @Test @MainActor func internalmedicineTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "internalmedicine", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - obgynrotation
+    @Test func obGynRotationRoutesObgynrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "OB/GYN rotation notes labor and delivery") == "obgynrotation")
+    }
+    @Test func obGynClerkshipRoutesObgynrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ob/gyn clerkship write up gynecology case") == "obgynrotation")
+    }
+    @Test func laborAndDeliveryNotesRoutesObgynrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "labor and delivery notes rotation write") == "obgynrotation")
+    }
+    @Test func lAndDNotesRoutesObgynrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "L&D notes rotation write") == "obgynrotation")
+    }
+    @Test func obgynShelfRoutesObgynrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "NBME ob/gyn shelf exam practice") == "obgynrotation")
+    }
+    @Test @MainActor func obgynrotationCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "obgynrotation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "obgynrotation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "obgynrotation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func obgynrotationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "obgynrotation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func obgynrotationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "obgynrotation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - familymedicine
+    @Test func familyMedicineClerkshipRoutesFamilymedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "family medicine clerkship clinic notes") == "familymedicine")
+    }
+    @Test func fmRotationRoutesFamilymedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "FM rotation continuity clinic notes write") == "familymedicine")
+    }
+    @Test func continuityClinicsRoutesFamilymedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "continuity clinic family medicine rotation notes") == "familymedicine")
+    }
+    @Test func fmShelfRoutesFamilymedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "family medicine shelf exam NBME FM") == "familymedicine")
+    }
+    @Test func fmRoundsRoutesFamilymedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "FM rounds family medicine attending notes") == "familymedicine")
+    }
+    @Test @MainActor func familymedicineCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "familymedicine", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "familymedicine", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "familymedicine", tier: 3).isEmpty)
+    }
+    @Test @MainActor func familymedicineTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "familymedicine", tier: 1).count >= 4)
+    }
+    @Test @MainActor func familymedicineTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "familymedicine", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: surgeryrotation/pediatricsrotation/internalmedicine/obgynrotation/familymedicine)
+    @Test func calloutTemplatesCountAtLeast751() {
+        #expect(SuggestedSessionTemplates.all.count >= 751, "template catalog must have ≥751 entries after surgeryrotation/pediatricsrotation/internalmedicine/obgynrotation/familymedicine (10 templates)")
+    }
 }

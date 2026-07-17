@@ -4775,5 +4775,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Clinical psychiatry study session completed (at least two psychiatric conditions reviewed with diagnostic criteria, MSE findings, differential diagnosis, and management principles noted)",
             preferredDuration: 45 * 60
         ),
+        // surgeryrotation
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Complete my surgery rotation work — write operative notes or H&Ps, prepare pre-op assessments, review surgical cases for rounds, or study operative indications and post-op care",
+            successCriteria: "Surgery rotation session completed (at least one operative note or H&P written, or two surgical cases reviewed with indication, procedure, and post-op management summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Study surgery for my clerkship shelf exam — review surgical indications, common operative procedures, post-op complications, wound management, and surgical anatomy",
+            successCriteria: "Surgery shelf study session completed (at least two surgical topics reviewed with indications, procedure overview, common complications, and management principles noted)",
+            preferredDuration: 60 * 60
+        ),
+        // pediatricsrotation
+        SuggestedTemplate(
+            icon: "figure.child",
+            task: "Complete my pediatrics rotation work — write pediatric case notes, document well-child visits, review developmental milestones, or prepare for peds rounds",
+            successCriteria: "Pediatrics rotation session completed (at least one case write-up or well-child visit note completed, or three developmental milestone categories reviewed with age-appropriate benchmarks saved)",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "figure.child",
+            task: "Study pediatrics for my clerkship shelf exam — review developmental milestones, common pediatric illnesses, vaccination schedules, pediatric vital sign norms, and growth charts",
+            successCriteria: "Pediatrics shelf study session completed (at least two pediatric topics reviewed with age-specific presentation, diagnosis, and management principles noted)",
+            preferredDuration: 45 * 60
+        ),
+        // internalmedicine
+        SuggestedTemplate(
+            icon: "stethoscope",
+            task: "Complete my internal medicine rotation work — write H&Ps or SOAP notes, prepare for medicine rounds, review patient cases, or work through medicine shelf practice questions",
+            successCriteria: "Internal medicine rotation session completed (at least one H&P or SOAP note written, or two patient cases reviewed with differential diagnosis, workup, and management plan noted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "stethoscope",
+            task: "Study internal medicine for my clerkship shelf exam — review common inpatient conditions, diagnostic workups, evidence-based management, and medicine clinical reasoning",
+            successCriteria: "Internal medicine shelf study session completed (at least two medicine topics reviewed with pathophysiology, clinical presentation, diagnostic approach, and management summarized)",
+            preferredDuration: 60 * 60
+        ),
+        // obgynrotation
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Complete my OB/GYN rotation work — write labor and delivery notes, document prenatal visits, review gynecologic cases, or prepare for OB/GYN rounds",
+            successCriteria: "OB/GYN rotation session completed (at least one L&D note or gynecologic case write-up completed, or three OB/GYN clinical scenarios reviewed with relevant management documented and saved)",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Study OB/GYN for my clerkship shelf exam — review normal obstetrics, common pregnancy complications, gynecologic conditions, and obstetric emergencies",
+            successCriteria: "OB/GYN shelf study session completed (at least two OB or GYN topics reviewed with clinical presentation, diagnostic approach, and management principles noted)",
+            preferredDuration: 45 * 60
+        ),
+        // familymedicine
+        SuggestedTemplate(
+            icon: "person.2.fill",
+            task: "Complete my family medicine rotation work — write continuity clinic notes, complete preventive care documentation, review chronic disease management cases, or prepare for FM rounds",
+            successCriteria: "Family medicine rotation session completed (at least one clinic note written or two chronic disease management cases reviewed with preventive care, treatment adjustments, and follow-up plan documented and saved)",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "person.2.fill",
+            task: "Study family medicine for my clerkship shelf exam — review preventive care guidelines, chronic disease management, common acute presentations, and family medicine clinical reasoning",
+            successCriteria: "Family medicine shelf study session completed (at least two FM topics reviewed with screening recommendations, management guidelines, and clinical reasoning approach summarized)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }
