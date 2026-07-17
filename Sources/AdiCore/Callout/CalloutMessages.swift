@@ -441,6 +441,11 @@ extension CalloutManager {
         case "internalmedicine":           return internalMedicineCallouts(tier: tier)
         case "obgynrotation":              return obgynrotationCallouts(tier: tier)
         case "familymedicine":             return familymedicineCallouts(tier: tier)
+        case "emergencymedicinerotation":  return emergencymedicinerotationCallouts(tier: tier)
+        case "virology":                   return virologyCallouts(tier: tier)
+        case "clinicalmicrobiology":       return clinicalmicrobiologyCallouts(tier: tier)
+        case "medicinalchemistry":         return medicinalchemistryCallouts(tier: tier)
+        case "cellandmolecularbiology":    return cellandmolecularbiologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -8681,6 +8686,111 @@ extension CalloutManager {
             "CLOSE THIS. open your family medicine rotation notes.",
             "CLOSE THIS. those clinic notes need to be written.",
             "CLOSE THIS. your FM rotation won't study itself."
+        ]
+        }
+    }
+
+    private func emergencymedicinerotationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those shift notes aren't going to write themselves.",
+            "close this and get back to your EM rotation.",
+            "your EM attending is waiting — close this.",
+            "those emergency medicine cases need your focus. close this."
+        ]
+        case 2: return [
+            "no one becomes an EM physician by scrolling.",
+            "close this and open your EM shift notes.",
+            "that emergency case won't present itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your emergency medicine notes.",
+            "CLOSE THIS. those shift notes need to be written.",
+            "CLOSE THIS. your EM rotation won't study itself."
+        ]
+        }
+    }
+
+    private func virologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those viral replication cycles aren't going to memorize themselves.",
+            "close this and get back to your virology.",
+            "those viral pathogens won't learn themselves. close this.",
+            "your virology exam is waiting. close this."
+        ]
+        case 2: return [
+            "no one masters virology by scrolling.",
+            "close this and open your virology notes.",
+            "those viral pathogenesis mechanisms won't memorize themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your virology textbook.",
+            "CLOSE THIS. those viral life cycles need your attention.",
+            "CLOSE THIS. your virology exam won't study itself."
+        ]
+        }
+    }
+
+    private func clinicalmicrobiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those culture results aren't going to interpret themselves.",
+            "close this and get back to your microbiology lab.",
+            "that antibiogram won't read itself. close this.",
+            "those cultures need your attention. close this."
+        ]
+        case 2: return [
+            "no one masters clinical microbiology by scrolling.",
+            "close this and open your culture results.",
+            "that antibiogram interpretation won't do itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your clinical microbiology lab.",
+            "CLOSE THIS. those culture results need interpretation.",
+            "CLOSE THIS. your clinical microbiology work won't do itself."
+        ]
+        }
+    }
+
+    private func medicinalchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those SAR analyses aren't going to write themselves.",
+            "close this and get back to your medicinal chemistry.",
+            "your drug design problem isn't going to solve itself. close this.",
+            "those lead compounds won't optimize themselves. close this."
+        ]
+        case 2: return [
+            "no one designs drugs by scrolling.",
+            "close this and open your medicinal chemistry notes.",
+            "that lead optimization won't do itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your medicinal chemistry textbook.",
+            "CLOSE THIS. those SAR analyses need your attention.",
+            "CLOSE THIS. your drug design work won't do itself."
+        ]
+        }
+    }
+
+    private func cellandmolecularbiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those cell biology problems aren't going to solve themselves.",
+            "close this and get back to your cell biology.",
+            "those organelles won't study themselves. close this.",
+            "your cell biology exam is waiting. close this."
+        ]
+        case 2: return [
+            "no one masters cell biology by scrolling.",
+            "close this and open your cell biology notes.",
+            "that cell cycle diagram won't learn itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your cell biology textbook.",
+            "CLOSE THIS. those cell division mechanisms need your attention.",
+            "CLOSE THIS. your cell biology exam won't study itself."
         ]
         }
     }

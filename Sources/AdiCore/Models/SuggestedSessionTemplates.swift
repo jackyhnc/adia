@@ -4840,5 +4840,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Family medicine shelf study session completed (at least two FM topics reviewed with screening recommendations, management guidelines, and clinical reasoning approach summarized)",
             preferredDuration: 45 * 60
         ),
+        // emergencymedicinerotation
+        SuggestedTemplate(
+            icon: "cross.fill",
+            task: "Complete my emergency medicine rotation work — write shift notes, document EM cases, review emergency protocols, or prepare for EM rounds",
+            successCriteria: "Emergency medicine rotation session completed (at least one shift note or EM case write-up completed, or three emergency presentations reviewed with assessment, management, and disposition documented and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.fill",
+            task: "Study emergency medicine for my clerkship shelf exam — review emergency presentations, ABCDE approach, acute management algorithms, toxicology, and EM clinical decision-making",
+            successCriteria: "Emergency medicine shelf study session completed (at least two EM topics reviewed with presentation, stabilization approach, differential diagnosis, and management algorithm summarized)",
+            preferredDuration: 60 * 60
+        ),
+        // virology
+        SuggestedTemplate(
+            icon: "allergens",
+            task: "Complete my virology assignment or lab — analyze viral replication cycles, identify viral pathogens, interpret virology lab results, or write up my virology lab report",
+            successCriteria: "Virology session completed (at least one viral pathogen or replication cycle fully analyzed with key steps, host interactions, and clinical relevance documented and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "allergens",
+            task: "Study virology for my exam — review viral replication cycles, viral pathogenesis, major viral families, host immune evasion strategies, and antiviral mechanisms",
+            successCriteria: "Virology study session completed (at least two viral families or replication mechanisms reviewed with structure, entry, replication, assembly, and pathogenesis summarized)",
+            preferredDuration: 45 * 60
+        ),
+        // clinicalmicrobiology
+        SuggestedTemplate(
+            icon: "flask.fill",
+            task: "Complete my clinical microbiology lab work — interpret culture results, read antibiograms, analyze susceptibility testing data, or document infection control cases",
+            successCriteria: "Clinical microbiology session completed (at least two culture results or antibiograms interpreted with organism identified, susceptibility pattern analyzed, and clinical significance documented and saved)",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "flask.fill",
+            task: "Study clinical microbiology for my exam — review culture interpretation, antibiogram reading, susceptibility testing, infection control principles, and nosocomial pathogen identification",
+            successCriteria: "Clinical microbiology study session completed (at least two topics reviewed with identification methods, susceptibility patterns, and infection control implications summarized)",
+            preferredDuration: 45 * 60
+        ),
+        // medicinalchemistry
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Complete my medicinal chemistry assignment — analyze structure-activity relationships, optimize lead compounds, apply Lipinski's rule of five, or work through drug design problem sets",
+            successCriteria: "Medicinal chemistry session completed (at least one SAR analysis or lead optimization problem worked through with pharmacophore identified, key modifications evaluated, and ADMET implications noted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study medicinal chemistry for my exam — review structure-activity relationships, drug design principles, pharmacophore modeling, prodrug strategies, and ADMET optimization",
+            successCriteria: "Medicinal chemistry study session completed (at least two drug design topics reviewed with key SAR features, design strategies, and pharmacokinetic considerations summarized)",
+            preferredDuration: 60 * 60
+        ),
+        // cellandmolecularbiology
+        SuggestedTemplate(
+            icon: "circle.hexagongrid.fill",
+            task: "Complete my cell biology lab or assignment — analyze cell division stages, identify organelles, interpret microscopy images, or work through cell biology problem sets",
+            successCriteria: "Cell biology session completed (at least one lab report section completed or two cell biology mechanisms — mitosis/meiosis stages, organelle functions, or cell signaling pathways — fully reviewed and documented)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "circle.hexagongrid.fill",
+            task: "Study cell biology for my exam — review cell cycle regulation, organelle functions, cytoskeleton dynamics, cell signaling pathways, and membrane biology",
+            successCriteria: "Cell biology study session completed (at least two cell biology topics reviewed with molecular mechanisms, key proteins, and physiological significance summarized)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

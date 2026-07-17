@@ -19883,4 +19883,170 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast751() {
         #expect(SuggestedSessionTemplates.all.count >= 751, "template catalog must have ≥751 entries after surgeryrotation/pediatricsrotation/internalmedicine/obgynrotation/familymedicine (10 templates)")
     }
+
+    // MARK: - emergencymedicinerotation
+    @Test func emRotationRoutesEmergencymedicinerotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "emergency medicine rotation shift notes write") == "emergencymedicinerotation")
+    }
+    @Test func emClerkshipRoutesEmergencymedicinerotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "EM clerkship case write up rotation") == "emergencymedicinerotation")
+    }
+    @Test func emShelfRoutesEmergencymedicinerotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "emergency medicine shelf exam NBME EM") == "emergencymedicinerotation")
+    }
+    @Test func emShiftNotesRoutesEmergencymedicinerotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "EM shift notes write emergency medicine rotation") == "emergencymedicinerotation")
+    }
+    @Test func emAttendingRoutesEmergencymedicinerotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "emergency medicine attending rounds EM rotation") == "emergencymedicinerotation")
+    }
+    @Test func bareEmergencyMedicineNotEmergencymedicinerotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "emergency medicine MCAT study") == "premed")
+    }
+    @Test @MainActor func emergencymedicinerotationCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "emergencymedicinerotation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "emergencymedicinerotation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "emergencymedicinerotation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func emergencymedicinerotationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "emergencymedicinerotation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func emergencymedicinerotationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "emergencymedicinerotation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - virology
+    @Test func virologyClassRoutesVirology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "virology class viral replication notes") == "virology")
+    }
+    @Test func virologyExamRoutesVirology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "virology exam study viral pathogenesis") == "virology")
+    }
+    @Test func viralReplicationRoutesVirology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "viral replication cycle class study HIV") == "virology")
+    }
+    @Test func viralPathogenesisRoutesVirology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "viral pathogenesis course exam notes") == "virology")
+    }
+    @Test func virologyLabRoutesVirology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "virology lab plaque assay results write") == "virology")
+    }
+    @Test func bacteriophageClassRoutesVirology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bacteriophage replication class exam virology") == "virology")
+    }
+    @Test @MainActor func virologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "virology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "virology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "virology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func virologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "virology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func virologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "virology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - clinicalmicrobiology
+    @Test func antibiogramRoutesClinicalmicrobiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "antibiogram interpretation microbiology lab") == "clinicalmicrobiology")
+    }
+    @Test func cultureResultsRoutesClinicalmicrobiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "culture results interpretation clinical microbiology lab") == "clinicalmicrobiology")
+    }
+    @Test func microbiologyRotationRoutesClinicalmicrobiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "microbiology lab rotation clinical culture") == "clinicalmicrobiology")
+    }
+    @Test func bloodCultureRoutesClinicalmicrobiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "blood culture microbiology lab clinical rotation") == "clinicalmicrobiology")
+    }
+    @Test func susceptibilityTestingRoutesClinicalmicrobiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "susceptibility testing clinical microbiology lab class") == "clinicalmicrobiology")
+    }
+    @Test @MainActor func clinicalmicrobiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "clinicalmicrobiology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "clinicalmicrobiology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "clinicalmicrobiology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func clinicalmicrobiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "clinicalmicrobiology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func clinicalmicrobiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "clinicalmicrobiology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - medicinalchemistry
+    @Test func medicinalChemistryClassRoutesMedicinalchemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "medicinal chemistry class drug design SAR") == "medicinalchemistry")
+    }
+    @Test func drugDesignRoutesMedicinalchemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "drug design problem set medicinal chemistry course") == "medicinalchemistry")
+    }
+    @Test func sarAnalysisRoutesMedicinalchemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "SAR analysis medicinal drug chemistry class") == "medicinalchemistry")
+    }
+    @Test func leadOptimizationRoutesMedicinalchemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "lead optimization drug design chemistry course") == "medicinalchemistry")
+    }
+    @Test func pharmacophoreRoutesMedicinalchemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pharmacophore model drug design medicinal chemistry exam") == "medicinalchemistry")
+    }
+    @Test @MainActor func medicinalchemistryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "medicinalchemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "medicinalchemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "medicinalchemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func medicinalchemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "medicinalchemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func medicinalchemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "medicinalchemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - cellandmolecularbiology
+    @Test func cellBiologyClassRoutesCellandmolecularbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cell biology class organelle function exam") == "cellandmolecularbiology")
+    }
+    @Test func cellBiologyLabRoutesCellandmolecularbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cell biology lab microscopy cell division") == "cellandmolecularbiology")
+    }
+    @Test func mitosisClassRoutesCellandmolecularbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mitosis cell biology class exam stages") == "cellandmolecularbiology")
+    }
+    @Test func cellCycleClassRoutesCellandmolecularbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cell cycle regulation class cell biology exam") == "cellandmolecularbiology")
+    }
+    @Test func cytoskeletonClassRoutesCellandmolecularbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cytoskeleton dynamics cell biology class lab") == "cellandmolecularbiology")
+    }
+    @Test @MainActor func cellandmolecularbiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "cellandmolecularbiology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "cellandmolecularbiology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "cellandmolecularbiology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func cellandmolecularbiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "cellandmolecularbiology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func cellandmolecularbiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "cellandmolecularbiology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: emergencymedicinerotation/virology/clinicalmicrobiology/medicinalchemistry/cellandmolecularbiology)
+    @Test func calloutTemplatesCountAtLeast761() {
+        #expect(SuggestedSessionTemplates.all.count >= 761, "template catalog must have ≥761 entries after emergencymedicinerotation/virology/clinicalmicrobiology/medicinalchemistry/cellandmolecularbiology (10 templates)")
+    }
 }

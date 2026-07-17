@@ -4486,6 +4486,28 @@ public final class CalloutManager {
             || lower.contains("medical lab class") || lower.contains("clinical laboratory tech") {
             return "medicallabscience"
         }
+        // cellandmolecularbiology — positioned BEFORE molecularbiology so cell biology class/lab work
+        // (microscopy, cell division, organelle function) gets a dedicated pool. Bare "cell biology"
+        // without class context, and "molecular biology", stay in molecularbiology (fires after).
+        if lower.contains("cell biology class") || lower.contains("cell biology course")
+            || lower.contains("cell biology exam") || lower.contains("cell biology lab")
+            || lower.contains("cell biology notes") || lower.contains("cell biology assignment")
+            || lower.contains("cell biology lecture") || lower.contains("cell biology textbook")
+            || lower.contains("cell division") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("cell biology"))
+            || lower.contains("mitosis") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("cell biology") || lower.contains("cell cycle"))
+            || lower.contains("meiosis") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("cell biology") || lower.contains("cell cycle"))
+            || lower.contains("organelle function") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("cell biology"))
+            || lower.contains("cell organelle") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("cytoskeleton") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("cell biology"))
+            || lower.contains("cell cycle") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("cell biology"))
+            || lower.contains("cell signaling") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("cell biology"))
+            || lower.contains("membrane biology") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("fluorescence microscopy") && (lower.contains("class") || lower.contains("lab") || lower.contains("cell biology"))
+            || lower.contains("confocal microscopy") && (lower.contains("class") || lower.contains("lab") || lower.contains("cell biology"))
+            || lower.contains("cell biology major") || lower.contains("cell biology program")
+            || lower.contains("cell biology degree") {
+            return "cellandmolecularbiology"
+        }
         // molecularbiology — positioned after pharmacy and before premed so lab-science terms
         // (PCR, Western blot, cloning, gene editing) route here rather than the MCAT/clinical pool.
         // Bare word("biochemistry") stays in premed (MCAT context); "molecular biology" is explicit.
@@ -5271,6 +5293,45 @@ public final class CalloutManager {
             && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("program")) {
             return "medicalhumanities"
         }
+        // virology — positioned BEFORE microbiology so specific virology coursework (viral
+        // replication cycles, viral pathogenesis, specific viral pathogens) routes here rather than
+        // the general microbiology pool. "virology class/course/exam" was formerly caught by microbiology.
+        if lower.contains("virology class") || lower.contains("virology course")
+            || lower.contains("virology exam") || lower.contains("virology lab")
+            || lower.contains("virology notes") || lower.contains("virology textbook")
+            || lower.contains("virology assignment") || lower.contains("virology lecture")
+            || lower.contains("viral replication") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("virology") || lower.contains("cycle"))
+            || lower.contains("viral pathogenesis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("virology"))
+            || lower.contains("viral life cycle") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("virology"))
+            || lower.contains("sars-cov-2") && (lower.contains("class") || lower.contains("course") || lower.contains("virology") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("hiv replication") && (lower.contains("class") || lower.contains("course") || lower.contains("virology") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("influenza virus") && (lower.contains("class") || lower.contains("course") || lower.contains("virology") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("viral protein") && (lower.contains("virology") || lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("virus structure") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("virology"))
+            || lower.contains("bacteriophage") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("virology") || lower.contains("lab"))
+            || lower.contains("viral tropism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("virology"))
+            || lower.contains("viral vector") && (lower.contains("class") || lower.contains("course") || lower.contains("virology") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("virology major") || lower.contains("virology program") {
+            return "virology"
+        }
+        // clinicalmicrobiology — positioned AFTER virology and BEFORE microbiology so clinical lab
+        // rotation work (culture interpretation, antibiogram reading, infection control) routes to a
+        // dedicated pool rather than the general microbiology course pool.
+        if lower.contains("clinical microbiology") && (lower.contains("lab") || lower.contains("rotation") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("microbiology lab rotation") || lower.contains("microbiology rotation")
+            || lower.contains("antibiogram") && (lower.contains("class") || lower.contains("lab") || lower.contains("rotation") || lower.contains("microbiology") || lower.contains("interpretation") || lower.contains("read"))
+            || lower.contains("culture interpretation") && (lower.contains("microbiology") || lower.contains("lab") || lower.contains("rotation") || lower.contains("clinical"))
+            || lower.contains("culture results") && (lower.contains("microbiology") || lower.contains("lab") || lower.contains("clinical") || lower.contains("rotation"))
+            || lower.contains("susceptibility testing") && (lower.contains("microbiology") || lower.contains("lab") || lower.contains("class") || lower.contains("clinical"))
+            || lower.contains("minimum inhibitory concentration") && (lower.contains("microbiology") || lower.contains("lab") || lower.contains("clinical") || lower.contains("class"))
+            || lower.contains("mic testing") && (lower.contains("microbiology") || lower.contains("lab") || lower.contains("clinical"))
+            || lower.contains("infection control") && (lower.contains("microbiology") || lower.contains("lab") || lower.contains("class") || lower.contains("rotation") || lower.contains("clinical"))
+            || lower.contains("nosocomial infection") && (lower.contains("class") || lower.contains("lab") || lower.contains("microbiology") || lower.contains("clinical"))
+            || lower.contains("blood culture") && (lower.contains("microbiology") || lower.contains("lab") || lower.contains("clinical") || lower.contains("class") || lower.contains("rotation"))
+            || lower.contains("urine culture") && (lower.contains("microbiology") || lower.contains("lab") || lower.contains("clinical") || lower.contains("class"))
+            || lower.contains("wound culture") && (lower.contains("microbiology") || lower.contains("lab") || lower.contains("clinical") || lower.contains("class")) {
+            return "clinicalmicrobiology"
+        }
         // microbiology — positioned BEFORE premed to catch dedicated microbiology class/lab work.
         // Bare word("microbiology") stays in premed for MCAT context (premed branch fires after).
         // "molecular microbiology" and PCR protocols stay in molecularbiology (much earlier).
@@ -5459,6 +5520,23 @@ public final class CalloutManager {
             || lower.contains("pharmacology major") || lower.contains("pharmacology degree")
             || lower.contains("clinical pharmacology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
             return "pharmacology"
+        }
+        // medicinalchemistry — positioned AFTER pharmacology and BEFORE physiology so drug design,
+        // SAR analysis, and lead optimization in a medicinal chemistry course context route here.
+        // "pharmacology" and "pharmacy" stay in their respective branches (fire earlier).
+        if lower.contains("medicinal chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("notes") || lower.contains("assignment") || lower.contains("lecture") || lower.contains("program"))
+            || lower.contains("drug design") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("medicinal") || lower.contains("chemistry") || lower.contains("problem set"))
+            || lower.contains("structure-activity relationship") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("medicinal") || lower.contains("drug"))
+            || lower.contains("sar analysis") && (lower.contains("class") || lower.contains("medicinal") || lower.contains("drug") || lower.contains("chemistry"))
+            || lower.contains("lead optimization") && (lower.contains("class") || lower.contains("course") || lower.contains("drug") || lower.contains("chemistry") || lower.contains("medicinal"))
+            || lower.contains("lead compound") && (lower.contains("class") || lower.contains("course") || lower.contains("drug") || lower.contains("optimization") || lower.contains("medicinal"))
+            || lower.contains("pharmacophore") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("model") || lower.contains("medicinal") || lower.contains("drug design"))
+            || lower.contains("prodrug") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("design") || lower.contains("medicinal") || lower.contains("chemistry"))
+            || lower.contains("bioisostere") && (lower.contains("class") || lower.contains("medicinal") || lower.contains("drug") || lower.contains("chemistry"))
+            || lower.contains("lipinski") && (lower.contains("class") || lower.contains("drug") || lower.contains("medicinal") || lower.contains("chemistry"))
+            || lower.contains("admet") && (lower.contains("class") || lower.contains("course") || lower.contains("drug design") || lower.contains("medicinal") || lower.contains("chemistry"))
+            || lower.contains("scaffold hopping") && (lower.contains("class") || lower.contains("drug") || lower.contains("medicinal") || lower.contains("chemistry")) {
+            return "medicinalchemistry"
         }
         // physiology — positioned AFTER pharmacology and BEFORE premed to catch dedicated physiology
         // class/lab work. Bare word("physiology") stays in premed (MCAT context fires after).
@@ -5704,6 +5782,24 @@ public final class CalloutManager {
             || lower.contains("family medicine shelf") || lower.contains("fm shelf")
             || lower.contains("nbme family medicine") {
             return "familymedicine"
+        }
+        // emergencymedicinerotation — positioned AFTER familymedicine and BEFORE premed so EM
+        // clerkship, shift notes, and EM shelf study route to a dedicated pool. Bare "emergency
+        // medicine" without rotation/clerkship context stays in premed (fires after).
+        if lower.contains("emergency medicine rotation") || lower.contains("emergency medicine clerkship")
+            || lower.contains("emergency medicine elective") || lower.contains("em rotation")
+            || lower.contains("em clerkship") || lower.contains("em elective")
+            || lower.contains("emergency medicine shift") && (lower.contains("notes") || lower.contains("write") || lower.contains("rotation") || lower.contains("clerkship") || lower.contains("report"))
+            || lower.contains("em shift notes") || lower.contains("em shift write")
+            || lower.contains("emergency medicine rounds") || lower.contains("em rounds") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("notes") || lower.contains("attending"))
+            || lower.contains("emergency medicine attending") || lower.contains("em attending")
+            || lower.contains("emergency medicine case") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("em case") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("emergency medicine notes") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write") || lower.contains("shift"))
+            || lower.contains("em notes") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write") || lower.contains("shift"))
+            || lower.contains("emergency medicine shelf") || lower.contains("em shelf")
+            || lower.contains("nbme emergency medicine") || lower.contains("nbme em") {
+            return "emergencymedicinerotation"
         }
         if word("anatomy") || word("physiology") || word("biochemistry")
             || word("pharmacology") || word("pathology") || word("histology")
