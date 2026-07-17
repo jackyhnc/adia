@@ -521,6 +521,11 @@ extension CalloutManager {
         case "nuclearphysics":             return nuclearphysicsCallouts(tier: tier)
         case "plasmaphysics":              return plasmaphysicsCallouts(tier: tier)
         case "computationalfluidynamics":  return computationalfluidynamicsCallouts(tier: tier)
+        case "hydrology":                  return hydrologyCallouts(tier: tier)
+        case "glaciology":                 return glaciologyCallouts(tier: tier)
+        case "climatology":                return climatologyCallouts(tier: tier)
+        case "photochemistry":             return photochemistryCallouts(tier: tier)
+        case "electromagnetictheory":      return electromagnetictheoryCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -10441,6 +10446,111 @@ extension CalloutManager {
             "CLOSE THIS. open your computational fluid dynamics textbook.",
             "CLOSE THIS. that CFD simulation won't set itself up.",
             "CLOSE THIS. your CFD exam won't study itself."
+        ]
+        }
+    }
+
+    private func glaciologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those ice sheet calculations won't do themselves.",
+            "your glaciology assignment is waiting.",
+            "glacier mass balance doesn't compute itself — get back to it.",
+            "you can't master glaciology by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters glaciology by scrolling.",
+            "close this and open your glaciology notes.",
+            "those ice core and glacier dynamics problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your glaciology textbook.",
+            "CLOSE THIS. those ice sheet dynamics won't analyze themselves.",
+            "CLOSE THIS. your glaciology exam won't study itself."
+        ]
+        }
+    }
+
+    private func hydrologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those streamflow calculations won't do themselves.",
+            "your hydrology assignment is waiting.",
+            "hydrological cycles don't analyze themselves — get back to it.",
+            "you can't master hydrology by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters hydrology by scrolling.",
+            "close this and open your hydrology notes.",
+            "those watershed and flood frequency problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your hydrology textbook.",
+            "CLOSE THIS. those hydrograph calculations won't do themselves.",
+            "CLOSE THIS. your hydrology exam won't study itself."
+        ]
+        }
+    }
+
+    private func climatologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those climate model equations won't run themselves.",
+            "your climatology assignment is waiting.",
+            "radiative forcing doesn't calculate itself — get back to it.",
+            "you can't master climatology by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters climatology by scrolling.",
+            "close this and open your climatology notes.",
+            "those climate feedback and ENSO problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your climatology textbook.",
+            "CLOSE THIS. those climate model calculations won't do themselves.",
+            "CLOSE THIS. your climatology exam won't study itself."
+        ]
+        }
+    }
+
+    private func photochemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those excited state transitions won't derive themselves.",
+            "your photochemistry assignment is waiting.",
+            "Jablonski diagrams don't draw themselves — get back to it.",
+            "you can't master photochemistry by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters photochemistry by scrolling.",
+            "close this and open your photochemistry notes.",
+            "those quantum yield and energy transfer problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your photochemistry textbook.",
+            "CLOSE THIS. those photochemical reaction mechanisms won't write themselves.",
+            "CLOSE THIS. your photochemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func electromagnetictheoryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those electrodynamics problems won't solve themselves.",
+            "your electromagnetic theory assignment is waiting.",
+            "retarded potentials don't derive themselves — get back to it.",
+            "you can't master electrodynamics by scrolling through this."
+        ]
+        case 2: return [
+            "no one masters electromagnetic theory by scrolling.",
+            "close this and open your Griffiths.",
+            "those gauge invariance and radiation problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your electrodynamics textbook.",
+            "CLOSE THIS. those multipole expansion problems won't solve themselves.",
+            "CLOSE THIS. your electromagnetic theory exam won't study itself."
         ]
         }
     }

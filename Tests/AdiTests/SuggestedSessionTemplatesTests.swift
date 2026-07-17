@@ -6504,4 +6504,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast911() {
         #expect(SuggestedSessionTemplates.all.count >= 911, "template catalog must have ≥911 entries after radioastronomy/astrochemistry/nuclearphysics/plasmaphysics/computationalfluidynamics additions")
     }
+    // MARK: - glaciology templates
+    @Test func glaciologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("glaciology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func glaciologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("glaciology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - hydrology templates
+    @Test func hydrologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("hydrology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func hydrologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("hydrology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - climatology templates
+    @Test func climatologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("climatology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func climatologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("climatology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - photochemistry templates
+    @Test func photochemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("photochemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func photochemistryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("photochemistry") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - electromagnetictheory templates
+    @Test func electromagneticTheoryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("electromagnetic theory") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func electromagneticTheoryProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("electromagnetic theory") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - Count guard (≥921)
+    @Test func templateCountAtLeast921() {
+        #expect(SuggestedSessionTemplates.all.count >= 921, "template catalog must have ≥921 entries after hydrology/oceanography/climatology/photochemistry/electromagnetictheory additions")
+    }
 }

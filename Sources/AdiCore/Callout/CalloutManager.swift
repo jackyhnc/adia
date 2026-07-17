@@ -1530,6 +1530,33 @@ public final class CalloutManager {
             || lower.contains("geo class") && !lower.contains("geoscience") && !lower.contains("geology") {
             return "geographyearthed"
         }
+        // hydrology — positioned BEFORE waterresources so hydrological science coursework
+        // (watershed hydrology, streamflow analysis, flood frequency, hydrological cycle, baseflow)
+        // gets a dedicated pool. "applied hydrology" and "engineering hydrology" route here first;
+        // waterresources catches the engineering-specific water infrastructure patterns below.
+        // Bare word("hydrology") alone (without class/exam/science context) still falls to geology.
+        if lower.contains("hydrology class") || lower.contains("hydrology course")
+            || lower.contains("hydrology exam") || lower.contains("hydrology lab")
+            || lower.contains("hydrology notes") || lower.contains("hydrology homework")
+            || lower.contains("hydrology assignment") || lower.contains("hydrology textbook")
+            || lower.contains("applied hydrology") || lower.contains("engineering hydrology")
+            || lower.contains("watershed hydrology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("hydrological cycle") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("hydrology"))
+            || lower.contains("streamflow analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("hydrology"))
+            || lower.contains("flood frequency") && (lower.contains("class") || lower.contains("hydrology") || lower.contains("exam") || lower.contains("analysis"))
+            || lower.contains("hydrograph") && (lower.contains("class") || lower.contains("exam") || lower.contains("hydrology") || lower.contains("analysis"))
+            || lower.contains("unit hydrograph") && (lower.contains("class") || lower.contains("exam") || lower.contains("hydrology"))
+            || lower.contains("baseflow") && (lower.contains("class") || lower.contains("hydrology") || lower.contains("exam") || lower.contains("analysis"))
+            || lower.contains("evapotranspiration") && (lower.contains("class") || lower.contains("hydrology") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("precipitation analysis") && (lower.contains("class") || lower.contains("hydrology") || lower.contains("exam"))
+            || lower.contains("infiltration rate") && (lower.contains("class") || lower.contains("hydrology") || lower.contains("exam"))
+            || lower.contains("rational method") && (lower.contains("class") || lower.contains("hydrology") || lower.contains("exam") || lower.contains("runoff"))
+            || lower.contains("runoff analysis") && (lower.contains("class") || lower.contains("hydrology") || lower.contains("exam"))
+            || lower.contains("surface water hydrology") || lower.contains("groundwater hydrology class")
+            || lower.contains("fluvial hydrology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("statistical hydrology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "hydrology"
+        }
         // waterresources — positioned BEFORE geology so water resources engineering, hydraulics,
         // and stormwater design tasks get a dedicated pool instead of routing to geology via
         // "hydrology". "hydrology" as a bare word still fires geology; only fires here when paired
@@ -1795,6 +1822,32 @@ public final class CalloutManager {
             || (lower.contains("provenance analysis") && (lower.contains("class") || lower.contains("sedimentology") || lower.contains("exam")))
             || lower.contains("clastic sedimentology") || lower.contains("carbonate sedimentology") {
             return "sedimentology"
+        }
+        // glaciology — positioned BEFORE structuralgeology/geologylab/geology so glaciology
+        // coursework (ice sheets, glacier dynamics, ice core analysis, glacial landforms, mass balance)
+        // gets a dedicated pool. "ice age" with climatology context routes to climatology (earlier).
+        // Bare "glacier" without class/exam/glaciology context stays in geology below.
+        if lower.contains("glaciology class") || lower.contains("glaciology course")
+            || lower.contains("glaciology exam") || lower.contains("glaciology lab")
+            || lower.contains("glaciology notes") || lower.contains("glaciology homework")
+            || lower.contains("glaciology assignment") || lower.contains("glaciology textbook")
+            || word("glaciology") || word("glaciologist") || word("glaciologists")
+            || lower.contains("glacier dynamics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("glaciology"))
+            || lower.contains("ice sheet") && (lower.contains("class") || lower.contains("exam") || lower.contains("glaciology") || lower.contains("dynamics"))
+            || lower.contains("ice sheets") && (lower.contains("class") || lower.contains("exam") || lower.contains("glaciology"))
+            || lower.contains("ice core") && (lower.contains("class") || lower.contains("exam") || lower.contains("glaciology") || lower.contains("analysis"))
+            || lower.contains("ice cores") && (lower.contains("class") || lower.contains("exam") || lower.contains("glaciology"))
+            || lower.contains("glacier mass balance") && (lower.contains("class") || lower.contains("exam") || lower.contains("glaciology"))
+            || lower.contains("glacial landform") && (lower.contains("class") || lower.contains("exam") || lower.contains("glaciology"))
+            || lower.contains("glacial landforms") && (lower.contains("class") || lower.contains("exam") || lower.contains("glaciology"))
+            || lower.contains("glacial erosion") && (lower.contains("class") || lower.contains("exam") || lower.contains("glaciology"))
+            || lower.contains("glacial deposition") && (lower.contains("class") || lower.contains("exam") || lower.contains("glaciology"))
+            || lower.contains("ice flow") && (lower.contains("class") || lower.contains("glaciology") || lower.contains("exam"))
+            || lower.contains("subglacial") && (lower.contains("class") || lower.contains("exam") || lower.contains("glaciology"))
+            || lower.contains("cryosphere") && (lower.contains("class") || lower.contains("exam") || lower.contains("glaciology") || lower.contains("course"))
+            || lower.contains("permafrost") && (lower.contains("class") || lower.contains("exam") || lower.contains("glaciology") || lower.contains("cryosphere"))
+            || lower.contains("sea ice") && (lower.contains("class") || lower.contains("glaciology") || lower.contains("exam") || lower.contains("cryosphere")) {
+            return "glaciology"
         }
         // structuralgeology — positioned BEFORE geologylab and geology so structural geology
         // class/exam, fault analysis, fold geometry, and stereonet analysis route to a dedicated pool.
@@ -2252,6 +2305,28 @@ public final class CalloutManager {
             || lower.contains("compressible flow") && (lower.contains("class") || lower.contains("course") || lower.contains("lab") || lower.contains("exam"))
             || lower.contains("aiaa") && (lower.contains("class") || lower.contains("design") || lower.contains("project") || lower.contains("competition")) {
             return "aerospacengineering"
+        }
+        // electromagnetictheory — positioned BEFORE electromagnetism so advanced electromagnetic
+        // theory coursework (Griffiths/Jackson electrodynamics, gauge invariance, vector potential,
+        // radiation, relativistic electrodynamics) gets a dedicated pool. Standard E&M physics
+        // (Gauss/Ampere/Faraday+class) falls through to electromagnetism below.
+        if lower.contains("electromagnetic theory class") || lower.contains("electromagnetic theory course")
+            || lower.contains("electromagnetic theory exam") || lower.contains("electromagnetic theory homework")
+            || lower.contains("electromagnetic theory notes") || lower.contains("electromagnetic theory problem")
+            || lower.contains("electrodynamics class") || lower.contains("electrodynamics course")
+            || lower.contains("electrodynamics exam") || lower.contains("electrodynamics homework")
+            || lower.contains("electrodynamics notes") || lower.contains("electrodynamics problem set")
+            || lower.contains("griffiths electrodynamics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("problem"))
+            || lower.contains("jackson electrodynamics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("problem"))
+            || lower.contains("gauge invariance") && (lower.contains("class") || lower.contains("electromagnetic") || lower.contains("electrodynamics") || lower.contains("exam"))
+            || lower.contains("vector potential") && (lower.contains("class") || lower.contains("electromagnetic theory") || lower.contains("electrodynamics") || lower.contains("exam"))
+            || lower.contains("radiation reaction") && (lower.contains("class") || lower.contains("electrodynamics") || lower.contains("electromagnetic"))
+            || lower.contains("larmor radiation") && (lower.contains("class") || lower.contains("electrodynamics") || lower.contains("exam"))
+            || lower.contains("multipole expansion") && (lower.contains("class") || lower.contains("electrodynamics") || lower.contains("electromagnetic") || lower.contains("exam"))
+            || lower.contains("retarded potential") && (lower.contains("class") || lower.contains("electrodynamics") || lower.contains("exam"))
+            || lower.contains("relativistic electrodynamics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("electromagnetic field tensor") && (lower.contains("class") || lower.contains("exam") || lower.contains("electrodynamics")) {
+            return "electromagnetictheory"
         }
         // electromagnetism — positioned BEFORE electricalengineering so physics E&M courses
         // (Gauss/Ampere/Faraday/Maxwell in a physics context) get a dedicated pool. EE-specific
@@ -4823,6 +4898,36 @@ public final class CalloutManager {
             || lower.contains("atmospheric chemistry") && !(lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("homework") || lower.contains("notes")) {
             return "atmosphericchemistry"
         }
+        // climatology — positioned BEFORE atmosphericscience so climatology coursework
+        // (climate models, radiative forcing, paleoclimate, climate sensitivity, ENSO, Hadley cells,
+        // climate feedback, global energy balance) gets a dedicated pool. Meteorology/atmospheric
+        // dynamics coursework falls through to atmosphericscience below.
+        if lower.contains("climatology class") || lower.contains("climatology course")
+            || lower.contains("climatology exam") || lower.contains("climatology lab")
+            || lower.contains("climatology notes") || lower.contains("climatology homework")
+            || lower.contains("climatology assignment") || lower.contains("climatology textbook")
+            || word("climatology") || word("climatologist") || word("climatologists")
+            || lower.contains("climate model") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("climatology"))
+            || lower.contains("climate models") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("climatology"))
+            || lower.contains("radiative forcing") && (lower.contains("class") || lower.contains("climatology") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("paleoclimate") && (lower.contains("class") || lower.contains("climatology") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("climate sensitivity") && (lower.contains("class") || lower.contains("exam") || lower.contains("climatology") || lower.contains("course"))
+            || lower.contains("enso") && (lower.contains("class") || lower.contains("climatology") || lower.contains("exam") || lower.contains("climate"))
+            || lower.contains("el niño") && (lower.contains("class") || lower.contains("climatology") || lower.contains("exam"))
+            || lower.contains("el nino") && (lower.contains("class") || lower.contains("climatology") || lower.contains("exam"))
+            || lower.contains("climate feedback") && (lower.contains("class") || lower.contains("exam") || lower.contains("climatology"))
+            || lower.contains("hadley cell") && (lower.contains("class") || lower.contains("climatology") || lower.contains("exam") || lower.contains("climate"))
+            || lower.contains("hadley circulation") && (lower.contains("class") || lower.contains("climatology") || lower.contains("exam"))
+            || lower.contains("global energy balance") && (lower.contains("class") || lower.contains("exam") || lower.contains("climatology") || lower.contains("climate"))
+            || lower.contains("climate change class") || lower.contains("climate change course")
+            || lower.contains("climate change exam") && (lower.contains("climatology") || lower.contains("climate science") || lower.contains("science"))
+            || lower.contains("climate science class") || lower.contains("climate science course")
+            || lower.contains("climate science exam") || lower.contains("climate science notes")
+            || lower.contains("ice age") && (lower.contains("class") || lower.contains("climatology") || lower.contains("exam") || lower.contains("climate"))
+            || lower.contains("milankovitch") && (lower.contains("class") || lower.contains("climatology") || lower.contains("exam") || lower.contains("climate"))
+            || lower.contains("albedo feedback") && (lower.contains("class") || lower.contains("climatology") || lower.contains("exam")) {
+            return "climatology"
+        }
         // atmosphericscience — positioned BEFORE environmentalscience so atmospheric science/
         // meteorology coursework (synoptic meteorology, atmospheric dynamics, mesoscale met)
         // gets a dedicated pool. Generic environmental science falls through to environmentalscience.
@@ -5815,6 +5920,35 @@ public final class CalloutManager {
             || lower.contains("pchem experiment") && (lower.contains("class") || lower.contains("course") || lower.contains("lab"))
             || lower.contains("kinetics experiment") && (lower.contains("pchem") || lower.contains("physical chemistry") || lower.contains("class") || lower.contains("lab")) {
             return "physicalchemistrylab"
+        }
+        // photochemistry — positioned BEFORE physicalchemistry so photochemistry coursework
+        // (photochemical reactions, excited states, Jablonski diagrams, quantum yield, singlet/triplet,
+        // fluorescence, phosphorescence, photoexcitation, photolysis) gets a dedicated pool.
+        // pchem and quantum chemistry (without photo context) fall through to physicalchemistry below.
+        if lower.contains("photochemistry class") || lower.contains("photochemistry course")
+            || lower.contains("photochemistry exam") || lower.contains("photochemistry lab")
+            || lower.contains("photochemistry notes") || lower.contains("photochemistry homework")
+            || lower.contains("photochemistry assignment") || lower.contains("photochemistry textbook")
+            || word("photochemistry") || word("photochemist") || word("photochemists")
+            || lower.contains("photochemical reaction") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("photochemistry"))
+            || lower.contains("photochemical reactions") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("excited state") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam") || lower.contains("chemistry"))
+            || lower.contains("excited states") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam"))
+            || lower.contains("jablonski diagram") && (lower.contains("class") || lower.contains("exam") || lower.contains("photochemistry"))
+            || lower.contains("jablonski") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam"))
+            || lower.contains("quantum yield") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam") || lower.contains("chemistry"))
+            || lower.contains("singlet state") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam"))
+            || lower.contains("triplet state") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam"))
+            || lower.contains("fluorescence spectroscopy") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("phosphorescence") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam") || lower.contains("chemistry"))
+            || lower.contains("photoexcitation") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam"))
+            || lower.contains("photolysis") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam") || lower.contains("chemistry"))
+            || lower.contains("photosensitizer") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam"))
+            || lower.contains("energy transfer") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam") || lower.contains("förster") || lower.contains("forster"))
+            || lower.contains("förster resonance") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam"))
+            || lower.contains("forster resonance") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam"))
+            || lower.contains("intersystem crossing") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam")) {
+            return "photochemistry"
         }
         // physicalchemistry — positioned AFTER biochemistry and BEFORE inorganicchemistry/organicchemistry.
         // Catches pchem, quantum chemistry (for chemists), thermodynamics of reactions, chemical

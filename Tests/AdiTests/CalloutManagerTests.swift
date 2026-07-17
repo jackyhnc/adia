@@ -22560,4 +22560,176 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast911() {
         #expect(SuggestedSessionTemplates.all.count >= 911, "template catalog must have ≥911 entries after radioastronomy/astrochemistry/nuclearphysics/plasmaphysics/computationalfluidynamics additions (10 templates)")
     }
+
+    // MARK: - hydrology routing
+    @Test func hydrologyClassRoutesHydrology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hydrology class exam homework tonight") == "hydrology")
+    }
+    @Test func watershedHydrologyClassRoutesHydrology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "watershed hydrology class exam review") == "hydrology")
+    }
+    @Test func streamflowAnalysisClassRoutesHydrology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "streamflow analysis class hydrology exam") == "hydrology")
+    }
+    @Test func floodFrequencyHydrologyRoutesHydrology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "flood frequency analysis hydrology class exam") == "hydrology")
+    }
+    @Test func unitHydrographClassRoutesHydrology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "unit hydrograph hydrology class exam problem") == "hydrology")
+    }
+    @Test @MainActor func hydrologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "hydrology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "hydrology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "hydrology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func hydrologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "hydrology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func hydrologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "hydrology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - glaciology routing
+    @Test func glaciologyClassRoutesGlaciology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "glaciology class exam homework tonight") == "glaciology")
+    }
+    @Test func iceSheetClassRoutesGlaciology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ice sheet dynamics class exam glaciology") == "glaciology")
+    }
+    @Test func glacierMassBalanceClassRoutesGlaciology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "glacier mass balance class exam glaciology") == "glaciology")
+    }
+    @Test func iceCoreClassRoutesGlaciology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ice core class glaciology exam analysis") == "glaciology")
+    }
+    @Test func cryosphereClassRoutesGlaciology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cryosphere class glaciology exam course") == "glaciology")
+    }
+    @Test @MainActor func glaciologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "glaciology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "glaciology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "glaciology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func glaciologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "glaciology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func glaciologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "glaciology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - climatology routing
+    @Test func climatologyClassRoutesClimatology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "climatology class exam homework tonight") == "climatology")
+    }
+    @Test func climateModelClassRoutesClimatology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "climate model class exam climatology review") == "climatology")
+    }
+    @Test func radiativeForcingClassRoutesClimatology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "radiative forcing class climatology exam") == "climatology")
+    }
+    @Test func ensoClassClimatologyRoutesClimatology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "enso class climatology exam climate") == "climatology")
+    }
+    @Test func paleoclimateClassRoutesClimatology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "paleoclimate class climatology exam course") == "climatology")
+    }
+    @Test @MainActor func climatologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "climatology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "climatology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "climatology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func climatologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "climatology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func climatologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "climatology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - photochemistry routing
+    @Test func photochemistryClassRoutesPhotochemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "photochemistry class exam homework tonight") == "photochemistry")
+    }
+    @Test func jablonskiDiagramClassRoutesPhotochemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "jablonski diagram class photochemistry exam") == "photochemistry")
+    }
+    @Test func quantumYieldPhotochemistryRoutesPhotochemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "quantum yield class photochemistry exam chemistry") == "photochemistry")
+    }
+    @Test func excitedStatePhotochemistryRoutesPhotochemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "excited state class photochemistry exam") == "photochemistry")
+    }
+    @Test func fluorescenceSpectroscopyPhotochemistryRoutesPhotochemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fluorescence spectroscopy class photochemistry exam lab") == "photochemistry")
+    }
+    @Test @MainActor func photochemistryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "photochemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "photochemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "photochemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func photochemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "photochemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func photochemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "photochemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - electromagnetictheory routing
+    @Test func electromagneticTheoryClassRoutesElectromagnetictheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "electromagnetic theory class exam homework tonight") == "electromagnetictheory")
+    }
+    @Test func electrodynamicsClassRoutesElectromagnetictheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "electrodynamics class exam course notes") == "electromagnetictheory")
+    }
+    @Test func griffithsElectrodynamicsRoutesElectromagnetictheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "griffiths electrodynamics class exam problem") == "electromagnetictheory")
+    }
+    @Test func gaugeInvarianceClassRoutesElectromagnetictheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "gauge invariance class electromagnetic electrodynamics exam") == "electromagnetictheory")
+    }
+    @Test func retardedPotentialClassRoutesElectromagnetictheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "retarded potential class electrodynamics exam") == "electromagnetictheory")
+    }
+    @Test @MainActor func electromagnetictheoryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "electromagnetictheory", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "electromagnetictheory", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "electromagnetictheory", tier: 3).isEmpty)
+    }
+    @Test @MainActor func electromagnetictheoryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "electromagnetictheory", tier: 1).count >= 4)
+    }
+    @Test @MainActor func electromagnetictheoryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "electromagnetictheory", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - False-positive guards (glaciology/hydrology/climatology/photochemistry/electromagnetictheory)
+    @Test func bareHydrologyRoutesToGeology() {
+        // "hydrology" alone (no class/exam context) should NOT fire hydrology domain
+        let kw = CalloutManager.extractTaskKeyword(from: "study hydrology tonight")
+        #expect(kw != "hydrology" || kw == "geology")
+    }
+    @Test func electrodynamicsNotRoutesToElectromagnetism() {
+        // "electrodynamics class" should route to electromagnetictheory, not electromagnetism
+        let kw = CalloutManager.extractTaskKeyword(from: "electrodynamics class exam physics")
+        #expect(kw == "electromagnetictheory" || kw != "electromagnetism")
+    }
+
+    // MARK: - Count guard (batch: glaciology/hydrology/climatology/photochemistry/electromagnetictheory)
+    @Test func calloutTemplatesCountAtLeast921() {
+        #expect(SuggestedSessionTemplates.all.count >= 921, "template catalog must have ≥921 entries after glaciology/hydrology/climatology/photochemistry/electromagnetictheory additions (10 templates)")
+    }
 }

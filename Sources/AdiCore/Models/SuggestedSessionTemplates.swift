@@ -5880,5 +5880,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "CFD assignment completed (NS discretization, turbulence model setup, simulation results, or convergence analysis documented with mesh details, boundary conditions, and post-processing results — saved to file)",
             preferredDuration: 60 * 60
         ),
+        // glaciology
+        SuggestedTemplate(
+            icon: "snowflake",
+            task: "Study glaciology for my exam — review glacier dynamics, ice sheet mechanics, mass balance equations, ice core analysis, glacial landforms, cryosphere processes, and sea ice extent",
+            successCriteria: "Glaciology study session completed (at least two topics reviewed with glacier flow laws, mass balance calculations, ice core proxy records, glacial erosion features, and cryosphere feedbacks summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "snowflake",
+            task: "Work on my glaciology assignment — analyze glacier mass balance data, model ice sheet flow, interpret ice core records, map glacial landforms, or assess permafrost and sea ice extent",
+            successCriteria: "Glaciology assignment completed (mass balance analysis, ice flow model, ice core interpretation, glacial mapping, or permafrost assessment completed with data sources, methods, and results documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // hydrology
+        SuggestedTemplate(
+            icon: "drop.fill",
+            task: "Study hydrology for my exam — review the hydrological cycle, streamflow analysis, flood frequency, hydrograph methods, unit hydrograph theory, baseflow separation, and evapotranspiration estimation",
+            successCriteria: "Hydrology study session completed (at least two topics reviewed with hydrological cycle stages, streamflow calculation steps, flood frequency methods, and hydrograph derivation principles summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "drop.fill",
+            task: "Work on my hydrology assignment — analyze watershed runoff, compute flood frequency curves, derive unit hydrographs, estimate evapotranspiration, or apply the rational method to a drainage basin",
+            successCriteria: "Hydrology assignment completed (watershed runoff analysis, flood frequency computation, unit hydrograph derivation, or rational method calculation completed with all assumptions, data inputs, and results documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // climatology
+        SuggestedTemplate(
+            icon: "sun.haze.fill",
+            task: "Study climatology for my exam — review climate models, radiative forcing, climate sensitivity, ENSO, Hadley cell circulation, paleoclimate evidence, climate feedbacks, and the global energy balance",
+            successCriteria: "Climatology study session completed (at least two topics reviewed with radiative forcing mechanisms, climate sensitivity values, ENSO dynamics, Hadley cell structure, and feedback processes summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "sun.haze.fill",
+            task: "Work on my climatology assignment — analyze climate model output, calculate radiative forcing, examine paleoclimate proxies, interpret ENSO indices, or assess climate sensitivity scenarios",
+            successCriteria: "Climatology assignment completed (model analysis, radiative forcing calculation, paleoclimate proxy examination, ENSO interpretation, or sensitivity assessment completed with data, methods, and conclusions documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // photochemistry
+        SuggestedTemplate(
+            icon: "sparkles",
+            task: "Study photochemistry for my exam — review photochemical reactions, excited states, Jablonski diagrams, quantum yield, singlet and triplet states, fluorescence, phosphorescence, and energy transfer mechanisms",
+            successCriteria: "Photochemistry study session completed (at least two topics reviewed with Jablonski diagram transitions, quantum yield calculations, excited state lifetimes, and energy transfer principles summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "sparkles",
+            task: "Work on my photochemistry assignment — analyze excited-state decay pathways, compute quantum yields, draw Jablonski diagrams, examine Förster energy transfer, or solve photolysis reaction mechanisms",
+            successCriteria: "Photochemistry assignment completed (decay pathway analysis, quantum yield computation, Jablonski diagram, FRET analysis, or photolysis mechanism completed with energy levels, rate constants, and all steps shown — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // electromagnetictheory
+        SuggestedTemplate(
+            icon: "bolt.fill",
+            task: "Study electromagnetic theory for my exam — review Maxwell's equations in full generality, vector and scalar potentials, gauge invariance, retarded potentials, multipole expansion, radiation, and relativistic electrodynamics",
+            successCriteria: "Electromagnetic theory study session completed (at least two topics reviewed with potential derivations, gauge transformation steps, retarded potential integrals, multipole terms, and Larmor radiation formula summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "bolt.fill",
+            task: "Work on my electromagnetic theory problem set — derive retarded potentials, compute multipole expansions, analyze radiation from accelerating charges, apply gauge transformations, or solve relativistic field problems",
+            successCriteria: "Electromagnetic theory problem set completed (retarded potential derivation, multipole computation, radiation analysis, gauge transformation, or relativistic field solution completed with all vector calculus steps shown — saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }
