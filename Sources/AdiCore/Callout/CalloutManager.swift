@@ -5513,6 +5513,99 @@ public final class CalloutManager {
             || word("anesthesiology") || word("anesthesiologist") || word("anesthesiologists") {
             return "anesthesiology"
         }
+        // structuralbiology — positioned AFTER anesthesiology and BEFORE premed so cryo-EM,
+        // protein structure determination, PDB, and SAXS route here and not to molecularbiology
+        // (which owns Western blot / PCR) or materialscience (which owns "crystallography class").
+        if lower.contains("structural biology") || lower.contains("structural biologist")
+            || lower.contains("cryo-em") || lower.contains("cryo em") || lower.contains("cryo-electron microscopy")
+            || lower.contains("protein structure determination") || lower.contains("protein structure prediction")
+            || lower.contains("protein data bank") || lower.contains("pdb structure") || lower.contains("pdb database")
+            || lower.contains("saxs") && (lower.contains("biology") || lower.contains("protein") || lower.contains("structural") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("small-angle x-ray scattering") && (lower.contains("biology") || lower.contains("protein") || lower.contains("structural"))
+            || lower.contains("protein crystallization") && (lower.contains("lab") || lower.contains("class") || lower.contains("structural") || lower.contains("crystallography"))
+            || lower.contains("protein nmr") || (lower.contains("nmr spectroscopy") && (lower.contains("protein") || lower.contains("structural") || lower.contains("biology")))
+            || lower.contains("homology modeling") && (lower.contains("protein") || lower.contains("structural") || lower.contains("biology"))
+            || lower.contains("protein folding") && (lower.contains("class") || lower.contains("research") || lower.contains("structural") || lower.contains("biology") || lower.contains("lab"))
+            || (word("alphafold") && (lower.contains("protein") || lower.contains("structural") || lower.contains("research") || lower.contains("class")))
+            || lower.contains("structural genomics") || lower.contains("structuralbiology class")
+            || lower.contains("structural biology class") || lower.contains("structural biology course")
+            || lower.contains("structural biology lab") || lower.contains("structural biology research") {
+            return "structuralbiology"
+        }
+        // biochemistrylab — positioned AFTER molecularbiology (which owns Western blot/PCR) and
+        // BEFORE premed. Catches hands-on biochemistry lab course work. Bare word("biochemistry")
+        // without lab/class/course context stays in premed for MCAT.
+        if lower.contains("sds-page") || lower.contains("sds page") || lower.contains("sds polyacrylamide")
+            || lower.contains("bradford assay") || lower.contains("bca assay") || lower.contains("lowry assay")
+            || lower.contains("protein assay") && (lower.contains("lab") || lower.contains("biochemistry") || lower.contains("class"))
+            || lower.contains("enzyme kinetics lab") || lower.contains("enzyme kinetics class") || lower.contains("enzyme kinetics course")
+            || lower.contains("michaelis-menten") && (lower.contains("lab") || lower.contains("class") || lower.contains("biochemistry") || lower.contains("experiment"))
+            || lower.contains("column chromatography") && (lower.contains("lab") || lower.contains("class") || lower.contains("biochemistry"))
+            || lower.contains("affinity chromatography") && (lower.contains("lab") || lower.contains("class") || lower.contains("biochemistry"))
+            || lower.contains("size exclusion chromatography") && (lower.contains("lab") || lower.contains("class") || lower.contains("biochemistry"))
+            || lower.contains("ion exchange chromatography") && (lower.contains("lab") || lower.contains("class") || lower.contains("biochemistry"))
+            || lower.contains("hplc") && (lower.contains("biochemistry") || lower.contains("protein") || lower.contains("lab class") || lower.contains("biochem lab"))
+            || lower.contains("biochemistry lab") && (lower.contains("class") || lower.contains("course") || lower.contains("report") || lower.contains("notebook") || lower.contains("experiment") || lower.contains("practical") || lower.contains("assignment"))
+            || lower.contains("biochemistry experiment") || lower.contains("biochemistry practical")
+            || lower.contains("biochemistry lab report") || lower.contains("biochem lab report")
+            || lower.contains("biochemistry lab notebook") || lower.contains("biochem lab notebook") {
+            return "biochemistrylab"
+        }
+        // clinicalneurology — positioned AFTER neuroanatomy and anesthesiology and BEFORE premed
+        // so neurology-rotation/ward tasks route here. "neuroanatomy class" stays in neuroanatomy
+        // (fires earlier). Bare "neurology" alone stays in premed.
+        if lower.contains("neurology rotation") || lower.contains("neuro rotation")
+            || lower.contains("neurology clerkship") || lower.contains("neuro clerkship")
+            || lower.contains("neurology elective") || lower.contains("neurology ward")
+            || lower.contains("neurology rounds") || lower.contains("neuro rounds")
+            || lower.contains("neurology attending") || lower.contains("neuro attending")
+            || lower.contains("neurology consult") || lower.contains("neuro consult")
+            || lower.contains("neurology residency") && (lower.contains("reading") || lower.contains("notes") || lower.contains("rotation") || lower.contains("case"))
+            || lower.contains("neurological exam") && (lower.contains("rotation") || lower.contains("ward") || lower.contains("class") || lower.contains("clinical"))
+            || lower.contains("eeg interpretation") && (lower.contains("rotation") || lower.contains("class") || lower.contains("neurology") || lower.contains("clinical"))
+            || lower.contains("lumbar puncture") && (lower.contains("rotation") || lower.contains("class") || lower.contains("neurology") || lower.contains("clinical"))
+            || lower.contains("neurological assessment") && (lower.contains("ward") || lower.contains("rotation") || lower.contains("clinical"))
+            || lower.contains("neurology case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("presentation") || lower.contains("ward"))
+            || lower.contains("neuro case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("presentation") || lower.contains("ward")) {
+            return "clinicalneurology"
+        }
+        // dermatologyrotation — positioned AFTER radiologyrotation and BEFORE premed so derm
+        // rotation, dermoscopy, and skin-biopsy interpretation tasks route here. Bare "dermatology"
+        // alone stays in premed.
+        if lower.contains("dermatology rotation") || lower.contains("derm rotation")
+            || lower.contains("dermatology clerkship") || lower.contains("derm clerkship")
+            || lower.contains("dermatology elective") || lower.contains("derm elective")
+            || lower.contains("dermatology reading") || lower.contains("derm reading")
+            || lower.contains("dermatology rounds") || lower.contains("derm rounds")
+            || lower.contains("dermatology attending") || lower.contains("derm attending")
+            || lower.contains("dermatology residency") && (lower.contains("reading") || lower.contains("notes") || lower.contains("rotation") || lower.contains("case"))
+            || lower.contains("skin biopsy") && (lower.contains("rotation") || lower.contains("class") || lower.contains("dermatology") || lower.contains("derm") || lower.contains("interpretation"))
+            || lower.contains("dermoscopy") && (lower.contains("rotation") || lower.contains("class") || lower.contains("dermatology") || lower.contains("study"))
+            || lower.contains("derm notes") || lower.contains("dermatology notes") && lower.contains("rotation")
+            || lower.contains("dermatology case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("lesion classification") && (lower.contains("dermatology") || lower.contains("derm") || lower.contains("rotation") || lower.contains("class"))
+            || (word("dermatologist") && (lower.contains("rotation") || lower.contains("notes") || lower.contains("studying") || lower.contains("rounds"))) {
+            return "dermatologyrotation"
+        }
+        // psychiatryrotation — positioned AFTER dermatologyrotation and BEFORE premed so psych
+        // rotation, mental status exam, and DSM-5 formulation tasks route here. Bare "psychiatry"
+        // alone stays in premed; "psychology" stays in psychology (fires much earlier).
+        if lower.contains("psychiatry rotation") || lower.contains("psych rotation")
+            || lower.contains("psychiatry clerkship") || lower.contains("psych clerkship")
+            || lower.contains("psychiatry elective") || lower.contains("inpatient psychiatry")
+            || lower.contains("psychiatry ward") || lower.contains("psych ward") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("notes"))
+            || lower.contains("psychiatry rounds") || lower.contains("psych rounds")
+            || lower.contains("psychiatry attending") || lower.contains("psych attending")
+            || lower.contains("psychiatry notes") && lower.contains("rotation")
+            || lower.contains("psychiatry residency") && (lower.contains("reading") || lower.contains("notes") || lower.contains("rotation") || lower.contains("case"))
+            || lower.contains("mental status exam") && (lower.contains("rotation") || lower.contains("class") || lower.contains("psychiatry") || lower.contains("psych") || lower.contains("clinical"))
+            || lower.contains("dsm-5 case") || lower.contains("dsm5 case") || lower.contains("dsm-5 formulation")
+            || lower.contains("psychiatric formulation") || lower.contains("psychiatric case formulation")
+            || lower.contains("psychiatric assessment") && (lower.contains("rotation") || lower.contains("ward") || lower.contains("clinical"))
+            || lower.contains("psychiatry case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("mood disorder case") && (lower.contains("rotation") || lower.contains("psychiatry") || lower.contains("psych")) {
+            return "psychiatryrotation"
+        }
         if word("anatomy") || word("physiology") || word("biochemistry")
             || word("pharmacology") || word("pathology") || word("histology")
             || word("microbiology") || word("immunology") || word("embryology")

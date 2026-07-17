@@ -4710,5 +4710,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Anesthesiology assignment completed (case or topic reviewed with anesthetic plan, drug selection rationale, monitoring parameters, and key clinical considerations documented)",
             preferredDuration: 45 * 60
         ),
+        // structuralbiology
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work on my structural biology research — analyze cryo-EM data, interpret protein structures in the PDB, run homology models, or study protein folding and X-ray crystallography methods",
+            successCriteria: "Structural biology session completed (at least one protein structure analyzed, key structural features documented, and research findings or methods notes saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study structural biology for my class or exam — review cryo-EM, X-ray crystallography, protein NMR, SAXS, protein folding, and structure determination workflows",
+            successCriteria: "Structural biology study session completed (at least two methods reviewed with technique principles, resolution limits, sample requirements, and key structural concepts summarized in notes)",
+            preferredDuration: 45 * 60
+        ),
+        // biochemistrylab
+        SuggestedTemplate(
+            icon: "flask.fill",
+            task: "Complete my biochemistry lab report or notebook — analyze SDS-PAGE or enzyme kinetics results, write up column chromatography data, or complete a protein assay analysis",
+            successCriteria: "Biochemistry lab report or notebook completed (data analyzed, results interpreted with controls accounted for, conclusions drawn with supporting calculations, and write-up saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "flask.fill",
+            task: "Study biochemistry lab techniques for my exam or practical — review SDS-PAGE, enzyme kinetics, Bradford/BCA assays, column chromatography, and biochemistry experimental methods",
+            successCriteria: "Biochemistry lab techniques study session completed (at least two techniques reviewed with principles, protocols, controls, and data-interpretation methods summarized in notes)",
+            preferredDuration: 45 * 60
+        ),
+        // clinicalneurology
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Complete my neurology rotation work — write up neuro case notes, prepare for rounds, review neurological exam findings, or study EEG interpretation and lumbar puncture technique",
+            successCriteria: "Neurology rotation session completed (case notes written or cases reviewed, key neurological findings documented, and rotation prep or write-up saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study neurology for my rotation exam — review neurological exam technique, common neurological syndromes, EEG interpretation, neuro imaging patterns, and lumbar puncture indications",
+            successCriteria: "Clinical neurology study session completed (at least two neurological syndromes or exam findings reviewed with localization, clinical features, and management pearls summarized in notes)",
+            preferredDuration: 45 * 60
+        ),
+        // dermatologyrotation
+        SuggestedTemplate(
+            icon: "person.fill.questionmark",
+            task: "Complete my dermatology rotation work — review skin lesion cases, practice dermoscopy pattern recognition, write up derm case notes, or study common dermatological conditions",
+            successCriteria: "Dermatology rotation session completed (at least 5 cases or lesion types reviewed, dermoscopic or clinical features noted, and rotation write-up or case notes saved)",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "person.fill.questionmark",
+            task: "Study dermatology for my rotation exam — review skin lesion classification, ABCDE melanoma criteria, dermoscopy patterns, common inflammatory conditions, and skin biopsy interpretation",
+            successCriteria: "Dermatology study session completed (at least two disease categories reviewed with clinical presentation, diagnostic findings, and management approach summarized in notes)",
+            preferredDuration: 45 * 60
+        ),
+        // psychiatryrotation
+        SuggestedTemplate(
+            icon: "brain",
+            task: "Complete my psychiatry rotation work — write psychiatric case formulations, document mental status exams, prepare DSM-5 differential diagnoses, or study inpatient psychiatry notes",
+            successCriteria: "Psychiatry rotation session completed (at least one case formulated with MSE, DSM-5 diagnosis, biopsychosocial framework, and treatment plan documented and saved)",
+            preferredDuration: 45 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain",
+            task: "Study psychiatry for my rotation exam — review DSM-5 diagnostic criteria, mental status exam components, biopsychosocial model, and common psychiatric syndromes and their management",
+            successCriteria: "Clinical psychiatry study session completed (at least two psychiatric conditions reviewed with diagnostic criteria, MSE findings, differential diagnosis, and management principles noted)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

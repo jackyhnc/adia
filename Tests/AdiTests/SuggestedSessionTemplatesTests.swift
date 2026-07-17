@@ -5565,4 +5565,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 731,
                 "catalog should have ≥731 templates after oceanography/geochemistry/thermodynamics/radiologyrotation/anesthesiology additions (10 templates)")
     }
+
+    // MARK: - structuralbiology templates
+    @Test func catalogHasStructuralbiologyTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasResearch = tasks.contains {
+            $0.localizedCaseInsensitiveContains("structural biology") &&
+            ($0.localizedCaseInsensitiveContains("cryo") || $0.localizedCaseInsensitiveContains("protein") || $0.localizedCaseInsensitiveContains("PDB"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("structural biology") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("class") || $0.localizedCaseInsensitiveContains("study"))
+        }
+        #expect(hasResearch, "catalog must include a structural biology research template")
+        #expect(hasStudy, "catalog must include a structural biology study template")
+    }
+
+    // MARK: - biochemistrylab templates
+    @Test func catalogHasBiochemistrylabTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasLabReport = tasks.contains {
+            $0.localizedCaseInsensitiveContains("biochemistry lab") &&
+            ($0.localizedCaseInsensitiveContains("report") || $0.localizedCaseInsensitiveContains("SDS") || $0.localizedCaseInsensitiveContains("enzyme") || $0.localizedCaseInsensitiveContains("notebook"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("biochemistry lab") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("technique") || $0.localizedCaseInsensitiveContains("practical"))
+        }
+        #expect(hasLabReport, "catalog must include a biochemistry lab report template")
+        #expect(hasStudy, "catalog must include a biochemistry lab techniques study template")
+    }
+
+    // MARK: - clinicalneurology templates
+    @Test func catalogHasClinicalNeurologyTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasRotation = tasks.contains {
+            $0.localizedCaseInsensitiveContains("neurology") &&
+            ($0.localizedCaseInsensitiveContains("rotation") || $0.localizedCaseInsensitiveContains("rounds") || $0.localizedCaseInsensitiveContains("case notes"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("neurology") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("neurological"))
+        }
+        #expect(hasRotation, "catalog must include a clinical neurology rotation template")
+        #expect(hasStudy, "catalog must include a clinical neurology study template")
+    }
+
+    // MARK: - dermatologyrotation templates
+    @Test func catalogHasDermatologyRotationTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasRotation = tasks.contains {
+            $0.localizedCaseInsensitiveContains("dermatology") &&
+            ($0.localizedCaseInsensitiveContains("rotation") || $0.localizedCaseInsensitiveContains("derm") || $0.localizedCaseInsensitiveContains("lesion"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("dermatology") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("dermoscopy"))
+        }
+        #expect(hasRotation, "catalog must include a dermatology rotation template")
+        #expect(hasStudy, "catalog must include a dermatology study template")
+    }
+
+    // MARK: - psychiatryrotation templates
+    @Test func catalogHasPsychiatryRotationTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasRotation = tasks.contains {
+            $0.localizedCaseInsensitiveContains("psychiatry") &&
+            ($0.localizedCaseInsensitiveContains("rotation") || $0.localizedCaseInsensitiveContains("formulation") || $0.localizedCaseInsensitiveContains("DSM"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("psychiatry") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("diagnostic"))
+        }
+        #expect(hasRotation, "catalog must include a psychiatry rotation template")
+        #expect(hasStudy, "catalog must include a psychiatry study template")
+    }
+
+    // MARK: - Count guard (batch: structuralbiology/biochemistrylab/clinicalneurology/dermatologyrotation/psychiatryrotation)
+    @Test func catalogHasAtLeastSevenHundredFortyOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 741,
+                "catalog should have ≥741 templates after structuralbiology/biochemistrylab/clinicalneurology/dermatologyrotation/psychiatryrotation additions (10 templates)")
+    }
 }

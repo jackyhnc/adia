@@ -431,6 +431,11 @@ extension CalloutManager {
         case "thermodynamics":             return thermodynamicsCallouts(tier: tier)
         case "radiologyrotation":          return radiologyrotationCallouts(tier: tier)
         case "anesthesiology":             return anesthesiologyCallouts(tier: tier)
+        case "structuralbiology":          return structuralbiologyCallouts(tier: tier)
+        case "biochemistrylab":            return biochemistrylabCallouts(tier: tier)
+        case "clinicalneurology":          return clinicalneurologyCallouts(tier: tier)
+        case "dermatologyrotation":        return dermatologyrotationCallouts(tier: tier)
+        case "psychiatryrotation":         return psychiatryrotationCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -8461,6 +8466,111 @@ extension CalloutManager {
             "CLOSE THIS. open your anesthesiology textbook.",
             "CLOSE THIS. anesthetic pharmacology won't study itself.",
             "CLOSE THIS. your anesthesiology exam won't pass itself."
+        ]
+        }
+    }
+
+    private func structuralbiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those protein structures aren't going to determine themselves.",
+            "close this and get back to your structural biology work.",
+            "cryo-EM data won't analyze itself — close this.",
+            "your protein structure project is waiting. close this."
+        ]
+        case 2: return [
+            "no one resolves protein structures by scrolling.",
+            "close this and open your structural biology data.",
+            "those PDB models won't build themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your structural biology tools.",
+            "CLOSE THIS. cryo-EM and X-ray data won't analyze themselves.",
+            "CLOSE THIS. protein structure determination won't do itself."
+        ]
+        }
+    }
+
+    private func biochemistrylabCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those biochemistry lab results aren't going to write themselves.",
+            "close this and get back to your biochemistry lab.",
+            "your SDS-PAGE gel isn't going to interpret itself — close this.",
+            "your biochemistry lab report is waiting. close this."
+        ]
+        case 2: return [
+            "no one passes biochemistry lab by scrolling.",
+            "close this and open your lab notebook.",
+            "those enzyme kinetics results won't analyze themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your biochemistry lab notebook.",
+            "CLOSE THIS. your lab data won't analyze itself.",
+            "CLOSE THIS. your biochemistry lab report won't write itself."
+        ]
+        }
+    }
+
+    private func clinicalneurologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those neurology cases aren't going to read themselves.",
+            "close this and get back to your neuro rotation work.",
+            "your attending is waiting — close this and get back to rounds.",
+            "your neurology cases need your focus. close this."
+        ]
+        case 2: return [
+            "no one becomes a neurologist by scrolling.",
+            "close this and get back to your neurology notes.",
+            "those neuro cases won't review themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your neurology case notes.",
+            "CLOSE THIS. those neuro cases need your full attention.",
+            "CLOSE THIS. your neurology rotation won't study itself."
+        ]
+        }
+    }
+
+    private func dermatologyrotationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those skin lesions aren't going to classify themselves.",
+            "close this and get back to your derm rotation.",
+            "your derm attending is waiting — close this.",
+            "those dermatology cases need your focus. close this."
+        ]
+        case 2: return [
+            "no one learns dermoscopy by scrolling.",
+            "close this and open your derm case notes.",
+            "those biopsy results won't interpret themselves — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your dermatology case notes.",
+            "CLOSE THIS. those skin lesions need your interpretation.",
+            "CLOSE THIS. your derm rotation won't study itself."
+        ]
+        }
+    }
+
+    private func psychiatryrotationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those psychiatric cases aren't going to formulate themselves.",
+            "close this and get back to your psychiatry rotation.",
+            "your psych attending is waiting — close this.",
+            "those psychiatry notes need your focus. close this."
+        ]
+        case 2: return [
+            "no one masters the DSM-5 by scrolling.",
+            "close this and open your psychiatry case notes.",
+            "that psychiatric formulation won't write itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your psychiatry case notes.",
+            "CLOSE THIS. those psychiatric formulations need your attention.",
+            "CLOSE THIS. your psychiatry rotation won't study itself."
         ]
         }
     }

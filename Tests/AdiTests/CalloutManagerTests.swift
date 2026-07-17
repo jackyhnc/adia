@@ -19563,4 +19563,161 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast731() {
         #expect(SuggestedSessionTemplates.all.count >= 731, "template catalog must have ≥731 entries after oceanography/geochemistry/thermodynamics/radiologyrotation/anesthesiology (10 templates)")
     }
+
+    // MARK: - structuralbiology keyword routing
+    @Test func cryoEmRoutesStructuralbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze cryo-EM data for protein structure") == "structuralbiology")
+    }
+    @Test func proteinStructureDeterminationRoutesStructuralbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "protein structure determination project") == "structuralbiology")
+    }
+    @Test func proteinDataBankRoutesStructuralbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "interpret PDB structure for research") == "structuralbiology")
+    }
+    @Test func saxsBiologyRoutesStructuralbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "SAXS protein structural biology research") == "structuralbiology")
+    }
+    @Test func structuralBiologyClassRoutesStructuralbiology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "structural biology class exam review") == "structuralbiology")
+    }
+    @Test @MainActor func structuralbiologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "structuralbiology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "structuralbiology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "structuralbiology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func structuralbiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "structuralbiology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func structuralbiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "structuralbiology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - biochemistrylab keyword routing
+    @Test func sdspageRoutesbiochemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analyze SDS-PAGE gel biochemistry lab") == "biochemistrylab")
+    }
+    @Test func bradfordAssayRoutesbiochemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bradford assay protein concentration biochemistry") == "biochemistrylab")
+    }
+    @Test func enzymeKineticsLabRoutesbiochemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "enzyme kinetics lab report") == "biochemistrylab")
+    }
+    @Test func columnChromatographyLabRoutesbiochemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "column chromatography biochemistry lab") == "biochemistrylab")
+    }
+    @Test func biochemistryLabReportRoutesbiochemistrylab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write biochemistry lab report") == "biochemistrylab")
+    }
+    @Test @MainActor func biochemistrylabCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "biochemistrylab", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "biochemistrylab", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "biochemistrylab", tier: 3).isEmpty)
+    }
+    @Test @MainActor func biochemistrylabTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "biochemistrylab", tier: 1).count >= 4)
+    }
+    @Test @MainActor func biochemistrylabTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "biochemistrylab", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - clinicalneurology keyword routing
+    @Test func neurologyRotationRoutesclinicalneurology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neurology rotation case notes write up") == "clinicalneurology")
+    }
+    @Test func neuroRoundsRoutesclinicalneurology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prepare for neuro rounds today") == "clinicalneurology")
+    }
+    @Test func eegInterpretationNeurologyRoutesclinicalneurology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "EEG interpretation neurology class") == "clinicalneurology")
+    }
+    @Test func lumbarPunctureNeurologyRoutesclinicalneurology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "lumbar puncture neurology rotation class") == "clinicalneurology")
+    }
+    @Test func neurologyClerkshipRoutesclinicalneurology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neurology clerkship case presentation") == "clinicalneurology")
+    }
+    @Test @MainActor func clinicalneurologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "clinicalneurology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "clinicalneurology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "clinicalneurology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func clinicalneurologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "clinicalneurology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func clinicalneurologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "clinicalneurology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - dermatologyrotation keyword routing
+    @Test func dermRotationRoutesdermatologyrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "derm rotation case notes today") == "dermatologyrotation")
+    }
+    @Test func dermoscopyRotationRoutesdermatologyrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "dermoscopy dermatology rotation study") == "dermatologyrotation")
+    }
+    @Test func skinBiopsyDermRotationRoutesdermatologyrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "skin biopsy interpretation dermatology rotation") == "dermatologyrotation")
+    }
+    @Test func dermatologyClerkshipRoutesdermatologyrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "dermatology clerkship rounds preparation") == "dermatologyrotation")
+    }
+    @Test @MainActor func dermatologyrotationCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "dermatologyrotation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "dermatologyrotation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "dermatologyrotation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func dermatologyrotationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "dermatologyrotation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func dermatologyrotationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "dermatologyrotation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - psychiatryrotation keyword routing
+    @Test func psychiatryRotationRoutespsychiatryrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "psychiatry rotation case formulation") == "psychiatryrotation")
+    }
+    @Test func inpatientPsychiatryRoutespsychiatryrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "inpatient psychiatry notes today") == "psychiatryrotation")
+    }
+    @Test func mentalStatusExamPsychRotationRoutespsychiatryrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mental status exam psychiatry rotation") == "psychiatryrotation")
+    }
+    @Test func dsm5CaseFormulationRoutespsychiatryrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "DSM-5 case formulation write up") == "psychiatryrotation")
+    }
+    @Test func psychiatricCaseFormulationRoutespsychiatryrotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "psychiatric case formulation write up") == "psychiatryrotation")
+    }
+    @Test @MainActor func psychiatryrotationCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "psychiatryrotation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "psychiatryrotation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "psychiatryrotation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func psychiatryrotationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "psychiatryrotation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func psychiatryrotationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "psychiatryrotation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (batch: structuralbiology/biochemistrylab/clinicalneurology/dermatologyrotation/psychiatryrotation)
+    @Test func calloutTemplatesCountAtLeast741() {
+        #expect(SuggestedSessionTemplates.all.count >= 741, "template catalog must have ≥741 entries after structuralbiology/biochemistrylab/clinicalneurology/dermatologyrotation/psychiatryrotation (10 templates)")
+    }
 }
