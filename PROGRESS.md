@@ -18336,3 +18336,75 @@ None. Swift toolchain unavailable on Linux container.
   - `neurochemistry` — neurochemistry class (neurotransmitter synthesis/degradation, synaptic vesicle cycling, monoamine pathways, neuropeptide signaling — distinct from biochemistry and neuroscience)
 - Template count: 841 → 851 after next 5-domain batch
 - CalloutManagerTests: ~22200+ lines after next batch
+
+---
+
+## Run 376 (automated) — 2026-07-17 — 5 new keyword domains: geriatricrotation/neurochemistry/psychobiologyclass/abnormalpsychology/healthpsychology (841→851 templates)
+
+### What shipped
+
+**5 new keyword domains: geriatricrotation, neurochemistry, psychobiologyclass, abnormalpsychology, healthpsychology**
+
+**New keyword domain — geriatricrotation:**
+- Branch positioned BEFORE gerontology. Catches clinical geriatric rotation tasks and ward contexts (vs. gerontology which catches course-level "geriatric medicine class/course/exam").
+- Catches: geriatric rotation, geriatric medicine rotation, geriatric ward/clinic, geriatric fellowship/residency, comprehensive geriatric assessment/CGA with rotation/clinical/patient/note context, polypharmacy+geriatric/rotation/patient/review, frailty syndrome, frailty assessment/scale+geriatric/patient/rotation, geriatric patient+rotation/ward/clinic/note/write/assessment, delirium management+geriatric/rotation/patient/ward, dementia management+rotation/clinical/patient/ward, age-related pharmacokinetics/geriatric pharmacokinetics, medication reconciliation+geriatric/rotation/patient, fall risk assessment+geriatric/rotation/patient/ward, geriatric fall risk, fall prevention+geriatric/rotation/patient.
+- `geriatricrotationCallouts(tier:)` 4/3/3: "that geriatric assessment won't write itself." / "no one aces geriatrics by scrolling." / "CLOSE THIS. open your geriatric rotation notes."
+- 2 templates: "Complete geriatric rotation tasks — CGA write-up, polypharmacy review, fall risk/frailty assessment, ward note" (60 min) + "Study for geriatric rotation — frailty syndrome, delirium vs. dementia, age-related pharmacokinetics, CGA components, fall prevention" (45 min)
+
+**New keyword domain — neurochemistry:**
+- Branch positioned BEFORE neuroscience. Catches neurochemistry coursework (neurotransmitter synthesis/degradation, monoamine pathways, synaptic vesicle cycling). Bare word("neurotransmitter") stays in neuroscience.
+- Catches: word("neurochemistry")/word("neurochemist"), neurochemistry class/course/exam/notes/textbook/assignment/problem set/homework, neurotransmitter synthesis/degradation+class/exam/pathway/notes, synaptic vesicle cycling+class/exam/neurochemistry, monoamine pathway+class/exam/notes, monoamine oxidase+class/exam/pathway/neurochemistry, catecholamine synthesis+class/exam/pathway, dopamine/serotonin synthesis+class/exam/neurochemistry/pathway, GABA synthesis/metabolism+class/exam/neurochemistry, glutamate GABA+class/balance/exam/neurochemistry, neuropeptide signaling+class/exam/neurochemistry, acetylcholine synthesis+class/exam/pathway/neurochemistry.
+- `neurochemistryCallouts(tier:)` 4/3/3: "those neurotransmitter pathways won't map themselves." / "no one masters neurochemistry by scrolling." / "CLOSE THIS. open your neurochemistry notes."
+- 2 templates: "Study neurochemistry for my exam — neurotransmitter synthesis/degradation, monoamine pathways, synaptic vesicle cycling, GABA/glutamate balance, neuropeptide signaling" (60 min) + "Work through my neurochemistry assignment — trace dopamine/serotonin synthesis pathway, map catecholamine biosynthesis, analyze MAO inhibitors" (45 min)
+
+**New keyword domain — psychobiologyclass:**
+- Branch positioned BEFORE neuroscience. Catches biopsychology and biological psychology coursework with class/exam qualifiers. Bare "behavioral neuroscience" without class/exam context falls through to neuroscience.
+- Catches: biological psychology class/course/exam/textbook/notes/major/assignment/program, biopsychology class/course/exam/textbook/notes/major/assignment/homework, physiological psychology class/course/exam/notes, behavioral neuroscience class/course/exam/notes/major/assignment, hemispheric lateralization/specialization+class/exam/biopsychology/psych, genetics and behavior+class/exam/biopsychology, hormones and behavior+class/exam/biopsychology, brain and behavior class/course/exam/notes, sensation and perception+class/exam/biopsychology/biological psych, neurobiological basis+class/exam/biopsychology/behavior, biopsychological model+class/exam/behavior.
+- `psychobiologyclassCallouts(tier:)` 4/3/3: "those brain-behavior mechanisms won't map themselves." / "no one masters biopsychology by scrolling." / "CLOSE THIS. open your biopsychology notes."
+- 2 templates: "Study biopsychology for my exam — brain structure/function, hemispheric lateralization, hormones and behavior, genetics and behavior, sensation and perception, neurobiological bases of emotion" (60 min) + "Work on my biological psychology assignment — map cortical functions, analyze brain lesion case study, compare hemispheric specialization evidence, trace hormones-and-behavior pathway" (45 min)
+
+**New keyword domain — abnormalpsychology:**
+- Branch positioned BEFORE psychology. Catches explicit abnormal psychology coursework (DSM criteria, disorder categories, case conceptualization, differential diagnosis). Bare "abnormal psychology" without class/exam context stays in psychology.
+- Catches: abnormal psychology class/course/exam/textbook/notes/assignment/major/problem set/homework, abnormal psych class/exam/course, DSM+class/exam/criteria/diagnosis/diagnostic/classification/abnormal, DSM-5/DSM-IV+class/exam/diagnosis/criteria, mental disorder/psychological disorder+class/exam/abnormal, anxiety/mood/depressive/personality disorder+class/exam/abnormal, schizophrenia/psychotic disorder+class/exam/abnormal/psych, eating disorder+class/exam/abnormal psych, OCD+class/exam/abnormal/psychology, PTSD+class/exam/abnormal psych, case conceptualization+class/exam/abnormal/psychology/psych, differential diagnosis+class/psych/abnormal/psychology exam, etiology of mental illness, prevalence of mental disorders+class/exam/psych.
+- `abnormalpsychologyCallouts(tier:)` 4/3/3: "those DSM criteria won't memorize themselves." / "no one masters abnormal psychology by scrolling." / "CLOSE THIS. open your abnormal psychology notes."
+- 2 templates: "Study abnormal psychology for my exam — DSM-5 criteria for anxiety/mood/psychotic/personality disorders, etiology models, case conceptualization, differential diagnosis" (60 min) + "Work on my abnormal psychology assignment — apply DSM-5 criteria to a case vignette, write a case conceptualization, analyze disorder etiology, compare differential diagnoses" (45 min)
+
+**New keyword domain — healthpsychology:**
+- Branch positioned BEFORE psychology. Catches health psychology coursework (biopsychosocial model, psychoneuroimmunology, pain psychology, illness behavior). "health behavior change/theory" stays in behavioralhealthpromotion (fires above).
+- Catches: health psychology class/course/exam/textbook/notes/assignment/major/problem set/homework, health psych class/exam/course, biopsychosocial model+class/exam/health/psych/patient/paper, biopsychosocial+class/exam/health psychology/assignment, psychoneuroimmunology+class/exam/research/paper, pain psychology, psychology of pain+class/exam/health, illness behavior+class/health psychology/exam, stress and health+class/psychology/exam/paper, coping mechanisms+class/health/psych/exam, chronic illness+class/psych/health psych/exam/health psychology, somatization+class/psych/health/exam, psychosomatic+class/health psych/health psychology/exam, placebo effect+class/psych/health/exam/paper.
+- `healthpsychologyCallouts(tier:)` 4/3/3: "that biopsychosocial case study won't write itself." / "no one masters health psychology by scrolling." / "CLOSE THIS. open your health psychology notes."
+- 2 templates: "Study health psychology for my exam — biopsychosocial model, psychoneuroimmunology, stress and health pathways, pain psychology, illness behavior, coping mechanisms for chronic illness" (60 min) + "Work on my health psychology assignment — apply biopsychosocial model to a patient case, analyze coping strategies and health outcomes, write a PNI summary, evaluate placebo effect study" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +41 @Test functions (5 routing + 3 callout pool tests per domain × 5 + 1 count guard ≥851) → 3962 total
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 per domain × 5 + 1 count guard ≥851) → 668 total
+
+**Template catalog: 841 → 851**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `geriatricrotation` fires at line 7340, BEFORE gerontology (7366) ✓
+- `neurochemistry` fires at line 7756, BEFORE neuroscience (7804) ✓
+- `psychobiologyclass` fires at line 7783, BEFORE neuroscience (7804) ✓
+- `abnormalpsychology` fires at line 7983, BEFORE psychology (8030) ✓
+- `healthpsychology` fires at line 8005, BEFORE psychology (8030) ✓
+- "geriatric medicine class" → gerontology (geriatricrotation only catches rotation/ward/clinic context) ✓
+- "neuroscience class" → neuroscience (neurochemistry/psychobiologyclass only catch their specific terms) ✓
+- "psychology class" → psychology (abnormalpsychology/healthpsychology require abnormal/health psych qualifiers) ✓
+- Brace balance: CalloutManager.swift 475/475 ✓; CalloutMessages.swift 895/895 ✓
+- Template count: 851 confirmed (grep -c "preferredDuration:" = 851) ✓
+- 5 new dispatch cases in taskAwareCallouts switch ✓
+- 5 new private callout pool functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `developmentalpsych` — developmental psychology more specific terms (Piaget cognitive stages class, attachment theory+class/exam, infant cognition+class, sensorimotor/preoperational/concrete/formal operational+class — distinct from developmentalpsychology which already catches child/lifespan development)
+  - `neuropsychology` — neuropsychology coursework (neuropsychological assessment class, cortical/subcortical functions class, hemispheric specialization class, executive function assessment, memory assessment class — distinct from clinicalpsychology which owns neuropsychological testing in clinical/internship context)
+  - `militarymedicine` — tactical medicine / combat casualty care / military medical officer rotation / TCCC / MARCH algorithm / field surgery / combat medicine class
+  - `sportsmedicine` — sports medicine rotation/clinic (musculoskeletal injury assessment+rotation/clinic, concussion management+rotation/clinic, return-to-play protocol+rotation, sports injury case+rotation/clinical — distinct from physicaltherapy and orthopedics)
+  - `palliativecare` — palliative care rotation/class (goals of care conversation+rotation, comfort measures class, palliative care assessment+rotation/patient, hospice class/rotation, symptom management+palliative/rotation, advance directive discussion+rotation/class)
+- Template count: 851 → 861 after next 5-domain batch
+- CalloutManagerTests: ~23700+ lines after next batch
