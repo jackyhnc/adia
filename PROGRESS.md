@@ -17923,3 +17923,66 @@ None. Swift toolchain unavailable on Linux container.
   - `marinebiology2` — marine biology lab (plankton identification, ocean field sampling, marine organism dissection — more lab-specific than the generic marinebiology branch)
 - Template count: 771 → 781 after next 5-domain batch
 - CalloutManagerTests: ~20100+ lines after next batch
+
+---
+
+## Run 372 (automated) — 2026-07-17 — 5 new keyword domains: biostatistics/marinebiology2/moleculargeneticslab/evolutionarybiology/biochemistry3 (781→791 templates)
+
+### What shipped
+
+**5 new keyword domains: biostatistics, marinebiology2, moleculargeneticslab, evolutionarybiology, biochemistry3**
+
+**New keyword domain — biostatistics:**
+- Branch positioned BEFORE statistics. Intercepts clinical/biological stats: survival analysis (with clinical/biostat/class context), Kaplan-Meier, Cox regression/proportional hazards, biostatistics class/course/exam, clinical trial design/analysis/statistics, power analysis (with clinical/biology/biostat/sample size context), sample size calculation (clinical/biology/biostat/trial), odds ratio/relative risk (clinical/epidemiology/class context), number needed to treat, Fisher's exact (biology/biostat/class), Mann-Whitney/Wilcoxon (biology/biostat/class/clinical), meta-analysis/systematic review (clinical/biostat/class), biostats class/course/exam.
+- `biostatisticsCallouts(tier:)` 4/3/3: "those survival curves aren't going to analyze themselves." / "no one masters biostatistics by scrolling." / "CLOSE THIS. open your biostatistics notes."
+- 2 templates: "Work through my biostatistics problem set — survival analysis, Kaplan-Meier curves, Cox regression, power analysis, clinical trial design, or odds ratio and relative risk calculations" (60 min) + "Study biostatistics for my exam — review survival analysis, Kaplan-Meier estimator, Cox proportional hazards model, power analysis, sample size calculation" (45 min)
+
+**New keyword domain — marinebiology2:**
+- Branch positioned AFTER marinebiology. Catches lab-specific marine biology signals: plankton/phytoplankton/zooplankton identification/counting/sample, tidepool/tide pool (lab/field/survey/ecology/sampling), marine invertebrate (lab/dissection/identification/class), marine organism dissection, ocean field sampling/survey, benthic survey/sampling/community, intertidal/subtidal (lab/field/ecology/survey/class/zone), kelp forest (lab/field/ecology/survey/class), marine biology lab report/notebook, ocean biology lab, marine science lab.
+- `marinebiology2Callouts(tier:)` 4/3/3: "those plankton samples aren't going to identify themselves." / "no one learns marine biology lab work by scrolling." / "CLOSE THIS. open your marine biology lab notebook."
+- 2 templates: "Complete my marine biology lab work — identify plankton samples, document tidepool species observations, write up benthic survey data, or analyze marine organism dissection results" (60 min) + "Prepare for my marine biology lab — review plankton identification keys, tidepool ecology, intertidal zonation, or pre-lab questions" (30 min)
+
+**New keyword domain — moleculargeneticslab:**
+- Branch positioned AFTER developmentalbiology, BEFORE evolutionarybiology (new), BEFORE genetics. Catches molecular genetics lab signals: restriction mapping (genetics/lab/class/dna), DNA restriction (lab/class/genetics/mapping/analysis), RFLP (genetics/lab/class/analysis), DNA fingerprinting/profiling (genetics/lab/class/analysis), karyotype analysis/karyotyping (genetics/lab/class/chromosomes), karyotype lab/class, chromosome spread, chromosome mapping (genetics/lab/class), genetic mapping (lab/class/experiment/report), complementation test (genetics/lab/class), gel electrophoresis (genetics/dna/restriction/karyotype/fingerprint context), molecular genetics lab, genetics lab report/notebook.
+- `moleculargeneticslabCallouts(tier:)` 4/3/3: "those restriction fragments aren't going to map themselves." / "no one masters molecular genetics lab by scrolling." / "CLOSE THIS. open your molecular genetics lab report."
+- 2 templates: "Complete my molecular genetics lab work — analyze restriction fragment patterns, build a DNA restriction map, interpret karyotype results, or write up my DNA fingerprinting lab report" (60 min) + "Prepare for my molecular genetics lab — review restriction enzyme digestion, agarose gel electrophoresis in genetics context, karyotyping techniques, or RFLP analysis pre-lab questions" (30 min)
+
+**New keyword domain — evolutionarybiology:**
+- Branch positioned AFTER moleculargeneticslab (new), BEFORE genetics. Catches evolution-specific class signals: evolutionary biology, evolution class/course/exam/notes/textbook/assignment/problem set, phylogenetic tree, phylogenetics (class/course/exam/analysis/build/construct), phylogeny (class/course/exam/analysis/reconstruct), maximum parsimony (phylogen/class/exam), maximum likelihood (phylogen/evolution/class/tree), speciation/allopatric/sympatric/peripatric, adaptive radiation (class/course/exam/evolution), evo-devo/evolutionary developmental biology, neutral theory (evolution/class/molecular/exam), molecular evolution (class/course/exam/notes), natural selection (class/course/evolution/exam/mechanism), sexual selection (class/course/evolution/exam), fitness landscape (class/evolution/exam), evolutionary biology class/course/exam/major, Darwin (evolution/class/natural selection), coevolution (class/course/exam/evolution), macroevolution/microevolution (class/course/exam).
+- False-positive guard: bare "natural selection" alone does NOT route to evolutionarybiology.
+- `evolutionarybiologyCallouts(tier:)` 4/3/3: "that phylogenetic tree isn't going to build itself." / "no one masters evolutionary biology by scrolling." / "CLOSE THIS. open your evolutionary biology notes."
+- 2 templates: "Study evolutionary biology for my exam — review phylogenetic tree construction, speciation mechanisms, adaptive radiation, evo-devo, and molecular evolution" (60 min) + "Work on my evolutionary biology assignment — build or interpret a phylogenetic tree, analyze a speciation case study, or complete a problem set" (45 min)
+
+**New keyword domain — biochemistry3:**
+- Branch positioned AFTER biochemistry2, BEFORE biochemistry. Catches cofactor biochemistry signals: vitamins as coenzymes, CoA (class/biochemistry/biochem/exam), thiamine/riboflavin/niacin/pyridoxine/pyridoxal phosphate/cobalamin/B12/biotin/pantothenic acid (class/biochemistry/biochem/exam/cofactor), folate metabolism (class/biochemistry/biochem/exam), one-carbon metabolism (class/biochemistry/biochem/exam), methylation cycle (class/biochemistry/biochem/exam), porphyrin synthesis (class/biochemistry/biochem/exam), heme biosynthesis (class/biochemistry/biochem/exam), bile acid synthesis/metabolism (class/biochemistry/biochem/exam), cofactor biochemistry, biochemical cofactor (class/exam/biochemistry).
+- `biochemistry3Callouts(tier:)` 4/3/3: "those cofactor pathways aren't going to memorize themselves." / "no one masters cofactor biochemistry by scrolling." / "CLOSE THIS. open your biochemistry notes."
+- 2 templates: "Study advanced biochemistry cofactors and coenzymes — review vitamins as coenzymes, heme biosynthesis, and bile acid synthesis" (60 min) + "Work through my advanced biochemistry problem set on cofactors — porphyrin and heme biosynthesis, bile acid synthesis, one-carbon metabolism, methylation cycle" (45 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +52 @Test functions (6 routing + 3 callout pool tests per domain + 1 false-positive guard for evolutionarybiology + count guard ≥791)
+- SuggestedSessionTemplatesTests.swift: +12 tests (2 per domain + count guard ≥791)
+
+**Template catalog: 781 → 791**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `biostatistics` fires at line 521, BEFORE statistics (line 537). "kaplan-meier survival clinical" → biostatistics ✓; "linear regression stats class" → statistics ✓
+- `marinebiology2` fires at line 884, AFTER marinebiology (line 863). "plankton identification lab" → marinebiology2 ✓; "marine biology class exam" → marinebiology ✓
+- `moleculargeneticslab` fires at line 4733, AFTER developmentalbiology, BEFORE evolutionarybiology (4762) and genetics (4794). "restriction mapping dna genetics lab" → moleculargeneticslab ✓
+- `evolutionarybiology` fires at line 4762, AFTER moleculargeneticslab (4733), BEFORE genetics (4794). "phylogenetic tree build class" → evolutionarybiology ✓; bare "natural selection" → studying ✓
+- `biochemistry3` fires at line 4839, AFTER biochemistry2 (4813), BEFORE biochemistry (4857). "heme biosynthesis biochemistry class" → biochemistry3 ✓; "biochemistry class enzyme kinetics" → biochemistry ✓
+- Brace balance: CalloutManager.swift 445/445 ✓; CalloutMessages.swift 835/835 ✓
+- Template count: 791 confirmed (grep -c "preferredDuration:" = 791)
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `systemsbiology` — systems biology (gene regulatory networks, Boolean network modeling, flux balance analysis, systems pharmacology — distinct from computationalbiology which focuses on coding/algorithms)
+  - `microbiologylab` — microbiology lab (aseptic technique, Gram staining, plate counting, culture interpretation, disk diffusion/antibiotic sensitivity — distinct from microbiology coursework)
+  - `ecophysiology` — ecophysiology class (how organisms respond to environmental variables: temperature, water potential, metabolic rate scaling — distinct from ecology and physiology)
+  - `plantphysiology` — plant physiology class (photosynthesis rate, stomatal conductance, water potential, transpiration, plant growth regulators — distinct from botany/cell biology)
+  - `animalphysiology` — animal physiology class (gas exchange, osmoregulation, thermoregulation, countercurrent exchange, endocrine physiology — distinct from human physiology)
+- Template count: 791 → 801 after next 5-domain batch
+- CalloutManagerTests: ~21400+ lines after next batch

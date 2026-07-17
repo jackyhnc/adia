@@ -494,6 +494,32 @@ public final class CalloutManager {
             || lower.contains("medical cost-effectiveness") || lower.contains("drug cost-effectiveness") {
             return "healtheconomics"
         }
+        // biostatistics — positioned BEFORE statistics so clinical/biological stats (survival
+        // analysis, Kaplan-Meier, Cox regression, power analysis, clinical trial design, odds
+        // ratio, relative risk, Fisher's exact test in biology/clinical context) route to a
+        // dedicated pool. Generic stats tools (SPSS, STATA, linear regression alone) stay in
+        // statistics (fires after).
+        if lower.contains("survival analysis") && (lower.contains("biostat") || lower.contains("clinical") || lower.contains("class") || lower.contains("course") || lower.contains("biology") || lower.contains("exam"))
+            || lower.contains("kaplan-meier") || lower.contains("kaplan meier")
+            || lower.contains("cox regression") || lower.contains("cox proportional hazard") || lower.contains("cox model")
+            || lower.contains("biostatistics") || lower.contains("biostatistician")
+            || lower.contains("clinical trial design") || lower.contains("clinical trial analysis") || lower.contains("clinical trial class") || lower.contains("clinical trial course")
+            || lower.contains("clinical trial statistics") || lower.contains("clinical trial data")
+            || lower.contains("power analysis") && (lower.contains("clinical") || lower.contains("biology") || lower.contains("biostat") || lower.contains("class") || lower.contains("sample size"))
+            || lower.contains("sample size calculation") && (lower.contains("clinical") || lower.contains("biology") || lower.contains("biostat") || lower.contains("trial"))
+            || lower.contains("odds ratio") && (lower.contains("class") || lower.contains("biostat") || lower.contains("clinical") || lower.contains("epidemiology") || lower.contains("exam"))
+            || lower.contains("relative risk") && (lower.contains("class") || lower.contains("biostat") || lower.contains("clinical") || lower.contains("epidemiology") || lower.contains("exam"))
+            || lower.contains("number needed to treat") || lower.contains("nnt") && (lower.contains("clinical") || lower.contains("biostat") || lower.contains("class"))
+            || lower.contains("fisher's exact") || lower.contains("fishers exact") && (lower.contains("biology") || lower.contains("biostat") || lower.contains("class"))
+            || lower.contains("mann-whitney") && (lower.contains("biology") || lower.contains("biostat") || lower.contains("class") || lower.contains("clinical"))
+            || lower.contains("wilcoxon") && (lower.contains("biology") || lower.contains("biostat") || lower.contains("class") || lower.contains("clinical"))
+            || lower.contains("meta-analysis") && (lower.contains("clinical") || lower.contains("biostat") || lower.contains("class") || lower.contains("systematic review"))
+            || lower.contains("systematic review") && (lower.contains("biostat") || lower.contains("clinical") || lower.contains("class") || lower.contains("meta"))
+            || lower.contains("biostat class") || lower.contains("biostat course") || lower.contains("biostat exam")
+            || lower.contains("biostat homework") || lower.contains("biostat problem set")
+            || lower.contains("biostats class") || lower.contains("biostats course") || lower.contains("biostats exam") {
+            return "biostatistics"
+        }
         // statistics — positioned before studying so professional stats tools/methods (R, SPSS,
         // STATA, regression analysis, ANOVA) route here. Bare word("statistics") and word("stats")
         // stay in studying so "study statistics for my exam" still routes to studying.
@@ -835,6 +861,27 @@ public final class CalloutManager {
             || lower.contains("marine biology course") || lower.contains("marine biology exam")
             || lower.contains("marine biology homework") {
             return "marinebiology"
+        }
+        // marinebiology2 — positioned immediately AFTER marinebiology so lab-specific marine
+        // biology sessions (plankton identification, tidepool field sampling, marine invertebrate
+        // dissection, ocean field work) route to a dedicated lab pool. Bare "marine biology lab"
+        // was caught above by marinebiology; compound lab-technique signals fire here first.
+        if lower.contains("plankton identification") || lower.contains("plankton counting") || lower.contains("plankton sample")
+            || lower.contains("phytoplankton identification") || lower.contains("zooplankton identification")
+            || lower.contains("tidepool") && (lower.contains("lab") || lower.contains("field") || lower.contains("survey") || lower.contains("ecology") || lower.contains("sampling"))
+            || lower.contains("tide pool") && (lower.contains("lab") || lower.contains("field") || lower.contains("survey") || lower.contains("ecology") || lower.contains("sampling"))
+            || lower.contains("marine invertebrate") && (lower.contains("lab") || lower.contains("dissection") || lower.contains("identification") || lower.contains("class") || lower.contains("biology"))
+            || lower.contains("marine organism dissection") || lower.contains("dissect marine") || lower.contains("marine specimen")
+            || lower.contains("ocean field") && (lower.contains("sample") || lower.contains("survey") || lower.contains("data") || lower.contains("collection") || lower.contains("lab"))
+            || lower.contains("ocean sampling") || lower.contains("marine field sampling") || lower.contains("marine field survey")
+            || lower.contains("seawater chemistry") && (lower.contains("lab") || lower.contains("class") || lower.contains("analysis") || lower.contains("marine"))
+            || lower.contains("benthic survey") || lower.contains("benthic sampling") || lower.contains("benthic community")
+            || lower.contains("intertidal") && (lower.contains("lab") || lower.contains("field") || lower.contains("ecology") || lower.contains("survey") || lower.contains("zone") || lower.contains("class"))
+            || lower.contains("subtidal") && (lower.contains("lab") || lower.contains("field") || lower.contains("ecology") || lower.contains("survey") || lower.contains("class"))
+            || lower.contains("kelp forest") && (lower.contains("lab") || lower.contains("field") || lower.contains("ecology") || lower.contains("survey") || lower.contains("class"))
+            || lower.contains("marine biology lab report") || lower.contains("marine biology lab notebook")
+            || lower.contains("ocean biology lab") || lower.contains("marine science lab") {
+            return "marinebiology2"
         }
         // experimentalphysics — positioned BEFORE the studying branch (which catches word("physics"))
         // so physics lab reports, optics experiments, and mechanics labs get a dedicated pool instead
@@ -4666,6 +4713,54 @@ public final class CalloutManager {
             || lower.contains("notch signaling") && (lower.contains("developmental") || lower.contains("class") || lower.contains("research")) {
             return "developmentalbiology"
         }
+        // moleculargeneticslab — positioned AFTER developmentalbiology and BEFORE genetics so
+        // molecular genetics lab-specific signals (DNA restriction mapping, gel electrophoresis in
+        // genetics context, karyotype analysis, RFLP, DNA fingerprinting) fire before the broader
+        // genetics branch. "gel electrophoresis" alone is caught by molecularbiology (much earlier);
+        // only compound genetics-lab forms route here.
+        if lower.contains("restriction mapping") && (lower.contains("genetics") || lower.contains("lab") || lower.contains("class") || lower.contains("dna"))
+            || lower.contains("dna restriction") && (lower.contains("lab") || lower.contains("class") || lower.contains("genetics") || lower.contains("mapping") || lower.contains("analysis"))
+            || lower.contains("restriction fragment length polymorphism") || lower.contains("rflp") && (lower.contains("genetics") || lower.contains("lab") || lower.contains("class") || lower.contains("analysis"))
+            || lower.contains("dna fingerprinting") && (lower.contains("genetics") || lower.contains("lab") || lower.contains("class") || lower.contains("analysis"))
+            || lower.contains("dna profiling") && (lower.contains("genetics") || lower.contains("lab") || lower.contains("class"))
+            || lower.contains("karyotype analysis") || lower.contains("karyotyping") && (lower.contains("genetics") || lower.contains("lab") || lower.contains("class") || lower.contains("chromosomes"))
+            || lower.contains("karyotype lab") || lower.contains("karyotype class") || lower.contains("chromosome spread")
+            || lower.contains("chromosome mapping") && (lower.contains("genetics") || lower.contains("lab") || lower.contains("class"))
+            || lower.contains("genetic mapping") && (lower.contains("lab") || lower.contains("class") || lower.contains("experiment") || lower.contains("report"))
+            || lower.contains("complementation test") && (lower.contains("genetics") || lower.contains("lab") || lower.contains("class"))
+            || lower.contains("gel electrophoresis") && (lower.contains("genetics") || lower.contains("dna") || lower.contains("restriction") || lower.contains("karyotype") || lower.contains("fingerprint"))
+            || lower.contains("molecular genetics lab") || lower.contains("genetics lab report") || lower.contains("genetics lab notebook") {
+            return "moleculargeneticslab"
+        }
+        // evolutionarybiology — positioned AFTER moleculargeneticslab and BEFORE genetics so
+        // evolution-specific class signals (phylogenetic trees, speciation, evo-devo, molecular
+        // evolution, adaptive radiation) route here. Population genetics (Hardy-Weinberg, allele
+        // frequency) stays in genetics (fires after); "natural selection" alone without evo-bio
+        // class/course context stays in studying.
+        if lower.contains("evolutionary biology") || lower.contains("evolution class") || lower.contains("evolution course")
+            || lower.contains("evolution exam") || lower.contains("evolution notes") || lower.contains("evolution textbook")
+            || lower.contains("evolution assignment") || lower.contains("evolution problem set")
+            || lower.contains("phylogenetic tree") || lower.contains("phylogenetics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("analysis") || lower.contains("build") || lower.contains("construct"))
+            || lower.contains("phylogeny") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("analysis") || lower.contains("reconstruct"))
+            || lower.contains("maximum parsimony") && (lower.contains("class") || lower.contains("phylogen") || lower.contains("exam"))
+            || lower.contains("maximum likelihood") && (lower.contains("phylogen") || lower.contains("evolution") || lower.contains("class") || lower.contains("tree"))
+            || lower.contains("speciation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("evolution") || lower.contains("notes"))
+            || lower.contains("allopatric speciation") || lower.contains("sympatric speciation") || lower.contains("peripatric speciation")
+            || lower.contains("adaptive radiation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("evolution"))
+            || lower.contains("evo-devo") || lower.contains("evolutionary developmental biology")
+            || lower.contains("neutral theory") && (lower.contains("evolution") || lower.contains("class") || lower.contains("molecular") || lower.contains("exam"))
+            || lower.contains("molecular evolution") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("notes"))
+            || lower.contains("natural selection") && (lower.contains("class") || lower.contains("course") || lower.contains("evolution") || lower.contains("exam") || lower.contains("mechanism"))
+            || lower.contains("sexual selection") && (lower.contains("class") || lower.contains("course") || lower.contains("evolution") || lower.contains("exam"))
+            || lower.contains("fitness landscape") && (lower.contains("class") || lower.contains("evolution") || lower.contains("exam"))
+            || lower.contains("evolutionary biology class") || lower.contains("evolutionary biology course")
+            || lower.contains("evolutionary biology exam") || lower.contains("evolution major")
+            || lower.contains("darwin") && (lower.contains("evolution") || lower.contains("class") || lower.contains("natural selection"))
+            || lower.contains("coevolution") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("evolution"))
+            || lower.contains("macroevolution") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("microevolution") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "evolutionarybiology"
+        }
         // genetics — positioned AFTER developmentalbiology and BEFORE biochemistry so classical
         // genetics (Mendelian, Hardy-Weinberg, pedigree analysis, population genetics) routes here.
         // "molecular genetics" stays in molecularbiology (earlier). Bare word("genetics") without
@@ -4716,6 +4811,32 @@ public final class CalloutManager {
             || lower.contains("nucleotide salvage") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
             || lower.contains("urea cycle") && (lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("class") || lower.contains("exam")) {
             return "biochemistry2"
+        }
+        // biochemistry3 — positioned AFTER biochemistry2 and BEFORE biochemistry so cofactor
+        // biochemistry (vitamins as coenzymes, porphyrin/heme synthesis, bile acid synthesis,
+        // one-carbon/folate metabolism, methylation cycle) route to a dedicated pool distinct
+        // from biochemistry2's signal transduction/lipid/nucleotide focus. Generic biochemistry
+        // class/lab terms still fall through to biochemistry (fires after).
+        if lower.contains("vitamin as coenzyme") || lower.contains("vitamins as coenzymes") || lower.contains("coenzyme a") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("thiamine") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam") || lower.contains("cofactor"))
+            || lower.contains("riboflavin") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam") || lower.contains("cofactor"))
+            || lower.contains("niacin") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam") || lower.contains("cofactor") || lower.contains("nad"))
+            || lower.contains("pyridoxine") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam") || lower.contains("cofactor"))
+            || lower.contains("pyridoxal phosphate") || lower.contains("plp") && (lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("class") || lower.contains("cofactor"))
+            || lower.contains("cobalamin") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam") || lower.contains("cofactor"))
+            || lower.contains("vitamin b12") && (lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("class") || lower.contains("exam") || lower.contains("coenzyme"))
+            || lower.contains("folate metabolism") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("one-carbon metabolism") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("methylation cycle") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("porphyrin synthesis") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("heme biosynthesis") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("porphyrin biochemistry") || lower.contains("heme pathway") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("exam"))
+            || lower.contains("bile acid synthesis") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("bile acid metabolism") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam"))
+            || lower.contains("cofactor biochemistry") || lower.contains("biochemical cofactor") && (lower.contains("class") || lower.contains("exam") || lower.contains("biochemistry"))
+            || lower.contains("biotin") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam") || lower.contains("cofactor") || lower.contains("carboxylase"))
+            || lower.contains("pantothenic acid") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam") || lower.contains("cofactor")) {
+            return "biochemistry3"
         }
         // biochemistry — positioned AFTER molecularbiology and BEFORE geneticcounseling.
         // Catches biochemistry lab/course work with specific enzyme-kinetics and assay terms.

@@ -5035,5 +5035,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Sociology study session completed (at least two sociological theories or key thinkers reviewed with core arguments, concepts, and real-world applications summarized and saved)",
             preferredDuration: 45 * 60
         ),
+        // biostatistics
+        SuggestedTemplate(
+            icon: "chart.xyaxis.line",
+            task: "Work through my biostatistics problem set — survival analysis, Kaplan-Meier curves, Cox regression, power analysis, clinical trial design, or odds ratio and relative risk calculations",
+            successCriteria: "Biostatistics problem set completed (at least two problems fully worked with method identified, calculations shown, and interpretation written — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.xyaxis.line",
+            task: "Study biostatistics for my exam — review survival analysis, Kaplan-Meier estimator, Cox proportional hazards model, power analysis, sample size calculation, and interpreting clinical trial statistics",
+            successCriteria: "Biostatistics study session completed (at least two methods reviewed with assumptions, formulas, and interpretation of results summarized and saved)",
+            preferredDuration: 45 * 60
+        ),
+        // marinebiology2
+        SuggestedTemplate(
+            icon: "drop.fill",
+            task: "Complete my marine biology lab work — identify plankton samples, document tidepool species observations, write up benthic survey data, or analyze marine organism dissection results",
+            successCriteria: "Marine biology lab work completed (organisms identified or data recorded, observations written up with scientific names and ecological notes, and lab section saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "drop.fill",
+            task: "Prepare for my marine biology lab — review plankton identification keys, tidepool ecology, intertidal zonation, or pre-lab questions for my ocean field sampling or marine organism dissection",
+            successCriteria: "Marine biology lab prep completed (plankton ID keys or tidepool species reviewed, key ecological concepts documented, and pre-lab questions answered and saved)",
+            preferredDuration: 30 * 60
+        ),
+        // moleculargeneticslab
+        SuggestedTemplate(
+            icon: "dna",
+            task: "Complete my molecular genetics lab work — analyze restriction fragment patterns, build a DNA restriction map, interpret karyotype results, or write up my DNA fingerprinting lab report",
+            successCriteria: "Molecular genetics lab work completed (restriction map drawn or karyotype interpreted, results documented with explanation of method and interpretation — saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "dna",
+            task: "Prepare for my molecular genetics lab — review restriction enzyme digestion, agarose gel electrophoresis in genetics context, karyotyping techniques, or RFLP analysis pre-lab questions",
+            successCriteria: "Molecular genetics lab prep completed (restriction digestion or karyotyping procedure reviewed, key concepts documented, and pre-lab questions answered and saved)",
+            preferredDuration: 30 * 60
+        ),
+        // evolutionarybiology
+        SuggestedTemplate(
+            icon: "arrow.triangle.branch",
+            task: "Study evolutionary biology for my exam — review phylogenetic tree construction (parsimony, maximum likelihood), speciation mechanisms, adaptive radiation, evo-devo concepts, and molecular evolution",
+            successCriteria: "Evolutionary biology study session completed (at least two concepts reviewed with mechanisms, examples, and key terminology summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "arrow.triangle.branch",
+            task: "Work on my evolutionary biology assignment — build or interpret a phylogenetic tree, analyze a speciation case study, or complete a problem set on natural selection mechanisms and molecular evolution",
+            successCriteria: "Evolutionary biology assignment completed (phylogenetic tree drawn or speciation analysis written, with method explained and results interpreted — saved to file)",
+            preferredDuration: 45 * 60
+        ),
+        // biochemistry3
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study advanced biochemistry cofactors and coenzymes — review vitamins as coenzymes (thiamine, riboflavin, niacin, pyridoxine, B12, folate, biotin, pantothenic acid), heme biosynthesis, and bile acid synthesis",
+            successCriteria: "Biochemistry cofactor study completed (at least two vitamin-coenzyme relationships reviewed with biochemical role, reaction type, and metabolic context summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work through my advanced biochemistry problem set on cofactors — porphyrin and heme biosynthesis pathway steps, bile acid synthesis, one-carbon metabolism, methylation cycle, or vitamin cofactor mechanisms",
+            successCriteria: "Biochemistry cofactor problem set completed (at least two pathway problems worked with steps, cofactors, and biochemical significance documented — saved to file)",
+            preferredDuration: 45 * 60
+        ),
     ]
 }

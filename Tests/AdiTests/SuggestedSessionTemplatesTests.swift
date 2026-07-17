@@ -5970,4 +5970,85 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.count >= 781,
                 "catalog should have ≥781 templates after astronomylab/geologylab/environmentalscience/anthropology/sociology additions (10 templates)")
     }
+
+    // MARK: - biostatistics templates
+    @Test func catalogHasBiostatisticsTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasProblemSet = tasks.contains {
+            $0.localizedCaseInsensitiveContains("biostatistics") &&
+            ($0.localizedCaseInsensitiveContains("problem set") || $0.localizedCaseInsensitiveContains("survival") || $0.localizedCaseInsensitiveContains("Kaplan"))
+        }
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("biostatistics") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        #expect(hasProblemSet, "catalog must include a biostatistics problem set template")
+        #expect(hasStudy, "catalog must include a biostatistics study template")
+    }
+
+    // MARK: - marinebiology2 templates
+    @Test func catalogHasMarinebiology2Templates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasLab = tasks.contains {
+            $0.localizedCaseInsensitiveContains("marine biology") &&
+            ($0.localizedCaseInsensitiveContains("lab") || $0.localizedCaseInsensitiveContains("plankton") || $0.localizedCaseInsensitiveContains("tidepool"))
+        }
+        let hasPrep = tasks.contains {
+            $0.localizedCaseInsensitiveContains("marine biology") &&
+            ($0.localizedCaseInsensitiveContains("prepare") || $0.localizedCaseInsensitiveContains("pre-lab") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        #expect(hasLab, "catalog must include a marine biology lab work template")
+        #expect(hasPrep, "catalog must include a marine biology lab prep template")
+    }
+
+    // MARK: - moleculargeneticslab templates
+    @Test func catalogHasMoleculargeneticslabTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasLab = tasks.contains {
+            $0.localizedCaseInsensitiveContains("molecular genetics") &&
+            ($0.localizedCaseInsensitiveContains("lab") || $0.localizedCaseInsensitiveContains("restriction") || $0.localizedCaseInsensitiveContains("karyotype"))
+        }
+        let hasPrep = tasks.contains {
+            $0.localizedCaseInsensitiveContains("molecular genetics") &&
+            ($0.localizedCaseInsensitiveContains("prepare") || $0.localizedCaseInsensitiveContains("pre-lab") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        #expect(hasLab, "catalog must include a molecular genetics lab work template")
+        #expect(hasPrep, "catalog must include a molecular genetics lab prep template")
+    }
+
+    // MARK: - evolutionarybiology templates
+    @Test func catalogHasEvolutionarybiologyTemplates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("evolutionary biology") &&
+            ($0.localizedCaseInsensitiveContains("exam") || $0.localizedCaseInsensitiveContains("study") || $0.localizedCaseInsensitiveContains("review"))
+        }
+        let hasAssignment = tasks.contains {
+            $0.localizedCaseInsensitiveContains("evolutionary biology") &&
+            ($0.localizedCaseInsensitiveContains("assignment") || $0.localizedCaseInsensitiveContains("phylogenetic") || $0.localizedCaseInsensitiveContains("problem set"))
+        }
+        #expect(hasStudy, "catalog must include an evolutionary biology study template")
+        #expect(hasAssignment, "catalog must include an evolutionary biology assignment template")
+    }
+
+    // MARK: - biochemistry3 templates
+    @Test func catalogHasBiochemistry3Templates() {
+        let tasks = SuggestedSessionTemplates.all.map(\.task)
+        let hasStudy = tasks.contains {
+            $0.localizedCaseInsensitiveContains("biochemistry") &&
+            ($0.localizedCaseInsensitiveContains("cofactor") || $0.localizedCaseInsensitiveContains("coenzyme") || $0.localizedCaseInsensitiveContains("heme"))
+        }
+        let hasProblemSet = tasks.contains {
+            $0.localizedCaseInsensitiveContains("biochemistry") &&
+            ($0.localizedCaseInsensitiveContains("cofactor") || $0.localizedCaseInsensitiveContains("porphyrin") || $0.localizedCaseInsensitiveContains("bile acid"))
+        }
+        #expect(hasStudy, "catalog must include a biochemistry cofactor/coenzyme study template")
+        #expect(hasProblemSet, "catalog must include a biochemistry3 problem set template")
+    }
+
+    // MARK: - Count guard (batch: biostatistics/marinebiology2/moleculargeneticslab/evolutionarybiology/biochemistry3)
+    @Test func catalogHasAtLeastSevenHundredNinetyOneTemplates() {
+        #expect(SuggestedSessionTemplates.all.count >= 791,
+                "catalog should have ≥791 templates after biostatistics/marinebiology2/moleculargeneticslab/evolutionarybiology/biochemistry3 additions (10 templates)")
+    }
 }

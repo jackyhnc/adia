@@ -456,6 +456,11 @@ extension CalloutManager {
         case "environmentalscience":       return environmentalscienceCallouts(tier: tier)
         case "anthropology":               return anthropologyCallouts(tier: tier)
         case "sociology":                  return sociologyCallouts(tier: tier)
+        case "biostatistics":              return biostatisticsCallouts(tier: tier)
+        case "marinebiology2":             return marinebiology2Callouts(tier: tier)
+        case "moleculargeneticslab":       return moleculargeneticslabCallouts(tier: tier)
+        case "evolutionarybiology":        return evolutionarybiologyCallouts(tier: tier)
+        case "biochemistry3":              return biochemistry3Callouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -9011,6 +9016,111 @@ extension CalloutManager {
             "CLOSE THIS. open your sociology textbook.",
             "CLOSE THIS. those social theory concepts need your attention.",
             "CLOSE THIS. your sociology exam won't study itself."
+        ]
+        }
+    }
+
+    private func biostatisticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those survival curves aren't going to analyze themselves.",
+            "close this and get back to your biostatistics.",
+            "that Kaplan-Meier plot won't interpret itself. close this.",
+            "your biostatistics problem set won't do itself. close this."
+        ]
+        case 2: return [
+            "no one masters biostatistics by scrolling.",
+            "close this and open your biostatistics textbook.",
+            "that Cox regression won't run itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your biostatistics notes.",
+            "CLOSE THIS. those survival curves need your analysis.",
+            "CLOSE THIS. your biostatistics exam won't study itself."
+        ]
+        }
+    }
+
+    private func marinebiology2Callouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those plankton samples aren't going to identify themselves.",
+            "close this and get back to your marine biology lab.",
+            "your tidepool field data won't write itself. close this.",
+            "that marine organism won't dissect itself. close this."
+        ]
+        case 2: return [
+            "no one learns marine biology lab work by scrolling.",
+            "close this and open your marine biology lab notebook.",
+            "those ocean samples need analysis — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your marine biology lab notebook.",
+            "CLOSE THIS. those plankton samples need identification.",
+            "CLOSE THIS. your tidepool field report won't write itself."
+        ]
+        }
+    }
+
+    private func moleculargeneticslabCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those restriction fragments aren't going to map themselves.",
+            "close this and get back to your molecular genetics lab.",
+            "that karyotype won't analyze itself. close this.",
+            "your DNA fingerprint results won't interpret themselves. close this."
+        ]
+        case 2: return [
+            "no one masters molecular genetics lab by scrolling.",
+            "close this and open your molecular genetics lab notebook.",
+            "that restriction map won't draw itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your molecular genetics lab report.",
+            "CLOSE THIS. those restriction fragments need mapping.",
+            "CLOSE THIS. your karyotype analysis won't do itself."
+        ]
+        }
+    }
+
+    private func evolutionarybiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that phylogenetic tree isn't going to build itself.",
+            "close this and get back to your evolutionary biology.",
+            "those speciation mechanisms won't memorize themselves. close this.",
+            "your evolutionary biology exam won't study itself. close this."
+        ]
+        case 2: return [
+            "no one masters evolutionary biology by scrolling.",
+            "close this and open your evolutionary biology textbook.",
+            "that phylogeny won't reconstruct itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your evolutionary biology notes.",
+            "CLOSE THIS. those phylogenetic trees need your analysis.",
+            "CLOSE THIS. your evolution exam won't study itself."
+        ]
+        }
+    }
+
+    private func biochemistry3Callouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those cofactor pathways aren't going to memorize themselves.",
+            "close this and get back to your biochemistry.",
+            "that heme biosynthesis pathway won't study itself. close this.",
+            "those vitamin coenzyme mechanisms won't review themselves. close this."
+        ]
+        case 2: return [
+            "no one masters cofactor biochemistry by scrolling.",
+            "close this and open your advanced biochemistry textbook.",
+            "that porphyrin pathway won't memorize itself — focus."
+        ]
+        default: return [
+            "CLOSE THIS. open your biochemistry notes.",
+            "CLOSE THIS. those cofactor mechanisms need your attention.",
+            "CLOSE THIS. your biochemistry exam won't study itself."
         ]
         }
     }
