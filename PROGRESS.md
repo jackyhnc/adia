@@ -19159,3 +19159,72 @@ None. Swift toolchain unavailable on Linux container.
   - `classicalmechanics` — classical mechanics class/course/exam (Lagrangian/Hamiltonian mechanics+class, Hamilton's equations+class, variational principle+class — distinct from physics)
 - Template count: 961 → 971 after next 5-domain batch
 - CalloutManagerTests: ~23500+ lines after next batch
+
+---
+
+## Run 388 (automated) — 2026-07-18 — 5 new keyword domains: photonics/acousticsengineering/petroleumengineering/sportspsychology/limnology (961→971 templates)
+
+### What shipped
+
+**5 new keyword domains: photonics, acousticsengineering, petroleumengineering, sportspsychology, limnology**
+
+**New keyword domain — photonics:**
+- Branch positioned AFTER optics and BEFORE experimentalphysics.
+- Catches: photonics class/course/exam/lab, fiber optics class/exam/photonics, optical fiber class/exam, laser physics + class/exam/photonics, nonlinear optics + class/exam/photonics, integrated photonics class/exam/lab, photonic crystal + class/exam/photonics, waveguide theory + class/exam/photonics/optics, optical amplifier/modulator + class/exam/photonics, silicon photonics class/lab, laser diode + class/photonics/exam.
+- `photonicsCallouts(tier:)` 4/3/3: "those photonic circuits won't design themselves." / "no one masters photonics by scrolling." / "CLOSE THIS. those nonlinear optics and integrated photonics problems won't solve themselves."
+- 2 templates: "Study photonics for my exam — fiber optic waveguide modes, laser rate equations, nonlinear effects (SPM/XPM/FWM), EDFA, integrated photonics, photonic crystal band gaps" (60 min) + "Work on my photonics assignment — single-mode fiber link design, laser threshold analysis, nonlinear phase calculation, Mach-Zehnder modulator, photonic crystal waveguide" (60 min)
+
+**New keyword domain — acousticsengineering:**
+- Branch positioned AFTER electricalengineering and BEFORE civilengineering.
+- Catches: acoustics class/course/exam/lab, acoustic engineering class/exam/lab, acoustical engineering class/exam, room acoustics + class/exam/acoustics, noise control + class/exam/acoustics/engineering, acoustic impedance + class/exam/acoustics, sound propagation + class/exam/acoustics, acoustic/vibration analysis + class/exam/acoustics/engineering, psychoacoustics class/lab, architectural/environmental acoustics class/exam, reverberation time + class/exam/acoustics.
+- `acousticsengineeringCallouts(tier:)` 4/3/3: "those acoustic measurements won't take themselves." / "no one masters acoustics by scrolling." / "CLOSE THIS. those acoustic wave and vibration analysis problems won't solve themselves."
+- 2 templates: "Study acoustics engineering for my exam — wave propagation, impedance, room acoustics (Sabine's formula), psychoacoustics, noise control, vibration analysis" (60 min) + "Work on my acoustics engineering assignment — RT60 calculation, noise barrier design, vibration mode analysis, impedance computation, anechoic treatment design" (60 min)
+
+**New keyword domain — petroleumengineering:**
+- Branch positioned AFTER chemicalengineering and BEFORE statisticalmechanics.
+- Catches: petroleum engineering class/course/exam/lab, reservoir engineering + class/exam/simulation, well logging + class/exam/petroleum/lab, petrophysics class/exam/petroleum, drilling/production engineering + class/exam/petroleum, reservoir simulation + class/exam/petroleum, enhanced oil recovery + class/exam/petroleum/lab, formation evaluation + class/course/petroleum/exam, hydraulic fracturing + class/course/petroleum/exam.
+- `petroleumengineeringCallouts(tier:)` 4/3/3: "that reservoir won't model itself." / "no one masters reservoir engineering by scrolling." / "CLOSE THIS. those reservoir simulation and drilling engineering problems won't solve themselves."
+- 2 templates: "Study petroleum engineering for my exam — reservoir fluid PVT, Darcy's law, well logging interpretation, petrophysics, material balance, EOR methods" (60 min) + "Work on my petroleum engineering assignment — well log interpretation, material balance, hydraulic fracture design, IPR calculation, reservoir simulation" (60 min)
+
+**New keyword domain — sportspsychology:**
+- Branch positioned BEFORE sportsmedicine.
+- Catches: sports/sport psychology class/course/exam/notes, mental performance + class/exam/sports/athlete/coaching, athlete confidence + class/exam/psychology/mental, pre-competition anxiety + class/exam/psychology/sports, flow state + sports/psychology/class/athlete/performance, visualization technique + sports/psychology/class/athlete, mental skills training + class/exam/sports/athlete, performance anxiety + class/psychology/sports/athlete/exam, goal setting + sports/sport/mental performance, self-talk + sports/psychology/class/athlete/performance, sports psych class/course/exam.
+- `sportspsychologyCallouts(tier:)` 4/3/3: "that athlete's mindset won't build itself." / "no one masters mental performance by scrolling." / "CLOSE THIS. those visualization and mental skills training concepts won't internalize themselves."
+- 2 templates: "Study sports psychology for my exam — mental skills training (goal setting, imagery, self-talk, arousal regulation), flow theory, IZOF, attention, confidence, coach-athlete communication" (60 min) + "Work on my sports psychology assignment — mental skills program design, psychological skills case analysis, arousal regulation, IZOF application, pre-competition routine" (60 min)
+
+**New keyword domain — limnology:**
+- Branch positioned BEFORE ecology.
+- Catches: limnology class/course/exam/lab, word("limnology"/"limnologist"/"limnologists"), freshwater ecology + class/exam/limnology, lake ecology class/exam/lab, stream/river ecology + class/exam/limnology, aquatic chemistry + class/exam/limnology/freshwater, eutrophication + class/exam/limnology/lake/freshwater, benthic community + class/exam/limnology/freshwater/stream, benthic macroinvertebrate class/exam/freshwater, thermal stratification/lake stratification + class/limnology/exam, phosphorus loading + class/limnology/lake/exam, dissolved oxygen + limnology/freshwater class/exam/lab, aquatic macroinvertebrate class/lab/exam, freshwater biology class/course/exam.
+- `limnologyCallouts(tier:)` 4/3/3: "those freshwater ecosystems won't study themselves." / "no one masters limnology by scrolling." / "CLOSE THIS. those freshwater ecology and lake stratification problems won't solve themselves."
+- 2 templates: "Study limnology for my exam — lake thermal stratification, nutrient cycling (Redfield ratio, eutrophication), primary productivity, benthic macroinvertebrates, dissolved oxygen dynamics, watershed hydrology" (60 min) + "Work on my limnology assignment — thermal profile analysis, trophic state index, macroinvertebrate identification, DO saturation, nutrient retention model" (60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +43 @Test functions (5 routing × 5 domains + 3 callout pool tests × 5 domains + 1 count guard ≥971)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + 1 count guard ≥971)
+
+**Template catalog: 961 → 971**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `photonics` fires at line 1822, BEFORE experimentalphysics (line 1849) ✓. "photonics class exam" → photonics ✓; bare "laser" → optics/experimentalphysics ✓
+- `acousticsengineering` fires at line 2869, BEFORE civilengineering (line 2897) ✓. "acoustics class exam" → acousticsengineering ✓; bare "sound" → falls through ✓
+- `petroleumengineering` fires at line 3038, BEFORE statisticalmechanics (line 3059) ✓. "petroleum engineering class exam" → petroleumengineering ✓; bare "reservoir" → falls through ✓
+- `sportspsychology` fires at line 4779, BEFORE sportsmedicine (line 4804) ✓. "sports psychology class exam" → sportspsychology ✓; bare "athlete" → sportsmedicine ✓
+- `limnology` fires at line 5366, BEFORE ecology (line 5394) ✓. "limnology class exam" → limnology ✓; bare "freshwater" → ecology ✓
+- Brace balance: CalloutManager.swift 535/535 ✓; CalloutMessages.swift 1015/1015 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 971 confirmed (grep -c "preferredDuration:" = 971) ✓
+- 5 new dispatch cases in taskAwareCallouts switch ✓
+- 5 new private callout pool functions ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `astrodynamics` — orbital mechanics class/course/exam (Keplerian orbits, Lambert's problem, Hohmann transfer, delta-v calculations, two-body problem, orbit determination, spacecraft navigation — distinct from astronomy/astrophysics)
+  - `spectroscopy` — spectroscopy class/course/exam (NMR spectroscopy + class/exam, IR spectroscopy + class/exam, mass spectrometry + class/exam/spectroscopy, UV-Vis spectroscopy + class, Raman spectroscopy + class — distinct from chemistry/biochemistry lab)
+  - `biomaterials` — biomaterials class/course/exam (biocompatibility + class/exam, tissue engineering scaffold + class/exam/biomaterials, implant material + class/exam/biomaterials, biodegradable polymer + class/biomaterials — distinct from materialscience/biomedicalengineering)
+  - `ergonomics` — ergonomics/human factors engineering class/course/exam (workstation design + class/exam, musculoskeletal disorder + class/ergonomics/exam, anthropometry + class/exam/ergonomics, cognitive workload + class/exam/ergonomics — distinct from humanfactors)
+  - `crystallography` — crystallography class/course/exam (X-ray diffraction + class/exam/crystallography, crystal structure + class/exam/crystallography, space group + class/exam, unit cell + class/crystallography/exam, Bragg's law + class/exam/crystallography — distinct from mineralogy/materialscience)
+- Template count: 971 → 981 after next 5-domain batch
+- CalloutManagerTests: ~24000+ lines after next batch
