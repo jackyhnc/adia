@@ -19400,3 +19400,72 @@ None. Swift toolchain unavailable on Linux container.
   - `structuralanalysis` — structural analysis class (beams, trusses, frames, method of sections, influence lines, matrix stiffness — distinct from civilengineering)
   - `compositematerials` — composite materials class (fiber-reinforced polymers, laminate theory, CLT, failure criteria, filament winding — distinct from materialscience/polymer)
 - Template count target: 1001 → 1011 after next 5-domain batch
+
+---
+
+## Run 392 (automated) — 2026-07-18 — 5 new keyword domains: compositematerials/powerelectronics/geotechnicalengineering/structuralanalysis/miningengineering (1001→1011 templates)
+
+### What shipped
+
+**5 new keyword domains: compositematerials, powerelectronics, geotechnicalengineering, structuralanalysis, miningengineering**
+
+**New keyword domain — compositematerials:**
+- Branch positioned BEFORE materialscience (line 2772→2801 now). "composite materials + class/course/exam/lab" was caught by materialscience; now intercepted here first.
+- Catches: composite materials class/course/exam/lab/assignment/homework/textbook/notes, fiber-reinforced polymer/plastics + class/exam/composite/lab, FRP composite + class/exam/lab, carbon fiber composite + class/exam/lab/design, laminate theory/classical lamination theory + class/exam/composite/materials, Tsai-Wu/Tsai-Hill failure + class/exam/composite, Hashin failure + class/exam/composite, filament winding + class/exam/composite/materials, resin transfer molding + class/exam/composite, vacuum infusion + composite + class/exam/lab, ply layup + class/exam/composite/laminate, composite fatigue + class/exam/lab/materials, micromechanics of composites + class/exam, rule of mixtures + composite + class/exam, halpin-tsai + class/exam/composite.
+- `compositematerialsCallouts(tier:)` 4/3/3: "those composite laminate analyses won't solve themselves." / "you know you have a composite materials problem set due." / "CLOSE THIS. those CLT and failure criteria analyses won't do themselves."
+- 2 templates: study exam (CLT, FRP, failure criteria, filament winding, micromechanics, fatigue, 60 min) + assignment (ABD matrix, failure analysis, pressure vessel or fatigue analysis, 60 min)
+
+**New keyword domain — powerelectronics:**
+- Branch positioned BEFORE electricalengineering (line 3025→3056 now). "power electronics + class/exam" was caught by electricalengineering; now intercepted here first.
+- Catches: power electronics class/course/exam/lab/assignment/homework/textbook/notes, DC-DC converter + class/exam/power/lab/design, buck/boost/buck-boost converter + class/exam/power/lab/design, SMPS/switched-mode power supply + class/exam/design, PWM control + class/exam/power/switching, inverter design + class/exam/power/lab, rectifier circuit + class/exam/power/lab, AC-DC conversion + class/exam/power, duty cycle + power + class/exam/switching, MOSFET switching + class/exam/power/lab, IGBT + power + class/exam/lab/switching, gate drive circuit + class/exam/power, power converter + class/exam/lab/design, half/full bridge + power + class/exam/lab.
+- `powerelectronicsCallouts(tier:)` 4/3/3: "those converter design problems won't solve themselves." / "you know you have a power electronics problem set due." / "CLOSE THIS. those buck-boost converter and PWM analyses won't do themselves."
+- 2 templates: study exam (DC-DC topologies, PWM, inductor/capacitor sizing, efficiency, inverter modulation, rectifiers, 60 min) + assignment (converter design with component values, switching waveforms, efficiency, 60 min)
+
+**New keyword domain — geotechnicalengineering:**
+- Branch positioned BEFORE civilengineering (line 3086→3148 now). "geotechnical engineering" and "soil mechanics" patterns were caught by civilengineering; now intercepted here first.
+- Catches: geotechnical engineering class/course/exam/lab/assignment/homework/textbook/notes, soil mechanics class/course/exam/lab/homework/assignment, foundation design class/course/exam/geotechnical, slope stability class/course/exam/analysis + class/exam/lab, triaxial test + class/exam/lab/soil, consolidation test/soil consolidation + class/lab/soil/settlement, soil classification + class/exam/lab/geotechnical, bearing capacity + class/exam/foundation/geotechnical, retaining wall + geotechnical + class/exam/design, compaction test/proctor compaction + class/lab/soil, lateral earth pressure/Rankine/Coulomb + class/exam/geotechnical, Terzaghi + class/exam/soil/consolidation, SPT/standard penetration test + class/lab/geotechnical, cone penetration test + class/lab/geotechnical, permeability test + class/lab/soil, Mohr-Coulomb + soil/geotechnical + class/exam, pile foundation + class/exam/geotechnical, FE exam + geotechnical.
+- `geotechnicalengineeringCallouts(tier:)` 4/3/3: "those soil mechanics problems won't solve themselves." / "you know you have a geotechnical engineering problem set due." / "CLOSE THIS. those foundation design and slope stability analyses won't do themselves."
+- 2 templates: study exam (soil classification, consolidation, bearing capacity, slope stability, lateral earth pressure, permeability, 60 min) + assignment (consolidation settlement, bearing capacity, slope stability, retaining wall, triaxial/SPT interpretation, 60 min)
+
+**New keyword domain — structuralanalysis:**
+- Branch positioned BEFORE civilengineering (after geotechnicalengineering). "structural analysis + class/exam" was caught by civilengineering; now intercepted here first.
+- Catches: structural analysis class/course/exam/homework/assignment/textbook/lab/notes, method of sections + class/exam/truss/structural, method of joints + class/exam/truss/structural, influence lines + class/exam/structural/beam, virtual work method/principle of virtual work + class/exam/structural, matrix stiffness method/direct stiffness method + class/exam/structural, stiffness matrix + class/exam/structural/frame, beam deflection + class/exam/structural/formula, shear and moment diagram + class/exam/beam, bending moment diagram + class/exam/structural/beam, shear force diagram + class/exam/structural/beam, indeterminate structure/beam + class/exam/structural, moment distribution method + class/exam/structural, slope deflection method + class/exam/structural, three-moment equation + class/exam, conjugate beam method + class/exam, unit load method + class/exam/structural.
+- `structuralanalysisCallouts(tier:)` 4/3/3: "those beam diagrams won't draw themselves." / "you know you have a structural analysis problem set due." / "CLOSE THIS. those shear-moment diagrams and matrix stiffness problems won't solve themselves."
+- 2 templates: study exam (SFD/BMD, beam deflection, truss analysis, influence lines, moment distribution, matrix stiffness, 60 min) + problem set (SFD/BMD, truss member forces, deflection, indeterminate beam, frame stiffness matrix, 60 min)
+
+**New keyword domain — miningengineering:**
+- Branch positioned BEFORE industrialengineering (line 3377→3477 now). Entirely new domain not previously caught.
+- Catches: mining engineering class/course/exam/lab/assignment/homework/textbook/notes, mine planning + class/exam/course/mining, ore/mineral processing + class/exam/course/mining, rock mechanics + class/exam/course/mining/lab, mine ventilation + class/exam/course/lab, open pit/underground mining + class/exam/course/design, blasting design/mine blasting + class/exam/course, explosives engineering + class/exam/course/mining, flotation process/ore flotation + class/exam/mining/ore, tunneling engineering + class/exam/mining, ground support + class/exam/mining/lab, stoping method/room-and-pillar/longwall mining + class/exam, tailings management/dam + class/exam/mining, ore grade estimation + class/exam/mining, mine safety + class/exam/course/engineering, mine reclamation + class/exam/mining, SME + mining + class/exam/handbook.
+- `miningengineeringCallouts(tier:)` 4/3/3: "those ore processing problems won't solve themselves." / "you know you have a mining engineering problem set due." / "CLOSE THIS. those mine planning and rock mechanics analyses won't do themselves."
+- 2 templates: study exam (mine planning, open pit/underground methods, rock mechanics, ore processing, flotation, ventilation, 60 min) + assignment (mine design, blast pattern, rock mass classification, mass balance, fan sizing, tailings, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +49 @Test functions (5 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains + 1 count guard ≥1011)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + 1 count guard ≥1011)
+
+**Template catalog: 1001 → 1011**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `compositematerials` fires at line 2801, BEFORE materialscience (line 2825) ✓
+- `powerelectronics` fires at line 3085, BEFORE electricalengineering (line 3119) ✓
+- `geotechnicalengineering` fires at line 3181, BEFORE civilengineering (line 3238) ✓
+- `structuralanalysis` fires at line 3210, BEFORE civilengineering (line 3238) ✓
+- `miningengineering` fires at line 3508, BEFORE industrialengineering (line 3535) ✓
+- Brace balance: CalloutManager.swift 555/555 ✓; CalloutMessages.swift 1055/1055 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 1011 confirmed (grep -c "preferredDuration:" = 1011) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases in CalloutMessages.swift ✓
+- 5 new private callout pool functions in CalloutMessages.swift ✓
+- Pushed to main: 5ba3195..c404366 ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `environmentalengineering` deep-specialization splits: `wastewatertreatment` (activated sludge, nitrification, membrane bioreactor, trickling filter — distinct from environmentalengineering) and `airpollutioncontrol` (PM2.5, scrubbers, ESP, SCR, NOx control — distinct from environmentalengineering)
+  - `navalarchitecture` — naval architecture class/course/exam (hull design, stability, Archimedes, metacentric height, resistance and propulsion, ship structures — entirely new domain)
+  - `mechatronics` — mechatronics class/course/exam (sensors and actuators, PLC programming, motion control, encoder feedback, hydraulics and pneumatics — distinct from robotics and mechanicalengineering)
+  - `renewableenergy` — renewable energy class/course/exam (solar PV, wind turbine design, energy storage, grid integration, LCOE — distinct from electricalengineering/energy)
+- Template count target: 1011 → 1021 after next 5-domain batch
