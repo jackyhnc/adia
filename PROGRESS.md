@@ -19330,3 +19330,73 @@ None. Swift toolchain unavailable on Linux container.
   - `quantummechanics` — quantum mechanics class/course/exam (Schrödinger equation, wave function, harmonic oscillator, perturbation theory — distinct from physics)
   - `classicalmechanics` — classical mechanics class/course/exam (Lagrangian/Hamiltonian, Hamilton's equations, variational principle — distinct from physics/engineering)
 - Template count target: 991 → 1001 after next 5-domain batch
+
+---
+
+## Run 391 (automated) — 2026-07-18 — 5 new keyword domains: signalprocessing/controlengineering/aerostructures/optogenetics/demography (991→1001 templates)
+
+### What shipped
+
+**5 new keyword domains: signalprocessing, controlengineering, aerostructures, optogenetics, demography**
+
+**New keyword domain — signalprocessing:**
+- Branch positioned BEFORE electricalengineering. "signal processing class/course/exam" and "digital signal processing class/course/exam" now own here first.
+- Catches: signal/digital signal processing class/course/exam/lab/assignment/homework, DSP class/course/exam/lab, fourier/discrete fourier/fast fourier transform + class/exam/problem, FFT + class/exam/lab/signal/processing, Z-transform + class/course/exam/signal, Laplace transform + class/exam/signal/processing, convolution + class/exam/signal/dsp, Nyquist + class/exam/signal/sampling, sampling theorem + class/exam/signal/nyquist, LTI system / linear time-invariant + class/exam/signal, FIR filter / IIR filter + class/exam/design/lab, digital filter design + class/exam/signal/lab, wavelet transform + class/exam/signal/processing, power spectral density + class/exam/signal/processing.
+- `signalprocessingCallouts(tier:)` 4/3/3: "those fourier transforms won't solve themselves." / "you know you have a dsp problem set due." / "CLOSE THIS. those fourier transforms and filter designs won't solve themselves."
+- 2 templates: "Study signal processing for my exam…" (60 min) + "Complete my DSP assignment…" (60 min)
+
+**New keyword domain — controlengineering:**
+- Branch positioned BEFORE electricalengineering (after signalprocessing). "control systems" and feedback-control-specific patterns own here.
+- Catches: control systems class/course/exam/lab/assignment/homework/textbook, control engineering class/course/exam/lab, feedback control + class/course/exam/system/design, PID controller + class/exam/design/tuning/lab, transfer function + class/exam/control/system, root locus + class/exam/control/design, Bode plot + class/exam/control/lab, Nyquist plot/stability criterion + class/exam/control/stability, state space / state-space + class/exam/control/system, controllability/observability + class/exam/control/system, gain margin/phase margin + class/exam/control/bode, stability analysis + class/exam/control/systems, Lyapunov stability + class/exam/control, frequency response + class/exam/control/bode, pole-zero / pole placement + class/exam/control/system/design.
+- `controlengineeringCallouts(tier:)` 4/3/3: "those pid tuning problems won't solve themselves." / "you know you have a control systems assignment due." / "CLOSE THIS. those transfer functions and stability analyses won't solve themselves."
+- 2 templates: "Study control engineering for my exam…" (60 min) + "Complete my control systems assignment…" (60 min)
+
+**New keyword domain — aerostructures:**
+- Branch positioned BEFORE aerospacengineering so dedicated aircraft structures coursework routes here.
+- Catches: aerostructures/aircraft structures class/course/exam/lab/assignment/notes, structural analysis of aircraft + class/exam/course, airframe structures + class/exam/course/lab, composite airframe + class/exam/course/design, aircraft fatigue + class/exam/course/analysis, wing structural design + class/exam/course, shear flow + class/exam/aircraft/aerostructures/airframe, monocoque structure + class/exam/aircraft/aerostructures, stiffened panel + class/exam/aircraft/aerostructures, aeroelasticity + class/exam/course/analysis, flutter analysis + class/exam/aeroelastic/aircraft, buckling analysis + class/exam/aircraft/aerostructures/airframe.
+- `aerostructuresCallouts(tier:)` 4/3/3: "that airframe structural analysis won't do itself." / "you know you have an aerostructures assignment due." / "CLOSE THIS. those airframe and aeroelasticity problems won't solve themselves."
+- 2 templates: "Study aerostructures for my exam…" (60 min) + "Complete my aircraft structures assignment…" (60 min)
+
+**New keyword domain — optogenetics:**
+- Branch positioned BEFORE neuroscience so dedicated optogenetics lab/class routes here.
+- Catches: word(optogenetics/optogenetic), optogenetics class/course/exam/lab/experiment/notes, channelrhodopsin/halorhodopsin + class/exam/lab/optogenetics/expression, opsin expression + class/exam/lab/optogenetics/neuron, viral vector + optogenetics/channelrhodopsin/opsin context, AAV injection + optogenetics/neuron/brain/lab, fiberoptic/fiber optic stimulation + optogenetics/neuron/brain/class, light-activated channel + class/exam/optogenetics/neuron, photostimulation + class/exam/optogenetics/neuron/circuit, neural circuit manipulation + optogenetics/class/exam/light, in vivo/in vitro optogenetics.
+- `optogeneticsCallouts(tier:)` 4/3/3: "those channelrhodopsin protocols won't write themselves." / "you know you have an optogenetics lab report due." / "CLOSE THIS. those viral vector and fiberoptic stimulation protocols won't write themselves."
+- 2 templates: "Study optogenetics for my exam…" (60 min) + "Write my optogenetics lab report…" (60 min)
+
+**New keyword domain — demography:**
+- Branch positioned BEFORE sociology so population dynamics, fertility, mortality, and demographic analysis coursework routes here.
+- Catches: word(demography/demographer/demographers/demographic), demography class/course/exam/notes/assignment/homework, demographic analysis + class/course/exam/paper/demography, demographic transition + class/course/exam/model/demography, population dynamics + class/course/exam/demography/demographic, fertility rate/total fertility rate + class/course/exam/demography/demographic, mortality table/life table + class/exam/demography/mortality, age pyramid/population pyramid + class/exam/demography/demographic/population, net migration rate + class/exam/demography/demographic, cohort analysis + class/exam/demography/demographic/population, mortality rate + class/exam/demography/demographic/epidemiology, population aging + class/exam/demography/demographic, Malthusian + class/exam/demography/population, birth rate + class/exam/demography/demographic.
+- `demographyCallouts(tier:)` 4/3/3: "those demographic tables won't analyze themselves." / "you know you have a demography problem set due." / "CLOSE THIS. those fertility rate and mortality table analyses won't do themselves."
+- 2 templates: "Study demography for my exam…" (60 min) + "Complete my demography assignment…" (60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +43 @Test functions (5 routing × 5 domains + 3 callout pool tests × 5 domains + 1 count guard ≥1001)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + 1 count guard ≥1001)
+
+**Template catalog: 991 → 1001**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `signalprocessing` fires BEFORE electricalengineering (line 2995 < 3063) ✓
+- `controlengineering` fires BEFORE electricalengineering (line 3023 < 3063) ✓
+- `aerostructures` fires BEFORE aerospacengineering (line 2892 < 2915) ✓
+- `optogenetics` fires BEFORE neuroscience (line 9335 < 9361) ✓
+- `demography` fires BEFORE sociology (line 9917 < 9920) ✓
+- Brace balance: CalloutManager.swift 550/550 ✓; CalloutMessages.swift 1045/1045 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 1001 confirmed (grep -c "preferredDuration:" = 1001) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases in CalloutMessages.swift ✓
+- 5 new private callout pool functions in CalloutMessages.swift ✓
+- Pushed to main: a34694f..d89ab56 ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `geotechnicalengineering` — geotechnical engineering class (soil mechanics, foundation design, slope stability, consolidation, triaxial test — distinct from geology/civilengineering)
+  - `computationalfluidynamicssim` — CFD simulation class/lab (finite volume, turbulence models, mesh generation, OpenFOAM/Fluent, Reynolds-averaged — distinct from computationalfluidynamics)
+  - `materialstesting` — materials testing lab (tensile test, hardness, fatigue, Charpy impact, SEM characterization — distinct from materialscience)
+  - `structuralanalysis` — structural analysis class (beams, trusses, frames, method of sections, influence lines, matrix stiffness — distinct from civilengineering)
+  - `compositematerials` — composite materials class (fiber-reinforced polymers, laminate theory, CLT, failure criteria, filament winding — distinct from materialscience/polymer)
+- Template count target: 1001 → 1011 after next 5-domain batch
