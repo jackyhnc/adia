@@ -19608,3 +19608,73 @@ None. Swift toolchain unavailable on Linux container.
   - `coastalengineeringocean` — coastal/ocean engineering class (wave mechanics, coastal sediment transport, beach nourishment, breakwater design — distinct from oceanography)
   - `earthquakeengineering` — earthquake engineering class (seismic hazard analysis, ground motion prediction, building code seismic design, liquefaction — distinct from structuraldynamics)
 - Template count target: 1031 → 1041 after next 5-domain batch
+
+---
+
+## Run 395 (automated) — 2026-07-18 — 5 new keyword domains: environmentalhydrology/geoenvironmentalengineering/earthquakeengineering/computationalstructuralmechanics/coastalengineeringocean (1031→1041 templates)
+
+### What shipped
+
+**5 new keyword domains: environmentalhydrology, geoenvironmentalengineering, earthquakeengineering, computationalstructuralmechanics, coastalengineeringocean**
+
+**New keyword domain — environmentalhydrology:**
+- Branch positioned BEFORE `hydrology` (line 2081→2108 now). HEC-HMS, SWMM, SCS curve number, TR-55, and stormwater modeling patterns were caught by hydrology; now intercepted here first.
+- Catches: environmental hydrology class/course/exam/lab/homework/assignment, HEC-HMS + class/exam/hydrology/lab, HEC HMS + class/exam/hydrology, SWMM + class/exam/stormwater/hydrology, EPA SWMM + class/exam/hydrology, SCS curve number + class/exam/hydrology/runoff, CN value + hydrology/runoff/class/exam, TR-55 + class/exam/hydrology/stormwater, stormwater modeling + class/exam/hydrology, stormwater detention/retention + class/exam/design/hydrology, culvert design + class/exam/hydrology/hydraulic, runoff coefficient + class/hydrology/exam/stormwater, peak flow calculation + class/hydrology/exam, detention pond + class/exam/hydrology/design.
+- `environmentalhydrologyCallouts(tier:)` 4/3/3: "those stormwater models and HEC-HMS runs won't set up themselves." / "no one masters environmental hydrology by scrolling." / "CLOSE THIS. those HEC-HMS and SWMM stormwater models won't run themselves."
+- 2 templates: study exam (rational method, SCS-CN, TR-55, HEC-HMS, SWMM, detention pond, culvert, flood frequency, 60 min) + assignment (peak runoff, HEC-HMS/SWMM model, detention pond design, culvert sizing, 60 min)
+
+**New keyword domain — geoenvironmentalengineering:**
+- Branch positioned BEFORE `geotechnicalengineering` (line 3270→3305 now). Contaminated site, groundwater plume, and landfill liner terms were caught by geotechnicalengineering; now intercepted here first.
+- Catches: geoenvironmental engineering class/course/exam/lab, contaminated site remediation + class/exam/engineering/geoenvironmental, groundwater contamination + class/exam/plume/remediation, contaminant transport + class/exam/groundwater/soil, soil vapor extraction + class/exam/remediation/engineering, pump-and-treat/pump and treat + class/exam/remediation/groundwater, landfill liner design + class/exam/geotechnical/geoenvironmental, geosynthetic liner + class/exam/landfill/geoenvironmental, leachate collection + class/exam/landfill/design, Darcy flow + soil + class/exam/contaminant, advection dispersion equation + class/exam/transport, contaminant plume + class/exam/modeling/groundwater, bioremediation + soil + class/exam/engineering, phytoremediation + class/exam/engineering/remediation.
+- `geoenvironmentalengineeringCallouts(tier:)` 4/3/3: "those contaminant transport and remediation design problems won't solve themselves." / "no one masters geoenvironmental engineering by scrolling." / "CLOSE THIS. those contaminant plume and soil vapor extraction problems won't solve themselves."
+- 2 templates: study exam (SVE, pump-and-treat, bioremediation, advection-dispersion, retardation, landfill liner, RCRA/CERCLA, 60 min) + assignment (contaminant plume, pump-and-treat/SVE design, retardation factors, landfill liner sizing, bioremediation feasibility, 60 min)
+
+**New keyword domain — earthquakeengineering:**
+- Branch positioned BEFORE `structuraldynamics` (line 3328→3353 now). Seismic hazard, liquefaction, and PSHA patterns were caught by structuraldynamics/civilengineering; now intercepted here first.
+- Catches: earthquake engineering class/course/exam/homework/assignment/lab, seismic hazard analysis + class/exam/earthquake/engineering, ground motion prediction + class/exam/earthquake, attenuation relationship + class/exam/seismic/earthquake, peak ground acceleration + class/exam/seismic/earthquake, PGA word + seismic + class/exam/hazard, liquefaction analysis + class/exam/seismic/earthquake, liquefaction potential + class/exam/seismic, site amplification + class/exam/seismic/earthquake, seismic design category + class/exam/earthquake, probabilistic seismic hazard + class/exam, PSHA word + class/exam/seismic, seismic risk analysis + class/exam, fault rupture + class/exam/seismic/earthquake, ground motion record + class/exam/seismic, cyclic stress ratio + class/exam/liquefaction.
+- `earthquakeengineeringCallouts(tier:)` 4/3/3: "those seismic hazard and liquefaction problems won't solve themselves." / "no one masters earthquake engineering by scrolling." / "CLOSE THIS. those liquefaction potential and seismic hazard analyses won't solve themselves."
+- 2 templates: study exam (PSHA, GMPE, hazard curves, site amplification, liquefaction, seismic design categories, ASCE 7, 60 min) + assignment (PSHA, liquefaction evaluation, site amplification, seismic design category, ground motion PGA/spectral ordinates, 60 min)
+
+**New keyword domain — computationalstructuralmechanics:**
+- Branch positioned BEFORE `structuralanalysis` (line 3373→3402 now). FEA, ABAQUS, and element stiffness matrix patterns were caught by structuralanalysis; now intercepted here first.
+- Catches: computational structural mechanics class/course/exam, finite element analysis class/course/exam, FEA class/course/exam, finite element method class/course/exam/homework, ABAQUS + class/exam/lab/structural, ANSYS structural + class/exam/lab, nonlinear FEA + class/exam/structural/analysis, contact mechanics + class/exam/FEA/finite element, mesh generation + class/exam/structural/FEA, element stiffness matrix + class/exam/finite element, isoparametric element + class/exam/finite element, numerical methods + structural + class/exam/FEA, Galerkin method + structural + class/exam.
+- `computationalstructuralmechanicsCallouts(tier:)` 4/3/3: "those FEA models and element stiffness matrices won't build themselves." / "no one masters finite element analysis by scrolling." / "CLOSE THIS. those mesh generation and contact mechanics FEA problems won't solve themselves."
+- 2 templates: study exam (element stiffness matrix, isoparametric, Gaussian quadrature, weak form/Galerkin, mesh convergence, contact mechanics, nonlinear FEA, ABAQUS/ANSYS, 60 min) + assignment (FEA model in ABAQUS/ANSYS, mesh convergence, contact stress, nonlinear deformation, analytical comparison, 60 min)
+
+**New keyword domain — coastalengineeringocean:**
+- Branch positioned BEFORE `civilengineering` (line 3423→3451 now). Wave mechanics, coastal sediment transport, and breakwater design terms were caught by civilengineering/waterresources; now intercepted here first.
+- Catches: coastal engineering class/course/exam/lab/homework/assignment, wave mechanics + class/exam/coastal/engineering, coastal sediment transport + class/exam/engineering, longshore transport + class/exam/coastal/sediment, beach nourishment + class/exam/coastal/engineering, breakwater design + class/exam/coastal/engineering, wave runup + class/exam/coastal/engineering, wave overtopping + class/exam/coastal, coastal flooding + class/exam/engineering/analysis, Airy wave theory + class/exam/coastal/engineering, Stokes wave + class/exam/coastal/engineering, nearshore process + class/exam/coastal, surf zone dynamics + class/exam/coastal, storm surge + coastal + class/exam/engineering.
+- `coastalengineeringoceanCallouts(tier:)` 4/3/3: "those wave mechanics and coastal sediment transport problems won't solve themselves." / "no one masters coastal engineering by scrolling." / "CLOSE THIS. those wave runup and longshore transport calculations won't solve themselves."
+- 2 templates: study exam (Airy wave theory, dispersion relation, shoaling/refraction, longshore drift, breakwater armor sizing, wave runup, storm surge, 60 min) + assignment (wave dispersion, nearshore transformation, longshore transport, breakwater/beach nourishment design, wave runup/overtopping, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +49 @Test functions (5 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains + 1 count guard ≥1041)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + 1 count guard ≥1041)
+
+**Template catalog: 1031 → 1041**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `environmentalhydrology` fires at line 2081, BEFORE hydrology (line 2108) ✓
+- `geoenvironmentalengineering` fires at line 3270, BEFORE geotechnicalengineering (line 3305) ✓
+- `earthquakeengineering` fires at line 3328, BEFORE structuraldynamics (line 3353) ✓
+- `computationalstructuralmechanics` fires at line 3373, BEFORE structuralanalysis (line 3402) ✓
+- `coastalengineeringocean` fires at line 3423, BEFORE civilengineering (line 3451) ✓
+- Brace balance: CalloutManager.swift 570/570 ✓; CalloutMessages.swift 1085/1085 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 1041 confirmed (grep -c "preferredDuration:" = 1041) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases in CalloutMessages.swift ✓
+- 5 new private callout pool functions in CalloutMessages.swift ✓
+- Pushed to main: 0a6e125..70bbb9a ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `computationalfluiddynamics` — CFD class (finite volume method, turbulence models k-epsilon/k-omega, mesh generation, OpenFOAM/Fluent, Reynolds-averaged Navier-Stokes, LES — distinct from fluid mechanics)
+  - `marinehyrdodynamics` — marine hydrodynamics class (ship resistance, propeller theory, seakeeping, added mass, radiation/diffraction — distinct from navalarchitecture and coastalengineeringocean)
+  - `thermofluidscombustion` — combustion engineering class (stoichiometry, flame temperature, combustion efficiency, NOx formation, premixed/diffusion flames — distinct from thermodynamics/chemicalengineering)
+  - `corrosionengineering` — corrosion science class (electrochemical corrosion, galvanic series, cathodic protection, corrosion inhibitors, SCC — distinct from materials science)
+  - `acousticalengineering` — architectural acoustics class (room acoustics, absorption coefficient, RT60, noise control, sound transmission loss — distinct from acousticsengineering which covers structural acoustics)
+- Template count target: 1041 → 1051 after next 5-domain batch
