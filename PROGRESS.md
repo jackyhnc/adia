@@ -19260,3 +19260,73 @@ None. Swift toolchain unavailable on Linux container.
 **Next agent should**:
 - Add 5 more domains: `tribology` (friction/wear/lubrication class/exam), `photogrammetry` (3D reconstruction from photos, LiDAR, drone mapping — class/exam), `tectonics` (plate tectonics, seismology, fault mechanics — class/exam; distinct from geology), `radiochemistry` (radioactive tracers, nuclear chemistry, isotope dating — class/exam; distinct from nuclearengineering), `psycholinguistics` (language acquisition, sentence processing, phonology — class/exam; distinct from linguistics)
 - Template count target: 981 → 991
+
+---
+
+## Run 390 (automated) — 2026-07-18 — 5 new keyword domains: psycholinguistics/photogrammetry/tectonics/tribology/radiochemistry (981→991 templates)
+
+### What shipped
+
+**5 new keyword domains: psycholinguistics, photogrammetry, tectonics, tribology, radiochemistry**
+
+**New keyword domain — psycholinguistics:**
+- Branch positioned BEFORE linguistics. Bare "linguistics class" stays in linguistics; "language acquisition" only routes here when psycholinguistics/cognitive context is present.
+- Catches: psycholinguistics class/course/exam/notes/lab, sentence processing + class/exam/psycholinguistics/cognitive, mental lexicon + class/exam/psycholinguistics, syntactic parsing + class/exam/psycholinguistics, garden path sentence/garden-path sentence + class/exam/psycholinguistics, reading/language comprehension + class/exam/psycholinguistics, priming experiment + class/exam/psycholinguistics/language, lexical access + class/exam/psycholinguistics, speech perception + class/exam/psycholinguistics, word recognition + class/exam/psycholinguistics, ERP study + language/psycholinguistics/class, bilingualism + class/exam/psycholinguistics.
+- `psycholinguisticsCallouts(tier:)` 4/3/3: "those sentence processing problems won't think themselves through." / "no one masters psycholinguistics by scrolling." / "CLOSE THIS. those sentence processing and lexical access problems won't solve themselves."
+- 2 templates: "Study psycholinguistics for my exam…" (60 min) + "Work on my psycholinguistics assignment…" (60 min)
+
+**New keyword domain — photogrammetry:**
+- Branch positioned BEFORE geospatial. Bare "lidar"/"drone" without photogrammetry/mapping class context falls through to geospatial.
+- Catches: photogrammetry class/course/exam/lab/assignment, aerial/close-range photogrammetry + class/exam/lab, structure from motion/structure-from-motion/SfM + class/exam/photogrammetry/mapping, point cloud processing + class/exam/photogrammetry, lidar point cloud + class/exam/photogrammetry, UAV mapping + class/exam/photogrammetry, drone mapping + class/exam/photogrammetry/survey, drone survey + class/exam/photogrammetry, 3D reconstruction from photo + class/exam/photogrammetry, bundle adjustment + class/exam/photogrammetry/mapping, orthorectification + class/exam/photogrammetry, digital elevation model + class/exam/photogrammetry.
+- `photogrammetryCallouts(tier:)` 4/3/3: "that 3D reconstruction won't happen while you're scrolling." / "no one masters photogrammetry by scrolling." / "CLOSE THIS. those point cloud processing and drone mapping problems won't solve themselves."
+- 2 templates: "Study photogrammetry for my exam…" (60 min) + "Work on my photogrammetry assignment…" (60 min)
+
+**New keyword domain — tectonics:**
+- Branch positioned BEFORE geology. Bare "plate tectonics" without class/exam/tectonics context stays in geology.
+- Catches: tectonics class/course/exam/notes/lab, plate tectonics class/course/exam/notes, tectonic plates class/exam, fault mechanics + class/exam/tectonics/course, geodynamics class/course/exam/lab, subduction + class/exam/tectonics/course, transform fault + class/exam/tectonics, continental drift + class/exam/tectonics/course, isostasy + class/exam/tectonics/geodynamics, mantle convection + class/exam/tectonics/geodynamics, tectonic geomorphology + class/exam/course, convergent/divergent boundary + class/exam/tectonics, rifting + class/exam/tectonics/geodynamics.
+- `tectonicsCallouts(tier:)` 4/3/3: "those tectonic plate problems won't solve themselves." / "no one masters plate tectonics by scrolling." / "CLOSE THIS. those plate motion and geodynamics problems won't solve themselves."
+- 2 templates: "Study tectonics for my exam…" (60 min) + "Work on my tectonics assignment…" (60 min)
+
+**New keyword domain — tribology:**
+- Branch positioned BEFORE mechanicalengineering. "tribology class/course/exam" removed from mechanicalengineering branch (now owned here). word("tribology"/"tribologist"/"tribological") fires unconditionally.
+- Catches: tribology class/course/exam/lab, word(tribology/tribologist/tribological), friction mechanics + class/exam/tribology, wear analysis + class/exam/tribology, lubrication engineering/theory + class/exam/tribology, contact mechanics + class/exam/tribology/hertz, Hertz contact + class/exam/tribology/contact mechanics, wear rate + class/exam/tribology, wear debris + class/exam/tribology, coefficient of friction + class/exam/tribology/lab, tribometer + class/exam/lab/test, EHD/elastohydrodynamic + class/exam/tribology/lubrication, surface roughness + class/exam/tribology/contact.
+- `tribologyCallouts(tier:)` 4/3/3: "that friction won't analyze itself." / "no one masters tribology by scrolling." / "CLOSE THIS. those friction, wear, and lubrication problems won't solve themselves."
+- 2 templates: "Study tribology for my exam…" (60 min) + "Work on my tribology assignment…" (60 min)
+
+**New keyword domain — radiochemistry:**
+- Branch positioned BEFORE nuclearchemistry. "radioactive decay" with class/chemistry context still routes to nuclearchemistry when radiochemistry context is absent. word("radiochemistry"/"radiochemist"/"radiochemists") fires unconditionally.
+- Catches: radiochemistry class/course/exam/lab, word(radiochemistry/radiochemist), radioactive tracer + class/exam/radiochemistry/lab, radiolabeling/radioactive labeling + class/exam/radiochemistry/lab, isotope dating + class/exam/radiochemistry/course, radiocarbon dating/carbon-14 dating + class/exam/radiochemistry, radioisotope + class/exam/radiochemistry/lab, nuclear medicine chemistry + class/exam/course, radiation chemistry + class/exam/radiochemistry/course, accelerator mass spectrometry + class/exam/radiochemistry/dating, positron emission + class/exam/radiochemistry/chemistry, gamma spectroscopy + class/exam/radiochemistry/lab.
+- `radiochemistryCallouts(tier:)` 4/3/3: "those radioactive tracers won't track themselves." / "no one masters radiochemistry by scrolling." / "CLOSE THIS. those radiocarbon dating and radioactive tracer problems won't solve themselves."
+- 2 templates: "Study radiochemistry for my exam…" (60 min) + "Work on my radiochemistry assignment…" (60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +43 @Test functions (5 routing × 5 domains + 3 callout pool tests × 5 domains + 1 count guard ≥991)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + 1 count guard ≥991)
+
+**Template catalog: 981 → 991**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `psycholinguistics` fires at line 1595, BEFORE linguistics (line 1613) ✓. "psycholinguistics class exam" → psycholinguistics ✓; bare "linguistics class" → linguistics ✓
+- `photogrammetry` fires at line 1939, BEFORE geospatial (line 1961) ✓. "photogrammetry class exam" → photogrammetry ✓; bare "lidar" → geospatial ✓
+- `tectonics` fires at line 2436, BEFORE geology (line 2464) ✓. "plate tectonics class exam" → tectonics ✓; bare "plate tectonics" → geology ✓
+- `tribology` fires at line 3058, BEFORE mechanicalengineering (line 3084) ✓. "tribology class exam" → tribology ✓; tribology class/course/exam removed from mechanicalengineering ✓
+- `radiochemistry` fires at line 6894, BEFORE nuclearchemistry (line 6918) ✓. "radiochemistry class exam" → radiochemistry ✓; bare "radioactive decay" + chemistry → nuclearchemistry ✓
+- Brace balance: CalloutManager.swift 545/545 ✓; CalloutMessages.swift 1035/1035 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 991 confirmed (grep -c "preferredDuration:" = 991) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases in CalloutMessages.swift ✓
+- 5 new private callout pool functions in CalloutMessages.swift ✓
+- Pushed to main: b1fd2bd..0bbc32f ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `atmosphericscience` — atmospheric science class (weather analysis, atmospheric dynamics, synoptic meteorology, radiosonde analysis, mesoscale convection — distinct from meteorology)
+  - `oceanography` — oceanography class/course/exam (thermohaline circulation, upwelling, ENSO, marine chemistry — distinct from marinebiologyresearch)
+  - `environmentalchemistry` — environmental chemistry class/course/exam (contaminant fate, water quality chemistry, Henry's law — distinct from biochemistry/chemistry)
+  - `quantummechanics` — quantum mechanics class/course/exam (Schrödinger equation, wave function, harmonic oscillator, perturbation theory — distinct from physics)
+  - `classicalmechanics` — classical mechanics class/course/exam (Lagrangian/Hamiltonian, Hamilton's equations, variational principle — distinct from physics/engineering)
+- Template count target: 991 → 1001 after next 5-domain batch
