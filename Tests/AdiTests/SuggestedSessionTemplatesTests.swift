@@ -6956,8 +6956,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func architecturalengineeringAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("architectural engineering") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1031)
-    @Test func templateCountAtLeast1031() {
-        #expect(SuggestedSessionTemplates.all.count >= 1031, "template catalog must have ≥1031 entries after structuraldynamics/bioprocessengineering/systemsengineering/transportationplanning/architecturalengineering additions")
+    // MARK: - environmentalhydrology templates
+    @Test func environmentalhydrologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("environmental hydrology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func environmentalhydrologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("environmental hydrology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - geoenvironmentalengineering templates
+    @Test func geoenvironmentalengineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("geoenvironmental engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func geoenvironmentalengineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("geoenvironmental engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - earthquakeengineering templates
+    @Test func earthquakeengineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("earthquake engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func earthquakeengineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("earthquake engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - computationalstructuralmechanics templates
+    @Test func computationalstructuralmechanicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computational structural mechanics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func computationalstructuralmechanicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("finite element analysis") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - coastalengineeringocean templates
+    @Test func coastalengineeringoceanStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("coastal engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func coastalengineeringoceanAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("coastal engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1041)
+    @Test func templateCountAtLeast1041() {
+        #expect(SuggestedSessionTemplates.all.count >= 1041, "template catalog must have ≥1041 entries after environmentalhydrology/geoenvironmentalengineering/earthquakeengineering/computationalstructuralmechanics/coastalengineeringocean additions")
     }
 }

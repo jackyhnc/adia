@@ -443,6 +443,11 @@ extension CalloutManager {
         case "systemsengineering":         return systemsengineeringCallouts(tier: tier)
         case "transportationplanning":     return transportationplanningCallouts(tier: tier)
         case "architecturalengineering":   return architecturalengineeringCallouts(tier: tier)
+        case "environmentalhydrology":        return environmentalhydrologyCallouts(tier: tier)
+        case "geoenvironmentalengineering":   return geoenvironmentalengineeringCallouts(tier: tier)
+        case "earthquakeengineering":         return earthquakeengineeringCallouts(tier: tier)
+        case "computationalstructuralmechanics": return computationalstructuralmechanicsCallouts(tier: tier)
+        case "coastalengineeringocean":       return coastalengineeringoceanCallouts(tier: tier)
         case "biomedicalengineering":      return biomedicalengineeringCallouts(tier: tier)
         case "chemicalengineering":        return chemicalengineeringCallouts(tier: tier)
         case "oceanography":               return oceanographyCallouts(tier: tier)
@@ -11761,6 +11766,111 @@ extension CalloutManager {
             "CLOSE THIS. open your architectural engineering textbook.",
             "CLOSE THIS. those building energy analysis and structural systems problems won't solve themselves.",
             "CLOSE THIS. your architectural engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func environmentalhydrologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those stormwater models and HEC-HMS runs won't set up themselves.",
+            "your environmental hydrology exam doesn't care that you're scrolling.",
+            "get back to your environmental hydrology work.",
+            "close this and open your environmental hydrology textbook.",
+        ]
+        case 2: return [
+            "no one masters environmental hydrology by scrolling.",
+            "close this and work on your stormwater design assignment.",
+            "those SCS curve number and detention pond calculations need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your environmental hydrology textbook.",
+            "CLOSE THIS. those HEC-HMS and SWMM stormwater models won't run themselves.",
+            "CLOSE THIS. your environmental hydrology exam won't study itself."
+        ]
+        }
+    }
+
+    private func geoenvironmentalengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those contaminant transport and remediation design problems won't solve themselves.",
+            "your geoenvironmental engineering exam doesn't care that you're scrolling.",
+            "get back to your geoenvironmental engineering work.",
+            "close this and open your geoenvironmental engineering textbook.",
+        ]
+        case 2: return [
+            "no one masters geoenvironmental engineering by scrolling.",
+            "close this and work on your geoenvironmental engineering assignment.",
+            "those groundwater contamination and landfill design problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your geoenvironmental engineering textbook.",
+            "CLOSE THIS. those contaminant plume and soil vapor extraction problems won't solve themselves.",
+            "CLOSE THIS. your geoenvironmental engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func earthquakeengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those seismic hazard and liquefaction problems won't solve themselves.",
+            "your earthquake engineering exam doesn't care that you're scrolling.",
+            "get back to your earthquake engineering work.",
+            "close this and open your earthquake engineering textbook.",
+        ]
+        case 2: return [
+            "no one masters earthquake engineering by scrolling.",
+            "close this and work on your earthquake engineering assignment.",
+            "those PSHA and ground motion prediction problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your earthquake engineering textbook.",
+            "CLOSE THIS. those liquefaction potential and seismic hazard analyses won't solve themselves.",
+            "CLOSE THIS. your earthquake engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func computationalstructuralmechanicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those FEA models and element stiffness matrices won't build themselves.",
+            "your computational structural mechanics exam doesn't care that you're scrolling.",
+            "get back to your finite element analysis work.",
+            "close this and open your FEA textbook.",
+        ]
+        case 2: return [
+            "no one masters finite element analysis by scrolling.",
+            "close this and work on your FEA assignment.",
+            "those ABAQUS models and nonlinear FEA problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your finite element analysis textbook.",
+            "CLOSE THIS. those mesh generation and contact mechanics FEA problems won't solve themselves.",
+            "CLOSE THIS. your computational structural mechanics exam won't study itself."
+        ]
+        }
+    }
+
+    private func coastalengineeringoceanCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those wave mechanics and coastal sediment transport problems won't solve themselves.",
+            "your coastal engineering exam doesn't care that you're scrolling.",
+            "get back to your coastal engineering work.",
+            "close this and open your coastal engineering textbook.",
+        ]
+        case 2: return [
+            "no one masters coastal engineering by scrolling.",
+            "close this and work on your coastal engineering assignment.",
+            "those breakwater design and beach nourishment calculations need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your coastal engineering textbook.",
+            "CLOSE THIS. those wave runup and longshore transport calculations won't solve themselves.",
+            "CLOSE THIS. your coastal engineering exam won't study itself."
         ]
         }
     }

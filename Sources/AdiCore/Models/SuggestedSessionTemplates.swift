@@ -6660,5 +6660,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Architectural engineering assignment completed (load calculation, daylighting analysis, or envelope evaluation performed with quantitative results, building cross-section or system diagram labeled, key assumptions documented, and written design rationale with performance summary saved to file)",
             preferredDuration: 60 * 60
         ),
+        // environmentalhydrology
+        SuggestedTemplate(
+            icon: "cloud.rain.fill",
+            task: "Study environmental hydrology for my exam — review stormwater hydrology concepts (rational method, SCS curve number, TR-55), HEC-HMS watershed modeling (sub-basin delineation, loss methods, routing), SWMM stormwater network simulation, detention and retention pond design, culvert hydraulics, and flood frequency analysis",
+            successCriteria: "Environmental hydrology study session completed (at least two topics reviewed with CN table lookups, HEC-HMS model parameters, TR-55 calculations, detention pond sizing, culvert design tables, and worked runoff estimation examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cloud.rain.fill",
+            task: "Complete my environmental hydrology assignment — compute peak runoff using the rational method or SCS-CN method, build or calibrate a HEC-HMS watershed model, design a detention pond for a target release rate, perform SWMM simulation for a stormwater network, or size a culvert for a design storm event",
+            successCriteria: "Environmental hydrology assignment completed (runoff calculations with design storm input, HEC-HMS or SWMM model built or calibrated, detention pond or culvert sized with hydraulic checks, and written design summary with labeled diagrams and numerical results saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // geoenvironmentalengineering
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Study geoenvironmental engineering for my exam — review contaminated site characterization and remediation (pump-and-treat, soil vapor extraction, bioremediation), groundwater contaminant transport (advection-dispersion equation, retardation factor, Darcy flow in soil), landfill liner design (geosynthetics, leachate collection), and regulatory frameworks (RCRA, CERCLA)",
+            successCriteria: "Geoenvironmental engineering study session completed (at least two topics reviewed with advection-dispersion equations, contaminant plume sketches, remediation system design parameters, landfill liner cross-section diagrams, and worked transport calculation examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "leaf.fill",
+            task: "Complete my geoenvironmental engineering assignment — model a contaminant plume using the advection-dispersion equation, design a pump-and-treat or SVE remediation system, calculate retardation factors and travel times for a contaminated aquifer, size a landfill liner system with leachate collection, or evaluate bioremediation feasibility for a site",
+            successCriteria: "Geoenvironmental engineering assignment completed (contaminant transport modeled with plume extent or concentration profiles, remediation system designed with well spacing or extraction rates, material balance and regulatory compliance checked, and written design rationale with supporting calculations saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // earthquakeengineering
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Study earthquake engineering for my exam — review probabilistic seismic hazard analysis (PSHA, ground motion prediction equations, hazard curves), site amplification and site response analysis, liquefaction potential evaluation (Seed-Idriss simplified method, cyclic stress ratio), seismic design categories per ASCE 7, and earthquake-resistant structural detailing",
+            successCriteria: "Earthquake engineering study session completed (at least two topics reviewed with PSHA calculation steps, GMPE equations, liquefaction triggering charts, site class definitions, seismic design category tables, and worked seismic hazard examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Complete my earthquake engineering assignment — perform probabilistic seismic hazard analysis for a site, evaluate liquefaction potential using the simplified Seed-Idriss procedure, compute site amplification factors, determine the seismic design category and design spectral accelerations per ASCE 7, or analyze ground motion records for PGA and spectral ordinates",
+            successCriteria: "Earthquake engineering assignment completed (PSHA or liquefaction evaluation completed with supporting calculations, design spectral acceleration determined, and written report with hazard curve, liquefaction factor of safety, or seismic design parameter table saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // computationalstructuralmechanics
+        SuggestedTemplate(
+            icon: "grid",
+            task: "Study computational structural mechanics and FEA for my exam — review finite element formulation (element stiffness matrix assembly, isoparametric elements, Gaussian quadrature), weak form and Galerkin method, mesh convergence and h/p-refinement, contact mechanics and nonlinear FEA (material and geometric nonlinearity), and ABAQUS/ANSYS workflow",
+            successCriteria: "Computational structural mechanics study session completed (at least two topics reviewed with stiffness matrix derivation, isoparametric shape functions, convergence plots, contact formulation notes, nonlinear solution procedure steps, and worked FEA examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "grid",
+            task: "Complete my finite element analysis assignment — derive or assemble element stiffness matrices for a structural problem, build and solve a truss or beam FEA model in ABAQUS or ANSYS, perform a mesh convergence study, analyze contact stress distribution, solve a nonlinear FEA problem with large deformations or plasticity, or verify FEA results against analytical solutions",
+            successCriteria: "Finite element analysis assignment completed (FEA model built with correct boundary conditions and loads, convergence verified, stress and displacement results post-processed, and written report with mesh diagram, convergence plot, stress contour, and comparison to analytical solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // coastalengineeringocean
+        SuggestedTemplate(
+            icon: "water.waves",
+            task: "Study coastal engineering for my exam — review linear wave theory (Airy waves, dispersion relation, wave celerity, group velocity), nearshore wave transformation (shoaling, refraction, diffraction, breaking), coastal sediment transport and longshore drift, breakwater and revetment design, wave runup and overtopping, and storm surge analysis",
+            successCriteria: "Coastal engineering study session completed (at least two topics reviewed with wave dispersion equations, shoaling coefficient calculations, sediment transport formulas, breakwater armor sizing, wave runup charts, and worked coastal design examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "water.waves",
+            task: "Complete my coastal engineering assignment — apply linear wave theory to compute wave properties at a given depth, calculate wave transformation from offshore to nearshore using shoaling and refraction analysis, estimate longshore sediment transport rates, design a rubble mound breakwater or beach nourishment scheme, or compute wave runup and overtopping rates for a coastal structure",
+            successCriteria: "Coastal engineering assignment completed (wave calculations with dispersion solution, nearshore transformation computed, structure designed or sediment budget estimated, and written design report with wave rose, cross-section diagram, armor sizing, and numerical results saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

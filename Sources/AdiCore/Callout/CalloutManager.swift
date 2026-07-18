@@ -2058,6 +2058,28 @@ public final class CalloutManager {
             || lower.contains("geo class") && !lower.contains("geoscience") && !lower.contains("geology") {
             return "geographyearthed"
         }
+        // environmentalhydrology — positioned BEFORE hydrology so stormwater modeling, HEC-HMS,
+        // SWMM, and SCS curve number coursework get a dedicated pool. "engineering hydrology" alone
+        // stays in hydrology; only fires here when paired with HEC-HMS/SWMM/TR-55/stormwater patterns.
+        if lower.contains("environmental hydrology class") || lower.contains("environmental hydrology course")
+            || lower.contains("environmental hydrology exam") || lower.contains("environmental hydrology lab")
+            || lower.contains("environmental hydrology homework") || lower.contains("environmental hydrology assignment")
+            || lower.contains("hec-hms") && (lower.contains("class") || lower.contains("exam") || lower.contains("hydrology") || lower.contains("lab"))
+            || lower.contains("hec hms") && (lower.contains("class") || lower.contains("exam") || lower.contains("hydrology"))
+            || lower.contains("swmm") && (lower.contains("class") || lower.contains("exam") || lower.contains("stormwater") || lower.contains("hydrology"))
+            || lower.contains("epa swmm") && (lower.contains("class") || lower.contains("exam") || lower.contains("hydrology"))
+            || lower.contains("scs curve number") && (lower.contains("class") || lower.contains("exam") || lower.contains("hydrology") || lower.contains("runoff"))
+            || lower.contains("cn value") && (lower.contains("hydrology") || lower.contains("runoff") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("tr-55") && (lower.contains("class") || lower.contains("exam") || lower.contains("hydrology") || lower.contains("stormwater"))
+            || lower.contains("stormwater modeling") && (lower.contains("class") || lower.contains("exam") || lower.contains("hydrology"))
+            || lower.contains("stormwater detention") && (lower.contains("class") || lower.contains("exam") || lower.contains("design") || lower.contains("hydrology"))
+            || lower.contains("stormwater retention") && (lower.contains("class") || lower.contains("exam") || lower.contains("design") || lower.contains("hydrology"))
+            || lower.contains("culvert design") && (lower.contains("class") || lower.contains("exam") || lower.contains("hydrology") || lower.contains("hydraulic"))
+            || lower.contains("runoff coefficient") && (lower.contains("class") || lower.contains("hydrology") || lower.contains("exam") || lower.contains("stormwater"))
+            || lower.contains("peak flow calculation") && (lower.contains("class") || lower.contains("hydrology") || lower.contains("exam"))
+            || lower.contains("detention pond") && (lower.contains("class") || lower.contains("exam") || lower.contains("hydrology") || lower.contains("design")) {
+            return "environmentalhydrology"
+        }
         // hydrology — positioned BEFORE waterresources so hydrological science coursework
         // (watershed hydrology, streamflow analysis, flood frequency, hydrological cycle, baseflow)
         // gets a dedicated pool. "applied hydrology" and "engineering hydrology" route here first;
@@ -3226,6 +3248,27 @@ public final class CalloutManager {
             || lower.contains("acoustic measurement") && (lower.contains("class") || lower.contains("exam") || lower.contains("acoustics") || lower.contains("engineering")) {
             return "acousticsengineering"
         }
+        // geoenvironmentalengineering — positioned BEFORE geotechnicalengineering so contaminated
+        // site remediation, groundwater contamination plumes, and landfill engineering coursework
+        // get a dedicated pool. Bare "geotechnical" stays in geotechnicalengineering below.
+        if lower.contains("geoenvironmental engineering class") || lower.contains("geoenvironmental engineering course")
+            || lower.contains("geoenvironmental engineering exam") || lower.contains("geoenvironmental engineering lab")
+            || lower.contains("contaminated site remediation") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering") || lower.contains("geoenvironmental"))
+            || lower.contains("groundwater contamination") && (lower.contains("class") || lower.contains("exam") || lower.contains("plume") || lower.contains("remediation"))
+            || lower.contains("contaminant transport") && (lower.contains("class") || lower.contains("exam") || lower.contains("groundwater") || lower.contains("soil"))
+            || lower.contains("soil vapor extraction") && (lower.contains("class") || lower.contains("exam") || lower.contains("remediation") || lower.contains("engineering"))
+            || lower.contains("pump-and-treat") && (lower.contains("class") || lower.contains("exam") || lower.contains("remediation") || lower.contains("groundwater"))
+            || lower.contains("pump and treat") && (lower.contains("class") || lower.contains("exam") || lower.contains("remediation") || lower.contains("groundwater"))
+            || lower.contains("landfill liner design") && (lower.contains("class") || lower.contains("exam") || lower.contains("geotechnical") || lower.contains("geoenvironmental"))
+            || lower.contains("geosynthetic liner") && (lower.contains("class") || lower.contains("exam") || lower.contains("landfill") || lower.contains("geoenvironmental"))
+            || lower.contains("leachate collection") && (lower.contains("class") || lower.contains("exam") || lower.contains("landfill") || lower.contains("design"))
+            || lower.contains("darcy flow") && lower.contains("soil") && (lower.contains("class") || lower.contains("exam") || lower.contains("contaminant"))
+            || lower.contains("advection dispersion equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("transport"))
+            || lower.contains("contaminant plume") && (lower.contains("class") || lower.contains("exam") || lower.contains("modeling") || lower.contains("groundwater"))
+            || lower.contains("bioremediation") && lower.contains("soil") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("phytoremediation") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering") || lower.contains("remediation")) {
+            return "geoenvironmentalengineering"
+        }
         // geotechnicalengineering — positioned BEFORE civilengineering so soil mechanics, foundation
         // design, slope stability, and consolidation coursework route here. "geotechnical engineering"
         // and "soil mechanics" patterns were caught by civilengineering; now intercepted here first.
@@ -3261,6 +3304,29 @@ public final class CalloutManager {
             || lower.contains("fe exam") && lower.contains("geotechnical") {
             return "geotechnicalengineering"
         }
+        // earthquakeengineering — positioned BEFORE structuraldynamics so seismic hazard analysis,
+        // ground motion prediction, and liquefaction coursework get a dedicated pool. Response spectra
+        // in a structural-dynamics context stay in structuraldynamics below.
+        if lower.contains("earthquake engineering class") || lower.contains("earthquake engineering course")
+            || lower.contains("earthquake engineering exam") || lower.contains("earthquake engineering homework")
+            || lower.contains("earthquake engineering assignment") || lower.contains("earthquake engineering lab")
+            || lower.contains("seismic hazard analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("earthquake") || lower.contains("engineering"))
+            || lower.contains("ground motion prediction") && (lower.contains("class") || lower.contains("exam") || lower.contains("earthquake"))
+            || lower.contains("attenuation relationship") && (lower.contains("class") || lower.contains("exam") || lower.contains("seismic") || lower.contains("earthquake"))
+            || lower.contains("peak ground acceleration") && (lower.contains("class") || lower.contains("exam") || lower.contains("seismic") || lower.contains("earthquake"))
+            || word("pga") && lower.contains("seismic") && (lower.contains("class") || lower.contains("exam") || lower.contains("hazard"))
+            || lower.contains("liquefaction analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("seismic") || lower.contains("earthquake"))
+            || lower.contains("liquefaction potential") && (lower.contains("class") || lower.contains("exam") || lower.contains("seismic"))
+            || lower.contains("site amplification") && (lower.contains("class") || lower.contains("exam") || lower.contains("seismic") || lower.contains("earthquake"))
+            || lower.contains("seismic design category") && (lower.contains("class") || lower.contains("exam") || lower.contains("earthquake"))
+            || lower.contains("probabilistic seismic hazard") && (lower.contains("class") || lower.contains("exam"))
+            || word("psha") && (lower.contains("class") || lower.contains("exam") || lower.contains("seismic"))
+            || lower.contains("seismic risk analysis") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("fault rupture") && (lower.contains("class") || lower.contains("exam") || lower.contains("seismic") || lower.contains("earthquake"))
+            || lower.contains("ground motion record") && (lower.contains("class") || lower.contains("exam") || lower.contains("seismic"))
+            || lower.contains("cyclic stress ratio") && (lower.contains("class") || lower.contains("exam") || lower.contains("liquefaction")) {
+            return "earthquakeengineering"
+        }
         // structuraldynamics — positioned BEFORE structuralanalysis so vibration analysis, modal
         // analysis, and earthquake engineering coursework get a dedicated pool. "seismic design"
         // stays in civilengineering; "structural analysis" stays in structuralanalysis.
@@ -3285,6 +3351,26 @@ public final class CalloutManager {
             || lower.contains("vibration analysis") && (lower.contains("structural") || lower.contains("class") || lower.contains("exam"))
             || lower.contains("forced vibration") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural")) {
             return "structuraldynamics"
+        }
+        // computationalstructuralmechanics — positioned BEFORE structuralanalysis so finite element
+        // analysis for structural mechanics, ABAQUS, and contact/nonlinear FEA coursework get a
+        // dedicated pool. General "structural analysis" stays in structuralanalysis below.
+        if lower.contains("computational structural mechanics class") || lower.contains("computational structural mechanics course")
+            || lower.contains("computational structural mechanics exam") || lower.contains("finite element analysis class")
+            || lower.contains("finite element analysis course") || lower.contains("finite element analysis exam")
+            || lower.contains("fea class") || lower.contains("fea course") || lower.contains("fea exam")
+            || lower.contains("finite element method class") || lower.contains("finite element method course")
+            || lower.contains("finite element method exam") || lower.contains("finite element method homework")
+            || lower.contains("abaqus") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("structural"))
+            || lower.contains("ansys structural") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("nonlinear fea") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural") || lower.contains("analysis"))
+            || lower.contains("contact mechanics") && (lower.contains("class") || lower.contains("exam") || lower.contains("fea") || lower.contains("finite element"))
+            || lower.contains("mesh generation") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural") || lower.contains("fea"))
+            || lower.contains("element stiffness matrix") && (lower.contains("class") || lower.contains("exam") || lower.contains("finite element"))
+            || lower.contains("isoparametric element") && (lower.contains("class") || lower.contains("exam") || lower.contains("finite element"))
+            || lower.contains("numerical methods") && lower.contains("structural") && (lower.contains("class") || lower.contains("exam") || lower.contains("fea"))
+            || lower.contains("galerkin method") && lower.contains("structural") && (lower.contains("class") || lower.contains("exam")) {
+            return "computationalstructuralmechanics"
         }
         // structuralanalysis — positioned BEFORE civilengineering so beams, trusses, frames, and
         // matrix-stiffness coursework route here. "structural analysis + class/exam" was caught by
@@ -3314,6 +3400,27 @@ public final class CalloutManager {
             || lower.contains("conjugate beam method") && (lower.contains("class") || lower.contains("exam"))
             || lower.contains("unit load method") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural")) {
             return "structuralanalysis"
+        }
+        // coastalengineeringocean — positioned BEFORE civilengineering so wave mechanics, coastal
+        // sediment transport, and breakwater design coursework get a dedicated pool. Distinct from
+        // oceanography (open-ocean science) and waterresources (river/stormwater infrastructure).
+        if lower.contains("coastal engineering class") || lower.contains("coastal engineering course")
+            || lower.contains("coastal engineering exam") || lower.contains("coastal engineering lab")
+            || lower.contains("coastal engineering homework") || lower.contains("coastal engineering assignment")
+            || lower.contains("wave mechanics") && (lower.contains("class") || lower.contains("exam") || lower.contains("coastal") || lower.contains("engineering"))
+            || lower.contains("coastal sediment transport") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("longshore transport") && (lower.contains("class") || lower.contains("exam") || lower.contains("coastal") || lower.contains("sediment"))
+            || lower.contains("beach nourishment") && (lower.contains("class") || lower.contains("exam") || lower.contains("coastal") || lower.contains("engineering"))
+            || lower.contains("breakwater design") && (lower.contains("class") || lower.contains("exam") || lower.contains("coastal") || lower.contains("engineering"))
+            || lower.contains("wave runup") && (lower.contains("class") || lower.contains("exam") || lower.contains("coastal") || lower.contains("engineering"))
+            || lower.contains("wave overtopping") && (lower.contains("class") || lower.contains("exam") || lower.contains("coastal"))
+            || lower.contains("coastal flooding") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering") || lower.contains("analysis"))
+            || lower.contains("airy wave theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("coastal") || lower.contains("engineering"))
+            || lower.contains("stokes wave") && (lower.contains("class") || lower.contains("exam") || lower.contains("coastal") || lower.contains("engineering"))
+            || lower.contains("nearshore process") && (lower.contains("class") || lower.contains("exam") || lower.contains("coastal"))
+            || lower.contains("surf zone dynamics") && (lower.contains("class") || lower.contains("exam") || lower.contains("coastal"))
+            || lower.contains("storm surge") && lower.contains("coastal") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering")) {
+            return "coastalengineeringocean"
         }
         // civilengineering — positioned BEFORE engineering so structural, geotechnical, and
         // transportation engineering coursework routes here. "civil engineering" removed from

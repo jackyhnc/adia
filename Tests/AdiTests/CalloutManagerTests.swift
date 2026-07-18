@@ -24486,8 +24486,168 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "architecturalengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1031)
-    @Test func calloutTemplatesCountAtLeast1031() {
-        #expect(SuggestedSessionTemplates.all.count >= 1031, "template catalog must have ≥1031 entries after structuraldynamics/bioprocessengineering/systemsengineering/transportationplanning/architecturalengineering additions")
+    // MARK: - environmentalhydrology
+    @Test func environmentalHydrologyClassRoutesEnvironmentalhydrology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "environmental hydrology class exam course tonight") == "environmentalhydrology")
+    }
+    @Test func hecHmsRoutesEnvironmentalhydrology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "HEC-HMS class exam hydrology lab") == "environmentalhydrology")
+    }
+    @Test func swmmRoutesEnvironmentalhydrology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "SWMM stormwater class exam hydrology") == "environmentalhydrology")
+    }
+    @Test func scsCurveNumberRoutesEnvironmentalhydrology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "SCS curve number class exam hydrology runoff") == "environmentalhydrology")
+    }
+    @Test func bareRunoffDoesNotRouteEnvironmentalhydrology() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "analyze rainfall runoff for my environmental science essay")
+        #expect(keyword != "environmentalhydrology", "bare runoff without HEC-HMS/SWMM/CN/class context must not route environmentalhydrology")
+    }
+    @Test @MainActor func environmentalhydrologyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentalhydrology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentalhydrology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentalhydrology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func environmentalhydrologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "environmentalhydrology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func environmentalhydrologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "environmentalhydrology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - geoenvironmentalengineering
+    @Test func geoenvironmentalEngineeringClassRoutesGeoenvironmentalengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geoenvironmental engineering class exam course tonight") == "geoenvironmentalengineering")
+    }
+    @Test func contaminatedSiteRemediationRoutesGeoenvironmentalengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "contaminated site remediation class exam geoenvironmental engineering") == "geoenvironmentalengineering")
+    }
+    @Test func groundwaterContaminationRoutesGeoenvironmentalengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "groundwater contamination plume class exam remediation") == "geoenvironmentalengineering")
+    }
+    @Test func soilVaporExtractionRoutesGeoenvironmentalengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "soil vapor extraction class exam remediation engineering") == "geoenvironmentalengineering")
+    }
+    @Test func bareGeotechnicalDoesNotRouteGeoenvironmentalengineering() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "foundation design bearing capacity soil mechanics class exam")
+        #expect(keyword != "geoenvironmentalengineering", "bare geotechnical soil mechanics without contamination/remediation context must not route geoenvironmentalengineering")
+    }
+    @Test @MainActor func geoenvironmentalengineeringCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "geoenvironmentalengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "geoenvironmentalengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "geoenvironmentalengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func geoenvironmentalengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "geoenvironmentalengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func geoenvironmentalengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "geoenvironmentalengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - earthquakeengineering
+    @Test func earthquakeEngineeringClassRoutesEarthquakeengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "earthquake engineering class exam course tonight") == "earthquakeengineering")
+    }
+    @Test func seismicHazardAnalysisRoutesEarthquakeengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "seismic hazard analysis class exam earthquake engineering") == "earthquakeengineering")
+    }
+    @Test func liquefactionAnalysisRoutesEarthquakeengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "liquefaction analysis class exam seismic earthquake") == "earthquakeengineering")
+    }
+    @Test func pshaRoutesEarthquakeengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "PSHA class exam seismic probabilistic hazard") == "earthquakeengineering")
+    }
+    @Test func bareSeismicDesignDoesNotRouteEarthquakeengineering() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "seismic design class structural building code tonight")
+        #expect(keyword != "earthquakeengineering", "seismic design without liquefaction/PSHA/ground motion context must not route earthquakeengineering")
+    }
+    @Test @MainActor func earthquakeengineeringCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "earthquakeengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "earthquakeengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "earthquakeengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func earthquakeengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "earthquakeengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func earthquakeengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "earthquakeengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - computationalstructuralmechanics
+    @Test func feaClassRoutesComputationalstructuralmechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "finite element analysis class exam course tonight") == "computationalstructuralmechanics")
+    }
+    @Test func abaqusRoutesComputationalstructuralmechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ABAQUS class exam lab structural analysis") == "computationalstructuralmechanics")
+    }
+    @Test func nonlinearFeaRoutesComputationalstructuralmechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nonlinear FEA class exam structural analysis") == "computationalstructuralmechanics")
+    }
+    @Test func elementStiffnessMatrixRoutesComputationalstructuralmechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "element stiffness matrix class exam finite element") == "computationalstructuralmechanics")
+    }
+    @Test func bareStructuralAnalysisDoesNotRouteComputationalstructuralmechanics() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "structural analysis class beam truss shear moment diagram")
+        #expect(keyword != "computationalstructuralmechanics", "bare structural analysis without FEA/ABAQUS context must not route computationalstructuralmechanics")
+    }
+    @Test @MainActor func computationalstructuralmechanicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalstructuralmechanics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalstructuralmechanics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalstructuralmechanics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func computationalstructuralmechanicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computationalstructuralmechanics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func computationalstructuralmechanicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computationalstructuralmechanics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - coastalengineeringocean
+    @Test func coastalEngineeringClassRoutesCoastalengineeringocean() {
+        #expect(CalloutManager.extractTaskKeyword(from: "coastal engineering class exam course tonight") == "coastalengineeringocean")
+    }
+    @Test func waveMechanicsRoutesCoastalengineeringocean() {
+        #expect(CalloutManager.extractTaskKeyword(from: "wave mechanics class exam coastal engineering") == "coastalengineeringocean")
+    }
+    @Test func coastalSedimentTransportRoutesCoastalengineeringocean() {
+        #expect(CalloutManager.extractTaskKeyword(from: "coastal sediment transport class exam engineering") == "coastalengineeringocean")
+    }
+    @Test func breakwaterDesignRoutesCoastalengineeringocean() {
+        #expect(CalloutManager.extractTaskKeyword(from: "breakwater design class exam coastal engineering") == "coastalengineeringocean")
+    }
+    @Test func bareOceanographyDoesNotRouteCoastalengineeringocean() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "oceanography class marine biology sea floor tonight")
+        #expect(keyword != "coastalengineeringocean", "bare oceanography without coastal engineering/wave mechanics context must not route coastalengineeringocean")
+    }
+    @Test @MainActor func coastalengineeringoceanCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "coastalengineeringocean", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "coastalengineeringocean", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "coastalengineeringocean", tier: 3).isEmpty)
+    }
+    @Test @MainActor func coastalengineeringoceanTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "coastalengineeringocean", tier: 1).count >= 4)
+    }
+    @Test @MainActor func coastalengineeringoceanTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "coastalengineeringocean", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1041)
+    @Test func calloutTemplatesCountAtLeast1041() {
+        #expect(SuggestedSessionTemplates.all.count >= 1041, "template catalog must have ≥1041 entries after environmentalhydrology/geoenvironmentalengineering/earthquakeengineering/computationalstructuralmechanics/coastalengineeringocean additions")
     }
 }
