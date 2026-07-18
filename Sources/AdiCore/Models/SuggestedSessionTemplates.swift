@@ -6725,5 +6725,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Coastal engineering assignment completed (wave calculations with dispersion solution, nearshore transformation computed, structure designed or sediment budget estimated, and written design report with wave rose, cross-section diagram, armor sizing, and numerical results saved to file)",
             preferredDuration: 60 * 60
         ),
+        // corrosionengineering
+        SuggestedTemplate(
+            icon: "bolt.shield.fill",
+            task: "Study corrosion engineering for my exam — review electrochemical corrosion mechanisms, the galvanic series, Pourbaix diagrams, corrosion rates and Faraday's law, cathodic and anodic protection, corrosion inhibitors, stress corrosion cracking (SCC), pitting and crevice corrosion, and passivation",
+            successCriteria: "Corrosion engineering study session completed (at least two corrosion mechanisms reviewed with Pourbaix diagram construction, corrosion rate calculations, cathodic protection design parameters, SCC susceptibility conditions, and mitigation strategies summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "bolt.shield.fill",
+            task: "Work on my corrosion engineering assignment — construct a Pourbaix diagram for a given metal-solution system, calculate corrosion current density and rate using Faraday's law, design a cathodic protection system (impressed current or sacrificial anode), analyze a stress corrosion cracking failure scenario, or evaluate corrosion inhibitor effectiveness",
+            successCriteria: "Corrosion engineering assignment completed (Pourbaix diagram constructed, corrosion rate computed, cathodic protection system designed, SCC failure scenario analyzed, or inhibitor evaluation completed with thermodynamic data, Tafel slopes, protection potentials, and written analysis saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // acousticalengineering
+        SuggestedTemplate(
+            icon: "ear.fill",
+            task: "Study acoustical engineering for my exam — review the Sabine and Eyring reverberation equations, absorption coefficients and NRC values, sound transmission loss, STC ratings, flanking transmission paths, noise criteria (NC) curves, speech intelligibility (STI), room acoustic design principles, and noise isolation class (NIC)",
+            successCriteria: "Acoustical engineering study session completed (at least two topics reviewed with Sabine RT60 calculations, absorption coefficient lookup, STC/NRC table use, NC curve construction, STI prediction, and noise isolation design for at least one room type summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "ear.fill",
+            task: "Work on my acoustical engineering assignment — calculate RT60 using Sabine or Eyring formula for a given room volume and absorption data, determine STC rating for a wall assembly, map flanking transmission paths in a building section, compute speech intelligibility index for a classroom, or design acoustic treatment (panel placement, absorption targets) to meet an NC criterion",
+            successCriteria: "Acoustical engineering assignment completed (RT60 calculated with room volume and absorption data, STC determined, flanking paths mapped, STI computed, or acoustic treatment designed with absorption schedule, NC curve comparison, and written design report saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // microfluidics
+        SuggestedTemplate(
+            icon: "square.3.layers.3d",
+            task: "Study microfluidics for my exam — review Reynolds number in microchannels, electroosmotic and electrophoretic flow, Stokes flow and pressure-driven profiles, Dean flow in curved channels, PDMS device fabrication via soft lithography, droplet and digital microfluidics, capillary electrophoresis, and lab-on-chip integration strategies",
+            successCriteria: "Microfluidics study session completed (at least two topics reviewed with low-Re flow regime derivation, electroosmotic velocity calculations, PDMS soft lithography steps, Dean flow secondary pattern sketches, droplet generation mechanism, and capillary electrophoresis separation principles summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "square.3.layers.3d",
+            task: "Work on my microfluidics assignment — design a microchannel network for a given flow rate and pressure drop using Stokes flow analysis, calculate electroosmotic flow velocity for a given electric field and zeta potential, design a PDMS soft-lithography fabrication process, model droplet formation in a T-junction, or analyze species separation in a capillary electrophoresis chip",
+            successCriteria: "Microfluidics assignment completed (microchannel design with hydraulic resistance network, EOF velocity computed, PDMS fabrication protocol written, droplet model analyzed, or CE separation resolved with mobility calculations, channel dimensions, applied voltage, and results saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // marinehydrodynamics
+        SuggestedTemplate(
+            icon: "ferry.fill",
+            task: "Study marine hydrodynamics for my exam — review potential flow theory, added mass and radiation damping coefficients, wave-body interaction (radiation/diffraction), strip theory for seakeeping, propeller thrust and torque theory (open-water characteristics), hydrodynamic wave resistance, and panel methods for submerged body analysis",
+            successCriteria: "Marine hydrodynamics study session completed (at least two topics reviewed with potential flow derivation, added mass tensor construction, radiation/diffraction problem setup, strip theory equation of motion, propeller KT/KQ curve interpretation, and wave resistance Froude number dependence summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "ferry.fill",
+            task: "Work on my marine hydrodynamics assignment — compute added mass coefficients for a given body geometry using potential flow theory, solve a strip theory seakeeping equation for heave or pitch motion, analyze propeller open-water characteristics using KT/KQ diagrams, set up a radiation/diffraction panel method boundary value problem, or compute wave resistance for a given ship hull form",
+            successCriteria: "Marine hydrodynamics assignment completed (added mass computed, seakeeping equation solved with RAO derivation, propeller performance point determined, panel method BVP formulated, or wave resistance computed with Froude number series, results plotted, and written analysis saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // thermofluidscombustion
+        SuggestedTemplate(
+            icon: "flame.fill",
+            task: "Study combustion engineering for my exam — review combustion stoichiometry, adiabatic flame temperature calculation, premixed and diffusion flames, laminar burning velocity, equivalence ratio and fuel-air ratio, NOx formation mechanisms (thermal, prompt, fuel NOx), ignition delay, flammability limits, and Damköhler number",
+            successCriteria: "Combustion engineering study session completed (at least two topics reviewed with stoichiometric coefficient balancing, adiabatic flame temperature energy balance, burning velocity Markstein number, equivalence ratio ϕ definition, NOx formation pathway sketch, and ignition delay correlation summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "flame.fill",
+            task: "Work on my combustion engineering assignment — calculate adiabatic flame temperature for a given fuel/oxidizer mixture using enthalpy balance, determine equivalence ratio and products composition for a given fuel-air ratio, analyze a premixed laminar flame structure using asymptotic theory, estimate NOx emissions for a given combustor inlet condition, or apply flammability limits to a burner safety analysis",
+            successCriteria: "Combustion engineering assignment completed (adiabatic flame temperature calculated, equivalence ratio and product composition determined, premixed flame structure analyzed, NOx estimate computed, or flammability safety analysis completed with species balance, thermochemical data, reaction pathway, and written solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

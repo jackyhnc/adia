@@ -6995,4 +6995,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast1041() {
         #expect(SuggestedSessionTemplates.all.count >= 1041, "template catalog must have ≥1041 entries after environmentalhydrology/geoenvironmentalengineering/earthquakeengineering/computationalstructuralmechanics/coastalengineeringocean additions")
     }
+    // MARK: - corrosionengineering templates
+    @Test func corrosionengineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("corrosion engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func corrosionengineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("corrosion engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - acousticalengineering templates
+    @Test func acousticalengineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("acoustical engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func acousticalengineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("acoustical engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - microfluidics templates
+    @Test func microfluidicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("microfluidics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func microfluidicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("microfluidics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - marinehydrodynamics templates
+    @Test func marinehydrodynamicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("marine hydrodynamics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func marinehydrodynamicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("marine hydrodynamics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - thermofluidscombustion templates
+    @Test func thermofluidscombustionStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("combustion engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func thermofluidscombustionAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("combustion engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1051)
+    @Test func templateCountAtLeast1051() {
+        #expect(SuggestedSessionTemplates.all.count >= 1051, "template catalog must have ≥1051 entries after corrosionengineering/acousticalengineering/microfluidics/marinehydrodynamics/thermofluidscombustion additions")
+    }
 }

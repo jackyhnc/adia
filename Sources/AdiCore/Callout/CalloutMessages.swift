@@ -561,6 +561,11 @@ extension CalloutManager {
         case "machinelearning":            return machinelearningCallouts(tier: tier)
         case "distributedsystems":         return distributedsystemsCallouts(tier: tier)
         case "computersecurity":           return computersecurityCallouts(tier: tier)
+        case "corrosionengineering":       return corrosionengineeringCallouts(tier: tier)
+        case "acousticalengineering":      return acousticalengineeringCallouts(tier: tier)
+        case "microfluidics":              return microfluidicsCallouts(tier: tier)
+        case "marinehydrodynamics":        return marinehydrodynamicsCallouts(tier: tier)
+        case "thermofluidscombustion":     return thermofluidscombustionCallouts(tier: tier)
         case "programminglanguages":       return programminglanguagesCallouts(tier: tier)
         case "compilerdesign":             return compilerdesignCallouts(tier: tier)
         case "computergraphics":           return computergraphicsCallouts(tier: tier)
@@ -10821,6 +10826,111 @@ extension CalloutManager {
             "CLOSE THIS. open your computer security textbook.",
             "CLOSE THIS. those secure coding and vulnerability analysis problems won't solve themselves.",
             "CLOSE THIS. your computer security exam won't study itself."
+        ]
+        }
+    }
+
+    private func corrosionengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those galvanic corrosion diagrams won't draw themselves.",
+            "your corrosion engineering exam doesn't care that you're scrolling.",
+            "get back to your corrosion engineering work.",
+            "close this and open your corrosion engineering textbook.",
+        ]
+        case 2: return [
+            "no one masters corrosion engineering by scrolling.",
+            "close this and work on your corrosion assignment.",
+            "those cathodic protection and SCC problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your corrosion engineering textbook.",
+            "CLOSE THIS. those electrochemical corrosion and Pourbaix diagram problems won't solve themselves.",
+            "CLOSE THIS. your corrosion engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func acousticalengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those RT60 calculations and STC ratings won't work themselves out.",
+            "your architectural acoustics exam doesn't care that you're scrolling.",
+            "get back to your building acoustics work.",
+            "close this and open your acoustical engineering textbook.",
+        ]
+        case 2: return [
+            "no one masters acoustical engineering by scrolling.",
+            "close this and work on your acoustics assignment.",
+            "those absorption coefficients and flanking transmission problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your acoustical engineering textbook.",
+            "CLOSE THIS. those Sabine formula and speech intelligibility calculations won't solve themselves.",
+            "CLOSE THIS. your architectural acoustics exam won't study itself."
+        ]
+        }
+    }
+
+    private func microfluidicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that lab-on-chip design won't build itself.",
+            "your microfluidics exam doesn't care that you're scrolling.",
+            "get back to your microfluidics work.",
+            "close this and open your microfluidics textbook.",
+        ]
+        case 2: return [
+            "no one masters microfluidics by scrolling.",
+            "close this and work on your microfluidics assignment.",
+            "those Dean flow and electroosmosis problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your microfluidics textbook.",
+            "CLOSE THIS. those PDMS device fabrication and microchannel flow problems won't solve themselves.",
+            "CLOSE THIS. your microfluidics exam won't study itself."
+        ]
+        }
+    }
+
+    private func marinehydrodynamicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those added mass and wave-body interaction problems won't solve themselves.",
+            "your marine hydrodynamics exam doesn't care that you're scrolling.",
+            "get back to your marine hydrodynamics work.",
+            "close this and open your marine hydrodynamics textbook.",
+        ]
+        case 2: return [
+            "no one masters marine hydrodynamics by scrolling.",
+            "close this and work on your marine hydrodynamics assignment.",
+            "those seakeeping and radiation/diffraction problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your marine hydrodynamics textbook.",
+            "CLOSE THIS. those panel method and strip theory hydrodynamics problems won't solve themselves.",
+            "CLOSE THIS. your marine hydrodynamics exam won't study itself."
+        ]
+        }
+    }
+
+    private func thermofluidscombustionCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those premixed flame and equivalence ratio problems won't solve themselves.",
+            "your combustion engineering exam doesn't care that you're scrolling.",
+            "get back to your combustion engineering work.",
+            "close this and open your combustion engineering textbook.",
+        ]
+        case 2: return [
+            "no one masters combustion engineering by scrolling.",
+            "close this and work on your combustion assignment.",
+            "those adiabatic flame temperature and NOx formation problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your combustion engineering textbook.",
+            "CLOSE THIS. those laminar burning velocity and diffusion flame problems won't solve themselves.",
+            "CLOSE THIS. your combustion engineering exam won't study itself."
         ]
         }
     }

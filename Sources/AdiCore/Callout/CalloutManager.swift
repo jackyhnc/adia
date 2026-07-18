@@ -2877,6 +2877,27 @@ public final class CalloutManager {
             || lower.contains("halpin-tsai") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite")) {
             return "compositematerials"
         }
+        // corrosionengineering — positioned BEFORE materialscience to intercept electrochemical
+        // corrosion, galvanic series, cathodic protection, and SCC coursework. "corrosion engineering
+        // class/course" was in materialscience (removed from there); now owned here with full term set.
+        if lower.contains("corrosion engineering class") || lower.contains("corrosion engineering course")
+            || lower.contains("corrosion engineering exam") || lower.contains("corrosion engineering homework")
+            || lower.contains("corrosion engineering assignment") || lower.contains("corrosion engineering lab")
+            || lower.contains("corrosion science class") || lower.contains("corrosion science course") || lower.contains("corrosion science exam")
+            || lower.contains("electrochemical corrosion") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering") || lower.contains("corrosion"))
+            || lower.contains("galvanic corrosion") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("cathodic protection") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering") || lower.contains("corrosion"))
+            || lower.contains("anodic protection") && (lower.contains("class") || lower.contains("exam") || lower.contains("corrosion"))
+            || lower.contains("galvanic cell") && (lower.contains("class") || lower.contains("exam") || lower.contains("corrosion"))
+            || lower.contains("corrosion inhibitor") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("stress corrosion cracking") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("corrosion rate") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering") || lower.contains("corrosion"))
+            || lower.contains("pitting corrosion") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("crevice corrosion") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("galvanic series") && (lower.contains("class") || lower.contains("exam") || lower.contains("corrosion") || lower.contains("engineering"))
+            || lower.contains("pourbaix diagram") && (lower.contains("class") || lower.contains("exam") || lower.contains("corrosion") || lower.contains("electrochemical")) {
+            return "corrosionengineering"
+        }
         // materialscience — positioned AFTER nanotechnology and BEFORE engineering.
         // Catches MSE coursework, metallurgy, polymer science, ceramics (in engineering context),
         // composite materials, and phase diagram labs. "nanomaterials"/"nanotechnology" now owned
@@ -2893,7 +2914,6 @@ public final class CalloutManager {
             || (lower.contains("crystallography") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
             || (lower.contains("crystal structure") && (lower.contains("class") || lower.contains("course") || lower.contains("lab")))
             || (lower.contains("phase diagram") && (lower.contains("class") || lower.contains("course") || lower.contains("lab")))
-            || (lower.contains("corrosion engineering") && (lower.contains("class") || lower.contains("course")))
             || lower.contains("thermodynamics of materials")
             || (lower.contains("electronic materials") || lower.contains("magnetic materials")) && (lower.contains("class") || lower.contains("course"))
             || (word("mems") && (lower.contains("class") || lower.contains("course") || lower.contains("lab")))
@@ -3221,6 +3241,25 @@ public final class CalloutManager {
             || lower.contains("ee lab report") || lower.contains("electrical engineering report") {
             return "electricalengineering"
         }
+        // acousticalengineering — positioned BEFORE acousticsengineering so architectural acoustics
+        // terms unique to building design (STC rating, flanking transmission, speech intelligibility,
+        // NIC, Sabine formula) get a dedicated pool. Bare "acoustics class" stays in acousticsengineering.
+        if lower.contains("stc rating") && (lower.contains("class") || lower.contains("exam") || lower.contains("acoustics"))
+            || lower.contains("sound transmission class") && (lower.contains("acoustics") || lower.contains("building") || lower.contains("wall") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("flanking transmission") && (lower.contains("class") || lower.contains("exam") || lower.contains("acoustics"))
+            || lower.contains("noise isolation class") && (lower.contains("acoustics") || lower.contains("building") || lower.contains("exam"))
+            || lower.contains("noise reduction coefficient") && (lower.contains("class") || lower.contains("exam") || lower.contains("acoustics"))
+            || lower.contains("nrc value") && (lower.contains("class") || lower.contains("exam") || lower.contains("acoustics") || lower.contains("material"))
+            || lower.contains("speech intelligibility") && (lower.contains("class") || lower.contains("exam") || lower.contains("acoustics"))
+            || lower.contains("sti score") && (lower.contains("class") || lower.contains("exam") || lower.contains("acoustics"))
+            || lower.contains("sabine formula") && (lower.contains("class") || lower.contains("exam") || lower.contains("acoustics") || lower.contains("room"))
+            || lower.contains("sabine equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("acoustics") || lower.contains("room"))
+            || lower.contains("building acoustics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("interior acoustics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("concert hall acoustic") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("auditorium acoustic") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("design")) {
+            return "acousticalengineering"
+        }
         // acousticsengineering — positioned AFTER electricalengineering and BEFORE civilengineering
         // so acoustics engineering class/exam, room acoustics, noise control, vibration analysis,
         // psychoacoustics, and acoustic wave coursework route here.
@@ -3473,6 +3512,27 @@ public final class CalloutManager {
             || lower.contains("surface roughness") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology") || lower.contains("contact")) {
             return "tribology"
         }
+        // marinehydrodynamics — positioned BEFORE navalarchitecture so wave-body interaction,
+        // added mass, radiation/diffraction problems, seakeeping analysis, and propeller theory
+        // coursework get a dedicated pool. Bare "ship design" stays in navalarchitecture below.
+        if lower.contains("marine hydrodynamics class") || lower.contains("marine hydrodynamics course")
+            || lower.contains("marine hydrodynamics exam") || lower.contains("marine hydrodynamics homework")
+            || lower.contains("marine hydrodynamics assignment") || lower.contains("marine hydrodynamics lab")
+            || lower.contains("added mass") && (lower.contains("class") || lower.contains("exam") || lower.contains("marine") || lower.contains("hydrodynamics") || lower.contains("wave"))
+            || lower.contains("radiation diffraction") && (lower.contains("class") || lower.contains("exam") || lower.contains("marine") || lower.contains("wave") || lower.contains("hydrodynamics"))
+            || lower.contains("radiation/diffraction") && (lower.contains("class") || lower.contains("exam") || lower.contains("marine") || lower.contains("wave"))
+            || lower.contains("seakeeping") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("analysis") || lower.contains("marine"))
+            || lower.contains("strip theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("seakeeping") || lower.contains("marine") || lower.contains("hydrodynamics"))
+            || lower.contains("propeller theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("marine") || lower.contains("naval") || lower.contains("hydrodynamics"))
+            || lower.contains("wave-body interaction") && (lower.contains("class") || lower.contains("exam") || lower.contains("marine") || lower.contains("hydrodynamics"))
+            || lower.contains("wave body interaction") && (lower.contains("class") || lower.contains("exam") || lower.contains("marine") || lower.contains("hydrodynamics"))
+            || lower.contains("panel method") && (lower.contains("class") || lower.contains("exam") || lower.contains("marine") || lower.contains("hydrodynamics") || lower.contains("potential flow"))
+            || lower.contains("potential flow") && (lower.contains("marine") || lower.contains("hydrodynamics")) && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("wave resistance") && (lower.contains("class") || lower.contains("exam") || lower.contains("marine") || lower.contains("ship") || lower.contains("hydrodynamics"))
+            || lower.contains("hydrodynamic coefficient") && (lower.contains("class") || lower.contains("exam") || lower.contains("marine") || lower.contains("ship"))
+            || lower.contains("viscous resistance") && (lower.contains("class") || lower.contains("exam") || lower.contains("ship") || lower.contains("marine") || lower.contains("hydrodynamics")) {
+            return "marinehydrodynamics"
+        }
         // navalarchitecture — BEFORE mechanicalengineering; hull design, ship stability, resistance
         // and propulsion, offshore structures. "naval architecture" removed from engineering below.
         if lower.contains("naval architecture class") || lower.contains("naval architecture course")
@@ -3607,6 +3667,27 @@ public final class CalloutManager {
             || lower.contains("rehabilitation engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("project")) {
             return "biomedicalengineering"
         }
+        // microfluidics — positioned BEFORE bioprocessengineering so lab-on-chip, microchannel flow,
+        // electroosmosis, and PDMS device coursework get a dedicated pool. Bare "microfluidics"
+        // without class/exam context falls through to chemicalengineering or biomedicalengineering.
+        if lower.contains("microfluidics class") || lower.contains("microfluidics course")
+            || lower.contains("microfluidics exam") || lower.contains("microfluidics lab")
+            || lower.contains("microfluidics homework") || lower.contains("microfluidics assignment")
+            || lower.contains("microfluidic device") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("microfluidic chip") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("fabrication"))
+            || lower.contains("lab-on-chip") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("lab on chip") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("microchannel") && (lower.contains("class") || lower.contains("exam") || lower.contains("microfluidics") || lower.contains("flow"))
+            || lower.contains("electroosmosis") && (lower.contains("class") || lower.contains("exam") || lower.contains("microfluidics"))
+            || lower.contains("electroosmotic flow") && (lower.contains("class") || lower.contains("exam") || lower.contains("microfluidics") || lower.contains("channel"))
+            || lower.contains("capillary electrophoresis") && (lower.contains("class") || lower.contains("exam") || lower.contains("microfluidics") || lower.contains("lab"))
+            || lower.contains("dean flow") && (lower.contains("class") || lower.contains("exam") || lower.contains("microfluidics") || lower.contains("channel"))
+            || lower.contains("pdms device") && (lower.contains("class") || lower.contains("exam") || lower.contains("microfluidics") || lower.contains("fabrication"))
+            || lower.contains("soft lithography") && (lower.contains("class") || lower.contains("exam") || lower.contains("microfluidics") || lower.contains("pdms"))
+            || lower.contains("droplet microfluidics") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("digital microfluidics") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab")) {
+            return "microfluidics"
+        }
         // bioprocessengineering — positioned BEFORE chemicalengineering so fermentation, bioreactor,
         // and downstream processing coursework get a dedicated pool distinct from chemical engineering.
         // Bare "fermentation" or "cell culture" without class/bioprocess context falls through.
@@ -3652,6 +3733,28 @@ public final class CalloutManager {
             || lower.contains("thermodynamics exam") && lower.contains("chemical")
             || lower.contains("fluid mechanics class") && lower.contains("chemical") {
             return "chemicalengineering"
+        }
+        // thermofluidscombustion — positioned AFTER chemicalengineering (which owns "thermodynamics class chemical"
+        // and "fluid mechanics class chemical") and BEFORE petroleumengineering/thermodynamics. Catches combustion
+        // engineering coursework with premixed/diffusion flames, equivalence ratio, and NOx formation.
+        if lower.contains("combustion engineering class") || lower.contains("combustion engineering course")
+            || lower.contains("combustion engineering exam") || lower.contains("combustion engineering homework")
+            || lower.contains("combustion class") && !lower.contains("internal combustion engine") || lower.contains("combustion course") && !lower.contains("internal combustion engine")
+            || lower.contains("combustion exam") || lower.contains("combustion homework") || lower.contains("combustion assignment")
+            || lower.contains("combustion textbook") || lower.contains("combustion lecture")
+            || lower.contains("premixed flame") && (lower.contains("class") || lower.contains("exam") || lower.contains("combustion") || lower.contains("lab"))
+            || lower.contains("diffusion flame") && (lower.contains("class") || lower.contains("exam") || lower.contains("combustion") || lower.contains("lab"))
+            || lower.contains("equivalence ratio") && (lower.contains("class") || lower.contains("exam") || lower.contains("combustion"))
+            || lower.contains("fuel-air ratio") && (lower.contains("class") || lower.contains("exam") || lower.contains("combustion"))
+            || lower.contains("adiabatic flame temperature") && (lower.contains("class") || lower.contains("exam") || lower.contains("combustion") || lower.contains("stoichiometry"))
+            || lower.contains("nox formation") && (lower.contains("class") || lower.contains("exam") || lower.contains("combustion") || lower.contains("emission"))
+            || lower.contains("laminar burning velocity") && (lower.contains("class") || lower.contains("exam") || lower.contains("combustion"))
+            || lower.contains("burning velocity") && (lower.contains("class") || lower.contains("exam") || lower.contains("combustion") || lower.contains("flame"))
+            || lower.contains("combustion stoichiometry") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("combustion efficiency") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("ignition delay") && (lower.contains("class") || lower.contains("exam") || lower.contains("combustion"))
+            || lower.contains("flame propagation") && (lower.contains("class") || lower.contains("exam") || lower.contains("combustion") || lower.contains("premixed")) {
+            return "thermofluidscombustion"
         }
         // petroleumengineering — positioned AFTER chemicalengineering and BEFORE statisticalmechanics
         // so petroleum engineering class/exam, reservoir engineering, well logging, petrophysics,

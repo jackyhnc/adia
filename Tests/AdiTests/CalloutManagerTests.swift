@@ -24650,4 +24650,169 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast1041() {
         #expect(SuggestedSessionTemplates.all.count >= 1041, "template catalog must have ≥1041 entries after environmentalhydrology/geoenvironmentalengineering/earthquakeengineering/computationalstructuralmechanics/coastalengineeringocean additions")
     }
+
+    // MARK: - corrosionengineering
+    @Test func corrosionEngineeringClassRoutesCorrosionengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "corrosion engineering class exam course tonight") == "corrosionengineering")
+    }
+    @Test func electrochemicalCorrosionRoutesCorrosionengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "electrochemical corrosion class exam engineering") == "corrosionengineering")
+    }
+    @Test func cathodicProtectionRoutesCorrosionengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cathodic protection class exam engineering corrosion") == "corrosionengineering")
+    }
+    @Test func galvanicSeriesRoutesCorrosionengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "galvanic series class exam corrosion engineering") == "corrosionengineering")
+    }
+    @Test func bareMaterialsLabDoesNotRouteCorrosionengineering() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "materials science class phase diagram crystallography lab tonight")
+        #expect(keyword != "corrosionengineering", "bare materials science without corrosion-specific context must not route corrosionengineering")
+    }
+    @Test @MainActor func corrosionengineeringCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "corrosionengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "corrosionengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "corrosionengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func corrosionengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "corrosionengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func corrosionengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "corrosionengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - acousticalengineering
+    @Test func stcRatingRoutesAcousticalengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "STC rating class exam acoustics building") == "acousticalengineering")
+    }
+    @Test func sabineFormulaRoutesAcousticalengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "Sabine formula class exam acoustics room") == "acousticalengineering")
+    }
+    @Test func speechIntelligibilityRoutesAcousticalengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "speech intelligibility class exam acoustics") == "acousticalengineering")
+    }
+    @Test func buildingAcousticsRoutesAcousticalengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "building acoustics class course exam lab") == "acousticalengineering")
+    }
+    @Test func bareAcousticsClassDoesNotRouteAcousticalengineering() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "acoustics class noise control acoustic wave vibration analysis tonight")
+        #expect(keyword != "acousticalengineering", "bare acoustics class without STC/RT60/Sabine/building-specific context must not exclusively route acousticalengineering")
+    }
+    @Test @MainActor func acousticalengineeringCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "acousticalengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "acousticalengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "acousticalengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func acousticalengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "acousticalengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func acousticalengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "acousticalengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - microfluidics
+    @Test func microfluidicsClassRoutesMicrofluidics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "microfluidics class exam course tonight") == "microfluidics")
+    }
+    @Test func labOnChipRoutesMicrofluidics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "lab-on-chip class exam design microfluidics") == "microfluidics")
+    }
+    @Test func electroosmosisRoutesMicrofluidics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "electroosmosis class exam microfluidics channel") == "microfluidics")
+    }
+    @Test func pdmsDeviceRoutesMicrofluidics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "PDMS device class exam microfluidics fabrication") == "microfluidics")
+    }
+    @Test func bareBioreactorDoesNotRouteMicrofluidics() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "bioreactor design class exam fermentation bioprocess engineering")
+        #expect(keyword != "microfluidics", "bioreactor/fermentation without microfluidic-specific terms must not route microfluidics")
+    }
+    @Test @MainActor func microfluidicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "microfluidics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "microfluidics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "microfluidics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func microfluidicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "microfluidics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func microfluidicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "microfluidics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - marinehydrodynamics
+    @Test func marineHydrodynamicsClassRoutesMarinehydrodynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "marine hydrodynamics class exam course tonight") == "marinehydrodynamics")
+    }
+    @Test func addedMassRoutesMarinehydrodynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "added mass class exam marine hydrodynamics wave") == "marinehydrodynamics")
+    }
+    @Test func seakeepingRoutesMarinehydrodynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "seakeeping class exam marine analysis course") == "marinehydrodynamics")
+    }
+    @Test func propellerTheoryRoutesMarinehydrodynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "propeller theory class exam marine hydrodynamics naval") == "marinehydrodynamics")
+    }
+    @Test func bareShipDesignDoesNotRouteMarinehydrodynamics() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "naval architecture class hull design ship stability metacentric height")
+        #expect(keyword != "marinehydrodynamics", "bare hull design/ship stability without added mass/seakeeping/panel method context must not route marinehydrodynamics")
+    }
+    @Test @MainActor func marinehydrodynamicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "marinehydrodynamics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "marinehydrodynamics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "marinehydrodynamics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func marinehydrodynamicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "marinehydrodynamics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func marinehydrodynamicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "marinehydrodynamics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - thermofluidscombustion
+    @Test func combustionEngineeringClassRoutesThermofluids() {
+        #expect(CalloutManager.extractTaskKeyword(from: "combustion engineering class exam course tonight") == "thermofluidscombustion")
+    }
+    @Test func premixedFlameRoutesThermofluids() {
+        #expect(CalloutManager.extractTaskKeyword(from: "premixed flame class exam combustion lab") == "thermofluidscombustion")
+    }
+    @Test func equivalenceRatioRoutesThermofluids() {
+        #expect(CalloutManager.extractTaskKeyword(from: "equivalence ratio class exam combustion engineering") == "thermofluidscombustion")
+    }
+    @Test func adiabaticFlameTemperatureRoutesThermofluids() {
+        #expect(CalloutManager.extractTaskKeyword(from: "adiabatic flame temperature class exam combustion stoichiometry") == "thermofluidscombustion")
+    }
+    @Test func bareThermodynamicsClassDoesNotRouteThermofluidscombustion() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "engineering thermodynamics class exam Rankine cycle steam tables")
+        #expect(keyword != "thermofluidscombustion", "bare engineering thermodynamics without combustion-specific terms must not route thermofluidscombustion")
+    }
+    @Test @MainActor func thermofluidscombustionCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "thermofluidscombustion", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "thermofluidscombustion", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "thermofluidscombustion", tier: 3).isEmpty)
+    }
+    @Test @MainActor func thermofluidscombustionTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "thermofluidscombustion", tier: 1).count >= 4)
+    }
+    @Test @MainActor func thermofluidscombustionTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "thermofluidscombustion", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1051)
+    @Test func calloutTemplatesCountAtLeast1051() {
+        #expect(SuggestedSessionTemplates.all.count >= 1051, "template catalog must have ≥1051 entries after corrosionengineering/acousticalengineering/microfluidics/marinehydrodynamics/thermofluidscombustion additions")
+    }
 }
