@@ -2870,6 +2870,27 @@ public final class CalloutManager {
             || lower.contains("process flow diagram") && (lower.contains("class") || lower.contains("course") || lower.contains("chemical") || lower.contains("engineering")) {
             return "processengineering"
         }
+        // aerostructures — positioned BEFORE aerospacengineering so aircraft structures, composite
+        // airframe, wing structural analysis, and aerostructures coursework route here.
+        // Bare "aerospace engineering" without structures context stays in aerospacengineering.
+        if lower.contains("aerostructures class") || lower.contains("aerostructures course")
+            || lower.contains("aerostructures exam") || lower.contains("aerostructures lab")
+            || lower.contains("aerostructures assignment") || lower.contains("aerostructures notes")
+            || lower.contains("aircraft structures class") || lower.contains("aircraft structures course")
+            || lower.contains("aircraft structures exam") || lower.contains("aircraft structures lab")
+            || lower.contains("structural analysis of aircraft") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("airframe structures") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("composite airframe") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("design"))
+            || lower.contains("aircraft fatigue") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("analysis"))
+            || lower.contains("wing structural design") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("shear flow") && (lower.contains("class") || lower.contains("exam") || lower.contains("aircraft") || lower.contains("aerostructures") || lower.contains("airframe"))
+            || lower.contains("monocoque structure") && (lower.contains("class") || lower.contains("exam") || lower.contains("aircraft") || lower.contains("aerostructures"))
+            || lower.contains("stiffened panel") && (lower.contains("class") || lower.contains("exam") || lower.contains("aircraft") || lower.contains("aerostructures"))
+            || lower.contains("aeroelasticity") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("analysis"))
+            || lower.contains("flutter analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("aeroelastic") || lower.contains("aircraft"))
+            || lower.contains("buckling analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("aircraft") || lower.contains("aerostructures") || lower.contains("airframe")) {
+            return "aerostructures"
+        }
         // aerospacengineering — positioned BEFORE civilengineering and engineering so aerodynamics,
         // propulsion, orbital mechanics, and aerospace coursework route here. "aviation" (FAA/pilot)
         // stays in the aviation branch (earlier). Bare "thermodynamics" stays in engineering.
@@ -2944,6 +2965,62 @@ public final class CalloutManager {
             || lower.contains("electromagnetism exam") || lower.contains("electromagnetism homework")
             || lower.contains("electromagnetism problem set") || lower.contains("electromagnetism notes") {
             return "electromagnetism"
+        }
+        // signalprocessing — positioned BEFORE electricalengineering so dedicated signal processing
+        // class/exam, DSP coursework, Fourier/Z-transform problems, and filter design route here.
+        // "digital signal processing" and "signal processing class" still in electricalengineering as fallback.
+        if lower.contains("signal processing class") || lower.contains("signal processing course")
+            || lower.contains("signal processing exam") || lower.contains("signal processing lab")
+            || lower.contains("signal processing notes") || lower.contains("signal processing assignment")
+            || lower.contains("signal processing homework") || lower.contains("signal processing textbook")
+            || lower.contains("digital signal processing class") || lower.contains("digital signal processing course")
+            || lower.contains("digital signal processing exam") || lower.contains("digital signal processing lab")
+            || lower.contains("dsp class") && !lower.contains("despicable") || lower.contains("dsp course") || lower.contains("dsp exam") || lower.contains("dsp lab")
+            || lower.contains("fourier transform") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem") || lower.contains("homework"))
+            || lower.contains("discrete fourier transform") && (lower.contains("class") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("fast fourier transform") && (lower.contains("class") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("fft") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("signal") || lower.contains("processing"))
+            || lower.contains("z-transform") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("signal"))
+            || lower.contains("laplace transform") && (lower.contains("class") || lower.contains("exam") || lower.contains("signal") || lower.contains("processing"))
+            || lower.contains("convolution") && (lower.contains("class") || lower.contains("exam") || lower.contains("signal") || lower.contains("dsp"))
+            || lower.contains("nyquist") && (lower.contains("class") || lower.contains("exam") || lower.contains("signal") || lower.contains("sampling"))
+            || lower.contains("sampling theorem") && (lower.contains("class") || lower.contains("exam") || lower.contains("signal") || lower.contains("nyquist"))
+            || lower.contains("lti system") && (lower.contains("class") || lower.contains("exam") || lower.contains("signal") || lower.contains("processing"))
+            || lower.contains("linear time-invariant") && (lower.contains("class") || lower.contains("exam") || lower.contains("signal"))
+            || lower.contains("fir filter") && (lower.contains("class") || lower.contains("exam") || lower.contains("design") || lower.contains("lab"))
+            || lower.contains("iir filter") && (lower.contains("class") || lower.contains("exam") || lower.contains("design") || lower.contains("lab"))
+            || lower.contains("digital filter design") && (lower.contains("class") || lower.contains("exam") || lower.contains("signal") || lower.contains("lab"))
+            || lower.contains("wavelet transform") && (lower.contains("class") || lower.contains("exam") || lower.contains("signal") || lower.contains("processing"))
+            || lower.contains("power spectral density") && (lower.contains("class") || lower.contains("exam") || lower.contains("signal") || lower.contains("processing")) {
+            return "signalprocessing"
+        }
+        // controlengineering — positioned BEFORE electricalengineering and mechanicalengineering so
+        // dedicated control systems class/exam, PID, Bode plot, root locus, and state space route here.
+        if lower.contains("control systems class") || lower.contains("control systems course")
+            || lower.contains("control systems exam") || lower.contains("control systems lab")
+            || lower.contains("control systems notes") || lower.contains("control systems assignment")
+            || lower.contains("control systems textbook") || lower.contains("control systems homework")
+            || lower.contains("control engineering class") || lower.contains("control engineering course")
+            || lower.contains("control engineering exam") || lower.contains("control engineering lab")
+            || lower.contains("feedback control") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("system") || lower.contains("design"))
+            || lower.contains("pid controller") && (lower.contains("class") || lower.contains("exam") || lower.contains("design") || lower.contains("tuning") || lower.contains("lab"))
+            || lower.contains("transfer function") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("system"))
+            || lower.contains("root locus") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("design"))
+            || lower.contains("bode plot") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("lab"))
+            || lower.contains("nyquist plot") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("stability"))
+            || lower.contains("nyquist stability criterion") && (lower.contains("class") || lower.contains("exam") || lower.contains("control"))
+            || lower.contains("state space") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("system"))
+            || lower.contains("state-space") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("system"))
+            || lower.contains("controllability") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("system"))
+            || lower.contains("observability") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("system"))
+            || lower.contains("gain margin") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("bode"))
+            || lower.contains("phase margin") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("bode"))
+            || lower.contains("stability analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("systems"))
+            || lower.contains("lyapunov stability") && (lower.contains("class") || lower.contains("exam") || lower.contains("control"))
+            || lower.contains("frequency response") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("bode"))
+            || lower.contains("pole-zero") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("system"))
+            || lower.contains("pole placement") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("design")) {
+            return "controlengineering"
         }
         // electricalengineering — positioned AFTER aerospacengineering and BEFORE civilengineering/engineering
         // so circuits class, signal processing, and EE coursework route here.
@@ -9238,6 +9315,25 @@ public final class CalloutManager {
             || lower.contains("biopsychological model") && (lower.contains("class") || lower.contains("exam") || lower.contains("behavior")) {
             return "psychobiologyclass"
         }
+        // optogenetics — positioned BEFORE neuroscience so dedicated optogenetics lab/class,
+        // channelrhodopsin, viral vector delivery, and fiberoptic brain stimulation route here.
+        if word("optogenetics") || word("optogenetic")
+            || lower.contains("optogenetics class") || lower.contains("optogenetics course")
+            || lower.contains("optogenetics exam") || lower.contains("optogenetics lab")
+            || lower.contains("optogenetics experiment") || lower.contains("optogenetics notes")
+            || lower.contains("channelrhodopsin") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("optogenetics") || lower.contains("expression"))
+            || lower.contains("halorhodopsin") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("optogenetics"))
+            || lower.contains("opsin expression") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("optogenetics") || lower.contains("neuron"))
+            || lower.contains("viral vector") && (lower.contains("optogenetics") || lower.contains("channelrhodopsin") || lower.contains("opsin") || lower.contains("class") && lower.contains("neuron"))
+            || lower.contains("aav injection") && (lower.contains("optogenetics") || lower.contains("neuron") || lower.contains("brain") || lower.contains("lab"))
+            || lower.contains("fiberoptic stimulation") && (lower.contains("optogenetics") || lower.contains("neuron") || lower.contains("brain") || lower.contains("class"))
+            || lower.contains("fiber optic stimulation") && (lower.contains("optogenetics") || lower.contains("brain") || lower.contains("neuron"))
+            || lower.contains("light-activated channel") && (lower.contains("class") || lower.contains("exam") || lower.contains("optogenetics") || lower.contains("neuron"))
+            || lower.contains("photostimulation") && (lower.contains("class") || lower.contains("exam") || lower.contains("optogenetics") || lower.contains("neuron") || lower.contains("circuit"))
+            || lower.contains("neural circuit manipulation") && (lower.contains("optogenetics") || lower.contains("class") || lower.contains("exam") || lower.contains("light"))
+            || lower.contains("in vivo optogenetics") || lower.contains("in vitro optogenetics") {
+            return "optogenetics"
+        }
         // neuroscience — positioned BEFORE psychology so brain/neuron-biology terms get a
         // dedicated pool. "neural network" (ML) stays in datascience (fires much earlier).
         // "cognitive neuroscience" now owned by cognitiveneuroscience branch above.
@@ -9796,6 +9892,29 @@ public final class CalloutManager {
             || lower.contains("anthropology class") || lower.contains("anthropology course")
             || lower.contains("anthropology exam") || lower.contains("anthropology notes") {
             return "anthropology"
+        }
+        // demography — positioned BEFORE sociology so population dynamics, fertility, mortality,
+        // and demography coursework routes here. Bare "population" without demography context falls through.
+        if word("demography") || word("demographer") || word("demographers") || word("demographic")
+            || lower.contains("demography class") || lower.contains("demography course")
+            || lower.contains("demography exam") || lower.contains("demography notes")
+            || lower.contains("demography assignment") || lower.contains("demography homework")
+            || lower.contains("demographic analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("demography"))
+            || lower.contains("demographic transition") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("model") || lower.contains("demography"))
+            || lower.contains("population dynamics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("demography") || lower.contains("demographic"))
+            || lower.contains("fertility rate") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("demography") || lower.contains("demographic"))
+            || lower.contains("total fertility rate") && (lower.contains("class") || lower.contains("exam") || lower.contains("demography"))
+            || lower.contains("mortality table") && (lower.contains("class") || lower.contains("exam") || lower.contains("demography") || lower.contains("actuarial"))
+            || lower.contains("life table") && (lower.contains("class") || lower.contains("exam") || lower.contains("demography") || lower.contains("mortality"))
+            || lower.contains("age pyramid") && (lower.contains("class") || lower.contains("exam") || lower.contains("demography") || lower.contains("demographic") || lower.contains("population"))
+            || lower.contains("population pyramid") && (lower.contains("class") || lower.contains("exam") || lower.contains("demography") || lower.contains("demographic"))
+            || lower.contains("net migration rate") && (lower.contains("class") || lower.contains("exam") || lower.contains("demography") || lower.contains("demographic"))
+            || lower.contains("cohort analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("demography") || lower.contains("demographic") || lower.contains("population"))
+            || lower.contains("mortality rate") && (lower.contains("class") || lower.contains("exam") || lower.contains("demography") || lower.contains("demographic") || lower.contains("epidemiology"))
+            || lower.contains("population aging") && (lower.contains("class") || lower.contains("exam") || lower.contains("demography") || lower.contains("demographic"))
+            || lower.contains("malthusian") && (lower.contains("class") || lower.contains("exam") || lower.contains("demography") || lower.contains("population"))
+            || lower.contains("birth rate") && (lower.contains("class") || lower.contains("exam") || lower.contains("demography") || lower.contains("demographic")) {
+            return "demography"
         }
         // sociology — positioned BEFORE socialscience so sociological theory, structural analysis,
         // and sociology coursework gets a dedicated callout pool. Bare word("sociology") routes to

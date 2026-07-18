@@ -6816,4 +6816,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast991() {
         #expect(SuggestedSessionTemplates.all.count >= 991, "template catalog must have ≥991 entries after psycholinguistics/photogrammetry/tectonics/tribology/radiochemistry additions")
     }
+    // MARK: - signalprocessing templates
+    @Test func signalProcessingStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("signal processing") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func signalProcessingAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("dsp") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - controlengineering templates
+    @Test func controlEngineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("control engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func controlEngineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("control systems") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - aerostructures templates
+    @Test func aerostructuresStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("aerostructures") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func aerostructuresAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("aircraft structures") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - optogenetics templates
+    @Test func optogeneticsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("optogenetics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func optogeneticsLabReportTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("optogenetics") && $0.task.lowercased().contains("lab report") })
+    }
+    // MARK: - demography templates
+    @Test func demographyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("demography") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func demographyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("demography") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1001)
+    @Test func templateCountAtLeast1001() {
+        #expect(SuggestedSessionTemplates.all.count >= 1001, "template catalog must have ≥1001 entries after signalprocessing/controlengineering/aerostructures/optogenetics/demography additions")
+    }
 }

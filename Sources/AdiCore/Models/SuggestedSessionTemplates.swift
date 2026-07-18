@@ -6400,5 +6400,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Radiochemistry assignment completed (isotope dating calculation, tracer experiment design, decay chain solution, gamma spectrum analysis, or radiolabeling evaluation completed with numerical results, decay diagrams, spectral annotations, and solution saved to file)",
             preferredDuration: 60 * 60
         ),
+        // signalprocessing
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Study signal processing for my exam — review Fourier transforms, Z-transforms, FIR/IIR filter design, sampling theorem, Nyquist criterion, convolution, and LTI system analysis",
+            successCriteria: "Signal processing study session completed (at least two topics reviewed with Fourier/Z-transform derivations, filter design steps, sampling theorem explanation, convolution examples, and key formulas saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Complete my DSP assignment — work through signal processing problems involving FFT computation, FIR or IIR filter design, spectral analysis, or LTI system response",
+            successCriteria: "DSP assignment completed (FFT computed or filter designed, frequency response plotted, system analysis documented, and results verified with at least two problems solved and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // controlengineering
+        SuggestedTemplate(
+            icon: "slider.horizontal.3",
+            task: "Study control engineering for my exam — review PID controllers, transfer functions, root locus, Bode plots, Nyquist stability criterion, and state-space representation",
+            successCriteria: "Control engineering study session completed (at least two topics reviewed with transfer function derivations, root locus sketches, Bode plot annotations, PID tuning rules, and stability criteria summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "slider.horizontal.3",
+            task: "Complete my control systems assignment — design a feedback controller, analyze closed-loop stability, sketch a root locus or Bode plot, or model a dynamic system in state-space",
+            successCriteria: "Control systems assignment completed (controller designed or stability analyzed, root locus or Bode plot drawn, gain and phase margins computed, and results documented with at least two problems solved and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // aerostructures
+        SuggestedTemplate(
+            icon: "airplane",
+            task: "Study aerostructures for my exam — review shear flow in thin-walled sections, monocoque and semi-monocoque structures, composite airframe analysis, buckling of panels, and aeroelasticity concepts",
+            successCriteria: "Aerostructures study session completed (at least two topics reviewed with shear flow calculations, buckling load derivations, monocoque structure diagrams, composite layup analysis, and aeroelastic flutter summary saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "airplane",
+            task: "Complete my aircraft structures assignment — compute shear flows in a thin-walled section, analyze buckling of a stiffened panel, evaluate a composite airframe layup, or assess fatigue life of an aircraft component",
+            successCriteria: "Aerostructures assignment completed (shear flow computed, buckling load calculated, composite layup evaluated, or fatigue life estimated with numerical results, structural diagrams, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // optogenetics
+        SuggestedTemplate(
+            icon: "flashlight.on.fill",
+            task: "Study optogenetics for my exam — review channelrhodopsin and halorhodopsin mechanisms, viral vector delivery strategies, fiber-optic brain stimulation, opsin expression verification, and neural circuit dissection methods",
+            successCriteria: "Optogenetics study session completed (at least two topics reviewed with opsin photocycle diagrams, viral vector serotype comparison, fiber-optic implant schematic, behavioral paradigm examples, and key experimental controls summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "flashlight.on.fill",
+            task: "Write my optogenetics lab report — describe opsin selection and viral vector delivery, analyze light-stimulation data, quantify opsin expression from histology, and interpret neural circuit findings",
+            successCriteria: "Optogenetics lab report completed (methods section written with opsin choice rationale and vector details, stimulation data analyzed and plotted, expression quantified from images, and circuit-level interpretation of behavioral results saved)",
+            preferredDuration: 60 * 60
+        ),
+        // demography
+        SuggestedTemplate(
+            icon: "person.3.fill",
+            task: "Study demography for my exam — review the demographic transition model, life tables, age pyramids, total fertility rate, net reproduction rate, migration analysis, and population growth models",
+            successCriteria: "Demography study session completed (at least two topics reviewed with demographic transition stage diagrams, life table construction steps, age pyramid interpretation, fertility and mortality rate formulas, and population model comparisons saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "person.3.fill",
+            task: "Complete my demography assignment — construct or analyze a life table, build an age pyramid from census data, compute demographic rates (TFR, NRR, IMR), or model population growth with a cohort-component projection",
+            successCriteria: "Demography assignment completed (life table or age pyramid constructed, demographic rates computed, population projection modeled, and written analysis explaining trends and policy implications saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

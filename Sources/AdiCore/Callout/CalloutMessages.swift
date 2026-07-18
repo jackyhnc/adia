@@ -160,6 +160,7 @@ extension CalloutManager {
         case "supplychain":            return supplychainCallouts(tier: tier)
         case "communicationstudies":   return communicationstudiesCallouts(tier: tier)
         case "healthcareadmin":        return healthcareadminCallouts(tier: tier)
+        case "optogenetics":           return optogeneticsCallouts(tier: tier)
         case "neuroscience":           return neuroscienceCallouts(tier: tier)
         case "ethnicstudies":          return ethnicstudiesCallouts(tier: tier)
         case "humanfactors":           return humanfactorsCallouts(tier: tier)
@@ -407,7 +408,10 @@ extension CalloutManager {
         case "metabolomics":               return metabolomicsCallouts(tier: tier)
         case "electrophysiology":          return electrophysiologyCallouts(tier: tier)
         case "aerospacengineering":        return aerospacengineeringCallouts(tier: tier)
+        case "aerostructures":             return aerostructuresCallouts(tier: tier)
+        case "controlengineering":         return controlengineeringCallouts(tier: tier)
         case "electricalengineering":      return electricalengineeringCallouts(tier: tier)
+        case "signalprocessing":           return signalprocessingCallouts(tier: tier)
         case "genetics":                   return geneticsCallouts(tier: tier)
         case "microbiology":               return microbiologyCallouts(tier: tier)
         case "immunology":                 return immunologyCallouts(tier: tier)
@@ -455,6 +459,7 @@ extension CalloutManager {
         case "geologylab":                 return geologylabCallouts(tier: tier)
         case "environmentalscience":       return environmentalscienceCallouts(tier: tier)
         case "anthropology":               return anthropologyCallouts(tier: tier)
+        case "demography":                 return demographyCallouts(tier: tier)
         case "sociology":                  return sociologyCallouts(tier: tier)
         case "biostatistics":              return biostatisticsCallouts(tier: tier)
         case "marinebiology2":             return marinebiology2Callouts(tier: tier)
@@ -11321,6 +11326,111 @@ extension CalloutManager {
             "CLOSE THIS. open your radiochemistry textbook.",
             "CLOSE THIS. those radiocarbon dating and radioactive tracer problems won't solve themselves.",
             "CLOSE THIS. your radiochemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func signalprocessingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those fourier transforms won't solve themselves.",
+            "no one learns dsp by scrolling.",
+            "those filters aren't going to design themselves.",
+            "you're supposed to be doing signal processing."
+        ]
+        case 2: return [
+            "you know you have a dsp problem set due.",
+            "those z-transforms are still waiting for you.",
+            "go work on your signal processing."
+        ]
+        default: return [
+            "CLOSE THIS. those fourier transforms and filter designs won't solve themselves.",
+            "CLOSE THIS. your dsp problem set is not going to work itself out.",
+            "CLOSE THIS. you have signal processing to do. do it."
+        ]
+        }
+    }
+
+    private func controlengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those pid tuning problems won't solve themselves.",
+            "no one masters control systems by scrolling.",
+            "that root locus isn't going to plot itself.",
+            "you're supposed to be working on control engineering."
+        ]
+        case 2: return [
+            "you know you have a control systems assignment due.",
+            "those bode plots are still waiting for you.",
+            "go work on your control engineering."
+        ]
+        default: return [
+            "CLOSE THIS. those transfer functions and stability analyses won't solve themselves.",
+            "CLOSE THIS. your control systems problem set is not going to work itself out.",
+            "CLOSE THIS. you have control engineering to do. do it."
+        ]
+        }
+    }
+
+    private func aerostructuresCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that airframe structural analysis won't do itself.",
+            "no one masters aerostructures by scrolling.",
+            "those composite airframe problems are still sitting there.",
+            "you're supposed to be working on aircraft structures."
+        ]
+        case 2: return [
+            "you know you have an aerostructures assignment due.",
+            "that shear flow analysis isn't going to solve itself.",
+            "go work on your aircraft structures."
+        ]
+        default: return [
+            "CLOSE THIS. those airframe and aeroelasticity problems won't solve themselves.",
+            "CLOSE THIS. your aerostructures assignment is not going to do itself.",
+            "CLOSE THIS. you have aircraft structures to work on. do it."
+        ]
+        }
+    }
+
+    private func optogeneticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those channelrhodopsin protocols won't write themselves.",
+            "no one masters optogenetics by scrolling.",
+            "that viral vector experiment isn't going to plan itself.",
+            "you're supposed to be working on your optogenetics lab."
+        ]
+        case 2: return [
+            "you know you have an optogenetics lab report due.",
+            "those opsin expression protocols are still waiting.",
+            "go work on your optogenetics."
+        ]
+        default: return [
+            "CLOSE THIS. those viral vector and fiberoptic stimulation protocols won't write themselves.",
+            "CLOSE THIS. your optogenetics lab report is not going to write itself.",
+            "CLOSE THIS. you have optogenetics work to do. do it."
+        ]
+        }
+    }
+
+    private func demographyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those demographic tables won't analyze themselves.",
+            "no one masters demography by scrolling.",
+            "that population pyramid isn't going to build itself.",
+            "you're supposed to be working on your demography assignment."
+        ]
+        case 2: return [
+            "you know you have a demography problem set due.",
+            "those life tables are still waiting for you.",
+            "go work on your demography."
+        ]
+        default: return [
+            "CLOSE THIS. those fertility rate and mortality table analyses won't do themselves.",
+            "CLOSE THIS. your demography assignment is not going to work itself out.",
+            "CLOSE THIS. you have demography work to do. do it."
         ]
         }
     }
