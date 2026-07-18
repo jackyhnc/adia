@@ -6530,5 +6530,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Mining engineering assignment completed (mine design, rock mass classification, mass balance, or ventilation calculation performed with labeled cross-sections or flow diagrams, key parameters computed, and written design rationale saved to file)",
             preferredDuration: 60 * 60
         ),
+        // wastewatertreatment
+        SuggestedTemplate(
+            icon: "drop.fill",
+            task: "Study wastewater treatment for my exam — review activated sludge process design, biological nutrient removal (nitrification, denitrification, EBPR), membrane bioreactor systems, primary and secondary treatment unit operations, sedimentation and clarifier design, anaerobic digestion, and disinfection",
+            successCriteria: "Wastewater treatment study session completed (at least two unit processes reviewed with flow diagrams, mass balance equations, BOD/COD removal calculations, sludge production estimates, and worked WWTP design examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "drop.fill",
+            task: "Complete my wastewater treatment assignment — design or analyze an activated sludge reactor (SRT, HRT, aeration requirements), perform a biological nutrient removal process calculation, size a clarifier or membrane bioreactor, model anaerobic digestion, or evaluate effluent quality against discharge limits",
+            successCriteria: "Wastewater treatment assignment completed (reactor sizing, clarifier design, or BNR calculation performed with labeled process flow diagram, design parameters tabulated, effluent quality checked against standards, and written design justification saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // airpollutioncontrol
+        SuggestedTemplate(
+            icon: "wind",
+            task: "Study air pollution control for my exam — review particulate matter control (electrostatic precipitators, baghouse filters, cyclone separators), NOx and SOx control technologies (SCR, SNCR, wet and dry scrubbers, FGD), PM2.5 and PM10 emission standards, and air dispersion modeling",
+            successCriteria: "Air pollution control study session completed (at least two control technologies reviewed with efficiency equations, pressure drop formulas, design sizing steps, emission limit comparisons, and worked examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "wind",
+            task: "Complete my air pollution control assignment — design or size an electrostatic precipitator, baghouse filter, cyclone separator, or wet/dry scrubber; analyze SCR or FGD system performance; calculate collection efficiency and pressure drop; or evaluate compliance with PM2.5, NOx, or SOx emission standards",
+            successCriteria: "Air pollution control assignment completed (control device designed with sizing equations and key parameters computed, collection efficiency calculated, compliance with emission standard evaluated, and written design rationale with schematic saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // renewableenergy
+        SuggestedTemplate(
+            icon: "sun.max.fill",
+            task: "Study renewable energy for my exam — review solar photovoltaic system design (I-V curves, MPPT, inverter sizing), wind turbine aerodynamics (Betz limit, power coefficient, wake effects), hydropower fundamentals, energy storage technologies, grid integration challenges, and LCOE analysis",
+            successCriteria: "Renewable energy study session completed (at least two energy technologies reviewed with power output equations, capacity factor analysis, LCOE comparison, storage dispatch logic, and worked system design examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "sun.max.fill",
+            task: "Complete my renewable energy assignment — size a solar PV array (panel count, inverter, battery storage), analyze wind turbine power output using Weibull distribution, calculate LCOE for a renewable project, evaluate grid integration and storage requirements, or compare life-cycle energy and cost for solar versus wind",
+            successCriteria: "Renewable energy assignment completed (system sized or LCOE calculated with energy yield estimate, key assumptions stated, comparison table or sensitivity analysis included, and written design rationale with system diagram saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // navalarchitecture
+        SuggestedTemplate(
+            icon: "ferry.fill",
+            task: "Study naval architecture for my exam — review ship stability fundamentals (metacentric height, righting lever curves, IMO criteria), hull resistance and propulsion (Froude number, resistance components, propeller design), ship structures (loads, section modulus, frame spacing), trim analysis, and offshore structure design",
+            successCriteria: "Naval architecture study session completed (at least two topics reviewed with stability curve diagrams, resistance prediction equations, hull form parameters, structural load calculations, and worked ship design examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "ferry.fill",
+            task: "Complete my naval architecture assignment — analyze ship stability (GM, GZ curve, angle of vanishing stability), calculate hull resistance using empirical methods, design a propeller for a given speed and power, perform a trim and displacement calculation, or evaluate structural loads on a ship cross-section",
+            successCriteria: "Naval architecture assignment completed (stability analysis, resistance calculation, or structural evaluation performed with labeled diagrams, key hydrostatic parameters tabulated, IMO criteria checked where applicable, and written design summary saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // mechatronics
+        SuggestedTemplate(
+            icon: "gearshape.2.fill",
+            task: "Study mechatronics for my exam — review sensors and actuators (encoders, resolvers, DC motors, stepper motors), PLC programming (ladder logic, function block, structured text), servo control systems (PID tuning, position and velocity loops), motion control, and hydraulic and pneumatic circuit design",
+            successCriteria: "Mechatronics study session completed (at least two topics reviewed with sensor selection criteria, PLC ladder logic diagrams, PID controller design steps, motion profile calculations, and worked system integration examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "gearshape.2.fill",
+            task: "Complete my mechatronics assignment — design a PLC ladder logic program for a control sequence, tune a PID servo controller (position or velocity loop), select sensors and actuators for a motion control application, model a hydraulic or pneumatic circuit, or analyze encoder feedback for a precision positioning system",
+            successCriteria: "Mechatronics assignment completed (PLC program, PID tuning parameters, or circuit design produced with logic diagram or block diagram, performance analysis included, and written design rationale explaining component selection and control strategy saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

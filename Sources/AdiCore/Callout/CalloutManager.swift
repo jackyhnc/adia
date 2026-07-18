@@ -2549,6 +2549,61 @@ public final class CalloutManager {
             || lower.contains("plss survey") || lower.contains("legal description") && lower.contains("surveying") {
             return "landsurveyingtech"
         }
+        // wastewatertreatment — positioned BEFORE environmentalengineering to intercept specific
+        // WWTP process coursework (activated sludge, MBR, biological nutrient removal) before the
+        // broader environmental engineering branch fires. Generic "wastewater" stays in environmentalengineering.
+        if lower.contains("wastewater treatment class") || lower.contains("wastewater treatment course")
+            || lower.contains("wastewater treatment exam") || lower.contains("wastewater treatment lab")
+            || lower.contains("wastewater treatment design") || lower.contains("wastewater treatment homework")
+            || lower.contains("wastewater treatment assignment") || lower.contains("wastewater treatment notes")
+            || lower.contains("wastewater treatment textbook") || lower.contains("wastewater engineering class")
+            || lower.contains("wastewater engineering course") || lower.contains("wastewater engineering exam")
+            || lower.contains("wwtp") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("activated sludge") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("process"))
+            || lower.contains("membrane bioreactor") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("mbr"))
+            || lower.contains("mbr") && (lower.contains("class") || lower.contains("exam") || lower.contains("wastewater") || lower.contains("lab"))
+            || lower.contains("trickling filter") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("wastewater"))
+            || lower.contains("biological nutrient removal") && (lower.contains("class") || lower.contains("exam") || lower.contains("wastewater"))
+            || lower.contains("nitrification") && (lower.contains("class") || lower.contains("exam")) && (lower.contains("wastewater") || lower.contains("treatment"))
+            || lower.contains("denitrification") && (lower.contains("class") || lower.contains("exam")) && (lower.contains("wastewater") || lower.contains("treatment"))
+            || lower.contains("bod removal") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("wastewater"))
+            || lower.contains("cod removal") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("wastewater"))
+            || lower.contains("secondary treatment") && (lower.contains("class") || lower.contains("exam")) && (lower.contains("wastewater") || lower.contains("environmental"))
+            || lower.contains("primary clarifier") && (lower.contains("class") || lower.contains("exam") || lower.contains("wastewater"))
+            || lower.contains("anaerobic digestion") && (lower.contains("class") || lower.contains("exam") || lower.contains("wastewater") || lower.contains("lab"))
+            || lower.contains("biological phosphorus removal") && (lower.contains("class") || lower.contains("exam") || lower.contains("wastewater"))
+            || lower.contains("aeration tank") && (lower.contains("class") || lower.contains("exam") || lower.contains("wastewater") || lower.contains("design"))
+            || lower.contains("sedimentation basin") && (lower.contains("class") || lower.contains("exam") || lower.contains("wastewater")) {
+            return "wastewatertreatment"
+        }
+        // airpollutioncontrol — positioned BEFORE environmentalengineering to intercept specific
+        // air pollution control coursework (ESP, scrubbers, SCR, PM2.5 control) before the broader
+        // environmental engineering branch fires. Generic "air quality" stays in environmentalengineering.
+        if lower.contains("air pollution control class") || lower.contains("air pollution control course")
+            || lower.contains("air pollution control exam") || lower.contains("air pollution control lab")
+            || lower.contains("air pollution control homework") || lower.contains("air pollution control assignment")
+            || lower.contains("air pollution class") && (lower.contains("control") || lower.contains("engineering"))
+            || lower.contains("air pollution course") && (lower.contains("control") || lower.contains("engineering"))
+            || lower.contains("air pollution exam") && (lower.contains("control") || lower.contains("engineering"))
+            || lower.contains("pm2.5") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("air pollution"))
+            || lower.contains("pm10") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("air pollution"))
+            || lower.contains("particulate matter") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("air pollution"))
+            || lower.contains("electrostatic precipitator") && (lower.contains("class") || lower.contains("exam") || lower.contains("design") || lower.contains("lab"))
+            || lower.contains("esp") && (lower.contains("class") || lower.contains("exam")) && (lower.contains("air") || lower.contains("particulate") || lower.contains("pollution"))
+            || lower.contains("wet scrubber") && (lower.contains("class") || lower.contains("exam") || lower.contains("air") || lower.contains("design"))
+            || lower.contains("dry scrubber") && (lower.contains("class") || lower.contains("exam") || lower.contains("air") || lower.contains("pollution"))
+            || lower.contains("selective catalytic reduction") && (lower.contains("class") || lower.contains("exam") || lower.contains("air") || lower.contains("nox"))
+            || lower.contains("scr") && (lower.contains("class") || lower.contains("exam")) && (lower.contains("nox") || lower.contains("catalyst") || lower.contains("air pollution"))
+            || lower.contains("nox control") && (lower.contains("class") || lower.contains("exam") || lower.contains("air") || lower.contains("pollution"))
+            || lower.contains("sox control") && (lower.contains("class") || lower.contains("exam") || lower.contains("air") || lower.contains("pollution"))
+            || lower.contains("emission control class") || lower.contains("emission control course") || lower.contains("emission control exam")
+            || lower.contains("flue gas desulfurization") && (lower.contains("class") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("fgd") && (lower.contains("class") || lower.contains("exam")) && (lower.contains("sulfur") || lower.contains("air") || lower.contains("pollution"))
+            || lower.contains("cyclone separator") && (lower.contains("class") || lower.contains("exam") || lower.contains("air") || lower.contains("particulate"))
+            || lower.contains("baghouse filter") && (lower.contains("class") || lower.contains("exam") || lower.contains("air") || lower.contains("pollution"))
+            || lower.contains("fabric filter") && (lower.contains("class") || lower.contains("exam") || lower.contains("air") || lower.contains("particulate")) {
+            return "airpollutioncontrol"
+        }
         // environmentalengineering — positioned BEFORE engineering so wastewater treatment, water/air
         // quality control, and remediation tasks route here. Generic word("engineering") falls through.
         if lower.contains("environmental engineering") || lower.contains("environmental engineer")
@@ -3084,6 +3139,32 @@ public final class CalloutManager {
             || lower.contains("full bridge") && lower.contains("power") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab")) {
             return "powerelectronics"
         }
+        // renewableenergy — positioned BEFORE electricalengineering to intercept solar PV, wind,
+        // hydropower, and grid-integration coursework before EE's broad circuits branch fires.
+        // Bare "solar" or "wind" without class/renewable/energy context falls through.
+        if lower.contains("renewable energy class") || lower.contains("renewable energy course")
+            || lower.contains("renewable energy exam") || lower.contains("renewable energy lab")
+            || lower.contains("renewable energy notes") || lower.contains("renewable energy textbook")
+            || lower.contains("renewable energy homework") || lower.contains("renewable energy assignment")
+            || lower.contains("sustainable energy class") || lower.contains("sustainable energy course")
+            || lower.contains("sustainable energy exam") || lower.contains("sustainable energy lab")
+            || lower.contains("clean energy class") || lower.contains("clean energy course") || lower.contains("clean energy exam")
+            || lower.contains("solar pv") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design") || lower.contains("course"))
+            || lower.contains("solar energy class") || lower.contains("solar energy course") || lower.contains("solar energy exam")
+            || lower.contains("photovoltaic") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design") || lower.contains("course"))
+            || lower.contains("wind energy class") || lower.contains("wind energy course") || lower.contains("wind energy exam")
+            || lower.contains("wind turbine") && (lower.contains("class") || lower.contains("exam") || lower.contains("design") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("wind power") && (lower.contains("class") || lower.contains("exam") || lower.contains("renewable") || lower.contains("course"))
+            || lower.contains("hydropower") && (lower.contains("class") || lower.contains("exam") || lower.contains("renewable") || lower.contains("course") || lower.contains("design"))
+            || lower.contains("energy storage") && (lower.contains("class") || lower.contains("exam") || lower.contains("renewable") || lower.contains("course") || lower.contains("battery"))
+            || lower.contains("grid integration") && (lower.contains("class") || lower.contains("exam") || lower.contains("renewable") || lower.contains("course"))
+            || lower.contains("lcoe") && (lower.contains("class") || lower.contains("exam") || lower.contains("renewable") || lower.contains("analysis"))
+            || lower.contains("levelized cost of energy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("solar irradiance") && (lower.contains("class") || lower.contains("exam") || lower.contains("renewable") || lower.contains("lab"))
+            || lower.contains("biomass energy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("renewable"))
+            || lower.contains("geothermal energy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("renewable")) {
+            return "renewableenergy"
+        }
         // electricalengineering — positioned AFTER aerospacengineering and BEFORE civilengineering/engineering
         // so circuits class, signal processing, and EE coursework route here.
         // "electrical engineering" removed from engineering branch below (now owned here).
@@ -3259,6 +3340,47 @@ public final class CalloutManager {
             || lower.contains("elastohydrodynamic") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology") || lower.contains("lubrication"))
             || lower.contains("surface roughness") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology") || lower.contains("contact")) {
             return "tribology"
+        }
+        // navalarchitecture — BEFORE mechanicalengineering; hull design, ship stability, resistance
+        // and propulsion, offshore structures. "naval architecture" removed from engineering below.
+        if lower.contains("naval architecture class") || lower.contains("naval architecture course")
+            || lower.contains("naval architecture exam") || lower.contains("naval architecture lab")
+            || lower.contains("naval architecture homework") || lower.contains("naval architecture assignment")
+            || lower.contains("naval architecture notes") || lower.contains("naval architecture textbook")
+            || lower.contains("naval architecture and marine engineering") || lower.contains("name program") && lower.contains("naval")
+            || lower.contains("ship stability") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("naval") || lower.contains("lab"))
+            || lower.contains("hull design") && (lower.contains("class") || lower.contains("exam") || lower.contains("naval") || lower.contains("ship") || lower.contains("course"))
+            || lower.contains("metacentric height") && (lower.contains("class") || lower.contains("exam") || lower.contains("ship") || lower.contains("stability"))
+            || lower.contains("ship resistance") && (lower.contains("class") || lower.contains("exam") || lower.contains("naval") || lower.contains("course"))
+            || lower.contains("ship propulsion") && (lower.contains("class") || lower.contains("exam") || lower.contains("naval") || lower.contains("design"))
+            || lower.contains("ship hydrodynamics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("naval"))
+            || lower.contains("ship structures") && (lower.contains("class") || lower.contains("exam") || lower.contains("naval") || lower.contains("course"))
+            || lower.contains("offshore structure") && (lower.contains("class") || lower.contains("exam") || lower.contains("design") || lower.contains("naval") || lower.contains("course"))
+            || lower.contains("displacement hull") && (lower.contains("class") || lower.contains("exam") || lower.contains("naval") || lower.contains("ship"))
+            || lower.contains("trim and stability") && (lower.contains("class") || lower.contains("exam") || lower.contains("ship") || lower.contains("naval"))
+            || lower.contains("freeboard") && (lower.contains("class") || lower.contains("exam") || lower.contains("ship") || lower.contains("naval"))
+            || lower.contains("waterplane area") && (lower.contains("class") || lower.contains("exam") || lower.contains("ship") || lower.contains("naval")) {
+            return "navalarchitecture"
+        }
+        // mechatronics — BEFORE mechanicalengineering; sensors and actuators, PLC programming,
+        // motion control, servo systems, hydraulics and pneumatics. Distinct from robotics (which
+        // focuses on ROS/autonomous systems) and mechanicalengineering.
+        if lower.contains("mechatronics class") || lower.contains("mechatronics course")
+            || lower.contains("mechatronics exam") || lower.contains("mechatronics lab")
+            || lower.contains("mechatronics homework") || lower.contains("mechatronics assignment")
+            || lower.contains("mechatronics notes") || lower.contains("mechatronics textbook")
+            || lower.contains("mechatronics project") || lower.contains("mechatronics program")
+            || lower.contains("mechatronic system") && (lower.contains("class") || lower.contains("exam") || lower.contains("design") || lower.contains("course"))
+            || lower.contains("sensors and actuators") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechatronics") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("plc programming") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("mechatronics") || lower.contains("course"))
+            || lower.contains("programmable logic controller") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("servo control") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechatronics") || lower.contains("lab"))
+            || lower.contains("encoder feedback") && (lower.contains("class") || lower.contains("lab") || lower.contains("mechatronics") || lower.contains("exam"))
+            || lower.contains("hydraulics and pneumatics") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechatronics") || lower.contains("lab"))
+            || lower.contains("motion control") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechatronics") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("machine automation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechatronics") || lower.contains("course"))
+            || lower.contains("industrial automation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechatronics") || lower.contains("course") || lower.contains("lab")) {
+            return "mechatronics"
         }
         // mechanicalengineering — BEFORE engineering; machine design, vibrations, kinematics,
         // statics, and dynamics coursework. "mechanical engineering" in generic text still falls

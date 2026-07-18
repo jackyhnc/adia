@@ -433,6 +433,11 @@ extension CalloutManager {
         case "geotechnicalengineering":    return geotechnicalengineeringCallouts(tier: tier)
         case "structuralanalysis":         return structuralanalysisCallouts(tier: tier)
         case "miningengineering":          return miningengineeringCallouts(tier: tier)
+        case "wastewatertreatment":        return wastewatertreatmentCallouts(tier: tier)
+        case "airpollutioncontrol":        return airpollutioncontrolCallouts(tier: tier)
+        case "renewableenergy":            return renewableenergyCallouts(tier: tier)
+        case "navalarchitecture":          return navalarchitectureCallouts(tier: tier)
+        case "mechatronics":               return mechatronicsCallouts(tier: tier)
         case "biomedicalengineering":      return biomedicalengineeringCallouts(tier: tier)
         case "chemicalengineering":        return chemicalengineeringCallouts(tier: tier)
         case "oceanography":               return oceanographyCallouts(tier: tier)
@@ -11541,6 +11546,111 @@ extension CalloutManager {
             "CLOSE THIS. those mine planning and rock mechanics analyses won't do themselves.",
             "CLOSE THIS. your mining engineering assignment is not going to work itself out.",
             "CLOSE THIS. you have mining engineering work to do. do it."
+        ]
+        }
+    }
+
+    private func wastewatertreatmentCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those activated sludge calculations won't solve themselves.",
+            "no one masters wastewater treatment by scrolling.",
+            "that WWTP design problem is still sitting there waiting.",
+            "you're supposed to be working on your wastewater treatment assignment."
+        ]
+        case 2: return [
+            "you know you have a wastewater treatment problem set due.",
+            "those biological nutrient removal analyses are still waiting for you.",
+            "go work on your wastewater treatment."
+        ]
+        default: return [
+            "CLOSE THIS. those activated sludge and membrane bioreactor problems won't do themselves.",
+            "CLOSE THIS. your wastewater treatment assignment is not going to finish itself.",
+            "CLOSE THIS. you have WWTP design work to do. do it."
+        ]
+        }
+    }
+
+    private func airpollutioncontrolCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those ESP and scrubber design problems won't solve themselves.",
+            "no one masters air pollution control by scrolling.",
+            "that NOx control analysis isn't going to finish itself.",
+            "you're supposed to be working on your air pollution control assignment."
+        ]
+        case 2: return [
+            "you know you have an air pollution control problem set due.",
+            "those particulate matter control calculations are still waiting for you.",
+            "go work on your air pollution control."
+        ]
+        default: return [
+            "CLOSE THIS. those electrostatic precipitator and SCR design problems won't do themselves.",
+            "CLOSE THIS. your air pollution control assignment is not going to work itself out.",
+            "CLOSE THIS. you have air quality control work to do. do it."
+        ]
+        }
+    }
+
+    private func renewableenergyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those solar PV and wind turbine calculations won't solve themselves.",
+            "no one masters renewable energy by scrolling.",
+            "that grid integration analysis isn't going to finish itself.",
+            "you're supposed to be working on your renewable energy assignment."
+        ]
+        case 2: return [
+            "you know you have a renewable energy problem set due.",
+            "those LCOE and energy storage analyses are still waiting for you.",
+            "go work on your renewable energy."
+        ]
+        default: return [
+            "CLOSE THIS. those solar PV and wind energy design problems won't do themselves.",
+            "CLOSE THIS. your renewable energy assignment is not going to work itself out.",
+            "CLOSE THIS. you have sustainable energy work to do. do it."
+        ]
+        }
+    }
+
+    private func navalarchitectureCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those ship stability and hull resistance problems won't solve themselves.",
+            "no one masters naval architecture by scrolling.",
+            "that ship design analysis isn't going to finish itself.",
+            "you're supposed to be working on your naval architecture assignment."
+        ]
+        case 2: return [
+            "you know you have a naval architecture problem set due.",
+            "those metacentric height and resistance calculations are still waiting for you.",
+            "go work on your naval architecture."
+        ]
+        default: return [
+            "CLOSE THIS. those ship stability and hull design problems won't do themselves.",
+            "CLOSE THIS. your naval architecture assignment is not going to work itself out.",
+            "CLOSE THIS. you have ship design work to do. do it."
+        ]
+        }
+    }
+
+    private func mechatronicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those PLC programming and servo control problems won't solve themselves.",
+            "no one masters mechatronics by scrolling.",
+            "that motion control design isn't going to finish itself.",
+            "you're supposed to be working on your mechatronics assignment."
+        ]
+        case 2: return [
+            "you know you have a mechatronics problem set due.",
+            "those sensors and actuators analyses are still waiting for you.",
+            "go work on your mechatronics."
+        ]
+        default: return [
+            "CLOSE THIS. those PLC programming and motion control problems won't do themselves.",
+            "CLOSE THIS. your mechatronics assignment is not going to work itself out.",
+            "CLOSE THIS. you have mechatronics design work to do. do it."
         ]
         }
     }

@@ -6886,8 +6886,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func miningengineeringAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mining engineering") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1011)
-    @Test func templateCountAtLeast1011() {
-        #expect(SuggestedSessionTemplates.all.count >= 1011, "template catalog must have ≥1011 entries after compositematerials/powerelectronics/geotechnicalengineering/structuralanalysis/miningengineering additions")
+    // MARK: - wastewatertreatment templates
+    @Test func wastewatertreatmentStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("wastewater treatment") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func wastewatertreatmentAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("wastewater treatment") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - airpollutioncontrol templates
+    @Test func airpollutioncontrolStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("air pollution control") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func airpollutioncontrolAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("air pollution control") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - renewableenergy templates
+    @Test func renewableenergyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("renewable energy") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func renewableenergyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("renewable energy") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - navalarchitecture templates
+    @Test func navalarchitectureStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("naval architecture") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func navalarchitectureAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("naval architecture") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - mechatronics templates
+    @Test func mechatronicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mechatronics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func mechatronicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mechatronics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1021)
+    @Test func templateCountAtLeast1021() {
+        #expect(SuggestedSessionTemplates.all.count >= 1021, "template catalog must have ≥1021 entries after wastewatertreatment/airpollutioncontrol/renewableenergy/navalarchitecture/mechatronics additions")
     }
 }

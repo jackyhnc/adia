@@ -24166,8 +24166,168 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "miningengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1011)
-    @Test func calloutTemplatesCountAtLeast1011() {
-        #expect(SuggestedSessionTemplates.all.count >= 1011, "template catalog must have ≥1011 entries after compositematerials/powerelectronics/geotechnicalengineering/structuralanalysis/miningengineering additions")
+    // MARK: - wastewatertreatment
+    @Test func wastewaterTreatmentClassRoutesWastewatertreatment() {
+        #expect(CalloutManager.extractTaskKeyword(from: "wastewater treatment class exam lab tonight") == "wastewatertreatment")
+    }
+    @Test func activatedSludgeRoutesWastewatertreatment() {
+        #expect(CalloutManager.extractTaskKeyword(from: "activated sludge process class exam lab") == "wastewatertreatment")
+    }
+    @Test func membraneBioreactorRoutesWastewatertreatment() {
+        #expect(CalloutManager.extractTaskKeyword(from: "membrane bioreactor MBR class exam wastewater") == "wastewatertreatment")
+    }
+    @Test func anaerobicDigestionRoutesWastewatertreatment() {
+        #expect(CalloutManager.extractTaskKeyword(from: "anaerobic digestion class exam wastewater lab") == "wastewatertreatment")
+    }
+    @Test func bareWastewaterDoesNotRouteWastewatertreatment() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "write a report about wastewater tonight")
+        #expect(keyword != "wastewatertreatment", "bare 'wastewater' without treatment/class context must not route wastewatertreatment")
+    }
+    @Test @MainActor func wastewatertreatmentCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "wastewatertreatment", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "wastewatertreatment", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "wastewatertreatment", tier: 3).isEmpty)
+    }
+    @Test @MainActor func wastewatertreatmentTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "wastewatertreatment", tier: 1).count >= 4)
+    }
+    @Test @MainActor func wastewatertreatmentTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "wastewatertreatment", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - airpollutioncontrol
+    @Test func airPollutionControlClassRoutesAirpollutioncontrol() {
+        #expect(CalloutManager.extractTaskKeyword(from: "air pollution control class exam course tonight") == "airpollutioncontrol")
+    }
+    @Test func electrostaticPrecipitatorRoutesAirpollutioncontrol() {
+        #expect(CalloutManager.extractTaskKeyword(from: "electrostatic precipitator design class exam lab") == "airpollutioncontrol")
+    }
+    @Test func pm25RoutesAirpollutioncontrol() {
+        #expect(CalloutManager.extractTaskKeyword(from: "PM2.5 air pollution control class exam") == "airpollutioncontrol")
+    }
+    @Test func scrNoxRoutesAirpollutioncontrol() {
+        #expect(CalloutManager.extractTaskKeyword(from: "selective catalytic reduction SCR NOx class exam") == "airpollutioncontrol")
+    }
+    @Test func bareAirQualityDoesNotRouteAirpollutioncontrol() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "check air quality reading sensor tonight")
+        #expect(keyword != "airpollutioncontrol", "bare 'air quality' without control/class context must not route airpollutioncontrol")
+    }
+    @Test @MainActor func airpollutioncontrolCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "airpollutioncontrol", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "airpollutioncontrol", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "airpollutioncontrol", tier: 3).isEmpty)
+    }
+    @Test @MainActor func airpollutioncontrolTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "airpollutioncontrol", tier: 1).count >= 4)
+    }
+    @Test @MainActor func airpollutioncontrolTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "airpollutioncontrol", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - renewableenergy
+    @Test func renewableEnergyClassRoutesRenewableenergy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "renewable energy class exam course tonight") == "renewableenergy")
+    }
+    @Test func solarPVRoutesRenewableenergy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solar PV design class exam lab course") == "renewableenergy")
+    }
+    @Test func windTurbineRoutesRenewableenergy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "wind turbine design class exam course lab") == "renewableenergy")
+    }
+    @Test func photovoltaicRoutesRenewableenergy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "photovoltaic class exam lab design course") == "renewableenergy")
+    }
+    @Test func bareSolarDoesNotRouteRenewableenergy() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "draw a solar system diagram tonight")
+        #expect(keyword != "renewableenergy", "bare 'solar' without energy/class context must not route renewableenergy")
+    }
+    @Test @MainActor func renewableenergyCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "renewableenergy", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "renewableenergy", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "renewableenergy", tier: 3).isEmpty)
+    }
+    @Test @MainActor func renewableenergyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "renewableenergy", tier: 1).count >= 4)
+    }
+    @Test @MainActor func renewableenergyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "renewableenergy", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - navalarchitecture
+    @Test func navalArchitectureClassRoutesNavalarchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "naval architecture class exam course tonight") == "navalarchitecture")
+    }
+    @Test func shipStabilityRoutesNavalarchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ship stability class exam naval course lab") == "navalarchitecture")
+    }
+    @Test func hullDesignRoutesNavalarchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hull design class exam naval ship course") == "navalarchitecture")
+    }
+    @Test func metacentricHeightRoutesNavalarchitecture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "metacentric height class exam ship stability") == "navalarchitecture")
+    }
+    @Test func bareNavalDoesNotRouteNavalarchitecture() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "watch a naval documentary tonight")
+        #expect(keyword != "navalarchitecture", "bare 'naval' without architecture/ship context must not route navalarchitecture")
+    }
+    @Test @MainActor func navalarchitectureCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "navalarchitecture", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "navalarchitecture", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "navalarchitecture", tier: 3).isEmpty)
+    }
+    @Test @MainActor func navalarchitectureTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "navalarchitecture", tier: 1).count >= 4)
+    }
+    @Test @MainActor func navalarchitectureTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "navalarchitecture", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - mechatronics
+    @Test func mechatronicsClassRoutesMechatronics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mechatronics class exam course lab tonight") == "mechatronics")
+    }
+    @Test func plcProgrammingRoutesMechatronics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "PLC programming class exam lab mechatronics") == "mechatronics")
+    }
+    @Test func servoControlRoutesMechatronics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "servo control class exam mechatronics lab") == "mechatronics")
+    }
+    @Test func sensorsAndActuatorsRoutesMechatronics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sensors and actuators class exam mechatronics course") == "mechatronics")
+    }
+    @Test func barePLCDoesNotRouteMechatronics() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "write a python script to automate my workflow tonight")
+        #expect(keyword != "mechatronics", "bare automation without PLC/mechatronics context must not route mechatronics")
+    }
+    @Test @MainActor func mechatronicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "mechatronics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "mechatronics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "mechatronics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func mechatronicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "mechatronics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func mechatronicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "mechatronics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1021)
+    @Test func calloutTemplatesCountAtLeast1021() {
+        #expect(SuggestedSessionTemplates.all.count >= 1021, "template catalog must have ≥1021 entries after wastewatertreatment/airpollutioncontrol/renewableenergy/navalarchitecture/mechatronics additions")
     }
 }
