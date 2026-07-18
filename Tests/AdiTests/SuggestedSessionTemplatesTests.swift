@@ -6699,4 +6699,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast961() {
         #expect(SuggestedSessionTemplates.all.count >= 961, "template catalog must have ≥961 entries after computationtheory/softwarearchitecture/informationretrieval/naturallanguageprocessing/computerarchitecture additions")
     }
+    // MARK: - photonics templates
+    @Test func photonicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("photonics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func photonicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("photonics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - acousticsengineering templates
+    @Test func acousticsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("acoustics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func acousticsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("acoustics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - petroleumengineering templates
+    @Test func petroleumEngineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("petroleum engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func petroleumEngineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("petroleum engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - sportspsychology templates
+    @Test func sportsPsychologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("sports psychology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func sportsPsychologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("sports psychology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - limnology templates
+    @Test func limnologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("limnology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func limnologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("limnology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥971)
+    @Test func templateCountAtLeast971() {
+        #expect(SuggestedSessionTemplates.all.count >= 971, "template catalog must have ≥971 entries after photonics/acousticsengineering/petroleumengineering/sportspsychology/limnology additions")
+    }
 }

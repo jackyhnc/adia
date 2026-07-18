@@ -546,6 +546,11 @@ extension CalloutManager {
         case "informationretrieval":       return informationretrievalCallouts(tier: tier)
         case "naturallanguageprocessing":  return naturallanguageprocessingCallouts(tier: tier)
         case "computerarchitecture":       return computerarchitectureCallouts(tier: tier)
+        case "photonics":                  return photonicsCallouts(tier: tier)
+        case "acousticsengineering":       return acousticsengineeringCallouts(tier: tier)
+        case "petroleumengineering":       return petroleumengineeringCallouts(tier: tier)
+        case "sportspsychology":           return sportspsychologyCallouts(tier: tier)
+        case "limnology":                  return limnologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -10991,6 +10996,111 @@ extension CalloutManager {
             "CLOSE THIS. open your computer architecture textbook.",
             "CLOSE THIS. those pipeline stages and cache coherence problems won't solve themselves.",
             "CLOSE THIS. your computer architecture exam won't study itself."
+        ]
+        }
+    }
+
+    private func photonicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those photonic circuits won't design themselves.",
+            "your photonics exam doesn't care that you're scrolling.",
+            "get back to your photonics work.",
+            "close this and open your photonics textbook.",
+        ]
+        case 2: return [
+            "no one masters photonics by scrolling.",
+            "close this and work on your photonics assignment.",
+            "those waveguide and fiber optics problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your photonics textbook.",
+            "CLOSE THIS. those nonlinear optics and integrated photonics problems won't solve themselves.",
+            "CLOSE THIS. your photonics exam won't study itself."
+        ]
+        }
+    }
+
+    private func acousticsengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those acoustic measurements won't take themselves.",
+            "your acoustics exam doesn't care that you're scrolling.",
+            "get back to your acoustics work.",
+            "close this and open your acoustics textbook.",
+        ]
+        case 2: return [
+            "no one masters acoustics by scrolling.",
+            "close this and work on your acoustics assignment.",
+            "those room acoustics and noise control problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your acoustics textbook.",
+            "CLOSE THIS. those acoustic wave and vibration analysis problems won't solve themselves.",
+            "CLOSE THIS. your acoustics exam won't study itself."
+        ]
+        }
+    }
+
+    private func petroleumengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that reservoir won't model itself.",
+            "your petroleum engineering exam doesn't care that you're scrolling.",
+            "get back to your petroleum engineering work.",
+            "close this and open your petroleum engineering textbook.",
+        ]
+        case 2: return [
+            "no one masters reservoir engineering by scrolling.",
+            "close this and work on your petroleum engineering assignment.",
+            "those well logging and petrophysics problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your petroleum engineering textbook.",
+            "CLOSE THIS. those reservoir simulation and drilling engineering problems won't solve themselves.",
+            "CLOSE THIS. your petroleum engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func sportspsychologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that athlete's mindset won't build itself.",
+            "your sports psychology exam doesn't care that you're scrolling.",
+            "get back to your sports psychology work.",
+            "close this and open your sports psychology textbook.",
+        ]
+        case 2: return [
+            "no one masters mental performance by scrolling.",
+            "close this and work on your sports psychology assignment.",
+            "those flow state and pre-competition anxiety concepts need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your sports psychology textbook.",
+            "CLOSE THIS. those visualization and mental skills training concepts won't internalize themselves.",
+            "CLOSE THIS. your sports psychology exam won't study itself."
+        ]
+        }
+    }
+
+    private func limnologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those freshwater ecosystems won't study themselves.",
+            "your limnology exam doesn't care that you're scrolling.",
+            "get back to your limnology work.",
+            "close this and open your limnology textbook.",
+        ]
+        case 2: return [
+            "no one masters limnology by scrolling.",
+            "close this and work on your limnology assignment.",
+            "those eutrophication and benthic community problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your limnology textbook.",
+            "CLOSE THIS. those freshwater ecology and lake stratification problems won't solve themselves.",
+            "CLOSE THIS. your limnology exam won't study itself."
         ]
         }
     }

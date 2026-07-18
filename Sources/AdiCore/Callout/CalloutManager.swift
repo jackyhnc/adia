@@ -1795,6 +1795,32 @@ public final class CalloutManager {
             || lower.contains("photonic device") && (lower.contains("class") || lower.contains("course") || lower.contains("design") || lower.contains("exam")) {
             return "optics"
         }
+        // photonics — positioned AFTER optics and BEFORE experimentalphysics so photonics
+        // class/exam terms (fiber optics, laser physics, nonlinear optics, integrated photonics,
+        // photonic crystals, waveguide theory) route to a dedicated pool.
+        // Bare "optics" or "laser" without class/photonics context stays in optics/experimentalphysics.
+        if lower.contains("photonics class") || lower.contains("photonics course")
+            || lower.contains("photonics exam") || lower.contains("photonics lab")
+            || lower.contains("photonics notes") || lower.contains("photonics textbook")
+            || lower.contains("photonics assignment") || lower.contains("photonics homework")
+            || lower.contains("photonics program") || lower.contains("photonics major")
+            || lower.contains("fiber optics class") || lower.contains("fiber optics course")
+            || lower.contains("fiber optics exam") || lower.contains("fiber optics lab")
+            || lower.contains("optical fiber class") || lower.contains("optical fiber course")
+            || lower.contains("optical fiber exam")
+            || lower.contains("laser physics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("photonics"))
+            || lower.contains("nonlinear optics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("photonics"))
+            || lower.contains("integrated photonics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("photonic crystal") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("photonics"))
+            || lower.contains("photonic crystals") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("photonics"))
+            || lower.contains("waveguide theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("photonics") || lower.contains("optics"))
+            || lower.contains("optical amplifier") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("photonics"))
+            || lower.contains("optical modulator") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("photonics"))
+            || lower.contains("silicon photonics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("optical coherence") && (lower.contains("class") || lower.contains("photonics") || lower.contains("exam"))
+            || lower.contains("laser diode") && (lower.contains("class") || lower.contains("photonics") || lower.contains("exam")) {
+            return "photonics"
+        }
         // experimentalphysics — positioned BEFORE the studying branch (which catches word("physics"))
         // so physics lab reports, optics experiments, and mechanics labs get a dedicated pool instead
         // of the generic studying pool. Bare word("physics") alone still falls through to studying.
@@ -2815,6 +2841,33 @@ public final class CalloutManager {
             || lower.contains("ee lab report") || lower.contains("electrical engineering report") {
             return "electricalengineering"
         }
+        // acousticsengineering — positioned AFTER electricalengineering and BEFORE civilengineering
+        // so acoustics engineering class/exam, room acoustics, noise control, vibration analysis,
+        // psychoacoustics, and acoustic wave coursework route here.
+        // Bare "acoustics" or "sound" without class/engineering context falls through to engineering.
+        if lower.contains("acoustics class") || lower.contains("acoustics course")
+            || lower.contains("acoustics exam") || lower.contains("acoustics lab")
+            || lower.contains("acoustics notes") || lower.contains("acoustics textbook")
+            || lower.contains("acoustics assignment") || lower.contains("acoustics homework")
+            || lower.contains("acoustic engineering class") || lower.contains("acoustic engineering course")
+            || lower.contains("acoustic engineering exam") || lower.contains("acoustic engineering lab")
+            || lower.contains("acoustical engineering class") || lower.contains("acoustical engineering course")
+            || lower.contains("acoustical engineering exam")
+            || lower.contains("room acoustics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("acoustics"))
+            || lower.contains("noise control") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("acoustics") || lower.contains("engineering"))
+            || lower.contains("acoustic impedance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("acoustics"))
+            || lower.contains("sound propagation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("acoustics"))
+            || lower.contains("acoustic wave") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("acoustics") || lower.contains("engineering"))
+            || lower.contains("acoustic waves") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("acoustics"))
+            || lower.contains("vibration analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("acoustics") || lower.contains("engineering"))
+            || lower.contains("psychoacoustics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("architectural acoustics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("environmental acoustics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("acoustic absorption") && (lower.contains("class") || lower.contains("exam") || lower.contains("acoustics") || lower.contains("engineering"))
+            || lower.contains("reverberation time") && (lower.contains("class") || lower.contains("exam") || lower.contains("acoustics"))
+            || lower.contains("acoustic measurement") && (lower.contains("class") || lower.contains("exam") || lower.contains("acoustics") || lower.contains("engineering")) {
+            return "acousticsengineering"
+        }
         // civilengineering — positioned BEFORE engineering so structural, geotechnical, and
         // transportation engineering coursework routes here. "civil engineering" removed from
         // engineering branch below. "solidworks/CAD" stays in engineering.
@@ -2959,6 +3012,30 @@ public final class CalloutManager {
             || lower.contains("thermodynamics exam") && lower.contains("chemical")
             || lower.contains("fluid mechanics class") && lower.contains("chemical") {
             return "chemicalengineering"
+        }
+        // petroleumengineering — positioned AFTER chemicalengineering and BEFORE statisticalmechanics
+        // so petroleum engineering class/exam, reservoir engineering, well logging, petrophysics,
+        // drilling engineering, and enhanced oil recovery coursework route here.
+        // Bare "reservoir" or "well" without petroleum/engineering context falls through.
+        if lower.contains("petroleum engineering class") || lower.contains("petroleum engineering course")
+            || lower.contains("petroleum engineering exam") || lower.contains("petroleum engineering lab")
+            || lower.contains("petroleum engineering notes") || lower.contains("petroleum engineering program")
+            || lower.contains("petroleum engineering major") || lower.contains("petroleum engineering degree")
+            || lower.contains("petroleum engineering assignment") || lower.contains("petroleum engineering project")
+            || lower.contains("reservoir engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("simulation"))
+            || lower.contains("well logging") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("petroleum") || lower.contains("lab"))
+            || lower.contains("petrophysics class") || lower.contains("petrophysics course")
+            || lower.contains("petrophysics exam") || lower.contains("petrophysics lab")
+            || word("petrophysics") && (lower.contains("class") || lower.contains("exam") || lower.contains("petroleum"))
+            || lower.contains("drilling engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("production engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("petroleum"))
+            || lower.contains("reservoir simulation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("petroleum"))
+            || lower.contains("enhanced oil recovery") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("petroleum") || lower.contains("lab"))
+            || lower.contains("formation evaluation") && (lower.contains("class") || lower.contains("course") || lower.contains("petroleum") || lower.contains("exam"))
+            || lower.contains("well completion") && (lower.contains("class") || lower.contains("course") || lower.contains("petroleum") || lower.contains("exam"))
+            || lower.contains("hydraulic fracturing") && (lower.contains("class") || lower.contains("course") || lower.contains("petroleum") || lower.contains("exam"))
+            || lower.contains("petroleum geomechanics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "petroleumengineering"
         }
         // statisticalmechanics — positioned BEFORE thermodynamics so statistical mechanics
         // class/exam and ensemble theory coursework route to a dedicated pool.
@@ -4676,6 +4753,31 @@ public final class CalloutManager {
             || lower.contains("certified industrial hygienist") {
             return "occupationalmedicine"
         }
+        // sportspsychology — positioned BEFORE sportsmedicine so sports psychology class/exam,
+        // mental performance coaching, visualization techniques, flow state, pre-competition
+        // anxiety, and athlete confidence training route to a dedicated pool.
+        // Generic "sports" or "athlete" without psychology context falls through to sportsmedicine.
+        if lower.contains("sports psychology class") || lower.contains("sports psychology course")
+            || lower.contains("sports psychology exam") || lower.contains("sports psychology notes")
+            || lower.contains("sports psychology textbook") || lower.contains("sports psychology assignment")
+            || lower.contains("sports psychology homework") || lower.contains("sports psychology program")
+            || lower.contains("sport psychology class") || lower.contains("sport psychology course")
+            || lower.contains("sport psychology exam") || lower.contains("sport psychology notes")
+            || lower.contains("mental performance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("sports") || lower.contains("athlete") || lower.contains("coaching"))
+            || lower.contains("athlete confidence") && (lower.contains("class") || lower.contains("exam") || lower.contains("psychology") || lower.contains("mental"))
+            || lower.contains("pre-competition anxiety") && (lower.contains("class") || lower.contains("exam") || lower.contains("psychology") || lower.contains("sports"))
+            || lower.contains("precompetition anxiety") && (lower.contains("class") || lower.contains("exam") || lower.contains("psychology") || lower.contains("sports"))
+            || lower.contains("choking under pressure") && (lower.contains("class") || lower.contains("psychology") || lower.contains("sports") || lower.contains("exam") || lower.contains("athlete"))
+            || lower.contains("flow state") && (lower.contains("sports") || lower.contains("psychology") || lower.contains("class") || lower.contains("athlete") || lower.contains("performance"))
+            || lower.contains("visualization technique") && (lower.contains("sports") || lower.contains("psychology") || lower.contains("class") || lower.contains("athlete"))
+            || lower.contains("mental skills training") && (lower.contains("class") || lower.contains("exam") || lower.contains("sports") || lower.contains("athlete"))
+            || lower.contains("performance anxiety") && (lower.contains("class") || lower.contains("psychology") || lower.contains("sports") || lower.contains("athlete") || lower.contains("exam"))
+            || lower.contains("goal setting") && (lower.contains("sports psychology") || lower.contains("sport psychology") || lower.contains("mental performance"))
+            || lower.contains("self-talk") && (lower.contains("sports") || lower.contains("psychology") || lower.contains("class") || lower.contains("athlete") || lower.contains("performance"))
+            || lower.contains("mindfulness sport") || lower.contains("sport mindfulness")
+            || lower.contains("sports psych class") || lower.contains("sports psych course") || lower.contains("sports psych exam") {
+            return "sportspsychology"
+        }
         // sportsmedicine — positioned BEFORE kinesiology so BOC exam prep, CAATE accreditation
         // coursework, and sports medicine physician rotation notes route to a dedicated pool.
         // "athletic training" stays in kinesiology for generic use; compound clinical-certification
@@ -5236,6 +5338,32 @@ public final class CalloutManager {
             || lower.contains("endotherm") && (lower.contains("class") || lower.contains("physiology") || lower.contains("ecology") || lower.contains("exam"))
             || lower.contains("stress physiology") && (lower.contains("class") || lower.contains("ecology") || lower.contains("biology") || lower.contains("exam")) {
             return "ecophysiology"
+        }
+        // limnology — positioned BEFORE ecology so freshwater science class/exam, lake ecology,
+        // stream ecology, aquatic chemistry, eutrophication, benthic community, and watershed
+        // hydrology coursework route to a dedicated pool.
+        // Bare "freshwater" or "lake" without class/limnology context falls through to ecology.
+        if lower.contains("limnology class") || lower.contains("limnology course")
+            || lower.contains("limnology exam") || lower.contains("limnology lab")
+            || lower.contains("limnology notes") || lower.contains("limnology textbook")
+            || lower.contains("limnology assignment") || lower.contains("limnology homework")
+            || lower.contains("limnology program") || lower.contains("limnology major")
+            || word("limnology") || word("limnologist") || word("limnologists")
+            || lower.contains("freshwater ecology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("limnology"))
+            || lower.contains("lake ecology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("stream ecology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("limnology"))
+            || lower.contains("river ecology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("limnology"))
+            || lower.contains("aquatic chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("limnology") || lower.contains("freshwater"))
+            || lower.contains("eutrophication") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("limnology") || lower.contains("lake") || lower.contains("freshwater"))
+            || lower.contains("benthic community") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("limnology") || lower.contains("freshwater") || lower.contains("stream"))
+            || lower.contains("benthic macroinvertebrate") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("freshwater"))
+            || lower.contains("thermal stratification") && (lower.contains("class") || lower.contains("limnology") || lower.contains("lake") || lower.contains("exam"))
+            || lower.contains("lake stratification") && (lower.contains("class") || lower.contains("limnology") || lower.contains("exam"))
+            || lower.contains("phosphorus loading") && (lower.contains("class") || lower.contains("limnology") || lower.contains("lake") || lower.contains("exam"))
+            || lower.contains("dissolved oxygen") && (lower.contains("limnology") || (lower.contains("freshwater") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))))
+            || lower.contains("aquatic macroinvertebrate") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("freshwater biology class") || lower.contains("freshwater biology course") || lower.contains("freshwater biology exam") {
+            return "limnology"
         }
         // ecology — positioned BEFORE ecologyconservation so general ecology class/coursework
         // routes here. Conservation-specific terms (restoration ecology, conservation biology,

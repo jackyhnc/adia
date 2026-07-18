@@ -6205,5 +6205,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Computer architecture assignment completed (hazard analysis, branch predictor simulation, cache hit rate calculation, coherence protocol design, or OOO execution evaluation completed with data path diagrams, timing analysis, and solution saved to file)",
             preferredDuration: 60 * 60
         ),
+        // photonics
+        SuggestedTemplate(
+            icon: "laser.burst",
+            task: "Study photonics for my exam — review fiber optic waveguide modes and attenuation, laser physics (rate equations, threshold condition, gain media), nonlinear optical effects (SPM, XPM, FWM), optical amplifiers (EDFA), integrated photonics building blocks, and photonic crystal band gaps",
+            successCriteria: "Photonics study session completed (at least two topics reviewed with waveguide mode diagrams, laser rate equation derivations, nonlinear coefficient calculations, EDFA gain curve, and photonic crystal dispersion relation summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "laser.burst",
+            task: "Work on my photonics assignment — design a single-mode fiber optic link (loss budget, dispersion budget), analyze laser threshold and slope efficiency, compute nonlinear phase accumulation in a fiber, design a Mach-Zehnder modulator, or simulate a photonic crystal waveguide",
+            successCriteria: "Photonics assignment completed (fiber link design, laser threshold analysis, nonlinear phase calculation, modulator design, or photonic crystal simulation completed with device parameters, signal budget calculations, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // acousticsengineering
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Study acoustics engineering for my exam — review sound wave propagation (wave equation, impedance, reflection/transmission), room acoustics (reverberation time, Sabine's formula, modal analysis), psychoacoustics (equal-loudness contours, masking), noise control (transmission loss, barriers, absorption), and vibration analysis",
+            successCriteria: "Acoustics engineering study session completed (at least two topics reviewed with wave impedance derivations, RT60 calculations, loudness contour examples, transmission loss measurements, and vibration mode shapes summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Work on my acoustics engineering assignment — calculate room reverberation time using Sabine's and Eyring's formulas, design a noise barrier for a given insertion loss target, analyze vibration modes of a structure, compute acoustic impedance mismatch at an interface, or design an anechoic treatment",
+            successCriteria: "Acoustics engineering assignment completed (RT60 calculation, barrier design, vibration mode analysis, impedance computation, or anechoic treatment design completed with material absorption coefficients, insertion loss curves, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // petroleumengineering
+        SuggestedTemplate(
+            icon: "cylinder.fill",
+            task: "Study petroleum engineering for my exam — review reservoir fluid properties (PVT, equation of state), Darcy's law and reservoir flow regimes, well logging (gamma ray, resistivity, neutron-density), petrophysics (porosity, permeability, water saturation), material balance equations, and enhanced oil recovery methods",
+            successCriteria: "Petroleum engineering study session completed (at least two topics reviewed with Darcy flow derivations, log interpretation charts, material balance calculations, EOR mechanism descriptions, and reservoir property tables summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cylinder.fill",
+            task: "Work on my petroleum engineering assignment — interpret a suite of well logs to determine porosity and water saturation, solve a material balance problem for oil recovery factor, design a hydraulic fracturing program, calculate inflow performance relationships (IPR), or run a reservoir simulation case",
+            successCriteria: "Petroleum engineering assignment completed (log interpretation, material balance solution, fracture design, IPR calculation, or simulation case completed with petrophysical cross-plots, recovery factor curves, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // sportspsychology
+        SuggestedTemplate(
+            icon: "figure.mind.and.body",
+            task: "Study sports psychology for my exam — review mental skills training frameworks (goal setting, imagery, self-talk, arousal regulation), flow state theory, pre-competition anxiety models (catastrophe theory, IZOF), attention and concentration, confidence and self-efficacy in sport, and coach-athlete communication",
+            successCriteria: "Sports psychology study session completed (at least two topics reviewed with goal-setting SMART criteria, imagery script examples, anxiety-performance models, flow channel diagram, and self-efficacy sources summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "figure.mind.and.body",
+            task: "Work on my sports psychology assignment — design a mental skills training program for an athlete, write a psychological skills inventory case analysis, apply arousal regulation techniques to a competition scenario, analyze a case study using IZOF theory, or develop a pre-competition routine using imagery and self-talk",
+            successCriteria: "Sports psychology assignment completed (mental skills program, case analysis, arousal regulation plan, IZOF application, or pre-competition routine completed with psychological theory citations, intervention rationale, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // limnology
+        SuggestedTemplate(
+            icon: "drop.fill",
+            task: "Study limnology for my exam — review lake thermal stratification and turnover, phosphorus and nitrogen cycling (Redfield ratio, eutrophication mechanisms), primary productivity measurement, benthic macroinvertebrate communities as bioassessment indicators, dissolved oxygen dynamics, and watershed hydrology inputs",
+            successCriteria: "Limnology study session completed (at least two topics reviewed with thermal profile diagrams, nutrient cycle flowcharts, P-E curve examples, benthic tolerance indices, DO deficit calculations, and watershed water balance summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "drop.fill",
+            task: "Work on my limnology assignment — analyze a lake thermal profile to identify epilimnion, metalimnion, and hypolimnion, calculate phosphorus loading and trophic state index, identify benthic macroinvertebrate assemblages from a sample to assess water quality, compute dissolved oxygen saturation, or model nutrient retention in a watershed",
+            successCriteria: "Limnology assignment completed (thermal profile analysis, trophic state calculation, macroinvertebrate identification, DO saturation computation, or nutrient retention model completed with field data tables, trophic classification, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }
