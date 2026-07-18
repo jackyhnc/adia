@@ -6595,5 +6595,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Mechatronics assignment completed (PLC program, PID tuning parameters, or circuit design produced with logic diagram or block diagram, performance analysis included, and written design rationale explaining component selection and control strategy saved to file)",
             preferredDuration: 60 * 60
         ),
+        // structuraldynamics
+        SuggestedTemplate(
+            icon: "waveform.path",
+            task: "Study structural dynamics for my exam — review free vibration of SDOF systems (natural frequency, damping ratio, logarithmic decrement), modal analysis and mode shapes of MDOF systems, forced vibration and frequency response, earthquake response spectra, Newmark-beta time integration, and Rayleigh damping",
+            successCriteria: "Structural dynamics study session completed (at least two topics reviewed with free body diagrams, equations of motion, mode shape sketches, response spectrum curves, Newmark integration tables, and worked numerical examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path",
+            task: "Complete my structural dynamics assignment — solve free and forced vibration problems for SDOF or MDOF systems, compute natural frequencies and mode shapes using stiffness/mass matrices, perform earthquake response spectrum analysis, apply Newmark-beta integration to find time-history response, or analyze damping effects on structural performance",
+            successCriteria: "Structural dynamics assignment completed (equations of motion formulated, natural frequencies and mode shapes computed, response spectrum or time-history results obtained, worked calculations clearly presented, and written solution summary with labeled diagrams saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // bioprocessengineering
+        SuggestedTemplate(
+            icon: "flask.fill",
+            task: "Study bioprocess engineering for my exam — review microbial growth kinetics (Monod model, yield coefficients, substrate inhibition), bioreactor types and design (CSTR, batch, fed-batch, airlift), mass transfer (oxygen transfer rate, kLa), downstream processing (centrifugation, filtration, chromatography), and cell culture scale-up considerations",
+            successCriteria: "Bioprocess engineering study session completed (at least two topics reviewed with kinetic model equations, bioreactor design parameters, oxygen transfer correlations, downstream processing flowsheets, and worked fermentation design examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "flask.fill",
+            task: "Complete my bioprocess engineering assignment — model microbial growth using Monod kinetics (compute μmax, Ks, yields), design a bioreactor (volume, aeration, agitation for OTR), analyze fed-batch feeding strategies, perform a mass balance for downstream processing, or evaluate chromatography column design for protein purification",
+            successCriteria: "Bioprocess engineering assignment completed (kinetic parameters estimated or bioreactor designed with material balance, OTR/kLa calculation, process flow diagram, key assumptions stated, and written design rationale with numerical results saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // systemsengineering
+        SuggestedTemplate(
+            icon: "cpu.fill",
+            task: "Study systems engineering for my exam — review the systems engineering V-model (requirements through verification/validation), model-based systems engineering (MBSE) and SysML diagrams (block definition, internal block, activity, sequence), requirements management (functional/performance/interface requirements), tradespace analysis, and system integration testing",
+            successCriteria: "Systems engineering study session completed (at least two topics reviewed with V-model diagram, SysML notation examples, requirements hierarchy tables, tradespace matrix, interface control document structure, and worked system decomposition examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cpu.fill",
+            task: "Complete my systems engineering assignment — develop a system concept of operations (ConOps), decompose a system into functional and physical architecture using SysML block definition diagrams, write measurable system requirements, create an interface control document, or perform a tradespace analysis comparing design alternatives",
+            successCriteria: "Systems engineering assignment completed (ConOps or SysML diagrams produced, requirements written with verification method, tradespace matrix or ICD completed, and written design rationale explaining architectural decisions and requirement traceability saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // transportationplanning
+        SuggestedTemplate(
+            icon: "car.fill",
+            task: "Study transportation planning for my exam — review the four-step travel demand model (trip generation with ITE rates, trip distribution with gravity model, mode choice with logit model, traffic assignment with user equilibrium), VMT and level of service calculation, land use and transportation interaction, and MPO planning processes",
+            successCriteria: "Transportation planning study session completed (at least two steps of the four-step model reviewed with production/attraction equations, gravity model calibration, logit model calculation, traffic assignment convergence, and worked demand forecasting examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "car.fill",
+            task: "Complete my transportation planning assignment — build or calibrate a trip generation model (regression or cross-classification), apply the gravity model for trip distribution, compute mode split probabilities using a logit model, perform traffic assignment to a network, or analyze travel demand model outputs to evaluate a land use or transportation policy scenario",
+            successCriteria: "Transportation planning assignment completed (model step computed with calibrated parameters, calculated trips/probabilities/assigned volumes, sensitivity analysis or scenario comparison included, and written report with model assumptions, results table, and interpretation saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // architecturalengineering
+        SuggestedTemplate(
+            icon: "building.2.fill",
+            task: "Study architectural engineering for my exam — review building systems integration (structural, HVAC, plumbing, electrical), building envelope performance (thermal resistance, air barrier, moisture control), daylighting and electrical lighting design (illuminance levels, daylight factor, lumen method), passive design strategies, and building energy analysis methods",
+            successCriteria: "Architectural engineering study session completed (at least two systems reviewed with R-value calculations, HVAC load estimation steps, illuminance calculations, energy balance concepts, and worked building performance examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "building.2.fill",
+            task: "Complete my architectural engineering assignment — perform a heating/cooling load calculation (ASHRAE method), design a daylighting scheme (window-to-wall ratio, daylight factor, glare control), analyze building envelope thermal performance (U-value, condensation risk), model MEP system coordination for a building floor plan, or evaluate passive design strategies to reduce energy use",
+            successCriteria: "Architectural engineering assignment completed (load calculation, daylighting analysis, or envelope evaluation performed with quantitative results, building cross-section or system diagram labeled, key assumptions documented, and written design rationale with performance summary saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

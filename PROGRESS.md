@@ -19539,3 +19539,72 @@ None. Swift toolchain unavailable on Linux container.
 - Template count target: 1021 → 1031 after next 5-domain batch
 
 ---
+
+---
+
+## Run 394 (automated) — 2026-07-18 — 5 new keyword domains: structuraldynamics/bioprocessengineering/systemsengineering/transportationplanning/architecturalengineering (1021→1031 templates)
+
+### What shipped
+
+**5 new keyword domains: structuraldynamics, bioprocessengineering, systemsengineering, transportationplanning, architecturalengineering**
+
+**New keyword domain — structuraldynamics:**
+- Branch positioned BEFORE `structuralanalysis` (line 3264→3287 now). Free vibration and modal analysis terms were caught by structuralanalysis/civilengineering; now intercepted here first.
+- Catches: structural dynamics class/course/exam/homework/assignment/textbook/notes/problem, free vibration + class/exam/structural, natural frequency/frequencies + class/exam/structural/vibration, mode shapes + class/exam/structural/vibration, modal analysis + class/exam/structural, response spectrum + class/exam/structural/earthquake, earthquake response spectra + class/exam, MDOF system + class/exam/structural, multi-degree of freedom + class/exam/structural, damping ratio + class/exam/structural/vibration, Rayleigh damping + class/exam/structural, Newmark method/Newmark-beta + class/exam/structural/dynamics, seismic response analysis + class/exam, vibration analysis + structural/class/exam, forced vibration + class/exam/structural.
+- `structuraldynamicsCallouts(tier:)` 4/3/3: "those free vibration and mode shape problems won't solve themselves." / "no one masters structural dynamics by scrolling." / "CLOSE THIS. those MDOF systems and earthquake response spectra won't solve themselves."
+- 2 templates: study exam (SDOF free vibration, modal analysis, MDOF, forced vibration, response spectra, Newmark-beta, Rayleigh damping, 60 min) + assignment (equations of motion, natural frequencies, mode shapes, response spectrum analysis, Newmark integration, 60 min)
+
+**New keyword domain — bioprocessengineering:**
+- Branch positioned BEFORE `chemicalengineering` (after biomedicalengineering). Fermentation and bioreactor design terms overlapped with chemical engineering; now intercepted here first.
+- Catches: bioprocess engineering class/course/exam/homework/assignment/textbook/lab/notes, fermentation + class/exam/bioprocess/bioreactor, bioreactor design + class/exam/course, bioreactor + class/bioprocess/exam/scale-up, downstream processing + class/exam/bioprocess, upstream bioprocessing + class/exam/course, microbial growth kinetics + class/exam/bioprocess, Monod kinetics + class/exam/bioprocess/fermentation, fed-batch/batch fermentation + class/exam/bioprocess, cell culture + class/bioprocess/exam/bioreactor, mammalian cell culture + class/exam/bioprocess, protein purification + class/exam/bioprocess/downstream, chromatography + class/bioprocess/exam/downstream, bioreactor scale-up + class/exam/course.
+- `bioprocessengineeringCallouts(tier:)` 4/3/3: "those bioreactor design and fermentation kinetics won't work themselves out." / "no one masters bioprocess engineering by scrolling." / "CLOSE THIS. those bioreactor scale-up and cell culture design problems won't solve themselves."
+- 2 templates: study exam (Monod model, bioreactor types, OTR/kLa, downstream processing, scale-up, 60 min) + assignment (Monod kinetics, bioreactor volume/aeration, fed-batch strategy, mass balance, chromatography design, 60 min)
+
+**New keyword domain — systemsengineering:**
+- Branch positioned BEFORE `engineering` (after industrialengineering). MBSE, V-model, INCOSE, and SysML terms were caught by generic engineering; now intercepted here for a dedicated pool.
+- Catches: systems engineering class/course/exam/homework/assignment/textbook/lab/notes, model-based systems engineering + class/exam/course, MBSE + class/exam/course/systems, INCOSE + class/exam/systems engineering, V-model + class/exam/systems engineering, systems integration + class/exam/systems engineering, requirements management + class/exam/systems engineering, interface control document + class/exam/systems, functional decomposition + class/exam/systems engineering, system of systems + class/exam/engineering, tradespace analysis + class/exam/systems, SysML + class/exam/systems/mbse, Cameo + class/exam/systems/mbse, CONOPS + class/exam/systems engineering.
+- `systemsengineeringCallouts(tier:)` 4/3/3: "those MBSE models and requirements documents won't write themselves." / "no one masters systems engineering by scrolling." / "CLOSE THIS. those V-model and requirements management problems won't solve themselves."
+- 2 templates: study exam (V-model, MBSE, SysML, requirements management, tradespace, system integration testing, 60 min) + assignment (ConOps, SysML diagrams, system requirements, ICD, tradespace analysis, 60 min)
+
+**New keyword domain — transportationplanning:**
+- Branch positioned BEFORE `urbanplanning` (after urbandesign). "transportation planning" alone routes to urbanplanning; intercepted here only when paired with more specific demand modeling patterns.
+- Catches: transportation planning class/course/exam/homework/assignment/lab/notes/textbook, travel demand modeling/model + class/exam/course, four-step/four step model + class/exam/transportation, trip generation + class/exam/transportation/demand model, trip distribution + class/exam/transportation/demand model, mode choice/split + class/exam/transportation, traffic assignment + class/exam/transportation/demand model, VMT calculation + class/exam/transportation, level of service + class/exam/transportation planning, TransCAD + class/exam/transportation, VISUM + class/exam/transportation, MPO + class/exam/transportation planning, regional transportation plan + class/exam.
+- `transportationplanningCallouts(tier:)` 4/3/3: "those travel demand models won't build themselves." / "no one masters transportation planning by scrolling." / "CLOSE THIS. those trip generation and mode split problems won't solve themselves."
+- 2 templates: study exam (four-step model, trip generation, gravity model, logit model, traffic assignment, VMT, level of service, 60 min) + assignment (trip generation model, gravity model, logit mode split, traffic assignment, demand scenario comparison, 60 min)
+
+**New keyword domain — architecturalengineering:**
+- Branch positioned BEFORE `architecture` (near end of file). Building systems terms (HVAC design, building envelope) were caught by the general architecture branch; now intercepted earlier for a dedicated pool.
+- Catches: architectural engineering class/course/exam/homework/assignment/textbook/notes/lab, building systems + class/exam/architectural/course, building HVAC + class/exam/architectural/design, HVAC design + class/exam/building/architectural, building envelope + class/exam/architectural/energy, daylighting + class/exam/architectural/building, building energy analysis/modeling + class/exam/course, structural systems + class/exam/architectural/building, illumination engineering + class/exam/course, passive design + class/exam/architectural/building, building codes + class/exam + architectural engineering, MEP (mechanical electrical plumbing) + class/exam/building, MCP + class/exam/building/architectural, thermal comfort + class/exam/architectural/building, energy performance + class/exam/architectural/building.
+- `architecturalengineeringCallouts(tier:)` 4/3/3: "those building systems and HVAC design problems won't solve themselves." / "no one masters architectural engineering by scrolling." / "CLOSE THIS. those building energy analysis and structural systems problems won't solve themselves."
+- 2 templates: study exam (building systems integration, HVAC, building envelope, daylighting, passive design, energy analysis, 60 min) + assignment (heating/cooling load, daylighting scheme, U-value analysis, MEP coordination, passive design evaluation, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +51 @Test functions (5 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains + 1 count guard ≥1031)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + 1 count guard ≥1031)
+
+**Template catalog: 1021 → 1031**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `structuraldynamics` fires at line 3287, BEFORE structuralanalysis (line 3316) ✓
+- `bioprocessengineering` fires at line 3524, BEFORE chemicalengineering (line 3547) ✓
+- `systemsengineering` fires at line 3727, BEFORE engineering (line 3745) ✓
+- `transportationplanning` fires at line 4016, BEFORE urbanplanning (line 4036) ✓
+- `architecturalengineering` fires at line 11061, BEFORE architecture (line ~11082) ✓
+- Brace balance: CalloutManager.swift 565/565 ✓; CalloutMessages.swift 1075/1075 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 1031 confirmed (grep -c "preferredDuration:" = 1031) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases in CalloutMessages.swift ✓
+- 5 new private callout pool functions in CalloutMessages.swift ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `environmentalhydrology` — environmental hydrology class (HEC-HMS, SCS curve number, stream flow statistics, stormwater modeling, SWMM — distinct from hydrology/waterresources)
+  - `computationalstructuralmechanics` — finite element analysis class dedicated to structural mechanics (FEA, ABAQUS, ANSYS for structural analysis, contact mechanics, nonlinear FEA)
+  - `geoenvironmentalengineering` — geoenvironmental engineering class (contaminated site remediation, Darcy flow in soils, groundwater contamination, landfill liner design)
+  - `coastalengineeringocean` — coastal/ocean engineering class (wave mechanics, coastal sediment transport, beach nourishment, breakwater design — distinct from oceanography)
+  - `earthquakeengineering` — earthquake engineering class (seismic hazard analysis, ground motion prediction, building code seismic design, liquefaction — distinct from structuraldynamics)
+- Template count target: 1031 → 1041 after next 5-domain batch

@@ -6921,8 +6921,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func mechatronicsAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mechatronics") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1021)
-    @Test func templateCountAtLeast1021() {
-        #expect(SuggestedSessionTemplates.all.count >= 1021, "template catalog must have ≥1021 entries after wastewatertreatment/airpollutioncontrol/renewableenergy/navalarchitecture/mechatronics additions")
+    // MARK: - structuraldynamics templates
+    @Test func structuraldynamicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("structural dynamics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func structuraldynamicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("structural dynamics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - bioprocessengineering templates
+    @Test func bioprocessengineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("bioprocess engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func bioprocessengineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("bioprocess engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - systemsengineering templates
+    @Test func systemsengineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("systems engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func systemsengineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("systems engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - transportationplanning templates
+    @Test func transportationplanningStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("transportation planning") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func transportationplanningAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("transportation planning") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - architecturalengineering templates
+    @Test func architecturalengineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("architectural engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func architecturalengineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("architectural engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1031)
+    @Test func templateCountAtLeast1031() {
+        #expect(SuggestedSessionTemplates.all.count >= 1031, "template catalog must have ≥1031 entries after structuraldynamics/bioprocessengineering/systemsengineering/transportationplanning/architecturalengineering additions")
     }
 }

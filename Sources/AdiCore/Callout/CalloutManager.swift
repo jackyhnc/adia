@@ -3261,6 +3261,31 @@ public final class CalloutManager {
             || lower.contains("fe exam") && lower.contains("geotechnical") {
             return "geotechnicalengineering"
         }
+        // structuraldynamics — positioned BEFORE structuralanalysis so vibration analysis, modal
+        // analysis, and earthquake engineering coursework get a dedicated pool. "seismic design"
+        // stays in civilengineering; "structural analysis" stays in structuralanalysis.
+        if lower.contains("structural dynamics class") || lower.contains("structural dynamics course")
+            || lower.contains("structural dynamics exam") || lower.contains("structural dynamics homework")
+            || lower.contains("structural dynamics assignment") || lower.contains("structural dynamics textbook")
+            || lower.contains("structural dynamics notes") || lower.contains("structural dynamics problem")
+            || lower.contains("free vibration") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("natural frequency") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural") || lower.contains("vibration"))
+            || lower.contains("natural frequencies") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("mode shapes") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural") || lower.contains("vibration"))
+            || lower.contains("modal analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("response spectrum") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural") || lower.contains("earthquake"))
+            || lower.contains("earthquake response spectra") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("mdof system") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("multi-degree of freedom") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("damping ratio") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural") || lower.contains("vibration"))
+            || lower.contains("rayleigh damping") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("newmark method") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural") || lower.contains("dynamics"))
+            || lower.contains("newmark-beta") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("seismic response analysis") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("vibration analysis") && (lower.contains("structural") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("forced vibration") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural")) {
+            return "structuraldynamics"
+        }
         // structuralanalysis — positioned BEFORE civilengineering so beams, trusses, frames, and
         // matrix-stiffness coursework route here. "structural analysis + class/exam" was caught by
         // civilengineering; now intercepted here for a dedicated pool.
@@ -3475,6 +3500,29 @@ public final class CalloutManager {
             || lower.contains("rehabilitation engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("project")) {
             return "biomedicalengineering"
         }
+        // bioprocessengineering — positioned BEFORE chemicalengineering so fermentation, bioreactor,
+        // and downstream processing coursework get a dedicated pool distinct from chemical engineering.
+        // Bare "fermentation" or "cell culture" without class/bioprocess context falls through.
+        if lower.contains("bioprocess engineering class") || lower.contains("bioprocess engineering course")
+            || lower.contains("bioprocess engineering exam") || lower.contains("bioprocess engineering homework")
+            || lower.contains("bioprocess engineering assignment") || lower.contains("bioprocess engineering textbook")
+            || lower.contains("bioprocess engineering lab") || lower.contains("bioprocess engineering notes")
+            || lower.contains("fermentation") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioprocess") || lower.contains("bioreactor"))
+            || lower.contains("bioreactor design") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("bioreactor") && (lower.contains("class") || lower.contains("bioprocess") || lower.contains("exam") || lower.contains("scale-up"))
+            || lower.contains("downstream processing") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioprocess"))
+            || lower.contains("upstream bioprocessing") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("microbial growth kinetics") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioprocess"))
+            || lower.contains("monod kinetics") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioprocess") || lower.contains("fermentation"))
+            || lower.contains("fed-batch fermentation") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioprocess"))
+            || lower.contains("batch fermentation") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioprocess"))
+            || lower.contains("cell culture") && (lower.contains("class") || lower.contains("bioprocess") || lower.contains("exam") || lower.contains("bioreactor"))
+            || lower.contains("mammalian cell culture") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioprocess"))
+            || lower.contains("protein purification") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioprocess") || lower.contains("downstream"))
+            || lower.contains("chromatography") && (lower.contains("class") || lower.contains("bioprocess") || lower.contains("exam") || lower.contains("downstream"))
+            || lower.contains("bioreactor scale-up") && (lower.contains("class") || lower.contains("exam") || lower.contains("course")) {
+            return "bioprocessengineering"
+        }
         // chemicalengineering — BEFORE engineering; transport phenomena, unit operations, mass
         // transfer, reaction engineering. Reactor-simulation tools (CSTR/PFR/Aspen) already owned
         // by processengineering. "chemical engineering" removed from generic engineering below.
@@ -3655,6 +3703,28 @@ public final class CalloutManager {
             || lower.contains("reliability engineering") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
             || lower.contains("fe exam") && lower.contains("industrial") {
             return "industrialengineering"
+        }
+        // systemsengineering — positioned BEFORE engineering so systems engineering class/exam,
+        // MBSE, INCOSE, V-model, and requirements management coursework get a dedicated pool.
+        // Bare "systems" or "system design" without explicit SE class/exam context falls through.
+        if lower.contains("systems engineering class") || lower.contains("systems engineering course")
+            || lower.contains("systems engineering exam") || lower.contains("systems engineering homework")
+            || lower.contains("systems engineering assignment") || lower.contains("systems engineering textbook")
+            || lower.contains("systems engineering lab") || lower.contains("systems engineering notes")
+            || lower.contains("model-based systems engineering") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("mbse") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("systems"))
+            || lower.contains("incose") && (lower.contains("class") || lower.contains("exam") || lower.contains("systems engineering"))
+            || lower.contains("v-model") && (lower.contains("class") || lower.contains("exam") || lower.contains("systems engineering"))
+            || lower.contains("systems integration") && (lower.contains("class") || lower.contains("exam") || lower.contains("systems engineering"))
+            || lower.contains("requirements management") && (lower.contains("class") || lower.contains("exam") || lower.contains("systems engineering"))
+            || lower.contains("interface control document") && (lower.contains("class") || lower.contains("exam") || lower.contains("systems"))
+            || lower.contains("functional decomposition") && (lower.contains("class") || lower.contains("exam") || lower.contains("systems engineering"))
+            || lower.contains("system of systems") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("tradespace analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("systems"))
+            || lower.contains("sysml") && (lower.contains("class") || lower.contains("exam") || lower.contains("systems") || lower.contains("mbse"))
+            || lower.contains("cameo") && (lower.contains("class") || lower.contains("exam") || lower.contains("systems") || lower.contains("mbse"))
+            || lower.contains("conops") && (lower.contains("class") || lower.contains("exam") || lower.contains("systems engineering")) {
+            return "systemsengineering"
         }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
@@ -3920,6 +3990,30 @@ public final class CalloutManager {
             || lower.contains("urban design class") || lower.contains("urban design course")
             || lower.contains("urban design program") || lower.contains("urban design exam") {
             return "urbandesign"
+        }
+        // transportationplanning — positioned BEFORE urbanplanning so travel demand modeling,
+        // four-step model, and traffic assignment coursework get a dedicated pool. "transportation
+        // planning" alone routes to urbanplanning; intercepted here only with more specific patterns.
+        if lower.contains("transportation planning class") || lower.contains("transportation planning course")
+            || lower.contains("transportation planning exam") || lower.contains("transportation planning homework")
+            || lower.contains("transportation planning assignment") || lower.contains("transportation planning lab")
+            || lower.contains("transportation planning notes") || lower.contains("transportation planning textbook")
+            || lower.contains("travel demand modeling") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("travel demand model") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("four-step model") && (lower.contains("class") || lower.contains("exam") || lower.contains("transportation"))
+            || lower.contains("four step model") && (lower.contains("class") || lower.contains("exam") || lower.contains("transportation"))
+            || lower.contains("trip generation") && (lower.contains("class") || lower.contains("exam") || lower.contains("transportation") || lower.contains("demand model"))
+            || lower.contains("trip distribution") && (lower.contains("class") || lower.contains("exam") || lower.contains("transportation") || lower.contains("demand model"))
+            || lower.contains("mode choice") && (lower.contains("class") || lower.contains("exam") || lower.contains("transportation"))
+            || lower.contains("mode split") && (lower.contains("class") || lower.contains("exam") || lower.contains("transportation"))
+            || lower.contains("traffic assignment") && (lower.contains("class") || lower.contains("exam") || lower.contains("transportation") || lower.contains("demand model"))
+            || lower.contains("vmt calculation") && (lower.contains("class") || lower.contains("exam") || lower.contains("transportation"))
+            || lower.contains("level of service") && (lower.contains("class") || lower.contains("exam") || lower.contains("transportation planning"))
+            || lower.contains("transcad") && (lower.contains("class") || lower.contains("exam") || lower.contains("transportation"))
+            || lower.contains("visum") && (lower.contains("class") || lower.contains("exam") || lower.contains("transportation"))
+            || lower.contains("mpo") && (lower.contains("class") || lower.contains("exam") || lower.contains("transportation planning"))
+            || lower.contains("regional transportation plan") && (lower.contains("class") || lower.contains("exam")) {
+            return "transportationplanning"
         }
         // urbanplanning — positioned before realestate (which catches bare word("zoning")) so
         // "urban planning", "zoning ordinance", and AICP exam prep route to the planning pool.
@@ -10941,6 +11035,30 @@ public final class CalloutManager {
             || lower.contains("landscape architecture class") || lower.contains("landscape architecture exam")
             || lower.contains("landscape architecture program") {
             return "landscapearchitecture"
+        }
+        // architecturalengineering — positioned BEFORE architecture so building systems coursework
+        // (HVAC design, structural systems, building envelope, daylighting) gets a dedicated pool
+        // distinct from the design-studio-focused architecture branch.
+        if lower.contains("architectural engineering class") || lower.contains("architectural engineering course")
+            || lower.contains("architectural engineering exam") || lower.contains("architectural engineering homework")
+            || lower.contains("architectural engineering assignment") || lower.contains("architectural engineering textbook")
+            || lower.contains("architectural engineering notes") || lower.contains("architectural engineering lab")
+            || lower.contains("building systems") && (lower.contains("class") || lower.contains("exam") || lower.contains("architectural") || lower.contains("course"))
+            || lower.contains("building hvac") && (lower.contains("class") || lower.contains("exam") || lower.contains("architectural") || lower.contains("design"))
+            || lower.contains("hvac design") && (lower.contains("class") || lower.contains("exam") || lower.contains("building") || lower.contains("architectural"))
+            || lower.contains("building envelope") && (lower.contains("class") || lower.contains("exam") || lower.contains("architectural") || lower.contains("energy"))
+            || lower.contains("daylighting") && (lower.contains("class") || lower.contains("exam") || lower.contains("architectural") || lower.contains("building"))
+            || lower.contains("building energy analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("building energy modeling") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("structural systems") && (lower.contains("class") || lower.contains("exam") || lower.contains("architectural") || lower.contains("building"))
+            || lower.contains("illumination engineering") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("passive design") && (lower.contains("class") || lower.contains("exam") || lower.contains("architectural") || lower.contains("building"))
+            || lower.contains("building codes") && (lower.contains("class") || lower.contains("exam") || lower.contains("architectural engineering"))
+            || lower.contains("mechanical electrical plumbing") && (lower.contains("class") || lower.contains("exam") || lower.contains("building"))
+            || lower.contains("mep") && (lower.contains("class") || lower.contains("exam") || lower.contains("building") || lower.contains("architectural"))
+            || lower.contains("thermal comfort") && (lower.contains("class") || lower.contains("exam") || lower.contains("architectural") || lower.contains("building"))
+            || lower.contains("energy performance") && (lower.contains("class") || lower.contains("exam") || lower.contains("architectural") || lower.contains("building")) {
+            return "architecturalengineering"
         }
         // Guard common software-domain and UX false positives before checking architecture keywords.
         // "information architecture" routes to the ux branch above; also guarded here so that

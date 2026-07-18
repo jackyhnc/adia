@@ -438,6 +438,11 @@ extension CalloutManager {
         case "renewableenergy":            return renewableenergyCallouts(tier: tier)
         case "navalarchitecture":          return navalarchitectureCallouts(tier: tier)
         case "mechatronics":               return mechatronicsCallouts(tier: tier)
+        case "structuraldynamics":         return structuraldynamicsCallouts(tier: tier)
+        case "bioprocessengineering":      return bioprocessengineeringCallouts(tier: tier)
+        case "systemsengineering":         return systemsengineeringCallouts(tier: tier)
+        case "transportationplanning":     return transportationplanningCallouts(tier: tier)
+        case "architecturalengineering":   return architecturalengineeringCallouts(tier: tier)
         case "biomedicalengineering":      return biomedicalengineeringCallouts(tier: tier)
         case "chemicalengineering":        return chemicalengineeringCallouts(tier: tier)
         case "oceanography":               return oceanographyCallouts(tier: tier)
@@ -11651,6 +11656,111 @@ extension CalloutManager {
             "CLOSE THIS. those PLC programming and motion control problems won't do themselves.",
             "CLOSE THIS. your mechatronics assignment is not going to work itself out.",
             "CLOSE THIS. you have mechatronics design work to do. do it."
+        ]
+        }
+    }
+
+    private func structuraldynamicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those free vibration and mode shape problems won't solve themselves.",
+            "your structural dynamics exam doesn't care that you're scrolling.",
+            "get back to your structural dynamics work.",
+            "close this and open your structural dynamics textbook.",
+        ]
+        case 2: return [
+            "no one masters structural dynamics by scrolling.",
+            "close this and work on your structural dynamics assignment.",
+            "those natural frequency and response spectrum problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your structural dynamics textbook.",
+            "CLOSE THIS. those MDOF systems and earthquake response spectra won't solve themselves.",
+            "CLOSE THIS. your structural dynamics exam won't study itself."
+        ]
+        }
+    }
+
+    private func bioprocessengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those bioreactor design and fermentation kinetics won't work themselves out.",
+            "your bioprocess engineering exam doesn't care that you're scrolling.",
+            "get back to your bioprocess engineering work.",
+            "close this and open your bioprocess engineering textbook.",
+        ]
+        case 2: return [
+            "no one masters bioprocess engineering by scrolling.",
+            "close this and work on your bioprocess assignment.",
+            "those Monod kinetics and downstream processing problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your bioprocess engineering textbook.",
+            "CLOSE THIS. those bioreactor scale-up and cell culture design problems won't solve themselves.",
+            "CLOSE THIS. your bioprocess engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func systemsengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those MBSE models and requirements documents won't write themselves.",
+            "your systems engineering exam doesn't care that you're scrolling.",
+            "get back to your systems engineering work.",
+            "close this and open your systems engineering textbook.",
+        ]
+        case 2: return [
+            "no one masters systems engineering by scrolling.",
+            "close this and work on your systems engineering assignment.",
+            "those SysML diagrams and tradespace analyses need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your systems engineering textbook.",
+            "CLOSE THIS. those V-model and requirements management problems won't solve themselves.",
+            "CLOSE THIS. your systems engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func transportationplanningCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those travel demand models won't build themselves.",
+            "your transportation planning exam doesn't care that you're scrolling.",
+            "get back to your transportation planning work.",
+            "close this and open your transportation planning textbook.",
+        ]
+        case 2: return [
+            "no one masters transportation planning by scrolling.",
+            "close this and work on your transportation planning assignment.",
+            "those four-step models and traffic assignment problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your transportation planning textbook.",
+            "CLOSE THIS. those trip generation and mode split problems won't solve themselves.",
+            "CLOSE THIS. your transportation planning exam won't study itself."
+        ]
+        }
+    }
+
+    private func architecturalengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those building systems and HVAC design problems won't solve themselves.",
+            "your architectural engineering exam doesn't care that you're scrolling.",
+            "get back to your architectural engineering work.",
+            "close this and open your architectural engineering textbook.",
+        ]
+        case 2: return [
+            "no one masters architectural engineering by scrolling.",
+            "close this and work on your architectural engineering assignment.",
+            "those building envelope and MEP design problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your architectural engineering textbook.",
+            "CLOSE THIS. those building energy analysis and structural systems problems won't solve themselves.",
+            "CLOSE THIS. your architectural engineering exam won't study itself."
         ]
         }
     }
