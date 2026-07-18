@@ -19228,3 +19228,35 @@ None. Swift toolchain unavailable on Linux container.
   - `crystallography` — crystallography class/course/exam (X-ray diffraction + class/exam/crystallography, crystal structure + class/exam/crystallography, space group + class/exam, unit cell + class/crystallography/exam, Bragg's law + class/exam/crystallography — distinct from mineralogy/materialscience)
 - Template count: 971 → 981 after next 5-domain batch
 - CalloutManagerTests: ~24000+ lines after next batch
+
+---
+
+## Run 389 — 2026-07-18
+
+**Task**: Add 5 new keyword domains to expand callout and template catalogs (continued from Run 388 recommendations)
+
+**What shipped**:
+- `CalloutManager.swift`: 5 new routing blocks
+  - `astrodynamics` — orbital mechanics/spacecraft dynamics class/exam (Keplerian orbits, vis-viva equation, Hohmann transfer, Lambert's problem, delta-v, ground track — positioned BEFORE astrophysics)
+  - `biomaterials` — biomaterials class/exam (biocompatibility, implant materials, biodegradable polymers, osseointegration, scaffold design, surface functionalization — positioned BEFORE materialscience)
+  - `crystallography` — crystallography class/exam (XRD, Bragg's law, Miller indices, space groups, Bravais lattices, reciprocal lattice — positioned BEFORE materialscience)
+  - `spectroscopy` — spectroscopy class/exam (NMR/COSY/HMBC, IR, UV-Vis, Raman, fluorescence, mass spectrometry — positioned BEFORE analyticalchemistry)
+  - `industrialengineering` — industrial engineering class/exam (operations research, lean/six-sigma, queueing theory, facilities layout, time study, reliability engineering — positioned BEFORE engineering; substituted for `ergonomics` which is already caught by `humanfactors`)
+- `CalloutMessages.swift`: 5 switch cases + 5 callout pool functions (4/3/3 pools each, tier-3 all start with "CLOSE THIS")
+- `SuggestedSessionTemplates.swift`: 10 templates added (study + assignment per domain); total 971 → 981
+- `CalloutManagerTests.swift`: routing tests + pool tests for all 5 domains + count guard `calloutTemplatesCountAtLeast981()`
+- `SuggestedSessionTemplatesTests.swift`: template existence tests for all 5 domains + count guard `templateCountAtLeast981()`
+
+**Verification**:
+- `grep -c "preferredDuration:"` → 981 ✓
+- All 5 routing returns confirmed in CalloutManager.swift ✓
+- All 5 switch cases confirmed in CalloutMessages.swift ✓
+- 5 files changed, 494 insertions ✓
+- Pushed to main: 3c77563..6f678b2 ✓
+
+**Blocked**:
+- Swift toolchain unavailable in Linux container — cannot run `swift build` or `swift test`; logic verified by code review
+
+**Next agent should**:
+- Add 5 more domains: `tribology` (friction/wear/lubrication class/exam), `photogrammetry` (3D reconstruction from photos, LiDAR, drone mapping — class/exam), `tectonics` (plate tectonics, seismology, fault mechanics — class/exam; distinct from geology), `radiochemistry` (radioactive tracers, nuclear chemistry, isotope dating — class/exam; distinct from nuclearengineering), `psycholinguistics` (language acquisition, sentence processing, phonology — class/exam; distinct from linguistics)
+- Template count target: 981 → 991
