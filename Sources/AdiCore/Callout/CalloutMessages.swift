@@ -428,6 +428,11 @@ extension CalloutManager {
         case "mechanicalengineering":      return mechanicalengineeringCallouts(tier: tier)
         case "nuclearengineering":         return nuclearengineeringCallouts(tier: tier)
         case "materialstesting":           return materialstestingCallouts(tier: tier)
+        case "compositematerials":         return compositematerialsCallouts(tier: tier)
+        case "powerelectronics":           return powerelectronicsCallouts(tier: tier)
+        case "geotechnicalengineering":    return geotechnicalengineeringCallouts(tier: tier)
+        case "structuralanalysis":         return structuralanalysisCallouts(tier: tier)
+        case "miningengineering":          return miningengineeringCallouts(tier: tier)
         case "biomedicalengineering":      return biomedicalengineeringCallouts(tier: tier)
         case "chemicalengineering":        return chemicalengineeringCallouts(tier: tier)
         case "oceanography":               return oceanographyCallouts(tier: tier)
@@ -11431,6 +11436,111 @@ extension CalloutManager {
             "CLOSE THIS. those fertility rate and mortality table analyses won't do themselves.",
             "CLOSE THIS. your demography assignment is not going to work itself out.",
             "CLOSE THIS. you have demography work to do. do it."
+        ]
+        }
+    }
+
+    private func compositematerialsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those composite laminate analyses won't solve themselves.",
+            "no one masters composite materials by scrolling.",
+            "that CLT problem set isn't going to finish itself.",
+            "you're supposed to be working on your composite materials assignment."
+        ]
+        case 2: return [
+            "you know you have a composite materials problem set due.",
+            "those failure criteria problems are still waiting for you.",
+            "go work on your composite materials."
+        ]
+        default: return [
+            "CLOSE THIS. those CLT and failure criteria analyses won't do themselves.",
+            "CLOSE THIS. your composite materials assignment is not going to work itself out.",
+            "CLOSE THIS. you have composite materials work to do. do it."
+        ]
+        }
+    }
+
+    private func powerelectronicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those converter design problems won't solve themselves.",
+            "no one masters power electronics by scrolling.",
+            "that PWM analysis isn't going to finish itself.",
+            "you're supposed to be working on your power electronics assignment."
+        ]
+        case 2: return [
+            "you know you have a power electronics problem set due.",
+            "those switching circuit analyses are still waiting for you.",
+            "go work on your power electronics."
+        ]
+        default: return [
+            "CLOSE THIS. those buck-boost converter and PWM analyses won't do themselves.",
+            "CLOSE THIS. your power electronics assignment is not going to work itself out.",
+            "CLOSE THIS. you have power electronics work to do. do it."
+        ]
+        }
+    }
+
+    private func geotechnicalengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those soil mechanics problems won't solve themselves.",
+            "no one masters geotechnical engineering by scrolling.",
+            "that foundation design analysis isn't going to finish itself.",
+            "you're supposed to be working on your geotechnical engineering assignment."
+        ]
+        case 2: return [
+            "you know you have a geotechnical engineering problem set due.",
+            "those slope stability analyses are still waiting for you.",
+            "go work on your geotechnical engineering."
+        ]
+        default: return [
+            "CLOSE THIS. those foundation design and slope stability analyses won't do themselves.",
+            "CLOSE THIS. your geotechnical engineering assignment is not going to work itself out.",
+            "CLOSE THIS. you have geotechnical engineering work to do. do it."
+        ]
+        }
+    }
+
+    private func structuralanalysisCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those beam diagrams won't draw themselves.",
+            "no one masters structural analysis by scrolling.",
+            "that shear-moment diagram isn't going to finish itself.",
+            "you're supposed to be working on your structural analysis problem set."
+        ]
+        case 2: return [
+            "you know you have a structural analysis problem set due.",
+            "those matrix stiffness problems are still waiting for you.",
+            "go work on your structural analysis."
+        ]
+        default: return [
+            "CLOSE THIS. those shear-moment diagrams and matrix stiffness problems won't solve themselves.",
+            "CLOSE THIS. your structural analysis assignment is not going to work itself out.",
+            "CLOSE THIS. you have structural analysis work to do. do it."
+        ]
+        }
+    }
+
+    private func miningengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those ore processing problems won't solve themselves.",
+            "no one masters mining engineering by scrolling.",
+            "that mine planning analysis isn't going to finish itself.",
+            "you're supposed to be working on your mining engineering assignment."
+        ]
+        case 2: return [
+            "you know you have a mining engineering problem set due.",
+            "those rock mechanics analyses are still waiting for you.",
+            "go work on your mining engineering."
+        ]
+        default: return [
+            "CLOSE THIS. those mine planning and rock mechanics analyses won't do themselves.",
+            "CLOSE THIS. your mining engineering assignment is not going to work itself out.",
+            "CLOSE THIS. you have mining engineering work to do. do it."
         ]
         }
     }

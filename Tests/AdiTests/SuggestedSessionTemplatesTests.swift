@@ -6851,8 +6851,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func demographyAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("demography") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1001)
-    @Test func templateCountAtLeast1001() {
-        #expect(SuggestedSessionTemplates.all.count >= 1001, "template catalog must have ≥1001 entries after signalprocessing/controlengineering/aerostructures/optogenetics/demography additions")
+    // MARK: - compositematerials templates
+    @Test func compositematerialsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("composite materials") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func compositematerialsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("composite materials") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - powerelectronics templates
+    @Test func powerelectronicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("power electronics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func powerelectronicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("power electronics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - geotechnicalengineering templates
+    @Test func geotechnicalengineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("geotechnical engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func geotechnicalengineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("geotechnical engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - structuralanalysis templates
+    @Test func structuralanalysisStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("structural analysis") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func structuralanalysisAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("structural analysis") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - miningengineering templates
+    @Test func miningengineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mining engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func miningengineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mining engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1011)
+    @Test func templateCountAtLeast1011() {
+        #expect(SuggestedSessionTemplates.all.count >= 1011, "template catalog must have ≥1011 entries after compositematerials/powerelectronics/geotechnicalengineering/structuralanalysis/miningengineering additions")
     }
 }

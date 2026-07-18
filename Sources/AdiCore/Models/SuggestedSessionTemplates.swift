@@ -6465,5 +6465,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Demography assignment completed (life table or age pyramid constructed, demographic rates computed, population projection modeled, and written analysis explaining trends and policy implications saved to file)",
             preferredDuration: 60 * 60
         ),
+        // compositematerials
+        SuggestedTemplate(
+            icon: "square.stack.3d.up.fill",
+            task: "Study composite materials for my exam — review fiber-reinforced polymer types and manufacturing, classical lamination theory, laminate stiffness and compliance matrices, failure criteria (Tsai-Wu, Tsai-Hill, Hashin), micromechanics, and fatigue behavior of composites",
+            successCriteria: "Composite materials study session completed (at least two topics reviewed with CLT derivation steps, laminate stiffness ABD matrix setup, failure envelope diagrams, micromechanics equations, and worked examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "square.stack.3d.up.fill",
+            task: "Complete my composite materials assignment — apply classical lamination theory to compute laminate stiffness, perform a failure analysis using Tsai-Wu or Hashin criteria, analyze a filament-wound pressure vessel, or characterize composite fatigue response",
+            successCriteria: "Composite materials assignment completed (ABD matrix computed, failure analysis performed with margin of safety, pressure vessel or fatigue analysis results tabulated, and written explanation of failure mode and design implications saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // powerelectronics
+        SuggestedTemplate(
+            icon: "bolt.fill",
+            task: "Study power electronics for my exam — review DC-DC converter topologies (buck, boost, buck-boost), PWM control principles, inductor and capacitor sizing, converter efficiency, inverter modulation strategies, and rectifier circuits",
+            successCriteria: "Power electronics study session completed (at least two converter topologies reviewed with switching waveforms, steady-state voltage conversion ratio derivations, inductor ripple current calculations, and worked design examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "bolt.fill",
+            task: "Complete my power electronics assignment — design a buck or boost DC-DC converter (duty cycle, inductor, capacitor sizing), analyze a PWM switching circuit, evaluate converter efficiency, or simulate an inverter modulation scheme",
+            successCriteria: "Power electronics assignment completed (converter designed with component values calculated, switching waveforms analyzed, efficiency computed, and written design rationale with circuit schematic saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // geotechnicalengineering
+        SuggestedTemplate(
+            icon: "mountain.2.fill",
+            task: "Study geotechnical engineering for my exam — review soil classification (USCS/AASHTO), consolidation theory (Terzaghi), bearing capacity (Terzaghi, Meyerhof), slope stability (Bishop, Fellenius), lateral earth pressure (Rankine, Coulomb), and permeability",
+            successCriteria: "Geotechnical engineering study session completed (at least two topics reviewed with soil classification charts, consolidation settlement equations, bearing capacity factor tables, slope stability analysis steps, and worked examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "mountain.2.fill",
+            task: "Complete my geotechnical engineering assignment — analyze consolidation settlement, compute bearing capacity of a shallow or deep foundation, perform a slope stability analysis, design a retaining wall under lateral earth pressure, or interpret a triaxial or standard penetration test",
+            successCriteria: "Geotechnical engineering assignment completed (consolidation, bearing capacity, or slope stability calculation performed with labeled soil profile, factor of safety computed, and written summary of design assumptions and results saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // structuralanalysis
+        SuggestedTemplate(
+            icon: "building.columns.fill",
+            task: "Study structural analysis for my exam — review shear force and bending moment diagrams, beam deflection formulas, method of sections and joints for trusses, influence lines, moment distribution method, slope-deflection equations, and the matrix stiffness method",
+            successCriteria: "Structural analysis study session completed (at least two topics reviewed with free-body diagrams, SFD/BMD drawn for sample beams, truss analysis by sections, influence line construction, and worked examples of indeterminate structures saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "building.columns.fill",
+            task: "Complete my structural analysis problem set — draw shear and bending moment diagrams, analyze a truss by method of sections or joints, compute beam deflection using virtual work or moment distribution, solve an indeterminate beam by slope-deflection method, or assemble and solve a frame stiffness matrix",
+            successCriteria: "Structural analysis problem set completed (SFD/BMD drawn with labeled values, truss member forces computed, deflection or reaction calculated, and worked solutions with equilibrium checks and unit annotations saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // miningengineering
+        SuggestedTemplate(
+            icon: "hammer.fill",
+            task: "Study mining engineering for my exam — review mine planning principles, open pit and underground mining methods (room-and-pillar, longwall, block caving), rock mechanics (strength criteria, support design), ore processing (flotation, comminution, gravity separation), and mine ventilation",
+            successCriteria: "Mining engineering study session completed (at least two topics reviewed with mine layout diagrams, rock mass classification tables, flotation circuit schematics, ventilation network concepts, and worked examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "hammer.fill",
+            task: "Complete my mining engineering assignment — design a mine excavation sequence or blast pattern, analyze rock mechanics data (RMR, Q-system), perform an ore processing mass balance (flotation or comminution circuit), size a ventilation fan, or evaluate tailings storage facility design",
+            successCriteria: "Mining engineering assignment completed (mine design, rock mass classification, mass balance, or ventilation calculation performed with labeled cross-sections or flow diagrams, key parameters computed, and written design rationale saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

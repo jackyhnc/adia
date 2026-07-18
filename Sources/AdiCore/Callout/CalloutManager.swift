@@ -2769,6 +2769,37 @@ public final class CalloutManager {
             || lower.contains("crystal symmetry") && (lower.contains("class") || lower.contains("exam") || lower.contains("crystallography")) {
             return "crystallography"
         }
+        // compositematerials — positioned BEFORE materialscience so fiber-reinforced polymers,
+        // laminate theory, CLT, and composite fatigue coursework route here. Bare "composite" or
+        // "materials" alone stays in materialscience (fires later).
+        if lower.contains("composite materials class") || lower.contains("composite materials course")
+            || lower.contains("composite materials exam") || lower.contains("composite materials lab")
+            || lower.contains("composite materials assignment") || lower.contains("composite materials homework")
+            || lower.contains("composite materials textbook") || lower.contains("composite materials notes")
+            || lower.contains("fiber reinforced polymer") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite") || lower.contains("lab"))
+            || lower.contains("fiber-reinforced polymer") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite") || lower.contains("lab"))
+            || lower.contains("fiber reinforced plastics") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite"))
+            || lower.contains("fiber-reinforced plastics") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite"))
+            || lower.contains("frp composite") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("carbon fiber composite") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("carbon fibre composite") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("laminate theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite") || lower.contains("materials"))
+            || lower.contains("classical lamination theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite"))
+            || lower.contains("lamination theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite"))
+            || lower.contains("tsai-wu") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite") || lower.contains("failure"))
+            || lower.contains("tsai wu") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite"))
+            || lower.contains("tsai-hill") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite") || lower.contains("failure"))
+            || lower.contains("hashin failure") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite"))
+            || lower.contains("filament winding") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite") || lower.contains("materials"))
+            || lower.contains("resin transfer molding") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite"))
+            || lower.contains("vacuum infusion") && lower.contains("composite") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("ply layup") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite") || lower.contains("laminate"))
+            || lower.contains("composite fatigue") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("materials"))
+            || lower.contains("micromechanics of composites") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("rule of mixtures") && lower.contains("composite") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("halpin-tsai") && (lower.contains("class") || lower.contains("exam") || lower.contains("composite")) {
+            return "compositematerials"
+        }
         // materialscience — positioned AFTER nanotechnology and BEFORE engineering.
         // Catches MSE coursework, metallurgy, polymer science, ceramics (in engineering context),
         // composite materials, and phase diagram labs. "nanomaterials"/"nanotechnology" now owned
@@ -3022,6 +3053,37 @@ public final class CalloutManager {
             || lower.contains("pole placement") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("design")) {
             return "controlengineering"
         }
+        // powerelectronics — positioned BEFORE electricalengineering so switching converters, PWM,
+        // and power electronics coursework route here. "power electronics + class/exam" was caught
+        // by electricalengineering; now intercepted here for a dedicated pool.
+        if lower.contains("power electronics class") || lower.contains("power electronics course")
+            || lower.contains("power electronics exam") || lower.contains("power electronics lab")
+            || lower.contains("power electronics assignment") || lower.contains("power electronics homework")
+            || lower.contains("power electronics textbook") || lower.contains("power electronics notes")
+            || lower.contains("dc-dc converter") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("dc dc converter") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("lab"))
+            || lower.contains("buck converter") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("boost converter") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("buck-boost converter") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("design"))
+            || lower.contains("switched-mode power supply") && (lower.contains("class") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("switch-mode power supply") && (lower.contains("class") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("smps") && lower.contains("power") && (lower.contains("class") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("pulse width modulation") && lower.contains("power") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("switching"))
+            || lower.contains("pwm control") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("switching"))
+            || lower.contains("inverter design") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("lab"))
+            || lower.contains("rectifier circuit") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("lab"))
+            || lower.contains("ac-dc conversion") && (lower.contains("class") || lower.contains("exam") || lower.contains("power"))
+            || lower.contains("ac dc conversion") && (lower.contains("class") || lower.contains("exam") || lower.contains("power"))
+            || lower.contains("duty cycle") && lower.contains("power") && (lower.contains("class") || lower.contains("exam") || lower.contains("switching"))
+            || lower.contains("mosfet switching") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("lab"))
+            || word("igbt") && lower.contains("power") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("switching"))
+            || lower.contains("gate drive circuit") && (lower.contains("class") || lower.contains("exam") || lower.contains("power"))
+            || lower.contains("voltage regulator") && lower.contains("power") && (lower.contains("class") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("power converter") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("half bridge") && lower.contains("power") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("full bridge") && lower.contains("power") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab")) {
+            return "powerelectronics"
+        }
         // electricalengineering — positioned AFTER aerospacengineering and BEFORE civilengineering/engineering
         // so circuits class, signal processing, and EE coursework route here.
         // "electrical engineering" removed from engineering branch below (now owned here).
@@ -3082,6 +3144,70 @@ public final class CalloutManager {
             || lower.contains("reverberation time") && (lower.contains("class") || lower.contains("exam") || lower.contains("acoustics"))
             || lower.contains("acoustic measurement") && (lower.contains("class") || lower.contains("exam") || lower.contains("acoustics") || lower.contains("engineering")) {
             return "acousticsengineering"
+        }
+        // geotechnicalengineering — positioned BEFORE civilengineering so soil mechanics, foundation
+        // design, slope stability, and consolidation coursework route here. "geotechnical engineering"
+        // and "soil mechanics" patterns were caught by civilengineering; now intercepted here first.
+        if lower.contains("geotechnical engineering class") || lower.contains("geotechnical engineering course")
+            || lower.contains("geotechnical engineering exam") || lower.contains("geotechnical engineering lab")
+            || lower.contains("geotechnical engineering assignment") || lower.contains("geotechnical engineering homework")
+            || lower.contains("geotechnical engineering textbook") || lower.contains("geotechnical engineering notes")
+            || lower.contains("soil mechanics class") || lower.contains("soil mechanics course")
+            || lower.contains("soil mechanics exam") || lower.contains("soil mechanics lab")
+            || lower.contains("soil mechanics homework") || lower.contains("soil mechanics assignment")
+            || lower.contains("foundation design class") || lower.contains("foundation design course")
+            || lower.contains("foundation design exam") || lower.contains("foundation design geotechnical")
+            || lower.contains("slope stability class") || lower.contains("slope stability course")
+            || lower.contains("slope stability exam") || lower.contains("slope stability analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("triaxial test") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("soil"))
+            || lower.contains("consolidation test") && (lower.contains("class") || lower.contains("lab") || lower.contains("soil") || lower.contains("settlement"))
+            || lower.contains("soil consolidation") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("settlement"))
+            || lower.contains("soil classification") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("geotechnical"))
+            || lower.contains("bearing capacity") && (lower.contains("class") || lower.contains("exam") || lower.contains("foundation") || lower.contains("geotechnical"))
+            || lower.contains("retaining wall") && lower.contains("geotechnical") && (lower.contains("class") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("compaction test") && (lower.contains("class") || lower.contains("lab") || lower.contains("soil") || lower.contains("geotechnical"))
+            || lower.contains("proctor compaction") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("lateral earth pressure") && (lower.contains("class") || lower.contains("exam") || lower.contains("geotechnical"))
+            || lower.contains("rankine earth pressure") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("coulomb earth pressure") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("terzaghi") && (lower.contains("class") || lower.contains("exam") || lower.contains("soil") || lower.contains("consolidation"))
+            || lower.contains("standard penetration test") && (lower.contains("class") || lower.contains("lab") || lower.contains("geotechnical"))
+            || word("spt") && lower.contains("geotechnical") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("cone penetration test") && (lower.contains("class") || lower.contains("lab") || lower.contains("geotechnical"))
+            || lower.contains("permeability test") && (lower.contains("class") || lower.contains("lab") || lower.contains("soil"))
+            || lower.contains("mohr-coulomb") && (lower.contains("soil") || lower.contains("geotechnical")) && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("pile foundation") && (lower.contains("class") || lower.contains("exam") || lower.contains("geotechnical"))
+            || lower.contains("fe exam") && lower.contains("geotechnical") {
+            return "geotechnicalengineering"
+        }
+        // structuralanalysis — positioned BEFORE civilengineering so beams, trusses, frames, and
+        // matrix-stiffness coursework route here. "structural analysis + class/exam" was caught by
+        // civilengineering; now intercepted here for a dedicated pool.
+        if lower.contains("structural analysis class") || lower.contains("structural analysis course")
+            || lower.contains("structural analysis exam") || lower.contains("structural analysis homework")
+            || lower.contains("structural analysis assignment") || lower.contains("structural analysis textbook")
+            || lower.contains("structural analysis lab") || lower.contains("structural analysis notes")
+            || lower.contains("method of sections") && (lower.contains("class") || lower.contains("exam") || lower.contains("truss") || lower.contains("structural"))
+            || lower.contains("method of joints") && (lower.contains("class") || lower.contains("exam") || lower.contains("truss") || lower.contains("structural"))
+            || lower.contains("influence lines") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural") || lower.contains("beam"))
+            || lower.contains("influence line") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural") || lower.contains("beam"))
+            || lower.contains("virtual work method") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("principle of virtual work") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("matrix stiffness method") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("direct stiffness method") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("stiffness matrix") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural") || lower.contains("frame"))
+            || lower.contains("beam deflection") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural") || lower.contains("formula"))
+            || lower.contains("shear and moment diagram") && (lower.contains("class") || lower.contains("exam") || lower.contains("beam"))
+            || lower.contains("bending moment diagram") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural") || lower.contains("beam"))
+            || lower.contains("shear force diagram") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural") || lower.contains("beam"))
+            || lower.contains("indeterminate structure") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("indeterminate beam") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("moment distribution method") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("slope deflection method") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural"))
+            || lower.contains("three-moment equation") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("conjugate beam method") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("unit load method") && (lower.contains("class") || lower.contains("exam") || lower.contains("structural")) {
+            return "structuralanalysis"
         }
         // civilengineering — positioned BEFORE engineering so structural, geotechnical, and
         // transportation engineering coursework routes here. "civil engineering" removed from
@@ -3347,6 +3473,39 @@ public final class CalloutManager {
             || lower.contains("openfoam") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("cfd") || lower.contains("project"))
             || lower.contains("computational aerodynamics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course")) {
             return "computationalfluidynamics"
+        }
+        // miningengineering — positioned BEFORE industrialengineering and engineering so mine
+        // planning, ore processing, rock mechanics, and mine ventilation coursework route here.
+        // Bare "mining" without engineering/class context stays in engineering.
+        if lower.contains("mining engineering class") || lower.contains("mining engineering course")
+            || lower.contains("mining engineering exam") || lower.contains("mining engineering lab")
+            || lower.contains("mining engineering assignment") || lower.contains("mining engineering homework")
+            || lower.contains("mining engineering textbook") || lower.contains("mining engineering notes")
+            || lower.contains("mine planning") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("mining"))
+            || lower.contains("ore processing") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("mining"))
+            || lower.contains("mineral processing") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("mining"))
+            || lower.contains("rock mechanics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("mining") || lower.contains("lab"))
+            || lower.contains("mine ventilation") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("open pit mining") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("design"))
+            || lower.contains("underground mining") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("design"))
+            || lower.contains("blasting design") && (lower.contains("class") || lower.contains("exam") || lower.contains("mining") || lower.contains("course"))
+            || lower.contains("mine blasting") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("explosives engineering") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("mining"))
+            || lower.contains("flotation process") && (lower.contains("class") || lower.contains("exam") || lower.contains("mining") || lower.contains("ore"))
+            || lower.contains("ore flotation") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("tunneling engineering") && (lower.contains("class") || lower.contains("exam") || lower.contains("mining"))
+            || lower.contains("tunnel design") && lower.contains("mining") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("ground support") && (lower.contains("class") || lower.contains("exam") || lower.contains("mining") || lower.contains("lab"))
+            || lower.contains("stoping method") && (lower.contains("class") || lower.contains("exam") || lower.contains("mining"))
+            || lower.contains("room and pillar") && (lower.contains("class") || lower.contains("exam") || lower.contains("mining"))
+            || lower.contains("longwall mining") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("tailings management") && (lower.contains("class") || lower.contains("exam") || lower.contains("mining"))
+            || lower.contains("tailings dam") && lower.contains("mining") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("ore grade estimation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mining"))
+            || lower.contains("mine safety") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("engineering"))
+            || lower.contains("mine reclamation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mining"))
+            || lower.contains("sme") && lower.contains("mining") && (lower.contains("class") || lower.contains("exam") || lower.contains("handbook")) {
+            return "miningengineering"
         }
         // industrialengineering — positioned BEFORE engineering so IE class/exam, operations
         // research, and lean manufacturing coursework routes here. Bare "operations research"
