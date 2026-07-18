@@ -556,6 +556,11 @@ extension CalloutManager {
         case "crystallography":            return crystallographyCallouts(tier: tier)
         case "spectroscopy":               return spectroscopyCallouts(tier: tier)
         case "industrialengineering":      return industrialengineeringCallouts(tier: tier)
+        case "psycholinguistics":          return psycholinguisticsCallouts(tier: tier)
+        case "photogrammetry":             return photogrammetryCallouts(tier: tier)
+        case "tectonics":                  return tectonicsCallouts(tier: tier)
+        case "tribology":                  return tribologyCallouts(tier: tier)
+        case "radiochemistry":             return radiochemistryCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -11211,6 +11216,111 @@ extension CalloutManager {
             "CLOSE THIS. open your industrial engineering textbook.",
             "CLOSE THIS. those operations research and lean manufacturing problems won't solve themselves.",
             "CLOSE THIS. your IE exam won't study itself."
+        ]
+        }
+    }
+
+    private func psycholinguisticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those sentence processing problems won't think themselves through.",
+            "your psycholinguistics exam doesn't care that you're scrolling.",
+            "get back to your psycholinguistics work.",
+            "close this and open your psycholinguistics textbook.",
+        ]
+        case 2: return [
+            "no one masters psycholinguistics by scrolling.",
+            "close this and work on your psycholinguistics assignment.",
+            "those garden-path sentences and mental lexicon problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your psycholinguistics textbook.",
+            "CLOSE THIS. those sentence processing and lexical access problems won't solve themselves.",
+            "CLOSE THIS. your psycholinguistics exam won't study itself."
+        ]
+        }
+    }
+
+    private func photogrammetryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that 3D reconstruction won't happen while you're scrolling.",
+            "your photogrammetry exam doesn't care that you're here.",
+            "get back to your photogrammetry work.",
+            "close this and open your photogrammetry textbook.",
+        ]
+        case 2: return [
+            "no one masters photogrammetry by scrolling.",
+            "close this and work on your photogrammetry assignment.",
+            "those structure-from-motion and bundle adjustment problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your photogrammetry textbook.",
+            "CLOSE THIS. those point cloud processing and drone mapping problems won't solve themselves.",
+            "CLOSE THIS. your photogrammetry exam won't study itself."
+        ]
+        }
+    }
+
+    private func tectonicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those tectonic plate problems won't solve themselves.",
+            "your tectonics exam doesn't care that you're scrolling.",
+            "get back to your tectonics work.",
+            "close this and open your tectonics textbook.",
+        ]
+        case 2: return [
+            "no one masters plate tectonics by scrolling.",
+            "close this and work on your tectonics assignment.",
+            "those subduction and fault mechanics problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your tectonics textbook.",
+            "CLOSE THIS. those plate motion and geodynamics problems won't solve themselves.",
+            "CLOSE THIS. your tectonics exam won't study itself."
+        ]
+        }
+    }
+
+    private func tribologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that friction won't analyze itself.",
+            "your tribology exam doesn't care that you're scrolling.",
+            "get back to your tribology work.",
+            "close this and open your tribology textbook.",
+        ]
+        case 2: return [
+            "no one masters tribology by scrolling.",
+            "close this and work on your tribology assignment.",
+            "those wear rate and contact mechanics problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your tribology textbook.",
+            "CLOSE THIS. those friction, wear, and lubrication problems won't solve themselves.",
+            "CLOSE THIS. your tribology exam won't study itself."
+        ]
+        }
+    }
+
+    private func radiochemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those radioactive tracers won't track themselves.",
+            "your radiochemistry exam doesn't care that you're scrolling.",
+            "get back to your radiochemistry work.",
+            "close this and open your radiochemistry textbook.",
+        ]
+        case 2: return [
+            "no one masters radiochemistry by scrolling.",
+            "close this and work on your radiochemistry assignment.",
+            "those isotope dating and radiolabeling problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your radiochemistry textbook.",
+            "CLOSE THIS. those radiocarbon dating and radioactive tracer problems won't solve themselves.",
+            "CLOSE THIS. your radiochemistry exam won't study itself."
         ]
         }
     }

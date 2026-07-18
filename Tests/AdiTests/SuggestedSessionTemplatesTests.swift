@@ -6777,4 +6777,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast981() {
         #expect(SuggestedSessionTemplates.all.count >= 981, "template catalog must have ≥981 entries after astrodynamics/biomaterials/crystallography/spectroscopy/industrialengineering additions")
     }
+    // MARK: - psycholinguistics templates
+    @Test func psycholinguisticsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("psycholinguistics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func psycholinguisticsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("psycholinguistics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - photogrammetry templates
+    @Test func photogrammetryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("photogrammetry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func photogrammetryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("photogrammetry") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - tectonics templates
+    @Test func tectonicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("tectonics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func tectonicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("tectonics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - tribology templates
+    @Test func tribologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("tribology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func tribologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("tribology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - radiochemistry templates
+    @Test func radiochemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("radiochemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func radiochemistryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("radiochemistry") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥991)
+    @Test func templateCountAtLeast991() {
+        #expect(SuggestedSessionTemplates.all.count >= 991, "template catalog must have ≥991 entries after psycholinguistics/photogrammetry/tectonics/tribology/radiochemistry additions")
+    }
 }

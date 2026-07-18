@@ -6335,5 +6335,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Industrial engineering assignment completed (LP solution, queueing analysis, facilities layout, time study, lean analysis, or reliability analysis completed with formulation tables, sensitivity analysis, layout diagram, and solution saved to file)",
             preferredDuration: 60 * 60
         ),
+        // psycholinguistics
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study psycholinguistics for my exam — review sentence processing models (serial vs. parallel, garden-path theory), mental lexicon organization and lexical access, language acquisition theories (nativist, connectionist, usage-based), speech perception and word recognition, syntactic parsing strategies, reading comprehension models, and ERP components for language (N400, P600)",
+            successCriteria: "Psycholinguistics study session completed (at least two topics reviewed with sentence processing diagram, lexical access model sketches, acquisition theory comparison table, ERP waveform descriptions, parsing strategy examples, and reading comprehension model summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Work on my psycholinguistics assignment — analyze a garden-path sentence and explain the reanalysis cost, design a priming experiment to test lexical access, evaluate competing language acquisition theories using empirical evidence, interpret ERP data from a language processing study, or write a critical review of a classic psycholinguistics paper",
+            successCriteria: "Psycholinguistics assignment completed (garden-path analysis, priming experiment design, acquisition theory evaluation, ERP interpretation, or paper review completed with theoretical rationale, empirical support, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // photogrammetry
+        SuggestedTemplate(
+            icon: "camera.aperture",
+            task: "Study photogrammetry for my exam — review image geometry and collinearity equations, camera calibration and lens distortion, structure from motion (SfM) pipeline and bundle adjustment, stereophotogrammetry and epipolar geometry, LiDAR point cloud processing and classification, orthorectification and digital elevation model generation, and UAV/drone mapping workflows",
+            successCriteria: "Photogrammetry study session completed (at least two topics reviewed with collinearity equation derivations, camera calibration diagrams, SfM workflow summary, epipolar geometry sketches, point cloud processing steps, DEM generation procedure, and UAV flight planning summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "camera.aperture",
+            task: "Work on my photogrammetry assignment — process a set of drone images using SfM to generate a point cloud and orthophoto, calibrate a camera model and correct for lens distortion, perform bundle adjustment on a photogrammetric network, classify a LiDAR point cloud into ground/vegetation/building returns, or compute a digital elevation model and extract contours",
+            successCriteria: "Photogrammetry assignment completed (SfM processing, camera calibration, bundle adjustment, point cloud classification, or DEM extraction completed with accuracy assessment, error statistics, output files, and solution report saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // tectonics
+        SuggestedTemplate(
+            icon: "globe.americas.fill",
+            task: "Study tectonics for my exam — review plate boundary types (convergent, divergent, transform) and associated processes, subduction zone mechanics and arc volcanism, continental drift and paleomagnetism evidence, isostasy and flexural rigidity, mantle convection and driving forces, fault mechanics (Anderson's theory, Byerlee's law), and tectonic geomorphology",
+            successCriteria: "Tectonics study session completed (at least two topics reviewed with plate boundary diagrams, subduction cross-sections, paleomagnetic reversal timescale, isostasy derivation, convection cell sketches, fault stress diagrams, and tectonic geomorphology examples summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "globe.americas.fill",
+            task: "Work on my tectonics assignment — reconstruct past plate positions using paleomagnetism and hot spot tracks, analyze a focal mechanism solution to determine fault type and slip direction, calculate convergence rates from GPS data and magnetic anomalies, evaluate isostatic rebound following deglaciation, or interpret a geologic cross-section showing fold-and-thrust belt geometry",
+            successCriteria: "Tectonics assignment completed (plate reconstruction, focal mechanism analysis, convergence rate calculation, isostatic rebound evaluation, or cross-section interpretation completed with maps/diagrams, velocity vectors, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // tribology
+        SuggestedTemplate(
+            icon: "gearshape.2.fill",
+            task: "Study tribology for my exam — review friction laws (Amontons, Coulomb), adhesion and ploughing components of friction, Archard wear equation and wear mechanisms (adhesive, abrasive, fatigue, corrosive), Hertzian contact mechanics and stress distributions, hydrodynamic and elastohydrodynamic lubrication theory (Reynolds equation, Stribeck curve), and surface roughness characterization",
+            successCriteria: "Tribology study session completed (at least two topics reviewed with friction law derivations, wear mechanism diagrams, Archard equation application, Hertz contact stress calculations, Stribeck curve annotations, Reynolds equation summary, and surface roughness parameter table saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "gearshape.2.fill",
+            task: "Work on my tribology assignment — calculate Hertzian contact stress and deformation for a sphere-on-flat geometry, apply the Archard wear equation to predict wear volume, analyze a Stribeck curve to identify lubrication regimes, solve a Reynolds equation problem for journal bearing pressure distribution, or select materials and coatings to minimize wear in a given tribological contact",
+            successCriteria: "Tribology assignment completed (contact stress calculation, wear volume prediction, Stribeck curve analysis, bearing pressure distribution, or material selection completed with numerical results, diagrams, design rationale, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // radiochemistry
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study radiochemistry for my exam — review radioactive decay laws and decay chains, radiocarbon and other isotope dating techniques (K-Ar, U-Pb, Rb-Sr), radioactive tracer principles and applications in biochemistry and environmental science, radiolabeling methods (synthesis, purification, quality control), radiation chemistry (radiolysis, free radical formation), and gamma/alpha/beta spectroscopy",
+            successCriteria: "Radiochemistry study session completed (at least two topics reviewed with decay law derivations, dating method comparison table, tracer experiment design examples, radiolabeling synthesis schemes, radiolysis mechanism, and spectroscopy energy range summary saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work on my radiochemistry assignment — calculate the age of a sample using radiocarbon or K-Ar dating, design a radioactive tracer experiment to track a metabolic pathway, solve decay chain equations for ingrowth of a daughter nuclide, analyze a gamma spectrum to identify unknown radionuclides and calculate activity, or evaluate radiolabeling yield and radiochemical purity",
+            successCriteria: "Radiochemistry assignment completed (isotope dating calculation, tracer experiment design, decay chain solution, gamma spectrum analysis, or radiolabeling evaluation completed with numerical results, decay diagrams, spectral annotations, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

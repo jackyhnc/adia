@@ -1571,6 +1571,29 @@ public final class CalloutManager {
             || lower.contains("applied linguistics major") || lower.contains("applied linguistics degree") {
             return "appliedlinguistics"
         }
+        // psycholinguistics — positioned BEFORE linguistics so dedicated psycholinguistics class/exam
+        // and sentence-processing/language-acquisition coursework gets its own pool. Bare "language
+        // acquisition" without psycholinguistics/cognitive context stays in linguistics below.
+        if lower.contains("psycholinguistics class") || lower.contains("psycholinguistics course")
+            || lower.contains("psycholinguistics exam") || lower.contains("psycholinguistics notes")
+            || lower.contains("psycholinguistics textbook") || lower.contains("psycholinguistics assignment")
+            || lower.contains("psycholinguistics homework") || lower.contains("psycholinguistics lab")
+            || lower.contains("sentence processing") && (lower.contains("class") || lower.contains("exam") || lower.contains("psycholinguistics") || lower.contains("cognitive"))
+            || lower.contains("mental lexicon") && (lower.contains("class") || lower.contains("exam") || lower.contains("psycholinguistics"))
+            || lower.contains("syntactic parsing") && (lower.contains("class") || lower.contains("exam") || lower.contains("psycholinguistics"))
+            || lower.contains("garden path sentence") && (lower.contains("class") || lower.contains("exam") || lower.contains("psycholinguistics"))
+            || lower.contains("garden-path sentence") && (lower.contains("class") || lower.contains("exam") || lower.contains("psycholinguistics"))
+            || lower.contains("reading comprehension") && (lower.contains("class") || lower.contains("exam") || lower.contains("psycholinguistics"))
+            || lower.contains("language comprehension") && (lower.contains("class") || lower.contains("exam") || lower.contains("psycholinguistics"))
+            || lower.contains("priming experiment") && (lower.contains("class") || lower.contains("exam") || lower.contains("psycholinguistics") || lower.contains("language"))
+            || lower.contains("lexical access") && (lower.contains("class") || lower.contains("exam") || lower.contains("psycholinguistics"))
+            || lower.contains("speech perception") && (lower.contains("class") || lower.contains("exam") || lower.contains("psycholinguistics"))
+            || lower.contains("word recognition") && (lower.contains("class") || lower.contains("exam") || lower.contains("psycholinguistics"))
+            || lower.contains("erp study") && (lower.contains("language") || lower.contains("psycholinguistics") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("bilingualism") && (lower.contains("class") || lower.contains("exam") || lower.contains("psycholinguistics"))
+            || lower.contains("language acquisition") && (lower.contains("psycholinguistics") || lower.contains("cognitive") || lower.contains("class") || lower.contains("exam")) && !lower.contains("applied linguistics") && !lower.contains("sla") {
+            return "psycholinguistics"
+        }
         // linguistics — positioned before studying so "linguistics exam", "phonetics class",
         // and language-science assignments don't fall through to studying.
         // Language learning (vocabulary, conjugation, Duolingo) stays in the language branch below.
@@ -1891,6 +1914,29 @@ public final class CalloutManager {
         if word("homework") || word("assignment") || lower.contains("problem set") || word("pset")
             || word("worksheet") || word("worksheets") {
             return "homework"
+        }
+        // photogrammetry — positioned BEFORE geospatial so drone mapping, structure-from-motion,
+        // and 3D point cloud coursework routes here. Bare "lidar" / "drone" without photogrammetry
+        // or mapping class context falls through to geospatial.
+        if lower.contains("photogrammetry class") || lower.contains("photogrammetry course")
+            || lower.contains("photogrammetry exam") || lower.contains("photogrammetry lab")
+            || lower.contains("photogrammetry assignment") || lower.contains("photogrammetry homework")
+            || lower.contains("photogrammetry notes") || lower.contains("photogrammetry textbook")
+            || lower.contains("aerial photogrammetry") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("close-range photogrammetry") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("structure from motion") && (lower.contains("class") || lower.contains("exam") || lower.contains("photogrammetry") || lower.contains("mapping"))
+            || lower.contains("structure-from-motion") && (lower.contains("class") || lower.contains("exam") || lower.contains("photogrammetry"))
+            || lower.contains("sfm") && (lower.contains("class") || lower.contains("exam") || lower.contains("photogrammetry"))
+            || lower.contains("point cloud processing") && (lower.contains("class") || lower.contains("exam") || lower.contains("photogrammetry") || lower.contains("lidar"))
+            || lower.contains("lidar point cloud") && (lower.contains("class") || lower.contains("exam") || lower.contains("photogrammetry"))
+            || lower.contains("uav mapping") && (lower.contains("class") || lower.contains("exam") || lower.contains("photogrammetry"))
+            || lower.contains("drone mapping") && (lower.contains("class") || lower.contains("exam") || lower.contains("photogrammetry") || lower.contains("survey"))
+            || lower.contains("drone survey") && (lower.contains("class") || lower.contains("exam") || lower.contains("photogrammetry"))
+            || lower.contains("3d reconstruction from photo") && (lower.contains("class") || lower.contains("exam") || lower.contains("photogrammetry"))
+            || lower.contains("bundle adjustment") && (lower.contains("class") || lower.contains("exam") || lower.contains("photogrammetry") || lower.contains("mapping"))
+            || lower.contains("orthorectification") && (lower.contains("class") || lower.contains("exam") || lower.contains("photogrammetry"))
+            || lower.contains("digital elevation model") && (lower.contains("class") || lower.contains("exam") || lower.contains("photogrammetry")) {
+            return "photogrammetry"
         }
         // geospatial — positioned BEFORE geology so GIS/remote sensing/spatial analysis tasks
         // route here. "gis analysis" and "gis mapping" removed from geology and owned here.
@@ -2364,6 +2410,30 @@ public final class CalloutManager {
             || lower.contains("rock identification class") || lower.contains("mineral identification class")
             || lower.contains("igneous rock lab") || lower.contains("sedimentary rock lab") || lower.contains("metamorphic rock lab") {
             return "geologylab"
+        }
+        // tectonics — positioned BEFORE geology so dedicated plate tectonics, fault mechanics,
+        // and geodynamics coursework gets its own pool. Bare "plate tectonics" stays in geology
+        // when no class/exam/tectonics context is present.
+        if lower.contains("tectonics class") || lower.contains("tectonics course")
+            || lower.contains("tectonics exam") || lower.contains("tectonics notes")
+            || lower.contains("tectonics textbook") || lower.contains("tectonics assignment")
+            || lower.contains("tectonics homework") || lower.contains("tectonics lab")
+            || lower.contains("plate tectonics class") || lower.contains("plate tectonics course")
+            || lower.contains("plate tectonics exam") || lower.contains("plate tectonics notes")
+            || lower.contains("tectonic plates class") || lower.contains("tectonic plates exam")
+            || lower.contains("fault mechanics") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonics") || lower.contains("course"))
+            || lower.contains("geodynamics class") || lower.contains("geodynamics course")
+            || lower.contains("geodynamics exam") || lower.contains("geodynamics lab")
+            || lower.contains("subduction") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonics") || lower.contains("course"))
+            || lower.contains("transform fault") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonics"))
+            || lower.contains("continental drift") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonics") || lower.contains("course"))
+            || lower.contains("isostasy") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonics") || lower.contains("geodynamics"))
+            || lower.contains("mantle convection") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonics") || lower.contains("geodynamics"))
+            || lower.contains("tectonic geomorphology") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("convergent boundary") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonics"))
+            || lower.contains("divergent boundary") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonics"))
+            || lower.contains("rifting") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonics") || lower.contains("geodynamics")) {
+            return "tectonics"
         }
         // geology — positioned before engineering so "geology lab" and earth-science field tasks
         // don't fall through to engineering or research via word("lab").
@@ -2964,6 +3034,29 @@ public final class CalloutManager {
             || lower.contains("surveying class") || lower.contains("surveying course") || lower.contains("surveying exam") || lower.contains("surveying lab") {
             return "civilengineering"
         }
+        // tribology — positioned BEFORE mechanicalengineering so friction, wear, lubrication, and
+        // contact mechanics coursework gets its own pool. "tribology class/course/exam" was formerly
+        // caught by mechanicalengineering; now removed there and owned here.
+        if lower.contains("tribology class") || lower.contains("tribology course")
+            || lower.contains("tribology exam") || lower.contains("tribology lab")
+            || lower.contains("tribology assignment") || lower.contains("tribology homework")
+            || lower.contains("tribology textbook") || lower.contains("tribology notes")
+            || word("tribology") || word("tribologist") || word("tribological")
+            || lower.contains("friction mechanics") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology") || lower.contains("course"))
+            || lower.contains("wear analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology"))
+            || lower.contains("lubrication engineering") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology") || lower.contains("course"))
+            || lower.contains("lubrication theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology"))
+            || lower.contains("contact mechanics") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology") || lower.contains("hertz"))
+            || lower.contains("hertz contact") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology") || lower.contains("contact mechanics"))
+            || lower.contains("wear rate") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology") || lower.contains("wear test"))
+            || lower.contains("wear debris") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology"))
+            || lower.contains("coefficient of friction") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology") || lower.contains("lab"))
+            || lower.contains("tribometer") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("test"))
+            || lower.contains("elasto-hydrodynamic") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology") || lower.contains("lubrication"))
+            || lower.contains("elastohydrodynamic") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology") || lower.contains("lubrication"))
+            || lower.contains("surface roughness") && (lower.contains("class") || lower.contains("exam") || lower.contains("tribology") || lower.contains("contact")) {
+            return "tribology"
+        }
         // mechanicalengineering — BEFORE engineering; machine design, vibrations, kinematics,
         // statics, and dynamics coursework. "mechanical engineering" in generic text still falls
         // through to engineering; only specific ME coursework routes here.
@@ -2987,7 +3080,6 @@ public final class CalloutManager {
             || lower.contains("dynamics class") && lower.contains("mechanical")
             || lower.contains("dynamics course") && lower.contains("mechanical")
             || lower.contains("dynamics exam") && lower.contains("mechanical")
-            || lower.contains("tribology class") || lower.contains("tribology course") || lower.contains("tribology exam")
             || lower.contains("engineering mechanics class") || lower.contains("engineering mechanics course") || lower.contains("engineering mechanics exam") {
             return "mechanicalengineering"
         }
@@ -6778,6 +6870,28 @@ public final class CalloutManager {
             || lower.contains("pseudo-first-order") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("kinetics"))
             || lower.contains("michaelis-menten kinetics") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("kinetics")) {
             return "chemicalkinetics"
+        }
+        // radiochemistry — positioned BEFORE nuclearchemistry so radioactive tracer, isotope dating,
+        // and radiolabeling coursework gets its own pool. "radioactive decay" with chemistry/class context
+        // is also caught by nuclearchemistry; when radiochemistry context is present it fires here first.
+        if lower.contains("radiochemistry class") || lower.contains("radiochemistry course")
+            || lower.contains("radiochemistry exam") || lower.contains("radiochemistry lab")
+            || lower.contains("radiochemistry assignment") || lower.contains("radiochemistry homework")
+            || lower.contains("radiochemistry textbook") || lower.contains("radiochemistry notes")
+            || word("radiochemistry") || word("radiochemist") || word("radiochemists")
+            || lower.contains("radioactive tracer") && (lower.contains("class") || lower.contains("exam") || lower.contains("radiochemistry") || lower.contains("lab"))
+            || lower.contains("radiolabeling") && (lower.contains("class") || lower.contains("exam") || lower.contains("radiochemistry") || lower.contains("lab"))
+            || lower.contains("radioactive labeling") && (lower.contains("class") || lower.contains("exam") || lower.contains("radiochemistry") || lower.contains("lab"))
+            || lower.contains("isotope dating") && (lower.contains("class") || lower.contains("exam") || lower.contains("radiochemistry") || lower.contains("course"))
+            || lower.contains("radiocarbon dating") && (lower.contains("class") || lower.contains("exam") || lower.contains("radiochemistry") || lower.contains("course"))
+            || lower.contains("carbon-14 dating") && (lower.contains("class") || lower.contains("exam") || lower.contains("radiochemistry"))
+            || lower.contains("radioisotope") && (lower.contains("class") || lower.contains("exam") || lower.contains("radiochemistry") || lower.contains("lab"))
+            || lower.contains("nuclear medicine chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("radiation chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("radiochemistry") || lower.contains("course"))
+            || lower.contains("accelerator mass spectrometry") && (lower.contains("class") || lower.contains("exam") || lower.contains("radiochemistry") || lower.contains("dating"))
+            || lower.contains("positron emission") && (lower.contains("class") || lower.contains("exam") || lower.contains("radiochemistry") || lower.contains("chemistry"))
+            || lower.contains("gamma spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("radiochemistry") || lower.contains("lab")) {
+            return "radiochemistry"
         }
         // nuclearchemistry — positioned AFTER analyticalchemistry and BEFORE drugdiscovery.
         // Catches nuclear chemistry coursework: radioactive decay, half-life, nuclear equations,
