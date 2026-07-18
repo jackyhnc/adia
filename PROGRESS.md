@@ -19469,3 +19469,73 @@ None. Swift toolchain unavailable on Linux container.
   - `mechatronics` — mechatronics class/course/exam (sensors and actuators, PLC programming, motion control, encoder feedback, hydraulics and pneumatics — distinct from robotics and mechanicalengineering)
   - `renewableenergy` — renewable energy class/course/exam (solar PV, wind turbine design, energy storage, grid integration, LCOE — distinct from electricalengineering/energy)
 - Template count target: 1011 → 1021 after next 5-domain batch
+
+## Run 393 (automated) — 2026-07-18 — 5 new keyword domains: wastewatertreatment/airpollutioncontrol/renewableenergy/navalarchitecture/mechatronics (1011→1021 templates)
+
+### What shipped
+
+**5 new keyword domains: wastewatertreatment, airpollutioncontrol, renewableenergy, navalarchitecture, mechatronics**
+
+**New keyword domain — wastewatertreatment:**
+- Branch positioned BEFORE `environmentalengineering` (line 2552→2607 now). "wastewater treatment" was caught by environmentalengineering; now intercepted here first.
+- Catches: wastewater treatment class/course/exam/lab/design/homework/assignment/notes/textbook, wastewater engineering class/course/exam, WWTP + class/exam/lab/design, activated sludge + class/exam/lab/process, membrane bioreactor/MBR + class/exam/lab/wastewater, trickling filter + class/exam/lab/wastewater, biological nutrient removal + class/exam/wastewater, nitrification/denitrification + class/exam + wastewater/treatment, BOD/COD removal + class/exam/lab/wastewater, secondary treatment + class/exam + wastewater/environmental, primary clarifier + class/exam/wastewater, anaerobic digestion + class/exam/wastewater/lab, biological phosphorus removal + class/exam/wastewater, aeration tank + class/exam/wastewater/design, sedimentation basin + class/exam/wastewater.
+- `wastewatertreatmentCallouts(tier:)` 4/3/3: "those activated sludge calculations won't solve themselves." / "you know you have a wastewater treatment problem set due." / "CLOSE THIS. those activated sludge and membrane bioreactor problems won't do themselves."
+- 2 templates: study exam (activated sludge, BNR, MBR, primary/secondary treatment, anaerobic digestion, disinfection, 60 min) + assignment (reactor sizing, clarifier design, BNR calculation, MBR analysis, effluent quality check, 60 min)
+
+**New keyword domain — airpollutioncontrol:**
+- Branch positioned BEFORE `environmentalengineering` (after wastewatertreatment). "air quality + class/control" was caught by environmentalengineering; now intercepted here first.
+- Catches: air pollution control class/course/exam/lab/homework/assignment, air pollution class + control/engineering, PM2.5/PM10/particulate matter + class/exam/control/air pollution, electrostatic precipitator + class/exam/design/lab, ESP + class/exam + air/particulate/pollution, wet/dry scrubber + class/exam/air/design, selective catalytic reduction + class/exam/air/NOx, SCR + class/exam + NOx/catalyst/air pollution, NOx/SOx control + class/exam/air/pollution, emission control class/course/exam, flue gas desulfurization + class/exam/design, FGD + class/exam + sulfur/air, cyclone separator + class/exam/air/particulate, baghouse/fabric filter + class/exam/air/particulate.
+- `airpollutioncontrolCallouts(tier:)` 4/3/3: "those ESP and scrubber design problems won't solve themselves." / "you know you have an air pollution control problem set due." / "CLOSE THIS. those electrostatic precipitator and SCR design problems won't do themselves."
+- 2 templates: study exam (ESP, baghouse, cyclone, scrubbers, SCR, FGD, PM2.5/NOx/SOx standards, 60 min) + assignment (control device sizing, collection efficiency, pressure drop, compliance evaluation, 60 min)
+
+**New keyword domain — renewableenergy:**
+- Branch positioned BEFORE `electricalengineering` (line 3087→3200 now). Solar PV, wind turbine, and LCOE terms were caught by electricalengineering; now intercepted here first.
+- Catches: renewable energy class/course/exam/lab/notes/textbook/homework/assignment, sustainable/clean energy class/course/exam, solar PV + class/exam/lab/design/course, solar energy class/course/exam, photovoltaic + class/exam/lab/design/course, wind energy class/course/exam, wind turbine + class/exam/design/course/lab, wind power + class/exam/renewable/course, hydropower + class/exam/renewable/course/design, energy storage + class/exam/renewable/course/battery, grid integration + class/exam/renewable/course, LCOE/levelized cost of energy + class/exam/course, solar irradiance + class/exam/renewable/lab, biomass/geothermal energy + class/exam/course/renewable.
+- `renewableenergyCallouts(tier:)` 4/3/3: "those solar PV and wind turbine calculations won't solve themselves." / "you know you have a renewable energy problem set due." / "CLOSE THIS. those solar PV and wind energy design problems won't do themselves."
+- 2 templates: study exam (solar PV, Betz limit, wind, hydropower, energy storage, grid integration, LCOE, 60 min) + assignment (PV array sizing, wind power output, LCOE calculation, storage sizing, 60 min)
+
+**New keyword domain — navalarchitecture:**
+- Branch positioned BEFORE `mechanicalengineering` (between tribology and mechanicalengineering). Entirely new domain not previously caught.
+- Catches: naval architecture class/course/exam/lab/homework/assignment/notes/textbook, naval architecture and marine engineering, ship stability + class/exam/course/naval/lab, hull design + class/exam/naval/ship/course, metacentric height + class/exam/ship/stability, ship resistance + class/exam/naval/course, ship propulsion + class/exam/naval/design, ship hydrodynamics + class/exam/course/naval, ship structures + class/exam/naval/course, offshore structure + class/exam/design/naval/course, displacement hull + class/exam/naval/ship, trim and stability + class/exam/ship/naval, freeboard + class/exam/ship/naval, waterplane area + class/exam/ship/naval.
+- `navalarchitectureCallouts(tier:)` 4/3/3: "those ship stability and hull resistance problems won't solve themselves." / "you know you have a naval architecture problem set due." / "CLOSE THIS. those ship stability and hull design problems won't do themselves."
+- 2 templates: study exam (metacentric height, GZ curve, hull resistance, propeller design, trim, offshore structures, 60 min) + assignment (stability analysis, resistance calculation, propeller design, trim/displacement, structural loads, 60 min)
+
+**New keyword domain — mechatronics:**
+- Branch positioned BEFORE `mechanicalengineering` (after navalarchitecture). Distinct from robotics (ROS/autonomous systems) and from mechanical engineering.
+- Catches: mechatronics class/course/exam/lab/homework/assignment/notes/textbook/project/program, mechatronic system + class/exam/design/course, sensors and actuators + class/exam/mechatronics/course/lab, PLC programming + class/exam/lab/mechatronics/course, programmable logic controller + class/exam/lab/course, servo control + class/exam/mechatronics/lab, encoder feedback + class/lab/mechatronics/exam, hydraulics and pneumatics + class/exam/mechatronics/lab, motion control + class/exam/mechatronics/course/lab, machine/industrial automation + class/exam/mechatronics/course/lab.
+- `mechatronicsCallouts(tier:)` 4/3/3: "those PLC programming and servo control problems won't solve themselves." / "you know you have a mechatronics problem set due." / "CLOSE THIS. those PLC programming and motion control problems won't do themselves."
+- 2 templates: study exam (sensors/actuators, PLC, PID servo, motion profiles, hydraulics/pneumatics, 60 min) + assignment (PLC ladder logic, PID tuning, sensor/actuator selection, hydraulic circuit, encoder analysis, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +49 @Test functions (5 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains + 1 count guard ≥1021)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + 1 count guard ≥1021)
+
+**Template catalog: 1011 → 1021**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `wastewatertreatment` fires at line 2577, BEFORE environmentalengineering (line 2619) ✓
+- `airpollutioncontrol` fires at line 2605, BEFORE environmentalengineering (line 2619) ✓
+- `renewableenergy` fires at line 3166, BEFORE electricalengineering (line 3200) ✓
+- `navalarchitecture` fires at line 3363, BEFORE mechanicalengineering (line 3409) ✓
+- `mechatronics` fires at line 3383, BEFORE mechanicalengineering (line 3409) ✓
+- Brace balance: CalloutManager.swift 560/560 ✓; CalloutMessages.swift 1065/1065 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 1021 confirmed (grep -c "preferredDuration:" = 1021) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases in CalloutMessages.swift ✓
+- 5 new private callout pool functions in CalloutMessages.swift ✓
+- Pushed to main: d974591..f6dc650 ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `computationalfluiddynamics` — CFD simulation class/lab (finite volume, turbulence models, mesh generation, OpenFOAM/Fluent, Reynolds-averaged Navier-Stokes — distinct from fluid mechanics)
+  - `environmentalhydrology` — environmental hydrology class (watershed analysis, runoff modeling, HEC-HMS, stream flow statistics, flood frequency — distinct from hydrology/civilengineering)
+  - `transportationplanning` — transportation planning class (travel demand modeling, four-step model, land use, traffic impact analysis — distinct from transportation engineering)
+  - `structuraldynamics` — structural dynamics class (free vibration, natural frequencies, mode shapes, earthquake response spectra, MDOF systems — distinct from structural analysis and civil engineering)
+  - `industrialengineering` — operations research sub-domains: `queueingtheory` (M/M/1, Little's law, service rate, utilization — distinct from industrialengineering/statistics), `linearprogramming` (simplex method, LP formulation, duality — distinct from optimizationtheory)
+- Template count target: 1021 → 1031 after next 5-domain batch
+
+---
