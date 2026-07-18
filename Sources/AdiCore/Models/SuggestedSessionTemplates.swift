@@ -6270,5 +6270,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Limnology assignment completed (thermal profile analysis, trophic state calculation, macroinvertebrate identification, DO saturation computation, or nutrient retention model completed with field data tables, trophic classification, and solution saved to file)",
             preferredDuration: 60 * 60
         ),
+        // astrodynamics
+        SuggestedTemplate(
+            icon: "moon.stars.fill",
+            task: "Study astrodynamics for my exam — review Keplerian orbit elements and two-body problem solutions, vis-viva equation and orbital energy, Hohmann transfer orbits and delta-v budgeting, Lambert's problem and orbit determination, ground track analysis, and spacecraft navigation fundamentals",
+            successCriteria: "Astrodynamics study session completed (at least two topics reviewed with orbit element tables, vis-viva derivations, Hohmann transfer delta-v calculations, Lambert arc diagrams, and ground track sketches summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "moon.stars.fill",
+            task: "Work on my astrodynamics problem set — solve a two-body orbit determination problem, calculate delta-v for a Hohmann transfer or plane change, compute orbit elements from position/velocity vectors, solve Lambert's problem for a rendezvous, or design a multi-burn trajectory",
+            successCriteria: "Astrodynamics problem set completed (orbit determination, delta-v calculation, orbit element conversion, Lambert solution, or trajectory design completed with state vector tables, transfer diagrams, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // biomaterials
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Study biomaterials for my exam — review biocompatibility criteria and ISO standards, implant material classes (metals, ceramics, polymers, composites), surface functionalization and cell-material interactions, biodegradable polymers for scaffold design, osseointegration mechanisms, and corrosion and wear of implant alloys",
+            successCriteria: "Biomaterials study session completed (at least two topics reviewed with biocompatibility test flowchart, material property comparison table, surface modification schemes, scaffold design criteria, osseointegration diagram, and corrosion mechanism summary saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cross.case.fill",
+            task: "Work on my biomaterials assignment — evaluate a biomaterial for biocompatibility and mechanical match to tissue, design a scaffold with target porosity and degradation rate, analyze corrosion behavior of an implant alloy, assess surface modification strategies for a titanium implant, or complete a case study on a failed medical device",
+            successCriteria: "Biomaterials assignment completed (biocompatibility evaluation, scaffold design, corrosion analysis, surface modification plan, or device failure case study completed with material property data, design rationale, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // crystallography
+        SuggestedTemplate(
+            icon: "diamond.fill",
+            task: "Study crystallography for my exam — review crystal lattice types and Bravais lattices, Miller indices and crystallographic directions, Bragg's law and X-ray diffraction geometry, systematic absences and space groups, powder diffraction pattern indexing, and reciprocal lattice construction",
+            successCriteria: "Crystallography study session completed (at least two topics reviewed with lattice parameter diagrams, Miller index calculations, Bragg equation derivations, space group symmetry element lists, powder pattern indexing steps, and reciprocal lattice construction summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "diamond.fill",
+            task: "Work on my crystallography assignment — index a powder X-ray diffraction pattern to determine lattice parameters, calculate d-spacings using Bragg's law, assign Miller indices to crystal planes, identify systematic absences to determine space group, or solve a crystal structure problem from diffraction data",
+            successCriteria: "Crystallography assignment completed (powder pattern indexing, d-spacing calculation, Miller index assignment, space group determination, or structure solution completed with diffraction data table, lattice parameter values, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // spectroscopy
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Study spectroscopy for my exam — review NMR spectroscopy (chemical shift, coupling constants, splitting patterns, COSY/HMBC correlation), IR spectroscopy (functional group absorptions), mass spectrometry (fragmentation patterns, molecular ion, base peak), UV-Vis spectroscopy (chromophores, Beer-Lambert law), and Raman spectroscopy fundamentals",
+            successCriteria: "Spectroscopy study session completed (at least two techniques reviewed with NMR shift table, IR absorption correlation chart, mass spec fragmentation mechanism examples, UV-Vis chromophore structures, and Beer-Lambert calculations summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Work on my spectroscopy assignment — interpret a 1H NMR spectrum to determine a molecular structure, identify functional groups from an IR spectrum, determine molecular formula and structure from a mass spectrum, calculate unknown concentration from UV-Vis absorbance, or solve a multi-spectral structure elucidation problem",
+            successCriteria: "Spectroscopy assignment completed (NMR interpretation, IR functional group identification, mass spectrum analysis, UV-Vis concentration calculation, or structure elucidation completed with spectral annotations, structural assignment rationale, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // industrialengineering
+        SuggestedTemplate(
+            icon: "chart.bar.doc.horizontal",
+            task: "Study industrial engineering for my exam — review operations research methods (linear programming, simplex method, transportation model), queueing theory (M/M/1, M/M/c models), facilities layout and material handling, work measurement and time study, lean manufacturing and six sigma principles, and reliability engineering",
+            successCriteria: "Industrial engineering study session completed (at least two topics reviewed with LP formulation and simplex tableau, M/M/1 performance metric derivations, facilities layout diagrams, time study calculations, lean/six-sigma tool summaries, and reliability block diagram summarized and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.bar.doc.horizontal",
+            task: "Work on my industrial engineering assignment — formulate and solve a linear programming problem, analyze a queueing system using M/M/1 or M/M/c model, design a facilities layout using systematic layout planning, conduct a time study and compute standard time, apply lean tools (value stream mapping, 5S) to a process, or perform a reliability block diagram analysis",
+            successCriteria: "Industrial engineering assignment completed (LP solution, queueing analysis, facilities layout, time study, lean analysis, or reliability analysis completed with formulation tables, sensitivity analysis, layout diagram, and solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

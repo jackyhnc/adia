@@ -1052,6 +1052,31 @@ public final class CalloutManager {
             || lower.contains("photometry lab") && (lower.contains("astronomy") || lower.contains("stellar") || lower.contains("ccd")) {
             return "astronomylab"
         }
+        // astrodynamics — positioned BEFORE astrophysics so orbital mechanics, spacecraft
+        // navigation, and space mission design class/exam terms route here. Bare "orbital"
+        // or "trajectory" without astrodynamics/class context falls through to astrophysics/astronomy.
+        if lower.contains("astrodynamics class") || lower.contains("astrodynamics course")
+            || lower.contains("astrodynamics exam") || lower.contains("astrodynamics homework")
+            || lower.contains("astrodynamics assignment") || lower.contains("astrodynamics textbook")
+            || lower.contains("orbital mechanics class") || lower.contains("orbital mechanics course")
+            || lower.contains("orbital mechanics exam") || lower.contains("orbital mechanics homework")
+            || lower.contains("orbital mechanics problem") || lower.contains("orbital mechanics textbook")
+            || lower.contains("spacecraft dynamics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("keplerian orbit") && (lower.contains("class") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("kepler's law") && (lower.contains("class") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("kepler's laws") && (lower.contains("class") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("hohmann transfer") && (lower.contains("class") || lower.contains("exam") || lower.contains("problem") || lower.contains("calculate"))
+            || lower.contains("lambert's problem") && (lower.contains("class") || lower.contains("exam") || lower.contains("orbital") || lower.contains("astrodynamics"))
+            || lower.contains("two-body problem") && (lower.contains("class") || lower.contains("exam") || lower.contains("orbital") || lower.contains("astrodynamics"))
+            || lower.contains("vis-viva equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("delta-v calculation") || lower.contains("delta-v budget") && (lower.contains("class") || lower.contains("exam") || lower.contains("orbital"))
+            || lower.contains("orbit determination") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("ground track") && (lower.contains("class") || lower.contains("exam") || lower.contains("orbital") || lower.contains("spacecraft"))
+            || lower.contains("orbital insertion") && (lower.contains("class") || lower.contains("exam") || lower.contains("problem"))
+            || lower.contains("spacecraft navigation") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("space mission design") && (lower.contains("class") || lower.contains("exam") || lower.contains("course")) {
+            return "astrodynamics"
+        }
         // astrophysics — positioned BEFORE astronomy to intercept research-level astrophysical
         // signals and bare word("astrophysics"). word("astrophysics"/"astrophysicist"/
         // "astrophysicists") removed from astronomy and owned here. "astrophysics class/course/
@@ -2631,6 +2656,49 @@ public final class CalloutManager {
             || lower.contains("nanotechnology program") || lower.contains("nanotechnology research") {
             return "nanotechnology"
         }
+        // biomaterials — positioned BEFORE materialscience so biocompatibility, scaffold design,
+        // and implant material coursework routes here. Bare "tissue engineering" routes to
+        // biomedicalengineering (fires much later); "biomaterial" without class context falls through.
+        if lower.contains("biomaterials class") || lower.contains("biomaterials course")
+            || lower.contains("biomaterials exam") || lower.contains("biomaterials lab")
+            || lower.contains("biomaterials assignment") || lower.contains("biomaterials homework")
+            || lower.contains("biomaterials textbook") || lower.contains("biomaterials notes")
+            || lower.contains("biocompatibility") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("biomaterials"))
+            || lower.contains("implant material") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("biomaterials"))
+            || lower.contains("biodegradable polymer") && (lower.contains("class") || lower.contains("exam") || lower.contains("biomaterials"))
+            || lower.contains("scaffold design") && (lower.contains("class") || lower.contains("exam") || lower.contains("biomaterials") || lower.contains("tissue"))
+            || lower.contains("tissue scaffold") && (lower.contains("class") || lower.contains("exam") || lower.contains("biomaterials"))
+            || lower.contains("hydroxyapatite") && (lower.contains("class") || lower.contains("exam") || lower.contains("biomaterials") || lower.contains("implant"))
+            || lower.contains("osseointegration") && (lower.contains("class") || lower.contains("exam") || lower.contains("biomaterials") || lower.contains("implant"))
+            || lower.contains("surface functionalization") && (lower.contains("class") || lower.contains("exam") || lower.contains("biomaterials"))
+            || lower.contains("cell-material interaction") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("corrosion resistance") && (lower.contains("implant") || lower.contains("biomaterials") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("biomaterial testing") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab")) {
+            return "biomaterials"
+        }
+        // crystallography — positioned BEFORE materialscience so crystal structure, X-ray diffraction,
+        // and space group coursework routes here. "crystallography class" currently catches in
+        // materialscience; this block intercepts it first for a dedicated pool.
+        if lower.contains("crystallography class") || lower.contains("crystallography course")
+            || lower.contains("crystallography exam") || lower.contains("crystallography lab")
+            || lower.contains("crystallography assignment") || lower.contains("crystallography homework")
+            || lower.contains("crystallography textbook") || lower.contains("crystallography notes")
+            || lower.contains("x-ray diffraction") && (lower.contains("class") || lower.contains("exam") || lower.contains("crystallography"))
+            || lower.contains("xrd analysis") && (lower.contains("class") || lower.contains("crystallography"))
+            || lower.contains("bragg's law") && (lower.contains("class") || lower.contains("exam") || lower.contains("crystallography"))
+            || lower.contains("crystal structure") && (lower.contains("class") || lower.contains("exam") || lower.contains("crystallography"))
+            || lower.contains("crystal structures") && (lower.contains("class") || lower.contains("exam") || lower.contains("crystallography"))
+            || lower.contains("space group") && (lower.contains("class") || lower.contains("exam") || lower.contains("crystallography"))
+            || lower.contains("unit cell") && (lower.contains("crystallography") || lower.contains("class") || lower.contains("exam")) && !lower.contains("biology")
+            || lower.contains("miller index") && (lower.contains("class") || lower.contains("exam") || lower.contains("crystallography"))
+            || lower.contains("miller indices") && (lower.contains("class") || lower.contains("exam") || lower.contains("crystallography"))
+            || lower.contains("diffraction pattern") && (lower.contains("class") || lower.contains("exam") || lower.contains("crystallography"))
+            || lower.contains("powder diffraction") && (lower.contains("class") || lower.contains("exam") || lower.contains("crystallography"))
+            || lower.contains("reciprocal lattice") && (lower.contains("class") || lower.contains("exam") || lower.contains("crystallography"))
+            || lower.contains("bravais lattice") && (lower.contains("class") || lower.contains("exam") || lower.contains("crystallography"))
+            || lower.contains("crystal symmetry") && (lower.contains("class") || lower.contains("exam") || lower.contains("crystallography")) {
+            return "crystallography"
+        }
         // materialscience — positioned AFTER nanotechnology and BEFORE engineering.
         // Catches MSE coursework, metallurgy, polymer science, ceramics (in engineering context),
         // composite materials, and phase diagram labs. "nanomaterials"/"nanotechnology" now owned
@@ -3110,6 +3178,33 @@ public final class CalloutManager {
             || lower.contains("openfoam") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("cfd") || lower.contains("project"))
             || lower.contains("computational aerodynamics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course")) {
             return "computationalfluidynamics"
+        }
+        // industrialengineering — positioned BEFORE engineering so IE class/exam, operations
+        // research, and lean manufacturing coursework routes here. Bare "operations research"
+        // without class context stays in engineering.
+        if lower.contains("industrial engineering class") || lower.contains("industrial engineering course")
+            || lower.contains("industrial engineering exam") || lower.contains("industrial engineering homework")
+            || lower.contains("industrial engineering assignment") || lower.contains("industrial engineering textbook")
+            || lower.contains("industrial engineering lab") || lower.contains("ie class") && lower.contains("industrial")
+            || lower.contains("ie exam") && lower.contains("industrial") || lower.contains("ie homework") && lower.contains("industrial")
+            || lower.contains("operations research class") || lower.contains("operations research course")
+            || lower.contains("operations research exam") || lower.contains("operations research homework")
+            || lower.contains("operations research problem") || lower.contains("operations research textbook")
+            || lower.contains("work measurement") && (lower.contains("class") || lower.contains("exam") || lower.contains("industrial engineering"))
+            || lower.contains("facilities layout") && (lower.contains("class") || lower.contains("exam") || lower.contains("industrial engineering"))
+            || lower.contains("lean manufacturing") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("six sigma") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("industrial engineering"))
+            || lower.contains("quality engineering") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("queueing theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("industrial engineering"))
+            || lower.contains("queuing theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("industrial engineering"))
+            || lower.contains("simulation modeling") && (lower.contains("class") || lower.contains("exam") || lower.contains("industrial engineering"))
+            || lower.contains("production planning") && (lower.contains("class") || lower.contains("exam") || lower.contains("industrial engineering"))
+            || lower.contains("inventory management") && (lower.contains("class") || lower.contains("exam") || lower.contains("industrial engineering"))
+            || lower.contains("supply chain engineering") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("iise") && (lower.contains("class") || lower.contains("exam") || lower.contains("competition"))
+            || lower.contains("reliability engineering") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("fe exam") && lower.contains("industrial") {
+            return "industrialengineering"
         }
         // engineering — positioned before datascience and research so tool/hardware-specific terms
         // (solidworks, arduino, pcb) don't fall through to generic research via word("lab").
@@ -6604,6 +6699,33 @@ public final class CalloutManager {
             || lower.contains("infrared spectrum") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("lab") || lower.contains("class"))
             || lower.contains("column chromatography") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("lab") || lower.contains("class")) {
             return "organicchemistrylab"
+        }
+        // spectroscopy — positioned BEFORE analyticalchemistry so dedicated spectroscopy class/exam
+        // terms (NMR, IR, mass spec, UV-Vis) route here. "raman spectroscopy" without class context
+        // already routes to materialscharacterization (fires earlier). "ir spectrum organic lab"
+        // routes to organicchemistrylab (fires earlier). Bare "spectrum" NOT matched.
+        if lower.contains("spectroscopy class") || lower.contains("spectroscopy course")
+            || lower.contains("spectroscopy exam") || lower.contains("spectroscopy lab")
+            || lower.contains("spectroscopy homework") || lower.contains("spectroscopy assignment")
+            || lower.contains("spectroscopy textbook") || lower.contains("spectroscopy notes")
+            || lower.contains("nmr spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("nuclear magnetic resonance") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("spectroscopy"))
+            || lower.contains("nmr spectrum") && (lower.contains("class") || lower.contains("exam") || lower.contains("interpret") || lower.contains("analyze") || lower.contains("assignment"))
+            || lower.contains("proton nmr") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("interpret"))
+            || lower.contains("carbon nmr") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("interpret"))
+            || lower.contains("ir spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("infrared spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("mass spectrometry class") || lower.contains("mass spectrometry course") || lower.contains("mass spectrometry exam")
+            || lower.contains("uv-vis spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("uv/vis spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("raman spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("fluorescence spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("x-ray spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("atomic emission spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("maldi") && (lower.contains("class") || lower.contains("exam") || lower.contains("spectroscopy"))
+            || lower.contains("cosy") && lower.contains("nmr") && (lower.contains("class") || lower.contains("exam") || lower.contains("interpret"))
+            || lower.contains("hmbc") && lower.contains("nmr") && (lower.contains("class") || lower.contains("exam") || lower.contains("interpret")) {
+            return "spectroscopy"
         }
         // analyticalchemistry — positioned AFTER organicchemistry and BEFORE drugdiscovery.
         // Catches HPLC, GC-MS, titration, chromatography, and spectroscopy in analytical context.

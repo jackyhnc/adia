@@ -551,6 +551,11 @@ extension CalloutManager {
         case "petroleumengineering":       return petroleumengineeringCallouts(tier: tier)
         case "sportspsychology":           return sportspsychologyCallouts(tier: tier)
         case "limnology":                  return limnologyCallouts(tier: tier)
+        case "astrodynamics":              return astrodynamicsCallouts(tier: tier)
+        case "biomaterials":               return biomaterialsCallouts(tier: tier)
+        case "crystallography":            return crystallographyCallouts(tier: tier)
+        case "spectroscopy":               return spectroscopyCallouts(tier: tier)
+        case "industrialengineering":      return industrialengineeringCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -11104,4 +11109,110 @@ extension CalloutManager {
         ]
         }
     }
+
+    private func astrodynamicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those orbital mechanics problems won't solve themselves.",
+            "your astrodynamics exam doesn't care that you're scrolling.",
+            "get back to your orbital mechanics work.",
+            "close this and open your astrodynamics textbook.",
+        ]
+        case 2: return [
+            "no one masters orbital mechanics by scrolling.",
+            "close this and work on your astrodynamics problem set.",
+            "those Hohmann transfers and orbit determination problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your astrodynamics textbook.",
+            "CLOSE THIS. those Keplerian orbits and delta-v calculations won't solve themselves.",
+            "CLOSE THIS. your orbital mechanics exam won't study itself."
+        ]
+        }
+    }
+
+    private func biomaterialsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those biocompatibility and scaffold design problems won't solve themselves.",
+            "your biomaterials exam doesn't care that you're scrolling.",
+            "get back to your biomaterials work.",
+            "close this and open your biomaterials textbook.",
+        ]
+        case 2: return [
+            "no one masters biomaterials by scrolling.",
+            "close this and work on your biomaterials assignment.",
+            "those implant materials and biocompatibility problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your biomaterials textbook.",
+            "CLOSE THIS. those scaffold design and surface functionalization problems won't solve themselves.",
+            "CLOSE THIS. your biomaterials exam won't study itself."
+        ]
+        }
+    }
+
+    private func crystallographyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those crystal structure problems won't solve themselves.",
+            "your crystallography exam doesn't care that you're scrolling.",
+            "get back to your crystallography work.",
+            "close this and open your crystallography textbook.",
+        ]
+        case 2: return [
+            "no one masters crystallography by scrolling.",
+            "close this and work on your crystallography assignment.",
+            "those Bragg's law and space group problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your crystallography textbook.",
+            "CLOSE THIS. those X-ray diffraction and crystal symmetry problems won't solve themselves.",
+            "CLOSE THIS. your crystallography exam won't study itself."
+        ]
+        }
+    }
+
+    private func spectroscopyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those NMR and IR spectra won't interpret themselves.",
+            "your spectroscopy exam doesn't care that you're scrolling.",
+            "get back to your spectroscopy work.",
+            "close this and open your spectroscopy textbook.",
+        ]
+        case 2: return [
+            "no one masters spectroscopy by scrolling.",
+            "close this and work on your spectroscopy assignment.",
+            "those NMR chemical shifts and mass spec fragmentation problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your spectroscopy textbook.",
+            "CLOSE THIS. those NMR splitting patterns and IR absorptions won't interpret themselves.",
+            "CLOSE THIS. your spectroscopy exam won't study itself."
+        ]
+        }
+    }
+
+    private func industrialengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those operations research problems won't solve themselves.",
+            "your industrial engineering exam doesn't care that you're scrolling.",
+            "get back to your IE work.",
+            "close this and open your industrial engineering textbook.",
+        ]
+        case 2: return [
+            "no one masters industrial engineering by scrolling.",
+            "close this and work on your IE assignment.",
+            "those queueing theory and facilities layout problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your industrial engineering textbook.",
+            "CLOSE THIS. those operations research and lean manufacturing problems won't solve themselves.",
+            "CLOSE THIS. your IE exam won't study itself."
+        ]
+        }
+    }
+
 }

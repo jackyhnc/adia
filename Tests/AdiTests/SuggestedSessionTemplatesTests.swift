@@ -6738,4 +6738,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast971() {
         #expect(SuggestedSessionTemplates.all.count >= 971, "template catalog must have ≥971 entries after photonics/acousticsengineering/petroleumengineering/sportspsychology/limnology additions")
     }
+    // MARK: - astrodynamics templates
+    @Test func astrodynamicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("astrodynamics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func astrodynamicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("astrodynamics") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - biomaterials templates
+    @Test func biomaterialsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("biomaterials") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func biomaterialsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("biomaterials") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - crystallography templates
+    @Test func crystallographyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("crystallography") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func crystallographyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("crystallography") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - spectroscopy templates
+    @Test func spectroscopyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("spectroscopy") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func spectroscopyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("spectroscopy") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - industrialengineering templates
+    @Test func industrialEngineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("industrial engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func industrialEngineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("industrial engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥981)
+    @Test func templateCountAtLeast981() {
+        #expect(SuggestedSessionTemplates.all.count >= 981, "template catalog must have ≥981 entries after astrodynamics/biomaterials/crystallography/spectroscopy/industrialengineering additions")
+    }
 }
