@@ -1,5 +1,75 @@
 # Adia — Build Progress
 
+## Run 403 (automated) — 2026-07-22 — 5 new keyword domains: quantumoptics/marinechemistry/bioinorganicchemistry/informationtheory/mathematicalstatistics (1109→1119 templates)
+
+### What shipped
+
+**5 new keyword domains: quantumoptics, marinechemistry, bioinorganicchemistry, informationtheory, mathematicalstatistics**
+
+**New keyword domain — quantumoptics:**
+- Branch positioned BEFORE `optics`. Quantum optics coursework (cavity QED, Jaynes-Cummings model, photon statistics, Wigner function, squeezed states, Hong-Ou-Mandel, Fock states, entangled photons) distinct from classical optics.
+- Removes `|| lower.contains("quantum optics")` line from optics branch (now owned here).
+- Catches: quantum optics class/course/exam/homework/notes/assignment/lab/textbook, cavity qed+class/exam/quantum/optics, jaynes-cummings+class/exam/quantum/optics, photon statistics+class/exam/quantum/optics, wigner function+class/exam/quantum/optics, squeezed state+class/exam/quantum optics/light, hong-ou-mandel+class/exam/quantum/optics, fock state+class/exam/quantum optics, coherent state+quantum optics+class/exam, entangled photon+class/exam/quantum optics, beam splitter+quantum+optics+class/exam, optical parametric amplifier+class/exam/quantum.
+- `quantumopticsCallouts(tier:)` 4/3/3: "those cavity QED and photon statistics problems won't solve themselves." / "no one masters quantum optics by scrolling." / "CLOSE THIS. those cavity QED and photon entanglement problems won't solve themselves."
+- 2 templates: study exam (Fock/coherent/squeezed states, Jaynes-Cummings, Wigner function, Hong-Ou-Mandel, SPDC, BB84, Purcell, homodyne detection, 60 min) + assignment (Jaynes-Cummings eigenstates, Wigner function, HOM visibility, BB84 secure key rate, Purcell factor, 60 min)
+
+**New keyword domain — marinechemistry:**
+- Branch positioned BEFORE `oceanography`. Marine/ocean chemistry coursework (seawater composition, alkalinity, carbonate system, dissolved inorganic carbon, trace metals, ocean acidification) distinct from general oceanography.
+- Catches: marine chemistry/ocean chemistry class/course/exam/lab/notes/assignment, chemical oceanography+class/course/exam/lab, seawater composition+class/exam/chemistry/marine, ocean alkalinity+class/exam/chemistry/marine, carbonate system+class/exam/ocean/marine/seawater, dissolved inorganic carbon+class/exam/marine/ocean, ocean acidification+chemistry+class/exam/marine/carbonate, trace metal+ocean/marine+class/exam/chemistry, dissolved organic matter+class/exam/marine chemistry, ocean carbon cycle+chemistry+class/exam.
+- `marinechemistryCallouts(tier:)` 4/3/3: "those carbonate system and seawater composition problems won't solve themselves." / "no one masters marine chemistry by scrolling." / "CLOSE THIS. those carbonate system and trace metal problems won't solve themselves."
+- 2 templates: study exam (seawater composition, carbonate system equilibria, Revelle factor, ocean acidification, Redfield ratio, AOU, trace metal distributions, 60 min) + assignment (carbonate speciation, saturation states, air-sea flux, nutrient drawdown, residence time, alkalinity titration, 60 min)
+
+**New keyword domain — bioinorganicchemistry:**
+- Branch positioned BEFORE `inorganicchemistry`. Bioinorganic chemistry coursework (metalloenzymes, iron-sulfur clusters, heme proteins, oxygen transport, nitrogenase, cisplatin, carbonic anhydrase, copper enzymes) distinct from general inorganic chemistry.
+- Catches: bioinorganic chem/chemistry class/course/exam/lab/notes/assignment, metalloenzyme+class/exam/bioinorganic/inorganic chemistry, iron-sulfur cluster+class/exam/bioinorganic/inorganic chemistry, nitrogenase+class/exam/bioinorganic/inorganic chemistry, heme protein+class/exam/bioinorganic/inorganic chemistry, oxygen transport+class/exam/bioinorganic/heme/hemoglobin/myoglobin, carbonic anhydrase+class/exam/bioinorganic/metalloenzyme, cisplatin+class/exam/bioinorganic/inorganic chemistry, metal-based drug+class/exam/bioinorganic/inorganic chemistry, copper enzyme+class/exam/bioinorganic/metalloenzyme.
+- `bioinorganicchemistryCallouts(tier:)` 4/3/3: "those metalloenzyme and iron-sulfur cluster problems won't solve themselves." / "no one masters bioinorganic chemistry by scrolling." / "CLOSE THIS. those metalloenzyme and cisplatin problems won't solve themselves."
+- 2 templates: study exam (hemoglobin/myoglobin O₂ binding, 4Fe-4S clusters, nitrogenase FeMo-cofactor, carbonic anhydrase zinc-hydroxide mechanism, cisplatin DNA adducts, 60 min) + assignment (Hill equation fit, 4Fe-4S oxidation states, carbonic anhydrase mechanism, FeMo-cofactor discussion, cisplatin crosslinks, 60 min)
+
+**New keyword domain — informationtheory:**
+- Branch positioned BEFORE `mathematicalstatistics` and `statisticalmethods`. Information-theoretic coursework (Shannon entropy, channel capacity, mutual information, Huffman coding, channel coding, rate-distortion, KL divergence) distinct from applied statistics.
+- Catches: information theory class/course/exam/homework/notes/assignment/problem set/textbook, shannon entropy+class/exam/information/channel, channel capacity+class/exam/information/shannon, mutual information+class/exam/information theory/channel, huffman coding+class/exam/information/compression, source/channel coding+class/exam/information theory/shannon, noisy channel+class/exam/information theory/coding, ldpc/turbo code+class/exam/information/coding, rate-distortion+class/exam/information/theory, kullback-leibler+class/exam/information theory/divergence, joint entropy+class/exam/information theory.
+- `informationtheoryCallouts(tier:)` 4/3/3: "those Shannon entropy and channel capacity problems won't solve themselves." / "no one masters information theory by scrolling." / "CLOSE THIS. those channel capacity and source coding problems won't solve themselves."
+- 2 templates: study exam (Shannon entropy, mutual information, Huffman, source/channel coding theorem, BSC/BEC capacity, turbo/LDPC/polar codes, rate-distortion, 60 min) + assignment (Huffman code construction, I(X;Y)≥0 proof, channel capacity optimization, data-processing inequality, R(D) derivation, LDPC belief propagation, 60 min)
+
+**New keyword domain — mathematicalstatistics:**
+- Branch positioned BEFORE `statisticalmethods`. Theoretical statistics coursework (sufficiency, Fisher information, Cramér-Rao bound, Neyman-Pearson lemma, UMVUE, exponential family, order statistics) distinct from applied statistics.
+- Catches: mathematical/theoretical statistics class/course/exam/homework/notes/assignment, math stat class/course/exam/homework, sufficiency+class/exam/mathematical/theoretical statistics, fisher information+class/exam/mathematical statistics/estimation, cramer-rao/cramér-rao bound+class/exam/statistics/bound, rao-blackwell+class/exam/statistics, neyman-pearson+class/exam/statistics/hypothesis, uniformly most powerful+class/exam/statistics, umvue+class/exam/statistics, exponential family+mathematical statistics+class/exam, complete/minimal sufficient statistic+class/exam/statistics, order statistics+mathematical statistics+class/exam.
+- `mathematicalstatisticsCallouts(tier:)` 4/3/3: "those sufficiency and Cramér-Rao bound problems won't solve themselves." / "no one masters mathematical statistics by scrolling." / "CLOSE THIS. those sufficiency and Rao-Blackwell problems won't solve themselves."
+- 2 templates: study exam (sufficiency, Rao-Blackwell, Cramér-Rao, Neyman-Pearson, UMP tests, exponential family, order statistics, delta method, 60 min) + assignment (minimal sufficient statistic, UMVUE derivation, NP test construction, GLRT asymptotic distribution, delta method application, MLE consistency proof, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +35 @Test functions (3–4 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains + 1 count guard ≥1119)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + 1 count guard ≥1119)
+
+**Template catalog: 1109 → 1119**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `quantumoptics` fires at line 2053, BEFORE optics (line 2072) ✓
+- `marinechemistry` fires at line 1730, BEFORE oceanography (line 1756) ✓
+- `bioinorganicchemistry` fires at line 8156, BEFORE inorganicchemistry (line 8180) ✓
+- `informationtheory` fires at line 976, BEFORE mathematicalstatistics (line 1001) ✓
+- `mathematicalstatistics` fires at line 1001, BEFORE statisticalmethods (line 1018) ✓
+- Brace balance: CalloutManager.swift 609/609 ✓; CalloutMessages.swift 1163/1163 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 1119 confirmed (grep -c "preferredDuration:" = 1119) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases + 5 new private pool functions in CalloutMessages.swift ✓
+- "quantum optics" condition removed from optics branch ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `neuropsychology` — neuropsychological assessment, cognitive-neurological disorders, testing batteries (WAIS, Halstead-Reitan), brain-behavior relationships — distinct from cognitive neuroscience and clinical psychology
+  - `historicalgeology` — historical geology class (geochronology, stratigraphic principles, Precambrian/Paleozoic/Mesozoic/Cenozoic eras, rock record interpretation — distinct from stratigraphy which covers physical principles)
+  - `agriculturalchemistry` — agricultural chemistry class (soil chemistry, fertilizer chemistry, pesticide chemistry, nutrient cycling — distinct from environmental chemistry and soil science)
+  - `combustionengineering` — combustion engineering class (flame structure, combustion kinetics, laminar/turbulent flames, NOx formation, detonation — distinct from thermodynamics and fluid mechanics)
+  - `digitalcommunications` — digital communications class (modulation schemes, BPSK/QPSK/QAM, BER analysis, matched filter, OFDM, MIMO — distinct from information theory and signal processing)
+- Template count target: 1119 → 1129 after next 5-domain batch
+
+---
+
 ## Run 402 (automated) — 2026-07-22 — 5 new keyword domains: solidmechanics/stochasticprocesses/quantumchemistry/opticalengineering/surfacechemistry (1099→1109 templates)
 
 ### What shipped
