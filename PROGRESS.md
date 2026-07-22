@@ -20447,3 +20447,65 @@ Switch cases added between:
 - `nephrologyclerkship` / `nephrologyrotation` — renal pathophysiology, AKI/CKD management, dialysis
 - `endocrinologyrotation` — thyroid/adrenal/DM management, endocrine tumors, hormone labs
 - `hematologyoncology` — leukemia/lymphoma workup, chemotherapy regimens, bone marrow interpretation
+
+---
+
+## Run 406 — advancedlinearalgebra / riemanniangeometry / nephrologyrotation / endocrinologyrotation / hematologyoncology
+
+**Date:** 2026-07-22  
+**Templates:** 1149 → 1159  
+**Domains added:** 5
+
+### Routing branches added (CalloutManager.swift)
+
+| Domain | Placement | Key triggers |
+|---|---|---|
+| `advancedlinearalgebra` | BEFORE `linearalgebra` | "advanced linear algebra" + class/course/exam; "linear algebra 2/ii" + class/exam; "jordan canonical form" (always); "spectral theorem" + class/exam/linear-algebra; "dual space"/"tensor product"/"bilinear form"/"matrix analysis"/"quadratic form" + class/exam/linear-algebra |
+| `riemanniangeometry` | BEFORE `differentialgeometry` | "riemannian geometry" + class/exam; "riemannian metric" + class/exam; "levi-civita connection"/"sectional curvature"/"ricci tensor"/"gauss-bonnet"/"jacobi field"/"hopf-rinow"/"comparison geometry"/"geodesic completeness" + class/exam |
+| `nephrologyrotation` | AFTER `cardiologyrotation`, BEFORE `obgynrotation` | nephrology rotation/clerkship/elective; renal rotation/clerkship; dialysis rotation; nephrology notes/case + rotation/write; nephrology shelf; nbme nephrology; aki/ckd management + rotation/clerkship |
+| `endocrinologyrotation` | AFTER `nephrologyrotation`, BEFORE `obgynrotation` | endocrinology/endocrine rotation/clerkship/elective; endocrinology notes/case + rotation/write; endocrinology shelf; thyroid clinic + rotation/clerkship |
+| `hematologyoncology` | AFTER `endocrinologyrotation`, BEFORE `obgynrotation` | hematology oncology rotation/clerkship; heme onc/heme-onc/hem-onc rotation; bone marrow rotation; infusion center rotation; hematology/oncology shelf; leukemia/lymphoma cases + rotation/write |
+
+### Callout pools added (CalloutMessages.swift)
+
+- `advancedlinearalgebraCallouts(tier:)` — Jordan canonical form, spectral theorem, dual spaces, bilinear forms; CLOSE THIS tier
+- `riemanniangeometryCallouts(tier:)` — geodesics, sectional curvature, Gauss-Bonnet, Jacobi fields, Hopf-Rinow; CLOSE THIS tier
+- `nephrologyrotationCallouts(tier:)` — AKI/CKD notes, glomerulonephritis, dialysis; CLOSE THIS tier
+- `endocrinologyrotationCallouts(tier:)` — thyroid/adrenal cases, hormone labs, DM; CLOSE THIS tier
+- `hematologyoncologyCallouts(tier:)` — leukemia/lymphoma, chemo regimens, bone marrow; CLOSE THIS tier
+
+### Templates added (SuggestedSessionTemplates.swift)
+
+| Domain | Template 1 | Template 2 |
+|---|---|---|
+| advancedlinearalgebra | Study exam — JNF, spectral theorem, dual spaces, tensor products, bilinear forms, quadratic forms | Problem set — JNF computation + Jordan basis, SVD, bilinear form signature via Sylvester, tensor product universal property |
+| riemanniangeometry | Study exam — Levi-Civita, geodesics, Hopf-Rinow, Riemann curvature, Gauss-Bonnet, Jacobi fields, comparison geometry | Problem set — Christoffel symbols, geodesic equations, curvature computation, Gauss-Bonnet application, parallel transport holonomy, comparison theorem proof |
+| nephrologyrotation | Write rotation notes — SOAP/H&P, AKI workup, CKD management, glomerulonephritis workup, dialysis | Study shelf — KDIGO AKI staging, FENa, CKD complications, nephrotic vs nephritic, dialysis AEIOU |
+| endocrinologyrotation | Write rotation notes — SOAP/H&P, thyroid/adrenal/DM cases, hormone labs | Study shelf — DKA/HHS, thyroid disease workup, Cushing's dexamethasone suppression, hyperaldosteronism ARR, hyperparathyroidism |
+| hematologyoncology | Write rotation notes — SOAP/H&P, leukemia/lymphoma workup, chemo cycle, bone marrow | Study shelf — AML/ALL/CML/CLL, Hodgkin/NHL, myeloma CRAB, DIC vs TTP, iron studies |
+
+### Tests added
+
+**CalloutManagerTests.swift** — 55 new @Test functions:
+- 3 routing tests + 1 false-positive guard + 3 pool tests (all-tiers, tier-1-count, tier-3-CLOSE-THIS) per domain × 5 domains
+- Count guard updated: ≥1149 → ≥1159
+
+**SuggestedSessionTemplatesTests.swift** — 12 new @Test functions:
+- 2 template existence tests per domain × 5 domains + count guard ≥1149 → ≥1159
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1159 ✓
+- Routing branch ordering confirmed: advancedlinearalgebra (1340) < linearalgebra (1361) ✓
+- riemanniangeometry (1644) < differentialgeometry (1658) ✓
+- cardiologyrotation (9815) < nephrologyrotation (9832) < endocrinologyrotation (9847) < hematologyoncology (9865) < obgynrotation (9885) ✓
+- Brace balance: CalloutMessages.swift 1203/1203 ✓; CalloutManager.swift 629/629 ✓
+- 5 new switch cases in CalloutMessages.swift ✓
+- 5 new private pool functions in CalloutMessages.swift ✓
+
+### Suggested next domains
+- `quantumoptics` — quantum optics class (cavity QED, Jaynes-Cummings model, photon statistics, Wigner function, entangled photon pairs, quantum key distribution — distinct from optics/photonics which covers classical)
+- `astrochemistry` — astrochemistry class (interstellar medium chemistry, molecular clouds, polycyclic aromatic hydrocarbons, isotopic fractionation, protostellar disk chemistry — distinct from astronomy and chemistry)
+- `geochemistry` — geochemistry class (trace element partitioning, radiogenic isotope geochronology, stable isotope systematics, mineral equilibria, geochemical cycles — distinct from geology/environmental science)
+- `marinechemistry` — marine chemistry class (seawater composition, alkalinity, carbonate system, ocean carbon cycle, trace metal speciation — distinct from oceanography)
+- `radiologyrotation` — radiology clerkship (chest X-ray interpretation, CT reads, MRI basics, interventional radiology procedures, radiology report writing, ABR Core exam — distinct from premed radiology physics)
+
