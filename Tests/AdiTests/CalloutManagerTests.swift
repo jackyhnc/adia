@@ -25821,8 +25821,148 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "mathematicalstatistics", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1119)
-    @Test func calloutTemplatesCountAtLeast1119() {
-        #expect(SuggestedSessionTemplates.all.count >= 1119, "template catalog must have ≥1119 entries after quantumoptics/marinechemistry/bioinorganicchemistry/informationtheory/mathematicalstatistics additions")
+    // MARK: - historicalgeology
+    @Test func historicalgeologyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "historical geology class exam geochronology precambrian paleozoic") == "historicalgeology")
+    }
+    @Test func historicalgeologyRoutingFromGeochronology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geochronology exam geology radiometric dating") == "historicalgeology")
+    }
+    @Test func historicalgeologyRoutingFromGeologicTimeScale() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geologic time scale class exam geology history") == "historicalgeology")
+    }
+    @Test func historicalgeologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "stratigraphy class exam sequence stratigraphy lithostratigraphy biostratigraphy") != "historicalgeology")
+    }
+    @Test @MainActor func historicalgeologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "historicalgeology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "historicalgeology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "historicalgeology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func historicalgeologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "historicalgeology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func historicalgeologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "historicalgeology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - agriculturalchemistry
+    @Test func agriculturalchemistryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "agricultural chemistry class exam fertilizer pesticide nutrient cycling") == "agriculturalchemistry")
+    }
+    @Test func agriculturalchemistryRoutingFromFertilizerChemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fertilizer chemistry class exam soil nutrient") == "agriculturalchemistry")
+    }
+    @Test func agriculturalchemistryRoutingFromAgrochemical() {
+        #expect(CalloutManager.extractTaskKeyword(from: "agrochemical chemistry class exam lab") == "agriculturalchemistry")
+    }
+    @Test func agriculturalchemistryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "soil science class pedology soil taxonomy soil horizon survey") != "agriculturalchemistry")
+    }
+    @Test @MainActor func agriculturalchemistryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "agriculturalchemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "agriculturalchemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "agriculturalchemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func agriculturalchemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "agriculturalchemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func agriculturalchemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "agriculturalchemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - digitalcommunications
+    @Test func digitalcommunicationsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "digital communications class exam bpsk qpsk ofdm matched filter") == "digitalcommunications")
+    }
+    @Test func digitalcommunicationsRoutingFromBPSK() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bpsk qpsk modulation class exam digital communications ber") == "digitalcommunications")
+    }
+    @Test func digitalcommunicationsRoutingFromOFDM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ofdm digital communications class exam modulation") == "digitalcommunications")
+    }
+    @Test func digitalcommunicationsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "signal processing class exam fourier transform z-transform fir iir filter design") != "digitalcommunications")
+    }
+    @Test @MainActor func digitalcommunicationsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "digitalcommunications", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "digitalcommunications", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "digitalcommunications", tier: 3).isEmpty)
+    }
+    @Test @MainActor func digitalcommunicationsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "digitalcommunications", tier: 1).count >= 4)
+    }
+    @Test @MainActor func digitalcommunicationsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "digitalcommunications", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - contractlaw
+    @Test func contractlawRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "contracts class exam offer acceptance consideration promissory estoppel") == "contractlaw")
+    }
+    @Test func contractlawRoutingFromBreachOfContract() {
+        #expect(CalloutManager.extractTaskKeyword(from: "breach of contract class law expectation damages") == "contractlaw")
+    }
+    @Test func contractlawRoutingFromStatuteOfFrauds() {
+        #expect(CalloutManager.extractTaskKeyword(from: "statute of frauds class law contracts") == "contractlaw")
+    }
+    @Test func contractlawFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "criminal law class exam mens rea actus reus model penal code homicide") != "contractlaw")
+    }
+    @Test @MainActor func contractlawCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "contractlaw", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "contractlaw", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "contractlaw", tier: 3).isEmpty)
+    }
+    @Test @MainActor func contractlawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "contractlaw", tier: 1).count >= 4)
+    }
+    @Test @MainActor func contractlawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "contractlaw", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - propertylaw
+    @Test func propertylawRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "property law class exam future interests rule against perpetuities") == "propertylaw")
+    }
+    @Test func propertylawRoutingFromAdversePossession() {
+        #expect(CalloutManager.extractTaskKeyword(from: "adverse possession class law property elements tacking") == "propertylaw")
+    }
+    @Test func propertylawRoutingFromRealPropertyClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "real property class exam easement landlord-tenant") == "propertylaw")
+    }
+    @Test func propertylawFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tort law class exam negligence products liability proximate cause duty of care") != "propertylaw")
+    }
+    @Test @MainActor func propertylawCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "propertylaw", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "propertylaw", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "propertylaw", tier: 3).isEmpty)
+    }
+    @Test @MainActor func propertylawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "propertylaw", tier: 1).count >= 4)
+    }
+    @Test @MainActor func propertylawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "propertylaw", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1129)
+    @Test func calloutTemplatesCountAtLeast1129() {
+        #expect(SuggestedSessionTemplates.all.count >= 1129, "template catalog must have ≥1129 entries after historicalgeology/agriculturalchemistry/digitalcommunications/contractlaw/propertylaw additions")
     }
 }

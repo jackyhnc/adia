@@ -2237,6 +2237,24 @@ public final class CalloutManager {
             || lower.contains("gisp exam") || word("gisp") {
             return "geospatial"
         }
+        // agriculturalchemistry — positioned BEFORE soilscience so agricultural chemistry
+        // coursework (soil chemistry, fertilizer chemistry, pesticide chemistry, nutrient
+        // cycling) routes to a dedicated pool. Bare "agriculture" stays in agriculturalscience.
+        if lower.contains("agricultural chemistry class") || lower.contains("agricultural chemistry course")
+            || lower.contains("agricultural chemistry exam") || lower.contains("agricultural chemistry lab")
+            || lower.contains("agricultural chemistry notes") || lower.contains("agricultural chemistry assignment")
+            || lower.contains("agricultural chemistry textbook") || lower.contains("agricultural chemistry homework")
+            || lower.contains("agrichemistry class") || lower.contains("agrichemistry course") || lower.contains("agrichemistry exam")
+            || (lower.contains("fertilizer chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab")))
+            || (lower.contains("pesticide chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab")))
+            || (lower.contains("herbicide chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab")))
+            || (lower.contains("nutrient cycling") && (lower.contains("chemistry") || lower.contains("agricultural")))
+            || (lower.contains("plant nutrition chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("soil nutrient") && (lower.contains("chemistry") || (lower.contains("class") && (lower.contains("agricultural") || lower.contains("agr")))))
+            || (lower.contains("nitrogen fixation chemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("agrochemical") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("chemistry"))) {
+            return "agriculturalchemistry"
+        }
         // soilscience — positioned BEFORE geology so dedicated soil-science and pedology
         // coursework gets its own pool. "soil mechanics" stays in geology (construction context).
         // Bare "soil" alone is NOT matched.
@@ -2554,6 +2572,31 @@ public final class CalloutManager {
             || lower.contains("modflow") && (lower.contains("class") || lower.contains("course") || lower.contains("groundwater") || lower.contains("hydrogeology"))
             || lower.contains("hydraulic conductivity") && (lower.contains("class") || lower.contains("hydrogeology") || lower.contains("exam") || lower.contains("problem")) {
             return "hydrogeology"
+        }
+        // historicalgeology — positioned BEFORE stratigraphy and geology so historical geology
+        // class/exam (geochronology, Precambrian/Paleozoic/Mesozoic/Cenozoic eras, rock record
+        // interpretation, mass extinctions, paleogeography) routes to a dedicated pool.
+        if lower.contains("historical geology class") || lower.contains("historical geology course")
+            || lower.contains("historical geology exam") || lower.contains("historical geology notes")
+            || lower.contains("historical geology assignment") || lower.contains("historical geology textbook")
+            || lower.contains("history of the earth class") || lower.contains("history of the earth course")
+            || lower.contains("history of the earth exam")
+            || lower.contains("earth history class") || lower.contains("earth history course")
+            || lower.contains("earth history exam")
+            || lower.contains("geochronology class") || lower.contains("geochronology course")
+            || lower.contains("geochronology exam") || lower.contains("geochronology lab")
+            || (lower.contains("precambrian geology") && (lower.contains("class") || lower.contains("exam") || lower.contains("history")))
+            || (lower.contains("paleozoic era") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("history")))
+            || (lower.contains("mesozoic era") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("history")))
+            || (lower.contains("cenozoic era") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("history")))
+            || (lower.contains("mass extinction") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("earth history")))
+            || (lower.contains("paleogeography") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("history")))
+            || (lower.contains("radiometric dating") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("geochronology")))
+            || (lower.contains("u-pb dating") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("geochronology")))
+            || (lower.contains("supercontinent") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("earth history") || lower.contains("pangea")))
+            || (lower.contains("pangea") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("earth history")))
+            || (lower.contains("geologic time scale") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("history"))) {
+            return "historicalgeology"
         }
         // stratigraphy — positioned BEFORE geologylab and geology so stratigraphy class/exam and
         // sequence-stratigraphy coursework get a dedicated pool.
@@ -3458,6 +3501,29 @@ public final class CalloutManager {
             || lower.contains("electromagnetism exam") || lower.contains("electromagnetism homework")
             || lower.contains("electromagnetism problem set") || lower.contains("electromagnetism notes") {
             return "electromagnetism"
+        }
+        // digitalcommunications — positioned BEFORE signalprocessing so digital communications
+        // class/exam (modulation schemes, BPSK/QPSK/QAM, BER analysis, matched filter,
+        // OFDM, MIMO, channel coding) routes to a dedicated pool.
+        if lower.contains("digital communications class") || lower.contains("digital communications course")
+            || lower.contains("digital communications exam") || lower.contains("digital communications lab")
+            || lower.contains("digital communications notes") || lower.contains("digital communications assignment")
+            || lower.contains("digital communications textbook") || lower.contains("digital communications homework")
+            || lower.contains("digital communication systems class") || lower.contains("digital communication systems course")
+            || lower.contains("digital communication systems exam")
+            || lower.contains("bpsk") && (lower.contains("class") || lower.contains("exam") || lower.contains("digital") || lower.contains("modulation") || lower.contains("communications"))
+            || lower.contains("qpsk") && (lower.contains("class") || lower.contains("exam") || lower.contains("digital") || lower.contains("modulation") || lower.contains("communications"))
+            || lower.contains("qam modulation") && (lower.contains("class") || lower.contains("exam") || lower.contains("digital") || lower.contains("communications"))
+            || lower.contains("bit error rate") && (lower.contains("class") || lower.contains("exam") || lower.contains("digital") || lower.contains("communications") || lower.contains("modulation"))
+            || lower.contains("ber analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("digital") || lower.contains("communications"))
+            || lower.contains("matched filter") && (lower.contains("class") || lower.contains("exam") || lower.contains("digital") || lower.contains("communications"))
+            || lower.contains("ofdm") && (lower.contains("class") || lower.contains("exam") || lower.contains("digital") || lower.contains("communications") || lower.contains("modulation"))
+            || lower.contains("mimo") && (lower.contains("class") || lower.contains("exam") || lower.contains("digital") || lower.contains("communications") || lower.contains("antenna"))
+            || lower.contains("channel coding") && (lower.contains("class") || lower.contains("exam") || lower.contains("digital") || lower.contains("communications"))
+            || lower.contains("convolutional code") && (lower.contains("class") || lower.contains("exam") || lower.contains("digital") || lower.contains("communications"))
+            || lower.contains("viterbi algorithm") && (lower.contains("class") || lower.contains("exam") || lower.contains("digital") || lower.contains("communications"))
+            || lower.contains("modulation scheme") && (lower.contains("class") || lower.contains("exam") || lower.contains("digital") || lower.contains("communications")) {
+            return "digitalcommunications"
         }
         // signalprocessing — positioned BEFORE electricalengineering so dedicated signal processing
         // class/exam, DSP coursework, Fourier/Z-transform problems, and filter design route here.
@@ -11829,6 +11895,51 @@ public final class CalloutManager {
             || (lower.contains("nuisance") && (lower.contains("torts class") || lower.contains("torts course") || lower.contains("tort law")))
             || (lower.contains("respondeat superior") && (lower.contains("class") || lower.contains("law"))) {
             return "tortlaw"
+        }
+        // contractlaw — positioned AFTER tortlaw and BEFORE neurolaw so contract law class,
+        // offer/acceptance, consideration, and UCC study route here. Bare "contract"/"breach"
+        // NOT matched without law/class/course/exam context.
+        if lower.contains("contract law class") || lower.contains("contract law course")
+            || lower.contains("contract law exam") || lower.contains("contract law paper")
+            || lower.contains("contract law assignment") || lower.contains("contract law outline")
+            || lower.contains("contracts class") || lower.contains("contracts course")
+            || lower.contains("contracts exam") || lower.contains("contracts paper") || lower.contains("contracts assignment") || lower.contains("contracts outline")
+            || lower.contains("law of contracts")
+            || (lower.contains("offer and acceptance") && (lower.contains("class") || lower.contains("law") || lower.contains("contracts")))
+            || (lower.contains("consideration") && (lower.contains("contracts class") || lower.contains("contracts course") || lower.contains("contract law")))
+            || (lower.contains("ucc") && (lower.contains("contracts") || lower.contains("contract law") || (lower.contains("class") && lower.contains("law"))))
+            || (lower.contains("breach of contract") && (lower.contains("class") || lower.contains("law") || lower.contains("contracts")))
+            || (lower.contains("promissory estoppel") && (lower.contains("class") || lower.contains("law") || lower.contains("contracts")))
+            || (lower.contains("statute of frauds") && (lower.contains("class") || lower.contains("law") || lower.contains("contracts")))
+            || (lower.contains("contract damages") && (lower.contains("class") || lower.contains("law") || lower.contains("contracts")))
+            || (lower.contains("expectation damages") && (lower.contains("class") || lower.contains("law") || lower.contains("contracts")))
+            || (lower.contains("reliance damages") && (lower.contains("class") || lower.contains("law") || lower.contains("contracts")))
+            || (lower.contains("frustration of purpose") && (lower.contains("contracts") || lower.contains("contract law") || lower.contains("class")))
+            || (lower.contains("impossibility of performance") && (lower.contains("contracts") || lower.contains("contract law") || lower.contains("class")))
+            || lower.contains("law school contracts") || lower.contains("1l contracts") || lower.contains("first year contracts") {
+            return "contractlaw"
+        }
+        // propertylaw — positioned AFTER contractlaw and BEFORE neurolaw so property law class,
+        // future interests, easements, and landlord-tenant study route here. Bare "property"
+        // NOT matched alone.
+        if lower.contains("property law class") || lower.contains("property law course")
+            || lower.contains("property law exam") || lower.contains("property law paper")
+            || lower.contains("property law assignment") || lower.contains("property law outline")
+            || (lower.contains("property class") && (lower.contains("law") || lower.contains("1l") || lower.contains("law school")))
+            || (lower.contains("property course") && (lower.contains("law") || lower.contains("1l") || lower.contains("law school")))
+            || (lower.contains("property exam") && (lower.contains("law") || lower.contains("1l") || lower.contains("law school")))
+            || lower.contains("real property class") || lower.contains("real property course")
+            || lower.contains("real property exam") || lower.contains("real property outline")
+            || lower.contains("law of property")
+            || (lower.contains("future interests") && (lower.contains("class") || lower.contains("law") || lower.contains("property")))
+            || (lower.contains("fee simple") && (lower.contains("property class") || lower.contains("property law") || lower.contains("property exam")))
+            || (lower.contains("easement") && (lower.contains("property class") || lower.contains("property law") || lower.contains("property exam")))
+            || (lower.contains("adverse possession") && (lower.contains("class") || lower.contains("law") || lower.contains("property")))
+            || (lower.contains("landlord-tenant") && (lower.contains("class") || lower.contains("law") || lower.contains("property")))
+            || (lower.contains("landlord tenant law") && (lower.contains("class") || lower.contains("law")))
+            || (lower.contains("rule against perpetuities") && (lower.contains("class") || lower.contains("law") || lower.contains("property")))
+            || lower.contains("law school property") || lower.contains("1l property") || lower.contains("first year property") {
+            return "propertylaw"
         }
         // neurolaw — positioned AFTER tortlaw and BEFORE mediationarbitration. Catches the intersection
         // of law and neuroscience (brain imaging in court, adolescent culpability, criminal responsibility).

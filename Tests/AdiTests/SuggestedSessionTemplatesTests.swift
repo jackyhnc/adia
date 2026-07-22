@@ -7268,8 +7268,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func mathematicalstatisticsAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mathematical statistics") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1119)
-    @Test func templateCountAtLeast1119() {
-        #expect(SuggestedSessionTemplates.all.count >= 1119, "template catalog must have ≥1119 entries after quantumoptics/marinechemistry/bioinorganicchemistry/informationtheory/mathematicalstatistics additions")
+    // MARK: - historicalgeology templates
+    @Test func historicalgeologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("historical geology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func historicalgeologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("historical geology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - agriculturalchemistry templates
+    @Test func agriculturalchemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("agricultural chemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func agriculturalchemistryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("agricultural chemistry") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - digitalcommunications templates
+    @Test func digitalcommunicationsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("digital communications") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func digitalcommunicationsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("digital communications") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - contractlaw templates
+    @Test func contractlawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("contract law") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func contractlawAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("contracts") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - propertylaw templates
+    @Test func propertylawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("property law") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func propertylawAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("property law") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1129)
+    @Test func templateCountAtLeast1129() {
+        #expect(SuggestedSessionTemplates.all.count >= 1129, "template catalog must have ≥1129 entries after historicalgeology/agriculturalchemistry/digitalcommunications/contractlaw/propertylaw additions")
     }
 }

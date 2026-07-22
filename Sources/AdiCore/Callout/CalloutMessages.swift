@@ -625,6 +625,11 @@ extension CalloutManager {
         case "opticalengineering":         return opticalengineeringCallouts(tier: tier)
         case "quantumchemistry":           return quantumchemistryCallouts(tier: tier)
         case "surfacechemistry":           return surfacechemistryCallouts(tier: tier)
+        case "historicalgeology":          return historicalgeologyCallouts(tier: tier)
+        case "agriculturalchemistry":      return agriculturalchemistryCallouts(tier: tier)
+        case "digitalcommunications":      return digitalcommunicationsCallouts(tier: tier)
+        case "contractlaw":                return contractlawCallouts(tier: tier)
+        case "propertylaw":                return propertylawCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -12729,6 +12734,111 @@ extension CalloutManager {
             "CLOSE THIS. open your mathematical statistics textbook.",
             "CLOSE THIS. those sufficiency and Rao-Blackwell problems won't solve themselves.",
             "CLOSE THIS. your mathematical statistics exam won't study itself."
+        ]
+        }
+    }
+
+    private func historicalgeologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those geochronology and geologic time scale problems won't study themselves.",
+            "your historical geology exam doesn't care that you're scrolling.",
+            "get back to your Precambrian and Paleozoic era study notes.",
+            "close this and open your historical geology textbook.",
+        ]
+        case 2: return [
+            "no one masters historical geology by scrolling.",
+            "close this and work on your historical geology problem set.",
+            "those mass extinctions and paleogeography problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your historical geology textbook.",
+            "CLOSE THIS. those geochronology and geologic time scale problems won't solve themselves.",
+            "CLOSE THIS. your historical geology exam won't study itself."
+        ]
+        }
+    }
+
+    private func agriculturalchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those fertilizer chemistry and nutrient cycling problems won't solve themselves.",
+            "your agricultural chemistry exam doesn't care that you're scrolling.",
+            "get back to your pesticide chemistry and soil nutrient study notes.",
+            "close this and open your agricultural chemistry textbook.",
+        ]
+        case 2: return [
+            "no one masters agricultural chemistry by scrolling.",
+            "close this and work on your agricultural chemistry problem set.",
+            "those agrochemical and nitrogen fixation problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your agricultural chemistry textbook.",
+            "CLOSE THIS. those fertilizer chemistry and soil nutrient problems won't solve themselves.",
+            "CLOSE THIS. your agricultural chemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func digitalcommunicationsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those BER analysis and OFDM modulation problems won't solve themselves.",
+            "your digital communications exam doesn't care that you're scrolling.",
+            "get back to your BPSK/QPSK and matched filter derivations.",
+            "close this and open your digital communications textbook.",
+        ]
+        case 2: return [
+            "no one masters digital communications by scrolling.",
+            "close this and work on your digital communications problem set.",
+            "those MIMO and channel coding problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your digital communications textbook.",
+            "CLOSE THIS. those BER analysis and OFDM problems won't solve themselves.",
+            "CLOSE THIS. your digital communications exam won't study itself."
+        ]
+        }
+    }
+
+    private func contractlawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those offer-and-acceptance and promissory estoppel problems won't brief themselves.",
+            "your contracts exam doesn't care that you're scrolling.",
+            "get back to your UCC and breach of contract analysis.",
+            "close this and open your contracts textbook.",
+        ]
+        case 2: return [
+            "no one aces contracts by scrolling.",
+            "close this and work on your contracts outline.",
+            "those expectation damages and statute of frauds problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your contracts textbook.",
+            "CLOSE THIS. those offer-and-acceptance and breach of contract problems won't brief themselves.",
+            "CLOSE THIS. your contracts exam won't study itself."
+        ]
+        }
+    }
+
+    private func propertylawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those future interests and rule against perpetuities problems won't brief themselves.",
+            "your property exam doesn't care that you're scrolling.",
+            "get back to your adverse possession and easement analysis.",
+            "close this and open your property law textbook.",
+        ]
+        case 2: return [
+            "no one aces property law by scrolling.",
+            "close this and work on your property law outline.",
+            "those fee simple and landlord-tenant problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your property law textbook.",
+            "CLOSE THIS. those future interests and rule against perpetuities problems won't brief themselves.",
+            "CLOSE THIS. your property exam won't study itself."
         ]
         }
     }
