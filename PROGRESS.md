@@ -1,5 +1,75 @@
 # Adia — Build Progress
 
+## Run 402 (automated) — 2026-07-22 — 5 new keyword domains: solidmechanics/stochasticprocesses/quantumchemistry/opticalengineering/surfacechemistry (1099→1109 templates)
+
+### What shipped
+
+**5 new keyword domains: solidmechanics, stochasticprocesses, quantumchemistry, opticalengineering, surfacechemistry**
+
+**New keyword domain — solidmechanics:**
+- Branch positioned BEFORE `mechanicalengineering`. Mechanics of materials / solid mechanics / continuum mechanics coursework (stress-strain, Mohr's circle, elastic modulus, yield criterion, fracture mechanics, fatigue) distinct from general ME.
+- Catches: solid mechanics class/course/exam/lab/notes/assignment, mechanics of materials class/course/exam/lab/assignment, continuum mechanics class/course/exam, strength of materials class/course/exam, Mohr's circle + class/exam/mechanics/stress, von Mises stress + class/exam/mechanics, yield criterion + class/exam/mechanics/stress, Tresca criterion + class/exam/mechanics, stress-strain curve + class/exam/mechanics, elastic/Young's modulus + class/exam/mechanics/solid, Poisson's ratio + class/exam/mechanics/solid, fracture mechanics + class/course/exam, fracture toughness + class/exam/mechanics, fatigue crack + class/exam/mechanics, plastic deformation + class/exam/mechanics/solid, constitutive relation + class/exam/mechanics/solid.
+- `solidmechanicsCallouts(tier:)` 4/3/3: "those Mohr's circle and von Mises stress problems" / "no one masters solid mechanics by scrolling" / "CLOSE THIS. those Mohr's circle and von Mises stress problems won't solve themselves."
+- 2 templates: study exam (Mohr's circle, fracture mechanics, plasticity, continuum mechanics, 60 min) + assignment (principal stresses, yield criterion, Paris law fatigue, 60 min)
+
+**New keyword domain — stochasticprocesses:**
+- Branch positioned BEFORE `probabilitytheory`. Stochastic processes coursework (Markov chains, Poisson process, Brownian motion, martingales, queueing theory, Itô calculus) distinct from probability theory.
+- Catches: stochastic processes class/course/exam/homework/notes/assignment, stochastic process class/course/exam, Markov chain + class/course/exam/homework/problem, Markov process + class/course/exam, Poisson process + class/course/exam/homework, Brownian motion + class/course/exam/stochastic, Wiener process + class/course/exam/stochastic, martingale + class/course/exam/stochastic, Itô's lemma + class/exam/stochastic, stochastic differential equation + class/course/exam, renewal theory + class/course/exam/stochastic, queuing/queueing theory class/course/exam, random walk + class/exam/stochastic/Markov, hitting time + class/exam/Markov/stochastic, stationary distribution + class/exam/Markov/stochastic.
+- `stochasticprocessesCallouts(tier:)` 4/3/3: "those Markov chain and Poisson process problems" / "no one masters stochastic processes by scrolling" / "CLOSE THIS. those Markov chain and Itô calculus problems won't solve themselves."
+- 2 templates: study exam (Markov chains, Poisson process, Brownian motion, Itô calculus, 60 min) + assignment (stationary distribution, hitting time, Brownian boundary crossing, 60 min)
+
+**New keyword domain — quantumchemistry:**
+- Branch positioned BEFORE `physicalchemistry`. Quantum chemistry coursework (molecular orbital theory, Hartree-Fock, DFT for molecules, coupled cluster, Born-Oppenheimer, basis sets) distinct from physical chemistry.
+- Catches: quantum chemistry class/course/exam/homework/notes/assignment/problem set/textbook, molecular orbital theory + class/course/exam/chemistry/quantum, Hartree-Fock + class/exam/chemistry/quantum, density functional theory + class/exam/chemistry/molecular/quantum, coupled cluster + class/exam/chemistry/quantum, Born-Oppenheimer + class/exam/chemistry/quantum, basis set + class/exam/chemistry/quantum/molecular orbital, LCAO + class/exam/chemistry/molecular orbital, Roothaan equations + class/exam/chemistry, configuration interaction + class/exam/chemistry/quantum, perturbation theory + chemistry + quantum + class/exam, variational method + chemistry + quantum + class/exam.
+- `quantumchemistryCallouts(tier:)` 4/3/3: "those molecular orbital theory and Hartree-Fock problems" / "no one masters quantum chemistry by scrolling" / "CLOSE THIS. those Hartree-Fock and basis set problems won't solve themselves."
+- 2 templates: study exam (Born-Oppenheimer, HF theory, DFT, coupled cluster, basis sets, 60 min) + assignment (variational method, Roothaan equations, DFT functional, 60 min)
+
+**New keyword domain — opticalengineering:**
+- Branch positioned BEFORE `photonics`. Optical engineering coursework (lens design, aberrations, Zemax, Zernike polynomials, wavefront sensing, interferometry, Gaussian beam propagation) distinct from photonics.
+- Catches: optical engineering class/course/exam/lab/notes/assignment, lens design + class/course/exam/lab/optics, optical aberration + class/exam/lens/optics, Zemax + class/lab/exam/design/optics, Zernike polynomial + class/exam/wavefront/optics, Zernike coefficient + class/exam/wavefront/optics, wavefront sensing + class/exam/optics/aberration, Shack-Hartmann + class/exam/wavefront/optics, optical interferometry + class/exam/lab/optics, interferometry class/exam/lab, Michelson interferometer + class/exam/optics/lab, geometrical optics + class/exam/lab/lens, ray optics + class/exam/lab/lens/design, Gaussian beam + class/exam/optics/laser/lab, optical design + class/course/exam/lab, optical system design + class/exam/lab, adaptive optics + class/course/exam/lab, point spread function + class/exam/optics/imaging.
+- `opticalengineeringCallouts(tier:)` 4/3/3: "those lens design and aberration analysis problems" / "no one masters optical engineering by scrolling" / "CLOSE THIS. those wavefront sensing and interferometry problems won't solve themselves."
+- 2 templates: study exam (ABCD matrices, Gaussian beam, Seidel aberrations, Zernike, Shack-Hartmann, interferometry, 60 min) + assignment (ray tracing, wavefront decomposition, Zemax design, 60 min)
+
+**New keyword domain — surfacechemistry:**
+- Branch positioned BEFORE `analyticalchemistry`. Surface chemistry/surface science coursework (adsorption isotherms, BET, Langmuir-Hinshelwood, TPD/TDS, surface reconstruction, contact angle, XPS surface analysis) distinct from analytical chemistry.
+- Catches: surface chemistry class/course/exam/lab/notes/assignment, surface science class/course/exam/lab, adsorption isotherm + class/exam/surface/chemistry, Langmuir isotherm + class/exam/surface/chemistry, BET surface area + class/exam/surface/chemistry, Langmuir-Hinshelwood + class/exam/surface/chemistry/kinetics, temperature-programmed desorption/TPD + class/exam/surface/chemistry, surface reconstruction + class/exam/surface/crystal, contact angle + class/exam/surface/chemistry/wetting, XPS + surface + class/exam/chemistry, surface diffusion + class/exam/surface/chemistry, Freundlich isotherm + class/exam/surface/chemistry, Temkin isotherm + class/exam/surface/chemistry.
+- `surfacechemistryCallouts(tier:)` 4/3/3: "those adsorption isotherms and BET surface area problems" / "no one masters surface chemistry by scrolling" / "CLOSE THIS. those adsorption isotherm and surface reconstruction problems won't solve themselves."
+- 2 templates: study exam (Gibbs adsorption, Langmuir isotherm, BET, LH mechanism, TPD, XPS, 60 min) + assignment (isotherm fitting, Redhead analysis, contact angle, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +35 @Test functions (3 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains + updated count guard ≥1109)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + 1 count guard ≥1109)
+
+**Template catalog: 1099 → 1109**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `stochasticprocesses` fires at line 1400, BEFORE probabilitytheory (line 1415) ✓
+- `opticalengineering` fires at line 2031, BEFORE photonics ✓
+- `solidmechanics` fires at line 4079, BEFORE mechanicalengineering ✓
+- `quantumchemistry` fires at line 8019, BEFORE physicalchemistry ✓
+- `surfacechemistry` fires at line 8168, BEFORE analyticalchemistry ✓
+- Brace balance: CalloutManager.swift 604/604 ✓; CalloutMessages.swift 1153/1153 ✓
+- Template count: 1109 confirmed (grep -c "preferredDuration:" = 1109) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases + 5 new private pool functions in CalloutMessages.swift ✓
+- stochasticprocesses placement fix: initially inserted after probabilitytheory block (which catches "stochastic process" substring), reverted and re-inserted BEFORE probabilitytheory ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `quantumoptics` — quantum optics class (cavity QED, Jaynes-Cummings model, photon statistics, Wigner function, entangled photon pairs — distinct from optics/photonics which covers classical)
+  - `astrochemistry` — astrochemistry class (interstellar medium chemistry, molecular clouds, polycyclic aromatic hydrocarbons, isotopic fractionation, protostellar disk chemistry — distinct from astronomy and chemistry)
+  - `geochemistry` — geochemistry class (trace element partitioning, radiogenic isotope geochronology, stable isotope systematics, mineral equilibria, geochemical cycles — distinct from geology/environmental science)
+  - `marinechemistry` — marine chemistry class (seawater composition, alkalinity, carbonate system, ocean carbon cycle, trace metal speciation — distinct from oceanography)
+  - `bioinorganicchemistry` — bioinorganic chemistry class (metalloenzymes, iron-sulfur clusters, oxygen transport, metal-based drugs, heme biochemistry — distinct from biochemistry and inorganic chemistry)
+- Template count target: 1109 → 1119 after next 5-domain batch
+- Note: Run 401 (bef1c93) added condensedmatterphysics/energymaterials/computationalneuroscience/biophysicslab (1091→1099) without updating PROGRESS.md/GOAL.md — that run is committed but undocumented.
+
+---
+
 ## Run 399 (automated) — 2026-07-22 — 5 new keyword domains: nucleardynamics/additivemfg/batterytechnology/semiconductordevices/vlsidesign (1071→1081 templates)
 
 ### What shipped
