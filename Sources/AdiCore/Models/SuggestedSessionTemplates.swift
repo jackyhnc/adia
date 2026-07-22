@@ -7055,5 +7055,57 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Biomechatronics assignment completed (EMG classifier designed or evaluated, neural interface SNR analyzed, exoskeleton torque or impedance control law derived, prosthetic control strategy compared with performance metrics, or surgical robot workspace computed, and written solution or simulation results saved to file)",
             preferredDuration: 60 * 60
         ),
+        // condensedmatterphysics
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study condensed matter physics for my exam — review Fermi liquid theory (quasiparticles, effective mass, Landau parameters), quantum Hall effect (integer and fractional, Landau levels, filling factor, edge states), topological insulators (bulk-boundary correspondence, Z2 invariant, surface Dirac cone), Berry phase and Berry curvature, Weyl semimetals (Weyl nodes, Fermi arc surface states, chirality), Kondo effect (Kondo temperature, heavy fermions), and strongly correlated electron systems (Mott insulator, Hubbard model)",
+            successCriteria: "Advanced condensed matter study session completed (at least two topics reviewed with Fermi liquid quasiparticle concept explained, Landau level degeneracy derived, topological invariant classification stated, Berry phase formula written, quantum Hall conductivity plateau explained, Kondo temperature estimate discussed, and notes saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work on my condensed matter physics assignment — derive Landau level energies for a 2D electron gas in a magnetic field, calculate the filling factor and Hall conductance for integer quantum Hall states, determine the Z2 topological invariant for a model topological insulator Hamiltonian, analyze Berry curvature and anomalous Hall conductivity, solve the Kondo renormalization group equations to find the Kondo temperature, or compute the phase boundary of a Mott insulating transition in the Hubbard model",
+            successCriteria: "Condensed matter physics assignment completed (Landau level spectrum derived, integer quantum Hall conductance computed, topological invariant evaluated, Berry phase or curvature calculated, Kondo temperature estimated, or Mott-Hubbard phase boundary determined, with full derivations written and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // energymaterials
+        SuggestedTemplate(
+            icon: "bolt.fill",
+            task: "Study energy materials for my exam — review solid oxide fuel cells (SOFC) (electrolyte conductivity, polarization losses, operating temperature, yttria-stabilized zirconia), hydrogen storage materials (metal hydrides, MOF adsorbents, gravimetric/volumetric density, thermodynamics), thermoelectric materials (Seebeck coefficient, ZT figure of merit, Peltier effect, phonon engineering, half-Heusler alloys), and electrocatalysis (oxygen reduction reaction, hydrogen evolution reaction, overpotential, Tafel slope, volcano plot)",
+            successCriteria: "Energy materials study session completed (at least two topics reviewed with SOFC operating principle and losses described, hydrogen storage mechanism and thermodynamics explained, ZT formula and trade-offs stated, ORR/HER mechanism and Tafel slope analysis outlined, and notes saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "bolt.fill",
+            task: "Work on my energy materials assignment — calculate the Nernst potential and efficiency of an SOFC at operating temperature, compute gravimetric hydrogen storage capacity for a metal hydride and compare to DOE targets, optimize ZT for a thermoelectric material by balancing Seebeck coefficient and thermal conductivity, analyze a Tafel plot to extract exchange current density and overpotential for an ORR electrocatalyst, or evaluate the volcano plot position of a proposed catalyst using d-band center theory",
+            successCriteria: "Energy materials assignment completed (SOFC efficiency computed, hydrogen storage capacity evaluated against targets, ZT optimized with trade-off analysis, Tafel slope and exchange current extracted from polarization data, or volcano plot position determined, with full written solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // computationalneuroscience
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Study computational neuroscience for my exam — review the Hodgkin-Huxley model (sodium/potassium conductance equations, action potential generation, gating variables m/h/n), integrate-and-fire neuron models (leaky IF, exponential IF, threshold dynamics), neural population models (mean-field theory, Wilson-Cowan equations, firing rate models), spike train analysis (Poisson process, ISI distribution, Fano factor, cross-correlogram), connectome analysis (graph measures, degree distribution, motifs), and reservoir computing (echo state networks, liquid state machines)",
+            successCriteria: "Computational neuroscience study session completed (at least two topics reviewed with HH gating variable equations written, LIF membrane potential dynamics described, Wilson-Cowan steady-state analyzed, Poisson ISI distribution derived, graph centrality measure explained, and reservoir computing readout mechanism outlined, with notes saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "brain.head.profile",
+            task: "Work on my computational neuroscience assignment — simulate the Hodgkin-Huxley model to reproduce an action potential and compute firing rate vs current (f-I curve), fit an integrate-and-fire model to spike train data, derive the mean-field equations for a Wilson-Cowan network and find its fixed points, analyze a spike train for Fano factor and cross-correlation, compute graph-theoretic measures (clustering coefficient, path length, small-world index) for a connectome dataset, or train a reservoir network to generate a target temporal pattern",
+            successCriteria: "Computational neuroscience assignment completed (HH simulation run and f-I curve plotted, LIF model fit to data, Wilson-Cowan fixed points identified, spike train statistics computed, connectome graph measures reported, or reservoir readout weights trained, with code and output figures saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // biophysicslab
+        SuggestedTemplate(
+            icon: "eyedropper.halffull",
+            task: "Study for my experimental biophysics lab — review optical tweezers (gradient force trapping, stiffness calibration, power spectrum method, force-extension curves for DNA/proteins), patch clamp electrophysiology (whole-cell and single-channel modes, pipette resistance, series resistance compensation, ion channel conductance), FRET (Förster radius, efficiency-distance relationship, donor/acceptor pair selection, single-molecule FRET), super-resolution microscopy (STORM/PALM localization, STED, diffraction limit, blinking kinetics), and single-molecule fluorescence (photobleaching, step detection, burst analysis)",
+            successCriteria: "Biophysics lab study session completed (at least two techniques reviewed with optical trap stiffness calibration method described, patch clamp recording mode explained, FRET efficiency-distance formula written, STORM localization principle outlined, single-molecule blinking kinetics analyzed, and lab notebook updated with key equations and protocols)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "eyedropper.halffull",
+            task: "Work on my experimental biophysics lab report — analyze optical tweezers power spectrum data to extract trap stiffness and calibrate force, process patch clamp recordings to identify single-channel conductance states and open/close dwell times, compute FRET efficiency from donor/acceptor intensity traces and convert to inter-dye distance using the Förster radius, reconstruct a super-resolution image from STORM localizations using a Gaussian fitting algorithm, or detect photobleaching steps in a single-molecule fluorescence trace to count labeled subunits",
+            successCriteria: "Biophysics lab report completed (trap stiffness extracted from power spectrum, ion channel conductance states identified from patch clamp trace, FRET efficiency and distance calculated, super-resolution image reconstructed or localization precision quoted, photobleaching step count determined, with analysis code, figures, and written report saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

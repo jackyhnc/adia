@@ -611,6 +611,10 @@ extension CalloutManager {
         case "tectonics":                  return tectonicsCallouts(tier: tier)
         case "tribology":                  return tribologyCallouts(tier: tier)
         case "radiochemistry":             return radiochemistryCallouts(tier: tier)
+        case "condensedmatterphysics":     return condensedmatterphysicsCallouts(tier: tier)
+        case "energymaterials":            return energymaterialsCallouts(tier: tier)
+        case "computationalneuroscience":  return computationalneuroscienceCallouts(tier: tier)
+        case "biophysicslab":              return biophysicslabCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -12421,6 +12425,90 @@ extension CalloutManager {
             "CLOSE THIS. open your biomechatronics textbook.",
             "CLOSE THIS. those EMG control and prosthetic design problems won't solve themselves.",
             "CLOSE THIS. your biomechatronics exam won't study itself."
+        ]
+        }
+    }
+
+    private func condensedmatterphysicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those topological insulator and quantum Hall problems won't solve themselves.",
+            "your condensed matter physics exam doesn't care that you're scrolling.",
+            "get back to your Fermi liquid theory assignment.",
+            "close this and open your condensed matter physics textbook.",
+        ]
+        case 2: return [
+            "no one masters condensed matter by scrolling.",
+            "close this and work on your condensed matter problem set.",
+            "those Berry phase and Landau level problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your condensed matter physics textbook.",
+            "CLOSE THIS. those topological insulator and Fermi liquid problems won't solve themselves.",
+            "CLOSE THIS. your condensed matter physics exam won't study itself."
+        ]
+        }
+    }
+
+    private func energymaterialsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those thermoelectric and electrocatalysis problems won't solve themselves.",
+            "your energy materials exam doesn't care that you're scrolling.",
+            "get back to your solid oxide fuel cell assignment.",
+            "close this and open your energy materials textbook.",
+        ]
+        case 2: return [
+            "no one masters energy materials by scrolling.",
+            "close this and work on your energy materials problem set.",
+            "those hydrogen storage and electrocatalysis problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your energy materials textbook.",
+            "CLOSE THIS. those thermoelectric and fuel cell problems won't solve themselves.",
+            "CLOSE THIS. your energy materials exam won't study itself."
+        ]
+        }
+    }
+
+    private func computationalneuroscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Hodgkin-Huxley and neural population model problems won't solve themselves.",
+            "your computational neuroscience exam doesn't care that you're scrolling.",
+            "get back to your spike train analysis assignment.",
+            "close this and open your computational neuroscience textbook.",
+        ]
+        case 2: return [
+            "no one masters computational neuroscience by scrolling.",
+            "close this and work on your computational neuroscience problem set.",
+            "those integrate-and-fire and connectome analysis problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your computational neuroscience textbook.",
+            "CLOSE THIS. those Hodgkin-Huxley and reservoir computing problems won't solve themselves.",
+            "CLOSE THIS. your computational neuroscience exam won't study itself."
+        ]
+        }
+    }
+
+    private func biophysicslabCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those patch clamp and FRET experiment problems won't solve themselves.",
+            "your biophysics lab report doesn't care that you're scrolling.",
+            "get back to your single-molecule fluorescence assignment.",
+            "close this and open your experimental biophysics lab notebook.",
+        ]
+        case 2: return [
+            "no one masters experimental biophysics by scrolling.",
+            "close this and work on your biophysics lab report.",
+            "those magnetic tweezers and super-resolution microscopy problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your biophysics lab notebook.",
+            "CLOSE THIS. those patch clamp and FRET experiment problems won't solve themselves.",
+            "CLOSE THIS. your biophysics lab report won't write itself."
         ]
         }
     }

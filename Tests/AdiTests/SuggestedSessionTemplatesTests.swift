@@ -7170,8 +7170,36 @@ struct SuggestedSessionTemplatesTests {
     @Test func biomechatronicsAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("biomechatronics") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1091)
-    @Test func templateCountAtLeast1091() {
-        #expect(SuggestedSessionTemplates.all.count >= 1091, "template catalog must have ≥1091 entries after spaceweather/nanophotonics/microelectromechanicalsystems/photovoltaicsenergy/biomechatronics additions")
+    // MARK: - condensedmatterphysics templates
+    @Test func condensedmatterphysicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("condensed matter") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func condensedmatterphysicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("condensed matter") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - energymaterials templates
+    @Test func energymaterialsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("energy materials") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func energymaterialsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("energy materials") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - computationalneuroscience templates
+    @Test func computationalneuroscienceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computational neuroscience") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func computationalneuroscienceAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computational neuroscience") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - biophysicslab templates
+    @Test func biophysicslabStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("biophysics lab") && $0.task.lowercased().contains("study") })
+    }
+    @Test func biophysicslabAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("biophysics lab report") && $0.task.lowercased().contains("assignment") || $0.task.lowercased().contains("biophysics lab report") })
+    }
+    // MARK: - Count guard (≥1099)
+    @Test func templateCountAtLeast1099() {
+        #expect(SuggestedSessionTemplates.all.count >= 1099, "template catalog must have ≥1099 entries after condensedmatterphysics/energymaterials/computationalneuroscience/biophysicslab additions")
     }
 }

@@ -1780,6 +1780,24 @@ public final class CalloutManager {
             || lower.contains("variational method") && (lower.contains("quantum") || lower.contains("class") || lower.contains("course") || lower.contains("physics")) {
             return "quantummechanics"
         }
+        // condensedmatterphysics — positioned BEFORE solidstatephysics so advanced condensed
+        // matter coursework (Fermi liquid theory, Landau levels, topological insulators, fractional
+        // quantum Hall effect, Berry phase, Weyl semimetals, Kondo effect) routes to a dedicated pool
+        // distinct from intro solid-state (band structure, phonons, Fermi level).
+        if lower.contains("advanced condensed matter") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("physics"))
+            || lower.contains("topological insulator") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("physics") || lower.contains("condensed matter"))
+            || lower.contains("fermi liquid theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("condensed matter") || lower.contains("physics"))
+            || lower.contains("landau level") && (lower.contains("class") || lower.contains("exam") || lower.contains("condensed matter") || lower.contains("physics"))
+            || lower.contains("quantum hall effect") && (lower.contains("class") || lower.contains("exam") || lower.contains("condensed matter") || lower.contains("physics"))
+            || lower.contains("fractional quantum hall") && (lower.contains("class") || lower.contains("exam") || lower.contains("physics"))
+            || lower.contains("berry phase") && (lower.contains("class") || lower.contains("exam") || lower.contains("condensed matter") || lower.contains("physics"))
+            || lower.contains("weyl semimetal") && (lower.contains("class") || lower.contains("exam") || lower.contains("condensed matter") || lower.contains("physics"))
+            || lower.contains("kondo effect") && (lower.contains("class") || lower.contains("exam") || lower.contains("condensed matter") || lower.contains("physics"))
+            || lower.contains("strongly correlated electrons") && (lower.contains("class") || lower.contains("exam") || lower.contains("condensed matter") || lower.contains("physics"))
+            || lower.contains("mott insulator") && (lower.contains("class") || lower.contains("exam") || lower.contains("condensed matter") || lower.contains("physics"))
+            || lower.contains("topological semimetal") && (lower.contains("class") || lower.contains("exam") || lower.contains("physics")) {
+            return "condensedmatterphysics"
+        }
         // solidstatephysics — positioned BEFORE experimentalphysics so condensed matter /
         // solid state physics coursework gets a dedicated callout pool.
         if lower.contains("solid state physics class") || lower.contains("solid state physics course")
@@ -3385,6 +3403,26 @@ public final class CalloutManager {
             || lower.contains("full bridge") && lower.contains("power") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab")) {
             return "powerelectronics"
         }
+        // energymaterials — positioned BEFORE batterytechnology so energy materials coursework
+        // (solid oxide fuel cells, hydrogen storage, thermoelectric materials, electrocatalysis)
+        // routes to a dedicated pool distinct from battery technology and photovoltaics.
+        if lower.contains("energy materials class") || lower.contains("energy materials course")
+            || lower.contains("energy materials exam") || lower.contains("energy materials lab")
+            || lower.contains("solid oxide fuel cell") && (lower.contains("class") || lower.contains("exam") || lower.contains("materials") || lower.contains("course"))
+            || lower.contains("hydrogen storage material") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("research"))
+            || lower.contains("hydrogen storage") && lower.contains("material") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("thermoelectric material") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("seebeck coefficient") && (lower.contains("class") || lower.contains("exam") || lower.contains("material") || lower.contains("thermoelectric"))
+            || lower.contains("zt figure of merit") && (lower.contains("class") || lower.contains("exam") || lower.contains("thermoelectric"))
+            || lower.contains("figure of merit") && lower.contains("thermoelectric") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("electrocatalysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("materials") || lower.contains("course"))
+            || lower.contains("oxygen reduction reaction") && (lower.contains("class") || lower.contains("exam") || lower.contains("materials") || lower.contains("electrocatalysis"))
+            || lower.contains("hydrogen evolution reaction") && (lower.contains("class") || lower.contains("exam") || lower.contains("materials") || lower.contains("electrocatalysis"))
+            || lower.contains("fuel cell material") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("science"))
+            || lower.contains("proton exchange membrane") && lower.contains("material") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("sofc") && (lower.contains("class") || lower.contains("exam") || lower.contains("material") || lower.contains("course")) {
+            return "energymaterials"
+        }
         // batterytechnology — positioned BEFORE renewableenergy so battery science class/exam
         // (Li-ion chemistry, SEI layer, solid electrolyte, cathode/anode materials, cycle life)
         // route to a dedicated pool distinct from system-level renewable energy integration.
@@ -4484,16 +4522,37 @@ public final class CalloutManager {
             || lower.contains("data integration class") || lower.contains("data modeling class") {
             return "dataengineering"
         }
+        // computationalneuroscience — positioned BEFORE computationalscience so computational
+        // neuroscience coursework (Hodgkin-Huxley, integrate-and-fire, neural population models,
+        // connectome analysis, reservoir computing, spike train analysis) routes to a dedicated pool.
+        // Bare "computational neuroscience" removed from computationalscience below.
+        if lower.contains("computational neuroscience class") || lower.contains("computational neuroscience course")
+            || lower.contains("computational neuroscience exam") || lower.contains("computational neuroscience lab")
+            || lower.contains("computational neuroscience homework") || lower.contains("computational neuroscience assignment")
+            || lower.contains("computational neuroscience research") || lower.contains("computational neuroscience major")
+            || lower.contains("hodgkin-huxley") && (lower.contains("class") || lower.contains("exam") || lower.contains("neuroscience") || lower.contains("model") || lower.contains("simulation"))
+            || lower.contains("hodgkin huxley") && (lower.contains("class") || lower.contains("exam") || lower.contains("neuroscience") || lower.contains("model"))
+            || lower.contains("integrate-and-fire") && (lower.contains("class") || lower.contains("exam") || lower.contains("neuroscience") || lower.contains("model"))
+            || lower.contains("integrate and fire") && (lower.contains("class") || lower.contains("exam") || lower.contains("neuroscience") || lower.contains("model"))
+            || lower.contains("neural population model") && (lower.contains("class") || lower.contains("exam") || lower.contains("neuroscience"))
+            || lower.contains("spiking neural network") && (lower.contains("class") || lower.contains("exam") || lower.contains("neuroscience") || lower.contains("model") || lower.contains("simulation"))
+            || lower.contains("connectome") && (lower.contains("class") || lower.contains("exam") || lower.contains("neuroscience") || lower.contains("analysis"))
+            || lower.contains("reservoir computing") && (lower.contains("class") || lower.contains("exam") || lower.contains("neuroscience") || lower.contains("model"))
+            || lower.contains("wilson-cowan") && (lower.contains("class") || lower.contains("exam") || lower.contains("neuroscience") || lower.contains("model"))
+            || lower.contains("neural coding") && (lower.contains("class") || lower.contains("exam") || lower.contains("computational") || lower.contains("course"))
+            || lower.contains("spike train analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("neuroscience")) {
+            return "computationalneuroscience"
+        }
         // computationalscience — positioned after datascience and before bioinformatics so
         // HPC, parallel computing, and scientific simulation tasks route here.
         // "computational biology" stays in bioinformatics (fires later);
         // "numerical analysis" stays in mathematics (fires earlier).
         // Bare word("matlab") alone can be numerical/engineering — requires compound guard.
+        // Note: "computational neuroscience" now owned by computationalneuroscience above.
         if lower.contains("high performance computing") || lower.contains("hpc cluster")
             || lower.contains("parallel computing") || lower.contains("distributed computing")
             || lower.contains("scientific computing") || lower.contains("supercomputer")
             || lower.contains("computational physics") || lower.contains("computational chemistry")
-            || lower.contains("computational neuroscience")
             || lower.contains("monte carlo simulation") || lower.contains("monte carlo method")
             || lower.contains("finite element simulation") || lower.contains("finite difference simulation")
             || lower.contains("numerical simulation") || lower.contains("simulation model")
@@ -8169,6 +8228,26 @@ public final class CalloutManager {
             || lower.contains("drug discovery exam") || lower.contains("drug discovery lab")
             || lower.contains("drug discovery research") || lower.contains("drug discovery program") {
             return "drugdiscovery"
+        }
+        // biophysicslab — positioned BEFORE biophysics so experimental biophysics lab coursework
+        // (patch clamp, FRET, magnetic tweezers, super-resolution microscopy, single-molecule
+        // fluorescence, biophotonics) routes to a dedicated pool distinct from theory biophysics.
+        if lower.contains("experimental biophysics") && (lower.contains("class") || lower.contains("lab") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("biophysics laboratory") || lower.contains("biophysics lab course")
+            || lower.contains("patch clamp") && (lower.contains("class") || lower.contains("lab") || lower.contains("biophysics") || lower.contains("electrophysiology"))
+            || lower.contains("patch-clamp") && (lower.contains("class") || lower.contains("lab") || lower.contains("biophysics") || lower.contains("electrophysiology"))
+            || lower.contains("fret") && (lower.contains("biophysics") || lower.contains("single molecule") || lower.contains("fluorescence resonance"))
+            || lower.contains("fluorescence resonance energy transfer") && (lower.contains("class") || lower.contains("lab") || lower.contains("biophysics"))
+            || lower.contains("magnetic tweezers") && (lower.contains("class") || lower.contains("lab") || lower.contains("biophysics") || lower.contains("single molecule"))
+            || lower.contains("super-resolution microscopy") && (lower.contains("biophysics") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("storm microscopy") && (lower.contains("biophysics") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("palm microscopy") && (lower.contains("biophysics") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("single-molecule fluorescence") && (lower.contains("class") || lower.contains("lab") || lower.contains("biophysics"))
+            || lower.contains("single molecule fluorescence") && (lower.contains("class") || lower.contains("lab") || lower.contains("biophysics"))
+            || lower.contains("cryo-electron microscopy") && lower.contains("biophysics") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam"))
+            || lower.contains("biophotonics") && (lower.contains("class") || lower.contains("lab") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("fluorescence microscopy") && lower.contains("biophysics") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam")) {
+            return "biophysicslab"
         }
         // biophysics — positioned AFTER biochemistry (which catches protein-assay, enzyme-kinetics,
         // and spectrophotometry terms) and BEFORE geneticcounseling. Catches biophysics class/lab

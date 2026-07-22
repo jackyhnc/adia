@@ -20114,3 +20114,66 @@ None. Swift toolchain unavailable on Linux container.
   - `plasmaphysics` — plasma physics class (Debye shielding, plasma oscillations, MHD, tokamak/stellarator, Alfvén waves — distinct from nuclearengineering)
   - `computationalneuroscience` — computational neuroscience class (Hodgkin-Huxley model, integrate-and-fire, neural population models, connectome analysis, reservoir computing — distinct from neuroscience and biophysics)
 - Template count target: 1091 → 1101 after next 5-domain batch
+
+---
+
+## Run 401 (automated) — 2026-07-22 — 4 new keyword domains: condensedmatterphysics/energymaterials/computationalneuroscience/biophysicslab (1091→1099 templates)
+
+### What shipped
+
+**4 new keyword domains: condensedmatterphysics, energymaterials, computationalneuroscience, biophysicslab**
+
+**New keyword domain — condensedmatterphysics:**
+- Branch positioned BEFORE `solidstatephysics`. Advanced condensed matter coursework (Fermi liquid theory, Landau levels, topological insulators, fractional quantum Hall, Berry phase, Weyl semimetals, Kondo effect) distinct from intro solid-state (band structure, phonons, Fermi level).
+- Catches: advanced condensed matter + class/exam, topological insulator + class/exam/physics/condensed matter, fermi liquid theory + class/exam, landau level + class/exam/physics, quantum hall effect + class/exam/condensed matter, fractional quantum hall + class/exam, berry phase + class/exam, weyl semimetal + class/exam, kondo effect + class/exam, strongly correlated electrons + class/exam, mott insulator + class/exam.
+- `condensedmatterphysicsCallouts(tier:)` 4/3/3
+- 2 templates: study exam (Fermi liquid, quantum Hall, topological insulators, Berry phase, Weyl semimetals, Kondo effect, Mott insulator, 60 min) + assignment (Landau levels, IQHE conductance, Z2 invariant, Berry curvature, Kondo temperature, Mott-Hubbard phase boundary, 60 min)
+
+**New keyword domain — energymaterials:**
+- Branch positioned BEFORE `batterytechnology`. Energy materials coursework (solid oxide fuel cells, hydrogen storage, thermoelectric materials, electrocatalysis) distinct from battery technology and photovoltaics.
+- Catches: energy materials class/course/exam/lab, solid oxide fuel cell + class/exam/materials, hydrogen storage material + class/exam, thermoelectric material + class/exam, seebeck coefficient + class/exam, zt figure of merit + thermoelectric, electrocatalysis + class/exam/materials, oxygen reduction reaction + class/exam/electrocatalysis, hydrogen evolution reaction + class/exam/electrocatalysis, fuel cell material + class/exam, SOFC + class/exam/material.
+- `energymaterialsCallouts(tier:)` 4/3/3
+- 2 templates: study exam (SOFC, hydrogen storage, thermoelectric ZT, electrocatalysis ORR/HER, 60 min) + assignment (Nernst potential, H2 storage capacity, ZT optimization, Tafel slope, volcano plot, 60 min)
+
+**New keyword domain — computationalneuroscience:**
+- Branch positioned BEFORE `computationalscience`. Computational neuroscience coursework (Hodgkin-Huxley model, integrate-and-fire neurons, neural population models, connectome analysis, reservoir computing) distinct from general HPC/scientific computing.
+- Removes bare "computational neuroscience" from computationalscience branch (now owned here with class/exam qualifiers; bare "computational neuroscience" falls through to neuroscience as before).
+- Catches: computational neuroscience class/course/exam/lab/homework/assignment/research/major, hodgkin-huxley + class/exam/neuroscience/model, integrate-and-fire + class/exam/neuroscience/model, neural population model + class/exam, spiking neural network + class/exam/neuroscience, connectome + class/exam/neuroscience/analysis, reservoir computing + class/exam/neuroscience, wilson-cowan + class/exam/neuroscience, neural coding + class/exam/computational, spike train analysis + class/exam.
+- `computationalneuroscienceCallouts(tier:)` 4/3/3
+- 2 templates: study exam (HH model, LIF, Wilson-Cowan, spike train, connectome, reservoir computing, 60 min) + assignment (HH simulation, LIF fit, Wilson-Cowan fixed points, spike train statistics, graph measures, reservoir readout, 60 min)
+
+**New keyword domain — biophysicslab:**
+- Branch positioned BEFORE `biophysics`. Experimental biophysics lab coursework (patch clamp, FRET, magnetic tweezers, super-resolution microscopy, single-molecule fluorescence, biophotonics) distinct from theory biophysics.
+- Catches: experimental biophysics + class/lab/course/exam, biophysics laboratory, biophysics lab course, patch clamp + class/lab/biophysics/electrophysiology, patch-clamp + class/lab/biophysics, fret + biophysics/single molecule/fluorescence resonance, fluorescence resonance energy transfer + class/lab/biophysics, magnetic tweezers + class/lab/biophysics, super-resolution microscopy + biophysics/class/lab, STORM/PALM microscopy + biophysics/class/lab, single-molecule/single molecule fluorescence + class/lab/biophysics, cryo-electron microscopy + biophysics + class/lab, biophotonics + class/lab/course/exam, fluorescence microscopy + biophysics + class/lab.
+- `biophysicslabCallouts(tier:)` 4/3/3
+- 2 templates: study lab (optical tweezers, patch clamp, FRET, super-resolution, single-molecule fluorescence, 60 min) + lab report (power spectrum trap stiffness, patch clamp conductance states, FRET distance, STORM localization, photobleaching step count, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +49 @Test functions (4 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 4 domains + 1 count guard ≥1099)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 4 domains + 1 count guard ≥1099)
+
+**Template catalog: 1091 → 1099**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `condensedmatterphysics` fires at line 1799, BEFORE solidstatephysics (line 1819) ✓
+- `energymaterials` fires at line 3424, BEFORE batterytechnology (line 3447) ✓
+- `computationalneuroscience` fires at line 4544, BEFORE computationalscience (line 4569) ✓
+- `biophysicslab` fires at line 8250, BEFORE biophysics (line 8274) ✓
+- Brace balance: CalloutManager.swift 599/599 ✓; CalloutMessages.swift 1143/1143 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 1099 confirmed (grep -c "preferredDuration:" = 1099) ✓
+- 4 new routing return statements in CalloutManager.swift ✓
+- 4 new switch cases in CalloutMessages.swift ✓
+- 4 new private callout pool functions in CalloutMessages.swift ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `quantumoptics` — quantum optics class (cavity QED, Jaynes-Cummings model, photon statistics, Wigner function, entangled photon pairs, quantum key distribution — distinct from optics/photonics which covers classical)
+  - `astrochemistry` — astrochemistry class (interstellar medium chemistry, molecular clouds, polycyclic aromatic hydrocarbons, isotopic fractionation, protostellar disk chemistry — distinct from astronomy and chemistry)
+  - `geochemistry` — geochemistry class (trace element partitioning, radiogenic isotope geochronology, stable isotope systematics, mineral equilibria, geochemical cycles — distinct from geology/environmental science)
+  - `marinechemistry` — marine chemistry class (seawater composition, alkalinity, carbonate system, ocean carbon cycle, trace metal speciation — distinct from oceanography)
+  - `bioinorganicchemistry` — bioinorganic chemistry class (metalloenzymes, iron-sulfur clusters, oxygen transport, metal-based drugs, heme biochemistry — distinct from biochemistry and inorganic chemistry)
+- Template count target: 1099 → 1109 after next 5-domain batch

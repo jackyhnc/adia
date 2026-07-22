@@ -25429,8 +25429,120 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "biomechatronics", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1091)
-    @Test func calloutTemplatesCountAtLeast1091() {
-        #expect(SuggestedSessionTemplates.all.count >= 1091, "template catalog must have ≥1091 entries after spaceweather/nanophotonics/microelectromechanicalsystems/photovoltaicsenergy/biomechatronics additions")
+    // MARK: - condensedmatterphysics
+    @Test func condensedmatterphysicsRoutingFromAdvancedCM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "advanced condensed matter physics class exam") == "condensedmatterphysics")
+    }
+    @Test func condensedmatterphysicsRoutingFromTopologicalInsulator() {
+        #expect(CalloutManager.extractTaskKeyword(from: "topological insulator physics class condensed matter") == "condensedmatterphysics")
+    }
+    @Test func condensedmatterphysicsRoutingFromQuantumHall() {
+        #expect(CalloutManager.extractTaskKeyword(from: "quantum hall effect class exam condensed matter") == "condensedmatterphysics")
+    }
+    @Test func condensedmatterphysicsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solid state physics class band structure phonons") != "condensedmatterphysics")
+    }
+    @Test @MainActor func condensedmatterphysicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "condensedmatterphysics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "condensedmatterphysics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "condensedmatterphysics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func condensedmatterphysicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "condensedmatterphysics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func condensedmatterphysicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "condensedmatterphysics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - energymaterials
+    @Test func energymaterialsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "energy materials class exam lab") == "energymaterials")
+    }
+    @Test func energymaterialsRoutingFromSOFC() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solid oxide fuel cell class materials course") == "energymaterials")
+    }
+    @Test func energymaterialsRoutingFromThermoelectric() {
+        #expect(CalloutManager.extractTaskKeyword(from: "thermoelectric material class exam seebeck coefficient") == "energymaterials")
+    }
+    @Test func energymaterialsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "battery technology class lithium-ion sei layer") != "energymaterials")
+    }
+    @Test @MainActor func energymaterialsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "energymaterials", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "energymaterials", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "energymaterials", tier: 3).isEmpty)
+    }
+    @Test @MainActor func energymaterialsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "energymaterials", tier: 1).count >= 4)
+    }
+    @Test @MainActor func energymaterialsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "energymaterials", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - computationalneuroscience
+    @Test func computationalneuroscienceRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "computational neuroscience class exam homework") == "computationalneuroscience")
+    }
+    @Test func computationalneuroscienceRoutingFromHodgkinHuxley() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hodgkin-huxley model class simulation neuroscience") == "computationalneuroscience")
+    }
+    @Test func computationalneuroscienceRoutingFromIntegrateAndFire() {
+        #expect(CalloutManager.extractTaskKeyword(from: "integrate-and-fire model class neuroscience exam") == "computationalneuroscience")
+    }
+    @Test func computationalneuroscienceFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cognitive neuroscience fmri bold signal study") != "computationalneuroscience")
+    }
+    @Test @MainActor func computationalneuroscienceCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalneuroscience", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalneuroscience", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalneuroscience", tier: 3).isEmpty)
+    }
+    @Test @MainActor func computationalneuroscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computationalneuroscience", tier: 1).count >= 4)
+    }
+    @Test @MainActor func computationalneuroscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computationalneuroscience", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - biophysicslab
+    @Test func biophysicslabRoutingFromExperimentalBiophysics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "experimental biophysics class lab exam") == "biophysicslab")
+    }
+    @Test func biophysicslabRoutingFromPatchClamp() {
+        #expect(CalloutManager.extractTaskKeyword(from: "patch clamp biophysics lab electrophysiology") == "biophysicslab")
+    }
+    @Test func biophysicslabRoutingFromBiophotonics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "biophotonics class lab course exam") == "biophysicslab")
+    }
+    @Test func biophysicslabFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "biophysics class thermodynamics of living systems membrane potential") != "biophysicslab")
+    }
+    @Test @MainActor func biophysicslabCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "biophysicslab", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "biophysicslab", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "biophysicslab", tier: 3).isEmpty)
+    }
+    @Test @MainActor func biophysicslabTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "biophysicslab", tier: 1).count >= 4)
+    }
+    @Test @MainActor func biophysicslabTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "biophysicslab", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1099)
+    @Test func calloutTemplatesCountAtLeast1099() {
+        #expect(SuggestedSessionTemplates.all.count >= 1099, "template catalog must have ≥1099 entries after condensedmatterphysics/energymaterials/computationalneuroscience/biophysicslab additions")
     }
 }
