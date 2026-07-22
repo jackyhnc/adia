@@ -1320,6 +1320,25 @@ public final class CalloutManager {
             || lower.contains("dynamic programming") && (lower.contains("or") || lower.contains("optimization class") || lower.contains("optimization course")) {
             return "operationsresearch"
         }
+        // advancedlinearalgebra — positioned BEFORE linearalgebra so upper-division/graduate
+        // linear algebra coursework (Jordan canonical form, spectral theorem for self-adjoint
+        // operators, dual spaces, bilinear forms, tensor products) routes to a dedicated pool.
+        // Standard "linear algebra class" without advanced markers falls through to linearalgebra.
+        if lower.contains("advanced linear algebra") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("notes") || lower.contains("hw") || lower.contains("problem set") || lower.contains("assignment"))
+            || (lower.contains("linear algebra 2") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("notes") || lower.contains("homework") || lower.contains("problem set")))
+            || (lower.contains("linear algebra ii") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("notes") || lower.contains("homework")))
+            || (lower.contains("abstract linear algebra") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || lower.contains("jordan canonical form")
+            || (lower.contains("jordan normal form") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra")))
+            || (lower.contains("jordan form") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra")))
+            || (lower.contains("spectral theorem") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra") || lower.contains("self-adjoint")))
+            || (lower.contains("dual space") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra")))
+            || (lower.contains("tensor product") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra")))
+            || (lower.contains("bilinear form") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra")))
+            || (lower.contains("matrix analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")))
+            || (lower.contains("quadratic form") && (lower.contains("class") || lower.contains("exam") || lower.contains("linear algebra"))) {
+            return "advancedlinearalgebra"
+        }
         // linearalgebra — positioned BEFORE mathematics so "linear algebra class/exam" routes
         // to a dedicated pool with eigenvector, matrix decomposition, and vector space context.
         // Bare "linear algebra" in mathematics catches it as a fallback for non-class mentions.
@@ -1601,6 +1620,28 @@ public final class CalloutManager {
             || (lower.contains("compact operator") && (lower.contains("class") || lower.contains("exam") || lower.contains("functional")))
             || (lower.contains("normed space") && (lower.contains("class") || lower.contains("exam") || lower.contains("functional"))) {
             return "functionalanalysis"
+        }
+        // riemanniangeometry — positioned BEFORE differentialgeometry so dedicated Riemannian
+        // geometry coursework (Riemannian metrics, Levi-Civita connection, geodesics, sectional
+        // curvature, Ricci tensor, Gauss-Bonnet, comparison geometry) routes to a focused pool.
+        // "riemannian geometry" with class context was previously caught by differentialgeometry;
+        // intercepting it here gives more specific callouts for this graduate-level course.
+        if (lower.contains("riemannian geometry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("notes") || lower.contains("assignment") || lower.contains("problem set")))
+            || (lower.contains("riemannian manifold") && (lower.contains("class") || lower.contains("exam") || lower.contains("course")) && !lower.contains("differential geometry"))
+            || (lower.contains("riemannian metric") && (lower.contains("class") || lower.contains("exam") || lower.contains("course")))
+            || lower.contains("levi-civita connection") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("levi civita connection") && (lower.contains("class") || lower.contains("exam"))
+            || (lower.contains("sectional curvature") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("ricci tensor") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("gauss-bonnet") && (lower.contains("riemannian") || lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("gauss bonnet") && (lower.contains("riemannian") || lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("parallel transport") && lower.contains("riemannian") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("exponential map") && lower.contains("riemannian") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("jacobi field") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("comparison geometry") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("geodesic completeness") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("hopf-rinow") && (lower.contains("class") || lower.contains("exam") || lower.contains("riemannian"))) {
+            return "riemanniangeometry"
         }
         // differentialgeometry — positioned BEFORE mathematics so differential geometry coursework
         // (Riemannian manifolds, curvature, geodesics, differential forms, manifolds) routes to a
@@ -9772,6 +9813,56 @@ public final class CalloutManager {
             || lower.contains("cardiology shelf") || lower.contains("nbme cardiology")
             || lower.contains("cardiology sub") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("internship")) {
             return "cardiologyrotation"
+        }
+        // nephrologyrotation — positioned AFTER cardiologyrotation and BEFORE obgynrotation so
+        // nephrology clerkship tasks (AKI/CKD management, dialysis rounds, renal biopsy notes,
+        // SOAP notes on renal patients) route to a dedicated pool. Bare "nephrology" or "renal"
+        // without rotation/clerkship context stays in premed (fires later).
+        if lower.contains("nephrology rotation") || lower.contains("nephrology clerkship")
+            || lower.contains("nephrology elective") || lower.contains("nephrology sub-i")
+            || lower.contains("nephrology rounds") || lower.contains("nephrology attending")
+            || lower.contains("nephrology ward") || lower.contains("renal rotation")
+            || lower.contains("renal clerkship") || lower.contains("dialysis rotation")
+            || lower.contains("nephrology notes") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write"))
+            || lower.contains("renal notes") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write"))
+            || lower.contains("nephrology case") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("nephrology shelf") || lower.contains("nbme nephrology")
+            || lower.contains("aki management") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("notes"))
+            || lower.contains("ckd management") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("notes")) {
+            return "nephrologyrotation"
+        }
+        // endocrinologyrotation — positioned AFTER nephrologyrotation and BEFORE obgynrotation so
+        // endocrinology clerkship tasks (thyroid/adrenal/DM management, hormone labs, endocrine
+        // tumor workup) route to a dedicated pool. Bare "endocrinology" stays in premed.
+        if lower.contains("endocrinology rotation") || lower.contains("endocrinology clerkship")
+            || lower.contains("endocrinology elective") || lower.contains("endocrinology sub-i")
+            || lower.contains("endocrine rotation") || lower.contains("endocrine clerkship")
+            || lower.contains("endocrinology rounds") || lower.contains("endocrinology attending")
+            || lower.contains("endocrinology notes") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write"))
+            || lower.contains("endocrine notes") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write"))
+            || lower.contains("endocrinology case") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("endocrinology shelf") || lower.contains("nbme endocrinology")
+            || lower.contains("thyroid clinic") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("notes"))
+            || lower.contains("diabetes clinic") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("endocrin")) {
+            return "endocrinologyrotation"
+        }
+        // hematologyoncology — positioned AFTER endocrinologyrotation and BEFORE obgynrotation so
+        // heme/onc rotation tasks (leukemia/lymphoma workup, chemo regimens, bone marrow rounds)
+        // route to a dedicated pool. Bare "oncology" or "hematology" stays in premed.
+        if lower.contains("hematology oncology rotation") || lower.contains("hematology oncology clerkship")
+            || lower.contains("heme onc rotation") || lower.contains("heme/onc rotation")
+            || lower.contains("hem-onc rotation") || lower.contains("heme-onc rotation")
+            || lower.contains("heme onc clerkship") || lower.contains("heme/onc clerkship")
+            || lower.contains("hematology rotation") && (lower.contains("notes") || lower.contains("clerkship") || lower.contains("write") || lower.contains("elective"))
+            || lower.contains("oncology rotation") && (lower.contains("notes") || lower.contains("clerkship") || lower.contains("write") || lower.contains("elective"))
+            || lower.contains("hematology clerkship") || lower.contains("oncology clerkship")
+            || lower.contains("bone marrow rotation") || lower.contains("bone marrow rounds") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("hem"))
+            || lower.contains("infusion center rotation")
+            || lower.contains("hematology shelf") || lower.contains("oncology shelf") || lower.contains("heme onc shelf")
+            || lower.contains("nbme hematology oncology") || lower.contains("nbme heme onc")
+            || lower.contains("leukemia cases") && (lower.contains("rotation") || lower.contains("write"))
+            || lower.contains("lymphoma cases") && (lower.contains("rotation") || lower.contains("write")) {
+            return "hematologyoncology"
         }
         // obgynrotation — positioned AFTER internalmedicine and BEFORE premed. Bare "obstetrics" or
         // "gynecology" alone stays in premed; OB/GYN clerkship-specific context routes here.

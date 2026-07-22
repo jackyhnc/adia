@@ -465,6 +465,9 @@ extension CalloutManager {
         case "pediatricsrotation":         return pediatricsrotationCallouts(tier: tier)
         case "internalmedicine":           return internalMedicineCallouts(tier: tier)
         case "cardiologyrotation":         return cardiologyrotationCallouts(tier: tier)
+        case "nephrologyrotation":         return nephrologyrotationCallouts(tier: tier)
+        case "endocrinologyrotation":      return endocrinologyrotationCallouts(tier: tier)
+        case "hematologyoncology":         return hematologyoncologyCallouts(tier: tier)
         case "obgynrotation":              return obgynrotationCallouts(tier: tier)
         case "familymedicine":             return familymedicineCallouts(tier: tier)
         case "emergencymedicinerotation":  return emergencymedicinerotationCallouts(tier: tier)
@@ -518,6 +521,7 @@ extension CalloutManager {
         case "psychobiologyclass":         return psychobiologyclassCallouts(tier: tier)
         case "abnormalpsychology":         return abnormalpsychologyCallouts(tier: tier)
         case "healthpsychology":           return healthpsychologyCallouts(tier: tier)
+        case "advancedlinearalgebra":      return advancedlinearalgebraCallouts(tier: tier)
         case "linearalgebra":              return linearalgebraCallouts(tier: tier)
         case "differentialequations":      return differentialequationsCallouts(tier: tier)
         case "neuropsychology":            return neuropsychologyCallouts(tier: tier)
@@ -540,6 +544,7 @@ extension CalloutManager {
         case "sedimentology":              return sedimentologyCallouts(tier: tier)
         case "structuralgeology":          return structuralgeologyCallouts(tier: tier)
         case "functionalanalysis":         return functionalanalysisCallouts(tier: tier)
+        case "riemanniangeometry":         return riemanniangeometryCallouts(tier: tier)
         case "differentialgeometry":       return differentialgeometryCallouts(tier: tier)
         case "cosmology":                  return cosmologyCallouts(tier: tier)
         case "planetaryscience":           return planetaryscienceCallouts(tier: tier)
@@ -13059,6 +13064,111 @@ extension CalloutManager {
             "CLOSE THIS. open your cardiology rotation notes.",
             "CLOSE THIS. those echo and cath lab cases won't document themselves.",
             "CLOSE THIS. your cardiology shelf won't study itself."
+        ]
+        }
+    }
+
+    private func nephrologyrotationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "nephrology rotation notes still need writing — AKI workup and CKD management plans don't document themselves.",
+            "your nephrology shelf is approaching — dialysis indications and renal pathophysiology need review.",
+            "those renal case presentations won't write themselves — get back to them.",
+            "glomerulonephritis cases and electrolyte management are waiting on your notes."
+        ]
+        case 2: return [
+            "stop. your nephrology rotation write-ups are still open.",
+            "renal biopsy cases, dialysis notes — your attending is expecting them.",
+            "nephrology clerkship doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your nephrology rotation notes.",
+            "CLOSE THIS. those AKI and CKD management cases won't document themselves.",
+            "CLOSE THIS. your nephrology shelf won't study itself."
+        ]
+        }
+    }
+
+    private func endocrinologyrotationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "endocrinology rotation notes still need writing — thyroid and adrenal cases don't document themselves.",
+            "your endocrinology shelf is approaching — diabetes management and hormone labs need review.",
+            "those endocrine case presentations won't write themselves — get back to them.",
+            "thyroid nodule workup and DM medication adjustment are waiting on your notes."
+        ]
+        case 2: return [
+            "stop. your endocrinology rotation write-ups are still open.",
+            "hormone lab results, endocrine tumor workup — your attending is expecting them.",
+            "endocrinology clerkship doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your endocrinology rotation notes.",
+            "CLOSE THIS. those thyroid and adrenal cases won't document themselves.",
+            "CLOSE THIS. your endocrinology shelf won't study itself."
+        ]
+        }
+    }
+
+    private func hematologyoncologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "heme/onc rotation notes still need writing — leukemia and lymphoma workups don't document themselves.",
+            "your hematology oncology shelf is approaching — chemo regimens and bone marrow interpretation need review.",
+            "those oncology case presentations won't write themselves — get back to them.",
+            "bone marrow biopsy results and chemotherapy toxicity notes are waiting on your write-up."
+        ]
+        case 2: return [
+            "stop. your heme/onc rotation notes are still open.",
+            "leukemia staging, lymphoma regimens — your attending is expecting those notes.",
+            "hematology oncology clerkship doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your heme/onc rotation notes.",
+            "CLOSE THIS. those leukemia and lymphoma cases won't document themselves.",
+            "CLOSE THIS. your hematology oncology shelf won't study itself."
+        ]
+        }
+    }
+
+    private func advancedlinearalgebraCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "advanced linear algebra isn't going to study itself — Jordan canonical form and spectral theorem are waiting.",
+            "your advanced linear algebra exam is coming — dual spaces and bilinear forms need review.",
+            "those tensor product and quadratic form problems are still open.",
+            "Jordan normal form, matrix analysis — get back to your problem set."
+        ]
+        case 2: return [
+            "stop. your advanced linear algebra assignment is still open.",
+            "Jordan blocks, spectral theorem — your exam won't wait.",
+            "advanced linear algebra class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your advanced linear algebra textbook.",
+            "CLOSE THIS. those Jordan canonical form and dual space problems won't solve themselves.",
+            "CLOSE THIS. your advanced linear algebra exam won't study itself."
+        ]
+        }
+    }
+
+    private func riemanniangeometryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "Riemannian geometry isn't going to study itself — geodesics and sectional curvature are waiting.",
+            "your Riemannian geometry exam is coming — Levi-Civita connection and Gauss-Bonnet need review.",
+            "those Ricci tensor and parallel transport problems are still open.",
+            "Jacobi fields, Hopf-Rinow, comparison geometry — get back to your problem set."
+        ]
+        case 2: return [
+            "stop. your Riemannian geometry assignment is still open.",
+            "Riemannian metrics, geodesic completeness — your exam won't wait.",
+            "Riemannian geometry class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your Riemannian geometry textbook.",
+            "CLOSE THIS. those geodesic and curvature tensor problems won't solve themselves.",
+            "CLOSE THIS. your Riemannian geometry exam won't study itself."
         ]
         }
     }

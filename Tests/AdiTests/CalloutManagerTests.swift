@@ -26241,8 +26241,148 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "cardiologyrotation", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1149)
-    @Test func calloutTemplatesCountAtLeast1149() {
-        #expect(SuggestedSessionTemplates.all.count >= 1149, "template catalog must have ≥1149 entries after measuretheory/algebraictopology/numbertheory/orthopedicsrotation/cardiologyrotation additions")
+    // MARK: - advancedlinearalgebra
+    @Test func advancedlinearalgebraRoutingFromAdvancedLinearAlgebraClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "advanced linear algebra class exam jordan canonical form spectral theorem") == "advancedlinearalgebra")
+    }
+    @Test func advancedlinearalgebraRoutingFromJordanCanonicalForm() {
+        #expect(CalloutManager.extractTaskKeyword(from: "jordan canonical form problem set linear algebra 2 exam") == "advancedlinearalgebra")
+    }
+    @Test func advancedlinearalgebraRoutingFromDualSpace() {
+        #expect(CalloutManager.extractTaskKeyword(from: "dual space class exam linear algebra bilinear form") == "advancedlinearalgebra")
+    }
+    @Test func advancedlinearalgebraFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "linear algebra class exam eigenvector matrix decomposition row reduction") != "advancedlinearalgebra")
+    }
+    @Test @MainActor func advancedlinearalgebraCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "advancedlinearalgebra", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "advancedlinearalgebra", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "advancedlinearalgebra", tier: 3).isEmpty)
+    }
+    @Test @MainActor func advancedlinearalgebraTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "advancedlinearalgebra", tier: 1).count >= 4)
+    }
+    @Test @MainActor func advancedlinearalgebraTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "advancedlinearalgebra", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - riemanniangeometry
+    @Test func riemanniangeometryRoutingFromRiemannianGeometryClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "riemannian geometry class exam levi-civita connection sectional curvature") == "riemanniangeometry")
+    }
+    @Test func riemanniangeometryRoutingFromGaussBonnet() {
+        #expect(CalloutManager.extractTaskKeyword(from: "gauss-bonnet theorem riemannian class exam surface") == "riemanniangeometry")
+    }
+    @Test func riemanniangeometryRoutingFromJacobiField() {
+        #expect(CalloutManager.extractTaskKeyword(from: "jacobi field class exam geodesic completeness hopf-rinow") == "riemanniangeometry")
+    }
+    @Test func riemanniangeometryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "differential geometry class exam manifold differential form covariant derivative") != "riemanniangeometry")
+    }
+    @Test @MainActor func riemanniangeometryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "riemanniangeometry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "riemanniangeometry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "riemanniangeometry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func riemanniangeometryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "riemanniangeometry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func riemanniangeometryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "riemanniangeometry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - nephrologyrotation
+    @Test func nephrologyrotationRoutingFromNephrologyRotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nephrology rotation notes aki ckd management clerkship") == "nephrologyrotation")
+    }
+    @Test func nephrologyrotationRoutingFromShelf() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nephrology shelf exam study nbme nephrology") == "nephrologyrotation")
+    }
+    @Test func nephrologyrotationRoutingFromDialysisRotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "dialysis rotation renal clerkship write notes") == "nephrologyrotation")
+    }
+    @Test func nephrologyrotationFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "internal medicine rotation notes wards cardiology") != "nephrologyrotation")
+    }
+    @Test @MainActor func nephrologyrotationCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "nephrologyrotation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nephrologyrotation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nephrologyrotation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func nephrologyrotationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nephrologyrotation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func nephrologyrotationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nephrologyrotation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - endocrinologyrotation
+    @Test func endocrinologyrotationRoutingFromEndocrinologyRotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "endocrinology rotation notes thyroid adrenal clerkship") == "endocrinologyrotation")
+    }
+    @Test func endocrinologyrotationRoutingFromShelf() {
+        #expect(CalloutManager.extractTaskKeyword(from: "endocrinology shelf exam study nbme endocrinology") == "endocrinologyrotation")
+    }
+    @Test func endocrinologyrotationRoutingFromEndoClerkship() {
+        #expect(CalloutManager.extractTaskKeyword(from: "endocrine clerkship write notes diabetes management") == "endocrinologyrotation")
+    }
+    @Test func endocrinologyrotationFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "internal medicine rotation notes cardiology wards") != "endocrinologyrotation")
+    }
+    @Test @MainActor func endocrinologyrotationCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "endocrinologyrotation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "endocrinologyrotation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "endocrinologyrotation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func endocrinologyrotationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "endocrinologyrotation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func endocrinologyrotationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "endocrinologyrotation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - hematologyoncology
+    @Test func hematologyoncologyRoutingFromHemeOncRotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "heme onc rotation notes leukemia lymphoma clerkship") == "hematologyoncology")
+    }
+    @Test func hematologyoncologyRoutingFromHematologyOncologyShelf() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hematology oncology shelf exam study nbme heme onc") == "hematologyoncology")
+    }
+    @Test func hematologyoncologyRoutingFromBoneMarrowRotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bone marrow rotation hematology clerkship write notes") == "hematologyoncology")
+    }
+    @Test func hematologyoncologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "internal medicine rotation notes cardiology wards") != "hematologyoncology")
+    }
+    @Test @MainActor func hematologyoncologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "hematologyoncology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "hematologyoncology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "hematologyoncology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func hematologyoncologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "hematologyoncology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func hematologyoncologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "hematologyoncology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1159)
+    @Test func calloutTemplatesCountAtLeast1159() {
+        #expect(SuggestedSessionTemplates.all.count >= 1159, "template catalog must have ≥1159 entries after advancedlinearalgebra/riemanniangeometry/nephrologyrotation/endocrinologyrotation/hematologyoncology additions")
     }
 }

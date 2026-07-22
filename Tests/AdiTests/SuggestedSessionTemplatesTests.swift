@@ -7373,8 +7373,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func cardiologyrotationShelfTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cardiology") && $0.task.lowercased().contains("shelf exam") })
     }
-    // MARK: - Count guard (≥1149)
-    @Test func templateCountAtLeast1149() {
-        #expect(SuggestedSessionTemplates.all.count >= 1149, "template catalog must have ≥1149 entries after measuretheory/algebraictopology/numbertheory/orthopedicsrotation/cardiologyrotation additions")
+    // MARK: - nephrologyrotation templates
+    @Test func nephrologyrotationNotesTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("nephrology rotation") && $0.task.lowercased().contains("notes") })
+    }
+    @Test func nephrologyrotationShelfTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("nephrology") && $0.task.lowercased().contains("shelf exam") })
+    }
+    // MARK: - endocrinologyrotation templates
+    @Test func endocrinologyrotationNotesTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("endocrinology rotation") && $0.task.lowercased().contains("notes") })
+    }
+    @Test func endocrinologyrotationShelfTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("endocrinology") && $0.task.lowercased().contains("shelf exam") })
+    }
+    // MARK: - hematologyoncology templates
+    @Test func hematologyoncologyNotesTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("hematology oncology rotation") && $0.task.lowercased().contains("notes") })
+    }
+    @Test func hematologyoncologyShelfTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("hematology oncology") && $0.task.lowercased().contains("shelf exam") })
+    }
+    // MARK: - advancedlinearalgebra templates
+    @Test func advancedlinearalgebraStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("advanced linear algebra") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func advancedlinearalgebraProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("advanced linear algebra") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - riemanniangeometry templates
+    @Test func riemanniangeometryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("riemannian geometry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func riemanniangeometryProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("riemannian geometry") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - Count guard (≥1159)
+    @Test func templateCountAtLeast1159() {
+        #expect(SuggestedSessionTemplates.all.count >= 1159, "template catalog must have ≥1159 entries after advancedlinearalgebra/riemanniangeometry/nephrologyrotation/endocrinologyrotation/hematologyoncology additions")
     }
 }
