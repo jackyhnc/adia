@@ -1,5 +1,73 @@
 # Adia — Build Progress
 
+## Run 399 (automated) — 2026-07-22 — 5 new keyword domains: nucleardynamics/additivemfg/batterytechnology/semiconductordevices/vlsidesign (1071→1081 templates)
+
+### What shipped
+
+**5 new keyword domains: nucleardynamics, additivemfg, batterytechnology, semiconductordevices, vlsidesign**
+
+**New keyword domain — nucleardynamics:**
+- Branch positioned BEFORE `nuclearreactorphysics`. Reactor dynamics coursework (point kinetics, xenon oscillations, temperature/Doppler feedback, RELAP/TRACE simulation) distinct from steady-state reactor physics (criticality, four-factor formula).
+- Catches: reactor dynamics class/course/exam/homework, point kinetics + class/exam/reactor/dynamics, xenon oscillation + class/exam/reactor/dynamics, temperature coefficient of reactivity + class/exam/reactor, Doppler coefficient + class/exam/reactor/reactivity, moderator temperature coefficient + class/exam/reactor, void coefficient + class/exam/reactor/reactivity, RELAP + class/exam/transient/reactor/simulation, TRACE simulation + reactor + class/exam, reactor transient + class/exam/analysis/simulation, subcritical multiplication + class/exam/reactor, prompt criticality + class/exam/reactor, scram analysis + reactor + class/exam.
+- `nucleardynamicsCallouts(tier:)` 4/3/3: "those point kinetics and reactor transient problems won't solve themselves." / "no one masters reactor dynamics by scrolling." / "CLOSE THIS. those point kinetics and RELAP transient problems won't solve themselves."
+- 2 templates: study exam (point kinetics, reactivity feedback, xenon oscillation, subcritical multiplication, scram, RELAP/TRACE, 60 min) + assignment (point kinetics solve, temperature feedback, xenon transient, subcritical mult, or RELAP output interpretation, 60 min)
+
+**New keyword domain — additivemfg:**
+- Branch positioned BEFORE `materialscience`. Additive manufacturing/3D printing coursework (FDM, SLA, SLS, powder bed fusion, DFAM) distinct from materials science theory.
+- Catches: additive manufacturing class/course/exam/lab/homework/assignment, 3d printing class/course/exam/lab, FDM + class/exam/printing/additive/lab, fused deposition modeling + class/exam/additive/lab, stereolithography + class/exam/additive/lab, selective laser sintering + class/exam/additive/lab, powder bed fusion + class/exam/additive/lab, direct metal laser sintering + class/exam/additive, design for additive manufacturing + class/exam, DFAM + class/exam/additive, infill density + class/exam/printing/additive, layer-by-layer manufacturing + class/exam.
+- `additivemfgCallouts(tier:)` 4/3/3: "those FDM and powder bed fusion problems won't design themselves." / "no one masters additive manufacturing by scrolling." / "CLOSE THIS. those FDM process parameters and DFAM problems won't solve themselves."
+- 2 templates: study exam (FDM, SLA, SLS, powder bed fusion, DFAM, support structures, post-processing, 60 min) + assignment (AM process selection, FDM parameter optimization, DFAM redesign, or AM process comparison, 60 min)
+
+**New keyword domain — batterytechnology:**
+- Branch positioned BEFORE `renewableenergy`. Battery science/electrochemistry (Li-ion chemistry, SEI layer, solid electrolyte, cathode/anode materials, EIS, cycle life) distinct from system-level renewable energy integration.
+- Catches: battery technology class/course/exam/lab, lithium-ion battery class/course/exam/lab, li-ion battery class/course/exam, battery electrochemistry + class/exam/lab/course, solid-state battery + class/exam/course/design, solid electrolyte + battery + class/exam, SEI layer + class/exam/battery/electrode, cathode material + battery + class/exam, anode material + battery + class/exam, battery electrode + class/exam/lab, electrochemical energy storage class/course/exam, coulombic efficiency + battery + class/exam, C-rate + battery + class/exam, cycle life + battery + class/exam, EIS + battery + class/exam.
+- `batterytechnologyCallouts(tier:)` 4/3/3: "those Li-ion chemistry and SEI layer problems won't solve themselves." / "no one masters battery technology by scrolling." / "CLOSE THIS. those Li-ion chemistry and cycle life problems won't solve themselves."
+- 2 templates: study exam (Li-ion intercalation, SEI, cathode/anode materials, EIS, C-rate, Ragone plot, coulombic efficiency, 60 min) + assignment (specific capacity calc, EIS interpretation, coulombic efficiency, cycle life analysis, or electrode stack design, 60 min)
+
+**New keyword domain — semiconductordevices:**
+- Branch positioned BEFORE `electricalengineering` (intercepts "semiconductor devices class" previously caught by EE). p-n junction/MOSFET/BJT device physics distinct from circuits/systems.
+- Catches: semiconductor devices class/course/exam/lab/homework/assignment, semiconductor device physics + class/exam/course, p-n junction + class/exam/semiconductor/device/lab (guard: !biology/genome), pn junction + class/exam/semiconductor/device/lab, MOSFET threshold + class/exam/device, MOSFET i-v + class/exam/device/lab, BJT + class/exam/semiconductor/device/lab (guard: !british), bipolar junction transistor + class/exam, depletion approximation + class/exam/semiconductor, ideal diode equation + class/exam/semiconductor, minority carrier + class/exam/semiconductor/device, carrier transport + class/exam/semiconductor, Shockley equation + class/exam/semiconductor, junction breakdown + class/exam/semiconductor, avalanche breakdown + class/exam/semiconductor.
+- `semiconductordevicesCallouts(tier:)` 4/3/3: "those p-n junction and MOSFET device physics problems won't solve themselves." / "no one masters semiconductor devices by scrolling." / "CLOSE THIS. those p-n junction I-V and MOSFET threshold voltage problems won't solve themselves."
+- 2 templates: study exam (p-n junction, MOSFET, BJT Ebers-Moll, minority carrier, Shockley, breakdown, small-signal, 60 min) + assignment (depletion width/built-in potential, MOSFET drain current, BJT current gain, minority carrier profile, or breakdown voltage, 60 min)
+
+**New keyword domain — vlsidesign:**
+- Branch positioned BEFORE `electricalengineering` (after semiconductordevices). VLSI/CMOS physical design distinct from RTL-level EE (verilog/fpga stays in electricalengineering).
+- Catches: vlsi class/course/exam/lab, vlsi design class/course/exam, cmos design class/course/exam, cmos logic design + class/exam/lab/course, standard cell + class/exam/vlsi/cmos/design, place and route/place-and-route + class/exam/vlsi/cmos, static timing analysis + class/exam/vlsi/cmos/design, transistor sizing + class/exam/vlsi/cmos/design, logic synthesis + class/exam/vlsi/cmos, digital ic design + class/exam/lab/course, custom ic design + class/exam, cadence virtuoso + class/exam/lab/vlsi, synopsys design compiler + class/exam/lab/vlsi, layout design rule + class/exam/vlsi/cmos.
+- `vlsidesignCallouts(tier:)` 4/3/3: "those standard cell and place-and-route problems won't design themselves." / "no one masters VLSI design by scrolling." / "CLOSE THIS. those place-and-route and static timing analysis problems won't solve themselves."
+- 2 templates: study exam (CMOS logic, standard cell, transistor sizing/logical effort, STA, P&R flow, logic synthesis, Cadence/Synopsys, DRC/LVS, 60 min) + assignment (transistor sizing via logical effort, critical path slack, RTL synthesis, STA, Cadence layout, or standard cell design, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +50 @Test functions (5 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains + 1 count guard ≥1081)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + 1 count guard ≥1081)
+
+**Template catalog: 1071 → 1081**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `nucleardynamics` fires at line 1821, BEFORE nuclearreactorphysics (line 1846) ✓
+- `additivemfg` fires at line 3016, BEFORE materialscience (line 3039) ✓
+- `batterytechnology` fires at line 3345, BEFORE renewableenergy (line 3371) ✓
+- `semiconductordevices` fires at line 3456, BEFORE electricalengineering (line 3512) ✓
+- `vlsidesign` fires at line 3478, BEFORE electricalengineering (line 3512) ✓
+- Brace balance: CalloutManager.swift 590/590 ✓; CalloutMessages.swift 1125/1125 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 1081 confirmed (grep -c "preferredDuration:" = 1081) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases + 5 new private pool functions in CalloutMessages.swift ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `nanophotonics` — nanophotonics class (plasmonics, Mie scattering, near-field optics, waveguide nanophotonics, quantum dots — distinct from photonics which covers fiber/laser systems)
+  - `microelectromechanicalsystems` — MEMS class (capacitive sensing, piezoelectric transduction, electrostatic actuation, fabrication process flow — distinct from nanotechnology)
+  - `quantumcomputing` — quantum computing class (qubit physics, quantum gates, Grover/Shor algorithms, quantum error correction, NISQ devices — distinct from quantummechanics and quantumfieldtheory)
+  - `biomechatronics` — biomechatronics/medical robotics class (prosthetics, EMG control, rehabilitation robotics, surgical robotics — distinct from mechatronics and robotics)
+  - `spaceweather` — space weather class (solar wind, geomagnetic storms, Van Allen belts, CME, Kp index — distinct from astronomy/astrophysics)
+- Template count target: 1081 → 1091 after next 5-domain batch
+
+---
+
 ## Run 397 (automated) — 2026-07-22 — 5 new keyword domains: nuclearreactorphysics/optoelectronics/magneticresonance/computationalelectromagnetics/thermoelectrics (1061→1071 templates)
 
 ### What shipped
