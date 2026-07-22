@@ -6920,5 +6920,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Thermoelectrics assignment completed (Seebeck voltage and TEG power output calculated, TEC COP and ΔTmax determined, ZT computed from measured transport data, or material efficiency compared with ZT analysis, Carnot efficiency reference, and written numerical solution with parameter table saved to file)",
             preferredDuration: 60 * 60
         ),
+        // nucleardynamics
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study reactor dynamics for my exam — review the point kinetics equations (prompt and delayed neutron contributions), reactivity feedback mechanisms (Doppler broadening, moderator temperature coefficient, void coefficient), xenon-135 buildup and oscillation dynamics, temperature coefficient of reactivity, subcritical multiplication, scram analysis, RELAP/TRACE transient simulation methodology, and reactor control principles",
+            successCriteria: "Reactor dynamics study session completed (at least two topics reviewed with point kinetics equations written, Doppler coefficient sign and mechanism explained, xenon oscillation condition derived, MTC and void coefficient calculated, subcritical multiplication formula applied, scram transient described, and key formulas saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work on my reactor dynamics assignment — solve the point kinetics equations for a specified reactivity insertion (prompt jump approximation and delayed neutron equations), calculate the temperature coefficient of reactivity using Doppler broadening for a given fuel composition, analyze xenon-135 transient behavior following a power change, determine subcritical multiplication for a subcritical assembly, or interpret RELAP/TRACE transient simulation output for a loss-of-coolant scenario",
+            successCriteria: "Reactor dynamics assignment completed (point kinetics solved with prompt jump and delayed neutron contributions, temperature feedback coefficient calculated, xenon transient analyzed with buildup/decay rates, subcritical multiplication determined, or RELAP/TRACE output interpreted with power, temperature, and reactivity traces described and written solution saved)",
+            preferredDuration: 60 * 60
+        ),
+        // additivemfg
+        SuggestedTemplate(
+            icon: "cube.fill",
+            task: "Study additive manufacturing for my exam — review FDM process parameters (layer height, infill density, print speed, nozzle temperature), stereolithography (SLA) photopolymerization and cure depth, selective laser sintering (SLS) and powder bed fusion energy density, direct metal laser sintering (DMLS) process, design for additive manufacturing (DFAM) principles, support structure requirements, post-processing methods, and comparison of AM processes by material class",
+            successCriteria: "Additive manufacturing study session completed (at least two AM processes reviewed with FDM parameters identified, SLA cure depth equation written, SLS energy density calculated, DFAM design rules listed, support structure placement criteria explained, post-processing steps described for one process, and key comparison table saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cube.fill",
+            task: "Work on my additive manufacturing assignment — select and justify an AM process (FDM, SLA, SLS, or DMLS) for a given part geometry and material requirement, determine optimal FDM parameters (layer height, infill, orientation) for a structural component, redesign a conventionally manufactured part for additive manufacturing using DFAM principles (topology optimization, lattice structures, part consolidation), or compare surface finish and mechanical properties for parts printed with different AM processes",
+            successCriteria: "Additive manufacturing assignment completed (AM process selected with justification, FDM parameters determined with rationale, part redesigned with DFAM topology/lattice applied and material savings quantified, or AM process comparison documented with surface finish and mechanical property data, and written solution with design sketches or parameter table saved)",
+            preferredDuration: 60 * 60
+        ),
+        // batterytechnology
+        SuggestedTemplate(
+            icon: "battery.100.bolt",
+            task: "Study battery technology for my exam — review lithium-ion battery electrochemistry (intercalation mechanism, cathode and anode materials), SEI layer formation and its role in cycle life, solid-state battery advantages and solid electrolyte options, electrochemical impedance spectroscopy (EIS) interpretation, C-rate effects on capacity, Ragone plot (energy vs. power density), coulombic efficiency, calendar aging, and battery management system fundamentals",
+            successCriteria: "Battery technology study session completed (at least two topics reviewed with Li-ion intercalation mechanism described, SEI formation explained, cathode/anode materials listed with voltage ranges, EIS Nyquist plot features identified, C-rate capacity relationship sketched, Ragone plot axes labeled, coulombic efficiency calculated, and key formulas saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "battery.100.bolt",
+            task: "Work on my battery technology assignment — calculate the theoretical specific capacity and energy density of a given cathode/anode pair, interpret an EIS Nyquist plot to extract ohmic resistance, charge transfer resistance, and Warburg diffusion impedance, determine coulombic efficiency from charge/discharge data, analyze cycle life degradation using capacity fade curves, compare solid-state and liquid-electrolyte batteries for a given application, or design a simple electrode stack for a target energy and power requirement",
+            successCriteria: "Battery technology assignment completed (specific capacity and energy density calculated, EIS features extracted with physical interpretation, coulombic efficiency determined, capacity fade analyzed quantitatively, or electrode stack design specified with area, thickness, and active material loading, and written solution with equations and results saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // semiconductordevices
+        SuggestedTemplate(
+            icon: "circuit.board",
+            task: "Study semiconductor devices for my exam — review p-n junction theory (depletion approximation, built-in potential, depletion width, I-V characteristic), MOSFET operation (threshold voltage, linear and saturation regions, body effect), BJT device physics (Ebers-Moll model, current gain, Early effect), minority carrier transport (drift-diffusion equation, diffusion length), Shockley ideal diode equation, junction breakdown mechanisms (avalanche and Zener), and small-signal models",
+            successCriteria: "Semiconductor devices study session completed (at least two devices reviewed with p-n junction depletion width derived, MOSFET threshold voltage and drain current equations written, BJT Ebers-Moll equations stated, minority carrier diffusion length calculated, Shockley equation applied, breakdown mechanisms explained, and small-signal parameters listed)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "circuit.board",
+            task: "Work on my semiconductor devices assignment — calculate depletion width and built-in potential for a specified p-n junction doping profile, derive or apply the MOSFET drain current in linear and saturation regions for given threshold voltage and device parameters, compute BJT current gain from minority carrier lifetimes and device geometry using the Ebers-Moll model, determine minority carrier concentration profile and diffusion current for a given injection level, or calculate avalanche breakdown voltage for a p-n junction",
+            successCriteria: "Semiconductor devices assignment completed (depletion width and built-in potential calculated, MOSFET drain current derived in both regions, BJT current gain computed with Ebers-Moll, minority carrier profile sketched with diffusion current integrated, or breakdown voltage calculated, and written solution with energy band diagrams and equations saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // vlsidesign
+        SuggestedTemplate(
+            icon: "cpu",
+            task: "Study VLSI design for my exam — review CMOS logic design (static CMOS, pass-transistor logic, transmission gates), standard cell library methodology, transistor sizing for performance and power, static timing analysis (setup/hold time, slack, critical path), place-and-route flow (floorplanning, power grid, routing), logic synthesis with Synopsys Design Compiler, Cadence Virtuoso layout workflow, design rule checking (DRC), and layout versus schematic (LVS) verification",
+            successCriteria: "VLSI design study session completed (at least two topics reviewed with CMOS gate sizing derived, standard cell characterization explained, critical path identified with slack calculated, place-and-route stages listed, logic synthesis flow described, Cadence/Synopsys tool flow outlined, DRC/LVS checks explained, and key timing equations saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cpu",
+            task: "Work on my VLSI design assignment — size CMOS transistors for a target propagation delay using the logical effort method, identify the critical path and compute setup-time slack in a given pipeline stage, write RTL for a digital module and run logic synthesis targeting a standard cell library with area or timing constraints, perform static timing analysis on a synthesized netlist, create or analyze a custom IC layout in Cadence Virtuoso satisfying DRC and LVS, or design a CMOS standard cell (inverter, NAND, NOR) with drive strength sizing",
+            successCriteria: "VLSI design assignment completed (transistor sizes determined via logical effort, critical path slack computed, RTL synthesized and timing report generated, STA results interpreted with setup/hold margins documented, layout created with DRC/LVS clean, or standard cell designed with schematic and layout matching, and written solution or tool output saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

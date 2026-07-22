@@ -7100,8 +7100,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func thermoelectricsAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("thermoelectrics") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1071)
-    @Test func templateCountAtLeast1071() {
-        #expect(SuggestedSessionTemplates.all.count >= 1071, "template catalog must have ≥1071 entries after nuclearreactorphysics/optoelectronics/magneticresonance/computationalelectromagnetics/thermoelectrics additions")
+    // MARK: - nucleardynamics templates
+    @Test func nucleardynamicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("reactor dynamics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func nucleardynamicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("reactor dynamics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - additivemfg templates
+    @Test func additivemfgStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("additive manufacturing") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func additivemfgAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("additive manufacturing") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - batterytechnology templates
+    @Test func batterytechnologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("battery technology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func batterytechnologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("battery technology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - semiconductordevices templates
+    @Test func semiconductordevicesStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("semiconductor devices") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func semiconductordevicesAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("semiconductor devices") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - vlsidesign templates
+    @Test func vlsidesignStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("vlsi design") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func vlsidesignAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("vlsi design") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1081)
+    @Test func templateCountAtLeast1081() {
+        #expect(SuggestedSessionTemplates.all.count >= 1081, "template catalog must have ≥1081 entries after nucleardynamics/additivemfg/batterytechnology/semiconductordevices/vlsidesign additions")
     }
 }

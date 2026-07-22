@@ -1800,6 +1800,26 @@ public final class CalloutManager {
             || lower.contains("action principle") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("mechanics") || lower.contains("physics")) {
             return "classicalmechanics"
         }
+        // nucleardynamics — positioned BEFORE nuclearreactorphysics so reactor dynamics class/exam
+        // (point kinetics, xenon oscillation dynamics, temperature feedback coefficients, Doppler
+        // broadening, RELAP/TRACE transient simulation) route to a dedicated pool distinct from
+        // steady-state reactor physics, criticality, and four-factor formula coursework.
+        if lower.contains("reactor dynamics class") || lower.contains("reactor dynamics course")
+            || lower.contains("reactor dynamics exam") || lower.contains("reactor dynamics homework")
+            || lower.contains("point kinetics") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor") || lower.contains("dynamics"))
+            || lower.contains("xenon oscillation") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor") || lower.contains("dynamics"))
+            || lower.contains("temperature coefficient of reactivity") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor"))
+            || lower.contains("doppler coefficient") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor") || lower.contains("reactivity"))
+            || lower.contains("moderator temperature coefficient") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor"))
+            || lower.contains("void coefficient") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor") || lower.contains("reactivity"))
+            || lower.contains("relap") && (lower.contains("class") || lower.contains("exam") || lower.contains("transient") || lower.contains("reactor") || lower.contains("simulation"))
+            || lower.contains("trace simulation") && lower.contains("reactor") && (lower.contains("class") || lower.contains("exam") || lower.contains("transient"))
+            || lower.contains("reactor transient") && (lower.contains("class") || lower.contains("exam") || lower.contains("analysis") || lower.contains("simulation"))
+            || lower.contains("subcritical multiplication") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor"))
+            || lower.contains("prompt criticality") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor"))
+            || lower.contains("scram analysis") && lower.contains("reactor") && (lower.contains("class") || lower.contains("exam") || lower.contains("dynamics") || lower.contains("transient")) {
+            return "nucleardynamics"
+        }
         // nuclearreactorphysics — positioned BEFORE nuclearphysics so reactor physics class/exam
         // (neutron transport, criticality, 4-factor formula, reactor kinetics, control rod worth,
         // xenon poisoning) route to a dedicated pool distinct from particle/nuclear fundamentals.
@@ -2973,6 +2993,28 @@ public final class CalloutManager {
             || lower.contains("pourbaix diagram") && (lower.contains("class") || lower.contains("exam") || lower.contains("corrosion") || lower.contains("electrochemical")) {
             return "corrosionengineering"
         }
+        // additivemfg — positioned BEFORE materialscience so additive manufacturing class/exam
+        // (FDM, SLA, SLS, powder bed fusion, DFAM, support structures) route to a dedicated pool.
+        // Bare "3D model" alone falls through; requires printing/additive manufacturing context.
+        if lower.contains("additive manufacturing class") || lower.contains("additive manufacturing course")
+            || lower.contains("additive manufacturing exam") || lower.contains("additive manufacturing lab")
+            || lower.contains("additive manufacturing homework") || lower.contains("additive manufacturing assignment")
+            || lower.contains("3d printing class") || lower.contains("3d printing course")
+            || lower.contains("3d printing exam") || lower.contains("3d printing lab")
+            || lower.contains("fdm") && (lower.contains("class") || lower.contains("exam") || lower.contains("printing") || lower.contains("additive") || lower.contains("lab"))
+            || lower.contains("fused deposition modeling") && (lower.contains("class") || lower.contains("exam") || lower.contains("additive") || lower.contains("lab"))
+            || lower.contains("fused deposition modelling") && (lower.contains("class") || lower.contains("exam") || lower.contains("additive"))
+            || lower.contains("stereolithography") && (lower.contains("class") || lower.contains("exam") || lower.contains("additive") || lower.contains("lab"))
+            || lower.contains("sla printing") && (lower.contains("class") || lower.contains("exam") || lower.contains("additive"))
+            || lower.contains("selective laser sintering") && (lower.contains("class") || lower.contains("exam") || lower.contains("additive") || lower.contains("lab"))
+            || lower.contains("powder bed fusion") && (lower.contains("class") || lower.contains("exam") || lower.contains("additive") || lower.contains("lab"))
+            || lower.contains("direct metal laser sintering") && (lower.contains("class") || lower.contains("exam") || lower.contains("additive"))
+            || lower.contains("design for additive manufacturing") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("dfam") && (lower.contains("class") || lower.contains("exam") || lower.contains("additive") || lower.contains("manufacturing"))
+            || lower.contains("infill density") && (lower.contains("class") || lower.contains("exam") || lower.contains("printing") || lower.contains("additive"))
+            || lower.contains("layer-by-layer") && lower.contains("manufacturing") && (lower.contains("class") || lower.contains("exam") || lower.contains("additive")) {
+            return "additivemfg"
+        }
         // materialscience — positioned AFTER nanotechnology and BEFORE engineering.
         // Catches MSE coursework, metallurgy, polymer science, ceramics (in engineering context),
         // composite materials, and phase diagram labs. "nanomaterials"/"nanotechnology" now owned
@@ -3279,6 +3321,29 @@ public final class CalloutManager {
             || lower.contains("full bridge") && lower.contains("power") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab")) {
             return "powerelectronics"
         }
+        // batterytechnology — positioned BEFORE renewableenergy so battery science class/exam
+        // (Li-ion chemistry, SEI layer, solid electrolyte, cathode/anode materials, cycle life)
+        // route to a dedicated pool distinct from system-level renewable energy integration.
+        if lower.contains("battery technology class") || lower.contains("battery technology course")
+            || lower.contains("battery technology exam") || lower.contains("battery technology lab")
+            || lower.contains("lithium-ion battery class") || lower.contains("lithium-ion battery course")
+            || lower.contains("lithium-ion battery exam") || lower.contains("lithium-ion battery lab")
+            || lower.contains("li-ion battery class") || lower.contains("li-ion battery course") || lower.contains("li-ion battery exam")
+            || lower.contains("battery electrochemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("solid-state battery") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("design"))
+            || lower.contains("solid state battery") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("design"))
+            || lower.contains("solid electrolyte") && lower.contains("battery") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("sei layer") && (lower.contains("class") || lower.contains("exam") || lower.contains("battery") || lower.contains("electrode"))
+            || lower.contains("cathode material") && lower.contains("battery") && (lower.contains("class") || lower.contains("exam") || lower.contains("science") || lower.contains("lab"))
+            || lower.contains("anode material") && lower.contains("battery") && (lower.contains("class") || lower.contains("exam") || lower.contains("science") || lower.contains("lab"))
+            || lower.contains("battery electrode") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("science"))
+            || lower.contains("electrochemical energy storage class") || lower.contains("electrochemical energy storage course") || lower.contains("electrochemical energy storage exam")
+            || lower.contains("coulombic efficiency") && lower.contains("battery") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("c-rate") && lower.contains("battery") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("cycle life") && lower.contains("battery") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("analysis"))
+            || lower.contains("electrochemical impedance spectroscopy") && lower.contains("battery") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab")) {
+            return "batterytechnology"
+        }
         // renewableenergy — positioned BEFORE electricalengineering to intercept solar PV, wind,
         // hydropower, and grid-integration coursework before EE's broad circuits branch fires.
         // Bare "solar" or "wind" without class/renewable/energy context falls through.
@@ -3367,6 +3432,50 @@ public final class CalloutManager {
             || lower.contains("newton-raphson power") && (lower.contains("class") || lower.contains("exam") || lower.contains("flow"))
             || lower.contains("gauss-seidel power") && (lower.contains("class") || lower.contains("exam") || lower.contains("flow")) {
             return "powersystems"
+        }
+        // semiconductordevices — positioned BEFORE electricalengineering so p-n junction, MOSFET,
+        // and BJT device physics class/exam route to a dedicated pool distinct from circuits/systems.
+        // "semiconductor devices class" was previously caught by electricalengineering; intercepted here.
+        if lower.contains("semiconductor devices class") || lower.contains("semiconductor devices course")
+            || lower.contains("semiconductor devices exam") || lower.contains("semiconductor devices lab")
+            || lower.contains("semiconductor devices homework") || lower.contains("semiconductor devices assignment")
+            || lower.contains("semiconductor device physics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("p-n junction") && (lower.contains("class") || lower.contains("exam") || lower.contains("semiconductor") || lower.contains("device") || lower.contains("lab")) && !lower.contains("biology") && !lower.contains("genome")
+            || lower.contains("pn junction") && (lower.contains("class") || lower.contains("exam") || lower.contains("semiconductor") || lower.contains("device") || lower.contains("lab"))
+            || lower.contains("mosfet threshold") && (lower.contains("class") || lower.contains("exam") || lower.contains("device"))
+            || lower.contains("mosfet i-v") && (lower.contains("class") || lower.contains("exam") || lower.contains("device") || lower.contains("lab"))
+            || lower.contains("bjt") && (lower.contains("class") || lower.contains("exam") || lower.contains("semiconductor") || lower.contains("device") || lower.contains("lab")) && !lower.contains("british")
+            || lower.contains("bipolar junction transistor") && (lower.contains("class") || lower.contains("exam") || lower.contains("device"))
+            || lower.contains("depletion approximation") && (lower.contains("class") || lower.contains("exam") || lower.contains("semiconductor") || lower.contains("device"))
+            || lower.contains("ideal diode equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("semiconductor"))
+            || lower.contains("minority carrier") && (lower.contains("class") || lower.contains("exam") || lower.contains("semiconductor") || lower.contains("device"))
+            || lower.contains("carrier transport") && (lower.contains("class") || lower.contains("exam") || lower.contains("semiconductor") || lower.contains("device"))
+            || lower.contains("shockley equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("semiconductor") || lower.contains("device"))
+            || lower.contains("junction breakdown") && (lower.contains("class") || lower.contains("exam") || lower.contains("semiconductor"))
+            || lower.contains("avalanche breakdown") && (lower.contains("class") || lower.contains("exam") || lower.contains("semiconductor") || lower.contains("device")) {
+            return "semiconductordevices"
+        }
+        // vlsidesign — positioned BEFORE electricalengineering so VLSI chip design class/exam
+        // (CMOS logic design, standard cell, place-and-route, static timing analysis, transistor
+        // sizing) route to a dedicated pool. "verilog/fpga class" stays in electricalengineering
+        // (RTL-level design); vlsidesign focuses on physical design and custom IC methodology.
+        if lower.contains("vlsi class") || lower.contains("vlsi course")
+            || lower.contains("vlsi exam") || lower.contains("vlsi lab")
+            || lower.contains("vlsi design class") || lower.contains("vlsi design course") || lower.contains("vlsi design exam")
+            || lower.contains("cmos design class") || lower.contains("cmos design course") || lower.contains("cmos design exam")
+            || lower.contains("cmos logic design") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("standard cell") && (lower.contains("class") || lower.contains("exam") || lower.contains("vlsi") || lower.contains("cmos") || lower.contains("design"))
+            || lower.contains("place and route") && (lower.contains("class") || lower.contains("exam") || lower.contains("vlsi") || lower.contains("cmos"))
+            || lower.contains("place-and-route") && (lower.contains("class") || lower.contains("exam") || lower.contains("vlsi") || lower.contains("cmos"))
+            || lower.contains("static timing analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("vlsi") || lower.contains("cmos") || lower.contains("design"))
+            || lower.contains("transistor sizing") && (lower.contains("class") || lower.contains("exam") || lower.contains("vlsi") || lower.contains("cmos") || lower.contains("design"))
+            || lower.contains("logic synthesis") && (lower.contains("class") || lower.contains("exam") || lower.contains("vlsi") || lower.contains("cmos"))
+            || lower.contains("digital ic design") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("custom ic design") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("cadence virtuoso") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("vlsi"))
+            || lower.contains("synopsys design compiler") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("vlsi"))
+            || lower.contains("layout design rule") && (lower.contains("class") || lower.contains("exam") || lower.contains("vlsi") || lower.contains("cmos")) {
+            return "vlsidesign"
         }
         // electricalengineering — positioned AFTER aerospacengineering and BEFORE civilengineering/engineering
         // so circuits class, signal processing, and EE coursework route here.

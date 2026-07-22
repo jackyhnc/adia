@@ -25131,8 +25131,163 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "thermoelectrics", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1071)
-    @Test func calloutTemplatesCountAtLeast1071() {
-        #expect(SuggestedSessionTemplates.all.count >= 1071, "template catalog must have ≥1071 entries after nuclearreactorphysics/optoelectronics/magneticresonance/computationalelectromagnetics/thermoelectrics additions")
+    // MARK: - nucleardynamics
+    @Test func nucleardynamicsRoutingFromPointKinetics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "point kinetics exam reactor dynamics") == "nucleardynamics")
+    }
+    @Test func nucleardynamicsRoutingFromReactorDynamics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "reactor dynamics class exam") == "nucleardynamics")
+    }
+    @Test func nucleardynamicsRoutingFromXenonOscillation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "xenon oscillation reactor class") == "nucleardynamics")
+    }
+    @Test func nucleardynamicsRoutingFromRELAP() {
+        #expect(CalloutManager.extractTaskKeyword(from: "RELAP transient reactor simulation exam") == "nucleardynamics")
+    }
+    @Test func nucleardynamicsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "xenon poisoning reactor physics class") != "nucleardynamics")
+    }
+    @Test @MainActor func nucleardynamicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "nucleardynamics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nucleardynamics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nucleardynamics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func nucleardynamicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nucleardynamics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func nucleardynamicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nucleardynamics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - additivemfg
+    @Test func additivemfgRoutingFromAdditiveMfgClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "additive manufacturing class exam") == "additivemfg")
+    }
+    @Test func additivemfgRoutingFrom3DPrinting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "3d printing exam lab") == "additivemfg")
+    }
+    @Test func additivemfgRoutingFromFDM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fdm printing class additive") == "additivemfg")
+    }
+    @Test func additivemfgRoutingFromPowderBedFusion() {
+        #expect(CalloutManager.extractTaskKeyword(from: "powder bed fusion class additive lab") == "additivemfg")
+    }
+    @Test func additivemfgFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "3d model rendering for architecture studio") != "additivemfg")
+    }
+    @Test @MainActor func additivemfgCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "additivemfg", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "additivemfg", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "additivemfg", tier: 3).isEmpty)
+    }
+    @Test @MainActor func additivemfgTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "additivemfg", tier: 1).count >= 4)
+    }
+    @Test @MainActor func additivemfgTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "additivemfg", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - batterytechnology
+    @Test func batterytechnologyRoutingFromBatteryTechClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "battery technology class exam") == "batterytechnology")
+    }
+    @Test func batterytechnologyRoutingFromLithiumIon() {
+        #expect(CalloutManager.extractTaskKeyword(from: "lithium-ion battery exam lab") == "batterytechnology")
+    }
+    @Test func batterytechnologyRoutingFromSEILayer() {
+        #expect(CalloutManager.extractTaskKeyword(from: "SEI layer battery electrode class") == "batterytechnology")
+    }
+    @Test func batterytechnologyRoutingFromSolidStateBattery() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solid-state battery class design course") == "batterytechnology")
+    }
+    @Test func batterytechnologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "energy storage class renewable grid integration") != "batterytechnology")
+    }
+    @Test @MainActor func batterytechnologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "batterytechnology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "batterytechnology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "batterytechnology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func batterytechnologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "batterytechnology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func batterytechnologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "batterytechnology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - semiconductordevices
+    @Test func semiconductordevicesRoutingFromSemiconductorDevicesClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "semiconductor devices class exam") == "semiconductordevices")
+    }
+    @Test func semiconductordevicesRoutingFromPNJunction() {
+        #expect(CalloutManager.extractTaskKeyword(from: "p-n junction class semiconductor lab") == "semiconductordevices")
+    }
+    @Test func semiconductordevicesRoutingFromBJT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "BJT semiconductor device exam lab") == "semiconductordevices")
+    }
+    @Test func semiconductordevicesRoutingFromDepletionApprox() {
+        #expect(CalloutManager.extractTaskKeyword(from: "depletion approximation class semiconductor") == "semiconductordevices")
+    }
+    @Test func semiconductordevicesFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "p-n junction biology genome class") != "semiconductordevices")
+    }
+    @Test @MainActor func semiconductordevicesCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "semiconductordevices", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "semiconductordevices", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "semiconductordevices", tier: 3).isEmpty)
+    }
+    @Test @MainActor func semiconductordevicesTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "semiconductordevices", tier: 1).count >= 4)
+    }
+    @Test @MainActor func semiconductordevicesTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "semiconductordevices", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - vlsidesign
+    @Test func vlsidesignRoutingFromVLSIClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "vlsi class exam lab") == "vlsidesign")
+    }
+    @Test func vlsidesignRoutingFromCMOSDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cmos design class exam") == "vlsidesign")
+    }
+    @Test func vlsidesignRoutingFromStaticTimingAnalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "static timing analysis class vlsi design") == "vlsidesign")
+    }
+    @Test func vlsidesignRoutingFromPlaceAndRoute() {
+        #expect(CalloutManager.extractTaskKeyword(from: "place-and-route class vlsi") == "vlsidesign")
+    }
+    @Test func vlsidesignFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "verilog class fpga design project") != "vlsidesign")
+    }
+    @Test @MainActor func vlsidesignCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "vlsidesign", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "vlsidesign", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "vlsidesign", tier: 3).isEmpty)
+    }
+    @Test @MainActor func vlsidesignTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "vlsidesign", tier: 1).count >= 4)
+    }
+    @Test @MainActor func vlsidesignTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "vlsidesign", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1081)
+    @Test func calloutTemplatesCountAtLeast1081() {
+        #expect(SuggestedSessionTemplates.all.count >= 1081, "template catalog must have ≥1081 entries after nucleardynamics/additivemfg/batterytechnology/semiconductordevices/vlsidesign additions")
     }
 }

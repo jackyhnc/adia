@@ -562,10 +562,15 @@ extension CalloutManager {
         case "distributedsystems":         return distributedsystemsCallouts(tier: tier)
         case "computersecurity":           return computersecurityCallouts(tier: tier)
         case "corrosionengineering":       return corrosionengineeringCallouts(tier: tier)
+        case "additivemfg":                return additivemfgCallouts(tier: tier)
+        case "batterytechnology":          return batterytechnologyCallouts(tier: tier)
+        case "semiconductordevices":       return semiconductordevicesCallouts(tier: tier)
+        case "vlsidesign":                 return vlsidesignCallouts(tier: tier)
         case "acousticalengineering":      return acousticalengineeringCallouts(tier: tier)
         case "microfluidics":              return microfluidicsCallouts(tier: tier)
         case "marinehydrodynamics":        return marinehydrodynamicsCallouts(tier: tier)
         case "thermofluidscombustion":     return thermofluidscombustionCallouts(tier: tier)
+        case "nucleardynamics":            return nucleardynamicsCallouts(tier: tier)
         case "nuclearreactorphysics":      return nuclearreactorphysicsCallouts(tier: tier)
         case "optoelectronics":            return optoelectronicsCallouts(tier: tier)
         case "magneticresonance":          return magneticresonanceCallouts(tier: tier)
@@ -12201,6 +12206,111 @@ extension CalloutManager {
             "CLOSE THIS. open your power systems textbook.",
             "CLOSE THIS. those load flow Newton-Raphson and symmetrical component problems won't solve themselves.",
             "CLOSE THIS. your power systems engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func nucleardynamicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those point kinetics and reactor transient problems won't solve themselves.",
+            "your reactor dynamics exam doesn't care that you're scrolling.",
+            "get back to your reactor dynamics work.",
+            "close this and open your reactor dynamics textbook.",
+        ]
+        case 2: return [
+            "no one masters reactor dynamics by scrolling.",
+            "close this and work on your reactor dynamics assignment.",
+            "those xenon oscillation and temperature feedback problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your reactor dynamics textbook.",
+            "CLOSE THIS. those point kinetics and RELAP transient problems won't solve themselves.",
+            "CLOSE THIS. your reactor dynamics exam won't study itself."
+        ]
+        }
+    }
+
+    private func additivemfgCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those FDM and powder bed fusion problems won't design themselves.",
+            "your additive manufacturing exam doesn't care that you're scrolling.",
+            "get back to your 3D printing and DFAM work.",
+            "close this and open your additive manufacturing textbook.",
+        ]
+        case 2: return [
+            "no one masters additive manufacturing by scrolling.",
+            "close this and work on your additive manufacturing assignment.",
+            "those SLA and selective laser sintering design problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your additive manufacturing textbook.",
+            "CLOSE THIS. those FDM process parameters and DFAM problems won't solve themselves.",
+            "CLOSE THIS. your additive manufacturing exam won't study itself."
+        ]
+        }
+    }
+
+    private func batterytechnologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Li-ion chemistry and SEI layer problems won't solve themselves.",
+            "your battery technology exam doesn't care that you're scrolling.",
+            "get back to your battery electrochemistry work.",
+            "close this and open your battery technology textbook.",
+        ]
+        case 2: return [
+            "no one masters battery technology by scrolling.",
+            "close this and work on your battery technology assignment.",
+            "those cathode material and EIS problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your battery technology textbook.",
+            "CLOSE THIS. those Li-ion chemistry and cycle life problems won't solve themselves.",
+            "CLOSE THIS. your battery technology exam won't study itself."
+        ]
+        }
+    }
+
+    private func semiconductordevicesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those p-n junction and MOSFET device physics problems won't solve themselves.",
+            "your semiconductor devices exam doesn't care that you're scrolling.",
+            "get back to your semiconductor device physics work.",
+            "close this and open your semiconductor devices textbook.",
+        ]
+        case 2: return [
+            "no one masters semiconductor devices by scrolling.",
+            "close this and work on your semiconductor devices assignment.",
+            "those depletion approximation and BJT problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your semiconductor devices textbook.",
+            "CLOSE THIS. those p-n junction I-V and MOSFET threshold voltage problems won't solve themselves.",
+            "CLOSE THIS. your semiconductor devices exam won't study itself."
+        ]
+        }
+    }
+
+    private func vlsidesignCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those standard cell and place-and-route problems won't design themselves.",
+            "your VLSI design exam doesn't care that you're scrolling.",
+            "get back to your VLSI and CMOS design work.",
+            "close this and open your VLSI design textbook.",
+        ]
+        case 2: return [
+            "no one masters VLSI design by scrolling.",
+            "close this and work on your VLSI design assignment.",
+            "those static timing analysis and transistor sizing problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your VLSI design textbook.",
+            "CLOSE THIS. those place-and-route and static timing analysis problems won't solve themselves.",
+            "CLOSE THIS. your VLSI design exam won't study itself."
         ]
         }
     }
