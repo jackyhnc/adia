@@ -570,6 +570,11 @@ extension CalloutManager {
         case "microfluidics":              return microfluidicsCallouts(tier: tier)
         case "marinehydrodynamics":        return marinehydrodynamicsCallouts(tier: tier)
         case "thermofluidscombustion":     return thermofluidscombustionCallouts(tier: tier)
+        case "spaceweather":               return spaceweatherCallouts(tier: tier)
+        case "nanophotonics":              return nanophotonicsCallouts(tier: tier)
+        case "microelectromechanicalsystems": return microelectromechanicalsystemsCallouts(tier: tier)
+        case "photovoltaicsenergy":        return photovoltaicsenergyCallouts(tier: tier)
+        case "biomechatronics":            return biomechatronicsCallouts(tier: tier)
         case "nucleardynamics":            return nucleardynamicsCallouts(tier: tier)
         case "nuclearreactorphysics":      return nuclearreactorphysicsCallouts(tier: tier)
         case "optoelectronics":            return optoelectronicsCallouts(tier: tier)
@@ -12311,6 +12316,111 @@ extension CalloutManager {
             "CLOSE THIS. open your VLSI design textbook.",
             "CLOSE THIS. those place-and-route and static timing analysis problems won't solve themselves.",
             "CLOSE THIS. your VLSI design exam won't study itself."
+        ]
+        }
+    }
+
+    private func spaceweatherCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those solar wind and geomagnetic storm problems won't solve themselves.",
+            "your space weather exam doesn't care that you're scrolling.",
+            "get back to your space weather assignment.",
+            "close this and open your space weather textbook.",
+        ]
+        case 2: return [
+            "no one masters space weather by scrolling.",
+            "close this and work on your space weather problem set.",
+            "those Kp index and CME impact models need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your space weather textbook.",
+            "CLOSE THIS. those solar wind and magnetosphere coupling problems won't solve themselves.",
+            "CLOSE THIS. your space weather exam won't study itself."
+        ]
+        }
+    }
+
+    private func nanophotonicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those plasmonics and near-field optics problems won't solve themselves.",
+            "your nanophotonics exam doesn't care that you're scrolling.",
+            "get back to your nanophotonics assignment.",
+            "close this and open your nanophotonics textbook.",
+        ]
+        case 2: return [
+            "no one masters nanophotonics by scrolling.",
+            "close this and work on your nanophotonics problem set.",
+            "those Mie scattering and photonic crystal problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your nanophotonics textbook.",
+            "CLOSE THIS. those plasmonics and near-field optics problems won't solve themselves.",
+            "CLOSE THIS. your nanophotonics exam won't study itself."
+        ]
+        }
+    }
+
+    private func microelectromechanicalsystemsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those capacitive sensing and electrostatic actuation problems won't design themselves.",
+            "your MEMS exam doesn't care that you're scrolling.",
+            "get back to your MEMS fabrication assignment.",
+            "close this and open your MEMS textbook.",
+        ]
+        case 2: return [
+            "no one masters MEMS by scrolling.",
+            "close this and work on your MEMS design problem.",
+            "those microfabrication process flow and DRIE problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your MEMS textbook.",
+            "CLOSE THIS. those capacitive sensing and piezoelectric transduction problems won't solve themselves.",
+            "CLOSE THIS. your MEMS exam won't study itself."
+        ]
+        }
+    }
+
+    private func photovoltaicsenergyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those fill factor and short-circuit current problems won't solve themselves.",
+            "your photovoltaics exam doesn't care that you're scrolling.",
+            "get back to your solar cell design assignment.",
+            "close this and open your photovoltaics textbook.",
+        ]
+        case 2: return [
+            "no one masters photovoltaics by scrolling.",
+            "close this and work on your solar cell problem set.",
+            "those heterojunction and perovskite cell problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your photovoltaics textbook.",
+            "CLOSE THIS. those fill factor and bandgap engineering problems won't solve themselves.",
+            "CLOSE THIS. your photovoltaics exam won't study itself."
+        ]
+        }
+    }
+
+    private func biomechatronicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those EMG control and prosthetic design problems won't solve themselves.",
+            "your biomechatronics exam doesn't care that you're scrolling.",
+            "get back to your rehabilitation robotics assignment.",
+            "close this and open your biomechatronics textbook.",
+        ]
+        case 2: return [
+            "no one masters biomechatronics by scrolling.",
+            "close this and work on your biomechatronics problem set.",
+            "those neural interface and exoskeleton design problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your biomechatronics textbook.",
+            "CLOSE THIS. those EMG control and prosthetic design problems won't solve themselves.",
+            "CLOSE THIS. your biomechatronics exam won't study itself."
         ]
         }
     }

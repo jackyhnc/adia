@@ -1180,6 +1180,27 @@ public final class CalloutManager {
             || lower.contains("interstellar ice") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("astrochemistry")) {
             return "astrochemistry"
         }
+        // spaceweather — positioned BEFORE astronomy so space weather coursework (solar wind,
+        // geomagnetic storms, Van Allen belts, CME, Kp index) routes to a dedicated pool.
+        // Generic "astronomy class" and bare word("astronomy") still fall through to astronomy below.
+        if lower.contains("space weather class") || lower.contains("space weather course")
+            || lower.contains("space weather exam") || lower.contains("space weather lab")
+            || lower.contains("space weather homework") || lower.contains("space weather assignment")
+            || lower.contains("solar wind") && (lower.contains("class") || lower.contains("exam") || lower.contains("space weather") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("geomagnetic storm") && (lower.contains("class") || lower.contains("exam") || lower.contains("space weather") || lower.contains("course"))
+            || lower.contains("coronal mass ejection") && (lower.contains("class") || lower.contains("exam") || lower.contains("space weather") || lower.contains("course"))
+            || lower.contains("cme") && lower.contains("space weather") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("van allen belt") && (lower.contains("class") || lower.contains("exam") || lower.contains("space weather") || lower.contains("course") || lower.contains("radiation belt"))
+            || lower.contains("radiation belt") && (lower.contains("class") || lower.contains("exam") || lower.contains("space weather") || lower.contains("course"))
+            || lower.contains("kp index") && (lower.contains("class") || lower.contains("exam") || lower.contains("space weather") || lower.contains("course"))
+            || lower.contains("dst index") && (lower.contains("class") || lower.contains("exam") || lower.contains("space weather") || lower.contains("course"))
+            || lower.contains("solar flare") && (lower.contains("class") || lower.contains("exam") || lower.contains("space weather") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("magnetosphere") && (lower.contains("class") || lower.contains("exam") || lower.contains("space weather") || lower.contains("course"))
+            || lower.contains("ionosphere") && (lower.contains("class") || lower.contains("exam") || lower.contains("space weather") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("solar energetic particle") && (lower.contains("class") || lower.contains("exam") || lower.contains("space weather") || lower.contains("course"))
+            || lower.contains("geomagnetic index") && (lower.contains("class") || lower.contains("exam") || lower.contains("space weather") || lower.contains("course")) {
+            return "spaceweather"
+        }
         // astronomy — positioned before studying so "astronomy exam" doesn't fall through to
         // the generic studying pool via word("exam"). Bare word("physics") stays in studying;
         // compound celestial/cosmological terms route here.
@@ -2872,6 +2893,26 @@ public final class CalloutManager {
             || lower.contains("industrial safety exam") || lower.contains("industrial safety program") {
             return "industrialsafety"
         }
+        // nanophotonics — positioned BEFORE nanotechnology so nanophotonics class/exam (plasmonics,
+        // Mie scattering, near-field optics, waveguide nanophotonics) routes to a dedicated pool.
+        // "nanophotonics/plasmonics + class/lab/research" removed from nanotechnology branch and owned here.
+        if lower.contains("nanophotonics class") || lower.contains("nanophotonics course")
+            || lower.contains("nanophotonics exam") || lower.contains("nanophotonics lab")
+            || lower.contains("nanophotonics homework") || lower.contains("nanophotonics assignment")
+            || (lower.contains("nanophotonics") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("course") || lower.contains("research")))
+            || lower.contains("plasmonics class") || lower.contains("plasmonics course") || lower.contains("plasmonics exam")
+            || (lower.contains("plasmonics") && (lower.contains("class") || lower.contains("lab") || lower.contains("research") || lower.contains("exam") || lower.contains("course")))
+            || lower.contains("surface plasmon") && (lower.contains("class") || lower.contains("exam") || lower.contains("nanophotonics") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("mie scattering") && (lower.contains("class") || lower.contains("exam") || lower.contains("nanophotonics") || lower.contains("course") || lower.contains("optics"))
+            || lower.contains("near-field optics") && (lower.contains("class") || lower.contains("exam") || lower.contains("nanophotonics") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("near field optics") && (lower.contains("class") || lower.contains("exam") || lower.contains("nanophotonics") || lower.contains("course"))
+            || lower.contains("optical antenna") && (lower.contains("class") || lower.contains("exam") || lower.contains("nanophotonics") || lower.contains("course") || lower.contains("design"))
+            || lower.contains("photonic crystal") && (lower.contains("class") || lower.contains("exam") || lower.contains("nanophotonics") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("photonic bandgap") && (lower.contains("class") || lower.contains("exam") || lower.contains("nanophotonics") || lower.contains("course"))
+            || lower.contains("localized surface plasmon") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("extraordinary optical transmission") && (lower.contains("class") || lower.contains("exam") || lower.contains("nanophotonics") || lower.contains("course")) {
+            return "nanophotonics"
+        }
         // nanotechnology — positioned BEFORE materialscience so nanotechnology research, nanomaterials
         // synthesis, nanoscale imaging, and nano-device work route here with dedicated callout messages.
         // "nanomaterials" and "nanotechnology" with class/course/exam context owned here;
@@ -2888,8 +2929,6 @@ public final class CalloutManager {
             || lower.contains("afm imaging") || lower.contains("afm characterization")
             || lower.contains("scanning tunneling microscopy") || lower.contains("stm imaging")
             || lower.contains("nanomedicine") || lower.contains("nanotoxicology")
-            || (lower.contains("nanophotonics") && (lower.contains("class") || lower.contains("lab") || lower.contains("research")))
-            || (lower.contains("plasmonics") && (lower.contains("class") || lower.contains("lab") || lower.contains("research")))
             || (lower.contains("self-assembly") && (lower.contains("nano") || lower.contains("molecular machine") || lower.contains("class") || lower.contains("lab")))
             || lower.contains("nanoparticle") || lower.contains("nanoparticles")
             || lower.contains("nanostructure") || lower.contains("nanostructures")
@@ -2897,6 +2936,31 @@ public final class CalloutManager {
             || lower.contains("nanotechnology exam") || lower.contains("nanotechnology lab")
             || lower.contains("nanotechnology program") || lower.contains("nanotechnology research") {
             return "nanotechnology"
+        }
+        // microelectromechanicalsystems — positioned AFTER nanotechnology and BEFORE materialscience
+        // so MEMS class/exam (capacitive sensing, piezoelectric transduction, electrostatic actuation,
+        // microfabrication process flows) routes to a dedicated pool distinct from nanotechnology.
+        if lower.contains("mems class") || lower.contains("mems course")
+            || lower.contains("mems exam") || lower.contains("mems lab")
+            || lower.contains("mems homework") || lower.contains("mems assignment")
+            || lower.contains("microelectromechanical systems class") || lower.contains("microelectromechanical systems course")
+            || lower.contains("microelectromechanical systems exam") || lower.contains("microelectromechanical systems lab")
+            || lower.contains("microelectromechanical") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("capacitive sensing") && (lower.contains("class") || lower.contains("exam") || lower.contains("mems") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("piezoelectric transduction") && (lower.contains("class") || lower.contains("exam") || lower.contains("mems") || lower.contains("course"))
+            || lower.contains("electrostatic actuation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mems") || lower.contains("course") || lower.contains("design"))
+            || lower.contains("mems fabrication") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab") || lower.contains("process"))
+            || lower.contains("microfabrication") && (lower.contains("class") || lower.contains("exam") || lower.contains("mems") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("wet etching") && lower.contains("mems") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("dry etching") && lower.contains("mems") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("deep reactive ion etching") && (lower.contains("class") || lower.contains("exam") || lower.contains("mems") || lower.contains("course"))
+            || lower.contains("drie") && lower.contains("mems") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("surface micromachining") && (lower.contains("class") || lower.contains("exam") || lower.contains("mems") || lower.contains("course"))
+            || lower.contains("bulk micromachining") && (lower.contains("class") || lower.contains("exam") || lower.contains("mems") || lower.contains("course"))
+            || lower.contains("cantilever beam") && lower.contains("mems") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("accelerometer design") && lower.contains("mems") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("pressure sensor") && lower.contains("mems") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design")) {
+            return "microelectromechanicalsystems"
         }
         // biomaterials — positioned BEFORE materialscience so biocompatibility, scaffold design,
         // and implant material coursework routes here. Bare "tissue engineering" routes to
@@ -3344,9 +3408,36 @@ public final class CalloutManager {
             || lower.contains("electrochemical impedance spectroscopy") && lower.contains("battery") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab")) {
             return "batterytechnology"
         }
-        // renewableenergy — positioned BEFORE electricalengineering to intercept solar PV, wind,
+        // photovoltaicsenergy — positioned BEFORE renewableenergy so photovoltaics / solar cell
+        // device physics class/exam (heterojunction, fill factor, short-circuit current, bandgap
+        // engineering, perovskite cells) routes to a dedicated pool distinct from system-level
+        // renewable energy. Solar PV, solar energy class, and photovoltaic + class context removed
+        // from renewableenergy branch and owned here.
+        if lower.contains("photovoltaics class") || lower.contains("photovoltaics course")
+            || lower.contains("photovoltaics exam") || lower.contains("photovoltaics lab")
+            || lower.contains("photovoltaics homework") || lower.contains("photovoltaics assignment")
+            || lower.contains("solar cell class") || lower.contains("solar cell course") || lower.contains("solar cell exam")
+            || lower.contains("solar cell physics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("solar cell design") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("solar pv") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design") || lower.contains("course"))
+            || lower.contains("solar energy class") || lower.contains("solar energy course") || lower.contains("solar energy exam")
+            || lower.contains("photovoltaic") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design") || lower.contains("course"))
+            || lower.contains("heterojunction solar cell") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("design"))
+            || lower.contains("fill factor") && lower.contains("solar") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("short-circuit current") && lower.contains("solar") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("open-circuit voltage") && lower.contains("solar") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("perovskite solar") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab") || lower.contains("cell"))
+            || lower.contains("bandgap engineering") && lower.contains("solar") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("tandem solar cell") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("design") || lower.contains("lab"))
+            || lower.contains("dye-sensitized solar cell") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("dssc") && lower.contains("solar") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("external quantum efficiency") && lower.contains("solar") && (lower.contains("class") || lower.contains("exam") || lower.contains("course")) {
+            return "photovoltaicsenergy"
+        }
+        // renewableenergy — positioned BEFORE electricalengineering to intercept wind,
         // hydropower, and grid-integration coursework before EE's broad circuits branch fires.
         // Bare "solar" or "wind" without class/renewable/energy context falls through.
+        // Note: solar PV, solar energy class, photovoltaic + class now owned by photovoltaicsenergy above.
         if lower.contains("renewable energy class") || lower.contains("renewable energy course")
             || lower.contains("renewable energy exam") || lower.contains("renewable energy lab")
             || lower.contains("renewable energy notes") || lower.contains("renewable energy textbook")
@@ -3354,9 +3445,6 @@ public final class CalloutManager {
             || lower.contains("sustainable energy class") || lower.contains("sustainable energy course")
             || lower.contains("sustainable energy exam") || lower.contains("sustainable energy lab")
             || lower.contains("clean energy class") || lower.contains("clean energy course") || lower.contains("clean energy exam")
-            || lower.contains("solar pv") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design") || lower.contains("course"))
-            || lower.contains("solar energy class") || lower.contains("solar energy course") || lower.contains("solar energy exam")
-            || lower.contains("photovoltaic") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("design") || lower.contains("course"))
             || lower.contains("wind energy class") || lower.contains("wind energy course") || lower.contains("wind energy exam")
             || lower.contains("wind turbine") && (lower.contains("class") || lower.contains("exam") || lower.contains("design") || lower.contains("course") || lower.contains("lab"))
             || lower.contains("wind power") && (lower.contains("class") || lower.contains("exam") || lower.contains("renewable") || lower.contains("course"))
@@ -3823,6 +3911,28 @@ public final class CalloutManager {
             || lower.contains("freeboard") && (lower.contains("class") || lower.contains("exam") || lower.contains("ship") || lower.contains("naval"))
             || lower.contains("waterplane area") && (lower.contains("class") || lower.contains("exam") || lower.contains("ship") || lower.contains("naval")) {
             return "navalarchitecture"
+        }
+        // biomechatronics — positioned BEFORE mechatronics so biomechatronics/medical robotics
+        // class/exam (prosthetics, EMG control, rehabilitation robotics, surgical robotics) routes
+        // to a dedicated pool distinct from general mechatronics coursework.
+        if lower.contains("biomechatronics class") || lower.contains("biomechatronics course")
+            || lower.contains("biomechatronics exam") || lower.contains("biomechatronics lab")
+            || lower.contains("biomechatronics homework") || lower.contains("biomechatronics assignment")
+            || lower.contains("biomechatronics project") || lower.contains("biomechatronics program")
+            || lower.contains("medical robotics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("surgical robotics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab") || lower.contains("design"))
+            || lower.contains("rehabilitation robotics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("prosthetics class") || lower.contains("prosthetics course") || lower.contains("prosthetics exam")
+            || lower.contains("prosthetic design") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("emg control") && (lower.contains("class") || lower.contains("exam") || lower.contains("prosth") || lower.contains("course") || lower.contains("biomechatronics") || lower.contains("lab"))
+            || lower.contains("electromyography") && lower.contains("control") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("neural interface") && (lower.contains("class") || lower.contains("exam") || lower.contains("prosth") || lower.contains("course") || lower.contains("lab") || lower.contains("biomechatronics"))
+            || lower.contains("brain-computer interface") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("bci") && lower.contains("prosth") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("exoskeleton design") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("wearable robot") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("orthotic device") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("design") || lower.contains("lab")) {
+            return "biomechatronics"
         }
         // mechatronics — BEFORE mechanicalengineering; sensors and actuators, PLC programming,
         // motion control, servo systems, hydraulics and pneumatics. Distinct from robotics (which

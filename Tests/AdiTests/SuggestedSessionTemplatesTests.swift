@@ -7135,8 +7135,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func vlsidesignAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("vlsi design") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1081)
-    @Test func templateCountAtLeast1081() {
-        #expect(SuggestedSessionTemplates.all.count >= 1081, "template catalog must have ≥1081 entries after nucleardynamics/additivemfg/batterytechnology/semiconductordevices/vlsidesign additions")
+    // MARK: - spaceweather templates
+    @Test func spaceweatherStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("space weather") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func spaceweatherAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("space weather") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - nanophotonics templates
+    @Test func nanophotonicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("nanophotonics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func nanophotonicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("nanophotonics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - microelectromechanicalsystems templates
+    @Test func memsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mems") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func memsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mems") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - photovoltaicsenergy templates
+    @Test func pvStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("photovoltaic") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func pvAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("photovoltaic") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - biomechatronics templates
+    @Test func biomechatronicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("biomechatronics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func biomechatronicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("biomechatronics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1091)
+    @Test func templateCountAtLeast1091() {
+        #expect(SuggestedSessionTemplates.all.count >= 1091, "template catalog must have ≥1091 entries after spaceweather/nanophotonics/microelectromechanicalsystems/photovoltaicsenergy/biomechatronics additions")
     }
 }

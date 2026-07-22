@@ -20043,3 +20043,74 @@ None. Swift toolchain unavailable on Linux container.
   - `photovoltaicsenergy` — photovoltaics and solar cell course (heterojunction solar cell, fill factor, short-circuit current, bandgap engineering, perovskite cells — distinct from renewableenergy which covers systems)
   - `biophysicslab` — experimental biophysics (optical tweezers, AFM, patch clamp, FRET, single-molecule techniques — distinct from biophysics which covers theory)
 - Template count target: 1061 → 1071 after next 5-domain batch
+
+---
+
+## Run 400 (automated) — 2026-07-22 — 5 new keyword domains: spaceweather/nanophotonics/microelectromechanicalsystems/photovoltaicsenergy/biomechatronics (1081→1091 templates)
+
+### What shipped
+
+**5 new keyword domains: spaceweather, nanophotonics, microelectromechanicalsystems, photovoltaicsenergy, biomechatronics**
+
+**New keyword domain — spaceweather:**
+- Branch positioned BEFORE `astronomy`. Space weather coursework (solar wind, geomagnetic storms, Van Allen belts, CME, Kp/Dst index, solar flares, magnetosphere-ionosphere coupling) distinct from general astronomy observational work.
+- Catches: space weather class/course/exam/lab, solar wind+class/space weather, geomagnetic storm+class/space weather, coronal mass ejection+class/space weather, CME+space weather+class, Van Allen belt/radiation belt+class/space weather, Kp index/Dst index+class/space weather, solar flare+class/space weather, magnetosphere+class/space weather, ionosphere+class/space weather, solar energetic particle+class/space weather, geomagnetic index+class/space weather.
+- `spaceweatherCallouts(tier:)` 4/3/3: "those solar wind and geomagnetic storm problems won't solve themselves." / "no one masters space weather by scrolling." / "CLOSE THIS. those solar wind and magnetosphere coupling problems won't solve themselves."
+- 2 templates: study exam (solar wind structure, CME, geomagnetic storm phases, Kp/Dst indices, Van Allen belts, magnetosphere-ionosphere coupling, SEP events, space weather impacts, forecasting, 60 min) + assignment (CME transit time, Kp/Dst analysis, solar wind plasma parameters, radiation belt flux, ionospheric TEC, satellite drag, or space weather impact assessment, 60 min)
+
+**New keyword domain — nanophotonics:**
+- Branch positioned BEFORE `nanotechnology`. Nanophotonics coursework (plasmonics, Mie scattering, near-field optics, photonic crystals, optical antennas) distinct from general nanotechnology synthesis and characterization.
+- Removes nanophotonics and plasmonics conditions from nanotechnology branch (now owned here).
+- Catches: nanophotonics class/course/exam/lab, plasmonics class/course/exam/lab/research, surface plasmon+class/nanophotonics, Mie scattering+class/nanophotonics/optics, near-field optics+class/nanophotonics, optical antenna+class/nanophotonics, photonic crystal+class/nanophotonics, photonic bandgap+class/nanophotonics, localized surface plasmon+class, extraordinary optical transmission+class/nanophotonics.
+- `nanophotonicsCallouts(tier:)` 4/3/3: "those plasmonics and near-field optics problems won't solve themselves." / "no one masters nanophotonics by scrolling." / "CLOSE THIS. those plasmonics and near-field optics problems won't solve themselves."
+- 2 templates: study exam (SPP dispersion, LSPR, Mie theory, photonic crystals, near-field optics, EOT, optical antennas, Purcell effect, 60 min) + assignment (SPP propagation length, Mie cross-section, photonic crystal bandgap, near-field enhancement, Purcell factor, or EOT spectra analysis, 60 min)
+
+**New keyword domain — microelectromechanicalsystems:**
+- Branch positioned AFTER `nanotechnology`, BEFORE `biomaterials`. MEMS coursework (capacitive sensing, piezoelectric transduction, electrostatic actuation, microfabrication process flow, DRIE, surface/bulk micromachining) distinct from general nanotechnology.
+- Catches: mems class/course/exam/lab, microelectromechanical systems+class, capacitive sensing+mems, piezoelectric transduction+mems, electrostatic actuation+class/mems, microfabrication+mems, wet/dry etching+mems, DRIE+mems, surface/bulk micromachining+mems, cantilever beam+mems, MEMS accelerometer design, MEMS pressure sensor+class.
+- `microelectromechanicalsystemsCallouts(tier:)` 4/3/3: "those capacitive sensing and electrostatic actuation problems won't design themselves." / "no one masters MEMS by scrolling." / "CLOSE THIS. those capacitive sensing and piezoelectric transduction problems won't solve themselves."
+- 2 templates: study exam (electrostatic actuation, piezoelectric transduction, capacitive sensing, surface micromachining, bulk micromachining/KOH, DRIE Bosch, MEMS resonators, pressure sensors, accelerometers, gyroscopes, 60 min) + assignment (pull-in voltage, piezoelectric cantilever deflection, comb-drive sensitivity, process flow design, DRIE parameters, or diaphragm stress/bridge output, 60 min)
+
+**New keyword domain — photovoltaicsenergy:**
+- Branch positioned BEFORE `renewableenergy`. Photovoltaics/solar cell device physics class/exam (heterojunction, fill factor, Isc/Voc, bandgap engineering, perovskite cells, DSSC) distinct from system-level renewable energy integration.
+- Removes solar pv, solar energy class/course/exam, and photovoltaic+class from renewableenergy branch (now owned here).
+- Catches: photovoltaics/solar cell class/course/exam, solar pv+class/lab, solar energy class/course/exam, photovoltaic+class/lab, heterojunction solar cell+class, fill factor+solar+class, Isc/Voc+solar+class, perovskite solar+class, tandem solar cell+class, DSSC+solar+class, EQE+solar+class, bandgap engineering+solar+class.
+- `photovoltaicsenergyCallouts(tier:)` 4/3/3: "those fill factor and short-circuit current problems won't solve themselves." / "no one masters photovoltaics by scrolling." / "CLOSE THIS. those fill factor and bandgap engineering problems won't solve themselves."
+- 2 templates: study exam (p-n junction photocurrent, I-V characteristics, Isc/Voc/FF, bandgap engineering, heterojunction, multi-junction/tandem, perovskite, DSSC, EQE, loss mechanisms, 60 min) + assignment (Isc/Voc/FF from I-V data, Shockley-Queisser limit, tandem current matching, EQE loss analysis, series/shunt resistance, or annual yield estimation, 60 min)
+
+**New keyword domain — biomechatronics:**
+- Branch positioned BEFORE `mechatronics`. Biomechatronics/medical robotics class/exam (prosthetics, EMG control, rehabilitation robotics, surgical robotics, neural interfaces, exoskeletons) distinct from general mechatronics.
+- Catches: biomechatronics class/course/exam/lab, medical robotics+class, surgical robotics+class, rehabilitation robotics+class, prosthetics class/course/exam, prosthetic design+class, EMG control+class/biomechatronics, electromyography+control+class, neural interface+class/prosth, brain-computer interface+class, exoskeleton design+class, wearable robot+class, orthotic device+class.
+- `biomechatronicsCallouts(tier:)` 4/3/3: "those EMG control and prosthetic design problems won't solve themselves." / "no one masters biomechatronics by scrolling." / "CLOSE THIS. those EMG control and prosthetic design problems won't solve themselves."
+- 2 templates: study exam (EMG signal processing, prosthetic control strategies, upper/lower limb prosthetics, neural interfaces, BCI, rehabilitation robotics, surgical robotics, 60 min) + assignment (EMG classifier design, neural interface SNR, exoskeleton torque control, prosthetic control comparison, surgical robot workspace, or impedance control law, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +49 @Test functions (5 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains + 1 count guard ≥1091) [some domains have 4 routing tests]
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + 1 count guard ≥1091)
+
+**Template catalog: 1081 → 1091**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `spaceweather` fires at line 1202, BEFORE astronomy (line 1227) ✓
+- `nanophotonics` fires at line 2914, BEFORE nanotechnology (line 2938) ✓
+- `microelectromechanicalsystems` fires at line 2963, BEFORE biomaterials (line 2983) ✓
+- `photovoltaicsenergy` fires at line 3435, BEFORE renewableenergy (line 3459) ✓
+- `biomechatronics` fires at line 3935, BEFORE mechatronics (line 3955) ✓
+- Brace balance: CalloutManager.swift 595/595 ✓; CalloutMessages.swift 1135/1135 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 1091 confirmed (grep -c "preferredDuration:" = 1091) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases in CalloutMessages.swift ✓
+- 5 new private callout pool functions in CalloutMessages.swift ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `condensedmatterphysics` — advanced condensed matter class (Fermi liquid theory, Landau levels, topological insulators, fractional quantum Hall, Berry phase — distinct from solidstatephysics which covers intro band structure)
+  - `biophysicslab` — experimental biophysics class (optical tweezers, AFM in biophysics context, patch clamp, FRET, single-molecule techniques — distinct from biophysics theory)
+  - `energymaterials` — energy materials class (solid oxide fuel cells, hydrogen storage materials, thermoelectric materials, electrocatalysis — distinct from batterytechnology and photovoltaicsenergy)
+  - `plasmaphysics` — plasma physics class (Debye shielding, plasma oscillations, MHD, tokamak/stellarator, Alfvén waves — distinct from nuclearengineering)
+  - `computationalneuroscience` — computational neuroscience class (Hodgkin-Huxley model, integrate-and-fire, neural population models, connectome analysis, reservoir computing — distinct from neuroscience and biophysics)
+- Template count target: 1091 → 1101 after next 5-domain batch

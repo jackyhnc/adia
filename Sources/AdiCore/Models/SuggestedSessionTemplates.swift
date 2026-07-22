@@ -6985,5 +6985,75 @@ public enum SuggestedSessionTemplates {
             successCriteria: "VLSI design assignment completed (transistor sizes determined via logical effort, critical path slack computed, RTL synthesized and timing report generated, STA results interpreted with setup/hold margins documented, layout created with DRC/LVS clean, or standard cell designed with schematic and layout matching, and written solution or tool output saved to file)",
             preferredDuration: 60 * 60
         ),
+
+        // spaceweather
+        SuggestedTemplate(
+            icon: "sun.max",
+            task: "Study space weather for my exam — review solar wind structure and propagation, coronal mass ejections (CME initiation, propagation, ICME structure), geomagnetic storm phases (sudden commencement, main phase, recovery), Kp and Dst indices, Van Allen radiation belts and dynamics, magnetosphere-ionosphere coupling, solar energetic particle events, space weather impacts on satellites and power grids, and forecasting with real-time data (NOAA SWPC, ACE, DSCOVR)",
+            successCriteria: "Space weather study session completed (at least two topics reviewed with solar wind–magnetosphere coupling explained, Kp and Dst indices defined with storm phases outlined, CME propagation time estimated, Van Allen belt particle trapping described, ionospheric effects summarized, and key space weather impacts on infrastructure listed and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "sun.max",
+            task: "Work on my space weather assignment — compute geomagnetic storm arrival time from CME speed and solar distance, calculate Kp index threshold for given Dst values, analyze solar wind plasma parameters (density, velocity, Bz) from DSCOVR data, model particle flux in the radiation belts, estimate ionospheric TEC perturbations during a geomagnetic storm, evaluate satellite drag enhancement from thermospheric heating, or write a space weather impact assessment for a power grid or satellite system",
+            successCriteria: "Space weather assignment completed (CME transit time calculated, Kp/Dst relationship quantified, solar wind parameters analyzed with expected magnetosphere response described, radiation belt flux or ionospheric TEC perturbation estimated, and written solution or analysis report saved to file)",
+            preferredDuration: 60 * 60
+        ),
+
+        // nanophotonics
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Study nanophotonics for my exam — review surface plasmon polaritons (dispersion relation, coupling conditions, Kretschmann/Otto configuration), localized surface plasmon resonance (Mie theory, Fröhlich condition), photonic crystals (band structure, bandgap, photonic density of states), near-field optics (evanescent waves, SNOM/NSOM), extraordinary optical transmission through subwavelength apertures, optical antennas, and quantum dot photophysics (Purcell effect, cavity QED)",
+            successCriteria: "Nanophotonics study session completed (at least two topics reviewed with SPP dispersion relation derived, LSPR resonance condition explained for metal nanoparticle, photonic bandgap formation described, near-field evanescent decay derived, EOT mechanism explained, and key equations or diagrams saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Work on my nanophotonics assignment — compute the SPP dispersion relation and propagation length for a given metal-dielectric interface, calculate Mie scattering cross-section for a metal nanosphere at resonance, design a photonic crystal with a specified bandgap using plane-wave expansion, determine the near-field intensity enhancement for a nanoparticle dimer, evaluate the Purcell factor for a quantum dot in a microcavity, or analyze extraordinary optical transmission spectra for a subwavelength aperture array",
+            successCriteria: "Nanophotonics assignment completed (SPP or LSPR resonance condition solved, Mie cross-section or photonic bandgap computed, near-field enhancement or Purcell factor calculated, transmission spectra analyzed and mechanism explained, and written solution or numerical result saved to file)",
+            preferredDuration: 60 * 60
+        ),
+
+        // microelectromechanicalsystems
+        SuggestedTemplate(
+            icon: "cpu",
+            task: "Study MEMS for my exam — review electrostatic actuation (parallel-plate and comb-drive, pull-in instability), piezoelectric transduction (d-coefficients, cantilever tip deflection), capacitive sensing (sensitivity, noise floor), surface micromachining (sacrificial layer, release etch), bulk micromachining (KOH anisotropic etch, DRIE Bosch process), MEMS resonators (Q factor, anchor loss), pressure sensors (diaphragm stress, Wheatstone bridge), accelerometers, and gyroscopes (Coriolis sensing)",
+            successCriteria: "MEMS study session completed (at least two topics reviewed with pull-in voltage derived for parallel-plate actuator, piezoelectric cantilever deflection formula stated, capacitive sensitivity and noise floor estimated, microfabrication process flow described with at least three steps, DRIE Bosch etch profile explained, and key MEMS device performance equations saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "cpu",
+            task: "Work on my MEMS assignment — derive pull-in voltage for a parallel-plate electrostatic actuator with given dimensions, compute tip deflection and resonant frequency of a piezoelectric cantilever, calculate capacitive sensitivity and minimum detectable signal for a comb-drive accelerometer, design a surface micromachining process flow for a MEMS resonator, estimate etch depth and sidewall angle for a DRIE Bosch process run, or analyze stress in a MEMS pressure sensor diaphragm and compute bridge output voltage",
+            successCriteria: "MEMS assignment completed (pull-in voltage or piezoelectric deflection calculated, capacitive sensitivity or SNR estimated, process flow designed with etch conditions specified, DRIE etch parameters evaluated, or stress/bridge output computed, and written solution with labeled diagrams or numerical results saved to file)",
+            preferredDuration: 60 * 60
+        ),
+
+        // photovoltaicsenergy
+        SuggestedTemplate(
+            icon: "bolt.fill",
+            task: "Study photovoltaics for my exam — review p-n junction solar cell physics (photocurrent generation, minority carrier diffusion, depletion width), I-V characteristics (short-circuit current Isc, open-circuit voltage Voc, fill factor FF, maximum power point), bandgap engineering and spectrum matching, heterojunction solar cells, multi-junction/tandem cells, perovskite solar cells (ABX3 structure, ion migration, stability), dye-sensitized solar cells (Grätzel cell), external/internal quantum efficiency, and loss mechanisms (recombination, reflection, series resistance)",
+            successCriteria: "Photovoltaics study session completed (at least two topics reviewed with Isc, Voc, and FF defined with ideal diode equation written, bandgap–wavelength relationship derived, heterojunction band alignment sketched, tandem cell current-matching condition explained, perovskite ABX3 structure described, and key efficiency limits noted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "bolt.fill",
+            task: "Work on my photovoltaics assignment — compute Isc, Voc, and fill factor from an I-V curve dataset, calculate the Shockley-Queisser efficiency limit for a given bandgap, design a two-junction tandem solar cell with current-matched subcells, analyze EQE spectrum to identify loss mechanisms, determine series and shunt resistance from I-V curve fitting, evaluate perovskite vs silicon heterojunction stability trade-offs, or estimate annual energy yield from a solar module given irradiance data",
+            successCriteria: "Photovoltaics assignment completed (Isc, Voc, and FF extracted from I-V data, efficiency limit or tandem current match calculated, EQE loss mechanism identified, series/shunt resistance extracted, or annual yield estimated, and written solution or analysis with numerical results saved to file)",
+            preferredDuration: 60 * 60
+        ),
+
+        // biomechatronics
+        SuggestedTemplate(
+            icon: "figure.walk",
+            task: "Study biomechatronics for my exam — review EMG signal acquisition and processing (electrode placement, signal conditioning, feature extraction, pattern classification), prosthetic limb control strategies (myoelectric control, direct control, pattern recognition), upper/lower limb prosthetics (terminal devices, socket fitting, actuation), neural interfaces (EEG, ECoG, Utah array, spiking neural signals), brain-computer interfaces (P300, motor imagery, SSVEP), rehabilitation robotics (exoskeletons, assist-as-needed control), and surgical robotics (da Vinci kinematics, haptic feedback)",
+            successCriteria: "Biomechatronics study session completed (at least two topics reviewed with EMG signal processing pipeline described, myoelectric control strategy explained, prosthetic socket-limb interface outlined, BCI signal acquisition and decoding steps listed, exoskeleton assist-as-needed control law written, and key biomechatronics device examples noted and saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "figure.walk",
+            task: "Work on my biomechatronics assignment — design an EMG-based prosthetic hand control algorithm (electrode placement, feature extraction, classifier), analyze neural interface recording quality (SNR, spike sorting, decoding accuracy), simulate exoskeleton joint torque assistance for gait rehabilitation, evaluate myoelectric control vs pattern recognition trade-offs for upper limb prosthetics, compute kinematic workspace for a surgical robotic arm, or design an assist-as-needed impedance control law for a lower limb exoskeleton",
+            successCriteria: "Biomechatronics assignment completed (EMG classifier designed or evaluated, neural interface SNR analyzed, exoskeleton torque or impedance control law derived, prosthetic control strategy compared with performance metrics, or surgical robot workspace computed, and written solution or simulation results saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

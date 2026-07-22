@@ -25286,8 +25286,151 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "vlsidesign", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1081)
-    @Test func calloutTemplatesCountAtLeast1081() {
-        #expect(SuggestedSessionTemplates.all.count >= 1081, "template catalog must have ≥1081 entries after nucleardynamics/additivemfg/batterytechnology/semiconductordevices/vlsidesign additions")
+    // MARK: - spaceweather
+    @Test func spaceweatherRoutingFromSpaceWeatherClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "space weather class exam lab") == "spaceweather")
+    }
+    @Test func spaceweatherRoutingFromSolarWind() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solar wind class space weather course") == "spaceweather")
+    }
+    @Test func spaceweatherRoutingFromGeomagneticStorm() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geomagnetic storm class space weather exam") == "spaceweather")
+    }
+    @Test func spaceweatherRoutingFromKpIndex() {
+        #expect(CalloutManager.extractTaskKeyword(from: "kp index space weather course exam") == "spaceweather")
+    }
+    @Test func spaceweatherFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "astronomy class observing run telescope") != "spaceweather")
+    }
+    @Test @MainActor func spaceweatherCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "spaceweather", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "spaceweather", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "spaceweather", tier: 3).isEmpty)
+    }
+    @Test @MainActor func spaceweatherTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "spaceweather", tier: 1).count >= 4)
+    }
+    @Test @MainActor func spaceweatherTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "spaceweather", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - nanophotonics
+    @Test func nanophotonicsRoutingFromNanophotonicsClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nanophotonics class exam lab") == "nanophotonics")
+    }
+    @Test func nanophotonicsRoutingFromPlasmonics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "plasmonics class lab research nanophotonics") == "nanophotonics")
+    }
+    @Test func nanophotonicsRoutingFromSurfacePlasmon() {
+        #expect(CalloutManager.extractTaskKeyword(from: "surface plasmon class nanophotonics exam") == "nanophotonics")
+    }
+    @Test func nanophotonisFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nanotechnology class nanomaterials synthesis lab") != "nanophotonics")
+    }
+    @Test @MainActor func nanophotonicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "nanophotonics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nanophotonics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nanophotonics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func nanophotonicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nanophotonics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func nanophotonicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nanophotonics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - microelectromechanicalsystems
+    @Test func memsRoutingFromMEMSClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mems class exam lab") == "microelectromechanicalsystems")
+    }
+    @Test func memsRoutingFromCapacitiveSensing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "capacitive sensing mems class lab") == "microelectromechanicalsystems")
+    }
+    @Test func memsRoutingFromMicrofabrication() {
+        #expect(CalloutManager.extractTaskKeyword(from: "microfabrication mems class exam") == "microelectromechanicalsystems")
+    }
+    @Test func memsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nanotechnology class nems fabrication lab") != "microelectromechanicalsystems")
+    }
+    @Test @MainActor func memsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "microelectromechanicalsystems", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "microelectromechanicalsystems", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "microelectromechanicalsystems", tier: 3).isEmpty)
+    }
+    @Test @MainActor func memsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "microelectromechanicalsystems", tier: 1).count >= 4)
+    }
+    @Test @MainActor func memsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "microelectromechanicalsystems", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - photovoltaicsenergy
+    @Test func pvRoutingFromPhotovoltaicsClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "photovoltaics class exam lab") == "photovoltaicsenergy")
+    }
+    @Test func pvRoutingFromSolarCellClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solar cell class exam design") == "photovoltaicsenergy")
+    }
+    @Test func pvRoutingFromSolarPV() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solar pv class design lab") == "photovoltaicsenergy")
+    }
+    @Test func pvFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "renewable energy class wind turbine hydropower") != "photovoltaicsenergy")
+    }
+    @Test @MainActor func pvCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "photovoltaicsenergy", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "photovoltaicsenergy", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "photovoltaicsenergy", tier: 3).isEmpty)
+    }
+    @Test @MainActor func pvTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "photovoltaicsenergy", tier: 1).count >= 4)
+    }
+    @Test @MainActor func pvTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "photovoltaicsenergy", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - biomechatronics
+    @Test func biomechatronicsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "biomechatronics class exam lab") == "biomechatronics")
+    }
+    @Test func biomechatronicsRoutingFromMedicalRobotics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "medical robotics class exam course") == "biomechatronics")
+    }
+    @Test func biomechatronicsRoutingFromEMGControl() {
+        #expect(CalloutManager.extractTaskKeyword(from: "emg control class biomechatronics lab") == "biomechatronics")
+    }
+    @Test func biomechatronicsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mechatronics class plc programming servo control") != "biomechatronics")
+    }
+    @Test @MainActor func biomechatronicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "biomechatronics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "biomechatronics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "biomechatronics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func biomechatronicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "biomechatronics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func biomechatronicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "biomechatronics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1091)
+    @Test func calloutTemplatesCountAtLeast1091() {
+        #expect(SuggestedSessionTemplates.all.count >= 1091, "template catalog must have ≥1091 entries after spaceweather/nanophotonics/microelectromechanicalsystems/photovoltaicsenergy/biomechatronics additions")
     }
 }
