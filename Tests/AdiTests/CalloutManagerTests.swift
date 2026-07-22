@@ -25541,8 +25541,148 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "biophysicslab", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1099)
-    @Test func calloutTemplatesCountAtLeast1099() {
-        #expect(SuggestedSessionTemplates.all.count >= 1099, "template catalog must have ≥1099 entries after condensedmatterphysics/energymaterials/computationalneuroscience/biophysicslab additions")
+    // MARK: - stochasticprocesses
+    @Test func stochasticprocessesRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "stochastic processes class exam markov chain homework") == "stochasticprocesses")
+    }
+    @Test func stochasticprocessesRoutingFromMarkovChain() {
+        #expect(CalloutManager.extractTaskKeyword(from: "markov chain class transition matrix stationary distribution problem") == "stochasticprocesses")
+    }
+    @Test func stochasticprocessesRoutingFromBrownianMotion() {
+        #expect(CalloutManager.extractTaskKeyword(from: "brownian motion stochastic exam ito lemma") == "stochasticprocesses")
+    }
+    @Test func stochasticprocessesFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "probability theory sigma algebra central limit theorem exam law of large numbers") != "stochasticprocesses")
+    }
+    @Test @MainActor func stochasticprocessesCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "stochasticprocesses", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "stochasticprocesses", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "stochasticprocesses", tier: 3).isEmpty)
+    }
+    @Test @MainActor func stochasticprocessesTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "stochasticprocesses", tier: 1).count >= 4)
+    }
+    @Test @MainActor func stochasticprocessesTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "stochasticprocesses", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - solidmechanics
+    @Test func solidmechanicsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solid mechanics class exam stress strain mohr circle") == "solidmechanics")
+    }
+    @Test func solidmechanicsRoutingFromMohrsCircle() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mohr's circle mechanics stress analysis exam principal stress") == "solidmechanics")
+    }
+    @Test func solidmechanicsRoutingFromFractureMechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fracture mechanics class stress intensity factor exam") == "solidmechanics")
+    }
+    @Test func solidmechanicsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mechanical engineering class machine design vibrations statics kinematics") != "solidmechanics")
+    }
+    @Test @MainActor func solidmechanicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "solidmechanics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "solidmechanics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "solidmechanics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func solidmechanicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "solidmechanics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func solidmechanicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "solidmechanics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - opticalengineering
+    @Test func opticalengineeringRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "optical engineering class exam lens design aberrations") == "opticalengineering")
+    }
+    @Test func opticalengineeringRoutingFromZemax() {
+        #expect(CalloutManager.extractTaskKeyword(from: "zemax design class optical engineering lab aberration") == "opticalengineering")
+    }
+    @Test func opticalengineeringRoutingFromWavefront() {
+        #expect(CalloutManager.extractTaskKeyword(from: "wavefront sensing shack-hartmann optics exam class") == "opticalengineering")
+    }
+    @Test func opticalengineeringFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "photonics class fiber optics laser physics integrated photonics waveguide") != "opticalengineering")
+    }
+    @Test @MainActor func opticalengineeringCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "opticalengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "opticalengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "opticalengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func opticalengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "opticalengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func opticalengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "opticalengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - quantumchemistry
+    @Test func quantumchemistryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "quantum chemistry class exam molecular orbital hartree-fock basis set") == "quantumchemistry")
+    }
+    @Test func quantumchemistryRoutingFromHartreeFock() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hartree-fock class chemistry exam roothaan equations quantum") == "quantumchemistry")
+    }
+    @Test func quantumchemistryRoutingFromDFT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "density functional theory class chemistry molecular exam kohn-sham") == "quantumchemistry")
+    }
+    @Test func quantumchemistryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "physical chemistry pchem exam gibbs energy partition function statistical thermodynamics") != "quantumchemistry")
+    }
+    @Test @MainActor func quantumchemistryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "quantumchemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "quantumchemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "quantumchemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func quantumchemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "quantumchemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func quantumchemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "quantumchemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - surfacechemistry
+    @Test func surfacechemistryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "surface chemistry class exam adsorption isotherm bet surface area") == "surfacechemistry")
+    }
+    @Test func surfacechemistryRoutingFromLangmuirIsotherm() {
+        #expect(CalloutManager.extractTaskKeyword(from: "langmuir isotherm surface chemistry class exam adsorption") == "surfacechemistry")
+    }
+    @Test func surfacechemistryRoutingFromTPD() {
+        #expect(CalloutManager.extractTaskKeyword(from: "temperature programmed desorption surface chemistry class exam") == "surfacechemistry")
+    }
+    @Test func surfacechemistryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "analytical chemistry hplc titration mass spectrometry gc-ms class exam") != "surfacechemistry")
+    }
+    @Test @MainActor func surfacechemistryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "surfacechemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "surfacechemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "surfacechemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func surfacechemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "surfacechemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func surfacechemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "surfacechemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1109)
+    @Test func calloutTemplatesCountAtLeast1109() {
+        #expect(SuggestedSessionTemplates.all.count >= 1109, "template catalog must have ≥1109 entries after solidmechanics/stochasticprocesses/quantumchemistry/opticalengineering/surfacechemistry additions")
     }
 }

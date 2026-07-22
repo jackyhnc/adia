@@ -1372,6 +1372,33 @@ public final class CalloutManager {
             || (lower.contains("boolean algebra") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("discrete"))) {
             return "discretemath"
         }
+        // stochasticprocesses — positioned BEFORE probabilitytheory so dedicated stochastic
+        // processes coursework (Markov chains, Poisson process, Brownian motion, martingales,
+        // queueing theory, Itô calculus) routes to a dedicated pool.
+        // Generic "stochastic process + probability theory" also handled here; probabilitytheory
+        // covers sigma-algebras, CLT, and rigorous probability without stochastic-process context.
+        if lower.contains("stochastic processes class") || lower.contains("stochastic processes course")
+            || lower.contains("stochastic processes exam") || lower.contains("stochastic processes homework")
+            || lower.contains("stochastic processes notes") || lower.contains("stochastic processes assignment")
+            || lower.contains("stochastic process class") || lower.contains("stochastic process course")
+            || lower.contains("stochastic process exam")
+            || lower.contains("markov chain") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("problem"))
+            || lower.contains("markov process") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("poisson process") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework"))
+            || lower.contains("brownian motion") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("stochastic"))
+            || lower.contains("wiener process") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("stochastic"))
+            || lower.contains("martingale") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("stochastic"))
+            || lower.contains("ito's lemma") && (lower.contains("class") || lower.contains("exam") || lower.contains("stochastic"))
+            || lower.contains("ito lemma") && (lower.contains("class") || lower.contains("exam") || lower.contains("stochastic"))
+            || lower.contains("stochastic differential equation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("renewal theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("stochastic"))
+            || lower.contains("queuing theory class") || lower.contains("queuing theory course") || lower.contains("queuing theory exam")
+            || lower.contains("queueing theory class") || lower.contains("queueing theory course") || lower.contains("queueing theory exam")
+            || lower.contains("random walk") && (lower.contains("class") || lower.contains("exam") || lower.contains("stochastic") || lower.contains("markov"))
+            || lower.contains("hitting time") && (lower.contains("class") || lower.contains("exam") || lower.contains("markov") || lower.contains("stochastic"))
+            || lower.contains("stationary distribution") && (lower.contains("class") || lower.contains("exam") || lower.contains("markov") || lower.contains("stochastic")) {
+            return "stochasticprocesses"
+        }
         // probabilitytheory — positioned BEFORE mathematics so rigorous probability COURSEWORK
         // (sigma-algebras, random variables, CLT, law of large numbers) routes to a dedicated
         // pool. "Probability theory" without class context stays in mathematics fallback.
@@ -1976,6 +2003,32 @@ public final class CalloutManager {
             || lower.contains("optical gain") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics") || lower.contains("laser"))
             || lower.contains("quantum well laser") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics")) {
             return "optoelectronics"
+        }
+        // opticalengineering — positioned BEFORE photonics so optical engineering class/exam
+        // (lens design, aberrations, Zemax, Zernike polynomials, wavefront sensing, interferometry,
+        // Gaussian beam propagation) routes to a dedicated pool. "fiber optics" and "laser physics"
+        // without opticalengineering context stay in photonics (fires after).
+        if lower.contains("optical engineering class") || lower.contains("optical engineering course")
+            || lower.contains("optical engineering exam") || lower.contains("optical engineering lab")
+            || lower.contains("optical engineering notes") || lower.contains("optical engineering assignment")
+            || lower.contains("lens design") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("optics"))
+            || lower.contains("optical aberration") && (lower.contains("class") || lower.contains("exam") || lower.contains("lens") || lower.contains("optics"))
+            || lower.contains("zemax") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("design") || lower.contains("optics"))
+            || lower.contains("zernike polynomial") && (lower.contains("class") || lower.contains("exam") || lower.contains("wavefront") || lower.contains("optics"))
+            || lower.contains("zernike coefficient") && (lower.contains("class") || lower.contains("exam") || lower.contains("wavefront") || lower.contains("optics"))
+            || lower.contains("wavefront sensing") && (lower.contains("class") || lower.contains("exam") || lower.contains("optics") || lower.contains("aberration"))
+            || lower.contains("shack-hartmann") && (lower.contains("class") || lower.contains("exam") || lower.contains("wavefront") || lower.contains("optics"))
+            || lower.contains("optical interferometry") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("optics"))
+            || lower.contains("interferometry class") || lower.contains("interferometry exam") || lower.contains("interferometry lab")
+            || lower.contains("michelson interferometer") && (lower.contains("class") || lower.contains("exam") || lower.contains("optics") || lower.contains("lab"))
+            || lower.contains("geometrical optics") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("lens"))
+            || lower.contains("ray optics") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("lens") || lower.contains("design"))
+            || lower.contains("gaussian beam") && (lower.contains("class") || lower.contains("exam") || lower.contains("optics") || lower.contains("laser") || lower.contains("lab"))
+            || lower.contains("optical design") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("optical system design") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("adaptive optics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("point spread function") && (lower.contains("class") || lower.contains("exam") || lower.contains("optics") || lower.contains("imaging")) {
+            return "opticalengineering"
         }
         // photonics — positioned AFTER optics and BEFORE experimentalphysics so photonics
         // class/exam terms (fiber optics, laser physics, nonlinear optics, integrated photonics,
@@ -3991,6 +4044,39 @@ public final class CalloutManager {
             || lower.contains("machine automation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechatronics") || lower.contains("course"))
             || lower.contains("industrial automation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechatronics") || lower.contains("course") || lower.contains("lab")) {
             return "mechatronics"
+        }
+        // solidmechanics — positioned BEFORE mechanicalengineering so mechanics of materials,
+        // solid mechanics, and continuum mechanics coursework (stress-strain, Mohr's circle,
+        // elastic modulus, yield criterion, fracture mechanics, fatigue) routes to a dedicated pool.
+        // "machine design" and bare "statics/dynamics" stay in mechanicalengineering (fires after).
+        if lower.contains("solid mechanics class") || lower.contains("solid mechanics course")
+            || lower.contains("solid mechanics exam") || lower.contains("solid mechanics lab")
+            || lower.contains("solid mechanics notes") || lower.contains("solid mechanics assignment")
+            || lower.contains("mechanics of materials class") || lower.contains("mechanics of materials course")
+            || lower.contains("mechanics of materials exam") || lower.contains("mechanics of materials lab")
+            || lower.contains("mechanics of materials assignment")
+            || lower.contains("continuum mechanics class") || lower.contains("continuum mechanics course")
+            || lower.contains("continuum mechanics exam")
+            || lower.contains("strength of materials class") || lower.contains("strength of materials course")
+            || lower.contains("strength of materials exam")
+            || lower.contains("mohr's circle") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics") || lower.contains("stress"))
+            || lower.contains("mohrs circle") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics") || lower.contains("stress"))
+            || lower.contains("von mises stress") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics"))
+            || lower.contains("yield criterion") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics") || lower.contains("stress"))
+            || lower.contains("tresca criterion") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics"))
+            || lower.contains("stress-strain curve") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics"))
+            || lower.contains("stress strain curve") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics"))
+            || lower.contains("elastic modulus") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics") || lower.contains("solid"))
+            || lower.contains("young's modulus") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics") || lower.contains("solid"))
+            || lower.contains("youngs modulus") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics") || lower.contains("solid"))
+            || lower.contains("poisson's ratio") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics") || lower.contains("solid"))
+            || lower.contains("poissons ratio") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics") || lower.contains("solid"))
+            || lower.contains("fracture mechanics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("fracture toughness") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics"))
+            || lower.contains("fatigue crack") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics"))
+            || lower.contains("plastic deformation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics") || lower.contains("solid"))
+            || lower.contains("constitutive relation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechanics") || lower.contains("solid")) {
+            return "solidmechanics"
         }
         // mechanicalengineering — BEFORE engineering; machine design, vibrations, kinematics,
         // statics, and dynamics coursework. "mechanical engineering" in generic text still falls
@@ -7908,6 +7994,30 @@ public final class CalloutManager {
             || lower.contains("intersystem crossing") && (lower.contains("class") || lower.contains("photochemistry") || lower.contains("exam")) {
             return "photochemistry"
         }
+        // quantumchemistry — positioned BEFORE physicalchemistry so dedicated quantum chemistry
+        // coursework (molecular orbital theory, Hartree-Fock, DFT for molecules, coupled cluster,
+        // Born-Oppenheimer, basis sets) routes to a dedicated pool. General pchem (Gibbs energy,
+        // statistical thermodynamics, chemical kinetics without quantum context) falls through to
+        // physicalchemistry (fires after).
+        if lower.contains("quantum chemistry class") || lower.contains("quantum chemistry course")
+            || lower.contains("quantum chemistry exam") || lower.contains("quantum chemistry homework")
+            || lower.contains("quantum chemistry notes") || lower.contains("quantum chemistry assignment")
+            || lower.contains("quantum chemistry problem set") || lower.contains("quantum chemistry textbook")
+            || lower.contains("molecular orbital theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("quantum"))
+            || lower.contains("hartree-fock") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("quantum"))
+            || lower.contains("hf theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("quantum"))
+            || lower.contains("density functional theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("molecular") || lower.contains("quantum"))
+            || lower.contains("coupled cluster") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("quantum"))
+            || lower.contains("born-oppenheimer") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("quantum"))
+            || lower.contains("born oppenheimer") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("quantum"))
+            || lower.contains("basis set") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("quantum") || lower.contains("molecular orbital"))
+            || lower.contains("lcao") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("molecular orbital"))
+            || lower.contains("roothaan equations") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry"))
+            || lower.contains("configuration interaction") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("quantum"))
+            || lower.contains("perturbation theory") && lower.contains("chemistry") && lower.contains("quantum") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("variational method") && lower.contains("chemistry") && lower.contains("quantum") && (lower.contains("class") || lower.contains("exam")) {
+            return "quantumchemistry"
+        }
         // physicalchemistry — positioned AFTER biochemistry and BEFORE inorganicchemistry/organicchemistry.
         // Catches pchem, quantum chemistry (for chemists), thermodynamics of reactions, chemical
         // kinetics, statistical thermodynamics, and molecular orbital theory coursework.
@@ -8030,6 +8140,32 @@ public final class CalloutManager {
             || lower.contains("cosy") && lower.contains("nmr") && (lower.contains("class") || lower.contains("exam") || lower.contains("interpret"))
             || lower.contains("hmbc") && lower.contains("nmr") && (lower.contains("class") || lower.contains("exam") || lower.contains("interpret")) {
             return "spectroscopy"
+        }
+        // surfacechemistry — positioned BEFORE analyticalchemistry so surface science/surface
+        // chemistry coursework (adsorption isotherms, BET, Langmuir-Hinshelwood, TPD/TDS,
+        // surface reconstruction, contact angle, XPS surface analysis) routes to a dedicated pool.
+        if lower.contains("surface chemistry class") || lower.contains("surface chemistry course")
+            || lower.contains("surface chemistry exam") || lower.contains("surface chemistry lab")
+            || lower.contains("surface chemistry notes") || lower.contains("surface chemistry assignment")
+            || lower.contains("surface science class") || lower.contains("surface science course")
+            || lower.contains("surface science exam") || lower.contains("surface science lab")
+            || lower.contains("adsorption isotherm") && (lower.contains("class") || lower.contains("exam") || lower.contains("surface") || lower.contains("chemistry"))
+            || lower.contains("langmuir isotherm") && (lower.contains("class") || lower.contains("exam") || lower.contains("surface") || lower.contains("chemistry"))
+            || lower.contains("bet surface area") && (lower.contains("class") || lower.contains("exam") || lower.contains("surface") || lower.contains("chemistry"))
+            || lower.contains("bet analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("surface") || lower.contains("chemistry"))
+            || lower.contains("brunauer-emmett-teller") && (lower.contains("class") || lower.contains("exam") || lower.contains("surface") || lower.contains("chemistry"))
+            || lower.contains("langmuir-hinshelwood") && (lower.contains("class") || lower.contains("exam") || lower.contains("surface") || lower.contains("chemistry") || lower.contains("catalysis"))
+            || lower.contains("eley-rideal") && (lower.contains("class") || lower.contains("exam") || lower.contains("surface") || lower.contains("catalysis"))
+            || lower.contains("temperature programmed desorption") && (lower.contains("class") || lower.contains("exam") || lower.contains("surface"))
+            || lower.contains("tpd") && (lower.contains("class") || lower.contains("exam") || lower.contains("surface") || lower.contains("desorption") || lower.contains("surface chemistry"))
+            || lower.contains("xps surface") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("analysis"))
+            || lower.contains("auger electron spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("surface"))
+            || lower.contains("surface diffusion") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("surface science"))
+            || lower.contains("surface reconstruction") && (lower.contains("class") || lower.contains("exam") || lower.contains("surface") || lower.contains("chemistry"))
+            || lower.contains("wetting angle") && (lower.contains("class") || lower.contains("exam") || lower.contains("surface") || lower.contains("chemistry"))
+            || lower.contains("contact angle") && (lower.contains("class") || lower.contains("exam") || lower.contains("surface chemistry") || lower.contains("surface science"))
+            || lower.contains("surface tension") && lower.contains("chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("surface science")) {
+            return "surfacechemistry"
         }
         // analyticalchemistry — positioned AFTER organicchemistry and BEFORE drugdiscovery.
         // Catches HPLC, GC-MS, titration, chromatography, and spectroscopy in analytical context.

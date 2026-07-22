@@ -7107,5 +7107,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Biophysics lab report completed (trap stiffness extracted from power spectrum, ion channel conductance states identified from patch clamp trace, FRET efficiency and distance calculated, super-resolution image reconstructed or localization precision quoted, photobleaching step count determined, with analysis code, figures, and written report saved to file)",
             preferredDuration: 60 * 60
         ),
+        // solidmechanics
+        SuggestedTemplate(
+            icon: "wrench.and.screwdriver",
+            task: "Study solid mechanics for my exam — review stress and strain tensors (normal/shear stress, principal stresses, stress transformation), Mohr's circle construction (2D and 3D), elastic constitutive relations (Young's modulus, Poisson's ratio, shear modulus, Hooke's law in 3D), yield criteria (von Mises and Tresca), plastic deformation (isotropic/kinematic hardening), fracture mechanics (stress intensity factor K_I, fracture toughness K_Ic, energy release rate G, Griffith criterion), fatigue analysis (S-N curve, Goodman criterion, Paris law for crack growth), and continuum mechanics foundations (deformation gradient, principal strains)",
+            successCriteria: "Solid mechanics study session completed (at least two topics reviewed with Mohr's circle construction described, von Mises yield criterion formula written, fracture toughness and mode-I stress intensity factor defined, plastic hardening type explained, Paris law crack-growth exponents noted, and key equations saved to study notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "wrench.and.screwdriver",
+            task: "Work on my solid mechanics assignment — compute principal stresses and maximum shear stress from a given stress tensor using Mohr's circle or eigenvalue analysis, determine whether a stressed state causes yielding under von Mises or Tresca criterion, calculate mode-I stress intensity factor for an edge crack in a finite plate, find the critical crack length for a material with known fracture toughness, apply the Paris law to estimate fatigue life under cyclic loading, or derive the deflection of a statically indeterminate beam using compatibility equations",
+            successCriteria: "Solid mechanics assignment completed (principal stresses and max shear computed, yield criterion applied with pass/fail conclusion, stress intensity factor or critical crack length found, fatigue life estimate calculated or beam deflection derived, with solution steps, free-body diagrams, and final numerical answers saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // stochasticprocesses
+        SuggestedTemplate(
+            icon: "chart.line.uptrend.xyaxis",
+            task: "Study stochastic processes for my exam — review probability space foundations (filtration, adapted process), discrete-time Markov chains (transition matrix, Chapman-Kolmogorov equations, stationary distribution, absorption, ergodicity, hitting times), continuous-time Markov chains (generator matrix, Kolmogorov forward/backward equations, birth-death process), Poisson process (interarrival times, superposition, thinning, compound Poisson), Brownian motion (construction, reflection principle, properties), martingales (definition, optional stopping theorem, Doob's maximal inequality), and stochastic calculus basics (Itô integral, Itô's lemma, geometric Brownian motion SDE)",
+            successCriteria: "Stochastic processes study session completed (at least two topics reviewed with Markov chain stationary distribution computed, Poisson process properties listed, Brownian motion characteristic function written, martingale definition and optional stopping conditions stated, Itô's lemma formula recorded, and key results saved to study notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "chart.line.uptrend.xyaxis",
+            task: "Work on my stochastic processes assignment — find the stationary distribution of a finite Markov chain from its transition matrix, compute mean hitting time from state i to state j using first-step equations, derive the distribution of Poisson process event counts and prove the memoryless property, calculate the probability that Brownian motion hits level b before level -a using the optional stopping theorem, verify the martingale property for a given process, apply Itô's lemma to derive the SDE for a function of a Brownian motion, or solve a Kolmogorov forward equation for a birth-death chain",
+            successCriteria: "Stochastic processes assignment completed (stationary distribution or hitting time computed, Poisson event distribution derived, Brownian motion boundary probability calculated, martingale property verified, Itô's lemma applied correctly, or birth-death equation solved, with full derivation steps and final answer saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // quantumchemistry
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study quantum chemistry for my exam — review the Schrödinger equation for molecules (Born-Oppenheimer approximation, separation of nuclear/electronic motion), variational principle and basis set expansion (LCAO-MO theory), Hartree-Fock theory (HF equations, Fock operator, self-consistent field procedure, Roothaan equations, Slater determinant), electron correlation methods (configuration interaction, MP2 perturbation theory, coupled cluster CCSD(T)), density functional theory (Hohenberg-Kohn theorems, Kohn-Sham equations, exchange-correlation functionals), basis sets (STO vs GTO, Pople sets, cc-pVXZ), and molecular properties (dipole moment, geometry optimization, vibrational frequencies from the Hessian)",
+            successCriteria: "Quantum chemistry study session completed (at least two topics reviewed with Born-Oppenheimer approximation explained, HF SCF procedure outlined, MP2 energy correction formula written, DFT Kohn-Sham equations described, CCSD(T) hierarchy placed, basis set notation decoded, and key equations saved to study notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work on my quantum chemistry assignment — apply the variational method to minimize energy for a trial wavefunction (e.g. He atom with screening constant), solve the Roothaan equations iteratively for a minimal-basis H₂ or HeH⁺ calculation, compute the Hartree-Fock energy and equilibrium bond length for a small molecule using a specified basis set, derive the MP2 correlation energy correction from second-order perturbation theory, evaluate exchange-correlation energy for a simple electron density using an LDA functional, interpret a DFT geometry optimization output to extract bond lengths and vibrational modes, or compare HF/DFT/CCSD(T) energies for a reaction and explain the source of discrepancies",
+            successCriteria: "Quantum chemistry assignment completed (variational energy minimized, HF energy computed or Roothaan equations stepped through, MP2 correction derived, DFT functional applied and energy reported, geometry optimization output interpreted, or method comparison table completed, with derivation steps and computed values saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // opticalengineering
+        SuggestedTemplate(
+            icon: "camera.aperture",
+            task: "Study optical engineering for my exam — review geometrical optics fundamentals (ray transfer matrix method ABCD, refraction at spherical surfaces, principal planes, nodal points), Gaussian beam propagation (beam waist, Rayleigh range, q-parameter, ABCD law for Gaussian beams, M² factor), aberration theory (Seidel/primary aberrations: spherical aberration, coma, astigmatism, field curvature, distortion; chromatic aberration), wavefront description (Zernike polynomials, Zernike coefficients, RMS wavefront error, Strehl ratio), wavefront sensing (Shack-Hartmann sensor principle, reconstructor), optical interferometry (Michelson, Mach-Zehnder, Fizeau; fringe pattern interpretation; phase-shifting interferometry), and adaptive optics concepts (deformable mirror, closed-loop correction)",
+            successCriteria: "Optical engineering study session completed (at least two topics reviewed with ray transfer matrix for a thick lens written, Gaussian beam q-parameter propagation formula stated, five Seidel aberrations listed, first three Zernike modes defined, Shack-Hartmann sensing principle described, interferogram fringe spacing formula noted, and key equations saved to study notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "camera.aperture",
+            task: "Work on my optical engineering assignment — trace paraxial rays through a multi-element lens system using ABCD ray transfer matrices to find effective focal length and principal-plane positions, propagate a Gaussian beam through a sequence of lenses using the ABCD formalism to find the output beam waist and location, decompose a measured wavefront map into Zernike polynomials and report the RMS wavefront error and Strehl ratio, design a simple two-lens system in Zemax to meet a specified F/# and field-of-view while minimizing spherical aberration, analyze a Shack-Hartmann sensor output to reconstruct the aberrated wavefront, or process phase-shifted interferograms to extract the OPD map and identify the dominant Seidel aberration",
+            successCriteria: "Optical engineering assignment completed (ray matrix EFL and principal planes computed, Gaussian beam output waist found, Zernike decomposition and RMS WFE reported, Zemax design meeting specs saved, Shack-Hartmann wavefront reconstructed, or OPD map extracted from interferograms, with figures and numerical results saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // surfacechemistry
+        SuggestedTemplate(
+            icon: "bubbles.and.sparkles",
+            task: "Study surface chemistry for my exam — review surface thermodynamics (Gibbs adsorption equation, surface excess, surface tension, wetting and contact angle, Young's equation, Dupré work of adhesion, spreading coefficient), adsorption isotherms (Langmuir model assumptions and derivation, Freundlich isotherm, BET multilayer adsorption, BET surface area measurement, Type I–VI physisorption isotherms), surface kinetics (Langmuir-Hinshelwood, Eley-Rideal, and Mars-van Krevelen mechanisms; Arrhenius analysis of surface rate constants; TOF and site density), surface characterization techniques (XPS binding energy shifts, Auger electron spectroscopy, LEED surface structure, temperature-programmed desorption/TPD analysis), and surface structure (surface reconstruction, relaxation, adsorbate-induced restructuring)",
+            successCriteria: "Surface chemistry study session completed (at least two topics reviewed with Langmuir isotherm derivation outlined, BET surface area method explained, Langmuir-Hinshelwood rate expression written, TPD peak temperature-to-desorption-energy relation stated, Young's equation for contact angle written, XPS principle explained, and key equations saved to study notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "bubbles.and.sparkles",
+            task: "Work on my surface chemistry assignment — fit experimental adsorption data to the Langmuir isotherm to extract K_eq and monolayer capacity θ_max, apply the BET equation to a nitrogen physisorption dataset to determine specific surface area and pore size, derive the Langmuir-Hinshelwood rate expression for a bimolecular surface reaction and extract activation energy from an Arrhenius plot, analyze a TPD spectrum to determine the desorption activation energy and pre-exponential factor using Redhead analysis, interpret an XPS spectrum to identify surface oxidation states and quantify surface elemental composition, or calculate the work of adhesion and spreading coefficient for a liquid-solid system from contact angle measurements",
+            successCriteria: "Surface chemistry assignment completed (Langmuir fit parameters extracted, BET surface area computed, LH rate expression derived and Arrhenius analysis done, TPD desorption energy obtained via Redhead analysis, XPS oxidation states identified or spreading coefficient calculated, with data plots, fitted parameters, and written analysis saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

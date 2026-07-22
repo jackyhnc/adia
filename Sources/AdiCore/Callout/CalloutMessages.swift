@@ -615,6 +615,11 @@ extension CalloutManager {
         case "energymaterials":            return energymaterialsCallouts(tier: tier)
         case "computationalneuroscience":  return computationalneuroscienceCallouts(tier: tier)
         case "biophysicslab":              return biophysicslabCallouts(tier: tier)
+        case "stochasticprocesses":        return stochasticprocessesCallouts(tier: tier)
+        case "solidmechanics":             return solidmechanicsCallouts(tier: tier)
+        case "opticalengineering":         return opticalengineeringCallouts(tier: tier)
+        case "quantumchemistry":           return quantumchemistryCallouts(tier: tier)
+        case "surfacechemistry":           return surfacechemistryCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -12509,6 +12514,111 @@ extension CalloutManager {
             "CLOSE THIS. open your biophysics lab notebook.",
             "CLOSE THIS. those patch clamp and FRET experiment problems won't solve themselves.",
             "CLOSE THIS. your biophysics lab report won't write itself."
+        ]
+        }
+    }
+
+    private func stochasticprocessesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Markov chain and Poisson process problems won't solve themselves.",
+            "your stochastic processes exam doesn't care that you're scrolling.",
+            "get back to your stochastic processes assignment.",
+            "close this and open your stochastic processes textbook.",
+        ]
+        case 2: return [
+            "no one masters stochastic processes by scrolling.",
+            "close this and work on your stochastic processes problem set.",
+            "those martingale and Brownian motion problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your stochastic processes textbook.",
+            "CLOSE THIS. those Markov chain and Itô calculus problems won't solve themselves.",
+            "CLOSE THIS. your stochastic processes exam won't study itself."
+        ]
+        }
+    }
+
+    private func solidmechanicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those stress-strain and Mohr's circle problems won't solve themselves.",
+            "your solid mechanics exam doesn't care that you're scrolling.",
+            "get back to your mechanics of materials assignment.",
+            "close this and open your solid mechanics textbook.",
+        ]
+        case 2: return [
+            "no one masters solid mechanics by scrolling.",
+            "close this and work on your solid mechanics problem set.",
+            "those fracture mechanics and yield criterion problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your solid mechanics textbook.",
+            "CLOSE THIS. those Mohr's circle and von Mises stress problems won't solve themselves.",
+            "CLOSE THIS. your solid mechanics exam won't study itself."
+        ]
+        }
+    }
+
+    private func opticalengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that lens design and aberration analysis won't do itself.",
+            "your optical engineering exam doesn't care that you're scrolling.",
+            "get back to your optical system design assignment.",
+            "close this and open your optical engineering textbook.",
+        ]
+        case 2: return [
+            "no one masters optical engineering by scrolling.",
+            "close this and work on your optical design problem set.",
+            "those Zemax layout and Zernike aberration problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your optical engineering textbook.",
+            "CLOSE THIS. those wavefront sensing and interferometry problems won't solve themselves.",
+            "CLOSE THIS. your optical engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func quantumchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those molecular orbital theory and Hartree-Fock problems won't solve themselves.",
+            "your quantum chemistry exam doesn't care that you're scrolling.",
+            "get back to your quantum chemistry assignment.",
+            "close this and open your quantum chemistry textbook.",
+        ]
+        case 2: return [
+            "no one masters quantum chemistry by scrolling.",
+            "close this and work on your quantum chemistry problem set.",
+            "those DFT and coupled cluster problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your quantum chemistry textbook.",
+            "CLOSE THIS. those Hartree-Fock and basis set problems won't solve themselves.",
+            "CLOSE THIS. your quantum chemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func surfacechemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those adsorption isotherms and BET surface area problems won't solve themselves.",
+            "your surface chemistry exam doesn't care that you're scrolling.",
+            "get back to your surface science assignment.",
+            "close this and open your surface chemistry textbook.",
+        ]
+        case 2: return [
+            "no one masters surface chemistry by scrolling.",
+            "close this and work on your surface chemistry problem set.",
+            "those Langmuir-Hinshelwood and TPD desorption problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your surface chemistry textbook.",
+            "CLOSE THIS. those adsorption isotherm and surface reconstruction problems won't solve themselves.",
+            "CLOSE THIS. your surface chemistry exam won't study itself."
         ]
         }
     }
