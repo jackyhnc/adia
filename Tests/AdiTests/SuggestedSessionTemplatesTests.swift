@@ -7303,8 +7303,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func propertylawAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("property law") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1129)
-    @Test func templateCountAtLeast1129() {
-        #expect(SuggestedSessionTemplates.all.count >= 1129, "template catalog must have ≥1129 entries after historicalgeology/agriculturalchemistry/digitalcommunications/contractlaw/propertylaw additions")
+    // MARK: - metamaterials templates
+    @Test func metamaterialsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("metamaterials") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func metamaterialsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("metamaterials") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - nondestructivetesting templates
+    @Test func nondestructivetestingStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("nondestructive testing") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func nondestructivetestingAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("nondestructive testing") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - optimalcontrol templates
+    @Test func optimalcontrolStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("optimal control") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func optimalcontrolAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("optimal control") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - rocketpropulsion templates
+    @Test func rocketpropulsionStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("rocket propulsion") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func rocketpropulsionAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("rocket propulsion") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - reliabilityengineering templates
+    @Test func reliabilityengineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("reliability engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func reliabilityengineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("reliability engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1139)
+    @Test func templateCountAtLeast1139() {
+        #expect(SuggestedSessionTemplates.all.count >= 1139, "template catalog must have ≥1139 entries after metamaterials/nondestructivetesting/optimalcontrol/rocketpropulsion/reliabilityengineering additions")
     }
 }

@@ -1,5 +1,70 @@
 # Adia — Build Progress
 
+## Run 404 (automated) — 2026-07-22 — 5 new keyword domains: metamaterials/nondestructivetesting/optimalcontrol/rocketpropulsion/reliabilityengineering (1129→1139 templates)
+
+### What shipped
+
+**5 new keyword domains: metamaterials, nondestructivetesting, optimalcontrol, rocketpropulsion, reliabilityengineering**
+
+**New keyword domain — metamaterials:**
+- Branch positioned BEFORE `nanophotonics`. Metamaterials coursework (negative-index media, split-ring resonator, effective medium theory, metasurface, transformation optics, electromagnetic cloaking, left-handed material, Veselago media) distinct from nanophotonics (plasmonics) and nanotechnology.
+- Catches: metamaterials/metamaterial class/course/exam/lab/homework/assignment/textbook, negative index+class/exam/metamaterial/medium, split-ring resonator+class/exam/metamaterial/course, split ring resonator+class/exam/metamaterial, effective medium theory+class/exam/metamaterial/optical, metasurface+class/exam/course/design/lab, transformation optics+class/exam/metamaterial/course, electromagnetic cloaking+class/exam/metamaterial, left-handed material/medium+class/exam/metamaterial, Veselago+class/exam/metamaterial/negative, Drude model+metamaterial+class/exam/course.
+- `metamaterialsCallouts(tier:)` 4/3/3: "those negative-index metamaterials and split-ring resonator problems won't solve themselves." / "no one masters metamaterials by scrolling." / "CLOSE THIS. those split-ring resonator and metasurface problems won't solve themselves."
+- 2 templates: study exam (Veselago DNG, SRR, effective medium, metasurface, generalized Snell's law, transformation optics cloak, 60 min) + assignment (wire medium plasma frequency, SRR resonance, S-parameter retrieval, phase-gradient metasurface, or carpet cloak, 60 min)
+
+**New keyword domain — nondestructivetesting:**
+- Branch positioned BEFORE `materialscience` (after `additivemfg`). NDT/NDE coursework (ultrasonic testing, radiographic testing, eddy current, magnetic particle inspection, dye penetrant, phased array UT, ASNT certification) distinct from materials science.
+- Catches: nondestructive testing/non-destructive testing+class/course/exam/lab/assignment/certification, ndt class/course/exam/certification/lab/training, nde class/course/exam, ultrasonic testing+class/exam/ndt/inspection/lab, ut inspection+ndt/class/exam/ultrasonic, radiographic testing+class/exam/ndt/inspection, industrial radiography+class/exam/ndt/testing, eddy current testing+class/exam/ndt/inspection, magnetic particle+class/exam/ndt/testing/inspection, dye penetrant/liquid penetrant+class/exam/ndt/testing/inspection, phased array ultrasound/PAUT+class/exam/ndt/inspection, ASNT certification/level, acoustic emission testing+class/exam/ndt, flaw detection+class/exam/ndt/ultrasonic.
+- `nondestructivetestingCallouts(tier:)` 4/3/3: "those ultrasonic testing and eddy current problems won't solve themselves." / "no one masters NDT by scrolling." / "CLOSE THIS. those ultrasonic testing and ASNT certification problems won't solve themselves."
+- 2 templates: study exam (UT pulse-echo/phased array, RT, eddy current skin depth, MPI, DPT, ASNT levels, 60 min) + assignment (Snell's law UT, phased-array B-scan, eddy current frequency, radiographic sensitivity, or inspection procedure, 60 min)
+
+**New keyword domain — optimalcontrol:**
+- Branch positioned BEFORE `controlengineering`. Advanced optimal control coursework (Pontryagin's maximum principle, Hamilton-Jacobi-Bellman equation, LQR, LQG, Kalman filter, MPC, dynamic programming for control) distinct from basic feedback/PID control engineering.
+- Catches: optimal control class/course/exam/homework/notes/assignment, optimal control problem+class/exam/solve, Pontryagin+class/exam/optimal/control, maximum principle+class/exam/optimal/control, Hamilton-Jacobi-Bellman/HJB equation+class/exam/optimal/control, linear quadratic regulator+class/exam/control/optimal, lqr controller/design+class/exam/design/optimal, lqg controller/design+class/exam/control, Kalman filter+class/exam/control/optimal (!data assimilation), model predictive control+class/exam/course/design, mpc controller/design+class/exam/control/design, infinite horizon+class/exam/control/lqr, Riccati equation+class/exam/control/lqr, costate equation+class/exam/optimal/control, bang-bang control+class/exam/optimal/control, receding horizon+class/exam/control/mpc.
+- `optimalcontrolCallouts(tier:)` 4/3/3: "those Pontryagin maximum principle and LQR problems won't solve themselves." / "no one masters optimal control by scrolling." / "CLOSE THIS. those LQR and Hamilton-Jacobi-Bellman problems won't solve themselves."
+- 2 templates: study exam (variational calculus, Pontryagin, HJB, LQR, LQG, separation principle, MPC, 60 min) + assignment (PMP TPBVP, LQR Riccati solve, Kalman-Bucy filter, or MPC QP formulation, 60 min)
+
+**New keyword domain — rocketpropulsion:**
+- Branch positioned BEFORE `thermofluidscombustion`. Rocket propulsion coursework (specific impulse, Tsiolkovsky rocket equation, nozzle design, propellant chemistry, de Laval nozzle, thrust coefficient, solid/liquid/electric propulsion) distinct from general combustion engineering.
+- Catches: rocket propulsion/spacecraft propulsion class/course/exam/homework/assignment/notes, propulsion class/course/exam (!cardiac !marine !ship), specific impulse+class/exam/rocket/propulsion/nozzle, Tsiolkovsky+class/exam/rocket/propulsion, rocket equation+class/exam/propulsion/delta-v, de Laval/converging-diverging nozzle+class/exam/rocket/propulsion, thrust coefficient+class/exam/rocket/propulsion/nozzle, solid rocket+class/exam/propulsion/motor, liquid propellant/bipropellant/monopropellant+class/exam/rocket/propulsion, combustion chamber+class/exam/rocket/propulsion (!combustion class/course), propellant chemistry/nozzle design+class/exam/rocket/propulsion, electric propulsion/ion thruster+class/exam/course/spacecraft.
+- `rocketpropulsionCallouts(tier:)` 4/3/3: "those specific impulse and Tsiolkovsky rocket equation problems won't solve themselves." / "no one masters rocket propulsion by scrolling." / "CLOSE THIS. those specific impulse and bipropellant combustion problems won't solve themselves."
+- 2 templates: study exam (thrust equation, I_sp, Tsiolkovsky, de Laval nozzle, C_F, propellant types, electric propulsion, 60 min) + assignment (multi-stage delta-V, nozzle design, solid grain burn rate, bipropellant comparison, or ion spacecraft mass fraction, 60 min)
+
+**New keyword domain — reliabilityengineering:**
+- Branch positioned BEFORE `industrialengineering`. Reliability engineering coursework (MTBF, failure rate, Weibull distribution, bathtub curve, FMEA, fault tree analysis, accelerated life testing, redundancy analysis, availability) distinct from industrial engineering and manufacturing.
+- Catches: reliability engineering class/course/exam/homework/assignment/notes, MTBF+class/exam/reliability/engineering/calculate, mean time between failures+class/exam/reliability, failure rate+reliability+class/exam/calculate, Weibull distribution/analysis+class/exam/reliability/failure, bathtub curve+class/exam/reliability/failure, FMEA+class/exam/reliability/engineering/analysis, failure mode and effects analysis+class/exam/reliability, fault tree analysis/FTA+class/exam/reliability/engineering, accelerated life testing/ALT+class/exam/reliability, MTTF/mean time to failure+class/exam/reliability/engineering, system reliability+class/exam/engineering/analysis, redundancy analysis/availability analysis+reliability+class/exam, hazard rate+class/exam/reliability/failure, exponential failure+class/exam/reliability/model.
+- `reliabilityengineeringCallouts(tier:)` 4/3/3: "those MTBF and Weibull distribution problems won't solve themselves." / "no one masters reliability engineering by scrolling." / "CLOSE THIS. those Weibull analysis and FMEA problems won't solve themselves."
+- 2 templates: study exam (R(t)/h(t), bathtub curve, Weibull, FMEA, FTA, series/parallel reliability, ALT/Arrhenius, 60 min) + assignment (Weibull probability plot, FTA cut sets, FMEA RPN, series-parallel calculation, or ALT acceleration factor, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +35 @Test functions (3 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains + 1 count guard ≥1139)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + 1 count guard ≥1139)
+
+**Template catalog: 1129 → 1139**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `metamaterials` fires at line 3121, BEFORE nanophotonics (line 3141) ✓
+- `nondestructivetesting` fires at line 3330, BEFORE materialscience (line 3353) ✓
+- `optimalcontrol` fires at line 3626, BEFORE controlengineering (line 3654) ✓
+- `rocketpropulsion` fires at line 4520, BEFORE thermofluidscombustion (line 4542) ✓
+- `reliabilityengineering` fires at line 4787, BEFORE industrialengineering (line 4814) ✓
+- Brace balance: CalloutManager.swift 619/619 ✓; CalloutMessages.swift 1183/1183 ✓; SuggestedSessionTemplates.swift 8/8 ✓
+- Template count: 1139 confirmed (grep -c "preferredDuration:" = 1139) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases + 5 new private pool functions in CalloutMessages.swift ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `neuropsychology` — already exists (line 10872); `historicalgeology` — already exists; `agriculturalchemistry` — already exists; `digitalcommunications` — already exists; `combustionengineering` — covered by `thermofluidscombustion`
+  - NEW candidates: `bioprocessengineering` — bioprocess engineering class (bioreactor design, fermentation kinetics, mass transfer in bioreactors, downstream processing, cell culture scale-up, fed-batch culture — distinct from chemicalengineering and microbiology), `geophysicsinversion` — seismic inversion / geophysical inversion class (full-waveform inversion, migration velocity analysis, amplitude vs. offset, AVO, pre-stack inversion — distinct from geophysics which covers field methods), `constitutivemodeling` — constitutive modeling class (material constitutive laws, plasticity models, viscoplasticity, hyperelasticity, damage mechanics, material parameter identification — distinct from solidmechanics), `quantumtransport` — quantum transport class (Landauer-Büttiker formalism, scattering matrix, conductance quantization, quantum Hall effect, Green's function methods, non-equilibrium Green's functions — distinct from solidstatephysics and condensedmatterphysics), `infraredspectroscopy` — FTIR and infrared spectroscopy class as a standalone analytical chemistry technique (peak assignment, functional groups, transmission/ATR sampling, Beer-Lambert, spectral interpretation — distinct from spectroscopy which is broader)
+- Template count target: 1139 → 1149 after next 5-domain batch
+
+---
+
 ## Run 403 (automated) — 2026-07-22 — 5 new keyword domains: quantumoptics/marinechemistry/bioinorganicchemistry/informationtheory/mathematicalstatistics (1109→1119 templates)
 
 ### What shipped

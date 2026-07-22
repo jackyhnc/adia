@@ -630,6 +630,11 @@ extension CalloutManager {
         case "digitalcommunications":      return digitalcommunicationsCallouts(tier: tier)
         case "contractlaw":                return contractlawCallouts(tier: tier)
         case "propertylaw":                return propertylawCallouts(tier: tier)
+        case "metamaterials":              return metamaterialsCallouts(tier: tier)
+        case "nondestructivetesting":      return nondestructivetestingCallouts(tier: tier)
+        case "optimalcontrol":             return optimalcontrolCallouts(tier: tier)
+        case "rocketpropulsion":           return rocketpropulsionCallouts(tier: tier)
+        case "reliabilityengineering":     return reliabilityengineeringCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -12839,6 +12844,111 @@ extension CalloutManager {
             "CLOSE THIS. open your property law textbook.",
             "CLOSE THIS. those future interests and rule against perpetuities problems won't brief themselves.",
             "CLOSE THIS. your property exam won't study itself."
+        ]
+        }
+    }
+
+    private func metamaterialsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those negative-index metamaterials and split-ring resonator problems won't solve themselves.",
+            "your metamaterials exam doesn't care that you're scrolling.",
+            "get back to your metasurface and transformation optics study notes.",
+            "close this and open your metamaterials textbook.",
+        ]
+        case 2: return [
+            "no one masters metamaterials by scrolling.",
+            "close this and work on your metamaterials problem set.",
+            "those effective medium theory and electromagnetic cloaking problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your metamaterials textbook.",
+            "CLOSE THIS. those split-ring resonator and metasurface problems won't solve themselves.",
+            "CLOSE THIS. your metamaterials exam won't study itself."
+        ]
+        }
+    }
+
+    private func nondestructivetestingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those ultrasonic testing and eddy current problems won't solve themselves.",
+            "your NDT exam doesn't care that you're scrolling.",
+            "get back to your magnetic particle and dye penetrant study notes.",
+            "close this and open your nondestructive testing textbook.",
+        ]
+        case 2: return [
+            "no one masters NDT by scrolling.",
+            "close this and work on your nondestructive testing problem set.",
+            "those phased array ultrasound and radiographic testing problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your nondestructive testing textbook.",
+            "CLOSE THIS. those ultrasonic testing and ASNT certification problems won't solve themselves.",
+            "CLOSE THIS. your NDT exam won't study itself."
+        ]
+        }
+    }
+
+    private func optimalcontrolCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Pontryagin maximum principle and LQR problems won't solve themselves.",
+            "your optimal control exam doesn't care that you're scrolling.",
+            "get back to your Hamilton-Jacobi-Bellman and Kalman filter study notes.",
+            "close this and open your optimal control textbook.",
+        ]
+        case 2: return [
+            "no one masters optimal control by scrolling.",
+            "close this and work on your optimal control problem set.",
+            "those Riccati equation and model predictive control problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your optimal control textbook.",
+            "CLOSE THIS. those LQR and Hamilton-Jacobi-Bellman problems won't solve themselves.",
+            "CLOSE THIS. your optimal control exam won't study itself."
+        ]
+        }
+    }
+
+    private func rocketpropulsionCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those specific impulse and Tsiolkovsky rocket equation problems won't solve themselves.",
+            "your rocket propulsion exam doesn't care that you're scrolling.",
+            "get back to your nozzle design and propellant chemistry study notes.",
+            "close this and open your rocket propulsion textbook.",
+        ]
+        case 2: return [
+            "no one masters rocket propulsion by scrolling.",
+            "close this and work on your rocket propulsion problem set.",
+            "those de Laval nozzle and thrust coefficient problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your rocket propulsion textbook.",
+            "CLOSE THIS. those specific impulse and bipropellant combustion problems won't solve themselves.",
+            "CLOSE THIS. your rocket propulsion exam won't study itself."
+        ]
+        }
+    }
+
+    private func reliabilityengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those MTBF and Weibull distribution problems won't solve themselves.",
+            "your reliability engineering exam doesn't care that you're scrolling.",
+            "get back to your FMEA and fault tree analysis study notes.",
+            "close this and open your reliability engineering textbook.",
+        ]
+        case 2: return [
+            "no one masters reliability engineering by scrolling.",
+            "close this and work on your reliability engineering problem set.",
+            "those bathtub curve and accelerated life testing problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your reliability engineering textbook.",
+            "CLOSE THIS. those Weibull analysis and FMEA problems won't solve themselves.",
+            "CLOSE THIS. your reliability engineering exam won't study itself."
         ]
         }
     }

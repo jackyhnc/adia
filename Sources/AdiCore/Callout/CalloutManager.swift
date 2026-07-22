@@ -3097,6 +3097,29 @@ public final class CalloutManager {
             || lower.contains("industrial safety exam") || lower.contains("industrial safety program") {
             return "industrialsafety"
         }
+        // metamaterials — positioned BEFORE nanophotonics so metamaterials class/exam (negative-index
+        // metamaterials, split-ring resonator, effective medium theory, metasurface, transformation optics,
+        // electromagnetic cloaking, left-handed material) routes to a dedicated pool distinct from
+        // photonics and nanotechnology.
+        if lower.contains("metamaterials class") || lower.contains("metamaterials course")
+            || lower.contains("metamaterials exam") || lower.contains("metamaterials lab")
+            || lower.contains("metamaterials homework") || lower.contains("metamaterials assignment")
+            || lower.contains("metamaterial class") || lower.contains("metamaterial course")
+            || lower.contains("metamaterial exam") || lower.contains("metamaterial textbook")
+            || lower.contains("negative index") && (lower.contains("class") || lower.contains("exam") || lower.contains("metamaterial") || lower.contains("medium"))
+            || lower.contains("split-ring resonator") && (lower.contains("class") || lower.contains("exam") || lower.contains("metamaterial") || lower.contains("course"))
+            || lower.contains("split ring resonator") && (lower.contains("class") || lower.contains("exam") || lower.contains("metamaterial"))
+            || lower.contains("effective medium theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("metamaterial") || lower.contains("optical"))
+            || lower.contains("metasurface") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("design") || lower.contains("lab"))
+            || lower.contains("transformation optics") && (lower.contains("class") || lower.contains("exam") || lower.contains("metamaterial") || lower.contains("course"))
+            || lower.contains("electromagnetic cloaking") && (lower.contains("class") || lower.contains("exam") || lower.contains("metamaterial"))
+            || lower.contains("left-handed material") && (lower.contains("class") || lower.contains("exam") || lower.contains("metamaterial") || lower.contains("medium"))
+            || lower.contains("left-handed medium") && (lower.contains("class") || lower.contains("exam") || lower.contains("metamaterial"))
+            || lower.contains("veselago") && (lower.contains("class") || lower.contains("exam") || lower.contains("metamaterial") || lower.contains("negative"))
+            || lower.contains("drude model") && lower.contains("metamaterial") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("photonic bandgap structure") && lower.contains("metamaterial") && (lower.contains("class") || lower.contains("exam")) {
+            return "metamaterials"
+        }
         // nanophotonics — positioned BEFORE nanotechnology so nanophotonics class/exam (plasmonics,
         // Mie scattering, near-field optics, waveguide nanophotonics) routes to a dedicated pool.
         // "nanophotonics/plasmonics + class/lab/research" removed from nanotechnology branch and owned here.
@@ -3282,6 +3305,29 @@ public final class CalloutManager {
             || lower.contains("infill density") && (lower.contains("class") || lower.contains("exam") || lower.contains("printing") || lower.contains("additive"))
             || lower.contains("layer-by-layer") && lower.contains("manufacturing") && (lower.contains("class") || lower.contains("exam") || lower.contains("additive")) {
             return "additivemfg"
+        }
+        // nondestructivetesting — positioned BEFORE materialscience so NDT class/exam (ultrasonic
+        // testing, radiographic testing, eddy current, magnetic particle, dye penetrant, phased array,
+        // ASNT certification) routes to a dedicated pool distinct from materials science.
+        if lower.contains("nondestructive testing") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("assignment") || lower.contains("certification"))
+            || lower.contains("non-destructive testing") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("ndt class") || lower.contains("ndt course") || lower.contains("ndt exam")
+            || lower.contains("ndt certification") || lower.contains("ndt lab") || lower.contains("ndt training")
+            || lower.contains("nde class") || lower.contains("nde course") || lower.contains("nde exam")
+            || lower.contains("ultrasonic testing") && (lower.contains("class") || lower.contains("exam") || lower.contains("ndt") || lower.contains("inspection") || lower.contains("lab"))
+            || lower.contains("ut inspection") && (lower.contains("ndt") || lower.contains("class") || lower.contains("exam") || lower.contains("ultrasonic"))
+            || lower.contains("radiographic testing") && (lower.contains("class") || lower.contains("exam") || lower.contains("ndt") || lower.contains("inspection"))
+            || lower.contains("industrial radiography") && (lower.contains("class") || lower.contains("exam") || lower.contains("ndt") || lower.contains("testing"))
+            || lower.contains("eddy current testing") && (lower.contains("class") || lower.contains("exam") || lower.contains("ndt") || lower.contains("inspection"))
+            || lower.contains("magnetic particle") && (lower.contains("class") || lower.contains("exam") || lower.contains("ndt") || lower.contains("testing") || lower.contains("inspection"))
+            || lower.contains("dye penetrant") && (lower.contains("class") || lower.contains("exam") || lower.contains("ndt") || lower.contains("testing") || lower.contains("inspection"))
+            || lower.contains("liquid penetrant") && (lower.contains("class") || lower.contains("exam") || lower.contains("ndt") || lower.contains("testing"))
+            || lower.contains("phased array ultrasound") && (lower.contains("class") || lower.contains("exam") || lower.contains("ndt") || lower.contains("inspection"))
+            || lower.contains("phased array ut") && (lower.contains("class") || lower.contains("exam") || lower.contains("inspection"))
+            || lower.contains("asnt certification") || lower.contains("asnt level")
+            || lower.contains("acoustic emission testing") && (lower.contains("class") || lower.contains("exam") || lower.contains("ndt"))
+            || lower.contains("flaw detection") && (lower.contains("class") || lower.contains("exam") || lower.contains("ndt") || lower.contains("ultrasonic")) {
+            return "nondestructivetesting"
         }
         // materialscience — positioned AFTER nanotechnology and BEFORE engineering.
         // Catches MSE coursework, metallurgy, polymer science, ceramics (in engineering context),
@@ -3552,6 +3598,32 @@ public final class CalloutManager {
             || lower.contains("wavelet transform") && (lower.contains("class") || lower.contains("exam") || lower.contains("signal") || lower.contains("processing"))
             || lower.contains("power spectral density") && (lower.contains("class") || lower.contains("exam") || lower.contains("signal") || lower.contains("processing")) {
             return "signalprocessing"
+        }
+        // optimalcontrol — positioned BEFORE controlengineering so advanced optimal control class/exam
+        // (Pontryagin's maximum principle, Hamilton-Jacobi-Bellman equation, LQR, LQG, Kalman filter,
+        // MPC, dynamic programming for control) routes here distinct from basic feedback/PID control.
+        if lower.contains("optimal control class") || lower.contains("optimal control course")
+            || lower.contains("optimal control exam") || lower.contains("optimal control homework")
+            || lower.contains("optimal control notes") || lower.contains("optimal control assignment")
+            || lower.contains("optimal control problem") && (lower.contains("class") || lower.contains("exam") || lower.contains("solve"))
+            || lower.contains("pontryagin") && (lower.contains("class") || lower.contains("exam") || lower.contains("optimal") || lower.contains("control"))
+            || lower.contains("maximum principle") && (lower.contains("class") || lower.contains("exam") || lower.contains("optimal") || lower.contains("control"))
+            || lower.contains("hamilton-jacobi-bellman") && (lower.contains("class") || lower.contains("exam") || lower.contains("optimal") || lower.contains("control"))
+            || lower.contains("hjb equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("optimal") || lower.contains("control"))
+            || lower.contains("linear quadratic regulator") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("optimal"))
+            || lower.contains("lqr controller") && (lower.contains("class") || lower.contains("exam") || lower.contains("design") || lower.contains("optimal"))
+            || lower.contains("lqr design") && (lower.contains("class") || lower.contains("exam") || lower.contains("control"))
+            || lower.contains("lqg controller") && (lower.contains("class") || lower.contains("exam") || lower.contains("control"))
+            || lower.contains("lqg design") && (lower.contains("class") || lower.contains("exam") || lower.contains("control"))
+            || lower.contains("kalman filter") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("optimal")) && !lower.contains("data assimilation")
+            || lower.contains("model predictive control") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("design"))
+            || lower.contains("mpc controller") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("design"))
+            || lower.contains("infinite horizon") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("lqr"))
+            || lower.contains("riccati equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("lqr"))
+            || lower.contains("costate equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("optimal") || lower.contains("control"))
+            || lower.contains("bang-bang control") && (lower.contains("class") || lower.contains("exam") || lower.contains("optimal") || lower.contains("control"))
+            || lower.contains("receding horizon") && (lower.contains("class") || lower.contains("exam") || lower.contains("control") || lower.contains("mpc")) {
+            return "optimalcontrol"
         }
         // controlengineering — positioned BEFORE electricalengineering and mechanicalengineering so
         // dedicated control systems class/exam, PID, Bode plot, root locus, and state space route here.
@@ -4418,6 +4490,35 @@ public final class CalloutManager {
             || lower.contains("fluid mechanics class") && lower.contains("chemical") {
             return "chemicalengineering"
         }
+        // rocketpropulsion — positioned BEFORE thermofluidscombustion so rocket propulsion class/exam
+        // (specific impulse, Tsiolkovsky rocket equation, nozzle design, propellant chemistry,
+        // de Laval nozzle, thrust coefficient, solid/liquid propellant, electric propulsion) routes here.
+        // "combustion class" without rocket context stays in thermofluidscombustion (fires after).
+        if lower.contains("rocket propulsion class") || lower.contains("rocket propulsion course")
+            || lower.contains("rocket propulsion exam") || lower.contains("rocket propulsion homework")
+            || lower.contains("rocket propulsion assignment") || lower.contains("rocket propulsion notes")
+            || lower.contains("spacecraft propulsion class") || lower.contains("spacecraft propulsion course")
+            || lower.contains("spacecraft propulsion exam") || lower.contains("spacecraft propulsion assignment")
+            || lower.contains("propulsion class") && !lower.contains("cardiac") && !lower.contains("marine") && !lower.contains("ship")
+            || lower.contains("propulsion course") && !lower.contains("cardiac") && !lower.contains("marine") && !lower.contains("ship")
+            || lower.contains("propulsion exam") && !lower.contains("cardiac")
+            || lower.contains("specific impulse") && (lower.contains("class") || lower.contains("exam") || lower.contains("rocket") || lower.contains("propulsion") || lower.contains("nozzle"))
+            || lower.contains("tsiolkovsky") && (lower.contains("class") || lower.contains("exam") || lower.contains("rocket") || lower.contains("propulsion"))
+            || lower.contains("rocket equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("propulsion") || lower.contains("delta-v"))
+            || lower.contains("de laval nozzle") && (lower.contains("class") || lower.contains("exam") || lower.contains("rocket") || lower.contains("propulsion"))
+            || lower.contains("converging-diverging nozzle") && (lower.contains("class") || lower.contains("exam") || lower.contains("rocket") || lower.contains("propulsion"))
+            || lower.contains("thrust coefficient") && (lower.contains("class") || lower.contains("exam") || lower.contains("rocket") || lower.contains("propulsion") || lower.contains("nozzle"))
+            || lower.contains("solid rocket") && (lower.contains("class") || lower.contains("exam") || lower.contains("propulsion") || lower.contains("motor"))
+            || lower.contains("liquid propellant") && (lower.contains("class") || lower.contains("exam") || lower.contains("rocket") || lower.contains("propulsion"))
+            || lower.contains("bipropellant") && (lower.contains("class") || lower.contains("exam") || lower.contains("rocket") || lower.contains("propulsion"))
+            || lower.contains("monopropellant") && (lower.contains("class") || lower.contains("exam") || lower.contains("rocket") || lower.contains("propulsion"))
+            || lower.contains("combustion chamber") && (lower.contains("class") || lower.contains("exam") || lower.contains("rocket") || lower.contains("propulsion")) && !lower.contains("combustion class") && !lower.contains("combustion course")
+            || lower.contains("propellant chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("rocket") || lower.contains("propulsion"))
+            || lower.contains("nozzle design") && (lower.contains("class") || lower.contains("exam") || lower.contains("rocket") || lower.contains("propulsion"))
+            || lower.contains("electric propulsion") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("spacecraft"))
+            || lower.contains("ion thruster") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("propulsion")) {
+            return "rocketpropulsion"
+        }
         // thermofluidscombustion — positioned AFTER chemicalengineering (which owns "thermodynamics class chemical"
         // and "fluid mechanics class chemical") and BEFORE petroleumengineering/thermodynamics. Catches combustion
         // engineering coursework with premixed/diffusion flames, equivalence ratio, and NOx formation.
@@ -4657,6 +4758,33 @@ public final class CalloutManager {
             || lower.contains("mine reclamation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mining"))
             || lower.contains("sme") && lower.contains("mining") && (lower.contains("class") || lower.contains("exam") || lower.contains("handbook")) {
             return "miningengineering"
+        }
+        // reliabilityengineering — positioned BEFORE industrialengineering so reliability engineering
+        // class/exam (MTBF, failure rate, Weibull distribution, bathtub curve, FMEA, fault tree
+        // analysis, accelerated life testing, redundancy analysis) routes to a dedicated pool.
+        if lower.contains("reliability engineering class") || lower.contains("reliability engineering course")
+            || lower.contains("reliability engineering exam") || lower.contains("reliability engineering homework")
+            || lower.contains("reliability engineering assignment") || lower.contains("reliability engineering notes")
+            || lower.contains("mtbf") && (lower.contains("class") || lower.contains("exam") || lower.contains("reliability") || lower.contains("engineering") || lower.contains("calculate"))
+            || lower.contains("mean time between failures") && (lower.contains("class") || lower.contains("exam") || lower.contains("reliability"))
+            || lower.contains("failure rate") && lower.contains("reliability") && (lower.contains("class") || lower.contains("exam") || lower.contains("calculate"))
+            || lower.contains("weibull distribution") && (lower.contains("class") || lower.contains("exam") || lower.contains("reliability") || lower.contains("failure"))
+            || lower.contains("weibull analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("reliability"))
+            || lower.contains("bathtub curve") && (lower.contains("class") || lower.contains("exam") || lower.contains("reliability") || lower.contains("failure"))
+            || lower.contains("fmea") && (lower.contains("class") || lower.contains("exam") || lower.contains("reliability") || lower.contains("engineering") || lower.contains("analysis"))
+            || lower.contains("failure mode and effects analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("reliability"))
+            || lower.contains("fault tree analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("reliability") || lower.contains("engineering"))
+            || lower.contains("fta") && lower.contains("reliability") && (lower.contains("class") || lower.contains("exam") || lower.contains("analysis"))
+            || lower.contains("accelerated life testing") && (lower.contains("class") || lower.contains("exam") || lower.contains("reliability"))
+            || lower.contains("alt test") && lower.contains("reliability") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("mttf") && (lower.contains("class") || lower.contains("exam") || lower.contains("reliability") || lower.contains("engineering"))
+            || lower.contains("mean time to failure") && (lower.contains("class") || lower.contains("exam") || lower.contains("reliability"))
+            || lower.contains("system reliability") && (lower.contains("class") || lower.contains("exam") || lower.contains("engineering") || lower.contains("analysis"))
+            || lower.contains("redundancy analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("reliability"))
+            || lower.contains("availability analysis") && lower.contains("reliability") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("hazard rate") && (lower.contains("class") || lower.contains("exam") || lower.contains("reliability") || lower.contains("failure"))
+            || lower.contains("exponential failure") && (lower.contains("class") || lower.contains("exam") || lower.contains("reliability") || lower.contains("model")) {
+            return "reliabilityengineering"
         }
         // industrialengineering — positioned BEFORE engineering so IE class/exam, operations
         // research, and lean manufacturing coursework routes here. Bare "operations research"

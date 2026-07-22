@@ -25961,8 +25961,148 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "propertylaw", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1129)
-    @Test func calloutTemplatesCountAtLeast1129() {
-        #expect(SuggestedSessionTemplates.all.count >= 1129, "template catalog must have ≥1129 entries after historicalgeology/agriculturalchemistry/digitalcommunications/contractlaw/propertylaw additions")
+    // MARK: - metamaterials
+    @Test func metamaterialsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "metamaterials class exam negative index split-ring resonator metasurface") == "metamaterials")
+    }
+    @Test func metamaterialsRoutingFromSplitRingResonator() {
+        #expect(CalloutManager.extractTaskKeyword(from: "split-ring resonator class exam metamaterial effective permeability") == "metamaterials")
+    }
+    @Test func metamaterialsRoutingFromMetasurface() {
+        #expect(CalloutManager.extractTaskKeyword(from: "metasurface design class transformation optics exam") == "metamaterials")
+    }
+    @Test func metamaterialsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nanophotonics class exam plasmonics surface plasmon localized resonance") != "metamaterials")
+    }
+    @Test @MainActor func metamaterialsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "metamaterials", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "metamaterials", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "metamaterials", tier: 3).isEmpty)
+    }
+    @Test @MainActor func metamaterialsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "metamaterials", tier: 1).count >= 4)
+    }
+    @Test @MainActor func metamaterialsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "metamaterials", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - nondestructivetesting
+    @Test func nondestructivetestingRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nondestructive testing class exam ultrasonic eddy current phased array ndt") == "nondestructivetesting")
+    }
+    @Test func nondestructivetestingRoutingFromNDT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ndt exam certification magnetic particle dye penetrant inspection") == "nondestructivetesting")
+    }
+    @Test func nondestructivetestingRoutingFromUltrasonicTesting() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ultrasonic testing class exam pulse-echo flaw detection ndt") == "nondestructivetesting")
+    }
+    @Test func nondestructivetestingFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "materials science class exam phase diagram polymer ceramic crystal structure") != "nondestructivetesting")
+    }
+    @Test @MainActor func nondestructivetestingCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "nondestructivetesting", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nondestructivetesting", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nondestructivetesting", tier: 3).isEmpty)
+    }
+    @Test @MainActor func nondestructivetestingTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nondestructivetesting", tier: 1).count >= 4)
+    }
+    @Test @MainActor func nondestructivetestingTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nondestructivetesting", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - optimalcontrol
+    @Test func optimalcontrolRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "optimal control class exam pontryagin maximum principle lqr kalman filter") == "optimalcontrol")
+    }
+    @Test func optimalcontrolRoutingFromLQR() {
+        #expect(CalloutManager.extractTaskKeyword(from: "linear quadratic regulator class exam riccati equation algebraic lqr design") == "optimalcontrol")
+    }
+    @Test func optimalcontrolRoutingFromMPC() {
+        #expect(CalloutManager.extractTaskKeyword(from: "model predictive control class exam receding horizon mpc design") == "optimalcontrol")
+    }
+    @Test func optimalcontrolFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "control systems class exam pid controller bode plot root locus feedback") != "optimalcontrol")
+    }
+    @Test @MainActor func optimalcontrolCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "optimalcontrol", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "optimalcontrol", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "optimalcontrol", tier: 3).isEmpty)
+    }
+    @Test @MainActor func optimalcontrolTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "optimalcontrol", tier: 1).count >= 4)
+    }
+    @Test @MainActor func optimalcontrolTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "optimalcontrol", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - rocketpropulsion
+    @Test func rocketpropulsionRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "rocket propulsion class exam specific impulse tsiolkovsky nozzle design bipropellant") == "rocketpropulsion")
+    }
+    @Test func rocketpropulsionRoutingFromSpecificImpulse() {
+        #expect(CalloutManager.extractTaskKeyword(from: "specific impulse exam rocket propulsion de laval nozzle throat") == "rocketpropulsion")
+    }
+    @Test func rocketpropulsionRoutingFromTsiolkovsky() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tsiolkovsky rocket equation class exam delta-v propulsion staging") == "rocketpropulsion")
+    }
+    @Test func rocketpropulsionFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "combustion class exam premixed flame equivalence ratio nox formation diffusion") != "rocketpropulsion")
+    }
+    @Test @MainActor func rocketpropulsionCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "rocketpropulsion", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "rocketpropulsion", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "rocketpropulsion", tier: 3).isEmpty)
+    }
+    @Test @MainActor func rocketpropulsionTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "rocketpropulsion", tier: 1).count >= 4)
+    }
+    @Test @MainActor func rocketpropulsionTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "rocketpropulsion", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - reliabilityengineering
+    @Test func reliabilityengineeringRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "reliability engineering class exam mtbf weibull distribution bathtub curve fmea") == "reliabilityengineering")
+    }
+    @Test func reliabilityengineeringRoutingFromWeibull() {
+        #expect(CalloutManager.extractTaskKeyword(from: "weibull distribution class exam reliability failure rate shape parameter") == "reliabilityengineering")
+    }
+    @Test func reliabilityengineeringRoutingFromFMEA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fmea reliability engineering analysis exam failure mode effects criticality") == "reliabilityengineering")
+    }
+    @Test func reliabilityengineeringFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "industrial engineering class exam operations research lean manufacturing six sigma") != "reliabilityengineering")
+    }
+    @Test @MainActor func reliabilityengineeringCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "reliabilityengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "reliabilityengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "reliabilityengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func reliabilityengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "reliabilityengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func reliabilityengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "reliabilityengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1139)
+    @Test func calloutTemplatesCountAtLeast1139() {
+        #expect(SuggestedSessionTemplates.all.count >= 1139, "template catalog must have ≥1139 entries after metamaterials/nondestructivetesting/optimalcontrol/rocketpropulsion/reliabilityengineering additions")
     }
 }
