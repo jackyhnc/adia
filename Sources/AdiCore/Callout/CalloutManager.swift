@@ -1800,6 +1800,31 @@ public final class CalloutManager {
             || lower.contains("action principle") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("mechanics") || lower.contains("physics")) {
             return "classicalmechanics"
         }
+        // nuclearreactorphysics — positioned BEFORE nuclearphysics so reactor physics class/exam
+        // (neutron transport, criticality, 4-factor formula, reactor kinetics, control rod worth,
+        // xenon poisoning) route to a dedicated pool distinct from particle/nuclear fundamentals.
+        if lower.contains("reactor physics class") || lower.contains("reactor physics course")
+            || lower.contains("reactor physics exam") || lower.contains("reactor physics homework")
+            || lower.contains("nuclear reactor class") || lower.contains("nuclear reactor course")
+            || lower.contains("nuclear reactor physics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("neutron transport") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor") || lower.contains("nuclear"))
+            || lower.contains("criticality analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("nuclear") || lower.contains("reactor"))
+            || lower.contains("nuclear criticality") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor"))
+            || lower.contains("four-factor formula") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor") || lower.contains("nuclear"))
+            || lower.contains("4-factor formula") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor"))
+            || lower.contains("six-factor formula") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor"))
+            || lower.contains("reactor kinetics") && (lower.contains("class") || lower.contains("exam") || lower.contains("nuclear"))
+            || lower.contains("delayed neutron") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor") || lower.contains("kinetics"))
+            || lower.contains("control rod worth") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor") || lower.contains("nuclear"))
+            || lower.contains("xenon poisoning") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor"))
+            || lower.contains("xenon transient") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor"))
+            || lower.contains("reactor core design") && (lower.contains("class") || lower.contains("exam") || lower.contains("nuclear"))
+            || lower.contains("diffusion theory") && (lower.contains("reactor") || lower.contains("nuclear")) && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("group diffusion") && (lower.contains("class") || lower.contains("exam") || lower.contains("reactor"))
+            || lower.contains("multiplication factor") && lower.contains("reactor") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("neutron flux") && (lower.contains("reactor") || lower.contains("nuclear")) && (lower.contains("class") || lower.contains("exam")) {
+            return "nuclearreactorphysics"
+        }
         // nuclearphysics — positioned BEFORE optics/experimentalphysics so nuclear physics
         // class/exam, radioactive decay, fission/fusion energetics, and nuclear structure
         // coursework route to a dedicated pool. "nuclear fusion + plasma" stays in plasmaphysics.
@@ -1869,6 +1894,29 @@ public final class CalloutManager {
             || lower.contains("photonics class") || lower.contains("photonics course") || lower.contains("photonics exam")
             || lower.contains("photonic device") && (lower.contains("class") || lower.contains("course") || lower.contains("design") || lower.contains("exam")) {
             return "optics"
+        }
+        // optoelectronics — positioned BEFORE photonics so optoelectronics class/exam
+        // (LED physics, photodetector, laser diode, optical fiber coupling, EL/PL spectroscopy,
+        // semiconductor band gaps) route to a dedicated pool distinct from photonics/electricalengineering.
+        if lower.contains("optoelectronics class") || lower.contains("optoelectronics course")
+            || lower.contains("optoelectronics exam") || lower.contains("optoelectronics lab")
+            || lower.contains("optoelectronics notes") || lower.contains("optoelectronics homework")
+            || lower.contains("optoelectronics assignment") || lower.contains("optoelectronics textbook")
+            || lower.contains("led physics") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics"))
+            || lower.contains("light emitting diode") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics") || lower.contains("semiconductor"))
+            || lower.contains("photodetector") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics") || lower.contains("semiconductor"))
+            || lower.contains("photodiode") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics") || lower.contains("semiconductor"))
+            || lower.contains("laser diode") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics") || lower.contains("semiconductor"))
+            || lower.contains("electroluminescence") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics"))
+            || lower.contains("photoluminescence") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics") || lower.contains("semiconductor"))
+            || lower.contains("optical fiber coupling") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics"))
+            || lower.contains("semiconductor band gap") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics"))
+            || lower.contains("semiconductor band structure") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics"))
+            || lower.contains("solar cell") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics") || lower.contains("semiconductor") || lower.contains("photovoltaic"))
+            || lower.contains("photovoltaic") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics") || lower.contains("semiconductor"))
+            || lower.contains("optical gain") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics") || lower.contains("laser"))
+            || lower.contains("quantum well laser") && (lower.contains("class") || lower.contains("exam") || lower.contains("optoelectronics")) {
+            return "optoelectronics"
         }
         // photonics — positioned AFTER optics and BEFORE experimentalphysics so photonics
         // class/exam terms (fiber optics, laser physics, nonlinear optics, integrated photonics,
@@ -3099,6 +3147,29 @@ public final class CalloutManager {
             || lower.contains("electromagnetic field tensor") && (lower.contains("class") || lower.contains("exam") || lower.contains("electrodynamics")) {
             return "electromagnetictheory"
         }
+        // computationalelectromagnetics — positioned BEFORE electromagnetism so CEM class/exam
+        // (FDTD, FEM for EM, MoM, HFSS/CST, antenna simulation) route to a dedicated pool
+        // distinct from classical E&M theory in the electromagnetism branch.
+        if lower.contains("computational electromagnetics class") || lower.contains("computational electromagnetics course")
+            || lower.contains("computational electromagnetics exam") || lower.contains("computational electromagnetics homework")
+            || lower.contains("computational electrodynamics class") || lower.contains("computational electrodynamics course")
+            || lower.contains("computational electrodynamics exam")
+            || lower.contains("fdtd") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation") || lower.contains("electromagnetics"))
+            || lower.contains("finite difference time domain") && (lower.contains("class") || lower.contains("exam") || lower.contains("electromagnetics"))
+            || lower.contains("method of moments") && (lower.contains("class") || lower.contains("exam") || lower.contains("electromagnetics") || lower.contains("antenna"))
+            || lower.contains("mom") && lower.contains("electromagnetics") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("hfss") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation") || lower.contains("electromagnetics") || lower.contains("antenna"))
+            || lower.contains("cst microwave") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation"))
+            || lower.contains("cst studio") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation") || lower.contains("electromagnetics"))
+            || lower.contains("antenna simulation") && (lower.contains("class") || lower.contains("exam") || lower.contains("electromagnetics"))
+            || lower.contains("fem electromagnetics") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("finite element method") && lower.contains("electromagnetics") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("numerical electromagnetics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("cem class") || lower.contains("cem course") || lower.contains("cem exam")
+            || lower.contains("computational em class") || lower.contains("computational em course") || lower.contains("computational em exam")
+            || lower.contains("radar cross section") && (lower.contains("class") || lower.contains("exam") || lower.contains("electromagnetics") || lower.contains("simulation")) {
+            return "computationalelectromagnetics"
+        }
         // electromagnetism — positioned BEFORE electricalengineering so physics E&M courses
         // (Gauss/Ampere/Faraday/Maxwell in a physics context) get a dedicated pool. EE-specific
         // signals (circuits, FPGA, signal processing) remain in electricalengineering.
@@ -3736,6 +3807,30 @@ public final class CalloutManager {
             || lower.contains("impact test") && lower.contains("materials") && (lower.contains("class") || lower.contains("lab") || lower.contains("course")) {
             return "materialstesting"
         }
+        // magneticresonance — positioned BEFORE biomedicalengineering so MRI/NMR class/exam
+        // (Bloch equations, spin-echo, pulse sequences, k-space, T1/T2 relaxation) route to a
+        // dedicated pool distinct from medicalimaging in biomedicalengineering.
+        if lower.contains("magnetic resonance imaging class") || lower.contains("magnetic resonance imaging course")
+            || lower.contains("magnetic resonance imaging exam") || lower.contains("mri class")
+            || lower.contains("mri course") || lower.contains("mri exam") || lower.contains("mri homework")
+            || lower.contains("mri physics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("nmr class") || lower.contains("nmr course") || lower.contains("nmr exam")
+            || lower.contains("nmr spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("nuclear magnetic resonance") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("bloch equations") && (lower.contains("class") || lower.contains("exam") || lower.contains("mri") || lower.contains("nmr"))
+            || lower.contains("spin echo") && (lower.contains("class") || lower.contains("exam") || lower.contains("mri") || lower.contains("nmr") || lower.contains("pulse"))
+            || lower.contains("spin-echo") && (lower.contains("class") || lower.contains("exam") || lower.contains("mri") || lower.contains("nmr"))
+            || lower.contains("pulse sequence") && (lower.contains("class") || lower.contains("exam") || lower.contains("mri") || lower.contains("nmr") || lower.contains("magnetic resonance"))
+            || lower.contains("pulse sequences") && (lower.contains("class") || lower.contains("exam") || lower.contains("mri") || lower.contains("nmr"))
+            || lower.contains("k-space") && (lower.contains("class") || lower.contains("exam") || lower.contains("mri") || lower.contains("magnetic resonance"))
+            || lower.contains("t1 relaxation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mri") || lower.contains("nmr"))
+            || lower.contains("t2 relaxation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mri") || lower.contains("nmr"))
+            || lower.contains("spin relaxation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mri") || lower.contains("nmr"))
+            || lower.contains("gradient echo") && (lower.contains("class") || lower.contains("exam") || lower.contains("mri"))
+            || lower.contains("rf pulse") && (lower.contains("class") || lower.contains("exam") || lower.contains("mri") || lower.contains("nmr") || lower.contains("magnetic resonance"))
+            || lower.contains("larmor frequency") && (lower.contains("class") || lower.contains("exam") || lower.contains("mri") || lower.contains("nmr") || lower.contains("magnetic resonance")) {
+            return "magneticresonance"
+        }
         // biomedicalengineering — BEFORE engineering; biomechanics, biomaterials, bioinstrumentation,
         // medical device design. "biomedical engineering" removed from generic engineering below.
         if lower.contains("biomedical engineering class") || lower.contains("biomedical engineering course")
@@ -3890,6 +3985,26 @@ public final class CalloutManager {
             || lower.contains("entropy") && lower.contains("stat mech")
             || lower.contains("phase transition") && (lower.contains("stat mech") || lower.contains("statistical mechanics")) {
             return "statisticalmechanics"
+        }
+        // thermoelectrics — positioned BEFORE thermodynamics so thermoelectric class/exam
+        // (Seebeck coefficient, Peltier effect, ZT figure of merit, thermoelectric generator/cooler)
+        // route to a dedicated pool distinct from thermodynamics/electricalengineering.
+        if lower.contains("thermoelectric") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("assignment"))
+            || lower.contains("seebeck coefficient") && (lower.contains("class") || lower.contains("exam") || lower.contains("thermoelectric"))
+            || lower.contains("seebeck effect") && (lower.contains("class") || lower.contains("exam") || lower.contains("thermoelectric"))
+            || lower.contains("peltier effect") && (lower.contains("class") || lower.contains("exam") || lower.contains("thermoelectric"))
+            || lower.contains("peltier cooling") && (lower.contains("class") || lower.contains("exam") || lower.contains("thermoelectric") || lower.contains("module"))
+            || lower.contains("thomson effect") && (lower.contains("class") || lower.contains("exam") || lower.contains("thermoelectric"))
+            || lower.contains("zt figure of merit") && (lower.contains("class") || lower.contains("exam") || lower.contains("thermoelectric"))
+            || lower.contains("figure of merit") && lower.contains("thermoelectric") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("thermoelectric generator") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("thermoelectric cooler") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("teg") && lower.contains("thermoelectric") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("tec") && lower.contains("thermoelectric") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("power factor") && lower.contains("thermoelectric") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("thermal conductivity") && lower.contains("thermoelectric") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("bismuth telluride") && (lower.contains("class") || lower.contains("exam") || lower.contains("thermoelectric")) {
+            return "thermoelectrics"
         }
         // thermodynamics — positioned AFTER chemicalengineering (which owns "thermodynamics class chemical")
         // and BEFORE engineering. Catches standalone engineering/applied thermodynamics class/exam.

@@ -566,6 +566,11 @@ extension CalloutManager {
         case "microfluidics":              return microfluidicsCallouts(tier: tier)
         case "marinehydrodynamics":        return marinehydrodynamicsCallouts(tier: tier)
         case "thermofluidscombustion":     return thermofluidscombustionCallouts(tier: tier)
+        case "nuclearreactorphysics":      return nuclearreactorphysicsCallouts(tier: tier)
+        case "optoelectronics":            return optoelectronicsCallouts(tier: tier)
+        case "magneticresonance":          return magneticresonanceCallouts(tier: tier)
+        case "computationalelectromagnetics": return computationalelectromagneticsCallouts(tier: tier)
+        case "thermoelectrics":            return thermoelectricsCallouts(tier: tier)
         case "quantumfieldtheory":         return quantumfieldtheoryCallouts(tier: tier)
         case "rfengineering":              return rfengineeringCallouts(tier: tier)
         case "fluidmechanics":             return fluidmechanicsCallouts(tier: tier)
@@ -10936,6 +10941,111 @@ extension CalloutManager {
             "CLOSE THIS. open your combustion engineering textbook.",
             "CLOSE THIS. those laminar burning velocity and diffusion flame problems won't solve themselves.",
             "CLOSE THIS. your combustion engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func nuclearreactorphysicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those neutron transport and criticality problems won't solve themselves.",
+            "your reactor physics exam doesn't care that you're scrolling.",
+            "get back to your reactor physics work.",
+            "close this and open your reactor physics textbook.",
+        ]
+        case 2: return [
+            "no one masters reactor physics by scrolling.",
+            "close this and work on your reactor physics assignment.",
+            "those four-factor formula and xenon poisoning problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your reactor physics textbook.",
+            "CLOSE THIS. those criticality analysis and reactor kinetics problems won't solve themselves.",
+            "CLOSE THIS. your reactor physics exam won't study itself."
+        ]
+        }
+    }
+
+    private func optoelectronicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those LED physics and photodetector problems won't solve themselves.",
+            "your optoelectronics exam doesn't care that you're scrolling.",
+            "get back to your optoelectronics work.",
+            "close this and open your optoelectronics textbook.",
+        ]
+        case 2: return [
+            "no one masters optoelectronics by scrolling.",
+            "close this and work on your optoelectronics assignment.",
+            "those laser diode and semiconductor band gap problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your optoelectronics textbook.",
+            "CLOSE THIS. those photoluminescence and electroluminescence optoelectronics problems won't solve themselves.",
+            "CLOSE THIS. your optoelectronics exam won't study itself."
+        ]
+        }
+    }
+
+    private func magneticresonanceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Bloch equations and pulse sequences won't work themselves out.",
+            "your MRI physics exam doesn't care that you're scrolling.",
+            "get back to your magnetic resonance work.",
+            "close this and open your MRI textbook.",
+        ]
+        case 2: return [
+            "no one masters magnetic resonance by scrolling.",
+            "close this and work on your MRI/NMR assignment.",
+            "those k-space and T1/T2 relaxation problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your magnetic resonance textbook.",
+            "CLOSE THIS. those spin-echo sequences and k-space reconstruction problems won't solve themselves.",
+            "CLOSE THIS. your MRI physics exam won't study itself."
+        ]
+        }
+    }
+
+    private func computationalelectromagneticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "that FDTD simulation won't run itself.",
+            "your computational electromagnetics exam doesn't care that you're scrolling.",
+            "get back to your CEM work.",
+            "close this and open your computational EM textbook.",
+        ]
+        case 2: return [
+            "no one masters computational electromagnetics by scrolling.",
+            "close this and work on your CEM assignment.",
+            "those FDTD grid setup and method-of-moments problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your computational electromagnetics textbook.",
+            "CLOSE THIS. those HFSS simulation and FDTD boundary condition problems won't solve themselves.",
+            "CLOSE THIS. your computational electromagnetics exam won't study itself."
+        ]
+        }
+    }
+
+    private func thermoelectricsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Seebeck coefficient and ZT figure-of-merit problems won't solve themselves.",
+            "your thermoelectrics exam doesn't care that you're scrolling.",
+            "get back to your thermoelectrics work.",
+            "close this and open your thermoelectrics textbook.",
+        ]
+        case 2: return [
+            "no one masters thermoelectrics by scrolling.",
+            "close this and work on your thermoelectrics assignment.",
+            "those Peltier effect and thermoelectric generator efficiency problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your thermoelectrics textbook.",
+            "CLOSE THIS. those ZT figure of merit and Seebeck/Peltier coefficient problems won't solve themselves.",
+            "CLOSE THIS. your thermoelectrics exam won't study itself."
         ]
         }
     }

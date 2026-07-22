@@ -6855,5 +6855,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Power systems assignment completed (load flow converged with per-unit values, fault current computed with sequence networks, Y-bus assembled, power factor corrected to target, or economic dispatch solved with lambda iteration and written solution with bus voltages, fault levels, and numerical results saved to file)",
             preferredDuration: 60 * 60
         ),
+        // nuclearreactorphysics
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study reactor physics for my exam — review neutron transport theory, the four-factor and six-factor formulas, reactor criticality analysis (keff, multiplication factor), reactor kinetics and point kinetics equations, delayed neutron groups and their precursors, xenon and samarium poisoning, control rod worth, group diffusion theory, and neutron flux distribution in a bare reactor",
+            successCriteria: "Reactor physics study session completed (at least two topics reviewed with four-factor formula components identified, keff calculation set up, point kinetics equations written, delayed neutron parameters listed, xenon transient described, control rod reactivity worth estimated, and key derivations saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work on my reactor physics assignment — calculate keff using the four-factor formula for a given fuel-moderator system, solve the point kinetics equations for a step reactivity insertion, estimate xenon poisoning reactivity worth at peak xenon, determine control rod worth using perturbation theory or the modified one-group model, or solve the one-group neutron diffusion equation for a specified reactor geometry",
+            successCriteria: "Reactor physics assignment completed (keff calculated with four-factor components, point kinetics solved numerically or analytically, xenon peak estimated, control rod worth determined, or diffusion equation solved with boundary conditions and neutron flux profile saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // optoelectronics
+        SuggestedTemplate(
+            icon: "light.max",
+            task: "Study optoelectronics for my exam — review semiconductor band gap and band structure, p-n junction physics under forward bias, LED physics (spontaneous emission, quantum efficiency, Shockley equation), photodiode and photodetector operation (responsivity, dark current, noise), laser diode gain spectrum and threshold condition, electroluminescence and photoluminescence spectroscopy, solar cell I-V characteristics, and optical fiber coupling efficiency",
+            successCriteria: "Optoelectronics study session completed (at least two topics reviewed with band gap energy diagram sketched, LED quantum efficiency calculated, photodetector responsivity derived, laser threshold gain condition written, solar cell fill factor defined, EL/PL peak identified, and worked examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "light.max",
+            task: "Work on my optoelectronics assignment — calculate the quantum efficiency and radiant flux for a given LED operating point, determine the responsivity and noise-equivalent power for a specified photodiode, find the threshold current density for a double-heterostructure laser diode, analyze the spectral output of a semiconductor using photoluminescence data, or compute the short-circuit current and power conversion efficiency for a solar cell under AM1.5 illumination",
+            successCriteria: "Optoelectronics assignment completed (LED quantum efficiency computed, photodiode responsivity and NEP calculated, laser threshold current estimated, PL spectrum analyzed for band gap, or solar cell efficiency determined with I-V characteristics, fill factor, and written numerical solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // magneticresonance
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Study MRI physics for my exam — review nuclear magnetic resonance fundamentals, Larmor frequency and precession, Bloch equations and magnetization dynamics, spin-echo and gradient-echo pulse sequences, k-space trajectory and image reconstruction via inverse Fourier transform, T1 and T2 relaxation mechanisms, slice selection and frequency/phase encoding, and signal-to-noise ratio in MRI",
+            successCriteria: "MRI physics study session completed (at least two topics reviewed with Larmor frequency calculated, Bloch equation solution written, spin-echo timing diagram drawn, k-space trajectory sketched, T1/T2 relaxation curves labeled, encoding gradient derived, and key equations saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path.ecg",
+            task: "Work on my MRI/NMR assignment — derive the Bloch equations solution for a spin-echo experiment and calculate the echo amplitude at a given TE/TR, determine the k-space coordinates sampled by a given gradient waveform, compute the Larmor frequency for a specified nucleus and field strength, estimate T1 and T2 from inversion recovery or CPMG data, or reconstruct a 1D image from sampled k-space data using the discrete inverse Fourier transform",
+            successCriteria: "MRI/NMR assignment completed (Bloch equation solution derived with echo amplitude computed, k-space coordinates mapped from gradient waveform, Larmor frequency calculated, T1/T2 fitted from experimental data, or 1D image reconstructed from k-space with timing diagram and written numerical solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // computationalelectromagnetics
+        SuggestedTemplate(
+            icon: "antenna.radiowaves.left.and.right.circle.fill",
+            task: "Study computational electromagnetics for my exam — review FDTD method (Yee grid, Courant stability, absorbing boundary conditions), method of moments (Green's function, basis functions, impedance matrix), finite element method for EM (weak form, tetrahedral meshing, penalty terms), HFSS/CST simulation workflow, numerical dispersion and convergence, antenna radiation pattern computation via near-to-far field transformation, and radar cross section estimation",
+            successCriteria: "CEM study session completed (at least two topics reviewed with FDTD update equations derived, MoM impedance matrix assembled, FEM weak form written, HFSS workflow steps listed, CFL stability condition verified, near-to-far field transform outlined, and key formulas saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "antenna.radiowaves.left.and.right.circle.fill",
+            task: "Work on my computational electromagnetics assignment — implement or analyze a 1D FDTD simulation for a specified pulse propagation problem and verify numerical dispersion, set up the method-of-moments impedance matrix for a wire dipole antenna and compute the current distribution, apply the FEM weak form to a waveguide eigenvalue problem, use HFSS or CST to simulate an antenna and extract S11 and radiation pattern, or estimate the radar cross section of a canonical scatterer",
+            successCriteria: "CEM assignment completed (FDTD simulation verified with dispersion analysis, MoM matrix assembled with current distribution computed, FEM eigenvalue solved, antenna S11 and pattern extracted from simulation, or RCS estimated with near-to-far field transform and written solution with field plots saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // thermoelectrics
+        SuggestedTemplate(
+            icon: "thermometer.and.lightning.bolt",
+            task: "Study thermoelectrics for my exam — review the Seebeck effect and Seebeck coefficient, Peltier effect and Peltier heat, Thomson effect, thermoelectric figure of merit ZT and its components (electrical conductivity, Seebeck coefficient, thermal conductivity), thermoelectric generator efficiency and power output, thermoelectric cooler COP and maximum temperature difference, Wiedemann-Franz law, bismuth telluride and other thermoelectric materials, and module characterization",
+            successCriteria: "Thermoelectrics study session completed (at least two topics reviewed with Seebeck voltage calculated, ZT expression written with all three transport coefficients, TEG efficiency formula applied, TEC COP derived, Wiedemann-Franz relation used, material properties compared, and worked examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "thermometer.and.lightning.bolt",
+            task: "Work on my thermoelectrics assignment — calculate the open-circuit Seebeck voltage and maximum power output for a thermoelectric generator at specified hot/cold-side temperatures, determine the coefficient of performance and maximum temperature difference for a thermoelectric cooler at a given current, compute ZT from measured electrical conductivity, Seebeck coefficient, and thermal conductivity data, or compare efficiency of two thermoelectric materials using their ZT values at operating temperature",
+            successCriteria: "Thermoelectrics assignment completed (Seebeck voltage and TEG power output calculated, TEC COP and ΔTmax determined, ZT computed from measured transport data, or material efficiency compared with ZT analysis, Carnot efficiency reference, and written numerical solution with parameter table saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

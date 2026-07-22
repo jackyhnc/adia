@@ -7065,8 +7065,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func powersystemsAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("power systems") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1061)
-    @Test func templateCountAtLeast1061() {
-        #expect(SuggestedSessionTemplates.all.count >= 1061, "template catalog must have ≥1061 entries after quantumfieldtheory/rfengineering/fluidmechanics/heattransfer/powersystems additions")
+    // MARK: - nuclearreactorphysics templates
+    @Test func nuclearreactorphysicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("reactor physics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func nuclearreactorphysicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("reactor physics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - optoelectronics templates
+    @Test func optoelectronicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("optoelectronics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func optoelectronicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("optoelectronics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - magneticresonance templates
+    @Test func magneticresonanceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mri") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func magneticresonanceAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mri") && ($0.task.lowercased().contains("assignment") || $0.task.lowercased().contains("nmr")) })
+    }
+    // MARK: - computationalelectromagnetics templates
+    @Test func computationalelectromagneticsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computational electromagnetics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func computationalelectromagneticsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computational electromagnetics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - thermoelectrics templates
+    @Test func thermoelectricsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("thermoelectrics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func thermoelectricsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("thermoelectrics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1071)
+    @Test func templateCountAtLeast1071() {
+        #expect(SuggestedSessionTemplates.all.count >= 1071, "template catalog must have ≥1071 entries after nuclearreactorphysics/optoelectronics/magneticresonance/computationalelectromagnetics/thermoelectrics additions")
     }
 }
