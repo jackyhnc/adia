@@ -6790,5 +6790,70 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Combustion engineering assignment completed (adiabatic flame temperature calculated, equivalence ratio and product composition determined, premixed flame structure analyzed, NOx estimate computed, or flammability safety analysis completed with species balance, thermochemical data, reaction pathway, and written solution saved to file)",
             preferredDuration: 60 * 60
         ),
+        // quantumfieldtheory
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study quantum field theory for my exam — review canonical quantization of scalar fields, Feynman diagram rules for QED, propagators (Feynman, retarded, advanced), S-matrix and LSZ reduction formula, one-loop renormalization, gauge invariance and Ward identities, path integral formulation, and Wick's theorem",
+            successCriteria: "QFT study session completed (at least two topics reviewed with Feynman rules derived, S-matrix element computed, propagator expressions written, renormalization counterterms identified, LSZ formula applied, and key derivations saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Work on my quantum field theory problem set — apply Feynman rules to compute a scattering amplitude at tree level, evaluate a one-loop diagram using dimensional regularization, derive the LSZ reduction formula for a given field, compute the Feynman propagator via path integral, or demonstrate gauge invariance for a given interaction",
+            successCriteria: "QFT problem set completed (scattering amplitude computed with Feynman rules, loop diagram evaluated with counterterms, propagator derived, or gauge invariance demonstrated with Lagrangian density, momentum-space expressions, and written solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // rfengineering
+        SuggestedTemplate(
+            icon: "antenna.radiowaves.left.and.right",
+            task: "Study RF engineering for my exam — review transmission line theory (wave equations, reflection coefficient, VSWR), Smith chart impedance transformations, S-parameter definitions and measurement, impedance matching networks (stub tuning, quarter-wave transformer), two-port network analysis, antenna fundamentals (radiation pattern, gain, directivity), and waveguide modes",
+            successCriteria: "RF engineering study session completed (at least two topics reviewed with transmission line equations derived, Smith chart impedance plotted, S-parameter matrix constructed, matching network designed, antenna directivity computed, and key formulas saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "antenna.radiowaves.left.and.right",
+            task: "Work on my RF engineering assignment — design an impedance matching network using stub tuning or quarter-wave transformer, compute S-parameters for a given two-port circuit, use the Smith chart to find the reflection coefficient and VSWR, analyze a waveguide for its dominant mode cutoff frequency, or compute the far-field radiation pattern and gain for a dipole or patch antenna",
+            successCriteria: "RF engineering assignment completed (matching network designed, S-parameters computed, Smith chart transformation completed, waveguide mode analyzed, or antenna gain and pattern calculated with transmission line equations, network matrix, and written solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // fluidmechanics
+        SuggestedTemplate(
+            icon: "wind",
+            task: "Study fluid mechanics for my exam — review fluid statics (pressure distribution, manometers, buoyancy), continuity and Bernoulli equations, Reynolds number and flow regimes, Navier-Stokes equations, pipe flow (Darcy-Weisbach, Moody chart, minor losses), boundary layer theory (Blasius, displacement thickness), and drag and lift on submerged bodies",
+            successCriteria: "Fluid mechanics study session completed (at least two topics reviewed with Bernoulli application, pipe friction factor from Moody chart, boundary layer thickness derivation, drag coefficient lookup, Reynolds number calculation, and worked examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "wind",
+            task: "Work on my fluid mechanics assignment — analyze flow in a pipe network using the Darcy-Weisbach equation and Moody chart, apply the Bernoulli equation and continuity to a nozzle or venturi problem, estimate boundary layer thickness on a flat plate using Blasius solution, compute drag force on a cylinder or sphere, or solve a fluid statics problem with manometer or buoyancy analysis",
+            successCriteria: "Fluid mechanics assignment completed (pipe network solved with friction factors, Bernoulli application completed, boundary layer thickness estimated, drag computed, or statics problem solved with free-body diagram, pressure distribution, and written numerical solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // heattransfer
+        SuggestedTemplate(
+            icon: "thermometer.sun.fill",
+            task: "Study heat transfer for my exam — review Fourier's law and thermal resistance networks, convection heat transfer coefficient (Newton's law, Nusselt correlation), radiation (Stefan-Boltzmann, emissivity, view factors), fin analysis (fin efficiency, extended surface), heat exchanger design (LMTD method, NTU-effectiveness), and transient conduction (Biot number, lumped capacitance)",
+            successCriteria: "Heat transfer study session completed (at least two topics reviewed with thermal resistance calculation, Nusselt correlation application, fin efficiency derivation, view factor determination, LMTD calculation, Biot number check, and worked examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "thermometer.sun.fill",
+            task: "Work on my heat transfer assignment — design a fin array to achieve a target heat dissipation rate, size a shell-and-tube heat exchanger using the LMTD or NTU-effectiveness method, compute the transient temperature response of a lumped-capacitance body, determine view factors and radiation heat exchange between surfaces, or analyze combined convection and conduction through a composite wall",
+            successCriteria: "Heat transfer assignment completed (fin array designed with efficiency and total heat rate, heat exchanger sized with LMTD or NTU calculation, transient response computed, radiation exchange determined, or composite wall analyzed with thermal resistance network and written numerical solution saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // powersystems
+        SuggestedTemplate(
+            icon: "powerplug.fill",
+            task: "Study power systems engineering for my exam — review per-unit system, bus admittance matrix (Y-bus) formulation, load flow analysis (Gauss-Seidel, Newton-Raphson), power factor correction, symmetrical components (positive/negative/zero sequence), short-circuit fault analysis, transformer equivalent circuits, and economic dispatch",
+            successCriteria: "Power systems study session completed (at least two topics reviewed with per-unit conversion, Y-bus matrix assembled, load flow iteration demonstrated, symmetrical component transformation, fault current computed, economic dispatch Lagrangian solved, and worked examples saved)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "powerplug.fill",
+            task: "Work on my power systems assignment — formulate and solve a load flow problem using Newton-Raphson or Gauss-Seidel iteration, compute fault currents for a three-phase or single-line-to-ground fault using symmetrical components, assemble the Y-bus matrix for a given network, design a capacitor bank for power factor correction to a target value, or solve an economic dispatch problem for a multi-generator system",
+            successCriteria: "Power systems assignment completed (load flow converged with per-unit values, fault current computed with sequence networks, Y-bus assembled, power factor corrected to target, or economic dispatch solved with lambda iteration and written solution with bus voltages, fault levels, and numerical results saved to file)",
+            preferredDuration: 60 * 60
+        ),
     ]
 }

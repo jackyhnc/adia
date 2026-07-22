@@ -7030,8 +7030,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func thermofluidscombustionAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("combustion engineering") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1051)
-    @Test func templateCountAtLeast1051() {
-        #expect(SuggestedSessionTemplates.all.count >= 1051, "template catalog must have ≥1051 entries after corrosionengineering/acousticalengineering/microfluidics/marinehydrodynamics/thermofluidscombustion additions")
+    // MARK: - quantumfieldtheory templates
+    @Test func quantumfieldtheoryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("quantum field theory") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func quantumfieldtheoryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("quantum field theory") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - rfengineering templates
+    @Test func rfengineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("rf engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func rfengineeringAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("rf engineering") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - fluidmechanics templates
+    @Test func fluidmechanicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("fluid mechanics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func fluidmechanicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("fluid mechanics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - heattransfer templates
+    @Test func heattransferStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("heat transfer") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func heattransferAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("heat transfer") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - powersystems templates
+    @Test func powersystemsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("power systems") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func powersystemsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("power systems") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1061)
+    @Test func templateCountAtLeast1061() {
+        #expect(SuggestedSessionTemplates.all.count >= 1061, "template catalog must have ≥1061 entries after quantumfieldtheory/rfengineering/fluidmechanics/heattransfer/powersystems additions")
     }
 }

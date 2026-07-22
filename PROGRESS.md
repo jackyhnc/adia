@@ -19818,3 +19818,91 @@ None. Swift toolchain unavailable on Linux container.
   - `corrosionengineering` — corrosion science class (electrochemical corrosion, galvanic series, cathodic protection, corrosion inhibitors, SCC — distinct from materials science)
   - `acousticalengineering` — architectural acoustics class (room acoustics, absorption coefficient, RT60, noise control, sound transmission loss — distinct from acousticsengineering which covers structural acoustics)
 - Template count target: 1041 → 1051 after next 5-domain batch
+
+---
+
+## Run 396 (automated) — 2026-07-18 — 5 new keyword domains: corrosionengineering/acousticalengineering/microfluidics/marinehydrodynamics/thermofluidscombustion (1041→1051 templates)
+
+### What shipped
+
+**5 new keyword domains committed in aa5739c (PROGRESS.md not updated in that commit — recorded here)**
+
+- `corrosionengineering` — electrochemical corrosion, galvanic series, cathodic protection, SCC, Pourbaix diagram (BEFORE materialscience)
+- `acousticalengineering` — architectural acoustics, Sabine RT60, STC rating, NRC, speech intelligibility (BEFORE acousticsengineering)  
+- `microfluidics` — Reynolds number in microchannels, electroosmotic flow, PDMS/soft lithography, droplet microfluidics (BEFORE bioprocessengineering)
+- `marinehydrodynamics` — added mass, radiation/diffraction, strip theory, propeller KT/KQ (BEFORE navalarchitecture)
+- `thermofluidscombustion` — combustion stoichiometry, adiabatic flame temperature, premixed/diffusion flames, NOx formation (AFTER chemicalengineering)
+
+**Template catalog: 1041 → 1051**
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+---
+
+## Run 397 (automated) — 2026-07-22 — 5 new keyword domains: quantumfieldtheory/rfengineering/fluidmechanics/heattransfer/powersystems (1051→1061 templates)
+
+### What shipped
+
+**5 new keyword domains:**
+
+**New keyword domain — quantumfieldtheory:**
+- Branch positioned BEFORE `quantummechanics`. QFT class, Feynman diagrams, QED/QCD, renormalization, path integrals, LSZ, gauge invariance, Wick contractions.
+- Catches: quantum field theory class/course/exam/homework, qft class/course/exam, Feynman diagram + class/exam/qft, quantum electrodynamics class/course/exam, QED class/exam, quantum chromodynamics + class/exam, renormalization + class/exam/qft, path integral formulation + class/exam/qft, gauge invariance + class/exam/qft, Feynman propagator + class/exam/qft, Wick contraction + class/exam/qft, Lagrangian density + class/exam/field theory, S-matrix + class/exam/qft, LSZ reduction + class/exam/qft.
+- `quantumfieldtheoryCallouts(tier:)` 4/3/3: "those Feynman diagrams and renormalization integrals won't do themselves." / "no one masters quantum field theory by scrolling." / "CLOSE THIS. those Feynman diagrams and renormalization group equations won't solve themselves."
+- 2 templates: study exam (canonical quantization, Feynman rules QED, propagators, S-matrix, LSZ, one-loop renormalization, gauge invariance, path integral, Wick's theorem, 60 min) + assignment (tree-level scattering amplitude, one-loop dimensional regularization, LSZ derivation, Feynman propagator via path integral, gauge invariance demonstration, 60 min)
+
+**New keyword domain — rfengineering:**
+- Branch positioned BEFORE `electricalengineering`. RF/microwave engineering, transmission lines, S-parameters, Smith chart, impedance matching, antenna theory, waveguides.
+- Catches: rf engineering class/course/exam, microwave engineering class/course/exam/lab/homework, transmission line + class/exam/rf/microwave, S-parameter(s) + class/exam/rf/microwave, Smith chart + class/exam/rf/microwave, impedance matching + class/exam/rf/microwave, antenna theory/design + class/exam/rf, waveguide + class/exam/rf/microwave (not photonic), VSWR + class/exam/rf/microwave, reflection coefficient + rf/microwave/transmission line + class/exam, RF amplifier + class/exam/design, LNA + class/exam/rf, scattering parameters + class/exam/rf/microwave, radiation pattern + class/exam/antenna/rf.
+- `rfengineeringCallouts(tier:)` 4/3/3: "those S-parameters and Smith chart problems won't solve themselves." / "no one masters RF engineering by scrolling." / "CLOSE THIS. those Smith chart and antenna design problems won't solve themselves."
+- 2 templates: study exam (transmission line wave equations, Smith chart, S-parameters, stub tuning/quarter-wave transformer, two-port network, antenna gain/directivity, waveguide modes, 60 min) + assignment (impedance matching design, S-parameter computation, Smith chart transformation, waveguide cutoff analysis, antenna radiation pattern/gain, 60 min)
+
+**New keyword domain — fluidmechanics:**
+- Branch positioned AFTER `computationalfluidynamics`, BEFORE `miningengineering`. Guards `!contains("chemical")` to avoid conflicting with chemicalengineering; guards `!contains("computational")` and `!contains("cfd")` to avoid overlapping computationalfluidynamics.
+- Catches: fluid mechanics class/course/exam/lab/homework/notes/textbook (not chemical), fluid dynamics class/course/exam (not computational/not chemical), pipe flow + class/exam/fluid (not chemical), Darcy-Weisbach + class/exam/fluid/pipe, Moody chart/diagram + class/exam/fluid, Bernoulli equation + class/exam/fluid/flow (not chemical), Reynolds number + class/exam/fluid/flow (not chemical/computational), boundary layer + class/exam/fluid/flow (not chemical/computational), Navier-Stokes + class/exam/fluid (not computational/cfd), viscous/potential/turbulent/laminar flow + class/exam/fluid, open channel flow, hydraulics class/course/exam (not chemical).
+- `fluidmechanicsCallouts(tier:)` 4/3/3: "those pipe flow and boundary layer problems won't solve themselves." / "no one masters fluid mechanics by scrolling." / "CLOSE THIS. those Reynolds number and Bernoulli equation problems won't solve themselves."
+- 2 templates: study exam (fluid statics, Bernoulli, Reynolds number, Navier-Stokes, pipe flow/Moody, boundary layer/Blasius, drag/lift, 60 min) + assignment (pipe network Darcy-Weisbach, Bernoulli/continuity nozzle, Blasius boundary layer, drag force, fluid statics, 60 min)
+
+**New keyword domain — heattransfer:**
+- Branch positioned AFTER `fluidmechanics`, BEFORE `miningengineering`. Guards `!contains("chemical")` throughout to avoid chemicalengineering conflict.
+- Catches: heat transfer class/course/exam/lab/homework/notes/textbook (not chemical), conduction/convection/thermal radiation class/exam (in heat/thermal context), fin analysis + class/exam/heat, extended surface + class/exam/heat/fin, Biot number + class/exam/heat/transfer, Fourier's law/number + class/exam/heat/conduction, LMTD method / log mean temperature difference + class/exam/heat/exchanger, NTU method/NTU-effectiveness + class/exam/heat, heat exchanger (not chemical) + class/exam/design/lab, Nusselt number + class/exam/heat/convection, Prandtl number + class/exam/heat (not chemical), Stefan-Boltzmann + class/exam/radiation/heat, view/shape factor + radiation + class/exam/heat, lumped capacitance + class/exam/heat/transient, thermal boundary layer + class/exam/heat/convection.
+- `heattransferCallouts(tier:)` 4/3/3: "those fin analysis and heat exchanger problems won't solve themselves." / "no one masters heat transfer by scrolling." / "CLOSE THIS. those Biot number and convection coefficient problems won't solve themselves."
+- 2 templates: study exam (Fourier's law, thermal resistance, convection/Nusselt, radiation/view factors, fin efficiency, LMTD/NTU-effectiveness, Biot number/lumped capacitance, 60 min) + assignment (fin array design, heat exchanger sizing LMTD/NTU, transient lumped capacitance, radiation view factors, composite wall, 60 min)
+
+**New keyword domain — powersystems:**
+- Branch positioned AFTER `rfengineering`, BEFORE `electricalengineering`. Catches power systems (not power electronics) coursework.
+- Catches: power systems class/course/exam/lab/homework/assignment, power systems engineering + class/course/exam, power engineering class/course/exam/homework, load flow/power flow + class/exam/power/analysis, bus admittance / Y-bus / Ybus + class/exam/power, per-unit system + class/exam/power, power factor correction + class/exam/power, fault analysis + class/exam/power/electrical, symmetrical components + class/exam/power, zero/positive/negative sequence + class/exam/power/fault, swing bus + class/exam/power, power transformer + class/exam/power systems/lab, transmission line parameter + class/exam/power, power grid + class/exam/power systems, economic dispatch + class/exam/power/optimization, optimal power flow + class/exam/power, Newton-Raphson/Gauss-Seidel power + class/exam/flow.
+- `powersystemsCallouts(tier:)` 4/3/3: "those load flow and fault analysis problems won't solve themselves." / "no one masters power systems by scrolling." / "CLOSE THIS. those load flow Newton-Raphson and symmetrical component problems won't solve themselves."
+- 2 templates: study exam (per-unit system, Y-bus, load flow, power factor correction, symmetrical components, fault analysis, transformer equivalent, economic dispatch, 60 min) + assignment (Newton-Raphson/Gauss-Seidel load flow, fault current symmetrical components, Y-bus assembly, capacitor bank power factor correction, economic dispatch lambda iteration, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +49 @Test functions (5 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains + 1 count guard ≥1061)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + 1 count guard ≥1061)
+
+**Template catalog: 1051 → 1061**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `quantumfieldtheory` fires at line 1709, BEFORE quantummechanics ✓
+- `rfengineering` fires at line 3237, BEFORE electricalengineering ✓
+- `powersystems` fires at line 3267, BEFORE electricalengineering (after rfengineering) ✓
+- `fluidmechanics` fires at line 3947, BEFORE miningengineering/engineering ✓
+- `heattransfer` fires at line 3980, BEFORE miningengineering/engineering (after fluidmechanics) ✓
+- Brace balance: CalloutManager.swift 580/580 ✓; CalloutMessages.swift 1105/1105 ✓; SuggestedSessionTemplates.swift 6/6 ✓
+- Template count: 1061 confirmed (grep -c "preferredDuration:" = 1061) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases in CalloutMessages.swift ✓
+- 5 new private callout pool functions in CalloutMessages.swift ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `nucleardynamics` — reactor dynamics class (point kinetics, xenon oscillations, reactivity feedback, transient analysis, RELAP — distinct from nuclearengineering which covers design/reactor physics)
+  - `condensedmatterphysics` — condensed matter class (band theory, phonons, Fermi liquid, superconductivity, magnetism, Bloch theorem — distinct from solidstatephysics which covers intro-level content)
+  - `semiconductordevices` — semiconductor device physics (p-n junction, MOSFET I-V, BJT Ebers-Moll, carrier transport, depletion approximation — distinct from electricalengineering which covers circuits)
+  - `photovoltaicsenergy` — photovoltaics and solar cell course (heterojunction solar cell, fill factor, short-circuit current, bandgap engineering, perovskite cells — distinct from renewableenergy which covers systems)
+  - `biophysicslab` — experimental biophysics (optical tweezers, AFM, patch clamp, FRET, single-molecule techniques — distinct from biophysics which covers theory)
+- Template count target: 1061 → 1071 after next 5-domain batch

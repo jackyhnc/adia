@@ -566,6 +566,11 @@ extension CalloutManager {
         case "microfluidics":              return microfluidicsCallouts(tier: tier)
         case "marinehydrodynamics":        return marinehydrodynamicsCallouts(tier: tier)
         case "thermofluidscombustion":     return thermofluidscombustionCallouts(tier: tier)
+        case "quantumfieldtheory":         return quantumfieldtheoryCallouts(tier: tier)
+        case "rfengineering":              return rfengineeringCallouts(tier: tier)
+        case "fluidmechanics":             return fluidmechanicsCallouts(tier: tier)
+        case "heattransfer":               return heattransferCallouts(tier: tier)
+        case "powersystems":               return powersystemsCallouts(tier: tier)
         case "programminglanguages":       return programminglanguagesCallouts(tier: tier)
         case "compilerdesign":             return compilerdesignCallouts(tier: tier)
         case "computergraphics":           return computergraphicsCallouts(tier: tier)
@@ -11981,6 +11986,111 @@ extension CalloutManager {
             "CLOSE THIS. open your coastal engineering textbook.",
             "CLOSE THIS. those wave runup and longshore transport calculations won't solve themselves.",
             "CLOSE THIS. your coastal engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func quantumfieldtheoryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Feynman diagrams and renormalization integrals won't do themselves.",
+            "your QFT exam doesn't care that you're scrolling.",
+            "get back to your quantum field theory work.",
+            "close this and open your QFT textbook.",
+        ]
+        case 2: return [
+            "no one masters quantum field theory by scrolling.",
+            "close this and work on your QFT problem set.",
+            "those path integrals and gauge invariance derivations need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your quantum field theory textbook.",
+            "CLOSE THIS. those Feynman diagrams and renormalization group equations won't solve themselves.",
+            "CLOSE THIS. your QFT exam won't study itself."
+        ]
+        }
+    }
+
+    private func rfengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those S-parameters and Smith chart problems won't solve themselves.",
+            "your RF engineering exam doesn't care that you're scrolling.",
+            "get back to your microwave engineering work.",
+            "close this and open your RF engineering textbook.",
+        ]
+        case 2: return [
+            "no one masters RF engineering by scrolling.",
+            "close this and work on your microwave engineering assignment.",
+            "those transmission line and impedance matching problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your RF engineering textbook.",
+            "CLOSE THIS. those Smith chart and antenna design problems won't solve themselves.",
+            "CLOSE THIS. your microwave engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func fluidmechanicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those pipe flow and boundary layer problems won't solve themselves.",
+            "your fluid mechanics exam doesn't care that you're scrolling.",
+            "get back to your fluid mechanics work.",
+            "close this and open your fluid mechanics textbook.",
+        ]
+        case 2: return [
+            "no one masters fluid mechanics by scrolling.",
+            "close this and work on your fluid mechanics assignment.",
+            "those Navier-Stokes and Moody chart problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your fluid mechanics textbook.",
+            "CLOSE THIS. those Reynolds number and Bernoulli equation problems won't solve themselves.",
+            "CLOSE THIS. your fluid mechanics exam won't study itself."
+        ]
+        }
+    }
+
+    private func heattransferCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those fin analysis and heat exchanger problems won't solve themselves.",
+            "your heat transfer exam doesn't care that you're scrolling.",
+            "get back to your heat transfer work.",
+            "close this and open your heat transfer textbook.",
+        ]
+        case 2: return [
+            "no one masters heat transfer by scrolling.",
+            "close this and work on your heat transfer assignment.",
+            "those LMTD and NTU-effectiveness problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your heat transfer textbook.",
+            "CLOSE THIS. those Biot number and convection coefficient problems won't solve themselves.",
+            "CLOSE THIS. your heat transfer exam won't study itself."
+        ]
+        }
+    }
+
+    private func powersystemsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those load flow and fault analysis problems won't solve themselves.",
+            "your power systems exam doesn't care that you're scrolling.",
+            "get back to your power systems engineering work.",
+            "close this and open your power systems textbook.",
+        ]
+        case 2: return [
+            "no one masters power systems by scrolling.",
+            "close this and work on your power systems assignment.",
+            "those per-unit calculations and bus admittance problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your power systems textbook.",
+            "CLOSE THIS. those load flow Newton-Raphson and symmetrical component problems won't solve themselves.",
+            "CLOSE THIS. your power systems engineering exam won't study itself."
         ]
         }
     }

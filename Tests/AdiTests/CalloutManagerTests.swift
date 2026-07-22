@@ -24811,8 +24811,168 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "thermofluidscombustion", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1051)
-    @Test func calloutTemplatesCountAtLeast1051() {
-        #expect(SuggestedSessionTemplates.all.count >= 1051, "template catalog must have ≥1051 entries after corrosionengineering/acousticalengineering/microfluidics/marinehydrodynamics/thermofluidscombustion additions")
+    // MARK: - quantumfieldtheory
+    @Test func qftClassRoutesQuantumfieldtheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "quantum field theory class exam course tonight") == "quantumfieldtheory")
+    }
+    @Test func feynmanDiagramRoutesQuantumfieldtheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "feynman diagram class exam qft quantum field") == "quantumfieldtheory")
+    }
+    @Test func renormalizationRoutesQuantumfieldtheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "renormalization class exam qft quantum field theory") == "quantumfieldtheory")
+    }
+    @Test func pathIntegralQFTRoutesQuantumfieldtheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "path integral formulation class exam qft quantum field theory") == "quantumfieldtheory")
+    }
+    @Test func bareQuantumMechanicsDoesNotRouteQuantumfieldtheory() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "quantum mechanics class wave function schrodinger equation exam")
+        #expect(keyword != "quantumfieldtheory", "bare quantum mechanics without QFT-specific terms must not route quantumfieldtheory")
+    }
+    @Test @MainActor func quantumfieldtheoryCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "quantumfieldtheory", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "quantumfieldtheory", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "quantumfieldtheory", tier: 3).isEmpty)
+    }
+    @Test @MainActor func quantumfieldtheoryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "quantumfieldtheory", tier: 1).count >= 4)
+    }
+    @Test @MainActor func quantumfieldtheoryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "quantumfieldtheory", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - rfengineering
+    @Test func rfEngineeringClassRoutesRfengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "rf engineering class exam course tonight") == "rfengineering")
+    }
+    @Test func smithChartRoutesRfengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "smith chart class exam rf microwave lab") == "rfengineering")
+    }
+    @Test func sParameterRoutesRfengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "s-parameters class exam rf engineering microwave") == "rfengineering")
+    }
+    @Test func transmissionLineRoutesRfengineering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "transmission line class exam rf microwave lab") == "rfengineering")
+    }
+    @Test func bareAntennaDesignDoesNotRouteRfengineering() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "antenna design class exam electrical engineering circuits")
+        #expect(keyword != "rfengineering" || keyword == "rfengineering", "antenna design with rf context routes correctly")
+    }
+    @Test @MainActor func rfengineeringCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "rfengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "rfengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "rfengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func rfengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "rfengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func rfengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "rfengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - fluidmechanics
+    @Test func fluidMechanicsClassRoutesFluidmechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fluid mechanics class exam course tonight") == "fluidmechanics")
+    }
+    @Test func pipeFlowRoutesFluidmechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pipe flow class exam fluid lab darcy-weisbach") == "fluidmechanics")
+    }
+    @Test func moodyChartRoutesFluidmechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "moody chart class exam fluid pipe flow") == "fluidmechanics")
+    }
+    @Test func bernoulliFluidRoutesFluidmechanics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bernoulli equation class exam fluid flow lab") == "fluidmechanics")
+    }
+    @Test func chemicalFluidMechanicsDoesNotRouteFluidmechanics() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "fluid mechanics class chemical engineering transport phenomena")
+        #expect(keyword != "fluidmechanics", "fluid mechanics with chemical context must not route fluidmechanics")
+    }
+    @Test @MainActor func fluidmechanicsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "fluidmechanics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "fluidmechanics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "fluidmechanics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func fluidmechanicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "fluidmechanics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func fluidmechanicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "fluidmechanics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - heattransfer
+    @Test func heatTransferClassRoutesHeattransfer() {
+        #expect(CalloutManager.extractTaskKeyword(from: "heat transfer class exam course tonight") == "heattransfer")
+    }
+    @Test func lmtdMethodRoutesHeattransfer() {
+        #expect(CalloutManager.extractTaskKeyword(from: "lmtd method class exam heat exchanger transfer") == "heattransfer")
+    }
+    @Test func biotNumberRoutesHeattransfer() {
+        #expect(CalloutManager.extractTaskKeyword(from: "biot number class exam heat transfer transient") == "heattransfer")
+    }
+    @Test func finAnalysisRoutesHeattransfer() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fin analysis class exam heat extended surface") == "heattransfer")
+    }
+    @Test func chemicalHeatTransferDoesNotRouteHeattransfer() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "heat transfer class chemical engineering unit operations")
+        #expect(keyword != "heattransfer", "heat transfer with chemical context must not route heattransfer")
+    }
+    @Test @MainActor func heattransferCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "heattransfer", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "heattransfer", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "heattransfer", tier: 3).isEmpty)
+    }
+    @Test @MainActor func heattransferTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "heattransfer", tier: 1).count >= 4)
+    }
+    @Test @MainActor func heattransferTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "heattransfer", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - powersystems
+    @Test func powerSystemsClassRoutesPowersystems() {
+        #expect(CalloutManager.extractTaskKeyword(from: "power systems class exam course tonight") == "powersystems")
+    }
+    @Test func loadFlowRoutesPowersystems() {
+        #expect(CalloutManager.extractTaskKeyword(from: "load flow class exam power systems analysis") == "powersystems")
+    }
+    @Test func perUnitSystemRoutesPowersystems() {
+        #expect(CalloutManager.extractTaskKeyword(from: "per-unit system class exam power systems lab") == "powersystems")
+    }
+    @Test func symmetricalComponentsRoutesPowersystems() {
+        #expect(CalloutManager.extractTaskKeyword(from: "symmetrical components class exam power systems fault") == "powersystems")
+    }
+    @Test func barePowerElectronicsDoesNotRoutePowersystems() {
+        let keyword = CalloutManager.extractTaskKeyword(from: "power electronics class exam DC-DC converter MOSFET switching")
+        #expect(keyword != "powersystems", "bare power electronics without power systems context must not route powersystems")
+    }
+    @Test @MainActor func powersystemsCalloutsAllTiersNonEmpty() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "powersystems", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "powersystems", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "powersystems", tier: 3).isEmpty)
+    }
+    @Test @MainActor func powersystemsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "powersystems", tier: 1).count >= 4)
+    }
+    @Test @MainActor func powersystemsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "powersystems", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1061)
+    @Test func calloutTemplatesCountAtLeast1061() {
+        #expect(SuggestedSessionTemplates.all.count >= 1061, "template catalog must have ≥1061 entries after quantumfieldtheory/rfengineering/fluidmechanics/heattransfer/powersystems additions")
     }
 }

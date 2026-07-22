@@ -1706,6 +1706,33 @@ public final class CalloutManager {
             || lower.contains("quark") && (lower.contains("class") || lower.contains("exam") || lower.contains("particle physics")) {
             return "particlephysics"
         }
+        // quantumfieldtheory — positioned BEFORE quantummechanics so QFT class, Feynman diagram,
+        // QED/QCD, renormalization, and path integral coursework gets a dedicated pool.
+        // Bare "quantum" or "field theory" alone NOT matched.
+        if lower.contains("quantum field theory class") || lower.contains("quantum field theory course")
+            || lower.contains("quantum field theory exam") || lower.contains("quantum field theory homework")
+            || lower.contains("quantum field theory notes") || lower.contains("quantum field theory problem")
+            || lower.contains("qft class") || lower.contains("qft course") || lower.contains("qft exam")
+            || lower.contains("qft homework") || lower.contains("qft problem set")
+            || lower.contains("feynman diagram") && (lower.contains("class") || lower.contains("exam") || lower.contains("qft") || lower.contains("quantum field"))
+            || lower.contains("feynman diagrams") && (lower.contains("class") || lower.contains("exam") || lower.contains("qft") || lower.contains("quantum field"))
+            || lower.contains("quantum electrodynamics class") || lower.contains("quantum electrodynamics course")
+            || lower.contains("quantum electrodynamics exam") || lower.contains("quantum electrodynamics homework")
+            || lower.contains("qed class") && !lower.contains("ue") || lower.contains("qed course") || lower.contains("qed exam") && !lower.contains("ue")
+            || lower.contains("quantum chromodynamics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("qcd"))
+            || lower.contains("qcd class") || lower.contains("qcd course") || lower.contains("qcd exam")
+            || lower.contains("renormalization") && (lower.contains("class") || lower.contains("exam") || lower.contains("qft") || lower.contains("quantum field"))
+            || lower.contains("path integral formulation") && (lower.contains("class") || lower.contains("exam") || lower.contains("qft") || lower.contains("quantum"))
+            || lower.contains("path integral") && (lower.contains("qft") || lower.contains("quantum field theory"))
+            || lower.contains("gauge invariance") && (lower.contains("class") || lower.contains("exam") || lower.contains("qft") || lower.contains("quantum field"))
+            || lower.contains("gauge field") && (lower.contains("class") || lower.contains("exam") || lower.contains("qft"))
+            || lower.contains("feynman propagator") && (lower.contains("class") || lower.contains("exam") || lower.contains("qft"))
+            || lower.contains("wick contraction") && (lower.contains("class") || lower.contains("exam") || lower.contains("qft") || lower.contains("quantum field"))
+            || lower.contains("lagrangian density") && (lower.contains("class") || lower.contains("exam") || lower.contains("qft") || lower.contains("field theory"))
+            || lower.contains("s-matrix") && (lower.contains("class") || lower.contains("exam") || lower.contains("qft") || lower.contains("scattering"))
+            || lower.contains("lsz reduction") && (lower.contains("class") || lower.contains("exam") || lower.contains("qft")) {
+            return "quantumfieldtheory"
+        }
         // quantummechanics — positioned BEFORE experimentalphysics so quantum mechanics and
         // quantum physics coursework gets a dedicated callout pool. "quantum mechanics + computing/
         // programming/algorithm" stays in quantumcomputing (fires much earlier).
@@ -3207,6 +3234,69 @@ public final class CalloutManager {
             || lower.contains("geothermal energy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("renewable")) {
             return "renewableenergy"
         }
+        // rfengineering — positioned BEFORE electricalengineering so RF/microwave engineering class,
+        // transmission line analysis, S-parameters, Smith chart, and antenna theory coursework gets
+        // a dedicated pool. Bare "antenna" or "RF" without class/engineering context NOT matched.
+        if lower.contains("rf engineering class") || lower.contains("rf engineering course")
+            || lower.contains("rf engineering exam") || lower.contains("rf engineering homework")
+            || lower.contains("microwave engineering class") || lower.contains("microwave engineering course")
+            || lower.contains("microwave engineering exam") || lower.contains("microwave engineering lab")
+            || lower.contains("microwave engineering homework") || lower.contains("microwave engineering assignment")
+            || lower.contains("transmission line") && (lower.contains("class") || lower.contains("exam") || lower.contains("rf") || lower.contains("microwave") || lower.contains("lab"))
+            || lower.contains("s-parameter") && (lower.contains("class") || lower.contains("exam") || lower.contains("rf") || lower.contains("microwave"))
+            || lower.contains("s-parameters") && (lower.contains("class") || lower.contains("exam") || lower.contains("rf") || lower.contains("microwave"))
+            || lower.contains("smith chart") && (lower.contains("class") || lower.contains("exam") || lower.contains("rf") || lower.contains("microwave") || lower.contains("lab"))
+            || lower.contains("impedance matching") && (lower.contains("class") || lower.contains("exam") || lower.contains("rf") || lower.contains("microwave"))
+            || lower.contains("matching network") && (lower.contains("class") || lower.contains("exam") || lower.contains("rf") || lower.contains("microwave"))
+            || lower.contains("antenna theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("rf") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("antenna design") && (lower.contains("class") || lower.contains("exam") || lower.contains("rf") || lower.contains("course"))
+            || lower.contains("waveguide") && (lower.contains("class") || lower.contains("exam") || lower.contains("rf") || lower.contains("microwave")) && !lower.contains("photonic") && !lower.contains("optical")
+            || lower.contains("voltage standing wave ratio") && (lower.contains("class") || lower.contains("exam") || lower.contains("rf"))
+            || word("vswr") && (lower.contains("class") || lower.contains("exam") || lower.contains("rf") || lower.contains("microwave"))
+            || lower.contains("reflection coefficient") && (lower.contains("rf") || lower.contains("microwave") || lower.contains("transmission line")) && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("rf amplifier") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("design"))
+            || lower.contains("low noise amplifier") && (lower.contains("class") || lower.contains("exam") || lower.contains("rf") || lower.contains("microwave"))
+            || word("lna") && (lower.contains("class") || lower.contains("exam") || lower.contains("rf") || lower.contains("microwave"))
+            || lower.contains("power amplifier") && lower.contains("rf") && (lower.contains("class") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("filter design") && (lower.contains("rf") || lower.contains("microwave")) && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("mixer circuit") && (lower.contains("rf") || lower.contains("microwave")) && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("scattering parameters") && (lower.contains("class") || lower.contains("exam") || lower.contains("rf") || lower.contains("microwave"))
+            || lower.contains("radiation pattern") && (lower.contains("class") || lower.contains("exam") || lower.contains("antenna") || lower.contains("rf")) {
+            return "rfengineering"
+        }
+        // powersystems — positioned BEFORE electricalengineering so power systems engineering class,
+        // load flow analysis, per-unit system, and fault analysis coursework routes here.
+        // "power electronics" stays in powerelectronics (fires earlier).
+        // "renewable energy" stays in renewableenergy (fires earlier).
+        if lower.contains("power systems class") || lower.contains("power systems course")
+            || lower.contains("power systems exam") || lower.contains("power systems lab")
+            || lower.contains("power systems homework") || lower.contains("power systems assignment")
+            || lower.contains("power systems engineering") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("power engineering class") || lower.contains("power engineering course")
+            || lower.contains("power engineering exam") || lower.contains("power engineering homework")
+            || lower.contains("load flow") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("analysis"))
+            || lower.contains("power flow") && (lower.contains("class") || lower.contains("exam") || lower.contains("power systems") || lower.contains("analysis"))
+            || lower.contains("bus admittance") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("matrix"))
+            || lower.contains("y-bus") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("systems"))
+            || lower.contains("ybus") && (lower.contains("class") || lower.contains("exam") || lower.contains("power"))
+            || lower.contains("per-unit system") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("lab"))
+            || lower.contains("per unit system") && (lower.contains("class") || lower.contains("exam") || lower.contains("power"))
+            || lower.contains("power factor correction") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("lab"))
+            || lower.contains("fault analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("electrical"))
+            || lower.contains("symmetrical components") && (lower.contains("class") || lower.contains("exam") || lower.contains("power"))
+            || lower.contains("zero sequence") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("fault"))
+            || lower.contains("positive sequence") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("fault"))
+            || lower.contains("negative sequence") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("fault"))
+            || lower.contains("swing bus") && (lower.contains("class") || lower.contains("exam") || lower.contains("power"))
+            || lower.contains("power transformer") && (lower.contains("class") || lower.contains("exam") || lower.contains("power systems") || lower.contains("lab"))
+            || lower.contains("transmission line parameter") && (lower.contains("class") || lower.contains("exam") || lower.contains("power"))
+            || lower.contains("power grid") && (lower.contains("class") || lower.contains("exam") || lower.contains("power systems") || lower.contains("lab"))
+            || lower.contains("economic dispatch") && (lower.contains("class") || lower.contains("exam") || lower.contains("power") || lower.contains("optimization"))
+            || lower.contains("optimal power flow") && (lower.contains("class") || lower.contains("exam") || lower.contains("power"))
+            || lower.contains("newton-raphson power") && (lower.contains("class") || lower.contains("exam") || lower.contains("flow"))
+            || lower.contains("gauss-seidel power") && (lower.contains("class") || lower.contains("exam") || lower.contains("flow")) {
+            return "powersystems"
+        }
         // electricalengineering — positioned AFTER aerospacengineering and BEFORE civilengineering/engineering
         // so circuits class, signal processing, and EE coursework route here.
         // "electrical engineering" removed from engineering branch below (now owned here).
@@ -3853,6 +3943,73 @@ public final class CalloutManager {
             || lower.contains("openfoam") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("cfd") || lower.contains("project"))
             || lower.contains("computational aerodynamics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course")) {
             return "computationalfluidynamics"
+        }
+        // fluidmechanics — positioned BEFORE engineering so fluid mechanics class/exam,
+        // pipe flow, boundary layer, and Bernoulli coursework routes here. "fluid mechanics class
+        // chemical" stays in chemicalengineering (fires earlier). "CFD/computational fluid" stays
+        // in computationalfluidynamics (fires earlier). Bare "fluid" NOT matched.
+        if lower.contains("fluid mechanics class") && !lower.contains("chemical")
+            || lower.contains("fluid mechanics course") && !lower.contains("chemical")
+            || lower.contains("fluid mechanics exam") && !lower.contains("chemical")
+            || lower.contains("fluid mechanics lab") && !lower.contains("chemical")
+            || lower.contains("fluid mechanics homework") && !lower.contains("chemical")
+            || lower.contains("fluid mechanics notes") && !lower.contains("chemical")
+            || lower.contains("fluid mechanics textbook") && !lower.contains("chemical")
+            || lower.contains("fluid dynamics class") && !lower.contains("computational") && !lower.contains("chemical")
+            || lower.contains("fluid dynamics course") && !lower.contains("computational") && !lower.contains("chemical")
+            || lower.contains("fluid dynamics exam") && !lower.contains("computational")
+            || lower.contains("pipe flow") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid") || lower.contains("lab")) && !lower.contains("chemical")
+            || lower.contains("darcy-weisbach") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid") || lower.contains("pipe"))
+            || lower.contains("moody chart") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid") || lower.contains("pipe"))
+            || lower.contains("moody diagram") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid"))
+            || lower.contains("bernoulli equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid") || lower.contains("flow")) && !lower.contains("chemical")
+            || lower.contains("bernoulli's equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid") || lower.contains("flow")) && !lower.contains("chemical")
+            || lower.contains("reynolds number") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid") || lower.contains("flow")) && !lower.contains("chemical") && !lower.contains("computational")
+            || lower.contains("boundary layer") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid") || lower.contains("flow")) && !lower.contains("chemical") && !lower.contains("computational")
+            || lower.contains("navier-stokes") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid")) && !lower.contains("computational") && !lower.contains("cfd")
+            || lower.contains("navier stokes") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid")) && !lower.contains("computational") && !lower.contains("cfd")
+            || lower.contains("viscous flow") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid") || lower.contains("lab")) && !lower.contains("chemical")
+            || lower.contains("potential flow") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid")) && !lower.contains("marine")
+            || lower.contains("flow visualization") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid") || lower.contains("lab"))
+            || lower.contains("drag coefficient") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid")) && !lower.contains("aerodynamics")
+            || lower.contains("lift coefficient") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid")) && !lower.contains("aerodynamics")
+            || lower.contains("turbulent flow") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid")) && !lower.contains("computational")
+            || lower.contains("laminar flow") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid")) && !lower.contains("microfluidics") && !lower.contains("chemical")
+            || lower.contains("open channel flow") && (lower.contains("class") || lower.contains("exam") || lower.contains("fluid") || lower.contains("hydraulic"))
+            || lower.contains("hydraulics class") && !lower.contains("chemical") || lower.contains("hydraulics course") && !lower.contains("chemical") || lower.contains("hydraulics exam") && !lower.contains("chemical") {
+            return "fluidmechanics"
+        }
+        // heattransfer — positioned AFTER fluidmechanics and BEFORE miningengineering, engineering.
+        // "heat transfer class/course/exam/lab" without chemical context routes here.
+        // chemicalengineering catches these WITH chemical context (fires earlier).
+        if lower.contains("heat transfer class") && !lower.contains("chemical")
+            || lower.contains("heat transfer course") && !lower.contains("chemical")
+            || lower.contains("heat transfer exam") && !lower.contains("chemical")
+            || lower.contains("heat transfer lab") && !lower.contains("chemical")
+            || lower.contains("heat transfer homework") && !lower.contains("chemical")
+            || lower.contains("heat transfer notes") && !lower.contains("chemical")
+            || lower.contains("heat transfer textbook") && !lower.contains("chemical")
+            || lower.contains("conduction class") && !lower.contains("electrical") || lower.contains("conduction exam") && (lower.contains("heat") || lower.contains("thermal"))
+            || lower.contains("convection class") || lower.contains("convection exam") && (lower.contains("heat") || lower.contains("thermal") || lower.contains("fluid"))
+            || lower.contains("thermal radiation") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat transfer") || lower.contains("lab")) && !lower.contains("chemical")
+            || lower.contains("fin analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat"))
+            || lower.contains("extended surface") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat") || lower.contains("fin"))
+            || lower.contains("biot number") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat") || lower.contains("transfer"))
+            || lower.contains("fourier's law") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat") || lower.contains("conduction"))
+            || lower.contains("fourier number") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat") || lower.contains("transfer"))
+            || lower.contains("lmtd method") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat") || lower.contains("exchanger"))
+            || lower.contains("log mean temperature difference") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat") || lower.contains("exchanger"))
+            || lower.contains("ntu method") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat") || lower.contains("exchanger"))
+            || lower.contains("ntu-effectiveness") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat"))
+            || lower.contains("heat exchanger") && !lower.contains("chemical") && (lower.contains("class") || lower.contains("exam") || lower.contains("design") || lower.contains("lab"))
+            || lower.contains("nusselt number") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat") || lower.contains("convection"))
+            || lower.contains("prandtl number") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat") || lower.contains("convection")) && !lower.contains("chemical")
+            || lower.contains("stefan-boltzmann") && (lower.contains("class") || lower.contains("exam") || lower.contains("radiation") || lower.contains("heat"))
+            || lower.contains("view factor") && (lower.contains("class") || lower.contains("exam") || lower.contains("radiation") || lower.contains("heat"))
+            || lower.contains("shape factor") && lower.contains("radiation") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat"))
+            || lower.contains("lumped capacitance") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat") || lower.contains("transient"))
+            || lower.contains("thermal boundary layer") && (lower.contains("class") || lower.contains("exam") || lower.contains("heat") || lower.contains("convection")) {
+            return "heattransfer"
         }
         // miningengineering — positioned BEFORE industrialengineering and engineering so mine
         // planning, ore processing, rock mechanics, and mine ventilation coursework route here.
