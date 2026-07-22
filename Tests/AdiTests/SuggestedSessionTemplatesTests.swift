@@ -7338,8 +7338,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func reliabilityengineeringAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("reliability engineering") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1139)
-    @Test func templateCountAtLeast1139() {
-        #expect(SuggestedSessionTemplates.all.count >= 1139, "template catalog must have ≥1139 entries after metamaterials/nondestructivetesting/optimalcontrol/rocketpropulsion/reliabilityengineering additions")
+    // MARK: - measuretheory templates
+    @Test func measuretheoryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("measure theory") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func measuretheoryProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("measure theory") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - algebraictopology templates
+    @Test func algebraictopologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("algebraic topology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func algebraictopologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("algebraic topology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - numbertheory templates
+    @Test func numbertheoryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("number theory") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func numbertheoryProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("number theory") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - orthopedicsrotation templates
+    @Test func orthopedicsrotationNotesTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("orthopedics rotation") && $0.task.lowercased().contains("notes") })
+    }
+    @Test func orthopedicsrotationShelfTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("orthopedics") && $0.task.lowercased().contains("shelf exam") })
+    }
+    // MARK: - cardiologyrotation templates
+    @Test func cardiologyrotationNotesTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cardiology rotation") && $0.task.lowercased().contains("notes") })
+    }
+    @Test func cardiologyrotationShelfTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cardiology") && $0.task.lowercased().contains("shelf exam") })
+    }
+    // MARK: - Count guard (≥1149)
+    @Test func templateCountAtLeast1149() {
+        #expect(SuggestedSessionTemplates.all.count >= 1149, "template catalog must have ≥1149 entries after measuretheory/algebraictopology/numbertheory/orthopedicsrotation/cardiologyrotation additions")
     }
 }

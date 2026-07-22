@@ -20382,3 +20382,68 @@ None. Swift toolchain unavailable on Linux container.
   - `marinechemistry` — marine chemistry class (seawater composition, alkalinity, carbonate system, ocean carbon cycle, trace metal speciation — distinct from oceanography)
   - `bioinorganicchemistry` — bioinorganic chemistry class (metalloenzymes, iron-sulfur clusters, oxygen transport, metal-based drugs, heme biochemistry — distinct from biochemistry and inorganic chemistry)
 - Template count target: 1099 → 1109 after next 5-domain batch
+
+---
+
+## Run 405 — measuretheory / algebraictopology / numbertheory / orthopedicsrotation / cardiologyrotation
+
+**Date:** 2026-07-22  
+**Templates:** 1139 → 1149  
+**Domains added:** 5
+
+### Routing branches added (CalloutManager.swift)
+
+| Domain | Placement | Key triggers |
+|---|---|---|
+| `measuretheory` | BEFORE `realanalysis` | "measure theory" + class/exam/course; sigma-algebra/Lebesgue/Hausdorff/outer/Borel measure + class/exam; Radon-Nikodym/Carathéodory + class/exam; L^p space + class/exam |
+| `algebraictopology` | BEFORE `topology` | "algebraic topology" + class/exam; fundamental group/covering spaces/homology groups/CW complex/Mayer-Vietoris + class/exam/topology |
+| `numbertheory` | BEFORE `abstractalgebra` | "number theory" + class/exam; Fermat/Euler totient/quadratic residues/Chinese remainder/Diophantine/Legendre symbol + class/exam |
+| `orthopedicsrotation` | BEFORE `surgeryrotation` | ortho/orthopedics/orthopedic rotation/clerkship/elective/rounds; nbme ortho/orthopedics; fracture management+rotation |
+| `cardiologyrotation` | AFTER `internalmedicine`, BEFORE `obgynrotation` | cardiology rotation/clerkship/elective/sub-i/rounds; cath lab rotation; nbme cardiology; echo rounds+rotation |
+
+### Callout pools added (CalloutMessages.swift)
+
+- `measuretheoryCallouts(tier:)` — sigma-algebras, Lebesgue/Hausdorff, Radon-Nikodym, L^p; CLOSE THIS tier
+- `algebraictopologyCallouts(tier:)` — homology, fundamental group, CW complexes, Mayer-Vietoris; CLOSE THIS tier
+- `numbertheoryCallouts(tier:)` — Fermat/Euler, quadratic residues, Diophantine, primitive roots; CLOSE THIS tier
+- `orthopedicsrotationCallouts(tier:)` — ortho notes, fracture cases, MSK exam, shelf; CLOSE THIS tier
+- `cardiologyrotationCallouts(tier:)` — echo/cath notes, HF/arrhythmia, EKG, shelf; CLOSE THIS tier
+
+Switch cases added between:
+- `complexanalysis` / `realanalysis` → `measuretheory`
+- `statisticalmethods` / `topology` → `algebraictopology`
+- `topology` / `abstractalgebra` → `numbertheory`
+- `surgeryrotation` / `pediatricsrotation` → `orthopedicsrotation`
+- `internalmedicine` / `obgynrotation` → `cardiologyrotation`
+
+### Templates added (SuggestedSessionTemplates.swift)
+
+| Domain | Template 1 | Template 2 |
+|---|---|---|
+| measuretheory | Study exam — sigma-algebras, Lebesgue/Hausdorff measure, DCT/MCT, Radon-Nikodym, L^p | Problem set — sigma-algebra membership, Lebesgue measure, measurability, Radon-Nikodym derivative |
+| algebraictopology | Study exam — homotopy, van Kampen, covering spaces, homology, Mayer-Vietoris | Assignment — fundamental group, covering space classification, cellular homology, Mayer-Vietoris |
+| numbertheory | Study exam — primes, modular arithmetic, CRT, Fermat/Euler, quadratic residues, primitive roots | Problem set — CRT, Fermat/Euler, Legendre symbol, primitive root, Diophantine no-solution proof |
+| orthopedicsrotation | Write rotation notes — SOAP/H&P, fracture classification, operative case review | Study shelf — fracture management, MSK exam findings, Salter-Harris, common ortho conditions |
+| cardiologyrotation | Write rotation notes — SOAP/H&P, EKG/echo, cath lab review | Study shelf — ACS/STEMI, HFrEF GDMT, AFib/CHA₂DS₂-VASc, valvular disease |
+
+### Tests added
+
+**CalloutManagerTests.swift** — 35 new @Test functions:
+- 3 routing tests + 1 false-positive guard + 3 pool tests (all-tiers, tier-1-count, tier-3-CLOSE-THIS) per domain × 5 domains
+- Count guard updated: ≥1149
+
+**SuggestedSessionTemplatesTests.swift** — 11 new @Test functions:
+- 2 template existence tests per domain × 5 domains
+- Count guard updated: ≥1149
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1149 ✓
+- Switch cases confirmed present via grep for all 5 domain keys in CalloutMessages.swift
+- Routing branches confirmed present in CalloutManager.swift (measuretheory before realanalysis, algebraictopology before topology, numbertheory before abstractalgebra, orthopedicsrotation before surgeryrotation, cardiologyrotation after internalmedicine)
+
+### Suggested next domains
+- `linearalgebra2` / `advancedlinearalgebra` — eigendecomposition, SVD, Jordan form, spectral theorem
+- `differentialgeometry2` / `riemanniangeometry` — Riemannian metrics, geodesics, curvature tensors, Gauss-Bonnet
+- `nephrologyclerkship` / `nephrologyrotation` — renal pathophysiology, AKI/CKD management, dialysis
+- `endocrinologyrotation` — thyroid/adrenal/DM management, endocrine tumors, hormone labs
+- `hematologyoncology` — leukemia/lymphoma workup, chemotherapy regimens, bone marrow interpretation

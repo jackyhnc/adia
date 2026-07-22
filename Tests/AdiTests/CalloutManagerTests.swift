@@ -26101,8 +26101,148 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "reliabilityengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1139)
-    @Test func calloutTemplatesCountAtLeast1139() {
-        #expect(SuggestedSessionTemplates.all.count >= 1139, "template catalog must have ≥1139 entries after metamaterials/nondestructivetesting/optimalcontrol/rocketpropulsion/reliabilityengineering additions")
+    // MARK: - measuretheory
+    @Test func measuretheoryRoutingFromMeasureTheoryClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "measure theory class exam sigma-algebra lebesgue measure") == "measuretheory")
+    }
+    @Test func measuretheoryRoutingFromRadonNikodym() {
+        #expect(CalloutManager.extractTaskKeyword(from: "radon-nikodym theorem measure class exam") == "measuretheory")
+    }
+    @Test func measuretheoryRoutingFromLebesgue() {
+        #expect(CalloutManager.extractTaskKeyword(from: "lebesgue measure class exam outer measure borel set") == "measuretheory")
+    }
+    @Test func measuretheoryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "real analysis class exam uniform convergence continuity metric space") != "measuretheory")
+    }
+    @Test @MainActor func measuretheoryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "measuretheory", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "measuretheory", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "measuretheory", tier: 3).isEmpty)
+    }
+    @Test @MainActor func measuretheoryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "measuretheory", tier: 1).count >= 4)
+    }
+    @Test @MainActor func measuretheoryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "measuretheory", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - algebraictopology
+    @Test func algebraictopologyRoutingFromAlgebraicTopologyClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "algebraic topology class exam homology groups fundamental group") == "algebraictopology")
+    }
+    @Test func algebraictopologyRoutingFromCovering() {
+        #expect(CalloutManager.extractTaskKeyword(from: "covering spaces topology class exam seifert van kampen") == "algebraictopology")
+    }
+    @Test func algebraictopologyRoutingFromCWComplex() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cw complex cell complex topology class exam mayer-vietoris") == "algebraictopology")
+    }
+    @Test func algebraictopologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "topology class exam metric spaces compactness connectedness") != "algebraictopology")
+    }
+    @Test @MainActor func algebraictopologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "algebraictopology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "algebraictopology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "algebraictopology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func algebraictopologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "algebraictopology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func algebraictopologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "algebraictopology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - numbertheory
+    @Test func numbertheoryRoutingFromNumberTheoryClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "number theory class exam quadratic residues fermat") == "numbertheory")
+    }
+    @Test func numbertheoryRoutingFromChineseRemainder() {
+        #expect(CalloutManager.extractTaskKeyword(from: "chinese remainder theorem number theory class exam") == "numbertheory")
+    }
+    @Test func numbertheoryRoutingFromEulerTotient() {
+        #expect(CalloutManager.extractTaskKeyword(from: "euler totient function number theory class exam") == "numbertheory")
+    }
+    @Test func numbertheoryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "abstract algebra class exam groups rings fields homomorphisms") != "numbertheory")
+    }
+    @Test @MainActor func numbertheoryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "numbertheory", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "numbertheory", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "numbertheory", tier: 3).isEmpty)
+    }
+    @Test @MainActor func numbertheoryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "numbertheory", tier: 1).count >= 4)
+    }
+    @Test @MainActor func numbertheoryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "numbertheory", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - orthopedicsrotation
+    @Test func orthopedicsrotationRoutingFromOrthoRotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "orthopedics rotation notes fracture management clerkship") == "orthopedicsrotation")
+    }
+    @Test func orthopedicsrotationRoutingFromShelf() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nbme ortho shelf exam study orthopedics clerkship") == "orthopedicsrotation")
+    }
+    @Test func orthopedicsrotationRoutingFromOrthoCase() {
+        #expect(CalloutManager.extractTaskKeyword(from: "orthopedic case presentation write rotation attending") == "orthopedicsrotation")
+    }
+    @Test func orthopedicsrotationFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "surgery rotation notes general surgery clerkship appendectomy laparoscopic") != "orthopedicsrotation")
+    }
+    @Test @MainActor func orthopedicsrotationCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "orthopedicsrotation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "orthopedicsrotation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "orthopedicsrotation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func orthopedicsrotationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "orthopedicsrotation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func orthopedicsrotationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "orthopedicsrotation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - cardiologyrotation
+    @Test func cardiologyrotationRoutingFromCardiologyRotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cardiology rotation notes echo cath lab clerkship") == "cardiologyrotation")
+    }
+    @Test func cardiologyrotationRoutingFromShelf() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cardiology shelf exam study nbme cardiology") == "cardiologyrotation")
+    }
+    @Test func cardiologyrotationRoutingFromCathLab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cath lab rotation cardiology case write presentation") == "cardiologyrotation")
+    }
+    @Test func cardiologyrotationFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "internal medicine rotation notes wards general medicine clerkship") != "cardiologyrotation")
+    }
+    @Test @MainActor func cardiologyrotationCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "cardiologyrotation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "cardiologyrotation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "cardiologyrotation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func cardiologyrotationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "cardiologyrotation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func cardiologyrotationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "cardiologyrotation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1149)
+    @Test func calloutTemplatesCountAtLeast1149() {
+        #expect(SuggestedSessionTemplates.all.count >= 1149, "template catalog must have ≥1149 entries after measuretheory/algebraictopology/numbertheory/orthopedicsrotation/cardiologyrotation additions")
     }
 }

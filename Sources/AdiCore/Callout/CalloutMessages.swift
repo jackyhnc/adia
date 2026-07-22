@@ -461,8 +461,10 @@ extension CalloutManager {
         case "dermatologyrotation":        return dermatologyrotationCallouts(tier: tier)
         case "psychiatryrotation":         return psychiatryrotationCallouts(tier: tier)
         case "surgeryrotation":            return surgeryrotationCallouts(tier: tier)
+        case "orthopedicsrotation":        return orthopedicsrotationCallouts(tier: tier)
         case "pediatricsrotation":         return pediatricsrotationCallouts(tier: tier)
         case "internalmedicine":           return internalMedicineCallouts(tier: tier)
+        case "cardiologyrotation":         return cardiologyrotationCallouts(tier: tier)
         case "obgynrotation":              return obgynrotationCallouts(tier: tier)
         case "familymedicine":             return familymedicineCallouts(tier: tier)
         case "emergencymedicinerotation":  return emergencymedicinerotationCallouts(tier: tier)
@@ -522,12 +524,15 @@ extension CalloutManager {
         case "developmentalpsych":         return developmentalpsychCallouts(tier: tier)
         case "militarymedicine":           return militarymedicineCallouts(tier: tier)
         case "complexanalysis":            return complexanalysisCallouts(tier: tier)
+        case "measuretheory":              return measuretheoryCallouts(tier: tier)
         case "realanalysis":               return realanalysisCallouts(tier: tier)
         case "discretemath":               return discretemathCallouts(tier: tier)
         case "probabilitytheory":          return probabilitytheoryCallouts(tier: tier)
         case "numericalanalysis":          return numericalanalysisCallouts(tier: tier)
         case "statisticalmethods":         return statisticalmethodsCallouts(tier: tier)
+        case "algebraictopology":          return algebraictopologyCallouts(tier: tier)
         case "topology":                   return topologyCallouts(tier: tier)
+        case "numbertheory":               return numbertheoryCallouts(tier: tier)
         case "abstractalgebra":            return abstractalgebraCallouts(tier: tier)
         case "seismology":                 return seismologyCallouts(tier: tier)
         case "volcanology":                return volcanologyCallouts(tier: tier)
@@ -12949,6 +12954,111 @@ extension CalloutManager {
             "CLOSE THIS. open your reliability engineering textbook.",
             "CLOSE THIS. those Weibull analysis and FMEA problems won't solve themselves.",
             "CLOSE THIS. your reliability engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func measuretheoryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "measure theory notes open? sigma-algebras and Lebesgue measure need your attention.",
+            "those Radon-Nikodym and Fubini problems are waiting.",
+            "your measure theory exam is coming — L^p spaces won't review themselves.",
+            "hausdorff measure and outer measure problems: get back to them."
+        ]
+        case 2: return [
+            "stop. your measure theory problem set is still open.",
+            "sigma-algebras, measurable functions — your exam won't wait.",
+            "measure theory class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your measure theory textbook.",
+            "CLOSE THIS. those Lebesgue integration and Carathéodory problems won't solve themselves.",
+            "CLOSE THIS. your measure theory exam won't study itself."
+        ]
+        }
+    }
+
+    private func algebraictopologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "algebraic topology notes open? fundamental groups and covering spaces need your focus.",
+            "those homology group computations and Mayer-Vietoris problems are waiting.",
+            "your algebraic topology exam is coming — CW complexes won't review themselves.",
+            "seifert-van Kampen theorem and Betti numbers: get back to them."
+        ]
+        case 2: return [
+            "stop. your algebraic topology problem set is still open.",
+            "singular homology, cohomology — your exam won't wait.",
+            "algebraic topology class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your algebraic topology textbook.",
+            "CLOSE THIS. those homology and homotopy problems won't solve themselves.",
+            "CLOSE THIS. your algebraic topology exam won't study itself."
+        ]
+        }
+    }
+
+    private func numbertheoryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "number theory notes open? Fermat's little theorem and quadratic residues need your focus.",
+            "those Euler totient and Chinese remainder theorem problems are waiting.",
+            "your number theory exam is coming — Legendre symbols won't review themselves.",
+            "diophantine equations and quadratic reciprocity: get back to them."
+        ]
+        case 2: return [
+            "stop. your number theory problem set is still open.",
+            "primitive roots, multiplicative functions — your exam won't wait.",
+            "number theory class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your number theory textbook.",
+            "CLOSE THIS. those prime factorization and modular arithmetic problems won't solve themselves.",
+            "CLOSE THIS. your number theory exam won't study itself."
+        ]
+        }
+    }
+
+    private func orthopedicsrotationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "ortho rotation notes still need writing — fracture management cases don't document themselves.",
+            "your orthopedics shelf is approaching — MSK exam findings need review.",
+            "those ortho case presentations won't write themselves — get back to them.",
+            "joint replacement and sports medicine cases are waiting on your notes."
+        ]
+        case 2: return [
+            "stop. your ortho rotation write-ups are still open.",
+            "fracture cases, post-op notes — your attending is expecting them.",
+            "orthopedics clerkship doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your orthopedics rotation notes.",
+            "CLOSE THIS. those fracture management and MSK cases won't document themselves.",
+            "CLOSE THIS. your orthopedics shelf won't study itself."
+        ]
+        }
+    }
+
+    private func cardiologyrotationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "cardiology rotation notes still need writing — echo findings and cath results don't document themselves.",
+            "your cardiology shelf is approaching — heart failure and arrhythmia management need review.",
+            "those cardiology case presentations won't write themselves — get back to them.",
+            "cath lab cases and EKG interpretation are waiting on your notes."
+        ]
+        case 2: return [
+            "stop. your cardiology rotation write-ups are still open.",
+            "echo reads, cath lab notes — your attending is expecting them.",
+            "cardiology clerkship doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your cardiology rotation notes.",
+            "CLOSE THIS. those echo and cath lab cases won't document themselves.",
+            "CLOSE THIS. your cardiology shelf won't study itself."
         ]
         }
     }

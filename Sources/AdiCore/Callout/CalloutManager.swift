@@ -1388,6 +1388,28 @@ public final class CalloutManager {
             || (lower.contains("riemann surface") && (lower.contains("class") || lower.contains("exam") || lower.contains("complex"))) {
             return "complexanalysis"
         }
+        // measuretheory — positioned BEFORE realanalysis so standalone measure theory coursework
+        // (sigma-algebras, Lebesgue measure, Hausdorff measure, Radon-Nikodym, Fubini, L^p spaces)
+        // routes to a dedicated pool distinct from real analysis. "sigma-algebra" with "probability"
+        // context stays in stochasticprocesses/probabilitytheory (fire earlier).
+        if (lower.contains("measure theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("notes") || lower.contains("textbook") || lower.contains("assignment") || lower.contains("problem set")))
+            || (lower.contains("sigma-algebra") && (lower.contains("class") || lower.contains("exam") || lower.contains("measure")) && !lower.contains("probability"))
+            || (lower.contains("sigma algebra") && (lower.contains("class") || lower.contains("exam") || lower.contains("measure")) && !lower.contains("probability"))
+            || (lower.contains("hausdorff measure") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("outer measure") && (lower.contains("class") || lower.contains("exam") || lower.contains("measure theory")))
+            || (lower.contains("borel measure") && (lower.contains("class") || lower.contains("exam") || lower.contains("measure theory")))
+            || (lower.contains("borel set") && (lower.contains("class") || lower.contains("exam") || lower.contains("measure theory")))
+            || (lower.contains("lebesgue measure") && (lower.contains("class") || lower.contains("exam") || lower.contains("measure theory")))
+            || (lower.contains("radon-nikodym") && (lower.contains("class") || lower.contains("exam") || lower.contains("measure")))
+            || (lower.contains("radon nikodym") && (lower.contains("class") || lower.contains("exam") || lower.contains("measure")))
+            || (lower.contains("caratheodory") && (lower.contains("class") || lower.contains("exam") || lower.contains("measure")))
+            || (lower.contains("lp space") && (lower.contains("class") || lower.contains("exam") || lower.contains("measure")))
+            || (lower.contains("l^p space") && (lower.contains("class") || lower.contains("exam") || lower.contains("measure")))
+            || (lower.contains("lebesgue-stieltjes") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("measurable function") && lower.contains("measure") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("measurable set") && lower.contains("measure") && (lower.contains("class") || lower.contains("exam"))) {
+            return "measuretheory"
+        }
         // realanalysis — positioned BEFORE mathematics so real analysis COURSEWORK (epsilon-delta,
         // metric spaces, Lebesgue integration, measure theory) routes to a dedicated pool.
         // Bare "real analysis" / "measure theory" stay in mathematics as broader fallbacks.
@@ -1485,6 +1507,29 @@ public final class CalloutManager {
             || (lower.contains("round-off error") && (lower.contains("class") || lower.contains("numerical") || lower.contains("exam"))) {
             return "numericalanalysis"
         }
+        // algebraictopology — positioned BEFORE topology so algebraic topology coursework
+        // (fundamental group, homology, cohomology, covering spaces, CW complexes, Seifert-van Kampen,
+        // Mayer-Vietoris, Betti numbers) routes to a dedicated pool. Bare topology terms (compactness,
+        // connectedness, homeomorphisms) stay in topology (fires after).
+        if (lower.contains("algebraic topology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("notes") || lower.contains("textbook") || lower.contains("assignment") || lower.contains("problem set")))
+            || (lower.contains("fundamental group") && (lower.contains("class") || lower.contains("exam") || lower.contains("topology") || lower.contains("algebraic")))
+            || (lower.contains("covering space") && (lower.contains("class") || lower.contains("exam") || lower.contains("topology") || lower.contains("algebraic")))
+            || (lower.contains("covering spaces") && (lower.contains("class") || lower.contains("exam") || lower.contains("topology")))
+            || (lower.contains("homology group") && (lower.contains("class") || lower.contains("exam") || lower.contains("topology")))
+            || (lower.contains("singular homology") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("simplicial homology") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("cohomology") && (lower.contains("class") || lower.contains("exam") || lower.contains("topology")) && !lower.contains("de rham") && !lower.contains("sheaf"))
+            || (lower.contains("seifert-van kampen") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("seifert van kampen") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("brouwer fixed point") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("euler characteristic") && (lower.contains("topology") || lower.contains("algebraic")) && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("cw complex") && (lower.contains("class") || lower.contains("exam") || lower.contains("topology")))
+            || (lower.contains("cell complex") && (lower.contains("class") || lower.contains("exam") || lower.contains("topology") || lower.contains("algebraic")))
+            || (lower.contains("simplicial complex") && (lower.contains("class") || lower.contains("exam") || lower.contains("topology")))
+            || (lower.contains("mayer-vietoris") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("betti number") && (lower.contains("class") || lower.contains("exam") || lower.contains("topology"))) {
+            return "algebraictopology"
+        }
         // topology — positioned BEFORE mathematics so topology coursework (open/closed sets,
         // compactness, connectedness, homeomorphisms, homotopy, quotient spaces) routes to a
         // dedicated pool. Bare word("topology") without class context falls through to mathematics.
@@ -1504,6 +1549,28 @@ public final class CalloutManager {
             || (lower.contains("metric topology") && (lower.contains("class") || lower.contains("exam")))
             || (lower.contains("topological space") && (lower.contains("class") || lower.contains("exam"))) {
             return "topology"
+        }
+        // numbertheory — positioned BEFORE abstractalgebra so number theory coursework
+        // (Fermat's little theorem, Euler's totient, quadratic residues, Chinese remainder theorem,
+        // Diophantine equations) routes to a dedicated pool. Bare "number theory" falls through to
+        // mathematics catch-all; "number theory" + crypto context stays in cybersecurity (fires earlier).
+        if (lower.contains("number theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("notes") || lower.contains("textbook") || lower.contains("assignment") || lower.contains("problem set")))
+            || (lower.contains("fermat's little theorem") && (lower.contains("class") || lower.contains("exam") || lower.contains("number theory")))
+            || (lower.contains("fermats little theorem") && (lower.contains("class") || lower.contains("exam") || lower.contains("number theory")))
+            || (lower.contains("euler's totient") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("euler totient") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("quadratic residue") && (lower.contains("class") || lower.contains("exam") || lower.contains("number theory")))
+            || (lower.contains("quadratic residues") && (lower.contains("class") || lower.contains("exam") || lower.contains("number theory")))
+            || (lower.contains("quadratic reciprocity") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("chinese remainder theorem") && (lower.contains("class") || lower.contains("exam") || lower.contains("number theory")))
+            || (lower.contains("diophantine equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("number theory")))
+            || (lower.contains("diophantine equations") && (lower.contains("class") || lower.contains("exam") || lower.contains("number theory")))
+            || (lower.contains("primitive root") && lower.contains("number theory") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("legendre symbol") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("multiplicative function") && lower.contains("number theory") && (lower.contains("class") || lower.contains("exam")))
+            || (lower.contains("goldbach") && (lower.contains("class") || lower.contains("exam") || lower.contains("number theory")))
+            || (lower.contains("sieve of eratosthenes") && lower.contains("number theory") && (lower.contains("class") || lower.contains("exam"))) {
+            return "numbertheory"
         }
         // abstractalgebra — positioned BEFORE mathematics so abstract algebra coursework
         // (group/ring/field theory class, Galois theory, homomorphisms, isomorphism theorems,
@@ -9607,6 +9674,26 @@ public final class CalloutManager {
             || lower.contains("mood disorder case") && (lower.contains("rotation") || lower.contains("psychiatry") || lower.contains("psych")) {
             return "psychiatryrotation"
         }
+        // orthopedicsrotation — positioned BEFORE surgeryrotation so orthopedic surgery/sports-medicine
+        // clerkship tasks (fracture management, MSK exam, joint replacement) route to a dedicated pool.
+        // Bare "orthopedics" or "orthopedic surgery" stays in premed.
+        if lower.contains("orthopedics rotation") || lower.contains("orthopedics clerkship")
+            || lower.contains("orthopedic rotation") || lower.contains("orthopedic clerkship")
+            || lower.contains("ortho rotation") || lower.contains("ortho clerkship")
+            || lower.contains("ortho elective") || lower.contains("orthopedics elective")
+            || lower.contains("orthopedic surgery rotation") || lower.contains("orthopedic surgery clerkship")
+            || lower.contains("orthopaedics rotation") || lower.contains("orthopaedics clerkship")
+            || lower.contains("ortho rounds") || lower.contains("orthopedics rounds")
+            || lower.contains("ortho attending") || lower.contains("orthopedics attending")
+            || lower.contains("fracture management") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("ortho") || lower.contains("notes"))
+            || lower.contains("orthopedic case") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("ortho case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("orthopedics notes") && (lower.contains("rotation") || lower.contains("write"))
+            || lower.contains("ortho notes") && (lower.contains("rotation") || lower.contains("write"))
+            || lower.contains("orthopedics shelf") || lower.contains("ortho shelf")
+            || lower.contains("nbme orthopedics") || lower.contains("nbme ortho") {
+            return "orthopedicsrotation"
+        }
         // surgeryrotation — positioned AFTER psychiatryrotation and BEFORE premed so surgery
         // clerkship, OR tasks, and operative notes route here. Bare "surgery" stays in premed.
         if lower.contains("surgery rotation") || lower.contains("surgery clerkship")
@@ -9668,6 +9755,23 @@ public final class CalloutManager {
             || lower.contains("im shelf") || lower.contains("internal medicine shelf")
             || lower.contains("medicine shelf") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("nbme")) {
             return "internalmedicine"
+        }
+        // cardiologyrotation — positioned AFTER internalmedicine and BEFORE obgynrotation so cardiology
+        // clerkship, echo reading, cath lab rotation tasks route to a dedicated pool.
+        // Bare "cardiology" alone stays in premed.
+        if lower.contains("cardiology rotation") || lower.contains("cardiology clerkship")
+            || lower.contains("cardiology elective") || lower.contains("cardiology sub-i")
+            || lower.contains("cardiology sub-internship") || lower.contains("cardiac rotation")
+            || lower.contains("cardiology rounds") || lower.contains("cardiology attending")
+            || lower.contains("cardiology ward") || lower.contains("cath lab rotation")
+            || lower.contains("cardiac catheterization rotation")
+            || lower.contains("echo rounds") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("cardiology"))
+            || lower.contains("cardiology case") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("cardiac case") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("cardiology notes") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write"))
+            || lower.contains("cardiology shelf") || lower.contains("nbme cardiology")
+            || lower.contains("cardiology sub") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("internship")) {
+            return "cardiologyrotation"
         }
         // obgynrotation — positioned AFTER internalmedicine and BEFORE premed. Bare "obstetrics" or
         // "gynecology" alone stays in premed; OB/GYN clerkship-specific context routes here.
