@@ -1,5 +1,74 @@
 # Adia — Build Progress
 
+## Run 397 (automated) — 2026-07-22 — 5 new keyword domains: nuclearreactorphysics/optoelectronics/magneticresonance/computationalelectromagnetics/thermoelectrics (1061→1071 templates)
+
+### What shipped
+
+**5 new keyword domains: nuclearreactorphysics, optoelectronics, magneticresonance, computationalelectromagnetics, thermoelectrics**
+
+**New keyword domain — nuclearreactorphysics:**
+- Positioned BEFORE `nuclearphysics`. Reactor physics terms (neutron transport, criticality, four-factor formula, reactor kinetics, xenon poisoning) were previously caught by the broad nuclearphysics branch; now intercepted here first.
+- Catches: reactor physics class/course/exam/homework, nuclear reactor class/course, nuclear reactor physics+class/exam/course, neutron transport+class/exam/reactor/nuclear, criticality analysis+class/exam/nuclear/reactor, nuclear criticality+class/exam/reactor, four-factor formula+class/exam/reactor/nuclear, 4-factor formula+class/exam/reactor, six-factor formula+class/exam/reactor, reactor kinetics+class/exam/nuclear, delayed neutron+class/exam/reactor/kinetics, control rod worth+class/exam/reactor/nuclear, xenon poisoning+class/exam/reactor, xenon transient+class/exam/reactor, reactor core design+class/exam/nuclear, diffusion theory+reactor/nuclear+class/exam, group diffusion+class/exam/reactor, multiplication factor+reactor+class/exam, neutron flux+reactor/nuclear+class/exam.
+- `nuclearreactorphysicsCallouts(tier:)` 4/3/3: "those neutron transport and criticality problems won't solve themselves." / "no one masters reactor physics by scrolling." / "CLOSE THIS. those criticality analysis and reactor kinetics problems won't solve themselves."
+- 2 templates: study-for-exam (neutron transport, four/six-factor formula, criticality, reactor kinetics, delayed neutrons, xenon/samarium poisoning, control rod worth, group diffusion theory, neutron flux, 60 min) + assignment (keff four-factor formula, point kinetics step reactivity, xenon poisoning worth, control rod worth, neutron diffusion equation, 60 min)
+
+**New keyword domain — optoelectronics:**
+- Positioned BEFORE `photonics`. LED physics, photodetector, laser diode, semiconductor band gap, EL/PL spectroscopy terms with optoelectronics/semiconductor context are now intercepted before the photonics branch.
+- Catches: optoelectronics class/course/exam/lab/notes/homework/assignment/textbook, LED physics+class/exam/optoelectronics, light emitting diode+class/exam/optoelectronics/semiconductor, photodetector+class/exam/optoelectronics/semiconductor, photodiode+class/exam/optoelectronics/semiconductor, laser diode+class/exam/optoelectronics/semiconductor, electroluminescence+class/exam/optoelectronics, photoluminescence+class/exam/optoelectronics/semiconductor, optical fiber coupling+class/exam/optoelectronics, semiconductor band gap+class/exam/optoelectronics, semiconductor band structure+class/exam/optoelectronics, solar cell+class/exam/optoelectronics/semiconductor/photovoltaic, photovoltaic+class/exam/optoelectronics/semiconductor, optical gain+class/exam/optoelectronics/laser, quantum well laser+class/exam/optoelectronics.
+- `optoelectronicsCallouts(tier:)` 4/3/3: "those LED physics and photodetector problems won't solve themselves." / "no one masters optoelectronics by scrolling." / "CLOSE THIS. those photoluminescence and electroluminescence optoelectronics problems won't solve themselves."
+- 2 templates: study-for-exam (semiconductor band gap, p-n junction, LED quantum efficiency, photodiode responsivity, laser diode threshold, EL/PL spectroscopy, solar cell I-V, optical fiber coupling, 60 min) + assignment (LED quantum efficiency/radiant flux, photodiode responsivity/NEP, laser threshold current density, PL spectrum band gap, solar cell PCE under AM1.5, 60 min)
+
+**New keyword domain — magneticresonance:**
+- Positioned BEFORE `biomedicalengineering`. MRI/NMR physics terms (Bloch equations, spin-echo, pulse sequences, k-space, T1/T2 relaxation, Larmor frequency) are now intercepted before biomedicalengineering's generic "medical imaging" clause.
+- Catches: magnetic resonance imaging class/course/exam, mri class/course/exam/homework, mri physics+class/exam/course, nmr class/course/exam, nmr spectroscopy+class/exam/course, nuclear magnetic resonance+class/exam/course, bloch equations+class/exam/mri/nmr, spin echo+class/exam/mri/nmr/pulse, spin-echo+class/exam/mri/nmr, pulse sequence+class/exam/mri/nmr/magnetic resonance, k-space+class/exam/mri/magnetic resonance, t1 relaxation+class/exam/mri/nmr, t2 relaxation+class/exam/mri/nmr, spin relaxation+class/exam/mri/nmr, gradient echo+class/exam/mri, rf pulse+class/exam/mri/nmr/magnetic resonance, larmor frequency+class/exam/mri/nmr/magnetic resonance.
+- `magneticresonanceCallouts(tier:)` 4/3/3: "those Bloch equations and pulse sequences won't work themselves out." / "no one masters magnetic resonance by scrolling." / "CLOSE THIS. those spin-echo sequences and k-space reconstruction problems won't solve themselves."
+- 2 templates: study-for-exam (NMR fundamentals, Larmor frequency, Bloch equations, spin-echo/gradient-echo pulse sequences, k-space/inverse FT, T1/T2 relaxation, encoding, SNR, 60 min) + assignment (Bloch equation spin-echo amplitude, k-space coordinates from gradient, Larmor frequency, T1/T2 from data, 1D image from k-space, 60 min)
+
+**New keyword domain — computationalelectromagnetics:**
+- Positioned BEFORE `electromagnetism`. CEM-specific terms (FDTD, method of moments, HFSS/CST, FEM for EM, antenna simulation, radar cross section) are now intercepted before the classical E&M physics branch.
+- Catches: computational electromagnetics class/course/exam/homework, computational electrodynamics class/course/exam, fdtd+class/exam/simulation/electromagnetics, finite difference time domain+class/exam/electromagnetics, method of moments+class/exam/electromagnetics/antenna, mom+electromagnetics+class/exam, hfss+class/exam/simulation/electromagnetics/antenna, cst microwave+class/exam/simulation, cst studio+class/exam/simulation/electromagnetics, antenna simulation+class/exam/electromagnetics, fem electromagnetics+class/exam, finite element method+electromagnetics+class/exam, numerical electromagnetics+class/exam/course, cem class/course/exam, computational em class/course/exam, radar cross section+class/exam/electromagnetics/simulation.
+- `computationalelectromagneticsCallouts(tier:)` 4/3/3: "that FDTD simulation won't run itself." / "no one masters computational electromagnetics by scrolling." / "CLOSE THIS. those HFSS simulation and FDTD boundary condition problems won't solve themselves."
+- 2 templates: study-for-exam (FDTD Yee grid/CFL/absorbing BC, MoM Green's function/impedance matrix, FEM weak form/meshing, HFSS/CST workflow, dispersion/convergence, near-to-far field, RCS, 60 min) + assignment (1D FDTD pulse propagation/dispersion, MoM wire dipole current distribution, FEM waveguide eigenvalue, antenna S11/pattern from HFSS/CST, RCS canonical scatterer, 60 min)
+
+**New keyword domain — thermoelectrics:**
+- Positioned BEFORE `thermodynamics`. Thermoelectric-specific terms (Seebeck/Peltier/Thomson effects, ZT figure of merit, TEG/TEC) are now intercepted before the broad thermodynamics branch. Guard: bare "thermodynamics class exam rankine cycle carnot" does NOT fire thermoelectrics.
+- Catches: thermoelectric+class/course/exam/homework/assignment, seebeck coefficient+class/exam/thermoelectric, seebeck effect+class/exam/thermoelectric, peltier effect+class/exam/thermoelectric, peltier cooling+class/exam/thermoelectric/module, thomson effect+class/exam/thermoelectric, zt figure of merit+class/exam/thermoelectric, figure of merit+thermoelectric+class/exam, thermoelectric generator+class/exam, thermoelectric cooler+class/exam, teg+thermoelectric+class/exam, tec+thermoelectric+class/exam, power factor+thermoelectric+class/exam, thermal conductivity+thermoelectric+class/exam, bismuth telluride+class/exam/thermoelectric.
+- `thermoelectricsCallouts(tier:)` 4/3/3: "those Seebeck coefficient and ZT figure-of-merit problems won't solve themselves." / "no one masters thermoelectrics by scrolling." / "CLOSE THIS. those ZT figure of merit and Seebeck/Peltier coefficient problems won't solve themselves."
+- 2 templates: study-for-exam (Seebeck/Peltier/Thomson, ZT and transport coefficients, TEG efficiency/power output, TEC COP/ΔTmax, Wiedemann-Franz, bismuth telluride, module characterization, 60 min) + assignment (Seebeck voltage/TEG power output, TEC COP/ΔTmax, ZT from measured data, material efficiency comparison, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +45 @Test functions (5 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains + count guard updated to ≥1071)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + count guard updated to ≥1071)
+
+**Template catalog: 1061 → 1071**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `nuclearreactorphysics` fires at line 1826, BEFORE nuclearphysics (line 1852) ✓. "reactor physics class exam" → nuclearreactorphysics ✓; "xenon poisoning class exam reactor" → nuclearreactorphysics ✓; "nuclear fission class exam physics radioactive decay" → nuclearphysics (not nuclearreactorphysics) ✓
+- `optoelectronics` fires at line 1919, BEFORE photonics (line 1945) ✓. "optoelectronics class exam" → optoelectronics ✓; "laser diode class exam optoelectronics semiconductor" → optoelectronics ✓; "laser diode class photonics integrated waveguide" → photonics ✓
+- `magneticresonance` fires at line 3832, BEFORE biomedicalengineering (line 3853) ✓. "mri class exam" → magneticresonance ✓; "bloch equations class exam mri" → magneticresonance ✓; "medical imaging class exam biomedical CT scan ultrasound" → biomedicalengineering ✓
+- `computationalelectromagnetics` fires at line 3171, BEFORE electromagnetism (line 3193) ✓. "computational electromagnetics class exam" → computationalelectromagnetics ✓; "fdtd class exam simulation electromagnetics" → computationalelectromagnetics ✓; "maxwell's equations class exam gauss faraday" → electromagnetism ✓
+- `thermoelectrics` fires at line 4007, BEFORE thermodynamics (line 4035) ✓. "thermoelectric class exam" → thermoelectrics ✓; "seebeck coefficient class exam thermoelectric" → thermoelectrics ✓; "thermodynamics class exam rankine cycle carnot entropy" → thermodynamics ✓
+- Brace balance: CalloutManager.swift 0 ✓; CalloutMessages.swift 0 ✓; SuggestedSessionTemplates.swift 0 ✓
+- Template count: 1071 confirmed (grep -c "preferredDuration:" = 1071) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases in CalloutMessages.swift ✓
+- 5 new private callout pool functions in CalloutMessages.swift ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `plasmasonics` / `nanophotonics` — plasmon resonance, LSPR, surface plasmon polariton, near-field optics, SERS
+  - `acceleratorPhysics` — particle accelerator class (synchrotron radiation, beam optics, RF cavities, magnet lattice, Twiss parameters)
+  - `quantumcomputing` — quantum information class (qubit, quantum gate, quantum circuit, quantum error correction, Bloch sphere)
+  - `geochemistry` — geochemistry class (isotope geochemistry, trace element, REE pattern, thermodynamic modeling, MELTS)
+  - `paleoclimatology` — paleoclimate class (ice core, proxy record, Milankovitch cycles, oxygen isotopes, dendrochronology)
+- Template count target: 1071 → 1081 after next 5-domain batch
+
+---
+
 ## Run 396 (automated) — 2026-07-18 — 5 new engineering keyword domains: corrosionengineering/acousticalengineering/microfluidics/marinehydrodynamics/thermofluidscombustion (1041→1051 templates)
 
 ### What shipped
