@@ -26381,8 +26381,148 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "hematologyoncology", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1159)
-    @Test func calloutTemplatesCountAtLeast1159() {
-        #expect(SuggestedSessionTemplates.all.count >= 1159, "template catalog must have ≥1159 entries after advancedlinearalgebra/riemanniangeometry/nephrologyrotation/endocrinologyrotation/hematologyoncology additions")
+    // MARK: - neurologyrotation
+    @Test func neurologyrotationRoutingFromRotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neurology rotation write soap notes stroke seizure") == "neurologyrotation")
+    }
+    @Test func neurologyrotationRoutingFromClerkship() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neurology clerkship notes attending write case presentation") == "neurologyrotation")
+    }
+    @Test func neurologyrotationRoutingFromShelf() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for neurology shelf exam nbme") == "neurologyrotation")
+    }
+    @Test func neurologyrotationFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neuroscience class action potential synaptic transmission lecture") != "neurologyrotation")
+    }
+    @Test @MainActor func neurologyrotationCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "neurologyrotation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "neurologyrotation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "neurologyrotation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func neurologyrotationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "neurologyrotation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func neurologyrotationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "neurologyrotation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - surgicalpathology
+    @Test func surgicalpathologyRoutingFromRotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "surgical pathology rotation gross specimens histopath sign-out notes") == "surgicalpathology")
+    }
+    @Test func surgicalpathologyRoutingFromFrozenSection() {
+        #expect(CalloutManager.extractTaskKeyword(from: "frozen section consultation intraoperative pathology rotation write") == "surgicalpathology")
+    }
+    @Test func surgicalpathologyRoutingFromSynopticReport() {
+        #expect(CalloutManager.extractTaskKeyword(from: "synoptic cap report tumor staging pathology rotation") == "surgicalpathology")
+    }
+    @Test func surgicalpathologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pathology class exam histopathology lab slides disease mechanisms") != "surgicalpathology")
+    }
+    @Test @MainActor func surgicalpathologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "surgicalpathology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "surgicalpathology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "surgicalpathology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func surgicalpathologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "surgicalpathology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func surgicalpathologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "surgicalpathology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - gametheory
+    @Test func gametheoryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "game theory class exam nash equilibrium dominant strategy") == "gametheory")
+    }
+    @Test func gametheoryRoutingFromNashEquilibrium() {
+        #expect(CalloutManager.extractTaskKeyword(from: "homework nash equilibrium mixed strategy payoff matrix game") == "gametheory")
+    }
+    @Test func gametheoryRoutingFromMechanismDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mechanism design course auction theory exam problem set") == "gametheory")
+    }
+    @Test func gametheoryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "economics class macroeconomics exam monetary policy") != "gametheory")
+    }
+    @Test @MainActor func gametheoryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "gametheory", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "gametheory", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "gametheory", tier: 3).isEmpty)
+    }
+    @Test @MainActor func gametheoryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "gametheory", tier: 1).count >= 4)
+    }
+    @Test @MainActor func gametheoryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "gametheory", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - forensicchemistry
+    @Test func forensicchemistryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "forensic chemistry class exam gcms drug identification arson") == "forensicchemistry")
+    }
+    @Test func forensicchemistryRoutingFromLab() {
+        #expect(CalloutManager.extractTaskKeyword(from: "forensic chemistry lab trace evidence analysis gc-ms controlled substance") == "forensicchemistry")
+    }
+    @Test func forensicchemistryRoutingFromArson() {
+        #expect(CalloutManager.extractTaskKeyword(from: "arson chemistry class exam accelerant analysis forensic") == "forensicchemistry")
+    }
+    @Test func forensicchemistryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "forensic science class dna profiling bloodstain pattern crime lab biology") != "forensicchemistry")
+    }
+    @Test @MainActor func forensicchemistryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "forensicchemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "forensicchemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "forensicchemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func forensicchemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "forensicchemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func forensicchemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "forensicchemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - neuropharmacology
+    @Test func neuropharmacologyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neuropharmacology class exam cns drug mechanisms receptor") == "neuropharmacology")
+    }
+    @Test func neuropharmacologyRoutingFromCNSPharmacology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cns pharmacology class exam dopamine serotonin gaba receptor") == "neuropharmacology")
+    }
+    @Test func neuropharmacologyRoutingFromAntidepressants() {
+        #expect(CalloutManager.extractTaskKeyword(from: "antidepressant mechanism class exam ssri pharmacology neuropharmacology") == "neuropharmacology")
+    }
+    @Test func neuropharmacologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pharmacology class exam drug metabolism bioavailability dose-response") != "neuropharmacology")
+    }
+    @Test @MainActor func neuropharmacologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "neuropharmacology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "neuropharmacology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "neuropharmacology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func neuropharmacologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "neuropharmacology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func neuropharmacologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "neuropharmacology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1169)
+    @Test func calloutTemplatesCountAtLeast1169() {
+        #expect(SuggestedSessionTemplates.all.count >= 1169, "template catalog must have ≥1169 entries after neurologyrotation/surgicalpathology/gametheory/forensicchemistry/neuropharmacology additions")
     }
 }

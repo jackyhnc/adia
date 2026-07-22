@@ -1033,6 +1033,30 @@ public final class CalloutManager {
             || lower.contains("effect size") || lower.contains("sample size calculation") {
             return "statistics"
         }
+        // gametheory — positioned BEFORE economics so game theory class/exam/homework
+        // routes to a dedicated pool. "game theory" keywords that previously fell into
+        // economics are intercepted here first. Bare "economics" stays in economics (fires after).
+        if lower.contains("game theory class") || lower.contains("game theory course")
+            || lower.contains("game theory exam") || lower.contains("game theory homework")
+            || lower.contains("game theory assignment") || lower.contains("game theory problem set")
+            || lower.contains("game theory textbook") || lower.contains("game theory notes")
+            || lower.contains("nash equilibrium") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("game") || lower.contains("homework"))
+            || lower.contains("nash eq") && (lower.contains("class") || lower.contains("exam") || lower.contains("game theory"))
+            || lower.contains("dominant strategy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("game"))
+            || lower.contains("mixed strategy") && (lower.contains("class") || lower.contains("exam") || lower.contains("game") || lower.contains("equilibrium"))
+            || lower.contains("pure strategy") && (lower.contains("class") || lower.contains("exam") || lower.contains("game") || lower.contains("equilibrium"))
+            || lower.contains("payoff matrix") && (lower.contains("class") || lower.contains("exam") || lower.contains("game") || lower.contains("strategy"))
+            || lower.contains("prisoner's dilemma") && (lower.contains("class") || lower.contains("exam") || lower.contains("game"))
+            || lower.contains("prisoners dilemma") && (lower.contains("class") || lower.contains("exam") || lower.contains("game"))
+            || lower.contains("bayesian game") && (lower.contains("class") || lower.contains("exam") || lower.contains("game theory"))
+            || lower.contains("mechanism design") && (lower.contains("class") || lower.contains("exam") || lower.contains("game") || lower.contains("course"))
+            || lower.contains("auction theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("game") || lower.contains("course"))
+            || lower.contains("evolutionary game") && (lower.contains("class") || lower.contains("exam") || lower.contains("theory"))
+            || lower.contains("repeated game") && (lower.contains("class") || lower.contains("exam") || lower.contains("game theory"))
+            || lower.contains("cooperative game") && (lower.contains("class") || lower.contains("exam") || lower.contains("theory"))
+            || lower.contains("extensive form game") && (lower.contains("class") || lower.contains("exam")) {
+            return "gametheory"
+        }
         // economics — positioned AFTER statistics and BEFORE astronomy so macroeconomics,
         // microeconomics, econometrics, and economics class/course terms route to a dedicated pool.
         // word("economics") catches the discipline name directly. Bare "economy" NOT matched.
@@ -9405,6 +9429,25 @@ public final class CalloutManager {
             || lower.contains("tissue staining") && (lower.contains("class") || lower.contains("lab") || lower.contains("histology")) {
             return "histology"
         }
+        // surgicalpathology — positioned BEFORE pathology so surgical pathology rotation/clerkship
+        // tasks (grossing specimens, sign-out, synoptic CAP reports, frozen section, tumor grading)
+        // route to a dedicated pool. Bare "pathology class" stays in the pathology branch (fires after).
+        if lower.contains("surgical pathology rotation") || lower.contains("surgical pathology clerkship")
+            || lower.contains("surgical path rotation") || lower.contains("surgical path clerkship")
+            || lower.contains("surgical pathology elective") || lower.contains("surgical pathology fellowship")
+            || lower.contains("grossing rotation") || lower.contains("grossing specimens") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("path"))
+            || lower.contains("sign-out rotation") || lower.contains("sign out rotation") && (lower.contains("path") || lower.contains("surgical"))
+            || lower.contains("pathology residency") && (lower.contains("rotation") || lower.contains("notes") || lower.contains("gross") || lower.contains("sign"))
+            || lower.contains("surgical pathology notes") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write"))
+            || lower.contains("surgical pathology report") && (lower.contains("rotation") || lower.contains("write") || lower.contains("clerkship"))
+            || lower.contains("synoptic report") && (lower.contains("path") || lower.contains("rotation") || lower.contains("gross") || lower.contains("tumor"))
+            || lower.contains("frozen section") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("path") || lower.contains("gross"))
+            || lower.contains("gross specimen") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("path") || lower.contains("write"))
+            || lower.contains("tumor grading") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("path") || lower.contains("report"))
+            || lower.contains("cap protocol") && (lower.contains("path") || lower.contains("rotation") || lower.contains("report") || lower.contains("synoptic"))
+            || lower.contains("intraoperative consultation") && (lower.contains("path") || lower.contains("rotation") || lower.contains("frozen")) {
+            return "surgicalpathology"
+        }
         // pathology — positioned BEFORE premed so pathology class/lab work routes here.
         // Bare word("pathology") stays in premed for MCAT context (fires after).
         if lower.contains("pathology class") || lower.contains("pathology course")
@@ -9464,6 +9507,30 @@ public final class CalloutManager {
             || lower.contains("synaptic physiology") && (lower.contains("class") || lower.contains("lab") || lower.contains("neurobiology"))
             || lower.contains("neurobiology lab report") || lower.contains("neurobiology lab notebook") {
             return "neurobiologylab"
+        }
+        // neuropharmacology — positioned BEFORE pharmacology so neuropharmacology class/exam tasks
+        // (CNS drug mechanisms, receptor pharmacology, neurotransmitter systems, antidepressants,
+        // antipsychotics, anxiolytics, opioids, dopamine/serotonin/GABA pharmacology) route here.
+        // Bare "pharmacology" and general pharm class stay in the pharmacology branch (fires after).
+        if lower.contains("neuropharmacology class") || lower.contains("neuropharmacology course")
+            || lower.contains("neuropharmacology exam") || lower.contains("neuropharmacology notes")
+            || lower.contains("neuropharmacology homework") || lower.contains("neuropharmacology assignment")
+            || lower.contains("neuropharmacology textbook") || lower.contains("neuropharmacology problem set")
+            || lower.contains("neuropsychopharmacology class") || lower.contains("neuropsychopharmacology course")
+            || lower.contains("neuropsychopharmacology exam") || lower.contains("neuropsychopharmacology notes")
+            || lower.contains("cns pharmacology class") || lower.contains("cns pharmacology course")
+            || lower.contains("cns pharmacology exam") || lower.contains("cns pharmacology homework")
+            || lower.contains("cns drug") && (lower.contains("class") || lower.contains("exam") || lower.contains("pharmacology") || lower.contains("mechanism"))
+            || lower.contains("dopamine receptor") && (lower.contains("class") || lower.contains("exam") || lower.contains("pharmacology") || lower.contains("neuropharm"))
+            || lower.contains("serotonin receptor") && (lower.contains("class") || lower.contains("exam") || lower.contains("pharmacology") || lower.contains("neuropharm"))
+            || lower.contains("gaba receptor") && (lower.contains("class") || lower.contains("exam") || lower.contains("pharmacology") || lower.contains("neuropharm"))
+            || lower.contains("nmda receptor") && (lower.contains("class") || lower.contains("exam") || lower.contains("pharmacology") || lower.contains("neuropharm"))
+            || lower.contains("antidepressant mechanism") && (lower.contains("class") || lower.contains("exam") || lower.contains("pharmacology"))
+            || lower.contains("antipsychotic mechanism") && (lower.contains("class") || lower.contains("exam") || lower.contains("pharmacology"))
+            || lower.contains("anxiolytic mechanism") && (lower.contains("class") || lower.contains("exam") || lower.contains("pharmacology"))
+            || lower.contains("ssri mechanism") && (lower.contains("class") || lower.contains("exam") || lower.contains("pharmacology"))
+            || lower.contains("opioid receptor") && (lower.contains("class") || lower.contains("exam") || lower.contains("pharmacology") || lower.contains("neuropharm")) {
+            return "neuropharmacology"
         }
         // pharmacology — positioned BEFORE physiology and premed to catch dedicated pharmacology
         // class/lab work. Bare word("pharmacology") stays in premed (MCAT context fires after).
@@ -9863,6 +9930,27 @@ public final class CalloutManager {
             || lower.contains("leukemia cases") && (lower.contains("rotation") || lower.contains("write"))
             || lower.contains("lymphoma cases") && (lower.contains("rotation") || lower.contains("write")) {
             return "hematologyoncology"
+        }
+        // neurologyrotation — positioned AFTER hematologyoncology and BEFORE obgynrotation so
+        // neurology clerkship tasks (SOAP notes, stroke/seizure/headache workup, EEG, LP results,
+        // neuro shelf, NBME neurology) route to a dedicated pool. Bare "neurology" without
+        // clerkship/rotation context stays in neuroscience (fires much earlier).
+        if lower.contains("neurology rotation") || lower.contains("neurology clerkship")
+            || lower.contains("neuro rotation") && (lower.contains("notes") || lower.contains("clerkship") || lower.contains("write") || lower.contains("elective") || lower.contains("wards"))
+            || lower.contains("neuro clerkship")
+            || lower.contains("neurology elective") || lower.contains("neurology wards")
+            || lower.contains("neurology notes") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write") || lower.contains("attending"))
+            || lower.contains("neurology attending") && (lower.contains("rotation") || lower.contains("notes") || lower.contains("clerkship"))
+            || lower.contains("neurology rounds") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write"))
+            || lower.contains("neurology case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("clerkship") || lower.contains("presentation"))
+            || lower.contains("stroke notes") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write") || lower.contains("neuro"))
+            || lower.contains("seizure notes") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write") || lower.contains("neuro"))
+            || lower.contains("eeg report") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("neuro") || lower.contains("write"))
+            || lower.contains("lumbar puncture") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write") || lower.contains("neuro") || lower.contains("notes"))
+            || lower.contains("nihss") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("write") || lower.contains("notes"))
+            || lower.contains("neurology shelf") || lower.contains("nbme neurology")
+            || lower.contains("neuro shelf exam") {
+            return "neurologyrotation"
         }
         // obgynrotation — positioned AFTER internalmedicine and BEFORE premed. Bare "obstetrics" or
         // "gynecology" alone stays in premed; OB/GYN clerkship-specific context routes here.
@@ -11462,6 +11550,26 @@ public final class CalloutManager {
             || lower.contains("thanatology program") || lower.contains("death studies class")
             || lower.contains("cremation technology") || lower.contains("cremation class") {
             return "mortuaryscience"
+        }
+        // forensicchemistry — positioned BEFORE forensicscience so dedicated forensic chemistry
+        // class/lab tasks (analytical chemistry in crime labs, drug identification by GC-MS/FTIR,
+        // arson accelerant analysis, trace evidence chemistry, toxicological chemistry methods)
+        // route here. Broad "forensic science" stays in forensicscience (fires after).
+        if lower.contains("forensic chemistry class") || lower.contains("forensic chemistry course")
+            || lower.contains("forensic chemistry exam") || lower.contains("forensic chemistry lab")
+            || lower.contains("forensic chemistry notes") || lower.contains("forensic chemistry assignment")
+            || lower.contains("forensic chemistry homework") || lower.contains("forensic chemistry textbook")
+            || lower.contains("forensic chemistry problem set")
+            || lower.contains("crime lab chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("course"))
+            || lower.contains("forensic analytical chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("drug identification chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("forensic") || lower.contains("lab"))
+            || lower.contains("arson chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("forensic"))
+            || lower.contains("accelerant analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("forensic") || lower.contains("chemistry"))
+            || lower.contains("trace evidence chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("forensic"))
+            || lower.contains("controlled substance analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("forensic") || lower.contains("chemistry"))
+            || lower.contains("gc-ms forensic") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("lab"))
+            || lower.contains("forensic toxicology chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab")) {
+            return "forensicchemistry"
         }
         // forensicscience — positioned BEFORE criminaljustice so crime-lab, DNA analysis,
         // and forensic-science coursework route here. "forensic accounting" is owned by its own

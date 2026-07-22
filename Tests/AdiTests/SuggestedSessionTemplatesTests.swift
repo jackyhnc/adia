@@ -7408,8 +7408,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func riemanniangeometryProblemSetTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("riemannian geometry") && $0.task.lowercased().contains("problem set") })
     }
-    // MARK: - Count guard (≥1159)
-    @Test func templateCountAtLeast1159() {
-        #expect(SuggestedSessionTemplates.all.count >= 1159, "template catalog must have ≥1159 entries after advancedlinearalgebra/riemanniangeometry/nephrologyrotation/endocrinologyrotation/hematologyoncology additions")
+    // MARK: - neurologyrotation templates
+    @Test func neurologyrotationNotesTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neurology rotation") && $0.task.lowercased().contains("notes") })
+    }
+    @Test func neurologyrotationShelfTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neurology shelf") && $0.task.lowercased().contains("study") })
+    }
+    // MARK: - surgicalpathology templates
+    @Test func surgicalpathologyRotationTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("surgical pathology rotation") && $0.task.lowercased().contains("gross") })
+    }
+    @Test func surgicalpathologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("surgical pathology") && $0.task.lowercased().contains("exam") })
+    }
+    // MARK: - gametheory templates
+    @Test func gametheoryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("game theory") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func gametheoryProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("game theory") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - forensicchemistry templates
+    @Test func forensicchemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("forensic chemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func forensicchemistryLabTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("forensic chemistry") && $0.task.lowercased().contains("lab report") })
+    }
+    // MARK: - neuropharmacology templates
+    @Test func neuropharmacologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neuropharmacology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func neuropharmacologyProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neuropharmacology") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - Count guard (≥1169)
+    @Test func templateCountAtLeast1169() {
+        #expect(SuggestedSessionTemplates.all.count >= 1169, "template catalog must have ≥1169 entries after neurologyrotation/surgicalpathology/gametheory/forensicchemistry/neuropharmacology additions")
     }
 }

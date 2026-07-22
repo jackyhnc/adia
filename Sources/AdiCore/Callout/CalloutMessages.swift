@@ -141,6 +141,7 @@ extension CalloutManager {
         case "arthistory":             return arthistoryCallouts(tier: tier)
         case "marinebiology":          return marinebiologyCallouts(tier: tier)
         case "speecharts":             return speechartsCallouts(tier: tier)
+        case "forensicchemistry":      return forensicchemistryCallouts(tier: tier)
         case "forensicscience":        return forensicscienceCallouts(tier: tier)
         case "accounting":             return accountingCallouts(tier: tier)
         case "sportsmanagement":       return sportsmanagementCallouts(tier: tier)
@@ -307,6 +308,7 @@ extension CalloutManager {
         case "informationassurance":  return informationassuranceCallouts(tier: tier)
         case "hrmanagement":          return hrmanagementCallouts(tier: tier)
         case "changemanagement":      return changemanagementCallouts(tier: tier)
+        case "gametheory":            return gametheoryCallouts(tier: tier)
         case "economics":             return economicsCallouts(tier: tier)
         case "iopsychology":          return iopsychologyCallouts(tier: tier)
         case "criminallaw":           return criminallawCallouts(tier: tier)
@@ -418,11 +420,13 @@ extension CalloutManager {
         case "parasitology":               return parasitologyCallouts(tier: tier)
         case "embryology":                 return embryologyCallouts(tier: tier)
         case "histology":                  return histologyCallouts(tier: tier)
+        case "surgicalpathology":          return surgicalpathologyCallouts(tier: tier)
         case "pathology":                  return pathologyCallouts(tier: tier)
         case "neuroanatomy":               return neuroanatomyCallouts(tier: tier)
         case "chemicalkinetics":           return chemicalkineticsCallouts(tier: tier)
         case "computationalchemistry":     return computationalchemistryCallouts(tier: tier)
         case "ecology":                    return ecologyCallouts(tier: tier)
+        case "neuropharmacology":          return neuropharmacologyCallouts(tier: tier)
         case "pharmacology":               return pharmacologyCallouts(tier: tier)
         case "physiology":                 return physiologyCallouts(tier: tier)
         case "mechanicalengineering":      return mechanicalengineeringCallouts(tier: tier)
@@ -468,6 +472,7 @@ extension CalloutManager {
         case "nephrologyrotation":         return nephrologyrotationCallouts(tier: tier)
         case "endocrinologyrotation":      return endocrinologyrotationCallouts(tier: tier)
         case "hematologyoncology":         return hematologyoncologyCallouts(tier: tier)
+        case "neurologyrotation":          return neurologyrotationCallouts(tier: tier)
         case "obgynrotation":              return obgynrotationCallouts(tier: tier)
         case "familymedicine":             return familymedicineCallouts(tier: tier)
         case "emergencymedicinerotation":  return emergencymedicinerotationCallouts(tier: tier)
@@ -13169,6 +13174,111 @@ extension CalloutManager {
             "CLOSE THIS. open your Riemannian geometry textbook.",
             "CLOSE THIS. those geodesic and curvature tensor problems won't solve themselves.",
             "CLOSE THIS. your Riemannian geometry exam won't study itself."
+        ]
+        }
+    }
+
+    private func neurologyrotationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "neurology rotation notes still need writing — stroke and seizure workups don't document themselves.",
+            "your neurology shelf is approaching — neuroanatomy and neuro exam findings need review.",
+            "those neurology case presentations won't write themselves — get back to them.",
+            "EEG findings, lumbar puncture results, NIHSS documentation — waiting on your write-up."
+        ]
+        case 2: return [
+            "stop. your neurology rotation notes are still open.",
+            "stroke protocol, seizure workup, headache differential — your attending is expecting those notes.",
+            "neurology clerkship doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your neurology rotation notes.",
+            "CLOSE THIS. those stroke and seizure cases won't document themselves.",
+            "CLOSE THIS. your neurology shelf won't study itself."
+        ]
+        }
+    }
+
+    private func surgicalpathologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those gross specimens and histopathology slides aren't going to write themselves.",
+            "your surgical path rotation — synoptic CAP reports, tumor grading, frozen section reads need documentation.",
+            "sign-out is coming up and those surgical pathology notes are still open.",
+            "grossing specimens, slide review, CAP protocol reports — get back to your write-ups."
+        ]
+        case 2: return [
+            "stop. your surgical pathology rotation notes are still open.",
+            "gross sections, histopath slides, tumor staging — your attending is expecting that sign-out.",
+            "surgical pathology rotation doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your surgical pathology notes.",
+            "CLOSE THIS. those gross specimens and frozen section reads won't document themselves.",
+            "CLOSE THIS. your surgical pathology sign-out won't write itself."
+        ]
+        }
+    }
+
+    private func gametheoryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "game theory isn't going to study itself — Nash equilibrium and dominant strategies are waiting.",
+            "your game theory exam is approaching — mixed strategies, payoff matrices, Bayesian games need review.",
+            "those prisoner's dilemma and mechanism design problems are still open.",
+            "Nash equilibrium, auction theory, evolutionary games — get back to your problem set."
+        ]
+        case 2: return [
+            "stop. your game theory assignment is still open.",
+            "mixed strategy equilibria, extensive form games — your exam won't wait.",
+            "game theory class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your game theory textbook.",
+            "CLOSE THIS. those Nash equilibrium and mechanism design problems won't solve themselves.",
+            "CLOSE THIS. your game theory exam won't study itself."
+        ]
+        }
+    }
+
+    private func forensicchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "forensic chemistry isn't going to study itself — GC-MS drug analysis and trace evidence methods are waiting.",
+            "your forensic chemistry exam is approaching — arson accelerant analysis and controlled substance identification need review.",
+            "those forensic analytical chemistry problems and lab reports are still open.",
+            "crime lab analytical methods, drug ID, trace evidence chemistry — get back to your assignment."
+        ]
+        case 2: return [
+            "stop. your forensic chemistry assignment is still open.",
+            "GC-MS analysis, arson chemistry, toxicological methods — your exam won't wait.",
+            "forensic chemistry class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your forensic chemistry textbook.",
+            "CLOSE THIS. those crime lab analytical chemistry problems won't solve themselves.",
+            "CLOSE THIS. your forensic chemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func neuropharmacologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "neuropharmacology isn't going to study itself — CNS receptor mechanisms and drug targets are waiting.",
+            "your neuropharmacology exam is approaching — dopamine, serotonin, GABA receptor pharmacology need review.",
+            "those antidepressant, antipsychotic, and opioid mechanism problems are still open.",
+            "SSRI/SNRI mechanisms, NMDA antagonists, anxiolytic pharmacology — get back to your problem set."
+        ]
+        case 2: return [
+            "stop. your neuropharmacology assignment is still open.",
+            "CNS drug mechanisms, receptor subtypes, neurotransmitter systems — your exam won't wait.",
+            "neuropharmacology class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your neuropharmacology textbook.",
+            "CLOSE THIS. those CNS receptor mechanism and drug target problems won't solve themselves.",
+            "CLOSE THIS. your neuropharmacology exam won't study itself."
         ]
         }
     }

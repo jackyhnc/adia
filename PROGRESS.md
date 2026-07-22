@@ -20509,3 +20509,62 @@ Switch cases added between:
 - `marinechemistry` — marine chemistry class (seawater composition, alkalinity, carbonate system, ocean carbon cycle, trace metal speciation — distinct from oceanography)
 - `radiologyrotation` — radiology clerkship (chest X-ray interpretation, CT reads, MRI basics, interventional radiology procedures, radiology report writing, ABR Core exam — distinct from premed radiology physics)
 
+
+---
+
+## Run 407 — neurologyrotation / surgicalpathology / gametheory / forensicchemistry / neuropharmacology
+
+**Date:** 2026-07-22  
+**Templates:** 1159 → 1169  
+**Domains added:** 5
+
+### Routing branches added (CalloutManager.swift)
+
+| Domain | Placement | Key triggers |
+|---|---|---|
+| `neurologyrotation` | AFTER `hematologyoncology`, BEFORE `obgynrotation` | neurology rotation/clerkship/elective/wards/notes/shelf; neuro rotation+notes/clerkship/write/elective/wards; neurology shelf; nbme neurology; neuro shelf exam; stroke/seizure/eeg notes+rotation/clerkship/write/neuro; lumbar puncture+rotation/clerkship/write/neuro/notes; nihss+rotation/clerkship/write/notes |
+| `surgicalpathology` | BEFORE `pathology` | surgical pathology rotation/clerkship/elective/fellowship; surgical path rotation/clerkship; grossing rotation; grossing specimens+rotation/clerkship/path; sign-out rotation+path/surgical; pathology residency+rotation/notes/gross/sign; synoptic report+path/rotation/gross/tumor; frozen section+rotation/clerkship/path/gross; gross specimen+rotation/clerkship/path/write; tumor grading+rotation/clerkship/path/report; cap protocol+path/rotation/report/synoptic; intraoperative consultation+path/rotation/frozen |
+| `gametheory` | BEFORE `economics` | game theory class/course/exam/homework/assignment/problem set/textbook/notes; nash equilibrium+class/course/exam/game/homework; dominant/mixed/pure strategy+class/exam/game/equilibrium; payoff matrix+class/exam/game/strategy; prisoner's dilemma+class/exam/game; bayesian game+class/exam/game theory; mechanism design+class/exam/game/course; auction theory+class/exam/game/course; evolutionary/repeated/cooperative game+class/exam/theory; extensive form game+class/exam |
+| `forensicchemistry` | BEFORE `forensicscience` | forensic chemistry class/course/exam/lab/notes/assignment/homework/textbook/problem set; crime lab chemistry+class/exam/lab/course; forensic analytical chemistry+class/exam/lab; drug identification chemistry+class/exam/forensic/lab; arson chemistry+class/exam/lab/forensic; accelerant analysis+class/exam/forensic/chemistry; trace evidence chemistry+class/exam/lab/forensic; controlled substance analysis+class/exam/forensic/chemistry; gc-ms forensic+class/exam/chemistry/lab; forensic toxicology chemistry+class/exam/lab |
+| `neuropharmacology` | BEFORE `pharmacology` | neuropharmacology class/course/exam/notes/homework/assignment/textbook/problem set; neuropsychopharmacology class/course/exam/notes; cns pharmacology class/course/exam/homework; cns drug+class/exam/pharmacology/mechanism; dopamine/serotonin/gaba/nmda receptor+class/exam/pharmacology/neuropharm; antidepressant/antipsychotic/anxiolytic mechanism+class/exam/pharmacology; ssri mechanism+class/exam/pharmacology; opioid receptor+class/exam/pharmacology/neuropharm |
+
+### Callout pools added (CalloutMessages.swift)
+
+- `neurologyrotationCallouts(tier:)` — stroke/seizure/headache workup notes, EEG/LP documentation, neuro shelf; CLOSE THIS tier
+- `surgicalpathologyCallouts(tier:)` — gross specimens, histopath slides, CAP synoptic reports, frozen section sign-out; CLOSE THIS tier
+- `gametheoryCallouts(tier:)` — Nash equilibrium, mixed strategies, payoff matrices, mechanism design, auction theory; CLOSE THIS tier
+- `forensicchemistryCallouts(tier:)` — GC-MS drug analysis, arson accelerant chemistry, trace evidence methods, crime lab analytical methods; CLOSE THIS tier
+- `neuropharmacologyCallouts(tier:)` — CNS receptor mechanisms, dopamine/serotonin/GABA pharmacology, antidepressant/antipsychotic mechanisms, opioid receptors; CLOSE THIS tier
+
+### Templates added (SuggestedSessionTemplates.swift)
+
+| Domain | Template 1 | Template 2 |
+|---|---|---|
+| neurologyrotation | Write rotation notes — SOAP/H&P, neuroanatomical localization, stroke/seizure/headache/movement disorder workup, EEG/MRI/CSF results, NIHSS | Study shelf — stroke/TIA, seizure/epilepsy, headache syndromes, movement disorders, dementia, neuromuscular diseases, MS, spinal cord syndromes |
+| surgicalpathology | Complete rotation documentation — gross description, microscopic H&E review, IHC/special stains, WHO diagnosis, CAP synoptic report with TNM staging | Study rotation/boards — colon adenocarcinoma, breast pathology (Nottingham grading), lung adenocarcinoma, prostate Gleason, frozen section indications |
+| gametheory | Study exam — Nash equilibrium, mixed strategies, extensive form games, Bayesian games, repeated games, mechanism design | Problem set — Nash equilibrium computation, backward induction, Bayesian Nash equilibrium, repeated game δ condition, VCG/Myerson mechanism |
+| forensicchemistry | Study exam — controlled substance identification (color tests, GC-MS, LC-MS/MS), arson accelerant analysis, trace evidence, blood alcohol Widmark, serology | Lab report/assignment — GC-MS spectrum interpretation, bench report writing, Widmark BAC calculation, trace evidence comparison, method validation |
+| neuropharmacology | Study exam — dopamine/serotonin/GABA/glutamate/opioid/ACh systems, antipsychotic profiles, SSRI/TCA/MAOI, benzodiazepines, AD pharmacotherapy | Problem set — SSRI delayed onset mechanism, D2 pathway selectivity, opioid tolerance, L-dopa dietary interaction, drug class comparisons |
+
+### Tests added
+
+**CalloutManagerTests.swift** — 35 new @Test functions:
+- 3 routing tests + 1 false-positive guard + 3 pool tests (all-tiers, tier-1-count, tier-3-CLOSE-THIS) per domain × 5 domains
+- Count guard updated: ≥1159 → ≥1169
+
+**SuggestedSessionTemplatesTests.swift** — 12 new @Test functions:
+- 2 template existence tests per domain × 5 domains + count guard ≥1159 → ≥1169
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1169 ✓
+- Brace balance: CalloutMessages.swift 1213/1213 ✓; CalloutManager.swift 634/634 ✓
+- Routing branch ordering confirmed: surgicalpathology (9448) < pathology (9469) ✓; neuropharmacology (9532) < pharmacology (9558) ✓; hematologyoncology (9931) < neurologyrotation (9952) ✓; gametheory (1057) < economics (1086) ✓; forensicchemistry (11571) < forensicscience (11594) ✓
+- 5 new switch cases in CalloutMessages.swift ✓
+- 5 new private pool functions in CalloutMessages.swift ✓
+
+### Suggested next domains
+- `clinicalneurology` / `neurologyadvanced` — clinical neurology elective distinct from basic neuroscience (movement disorder clinic, neuro-ICU, epilepsy monitoring unit, multiple sclerosis clinic)
+- `toxicology` already exists; `clinicaltoxicology` — clinical toxicology rotation (poison control, overdose management, antidotes, TOXIC mnemonic, toxidromes: opioid/cholinergic/anticholinergic/sympathomimetic/serotonin/sedative-hypnotic)
+- `behavioraleconomics` — behavioral economics class (prospect theory, loss aversion, framing effects, anchoring, hyperbolic discounting, nudge theory — distinct from game theory and mainstream economics)
+- `environmentallaw` — environmental law class (NEPA, Clean Air Act, Clean Water Act, CERCLA/Superfund, RCRA, ESA — distinct from property law and environmental science)
+- `globalenvironmentalgovernance` — global environmental governance / international environmental law (Paris Agreement, Kyoto Protocol, CBD, UNFCCC, MEAs, global commons — distinct from environmental law and international relations)
