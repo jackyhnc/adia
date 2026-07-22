@@ -951,6 +951,55 @@ public final class CalloutManager {
             || lower.contains("biostats class") || lower.contains("biostats course") || lower.contains("biostats exam") {
             return "biostatistics"
         }
+        // informationtheory — positioned BEFORE mathematicalstatistics and statisticalmethods so
+        // information-theoretic coursework (Shannon entropy, channel capacity, mutual information,
+        // Huffman coding, channel coding, source coding, rate-distortion, KL divergence) routes
+        // to a dedicated pool distinct from applied statistics.
+        if lower.contains("information theory class") || lower.contains("information theory course")
+            || lower.contains("information theory exam") || lower.contains("information theory homework")
+            || lower.contains("information theory notes") || lower.contains("information theory assignment")
+            || lower.contains("information theory problem set") || lower.contains("information theory textbook")
+            || lower.contains("shannon entropy") && (lower.contains("class") || lower.contains("exam") || lower.contains("information") || lower.contains("channel"))
+            || lower.contains("channel capacity") && (lower.contains("class") || lower.contains("exam") || lower.contains("information") || lower.contains("shannon"))
+            || lower.contains("mutual information") && (lower.contains("class") || lower.contains("exam") || lower.contains("information theory") || lower.contains("channel"))
+            || lower.contains("huffman coding") && (lower.contains("class") || lower.contains("exam") || lower.contains("information") || lower.contains("compression"))
+            || lower.contains("source coding") && (lower.contains("class") || lower.contains("exam") || lower.contains("information theory") || lower.contains("shannon"))
+            || lower.contains("channel coding") && (lower.contains("class") || lower.contains("exam") || lower.contains("information theory") || lower.contains("shannon"))
+            || lower.contains("lossless compression") && lower.contains("information theory") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("noisy channel") && (lower.contains("class") || lower.contains("exam") || lower.contains("information theory") || lower.contains("coding"))
+            || lower.contains("ldpc code") && (lower.contains("class") || lower.contains("exam") || lower.contains("information") || lower.contains("coding"))
+            || lower.contains("turbo code") && (lower.contains("class") || lower.contains("exam") || lower.contains("information") || lower.contains("coding"))
+            || lower.contains("rate-distortion") && (lower.contains("class") || lower.contains("exam") || lower.contains("information") || lower.contains("theory"))
+            || lower.contains("kullback-leibler") && (lower.contains("class") || lower.contains("exam") || lower.contains("information theory") || lower.contains("divergence"))
+            || lower.contains("relative entropy") && lower.contains("information theory") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("joint entropy") && (lower.contains("class") || lower.contains("exam") || lower.contains("information theory")) {
+            return "informationtheory"
+        }
+        // mathematicalstatistics — positioned BEFORE statisticalmethods so theoretical statistics
+        // coursework (sufficiency, Fisher information, Cramér-Rao bound, Neyman-Pearson lemma,
+        // UMVUE, exponential family, order statistics) routes to a dedicated pool distinct from
+        // applied statistics methods and biostatistics.
+        if lower.contains("mathematical statistics class") || lower.contains("mathematical statistics course")
+            || lower.contains("mathematical statistics exam") || lower.contains("mathematical statistics homework")
+            || lower.contains("mathematical statistics notes") || lower.contains("mathematical statistics assignment")
+            || lower.contains("theoretical statistics class") || lower.contains("theoretical statistics course")
+            || lower.contains("theoretical statistics exam") || lower.contains("theoretical statistics homework")
+            || lower.contains("math stat class") || lower.contains("math stat course")
+            || lower.contains("math stat exam") || lower.contains("math stat homework")
+            || lower.contains("sufficiency") && (lower.contains("class") || lower.contains("exam") || lower.contains("mathematical statistics") || lower.contains("theoretical statistics"))
+            || lower.contains("fisher information") && (lower.contains("class") || lower.contains("exam") || lower.contains("mathematical statistics") || lower.contains("estimation"))
+            || lower.contains("cramer-rao") && (lower.contains("class") || lower.contains("exam") || lower.contains("statistics") || lower.contains("bound"))
+            || lower.contains("cramér-rao") && (lower.contains("class") || lower.contains("exam") || lower.contains("statistics") || lower.contains("bound"))
+            || lower.contains("rao-blackwell") && (lower.contains("class") || lower.contains("exam") || lower.contains("statistics"))
+            || lower.contains("neyman-pearson") && (lower.contains("class") || lower.contains("exam") || lower.contains("statistics") || lower.contains("hypothesis"))
+            || lower.contains("uniformly most powerful") && (lower.contains("class") || lower.contains("exam") || lower.contains("statistics"))
+            || lower.contains("umvue") && (lower.contains("class") || lower.contains("exam") || lower.contains("statistics"))
+            || lower.contains("exponential family") && lower.contains("mathematical statistics") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("complete statistic") && (lower.contains("class") || lower.contains("exam") || lower.contains("mathematical statistics") || lower.contains("theoretical statistics"))
+            || lower.contains("minimal sufficient") && (lower.contains("class") || lower.contains("exam") || lower.contains("statistics"))
+            || lower.contains("order statistics") && lower.contains("mathematical statistics") && (lower.contains("class") || lower.contains("exam")) {
+            return "mathematicalstatistics"
+        }
         // statisticalmethods — positioned AFTER biostatistics and BEFORE statistics so applied
         // statistics coursework (applied statistics class, statistical methods, design of
         // experiments, Bayesian statistics, nonparametric methods, time series analysis)
@@ -1660,6 +1709,26 @@ public final class CalloutManager {
             || lower.contains("international phonetic alphabet") {
             return "linguistics"
         }
+        // marinechemistry — positioned BEFORE oceanography so dedicated marine/ocean chemistry
+        // coursework (seawater composition, alkalinity, carbonate system, dissolved inorganic carbon,
+        // trace metals, ocean acidification) routes to a dedicated pool distinct from general oceanography.
+        if lower.contains("marine chemistry class") || lower.contains("marine chemistry course")
+            || lower.contains("marine chemistry exam") || lower.contains("marine chemistry lab")
+            || lower.contains("marine chemistry notes") || lower.contains("marine chemistry assignment")
+            || lower.contains("ocean chemistry class") || lower.contains("ocean chemistry course")
+            || lower.contains("ocean chemistry exam") || lower.contains("ocean chemistry lab")
+            || lower.contains("chemical oceanography") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("seawater composition") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("marine"))
+            || lower.contains("ocean alkalinity") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("marine"))
+            || lower.contains("carbonate system") && (lower.contains("class") || lower.contains("exam") || lower.contains("ocean") || lower.contains("marine") || lower.contains("seawater"))
+            || lower.contains("carbonate chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("ocean") || lower.contains("marine"))
+            || lower.contains("dissolved inorganic carbon") && (lower.contains("class") || lower.contains("exam") || lower.contains("marine") || lower.contains("ocean"))
+            || lower.contains("ocean acidification") && lower.contains("chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("marine") || lower.contains("carbonate"))
+            || lower.contains("trace metal") && (lower.contains("ocean") || lower.contains("marine")) && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry"))
+            || lower.contains("dissolved organic matter") && (lower.contains("class") || lower.contains("exam") || lower.contains("marine chemistry") || lower.contains("ocean chemistry"))
+            || lower.contains("ocean carbon cycle") && lower.contains("chemistry") && (lower.contains("class") || lower.contains("exam")) {
+            return "marinechemistry"
+        }
         // oceanography — positioned BEFORE marinebiology so dedicated oceanography class/lab/exam
         // tasks route here rather than the marine biology pool. Bare "ocean" NOT matched alone.
         // Physical, chemical, biological, and geological oceanography all covered here.
@@ -1962,8 +2031,30 @@ public final class CalloutManager {
             || lower.contains("stellarator") && (lower.contains("class") || lower.contains("exam") || lower.contains("plasma") || lower.contains("physics")) {
             return "plasmaphysics"
         }
+        // quantumoptics — positioned BEFORE optics so quantum optics coursework (cavity QED,
+        // Jaynes-Cummings model, photon statistics, Wigner function, squeezed states,
+        // Hong-Ou-Mandel, Fock states, entangled photons) routes to a dedicated pool distinct
+        // from classical optics. "quantum optics" line removed from optics branch below.
+        if lower.contains("quantum optics class") || lower.contains("quantum optics course")
+            || lower.contains("quantum optics exam") || lower.contains("quantum optics homework")
+            || lower.contains("quantum optics notes") || lower.contains("quantum optics assignment")
+            || lower.contains("quantum optics lab") || lower.contains("quantum optics textbook")
+            || lower.contains("cavity qed") && (lower.contains("class") || lower.contains("exam") || lower.contains("quantum") || lower.contains("optics"))
+            || lower.contains("jaynes-cummings") && (lower.contains("class") || lower.contains("exam") || lower.contains("quantum") || lower.contains("optics"))
+            || lower.contains("photon statistics") && (lower.contains("class") || lower.contains("exam") || lower.contains("quantum") || lower.contains("optics"))
+            || lower.contains("wigner function") && (lower.contains("class") || lower.contains("exam") || lower.contains("quantum") || lower.contains("optics"))
+            || lower.contains("squeezed state") && (lower.contains("class") || lower.contains("exam") || lower.contains("quantum optics") || lower.contains("quantum light"))
+            || lower.contains("hong-ou-mandel") && (lower.contains("class") || lower.contains("exam") || lower.contains("quantum") || lower.contains("optics"))
+            || lower.contains("fock state") && (lower.contains("class") || lower.contains("exam") || lower.contains("quantum optics") || lower.contains("quantum light"))
+            || lower.contains("coherent state") && lower.contains("quantum optics") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("entangled photon") && (lower.contains("class") || lower.contains("exam") || lower.contains("quantum optics") || lower.contains("quantum optics"))
+            || lower.contains("beam splitter") && lower.contains("quantum") && lower.contains("optics") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("optical parametric amplifier") && (lower.contains("class") || lower.contains("exam") || lower.contains("quantum")) {
+            return "quantumoptics"
+        }
         // optics — positioned BEFORE experimentalphysics so optics/photonics class work routes
         // to a dedicated pool. "optics lab" stays in experimentalphysics (no class qualifier needed).
+        // "quantum optics" now owned by quantumoptics branch above.
         if word("optics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("homework") || lower.contains("problem set") || lower.contains("notes"))
             || word("photonics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("project") || lower.contains("homework"))
             || lower.contains("laser physics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem"))
@@ -1971,7 +2062,6 @@ public final class CalloutManager {
             || lower.contains("geometric optics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem"))
             || lower.contains("fourier optics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem"))
             || lower.contains("nonlinear optics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
-            || lower.contains("quantum optics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
             || lower.contains("optical fiber") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("notes"))
             || lower.contains("optical fibers") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab"))
             || lower.contains("diffraction grating") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("problem") || lower.contains("optics"))
@@ -8042,6 +8132,28 @@ public final class CalloutManager {
             || lower.contains("physical chemistry exam") || lower.contains("physical chemistry lab")
             || lower.contains("physical chemistry problem set") || lower.contains("physical chemistry notes") {
             return "physicalchemistry"
+        }
+        // bioinorganicchemistry — positioned BEFORE inorganicchemistry so bioinorganic chemistry
+        // coursework (metalloenzymes, iron-sulfur clusters, heme proteins, oxygen transport,
+        // nitrogenase, cisplatin, carbonic anhydrase, copper enzymes) routes to a dedicated pool.
+        if lower.contains("bioinorganic chemistry class") || lower.contains("bioinorganic chemistry course")
+            || lower.contains("bioinorganic chemistry exam") || lower.contains("bioinorganic chemistry lab")
+            || lower.contains("bioinorganic chemistry notes") || lower.contains("bioinorganic chemistry assignment")
+            || lower.contains("bioinorganic chem class") || lower.contains("bioinorganic chem exam")
+            || lower.contains("bioinorganic chem course") || lower.contains("bioinorganic chem lab")
+            || lower.contains("metalloenzyme") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioinorganic") || lower.contains("inorganic chemistry"))
+            || lower.contains("iron-sulfur cluster") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioinorganic") || lower.contains("inorganic chemistry"))
+            || lower.contains("iron sulfur cluster") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioinorganic") || lower.contains("inorganic chemistry"))
+            || lower.contains("nitrogenase") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioinorganic") || lower.contains("inorganic chemistry"))
+            || lower.contains("heme protein") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioinorganic") || lower.contains("inorganic chemistry"))
+            || lower.contains("oxygen transport") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioinorganic") || lower.contains("heme") || lower.contains("hemoglobin") || lower.contains("myoglobin"))
+            || lower.contains("carbonic anhydrase") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioinorganic") || lower.contains("metalloenzyme"))
+            || lower.contains("cisplatin") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioinorganic") || lower.contains("inorganic chemistry"))
+            || lower.contains("metal-based drug") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioinorganic") || lower.contains("inorganic chemistry"))
+            || lower.contains("copper enzyme") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioinorganic") || lower.contains("metalloenzyme"))
+            || lower.contains("cytochrome") && lower.contains("bioinorganic") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("rubredoxin") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioinorganic")) {
+            return "bioinorganicchemistry"
         }
         // inorganicchemistry — positioned AFTER physicalchemistry and BEFORE organicchemistry.
         // Catches coordination chemistry, crystal field theory, ligand field, d-block/f-block elements,

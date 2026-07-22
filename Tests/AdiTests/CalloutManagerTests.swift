@@ -25681,8 +25681,148 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "surfacechemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1109)
-    @Test func calloutTemplatesCountAtLeast1109() {
-        #expect(SuggestedSessionTemplates.all.count >= 1109, "template catalog must have ≥1109 entries after solidmechanics/stochasticprocesses/quantumchemistry/opticalengineering/surfacechemistry additions")
+    // MARK: - quantumoptics
+    @Test func quantumopticsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "quantum optics class exam cavity qed jaynes-cummings") == "quantumoptics")
+    }
+    @Test func quantumopticsRoutingFromCavityQED() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cavity qed class exam quantum optics") == "quantumoptics")
+    }
+    @Test func quantumopticsRoutingFromWignerFunction() {
+        #expect(CalloutManager.extractTaskKeyword(from: "wigner function quantum optics class exam") == "quantumoptics")
+    }
+    @Test func quantumopticsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nonlinear optics class exam laser physics fiber optics") != "quantumoptics")
+    }
+    @Test @MainActor func quantumopticsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "quantumoptics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "quantumoptics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "quantumoptics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func quantumopticsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "quantumoptics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func quantumopticsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "quantumoptics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - marinechemistry
+    @Test func marinechemistryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "marine chemistry class exam seawater carbonate system") == "marinechemistry")
+    }
+    @Test func marinechemistryRoutingFromChemicalOceanography() {
+        #expect(CalloutManager.extractTaskKeyword(from: "chemical oceanography class exam alkalinity dic") == "marinechemistry")
+    }
+    @Test func marinechemistryRoutingFromOceanAcidification() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ocean acidification chemistry class exam carbonate") == "marinechemistry")
+    }
+    @Test func marinechemistryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "oceanography class exam physical oceanography temperature salinity") != "marinechemistry")
+    }
+    @Test @MainActor func marinechemistryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "marinechemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "marinechemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "marinechemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func marinechemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "marinechemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func marinechemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "marinechemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - bioinorganicchemistry
+    @Test func bioinorganicchemistryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bioinorganic chemistry class exam metalloenzyme iron sulfur cluster") == "bioinorganicchemistry")
+    }
+    @Test func bioinorganicchemistryRoutingFromMetalloenzyme() {
+        #expect(CalloutManager.extractTaskKeyword(from: "metalloenzyme bioinorganic chemistry class exam") == "bioinorganicchemistry")
+    }
+    @Test func bioinorganicchemistryRoutingFromNitrogenase() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nitrogenase bioinorganic chemistry class exam") == "bioinorganicchemistry")
+    }
+    @Test func bioinorganicchemistryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "inorganic chemistry class exam coordination chemistry crystal field theory") != "bioinorganicchemistry")
+    }
+    @Test @MainActor func bioinorganicchemistryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "bioinorganicchemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "bioinorganicchemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "bioinorganicchemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func bioinorganicchemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "bioinorganicchemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func bioinorganicchemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "bioinorganicchemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - informationtheory
+    @Test func informationtheoryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "information theory class exam shannon entropy channel capacity") == "informationtheory")
+    }
+    @Test func informationtheoryRoutingFromShannonEntropy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "shannon entropy channel class exam information") == "informationtheory")
+    }
+    @Test func informationtheoryRoutingFromHuffmanCoding() {
+        #expect(CalloutManager.extractTaskKeyword(from: "huffman coding class exam information compression") == "informationtheory")
+    }
+    @Test func informationtheoryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "applied statistics class bayesian inference nonparametric methods time series") != "informationtheory")
+    }
+    @Test @MainActor func informationtheoryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "informationtheory", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "informationtheory", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "informationtheory", tier: 3).isEmpty)
+    }
+    @Test @MainActor func informationtheoryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "informationtheory", tier: 1).count >= 4)
+    }
+    @Test @MainActor func informationtheoryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "informationtheory", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - mathematicalstatistics
+    @Test func mathematicalstatisticsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mathematical statistics class exam sufficiency cramer-rao") == "mathematicalstatistics")
+    }
+    @Test func mathematicalstatisticsRoutingFromCramerRao() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cramer-rao bound statistics class exam bound") == "mathematicalstatistics")
+    }
+    @Test func mathematicalstatisticsRoutingFromNeymanPearson() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neyman-pearson statistics class exam hypothesis") == "mathematicalstatistics")
+    }
+    @Test func mathematicalstatisticsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "applied statistics class bayesian statistics design of experiments time series") != "mathematicalstatistics")
+    }
+    @Test @MainActor func mathematicalstatisticsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "mathematicalstatistics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "mathematicalstatistics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "mathematicalstatistics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func mathematicalstatisticsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "mathematicalstatistics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func mathematicalstatisticsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "mathematicalstatistics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1119)
+    @Test func calloutTemplatesCountAtLeast1119() {
+        #expect(SuggestedSessionTemplates.all.count >= 1119, "template catalog must have ≥1119 entries after quantumoptics/marinechemistry/bioinorganicchemistry/informationtheory/mathematicalstatistics additions")
     }
 }

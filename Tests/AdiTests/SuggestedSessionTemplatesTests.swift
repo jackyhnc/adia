@@ -7233,8 +7233,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func surfacechemistryAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("surface chemistry") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1109)
-    @Test func templateCountAtLeast1109() {
-        #expect(SuggestedSessionTemplates.all.count >= 1109, "template catalog must have ≥1109 entries after solidmechanics/stochasticprocesses/quantumchemistry/opticalengineering/surfacechemistry additions")
+    // MARK: - quantumoptics templates
+    @Test func quantumopticsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("quantum optics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func quantumopticsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("quantum optics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - marinechemistry templates
+    @Test func marinechemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("marine chemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func marinechemistryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("marine chemistry") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - bioinorganicchemistry templates
+    @Test func bioinorganicchemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("bioinorganic chemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func bioinorganicchemistryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("bioinorganic chemistry") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - informationtheory templates
+    @Test func informationtheoryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("information theory") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func informationtheoryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("information theory") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - mathematicalstatistics templates
+    @Test func mathematicalstatisticsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mathematical statistics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func mathematicalstatisticsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("mathematical statistics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1119)
+    @Test func templateCountAtLeast1119() {
+        #expect(SuggestedSessionTemplates.all.count >= 1119, "template catalog must have ≥1119 entries after quantumoptics/marinechemistry/bioinorganicchemistry/informationtheory/mathematicalstatistics additions")
     }
 }

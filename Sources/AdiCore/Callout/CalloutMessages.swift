@@ -545,6 +545,11 @@ extension CalloutManager {
         case "astrochemistry":             return astrochemistryCallouts(tier: tier)
         case "nuclearphysics":             return nuclearphysicsCallouts(tier: tier)
         case "plasmaphysics":              return plasmaphysicsCallouts(tier: tier)
+        case "quantumoptics":              return quantumopticsCallouts(tier: tier)
+        case "marinechemistry":            return marinechemistryCallouts(tier: tier)
+        case "bioinorganicchemistry":      return bioinorganicchemistryCallouts(tier: tier)
+        case "informationtheory":          return informationtheoryCallouts(tier: tier)
+        case "mathematicalstatistics":     return mathematicalstatisticsCallouts(tier: tier)
         case "computationalfluidynamics":  return computationalfluidynamicsCallouts(tier: tier)
         case "hydrology":                  return hydrologyCallouts(tier: tier)
         case "glaciology":                 return glaciologyCallouts(tier: tier)
@@ -12619,6 +12624,111 @@ extension CalloutManager {
             "CLOSE THIS. open your surface chemistry textbook.",
             "CLOSE THIS. those adsorption isotherm and surface reconstruction problems won't solve themselves.",
             "CLOSE THIS. your surface chemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func quantumopticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those cavity QED and photon statistics problems won't solve themselves.",
+            "your quantum optics exam doesn't care that you're scrolling.",
+            "get back to your Jaynes-Cummings model and Wigner function derivations.",
+            "close this and open your quantum optics textbook.",
+        ]
+        case 2: return [
+            "no one masters quantum optics by scrolling.",
+            "close this and work on your quantum optics problem set.",
+            "those squeezed states and Hong-Ou-Mandel problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your quantum optics textbook.",
+            "CLOSE THIS. those cavity QED and photon entanglement problems won't solve themselves.",
+            "CLOSE THIS. your quantum optics exam won't study itself."
+        ]
+        }
+    }
+
+    private func marinechemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those carbonate system and seawater composition problems won't solve themselves.",
+            "your marine chemistry exam doesn't care that you're scrolling.",
+            "get back to your ocean alkalinity and trace metal speciation work.",
+            "close this and open your chemical oceanography textbook.",
+        ]
+        case 2: return [
+            "no one masters marine chemistry by scrolling.",
+            "close this and work on your marine chemistry problem set.",
+            "those dissolved inorganic carbon and ocean acidification problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your marine chemistry textbook.",
+            "CLOSE THIS. those carbonate system and trace metal problems won't solve themselves.",
+            "CLOSE THIS. your marine chemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func bioinorganicchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those metalloenzyme and iron-sulfur cluster problems won't solve themselves.",
+            "your bioinorganic chemistry exam doesn't care that you're scrolling.",
+            "get back to your heme protein and oxygen transport mechanisms.",
+            "close this and open your bioinorganic chemistry textbook.",
+        ]
+        case 2: return [
+            "no one masters bioinorganic chemistry by scrolling.",
+            "close this and work on your bioinorganic chemistry problem set.",
+            "those nitrogenase and carbonic anhydrase problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your bioinorganic chemistry textbook.",
+            "CLOSE THIS. those metalloenzyme and cisplatin problems won't solve themselves.",
+            "CLOSE THIS. your bioinorganic chemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func informationtheoryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Shannon entropy and channel capacity problems won't solve themselves.",
+            "your information theory exam doesn't care that you're scrolling.",
+            "get back to your Huffman coding and mutual information derivations.",
+            "close this and open your information theory textbook.",
+        ]
+        case 2: return [
+            "no one masters information theory by scrolling.",
+            "close this and work on your information theory problem set.",
+            "those channel coding and rate-distortion problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your information theory textbook.",
+            "CLOSE THIS. those channel capacity and source coding problems won't solve themselves.",
+            "CLOSE THIS. your information theory exam won't study itself."
+        ]
+        }
+    }
+
+    private func mathematicalstatisticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those sufficiency and Cramér-Rao bound problems won't solve themselves.",
+            "your mathematical statistics exam doesn't care that you're scrolling.",
+            "get back to your Neyman-Pearson lemma and UMVUE derivations.",
+            "close this and open your mathematical statistics textbook.",
+        ]
+        case 2: return [
+            "no one masters mathematical statistics by scrolling.",
+            "close this and work on your mathematical statistics problem set.",
+            "those Fisher information and exponential family problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your mathematical statistics textbook.",
+            "CLOSE THIS. those sufficiency and Rao-Blackwell problems won't solve themselves.",
+            "CLOSE THIS. your mathematical statistics exam won't study itself."
         ]
         }
     }
