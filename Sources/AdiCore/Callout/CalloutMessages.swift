@@ -739,6 +739,11 @@ extension CalloutManager {
         case "constitutionalcomparativelaw": return constitutionalcomparativelawCallouts(tier: tier)
         case "internationalhumanitarianlaw": return internationalhumanitarianlawCallouts(tier: tier)
         case "islamiclaw":                 return islamiclawCallouts(tier: tier)
+        case "macroeconomics":             return macroeconomicsCallouts(tier: tier)
+        case "operationsmanagement":       return operationsmanagementCallouts(tier: tier)
+        case "urbaneconomics":             return urbaneconomicsCallouts(tier: tier)
+        case "comparativeliterature":      return comparativeliteratureCallouts(tier: tier)
+        case "politicalphilosophy":        return politicalphilosophyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -15237,6 +15242,111 @@ extension CalloutManager {
             "CLOSE THIS. open your Islamic law textbook or fiqh methodology and madhab jurisprudence notes.",
             "CLOSE THIS. those usul al-fiqh and Islamic legal theory problems won't solve themselves.",
             "CLOSE THIS. your Islamic law exam won't study itself."
+        ]
+        }
+    }
+
+    private func macroeconomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those macroeconomics problems — IS-LM and AD-AS models, the Solow growth model and steady-state capital, New Keynesian DSGE frameworks, the Phillips curve, Mundell-Fleming open economy model, the Taylor rule, fiscal and money multipliers, Ricardian equivalence, quantitative easing mechanics, and real business cycle theory — won't solve themselves.",
+            "your macroeconomics exam needs you — IS-LM equilibrium (goods market + money market), AD-AS (short-run/long-run aggregate supply), Solow model (capital accumulation, TFP, steady-state, golden rule), New Keynesian DSGE (sticky prices, Calvo pricing, Taylor principle), Phillips curve (expectations-augmented, New Keynesian), Mundell-Fleming (exchange rate regimes, capital flows, BP curve), Taylor rule (real interest rate response to inflation/output gaps), fiscal multiplier (Keynesian cross), money multiplier (reserve requirements, excess reserves), Ricardian equivalence (Barro debate), quantitative easing (zero lower bound, forward guidance), and RBC vs New Keynesian debate are all waiting.",
+            "those macroeconomics assignments and model-solving problems are still open.",
+            "IS-LM, AD-AS, Solow model, New Keynesian DSGE, Phillips curve, Mundell-Fleming, Taylor rule, fiscal multiplier — get back to your macroeconomics coursework."
+        ]
+        case 2: return [
+            "stop. your macroeconomics exam and growth model problem set are still open.",
+            "IS-LM equilibrium, Solow steady-state, New Keynesian sticky prices, Phillips curve expectations, Mundell-Fleming exchange rates, Taylor rule, fiscal multiplier, QE at the ZLB — your exam won't wait.",
+            "macroeconomics class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your macroeconomics textbook or IS-LM, Solow model, and New Keynesian DSGE notes.",
+            "CLOSE THIS. those Mundell-Fleming and Phillips curve problems won't solve themselves.",
+            "CLOSE THIS. your macroeconomics exam won't study itself."
+        ]
+        }
+    }
+
+    private func operationsmanagementCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those operations management problems — the newsvendor model, Little's Law, aggregate planning and S&OP, master production scheduling (MPS), material requirements planning (MRP), ERP systems (SAP/Oracle), revenue management and dynamic pricing, capacity planning, facility location models, and service operations design — won't solve themselves.",
+            "your operations management exam needs you — newsvendor model (critical ratio, optimal stocking quantity), Little's Law (L = λW: inventory, throughput, flow time), aggregate planning (level vs chase strategies, S&OP process), master production scheduling (MPS: firm vs tentative buckets, available-to-promise), MRP explosion (BOM, lot sizing, pegging), ERP systems (SAP modules: MM/PP/SD, Oracle Supply Chain), revenue management (price discrimination, yield management, overbooking model), capacity planning (bottleneck analysis, waiting line theory), facility location (weighted center, set covering, p-median models), and service operations (queuing theory applied to service systems, service quality SERVQUAL model) are all waiting.",
+            "those operations management assignments and OM model problems are still open.",
+            "newsvendor model, Little's Law, MPS, MRP, ERP, revenue management, aggregate planning, capacity planning — get back to your operations management coursework."
+        ]
+        case 2: return [
+            "stop. your operations management exam and OM model problem set are still open.",
+            "newsvendor critical ratio, Little's Law L=λW, aggregate planning S&OP, MPS firm buckets, MRP BOM explosion, ERP SAP modules, revenue management yield, capacity bottleneck analysis — your exam won't wait.",
+            "operations management class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your operations management textbook or newsvendor, Little's Law, and MRP/ERP notes.",
+            "CLOSE THIS. those aggregate planning and revenue management problems won't solve themselves.",
+            "CLOSE THIS. your operations management exam won't study itself."
+        ]
+        }
+    }
+
+    private func urbaneconomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those urban economics problems — the monocentric city model and bid-rent theory, Alonso-Muth-Mills framework, agglomeration economies (localization vs urbanization), spatial equilibrium, housing supply elasticity, rent control effects, gentrification economics, place-based policies, and new economic geography (Krugman core-periphery) — won't analyze themselves.",
+            "your urban economics exam needs you — monocentric city model (Alonso bid-rent, von Thünen location, Mills-Muth residential extension), agglomeration economies (localization economies: firms in same industry; urbanization economies: firms in same city; Marshall's triad: labor pooling, input sharing, knowledge spillovers), spatial equilibrium (Rosen-Roback: wages, housing costs, amenities; compensating differentials), housing supply elasticity (Saiz estimates; regulatory barriers; Glaeser-Gyourko supply constraints), rent control (housing quality deterioration, misallocation; Diamond et al. San Francisco study), gentrification (price appreciation, displacement; Guerrieri et al.; Autor-Palmer-Pathak Boston study), place-based policies (empowerment zones; opportunity zones; Busso-Gregory-Kline; Diamond-McQuade), Krugman core-periphery (increasing returns, transport costs, home market effect, catastrophic agglomeration) are all waiting.",
+            "those urban economics assignments and housing market analyses are still open.",
+            "monocentric city model, bid-rent theory, agglomeration economies, spatial equilibrium, housing supply, rent control, gentrification, place-based policies — get back to your urban economics coursework."
+        ]
+        case 2: return [
+            "stop. your urban economics exam and housing market paper are still open.",
+            "Alonso-Muth-Mills bid-rent, Marshall's triad agglomeration, Rosen-Roback spatial equilibrium, housing supply elasticity, rent control misallocation, gentrification displacement, Krugman core-periphery — your exam won't wait.",
+            "urban economics class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your urban economics textbook or bid-rent theory, agglomeration, and housing supply notes.",
+            "CLOSE THIS. those spatial equilibrium and gentrification economics problems won't solve themselves.",
+            "CLOSE THIS. your urban economics exam won't study itself."
+        ]
+        }
+    }
+
+    private func comparativeliteratureCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those comparative literature problems — literary theory (New Criticism, structuralism, poststructuralism, reader-response, postcolonial), narratology (Genette's narrative levels and focalization, Propp's morphology), intertextuality (Kristeva, Bakhtin's dialogism), Derrida's deconstruction, Barthes's death of the author, Lacan's mirror stage and symbolic order, close reading across languages, and translation theory — won't write themselves.",
+            "your comparative literature exam needs you — literary theory traditions (New Criticism: close reading, intentional fallacy, Brooks/Wimsatt; Russian Formalism: defamiliarization, Shklovsky; structuralism: Saussure, Jakobson, Lévi-Strauss; poststructuralism: Derrida's différance and deconstruction, Foucault's discourse/author-function, Barthes's death of the author; reader-response: Iser's implied reader, Fish's interpretive communities; postcolonial: Said's Orientalism, Spivak's subaltern, Bhabha's hybridity; Marxist criticism: Jameson, Althusser, Eagleton; psychoanalytic: Lacan's mirror stage/symbolic order/objet petit a; feminism: Cixous écriture féminine, Butler's performativity; narratology: Genette's narrative levels — histoire/récit/narration, focalization, anachrony; Propp's morphology of the folktale; Bakhtin's dialogism and heteroglossia, carnivalesque; Kristeva's intertextuality; genre theory: Bakhtin's novel theory, Frye's Anatomy of Criticism) are all waiting.",
+            "those comparative literature assignments and literary theory analyses are still open.",
+            "Derrida deconstruction, Barthes death of the author, Lacan symbolic order, Genette narratology, Bakhtin dialogism, poststructuralism, reader-response, postcolonial — get back to your comp lit coursework."
+        ]
+        case 2: return [
+            "stop. your comparative literature exam and literary theory paper are still open.",
+            "New Criticism close reading, Derrida différance/deconstruction, Barthes death of the author, Foucault author-function, Lacan mirror stage, Genette narrative levels, Bakhtin dialogism, Said Orientalism, Spivak subaltern — your exam won't wait.",
+            "comparative literature class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your comparative literature textbook or literary theory and narratology notes.",
+            "CLOSE THIS. those deconstruction and postcolonial theory problems won't write themselves.",
+            "CLOSE THIS. your comparative literature exam won't study itself."
+        ]
+        }
+    }
+
+    private func politicalphilosophyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those political philosophy problems — Rawls's theory of justice (veil of ignorance, original position, difference principle), Nozick's libertarian entitlement theory, social contract theory (Hobbes/Locke/Rousseau), communitarianism (Sandel/MacIntyre/Taylor), civic republicanism (Pettit's non-domination), Hannah Arendt's political action, Habermas's deliberative democracy, and agonistic democracy (Mouffe) — won't analyze themselves.",
+            "your political philosophy exam needs you — social contract tradition (Hobbes's Leviathan: security/sovereign; Locke's Second Treatise: natural rights/tacit consent/property; Rousseau's general will/social contract/amour propre); Rawls's theory of justice: original position behind veil of ignorance, two principles of justice (equal basic liberties; fair equality of opportunity + difference principle), reflective equilibrium, primary goods; Nozick's Anarchy State and Utopia: entitlement theory (acquisition, transfer, rectification), Wilt Chamberlain argument against patterned distribution, night-watchman state; Dworkin: resource egalitarianism, luck egalitarianism; communitarian critics (Sandel: unencumbered self, Liberalism and the Limits of Justice; MacIntyre: After Virtue, virtue ethics critique; Taylor: atomism critique, authenticity); civic republicanism (Pettit: freedom as non-domination vs non-interference, contested/republican liberty; Viroli; neo-Roman theory); Arendt: public realm/natality/action, banality of evil; Habermas: communicative action, ideal speech situation, deliberative democracy; agonistic democracy (Mouffe: friend/enemy distinction, democratic paradox, Schmitt response) are all waiting.",
+            "those political philosophy assignments and political theory analyses are still open.",
+            "Rawls original position, Nozick entitlement theory, Hobbes/Locke/Rousseau social contract, Sandel communitarianism, Pettit non-domination, Arendt action, Habermas deliberation — get back to your political philosophy coursework."
+        ]
+        case 2: return [
+            "stop. your political philosophy exam and justice theory paper are still open.",
+            "Rawls veil of ignorance/difference principle, Nozick Wilt Chamberlain argument, Hobbes/Locke/Rousseau social contract, Sandel unencumbered self, Pettit non-domination, Arendt natality/action, Habermas ideal speech situation — your exam won't wait.",
+            "political philosophy class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your political philosophy textbook or Rawls, Nozick, and social contract theory notes.",
+            "CLOSE THIS. those communitarianism and civic republicanism problems won't analyze themselves.",
+            "CLOSE THIS. your political philosophy exam won't study itself."
         ]
         }
     }

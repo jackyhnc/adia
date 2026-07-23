@@ -1107,6 +1107,44 @@ public final class CalloutManager {
             || lower.contains("labor demand") && (lower.contains("economics") || lower.contains("class") || lower.contains("exam") || lower.contains("course")) {
             return "laboreconomics"
         }
+        // macroeconomics — positioned BEFORE environmentaleconomics and generic economics so
+        // advanced macro class/exam, IS-LM/AD-AS models, DSGE, New Keynesian, Mundell-Fleming,
+        // Phillips curve, Solow growth model, and central bank policy coursework route here.
+        // Distinct from laboreconomics (micro labor markets), energyeconomics (electricity/oil),
+        // environmentaleconomics (Pigouvian externalities), and economics (general principles).
+        if lower.contains("macroeconomics class") || lower.contains("macroeconomics course")
+            || lower.contains("macroeconomics exam") || lower.contains("macroeconomics paper")
+            || lower.contains("macroeconomics homework") || lower.contains("macroeconomics assignment")
+            || lower.contains("macroeconomics textbook") || lower.contains("macroeconomics notes")
+            || lower.contains("advanced macroeconomics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("intermediate macroeconomics") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("macro economics class") || lower.contains("macro economics course")
+            || lower.contains("macro exam") && (lower.contains("economics") || lower.contains("econ"))
+            || lower.contains("is-lm") && (lower.contains("class") || lower.contains("exam") || lower.contains("model") || lower.contains("course"))
+            || lower.contains("is lm model") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("ad-as model") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics"))
+            || lower.contains("aggregate demand") && lower.contains("aggregate supply") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("dsge model") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("economics"))
+            || lower.contains("new keynesian model") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("new keynesian economics") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("keynesian economics class") || lower.contains("keynesian economics course")
+            || lower.contains("phillips curve") && (lower.contains("class") || lower.contains("exam") || lower.contains("macroeconomics") || lower.contains("economics"))
+            || lower.contains("mundell-fleming") && (lower.contains("class") || lower.contains("exam") || lower.contains("model") || lower.contains("economics"))
+            || lower.contains("mundell fleming") && (lower.contains("class") || lower.contains("exam") || lower.contains("model"))
+            || lower.contains("ricardian equivalence") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics"))
+            || lower.contains("taylor rule") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("monetary"))
+            || lower.contains("quantitative easing") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("monetary"))
+            || lower.contains("fiscal multiplier") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics"))
+            || lower.contains("money multiplier") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("macroeconomics"))
+            || lower.contains("open economy macroeconomics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("macroeconomic policy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("solow model") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("growth"))
+            || lower.contains("solow growth model") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("endogenous growth") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics"))
+            || lower.contains("rbc model") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics"))
+            || lower.contains("real business cycle") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics")) {
+            return "macroeconomics"
+        }
         // environmentaleconomics — positioned BEFORE economics so environmental economics class,
         // Pigouvian tax, Coase theorem (environmental context), ecosystem services valuation,
         // and benefit-cost analysis for environmental policy route here. Distinct from
@@ -5671,6 +5709,36 @@ public final class CalloutManager {
             || lower.contains("urban infrastructure") || lower.contains("land use analysis") {
             return "urbanplanning"
         }
+        // urbaneconomics — positioned AFTER urbanplanning and BEFORE environmentalplanning so
+        // urban economics class/exam, monocentric city model, bid-rent theory, agglomeration
+        // economies, housing economics, and gentrification economics route here. Distinct from
+        // urbanplanning (zoning/regulatory/design), realestate (transactions/appraisal), and
+        // economics (general principles).
+        if lower.contains("urban economics class") || lower.contains("urban economics course")
+            || lower.contains("urban economics exam") || lower.contains("urban economics paper")
+            || lower.contains("urban economics assignment") || lower.contains("urban economics textbook")
+            || lower.contains("city economics class") || lower.contains("city economics course")
+            || lower.contains("city economics exam") || lower.contains("city economics paper")
+            || lower.contains("monocentric city model") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics"))
+            || lower.contains("bid-rent theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("urban") || lower.contains("economics"))
+            || lower.contains("bid rent theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("urban") || lower.contains("economics"))
+            || lower.contains("alonso-muth-mills") && (lower.contains("class") || lower.contains("exam") || lower.contains("urban"))
+            || lower.contains("alonso muth mills") && (lower.contains("class") || lower.contains("exam") || lower.contains("urban"))
+            || lower.contains("agglomeration economies") && (lower.contains("class") || lower.contains("exam") || lower.contains("urban") || lower.contains("economics"))
+            || lower.contains("agglomeration effects") && (lower.contains("economics class") || lower.contains("economics exam") || lower.contains("urban"))
+            || lower.contains("housing economics class") || lower.contains("housing economics course") || lower.contains("housing economics exam")
+            || lower.contains("housing supply") && (lower.contains("economics class") || lower.contains("economics exam") || lower.contains("urban economics"))
+            || lower.contains("rent control") && (lower.contains("economics class") || lower.contains("economics exam") || lower.contains("economics course") || lower.contains("urban economics"))
+            || lower.contains("land use economics class") || lower.contains("land use economics course") || lower.contains("land use economics exam")
+            || lower.contains("urban land market") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics"))
+            || lower.contains("spatial equilibrium") && (lower.contains("class") || lower.contains("exam") || lower.contains("urban") || lower.contains("economics"))
+            || lower.contains("gentrification") && (lower.contains("economics class") || lower.contains("economics exam") || lower.contains("economics course") || lower.contains("urban economics"))
+            || lower.contains("place-based policies") && (lower.contains("economics class") || lower.contains("economics exam") || lower.contains("urban"))
+            || lower.contains("urban growth model") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics"))
+            || lower.contains("new economic geography") && (lower.contains("class") || lower.contains("exam") || lower.contains("urban"))
+            || lower.contains("localization economies") && (lower.contains("class") || lower.contains("exam") || lower.contains("urban") || lower.contains("economics")) {
+            return "urbaneconomics"
+        }
         // environmentalplanning — positioned AFTER urbanplanning and BEFORE realestate.
         // Catches EIS/EIA preparation, NEPA/CEQA compliance coursework, and environmental
         // permitting classes. "environmental law" and bare word("nepa") stay in environmentallaw
@@ -5756,6 +5824,38 @@ public final class CalloutManager {
             || lower.contains("floral design class") || lower.contains("floral design course")
             || lower.contains("floral design exam") || lower.contains("floral design certification") {
             return "floristryweddingplanning"
+        }
+        // operationsmanagement — positioned BEFORE qualitymanagement and supplychain so
+        // OM class/exam, service operations, revenue management, aggregate planning, MPS, ERP,
+        // capacity planning, and production management route here. Distinct from
+        // industrialengineering (engineering degree/queueing+IE context), qualitymanagement
+        // (ISO/TQM standards certification), and supplychain (logistics/SCM networks).
+        if lower.contains("operations management class") || lower.contains("operations management course")
+            || lower.contains("operations management exam") || lower.contains("operations management paper")
+            || lower.contains("operations management assignment") || lower.contains("operations management homework")
+            || lower.contains("operations management textbook") || lower.contains("operations management notes")
+            || lower.contains("operations management degree") || lower.contains("operations management major")
+            || lower.contains("operations management program")
+            || lower.contains("om class") || lower.contains("om course") || lower.contains("om exam")
+            || lower.contains("om assignment") || lower.contains("om homework")
+            || lower.contains("service operations management") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("service operations") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("om"))
+            || lower.contains("revenue management") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("operations"))
+            || lower.contains("aggregate planning") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("operations"))
+            || lower.contains("master production schedule") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("operations"))
+            || lower.contains("material requirements planning") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("mrp") && lower.contains("operations") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("erp class") || lower.contains("erp course") || lower.contains("erp exam") || lower.contains("erp systems class")
+            || lower.contains("enterprise resource planning class") || lower.contains("enterprise resource planning course")
+            || lower.contains("enterprise resource planning exam")
+            || lower.contains("capacity planning") && (lower.contains("operations") || lower.contains("om")) && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("production management class") || lower.contains("production management course")
+            || lower.contains("production management exam") || lower.contains("production management assignment")
+            || lower.contains("newsvendor model") && (lower.contains("class") || lower.contains("exam") || lower.contains("operations"))
+            || lower.contains("little's law") && (lower.contains("class") || lower.contains("exam") || lower.contains("operations"))
+            || lower.contains("littles law") && (lower.contains("class") || lower.contains("exam") || lower.contains("operations"))
+            || lower.contains("facility location") && (lower.contains("operations") || lower.contains("class") || lower.contains("exam") || lower.contains("om")) {
+            return "operationsmanagement"
         }
         // qualitymanagement — positioned BEFORE supplychain (which owns six sigma/lean) and BEFORE
         // business so ISO auditing, CQE exam prep, and quality systems coursework gets a dedicated
@@ -13532,6 +13632,38 @@ public final class CalloutManager {
             || lower.contains("hellenistic") && lower.contains("class") {
             return "classicalstudies"
         }
+        // comparativeliterature — positioned AFTER classicalstudies and BEFORE philosophyofmind
+        // so comparative literature class/exam, literary theory, world literature, poststructuralism,
+        // narratology, intertextuality, and Derrida/Barthes/Lacan in literary context route here.
+        // Distinct from classicalstudies (ancient Greek/Latin texts), writing/screenwriting (craft),
+        // and philosophyofmind (consciousness/qualia).
+        if lower.contains("comparative literature class") || lower.contains("comparative literature course")
+            || lower.contains("comparative literature exam") || lower.contains("comparative literature paper")
+            || lower.contains("comparative literature major") || lower.contains("comparative literature program")
+            || lower.contains("comparative literature assignment") || lower.contains("comparative literature notes")
+            || lower.contains("comp lit class") || lower.contains("comp lit course") || lower.contains("comp lit exam")
+            || lower.contains("comp lit paper") || lower.contains("comp lit major") || lower.contains("comp lit assignment")
+            || lower.contains("literary theory class") || lower.contains("literary theory course") || lower.contains("literary theory exam")
+            || lower.contains("literary theory paper") || lower.contains("literary theory assignment")
+            || lower.contains("literary criticism class") || lower.contains("literary criticism course") || lower.contains("literary criticism exam")
+            || lower.contains("literary analysis class") || lower.contains("literary analysis course") || lower.contains("literary analysis exam")
+            || lower.contains("world literature class") || lower.contains("world literature course") || lower.contains("world literature exam")
+            || lower.contains("poststructuralism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("literature") || lower.contains("literary") || lower.contains("paper"))
+            || lower.contains("post-structuralism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("literature"))
+            || lower.contains("narratology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("literary"))
+            || lower.contains("intertextuality") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("literary"))
+            || lower.contains("derrida") && (lower.contains("class") || lower.contains("course") || lower.contains("literature") || lower.contains("literary") || lower.contains("exam") || lower.contains("theory"))
+            || lower.contains("barthes") && (lower.contains("class") || lower.contains("course") || lower.contains("literature") || lower.contains("literary") || lower.contains("exam") || lower.contains("theory"))
+            || lower.contains("lacan") && (lower.contains("class") || lower.contains("course") || lower.contains("literature") || lower.contains("literary") || lower.contains("exam") || lower.contains("theory"))
+            || lower.contains("close reading") && (lower.contains("class") || lower.contains("course") || lower.contains("literary") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("genre theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("literary"))
+            || lower.contains("translation theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("literary"))
+            || lower.contains("new criticism") && (lower.contains("class") || lower.contains("course") || lower.contains("literary") || lower.contains("exam") || lower.contains("theory"))
+            || lower.contains("reader-response") && (lower.contains("class") || lower.contains("course") || lower.contains("literary") || lower.contains("exam") || lower.contains("theory"))
+            || lower.contains("reader response") && (lower.contains("class") || lower.contains("course") || lower.contains("literary") || lower.contains("exam") || lower.contains("theory"))
+            || lower.contains("postcolonial literary") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")) {
+            return "comparativeliterature"
+        }
         // philosophyofmind — positioned BEFORE philosophy so consciousness studies, qualia,
         // and phenomenology of mind tasks route here rather than the general philosophy pool.
         // "philosophy of mind" combined with "cogsci"/"cognitive science" fires cognitivescience above.
@@ -13552,6 +13684,34 @@ public final class CalloutManager {
             || (lower.contains("zombie") && lower.contains("philosophy") && !lower.contains("game"))
             || (lower.contains("theory of mind") && lower.contains("philosophy")) {
             return "philosophyofmind"
+        }
+        // politicalphilosophy — positioned BEFORE philosophy so political philosophy class/exam,
+        // social contract theory, Rawls/Nozick/Sandel, communitarianism, deliberative democracy,
+        // civic republicanism, Arendt, and Habermas route here with specific callouts. Distinct
+        // from general philosophy, from political science/geopolitics (empirical), and socialscience.
+        if lower.contains("political philosophy class") || lower.contains("political philosophy course")
+            || lower.contains("political philosophy exam") || lower.contains("political philosophy paper")
+            || lower.contains("political philosophy seminar") || lower.contains("political philosophy assignment")
+            || lower.contains("political philosophy notes") || lower.contains("political philosophy major")
+            || lower.contains("social contract theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy"))
+            || lower.contains("rawls") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("political") || lower.contains("justice") || lower.contains("philosophy") || lower.contains("paper"))
+            || lower.contains("veil of ignorance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("original position") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("rawls") || lower.contains("philosophy"))
+            || lower.contains("nozick") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("political") || lower.contains("philosophy") || lower.contains("paper"))
+            || lower.contains("anarchy state and utopia") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("theory of justice") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("rawls"))
+            || lower.contains("libertarianism") && (lower.contains("political philosophy") || lower.contains("class") || lower.contains("philosophy") || lower.contains("paper"))
+            || lower.contains("communitarianism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy"))
+            || lower.contains("sandel") && (lower.contains("class") || lower.contains("course") || lower.contains("philosophy") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("arendt") && (lower.contains("political") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("philosophy") || lower.contains("paper"))
+            || lower.contains("habermas") && (lower.contains("political") || lower.contains("deliberative") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("deliberative democracy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("agonistic democracy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("civic republicanism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("pettit") && (lower.contains("political") || lower.contains("class") || lower.contains("philosophy") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("non-domination") && (lower.contains("political") || lower.contains("class") || lower.contains("philosophy") || lower.contains("paper"))
+            || lower.contains("justice as fairness") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")) {
+            return "politicalphilosophy"
         }
         // philosophy — positioned after socialscience (shared "political philosophy" territory)
         // and before legal so "ethics paper" and "philosophical argument" don't fall to legal.

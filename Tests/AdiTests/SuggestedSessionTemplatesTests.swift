@@ -8078,6 +8078,41 @@ struct SuggestedSessionTemplatesTests {
     @Test func islamiclawAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("islamic law paper") })
     }
+    // MARK: - macroeconomics templates
+    @Test func macroeconomicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("macroeconomics for my exam") })
+    }
+    @Test func macroeconomicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("macroeconomics paper") })
+    }
+    // MARK: - operationsmanagement templates
+    @Test func operationsmanagementStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("operations management for my exam") })
+    }
+    @Test func operationsmanagementAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("operations management paper") })
+    }
+    // MARK: - urbaneconomics templates
+    @Test func urbaneconomicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("urban economics for my exam") })
+    }
+    @Test func urbaneconomicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("urban economics paper") })
+    }
+    // MARK: - comparativeliterature templates
+    @Test func comparativeliteratureStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("comparative literature for my exam") })
+    }
+    @Test func comparativeliteratureAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("comparative literature paper") })
+    }
+    // MARK: - politicalphilosophy templates
+    @Test func politicalphilosophyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("political philosophy for my exam") })
+    }
+    @Test func politicalphilosophyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("political philosophy paper") })
+    }
     // MARK: - Count guard (≥1317)
     @Test func templateCountAtLeast1307() {
         #expect(SuggestedSessionTemplates.all.count >= 1307, "template catalog must have ≥1307 entries after mediatheory/theaterstudies/developmentstudies/entertainmentlaw/bankinglaw additions")
@@ -8093,5 +8128,8 @@ struct SuggestedSessionTemplatesTests {
     }
     @Test func templateCountAtLeast1347() {
         #expect(SuggestedSessionTemplates.all.count >= 1347, "template catalog must have ≥1347 entries after behavioralfinance/cryptocurrencyeconomics/constitutionalcomparativelaw/internationalhumanitarianlaw/islamiclaw additions")
+    }
+    @Test func templateCountAtLeast1357() {
+        #expect(SuggestedSessionTemplates.all.count >= 1357, "template catalog must have ≥1357 entries after macroeconomics/operationsmanagement/urbaneconomics/comparativeliterature/politicalphilosophy additions")
     }
 }

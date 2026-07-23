@@ -29058,6 +29058,151 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "islamiclaw", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
+    // MARK: - macroeconomics
+    @Test func macroeconomicsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "macroeconomics class IS-LM model AD-AS Solow growth model New Keynesian DSGE Phillips curve Mundell-Fleming exam") == "macroeconomics")
+    }
+    @Test func macroeconomicsRoutingFromISLM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "IS-LM model class goods market equilibrium money market LM curve aggregate demand macroeconomics exam") == "macroeconomics")
+    }
+    @Test func macroeconomicsRoutingFromSolowModel() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solow growth model class steady-state capital accumulation TFP endogenous growth macroeconomics exam") == "macroeconomics")
+    }
+    @Test func macroeconomicsFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "labor economics class minimum wage monopsony job search DMP model collective bargaining exam")
+        #expect(kw != "macroeconomics", "labor economics without macroeconomics/IS-LM/Solow keywords should not route to macroeconomics")
+    }
+    @Test @MainActor func macroeconomicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "macroeconomics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "macroeconomics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "macroeconomics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func macroeconomicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "macroeconomics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func macroeconomicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "macroeconomics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - operationsmanagement
+    @Test func operationsmanagementRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "operations management class newsvendor model Little's Law aggregate planning MPS MRP ERP revenue management exam") == "operationsmanagement")
+    }
+    @Test func operationsmanagementRoutingFromOM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "OM class service operations revenue management capacity planning production management exam") == "operationsmanagement")
+    }
+    @Test func operationsmanagementRoutingFromNewsvendor() {
+        #expect(CalloutManager.extractTaskKeyword(from: "newsvendor model class operations critical ratio optimal order quantity underage cost operations exam") == "operationsmanagement")
+    }
+    @Test func operationsmanagementFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "six sigma class ISO 9001 quality management system FMEA design of experiments SPC CQE certification")
+        #expect(kw != "operationsmanagement", "quality management without OM class/exam/newsvendor/MPS/ERP keywords should not route to operationsmanagement")
+    }
+    @Test @MainActor func operationsmanagementCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "operationsmanagement", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "operationsmanagement", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "operationsmanagement", tier: 3).isEmpty)
+    }
+    @Test @MainActor func operationsmanagementTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "operationsmanagement", tier: 1).count >= 4)
+    }
+    @Test @MainActor func operationsmanagementTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "operationsmanagement", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - urbaneconomics
+    @Test func urbaneconomicsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "urban economics class monocentric city model bid-rent theory agglomeration economies housing supply spatial equilibrium exam") == "urbaneconomics")
+    }
+    @Test func urbaneconomicsRoutingFromBidRent() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bid-rent theory class Alonso-Muth-Mills urban land use agglomeration economies city economics exam") == "urbaneconomics")
+    }
+    @Test func urbaneconomicsRoutingFromHousingEconomics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "housing economics class housing supply elasticity rent control gentrification place-based policies urban economics exam") == "urbaneconomics")
+    }
+    @Test func urbaneconomicsFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "urban planning class zoning comprehensive plan transit-oriented development LEED smart cities land use analysis")
+        #expect(kw != "urbaneconomics", "urban planning without bid-rent/agglomeration/spatial equilibrium/housing economics keywords should not route to urbaneconomics")
+    }
+    @Test @MainActor func urbaneconomicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "urbaneconomics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "urbaneconomics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "urbaneconomics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func urbaneconomicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "urbaneconomics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func urbaneconomicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "urbaneconomics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - comparativeliterature
+    @Test func comparativeliteratureRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "comparative literature class poststructuralism Derrida Barthes Lacan narratology intertextuality world literature exam") == "comparativeliterature")
+    }
+    @Test func comparativeliteratureRoutingFromLiteraryTheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "literary theory class New Criticism close reading reader-response narratology postcolonial Genette focalization exam") == "comparativeliterature")
+    }
+    @Test func comparativeliteratureRoutingFromCompLit() {
+        #expect(CalloutManager.extractTaskKeyword(from: "comp lit exam poststructuralism translation theory genre theory intertextuality Said Orientalism Spivak subaltern") == "comparativeliterature")
+    }
+    @Test func comparativeliteratureFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "creative writing class fiction novel screenplay workshop draft revision feedback peer review")
+        #expect(kw != "comparativeliterature", "creative writing without literary theory/poststructuralism/narratology keywords should not route to comparativeliterature")
+    }
+    @Test @MainActor func comparativeliteratureCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "comparativeliterature", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "comparativeliterature", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "comparativeliterature", tier: 3).isEmpty)
+    }
+    @Test @MainActor func comparativeliteratureTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "comparativeliterature", tier: 1).count >= 4)
+    }
+    @Test @MainActor func comparativeliteratureTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "comparativeliterature", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - politicalphilosophy
+    @Test func politicalphilosophyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "political philosophy class Rawls veil of ignorance original position difference principle Nozick libertarianism social contract theory exam") == "politicalphilosophy")
+    }
+    @Test func politicalphilosophyRoutingFromRawls() {
+        #expect(CalloutManager.extractTaskKeyword(from: "rawls class theory of justice original position veil of ignorance difference principle political philosophy paper") == "politicalphilosophy")
+    }
+    @Test func politicalphilosophyRoutingFromDeliberativeDemocracy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "deliberative democracy class Habermas ideal speech situation communicative action civic republicanism Pettit non-domination exam") == "politicalphilosophy")
+    }
+    @Test func politicalphilosophyFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "political science class comparative politics electoral systems voting behavior democratic institutions legislative process")
+        #expect(kw != "politicalphilosophy", "political science without Rawls/Nozick/social contract/communitarianism/deliberative democracy keywords should not route to politicalphilosophy")
+    }
+    @Test @MainActor func politicalphilosophyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "politicalphilosophy", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "politicalphilosophy", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "politicalphilosophy", tier: 3).isEmpty)
+    }
+    @Test @MainActor func politicalphilosophyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "politicalphilosophy", tier: 1).count >= 4)
+    }
+    @Test @MainActor func politicalphilosophyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "politicalphilosophy", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
     // MARK: - Count guard (≥1317)
     @Test func calloutTemplatesCountAtLeast1307() {
         #expect(SuggestedSessionTemplates.all.count >= 1307, "template catalog must have ≥1307 entries after mediatheory/theaterstudies/developmentstudies/entertainmentlaw/bankinglaw additions")
@@ -29073,5 +29218,8 @@ struct CalloutManagerTests {
     }
     @Test func calloutTemplatesCountAtLeast1347() {
         #expect(SuggestedSessionTemplates.all.count >= 1347, "template catalog must have ≥1347 entries after behavioralfinance/cryptocurrencyeconomics/constitutionalcomparativelaw/internationalhumanitarianlaw/islamiclaw additions")
+    }
+    @Test func calloutTemplatesCountAtLeast1357() {
+        #expect(SuggestedSessionTemplates.all.count >= 1357, "template catalog must have ≥1357 entries after macroeconomics/operationsmanagement/urbaneconomics/comparativeliterature/politicalphilosophy additions")
     }
 }
