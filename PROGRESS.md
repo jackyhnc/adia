@@ -21071,3 +21071,53 @@ All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested 
 - `medicalanthropology` — medical anthropology class (biocultural approach, illness vs disease, explanatory models, medicalization, health disparities from anthropological lens — distinct from culturalanthropology, publichealth, and physicalanthropology)
 - `communityhealth` — community health class/course (CHW, CBPR, community health assessment, social determinants at community level — distinct from publichealth which is more epidemiology-focused)
 - `nutritionscience` — nutrition science / human nutrition class (macronutrients, micronutrients, nutrient metabolism, DRI, dietary assessment methods — distinct from foodscience which is more food chemistry/processing)
+
+---
+
+## Run 416 — 2026-07-23
+
+### What shipped
+5 new keyword domains: **exercisephysiology**, **nutritionscience**, **reproductivehealth**, **medicalanthropology**, **comparativepolitics** — template catalog grows 1267→1277.
+
+**exercisephysiology** — exercise physiology class/course/lab/exam, VO2max, lactate threshold, EPOC/excess post-exercise oxygen consumption, Fick principle, cardiac output + exercise/physiology context, oxygen kinetics, energy systems + exercise context, ATP-PCr/phosphocreatine system, aerobic metabolism + exercise context, anaerobic threshold, cardiorespiratory response, exercise metabolism, thermoregulation + exercise context. Positioned BEFORE exercisescience (7051 < 7068). 4+3+3 callout pool. 2 templates (exam review with energy systems/VO2max/LT/EPOC/Fick / lab report: GXT, lactate threshold analysis, or energy systems sport analysis).
+
+**nutritionscience** — nutrition science/human nutrition/nutritional science/nutritional biochemistry class/course/exam, macronutrient, micronutrient, dietary reference intake (EAR/RDA/AI/UL), DRI + nutrition class/exam/course, nutrient metabolism, dietary assessment, 24-hour recall, food frequency questionnaire, diet history + nutrition context, nutrient bioavailability, food composition + nutrition context, nutritional epidemiology, nutrition assessment class/course/exam. Positioned BEFORE performancenutrition (7231 < 7251). 4+3+3 callout pool. 2 templates (exam review with macros/micros/DRI/dietary assessment / dietary analysis and DRI comparison, macronutrient metabolism case study, or food bioavailability analysis).
+
+**reproductivehealth** — reproductive health class/course/exam, sexual and reproductive health/SRH, family planning class/course/exam, contraception class/course/exam, contraceptive method + health context, LARC/long-acting reversible contraception, sexually transmitted infection + class/course/exam/health, sexually transmitted disease + class/course/exam/health, reproductive physiology class/course/exam, reproductive endocrinology + class/course/exam, fertility and infertility + class/exam/course, human sexuality class/course/exam, reproductive justice/rights class/course/exam/paper. Positioned BEFORE maternalhealth (10927 < 10959). 4+3+3 callout pool. 2 templates (exam review with contraception mechanisms/STIs/reproductive physiology / contraceptive counseling case study, STI screening case, or reproductive justice analysis).
+
+**medicalanthropology** — medical anthropology class/course/exam, biocultural approach + anthropology/health context, illness vs disease/illness and disease + anthropology/medical context, explanatory model + anthropology/medical/Kleinman context, Kleinman + anthropology/medical/health context, medicalization + anthropology/class context, sick role + anthropology/medical/class context, ethnomedical + anthropology/medical context, illness narrative/narratives + anthropology/medical context, embodiment + anthropology/medical + class/health context, critical medical anthropology, anthropology of medicine/health/illness/body, structural violence + anthropology/health + class/medical context. Positioned BEFORE physicalanthropology (12697 < 12724). 4+3+3 callout pool. 2 templates (exam review with illness vs disease/Kleinman EM/medicalization/structural violence / Kleinman EM interview analysis, medicalization paper, or comparative ethnomedical systems analysis).
+
+**comparativepolitics** — comparative politics/government class/course/exam, regime type + class/politics context, democratization + class/politics context, varieties of capitalism + class/politics context, liberal/coordinated market economy + class/politics/capitalism context, presidentialism/parliamentarism + class/politics context, electoral/party system + comparative/politics context, Lipset/Przeworski + class/politics/democratization context, authoritarian/hybrid regime + class/politics context, proportional representation + comparative/politics + class/exam, comparative institutions, welfare state + comparative/politics + class/exam. Positioned BEFORE socialscience (12916 < 12929). Bare "comparative politics" removed from socialscience fallback (line 12928). 4+3+3 callout pool. 2 templates (exam review with regime types/democratization/VoC/electoral systems / democratization case study, VoC welfare state analysis, or comparative electoral systems paper).
+
+### Tests added
+
+**CalloutManagerTests.swift** — 35 new @Test functions:
+- 3 routing tests + 1 false-positive guard + 3 pool tests (all-tiers, tier-1-count, tier-3-CLOSE-THIS) per domain × 5 domains
+- Count guard updated: ≥1267 → ≥1277
+
+**SuggestedSessionTemplatesTests.swift** — 10 new @Test functions:
+- 2 template existence tests per domain × 5 domains + count guard ≥1267 → ≥1277
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1277 ✓
+- Brace balance: CalloutMessages.swift 1321/1321 ✓; CalloutManager.swift 688/688 ✓
+- 5 routing returns confirmed in CalloutManager.swift ✓
+- 5 case entries + 5 pool functions confirmed in CalloutMessages.swift ✓
+- Routing ordering:
+  - exercisephysiology(7051) BEFORE exercisescience(7068) ✓
+  - nutritionscience(7231) BEFORE performancenutrition(7251) ✓
+  - reproductivehealth(10927) BEFORE maternalhealth(10959) ✓
+  - medicalanthropology(12697) BEFORE physicalanthropology(12724) ✓
+  - comparativepolitics(12916) BEFORE socialscience(12929) ✓
+- "comparative politics" removed from socialscience fallback branch ✓
+
+### Blocked
+Swift toolchain unavailable on Linux container — no `swift build` or `swift test` possible.
+
+### Next agent pick-up
+All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested next 5:
+- `foodsystems` — food systems / sustainable food systems class (food sovereignty, agroecology in food policy context, just transition in food, supply chain analysis, food deserts, food justice movement — distinct from foodscience/foodsafety/agroecology which are more biology/chemistry/agronomy focused)
+- `socialentrepreneurshipclass` — wait, socialentrepreneurship already exists; check if there's a gap for `socialinnovation` class specifically
+- `computationalchemistry` — computational chemistry class (molecular dynamics simulation, DFT, quantum mechanics in chemistry, force fields, energy minimization — distinct from computationalfinance and general chemistry domains)
+- `criminallaw` — criminal law class (actus reus, mens rea, Model Penal Code, strict liability, common law crimes, defenses — distinct from criminaljustice/criminallaw may already exist, check)
+- `musichistory` — music history class (Baroque, Classical, Romantic, 20th-century music, form analysis, historical context, listening assignments — distinct from musictheory and musiccomposition)
