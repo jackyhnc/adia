@@ -29368,8 +29368,153 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "moralphilosophy", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1365)
-    @Test func calloutTemplatesCountAtLeast1365() {
-        #expect(SuggestedSessionTemplates.all.count >= 1365, "template catalog must have ≥1365 entries after microeconomics/econometrics/industrialorganization/organizationalbehavior/moralphilosophy additions")
+    // MARK: - networkscience
+    @Test func networkscienceRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "network science class complex networks scale-free Barabasi-Albert small-world community detection exam") == "networkscience")
+    }
+    @Test func networkscienceRoutingFromSmallWorld() {
+        #expect(CalloutManager.extractTaskKeyword(from: "small-world network Watts-Strogatz model clustering coefficient average path length exam") == "networkscience")
+    }
+    @Test func networkscienceRoutingFromEpidemic() {
+        #expect(CalloutManager.extractTaskKeyword(from: "epidemic spreading on networks SIR model percolation theory class paper") == "networkscience")
+    }
+    @Test func networkscienceFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "computer networks TCP/IP OSI model packet routing exam")
+        #expect(kw != "networkscience", "computer networks TCP/IP exam should route to computernetworks not networkscience")
+    }
+    @Test @MainActor func networkscienceCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "networkscience", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "networkscience", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "networkscience", tier: 3).isEmpty)
+    }
+    @Test @MainActor func networkscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "networkscience", tier: 1).count >= 4)
+    }
+    @Test @MainActor func networkscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "networkscience", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - institutionaleconomics
+    @Test func institutionaleconomicsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "institutional economics class transaction cost economics property rights Coase theorem NIE exam") == "institutionaleconomics")
+    }
+    @Test func institutionaleconomicsRoutingFromCoase() {
+        #expect(CalloutManager.extractTaskKeyword(from: "coase theorem class economics paper transaction costs property rights assignment") == "institutionaleconomics")
+    }
+    @Test func institutionaleconomicsRoutingFromOstrom() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ostrom commons governance institution economics exam common-pool resources design principles") == "institutionaleconomics")
+    }
+    @Test func institutionaleconomicsFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "industrial organization class Cournot Bertrand antitrust economics exam")
+        #expect(kw != "institutionaleconomics", "industrial organization antitrust exam should route to industrialorganization not institutionaleconomics")
+    }
+    @Test @MainActor func institutionaleconomicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "institutionaleconomics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "institutionaleconomics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "institutionaleconomics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func institutionaleconomicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "institutionaleconomics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func institutionaleconomicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "institutionaleconomics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - developmenteconomics
+    @Test func developmenteconomicsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "development economics class Solow growth model endogenous growth poverty traps RCT exam") == "developmenteconomics")
+    }
+    @Test func developmenteconomicsRoutingFromSolow() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solow growth model development economics exam steady state conditional convergence golden rule") == "developmenteconomics")
+    }
+    @Test func developmenteconomicsRoutingFromAcemoglu() {
+        #expect(CalloutManager.extractTaskKeyword(from: "acemoglu development economics paper institutions settler mortality inclusive extractive") == "developmenteconomics")
+    }
+    @Test func developmenteconomicsFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "global health epidemiology disease burden developing countries class exam")
+        #expect(kw != "developmenteconomics", "global health epidemiology exam should not route to developmenteconomics")
+    }
+    @Test @MainActor func developmenteconomicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "developmenteconomics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "developmenteconomics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "developmenteconomics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func developmenteconomicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "developmenteconomics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func developmenteconomicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "developmenteconomics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - healthpolicyanalysis
+    @Test func healthpolicyanalysisRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "health policy analysis class Bismarck Beveridge ACA QALY social determinants exam") == "healthpolicyanalysis")
+    }
+    @Test func healthpolicyanalysisRoutingFromACA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "affordable care act health policy class provisions Medicaid expansion essential health benefits exam") == "healthpolicyanalysis")
+    }
+    @Test func healthpolicyanalysisRoutingFromQALY() {
+        #expect(CalloutManager.extractTaskKeyword(from: "qaly health policy analysis paper NICE ICER cost-effectiveness threshold priority setting") == "healthpolicyanalysis")
+    }
+    @Test func healthpolicyanalysisFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "global health epidemiology WHO SDG disease burden DALY exam")
+        #expect(kw != "healthpolicyanalysis", "global health epidemiology/DALY exam should not route to healthpolicyanalysis")
+    }
+    @Test @MainActor func healthpolicyanalysisCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "healthpolicyanalysis", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "healthpolicyanalysis", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "healthpolicyanalysis", tier: 3).isEmpty)
+    }
+    @Test @MainActor func healthpolicyanalysisTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "healthpolicyanalysis", tier: 1).count >= 4)
+    }
+    @Test @MainActor func healthpolicyanalysisTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "healthpolicyanalysis", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - cognitivebehavioraltherapy
+    @Test func cognitivebehavioraltherapyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "CBT class cognitive behavioral therapy Beck cognitive model thought records cognitive distortions exam") == "cognitivebehavioraltherapy")
+    }
+    @Test func cognitivebehavioraltherapyRoutingFromACT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "acceptance and commitment therapy class ACT hexaflex psychological flexibility exam paper") == "cognitivebehavioraltherapy")
+    }
+    @Test func cognitivebehavioraltherapyRoutingFromDBT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "dialectical behavior therapy class DBT skills mindfulness distress tolerance emotion regulation exam") == "cognitivebehavioraltherapy")
+    }
+    @Test func cognitivebehavioraltherapyFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "write therapy session notes treatment plan progress notes client case conceptualization")
+        #expect(kw != "cognitivebehavioraltherapy", "clinical session notes should route to therapy not cognitivebehavioraltherapy")
+    }
+    @Test @MainActor func cognitivebehavioraltherapyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "cognitivebehavioraltherapy", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "cognitivebehavioraltherapy", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "cognitivebehavioraltherapy", tier: 3).isEmpty)
+    }
+    @Test @MainActor func cognitivebehavioraltherapyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "cognitivebehavioraltherapy", tier: 1).count >= 4)
+    }
+    @Test @MainActor func cognitivebehavioraltherapyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "cognitivebehavioraltherapy", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1377)
+    @Test func calloutTemplatesCountAtLeast1377() {
+        #expect(SuggestedSessionTemplates.all.count >= 1377, "template catalog must have ≥1377 entries after networkscience/institutionaleconomics/developmenteconomics/healthpolicyanalysis/cognitivebehavioraltherapy additions")
     }
 }

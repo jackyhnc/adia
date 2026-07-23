@@ -8173,8 +8173,48 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("moral philosophy paper") })
     }
 
-    // MARK: - Count guard (≥1365)
-    @Test func templateCountAtLeast1365() {
-        #expect(SuggestedSessionTemplates.all.count >= 1365, "template catalog must have ≥1365 entries after microeconomics/econometrics/industrialorganization/organizationalbehavior/moralphilosophy additions")
+    // MARK: - networkscience templates
+    @Test func networkscienceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("network science for my exam") })
+    }
+    @Test func networksciencePaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("network science paper") })
+    }
+
+    // MARK: - institutionaleconomics templates
+    @Test func institutionaleconomicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("institutional economics for my exam") })
+    }
+    @Test func institutionaleconomicsPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("institutional economics paper") })
+    }
+
+    // MARK: - developmenteconomics templates
+    @Test func developmenteconomicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("development economics for my exam") })
+    }
+    @Test func developmenteconomicsPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("development economics paper") })
+    }
+
+    // MARK: - healthpolicyanalysis templates
+    @Test func healthpolicyanalysisStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("health policy analysis for my exam") })
+    }
+    @Test func healthpolicyanalysisPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("health policy analysis paper") })
+    }
+
+    // MARK: - cognitivebehavioraltherapy templates
+    @Test func cognitivebehavioraltherapyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cognitive behavioral therapy for my exam") })
+    }
+    @Test func cognitivebehavioraltherapyPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cognitive behavioral therapy paper") })
+    }
+
+    // MARK: - Count guard (≥1377)
+    @Test func templateCountAtLeast1377() {
+        #expect(SuggestedSessionTemplates.all.count >= 1377, "template catalog must have ≥1377 entries after networkscience/institutionaleconomics/developmenteconomics/healthpolicyanalysis/cognitivebehavioraltherapy additions")
     }
 }

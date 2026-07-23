@@ -749,6 +749,11 @@ extension CalloutManager {
         case "industrialorganization":     return industrialorganizationCallouts(tier: tier)
         case "organizationalbehavior":     return organizationalbehaviorCallouts(tier: tier)
         case "moralphilosophy":            return moralphilosophyCallouts(tier: tier)
+        case "networkscience":             return networkscienceCallouts(tier: tier)
+        case "institutionaleconomics":     return institutionaleconomicsCallouts(tier: tier)
+        case "developmenteconomics":       return developmenteconomicsCallouts(tier: tier)
+        case "healthpolicyanalysis":       return healthpolicyanalysisCallouts(tier: tier)
+        case "cognitivebehavioraltherapy": return cognitivebehavioraltherapyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -15457,6 +15462,111 @@ extension CalloutManager {
             "CLOSE THIS. your ethics exam needs utilitarian theory, Kantian deontology, virtue ethics, and contractualism — all with counterexamples.",
             "CLOSE THIS. those normative ethics and metaethics analysis problems won't write themselves.",
             "CLOSE THIS. your moral philosophy final won't study itself."
+        ]
+        }
+    }
+
+    private func networkscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "Network science studies the structure and dynamics of complex networks. The Barabási-Albert (BA) model generates scale-free networks via preferential attachment: new nodes attach to existing nodes with probability proportional to their degree, producing a degree distribution that follows a power law P(k) ~ k^(-γ) with γ typically between 2 and 3. This contrasts with Erdős-Rényi random graphs (Poisson degree distribution) and lattices. Scale-free networks exhibit hubs — high-degree nodes that make networks robust to random failures but fragile to targeted hub removal.",
+            "The Watts-Strogatz small-world model interpolates between a regular lattice and a random graph by randomly rewiring edges with probability p. At intermediate p, the network exhibits high clustering coefficient C (like a lattice) and short average path length L (like a random graph) — the small-world property. Formally, C(p)/C(0) decays slowly while L(p)/L(0) drops sharply. Real networks (social, biological, technological) share this property. Clustering coefficient of node i: C_i = (number of triangles through i) / (k_i(k_i-1)/2), where k_i is degree.",
+            "Community detection finds groups of nodes with dense internal connections and sparse external connections. Modularity Q = Σ_c [L_c/m - (d_c/(2m))²] where L_c is intra-community edges, m total edges, d_c community degree sum. Maximizing Q (Louvain algorithm) identifies communities. Percolation theory analyzes network robustness: at the critical threshold p_c, the giant component (spanning cluster) emerges. For ER networks: p_c = 1/⟨k⟩. For scale-free networks, the threshold vanishes (p_c→0 as N→∞), making them resilient to random attacks but fragile to targeted removal of high-degree hubs.",
+            "Epidemic spreading on networks follows SIR/SIS dynamics shaped by network topology. In the SIR model (Susceptible-Infected-Recovered), the epidemic threshold is β/μ > 1/⟨k⟩ for ER networks, but vanishes for scale-free networks because ⟨k²⟩/⟨k⟩→∞ — meaning any non-zero transmission rate triggers an epidemic. Network resilience under targeted attack: removing the top-f fraction of hubs causes the giant component to fragment at a critical f much smaller than under random removal. The k-core decomposition (iteratively removing nodes with degree below k) identifies the network's structural core and predicts cascade dynamics."
+        ]
+        case 2: return [
+            "Network science exam — know BA model preferential attachment and power-law degree distribution, Watts-Strogatz small-world construction and the C vs L tradeoff, modularity Q formula and Louvain community detection, ER percolation threshold p_c=1/⟨k⟩, and why scale-free networks have a vanishing epidemic threshold.",
+            "Network science problem set: for each model (ER, WS, BA), derive the degree distribution, calculate clustering coefficient and path length, and identify the percolation threshold. Apply modularity maximization to identify communities in a given adjacency matrix.",
+            "Network science class open — work through the network: compute degree sequence, check scale-free vs Poisson fit, measure clustering and path length, identify hubs, run SIR simulation with your network's ⟨k²⟩/⟨k⟩ ratio."
+        ]
+        default: return [
+            "CLOSE THIS. your network science exam needs BA model, Watts-Strogatz, modularity, percolation theory, and epidemic spreading on networks.",
+            "CLOSE THIS. those scale-free network and community detection problems won't solve themselves.",
+            "CLOSE THIS. your network science exam won't study itself."
+        ]
+        }
+    }
+
+    private func institutionaleconomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "Institutional economics analyzes how rules, norms, and organizations shape economic performance. Coase's theorem (1960): when transaction costs are zero, parties will bargain to the efficient outcome regardless of initial property rights assignment. The theorem's force lies in its contrapositive — observed inefficiency reveals positive transaction costs. Coase's insight: property rights matter when transaction costs are positive, and institutions exist to reduce those costs. Williamson's transaction cost economics identifies asset specificity, uncertainty, and frequency as the key dimensions determining whether transactions should be governed by markets, hybrids, or hierarchies.",
+            "Williamson's four levels of social analysis: (1) informal institutions — norms, customs, traditions, ideology (changes over centuries); (2) formal institutional environment — constitutions, laws, property rights (changes over decades); (3) governance structures — contracts, firms, markets (changes over years); (4) resource allocation — prices and quantities (continuous). Douglass North distinguishes formal institutions (constitutions, laws, regulations) from informal constraints (codes of conduct, norms, conventions). Institutional change is typically incremental and path-dependent — informal constraints outlast formal rule changes, explaining why institutional transplants often fail.",
+            "Ostrom's design principles for sustainable common-pool resource (CPR) governance (Governing the Commons, 1990): (1) clearly defined boundaries; (2) rules adapted to local conditions; (3) collective choice arrangements (users participate in rule modification); (4) monitoring; (5) graduated sanctions; (6) conflict resolution mechanisms; (7) recognition of rights by external authorities; (8) nested enterprises for larger systems. Polycentric governance — multiple overlapping institutions at different scales — often outperforms both state control and privatization for CPRs (fisheries, irrigation, forests). Ostrom disproves the 'tragedy of the commons' (Hardin 1968) as an inevitable outcome.",
+            "The principal-agent problem arises when an agent takes actions on behalf of a principal but their interests diverge and information is asymmetric. Hidden action (moral hazard): the agent's effort is unobservable — optimal contract balances incentive provision (tying pay to output) against risk imposition on the risk-averse agent. Hidden information (adverse selection): agent knows their type — signaling (Spence) and screening (Stiglitz-Weiss) emerge. The hold-up problem: when one party makes relationship-specific investments, the other party can ex post renegotiate to capture quasi-rents. Solution: vertical integration or long-term contracts with credible commitment devices. Property rights theory (Grossman-Hart-Moore): ownership of assets determines residual control rights, which shapes investment incentives."
+        ]
+        case 2: return [
+            "Institutional economics exam — know Coase theorem (zero vs positive transaction costs), Williamson's four governance levels and asset specificity dimensions, North's formal vs informal institutions and path dependence, Ostrom's eight design principles for CPR governance, and the principal-agent hidden action vs hidden information distinction.",
+            "NIE problem set: for each case (firm boundary, CPR governance, contract design), identify the transaction characteristics (asset specificity, uncertainty, frequency), derive the efficient governance structure, and explain what informal constraints would need to change for reform to succeed.",
+            "Institutional economics class open — apply the NIE framework: what are the property rights, who bears the transaction costs, what is the governance structure, and which Ostrom design principles are present or absent?"
+        ]
+        default: return [
+            "CLOSE THIS. your institutional economics exam needs Coase theorem, Williamson transaction costs, North's institutional change, Ostrom's CPR principles, and principal-agent theory.",
+            "CLOSE THIS. those property rights and transaction cost governance problems won't analyze themselves.",
+            "CLOSE THIS. your NIE exam won't study itself."
+        ]
+        }
+    }
+
+    private func developmenteconomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "The Solow growth model (1956) separates the proximate determinants of growth. Capital accumulation: k̇ = sf(k) - (n+δ)k, where k is capital per worker, s the savings rate, n population growth, δ depreciation. Steady state: sf(k*) = (n+δ)k*. At steady state, the economy grows at rate n (extensive). The golden rule maximizes steady-state consumption: MPK = n+δ. Solow residual (total factor productivity, A): growth not explained by factor accumulation. Conditional convergence: poor countries grow faster only if they share the same steady state. Cross-country regressions (Mankiw-Romer-Weil 1992) support augmented Solow with human capital.",
+            "Romer's endogenous growth theory (1986, 1990) explains TFP growth internally. AK model: Y=AK with constant returns to broad capital (including human capital) — no diminishing returns, so growth persists. Romer (1990): intentional R&D by profit-maximizing firms; new varieties of intermediate goods; non-rivalry of ideas generates increasing returns at the aggregate level. Lucas (1988): human capital accumulation drives growth via externalities. Policy implications differ sharply from Solow: in AK/Romer, savings rate changes permanently affect growth rates (not just levels), and R&D subsidies have lasting effects.",
+            "Acemoglu, Johnson, and Robinson ('Why Nations Fail' and 'The Colonial Origins of Comparative Development', 2001) argue institutions are the fundamental cause of growth differences. Inclusive institutions (secure property rights, rule of law, broad political participation) generate growth; extractive institutions (concentrated power, appropriation of surplus) stagnate. Their IV strategy: European settler mortality → settlement patterns → institutions today → income today. Banerjee and Duflo's RCT methodology (Poor Economics, 2011; Nobel 2019) evaluates specific interventions (deworming, conditional cash transfers, microfinance). Key finding: poverty traps are local and specific — the S-curve savings function, nutritional traps, and behavioral constraints require targeted nudges, not one-size-fits-all big pushes.",
+            "Conditional cash transfer (CCT) programs (Progresa/Oportunidades in Mexico, Bolsa Família in Brazil) transfer income to poor households conditional on school attendance and health visits. Randomized evaluation of Progresa (Schultz 2004): significant increases in enrollment, health visits, and consumption. Bolsa Família covers ~14 million families and is credited with reducing Brazilian inequality. Microfinance (Grameen Bank, Yunus) provides small loans without collateral, leveraging social capital through group lending. RCT evidence (Banerjee et al. 2015): modest consumption effects, no transformational poverty reduction from microcredit alone. Structural transformation (Lewis 1954, Kuznets): development involves labor reallocation from low-productivity agriculture to high-productivity manufacturing and services — the engine of sustained growth in East Asian tigers."
+        ]
+        case 2: return [
+            "Development economics exam — know Solow steady-state condition and convergence, Romer vs Solow on policy implications of growth rates vs levels, AJR's IV strategy for institutions, Banerjee-Duflo RCT design for poverty programs, CCT Progresa evaluation findings, and Lewis dual-sector structural transformation model.",
+            "Development economics problem set: for each growth model, derive the steady state, calculate the golden rule savings rate, and predict the growth effect of a one-time productivity increase vs a permanent savings rate increase. Apply the AJR framework to explain cross-country income differences.",
+            "Dev econ class open — apply the poverty trap framework: draw the S-curve savings function, identify the unstable low-level equilibrium, and evaluate whether the Sachs big push or Easterly bottom-up view better diagnoses the specific case."
+        ]
+        default: return [
+            "CLOSE THIS. your development economics exam needs Solow model, endogenous growth, AJR institutions, poverty traps, and CCT program evaluation.",
+            "CLOSE THIS. those growth accounting and poverty trap problems won't solve themselves.",
+            "CLOSE THIS. your development economics exam won't study itself."
+        ]
+        }
+    }
+
+    private func healthpolicyanalysisCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "Health system typologies classify financing and delivery arrangements. Bismarck model (Germany, France, Japan): social health insurance funded by payroll contributions from employers and employees; multiple competing non-profit 'sickness funds'; coverage tied to employment; universal through mandatory participation. Beveridge model (UK NHS, Nordic systems): government-funded via general taxation; government is both insurer and provider; universal coverage as a right; free at point of use; strong primary care gatekeeping. National Health Insurance (Canada, Taiwan): single government payer (monopsony) contracts with private providers; eliminates administrative fragmentation of multi-payer systems; funded by taxes. Out-of-pocket market model (many low-income countries): individuals pay directly; catastrophic expenditure risk; inequitable access.",
+            "The Affordable Care Act (ACA, 2010) restructured US health coverage through four major pillars: (1) individual mandate — requirement to obtain coverage or pay a penalty (zeroed out by TCJA 2017); (2) community rating — insurers must charge same premium regardless of health status (guaranteed issue eliminates medical underwriting); (3) essential health benefits — ten categories insurers must cover; (4) Medicaid expansion — extended eligibility to 138% FPL (137 million now enrolled). Health insurance exchanges (marketplaces) with income-based premium subsidies. Employer mandate for firms with 50+ full-time employees. Impact: uninsured rate fell from ~16% (2010) to ~8% (2023). Remaining gaps: Medicaid coverage gap in non-expansion states, affordability of bronze plan cost-sharing.",
+            "QALY (Quality-Adjusted Life Year) is the standard outcome measure for health technology assessment. One QALY = one year of perfect health; a year in a health state with utility weight 0.6 = 0.6 QALYs. ICER (Incremental Cost-Effectiveness Ratio) = ΔCOST/ΔQALY. NICE (UK National Institute for Health and Care Excellence) uses a threshold of £20,000-£30,000/QALY for routine approvals; the 'end-of-life' modifier allows up to £50,000/QALY. Criticisms of QALY: discriminates against disabled persons (lower utility weights), ignores distributional concerns, poor at capturing process utility. Alternative frameworks: multi-criteria decision analysis (MCDA), fair innings argument, severity weighting.",
+            "Social determinants of health (SDH) are the conditions in which people are born, grow, live, work, and age. The WHO Commission on Social Determinants of Health (CSDH, 2008 Marmot Report) identified structural determinants (income distribution, education, political institutions, social policies) and intermediary determinants (material circumstances, psychosocial factors, behavioral factors, healthcare access). The Marmot Review (2010, UK): a social gradient in health exists across all income levels, not just poverty — reducing health inequalities requires action across the social gradient. Value-based care (VBC) shifts payment from volume (fee-for-service) to value (outcomes per dollar): bundled payments, accountable care organizations (ACOs), pay-for-performance (P4P). Evidence on VBC: modest cost savings, mixed quality effects, risk of patient selection."
+        ]
+        case 2: return [
+            "Health policy exam — know the four health system typologies (Bismarck, Beveridge, NHI, OOP) with country examples, ACA's four major provisions and coverage impact, QALY calculation and NICE threshold ranges, WHO CSDH structural vs intermediary determinants, and value-based care payment model distinctions.",
+            "Health policy analysis problem set: for each policy instrument (individual mandate, QALY threshold, bundled payment), identify the market failure it corrects, predict behavioral responses, and evaluate distributional effects. Apply the Bismarck vs Beveridge framework to a specific country's reform proposal.",
+            "Health policy class open — structure your analysis: what is the health system type, what market failures exist (adverse selection, moral hazard, externalities, information asymmetry), what is the financing mechanism, and what are the equity and efficiency tradeoffs?"
+        ]
+        default: return [
+            "CLOSE THIS. your health policy exam needs Bismarck/Beveridge/NHI typologies, ACA provisions, QALY methodology, social determinants framework, and value-based care models.",
+            "CLOSE THIS. those health system financing and ICER calculation problems won't solve themselves.",
+            "CLOSE THIS. your health policy analysis exam won't study itself."
+        ]
+        }
+    }
+
+    private func cognitivebehavioraltherapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "CBT's cognitive model (Beck 1979) posits that psychological distress arises from distorted cognitions at three levels: automatic thoughts (situation-specific, spontaneous), intermediate beliefs (conditional rules and attitudes), and core beliefs (global, rigid schemas about self, world, and future — 'I am worthless', 'The world is dangerous'). The negative cognitive triad (depression): negative views of self, world, and future. Cognitive conceptualization diagram maps the connection from early experience → core beliefs → intermediate beliefs → situation → automatic thoughts → emotions/behaviors/physiology. Thought records (dysfunctional thought record, DTR) are the primary tool: identify the situation, emotion, automatic thought, evidence for and against, balanced thought, re-rate emotion.",
+            "Cognitive distortions (Beck, Burns) are systematic errors in thinking. Key types: all-or-nothing thinking (black-and-white evaluation); catastrophizing (predicting the worst case); mind reading (assuming others' negative thoughts); fortune telling (predicting negative outcomes); overgeneralization (broad negative conclusion from one event); mental filter (dwelling on negatives, ignoring positives); disqualifying the positive (rejecting positive experiences); should statements (rigid standards generating guilt/resentment); labeling (global negative self-judgment: 'I am a failure'); personalization (blaming oneself for external events); magnification/minimization. Behavioral activation (Lewinsohn) targets depression by scheduling valued activities to break avoidance-withdrawal cycles, increasing positive reinforcement independent of mood.",
+            "Behavioral experiments directly test cognitions in real-world situations — more powerful than verbal restructuring alone. Exposure and Response Prevention (ERP) is the gold standard for OCD: construct a fear hierarchy, expose to feared stimuli, prevent compulsive response, allow anxiety to habituate. For specific phobias: systematic desensitization (Wolpe) or in-vivo exposure with graded hierarchy. For PTSD: prolonged exposure (Foa), trauma-focused CBT. For panic disorder: interoceptive exposure to body sensations. Clark's cognitive model of panic: misinterpretation of bodily sensations as catastrophic triggers panic cycle. CBT for GAD: worry postponement, cognitive restructuring of the positive and negative beliefs about worry (Wells' metacognitive model).",
+            "Third-wave CBT extends beyond cognitive restructuring to acceptance, mindfulness, and values. ACT (Acceptance and Commitment Therapy, Hayes): the psychological flexibility hexaflex — acceptance (opening to thoughts/feelings without struggle), cognitive defusion (observing thoughts rather than fusing with their content), present-moment awareness (mindfulness), self-as-context (the observing self), values clarification, and committed action (behavior consistent with values). DBT (Dialectical Behavior Therapy, Linehan): biosocial theory of BPD (emotional dysregulation + invalidating environment); four skill modules — mindfulness (core), distress tolerance (crisis survival), emotion regulation, interpersonal effectiveness; diary cards and individual therapy + skills training group. MBCT (Mindfulness-Based Cognitive Therapy): integrates mindfulness meditation with cognitive therapy; prevents depressive relapse by enabling meta-awareness of depressive thought patterns rather than engaging with their content; evidence: reduces relapse rates by ~50% in recurrent depression."
+        ]
+        case 2: return [
+            "CBT exam — know Beck's three-tier cognitive model, the negative cognitive triad, ten major cognitive distortions, behavioral activation rationale, thought record steps, ACT hexaflex components, DBT's four skill modules, and MBCT's relapse-prevention mechanism.",
+            "CBT problem set: for each case vignette, identify the automatic thought, map it to a cognitive distortion category, apply the DTR to generate a balanced thought, and design a behavioral experiment to test the prediction. Apply the fear hierarchy to design an ERP protocol for OCD.",
+            "CBT class open — conceptualize the case: early experiences, core beliefs, intermediate beliefs, typical triggers, automatic thoughts, and behavioral responses. Identify which module (cognitive restructuring, behavioral activation, ERP, or third-wave ACT/DBT) is the best fit and why."
+        ]
+        default: return [
+            "CLOSE THIS. your CBT exam needs Beck's cognitive model, cognitive distortions, behavioral activation, ERP, ACT hexaflex, DBT skill modules, and MBCT.",
+            "CLOSE THIS. those thought records and cognitive distortion classification problems won't write themselves.",
+            "CLOSE THIS. your cognitive behavioral therapy exam won't study itself."
         ]
         }
     }

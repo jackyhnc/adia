@@ -535,6 +535,26 @@ public final class CalloutManager {
             || lower.contains("computer communication") && (lower.contains("class") || lower.contains("exam") || lower.contains("course")) {
             return "computernetworks"
         }
+        // networkscience — positioned AFTER computernetworks and BEFORE computervision so
+        // network science class, complex networks (scale-free, small-world, Barabási-Albert,
+        // Watts-Strogatz, community detection, percolation theory) route to a dedicated pool.
+        // Distinct from computernetworks (TCP/IP/OSI protocols) and algorithms (pure graph algorithms).
+        if lower.contains("network science class") || lower.contains("network science course")
+            || lower.contains("network science exam") || lower.contains("network science paper")
+            || lower.contains("network science notes") || lower.contains("complex networks class")
+            || lower.contains("complex networks course") || lower.contains("complex networks exam")
+            || lower.contains("scale-free network") && (lower.contains("class") || lower.contains("exam") || lower.contains("networks") || lower.contains("science"))
+            || lower.contains("barabasi") && (lower.contains("class") || lower.contains("exam") || lower.contains("networks") || lower.contains("paper"))
+            || lower.contains("barabási") && (lower.contains("class") || lower.contains("exam") || lower.contains("networks") || lower.contains("paper"))
+            || lower.contains("small-world network") && (lower.contains("class") || lower.contains("exam") || lower.contains("networks") || lower.contains("science"))
+            || lower.contains("watts-strogatz") && (lower.contains("class") || lower.contains("exam") || lower.contains("networks"))
+            || lower.contains("community detection") && (lower.contains("class") || lower.contains("exam") || lower.contains("networks") || lower.contains("graph"))
+            || lower.contains("percolation theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("networks") || lower.contains("physics"))
+            || lower.contains("epidemic spreading") && (lower.contains("class") || lower.contains("exam") || lower.contains("network") || lower.contains("model"))
+            || lower.contains("network resilience") && (lower.contains("class") || lower.contains("exam") || lower.contains("networks") || lower.contains("science"))
+            || lower.contains("graph theory") && (lower.contains("class") || lower.contains("networks") || lower.contains("exam")) && (lower.contains("network science") || lower.contains("complex network")) {
+            return "networkscience"
+        }
         // computervision — positioned BEFORE code so CV class/exam and OpenCV project terms
         // route here. Bare "neural network" stays in artificialintelligence (fires earlier).
         if lower.contains("computer vision class") || lower.contains("computer vision course") || lower.contains("computer vision exam")
@@ -1218,6 +1238,54 @@ public final class CalloutManager {
             || lower.contains("market power") && (lower.contains("economics class") || lower.contains("io class") || lower.contains("antitrust") || lower.contains("io exam") || lower.contains("economics exam"))
             || lower.contains("monopolistic competition") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("io") || lower.contains("paper")) {
             return "industrialorganization"
+        }
+        // institutionaleconomics — positioned AFTER industrialorganization and BEFORE economics so
+        // North's NIE, Coase theorem, transaction cost economics, Ostrom commons governance, and
+        // property rights theory tasks route to a dedicated pool. Distinct from economics (general
+        // macro/micro), industrialorganization (firm-level market structure), and developmenteconomics.
+        if lower.contains("institutional economics class") || lower.contains("institutional economics course")
+            || lower.contains("institutional economics exam") || lower.contains("institutional economics paper")
+            || lower.contains("institutional economics assignment") || lower.contains("institutional economics textbook")
+            || lower.contains("new institutional economics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("nie ") && (lower.contains("class") || lower.contains("economics") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("transaction cost economics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("transaction costs") && (lower.contains("class") || lower.contains("economics") || lower.contains("exam") || lower.contains("paper") || lower.contains("institution"))
+            || lower.contains("coase theorem") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("paper") || lower.contains("institution"))
+            || lower.contains("property rights theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("paper"))
+            || lower.contains("douglass north") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("institution") || lower.contains("paper"))
+            || lower.contains("ostrom") && lower.contains("commons") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("paper") || lower.contains("institution"))
+            || lower.contains("commons governance") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("paper") || lower.contains("institution"))
+            || lower.contains("principal-agent") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("institution") || lower.contains("paper")) && !(lower.contains("io class") || lower.contains("finance class"))
+            || lower.contains("hold-up problem") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("institution") || lower.contains("paper"))
+            || lower.contains("credible commitment") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("institution") || lower.contains("paper")) {
+            return "institutionaleconomics"
+        }
+        // developmenteconomics — positioned AFTER institutionaleconomics and BEFORE economics so
+        // Solow growth, endogenous growth theory, Acemoglu-Johnson-Robinson, poverty traps,
+        // conditional cash transfers, Banerjee-Duflo RCTs, and structural transformation tasks
+        // route to a dedicated pool. Distinct from economics (general macro/micro),
+        // institutionaleconomics (North/Coase/Williamson), and globalhealth.
+        if lower.contains("development economics class") || lower.contains("development economics course")
+            || lower.contains("development economics exam") || lower.contains("development economics paper")
+            || lower.contains("development economics assignment") || lower.contains("development economics textbook")
+            || lower.contains("economic development class") || lower.contains("economic development course")
+            || lower.contains("economic development exam") || lower.contains("economic development paper")
+            || lower.contains("econ development class") || lower.contains("econ development course")
+            || lower.contains("solow growth model") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("paper") || lower.contains("development"))
+            || lower.contains("solow model") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("development") || lower.contains("paper"))
+            || lower.contains("endogenous growth") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("paper") || lower.contains("development"))
+            || lower.contains("acemoglu") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("development") || lower.contains("paper") || lower.contains("institution"))
+            || lower.contains("poverty trap") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("development") || lower.contains("paper"))
+            || lower.contains("conditional cash transfer") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("development") || lower.contains("paper"))
+            || lower.contains("progresa") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("development") || lower.contains("paper"))
+            || lower.contains("bolsa familia") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("development") || lower.contains("paper"))
+            || lower.contains("rct development") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("paper"))
+            || lower.contains("banerjee") && lower.contains("duflo") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("development") || lower.contains("paper"))
+            || lower.contains("poor economics") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("development"))
+            || lower.contains("microfinance") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("development") || lower.contains("paper"))
+            || lower.contains("structural transformation") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("development") || lower.contains("paper"))
+            || lower.contains("human development index") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("development") || lower.contains("paper")) {
+            return "developmenteconomics"
         }
         // economics — positioned AFTER statistics and BEFORE astronomy so macroeconomics,
         // microeconomics, econometrics, and economics class/course terms route to a dedicated pool.
@@ -11882,6 +11950,32 @@ public final class CalloutManager {
             || lower.contains("counseling class") && (lower.contains("school") || lower.contains("guidance") || lower.contains("student affairs")) {
             return "schoolcounseling"
         }
+        // cognitivebehavioraltherapy — positioned BEFORE socialwork so academic CBT coursework
+        // (Beck's cognitive model, thought records, cognitive distortions, behavioral activation,
+        // exposure hierarchies, ACT, DBT, MBCT) routes to a dedicated study pool. Distinct from
+        // therapy (clinical notes/session documentation) and socialwork (case management/field placement).
+        if lower.contains("cbt class") || lower.contains("cbt course") || lower.contains("cbt exam")
+            || lower.contains("cbt paper") || lower.contains("cbt textbook") || lower.contains("cbt notes")
+            || lower.contains("cbt therapy class") || lower.contains("cbt therapy course") || lower.contains("cbt therapy exam")
+            || lower.contains("cognitive behavioral therapy class") || lower.contains("cognitive behavioral therapy course")
+            || lower.contains("cognitive behavioral therapy exam") || lower.contains("cognitive behavioral therapy paper")
+            || lower.contains("cognitive behavioral therapy textbook")
+            || lower.contains("cognitive behavioral therapy techniques") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("beck's cognitive model") && (lower.contains("class") || lower.contains("exam") || lower.contains("cbt") || lower.contains("therapy") || lower.contains("paper"))
+            || lower.contains("beck cognitive model") && (lower.contains("class") || lower.contains("exam") || lower.contains("cbt") || lower.contains("therapy") || lower.contains("paper"))
+            || lower.contains("thought records") && (lower.contains("class") || lower.contains("exam") || lower.contains("cbt") || lower.contains("therapy") || lower.contains("paper"))
+            || lower.contains("cognitive distortions") && (lower.contains("class") || lower.contains("exam") || lower.contains("cbt") || lower.contains("therapy") || lower.contains("paper"))
+            || lower.contains("behavioral activation") && (lower.contains("class") || lower.contains("exam") || lower.contains("cbt") || lower.contains("therapy") || lower.contains("paper"))
+            || lower.contains("exposure and response prevention") && (lower.contains("class") || lower.contains("exam") || lower.contains("cbt") || lower.contains("therapy") || lower.contains("paper"))
+            || lower.contains("act therapy class") || lower.contains("act therapy course") || lower.contains("act therapy exam")
+            || lower.contains("acceptance and commitment therapy") && (lower.contains("class") || lower.contains("exam") || lower.contains("paper") || lower.contains("course"))
+            || lower.contains("dbt class") || lower.contains("dbt course") || lower.contains("dbt exam") || lower.contains("dbt paper")
+            || lower.contains("dialectical behavior therapy class") || lower.contains("dialectical behavior therapy course")
+            || lower.contains("dialectical behavior therapy exam")
+            || lower.contains("mindfulness-based cognitive therapy") && (lower.contains("class") || lower.contains("exam") || lower.contains("paper") || lower.contains("course"))
+            || lower.contains("third-wave cbt") && (lower.contains("class") || lower.contains("exam") || lower.contains("paper")) {
+            return "cognitivebehavioraltherapy"
+        }
         // socialwork — positioned before therapy so social-work-specific tasks (case management,
         // child welfare, community resources) route here instead of to therapist callouts.
         // "social work" is owned here; "social work" in the therapy branch is removed.
@@ -12157,6 +12251,31 @@ public final class CalloutManager {
             || lower.contains("global health policy exam") || lower.contains("global health policy paper")
             || lower.contains("global health policy program") || lower.contains("global health policy assignment") {
             return "globalhealthpolicy"
+        }
+        // healthpolicyanalysis — positioned AFTER globalhealthpolicy and BEFORE environmentalhealth so
+        // health system financing (Bismarck/Beveridge/NHI/OOP typologies), ACA/Medicare/Medicaid
+        // policy analysis, QALY-based priority setting (NICE), social determinants policy
+        // interventions, and value-based care reform tasks route to a dedicated pool. Distinct from
+        // healtheconomics (economic modeling earlier), healthlaw (legal/regulatory), and globalhealth.
+        if lower.contains("health policy class") || lower.contains("health policy course")
+            || lower.contains("health policy exam") || lower.contains("health policy paper")
+            || lower.contains("health policy analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("health systems class") || lower.contains("health systems course")
+            || lower.contains("health systems exam") || lower.contains("health systems paper")
+            || lower.contains("bismarck model") && (lower.contains("class") || lower.contains("exam") || lower.contains("health") || lower.contains("policy"))
+            || lower.contains("beveridge model") && (lower.contains("class") || lower.contains("exam") || lower.contains("health") || lower.contains("policy"))
+            || lower.contains("national health insurance") && (lower.contains("class") || lower.contains("exam") || lower.contains("health") || lower.contains("policy"))
+            || lower.contains("aca") && (lower.contains("class") || lower.contains("exam") || lower.contains("health policy") || lower.contains("affordable care act"))
+            || lower.contains("affordable care act") && (lower.contains("class") || lower.contains("exam") || lower.contains("health") || lower.contains("policy"))
+            || lower.contains("medicare policy") && (lower.contains("class") || lower.contains("exam") || lower.contains("health") || lower.contains("policy") || lower.contains("reform"))
+            || lower.contains("medicaid policy") && (lower.contains("class") || lower.contains("exam") || lower.contains("health") || lower.contains("policy") || lower.contains("reform"))
+            || lower.contains("qaly") && (lower.contains("class") || lower.contains("exam") || lower.contains("health") || lower.contains("policy") || lower.contains("economics"))
+            || lower.contains("nice methodology") && (lower.contains("class") || lower.contains("exam") || lower.contains("health") || lower.contains("policy"))
+            || lower.contains("social determinants") && (lower.contains("class") || lower.contains("exam") || lower.contains("health") || lower.contains("policy"))
+            || lower.contains("value-based care") && (lower.contains("class") || lower.contains("exam") || lower.contains("health") || lower.contains("policy"))
+            || lower.contains("single payer") && (lower.contains("class") || lower.contains("exam") || lower.contains("health") || lower.contains("policy"))
+            || lower.contains("universal health coverage") && (lower.contains("class") || lower.contains("exam") || lower.contains("health") || lower.contains("policy") || lower.contains("who")) {
+            return "healthpolicyanalysis"
         }
         // environmentalhealth — positioned AFTER publichealthnutrition and BEFORE publicheath.
         // Catches REHS exam prep, sanitarian certification, food inspection class, environmental

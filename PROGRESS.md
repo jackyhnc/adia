@@ -1,5 +1,73 @@
 # Adia — Build Progress
 
+## Run 425 — 2026-07-23 — 5 new keyword domains: networkscience/institutionaleconomics/developmenteconomics/healthpolicyanalysis/cognitivebehavioraltherapy (1367→1377 templates)
+
+### What shipped
+
+**5 new keyword domains: networkscience, institutionaleconomics, developmenteconomics, healthpolicyanalysis, cognitivebehavioraltherapy**
+
+**New keyword domain — networkscience:**
+- Branch positioned AFTER `computernetworks` and BEFORE `computervision`. Scale-free networks (Barabási-Albert model, preferential attachment, power-law P(k)~k^-γ), small-world networks (Watts-Strogatz, high clustering + low path length), community detection (modularity Q, Louvain algorithm, stochastic block model), percolation theory (giant component threshold, ER vs scale-free robustness), epidemic spreading (SIR/SIS on networks, vanishing threshold on scale-free networks) — distinct from computernetworks (TCP/IP) and algorithms (pure graph algorithms).
+- Catches: network science class/course/exam/paper, complex networks class/course/exam, scale-free network+class/exam/networks/science, Barabasi/Watts-Strogatz+class/exam, community detection+class/exam/networks, percolation theory+class/exam/networks, epidemic spreading+class/exam/network, network resilience+class/exam/networks.
+- `networkscienceCallouts(tier:)` 4/3/3: BA model power-law + hub vulnerability / Watts-Strogatz small-world interpolation / modularity Q + Louvain + percolation / SIR on heterogeneous networks + epidemic threshold.
+- 2 templates: study exam (BA/WS/ER models, modularity, percolation, SIR epidemic threshold, centrality measures, 60 min) + paper (network model comparison, community detection methods, epidemic spreading analysis, 90 min)
+
+**New keyword domain — institutionaleconomics:**
+- Branch positioned AFTER `industrialorganization` and BEFORE `economics`. Coase theorem, Williamson's four governance levels, transaction cost economics, hold-up problem, North's formal/informal institutions, path dependence, Ostrom's CPR design principles, principal-agent hidden action/hidden information, property rights (GHM) — distinct from economics (general), industrialorganization (firm-level market structure), and developmenteconomics.
+- Catches: institutional economics class/course/exam/paper, new institutional economics/NIE+class/exam, transaction cost economics+class/exam, coase theorem+class/exam/economics, property rights theory+class/exam/economics, douglass north+class/exam/economics, ostrom+commons+class/exam/economics, principal-agent+class/exam/economics/institution, hold-up problem+class/exam, credible commitment+class/exam.
+- `institutionaleconomicsCallouts(tier:)` 4/3/3: Coase theorem / Williamson four levels + hold-up / North formal/informal institutions + path dependence / Ostrom eight CPR design principles + polycentric governance.
+- 2 templates: study exam (Coase, Williamson, North, Ostrom, principal-agent, GHM, 60 min) + paper (transaction cost governance, commons governance, principal-agent theory, 90 min)
+
+**New keyword domain — developmenteconomics:**
+- Branch positioned AFTER `institutionaleconomics` and BEFORE `economics`. Solow growth (steady-state, conditional convergence, golden rule), endogenous growth (Romer AK/horizontal variety, Lucas human capital), Acemoglu-Johnson-Robinson (settler mortality IV, inclusive vs extractive institutions), Banerjee-Duflo RCTs, CCT programs (Progresa, Bolsa Família), poverty traps, structural transformation — distinct from economics (general), institutionaleconomics (North/Coase/Williamson), globalhealth.
+- Catches: development economics class/course/exam/paper, economic development class/course/exam, solow growth model/solow model+class/exam/economics, endogenous growth+class/exam/economics, acemoglu+class/exam/economics/development, poverty trap+class/exam/economics/development, conditional cash transfer+class/exam/economics, banerjee+duflo+class/exam, microfinance+class/exam/economics/development, structural transformation+class/exam/economics/development.
+- `developmenteconomicsCallouts(tier:)` 4/3/3: Solow model derivation / Romer endogenous growth / AJR institutions + settler mortality / Banerjee-Duflo RCTs + CCT Progresa + structural transformation.
+- 2 templates: study exam (Solow, Romer, Lucas, AJR, Banerjee-Duflo, CCTs, poverty traps, Lewis dual-sector, Kuznets, 60 min) + paper (growth theory, institutions and development, poverty measurement, 90 min)
+
+**New keyword domain — healthpolicyanalysis:**
+- Branch positioned AFTER `globalhealthpolicy` and BEFORE `environmentalhealth`. Health system typologies (Bismarck/Beveridge/NHI/OOP), insurance market failures (adverse selection, moral hazard, RAND HIE), ACA provisions (guaranteed issue, EHBs, Medicaid expansion, marketplaces), QALY methodology (EQ-5D, ICER, NICE threshold), social determinants of health (WHO CSDH, Marmot Review, Whitehall), value-based care — distinct from healtheconomics (economic modeling, fires earlier), healthlaw (legal/regulatory), globalhealth (global epidemiology).
+- Catches: health policy class/course/exam/paper/analysis/seminar, health systems class/course/exam, bismarck model+class/exam/health/policy, beveridge model+class/exam/health/policy, ACA+class/exam/health policy, qaly+class/exam/health/policy, NICE methodology+class/exam/health/policy, social determinants+class/exam/health/policy, value-based care+class/exam/health/policy.
+- `healthpolicyanalysisCallouts(tier:)` 4/3/3: four health system typologies / ACA provisions + insurance market failures / QALY methodology + NICE threshold / WHO CSDH social determinants + Marmot Review.
+- 2 templates: study exam (Bismarck/Beveridge/NHI/OOP, ACA, adverse selection, QALY, NICE, Marmot, SDOH, VBC, 60 min) + paper (health system financing, QALY priority-setting, social determinants, 90 min)
+
+**New keyword domain — cognitivebehavioraltherapy:**
+- Branch positioned AFTER `schoolcounseling` and BEFORE `socialwork`. Beck's cognitive model (3-tier hierarchy, negative cognitive triad, case conceptualization), cognitive distortions (10+ types, Ellis REBT), behavioral activation (Lewinsohn), exposure hierarchies (ERP for OCD, PE for PTSD, Clark's panic model), behavioral experiments, ACT (hexaflex: acceptance/defusion/present-moment/self-as-context/values/committed action), DBT (biosocial theory, 4 skill modules), MBCT (decentering, relapse prevention) — distinct from therapy (clinical session notes) and socialwork (case management/field placement).
+- Catches: CBT class/course/exam/paper/textbook, cbt therapy class/course/exam, cognitive behavioral therapy class/course/exam/paper, beck's cognitive model+class/exam/cbt, thought records+class/exam/cbt, cognitive distortions+class/exam/cbt, behavioral activation+class/exam/cbt, exposure and response prevention+class/exam/cbt, act therapy class/course/exam, acceptance and commitment therapy+class/exam, dbt class/course/exam/paper, dialectical behavior therapy class/course/exam, mbct+class/exam, mindfulness-based cognitive therapy+class/exam.
+- `cognitivebehavioraltherapyCallouts(tier:)` 4/3/3: Beck's model + cognitive triad / cognitive distortions + behavioral activation / behavioral experiments + ERP + Clark panic model / ACT hexaflex + DBT biosocial + MBCT decentering.
+- 2 templates: study exam (Beck, cognitive distortions, BA, ERP, ACT hexaflex, DBT 4 modules, MBCT, 60 min) + paper (cognitive model formulation, third-wave comparison, CBT evidence base, 90 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +35 @Test functions (3 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains) + updated count guard ≥1377
+- SuggestedSessionTemplatesTests.swift: +10 @Test functions (2 template existence × 5 domains) + updated count guard ≥1377
+
+**Template catalog: 1367 → 1377**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection and Python brace counting.
+- `networkscience` fires AFTER `computernetworks` (line ~536) and BEFORE `computervision` ✓
+- `institutionaleconomics` fires AFTER `industrialorganization` (~1220) and BEFORE `economics` (~1250) ✓
+- `developmenteconomics` fires AFTER `institutionaleconomics` and BEFORE `economics` ✓
+- `healthpolicyanalysis` fires AFTER `globalhealthpolicy` (~12163) and BEFORE `environmentalhealth` (~12166) ✓
+- `cognitivebehavioraltherapy` fires AFTER `schoolcounseling` (~11883) and BEFORE `socialwork` (~11885) ✓
+- Brace balance: CalloutManager.swift 738/738 ✓; CalloutMessages.swift 1421/1421 ✓; SuggestedSessionTemplates.swift 16/16 ✓
+- Template count: 1377 confirmed (grep -c "preferredDuration:" = 1377) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new case entries in CalloutMessages.swift switch ✓
+- 5 new private pool functions in CalloutMessages.swift ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent pick-up
+All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested next 5:
+- `islamicfinance` — Islamic finance class (riba prohibition, murabaha cost-plus sale, musharaka partnership, mudaraba profit-sharing, ijara lease, sukuk Islamic bonds, takaful Islamic insurance, sharia supervisory boards — distinct from islamiclaw which covers fiqh/usul methodology)
+- `gamedesign` — game design class (game mechanics, game feel, balancing, narrative design, level design, player psychology, monetization systems, accessibility — distinct from gamedev which is more technical/programming)
+- `forensiccriminology` — forensic criminology / criminal behavior class (crime scene analysis, criminal profiling, psychological autopsy, victimology, criminal typologies, eyewitness testimony, deception detection — distinct from forensicaccounting and criminallaw)
+- `environmentallaw` — environmental law class (NEPA, Clean Air Act, Clean Water Act, CERCLA, EPA rulemaking, international environmental treaties, climate litigation — distinct from environmentalpolicy, environmentalscience, and internationallaw)
+- `publicinternationallaw` — public international law class (sources: Article 38 ICJ Statute, custom, treaty, general principles; state responsibility; jus cogens; jurisdiction; diplomatic immunity; VCLT — distinct from internationallaw broader catchall and humanrights)
+- Template count target: 1377 → 1387 after next 5-domain batch
+
+---
 ## Run 422 — 2026-07-23 — 5 new keyword domains: behavioralfinance/cryptocurrencyeconomics/constitutionalcomparativelaw/internationalhumanitarianlaw/islamiclaw (1337→1347 templates)
 
 ### What shipped
