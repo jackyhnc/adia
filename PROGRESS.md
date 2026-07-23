@@ -1,5 +1,71 @@
 # Adia — Build Progress
 
+## Run 422 — 2026-07-23 — 5 new keyword domains: behavioralfinance/cryptocurrencyeconomics/constitutionalcomparativelaw/internationalhumanitarianlaw/islamiclaw (1337→1347 templates)
+
+### What shipped
+
+**5 new keyword domains: behavioralfinance, cryptocurrencyeconomics, constitutionalcomparativelaw, internationalhumanitarianlaw, islamiclaw**
+
+**New keyword domain — behavioralfinance:**
+- Branch positioned BEFORE `finance`. Prospect theory in financial markets, overconfidence bias in trading, herding behavior, noise trader risk, calendar anomalies (January effect, momentum), disposition effect, limits to arbitrage, and irrational exuberance distinct from behavioraleconomics (nudge theory/choice architecture) and finance (CFA/DCF/LBO).
+- Catches: behavioral/behavioural finance class/course/exam/paper/textbook/assignment, word("behavioral finance")/word("behavioural finance"), prospect theory+invest/market/portfolio/finance/stock/class/exam, loss aversion+invest/portfolio/finance/market/trading/class+finance context, overconfidence bias+invest/market/trading/finance/class/exam, noise trader+class/exam/finance/market, irrational exuberance+class/exam/finance/market, market anomaly/anomalies+class/exam/finance/behavioral, January effect/momentum effect+class/finance/market/exam, herding behavior+invest/market/finance/class/exam, investor herding+class/exam/finance/market, mental accounting+invest/portfolio/finance/market+finance context, disposition effect+class/exam/finance/invest/market, limits to arbitrage+class/exam/finance/market, Shiller+finance/market/class/exam/irrational.
+- `behavioralfinanceCallouts(tier:)` 4/3/3: "those behavioral finance problems — prospect theory in markets, overconfidence bias in trading, herding behavior, noise trader risk, calendar anomalies, the disposition effect, and limits to arbitrage — won't analyze themselves." / "stop. your behavioral finance exam and market anomaly paper are still open." / "CLOSE THIS. open your behavioral finance textbook or prospect theory and market anomaly notes."
+- 2 templates: study exam (prospect theory, loss aversion, overconfidence, noise traders, disposition effect, limits to arbitrage, herding, calendar anomalies, Shiller, 60 min) + paper (market anomaly, behavioral bias, or institutional behavior analysis, 90 min)
+
+**New keyword domain — cryptocurrencyeconomics:**
+- Branch positioned BEFORE `cryptolaw`. Tokenomics design, DeFi protocol economics, AMM (x*y=k) pricing, impermanent loss, MEV, Bitcoin halving supply schedule, staking yields, PoW/PoS incentive economics, blockchain consensus game theory distinct from cryptolaw (Howey test/SEC/DAO legal status).
+- Catches: crypto/cryptocurrency economics class/course/exam/paper, word("cryptocurrency economics")/word("crypto economics"), tokenomics+class/course/exam/design/paper/assignment, defi+economics/class/course/exam/paper/protocol, decentralized finance+economics/class/course/exam/paper/protocol, amm+defi/economics/liquidity/class/exam, automated market maker+class/exam/economics/defi/liquidity, mev+blockchain/class/exam/economics/mining, maximal extractable value+class/exam/blockchain/economics, bitcoin halving+class/exam/economics/course/paper, staking yield/rewards+class/exam/economics/defi, proof of stake/work+economics/class/exam/incentive/game theory, blockchain consensus+economics/class/exam/game theory/incentive, liquidity mining+class/exam/economics/defi, yield farming+class/exam/economics/defi/course.
+- `cryptocurrencyeconomicsCallouts(tier:)` 4/3/3: "those cryptocurrency economics problems — tokenomics design, DeFi protocol economics, AMM liquidity provision, MEV, Bitcoin halving cycles, staking yields, proof-of-stake incentives, and crypto market microstructure — won't analyze themselves." / "stop. your crypto economics exam and tokenomics paper are still open." / "CLOSE THIS. open your crypto economics textbook or tokenomics and DeFi protocol notes."
+- 2 templates: study exam (tokenomics, AMM x*y=k, impermanent loss, DeFi, MEV, Bitcoin halving, staking, PoS/PoW incentives, consensus game theory, 60 min) + paper (AMM design, DeFi sustainability, MEV, consensus economics, or crypto market structure, 90 min)
+
+**New keyword domain — constitutionalcomparativelaw:**
+- Branch positioned AFTER `constitutionaltheory` and BEFORE `taxlaw`. Comparative constitutional design, Kelsenian abstract review vs Marbury concrete review, rights entrenchment, constitutional courts, amendment formulas, parliamentary sovereignty, presidential vs parliamentary systems distinct from constitutionaltheory (originalism/living-constitutionalism interpretation) and constitutionallaw (U.S. Commerce Clause/First Amendment doctrine).
+- Catches: comparative constitutional law+class/course/exam/paper/seminar, word("comparative constitutional law"), comparative constitutionalism+class/course/exam/paper, constitutional design+class/course/exam/comparative/paper, constitutional court/courts+class/comparative/course/exam/paper, Kelsenian+class/course/exam/constitutional/review, abstract/concrete review+class/course/exam/constitutional/comparative, constitutional amendment+comparative/design+class/course/exam/paper, rights entrenchment+class/course/exam/constitutional/comparative, judicial independence/review+comparative/constitutional court+class/course/exam, constitutional entrenchment+class/course/exam/paper, parliamentary sovereignty+comparative/constitutional+class/course/exam, presidential vs parliamentary+class/course/exam/constitutional/comparative, semi-presidential+class/course/exam/constitutional/comparative.
+- `constitutionalcomparativelawCallouts(tier:)` 4/3/3: "those comparative constitutional law problems — constitutional design comparisons, Kelsenian abstract review vs Marbury concrete review, rights entrenchment, constitutional courts, amendment formulas, parliamentary sovereignty, and semi-presidential systems — won't analyze themselves." / "stop. your comparative constitutional law exam and constitutional design paper are still open." / "CLOSE THIS. open your comparative constitutional law textbook or constitutional design and judicial review notes."
+- 2 templates: study exam (Kelsen/Marbury models, German BVerfG, rights entrenchment, amendment formulas, eternity clauses, parliamentary sovereignty, presidential vs parliamentary, 60 min) + paper (judicial review model, constitutional amendment, rights entrenchment, or government structure, 90 min)
+
+**New keyword domain — internationalhumanitarianlaw:**
+- Branch positioned BEFORE `internationallaw`. IHL class, Geneva Conventions I-IV, Additional Protocols, LOAC, principle of distinction, proportionality in attack, military necessity, ICRC mandate, POW treatment, protected persons, combatant status, war crimes distinct from humanrights (peacetime ICCPR/ECHR) and internationallaw (general PIL/treaty law/VCLT/ICJ).
+- Catches: international humanitarian law+class/course/exam/paper/seminar, IHL class/course/exam/paper/seminar, word(IHL)+class/course/exam/law/armed, law of armed conflict+class/course/exam/paper/seminar, LOAC class/course/exam, word(LOAC)+class/course/exam/law, Geneva Convention/Conventions+class/course/exam/paper/ihl/loac, additional protocol+ihl/loac/armed conflict/humanitarian law+class/exam, principle of distinction+class/course/exam/ihl/loac/humanitarian, military necessity+class/course/exam/ihl/loac/humanitarian, proportionality+ihl/loac/armed conflict/humanitarian law+class/exam, protected persons/prisoner of war+class/course/exam/ihl/loac/geneva, ICRC+class/course/exam/ihl/humanitarian/law, war crimes+class/course/exam/ihl/loac/humanitarian, combatant status/unlawful combatant+class/exam/ihl/loac/law, Hague law+class/course/exam/ihl/loac/armed conflict.
+- `internationalhumanitarianlawCallouts(tier:)` 4/3/3: "those international humanitarian law problems — the Geneva Conventions, principles of distinction, proportionality, and military necessity, ICRC operations, POW treatment, protected persons, combatant status, and war crimes prosecution — won't analyze themselves." / "stop. your IHL exam and Geneva Conventions analysis are still open." / "CLOSE THIS. open your IHL textbook or Geneva Conventions and LOAC principle notes."
+- 2 templates: study exam (Geneva Conventions I-IV, Additional Protocols, principle of distinction, proportionality, military necessity, ICRC, POW status, Martens Clause, Hague Law, 60 min) + paper (IHL principles analysis, combatant status, occupation law, or war crimes accountability, 90 min)
+
+**New keyword domain — islamiclaw:**
+- Branch positioned BEFORE `legal` (after `lawandeconomics`). Sharia, fiqh, usul al-fiqh (qiyas, maslaha, ijma, ijtihad, istihsan, istishab, maqasid al-sharia), four Sunni madhabs (Hanafi/Maliki/Shafi'i/Hanbali), hudud, tazir, qisas/diyya, Islamic contract law (riba prohibition, murabaha, musharaka, sukuk) distinct from comparativereligion (theology) and internationalhumanitarianlaw (LOAC).
+- Catches: Islamic law class/course/exam/paper/seminar/notes/assignment/textbook, word("Islamic law")/word("sharia law")/word("shariah law"), sharia/shariah class/course/exam, word(fiqh)+class/course/exam/paper/study, fiqh class/course/exam, usul al-fiqh+class/course/exam/paper, Islamic jurisprudence class/course/exam/paper, word("Islamic jurisprudence")+class/course/exam/paper, Hanafi/Maliki/Hanbali+class/course/exam/fiqh/law, madhab/madhabs+class/course/exam/fiqh/law, qiyas/maslaha/ijtihad/hudud+class/course/exam/fiqh/islamic/law, Islamic contract law+class/course/exam/paper.
+- `islamiclawCallouts(tier:)` 4/3/3: "those Islamic law problems — sharia sources and fiqh methodology, usul al-fiqh (qiyas analogical reasoning, maslaha public interest, ijma consensus, ijtihad independent reasoning), the four madhabs (Hanafi, Maliki, Shafi'i, Hanbali), hudud and tazir penalties, and Islamic contract law — won't analyze themselves." / "stop. your Islamic law exam and fiqh methodology paper are still open." / "CLOSE THIS. open your Islamic law textbook or fiqh methodology and madhab jurisprudence notes."
+- 2 templates: study exam (sharia sources, usul al-fiqh, four madhabs, qiyas/maslaha/ijtihad, hudud/tazir, qisas/diyya, Islamic contract law, 60 min) + paper (qiyas methodology, maslaha reasoning, hudud analysis, Islamic finance, or contemporary sharia application, 90 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +36 @Test functions (3 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains + 1 count guard ≥1347)
+- SuggestedSessionTemplatesTests.swift: +12 @Test functions (2 template existence × 5 domains + 2 count guards ≥1337/≥1347)
+
+**Template catalog: 1337 → 1347**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `behavioralfinance` fires BEFORE `finance` (behavioralfinance at line ~6794, finance at ~6826) ✓
+- `cryptocurrencyeconomics` fires BEFORE `cryptolaw` (cryptocurrencyeconomics at line ~14230, cryptolaw at ~14255) ✓
+- `constitutionalcomparativelaw` fires AFTER `constitutionaltheory` (14334) and BEFORE `taxlaw` (14386) ✓
+- `internationalhumanitarianlaw` fires BEFORE `internationallaw` (internationalhumanitarianlaw at ~14549, internationallaw at ~14576) ✓
+- `islamiclaw` fires BEFORE `legal` (islamiclaw at ~14628, legal at ~14638) ✓
+- Brace balance: CalloutManager.swift 723/723 ✓; CalloutMessages.swift 1391/1391 ✓
+- Template count: 1347 confirmed (grep -c "preferredDuration:" = 1347) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new case entries + 5 new private pool functions in CalloutMessages.swift ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent pick-up
+All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested next 5:
+- `moralphilosophy` — moral philosophy class (normative ethics: consequentialism/utilitarianism, deontology/Kantian ethics, virtue ethics/Aristotle, contractarianism/Rawls, care ethics; metaethics: moral realism/anti-realism, naturalism, non-cognitivism, expressivism — distinct from ethics in professional contexts and philosophyofmind)
+- `networkscience` — network science class (graph theory for complex networks, scale-free networks/Barabási-Albert, small-world networks/Watts-Strogatz, community detection, percolation theory, epidemic spreading on networks, network resilience — distinct from computernetworks/TCP-IP and socialnetworkanalysis)
+- `gamedesign` — game design class (game mechanics, balancing, narrative design, level design, player psychology, monetization systems, game feel, accessibility — distinct from gamedev which is more technical/programming)
+- `islamicfinance` — Islamic finance class (riba prohibition, murabaha cost-plus sale, musharaka partnership, mudaraba profit-sharing, ijara lease, sukuk Islamic bonds, takaful Islamic insurance, sharia supervisory boards — distinct from islamiclaw which covers fiqh/usul methodology)
+- `forensicaccounting` — forensic accounting class (fraud examination, financial statement fraud, Benford's Law, money laundering detection, asset tracing, bankruptcy forensics, litigation support, expert witness — distinct from accounting and auditing)
+- Template count target: 1347 → 1357 after next 5-domain batch
+
 ## Run 407 (automated) — 2026-07-23 — 5 new keyword domains: solidstatechemistry/coordinationchemistry/biophysicalchemistry/physicochemistry/nucleargeochemistry (1307→1317 templates)
 
 ### What shipped
