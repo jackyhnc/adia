@@ -21366,3 +21366,52 @@ All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested 
 - `educationpolicy` — education policy class (school choice, vouchers, charter schools, standards-based reform, NCLB/ESSA, equity and access, teacher effectiveness, higher education policy, student debt — distinct from educationalpsychology and curriculum studies)
 - `energyeconomics` — energy economics class (electricity market design, carbon pricing, energy transition, natural gas economics, energy subsidies, LCOE comparisons, oil market dynamics — distinct from environmentaleconomics which is more Pigouvian externality theory)
 - `socialentrepreneurship` — social entrepreneurship class (B corps, social enterprise models, impact investing, blended value, mission-related investing, SROI — distinct from socialinnovation which is more policy/systems-change focused)
+
+---
+
+## Run 421 — 2026-07-23
+
+### What shipped
+5 new keyword domains: **energyeconomics**, **laboreconomics**, **marinegeology**, **educationpolicy**, **globalfoodpolicy** — template catalog grows 1327→1337.
+
+**energyeconomics** — positioned BEFORE `environmentaleconomics` (and BEFORE generic `economics`). Distinct from environmentaleconomics (Pigouvian externalities). Catches energy economics class/course/exam, electricity market design, merit order dispatch/merit order, capacity market + energy/economics/class/exam, energy transition + economics/class/exam, levelized cost of energy/electricity, lcoe + class/economics/exam, energy subsidies + class/economics, oil market + economics, natural gas economics/market + class/exam, carbon pricing + economics/class/exam, renewable energy economics. 4+3+3 callout pool. 2 templates (study electricity market design/merit order/LCOE/carbon pricing/oil market/natural gas / electricity market design analysis, carbon pricing analysis, or energy transition/fossil fuel economics paper).
+
+**laboreconomics** — positioned BEFORE `environmentaleconomics` (after energyeconomics, before generic `economics`). Distinct from labour-market content in general economics. Catches labor/labour economics class/course/exam/paper, human capital theory + class/economics/exam, mincer equation/earnings, job search model + labor/economics/class/exam, search and matching + labor/economics/class/exam, wage determination + labor/economics/class/exam, minimum wage + economics class/course/exam or labor economics, monopsony + labor/economics/class/exam, labor/labour market discrimination, collective bargaining + economics class/course/exam or labor economics, wage inequality + economics/labor + class/exam/course, labor/labour supply + economics + class/exam, labor demand + economics/class/exam/course. 4+3+3 callout pool. 2 templates (study human capital theory/Mincer/DMP model/discrimination/collective bargaining / minimum wage analysis, discrimination analysis, or human capital/returns to education paper).
+
+**marinegeology** — positioned BEFORE `geology` (after `tectonics` return). Catches marine geology class/course/exam/lab/homework/assignment/textbook/notes, seafloor spreading + class/course/exam/geology/marine, oceanic crust + class/course/exam/geology/marine, mid-ocean/mid ocean ridge + class/course/exam/geology/marine, pelagic sediment + class/exam/marine/geology, turbidite + class/exam/marine/deep sea, abyssal plain + class/exam/geology/marine, hydrothermal vent + class/exam/geology/marine, seamount + class/exam/geology/marine, deep sea sediment + class/exam/geology/marine, marine sedimentary + class/exam/geology, ocean drilling program + class/exam/geology, iodp + core + class/exam/geology/marine. 4+3+3 callout pool. 2 templates (study seafloor spreading/Bouma sequence/CCD/hydrothermal vents/ocean drilling / seafloor spreading analysis, deep-sea sediment analysis, or hydrothermal vent/IODP lab assignment).
+
+**educationpolicy** — positioned BEFORE `educationalleadership` (after `specialeducation` return). Distinct from educationalpsychology and curriculum studies. Catches education/educational policy class/course/exam/paper/seminar/notes/assignment/analysis, school choice + class/course/exam/policy/paper, voucher program + class/course/exam/education/policy, charter school + class/course/exam/policy/paper, no child left behind + class/course/exam/policy, nclb + class/course/exam/policy/education, every student succeeds act + class/course/exam/policy, essa + class/course/exam + education policy/policy, teacher effectiveness + class/course/exam/policy/paper, value-added model + class/course/exam/education/teacher, higher education policy + class/course/exam/paper, student debt policy + class/course/exam/paper/higher education, education reform + class/course/exam/policy/paper, k-12 policy + class/course/exam/education. 4+3+3 callout pool. 2 templates (study school choice/vouchers/NCLB/ESSA/teacher effectiveness/VAMs/higher ed policy / school choice/charter school, teacher effectiveness, or higher education policy paper).
+
+**globalfoodpolicy** — positioned BEFORE `foodsystems` (after `foodsafety` return). Distinct from foodscience and foodsystems (production-chain/sustainability). Catches global food policy, global food security class/course/exam/paper/seminar, food security policy + class/course/exam/paper/global, food security governance + class/course/exam, green revolution + class/course/exam/policy/food/agriculture, la via campesina + class/course/exam/policy/food, food sovereignty + international/global/policy/class+food, wfp + food + class/course/policy/exam/aid, world food programme + class/course/exam/policy, fao + food + class/course/policy/exam/security, codex alimentarius + class/course/exam/policy/food, food aid policy + class/course/exam, global hunger + class/course/policy/exam/food, malnutrition policy + class/course/exam/food/global, food price crisis + class/course/exam/policy. 4+3+3 callout pool. 2 templates (study FAO four pillars/Green Revolution/food sovereignty/food price crises / food security governance, food sovereignty/agroecology, or Green Revolution/agricultural development paper).
+
+### Tests added
+
+**CalloutManagerTests.swift** — 35 new @Test functions:
+- 3 routing tests + 1 false-positive guard + 3 pool tests (all-tiers, tier-1-count, tier-3-CLOSE-THIS) per domain × 5 domains
+- Count guard updated: ≥1327 → ≥1337
+
+**SuggestedSessionTemplatesTests.swift** — 10 new @Test functions:
+- 2 template existence tests per domain × 5 domains + count guard ≥1327 → ≥1337
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1337 ✓
+- Brace balance: CalloutMessages.swift 1381/1381 ✓; CalloutManager.swift 718/718 ✓
+- Routing ordering:
+  - energyeconomics positioned BEFORE environmentaleconomics and generic economics ✓
+  - laboreconomics positioned BEFORE environmentaleconomics (after energyeconomics) ✓
+  - marinegeology positioned BEFORE geology (after tectonics) ✓
+  - educationpolicy positioned BEFORE educationalleadership (after specialeducation) ✓
+  - globalfoodpolicy positioned BEFORE foodsystems (after foodsafety) ✓
+- 5 case entries confirmed in taskAwareCallouts switch (CalloutMessages.swift) ✓
+- 5 new private pool functions confirmed in CalloutMessages.swift ✓
+
+### Blocked
+Swift toolchain unavailable on Linux container — no `swift build` or `swift test` possible.
+
+### Next agent pick-up
+All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested next 5:
+- `cognitivescience` — cognitive science class (cognitive architectures, ACT-R, connectionism, embodied cognition, cognitive linguistics, perception/attention/memory computational models — distinct from cognitivepsychology and neuroscience which are more empirical/biological)
+- `socialentrepreneurship` — social entrepreneurship class (B corps, social enterprise models, impact investing, blended value, mission-related investing, SROI measurement — distinct from socialinnovation which is more policy/systems-change focused)
+- `internationalhumanitarianlaw` — IHL class (Geneva Conventions, laws of armed conflict, distinction principle, proportionality, military necessity, ICRC, war crimes — distinct from humanrights which is peacetime-focused)
+- `cryptocurrencyeconomics` — crypto economics class (tokenomics, DeFi protocols, blockchain consensus mechanisms, Bitcoin halving cycles, staking yields, MEV — distinct from cryptolaw which covers regulatory/legal aspects)
+- `constitutionalcomparativelaw` — comparative constitutional law class (constitutional design, federalism comparisons, rights entrenchment, constitutional courts, judicial review across systems — distinct from constitutionallaw doctrine and constitutionaltheory interpretation)
