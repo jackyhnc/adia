@@ -7973,11 +7973,49 @@ struct SuggestedSessionTemplatesTests {
     @Test func nucleargeochemistryAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("geochronology") && $0.task.lowercased().contains("assignment") })
     }
+    // MARK: - immigrationpolicy templates
+    @Test func immigrationpolicyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("immigration policy") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func immigrationpolicyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("immigration policy") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - cryptolaw templates
+    @Test func cryptolawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("crypto and blockchain law") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func cryptolawAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cryptocurrency law paper") })
+    }
+    // MARK: - datalaw templates
+    @Test func datalawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("data privacy law") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func datalawAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("data privacy law paper") })
+    }
+    // MARK: - competitionlaw templates
+    @Test func competitionlawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("antitrust and competition law") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func competitionlawAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("antitrust law paper") })
+    }
+    // MARK: - constitutionaltheory templates
+    @Test func constitutionaltheoryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("constitutional theory and interpretation") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func constitutionaltheoryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("constitutional theory paper") })
+    }
     // MARK: - Count guard (≥1317)
     @Test func templateCountAtLeast1307() {
         #expect(SuggestedSessionTemplates.all.count >= 1307, "template catalog must have ≥1307 entries after mediatheory/theaterstudies/developmentstudies/entertainmentlaw/bankinglaw additions")
     }
     @Test func templateCountAtLeast1317() {
         #expect(SuggestedSessionTemplates.all.count >= 1317, "template catalog must have ≥1317 entries after solidstatechemistry/coordinationchemistry/biophysicalchemistry/physicochemistry/nucleargeochemistry additions")
+    }
+    @Test func templateCountAtLeast1327() {
+        #expect(SuggestedSessionTemplates.all.count >= 1327, "template catalog must have ≥1327 entries after immigrationpolicy/cryptolaw/datalaw/competitionlaw/constitutionaltheory additions")
     }
 }

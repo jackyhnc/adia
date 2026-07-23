@@ -14031,6 +14031,133 @@ public final class CalloutManager {
             || lower.contains("community reinvestment act") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("banking") || lower.contains("cra")) {
             return "bankinglaw"
         }
+        // immigrationpolicy — positioned AFTER bankinglaw and BEFORE taxlaw so immigration policy
+        // class, DACA policy, comprehensive immigration reform, border policy, integration/assimilation
+        // policy, and immigration economics (Borjas vs Card) route here. Distinct from immigrationlaw
+        // (visa petitions, removal proceedings, asylum practice) which fires much earlier in the chain.
+        if lower.contains("immigration policy class") || lower.contains("immigration policy course")
+            || lower.contains("immigration policy exam") || lower.contains("immigration policy paper")
+            || lower.contains("immigration policy seminar") || lower.contains("immigration policy notes")
+            || lower.contains("immigration policy assignment") || lower.contains("immigration policy analysis")
+            || lower.contains("daca policy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("analysis"))
+            || lower.contains("deferred action") && (lower.contains("policy") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("comprehensive immigration reform") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("policy"))
+            || lower.contains("border policy") && (lower.contains("immigration") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("immigration enforcement") && (lower.contains("policy") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("immigration economics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("borjas") && (lower.contains("immigration") || lower.contains("policy") || lower.contains("class") || lower.contains("course") || lower.contains("labor"))
+            || lower.contains("immigration and labor market") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("integration policy") && (lower.contains("immigration") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("assimilation policy") && (lower.contains("immigration") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("immigration reform policy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("points-based immigration") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy"))
+            || lower.contains("immigration selection policy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "immigrationpolicy"
+        }
+        // cryptolaw — positioned AFTER immigrationpolicy and BEFORE taxlaw so cryptocurrency and
+        // blockchain law class, SEC vs CFTC crypto jurisdiction, DAO governance, smart contract
+        // enforceability, NFT intellectual property, and AML/KYC for crypto exchanges route here.
+        // Bare "crypto" alone stays generic; "blockchain technology" class stays in computer science.
+        if lower.contains("crypto law class") || lower.contains("crypto law course")
+            || lower.contains("crypto law exam") || lower.contains("crypto law paper")
+            || lower.contains("cryptocurrency law class") || lower.contains("cryptocurrency law course")
+            || lower.contains("cryptocurrency law exam") || lower.contains("cryptocurrency law paper")
+            || lower.contains("cryptocurrency regulation class") || lower.contains("cryptocurrency regulation course")
+            || lower.contains("cryptocurrency regulation exam") || lower.contains("cryptocurrency regulation paper")
+            || lower.contains("blockchain law class") || lower.contains("blockchain law course")
+            || lower.contains("blockchain law exam") || lower.contains("blockchain law paper")
+            || lower.contains("blockchain regulation class") || lower.contains("blockchain regulation course")
+            || lower.contains("digital asset law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("digital asset regulation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("sec vs cftc") && (lower.contains("crypto") || lower.contains("class") || lower.contains("law") || lower.contains("exam"))
+            || lower.contains("dao governance") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("legal") || lower.contains("exam"))
+            || lower.contains("smart contract") && (lower.contains("law") || lower.contains("legal") || lower.contains("enforceab") || lower.contains("class") || lower.contains("course")) && (lower.contains("class") || lower.contains("law") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("nft law") || lower.contains("nft legal") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("ip"))
+            || lower.contains("crypto aml") && (lower.contains("class") || lower.contains("law") || lower.contains("course") || lower.contains("kyc") || lower.contains("regulation"))
+            || lower.contains("stablecoin regulation") && (lower.contains("class") || lower.contains("law") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("howey test") && (lower.contains("crypto") || lower.contains("token") || lower.contains("digital asset") || lower.contains("class") || lower.contains("securities"))
+            || lower.contains("security token") && (lower.contains("law") || lower.contains("class") || lower.contains("sec") || lower.contains("regulation") || lower.contains("exam")) {
+            return "cryptolaw"
+        }
+        // datalaw — positioned AFTER cryptolaw and BEFORE taxlaw so data privacy law class,
+        // GDPR compliance coursework, CCPA, HIPAA data privacy, FTC Section 5, data breach
+        // notification law, and cross-border data transfer route here. Distinct from healthlaw
+        // (clinical health law) and cybersecurity (technical security).
+        if lower.contains("data privacy law class") || lower.contains("data privacy law course")
+            || lower.contains("data privacy law exam") || lower.contains("data privacy law paper")
+            || lower.contains("data privacy law seminar") || lower.contains("data privacy law notes")
+            || lower.contains("privacy law class") || lower.contains("privacy law course")
+            || lower.contains("privacy law exam") || lower.contains("privacy law paper")
+            || lower.contains("privacy law assignment") || lower.contains("privacy law outline")
+            || lower.contains("gdpr class") || lower.contains("gdpr course") || lower.contains("gdpr exam")
+            || lower.contains("gdpr law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("compliance"))
+            || lower.contains("gdpr compliance class") || lower.contains("gdpr compliance course")
+            || lower.contains("ccpa class") || lower.contains("ccpa law class") || lower.contains("ccpa course") || lower.contains("ccpa exam")
+            || lower.contains("california consumer privacy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("law"))
+            || lower.contains("hipaa privacy") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("regulation"))
+            || lower.contains("data breach law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("notification"))
+            || lower.contains("data breach notification") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("ftc section 5") && (lower.contains("privacy") || lower.contains("law") || lower.contains("class") || lower.contains("data") || lower.contains("exam"))
+            || lower.contains("cross-border data transfer") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("eu-us data privacy") && (lower.contains("class") || lower.contains("course") || lower.contains("law") || lower.contains("exam") || lower.contains("framework"))
+            || lower.contains("data protection law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("information privacy law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("schrems") && (lower.contains("law") || lower.contains("class") || lower.contains("data") || lower.contains("privacy") || lower.contains("exam")) {
+            return "datalaw"
+        }
+        // competitionlaw — positioned AFTER datalaw and BEFORE taxlaw so antitrust law class,
+        // Sherman Act Sections 1 and 2, Clayton Act, FTC Act, rule of reason vs per se, merger
+        // review, and EU competition law Article 101/102 route here. Distinct from corporatelaw
+        // (M&A transactions) and lawandeconomics (Coase/Posner/efficiency — fires later).
+        if lower.contains("antitrust law class") || lower.contains("antitrust law course")
+            || lower.contains("antitrust law exam") || lower.contains("antitrust law paper")
+            || lower.contains("antitrust law seminar") || lower.contains("antitrust law outline")
+            || lower.contains("competition law class") || lower.contains("competition law course")
+            || lower.contains("competition law exam") || lower.contains("competition law paper")
+            || lower.contains("competition law seminar") || lower.contains("competition law notes")
+            || lower.contains("antitrust class") && (lower.contains("law") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("brief"))
+            || lower.contains("antitrust course") && (lower.contains("law") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("antitrust exam") && (lower.contains("law") || lower.contains("class") || lower.contains("paper"))
+            || lower.contains("sherman act") && (lower.contains("class") || lower.contains("law") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("clayton act") && (lower.contains("class") || lower.contains("law") || lower.contains("course") || lower.contains("exam") || lower.contains("antitrust"))
+            || lower.contains("ftc act") && (lower.contains("antitrust") || lower.contains("class") || lower.contains("law") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("rule of reason") && (lower.contains("antitrust") || lower.contains("class") || lower.contains("law") || lower.contains("exam") || lower.contains("competition"))
+            || lower.contains("per se illegal") && (lower.contains("antitrust") || lower.contains("class") || lower.contains("law") || lower.contains("exam"))
+            || lower.contains("horizontal restraint") && (lower.contains("antitrust") || lower.contains("class") || lower.contains("law") || lower.contains("exam"))
+            || lower.contains("vertical restraint") && (lower.contains("antitrust") || lower.contains("class") || lower.contains("law") || lower.contains("exam"))
+            || lower.contains("merger review") && (lower.contains("antitrust") || lower.contains("class") || lower.contains("law") || lower.contains("exam") || lower.contains("competition"))
+            || lower.contains("hhi") && (lower.contains("antitrust") || lower.contains("merger") || lower.contains("class") || lower.contains("competition") || lower.contains("law"))
+            || lower.contains("monopolization") && (lower.contains("class") || lower.contains("law") || lower.contains("course") || lower.contains("exam") || lower.contains("antitrust"))
+            || lower.contains("eu competition law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("article 101") && (lower.contains("competition") || lower.contains("eu") || lower.contains("class") || lower.contains("antitrust") || lower.contains("exam"))
+            || lower.contains("article 102") && (lower.contains("competition") || lower.contains("eu") || lower.contains("class") || lower.contains("antitrust") || lower.contains("exam"))
+            || lower.contains("law school antitrust") || lower.contains("1l antitrust") || lower.contains("2l antitrust") || lower.contains("3l antitrust") {
+            return "competitionlaw"
+        }
+        // constitutionaltheory — positioned AFTER competitionlaw and BEFORE taxlaw so constitutional
+        // theory and interpretation class (originalism, living constitutionalism, textualism,
+        // departmentalism, popular constitutionalism, Dworkin's law as integrity) route here.
+        // Distinct from constitutionallaw (doctrine/cases — fires much earlier).
+        if lower.contains("constitutional theory class") || lower.contains("constitutional theory course")
+            || lower.contains("constitutional theory exam") || lower.contains("constitutional theory paper")
+            || lower.contains("constitutional theory seminar") || lower.contains("constitutional theory notes")
+            || lower.contains("constitutional interpretation class") || lower.contains("constitutional interpretation course")
+            || lower.contains("constitutional interpretation exam") || lower.contains("constitutional interpretation paper")
+            || lower.contains("originalism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("theory") || lower.contains("constitutional"))
+            || lower.contains("living constitutionalism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("theory"))
+            || lower.contains("textualism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("constitutional") || lower.contains("theory"))
+            || lower.contains("departmentalism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("constitutional"))
+            || lower.contains("popular constitutionalism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("dworkin law as integrity") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("constitutional construction") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("theory"))
+            || lower.contains("interpretation theory") && (lower.contains("constitutional") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("judicial philosophy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("constitutional") || lower.contains("theory"))
+            || lower.contains("strict constructionism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("constitutional"))
+            || lower.contains("purposivism") && (lower.contains("constitutional") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("interpretation"))
+            || lower.contains("akhil amar") && (lower.contains("class") || lower.contains("constitutional") || lower.contains("course") || lower.contains("exam") || lower.contains("theory"))
+            || lower.contains("jack balkin") && (lower.contains("class") || lower.contains("constitutional") || lower.contains("course") || lower.contains("exam") || lower.contains("theory")) {
+            return "constitutionaltheory"
+        }
         // taxlaw — positioned AFTER corporatelaw and BEFORE neurolaw so federal income tax law class,
         // capital gains analysis, deductions, and tax policy coursework route here rather than the
         // generic accounting or law branch. "Accounting" alone stays in accounting (fires earlier).

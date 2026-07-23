@@ -724,6 +724,11 @@ extension CalloutManager {
         case "developmentstudies":         return developmentstudiesCallouts(tier: tier)
         case "entertainmentlaw":           return entertainmentlawCallouts(tier: tier)
         case "bankinglaw":                 return bankinglawCallouts(tier: tier)
+        case "immigrationpolicy":          return immigrationpolicyCallouts(tier: tier)
+        case "cryptolaw":                  return cryptolawCallouts(tier: tier)
+        case "datalaw":                    return datalawCallouts(tier: tier)
+        case "competitionlaw":             return competitionlawCallouts(tier: tier)
+        case "constitutionaltheory":       return constitutionaltheoryCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -14907,6 +14912,111 @@ extension CalloutManager {
             "CLOSE THIS. open your banking law textbook or Dodd-Frank and Basel III notes.",
             "CLOSE THIS. those bank regulation and financial regulation law assignments won't complete themselves.",
             "CLOSE THIS. your banking law exam won't study itself."
+        ]
+        }
+    }
+
+    private func immigrationpolicyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "immigration policy doesn't analyze itself — DACA, comprehensive immigration reform, border policy, integration vs assimilation, points-based selection systems, and the Borjas vs Card immigration economics debate are all waiting.",
+            "your immigration policy exam needs you — enforcement vs legalization tradeoffs, immigrant labor market effects, integration policy, DACA, and comprehensive reform proposals won't memorize themselves.",
+            "those immigration policy assignments and border policy analyses are still open.",
+            "DACA, comprehensive reform, border enforcement, Borjas vs Card, points-based immigration, integration policy — get back to your immigration policy coursework."
+        ]
+        case 2: return [
+            "stop. your immigration policy exam and reform analysis paper are still open.",
+            "DACA, comprehensive immigration reform, border policy, immigration economics, integration and assimilation — your exam won't wait.",
+            "immigration policy class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your immigration policy textbook or DACA and comprehensive reform notes.",
+            "CLOSE THIS. those immigration economics and border policy assignments won't complete themselves.",
+            "CLOSE THIS. your immigration policy exam won't study itself."
+        ]
+        }
+    }
+
+    private func cryptolawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "crypto law doesn't regulate itself — SEC vs CFTC jurisdiction over crypto assets, the Howey test for security tokens, DAO legal status, smart contract enforceability, NFT IP, stablecoin regulation, and AML/KYC for exchanges are all waiting.",
+            "your crypto law exam needs you — digital asset classification, SEC enforcement actions, smart contract law, DAO governance structures, and crypto AML compliance won't memorize themselves.",
+            "those cryptocurrency regulation assignments and blockchain law analyses are still open.",
+            "Howey test, SEC vs CFTC, DAO governance, smart contracts, stablecoin regulation, NFT law — get back to your crypto law coursework."
+        ]
+        case 2: return [
+            "stop. your crypto law exam and digital asset regulation paper are still open.",
+            "SEC vs CFTC jurisdiction, Howey test for tokens, smart contract enforceability, DAO legal status, stablecoin regulation — your exam won't wait.",
+            "cryptocurrency law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your crypto law textbook or SEC enforcement and blockchain regulation notes.",
+            "CLOSE THIS. those digital asset regulation and smart contract law assignments won't complete themselves.",
+            "CLOSE THIS. your cryptocurrency law exam won't study itself."
+        ]
+        }
+    }
+
+    private func datalawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "data privacy law doesn't comply itself — GDPR consent and data subject rights, CCPA consumer rights, HIPAA privacy rule, FTC Section 5 unfair practices, data breach notification requirements, and cross-border data transfer mechanisms (Standard Contractual Clauses, EU-US Data Privacy Framework) are all waiting.",
+            "your data privacy law exam needs you — GDPR lawful bases, data subject access rights, CCPA opt-out, data breach notification timelines, and Schrems I and II won't memorize themselves.",
+            "those data privacy law assignments and GDPR compliance analyses are still open.",
+            "GDPR, CCPA, HIPAA privacy, FTC Section 5, data breach notification, Schrems II — get back to your data privacy law coursework."
+        ]
+        case 2: return [
+            "stop. your data privacy law exam and GDPR compliance paper are still open.",
+            "GDPR lawful bases, CCPA consumer rights, HIPAA privacy rule, data breach notification, cross-border data transfer — your exam won't wait.",
+            "data privacy law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your data privacy law textbook or GDPR and CCPA notes.",
+            "CLOSE THIS. those data protection and privacy regulation assignments won't complete themselves.",
+            "CLOSE THIS. your data privacy law exam won't study itself."
+        ]
+        }
+    }
+
+    private func competitionlawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "antitrust law doesn't self-regulate — Sherman Act Sections 1 and 2, the Clayton Act, the FTC Act, rule of reason vs per se analysis, horizontal and vertical restraints, merger review (HHI thresholds), monopolization, and EU competition law Articles 101/102 are all waiting.",
+            "your antitrust exam needs you — per se illegal price-fixing, rule of reason balancing, Section 2 monopolization elements, Hart-Scott-Rodino merger review, and predatory pricing won't memorize themselves.",
+            "those antitrust law assignments and competition law analyses are still open.",
+            "Sherman Act, Clayton Act, FTC Act, rule of reason, per se illegal, merger HHI, Article 101/102 — get back to your competition law coursework."
+        ]
+        case 2: return [
+            "stop. your antitrust exam and competition law paper are still open.",
+            "Sherman Act sections, rule of reason vs per se, merger review HHI, monopolization elements, EU Article 101/102 — your exam won't wait.",
+            "antitrust law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your antitrust textbook or Sherman Act and EU competition law notes.",
+            "CLOSE THIS. those antitrust and competition law assignments won't complete themselves.",
+            "CLOSE THIS. your antitrust law exam won't study itself."
+        ]
+        }
+    }
+
+    private func constitutionaltheoryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "constitutional theory doesn't interpret itself — originalism vs living constitutionalism, textualism, purposivism, departmentalism, popular constitutionalism, and Dworkin's law as integrity (plus Akhil Amar and Jack Balkin) are all waiting.",
+            "your constitutional theory exam needs you — originalist vs living constitutionalist methods, strict constructionism, judicial supremacy vs departmentalism, popular constitutionalism, and Dworkin's integrity principle won't analyze themselves.",
+            "those constitutional theory assignments and interpretation papers are still open.",
+            "originalism, living constitutionalism, textualism, departmentalism, Dworkin, Balkin, Amar — get back to your constitutional theory coursework."
+        ]
+        case 2: return [
+            "stop. your constitutional theory exam and interpretation paper are still open.",
+            "originalism vs living constitutionalism, textualism, departmentalism, popular constitutionalism, Dworkin's law as integrity — your exam won't wait.",
+            "constitutional theory class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your constitutional theory textbook or originalism and living constitutionalism notes.",
+            "CLOSE THIS. those constitutional interpretation and judicial philosophy assignments won't complete themselves.",
+            "CLOSE THIS. your constitutional theory exam won't study itself."
         ]
         }
     }
