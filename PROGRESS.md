@@ -21530,3 +21530,32 @@ All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested 
 - `laborlaw` — labor law class (NLRA, collective bargaining law, unfair labor practices, NLRB, Title VII employment discrimination, ADEA, ADA, FMLA — distinct from laboreconomics which is economics of labor markets, and from employmentlaw which may already exist)
 - `ethicsphilosophy` — ethics / moral philosophy class (normative ethics: utilitarianism/Bentham/Mill, deontology/Kant, virtue ethics/Aristotle, care ethics/Noddings, contractualism/Scanlon; metaethics: moral realism/anti-realism, naturalism, error theory — distinct from politicalphilosophy which is more institutional/distributive and philosophy which catches bare "ethics paper")
 - `philosophyoflanguage` — philosophy of language class (Frege sense/reference, Russell theory of descriptions, Wittgenstein early/late, Austin speech acts, Grice conversational implicature, Kripke naming and necessity, possible worlds semantics — distinct from linguistics/appliedlinguistics and from philosophyofmind)
+
+---
+## Run 424 — 2026-07-23
+
+**What shipped:**
+Added 5 new keyword domains to the task-aware callout system:
+- **microeconomics**: consumer theory, producer theory, utility maximization, Slutsky decomposition, Cobb-Douglas, Pareto efficiency, price elasticity, indifference curves — positioned after environmentaleconomics, before economics
+- **econometrics**: OLS, Gauss-Markov, IV/2SLS, DiD, panel FE/RE, regression discontinuity, Hausman test — positioned after microeconomics, before economics
+- **industrialorganization**: Cournot/Bertrand, Stackelberg, monopolistic competition, two-sided markets, Lerner Index, HHI, antitrust — positioned after econometrics, before economics
+- **organizationalbehavior**: Maslow, Herzberg two-factor, Vroom VIE, Adams equity, Locke goal-setting, Fiedler contingency, transformational leadership, Tuckman stages, groupthink — positioned after changemanagement, before business
+- **moralphilosophy**: metaethics (realism/anti-realism), act/rule utilitarianism, Kant categorical imperative (3 formulations), Ross prima facie duties, virtue ethics/eudaimonia/phronesis, Scanlon contractualism — positioned after politicalphilosophy, before philosophy
+
+Template count: 1355 → 1365 (+10: 2 per domain)
+Tests added: 47 (35 CalloutManagerTests + 12 SuggestedSessionTemplatesTests)
+
+**Routing order:**
+environmentaleconomics(~1166) < microeconomics(~1185) < econometrics(~1203) < industrialorganization(~1220) < economics(~1240)
+changemanagement < organizationalbehavior(~6125) < business
+politicalphilosophy < moralphilosophy(~13810) < philosophy
+
+**Verification:** All brace counts balanced (CalloutManager 733/733, CalloutMessages 1411/1411, Templates 16/16). 15 routing simulations passed. Template count 1365 confirmed.
+
+**What's blocked:** No Swift toolchain on Linux — cannot run swift test; verified via Python brace counting and grep.
+
+**Next agent should:**
+- Continue domain expansion with 5 more keyword domains
+- Suggested domains (verify absence first): `institutionaleconomics`, `developmenteconomics`, `healthpolicyanalysis`, `socialpsychology`, `cognitivebehavioraltherapy`
+- Note: `socialwork`, `cognitivescience`, `cognitivepsychology`, `laborlaw`, `gametheory`, `healtheconomics` are already present — skip them
+- Follow same pattern: routing block → switch case → pool function (4+3+3 messages) → 2 templates → 7 CalloutManagerTests + 2 SuggestedSessionTemplatesTests + count guard
