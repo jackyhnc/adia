@@ -7693,8 +7693,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func infraredspectroscopyAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("infrared spectroscopy") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1237)
-    @Test func templateCountAtLeast1237() {
-        #expect(SuggestedSessionTemplates.all.count >= 1237, "template catalog must have ≥1237 entries after quantumtransport/geophysicsinversion/constitutivemodeling/infraredspectroscopy additions")
+    // MARK: - biogeochemistry templates
+    @Test func biogeochemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("biogeochemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func biogeochemistryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("biogeochemistry") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - tectonophysics templates
+    @Test func tectonophysicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("tectonophysics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func tectonophysicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("tectonophysics") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - catalysis templates
+    @Test func catalysisStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("catalysis") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func catalysisAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("catalysis") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - rheology templates
+    @Test func rheologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("rheology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func rheologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("rheology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - molecularsimulation templates
+    @Test func molecularsimulationStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("molecular simulation") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func molecularsimulationAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("molecular simulation") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1247)
+    @Test func templateCountAtLeast1247() {
+        #expect(SuggestedSessionTemplates.all.count >= 1247, "template catalog must have ≥1247 entries after biogeochemistry/tectonophysics/catalysis/rheology/molecularsimulation additions")
     }
 }

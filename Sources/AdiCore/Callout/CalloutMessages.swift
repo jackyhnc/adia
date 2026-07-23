@@ -402,6 +402,9 @@ extension CalloutManager {
         case "nuclearchemistry":           return nuclearchemistryCallouts(tier: tier)
         case "electrochemistry":           return electrochemistryCallouts(tier: tier)
         case "polymerchemistry":           return polymerchemistryCallouts(tier: tier)
+        case "rheology":                   return rheologyCallouts(tier: tier)
+        case "molecularsimulation":        return molecularsimulationCallouts(tier: tier)
+        case "catalysis":                  return catalysisCallouts(tier: tier)
         case "maternalhealth":             return maternalhealthCallouts(tier: tier)
         case "globalhealthpolicy":         return globalhealthpolicyCallouts(tier: tier)
         case "processengineering":         return processengineeringCallouts(tier: tier)
@@ -456,6 +459,7 @@ extension CalloutManager {
         case "biomedicalengineering":      return biomedicalengineeringCallouts(tier: tier)
         case "chemicalengineering":        return chemicalengineeringCallouts(tier: tier)
         case "oceanography":               return oceanographyCallouts(tier: tier)
+        case "biogeochemistry":            return biogeochemistryCallouts(tier: tier)
         case "geochemistry":               return geochemistryCallouts(tier: tier)
         case "thermodynamics":             return thermodynamicsCallouts(tier: tier)
         case "radiologyrotation":          return radiologyrotationCallouts(tier: tier)
@@ -549,6 +553,7 @@ extension CalloutManager {
         case "volcanology":                return volcanologyCallouts(tier: tier)
         case "geomorphology":              return geomorphologyCallouts(tier: tier)
         case "sedimentology":              return sedimentologyCallouts(tier: tier)
+        case "tectonophysics":             return tectonophysicsCallouts(tier: tier)
         case "structuralgeology":          return structuralgeologyCallouts(tier: tier)
         case "functionalanalysis":         return functionalanalysisCallouts(tier: tier)
         case "riemanniangeometry":         return riemanniangeometryCallouts(tier: tier)
@@ -14027,6 +14032,111 @@ extension CalloutManager {
             "CLOSE THIS. open your infrared spectroscopy textbook.",
             "CLOSE THIS. those FTIR spectrum interpretation and peak assignment problems won't solve themselves.",
             "CLOSE THIS. your infrared spectroscopy exam won't study itself."
+        ]
+        }
+    }
+
+    private func biogeochemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those biogeochemical cycling and isotope fractionation problems won't solve themselves.",
+            "your biogeochemistry exam doesn't care that you're scrolling.",
+            "get back to your carbon and nitrogen cycle study notes.",
+            "close this and open your biogeochemistry textbook."
+        ]
+        case 2: return [
+            "no one masters biogeochemistry by scrolling.",
+            "close this and work on your biogeochemical cycling problem set.",
+            "those element cycles and radiocarbon dating problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your biogeochemistry textbook.",
+            "CLOSE THIS. those biogeochemical cycle and isotope fractionation problems won't solve themselves.",
+            "CLOSE THIS. your biogeochemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func tectonophysicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those plate kinematics and moment tensor problems won't solve themselves.",
+            "your tectonophysics exam doesn't care that you're scrolling.",
+            "get back to your fault mechanics and earthquake cycle study notes.",
+            "close this and open your tectonophysics textbook."
+        ]
+        case 2: return [
+            "no one masters tectonophysics by scrolling.",
+            "close this and work on your tectonophysics problem set.",
+            "those GPS geodesy and lithospheric stress problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your tectonophysics textbook.",
+            "CLOSE THIS. those plate kinematics and viscoelastic relaxation problems won't solve themselves.",
+            "CLOSE THIS. your tectonophysics exam won't study itself."
+        ]
+        }
+    }
+
+    private func catalysisCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those heterogeneous catalysis and Langmuir-Hinshelwood problems won't solve themselves.",
+            "your catalysis exam doesn't care that you're scrolling.",
+            "get back to your catalyst design and reaction mechanism study notes.",
+            "close this and open your catalysis textbook."
+        ]
+        case 2: return [
+            "no one masters catalysis by scrolling.",
+            "close this and work on your catalysis problem set.",
+            "those turnover frequency and volcano plot problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your catalysis textbook.",
+            "CLOSE THIS. those heterogeneous and electrocatalysis problems won't solve themselves.",
+            "CLOSE THIS. your catalysis exam won't study itself."
+        ]
+        }
+    }
+
+    private func rheologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those viscoelasticity and non-Newtonian flow problems won't solve themselves.",
+            "your rheology exam doesn't care that you're scrolling.",
+            "get back to your oscillatory shear and creep experiment study notes.",
+            "close this and open your rheology textbook."
+        ]
+        case 2: return [
+            "no one masters rheology by scrolling.",
+            "close this and work on your rheology problem set.",
+            "those storage modulus and yield stress problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your rheology textbook.",
+            "CLOSE THIS. those viscoelastic and non-Newtonian rheology problems won't solve themselves.",
+            "CLOSE THIS. your rheology exam won't study itself."
+        ]
+        }
+    }
+
+    private func molecularsimulationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those molecular dynamics and free energy perturbation simulations won't run themselves.",
+            "your molecular simulation exam doesn't care that you're scrolling.",
+            "get back to your GROMACS/AMBER force field and umbrella sampling study notes.",
+            "close this and open your molecular simulation textbook."
+        ]
+        case 2: return [
+            "no one masters molecular simulation by scrolling.",
+            "close this and work on your molecular dynamics problem set.",
+            "those potential of mean force and enhanced sampling problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your molecular simulation textbook.",
+            "CLOSE THIS. those GROMACS and free energy perturbation problems won't solve themselves.",
+            "CLOSE THIS. your molecular simulation exam won't study itself."
         ]
         }
     }

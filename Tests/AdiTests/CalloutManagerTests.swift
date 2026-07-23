@@ -27483,8 +27483,148 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "infraredspectroscopy", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1237)
-    @Test func calloutTemplatesCountAtLeast1237() {
-        #expect(SuggestedSessionTemplates.all.count >= 1237, "template catalog must have ≥1237 entries after quantumtransport/geophysicsinversion/constitutivemodeling/infraredspectroscopy additions")
+    // MARK: - biogeochemistry
+    @Test func biogeochemistryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "biogeochemistry class biogeochemical cycling element cycles exam") == "biogeochemistry")
+    }
+    @Test func biogeochemistryRoutingFromCarbonCycle() {
+        #expect(CalloutManager.extractTaskKeyword(from: "carbon cycle class biogeochemistry biogeochemical exam") == "biogeochemistry")
+    }
+    @Test func biogeochemistryRoutingFromIsotopeFractionation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "isotope fractionation class biogeochemistry stable isotope exam") == "biogeochemistry")
+    }
+    @Test func biogeochemistryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "isotope geochemistry xrf icp-ms trace element rock class geochemistry exam") != "biogeochemistry")
+    }
+    @Test @MainActor func biogeochemistryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "biogeochemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "biogeochemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "biogeochemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func biogeochemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "biogeochemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func biogeochemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "biogeochemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - tectonophysics
+    @Test func tectonophysicsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tectonophysics class plate kinematics fault mechanics exam") == "tectonophysics")
+    }
+    @Test func tectonophysicsRoutingFromMomentTensor() {
+        #expect(CalloutManager.extractTaskKeyword(from: "seismic moment tensor class tectonophysics exam seismology") == "tectonophysics")
+    }
+    @Test func tectonophysicsRoutingFromEarthquakeCycle() {
+        #expect(CalloutManager.extractTaskKeyword(from: "earthquake cycles class tectonophysics viscoelastic relaxation exam") == "tectonophysics")
+    }
+    @Test func tectonophysicsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "structural geology fault analysis fold geometry stereonet class exam") != "tectonophysics")
+    }
+    @Test @MainActor func tectonophysicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "tectonophysics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "tectonophysics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "tectonophysics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func tectonophysicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "tectonophysics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func tectonophysicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "tectonophysics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - catalysis
+    @Test func catalysisRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "catalysis class heterogeneous catalysis langmuir-hinshelwood exam") == "catalysis")
+    }
+    @Test func catalysisRoutingFromElectrocatalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "electrocatalysis class catalyst design exam course") == "catalysis")
+    }
+    @Test func catalysisRoutingFromVolcanoPlot() {
+        #expect(CalloutManager.extractTaskKeyword(from: "volcano plot class catalysis sabatier principle exam") == "catalysis")
+    }
+    @Test func catalysisFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "chemical kinetics rate law arrhenius equation activation energy class exam") != "catalysis")
+    }
+    @Test @MainActor func catalysisCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "catalysis", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "catalysis", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "catalysis", tier: 3).isEmpty)
+    }
+    @Test @MainActor func catalysisTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "catalysis", tier: 1).count >= 4)
+    }
+    @Test @MainActor func catalysisTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "catalysis", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - rheology
+    @Test func rheologyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "rheology class viscoelasticity non-newtonian fluid oscillatory shear exam") == "rheology")
+    }
+    @Test func rheologyRoutingFromViscoelasticity() {
+        #expect(CalloutManager.extractTaskKeyword(from: "viscoelasticity class rheology polymer maxwell model exam") == "rheology")
+    }
+    @Test func rheologyRoutingFromRheometer() {
+        #expect(CalloutManager.extractTaskKeyword(from: "rheometer class rheology storage modulus loss modulus lab exam") == "rheology")
+    }
+    @Test func rheologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "polymer chemistry polymerization free radical chain growth class exam") != "rheology")
+    }
+    @Test @MainActor func rheologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "rheology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "rheology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "rheology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func rheologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "rheology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func rheologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "rheology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - molecularsimulation
+    @Test func molecularsimulationRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "molecular simulation class molecular dynamics gromacs amber force field exam") == "molecularsimulation")
+    }
+    @Test func molecularsimulationRoutingFromUmbrellaSampling() {
+        #expect(CalloutManager.extractTaskKeyword(from: "umbrella sampling class molecular simulation free energy perturbation exam") == "molecularsimulation")
+    }
+    @Test func molecularsimulationRoutingFromGROMACS() {
+        #expect(CalloutManager.extractTaskKeyword(from: "gromacs class exam molecular dynamics simulation course") == "molecularsimulation")
+    }
+    @Test func molecularsimulationFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "dft gaussian ab initio computational chemistry hartree-fock class exam") != "molecularsimulation")
+    }
+    @Test @MainActor func molecularsimulationCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "molecularsimulation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "molecularsimulation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "molecularsimulation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func molecularsimulationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "molecularsimulation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func molecularsimulationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "molecularsimulation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1247)
+    @Test func calloutTemplatesCountAtLeast1247() {
+        #expect(SuggestedSessionTemplates.all.count >= 1247, "template catalog must have ≥1247 entries after biogeochemistry/tectonophysics/catalysis/rheology/molecularsimulation additions")
     }
 }

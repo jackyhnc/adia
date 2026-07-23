@@ -4515,6 +4515,19 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Neuroanatomy practice session completed (at least 12 cranial nerves, major brain regions, or spinal cord tracts identified with functions, origins, and pathways documented)",
             preferredDuration: 45 * 60
         ),
+        // catalysis
+        SuggestedTemplate(
+            icon: "arrow.triangle.2.circlepath",
+            task: "Study catalysis for my exam — review heterogeneous and homogeneous catalysis mechanisms, Langmuir-Hinshelwood kinetics, the Sabatier principle, volcano plots, turnover frequency, zeolite and photocatalysis concepts",
+            successCriteria: "Catalysis study session completed (at least two catalytic mechanisms reviewed with rate equations, volcano plot interpretation, and catalyst design principles summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "arrow.triangle.2.circlepath",
+            task: "Complete my catalysis assignment — derive a Langmuir-Hinshelwood rate expression, analyze a volcano plot for catalyst optimization, evaluate electrocatalysis or photocatalysis efficiency, or propose a catalyst design for a target reaction",
+            successCriteria: "Catalysis assignment completed (rate expression derived or catalyst evaluated with supporting kinetic analysis, volcano plot or selectivity data interpreted, and written design rationale with calculations saved to file)",
+            preferredDuration: 60 * 60
+        ),
         // chemicalkinetics
         SuggestedTemplate(
             icon: "waveform.path.ecg",
@@ -4527,6 +4540,32 @@ public enum SuggestedSessionTemplates {
             task: "Study chemical kinetics for my chemistry exam — review rate laws, reaction orders, Arrhenius equation, collision theory, transition state theory, and integrated rate expressions",
             successCriteria: "Chemical kinetics study session completed (rate law derivations reviewed, Arrhenius equation practiced, and key mechanism concepts summarized with notes saved)",
             preferredDuration: 45 * 60
+        ),
+        // rheology
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Study rheology for my exam — review viscoelasticity, non-Newtonian fluid behavior, oscillatory shear, storage and loss moduli, creep and stress relaxation, Maxwell and Kelvin-Voigt models, and yield stress fluids",
+            successCriteria: "Rheology study session completed (at least two topics reviewed with viscoelastic constitutive equations, dynamic moduli interpretations, and creep/relaxation analysis summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform",
+            task: "Complete my rheology assignment — analyze oscillatory shear data to extract storage and loss moduli, fit a Maxwell or Kelvin-Voigt creep curve, construct and interpret a flow curve for a non-Newtonian fluid, or measure and report yield stress for a complex material",
+            successCriteria: "Rheology assignment completed (viscoelastic data analyzed with moduli or time constants fitted, flow curve or yield stress measurement interpreted, and written analysis with supporting calculations saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // molecularsimulation
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study molecular simulation for my exam — review molecular dynamics and Monte Carlo methods, force fields (AMBER, CHARMM, OPLS), GROMACS/NAMD workflow, umbrella sampling, free energy perturbation, and potential of mean force",
+            successCriteria: "Molecular simulation study session completed (at least two methods reviewed with equations of motion, force field parameter concepts, PMF calculation workflow, and enhanced sampling methods summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Complete my molecular simulation assignment — set up and run a GROMACS or NAMD MD simulation, calculate a potential of mean force with umbrella sampling, perform free energy perturbation, or analyze trajectory data for structural and thermodynamic properties",
+            successCriteria: "Molecular simulation assignment completed (simulation input prepared and run, trajectory analyzed with RMS deviation/radius of gyration/free energy results, and written methods and results summary saved to file)",
+            preferredDuration: 60 * 60
         ),
         // computationalchemistry
         SuggestedTemplate(
@@ -4657,6 +4696,19 @@ public enum SuggestedSessionTemplates {
             task: "Complete my oceanography lab or assignment — analyze ocean circulation data, plot sea surface temperature, interpret salinity profiles, or work through physical oceanography problems",
             successCriteria: "Oceanography assignment completed (ocean data interpreted, circulation patterns identified, and lab write-up or problem solutions documented and saved)",
             preferredDuration: 45 * 60
+        ),
+        // biogeochemistry
+        SuggestedTemplate(
+            icon: "leaf.circle.fill",
+            task: "Study biogeochemistry for my exam — review biogeochemical cycling (C, N, P, S), isotope fractionation, radiocarbon dating, organic geochemistry, and marine sediment geochemistry",
+            successCriteria: "Biogeochemistry study session completed (at least two topics reviewed with element cycle diagrams, isotope fractionation equations, and biogeochemical flux estimates summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "leaf.circle.fill",
+            task: "Complete my biogeochemistry assignment — model a biogeochemical cycle, calculate isotope fractionation factors, analyze organic geochemistry data, interpret radiocarbon ages, or assess nutrient cycling in an aquatic or terrestrial system",
+            successCriteria: "Biogeochemistry assignment completed (biogeochemical cycle modeled or nutrient flux calculated, isotope or radiocarbon analysis completed with interpretations, and written summary with supporting data saved to file)",
+            preferredDuration: 60 * 60
         ),
         // geochemistry
         SuggestedTemplate(
@@ -5736,6 +5788,19 @@ public enum SuggestedSessionTemplates {
             task: "Work on my sedimentology assignment — interpret sedimentary structures, classify grain sizes, analyze facies associations, or write up sedimentary basin analysis",
             successCriteria: "Sedimentology assignment completed (sedimentary structure interpretation, facies analysis, grain size classification, or basin analysis documented with evidence and conclusions — saved to file)",
             preferredDuration: 45 * 60
+        ),
+        // tectonophysics
+        SuggestedTemplate(
+            icon: "globe.europe.africa.fill",
+            task: "Study tectonophysics for my exam — review plate kinematics, lithospheric stress, isostasy, GPS geodesy, seismic moment tensors, fault mechanics, earthquake cycles, and viscoelastic relaxation",
+            successCriteria: "Tectonophysics study session completed (at least two topics reviewed with plate motion equations, stress tensor analysis, moment tensor decomposition, GPS velocity fields, and earthquake cycle diagrams summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "globe.europe.africa.fill",
+            task: "Complete my tectonophysics assignment — compute plate kinematics from GPS velocities, analyze lithospheric stress orientation, solve isostasy problems, decompose a seismic moment tensor, model postseismic deformation, or calculate interseismic coupling",
+            successCriteria: "Tectonophysics assignment completed (plate motion or stress analysis computed, moment tensor or isostasy problem solved with intermediate steps shown, and written summary with supporting calculations saved to file)",
+            preferredDuration: 60 * 60
         ),
         // structuralgeology
         SuggestedTemplate(

@@ -2738,6 +2738,28 @@ public final class CalloutManager {
             || lower.contains("paleontology notes") || lower.contains("paleontology assignment") {
             return "paleontology"
         }
+        // biogeochemistry — positioned BEFORE geochemistry so biogeochemical cycling,
+        // stable isotope biogeochemistry, C/N/P/S element cycle coursework, and marine sediment
+        // geochemistry get a dedicated pool distinct from isotope/trace-element geochemistry.
+        if lower.contains("biogeochemistry class") || lower.contains("biogeochemistry course")
+            || lower.contains("biogeochemistry exam") || lower.contains("biogeochemistry lab")
+            || lower.contains("biogeochemistry notes") || lower.contains("biogeochemistry homework")
+            || lower.contains("biogeochemistry assignment") || lower.contains("biogeochemistry textbook")
+            || word("biogeochemistry") || word("biogeochemist") || word("biogeochemists")
+            || lower.contains("biogeochemical cycle") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("biogeochemical cycling") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("carbon cycle") && (lower.contains("class") || lower.contains("biogeochemistry") || lower.contains("biogeochemical"))
+            || lower.contains("nitrogen cycle") && (lower.contains("class") || lower.contains("biogeochemistry") || lower.contains("biogeochemical"))
+            || lower.contains("phosphorus cycle") && (lower.contains("class") || lower.contains("biogeochemistry") || lower.contains("biogeochemical"))
+            || lower.contains("sulfur cycle") && (lower.contains("class") || lower.contains("biogeochemistry") || lower.contains("biogeochemical"))
+            || lower.contains("element cycling") && (lower.contains("class") || lower.contains("biogeochemistry") || lower.contains("biogeochemical") || lower.contains("exam"))
+            || lower.contains("isotope fractionation") && (lower.contains("class") || lower.contains("biogeochemistry") || lower.contains("geochemistry") || lower.contains("exam"))
+            || lower.contains("radiocarbon dating") && (lower.contains("class") || lower.contains("biogeochemistry") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("marine sediment geochemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("organic geochemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("biogeochemistry"))
+            || lower.contains("nutrient cycling") && (lower.contains("class") || lower.contains("biogeochemistry") || lower.contains("biogeochemical") || lower.contains("exam")) {
+            return "biogeochemistry"
+        }
         // geochemistry — positioned BEFORE geology; isotope geochemistry, trace-element and
         // major-element geochemical analysis, fluid-rock interaction, and geochemical modeling.
         // word("geochemistry") removed from geology (below) and owned here.
@@ -3025,6 +3047,30 @@ public final class CalloutManager {
             || lower.contains("permafrost") && (lower.contains("class") || lower.contains("exam") || lower.contains("glaciology") || lower.contains("cryosphere"))
             || lower.contains("sea ice") && (lower.contains("class") || lower.contains("glaciology") || lower.contains("exam") || lower.contains("cryosphere")) {
             return "glaciology"
+        }
+        // tectonophysics — positioned BEFORE structuralgeology so plate kinematics, lithospheric
+        // stress, GPS geodesy, seismic moment tensor, fault mechanics, and earthquake cycle
+        // coursework gets a dedicated pool distinct from structural geology field mapping.
+        if lower.contains("tectonophysics class") || lower.contains("tectonophysics course")
+            || lower.contains("tectonophysics exam") || lower.contains("tectonophysics lab")
+            || lower.contains("tectonophysics notes") || lower.contains("tectonophysics homework")
+            || lower.contains("tectonophysics assignment") || lower.contains("tectonophysics textbook")
+            || word("tectonophysics")
+            || lower.contains("plate kinematics") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonophysics") || lower.contains("course"))
+            || lower.contains("lithospheric stress") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonophysics"))
+            || lower.contains("isostasy") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonophysics") || lower.contains("geophysics"))
+            || lower.contains("gps geodesy") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonophysics") || lower.contains("tectonics"))
+            || lower.contains("seismic moment tensor") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonophysics"))
+            || lower.contains("moment tensor") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonophysics") || lower.contains("seismology"))
+            || lower.contains("fault mechanics") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonophysics") || lower.contains("tectonic"))
+            || lower.contains("earthquake cycle") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonophysics"))
+            || lower.contains("earthquake cycles") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonophysics"))
+            || lower.contains("visco-elastic relaxation") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonophysics") || lower.contains("geophysics"))
+            || lower.contains("viscoelastic relaxation") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonophysics"))
+            || lower.contains("postseismic deformation") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonophysics"))
+            || lower.contains("interseismic coupling") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonophysics"))
+            || lower.contains("geodetic imaging") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonophysics")) {
+            return "tectonophysics"
         }
         // structuralgeology — positioned BEFORE geologylab and geology so structural geology
         // class/exam, fault analysis, fold geometry, and stereonet analysis route to a dedicated pool.
@@ -9031,6 +9077,31 @@ public final class CalloutManager {
             || lower.contains("analytical chemistry notes") || lower.contains("analytical chemistry problem set") {
             return "analyticalchemistry"
         }
+        // catalysis — positioned AFTER analyticalchemistry and BEFORE chemicalkinetics so
+        // heterogeneous/homogeneous catalysis, enzyme catalysis, and catalyst design coursework
+        // gets a dedicated pool. "transition state theory" without catalysis context stays in
+        // chemicalkinetics (fires after).
+        if lower.contains("catalysis class") || lower.contains("catalysis course")
+            || lower.contains("catalysis exam") || lower.contains("catalysis lab")
+            || lower.contains("catalysis notes") || lower.contains("catalysis homework")
+            || lower.contains("catalysis assignment") || lower.contains("catalysis textbook")
+            || word("catalysis") || word("catalysts") && (lower.contains("class") || lower.contains("exam") || lower.contains("design") || lower.contains("course"))
+            || lower.contains("heterogeneous catalysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("homogeneous catalysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("enzyme catalysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("catalysis") || lower.contains("kinetics"))
+            || lower.contains("langmuir-hinshelwood") && (lower.contains("class") || lower.contains("exam") || lower.contains("catalysis"))
+            || lower.contains("sabatier principle") && (lower.contains("class") || lower.contains("exam") || lower.contains("catalysis"))
+            || lower.contains("catalyst design") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("zeolite catalysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("zeolite catalyst") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("photocatalysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("electrocatalysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("volcano plot") && (lower.contains("class") || lower.contains("catalysis") || lower.contains("exam"))
+            || lower.contains("surface reaction") && (lower.contains("class") || lower.contains("catalysis") || lower.contains("exam") || lower.contains("kinetics") || lower.contains("lab"))
+            || lower.contains("turnover frequency") && (lower.contains("class") || lower.contains("catalysis") || lower.contains("exam"))
+            || lower.contains("catalytic cycle") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("mechanism")) {
+            return "catalysis"
+        }
         // chemicalkinetics — positioned AFTER analyticalchemistry and BEFORE nuclearchemistry.
         // Catches dedicated chemical kinetics and reaction dynamics coursework distinct from
         // general physical chemistry. "rate law" without class context stays in studying.
@@ -9126,6 +9197,31 @@ public final class CalloutManager {
             || lower.contains("electrochemical impedance") && (lower.contains("class") || lower.contains("lab") || lower.contains("chemistry")) {
             return "electrochemistry"
         }
+        // rheology — positioned AFTER electrochemistry and BEFORE polymerchemistry so
+        // viscoelasticity, non-Newtonian flow, oscillatory shear, and rheometer coursework
+        // gets a dedicated pool. "viscosity" alone stays in chemistry/physics (fires earlier).
+        if lower.contains("rheology class") || lower.contains("rheology course")
+            || lower.contains("rheology exam") || lower.contains("rheology lab")
+            || lower.contains("rheology notes") || lower.contains("rheology homework")
+            || lower.contains("rheology assignment") || lower.contains("rheology textbook")
+            || word("rheology") || word("rheologist") || word("rheologists")
+            || lower.contains("viscoelasticity") && (lower.contains("class") || lower.contains("exam") || lower.contains("rheology") || lower.contains("polymer"))
+            || lower.contains("viscoelastic material") && (lower.contains("class") || lower.contains("exam") || lower.contains("rheology"))
+            || lower.contains("non-newtonian fluid") && (lower.contains("class") || lower.contains("exam") || lower.contains("rheology") || lower.contains("flow"))
+            || lower.contains("non newtonian fluid") && (lower.contains("class") || lower.contains("exam") || lower.contains("rheology") || lower.contains("flow"))
+            || lower.contains("oscillatory shear") && (lower.contains("class") || lower.contains("exam") || lower.contains("rheology") || lower.contains("measurement"))
+            || lower.contains("creep experiment") && (lower.contains("class") || lower.contains("rheology") || lower.contains("exam") || lower.contains("viscoelastic"))
+            || lower.contains("stress relaxation") && (lower.contains("class") || lower.contains("rheology") || lower.contains("exam") || lower.contains("polymer") || lower.contains("viscoelastic"))
+            || lower.contains("polymer rheology") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("rheometer") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("measurement"))
+            || lower.contains("yield stress fluid") && (lower.contains("class") || lower.contains("rheology") || lower.contains("exam"))
+            || lower.contains("flow curve") && (lower.contains("class") || lower.contains("rheology") || lower.contains("exam") || lower.contains("viscosity"))
+            || lower.contains("maxwell model") && (lower.contains("rheology") || lower.contains("viscoelastic") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("kelvin-voigt") && (lower.contains("rheology") || lower.contains("viscoelastic") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("storage modulus") && (lower.contains("class") || lower.contains("rheology") || lower.contains("exam") || lower.contains("polymer"))
+            || lower.contains("loss modulus") && (lower.contains("class") || lower.contains("rheology") || lower.contains("exam") || lower.contains("polymer")) {
+            return "rheology"
+        }
         // polymerchemistry — positioned AFTER electrochemistry and BEFORE drugdiscovery. Catches
         // polymer science coursework, polymerization reactions, molecular weight distribution, and
         // polymer characterization labs. "polymer" alone in materials context fires materialscience earlier.
@@ -9151,6 +9247,32 @@ public final class CalloutManager {
             || lower.contains("polymer chemistry exam") || lower.contains("polymer chemistry lab")
             || lower.contains("polymer chemistry notes") || lower.contains("polymer chemistry program") {
             return "polymerchemistry"
+        }
+        // molecularsimulation — positioned AFTER polymerchemistry and BEFORE computationalchemistry
+        // so dedicated MD/MC simulation coursework (GROMACS, NAMD, AMBER, LAMMPS, free energy,
+        // umbrella sampling) gets its own pool. DFT/ab initio/Gaussian-specific terms stay in
+        // computationalchemistry (fires after).
+        if lower.contains("molecular simulation class") || lower.contains("molecular simulation course")
+            || lower.contains("molecular simulation exam") || lower.contains("molecular simulation lab")
+            || lower.contains("molecular simulation homework") || lower.contains("molecular simulation assignment")
+            || lower.contains("molecular simulation notes") || lower.contains("molecular simulation textbook")
+            || word("gromacs") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation") || lower.contains("course") || lower.contains("lab"))
+            || word("namd") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation") || lower.contains("molecular") || lower.contains("dynamics"))
+            || word("amber") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation") || lower.contains("force field") || lower.contains("molecular"))
+            || word("lammps") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation") || lower.contains("molecular"))
+            || lower.contains("charmm force field") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation"))
+            || lower.contains("opls force field") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation"))
+            || lower.contains("free energy perturbation") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation") || lower.contains("molecular"))
+            || lower.contains("umbrella sampling") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation") || lower.contains("molecular"))
+            || lower.contains("potential of mean force") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation"))
+            || lower.contains("monte carlo simulation") && (lower.contains("class") || lower.contains("exam") || lower.contains("molecular") || lower.contains("chemistry"))
+            || lower.contains("molecular dynamics class") || lower.contains("molecular dynamics course")
+            || lower.contains("molecular dynamics exam") || lower.contains("molecular dynamics lab")
+            || lower.contains("molecular dynamics simulation") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("enhanced sampling") && (lower.contains("class") || lower.contains("simulation") || lower.contains("molecular") || lower.contains("exam"))
+            || lower.contains("metadynamics") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation") || lower.contains("molecular"))
+            || lower.contains("replica exchange") && (lower.contains("class") || lower.contains("exam") || lower.contains("simulation") || lower.contains("molecular")) {
+            return "molecularsimulation"
         }
         // computationalchemistry — positioned AFTER polymerchemistry and BEFORE drugdiscovery.
         // Catches computational quantum chemistry and molecular simulation coursework: DFT,
