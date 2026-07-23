@@ -1,5 +1,73 @@
 # Adia — Build Progress
 
+## Run 406 (automated) — 2026-07-23 — 5 new keyword domains: biogeochemistry/tectonophysics/catalysis/rheology/molecularsimulation (1237→1247 templates)
+
+### What shipped
+
+**5 new keyword domains: biogeochemistry, tectonophysics, catalysis, rheology, molecularsimulation**
+
+**New keyword domain — biogeochemistry:**
+- Branch positioned BEFORE `geochemistry`. Biogeochemical cycling, C/N/P/S element cycles, stable isotope biogeochemistry, isotope fractionation, radiocarbon dating, marine sediment geochemistry, organic geochemistry, and nutrient cycling coursework distinct from isotope/trace-element geochemistry.
+- Catches: biogeochemistry class/course/exam/lab/notes/homework/assignment/textbook, word("biogeochemistry")/word("biogeochemist"), biogeochemical cycle(s)+class/exam, carbon/nitrogen/phosphorus/sulfur cycle+class/biogeochemistry, isotope fractionation+class/biogeochemistry/exam, radiocarbon dating+class/biogeochemistry/exam, organic geochemistry+class/biogeochemistry, nutrient cycling+class/biogeochemistry/exam.
+- `biogeochemistryCallouts(tier:)` 4/3/3: "those biogeochemical cycling and isotope fractionation problems won't solve themselves." / "no one masters biogeochemistry by scrolling." / "CLOSE THIS. those biogeochemical cycle and isotope fractionation problems won't solve themselves."
+- 2 templates: study exam (C/N/P/S cycles, isotope fractionation, radiocarbon dating, organic geochemistry, 60 min) + assignment (model a cycle, isotope analysis, radiocarbon ages, nutrient flux, 60 min)
+
+**New keyword domain — tectonophysics:**
+- Branch positioned BEFORE `structuralgeology`. Plate kinematics, lithospheric stress, isostasy, GPS geodesy, seismic moment tensor, fault mechanics, earthquake cycles, viscoelastic relaxation coursework distinct from structural geology field mapping.
+- Catches: tectonophysics class/course/exam/lab/notes/homework/assignment/textbook, word("tectonophysics"), plate kinematics+class/exam/tectonophysics, lithospheric stress+class/exam/tectonophysics, isostasy+class/exam/tectonophysics/geophysics, gps geodesy+class/exam/tectonophysics/tectonics, seismic moment tensor+class/exam/tectonophysics, fault mechanics+class/exam/tectonophysics/tectonic, earthquake cycle(s)+class/exam/tectonophysics, visco-elastic/viscoelastic relaxation+class/exam/tectonophysics, postseismic deformation+class/exam/tectonophysics, interseismic coupling+class/exam/tectonophysics, geodetic imaging+class/exam/tectonophysics.
+- `tectonophysicsCallouts(tier:)` 4/3/3: "those plate kinematics and moment tensor problems won't solve themselves." / "no one masters tectonophysics by scrolling." / "CLOSE THIS. those plate kinematics and viscoelastic relaxation problems won't solve themselves."
+- 2 templates: study exam (plate kinematics, lithospheric stress, isostasy, GPS geodesy, moment tensor, fault mechanics, earthquake cycles, viscoelastic relaxation, 60 min) + assignment (compute plate motion or stress analysis, moment tensor or isostasy problem, 60 min)
+
+**New keyword domain — catalysis:**
+- Branch positioned AFTER `analyticalchemistry` and BEFORE `chemicalkinetics`. Heterogeneous/homogeneous/enzyme catalysis, Langmuir-Hinshelwood kinetics, Sabatier principle, volcano plots, turnover frequency, zeolite/photo/electrocatalysis distinct from chemical kinetics (rate laws, Arrhenius).
+- Catches: catalysis class/course/exam/lab/notes/homework/assignment/textbook, word("catalysis"), word("catalysts")+edu context, heterogeneous/homogeneous/enzyme catalysis+class/exam, langmuir-hinshelwood+class/exam/catalysis, sabatier principle+class/exam/catalysis, catalyst design+class/exam, zeolite catalyst+class/exam, photocatalysis/electrocatalysis+class/exam, volcano plot+class/catalysis, surface reaction+class/catalysis/exam, turnover frequency+class/catalysis, catalytic cycle+class/exam.
+- `catalysisCallouts(tier:)` 4/3/3: "those heterogeneous catalysis and Langmuir-Hinshelwood problems won't solve themselves." / "no one masters catalysis by scrolling." / "CLOSE THIS. those heterogeneous and electrocatalysis problems won't solve themselves."
+- 2 templates: study exam (heterogeneous/homogeneous catalysis, Langmuir-Hinshelwood, Sabatier, volcano plots, zeolite, photocatalysis, 60 min) + assignment (Langmuir-Hinshelwood rate expression, volcano plot analysis, electrocatalysis/photocatalysis efficiency, catalyst design, 60 min)
+
+**New keyword domain — rheology:**
+- Branch positioned AFTER `electrochemistry` and BEFORE `polymerchemistry`. Viscoelasticity, non-Newtonian flow, oscillatory shear, Maxwell/Kelvin-Voigt models, creep/stress relaxation, rheometer measurements distinct from polymer synthesis/characterization.
+- Catches: rheology class/course/exam/lab/notes/homework/assignment/textbook, word("rheology")/word("rheologist"), viscoelasticity+class/exam/rheology/polymer, non-newtonian fluid+class/exam/rheology, oscillatory shear+class/exam/rheology, creep experiment+class/rheology/viscoelastic, stress relaxation+class/rheology/polymer/viscoelastic, polymer rheology+class/exam, rheometer+class/exam/lab, yield stress fluid+class/rheology, flow curve+class/rheology/viscosity, maxwell model+rheology/viscoelastic, kelvin-voigt+rheology/viscoelastic, storage/loss modulus+class/rheology/polymer.
+- `rheologyCallouts(tier:)` 4/3/3: "those viscoelasticity and non-Newtonian flow problems won't solve themselves." / "no one masters rheology by scrolling." / "CLOSE THIS. those viscoelastic and non-Newtonian rheology problems won't solve themselves."
+- 2 templates: study exam (viscoelasticity, non-Newtonian behavior, oscillatory shear, storage/loss moduli, creep/stress relaxation, Maxwell/Kelvin-Voigt, yield stress, 60 min) + assignment (analyze oscillatory shear data, fit Maxwell/Kelvin-Voigt creep curve, flow curve construction, yield stress measurement, 60 min)
+
+**New keyword domain — molecularsimulation:**
+- Branch positioned AFTER `polymerchemistry` and BEFORE `computationalchemistry`. GROMACS/NAMD/AMBER/LAMMPS MD simulation, Monte Carlo, free energy perturbation, umbrella sampling, potential of mean force distinct from DFT/ab initio/Gaussian computational chemistry.
+- Catches: molecular simulation class/course/exam/lab/homework/assignment, word("gromacs")/word("namd")/word("amber")/word("lammps")+class/exam/simulation/molecular, charmm/opls force field+class/exam/simulation, free energy perturbation+class/exam/simulation/molecular, umbrella sampling+class/exam/simulation/molecular, potential of mean force+class/exam/simulation, monte carlo simulation+class/exam/molecular/chemistry, molecular dynamics class/course/exam/lab, molecular dynamics simulation+class/exam/course/lab, enhanced sampling+class/simulation/molecular, metadynamics+class/exam/simulation, replica exchange+class/exam/simulation/molecular.
+- `molecularsimulationCallouts(tier:)` 4/3/3: "those molecular dynamics and free energy perturbation simulations won't run themselves." / "no one masters molecular simulation by scrolling." / "CLOSE THIS. those GROMACS and free energy perturbation problems won't solve themselves."
+- 2 templates: study exam (MD/MC methods, force fields, GROMACS/NAMD workflow, umbrella sampling, FEP, PMF, enhanced sampling, 60 min) + assignment (set up GROMACS/NAMD MD simulation, calculate PMF with umbrella sampling, FEP, trajectory analysis, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +35 @Test functions (3 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains + 1 count guard ≥1247)
+- SuggestedSessionTemplatesTests.swift: +11 @Test functions (2 template existence × 5 domains + 1 count guard ≥1247)
+
+**Template catalog: 1237 → 1247**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `biogeochemistry` fires BEFORE geochemistry (biogeochemistry at line ~2761, geochemistry at ~2788) ✓
+- `tectonophysics` fires BEFORE structuralgeology (tectonophysics at ~3073, structuralgeology at ~3089) ✓
+- `catalysis` fires BEFORE chemicalkinetics (catalysis at ~9103, chemicalkinetics at ~9130) ✓
+- `rheology` fires BEFORE polymerchemistry (rheology at ~9223, polymerchemistry at ~9249) ✓
+- `molecularsimulation` fires BEFORE computationalchemistry (molecularsimulation at ~9275, computationalchemistry at ~9302) ✓
+- Brace balance: CalloutManager.swift 673/673 ✓; CalloutMessages.swift 1291/1291 ✓
+- Template count: 1247 confirmed (grep -c "preferredDuration:" = 1247) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases + 5 new private pool functions in CalloutMessages.swift ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `solidstatechemistry` — solid-state chemistry class (crystal structures, bonding in solids, solid-state NMR, powder X-ray diffraction, ionic conductors, battery materials chemistry — distinct from crystallography, materialscience, and solidstatephysics)
+  - `biophysicalchemistry` — biophysical chemistry class (thermodynamics of macromolecules, protein folding energetics, fluorescence spectroscopy of biomolecules, FRET, single-molecule methods, calorimetry — distinct from biophysics and biochemistry)
+  - `coordinationchemistry` — coordination chemistry class (transition metal complexes, ligand field theory, crystal field splitting, chelates, coordination number, spectroscopic properties of complexes — distinct from inorganic chemistry)
+  - `physicochemistry` — physical organic chemistry class (linear free energy relationships, Hammett equation, isotope effects, steric effects, Marcus theory, curved Hammett plots — distinct from organic chemistry and physical chemistry)
+  - `nucleargeochemistry` — nuclear geochemistry / radiogenic isotope geochemistry class (U-Pb geochronology, Rb-Sr, Sm-Nd, Lu-Hf systems, cosmogenic nuclides, K-Ar dating, fission track — distinct from biogeochemistry and geochemistry)
+- Template count target: 1247 → 1257 after next 5-domain batch
+
+---
+
 ## Run 405 (automated) — 2026-07-23 — 4 new keyword domains: quantumtransport/geophysicsinversion/constitutivemodeling/infraredspectroscopy (1229→1237 templates)
 
 ### What shipped
