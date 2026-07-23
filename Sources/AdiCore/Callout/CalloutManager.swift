@@ -10007,6 +10007,24 @@ public final class CalloutManager {
             || lower.contains("nbme emergency medicine") || lower.contains("nbme em") {
             return "emergencymedicinerotation"
         }
+        // clinicaltoxicology — positioned AFTER emergencymedicinerotation and BEFORE premed so
+        // clinical toxicology rotation, poison control center rotations, and toxicology consult
+        // service tasks route here. Bare "toxicology" class stays in the toxicology branch
+        // (fires much later); this targets clinical rotation/consult context exclusively.
+        if lower.contains("clinical toxicology rotation") || lower.contains("clinical toxicology clerkship")
+            || lower.contains("clinical toxicology consult") || lower.contains("clinical toxicology elective")
+            || lower.contains("poison control rotation") || lower.contains("poison center rotation")
+            || lower.contains("poison control clerkship")
+            || lower.contains("toxicology consult") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("service") || lower.contains("notes"))
+            || lower.contains("toxicology rotation") && !lower.contains("toxicology class") && !lower.contains("toxicology course") && !lower.contains("toxicology exam")
+            || lower.contains("tox rotation") || lower.contains("tox consult") && (lower.contains("rotation") || lower.contains("service") || lower.contains("notes"))
+            || lower.contains("overdose management") && (lower.contains("rotation") || lower.contains("clinical") || lower.contains("notes") || lower.contains("consult"))
+            || lower.contains("toxidrome") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("clinical") || lower.contains("consult") || lower.contains("notes"))
+            || lower.contains("antidote") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("clinical") || lower.contains("consult") || lower.contains("notes"))
+            || lower.contains("clinical toxicology notes") && (lower.contains("rotation") || lower.contains("write") || lower.contains("clerkship"))
+            || lower.contains("poison control notes") && (lower.contains("rotation") || lower.contains("write") || lower.contains("clerkship")) {
+            return "clinicaltoxicology"
+        }
         if word("anatomy") || word("physiology") || word("biochemistry")
             || word("pharmacology") || word("pathology") || word("histology")
             || word("microbiology") || word("immunology") || word("embryology")
@@ -12136,6 +12154,32 @@ public final class CalloutManager {
             || lower.contains("climate disclosure law") || lower.contains("climate disclosure regulation") && (lower.contains("class") || lower.contains("course") || lower.contains("legal")) {
             return "climatelaw"
         }
+        // globalenvironmentalgovernance — positioned AFTER climatelaw (which owns Paris Agreement/
+        // carbon trading law / UNFCCC / climate finance law) and BEFORE familylaw so international
+        // environmental treaty regimes (CBD, CITES, UNCLOS fisheries, Basel/Stockholm/Rotterdam
+        // conventions, UNEP governance, MEAs, Antarctic Treaty, IPBES, global commons) get a
+        // dedicated pool. "environmental law" class stays in environmentallaw; "climate law"
+        // stays in climatelaw; bare "international law" routes to the general legal branch.
+        if lower.contains("global environmental governance") || lower.contains("international environmental governance")
+            || lower.contains("international environmental law class") || lower.contains("international environmental law course")
+            || lower.contains("international environmental law exam") || lower.contains("international environmental law paper")
+            || lower.contains("international environmental treaty") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("assignment"))
+            || lower.contains("convention on biological diversity") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("treaty") || lower.contains("paper"))
+            || lower.contains("cbd treaty") && (lower.contains("class") || lower.contains("course") || lower.contains("law") || lower.contains("paper"))
+            || lower.contains("cites") && (lower.contains("wildlife treaty") || lower.contains("treaty law") || lower.contains("class") && lower.contains("treaty") || lower.contains("law") && lower.contains("class"))
+            || lower.contains("unclos") && (lower.contains("environmental") || lower.contains("fisheries law") || lower.contains("class") && (lower.contains("treaty") || lower.contains("law")))
+            || lower.contains("basel convention") && (lower.contains("law") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("rotterdam convention") && (lower.contains("law") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("stockholm convention") && (lower.contains("law") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("multilateral environmental agreement") && (lower.contains("class") || lower.contains("course") || lower.contains("law") || lower.contains("paper") || lower.contains("analysis"))
+            || lower.contains("multilateral environmental agreements") && (lower.contains("class") || lower.contains("course") || lower.contains("law") || lower.contains("paper"))
+            || lower.contains("global commons") && (lower.contains("law") || lower.contains("class") || lower.contains("governance") || lower.contains("course"))
+            || lower.contains("antarctic treaty") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("legal"))
+            || lower.contains("unep governance") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("law"))
+            || lower.contains("ipbes") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("policy") || lower.contains("governance"))
+            || lower.contains("environmental treaty regime") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("law")) {
+            return "globalenvironmentalgovernance"
+        }
         // familylaw — positioned BEFORE the general legal branch so divorce, custody, adoption,
         // and domestic-relations coursework routes here rather than generic bar-exam callouts.
         if lower.contains("family law") || lower.contains("family lawyer")
@@ -12371,6 +12415,83 @@ public final class CalloutManager {
             || (lower.contains("rule against perpetuities") && (lower.contains("class") || lower.contains("law") || lower.contains("property")))
             || lower.contains("law school property") || lower.contains("1l property") || lower.contains("first year property") {
             return "propertylaw"
+        }
+        // corporatelaw — positioned AFTER propertylaw and BEFORE neurolaw so corporate law class,
+        // business organizations, M&A, fiduciary duties, and securities regulation coursework
+        // route here. Bare "business" or "corporation" alone stays in the generic business branch.
+        if lower.contains("corporate law class") || lower.contains("corporate law course")
+            || lower.contains("corporate law exam") || lower.contains("corporate law paper")
+            || lower.contains("corporate law assignment") || lower.contains("corporate law outline")
+            || lower.contains("business organizations class") || lower.contains("business organizations course")
+            || lower.contains("business organizations exam") || lower.contains("business organizations outline")
+            || lower.contains("business organizations law")
+            || lower.contains("corporations class") && (lower.contains("law") || lower.contains("law school") || lower.contains("1l") || lower.contains("2l") || lower.contains("3l"))
+            || lower.contains("corporations course") && (lower.contains("law") || lower.contains("law school"))
+            || lower.contains("corporations exam") && (lower.contains("law") || lower.contains("law school"))
+            || lower.contains("fiduciary duty") && (lower.contains("class") || lower.contains("law") || lower.contains("corporate") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("fiduciary duties") && (lower.contains("class") || lower.contains("law") || lower.contains("corporate") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("duty of care") && (lower.contains("corporate") || (lower.contains("business org") && lower.contains("law")))
+            || lower.contains("duty of loyalty") && (lower.contains("class") || lower.contains("law") || lower.contains("corporate"))
+            || lower.contains("business judgment rule") && (lower.contains("class") || lower.contains("law") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("mergers and acquisitions law") || lower.contains("m&a law class") || lower.contains("m&a law course")
+            || lower.contains("corporate governance class") && (lower.contains("law") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("delaware corporate law") || lower.contains("dgcl") && (lower.contains("class") || lower.contains("law"))
+            || lower.contains("securities regulation class") || lower.contains("securities regulation course")
+            || lower.contains("securities regulation exam") || lower.contains("securities law class")
+            || lower.contains("securities law course") || lower.contains("securities law exam")
+            || lower.contains("law school corporations") || lower.contains("1l corporations") || lower.contains("2l corporations") {
+            return "corporatelaw"
+        }
+        // taxlaw — positioned AFTER corporatelaw and BEFORE neurolaw so federal income tax law class,
+        // capital gains analysis, deductions, and tax policy coursework route here rather than the
+        // generic accounting or law branch. "Accounting" alone stays in accounting (fires earlier).
+        if lower.contains("tax law class") || lower.contains("tax law course")
+            || lower.contains("tax law exam") || lower.contains("tax law paper")
+            || lower.contains("tax law assignment") || lower.contains("tax law outline")
+            || lower.contains("taxation class") && (lower.contains("law") || lower.contains("law school") || lower.contains("1l") || lower.contains("2l") || lower.contains("3l"))
+            || lower.contains("taxation course") && (lower.contains("law") || lower.contains("law school"))
+            || lower.contains("taxation exam") && (lower.contains("law") || lower.contains("law school"))
+            || lower.contains("federal income tax class") || lower.contains("federal income tax course")
+            || lower.contains("federal income tax exam") || lower.contains("federal income tax law")
+            || lower.contains("income tax law class") || lower.contains("income tax law course")
+            || lower.contains("income tax law exam")
+            || lower.contains("tax policy class") || lower.contains("tax policy course")
+            || lower.contains("tax policy exam") || lower.contains("tax policy paper")
+            || lower.contains("corporate tax law") || lower.contains("corporate taxation class")
+            || lower.contains("corporate taxation law")
+            || lower.contains("partnership tax class") || lower.contains("partnership taxation") && (lower.contains("class") || lower.contains("law") || lower.contains("course"))
+            || lower.contains("estate tax law") || lower.contains("gift tax law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("internal revenue code") && (lower.contains("class") || lower.contains("law") || lower.contains("course"))
+            || lower.contains("irc section") && (lower.contains("class") || lower.contains("law") || lower.contains("exam"))
+            || lower.contains("international tax class") || lower.contains("international taxation") && (lower.contains("class") || lower.contains("law") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("tax treaty class") || lower.contains("tax treaty law")
+            || lower.contains("law school taxation") || lower.contains("1l tax") && lower.contains("law")
+            || lower.contains("2l tax") && lower.contains("law") {
+            return "taxlaw"
+        }
+        // administrativelaw — positioned AFTER taxlaw and BEFORE neurolaw so APA, rulemaking,
+        // Chevron deference, and judicial review of agency action coursework route here. Bare
+        // "admin" or "administration" alone stays generic.
+        if lower.contains("administrative law class") || lower.contains("administrative law course")
+            || lower.contains("administrative law exam") || lower.contains("administrative law paper")
+            || lower.contains("administrative law assignment") || lower.contains("administrative law outline")
+            || lower.contains("admin law class") || lower.contains("admin law course")
+            || lower.contains("admin law exam") || lower.contains("admin law paper") || lower.contains("admin law outline")
+            || lower.contains("apa rulemaking") && (lower.contains("class") || lower.contains("law") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("administrative procedure act") && (lower.contains("class") || lower.contains("law") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("notice and comment rulemaking") && (lower.contains("class") || lower.contains("law") || lower.contains("exam"))
+            || lower.contains("chevron deference") && (lower.contains("class") || lower.contains("law") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("chevron doctrine") && (lower.contains("class") || lower.contains("law") || lower.contains("exam"))
+            || lower.contains("arbitrary and capricious") && (lower.contains("class") || lower.contains("law") || lower.contains("exam") || lower.contains("review"))
+            || lower.contains("agency adjudication") && (lower.contains("class") || lower.contains("law") || lower.contains("course"))
+            || lower.contains("agency rulemaking") && (lower.contains("class") || lower.contains("law") || lower.contains("course"))
+            || lower.contains("judicial review of agency") && (lower.contains("class") || lower.contains("law") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("hard look review") && (lower.contains("class") || lower.contains("law") || lower.contains("exam"))
+            || lower.contains("nondelegation doctrine") && (lower.contains("class") || lower.contains("law") || lower.contains("course"))
+            || lower.contains("informal rulemaking") && (lower.contains("class") || lower.contains("law") || lower.contains("course"))
+            || lower.contains("formal rulemaking") && (lower.contains("class") || lower.contains("law") || lower.contains("course"))
+            || lower.contains("law school administrative") || lower.contains("2l admin law") || lower.contains("3l admin law") {
+            return "administrativelaw"
         }
         // neurolaw — positioned AFTER tortlaw and BEFORE mediationarbitration. Catches the intersection
         // of law and neuroscience (brain imaging in court, adolescent culpability, criminal responsibility).

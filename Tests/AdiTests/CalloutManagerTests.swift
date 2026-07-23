@@ -26521,8 +26521,148 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "neuropharmacology", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1169)
-    @Test func calloutTemplatesCountAtLeast1169() {
-        #expect(SuggestedSessionTemplates.all.count >= 1169, "template catalog must have ≥1169 entries after neurologyrotation/surgicalpathology/gametheory/forensicchemistry/neuropharmacology additions")
+    // MARK: - clinicaltoxicology
+    @Test func clinicaltoxicologyRoutingFromRotation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "clinical toxicology rotation notes soap overdose management toxidrome antidote") == "clinicaltoxicology")
+    }
+    @Test func clinicaltoxicologyRoutingFromPoisonControl() {
+        #expect(CalloutManager.extractTaskKeyword(from: "poison control rotation tox consult service notes toxidrome identification") == "clinicaltoxicology")
+    }
+    @Test func clinicaltoxicologyRoutingFromToxidrome() {
+        #expect(CalloutManager.extractTaskKeyword(from: "toxidrome rotation clinical consult opioid cholinergic antidote naloxone notes") == "clinicaltoxicology")
+    }
+    @Test func clinicaltoxicologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "toxicology class exam heavy metals pharmacokinetics dose-response") != "clinicaltoxicology")
+    }
+    @Test @MainActor func clinicaltoxicologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "clinicaltoxicology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "clinicaltoxicology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "clinicaltoxicology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func clinicaltoxicologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "clinicaltoxicology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func clinicaltoxicologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "clinicaltoxicology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - globalenvironmentalgovernance
+    @Test func globalenvironmentalgovernanceRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "global environmental governance class exam multilateral environmental agreements CBD CITES") == "globalenvironmentalgovernance")
+    }
+    @Test func globalenvironmentalgovernanceRoutingFromMEA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "multilateral environmental agreement class analysis Basel convention hazardous waste treaty") == "globalenvironmentalgovernance")
+    }
+    @Test func globalenvironmentalgovernanceRoutingFromUNCLOS() {
+        #expect(CalloutManager.extractTaskKeyword(from: "unclos fisheries environmental law class course analysis bbnj high seas treaty") == "globalenvironmentalgovernance")
+    }
+    @Test func globalenvironmentalgovernanceFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "environmental law class nepa clean air act cercla superfund epa regulation") != "globalenvironmentalgovernance")
+    }
+    @Test @MainActor func globalenvironmentalgovernanceCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "globalenvironmentalgovernance", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "globalenvironmentalgovernance", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "globalenvironmentalgovernance", tier: 3).isEmpty)
+    }
+    @Test @MainActor func globalenvironmentalgovernanceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "globalenvironmentalgovernance", tier: 1).count >= 4)
+    }
+    @Test @MainActor func globalenvironmentalgovernanceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "globalenvironmentalgovernance", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - corporatelaw
+    @Test func corporatelawRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "corporate law class exam fiduciary duty business judgment rule M&A") == "corporatelaw")
+    }
+    @Test func corporatelawRoutingFromBusinessOrganizations() {
+        #expect(CalloutManager.extractTaskKeyword(from: "business organizations law school exam duty of loyalty entire fairness review") == "corporatelaw")
+    }
+    @Test func corporatelawRoutingFromSecurities() {
+        #expect(CalloutManager.extractTaskKeyword(from: "securities regulation class exam corporate governance Delaware corporate law") == "corporatelaw")
+    }
+    @Test func corporatelawFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "property law class exam adverse possession future interests easements") != "corporatelaw")
+    }
+    @Test @MainActor func corporatelawCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "corporatelaw", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "corporatelaw", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "corporatelaw", tier: 3).isEmpty)
+    }
+    @Test @MainActor func corporatelawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "corporatelaw", tier: 1).count >= 4)
+    }
+    @Test @MainActor func corporatelawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "corporatelaw", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - taxlaw
+    @Test func taxlawRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tax law class exam federal income tax capital gains IRC deductions") == "taxlaw")
+    }
+    @Test func taxlawRoutingFromFederalIncomeTax() {
+        #expect(CalloutManager.extractTaskKeyword(from: "federal income tax class exam gross income exclusions deductions capital gains") == "taxlaw")
+    }
+    @Test func taxlawRoutingFromTaxPolicy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tax policy course exam progressive rates corporate taxation IRC section analysis") == "taxlaw")
+    }
+    @Test func taxlawFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "accounting class exam financial statements balance sheet income statement") != "taxlaw")
+    }
+    @Test @MainActor func taxlawCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "taxlaw", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "taxlaw", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "taxlaw", tier: 3).isEmpty)
+    }
+    @Test @MainActor func taxlawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "taxlaw", tier: 1).count >= 4)
+    }
+    @Test @MainActor func taxlawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "taxlaw", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - administrativelaw
+    @Test func administrativelawRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "administrative law class exam APA rulemaking Chevron deference judicial review agency") == "administrativelaw")
+    }
+    @Test func administrativelawRoutingFromAdminLaw() {
+        #expect(CalloutManager.extractTaskKeyword(from: "admin law class exam notice and comment rulemaking arbitrary and capricious review") == "administrativelaw")
+    }
+    @Test func administrativelawRoutingFromAPA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "administrative procedure act class exam agency adjudication nondelegation doctrine") == "administrativelaw")
+    }
+    @Test func administrativelawFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "contract law class exam offer acceptance consideration breach promissory estoppel") != "administrativelaw")
+    }
+    @Test @MainActor func administrativelawCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "administrativelaw", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "administrativelaw", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "administrativelaw", tier: 3).isEmpty)
+    }
+    @Test @MainActor func administrativelawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "administrativelaw", tier: 1).count >= 4)
+    }
+    @Test @MainActor func administrativelawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "administrativelaw", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1179)
+    @Test func calloutTemplatesCountAtLeast1179() {
+        #expect(SuggestedSessionTemplates.all.count >= 1179, "template catalog must have ≥1179 entries after clinicaltoxicology/globalenvironmentalgovernance/corporatelaw/taxlaw/administrativelaw additions")
     }
 }

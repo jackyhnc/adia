@@ -7443,8 +7443,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func neuropharmacologyProblemSetTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neuropharmacology") && $0.task.lowercased().contains("problem set") })
     }
-    // MARK: - Count guard (≥1169)
-    @Test func templateCountAtLeast1169() {
-        #expect(SuggestedSessionTemplates.all.count >= 1169, "template catalog must have ≥1169 entries after neurologyrotation/surgicalpathology/gametheory/forensicchemistry/neuropharmacology additions")
+    // MARK: - clinicaltoxicology templates
+    @Test func clinicaltoxicologyNotesTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("clinical toxicology rotation") && $0.task.lowercased().contains("notes") })
+    }
+    @Test func clinicaltoxicologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("clinical toxicology") && $0.task.lowercased().contains("shelf") })
+    }
+    // MARK: - globalenvironmentalgovernance templates
+    @Test func globalenvironmentalgovernanceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("global environmental governance") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func globalenvironmentalgovernancePaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("global environmental governance") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - corporatelaw templates
+    @Test func corporatelawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("corporate law") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func corporatelawProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("corporate law") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - taxlaw templates
+    @Test func taxlawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("federal income tax") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func taxlawProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("tax law") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - administrativelaw templates
+    @Test func administrativelawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("administrative law") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func administrativelawPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("administrative law") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - Count guard (≥1179)
+    @Test func templateCountAtLeast1179() {
+        #expect(SuggestedSessionTemplates.all.count >= 1179, "template catalog must have ≥1179 entries after clinicaltoxicology/globalenvironmentalgovernance/corporatelaw/taxlaw/administrativelaw additions")
     }
 }

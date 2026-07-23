@@ -20568,3 +20568,75 @@ Switch cases added between:
 - `behavioraleconomics` — behavioral economics class (prospect theory, loss aversion, framing effects, anchoring, hyperbolic discounting, nudge theory — distinct from game theory and mainstream economics)
 - `environmentallaw` — environmental law class (NEPA, Clean Air Act, Clean Water Act, CERCLA/Superfund, RCRA, ESA — distinct from property law and environmental science)
 - `globalenvironmentalgovernance` — global environmental governance / international environmental law (Paris Agreement, Kyoto Protocol, CBD, UNFCCC, MEAs, global commons — distinct from environmental law and international relations)
+
+---
+
+## Run 408 — clinicaltoxicology / globalenvironmentalgovernance / corporatelaw / taxlaw / administrativelaw
+
+**Date:** 2026-07-23  
+**Templates:** 1169 → 1179  
+**Domains added:** 5
+
+### Routing branches added (CalloutManager.swift)
+
+| Domain | Placement | Key triggers |
+|---|---|---|
+| `clinicaltoxicology` | AFTER `emergencymedicinerotation`, BEFORE `premed` | clinical toxicology rotation/clerkship/consult/elective; poison control rotation/center; toxicology consult+rotation/service/notes; toxicology rotation without class/exam guard; tox rotation/consult+rotation; overdose management+rotation/clinical; toxidrome+rotation/clinical/consult; antidote+rotation/clerkship/clinical |
+| `globalenvironmentalgovernance` | AFTER `climatelaw`, BEFORE `familylaw` | global/international environmental governance; international environmental law class/course/exam; CBD/CITES/UNCLOS+environmental; Basel/Rotterdam/Stockholm+law/class; multilateral environmental agreement+class/law; global commons+law/class; Antarctic treaty+law/class; UNEP/IPBES+law/class/governance |
+| `corporatelaw` | AFTER `propertylaw`, BEFORE `neurolaw` | corporate law class/course/exam/paper/outline; business organizations class/exam/law; corporations class/exam+law school; fiduciary duty/duties+class/law; business judgment rule+class/law; M&A law class; securities regulation/law class/exam; Delaware corporate law; 1L/2L corporations |
+| `taxlaw` | AFTER `corporatelaw`, BEFORE `neurolaw` | tax law class/course/exam/paper; federal income tax class/course/exam/law; income tax law class/exam; tax policy class/course/paper; corporate/partnership tax+class/law; estate/gift tax law+class; IRC/internal revenue code+class/law; international taxation+class/law |
+| `administrativelaw` | AFTER `taxlaw`, BEFORE `neurolaw` | administrative law class/course/exam/paper/outline; admin law class/course/exam; APA rulemaking+class/law; administrative procedure act+class/law; notice and comment+class/law; Chevron deference/doctrine+class/law; arbitrary and capricious+class/law; agency adjudication/rulemaking+class/law; hard look review; nondelegation doctrine; 2L/3L admin law |
+
+### Callout pools added (CalloutMessages.swift)
+
+- `clinicaltoxicologyCallouts(tier:)` — toxidrome notes, antidote protocols, poison control consult, tox rotation attendance; CLOSE THIS tier
+- `globalenvironmentalgovernanceCallouts(tier:)` — CBD/CITES/UNCLOS/MEA analysis, UNEP governance, global commons; CLOSE THIS tier
+- `corporatelawCallouts(tier:)` — fiduciary duties, BJR, M&A, corporate governance, securities regulation; CLOSE THIS tier
+- `taxlawCallouts(tier:)` — IRC sections, federal income tax, capital gains, deductions, tax policy; CLOSE THIS tier
+- `administrativelawCallouts(tier:)` — APA rulemaking, Chevron deference, arbitrary-and-capricious, agency adjudication; CLOSE THIS tier
+
+Switch cases added:
+- `clinicaltoxicology` after `emergencymedicinerotation` in switch (line 480)
+- `globalenvironmentalgovernance` after `climatelaw` in switch (line 357)
+- `corporatelaw`, `taxlaw`, `administrativelaw` after `propertylaw` in switch (lines 650-652)
+
+### Templates added (SuggestedSessionTemplates.swift)
+
+| Domain | Template 1 | Template 2 |
+|---|---|---|
+| clinicaltoxicology | Write rotation notes — toxidrome ID, antidote protocols, poison control consult, overdose management, decontamination, disposition | Study shelf/cert — toxic alcohols, salicylates, acetaminophen, TCA/CCB/BB toxicity, CO, cyanide, heavy metals, plant toxins |
+| globalenvironmentalgovernance | Study exam — CBD, CITES, UNCLOS, Basel/Rotterdam/Stockholm conventions, Montreal Protocol, global commons, UNEP/IPBES, WTO-environment nexus | Write paper — MEA effectiveness analysis, treaty design comparison, CBDR application, trade-environment nexus, BBNJ policy memo |
+| corporatelaw | Study exam — fiduciary duties, BJR, M&A structures, Delaware law, securities regulation, LLC governance | Complete problem set — BJR vs entire fairness analysis, Unocal/Revlon, MFW framework, derivative suits, LLC operating agreement |
+| taxlaw | Study exam — IRC §61 gross income, exclusions, §162 deductions, capital gains §1221/1231, assignment of income, timing doctrines | Complete problem set — gross income computation, deductibility analysis, capital gains characterization, §1031 exchange, tax research memo |
+| administrativelaw | Study exam — APA §553 rulemaking, Loper Bright/Chevron, arbitrary-and-capricious, agency adjudication, major questions doctrine, separation of powers | Write paper/case brief — State Farm hard look analysis, Loper Bright deference memo, major questions doctrine application, Mathews due process, rulemaking-validity memo |
+
+### Tests added
+
+**CalloutManagerTests.swift** — 35 new @Test functions:
+- 3 routing tests + 1 false-positive guard + 3 pool tests (all-tiers, tier-1-count, tier-3-CLOSE-THIS) per domain × 5 domains
+- Count guard updated: ≥1169 → ≥1179
+
+**SuggestedSessionTemplatesTests.swift** — 12 new @Test functions:
+- 2 template existence tests per domain × 5 domains + count guard ≥1169 → ≥1179
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1179 ✓
+- Brace balance: CalloutMessages.swift 1223/1223 ✓; CalloutManager.swift 639/639 ✓
+- Routing branch ordering confirmed:
+  - clinicaltoxicology (10026) AFTER emergencymedicinerotation (10008), BEFORE premed (10038) ✓
+  - globalenvironmentalgovernance (12181) AFTER climatelaw (12155), BEFORE familylaw (12198) ✓
+  - corporatelaw (12443) AFTER propertylaw (12417), BEFORE neurolaw (12516) ✓
+  - taxlaw (12470) AFTER corporatelaw (12443), BEFORE neurolaw (12516) ✓
+  - administrativelaw (12494) AFTER taxlaw (12470), BEFORE neurolaw (12516) ✓
+- 5 new switch cases in CalloutMessages.swift ✓
+- 5 new private pool functions in CalloutMessages.swift ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Suggested next domains
+- `speechlanguagepathology` — SLP clinical practicum (SOAP notes for articulation/language/fluency/voice/AAC therapy sessions, CF supervision, Praxis exam — distinct from linguistics)
+- `physicaltherapy` — DPT clinical internship/rotation (SOAP notes for musculoskeletal/neuro/cardiopulmonary PT, NPTE board prep — distinct from exercise physiology and biomechanics)
+- `occupationaltherapy` — OT fieldwork (SOAP/POMR notes for ADL/IADL intervention, sensory processing, NBCOT exam — distinct from occupational medicine and social work)
+- `bioethics` — bioethics class/seminar/rotation (principlism: autonomy/beneficence/non-maleficence/justice, clinical ethics consultation, research ethics IRB, end-of-life ethics, genomic ethics — distinct from medical humanities and ethics as a philosophy branch)
+- `medicalspanish` — medical Spanish class/course (clinical vocabulary, patient-history phrases, OSCE in Spanish, interpreter competency certification — distinct from general Spanish)

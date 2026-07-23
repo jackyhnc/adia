@@ -354,6 +354,7 @@ extension CalloutManager {
         case "healthequity":                return healthequityCallouts(tier: tier)
         case "neurolaw":                    return neurolawCallouts(tier: tier)
         case "climatelaw":                  return climatelawCallouts(tier: tier)
+        case "globalenvironmentalgovernance": return globalenvironmentalgovernanceCallouts(tier: tier)
         case "athletictraining":            return athletictrainingCallouts(tier: tier)
         case "biomechanics":               return biomechanicsCallouts(tier: tier)
         case "zoology":                    return zoologyCallouts(tier: tier)
@@ -476,6 +477,7 @@ extension CalloutManager {
         case "obgynrotation":              return obgynrotationCallouts(tier: tier)
         case "familymedicine":             return familymedicineCallouts(tier: tier)
         case "emergencymedicinerotation":  return emergencymedicinerotationCallouts(tier: tier)
+        case "clinicaltoxicology":         return clinicaltoxicologyCallouts(tier: tier)
         case "virology":                   return virologyCallouts(tier: tier)
         case "clinicalmicrobiology":       return clinicalmicrobiologyCallouts(tier: tier)
         case "medicinalchemistry":         return medicinalchemistryCallouts(tier: tier)
@@ -645,6 +647,9 @@ extension CalloutManager {
         case "digitalcommunications":      return digitalcommunicationsCallouts(tier: tier)
         case "contractlaw":                return contractlawCallouts(tier: tier)
         case "propertylaw":                return propertylawCallouts(tier: tier)
+        case "corporatelaw":               return corporatelawCallouts(tier: tier)
+        case "taxlaw":                     return taxlawCallouts(tier: tier)
+        case "administrativelaw":          return administrativelawCallouts(tier: tier)
         case "metamaterials":              return metamaterialsCallouts(tier: tier)
         case "nondestructivetesting":      return nondestructivetestingCallouts(tier: tier)
         case "optimalcontrol":             return optimalcontrolCallouts(tier: tier)
@@ -13279,6 +13284,111 @@ extension CalloutManager {
             "CLOSE THIS. open your neuropharmacology textbook.",
             "CLOSE THIS. those CNS receptor mechanism and drug target problems won't solve themselves.",
             "CLOSE THIS. your neuropharmacology exam won't study itself."
+        ]
+        }
+    }
+
+    private func clinicaltoxicologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "clinical toxicology rotation notes still need writing — toxidrome documentation and antidote protocols don't write themselves.",
+            "your tox consult service notes are still open — overdose management and antidote decisions need documentation.",
+            "those poison control center cases won't document themselves — get back to your clinical tox notes.",
+            "toxidrome identification, antidote selection, decontamination protocols — your attending is expecting those consult notes."
+        ]
+        case 2: return [
+            "stop. your clinical toxicology consult notes are still open.",
+            "opioid/cholinergic/anticholinergic toxidrome, antidote protocols — your tox rotation notes won't write themselves.",
+            "clinical toxicology rotation doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your clinical toxicology rotation notes.",
+            "CLOSE THIS. those toxidrome and antidote consult notes won't document themselves.",
+            "CLOSE THIS. your tox rotation notes won't write themselves."
+        ]
+        }
+    }
+
+    private func globalenvironmentalgovernanceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "global environmental governance isn't going to study itself — CBD, CITES, UNCLOS, MEAs, and treaty compliance are waiting.",
+            "your international environmental law exam is approaching — multilateral agreements, UNEP governance, and global commons need review.",
+            "those international environmental treaty analysis papers are still open.",
+            "Paris Agreement (climate), CBD (biodiversity), CITES (wildlife), Basel (hazardous waste) — get back to your MEA analysis."
+        ]
+        case 2: return [
+            "stop. your international environmental governance assignment is still open.",
+            "MEA compliance, UNEP governance, global commons — your exam won't wait.",
+            "global environmental governance class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your international environmental governance textbook.",
+            "CLOSE THIS. those multilateral treaty analysis papers won't write themselves.",
+            "CLOSE THIS. your global environmental governance exam won't study itself."
+        ]
+        }
+    }
+
+    private func corporatelawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "corporate law isn't going to study itself — fiduciary duties, business judgment rule, and M&A structures are waiting.",
+            "your corporate law exam is approaching — duty of care/loyalty, corporate governance, and securities regulation need review.",
+            "those corporate law case briefs and business organizations problems are still open.",
+            "Delaware corporate law, fiduciary duties, shareholder rights, M&A transactions — get back to your outline."
+        ]
+        case 2: return [
+            "stop. your corporate law exam prep is still open.",
+            "duty of loyalty, business judgment rule, corporate governance — your exam won't wait.",
+            "corporate law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your corporate law textbook.",
+            "CLOSE THIS. those fiduciary duty and M&A transaction problems won't solve themselves.",
+            "CLOSE THIS. your corporate law exam won't study itself."
+        ]
+        }
+    }
+
+    private func taxlawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "tax law isn't going to study itself — federal income tax, capital gains, deductions, and IRC sections are waiting.",
+            "your tax law exam is approaching — gross income, exclusions, deductions, capital gains, and tax policy need review.",
+            "those federal income tax analysis problems and IRC section questions are still open.",
+            "IRC §61 gross income, §162 business deductions, capital gains characterization, progressive rates — get back to your outline."
+        ]
+        case 2: return [
+            "stop. your tax law exam prep is still open.",
+            "gross income inclusions, IRC deductions, capital gains rules — your exam won't wait.",
+            "tax law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your tax law textbook.",
+            "CLOSE THIS. those IRC code section analysis problems won't solve themselves.",
+            "CLOSE THIS. your tax law exam won't study itself."
+        ]
+        }
+    }
+
+    private func administrativelawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "administrative law isn't going to study itself — APA rulemaking, Chevron deference, and judicial review of agency action are waiting.",
+            "your administrative law exam is approaching — notice-and-comment rulemaking, arbitrary-and-capricious review, and agency adjudication need review.",
+            "those APA and agency judicial review case briefs are still open.",
+            "Chevron deference, hard look review, informal rulemaking, nondelegation doctrine — get back to your admin law outline."
+        ]
+        case 2: return [
+            "stop. your administrative law exam prep is still open.",
+            "APA rulemaking, Chevron doctrine, arbitrary-and-capricious review — your exam won't wait.",
+            "administrative law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your administrative law textbook.",
+            "CLOSE THIS. those APA and agency adjudication analysis problems won't solve themselves.",
+            "CLOSE THIS. your administrative law exam won't study itself."
         ]
         }
     }
