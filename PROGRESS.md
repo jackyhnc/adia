@@ -20983,3 +20983,51 @@ All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested 
 - `sciencecommunication` — science communication class (communicating to lay audiences, science journalism, risk communication, deficit model, framing science — distinct from scientificwriting)
 - `industrialorganizational` — I-O psychology class (job analysis, personnel selection, criterion validity, predictive validity, organizational behavior OB topics — distinct from organizationalbehavior and clinicalpsychology)
 - `developmentalbiologycourse` — developmental biology class (induction, competence, morphogen gradients, Hox genes, gastrulation, somitogenesis — distinct from cellbiology and genetics; avoid "developmental psychology" false positive)
+
+---
+
+## Run 414 — 2026-07-23
+
+### What shipped
+5 new keyword domains: **sciencecommunication**, **healthbehavior**, **physicalanthropology**, **culturalanthropology**, **translationalscience** — template catalog grows 1247→1257.
+
+**sciencecommunication** — science communication class/course/exam/assignment/program/seminar, deficit model (with class/science communication context), framing science (with class/course/communication/exam), risk communication class/course/exam, science journalism class/course/exam, public understanding of science, science for lay audiences, communicating science to lay audiences, science for general audiences, science literacy class, science and media class. Positioned BEFORE `scientificwriting` (line 6430 < 6453). 4+3+3 callout pool. 2 templates (study exam / analysis & project).
+
+**healthbehavior** — Health Belief Model (HBM), theory of planned behavior/TPB, transtheoretical model, stages of change (with health/behavior/class context), prochaska (with behavior/health/class context), motivational interviewing class/course/exam/theory, health behavior theory/class/course, behavior change theory (with health/class context), social cognitive theory (with health/class context), self-efficacy theory (with health/class/behavior context), protection motivation theory (with health/class context), health promotion theory (with class/course/exam/model). Positioned BEFORE `publicheath` (line 11650 < 11670). 4+3+3 callout pool. 2 templates (study exam / paper & intervention design).
+
+**physicalanthropology** — physical/biological anthropology class/course/exam/notes/program/major, paleoanthropology class/course/exam/notes, human evolution class/course/exam/notes, primatology class/course/exam/notes, osteology class/course/exam/lab, skeletal analysis (with class/anthropology/lab/course/exam), forensic osteology (excluding forensic science context), australopithecus/australopithecines (with class/course/exam/study), homo erectus/naledi (with class/course/exam), hominid/hominin evolution, bipedalism (with class/anthropology/evolution/exam), sexual dimorphism (with anthropology/evolution/primatology). Positioned BEFORE `culturalanthropology` BEFORE `anthropology` (lines 12508 < 12531 < 12554). 4+3+3 callout pool. 2 templates (study exam / paper, skeletal report, primatology analysis).
+
+**culturalanthropology** — cultural anthropology class/course/exam/notes/program/major, ethnographic methods class/course/exam, thick description (with class/anthropology/ethnography/geertz), geertz (with class/anthropology/ethnography/culture), cultural relativism (with class/anthropology/course/exam), rites of passage (with class/anthropology/course/exam/van gennep), material culture (with anthropology/class/course/analysis), kinship analysis (with class/anthropology/course/system), fieldwork design (with anthropology/ethnography/class/research), ethnographic fieldwork (with class/course/methods/cultural/design), liminality (with class/anthropology/ritual/van gennep/turner), van gennep (with class/anthropology/rites/liminality), symbolic/interpretive anthropology (with class/course/exam). Positioned BEFORE `anthropology` (line 12531 < 12554). 4+3+3 callout pool. 2 templates (study exam / ethnographic analysis & fieldwork design).
+
+**translationalscience** — translational research/medicine/science class/course/exam/program/degree/major, bench to bedside/bench-to-bedside, T1/T2/T3 translational, T1/T2 (with translational/research), first in human/first-in-human (with class/translational/research), CTSA (with translational/research/class/consortium), clinical and translational (with class/course/program/research), biomarker development/discovery (with class/translational/research/course), drug development pipeline (with class/translational/course/exam), preclinical to clinical (with class/translational/research), IND application (with class/translational/research/drug), translational pharmacology (with class/course/exam). Positioned BEFORE `premed` (line 10643 < 10655). 4+3+3 callout pool. 2 templates (study exam / pipeline analysis, biomarker proposal, adaptive trial design).
+
+### Tests added
+
+**CalloutManagerTests.swift** — 35 new @Test functions:
+- 3 routing tests + 1 false-positive guard + 3 pool tests (all-tiers, tier-1-count, tier-3-CLOSE-THIS) per domain × 5 domains
+- Count guard updated: ≥1247 → ≥1257
+
+**SuggestedSessionTemplatesTests.swift** — 12 new @Test functions:
+- 2 template existence tests per domain × 5 domains + count guard ≥1247 → ≥1257
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1257 ✓
+- Brace balance: CalloutMessages.swift 1301/1301 ✓; CalloutManager.swift 678/678 ✓
+- 5 routing returns confirmed in CalloutManager.swift ✓
+- 5 case entries + 5 pool functions confirmed in CalloutMessages.swift ✓
+- Routing ordering:
+  - sciencecommunication(6430) BEFORE scientificwriting(6453) ✓
+  - translationalscience(10643) BEFORE premed(10655) ✓
+  - healthbehavior(11650) BEFORE publicheath(11670) ✓
+  - physicalanthropology(12508) BEFORE culturalanthropology(12531) BEFORE anthropology(12554) ✓
+
+### Blocked
+Swift toolchain unavailable on Linux container — no `swift build` or `swift test` possible.
+
+### Next agent pick-up
+All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested next 5:
+- `globalhealth` (distinct generic catch-all) — global health class/course/exam, DALYs, burden of disease, PEPFAR, health systems strengthening (distinct from globalhealthpolicy which requires policy/governance qualifier and globalhealthdev which requires NGO/development qualifier)
+- `environmentalpolicy` — environmental policy class (distinct from globalenvironmentalgovernance and environmentallaw; covers NEPA, EIS, Clean Air Act/Clean Water Act policy context, cost-benefit analysis for environment, EPA rulemaking, Kyoto/Paris in regulatory context)
+- `disasterrisk` — disaster risk reduction class (Sendai Framework, UNDRR, DRR vs DRM distinction, risk assessment, vulnerability mapping, resilience metrics — distinct from emergencymanagement)
+- `developmentalpsychopath` — developmental psychopathology class (diathesis-stress model, equifinality and multifinality, attachment and psychopathology, developmental cascades, early adversity ACEs — distinct from developmentalpsychology and clinicalpsychology)
+- `pedsrotation` / `neonatologyrotation` — already have pediatricsrotation; check if neonatologyrotation exists
