@@ -29513,8 +29513,153 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "cognitivebehavioraltherapy", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1377)
-    @Test func calloutTemplatesCountAtLeast1377() {
-        #expect(SuggestedSessionTemplates.all.count >= 1377, "template catalog must have ≥1377 entries after networkscience/institutionaleconomics/developmenteconomics/healthpolicyanalysis/cognitivebehavioraltherapy additions")
+    // MARK: - gamedesign
+    @Test func gamedesignRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "game design class MDA framework mechanics dynamics aesthetics narrative design player psychology exam") == "gamedesign")
+    }
+    @Test func gamedesignRoutingFromNarrativeDesign() {
+        #expect(CalloutManager.extractTaskKeyword(from: "narrative design class branching dialogue ludonarrative dissonance environmental storytelling game exam") == "gamedesign")
+    }
+    @Test func gamedesignRoutingFromGameFeel() {
+        #expect(CalloutManager.extractTaskKeyword(from: "game feel class juiciness input responsiveness screen shake particle effects game design exam") == "gamedesign")
+    }
+    @Test func gamedesignFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "build unity game shoot enemies collect coins score board")
+        #expect(kw != "gamedesign", "Unity engine project without design class context should route to gamedev not gamedesign")
+    }
+    @Test @MainActor func gamedesignCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "gamedesign", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "gamedesign", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "gamedesign", tier: 3).isEmpty)
+    }
+    @Test @MainActor func gamedesignTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "gamedesign", tier: 1).count >= 4)
+    }
+    @Test @MainActor func gamedesignTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "gamedesign", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - neuroeconomics
+    @Test func neuroeconomicsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neuroeconomics class dopamine reward prediction error decision neuroscience vmPFC value coding exam") == "neuroeconomics")
+    }
+    @Test func neuroeconomicsRoutingFromDecisionNeuroscience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "decision neuroscience class intertemporal choice temporal discounting fMRI economics exam paper") == "neuroeconomics")
+    }
+    @Test func neuroeconomicsRoutingFromNeuromarketing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neuromarketing class EEG consumer neuroscience pupillometry brand preference course exam") == "neuroeconomics")
+    }
+    @Test func neuroeconomicsFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "behavioral economics nudge theory loss aversion Kahneman Tversky prospect theory class exam")
+        #expect(kw != "neuroeconomics", "behavioral economics without neuroscience framing should route to behavioraleconomics not neuroeconomics")
+    }
+    @Test @MainActor func neuroeconomicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "neuroeconomics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "neuroeconomics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "neuroeconomics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func neuroeconomicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "neuroeconomics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func neuroeconomicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "neuroeconomics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - forensiccriminology
+    @Test func forensiccriminologyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "forensic criminology class criminal profiling victimology psychological autopsy eyewitness testimony exam") == "forensiccriminology")
+    }
+    @Test func forensiccriminologyRoutingFromCriminalBehavior() {
+        #expect(CalloutManager.extractTaskKeyword(from: "criminal behavior class Moffitt life-course persistent adolescence-limited typology exam paper") == "forensiccriminology")
+    }
+    @Test func forensiccriminologyRoutingFromProfiling() {
+        #expect(CalloutManager.extractTaskKeyword(from: "criminal profiling class organized disorganized FBI typology geographic profiling Rossmo exam") == "forensiccriminology")
+    }
+    @Test func forensiccriminologyFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "forensic DNA analysis crime lab evidence CODIS DNA profiling fingerprint exam")
+        #expect(kw != "forensiccriminology", "forensic DNA crime lab analysis should route to forensicscience not forensiccriminology")
+    }
+    @Test @MainActor func forensiccriminologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "forensiccriminology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "forensiccriminology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "forensiccriminology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func forensiccriminologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "forensiccriminology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func forensiccriminologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "forensiccriminology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - publicinternationallaw
+    @Test func publicinternationallawRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "public international law class Article 38 ICJ sources customary international law jus cogens VCLT exam") == "publicinternationallaw")
+    }
+    @Test func publicinternationallawRoutingFromSources() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sources of international law class opinio juris state practice customary law persistent objector exam") == "publicinternationallaw")
+    }
+    @Test func publicinternationallawRoutingFromStateResponsibility() {
+        #expect(CalloutManager.extractTaskKeyword(from: "state responsibility class ILC articles attribution circumstances precluding wrongfulness countermeasures exam") == "publicinternationallaw")
+    }
+    @Test func publicinternationallawFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "international trade law WTO dispute settlement GATT tariffs exam")
+        #expect(kw != "publicinternationallaw", "trade law WTO without PIL doctrine should route to tradelaw not publicinternationallaw")
+    }
+    @Test @MainActor func publicinternationallawCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "publicinternationallaw", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "publicinternationallaw", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "publicinternationallaw", tier: 3).isEmpty)
+    }
+    @Test @MainActor func publicinternationallawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "publicinternationallaw", tier: 1).count >= 4)
+    }
+    @Test @MainActor func publicinternationallawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "publicinternationallaw", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - islamicfinance
+    @Test func islamicfinanceRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "Islamic finance class riba prohibition murabaha sukuk takaful AAOIFI sharia compliant exam") == "islamicfinance")
+    }
+    @Test func islamicfinanceRoutingFromSukuk() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sukuk Islamic bonds class asset-backed asset-based takaful mudaraba musharaka exam paper") == "islamicfinance")
+    }
+    @Test func islamicfinanceRoutingFromIslamicBanking() {
+        #expect(CalloutManager.extractTaskKeyword(from: "Islamic banking class musharaka mudaraba ijara riba prohibition IFSB capital adequacy exam") == "islamicfinance")
+    }
+    @Test func islamicfinanceFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "Islamic law fiqh usul al-fiqh madhab Hanafi Maliki qiyas maslaha exam")
+        #expect(kw != "islamicfinance", "Islamic law fiqh jurisprudence should route to islamiclaw not islamicfinance")
+    }
+    @Test @MainActor func islamicfinanceCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "islamicfinance", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "islamicfinance", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "islamicfinance", tier: 3).isEmpty)
+    }
+    @Test @MainActor func islamicfinanceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "islamicfinance", tier: 1).count >= 4)
+    }
+    @Test @MainActor func islamicfinanceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "islamicfinance", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1387)
+    @Test func calloutTemplatesCountAtLeast1387() {
+        #expect(SuggestedSessionTemplates.all.count >= 1387, "template catalog must have ≥1387 entries after islamicfinance/gamedesign/forensiccriminology/publicinternationallaw/neuroeconomics additions")
     }
 }

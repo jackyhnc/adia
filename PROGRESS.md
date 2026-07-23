@@ -1,5 +1,66 @@
 # Adia — Build Progress
 
+## Run 426 — 2026-07-23 — 5 new keyword domains: gamedesign/neuroeconomics/forensiccriminology/publicinternationallaw/islamicfinance (1377→1387 templates)
+
+### What shipped
+
+**5 new keyword domains: gamedesign, neuroeconomics, forensiccriminology, publicinternationallaw, islamicfinance**
+
+**New keyword domain — gamedesign:**
+- Branch positioned BEFORE `gamedev` (which catches Unity/Unreal/game programming). Catches game design class/course/exam/paper, MDA framework (mechanics/dynamics/aesthetics), game feel/juiciness, narrative design, player psychology/flow state (Csikszentmihalyi), game balancing, monetization ethics, level design. Distinct from gamedev (engine/code), ux (interface design), businessstrategy (monetization only).
+- Catches: game design class/course/exam/paper/textbook, MDA framework+class/exam/design, game feel+class/exam/design, narrative design+class/exam/design, player psychology+class/exam/design/game, flow state+class/exam/design/game, game balancing+class/exam/design, level design+class/exam/design.
+- `gamedesignCallouts(tier:)` 4/3/3: MDA framework + player psychology / game feel/juiciness + flow state / narrative design + balancing / monetization ethics.
+- 2 templates: study exam (MDA, Csikszentmihalyi flow, Jesse Schell lenses, game balancing, narrative design, monetization ethics, 60 min) + paper (game design theory, player experience analysis, narrative systems, ethical game design, 90 min)
+
+**New keyword domain — neuroeconomics:**
+- Branch positioned AFTER `behavioraleconomics` and BEFORE `insurancefinance`. Dopamine reward prediction error (Schultz RPE), vmPFC value coding, temporal discounting (hyperbolic vs exponential), risk/ambiguity neural correlates (EUT vs PT), social preferences in brain (ultimatum game, TPJ), neuromarketing/consumer neuroscience, fMRI decision tasks. Distinct from behavioraleconomics (Kahneman/Thaler nudge heuristics) and neuroscience (brain mechanisms without economic framing).
+- Catches: neuroeconomics class/course/exam/paper/textbook, decision neuroscience+class/exam, neural basis of decision+class/exam, dopamine reward+economics/decision+class/exam, neuromarketing class/course/exam, fMRI+economics/decision+class/exam, temporal discounting+neuroscience+class/exam, vmPFC+economics/decision+class/exam.
+- `neuroeconomicsCallouts(tier:)` 4/3/3: dopamine RPE Schultz / vmPFC value coding + dlPFC control / temporal discounting hyperbolic / social preferences TPJ + ultimatum game.
+- 2 templates: study exam (Schultz RPE, vmPFC, dlPFC, temporal discounting, Tversky/Kahneman PT, ultimatum game, neuromarketing, 60 min) + paper (reward valuation, temporal discounting neural mechanisms, social decision-making, neuromarketing ethics, 90 min)
+
+**New keyword domain — forensiccriminology:**
+- Branch positioned BEFORE `criminaljustice`. Criminal behavior analysis, offender profiling (FBI organized/disorganized + Canter investigative psychology), geographic profiling (Rossmo distance-decay, circle hypothesis), victimology (routine activity theory, RAT), Locard's exchange principle, eyewitness testimony (Loftus misinformation, weapon focus, confidence-accuracy), deception detection (Ekman FACS, Reid Technique vs PEACE model), criminal typologies (Moffitt dual taxonomy, Farrington Cambridge longitudinal). Distinct from forensicscience (crime lab/DNA), forensicpsychology (clinical assessment), criminaljustice (policy/institutions).
+- Catches: forensic criminology+class/exam/paper, criminal behavior class/course/exam/paper/analysis, criminal profiling+class/exam, offender profiling+class/exam, psychological autopsy+class/exam, criminal typologies+class/exam, eyewitness testimony+class/exam/criminology, victimology class/course/exam, modus operandi+class/exam/criminology, serial offender+class/exam/criminology.
+- `forensiccriminologyCallouts(tier:)` 4/3/3: FBI profiling + geographic profiling Rossmo / RAT victimology + Locard exchange / Loftus misinformation + Reid vs PEACE / Moffitt LCP vs AL + Farrington.
+- 2 templates: study exam (FBI typology, Canter IP, Rossmo, RAT, Locard, Loftus, Reid/PEACE, Moffitt, 60 min) + paper (criminal profiling validity, eyewitness testimony reform, false confessions, routine activity theory, Moffitt taxonomy, psychological autopsy, 90 min)
+
+**New keyword domain — publicinternationallaw:**
+- Branch positioned BEFORE `internationallaw`. Article 38 ICJ sources (treaties, CIL, general principles, judicial decisions), CIL formation (state practice + opinio juris, persistent objector, North Sea Continental Shelf), jus cogens (VCLT Article 53), erga omnes (Barcelona Traction), VCLT treaty interpretation (Articles 31-32), ILC ARSIWA state attribution (Articles 4-11 effective vs overall control), diplomatic immunity (VCDR, LaGrand/Avena), jurisdictional principles (Lotus, territoriality, universality, R2P). Distinct from internationallaw (broader treaty/UNCLOS) and internationalhumanitarianlaw (IHL/armed conflict).
+- Catches: public international law class/course/exam/paper/notes/textbook/seminar, PIL class/course/exam, sources of international law+class/exam, Article 38+ICJ/international law+class/exam, opinio juris+class/exam, state responsibility+class/exam/international law, diplomatic immunity+class/exam/international law, jus cogens+class/exam/international law, erga omnes+class/exam/international law, treaty interpretation+class/exam/VCLT.
+- `publicinternationallawCallouts(tier:)` 4/3/3: Article 38 four sources / CIL two elements + persistent objector + North Sea / jus cogens + erga omnes Barcelona Traction / ILC ARSIWA attribution + VCDR diplomatic immunity.
+- 2 templates: study exam (Article 38, CIL, jus cogens, VCLT 31-32, ARSIWA, VCDR, jurisdictional principles, 60 min) + paper (customary IL formation, jus cogens/erga omnes, treaty interpretation, state responsibility, diplomatic immunity, use of force, 90 min)
+
+**New keyword domain — islamicfinance:**
+- Branch positioned AFTER `islamiclaw` (jurisprudence/fiqh) and BEFORE `legal` catchall. Riba prohibition (riba al-fadl and riba al-nasi'ah), gharar/maysir prohibition, murabaha (cost-plus sale, tawarruq controversy), musharaka (equity partnership, diminishing musharaka), mudaraba (profit-sharing trust, two-tier banking), ijara (operational/finance lease), sukuk (asset-backed vs asset-based, Dana Gas dispute), takaful (tabarru' donation, wakala vs mudaraba models), AAOIFI standards, IFSB prudential standards, sharia supervisory board governance. Distinct from islamiclaw (jurisprudence) and finance/banking (conventional).
+- Catches: islamic finance class/course/exam/paper/textbook/notes/assignment/seminar, islamic banking class/course/exam/paper/textbook, murabaha/musharaka/mudaraba/ijara+class/exam/finance, sukuk+class/exam/finance, takaful+class/exam/finance/insurance, sharia compliant finance, riba prohibition+class/exam/finance, aaoifi+class/exam/finance, ifsb+class/exam/finance, sharia supervisory board+class/exam/finance.
+- `islamicfinanceCallouts(tier:)` 4/3/3: riba prohibition + murabaha mechanics / musharaka + mudaraba two-tier / sukuk asset-backed vs asset-based + takaful tabarru' / AAOIFI + IFSB + SSB governance.
+- 2 templates: study exam (riba al-fadl/nasi'ah, murabaha/musharaka/mudaraba/ijara, sukuk, takaful, AAOIFI, IFSB, SSB, 60 min) + paper (murabaha authenticity, sukuk structures, takaful models, SSB governance, AAOIFI/IFSB, Islamic finance in secular jurisdictions, 90 min)
+
+**Verification:**
+- `grep -c "preferredDuration:"` = 1387 ✓
+- CalloutManager.swift brace balance: { = 743, } = 743 ✓
+- CalloutMessages.swift brace balance: { = 1431, } = 1431 ✓
+- All 5 domain switch cases confirmed in CalloutMessages.swift ✓
+- All 5 domain return statements confirmed in CalloutManager.swift ✓
+- Count guards updated to ≥1387 in both test files ✓
+
+### What's blocked
+
+Nothing. No Swift toolchain on Linux container so tests run on developer's machine at push.
+
+### Next agent pick-up
+
+Continue expanding keyword domain coverage. Suggested next 5 domains:
+1. **comparativeliterature** — literary theory class (Derrida deconstruction, Bakhtin dialogism, Northrop Frye archetypal criticism, Foucault discourse, Said orientalism, Kristeva intertextuality, narratology Genette)
+2. **architecturedesign** — architecture class/studio (Le Corbusier 5 points, Venturi postmodern complexity, Tschumi event architecture, Koolhaas bigness, programmatic analysis, circulation/structure, sustainable design LEED)
+3. **linguisticanthropology** — linguistic anthropology class (Sapir-Whorf hypothesis, indexicality/iconicity/symbolism, speech acts Austin/Searle, conversational analysis, language socialization Schieffelin/Ochs, code-switching, endangered language revitalization)
+4. **cognitivescience** — cognitive science class (Marr's three levels, connectionism vs classical computationalism, predictive processing, embodied cognition, dual process theory in a broader interdisciplinary framing — distinct from cognitivepsychology which fires earlier)
+5. **laboreconomics** — labor economics class (Mincer earnings equation, human capital theory Becker, compensating differentials, monopsony power, efficiency wages, job search Mortensen-Pissarides, union wage premium, discrimination (Becker taste model, statistical discrimination))
+
+Template count target: 1387 → 1397 after next 5-domain batch.
+
+---
+
 ## Run 425 — 2026-07-23 — 5 new keyword domains: networkscience/institutionaleconomics/developmenteconomics/healthpolicyanalysis/cognitivebehavioraltherapy (1367→1377 templates)
 
 ### What shipped

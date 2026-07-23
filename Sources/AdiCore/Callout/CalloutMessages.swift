@@ -754,6 +754,11 @@ extension CalloutManager {
         case "developmenteconomics":       return developmenteconomicsCallouts(tier: tier)
         case "healthpolicyanalysis":       return healthpolicyanalysisCallouts(tier: tier)
         case "cognitivebehavioraltherapy": return cognitivebehavioraltherapyCallouts(tier: tier)
+        case "gamedesign":             return gamedesignCallouts(tier: tier)
+        case "neuroeconomics":         return neuroeconomicsCallouts(tier: tier)
+        case "forensiccriminology":    return forensiccriminologyCallouts(tier: tier)
+        case "publicinternationallaw": return publicinternationallawCallouts(tier: tier)
+        case "islamicfinance":         return islamicfinanceCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -15567,6 +15572,111 @@ extension CalloutManager {
             "CLOSE THIS. your CBT exam needs Beck's cognitive model, cognitive distortions, behavioral activation, ERP, ACT hexaflex, DBT skill modules, and MBCT.",
             "CLOSE THIS. those thought records and cognitive distortion classification problems won't write themselves.",
             "CLOSE THIS. your cognitive behavioral therapy exam won't study itself."
+        ]
+        }
+    }
+
+    private func gamedesignCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those game design problems — MDA framework (mechanics, dynamics, aesthetics), game feel (input latency, juice, screen shake), narrative design (branching dialogue, ludonarrative dissonance, story-structure), player psychology (flow state, intrinsic/extrinsic motivation, Bartle player types), game balancing (parametric design, positive/negative feedback loops, economy balancing), and monetization ethics — won't design themselves.",
+            "your game design exam needs you — MDA framework (mechanics: rules/systems; dynamics: runtime behavior; aesthetics: player experience; reverse engineering from aesthetics to mechanics); game feel (Schell's 'juice': responsive controls, particle effects, screen shake, sound feedback; input latency tolerance; Juiciness vs Core Mechanics tradeoff); narrative design (Freytag's pyramid in games, branching dialogue trees, ludonarrative dissonance, environmental storytelling, player agency); player psychology (Csikszentmihalyi flow state: challenge-skill balance; Bartle's taxonomy: achievers/explorers/socializers/killers; Ryan-Deci self-determination theory: competence/autonomy/relatedness; intrinsic vs extrinsic motivation; operant conditioning in games: variable reward schedules); game balancing (parametric design, positive feedback loops (snowballing), negative feedback loops (catch-up mechanics), zero-sum vs non-zero-sum balance, difficulty curves, accessibility design: difficulty options, colorblind modes, remappable controls); monetization (premium, free-to-play, subscription, DLC; ethical vs exploitative loot boxes; ARPU vs ARPPU) are all waiting.",
+            "those game design assignments and design document analyses are still open.",
+            "MDA framework, game feel, narrative design, player psychology, flow state, balancing, monetization ethics — get back to your game design coursework."
+        ]
+        case 2: return [
+            "stop. your game design exam and design analysis paper are still open.",
+            "MDA framework mechanics-dynamics-aesthetics, game feel juice and input responsiveness, narrative design branching and ludonarrative dissonance, player psychology flow state and Bartle types, game balancing feedback loops and difficulty curves — your exam won't wait.",
+            "game design class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your game design textbook or MDA framework and game feel notes.",
+            "CLOSE THIS. those game feel and player psychology design problems won't solve themselves.",
+            "CLOSE THIS. your game design exam won't study itself."
+        ]
+        }
+    }
+
+    private func neuroeconomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those neuroeconomics problems — dopamine and reward prediction error (Schultz, Montague, Dayan), prospect theory in the brain (striatum/vmPFC role in value coding), temporal discounting and hyperbolic discounting neurobiology, risk and ambiguity in the brain (amygdala, OFC, anterior insula), social preferences (oxytocin, trust games, fairness in the ultimatum game), and neuromarketing applications — won't analyze themselves.",
+            "your neuroeconomics exam needs you — dopamine reward prediction error (Schultz RPE model: dopamine neurons encode δ = R - V(s); Montague-Dayan temporal difference learning; how RPE signals bridge reinforcement learning and neuroscience); value coding in the brain (vmPFC: subjective value signal; striatum (NAcc, caudate): expected reward; OFC: reward identity/extinction; anterior insula: risk and loss aversion signals; dlPFC: cognitive control over impulsive choices); temporal discounting and intertemporal choice (hyperbolic discounting: V = A/(1 + kD); limbic (striatum) vs prefrontal conflict; McClure-Laibson dual system: β-δ model neural correlates; delay discounting in addiction); risk and ambiguity (Ellsberg paradox neural correlates; amygdala: ambiguity aversion; OFC: risk encoding; dACC: choice uncertainty; anterior insula: anticipatory regret and loss aversion); social preferences in neuroeconomics (ultimatum game: rejected unfair offers activate right dorsolateral PFC (Sanfey 2003); trust game: oxytocin increases trust (Kosfeld 2005); inequity aversion (Fehr-Schmidt) neural correlates; mentalizing network (TPJ, mPFC, STS): theory of mind in strategic games); neuromarketing (EEG alpha suppression: cognitive load; P300: attention; eye-tracking + pupillometry: arousal; IAT: implicit attitudes; functional neuroimaging in consumer preference) are all waiting.",
+            "those neuroeconomics assignments and decision neuroscience analyses are still open.",
+            "dopamine RPE, vmPFC value coding, temporal discounting, risk in OFC/amygdala, social preferences in ultimatum/trust games, neuromarketing — get back to your neuroeconomics coursework."
+        ]
+        case 2: return [
+            "stop. your neuroeconomics exam and decision neuroscience paper are still open.",
+            "dopamine reward prediction error (Schultz), vmPFC subjective value, striatum expected reward, temporal discounting hyperbolic-δ model, risk in OFC/amygdala/insula, oxytocin trust, ultimatum fairness rejection, neuromarketing EEG — your exam won't wait.",
+            "neuroeconomics class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your neuroeconomics textbook or dopamine reward and vmPFC value coding notes.",
+            "CLOSE THIS. those temporal discounting and social preferences neuroeconomics problems won't solve themselves.",
+            "CLOSE THIS. your neuroeconomics exam won't study itself."
+        ]
+        }
+    }
+
+    private func forensiccriminologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those forensic criminology problems — criminal profiling (FBI typology: organized/disorganized; geographic profiling Rossmo's formula), victimology (routine activity theory: motivated offender + suitable target + absent guardian), psychological autopsy, Locard's exchange principle, eyewitness testimony reliability (Loftus misinformation effect, weapon focus, lineup bias), deception detection (Ekman micro-expressions, Reid Technique critique, PEACE model), and criminal typologies (Lombroso born criminal to Moffitt life-course theory) — won't analyze themselves.",
+            "your forensic criminology exam needs you — criminal profiling methods (FBI approach: organized vs disorganized (Ressler, Burgess, Douglas 1988); geographic profiling (Rossmo's D(x,y) distance-decay formula; buffer zone hypothesis; least-effort principle); Canter's investigative psychology: circle hypothesis; bottom-up vs top-down profiling; critique: Snook et al. meta-analysis on accuracy); victimology and routine activity theory (Cohen-Felson routine activity theory (1979): three elements — motivated offender, suitable target (VIVA: value, inertia, visibility, accessibility), capable guardian (absence); lifestyle exposure theory (Hindelang); Von Hentig victim typology; secondary victimization; victim precipitation (Wolfgang) and critique); psychological autopsy (equivocal death investigation; Schnyder method; NASH classification: natural/accident/suicide/homicide; Poythress et al. reliability critique; psychological autopsy in insurance and legal settings); crime scene reconstruction (Locard's exchange principle: every contact leaves a trace; crime scene indicators (staging, undoing, personation); modus operandi vs signature; wound pattern analysis; behavioral evidence analysis (Turvey)); eyewitness testimony (Loftus misinformation effect (1974): post-event information; weapon focus effect (Steblay meta-analysis); confidence-accuracy correlation (Sporer et al.); lineup procedures (sequential vs simultaneous; eyewitness-expert reforms (Wells 1998 NAS report))); deception detection (Ekman's FACS and micro-expressions; Paul Ekman's 7 universal emotions; Reid Technique: BAI + minimization/maximization (critique: false confessions, Kassin); PEACE model (UK): non-confrontational; Vrij's CBCA and Reality Monitoring; polygraph validity debate); criminal career typologies (Lombroso atavism; Merton strain theory and anomie; Sutherland differential association; Hirschi social bond theory; Gottfredson-Hirschi general theory (low self-control); Moffitt (1993): life-course persistent vs adolescence-limited; Farrington Cambridge longitudinal study) are all waiting.",
+            "those forensic criminology assignments and criminal behavior analyses are still open.",
+            "criminal profiling FBI typology, Rossmo geographic formula, victimology RAT, Loftus eyewitness misinformation, Reid Technique PEACE model, Moffitt career typologies — get back to your forensic criminology coursework."
+        ]
+        case 2: return [
+            "stop. your forensic criminology exam and criminal behavior analysis are still open.",
+            "criminal profiling (organized/disorganized, geographic profiling Rossmo), victimology (routine activity theory: motivated offender + suitable target + absent guardian), psychological autopsy, Locard's exchange, Loftus misinformation effect, Reid Technique vs PEACE model, Moffitt life-course persistent — your exam won't wait.",
+            "forensic criminology class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your forensic criminology textbook or criminal profiling and victimology notes.",
+            "CLOSE THIS. those eyewitness testimony and deception detection problems won't solve themselves.",
+            "CLOSE THIS. your forensic criminology exam won't study itself."
+        ]
+        }
+    }
+
+    private func publicinternationallawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those public international law problems — Article 38 ICJ Statute sources (treaties, custom, general principles, judicial decisions/doctrine), customary international law formation (state practice + opinio juris), jus cogens norms, erga omnes obligations, the VCLT treaty interpretation rules (Articles 31-32), the ILC Articles on State Responsibility (attribution, circumstances precluding wrongfulness, countermeasures), diplomatic immunity under the VCDR, and jurisdictional principles (territoriality, nationality, protective, universality) — won't analyze themselves.",
+            "your public international law exam needs you — sources of international law (Article 38(1) ICJ Statute: (a) treaties; (b) international custom (state practice + opinio juris — Nicaragua v US ICJ 1986); (c) general principles of law recognized by civilized nations; (d) judicial decisions and teachings as subsidiary means; jus cogens peremptory norms (Article 53 VCLT): non-derogable — genocide, slavery, torture, prohibition on use of force; erga omnes obligations (Barcelona Traction 1970): owed to international community as a whole; persistent objector doctrine (fisheries case)); treaty law and the VCLT (Vienna Convention on the Law of Treaties 1969: Article 26 pacta sunt servanda, Article 31 general rule of interpretation (ordinary meaning + context + object and purpose), Article 32 supplementary means (travaux préparatoires), Article 53 jus cogens invalidity, Article 60 material breach termination, Article 64 jus cogens supervenes; reservations (VCLT Articles 19-23; Genocide Convention advisory opinion)); state responsibility (ILC Articles on State Responsibility 2001: attribution (Articles 4-11): state organs, ultra vires acts (Article 7), instruction/direction (Article 8), adoption (Article 11); internationally wrongful act = attribution + breach; circumstances precluding wrongfulness (Articles 20-27): consent, self-defense, necessity (Caroline test), force majeure, countermeasures (Articles 49-54)); diplomatic and consular immunity (Vienna Convention on Diplomatic Relations 1961: diplomatic bag inviolability, diplomatic premises inviolability, personal inviolability, diplomatic immunity ratione personae vs ratione materiae; Vienna Convention on Consular Relations 1963: consular notification — LaGrand/Avena cases); jurisdiction in international law (territoriality principle (subjective/objective); nationality principle (active/passive); protective principle; universality principle (piracy, war crimes, genocide); Lotus principle (PCIJ 1927): no prohibition = permissible; UN Charter Article 2(4) use of force prohibition; Chapter VII collective security) are all waiting.",
+            "those public international law assignments and PIL doctrine analyses are still open.",
+            "Article 38 ICJ sources, custom state practice opinio juris, jus cogens, VCLT interpretation, ILC state responsibility attribution, diplomatic immunity VCDR, jurisdictional principles — get back to your public international law coursework."
+        ]
+        case 2: return [
+            "stop. your public international law exam and PIL doctrine paper are still open.",
+            "Article 38 ICJ sources (treaties, custom, general principles), customary IL (state practice + opinio juris), jus cogens peremptory norms, erga omnes Barcelona Traction, VCLT Articles 31-32 interpretation, ILC state responsibility attribution, diplomatic immunity VCDR, Lotus principle jurisdictional analysis — your exam won't wait.",
+            "public international law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your public international law textbook or Article 38 ICJ sources and VCLT notes.",
+            "CLOSE THIS. those ILC state responsibility and diplomatic immunity PIL problems won't solve themselves.",
+            "CLOSE THIS. your public international law exam won't study itself."
+        ]
+        }
+    }
+
+    private func islamicfinanceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Islamic finance problems — riba prohibition (riba al-fadl and riba al-nasi'ah), murabaha cost-plus sale mechanics, musharaka equity partnership, mudaraba profit-sharing (rab al-mal vs mudarib), ijara leasing structures, sukuk bond-equivalents (asset-backed vs asset-based), takaful mutual insurance (tabarru' concept, wakala vs mudaraba models), AAOIFI Shariah Standards, IFSB capital adequacy frameworks, and sharia supervisory board governance — won't analyze themselves.",
+            "your Islamic finance exam needs you — prohibition of riba (riba al-fadl: same-commodity excess in spot exchange; riba al-nasi'ah: interest on deferred payment; gharar prohibition: excessive uncertainty; maysir prohibition: speculation/gambling; halal finance requirement); core Islamic finance instruments (murabaha: cost-plus sale — bank buys asset then sells to client at disclosed profit margin; commodity murabaha (tawarruq): organized back-to-back sales — controversial; musharaka: equity partnership — profit/loss sharing by agreed ratio; diminishing musharaka: home finance application; mudaraba: profit-sharing — rab al-mal (capital provider) bears loss, mudarib (entrepreneur) loses effort; two-tier mudaraba in Islamic banking; ijara: lease — ijara wa-iqtina (finance lease with purchase option); sukuk: asset-backed securities — Al-Ahkam structure, underlying asset requirement; sukuk al-ijara, sukuk al-musharaka, sukuk al-murabaha; difference between asset-backed and asset-based sukuk; default/recourse issues; takaful: mutual insurance — tabarru' (donation) concept; wakala (agency) model; mudaraba model; re-takaful; family takaful vs general takaful); regulatory frameworks (AAOIFI: Accounting and Auditing Organization for Islamic Financial Institutions — Bahrain; AAOIFI Shariah Standards (57 standards); IFSB: Islamic Financial Services Board — Kuala Lumpur; IFSB capital adequacy standards (IFSB-2) and liquidity (IFSB-12); OIC Fiqh Academy resolutions; Bank Negara Malaysia — Central Shariah Committee; sharia supervisory board: composition requirements, fatwa issuance, conflicts of interest, agency problem between SSB and bank management); global Islamic finance markets (Malaysia dual banking system; Gulf Cooperation Council Islamic banks; London as Western hub for sukuk; Islamic Development Bank; UK Islamic finance regulation (FSA/FCA level playing field approach); Indonesia as largest Muslim-majority market; Islamic microfinance) are all waiting.",
+            "those Islamic finance assignments and sharia-compliant instrument analyses are still open.",
+            "riba prohibition, murabaha cost-plus, musharaka equity, mudaraba profit-sharing, ijara lease, sukuk structure, takaful tabarru', AAOIFI standards, IFSB, sharia supervisory board — get back to your Islamic finance coursework."
+        ]
+        case 2: return [
+            "stop. your Islamic finance exam and sharia-compliant instrument paper are still open.",
+            "riba prohibition (riba al-fadl/nasi'ah), murabaha (cost-plus sale), musharaka (equity partnership), mudaraba (profit-sharing rab al-mal/mudarib), ijara (lease), sukuk (asset-backed), takaful (tabarru' mutual insurance), AAOIFI Shariah Standards, IFSB capital adequacy — your exam won't wait.",
+            "Islamic finance class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your Islamic finance textbook or murabaha, sukuk, and takaful instrument notes.",
+            "CLOSE THIS. those sharia supervisory board governance and AAOIFI standards problems won't solve themselves.",
+            "CLOSE THIS. your Islamic finance exam won't study itself."
         ]
         }
     }

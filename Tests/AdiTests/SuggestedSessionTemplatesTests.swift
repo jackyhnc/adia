@@ -8213,8 +8213,48 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cognitive behavioral therapy paper") })
     }
 
-    // MARK: - Count guard (≥1377)
-    @Test func templateCountAtLeast1377() {
-        #expect(SuggestedSessionTemplates.all.count >= 1377, "template catalog must have ≥1377 entries after networkscience/institutionaleconomics/developmenteconomics/healthpolicyanalysis/cognitivebehavioraltherapy additions")
+    // MARK: - gamedesign templates
+    @Test func gamedesignStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("game design for my exam") })
+    }
+    @Test func gamedesignPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("game design paper") })
+    }
+
+    // MARK: - neuroeconomics templates
+    @Test func neuroeconomicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neuroeconomics for my exam") })
+    }
+    @Test func neuroeconomicsPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neuroeconomics paper") })
+    }
+
+    // MARK: - forensiccriminology templates
+    @Test func forensiccriminologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("forensic criminology for my exam") })
+    }
+    @Test func forensiccriminologyPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("forensic criminology paper") })
+    }
+
+    // MARK: - publicinternationallaw templates
+    @Test func publicinternationallawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("public international law for my exam") })
+    }
+    @Test func publicinternationallawPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("public international law paper") })
+    }
+
+    // MARK: - islamicfinance templates
+    @Test func islamicfinanceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("islamic finance for my exam") })
+    }
+    @Test func islamicfinancePaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("islamic finance paper") })
+    }
+
+    // MARK: - Count guard (≥1387)
+    @Test func templateCountAtLeast1387() {
+        #expect(SuggestedSessionTemplates.all.count >= 1387, "template catalog must have ≥1387 entries after islamicfinance/gamedesign/forensiccriminology/publicinternationallaw/neuroeconomics additions")
     }
 }

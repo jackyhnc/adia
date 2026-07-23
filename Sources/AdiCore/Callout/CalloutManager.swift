@@ -421,6 +421,30 @@ public final class CalloutManager {
             || lower.contains("metaverse project") || lower.contains("metaverse course") {
             return "virtualreality"
         }
+        // gamedesign — positioned BEFORE gamedev so academic game design class/exam terms (game
+        // design theory, narrative design, game feel, player psychology, monetization systems,
+        // game accessibility) route to a dedicated pool. "game design document" (GDD) and engine
+        // terms stay in gamedev (fires after). Distinct from gamedev (programming/tools).
+        if lower.contains("game design class") || lower.contains("game design course")
+            || lower.contains("game design exam") || lower.contains("game design paper")
+            || lower.contains("game design textbook") || lower.contains("game design assignment")
+            || lower.contains("game design notes") || lower.contains("game design homework")
+            || lower.contains("game design program") || lower.contains("game design degree")
+            || lower.contains("game design theory") || lower.contains("game design principles")
+            || lower.contains("game design curriculum") || lower.contains("game design major")
+            || lower.contains("narrative design") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("game feel") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("game design"))
+            || lower.contains("game balancing") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("game balance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("player psychology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("game"))
+            || lower.contains("game monetization") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("game accessibility") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("game aesthetics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("game user research") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("playtesting") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("game design"))
+            || lower.contains("game prototyping") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "gamedesign"
+        }
         // gamedev — positioned before code so Unity/Godot/engine terms don't fall through to code.
         // "game plan" is not matched because no specific tool name or game-dev phrase fires.
         if word("unity") || word("godot") || lower.contains("unreal engine")
@@ -7088,6 +7112,28 @@ public final class CalloutManager {
             || lower.contains("behavioral science exam") {
             return "behavioraleconomics"
         }
+        // neuroeconomics — positioned AFTER behavioraleconomics and BEFORE insurancefinance.
+        // Catches decision neuroscience, dopamine reward, fMRI economics, neuromarketing, and
+        // intertemporal choice neurobiology. Distinct from behavioraleconomics (nudge/heuristics)
+        // and neuroscience (brain mechanisms without economic framing).
+        if lower.contains("neuroeconomics class") || lower.contains("neuroeconomics course")
+            || lower.contains("neuroeconomics exam") || lower.contains("neuroeconomics paper")
+            || lower.contains("neuroeconomics textbook") || lower.contains("neuroeconomics notes")
+            || lower.contains("neuroeconomics assignment") || lower.contains("neuroeconomics homework")
+            || lower.contains("decision neuroscience") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("neural basis of decision") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("economics"))
+            || lower.contains("dopamine reward") && (lower.contains("economics") || lower.contains("decision") || lower.contains("class") || lower.contains("exam") || lower.contains("neuroeconomics"))
+            || lower.contains("neuromarketing class") || lower.contains("neuromarketing course") || lower.contains("neuromarketing exam")
+            || lower.contains("consumer neuroscience") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("fmri") && (lower.contains("economics") || lower.contains("decision") || lower.contains("neuroeconomics") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("temporal discounting") && (lower.contains("neuroscience") || lower.contains("neuroeconomics") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("intertemporal choice") && (lower.contains("neuroscience") || lower.contains("neuroeconomics") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("risk preferences") && (lower.contains("neuroscience") || lower.contains("neuroeconomics") || lower.contains("brain") || lower.contains("neural")) && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("social preferences") && (lower.contains("neuroscience") || lower.contains("neuroeconomics") || lower.contains("brain")) && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("vmPFC") && (lower.contains("economics") || lower.contains("decision") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("striatum") && (lower.contains("economics") || lower.contains("decision") || lower.contains("reward") || lower.contains("class")) && (lower.contains("class") || lower.contains("exam") || lower.contains("neuroeconomics")) {
+            return "neuroeconomics"
+        }
         // insurancefinance — positioned AFTER behavioraleconomics and BEFORE budget.
         // Catches CPCU/LOMA/AINS designation prep, insurance licensing exams, underwriting
         // coursework, and P&C insurance classes. "title insurance" stays in realestate (fires earlier).
@@ -13184,6 +13230,28 @@ public final class CalloutManager {
             || lower.contains("police department application") && lower.contains("exam") {
             return "policeacademy"
         }
+        // forensiccriminology — positioned BEFORE criminaljustice so forensic criminology class,
+        // criminal profiling, psychological autopsy, criminal typologies, eyewitness testimony,
+        // and deception detection route to a dedicated pool. Distinct from forensicscience (crime
+        // lab/DNA), forensicpsychology (clinical assessment), and criminaljustice (policy/institutions).
+        if lower.contains("forensic criminology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("textbook"))
+            || lower.contains("criminal behavior class") || lower.contains("criminal behavior course")
+            || lower.contains("criminal behavior exam") || lower.contains("criminal behavior paper")
+            || lower.contains("criminal behavior textbook") || lower.contains("criminal behavior analysis")
+            || lower.contains("criminal profiling") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("notes"))
+            || lower.contains("offender profiling") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("psychological autopsy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("criminology"))
+            || lower.contains("criminal typologies") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("criminology"))
+            || lower.contains("eyewitness testimony") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("criminology") || lower.contains("forensic"))
+            || lower.contains("eyewitness memory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("forensic"))
+            || lower.contains("deception detection") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("forensic") || lower.contains("criminology"))
+            || lower.contains("crime scene reconstruction") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("criminology"))
+            || lower.contains("victimology class") || lower.contains("victimology course")
+            || lower.contains("victimology exam") || lower.contains("victimology paper")
+            || lower.contains("modus operandi") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("criminology") || lower.contains("forensic"))
+            || lower.contains("serial offender") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("criminology") || lower.contains("profiling")) {
+            return "forensiccriminology"
+        }
         // criminaljustice — split from socialscience so criminology and criminal justice tasks get
         // a dedicated callout pool. Positioned BEFORE socialscience. "criminal law" routed here
         // because it is a criminal-justice course, not a law-school litigation task.
@@ -14923,6 +14991,28 @@ public final class CalloutManager {
             || lower.contains("hague law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("ihl") || lower.contains("loac") || lower.contains("armed conflict")) {
             return "internationalhumanitarianlaw"
         }
+        // publicinternationallaw — positioned BEFORE internationallaw so PIL-specific doctrine
+        // (Article 38 ICJ sources, opinio juris, state attribution, diplomatic immunity, VCLT
+        // interpretation, ILC Articles on State Responsibility) routes to a dedicated pool.
+        // Distinct from internationallaw (broader PIL/treaty/UNCLOS) and humanrights (ICCPR/ECHR).
+        if lower.contains("public international law class") || lower.contains("public international law course")
+            || lower.contains("public international law exam") || lower.contains("public international law paper")
+            || lower.contains("public international law notes") || lower.contains("public international law textbook")
+            || lower.contains("public international law seminar")
+            || lower.contains("PIL class") || lower.contains("PIL course") || lower.contains("PIL exam") || lower.contains("PIL paper")
+            || lower.contains("sources of international law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("article 38") && (lower.contains("icj") || lower.contains("international law") || lower.contains("class") || lower.contains("exam") || lower.contains("sources"))
+            || lower.contains("opinio juris") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("international law") || lower.contains("custom"))
+            || lower.contains("state responsibility") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("international law") || lower.contains("ilc"))
+            || lower.contains("ilc articles on state responsibility") || lower.contains("articles on state responsibility") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("diplomatic immunity") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("international law") || lower.contains("vclt"))
+            || lower.contains("persistent objector") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("international law") || lower.contains("custom"))
+            || lower.contains("jus cogens") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("international law") || lower.contains("PIL"))
+            || lower.contains("erga omnes") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("international law"))
+            || lower.contains("treaty interpretation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("vclt") || lower.contains("international law"))
+            || lower.contains("state attribution") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("international law") || lower.contains("ilc")) {
+            return "publicinternationallaw"
+        }
         // internationallaw — positioned BEFORE the general legal catchall so public international
         // law, PIL, ICJ, UNCLOS, VCLT, and treaty law route to a dedicated pool. Distinct from
         // internationalrelations (IR theory) and tradelaw (WTO/tariffs).
@@ -15001,6 +15091,32 @@ public final class CalloutManager {
             || lower.contains("hudud") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("fiqh") || lower.contains("islamic") || lower.contains("law"))
             || lower.contains("islamic contract law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")) {
             return "islamiclaw"
+        }
+        // islamicfinance — positioned AFTER islamiclaw (which owns sharia/fiqh/usul methodology)
+        // and BEFORE the general legal catchall. Catches Islamic finance class, Islamic banking,
+        // riba prohibition, murabaha/musharaka/mudaraba/ijara/sukuk instruments, takaful insurance,
+        // AAOIFI standards, IFSB, and sharia supervisory boards. Distinct from islamiclaw (jurisprudence).
+        if lower.contains("islamic finance class") || lower.contains("islamic finance course")
+            || lower.contains("islamic finance exam") || lower.contains("islamic finance paper")
+            || lower.contains("islamic finance textbook") || lower.contains("islamic finance notes")
+            || lower.contains("islamic finance assignment") || lower.contains("islamic finance seminar")
+            || lower.contains("islamic banking class") || lower.contains("islamic banking course")
+            || lower.contains("islamic banking exam") || lower.contains("islamic banking paper")
+            || lower.contains("islamic banking textbook") || lower.contains("islamic banking notes")
+            || lower.contains("murabaha") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("finance") || lower.contains("banking"))
+            || lower.contains("musharaka") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("finance") || lower.contains("banking"))
+            || lower.contains("mudaraba") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("finance") || lower.contains("banking"))
+            || lower.contains("ijara") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("finance") || lower.contains("banking"))
+            || lower.contains("sukuk") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("finance"))
+            || lower.contains("takaful") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("insurance") || lower.contains("finance"))
+            || lower.contains("sharia compliant finance") || lower.contains("shariah compliant finance")
+            || lower.contains("halal finance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("riba prohibition") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("finance") || lower.contains("banking"))
+            || word("aaoifi") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("standard") || lower.contains("finance"))
+            || word("ifsb") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("finance") || lower.contains("banking"))
+            || lower.contains("sharia supervisory board") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("finance") || lower.contains("banking"))
+            || lower.contains("shariah supervisory board") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("finance") || lower.contains("banking")) {
+            return "islamicfinance"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")
