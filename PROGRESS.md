@@ -21163,3 +21163,50 @@ All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested 
 - `philosophyofscience` — check if exists; philosophy of science class (Kuhn's paradigm shifts, Popper's falsificationism, Lakatos, Feyerabend, underdetermination, demarcation problem — distinct from philosophy and sociology of science)
 - `environmentalhumanities` — environmental humanities/ecocriticism class (nature-culture relationships, environmental justice narrative, ecocriticism, posthumanism, more-than-human theory — distinct from environmental studies/environmentalscience)
 - `africanstudies` — African studies class (pan-Africanism, postcolonial theory in Africa, African political economy, decolonization in Africa — distinct from ethnicstudies which handles broader race/diaspora context)
+
+---
+
+## Run 418 — 2026-07-23
+
+### What shipped
+5 new keyword domains: **socialinnovation**, **philosophyofscience**, **environmentalhumanities**, **africanstudies**, **sciencetechnologystudies** — template catalog grows 1287→1297.
+
+**socialinnovation** — social innovation class/course/exam/program/major/paper/assignment/notes/textbook/seminar, design thinking for social (impact/class/course/exam), systems change (class/course/paper/exam/social), impact measurement (class/course/social/exam/paper), scaling social (class/course/exam/impact/innovation), theory of change (class/course/social/exam/paper). Positioned AFTER globalpoliticaleconomy(12761) and BEFORE philosophyofscience(12776). 4+3+3 callout pool. 2 templates (study with systems thinking/design thinking/theory of change/impact measurement/scaling / theory of change development or case study or impact measurement plan).
+
+**philosophyofscience** — philosophy of science class/course/exam/paper/notes/textbook/major/program, scientific paradigm (class/course/exam/philosophy/kuhn), paradigm shift (class/course/philosophy/exam/paper), falsificationism (class/course/exam/paper), falsifiability (class/course/philosophy/exam/paper), demarcation problem (class/course/philosophy/exam), kuhn (class/course/philosophy of/paradigm/exam), popper (class/philosophy/science/exam/falsifi), underdetermination (class/philosophy/science/exam), scientific realism (class/philosophy/course/exam/paper). Positioned BEFORE environmentalhumanities(12794). 4+3+3 callout pool. 2 templates (study Kuhn/Popper/Lakatos/Feyerabend/scientific realism / Kuhn vs Popper paper or scientific realism debate or historical case study).
+
+**environmentalhumanities** — environmental humanities class/course/exam/paper/program/major, ecocriticism class/course/exam/paper, posthumanism (class/course/exam/paper/humanities), more-than-human (class/course/paper/theory/humanities), multispecies (class/course/exam/paper/humanities/studies), nature-culture (class/course/theory/exam/humanities), environmental justice narrative (class/course/paper/humanities), haraway (class/humanities/posthumanism/multispecies/exam). Positioned BEFORE africanstudies(12810). 4+3+3 callout pool. 2 templates (study with ecocriticism/posthumanism/more-than-human/Haraway / ecocritical text analysis or posthumanist analysis or environmental justice paper).
+
+**africanstudies** — african studies class/course/exam/paper/program/major/notes/textbook, pan-africanism (class/course/exam/paper/african/studies), pan africanism (class/course/exam/african/studies), african political economy (class/course/exam/paper/studies), african political thought (class/course/exam/paper), decolonization in africa (class/course/exam/paper/studies), afrocentrism (class/course/exam/paper), negritude (class/course/exam/paper/african), sub-saharan africa class/course/exam/notes, african diaspora class/course/exam/paper, africa class with politics/history/economics/development (excluding south africa/north africa). Positioned BEFORE sciencetechnologystudies(12831). 4+3+3 callout pool. 2 templates (study with Pan-Africanism/Negritude/African political economy/Fanon/decolonization / Pan-Africanism analysis or political economy paper or African literary studies paper).
+
+**sciencetechnologystudies** — science and technology studies, science, technology and society, sts class/course/exam (excluding statistics), sts program/major/seminar, actor-network theory (class/course/paper/exam/sts), actor network theory (class/course/paper/sts), social construction of science (class/course/exam/paper), social construction of technology (class/course/exam/paper), sociology of scientific knowledge (class/course/exam/paper), latour (class/sts/actor-network/actor network/science studies/exam), technological determinism (class/course/sts/exam/paper), technoscience (class/course/exam/paper/studies). Positioned AFTER africanstudies(12831) and BEFORE geopolitics(12864). 4+3+3 callout pool. 2 templates (study ANT/SCOT/Latour/Haraway/SSK / SCOT analysis or ANT analysis or feminist STS paper).
+
+### Tests added
+
+**CalloutManagerTests.swift** — 35 new @Test functions:
+- 3 routing tests + 1 false-positive guard + 3 pool tests (all-tiers, tier-1-count, tier-3-CLOSE-THIS) per domain × 5 domains
+- Count guard updated: ≥1287 → ≥1297
+
+**SuggestedSessionTemplatesTests.swift** — 12 new @Test functions:
+- 2 template existence tests per domain × 5 domains + count guard ≥1287 → ≥1297
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1297 ✓
+- Brace balance: CalloutMessages.swift 1341/1341 ✓; CalloutManager.swift 698/698 ✓
+- Routing ordering:
+  - globalpoliticaleconomy(12761) < socialinnovation(12776) < philosophyofscience(12794) ✓
+  - philosophyofscience(12794) < environmentalhumanities(12810) < africanstudies(12831) ✓
+  - africanstudies(12831) < sciencetechnologystudies(12849) < geopolitics(12864) ✓
+- 5 case entries confirmed in CalloutMessages switch ✓
+- 5 new private pool functions confirmed in CalloutMessages.swift ✓
+
+### Blocked
+Swift toolchain unavailable on Linux container — no `swift build` or `swift test` possible.
+
+### Next agent pick-up
+All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested next 5:
+- `cognitivescience` — cognitive science class (cognitive architectures, computational models of mind, connectionism, embodied cognition, cognitive linguistics, perception, attention, memory — distinct from psychology and neuroscience which are more empirical/biological)
+- `mediatheory` — media theory / media studies class (McLuhan, Baudrillard, Hall's encoding/decoding, media ecology, platform studies, political economy of media — distinct from journalism/massmedia which is more professional/practical)
+- `developmentstudies` — development studies class (development theory, post-development, dependency, human development index, capabilities approach, Amartya Sen, Martha Nussbaum — distinct from economics and international relations)
+- `classicalstudies` — classical studies / classics class (ancient Greek/Roman history, literature (Homer, Virgil, Cicero), philosophy (Plato, Aristotle), classical archaeology, Latin/Greek — distinct from philosophy and ancient history which may be separate domains)
+- `theaterstudies` — theater studies / dramatic arts class (dramatic theory, performance theory, Brecht, Stanislavski, directing, dramaturgy, dramatic analysis — distinct from musictheory/musichistory and creative writing)
