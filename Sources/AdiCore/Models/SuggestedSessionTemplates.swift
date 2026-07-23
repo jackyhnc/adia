@@ -4567,6 +4567,71 @@ public enum SuggestedSessionTemplates {
             successCriteria: "Molecular simulation assignment completed (simulation input prepared and run, trajectory analyzed with RMS deviation/radius of gyration/free energy results, and written methods and results summary saved to file)",
             preferredDuration: 60 * 60
         ),
+        // solidstatechemistry
+        SuggestedTemplate(
+            icon: "hexagon.fill",
+            task: "Study solid-state chemistry for my exam — review crystal structures and bonding in solids, ionic conductors, defect chemistry (Schottky and Frenkel defects), solid-state NMR, powder XRD, lattice energy and Born-Haber cycles, band gaps, and battery materials chemistry",
+            successCriteria: "Solid-state chemistry study session completed (at least two topics reviewed — crystal bonding, defect types, or ionic conductivity — with lattice energy calculations and powder XRD interpretation principles summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "hexagon.fill",
+            task: "Complete my solid-state chemistry assignment — calculate a Born-Haber cycle for an ionic compound, analyze powder XRD patterns to determine crystal structure, model ionic conductivity and defect concentrations, or characterize a battery material using solid-state NMR data",
+            successCriteria: "Solid-state chemistry assignment completed (Born-Haber cycle or XRD analysis performed, defect chemistry calculations shown, and results with crystal structure or ionic conductivity interpretation written up and saved)",
+            preferredDuration: 60 * 60
+        ),
+        // coordinationchemistry
+        SuggestedTemplate(
+            icon: "link",
+            task: "Study coordination chemistry for my exam — review transition metal complexes, ligand field theory, crystal field splitting (octahedral, tetrahedral, square-planar geometries), CFSE, the spectrochemical series, chelate stability, polydentate ligands, trans effect, and Jahn-Teller distortions",
+            successCriteria: "Coordination chemistry study session completed (at least two topics reviewed — crystal field theory, spectrochemical series, or chelate effect — with CFSE calculations and coordination geometry examples summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "link",
+            task: "Complete my coordination chemistry assignment — derive crystal field splitting energies and CFSE for a given complex, apply the spectrochemical series to predict color and magnetic behavior, determine chelate stability from formation constants, or analyze lability and the trans effect in substitution reactions",
+            successCriteria: "Coordination chemistry assignment completed (CFSE or crystal field stabilization energy calculated, spectrochemical series and magnetic behavior explained, and chelate or lability analysis written up and saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // biophysicalchemistry
+        SuggestedTemplate(
+            icon: "waveform.path",
+            task: "Study biophysical chemistry for my exam — review thermodynamics of macromolecules, protein folding energetics and stability, fluorescence spectroscopy of biomolecules, FRET and energy transfer, single-molecule methods, isothermal titration calorimetry (ITC), differential scanning calorimetry (DSC), and the worm-like chain polymer model",
+            successCriteria: "Biophysical chemistry study session completed (at least two techniques reviewed — ITC, DSC, FRET, or single-molecule methods — with thermodynamic binding parameters and protein stability concepts summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "waveform.path",
+            task: "Complete my biophysical chemistry assignment — analyze ITC binding data to extract ΔH, ΔS, and Ka, interpret DSC thermograms for protein unfolding Tm and ΔHcal, calculate FRET efficiency from donor-acceptor distances, or apply van't Hoff analysis to a biomolecular binding equilibrium",
+            successCriteria: "Biophysical chemistry assignment completed (ITC or DSC analysis performed, thermodynamic parameters extracted, and FRET efficiency or binding affinity calculation documented with interpretation saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // physicochemistry (physical organic chemistry)
+        SuggestedTemplate(
+            icon: "function",
+            task: "Study physical organic chemistry for my exam — review linear free energy relationships, the Hammett equation and sigma-rho correlations, kinetic isotope effects (primary and secondary), Marcus theory for electron transfer, Brønsted catalysis law, curved Hammett plots, and Marcus-Cohen cross-relation",
+            successCriteria: "Physical organic chemistry study session completed (at least two topics reviewed — Hammett correlations, KIE analysis, or Marcus theory — with sigma values, rho interpretation, and rate-equilibrium relationships summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "function",
+            task: "Complete my physical organic chemistry assignment — construct and interpret a Hammett plot to determine rho for a reaction series, calculate kinetic isotope effects to probe transition-state structure, apply Marcus theory to an electron transfer reaction, or analyze a curved Hammett plot for a change in mechanism",
+            successCriteria: "Physical organic chemistry assignment completed (Hammett sigma-rho analysis or KIE calculation performed, mechanistic interpretation written, and Marcus theory or LFER result documented and saved to file)",
+            preferredDuration: 60 * 60
+        ),
+        // nucleargeochemistry
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Study nuclear geochemistry and geochronology for my exam — review radiogenic isotope systems (U-Pb, Rb-Sr, Sm-Nd, Lu-Hf, Re-Os), K-Ar and Ar-Ar dating, fission track thermochronology, cosmogenic nuclide exposure dating, isochron diagrams, initial isotope ratios, and closure temperature concepts",
+            successCriteria: "Nuclear geochemistry study session completed (at least two isotope systems reviewed — U-Pb, Rb-Sr, or K-Ar — with decay constants, isochron construction, and closure temperature concepts summarized in notes)",
+            preferredDuration: 60 * 60
+        ),
+        SuggestedTemplate(
+            icon: "atom",
+            task: "Complete my geochronology assignment — calculate U-Pb concordia ages or Rb-Sr isochron dates, analyze Sm-Nd or Lu-Hf whole-rock or mineral data to determine initial isotope ratios and model ages, evaluate fission track annealing and thermochronology profiles, or calculate cosmogenic nuclide exposure ages",
+            successCriteria: "Geochronology assignment completed (isochron or concordia age calculation performed, closure temperature or exposure age determined, and isotope system decay equation and error analysis written up and saved to file)",
+            preferredDuration: 60 * 60
+        ),
         // computationalchemistry
         SuggestedTemplate(
             icon: "cpu.fill",

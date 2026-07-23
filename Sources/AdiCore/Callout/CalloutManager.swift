@@ -2760,6 +2760,34 @@ public final class CalloutManager {
             || lower.contains("nutrient cycling") && (lower.contains("class") || lower.contains("biogeochemistry") || lower.contains("biogeochemical") || lower.contains("exam")) {
             return "biogeochemistry"
         }
+        // nucleargeochemistry — positioned BEFORE geochemistry so radiogenic isotope geochemistry
+        // and geochronology coursework (U-Pb, Rb-Sr, Sm-Nd, Lu-Hf, K-Ar, cosmogenic nuclides,
+        // fission track, Re-Os) gets its own pool distinct from biogeochemistry and general
+        // geochemistry. "radiocarbon dating + class" is caught by biogeochemistry (fires before).
+        if lower.contains("nuclear geochemistry class") || lower.contains("nuclear geochemistry course")
+            || lower.contains("nuclear geochemistry exam") || lower.contains("nuclear geochemistry lab")
+            || lower.contains("nuclear geochemistry notes") || lower.contains("nuclear geochemistry homework")
+            || lower.contains("nuclear geochemistry assignment") || lower.contains("nuclear geochemistry textbook")
+            || word("nuclear geochemistry") || word("nucleargeochemistry")
+            || lower.contains("geochronology class") || lower.contains("geochronology course")
+            || lower.contains("geochronology exam") || lower.contains("geochronology lab")
+            || lower.contains("geochronology homework") || lower.contains("geochronology assignment")
+            || word("geochronology") || word("geochronologist")
+            || lower.contains("u-pb geochronology") && (lower.contains("class") || lower.contains("exam") || lower.contains("dating") || lower.contains("zircon"))
+            || lower.contains("u pb geochronology") && (lower.contains("class") || lower.contains("exam") || lower.contains("dating"))
+            || lower.contains("rb-sr system") && (lower.contains("class") || lower.contains("exam") || lower.contains("geochronology") || lower.contains("isotope"))
+            || lower.contains("sm-nd system") && (lower.contains("class") || lower.contains("exam") || lower.contains("geochronology") || lower.contains("isotope"))
+            || lower.contains("lu-hf system") && (lower.contains("class") || lower.contains("exam") || lower.contains("geochronology") || lower.contains("isotope"))
+            || lower.contains("k-ar dating") && (lower.contains("class") || lower.contains("exam") || lower.contains("geochronology") || lower.contains("geology"))
+            || lower.contains("ar-ar dating") && (lower.contains("class") || lower.contains("exam") || lower.contains("geochronology") || lower.contains("geology"))
+            || lower.contains("re-os system") && (lower.contains("class") || lower.contains("exam") || lower.contains("geochronology") || lower.contains("isotope"))
+            || lower.contains("cosmogenic nuclide") && (lower.contains("class") || lower.contains("exam") || lower.contains("geochronology") || lower.contains("dating"))
+            || lower.contains("fission track") && (lower.contains("class") || lower.contains("exam") || lower.contains("geochronology") || lower.contains("dating") || lower.contains("thermochronology"))
+            || lower.contains("thermochronology") && (lower.contains("class") || lower.contains("exam") || lower.contains("geochronology") || lower.contains("dating") || lower.contains("course"))
+            || lower.contains("radiogenic isotope geochemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("radiogenic isotope") && (lower.contains("class") || lower.contains("geochronology") || lower.contains("geochemistry") || lower.contains("exam")) {
+            return "nucleargeochemistry"
+        }
         // geochemistry — positioned BEFORE geology; isotope geochemistry, trace-element and
         // major-element geochemical analysis, fluid-rock interaction, and geochemical modeling.
         // word("geochemistry") removed from geology (below) and owned here.
@@ -8968,6 +8996,32 @@ public final class CalloutManager {
             || lower.contains("pantothenic acid") && (lower.contains("class") || lower.contains("biochemistry") || lower.contains("biochem") || lower.contains("exam") || lower.contains("cofactor")) {
             return "biochemistry3"
         }
+        // biophysicalchemistry — positioned BEFORE biochemistry so biophysical chemistry coursework
+        // (thermodynamics of macromolecules, protein folding energetics, fluorescence spectroscopy,
+        // FRET, single-molecule methods, isothermal titration calorimetry, DSC) gets its own pool.
+        // Bare "biochemistry" and bare "biophysics" fall through to their respective domains.
+        if lower.contains("biophysical chemistry class") || lower.contains("biophysical chemistry course")
+            || lower.contains("biophysical chemistry exam") || lower.contains("biophysical chemistry lab")
+            || lower.contains("biophysical chemistry notes") || lower.contains("biophysical chemistry homework")
+            || lower.contains("biophysical chemistry assignment") || lower.contains("biophysical chemistry textbook")
+            || word("biophysical chemistry") || word("biophysicalchemistry")
+            || lower.contains("thermodynamics of macromolecules") && (lower.contains("class") || lower.contains("exam") || lower.contains("biophysical"))
+            || lower.contains("protein folding energetics") && (lower.contains("class") || lower.contains("exam") || lower.contains("biophysical") || lower.contains("thermodynamics"))
+            || lower.contains("protein stability thermodynamics") && (lower.contains("class") || lower.contains("exam") || lower.contains("biophysical"))
+            || lower.contains("isothermal titration calorimetry") && (lower.contains("class") || lower.contains("exam") || lower.contains("biophysical") || lower.contains("lab"))
+            || word("itc") && lower.contains("binding") && (lower.contains("class") || lower.contains("exam") || lower.contains("biophysical") || lower.contains("calorimetry"))
+            || lower.contains("differential scanning calorimetry") && (lower.contains("class") || lower.contains("exam") || lower.contains("biophysical") || lower.contains("protein"))
+            || word("dsc") && lower.contains("protein") && (lower.contains("class") || lower.contains("exam") || lower.contains("biophysical") || lower.contains("unfolding"))
+            || lower.contains("fluorescence spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("biophysical") || lower.contains("protein") || lower.contains("biomolecule"))
+            || lower.contains("fret") && (lower.contains("class") || lower.contains("exam") || lower.contains("biophysical") || lower.contains("fluorescence") || lower.contains("energy transfer"))
+            || lower.contains("single-molecule") && (lower.contains("class") || lower.contains("exam") || lower.contains("biophysical") || lower.contains("spectroscopy") || lower.contains("force"))
+            || lower.contains("single molecule") && (lower.contains("class") || lower.contains("exam") || lower.contains("biophysical") || lower.contains("spectroscopy"))
+            || lower.contains("optical tweezers") && (lower.contains("class") || lower.contains("exam") || lower.contains("biophysical") || lower.contains("course"))
+            || lower.contains("worm-like chain") && (lower.contains("class") || lower.contains("exam") || lower.contains("biophysical") || lower.contains("polymer") || lower.contains("dna"))
+            || lower.contains("thermodynamic cycle") && (lower.contains("class") || lower.contains("biophysical") || lower.contains("exam") || lower.contains("protein"))
+            || lower.contains("van't hoff analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("biophysical") || lower.contains("binding")) {
+            return "biophysicalchemistry"
+        }
         // biochemistry — positioned AFTER molecularbiology and BEFORE geneticcounseling.
         // Catches biochemistry lab/course work with specific enzyme-kinetics and assay terms.
         // Bare word("biochemistry") alone stays in premed (MCAT context); compound lab terms fire here.
@@ -9104,6 +9158,63 @@ public final class CalloutManager {
             || lower.contains("rubredoxin") && (lower.contains("class") || lower.contains("exam") || lower.contains("bioinorganic")) {
             return "bioinorganicchemistry"
         }
+        // solidstatechemistry — positioned BEFORE inorganicchemistry so solid-state chemistry
+        // coursework (crystal structures and bonding, solid-state NMR, powder XRD, ionic conductors,
+        // defect chemistry, battery materials chemistry) gets a dedicated pool distinct from
+        // crystallography (mineral focus), materialscience (engineering focus), and solidstatephysics.
+        if lower.contains("solid state chemistry class") || lower.contains("solid-state chemistry class")
+            || lower.contains("solid state chemistry course") || lower.contains("solid-state chemistry course")
+            || lower.contains("solid state chemistry exam") || lower.contains("solid-state chemistry exam")
+            || lower.contains("solid state chemistry lab") || lower.contains("solid-state chemistry lab")
+            || lower.contains("solid state chemistry notes") || lower.contains("solid-state chemistry notes")
+            || lower.contains("solid state chemistry homework") || lower.contains("solid-state chemistry homework")
+            || lower.contains("solid state chemistry assignment") || lower.contains("solid-state chemistry assignment")
+            || lower.contains("solid state chemistry textbook") || lower.contains("solid-state chemistry textbook")
+            || word("solid-state chemistry") || word("solid state chemistry")
+            || lower.contains("solid state nmr") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("lab"))
+            || lower.contains("solid-state nmr") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("lab"))
+            || lower.contains("powder xrd") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("lab"))
+            || lower.contains("powder diffraction") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("exam"))
+            || lower.contains("ionic conductor") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("solid"))
+            || lower.contains("ionic conductivity") && (lower.contains("class") || lower.contains("exam") || lower.contains("solid") || lower.contains("chemistry"))
+            || lower.contains("defect chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("solid"))
+            || lower.contains("schottky defect") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("solid"))
+            || lower.contains("frenkel defect") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("solid"))
+            || lower.contains("band gap") && (lower.contains("class") || lower.contains("chemistry") || lower.contains("exam") || lower.contains("solid state"))
+            || lower.contains("crystal bonding") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry"))
+            || lower.contains("lattice energy") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("born-haber"))
+            || lower.contains("born-haber cycle") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry"))
+            || lower.contains("battery materials") && (lower.contains("class") || lower.contains("exam") || lower.contains("chemistry") || lower.contains("solid")) {
+            return "solidstatechemistry"
+        }
+        // coordinationchemistry — positioned BEFORE inorganicchemistry so dedicated coordination
+        // chemistry coursework (transition metal complexes, ligand field theory, crystal field
+        // splitting, chelates, spectrochemical series, coordination number, CFSE) gets its own pool.
+        // Bare "crystal field theory" with class context fires here; broader inorganic context
+        // falls through to inorganicchemistry (fires after).
+        if lower.contains("coordination chemistry class") || lower.contains("coordination chemistry course")
+            || lower.contains("coordination chemistry exam") || lower.contains("coordination chemistry lab")
+            || lower.contains("coordination chemistry notes") || lower.contains("coordination chemistry homework")
+            || lower.contains("coordination chemistry assignment") || lower.contains("coordination chemistry textbook")
+            || word("coordination chemistry") || word("coordinationchemistry")
+            || lower.contains("coordination compound") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("coordination"))
+            || lower.contains("coordination complex") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("metal"))
+            || lower.contains("ligand field theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("coordination") || lower.contains("course"))
+            || lower.contains("crystal field theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("coordination") || lower.contains("transition metal"))
+            || lower.contains("crystal field splitting") && (lower.contains("class") || lower.contains("exam") || lower.contains("coordination"))
+            || lower.contains("chelate") && (lower.contains("class") || lower.contains("exam") || lower.contains("coordination") || lower.contains("complex") || lower.contains("chemistry"))
+            || lower.contains("chelation") && (lower.contains("class") || lower.contains("exam") || lower.contains("coordination") || lower.contains("complex"))
+            || lower.contains("spectrochemical series") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("crystal field stabilization energy") && (lower.contains("class") || lower.contains("exam") || lower.contains("coordination"))
+            || lower.contains("jahn-teller distortion") && (lower.contains("class") || lower.contains("exam") || lower.contains("coordination") || lower.contains("complex"))
+            || lower.contains("coordination number") && (lower.contains("class") || lower.contains("exam") || lower.contains("coordination") || lower.contains("complex") || lower.contains("chemistry"))
+            || lower.contains("lability") && (lower.contains("class") || lower.contains("exam") || lower.contains("coordination") || lower.contains("complex") || lower.contains("metal"))
+            || lower.contains("trans effect") && (lower.contains("class") || lower.contains("exam") || lower.contains("coordination") || lower.contains("complex"))
+            || lower.contains("polydentate ligand") && (lower.contains("class") || lower.contains("exam") || lower.contains("coordination"))
+            || lower.contains("bidentate ligand") && (lower.contains("class") || lower.contains("exam") || lower.contains("coordination"))
+            || lower.contains("tridentate ligand") && (lower.contains("class") || lower.contains("exam") || lower.contains("coordination")) {
+            return "coordinationchemistry"
+        }
         // inorganicchemistry — positioned AFTER physicalchemistry and BEFORE organicchemistry.
         // Catches coordination chemistry, crystal field theory, ligand field, d-block/f-block elements,
         // main group chemistry, and organometallic chemistry. "transition metals" alone NOT matched.
@@ -9158,6 +9269,32 @@ public final class CalloutManager {
             || lower.contains("woodward-hoffmann") || lower.contains("woodward hoffmann")
             || lower.contains("mcat organic") || lower.contains("mcat orgo") {
             return "organicchemistry"
+        }
+        // physicochemistry (physical organic chemistry) — positioned AFTER organicchemistry and
+        // BEFORE organicchemistrylab so advanced physical organic coursework (Hammett equation,
+        // linear free energy relationships, Marcus theory, kinetic isotope effects, curved Hammett
+        // plots, Marcus-Cohen, Brønsted catalysis law) gets its own pool distinct from organic
+        // chemistry reaction mechanisms and physical chemistry thermodynamics.
+        if lower.contains("physical organic chemistry class") || lower.contains("physical organic chemistry course")
+            || lower.contains("physical organic chemistry exam") || lower.contains("physical organic chemistry lab")
+            || lower.contains("physical organic chemistry notes") || lower.contains("physical organic chemistry homework")
+            || lower.contains("physical organic chemistry assignment") || lower.contains("physical organic chemistry textbook")
+            || word("physical organic chemistry") || word("physical organic chem")
+            || lower.contains("hammett equation") && (lower.contains("class") || lower.contains("exam") || lower.contains("organic") || lower.contains("linear free energy"))
+            || lower.contains("hammett plot") && (lower.contains("class") || lower.contains("exam") || lower.contains("organic") || lower.contains("substituent"))
+            || lower.contains("sigma rho") && (lower.contains("class") || lower.contains("exam") || lower.contains("hammett") || lower.contains("organic"))
+            || lower.contains("linear free energy relationship") && (lower.contains("class") || lower.contains("exam") || lower.contains("organic") || lower.contains("chemistry"))
+            || lower.contains("lfer") && (lower.contains("class") || lower.contains("exam") || lower.contains("organic") || lower.contains("chemistry"))
+            || lower.contains("kinetic isotope effect") && (lower.contains("class") || lower.contains("exam") || lower.contains("organic") || lower.contains("chemistry"))
+            || lower.contains("secondary kinetic isotope") && (lower.contains("class") || lower.contains("exam") || lower.contains("organic"))
+            || lower.contains("solvent isotope effect") && (lower.contains("class") || lower.contains("exam") || lower.contains("organic") || lower.contains("chemistry"))
+            || lower.contains("marcus theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("organic") || lower.contains("electron transfer"))
+            || lower.contains("marcus-cohen") && (lower.contains("class") || lower.contains("exam") || lower.contains("organic"))
+            || lower.contains("brønsted catalysis law") && (lower.contains("class") || lower.contains("exam") || lower.contains("organic"))
+            || lower.contains("bronsted catalysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("organic") || lower.contains("law"))
+            || lower.contains("curved hammett plot") && (lower.contains("class") || lower.contains("exam") || lower.contains("organic"))
+            || lower.contains("substituent constant") && (lower.contains("class") || lower.contains("exam") || lower.contains("hammett") || lower.contains("organic")) {
+            return "physicochemistry"
         }
         // organicchemistrylab — positioned AFTER organicchemistry and BEFORE analyticalchemistry
         // so specific orgo lab technique sessions (distillation, recrystallization, TLC, IR,

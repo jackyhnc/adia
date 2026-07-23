@@ -28483,8 +28483,151 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "bankinglaw", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1307)
+    // MARK: - solidstatechemistry
+    @Test func solidstatechemistryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solid state chemistry class crystal bonding ionic conductors powder XRD exam") == "solidstatechemistry")
+    }
+    @Test func solidstatechemistryRoutingFromDefectChemistry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "defect chemistry class Schottky Frenkel defects solid state exam ionic conductor") == "solidstatechemistry")
+    }
+    @Test func solidstatechemistryRoutingFromBornHaber() {
+        #expect(CalloutManager.extractTaskKeyword(from: "Born-Haber cycle solid state chemistry class lattice energy exam") == "solidstatechemistry")
+    }
+    @Test func solidstatechemistryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "solid state physics condensed matter band structure semiconductor exam class") != "solidstatechemistry")
+    }
+    @Test @MainActor func solidstatechemistryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "solidstatechemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "solidstatechemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "solidstatechemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func solidstatechemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "solidstatechemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func solidstatechemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "solidstatechemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - coordinationchemistry
+    @Test func coordinationchemistryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "coordination chemistry class crystal field theory spectrochemical series chelate exam") == "coordinationchemistry")
+    }
+    @Test func coordinationchemistryRoutingFromLigandField() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ligand field theory class coordination chemistry exam CFSE crystal field splitting") == "coordinationchemistry")
+    }
+    @Test func coordinationchemistryRoutingFromChelate() {
+        #expect(CalloutManager.extractTaskKeyword(from: "chelation coordination complex class exam bidentate ligand transition metal") == "coordinationchemistry")
+    }
+    @Test func coordinationchemistryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "biochemistry class enzyme mechanism protein structure substrate binding exam") != "coordinationchemistry")
+    }
+    @Test @MainActor func coordinationchemistryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "coordinationchemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "coordinationchemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "coordinationchemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func coordinationchemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "coordinationchemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func coordinationchemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "coordinationchemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - biophysicalchemistry
+    @Test func biophysicalchemistryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "biophysical chemistry class ITC fluorescence spectroscopy protein folding thermodynamics exam") == "biophysicalchemistry")
+    }
+    @Test func biophysicalchemistryRoutingFromFRET() {
+        #expect(CalloutManager.extractTaskKeyword(from: "FRET class biophysical chemistry fluorescence energy transfer exam single-molecule") == "biophysicalchemistry")
+    }
+    @Test func biophysicalchemistryRoutingFromITC() {
+        #expect(CalloutManager.extractTaskKeyword(from: "isothermal titration calorimetry class biophysical exam binding thermodynamics lab") == "biophysicalchemistry")
+    }
+    @Test func biophysicalchemistryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "biochemistry enzyme kinetics class michaelis-menten substrate binding exam") != "biophysicalchemistry")
+    }
+    @Test @MainActor func biophysicalchemistryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "biophysicalchemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "biophysicalchemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "biophysicalchemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func biophysicalchemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "biophysicalchemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func biophysicalchemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "biophysicalchemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - physicochemistry
+    @Test func physicochemistryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "physical organic chemistry class Hammett equation sigma rho linear free energy exam") == "physicochemistry")
+    }
+    @Test func physicochemistryRoutingFromHammett() {
+        #expect(CalloutManager.extractTaskKeyword(from: "Hammett plot class organic chemistry substituent constant linear free energy relationship exam") == "physicochemistry")
+    }
+    @Test func physicochemistryRoutingFromKineticIsotopeEffect() {
+        #expect(CalloutManager.extractTaskKeyword(from: "kinetic isotope effect class organic chemistry primary secondary exam transition state") == "physicochemistry")
+    }
+    @Test func physicochemistryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "organic chemistry class SN1 SN2 reaction mechanisms aldol condensation Diels-Alder exam") != "physicochemistry")
+    }
+    @Test @MainActor func physicochemistryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "physicochemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "physicochemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "physicochemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func physicochemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "physicochemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func physicochemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "physicochemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - nucleargeochemistry
+    @Test func nucleargeochemistryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nuclear geochemistry class U-Pb geochronology radiogenic isotope Rb-Sr isochron exam") == "nucleargeochemistry")
+    }
+    @Test func nucleargeochemistryRoutingFromGeochronology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geochronology class K-Ar dating fission track thermochronology cosmogenic nuclide exam") == "nucleargeochemistry")
+    }
+    @Test func nucleargeochemistryRoutingFromUPb() {
+        #expect(CalloutManager.extractTaskKeyword(from: "U-Pb geochronology class zircon dating concordia diagram exam course") == "nucleargeochemistry")
+    }
+    @Test func nucleargeochemistryFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "geochemistry class trace element XRF ICP-MS rock chemistry fluid-rock interaction exam") != "nucleargeochemistry")
+    }
+    @Test @MainActor func nucleargeochemistryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "nucleargeochemistry", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nucleargeochemistry", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nucleargeochemistry", tier: 3).isEmpty)
+    }
+    @Test @MainActor func nucleargeochemistryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nucleargeochemistry", tier: 1).count >= 4)
+    }
+    @Test @MainActor func nucleargeochemistryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nucleargeochemistry", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1317)
     @Test func calloutTemplatesCountAtLeast1307() {
         #expect(SuggestedSessionTemplates.all.count >= 1307, "template catalog must have ≥1307 entries after mediatheory/theaterstudies/developmentstudies/entertainmentlaw/bankinglaw additions")
+    }
+    @Test func calloutTemplatesCountAtLeast1317() {
+        #expect(SuggestedSessionTemplates.all.count >= 1317, "template catalog must have ≥1317 entries after solidstatechemistry/coordinationchemistry/biophysicalchemistry/physicochemistry/nucleargeochemistry additions")
     }
 }

@@ -405,6 +405,11 @@ extension CalloutManager {
         case "rheology":                   return rheologyCallouts(tier: tier)
         case "molecularsimulation":        return molecularsimulationCallouts(tier: tier)
         case "catalysis":                  return catalysisCallouts(tier: tier)
+        case "solidstatechemistry":        return solidstatechemistryCallouts(tier: tier)
+        case "coordinationchemistry":      return coordinationchemistryCallouts(tier: tier)
+        case "biophysicalchemistry":       return biophysicalchemistryCallouts(tier: tier)
+        case "physicochemistry":           return physicochemistryCallouts(tier: tier)
+        case "nucleargeochemistry":        return nucleargeochemistryCallouts(tier: tier)
         case "maternalhealth":             return maternalhealthCallouts(tier: tier)
         case "globalhealthpolicy":         return globalhealthpolicyCallouts(tier: tier)
         case "processengineering":         return processengineeringCallouts(tier: tier)
@@ -14167,6 +14172,111 @@ extension CalloutManager {
             "CLOSE THIS. open your molecular simulation textbook.",
             "CLOSE THIS. those GROMACS and free energy perturbation problems won't solve themselves.",
             "CLOSE THIS. your molecular simulation exam won't study itself."
+        ]
+        }
+    }
+
+    private func solidstatechemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those crystal structure and ionic conductivity problems won't solve themselves.",
+            "your solid-state chemistry exam doesn't care that you're scrolling.",
+            "get back to your powder XRD and defect chemistry study notes.",
+            "close this and open your solid-state chemistry textbook."
+        ]
+        case 2: return [
+            "no one masters solid-state chemistry by scrolling.",
+            "close this and work on your solid-state chemistry problem set.",
+            "those lattice energy and band gap problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your solid-state chemistry textbook.",
+            "CLOSE THIS. those crystal bonding and ionic conductor problems won't solve themselves.",
+            "CLOSE THIS. your solid-state chemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func coordinationchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those crystal field splitting and chelate stability problems won't solve themselves.",
+            "your coordination chemistry exam doesn't care that you're scrolling.",
+            "get back to your ligand field theory and spectrochemical series study notes.",
+            "close this and open your coordination chemistry textbook."
+        ]
+        case 2: return [
+            "no one masters coordination chemistry by scrolling.",
+            "close this and work on your coordination chemistry problem set.",
+            "those CFSE and trans effect problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your coordination chemistry textbook.",
+            "CLOSE THIS. those crystal field theory and chelate problems won't solve themselves.",
+            "CLOSE THIS. your coordination chemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func biophysicalchemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those protein folding thermodynamics and FRET problems won't solve themselves.",
+            "your biophysical chemistry exam doesn't care that you're scrolling.",
+            "get back to your ITC and fluorescence spectroscopy study notes.",
+            "close this and open your biophysical chemistry textbook."
+        ]
+        case 2: return [
+            "no one masters biophysical chemistry by scrolling.",
+            "close this and work on your biophysical chemistry problem set.",
+            "those single-molecule and optical tweezers problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your biophysical chemistry textbook.",
+            "CLOSE THIS. those thermodynamics of macromolecules and FRET problems won't solve themselves.",
+            "CLOSE THIS. your biophysical chemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func physicochemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Hammett equation and linear free energy relationship problems won't solve themselves.",
+            "your physical organic chemistry exam doesn't care that you're scrolling.",
+            "get back to your Marcus theory and kinetic isotope effect study notes.",
+            "close this and open your physical organic chemistry textbook."
+        ]
+        case 2: return [
+            "no one masters physical organic chemistry by scrolling.",
+            "close this and work on your physical organic chemistry problem set.",
+            "those Brønsted catalysis law and curved Hammett plot problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your physical organic chemistry textbook.",
+            "CLOSE THIS. those Hammett sigma-rho and Marcus theory problems won't solve themselves.",
+            "CLOSE THIS. your physical organic chemistry exam won't study itself."
+        ]
+        }
+    }
+
+    private func nucleargeochemistryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those U-Pb geochronology and Rb-Sr isotope system problems won't solve themselves.",
+            "your nuclear geochemistry exam doesn't care that you're scrolling.",
+            "get back to your fission track and cosmogenic nuclide study notes.",
+            "close this and open your geochronology textbook."
+        ]
+        case 2: return [
+            "no one masters nuclear geochemistry by scrolling.",
+            "close this and work on your geochronology problem set.",
+            "those K-Ar dating and thermochronology problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your geochronology textbook.",
+            "CLOSE THIS. those U-Pb and Sm-Nd radiogenic isotope problems won't solve themselves.",
+            "CLOSE THIS. your nuclear geochemistry exam won't study itself."
         ]
         }
     }

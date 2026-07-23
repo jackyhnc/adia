@@ -7938,8 +7938,46 @@ struct SuggestedSessionTemplatesTests {
     @Test func bankinglawAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("banking law") && $0.task.lowercased().contains("paper") })
     }
-    // MARK: - Count guard (≥1307)
+    // MARK: - solidstatechemistry templates
+    @Test func solidstatechemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("solid-state chemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func solidstatechemistryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("solid-state chemistry") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - coordinationchemistry templates
+    @Test func coordinationchemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("coordination chemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func coordinationchemistryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("coordination chemistry") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - biophysicalchemistry templates
+    @Test func biophysicalchemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("biophysical chemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func biophysicalchemistryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("biophysical chemistry") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - physicochemistry templates
+    @Test func physicochemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("physical organic chemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func physicochemistryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("physical organic chemistry") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - nucleargeochemistry templates
+    @Test func nucleargeochemistryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("nuclear geochemistry") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func nucleargeochemistryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("geochronology") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1317)
     @Test func templateCountAtLeast1307() {
         #expect(SuggestedSessionTemplates.all.count >= 1307, "template catalog must have ≥1307 entries after mediatheory/theaterstudies/developmentstudies/entertainmentlaw/bankinglaw additions")
+    }
+    @Test func templateCountAtLeast1317() {
+        #expect(SuggestedSessionTemplates.all.count >= 1317, "template catalog must have ≥1317 entries after solidstatechemistry/coordinationchemistry/biophysicalchemistry/physicochemistry/nucleargeochemistry additions")
     }
 }
