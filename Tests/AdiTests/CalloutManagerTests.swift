@@ -26945,4 +26945,149 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast1199() {
         #expect(SuggestedSessionTemplates.all.count >= 1199, "template catalog must have ≥1199 entries after computationallinguistics/sociolinguistics/agroecology/forensicengineering/healthlaw additions")
     }
+
+    // MARK: - deepseabiology
+    @Test func deepseabiologyRoutingFromHydrothermalVent() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hydrothermal vent ecology class chemosynthesis tubeworm biology lab") == "deepseabiology")
+    }
+    @Test func deepseabiologyRoutingFromHadalZone() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hadal zone biology deep sea biology exam Mariana Trench pressure adaptation") == "deepseabiology")
+    }
+    @Test func deepseabiologyRoutingFromChemosynthesis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "chemosynthesis ecology class abyssal zone bioluminescence deep sea") == "deepseabiology")
+    }
+    @Test func deepseabiologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "coral reef ecology tidepool survey intertidal zone field sampling") != "deepseabiology")
+    }
+    @Test @MainActor func deepseabiologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "deepseabiology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "deepseabiology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "deepseabiology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func deepseabiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "deepseabiology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func deepseabiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "deepseabiology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - constructionestimating
+    @Test func constructionestimatingRoutingFromQuantityTakeoff() {
+        #expect(CalloutManager.extractTaskKeyword(from: "quantity takeoff construction estimating class RSMeans unit price") == "constructionestimating")
+    }
+    @Test func constructionestimatingRoutingFromRSMeans() {
+        #expect(CalloutManager.extractTaskKeyword(from: "RSMeans construction estimating exam MasterFormat CSI division bid preparation") == "constructionestimating")
+    }
+    @Test func constructionestimatingRoutingFromBidEstimate() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bid estimate construction class subcontractor bid comparison overhead and profit") == "constructionestimating")
+    }
+    @Test func constructionestimatingFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "construction management project schedule CPM CCM exam site safety") != "constructionestimating")
+    }
+    @Test @MainActor func constructionestimatingCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "constructionestimating", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "constructionestimating", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "constructionestimating", tier: 3).isEmpty)
+    }
+    @Test @MainActor func constructionestimatingTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "constructionestimating", tier: 1).count >= 4)
+    }
+    @Test @MainActor func constructionestimatingTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "constructionestimating", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - internationallaw
+    @Test func internationallawRoutingFromPublicIntlLaw() {
+        #expect(CalloutManager.extractTaskKeyword(from: "public international law class PIL VCLT treaty interpretation state responsibility exam") == "internationallaw")
+    }
+    @Test func internationallawRoutingFromICJ() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ICJ international law case brief UNCLOS jus cogens exam") == "internationallaw")
+    }
+    @Test func internationallawRoutingFromVCLT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "VCLT international law course treaty law exam Vienna Convention on Law of Treaties") == "internationallaw")
+    }
+    @Test func internationallawFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "international trade WTO tariff GATT dispute panel arbitration") != "internationallaw")
+    }
+    @Test @MainActor func internationallawCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "internationallaw", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "internationallaw", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "internationallaw", tier: 3).isEmpty)
+    }
+    @Test @MainActor func internationallawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "internationallaw", tier: 1).count >= 4)
+    }
+    @Test @MainActor func internationallawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "internationallaw", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - urbansociology
+    @Test func urbansociologyRoutingFromGentrification() {
+        #expect(CalloutManager.extractTaskKeyword(from: "gentrification urban sociology class neighborhood effects displacement paper") == "urbansociology")
+    }
+    @Test func urbansociologyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "urban sociology course residential segregation Chicago school collective efficacy exam") == "urbansociology")
+    }
+    @Test func urbansociologyRoutingFromSegregation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "residential segregation urban sociology paper concentrated disadvantage neighborhood") == "urbansociology")
+    }
+    @Test func urbansociologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "urban planning zoning land use transportation policy GIS city hall") != "urbansociology")
+    }
+    @Test @MainActor func urbansociologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "urbansociology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "urbansociology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "urbansociology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func urbansociologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "urbansociology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func urbansociologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "urbansociology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - politicalsociology
+    @Test func politicalsociologyRoutingFromSocialMovements() {
+        #expect(CalloutManager.extractTaskKeyword(from: "social movements class resource mobilization theory political opportunity structure exam") == "politicalsociology")
+    }
+    @Test func politicalsociologyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "political sociology course Gramsci hegemony state theory power elite exam") == "politicalsociology")
+    }
+    @Test func politicalsociologyRoutingFromHegemony() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hegemony theory sociology class Gramsci ruling class collective action paper") == "politicalsociology")
+    }
+    @Test func politicalsociologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "political science comparative politics elections voting behavior party systems") != "politicalsociology")
+    }
+    @Test @MainActor func politicalsociologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "politicalsociology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "politicalsociology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "politicalsociology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func politicalsociologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "politicalsociology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func politicalsociologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "politicalsociology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1209)
+    @Test func calloutTemplatesCountAtLeast1209() {
+        #expect(SuggestedSessionTemplates.all.count >= 1209, "template catalog must have ≥1209 entries after deepseabiology/constructionestimating/internationallaw/urbansociology/politicalsociology additions")
+    }
 }

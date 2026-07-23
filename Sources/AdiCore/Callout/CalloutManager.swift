@@ -1991,6 +1991,29 @@ public final class CalloutManager {
             || lower.contains("ocean biology lab") || lower.contains("marine science lab") {
             return "marinebiology2"
         }
+        // deepseabiology — positioned immediately AFTER marinebiology2 so hydrothermal vent,
+        // cold seep, hadal zone, and chemosynthesis ecology route to a dedicated pool.
+        // Distinct from marinebiology (general) and marinebiology2 (lab techniques).
+        if lower.contains("deep sea biology") || lower.contains("deep-sea biology")
+            || lower.contains("deep sea ecology") || lower.contains("deep-sea ecology")
+            || lower.contains("hydrothermal vent") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("ecology") || lower.contains("biology") || lower.contains("lab") || lower.contains("research"))
+            || lower.contains("cold seep") && (lower.contains("class") || lower.contains("ecology") || lower.contains("biology") || lower.contains("lab"))
+            || lower.contains("hadal zone") || lower.contains("hadal biology") || lower.contains("hadal trench")
+            || lower.contains("hadal ecology") || lower.contains("ultra-deep sea")
+            || lower.contains("chemosynthesis") && (lower.contains("class") || lower.contains("course") || lower.contains("ecology") || lower.contains("vent") || lower.contains("biology") || lower.contains("lab"))
+            || lower.contains("chemosynthetic") && (lower.contains("class") || lower.contains("ecology") || lower.contains("vent") || lower.contains("biology"))
+            || lower.contains("bioluminescence") && (lower.contains("deep") || lower.contains("class") || lower.contains("course") || lower.contains("marine") || lower.contains("ecology"))
+            || lower.contains("abyssal zone") && (lower.contains("class") || lower.contains("ecology") || lower.contains("biology") || lower.contains("course"))
+            || lower.contains("bathypelagic") && (lower.contains("class") || lower.contains("ecology") || lower.contains("biology") || lower.contains("course"))
+            || lower.contains("mesopelagic") && (lower.contains("class") || lower.contains("ecology") || lower.contains("biology") || lower.contains("course"))
+            || lower.contains("tubeworm") && (lower.contains("class") || lower.contains("ecology") || lower.contains("vent") || lower.contains("biology"))
+            || lower.contains("riftia") && (lower.contains("class") || lower.contains("vent") || lower.contains("biology") || lower.contains("ecology"))
+            || lower.contains("marine snow") && (lower.contains("class") || lower.contains("ecology") || lower.contains("deep") || lower.contains("biology"))
+            || lower.contains("pressure adaptation") && (lower.contains("marine") || lower.contains("deep") || lower.contains("biology") || lower.contains("class"))
+            || lower.contains("deep sea fish") && (lower.contains("class") || lower.contains("ecology") || lower.contains("biology") || lower.contains("lab"))
+            || lower.contains("ocean floor ecology") || lower.contains("seafloor ecology") {
+            return "deepseabiology"
+        }
         // particlephysics — positioned BEFORE quantummechanics so particle physics class/exam,
         // Standard Model, and QFT coursework route to a dedicated pool. Bare "quark" or "boson"
         // without class/particle context NOT matched.
@@ -5277,6 +5300,32 @@ public final class CalloutManager {
             || lower.contains("accessibility audit")
             || word("wireframing") || lower.contains("user story") || lower.contains("user stories") {
             return "ux"
+        }
+        // constructionestimating — positioned BEFORE constructionmanagement so RSMeans, quantity
+        // takeoff, bid preparation, and unit price estimating route to a dedicated pool.
+        // "construction management" and CCM/CMAA terms still fire constructionmanagement afterward.
+        if lower.contains("construction estimating class") || lower.contains("construction estimating course")
+            || lower.contains("construction estimating exam") || lower.contains("construction estimating program")
+            || lower.contains("cost estimating class") && lower.contains("construction")
+            || lower.contains("cost estimating course") && lower.contains("construction")
+            || lower.contains("quantity takeoff") || lower.contains("quantity take-off")
+            || lower.contains("material takeoff") || lower.contains("material take-off")
+            || lower.contains("rsmeans") || lower.contains("rs means")
+            || lower.contains("unit price estimating") || lower.contains("unit cost estimating")
+            || lower.contains("bid estimate") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("construction") || lower.contains("write"))
+            || lower.contains("bid preparation") && (lower.contains("construction") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("bid writing") && (lower.contains("construction") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("estimating software") && (lower.contains("construction") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("bluebeam estimating") || lower.contains("planswift") || lower.contains("proest")
+            || lower.contains("on-screen takeoff") || lower.contains("sage estimating") && lower.contains("construction")
+            || lower.contains("cost per square foot") && (lower.contains("construction") || lower.contains("class") || lower.contains("estimating"))
+            || lower.contains("division of cost") && lower.contains("construction")
+            || lower.contains("csi division") && (lower.contains("estimating") || lower.contains("cost") || lower.contains("class") || lower.contains("takeoff"))
+            || lower.contains("masterformat") && (lower.contains("estimating") || lower.contains("class") || lower.contains("cost") || lower.contains("division"))
+            || lower.contains("general conditions cost") && lower.contains("construction")
+            || lower.contains("overhead and profit") && lower.contains("construction")
+            || lower.contains("subcontractor bid") && (lower.contains("class") || lower.contains("estimating") || lower.contains("review") || lower.contains("compare")) {
+            return "constructionestimating"
         }
         // constructionmanagement — positioned BEFORE urbanplanning so CM-degree coursework,
         // CCM/CMAA exam prep, estimating, and scheduling tasks route here rather than architecture
@@ -12037,6 +12086,55 @@ public final class CalloutManager {
             || lower.contains("birth rate") && (lower.contains("class") || lower.contains("exam") || lower.contains("demography") || lower.contains("demographic")) {
             return "demography"
         }
+        // politicalsociology — positioned BEFORE urbansociology and sociology so political
+        // sociology class, social movements, state theory, and power/politics coursework routes
+        // here. Distinct from politicalscience (institutions/IR) and sociology (broad).
+        if lower.contains("political sociology class") || lower.contains("political sociology course")
+            || lower.contains("political sociology exam") || lower.contains("political sociology paper")
+            || lower.contains("political sociology notes") || lower.contains("political sociology assignment")
+            || lower.contains("political sociology seminar") || lower.contains("political sociology textbook")
+            || lower.contains("social movement theory") && (lower.contains("class") || lower.contains("course") || lower.contains("sociology") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("social movements class") || lower.contains("social movements course")
+            || lower.contains("social movements exam") || lower.contains("social movements paper")
+            || lower.contains("collective action problem") && (lower.contains("class") || lower.contains("sociology") || lower.contains("politics") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("resource mobilization theory") && (lower.contains("class") || lower.contains("sociology") || lower.contains("exam"))
+            || lower.contains("political opportunity structure") && (lower.contains("class") || lower.contains("sociology") || lower.contains("exam"))
+            || lower.contains("state theory") && (lower.contains("class") || lower.contains("sociology") || lower.contains("politics") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("power elite") && (lower.contains("class") || lower.contains("sociology") || lower.contains("politics") || lower.contains("exam"))
+            || lower.contains("class struggle") && (lower.contains("sociology") || lower.contains("class") || lower.contains("politics") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("hegemony theory") && (lower.contains("sociology") || lower.contains("class") || lower.contains("politics") || lower.contains("exam"))
+            || lower.contains("gramsci") && (lower.contains("class") || lower.contains("sociology") || lower.contains("hegemony") || lower.contains("exam") || lower.contains("politics"))
+            || lower.contains("political power") && (lower.contains("sociology") || lower.contains("class") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("ideology and power") && (lower.contains("class") || lower.contains("sociology") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("political class") && lower.contains("sociology")
+            || lower.contains("ruling class") && (lower.contains("sociology") || lower.contains("class") || lower.contains("exam") || lower.contains("politics")) {
+            return "politicalsociology"
+        }
+        // urbansociology — positioned BEFORE sociology so urban sociology class, gentrification,
+        // neighborhood effects, urban inequality, and urban ethnography route to a dedicated pool.
+        // Distinct from urbanplanning (land use/zoning) and urbandesign (physical form).
+        if lower.contains("urban sociology class") || lower.contains("urban sociology course")
+            || lower.contains("urban sociology exam") || lower.contains("urban sociology paper")
+            || lower.contains("urban sociology notes") || lower.contains("urban sociology assignment")
+            || lower.contains("urban sociology seminar") || lower.contains("urban sociology textbook")
+            || lower.contains("gentrification") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("sociology") || lower.contains("paper") || lower.contains("neighborhood"))
+            || lower.contains("neighborhood effects") && (lower.contains("class") || lower.contains("sociology") || lower.contains("exam") || lower.contains("paper") || lower.contains("urban"))
+            || lower.contains("urban inequality") && (lower.contains("class") || lower.contains("course") || lower.contains("sociology") || lower.contains("paper") || lower.contains("exam"))
+            || lower.contains("urban ethnography") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("sociology"))
+            || lower.contains("urban poverty") && (lower.contains("class") || lower.contains("sociology") || lower.contains("exam") || lower.contains("course") || lower.contains("paper"))
+            || lower.contains("residential segregation") && (lower.contains("class") || lower.contains("sociology") || lower.contains("exam") || lower.contains("paper") || lower.contains("urban"))
+            || lower.contains("racial segregation") && (lower.contains("sociology") || lower.contains("class") || lower.contains("urban") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("urban ecology") && (lower.contains("class") || lower.contains("sociology") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("chicago school") && (lower.contains("sociology") || lower.contains("class") || lower.contains("urban") || lower.contains("course"))
+            || lower.contains("urban community") && (lower.contains("class") || lower.contains("sociology") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("collective efficacy") && (lower.contains("class") || lower.contains("sociology") || lower.contains("urban") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("social disorganization theory") && (lower.contains("class") || lower.contains("sociology") || lower.contains("exam") || lower.contains("urban"))
+            || lower.contains("concentrated disadvantage") && (lower.contains("class") || lower.contains("sociology") || lower.contains("urban") || lower.contains("exam"))
+            || lower.contains("urban social movement") && (lower.contains("class") || lower.contains("sociology") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("right to the city") && (lower.contains("class") || lower.contains("sociology") || lower.contains("urban") || lower.contains("paper"))
+            || lower.contains("displacement") && (lower.contains("sociology") || lower.contains("urban") || lower.contains("gentrification")) && (lower.contains("class") || lower.contains("exam") || lower.contains("paper")) {
+            return "urbansociology"
+        }
         // sociology — positioned BEFORE socialscience so sociological theory, structural analysis,
         // and sociology coursework gets a dedicated callout pool. Bare word("sociology") routes to
         // studying (fires much earlier); compound sociology terms without bare study-words route here.
@@ -12808,6 +12906,33 @@ public final class CalloutManager {
             || lower.contains("construction dispute") || lower.contains("construction litigation")
             || lower.contains("construction delay claim") || lower.contains("subcontractor claims") && lower.contains("construction") {
             return "constructionlaw"
+        }
+        // internationallaw — positioned BEFORE the general legal catchall so public international
+        // law, PIL, ICJ, UNCLOS, VCLT, and treaty law route to a dedicated pool. Distinct from
+        // internationalrelations (IR theory) and tradelaw (WTO/tariffs).
+        if lower.contains("international law class") || lower.contains("international law course")
+            || lower.contains("international law exam") || lower.contains("international law paper")
+            || lower.contains("international law notes") || lower.contains("international law assignment")
+            || lower.contains("international law seminar") || lower.contains("international law outline")
+            || lower.contains("international law textbook") || lower.contains("international law program")
+            || lower.contains("public international law") || lower.contains("PIL class") || lower.contains("PIL course") || lower.contains("PIL exam")
+            || lower.contains("international court of justice") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("brief") || lower.contains("case"))
+            || lower.contains("ICJ") && (lower.contains("class") || lower.contains("international law") || lower.contains("exam") || lower.contains("case"))
+            || lower.contains("vclt") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("treaty") || lower.contains("international"))
+            || lower.contains("vienna convention on the law of treaties") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("state responsibility") && (lower.contains("class") || lower.contains("international") || lower.contains("exam") || lower.contains("law"))
+            || lower.contains("jus cogens") && (lower.contains("class") || lower.contains("international") || lower.contains("exam") || lower.contains("law"))
+            || lower.contains("erga omnes") && (lower.contains("class") || lower.contains("international") || lower.contains("exam") || lower.contains("law"))
+            || lower.contains("unclos") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("international") || lower.contains("law"))
+            || lower.contains("un charter") && (lower.contains("class") || lower.contains("international") || lower.contains("exam") || lower.contains("law"))
+            || lower.contains("treaty interpretation") && (lower.contains("class") || lower.contains("international") || lower.contains("exam") || lower.contains("law"))
+            || lower.contains("sovereign immunity") && (lower.contains("class") || lower.contains("international") || lower.contains("exam") || lower.contains("law"))
+            || lower.contains("international humanitarian law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("law of armed conflict") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("customary international law") && (lower.contains("class") || lower.contains("exam") || lower.contains("law"))
+            || lower.contains("international criminal court") && (lower.contains("class") || lower.contains("exam") || lower.contains("law") || lower.contains("icc"))
+            || lower.contains("ICC") && (lower.contains("class") || lower.contains("international law") || lower.contains("exam")) {
+            return "internationallaw"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")

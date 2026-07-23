@@ -665,6 +665,11 @@ extension CalloutManager {
         case "optimalcontrol":             return optimalcontrolCallouts(tier: tier)
         case "rocketpropulsion":           return rocketpropulsionCallouts(tier: tier)
         case "reliabilityengineering":     return reliabilityengineeringCallouts(tier: tier)
+        case "deepseabiology":             return deepseabiologyCallouts(tier: tier)
+        case "constructionestimating":     return constructionestimatingCallouts(tier: tier)
+        case "internationallaw":           return internationallawCallouts(tier: tier)
+        case "urbansociology":             return urbansociologyCallouts(tier: tier)
+        case "politicalsociology":         return politicalsociologyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -13609,6 +13614,111 @@ extension CalloutManager {
             "CLOSE THIS. open your health law casebook or HIPAA outline.",
             "CLOSE THIS. those health law case briefs and FDA regulatory memos won't write themselves.",
             "CLOSE THIS. your health law exam won't study itself."
+        ]
+        }
+    }
+
+    private func deepseabiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "deep-sea biology doesn't study itself — hydrothermal vent ecology, cold seep communities, chemosynthesis, and hadal zone adaptations are all waiting.",
+            "your deep-sea biology exam needs you — chemosynthetic bacteria, tubeworm symbiosis, abyssal zone food webs, and bioluminescence mechanisms won't memorize themselves.",
+            "those deep-sea biology notes and hadal trench ecology assignments are still open.",
+            "hydrothermal vents, cold seeps, marine snow, mesopelagic zones — get back to your deep-sea biology coursework."
+        ]
+        case 2: return [
+            "stop. your deep-sea biology exam prep and lab report are still open.",
+            "chemosynthesis, tubeworms, hadal trenches, pressure adaptation — your exam won't wait.",
+            "deep-sea biology class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your deep-sea biology notes or vent ecology textbook.",
+            "CLOSE THIS. those chemosynthesis and cold seep community analyses won't write themselves.",
+            "CLOSE THIS. your hadal zone biology exam won't study itself."
+        ]
+        }
+    }
+
+    private func constructionestimatingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "construction estimating doesn't complete itself — quantity takeoffs, RSMeans unit prices, CSI divisions, and bid preparation are all waiting.",
+            "your estimating exam needs you — material takeoffs, MasterFormat divisions, overhead and profit, and subcontractor bid review won't memorize themselves.",
+            "those cost estimate spreadsheets and quantity takeoff assignments are still open.",
+            "RSMeans, quantity takeoff, bid writing, unit price estimating — get back to your construction estimating coursework."
+        ]
+        case 2: return [
+            "stop. your construction estimating exam and takeoff assignment are still open.",
+            "quantity takeoff, RSMeans pricing, CSI divisions, bid preparation — your exam won't wait.",
+            "estimating class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your estimating notes or RSMeans manual.",
+            "CLOSE THIS. those quantity takeoffs and bid worksheets won't complete themselves.",
+            "CLOSE THIS. your construction estimating exam won't study itself."
+        ]
+        }
+    }
+
+    private func internationallawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "international law doesn't study itself — VCLT treaty interpretation, state responsibility, jus cogens, UNCLOS, and ICJ jurisprudence are all waiting.",
+            "your public international law exam needs you — sovereign immunity, customary international law, UN Charter obligations, and IHL won't memorize themselves.",
+            "those PIL case briefs and treaty analysis assignments are still open.",
+            "ICJ, VCLT, UNCLOS, state responsibility — get back to your international law coursework."
+        ]
+        case 2: return [
+            "stop. your international law exam and PIL case brief are still open.",
+            "jus cogens, VCLT, sovereign immunity, customary international law — your exam won't wait.",
+            "international law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your PIL casebook or VCLT treaty law outline.",
+            "CLOSE THIS. those ICJ case briefs and state responsibility memos won't write themselves.",
+            "CLOSE THIS. your international law exam won't study itself."
+        ]
+        }
+    }
+
+    private func urbansociologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "urban sociology doesn't study itself — gentrification, neighborhood effects, residential segregation, collective efficacy, and urban inequality are all waiting.",
+            "your urban sociology exam needs you — Chicago school theory, social disorganization, concentrated disadvantage, and urban ethnography won't memorize themselves.",
+            "those urban sociology case studies and neighborhood effects papers are still open.",
+            "gentrification, displacement, urban inequality, right to the city — get back to your urban sociology coursework."
+        ]
+        case 2: return [
+            "stop. your urban sociology exam and ethnography assignment are still open.",
+            "gentrification, residential segregation, collective efficacy, Chicago school — your exam won't wait.",
+            "urban sociology class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your urban sociology textbook or neighborhood effects readings.",
+            "CLOSE THIS. those gentrification and urban inequality analyses won't write themselves.",
+            "CLOSE THIS. your urban sociology exam won't study itself."
+        ]
+        }
+    }
+
+    private func politicalsociologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "political sociology doesn't study itself — social movement theory, state power, hegemony, resource mobilization, and collective action are all waiting.",
+            "your political sociology exam needs you — Gramsci, power elite theory, political opportunity structure, and class struggle won't memorize themselves.",
+            "those political sociology papers and social movement analysis assignments are still open.",
+            "state theory, hegemony, social movements, ruling class — get back to your political sociology coursework."
+        ]
+        case 2: return [
+            "stop. your political sociology exam and social movement analysis are still open.",
+            "resource mobilization, political opportunity structure, Gramsci, state theory — your exam won't wait.",
+            "political sociology class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your political sociology textbook or social movements readings.",
+            "CLOSE THIS. those hegemony theory and collective action analyses won't write themselves.",
+            "CLOSE THIS. your political sociology exam won't study itself."
         ]
         }
     }

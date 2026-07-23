@@ -7552,4 +7552,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast1199() {
         #expect(SuggestedSessionTemplates.all.count >= 1199, "template catalog must have ≥1199 entries after computationallinguistics/sociolinguistics/agroecology/forensicengineering/healthlaw additions")
     }
+    // MARK: - deepseabiology templates
+    @Test func deepseabiologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("deep-sea biology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func deepseabiologyLabTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("deep-sea biology") && $0.task.lowercased().contains("lab report") })
+    }
+    // MARK: - constructionestimating templates
+    @Test func constructionestimatingStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("construction estimating") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func constructionestimatingAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("construction estimating") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - internationallaw templates
+    @Test func internationallawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("public international law") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func internationallawWritingTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("international law") && $0.task.lowercased().contains("case brief") })
+    }
+    // MARK: - urbansociology templates
+    @Test func urbansociologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("urban sociology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func urbansociologyPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("urban sociology") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - politicalsociology templates
+    @Test func politicalsociologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("political sociology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func politicalsociologyPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("political sociology") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - Count guard (≥1209)
+    @Test func templateCountAtLeast1209() {
+        #expect(SuggestedSessionTemplates.all.count >= 1209, "template catalog must have ≥1209 entries after deepseabiology/constructionestimating/internationallaw/urbansociology/politicalsociology additions")
+    }
 }
