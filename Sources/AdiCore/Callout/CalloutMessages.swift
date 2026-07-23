@@ -655,6 +655,11 @@ extension CalloutManager {
         case "musicology":                 return musicologyCallouts(tier: tier)
         case "patientadvocacy":            return patientadvocacyCallouts(tier: tier)
         case "animallaw":                  return animallawCallouts(tier: tier)
+        case "computationallinguistics":   return computationallinguisticsCallouts(tier: tier)
+        case "sociolinguistics":           return sociolinguisticsCallouts(tier: tier)
+        case "agroecology":                return agroecologyCallouts(tier: tier)
+        case "forensicengineering":        return forensicengineeringCallouts(tier: tier)
+        case "healthlaw":                  return healthlawCallouts(tier: tier)
         case "metamaterials":              return metamaterialsCallouts(tier: tier)
         case "nondestructivetesting":      return nondestructivetestingCallouts(tier: tier)
         case "optimalcontrol":             return optimalcontrolCallouts(tier: tier)
@@ -13499,6 +13504,111 @@ extension CalloutManager {
             "CLOSE THIS. open your animal law casebook.",
             "CLOSE THIS. those AWA analysis problems and animal law case briefs won't write themselves.",
             "CLOSE THIS. your animal law exam won't study itself."
+        ]
+        }
+    }
+
+    private func computationallinguisticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "computational linguistics isn't going to study itself — CKY parsing, PCFGs, formal grammar, and dependency parsing are waiting.",
+            "your computational linguistics exam is approaching — context-free grammars, Earley algorithm, formal semantics, and parsing complexity need review.",
+            "those computational linguistics problem sets and formal grammar proofs are still open.",
+            "CKY/Earley parsing, probabilistic CFGs, lambda semantics, minimalist syntax — get back to your computational linguistics coursework."
+        ]
+        case 2: return [
+            "stop. your computational linguistics exam and parsing assignment are still open.",
+            "formal grammars, PCFGs, dependency parsing, computational semantics — your exam won't wait.",
+            "computational linguistics class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your computational linguistics textbook or problem set.",
+            "CLOSE THIS. those parsing proofs and formal grammar exercises won't complete themselves.",
+            "CLOSE THIS. your computational linguistics exam won't study itself."
+        ]
+        }
+    }
+
+    private func sociolinguisticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "sociolinguistics isn't going to study itself — language variation, dialectology, code-switching, and language policy are waiting.",
+            "your sociolinguistics exam is approaching — variationist methods, Labovian fieldwork, pidgins, creoles, and linguistic landscape need review.",
+            "those sociolinguistics analysis exercises and language variation assignments are still open.",
+            "code-switching, speech communities, register variation, language contact — get back to your sociolinguistics coursework."
+        ]
+        case 2: return [
+            "stop. your sociolinguistics exam and language variation analysis are still open.",
+            "dialectology, language policy, sociolects, variationist linguistics — your exam won't wait.",
+            "sociolinguistics class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your sociolinguistics textbook or field data.",
+            "CLOSE THIS. those language variation exercises and dialect analysis problems won't complete themselves.",
+            "CLOSE THIS. your sociolinguistics exam won't study itself."
+        ]
+        }
+    }
+
+    private func agroecologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "agroecology isn't going to study itself — agroforestry design, agroecosystem analysis, sustainable farming systems, and permaculture principles are waiting.",
+            "your agroecology exam is approaching — food systems ecology, polyculture farming, integrated pest management, and soil ecology need review.",
+            "those agroecology problem sets and agroforestry design assignments are still open.",
+            "agroforestry, regenerative agriculture, crop ecology, soil biology — get back to your agroecology coursework."
+        ]
+        case 2: return [
+            "stop. your agroecology exam and sustainable farming systems assignment are still open.",
+            "agroforestry, permaculture design, food systems ecology, soil ecology — your exam won't wait.",
+            "agroecology class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your agroecology textbook or field assignment.",
+            "CLOSE THIS. those agroforestry design problems and agroecosystem analyses won't complete themselves.",
+            "CLOSE THIS. your agroecology exam won't study itself."
+        ]
+        }
+    }
+
+    private func forensicengineeringCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "forensic engineering isn't going to study itself — failure analysis, root cause investigation, product liability, and expert witness reports are waiting.",
+            "your forensic engineering exam is approaching — structural failure modes, FMEA, fracture mechanics, and accident reconstruction need review.",
+            "that forensic engineering failure analysis report and root cause documentation are still open.",
+            "failure mode analysis, structural failure investigation, product liability engineering, expert witness report — get back to your forensic engineering work."
+        ]
+        case 2: return [
+            "stop. your forensic engineering exam and failure analysis assignment are still open.",
+            "FMEA, root cause analysis, structural failure, product liability engineering — your exam won't wait.",
+            "forensic engineering class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your forensic engineering textbook or failure analysis case.",
+            "CLOSE THIS. that failure analysis investigation and expert witness report won't write themselves.",
+            "CLOSE THIS. your forensic engineering exam won't study itself."
+        ]
+        }
+    }
+
+    private func healthlawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "health law isn't going to study itself — HIPAA privacy rule, FDA regulatory law, ACA litigation, and healthcare compliance are waiting.",
+            "your health law exam is approaching — Medicare/Medicaid law, informed consent doctrine, EMTALA, and healthcare antitrust need review.",
+            "those health law case briefs and HIPAA compliance memos are still open.",
+            "HIPAA law, FDA drug regulation, ACA structure, Medicare/Medicaid — get back to your health law coursework."
+        ]
+        case 2: return [
+            "stop. your health law exam prep and healthcare compliance memo are still open.",
+            "HIPAA privacy rule, FDA regulatory framework, ACA litigation, healthcare antitrust — your exam won't wait.",
+            "health law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your health law casebook or HIPAA outline.",
+            "CLOSE THIS. those health law case briefs and FDA regulatory memos won't write themselves.",
+            "CLOSE THIS. your health law exam won't study itself."
         ]
         }
     }

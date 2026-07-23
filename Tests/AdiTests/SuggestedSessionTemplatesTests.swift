@@ -7513,8 +7513,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func animallawWritingTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("animal law") && $0.task.lowercased().contains("memo") })
     }
-    // MARK: - Count guard (≥1189)
-    @Test func templateCountAtLeast1189() {
-        #expect(SuggestedSessionTemplates.all.count >= 1189, "template catalog must have ≥1189 entries after physicaltherapy/medicalspanish/musicology/patientadvocacy/animallaw additions")
+    // MARK: - computationallinguistics templates
+    @Test func computationallinguisticsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computational linguistics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func computationallinguisticsProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computational linguistics") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - sociolinguistics templates
+    @Test func sociolinguisticsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("sociolinguistics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func sociolinguisticsPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("sociolinguistics") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - agroecology templates
+    @Test func agroecologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("agroecology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func agroecologyDesignTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("agroecology") && $0.task.lowercased().contains("design") })
+    }
+    // MARK: - forensicengineering templates
+    @Test func forensicengineeringStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("forensic engineering") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func forensicengineeringReportTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("forensic engineering") && $0.task.lowercased().contains("report") })
+    }
+    // MARK: - healthlaw templates
+    @Test func healthlawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("health law") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func healthlawWritingTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("health law") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - Count guard (≥1199)
+    @Test func templateCountAtLeast1199() {
+        #expect(SuggestedSessionTemplates.all.count >= 1199, "template catalog must have ≥1199 entries after computationallinguistics/sociolinguistics/agroecology/forensicengineering/healthlaw additions")
     }
 }

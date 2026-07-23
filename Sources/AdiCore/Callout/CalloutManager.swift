@@ -1823,6 +1823,64 @@ public final class CalloutManager {
             || lower.contains("language acquisition") && (lower.contains("psycholinguistics") || lower.contains("cognitive") || lower.contains("class") || lower.contains("exam")) && !lower.contains("applied linguistics") && !lower.contains("sla") {
             return "psycholinguistics"
         }
+        // computationallinguistics — positioned BEFORE linguistics so dedicated computational
+        // linguistics class tasks (formal grammar, parsing algorithms, CKY/Earley, PCFGs,
+        // dependency parsing, computational syntax/semantics) route here. NLP-as-ML tasks
+        // stay in naturallanguageprocessing (fires later); generic linguistics falls through.
+        if lower.contains("computational linguistics class") || lower.contains("computational linguistics course")
+            || lower.contains("computational linguistics exam") || lower.contains("computational linguistics notes")
+            || lower.contains("computational linguistics assignment") || lower.contains("computational linguistics homework")
+            || lower.contains("computational linguistics textbook") || lower.contains("computational linguistics problem set")
+            || lower.contains("formal grammar class") || lower.contains("formal grammar course")
+            || lower.contains("formal grammar exam") || lower.contains("formal grammar assignment")
+            || lower.contains("context-free grammar") && (lower.contains("class") || lower.contains("exam") || lower.contains("linguistics") || lower.contains("parsing"))
+            || lower.contains("context free grammar") && (lower.contains("class") || lower.contains("exam") || lower.contains("linguistics"))
+            || lower.contains("cfg") && (lower.contains("linguistics") || lower.contains("parsing") || lower.contains("class") || lower.contains("grammar"))
+            || lower.contains("cky algorithm") || lower.contains("cky parsing")
+            || lower.contains("earley parser") || lower.contains("earley algorithm") && lower.contains("parsing")
+            || lower.contains("chart parsing") && (lower.contains("class") || lower.contains("linguistics") || lower.contains("exam"))
+            || lower.contains("pcfg") && (lower.contains("class") || lower.contains("linguistics") || lower.contains("exam") || lower.contains("parsing"))
+            || lower.contains("probabilistic context-free") && (lower.contains("grammar") || lower.contains("parsing"))
+            || lower.contains("dependency parsing") && (lower.contains("class") || lower.contains("linguistics") || lower.contains("exam"))
+            || lower.contains("tree-adjoining grammar") || lower.contains("tag grammar") && lower.contains("linguistics")
+            || lower.contains("combinatory categorial grammar") || lower.contains("ccg") && lower.contains("linguistics")
+            || lower.contains("minimalist syntax") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("formal syntax class") || lower.contains("formal syntax course")
+            || lower.contains("formal semantics class") || lower.contains("formal semantics course")
+            || lower.contains("lambda calculus") && lower.contains("linguistics")
+            || lower.contains("computational syntax") || lower.contains("computational semantics") && (lower.contains("class") || lower.contains("exam") || lower.contains("linguistics"))
+            || lower.contains("cl class") && (lower.contains("linguistics") || lower.contains("language"))
+            || lower.contains("cl course") && (lower.contains("linguistics") || lower.contains("language")) {
+            return "computationallinguistics"
+        }
+        // sociolinguistics — positioned BEFORE linguistics so dedicated sociolinguistics class
+        // tasks (language variation, dialectology, code-switching, language policy, pidgins/creoles,
+        // variationist linguistics) route here. Generic linguistics falls through to linguistics.
+        if lower.contains("sociolinguistics class") || lower.contains("sociolinguistics course")
+            || lower.contains("sociolinguistics exam") || lower.contains("sociolinguistics notes")
+            || lower.contains("sociolinguistics assignment") || lower.contains("sociolinguistics homework")
+            || lower.contains("sociolinguistics textbook") || lower.contains("sociolinguistics seminar")
+            || lower.contains("language variation class") || lower.contains("language variation course")
+            || lower.contains("language variation exam") || lower.contains("language variation study")
+            || lower.contains("dialectology class") || lower.contains("dialectology course")
+            || lower.contains("dialectology exam") || lower.contains("dialect survey") && (lower.contains("class") || lower.contains("linguistics"))
+            || lower.contains("language and society") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("sociolect") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("study"))
+            || lower.contains("code-switching") && (lower.contains("class") || lower.contains("course") || lower.contains("linguistics") || lower.contains("exam"))
+            || lower.contains("code switching") && (lower.contains("class") || lower.contains("course") || lower.contains("linguistics") || lower.contains("exam"))
+            || lower.contains("language contact class") || lower.contains("language contact course")
+            || lower.contains("language contact exam") || lower.contains("language contact linguistics")
+            || lower.contains("pidgin") && (lower.contains("class") || lower.contains("linguistics") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("creole") && (lower.contains("class") || lower.contains("linguistics") || lower.contains("exam") || lower.contains("course")) && !lower.contains("haitian") && !lower.contains("louisiana") && !lower.contains("cook")
+            || lower.contains("language policy") && (lower.contains("class") || lower.contains("course") || lower.contains("linguistics") || lower.contains("exam"))
+            || lower.contains("language planning") && (lower.contains("class") || lower.contains("course") || lower.contains("linguistics") || lower.contains("exam"))
+            || lower.contains("variationist linguistics") || lower.contains("labovian") && (lower.contains("class") || lower.contains("study") || lower.contains("exam"))
+            || lower.contains("speech community") && (lower.contains("class") || lower.contains("study") || lower.contains("linguistics") || lower.contains("exam"))
+            || lower.contains("register variation") && (lower.contains("class") || lower.contains("linguistics") || lower.contains("exam"))
+            || lower.contains("linguistic landscape") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("endangered language") && (lower.contains("class") || lower.contains("course") || lower.contains("linguistics") || lower.contains("policy")) {
+            return "sociolinguistics"
+        }
         // linguistics — positioned before studying so "linguistics exam", "phonetics class",
         // and language-science assignments don't fall through to studying.
         // Language learning (vocabulary, conjugation, Duolingo) stays in the language branch below.
@@ -2409,6 +2467,34 @@ public final class CalloutManager {
             || lower.contains("soil science notes") || lower.contains("soil science major")
             || lower.contains("soil science degree") {
             return "soilscience"
+        }
+        // agroecology — positioned BEFORE agriculturalscience so dedicated agroecology/agroforestry
+        // class and sustainable farming systems coursework routes here. Generic agronomy and crop
+        // science stay in agriculturalscience (fires after). Bare "ecology" stays in ecology.
+        if lower.contains("agroecology class") || lower.contains("agroecology course")
+            || lower.contains("agroecology exam") || lower.contains("agroecology assignment")
+            || lower.contains("agroecology homework") || lower.contains("agroecology notes")
+            || lower.contains("agroecology textbook") || lower.contains("agroecology seminar")
+            || lower.contains("agroecology program") || lower.contains("agroecology degree")
+            || lower.contains("agroecosystem") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("lab") || lower.contains("study"))
+            || lower.contains("agroforestry class") || lower.contains("agroforestry course")
+            || lower.contains("agroforestry exam") || lower.contains("agroforestry assignment")
+            || lower.contains("agroforestry program") || lower.contains("agroforestry design")
+            || lower.contains("sustainable farming systems") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("assignment"))
+            || lower.contains("food systems ecology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("food systems science") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("regenerative agriculture class") || lower.contains("regenerative agriculture course")
+            || lower.contains("regenerative agriculture exam") || lower.contains("regenerative agriculture program")
+            || lower.contains("permaculture design course") || lower.contains("permaculture design certificate")
+            || lower.contains("permaculture class") || lower.contains("permaculture course")
+            || lower.contains("permaculture exam") || lower.contains("permaculture assignment")
+            || lower.contains("ecological farming") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("crop ecology class") || lower.contains("crop ecology course")
+            || lower.contains("soil ecology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("agroecol"))
+            || lower.contains("integrated pest management") && (lower.contains("agroecol") || lower.contains("sustainable farming") || lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("polyculture farming") && (lower.contains("class") || lower.contains("study") || lower.contains("course"))
+            || lower.contains("cover crop ecology") && (lower.contains("class") || lower.contains("study") || lower.contains("exam")) {
+            return "agroecology"
         }
         // agriculturalscience — positioned AFTER soilscience (soil-science-specific pedology terms fire
         // first) and BEFORE geology so agronomy, crop science, and precision agriculture coursework
@@ -11682,6 +11768,30 @@ public final class CalloutManager {
             || lower.contains("forensic toxicology chemistry") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab")) {
             return "forensicchemistry"
         }
+        // forensicengineering — positioned BEFORE forensicscience so failure analysis investigation,
+        // forensic engineering class/exam, product liability engineering, and expert witness
+        // report work routes here. Generic "forensic science" and crime-lab work fires after.
+        if lower.contains("forensic engineering class") || lower.contains("forensic engineering course")
+            || lower.contains("forensic engineering exam") || lower.contains("forensic engineering assignment")
+            || lower.contains("forensic engineering notes") || lower.contains("forensic engineering textbook")
+            || lower.contains("forensic engineering investigation") || lower.contains("forensic engineering report")
+            || lower.contains("failure analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("engineering") || lower.contains("investigation") || lower.contains("lab"))
+            || lower.contains("failure mode analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("engineering"))
+            || lower.contains("fmea") && (lower.contains("class") || lower.contains("course") || lower.contains("engineering") || lower.contains("exam"))
+            || lower.contains("root cause analysis") && (lower.contains("class") || lower.contains("course") || lower.contains("engineering") || lower.contains("investigation") || lower.contains("exam"))
+            || lower.contains("structural failure") && (lower.contains("class") || lower.contains("course") || lower.contains("engineering") || lower.contains("investigation") || lower.contains("analysis"))
+            || lower.contains("material failure") && (lower.contains("class") || lower.contains("course") || lower.contains("engineering") || lower.contains("investigation"))
+            || lower.contains("materials failure") && (lower.contains("class") || lower.contains("course") || lower.contains("engineering") || lower.contains("investigation"))
+            || lower.contains("product liability engineering") || lower.contains("product failure engineering")
+            || lower.contains("expert witness engineering") && (lower.contains("report") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("forensic structural engineering") || lower.contains("forensic civil engineering")
+            || lower.contains("forensic mechanical engineering") || lower.contains("engineering failure investigation")
+            || lower.contains("accident reconstruction") && (lower.contains("engineering") || lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("engineering expert witness") && (lower.contains("report") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("component failure analysis") && (lower.contains("class") || lower.contains("engineering") || lower.contains("exam"))
+            || lower.contains("fracture mechanics forensic") || lower.contains("fatigue fracture investigation") && lower.contains("engineering") {
+            return "forensicengineering"
+        }
         // forensicscience — positioned BEFORE criminaljustice so crime-lab, DNA analysis,
         // and forensic-science coursework route here. "forensic accounting" is owned by its own
         // earlier branch. Bare "forensics" is NOT matched (ambiguous: could be speech forensics).
@@ -12585,6 +12695,39 @@ public final class CalloutManager {
             || lower.contains("formal rulemaking") && (lower.contains("class") || lower.contains("law") || lower.contains("course"))
             || lower.contains("law school administrative") || lower.contains("2l admin law") || lower.contains("3l admin law") {
             return "administrativelaw"
+        }
+        // healthlaw — positioned BEFORE neurolaw so health law class/exam, HIPAA law coursework,
+        // FDA regulatory law, ACA litigation, and healthcare compliance law route here.
+        // Bare "HIPAA" without law/class context stays in healthcareadmin; "bioethics" alone stays
+        // in bioethics (fires earlier); "medical malpractice" stays in tortlaw (fires earlier).
+        if lower.contains("health law class") || lower.contains("health law course")
+            || lower.contains("health law exam") || lower.contains("health law paper")
+            || lower.contains("health law assignment") || lower.contains("health law notes")
+            || lower.contains("health law textbook") || lower.contains("health law seminar")
+            || lower.contains("health law outline") || lower.contains("health law journal")
+            || lower.contains("healthcare law class") || lower.contains("healthcare law course")
+            || lower.contains("healthcare law exam") || lower.contains("healthcare law paper")
+            || lower.contains("health care law class") || lower.contains("health care law course")
+            || lower.contains("health care law exam") || lower.contains("health care law paper")
+            || lower.contains("hipaa law class") || lower.contains("hipaa law course")
+            || lower.contains("hipaa law exam") || lower.contains("hipaa regulation class")
+            || lower.contains("hipaa regulation course") || lower.contains("hipaa compliance law")
+            || lower.contains("fda law class") || lower.contains("fda law course")
+            || lower.contains("fda regulatory law") || lower.contains("fda regulation class")
+            || lower.contains("fda regulation course") || lower.contains("fda regulation exam")
+            || lower.contains("aca law class") || lower.contains("aca litigation")
+            || lower.contains("affordable care act law") || lower.contains("affordable care act litigation")
+            || lower.contains("affordable care act class") && (lower.contains("law") || lower.contains("legal"))
+            || lower.contains("medicare law class") || lower.contains("medicare law course")
+            || lower.contains("medicaid law class") || lower.contains("medicaid law course")
+            || lower.contains("healthcare compliance law") || lower.contains("health care compliance law")
+            || lower.contains("medical licensing law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("healthcare regulation class") || lower.contains("healthcare regulation course")
+            || lower.contains("health policy law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("bioethics law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("law and medicine class") || lower.contains("law and medicine course")
+            || lower.contains("law and medicine exam") || lower.contains("medicine and law class") {
+            return "healthlaw"
         }
         // neurolaw — positioned AFTER tortlaw and BEFORE mediationarbitration. Catches the intersection
         // of law and neuroscience (brain imaging in court, adolescent culpability, criminal responsibility).

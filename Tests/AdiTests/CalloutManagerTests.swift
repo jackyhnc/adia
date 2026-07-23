@@ -26801,8 +26801,148 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "animallaw", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1189)
-    @Test func calloutTemplatesCountAtLeast1189() {
-        #expect(SuggestedSessionTemplates.all.count >= 1189, "template catalog must have ≥1189 entries after physicaltherapy/medicalspanish/musicology/patientadvocacy/animallaw additions")
+    // MARK: - computationallinguistics
+    @Test func computationallinguisticsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "computational linguistics class CKY parsing PCFGs formal grammar exam") == "computationallinguistics")
+    }
+    @Test func computationallinguisticsRoutingFromFormalGrammar() {
+        #expect(CalloutManager.extractTaskKeyword(from: "formal grammar class context-free grammar problem set Earley algorithm assignment") == "computationallinguistics")
+    }
+    @Test func computationallinguisticsRoutingFromParsing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "computational linguistics course dependency parsing PCFGs treebank assignment") == "computationallinguistics")
+    }
+    @Test func computationallinguisticsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "natural language processing machine learning transformer BERT fine-tuning") != "computationallinguistics")
+    }
+    @Test @MainActor func computationallinguisticsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "computationallinguistics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computationallinguistics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computationallinguistics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func computationallinguisticsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computationallinguistics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func computationallinguisticsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computationallinguistics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - sociolinguistics
+    @Test func sociolinguisticsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sociolinguistics class language variation dialectology code-switching exam") == "sociolinguistics")
+    }
+    @Test func sociolinguisticsRoutingFromVariationist() {
+        #expect(CalloutManager.extractTaskKeyword(from: "variationist linguistics language variation course Labovian fieldwork assignment") == "sociolinguistics")
+    }
+    @Test func sociolinguisticsRoutingFromLanguageContact() {
+        #expect(CalloutManager.extractTaskKeyword(from: "language contact class pidgin creole code-switching sociolinguistics exam") == "sociolinguistics")
+    }
+    @Test func sociolinguisticsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "phonology phonetics morphology syntax linguistics exam IPA") != "sociolinguistics")
+    }
+    @Test @MainActor func sociolinguisticsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "sociolinguistics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "sociolinguistics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "sociolinguistics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func sociolinguisticsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "sociolinguistics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func sociolinguisticsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "sociolinguistics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - agroecology
+    @Test func agroecologyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "agroecology class agroforestry design sustainable farming systems exam") == "agroecology")
+    }
+    @Test func agroecologyRoutingFromAgroforestry() {
+        #expect(CalloutManager.extractTaskKeyword(from: "agroforestry course alley cropping silvopastoral system design assignment") == "agroecology")
+    }
+    @Test func agroecologyRoutingFromPermaculture() {
+        #expect(CalloutManager.extractTaskKeyword(from: "permaculture design course food systems ecology regenerative agriculture assignment") == "agroecology")
+    }
+    @Test func agroecologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "agronomy crop science precision agriculture farm management class") != "agroecology")
+    }
+    @Test @MainActor func agroecologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "agroecology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "agroecology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "agroecology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func agroecologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "agroecology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func agroecologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "agroecology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - forensicengineering
+    @Test func forensicengineeringRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "forensic engineering class failure analysis product liability expert witness exam") == "forensicengineering")
+    }
+    @Test func forensicengineeringRoutingFromFailureAnalysis() {
+        #expect(CalloutManager.extractTaskKeyword(from: "failure analysis engineering investigation structural failure root cause report") == "forensicengineering")
+    }
+    @Test func forensicengineeringRoutingFromFMEA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "FMEA failure mode analysis engineering class product liability investigation exam") == "forensicengineering")
+    }
+    @Test func forensicengineeringFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "forensic science crime lab DNA analysis fingerprint bloodstain") != "forensicengineering")
+    }
+    @Test @MainActor func forensicengineeringCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "forensicengineering", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "forensicengineering", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "forensicengineering", tier: 3).isEmpty)
+    }
+    @Test @MainActor func forensicengineeringTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "forensicengineering", tier: 1).count >= 4)
+    }
+    @Test @MainActor func forensicengineeringTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "forensicengineering", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - healthlaw
+    @Test func healthlawRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "health law class HIPAA FDA ACA Medicare Medicaid regulatory law exam") == "healthlaw")
+    }
+    @Test func healthlawRoutingFromHIPAA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "HIPAA law course privacy rule PHI healthcare compliance law exam") == "healthlaw")
+    }
+    @Test func healthlawRoutingFromFDA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "FDA law class regulatory law NDA drug approval ACA litigation exam") == "healthlaw")
+    }
+    @Test func healthlawFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "medical malpractice tort negligence standard of care hospital liability") != "healthlaw")
+    }
+    @Test @MainActor func healthlawCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "healthlaw", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "healthlaw", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "healthlaw", tier: 3).isEmpty)
+    }
+    @Test @MainActor func healthlawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "healthlaw", tier: 1).count >= 4)
+    }
+    @Test @MainActor func healthlawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "healthlaw", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1199)
+    @Test func calloutTemplatesCountAtLeast1199() {
+        #expect(SuggestedSessionTemplates.all.count >= 1199, "template catalog must have ≥1199 entries after computationallinguistics/sociolinguistics/agroecology/forensicengineering/healthlaw additions")
     }
 }
