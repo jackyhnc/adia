@@ -10415,6 +10415,25 @@ public final class CalloutManager {
             || lower.contains("nbme surgery") || lower.contains("surgery nbme") {
             return "surgeryrotation"
         }
+        // neonatologyrotation — positioned AFTER surgeryrotation and BEFORE pediatricsrotation.
+        // Catches NICU rotations, neonatal resuscitation, and premature-infant care clerkship tasks
+        // that are distinct from general pediatrics. Bare "neonatal" stays in premed.
+        if lower.contains("neonatology rotation") || lower.contains("neonatology clerkship")
+            || lower.contains("neonatology elective") || lower.contains("neonatology rounds")
+            || lower.contains("neonatology attending") || lower.contains("neonatology ward")
+            || lower.contains("nicu rotation") || lower.contains("nicu clerkship")
+            || lower.contains("nicu elective") || lower.contains("nicu rounds")
+            || lower.contains("neonatal icu rotation") || lower.contains("neonatal icu clerkship")
+            || lower.contains("neonatal intensive care") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("rounds") || lower.contains("notes"))
+            || lower.contains("neonatology notes") && (lower.contains("rotation") || lower.contains("write"))
+            || lower.contains("neonatology case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("presentation"))
+            || lower.contains("neonatal case") && (lower.contains("rotation") || lower.contains("write") || lower.contains("clerkship"))
+            || lower.contains("neonatal resuscitation") && (lower.contains("rotation") || lower.contains("clerkship") || lower.contains("nicu") || lower.contains("notes"))
+            || lower.contains("premature infant") && (lower.contains("rotation") || lower.contains("nicu") || lower.contains("clerkship"))
+            || lower.contains("preterm infant") && (lower.contains("rotation") || lower.contains("nicu") || lower.contains("clerkship"))
+            || lower.contains("neonatology shelf") || lower.contains("nbme neonatology") {
+            return "neonatologyrotation"
+        }
         // pediatricsrotation — positioned AFTER surgeryrotation and BEFORE premed. Bare "pediatrics"
         // alone stays in premed; NBME/shelf context specific to peds rotation routes here.
         if lower.contains("pediatrics rotation") || lower.contains("pediatrics clerkship")
@@ -11696,6 +11715,25 @@ public final class CalloutManager {
             || lower.contains("m&e") && (lower.contains("development") || lower.contains("ngo")) {
             return "globalhealthdev"
         }
+        // globalhealth — positioned AFTER globalhealthpolicy (policy/governance qualifier) and
+        // globalhealthdev (NGO/development qualifier), BEFORE emergencymanagement. Catches generic
+        // global health class/course/exam, DALYs, PEPFAR, and tropical medicine coursework without
+        // the more specific policy or development qualifiers already handled above.
+        // Bare "global health" alone falls through to publicheath below.
+        if lower.contains("global health class") || lower.contains("global health course")
+            || lower.contains("global health exam") || lower.contains("global health program")
+            || lower.contains("global health major") || lower.contains("global health degree")
+            || lower.contains("global health assignment") || lower.contains("global health paper")
+            || lower.contains("global health notes") || lower.contains("global health research")
+            || lower.contains("global health seminar") || lower.contains("global health elective")
+            || lower.contains("disability-adjusted life year") || lower.contains("disability adjusted life year")
+            || (word("daly") || lower.contains("dalys")) && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("global") || lower.contains("health"))
+            || lower.contains("pepfar") && (lower.contains("class") || lower.contains("course") || lower.contains("global") || lower.contains("health") || lower.contains("exam"))
+            || lower.contains("tropical medicine class") || lower.contains("tropical medicine course")
+            || lower.contains("tropical medicine exam") || lower.contains("tropical medicine program")
+            || lower.contains("neglected tropical disease") && (lower.contains("class") || lower.contains("course") || lower.contains("global")) {
+            return "globalhealth"
+        }
         // emergencymanagement — positioned after publicheath and before psychology.
         // Catches FEMA cert prep, disaster response, incident command, and crisis management.
         if lower.contains("emergency management") || lower.contains("emergency manager")
@@ -11715,6 +11753,25 @@ public final class CalloutManager {
             || lower.contains("emergency management exam") || lower.contains("homeland security class")
             || lower.contains("homeland security course") || lower.contains("homeland security program") {
             return "emergencymanagement"
+        }
+        // disasterrisk — positioned AFTER emergencymanagement (which owns FEMA/incident command) and
+        // BEFORE cognitivescience. Catches disaster risk reduction (DRR), Sendai Framework, UNDRR,
+        // vulnerability mapping, and resilience-framework coursework.
+        if lower.contains("disaster risk reduction") || lower.contains("disaster risk management")
+            || lower.contains("disaster risk class") || lower.contains("disaster risk course")
+            || lower.contains("disaster risk exam") || lower.contains("disaster risk program")
+            || lower.contains("disaster risk major") || lower.contains("disaster risk research")
+            || lower.contains("drr class") || lower.contains("drr course") || lower.contains("drr exam")
+            || (lower.contains("drr") && (lower.contains("sendai") || lower.contains("undrr") || lower.contains("risk reduction") || lower.contains("vulnerability")))
+            || lower.contains("sendai framework") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("drr") || lower.contains("risk"))
+            || lower.contains("undrr") && (lower.contains("class") || lower.contains("course") || lower.contains("risk") || lower.contains("sendai"))
+            || lower.contains("vulnerability mapping") && (lower.contains("class") || lower.contains("course") || lower.contains("disaster") || lower.contains("risk"))
+            || lower.contains("hazard assessment") && (lower.contains("class") || lower.contains("course") || lower.contains("disaster") || lower.contains("drr"))
+            || lower.contains("resilience framework") && (lower.contains("class") || lower.contains("course") || lower.contains("disaster") || lower.contains("drr") || lower.contains("risk"))
+            || lower.contains("risk governance") && (lower.contains("class") || lower.contains("course") || lower.contains("disaster") || lower.contains("drr"))
+            || lower.contains("disaster risk and resilience") || lower.contains("disaster risk reduction course")
+            || lower.contains("drm class") || lower.contains("drm course") || lower.contains("drm exam") {
+            return "disasterrisk"
         }
         // cognitivescience — positioned BEFORE neuroscience so cognitive science/cogsci
         // interdisciplinary programs (mind, brain, computation, language) get a dedicated pool.
@@ -12078,6 +12135,26 @@ public final class CalloutManager {
             || lower.contains("dual process theory") && (lower.contains("psych") || lower.contains("cognitive") || lower.contains("class") || lower.contains("paper")) {
             return "cognitivepsychology"
         }
+        // developmentalpsychopath — positioned BEFORE developmentalpsych so diathesis-stress,
+        // equifinality/multifinality, developmental cascades, and ACEs coursework route to a
+        // dedicated pool. Bare "developmental psychopathology" without class context falls through.
+        if lower.contains("developmental psychopathology class") || lower.contains("developmental psychopathology course")
+            || lower.contains("developmental psychopathology exam") || lower.contains("developmental psychopathology textbook")
+            || lower.contains("developmental psychopathology notes") || lower.contains("developmental psychopathology assignment")
+            || lower.contains("developmental psychopathology major") || lower.contains("developmental psychopathology program")
+            || lower.contains("dev psychopathology class") || lower.contains("dev psychopathology course")
+            || lower.contains("dev psychopathology exam")
+            || lower.contains("diathesis-stress model") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("psych") || lower.contains("developmental"))
+            || lower.contains("diathesis stress model") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("psych") || lower.contains("developmental"))
+            || word("equifinality") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("developmental") || lower.contains("exam"))
+            || word("multifinality") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("developmental") || lower.contains("exam"))
+            || lower.contains("developmental cascade") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("exam"))
+            || lower.contains("developmental cascades") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("exam"))
+            || lower.contains("adverse childhood experience") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("developmental") || lower.contains("exam"))
+            || lower.contains("early adversity") && (lower.contains("class") || lower.contains("course") || lower.contains("psych") || lower.contains("developmental") || lower.contains("pathology"))
+            || lower.contains("risk and resilience") && (lower.contains("class") || lower.contains("developmental") || lower.contains("psych") || lower.contains("pathology") || lower.contains("exam")) {
+            return "developmentalpsychopath"
+        }
         // developmentalpsych — positioned BEFORE developmentalpsychology so Piaget stage class
         // terms, attachment theory class, infant cognition class, and stage-name coursework route
         // to a more specific pool. Generic child development and lifespan terms stay in
@@ -12418,6 +12495,29 @@ public final class CalloutManager {
             || lower.contains("diaspora studies") || lower.contains("cultural studies class")
             || lower.contains("cultural studies course") || lower.contains("cultural studies exam") {
             return "ethnicstudies"
+        }
+        // humanrights — positioned AFTER ethnicstudies and BEFORE internationalrelations so international
+        // human rights law, UDHR, ICCPR, ICESCR, ICC, and R2P coursework get a dedicated pool.
+        // Bare "human rights" without educational context falls through to socialscience.
+        if lower.contains("human rights class") || lower.contains("human rights course")
+            || lower.contains("human rights exam") || lower.contains("human rights program")
+            || lower.contains("human rights major") || lower.contains("human rights degree")
+            || lower.contains("human rights assignment") || lower.contains("human rights paper")
+            || lower.contains("human rights notes") || lower.contains("human rights law class")
+            || lower.contains("human rights law course") || lower.contains("human rights law exam")
+            || lower.contains("international human rights") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("law") || lower.contains("paper"))
+            || lower.contains("udhr") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("law") || lower.contains("rights"))
+            || lower.contains("universal declaration of human rights") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("iccpr") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("rights"))
+            || lower.contains("icescr") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("rights"))
+            || lower.contains("humanitarian law class") || lower.contains("humanitarian law course") || lower.contains("humanitarian law exam")
+            || lower.contains("international humanitarian law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("responsibility to protect") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("rights"))
+            || lower.contains("r2p") && (lower.contains("class") || lower.contains("course") || lower.contains("human rights") || lower.contains("international law"))
+            || lower.contains("refugee rights") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("law"))
+            || lower.contains("human rights documentation") && (lower.contains("class") || lower.contains("course") || lower.contains("research"))
+            || lower.contains("human rights report") && (lower.contains("class") || lower.contains("assignment") || lower.contains("course")) {
+            return "humanrights"
         }
         // internationalrelations — positioned BEFORE socialscience (which caught "international relations"
         // generically) so IR theory, foreign policy, diplomatic studies, and global governance courses

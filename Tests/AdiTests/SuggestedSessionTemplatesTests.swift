@@ -7763,8 +7763,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func translationalscienceAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("translational science") && $0.task.lowercased().contains("paper") })
     }
-    // MARK: - Count guard (≥1257)
-    @Test func templateCountAtLeast1257() {
-        #expect(SuggestedSessionTemplates.all.count >= 1257, "template catalog must have ≥1257 entries after sciencecommunication/healthbehavior/physicalanthropology/culturalanthropology/translationalscience additions")
+    // MARK: - globalhealth templates
+    @Test func globalhealthStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("global health") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func globalhealthAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("global health") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - disasterrisk templates
+    @Test func disasterriskStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("disaster risk") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func disasterriskAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("disaster risk") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - neonatologyrotation templates
+    @Test func neonatologyrotationStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neonatology") && $0.task.lowercased().contains("rotation") })
+    }
+    @Test func neonatologyrotationShelfTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neonatology") && $0.task.lowercased().contains("shelf") })
+    }
+    // MARK: - developmentalpsychopath templates
+    @Test func developmentalpsychopathStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("developmental psychopathology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func developmentalpsychopathAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("developmental psychopathology") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - humanrights templates
+    @Test func humanrightsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("human rights") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func humanrightsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("human rights") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - Count guard (≥1267)
+    @Test func templateCountAtLeast1267() {
+        #expect(SuggestedSessionTemplates.all.count >= 1267, "template catalog must have ≥1267 entries after globalhealth/disasterrisk/neonatologyrotation/developmentalpsychopath/humanrights additions")
     }
 }

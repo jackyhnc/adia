@@ -694,6 +694,11 @@ extension CalloutManager {
         case "physicalanthropology":       return physicalanthropologyCallouts(tier: tier)
         case "culturalanthropology":       return culturalanthropologyCallouts(tier: tier)
         case "translationalscience":       return translationalscienceCallouts(tier: tier)
+        case "globalhealth":               return globalhealthCallouts(tier: tier)
+        case "disasterrisk":               return disasterriskCallouts(tier: tier)
+        case "neonatologyrotation":        return neonatologyrotationCallouts(tier: tier)
+        case "developmentalpsychopath":    return developmentalpsychopathCallouts(tier: tier)
+        case "humanrights":                return humanrightsCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -14247,6 +14252,111 @@ extension CalloutManager {
             "CLOSE THIS. open your translational science textbook.",
             "CLOSE THIS. those T1-to-T3 and bench-to-bedside problems won't solve themselves.",
             "CLOSE THIS. your translational science exam won't study itself."
+        ]
+        }
+    }
+
+    private func globalhealthCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "global health doesn't study itself — DALYs, PEPFAR, health systems strengthening, tropical medicine, and global burden of disease are all waiting.",
+            "your global health exam needs you — universal health coverage, neglected tropical diseases, health equity, and SDG health targets won't memorize themselves.",
+            "those global health assignments and global burden of disease reports are still open.",
+            "DALYs, PEPFAR, health systems strengthening, tropical medicine — get back to your global health coursework."
+        ]
+        case 2: return [
+            "stop. your global health exam and global burden of disease assignment are still open.",
+            "DALYs, PEPFAR, universal health coverage, neglected tropical diseases — your exam won't wait.",
+            "global health class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your global health textbook or DALY calculation notes.",
+            "CLOSE THIS. those health systems strengthening and tropical medicine assignments won't complete themselves.",
+            "CLOSE THIS. your global health exam won't study itself."
+        ]
+        }
+    }
+
+    private func disasterriskCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "disaster risk reduction doesn't study itself — Sendai Framework, UNDRR, vulnerability mapping, hazard assessment, and resilience frameworks are all waiting.",
+            "your DRR exam needs you — disaster risk management, risk governance, vulnerability and capacity assessment, and resilience metrics won't memorize themselves.",
+            "those disaster risk reduction assignments and DRR frameworks are still open.",
+            "Sendai Framework, UNDRR, vulnerability mapping, hazard assessment — get back to your disaster risk coursework."
+        ]
+        case 2: return [
+            "stop. your disaster risk reduction exam and DRR assignment are still open.",
+            "Sendai Framework, vulnerability mapping, risk governance, hazard assessment — your exam won't wait.",
+            "disaster risk class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your disaster risk reduction textbook or Sendai Framework notes.",
+            "CLOSE THIS. those vulnerability mapping and risk governance assignments won't complete themselves.",
+            "CLOSE THIS. your disaster risk exam won't study itself."
+        ]
+        }
+    }
+
+    private func neonatologyrotationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "neonatology doesn't run itself — NICU rounds, neonatal resuscitation protocols, premature infant care, and neonatology case write-ups are all waiting.",
+            "your NICU rotation needs you — neonatal resuscitation (NRP), respiratory distress syndrome, sepsis workup, and neonatology case presentations won't write themselves.",
+            "those neonatology rotation notes and NICU case write-ups are still open.",
+            "close this and get back to your neonatology rotation cases."
+        ]
+        case 2: return [
+            "stop. your neonatology rotation notes and NICU case presentations are still open.",
+            "neonatal resuscitation, premature infant care, NICU rounds — your case write-up won't finish itself.",
+            "your NICU rotation doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your neonatology rotation notes or NICU case write-up.",
+            "CLOSE THIS. those neonatal resuscitation and premature infant care cases won't write themselves.",
+            "CLOSE THIS. your neonatology rotation notes won't write themselves."
+        ]
+        }
+    }
+
+    private func developmentalpsychopathCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "developmental psychopathology doesn't study itself — diathesis-stress model, equifinality, multifinality, developmental cascades, and ACEs are all waiting.",
+            "your dev psychopathology exam needs you — risk and resilience frameworks, early adversity effects, equifinality, and developmental cascade models won't memorize themselves.",
+            "those developmental psychopathology assignments and diathesis-stress model analyses are still open.",
+            "diathesis-stress model, equifinality, multifinality, developmental cascades — get back to your dev psychopathology coursework."
+        ]
+        case 2: return [
+            "stop. your developmental psychopathology exam and risk-and-resilience assignment are still open.",
+            "diathesis-stress, equifinality, multifinality, developmental cascades — your exam won't wait.",
+            "developmental psychopathology class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your developmental psychopathology textbook or diathesis-stress notes.",
+            "CLOSE THIS. those equifinality and developmental cascade assignments won't complete themselves.",
+            "CLOSE THIS. your developmental psychopathology exam won't study itself."
+        ]
+        }
+    }
+
+    private func humanrightsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "human rights doesn't study itself — UDHR, ICCPR, ICESCR, international humanitarian law, R2P, and refugee rights frameworks are all waiting.",
+            "your human rights exam needs you — universal declaration, treaty body monitoring, responsibility to protect, and humanitarian law principles won't memorize themselves.",
+            "those human rights assignments and international human rights law analyses are still open.",
+            "UDHR, ICCPR, ICESCR, R2P, refugee rights — get back to your human rights coursework."
+        ]
+        case 2: return [
+            "stop. your human rights exam and treaty law assignment are still open.",
+            "UDHR, ICCPR, R2P, humanitarian law, refugee rights — your exam won't wait.",
+            "human rights class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your human rights textbook or UDHR and treaty notes.",
+            "CLOSE THIS. those international humanitarian law and R2P assignments won't complete themselves.",
+            "CLOSE THIS. your human rights exam won't study itself."
         ]
         }
     }

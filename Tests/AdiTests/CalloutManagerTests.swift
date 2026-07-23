@@ -27763,8 +27763,148 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "translationalscience", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1257)
-    @Test func calloutTemplatesCountAtLeast1257() {
-        #expect(SuggestedSessionTemplates.all.count >= 1257, "template catalog must have ≥1257 entries after sciencecommunication/healthbehavior/physicalanthropology/culturalanthropology/translationalscience additions")
+    // MARK: - globalhealth
+    @Test func globalhealthRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "global health class dalys tropical medicine neglected tropical disease exam study notes") == "globalhealth")
+    }
+    @Test func globalhealthRoutingFromDALYs() {
+        #expect(CalloutManager.extractTaskKeyword(from: "global health course disability-adjusted life year dalys pepfar tropical medicine exam study") == "globalhealth")
+    }
+    @Test func globalhealthRoutingFromTropicalMedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tropical medicine class neglected tropical disease global health program pepfar global exam notes") == "globalhealth")
+    }
+    @Test func globalhealthFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "global health policy governance class international organizations pepfar policy exam") != "globalhealth")
+    }
+    @Test @MainActor func globalhealthCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "globalhealth", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "globalhealth", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "globalhealth", tier: 3).isEmpty)
+    }
+    @Test @MainActor func globalhealthTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "globalhealth", tier: 1).count >= 4)
+    }
+    @Test @MainActor func globalhealthTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "globalhealth", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - disasterrisk
+    @Test func disasterriskRoutingFromDRR() {
+        #expect(CalloutManager.extractTaskKeyword(from: "disaster risk reduction class DRR Sendai Framework UNDRR vulnerability mapping exam") == "disasterrisk")
+    }
+    @Test func disasterriskRoutingFromSendai() {
+        #expect(CalloutManager.extractTaskKeyword(from: "Sendai Framework class disaster risk course hazard assessment resilience framework drr") == "disasterrisk")
+    }
+    @Test func disasterriskRoutingFromVulnerability() {
+        #expect(CalloutManager.extractTaskKeyword(from: "vulnerability mapping disaster risk class hazard assessment risk governance drr course") == "disasterrisk")
+    }
+    @Test func disasterriskFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "emergency management fema incident command disaster response preparedness homeland security class") != "disasterrisk")
+    }
+    @Test @MainActor func disasterriskCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "disasterrisk", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "disasterrisk", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "disasterrisk", tier: 3).isEmpty)
+    }
+    @Test @MainActor func disasterriskTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "disasterrisk", tier: 1).count >= 4)
+    }
+    @Test @MainActor func disasterriskTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "disasterrisk", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - neonatologyrotation
+    @Test func neonatologyrotationRoutingFromNICU() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nicu rotation neonatal resuscitation premature infant care neonatology clerkship notes") == "neonatologyrotation")
+    }
+    @Test func neonatologyrotationRoutingFromNeonatalICU() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neonatal icu rotation neonatal intensive care rounds neonatology attending write up notes") == "neonatologyrotation")
+    }
+    @Test func neonatologyrotationRoutingFromPrematureInfant() {
+        #expect(CalloutManager.extractTaskKeyword(from: "premature infant care nicu rotation neonatology case write up clerkship notes") == "neonatologyrotation")
+    }
+    @Test func neonatologyrotationFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pediatrics rotation peds clerkship well child exam pediatric ward developmental milestones peds shelf") != "neonatologyrotation")
+    }
+    @Test @MainActor func neonatologyrotationCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "neonatologyrotation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "neonatologyrotation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "neonatologyrotation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func neonatologyrotationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "neonatologyrotation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func neonatologyrotationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "neonatologyrotation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - developmentalpsychopath
+    @Test func developmentalpsychopathRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "developmental psychopathology class diathesis-stress equifinality multifinality developmental cascades exam") == "developmentalpsychopath")
+    }
+    @Test func developmentalpsychopathRoutingFromDiathesisStress() {
+        #expect(CalloutManager.extractTaskKeyword(from: "diathesis-stress model developmental psych class equifinality risk and resilience early adversity exam") == "developmentalpsychopath")
+    }
+    @Test func developmentalpsychopathRoutingFromACEs() {
+        #expect(CalloutManager.extractTaskKeyword(from: "adverse childhood experience developmental psychopathology course developmental cascade risk resilience exam") == "developmentalpsychopath")
+    }
+    @Test func developmentalpsychopathFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "developmental psychology class piaget vygotsky erikson kohlberg child development lifespan exam") != "developmentalpsychopath")
+    }
+    @Test @MainActor func developmentalpsychopathCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "developmentalpsychopath", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "developmentalpsychopath", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "developmentalpsychopath", tier: 3).isEmpty)
+    }
+    @Test @MainActor func developmentalpsychopathTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "developmentalpsychopath", tier: 1).count >= 4)
+    }
+    @Test @MainActor func developmentalpsychopathTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "developmentalpsychopath", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - humanrights
+    @Test func humanrightsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "human rights class UDHR ICCPR ICESCR international humanitarian law R2P refugee rights exam") == "humanrights")
+    }
+    @Test func humanrightsRoutingFromTreaties() {
+        #expect(CalloutManager.extractTaskKeyword(from: "international human rights course iccpr icescr treaty body monitoring udhr class exam paper") == "humanrights")
+    }
+    @Test func humanrightsRoutingFromHumanitarianLaw() {
+        #expect(CalloutManager.extractTaskKeyword(from: "humanitarian law class international humanitarian law course responsibility to protect R2P exam paper") == "humanrights")
+    }
+    @Test func humanrightsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "international relations class foreign policy realism liberalism IR theory geopolitics global governance exam") != "humanrights")
+    }
+    @Test @MainActor func humanrightsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "humanrights", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "humanrights", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "humanrights", tier: 3).isEmpty)
+    }
+    @Test @MainActor func humanrightsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "humanrights", tier: 1).count >= 4)
+    }
+    @Test @MainActor func humanrightsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "humanrights", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1267)
+    @Test func calloutTemplatesCountAtLeast1267() {
+        #expect(SuggestedSessionTemplates.all.count >= 1267, "template catalog must have ≥1267 entries after globalhealth/disasterrisk/neonatologyrotation/developmentalpsychopath/humanrights additions")
     }
 }
