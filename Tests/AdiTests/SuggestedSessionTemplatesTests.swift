@@ -7903,8 +7903,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func sciencetechnologystudiesAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("science and technology studies") && $0.task.lowercased().contains("paper") })
     }
-    // MARK: - Count guard (≥1297)
-    @Test func templateCountAtLeast1297() {
-        #expect(SuggestedSessionTemplates.all.count >= 1297, "template catalog must have ≥1297 entries after socialinnovation/philosophyofscience/environmentalhumanities/africanstudies/sciencetechnologystudies additions")
+    // MARK: - mediatheory templates
+    @Test func mediatheoryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("media theory") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func mediatheoryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("media theory") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - theaterstudies templates
+    @Test func theaterstudiesStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("theater studies") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func theaterstudiesAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("theater studies") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - developmentstudies templates
+    @Test func developmentstudiesStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("international development") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func developmentstudiesAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("international development") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - entertainmentlaw templates
+    @Test func entertainmentlawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("entertainment law") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func entertainmentlawAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("entertainment law") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - bankinglaw templates
+    @Test func bankinglawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("banking law") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func bankinglawAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("banking law") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - Count guard (≥1307)
+    @Test func templateCountAtLeast1307() {
+        #expect(SuggestedSessionTemplates.all.count >= 1307, "template catalog must have ≥1307 entries after mediatheory/theaterstudies/developmentstudies/entertainmentlaw/bankinglaw additions")
     }
 }

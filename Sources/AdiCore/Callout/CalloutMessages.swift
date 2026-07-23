@@ -714,6 +714,11 @@ extension CalloutManager {
         case "environmentalhumanities":    return environmentalhumanitiesCallouts(tier: tier)
         case "africanstudies":             return africanstudiesCallouts(tier: tier)
         case "sciencetechnologystudies":   return sciencetechnologystudiesCallouts(tier: tier)
+        case "mediatheory":                return mediatheoryCallouts(tier: tier)
+        case "theaterstudies":             return theaterstudiesCallouts(tier: tier)
+        case "developmentstudies":         return developmentstudiesCallouts(tier: tier)
+        case "entertainmentlaw":           return entertainmentlawCallouts(tier: tier)
+        case "bankinglaw":                 return bankinglawCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -14687,6 +14692,111 @@ extension CalloutManager {
             "CLOSE THIS. open your STS textbook or Latour and actor-network theory notes.",
             "CLOSE THIS. those social construction of science and technoscience assignments won't complete themselves.",
             "CLOSE THIS. your STS exam won't study itself."
+        ]
+        }
+    }
+
+    private func mediatheoryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "media theory doesn't analyze itself — McLuhan, Baudrillard, Hall's encoding/decoding, Frankfurt School critical theory, and the political economy of media are all waiting.",
+            "your media theory exam needs you — simulacra and hyperreality, the culture industry, manufacturing consent, and the society of the spectacle won't memorize themselves.",
+            "those media theory assignments and critical media studies papers are still open.",
+            "McLuhan, Baudrillard, Stuart Hall, Debord, Kittler — get back to your media theory coursework."
+        ]
+        case 2: return [
+            "stop. your media theory exam and critical media studies paper are still open.",
+            "McLuhan's medium is the message, Baudrillard's simulacra, Hall's encoding/decoding, Debord's spectacle — your exam won't wait.",
+            "media theory class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your media theory textbook or McLuhan and Baudrillard notes.",
+            "CLOSE THIS. those political economy of media and critical media studies assignments won't complete themselves.",
+            "CLOSE THIS. your media theory exam won't study itself."
+        ]
+        }
+    }
+
+    private func theaterstudiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "theater studies doesn't study itself — Brecht's Verfremdungseffekt, Artaud's theater of cruelty, Grotowski's poor theater, Schechner's performance theory, and dramatic literature are all waiting.",
+            "your theater studies exam needs you — epic theater, dramatic theory, theater history, play analysis, and performance theory won't memorize themselves.",
+            "those theater studies assignments and dramatic literature papers are still open.",
+            "Brecht, Artaud, Grotowski, Schechner, Aristotle's Poetics — get back to your theater studies coursework."
+        ]
+        case 2: return [
+            "stop. your theater studies exam and dramaturgy paper are still open.",
+            "Brechtian Verfremdungseffekt, Artaud's theater of cruelty, Grotowski's poor theater, Schechner's environmental theater — your exam won't wait.",
+            "theater studies class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your theater history textbook or Brecht and Artaud notes.",
+            "CLOSE THIS. those dramatic theory and play analysis assignments won't complete themselves.",
+            "CLOSE THIS. your theater studies exam won't study itself."
+        ]
+        }
+    }
+
+    private func developmentstudiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "international development doesn't develop itself — capabilities approach (Sen/Nussbaum), post-development (Escobar), modernization theory (Rostow), the HDI, and the Sachs vs Easterly aid debate are all waiting.",
+            "your development studies exam needs you — capabilities approach, human development index, post-development theory, modernization theory, and aid effectiveness won't memorize themselves.",
+            "those development studies assignments and international development papers are still open.",
+            "Sen, Nussbaum, Escobar, Rostow, Sachs, Easterly — get back to your development studies coursework."
+        ]
+        case 2: return [
+            "stop. your development studies exam and international development paper are still open.",
+            "capabilities approach, HDI, post-development, modernization theory, aid effectiveness — your exam won't wait.",
+            "development studies class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your development studies textbook or Sen and Escobar notes.",
+            "CLOSE THIS. those capabilities approach and post-development assignments won't complete themselves.",
+            "CLOSE THIS. your development studies exam won't study itself."
+        ]
+        }
+    }
+
+    private func entertainmentlawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "entertainment law doesn't negotiate itself — music contracts, recording deals, talent agreements, right of publicity, SAG-AFTRA, WGA, and sync licensing are all waiting.",
+            "your entertainment law exam needs you — music publishing, recording contracts, talent agreements, right of publicity, and entertainment IP won't memorize themselves.",
+            "those entertainment law assignments and music contract analyses are still open.",
+            "music contracts, film deals, talent agreements, SAG-AFTRA collective bargaining, right of publicity — get back to your entertainment law coursework."
+        ]
+        case 2: return [
+            "stop. your entertainment law exam and music contract analysis are still open.",
+            "recording contracts, talent agreements, right of publicity, sync licensing, SAG-AFTRA — your exam won't wait.",
+            "entertainment law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your entertainment law textbook or music contract and talent agreement notes.",
+            "CLOSE THIS. those entertainment industry law and right of publicity assignments won't complete themselves.",
+            "CLOSE THIS. your entertainment law exam won't study itself."
+        ]
+        }
+    }
+
+    private func bankinglawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "banking law doesn't regulate itself — Dodd-Frank, Basel III, FDIC deposit insurance, Glass-Steagall history, the Federal Reserve Act, and bank holding company regulation are all waiting.",
+            "your banking law exam needs you — Dodd-Frank's Volcker Rule, Basel III capital requirements, FDIC resolution authority, OCC supervision, and the community reinvestment act won't memorize themselves.",
+            "those banking law assignments and bank regulation analyses are still open.",
+            "Dodd-Frank, Basel III, FDIC, OCC, Glass-Steagall, Federal Reserve Act — get back to your banking law coursework."
+        ]
+        case 2: return [
+            "stop. your banking law exam and bank regulation paper are still open.",
+            "Dodd-Frank's Volcker Rule, Basel III capital requirements, FDIC, OCC supervision, bank holding companies — your exam won't wait.",
+            "banking law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your banking law textbook or Dodd-Frank and Basel III notes.",
+            "CLOSE THIS. those bank regulation and financial regulation law assignments won't complete themselves.",
+            "CLOSE THIS. your banking law exam won't study itself."
         ]
         }
     }

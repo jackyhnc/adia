@@ -5931,6 +5931,38 @@ public final class CalloutManager {
             || word("dataset") || word("datasets") || lower.contains("qualitative") || lower.contains("quantitative") {
             return "research"
         }
+        // mediatheory — positioned BEFORE communicationstudies (which catches bare "media theory")
+        // so critical media theory coursework — McLuhan, Baudrillard, Hall's encoding/decoding,
+        // Frankfurt School, Debord, Kittler, and political economy of media — routes here.
+        // Bare "media theory" without a distinct theoretical qualifier stays in communicationstudies.
+        if lower.contains("media theory class") || lower.contains("media theory course")
+            || lower.contains("media theory exam") || lower.contains("media theory paper")
+            || lower.contains("media theory program") || lower.contains("media theory major")
+            || lower.contains("media theory notes") || lower.contains("media theory assignment")
+            || lower.contains("media ecology class") || lower.contains("media ecology course")
+            || lower.contains("media ecology exam") || lower.contains("media ecology paper")
+            || lower.contains("critical media studies class") || lower.contains("critical media studies course")
+            || lower.contains("critical media studies exam") || lower.contains("critical media studies paper")
+            || lower.contains("mcluhan") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("theory"))
+            || lower.contains("medium is the message") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("baudrillard") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("media") || lower.contains("paper"))
+            || lower.contains("simulacra") && (lower.contains("class") || lower.contains("media") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("hyperreality") && (lower.contains("class") || lower.contains("media") || lower.contains("course") || lower.contains("exam") || lower.contains("baudrillard"))
+            || lower.contains("hall's encoding") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("encoding and decoding") && (lower.contains("media") || lower.contains("class") || lower.contains("course") || lower.contains("hall"))
+            || lower.contains("encoding/decoding") && (lower.contains("media") || lower.contains("class") || lower.contains("course") || lower.contains("hall"))
+            || lower.contains("political economy of media") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("manufacturing consent") && (lower.contains("class") || lower.contains("course") || lower.contains("media") || lower.contains("exam"))
+            || lower.contains("frankfurt school") && (lower.contains("media") || lower.contains("class") || lower.contains("course") || lower.contains("theory"))
+            || lower.contains("culture industry") && (lower.contains("class") || lower.contains("media") || lower.contains("course") || lower.contains("adorno") || lower.contains("horkheimer"))
+            || lower.contains("debord") && (lower.contains("spectacle") || lower.contains("class") || lower.contains("media") || lower.contains("theory"))
+            || lower.contains("society of the spectacle") && (lower.contains("class") || lower.contains("course") || lower.contains("media"))
+            || lower.contains("kittler") && (lower.contains("class") || lower.contains("media") || lower.contains("theory") || lower.contains("course"))
+            || lower.contains("platform studies class") || lower.contains("platform studies course")
+            || lower.contains("platform studies exam") || lower.contains("platform studies paper")
+            || lower.contains("media studies theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "mediatheory"
+        }
         // communicationstudies — positioned after research/business and before journalism so
         // interpersonal communication, mass communication, and comm-theory courses route here.
         // bare word("communication") is NOT matched (too broad: software systems communicate too).
@@ -6322,6 +6354,44 @@ public final class CalloutManager {
             || lower.contains("dance research") && lower.contains("science")
             || lower.contains("dance for pd") || lower.contains("dance wellness") {
             return "dancescience"
+        }
+        // theaterstudies — positioned BEFORE performingarts so theater studies / dramatic theory
+        // coursework — theater history, Brecht, Artaud, Grotowski, Schechner, play analysis, and
+        // dramatic literature — routes here. Practical acting/dance ("drama class", bare "theater
+        // class") stays in performingarts. Bare "dramaturgy" stays in performingarts; compound
+        // edu-context (dramaturgy class/course/exam/paper) routes here.
+        if lower.contains("theater studies class") || lower.contains("theater studies course")
+            || lower.contains("theater studies exam") || lower.contains("theater studies major")
+            || lower.contains("theater studies program") || lower.contains("theater studies paper")
+            || lower.contains("theatre studies class") || lower.contains("theatre studies course")
+            || lower.contains("theatre studies exam") || lower.contains("theatre studies major")
+            || lower.contains("theatre studies program") || lower.contains("theatre studies paper")
+            || lower.contains("theater history class") || lower.contains("theater history course")
+            || lower.contains("theater history exam") || lower.contains("theater history notes")
+            || lower.contains("theatre history class") || lower.contains("theatre history course")
+            || lower.contains("theatre history exam") || lower.contains("theatre history notes")
+            || lower.contains("dramatic literature class") || lower.contains("dramatic literature course")
+            || lower.contains("dramatic literature exam") || lower.contains("dramatic literature paper")
+            || lower.contains("dramatic theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("theater criticism class") || lower.contains("theatre criticism class")
+            || lower.contains("theater criticism course") || lower.contains("theatre criticism course")
+            || lower.contains("play analysis class") || lower.contains("play analysis course") || lower.contains("play analysis exam")
+            || lower.contains("dramaturgy class") || lower.contains("dramaturgy course") || lower.contains("dramaturgy exam")
+            || lower.contains("dramaturgy paper") || lower.contains("dramaturgy seminar") || lower.contains("dramaturgy assignment")
+            || lower.contains("brechtian") && (lower.contains("class") || lower.contains("theory") || lower.contains("course") || lower.contains("paper"))
+            || lower.contains("epic theater") && (lower.contains("class") || lower.contains("theory") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("epic theatre") && (lower.contains("class") || lower.contains("theory") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("verfremdungseffekt") && (lower.contains("class") || lower.contains("theater") || lower.contains("theatre") || lower.contains("theory"))
+            || lower.contains("theater of cruelty") && (lower.contains("class") || lower.contains("course") || lower.contains("artaud"))
+            || lower.contains("theatre of cruelty") && (lower.contains("class") || lower.contains("course") || lower.contains("artaud"))
+            || lower.contains("artaud") && (lower.contains("class") || lower.contains("theater") || lower.contains("theatre") || lower.contains("performance") || lower.contains("theory"))
+            || lower.contains("grotowski") && (lower.contains("class") || lower.contains("theater") || lower.contains("theatre") || lower.contains("performance") || lower.contains("theory"))
+            || lower.contains("poor theater") && (lower.contains("class") || lower.contains("course") || lower.contains("grotowski"))
+            || lower.contains("performance theory class") || lower.contains("performance theory course") || lower.contains("performance theory exam")
+            || lower.contains("schechner") && (lower.contains("class") || lower.contains("performance") || lower.contains("theory") || lower.contains("theater"))
+            || lower.contains("environmental theater") && (lower.contains("class") || lower.contains("course") || lower.contains("theory"))
+            || lower.contains("catharsis") && (lower.contains("drama") || lower.contains("theater") || lower.contains("class") || lower.contains("aristotle")) {
+            return "theaterstudies"
         }
         // performingarts — positioned before video so "filming" in a theater context and
         // word("film") don't override theater/acting/dance tasks.
@@ -12741,6 +12811,37 @@ public final class CalloutManager {
             || lower.contains("global issues exam") || lower.contains("global issues paper") {
             return "globalstudies"
         }
+        // developmentstudies — positioned AFTER globalstudies and BEFORE globalpoliticaleconomy so
+        // international development theory — capabilities approach (Sen/Nussbaum), post-development
+        // (Escobar), modernization theory (Rostow), aid effectiveness debates (Sachs vs Easterly),
+        // HDI, MDGs, and SDGs — routes here. Distinct from globalpoliticaleconomy (IPE/VoC/dependency
+        // theory in political economy context) and internationalrelations (state-centric foreign policy).
+        if lower.contains("development studies class") || lower.contains("development studies course")
+            || lower.contains("development studies exam") || lower.contains("development studies paper")
+            || lower.contains("development studies program") || lower.contains("development studies major")
+            || lower.contains("development studies notes") || lower.contains("development studies assignment")
+            || lower.contains("international development class") || lower.contains("international development course")
+            || lower.contains("international development exam") || lower.contains("international development paper")
+            || lower.contains("international development program") || lower.contains("international development major")
+            || lower.contains("capabilities approach") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("development") || lower.contains("paper"))
+            || lower.contains("human development index") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("hdi") && (lower.contains("class") || lower.contains("development") || lower.contains("course") || lower.contains("exam") || lower.contains("undp"))
+            || lower.contains("amartya sen") && (lower.contains("class") || lower.contains("development") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("martha nussbaum") && (lower.contains("class") || lower.contains("development") || lower.contains("course") || lower.contains("exam") || lower.contains("capabilities"))
+            || lower.contains("post-development") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("escobar"))
+            || lower.contains("arturo escobar") && (lower.contains("class") || lower.contains("development") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("modernization theory") && (lower.contains("class") || lower.contains("development") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("rostow") && (lower.contains("class") || lower.contains("development") || lower.contains("stages") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("basic needs approach") && (lower.contains("class") || lower.contains("development") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("aid effectiveness") && (lower.contains("class") || lower.contains("course") || lower.contains("development") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("jeffrey sachs") && (lower.contains("class") || lower.contains("development") || lower.contains("aid") || lower.contains("poverty") || lower.contains("exam"))
+            || lower.contains("william easterly") && (lower.contains("class") || lower.contains("development") || lower.contains("aid") || lower.contains("poverty") || lower.contains("exam"))
+            || lower.contains("millennium development goals") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("sustainable development goals") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("development"))
+            || lower.contains("sdgs") && (lower.contains("class") || lower.contains("development") || lower.contains("course") || lower.contains("exam") || lower.contains("undp"))
+            || lower.contains("mdgs") && (lower.contains("class") || lower.contains("development") || lower.contains("course") || lower.contains("exam") || lower.contains("undp")) {
+            return "developmentstudies"
+        }
         // globalpoliticaleconomy — positioned AFTER internationalrelations and BEFORE socialscience.
         // Catches IPE coursework, comparative political economy, and global political economy.
         // Bare "political economy" without edu context stays in socialscience.
@@ -13414,6 +13515,31 @@ public final class CalloutManager {
             || lower.contains("ip portfolio") || lower.contains("ip policy") {
             return "intellectualproperty"
         }
+        // entertainmentlaw — positioned AFTER intellectualproperty (copyright/trademark/patent) and
+        // BEFORE environmentallaw so entertainment law class, music contracts, film deals, talent
+        // agreements, right of publicity, SAG-AFTRA, and WGA legal coursework route here.
+        if lower.contains("entertainment law class") || lower.contains("entertainment law course")
+            || lower.contains("entertainment law exam") || lower.contains("entertainment law paper")
+            || lower.contains("entertainment law seminar") || lower.contains("entertainment law program")
+            || lower.contains("music law class") || lower.contains("music law course")
+            || lower.contains("music law exam") || lower.contains("music law paper")
+            || lower.contains("film law class") || lower.contains("film law course")
+            || lower.contains("film law exam") || lower.contains("film law paper")
+            || lower.contains("music contract") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("legal") || lower.contains("exam"))
+            || lower.contains("recording contract") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("legal") || lower.contains("exam"))
+            || lower.contains("talent agreement") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("legal") || lower.contains("exam"))
+            || lower.contains("right of publicity") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("entertainment"))
+            || lower.contains("sag-aftra") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("contract") || lower.contains("exam"))
+            || lower.contains("wga") && (lower.contains("entertainment") || lower.contains("law") || lower.contains("contract") || lower.contains("class") || lower.contains("legal"))
+            || lower.contains("entertainment industry law") || lower.contains("music industry law")
+            || lower.contains("film industry law") || lower.contains("entertainment contracts class")
+            || lower.contains("entertainment contracts course") || lower.contains("entertainment contracts exam")
+            || lower.contains("artist management") && (lower.contains("law") || lower.contains("contract") || lower.contains("class") || lower.contains("legal") || lower.contains("entertainment"))
+            || lower.contains("music publishing") && (lower.contains("law") || lower.contains("class") || lower.contains("legal") || lower.contains("contract") || lower.contains("exam"))
+            || lower.contains("sync licensing") && (lower.contains("law") || lower.contains("class") || lower.contains("legal") || lower.contains("contract"))
+            || lower.contains("entertainment transactional") && (lower.contains("law") || lower.contains("class") || lower.contains("exam")) {
+            return "entertainmentlaw"
+        }
         // environmentallaw — positioned BEFORE the general legal branch so NEPA compliance,
         // environmental litigation, Clean Air/Water Act assignments, and Superfund research
         // don't fall through to generic bar-exam / brief callouts.
@@ -13743,6 +13869,30 @@ public final class CalloutManager {
             || lower.contains("securities law course") || lower.contains("securities law exam")
             || lower.contains("law school corporations") || lower.contains("1l corporations") || lower.contains("2l corporations") {
             return "corporatelaw"
+        }
+        // bankinglaw — positioned AFTER corporatelaw and BEFORE taxlaw so banking regulation, Dodd-Frank,
+        // Basel III, FDIC, OCC, Glass-Steagall, and bank supervision law coursework routes here.
+        // Distinct from corporatelaw (M&A/securities) and taxlaw (IRC sections).
+        if lower.contains("banking law class") || lower.contains("banking law course")
+            || lower.contains("banking law exam") || lower.contains("banking law paper")
+            || lower.contains("banking law seminar") || lower.contains("banking law outline")
+            || lower.contains("bank regulation class") || lower.contains("bank regulation course")
+            || lower.contains("bank regulation exam") || lower.contains("bank regulation paper")
+            || lower.contains("bank regulation seminar") || lower.contains("bank regulation outline")
+            || lower.contains("financial regulation law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("banking") || lower.contains("paper"))
+            || lower.contains("dodd-frank") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("banking") || lower.contains("regulation") || lower.contains("exam"))
+            || lower.contains("dodd frank") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("banking") || lower.contains("regulation") || lower.contains("exam"))
+            || lower.contains("basel iii") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("banking") || lower.contains("regulation") || lower.contains("exam"))
+            || lower.contains("fdic") && (lower.contains("law") || lower.contains("class") || lower.contains("regulation") || lower.contains("banking") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("occ regulation") && (lower.contains("banking") || lower.contains("class") || lower.contains("law") || lower.contains("exam"))
+            || lower.contains("glass-steagall") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("banking") || lower.contains("exam"))
+            || lower.contains("glass steagall") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("banking") || lower.contains("exam"))
+            || lower.contains("federal reserve act") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("banking") || lower.contains("exam"))
+            || lower.contains("bank holding company") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("regulation"))
+            || lower.contains("commercial banking law") || lower.contains("commercial bank law")
+            || lower.contains("bank supervision") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("community reinvestment act") && (lower.contains("law") || lower.contains("class") || lower.contains("course") || lower.contains("banking") || lower.contains("cra")) {
+            return "bankinglaw"
         }
         // taxlaw — positioned AFTER corporatelaw and BEFORE neurolaw so federal income tax law class,
         // capital gains analysis, deductions, and tax policy coursework route here rather than the
