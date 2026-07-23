@@ -20740,3 +20740,35 @@ Swift toolchain unavailable on Linux container — no `swift build` or `swift te
 - `translationalscience` — translational research/science class (bench-to-bedside, T1/T2 translational research types, CTSA network, phase 0 studies, biomarker development — distinct from clinical research and pharmacology)
 - `marinebiology3` or `deepseabiology` — deep-sea biology / marine ecology of extreme environments (hydrothermal vents, cold seeps, hadal zone, chemosynthesis — distinct from marinebiology and marinebiology2)
 - `toxicology` already exists — check if `clinicaltoxicology` is distinct enough (it is — added in Run 408)
+
+---
+
+## Run 411 — 2026-07-23
+
+### What shipped
+5 new keyword domains: **deepseabiology**, **constructionestimating**, **internationallaw**, **urbansociology**, **politicalsociology** — template catalog grows 1199→1209.
+
+**deepseabiology** — hydrothermal vent ecology, cold seep communities, chemosynthesis, hadal zone, bioluminescence (deep/marine), abyssal/bathypelagic/mesopelagic zones, tubeworms (Riftia), marine snow, pressure adaptation. Positioned AFTER marinebiology2. 4+3+3 callout pool. 2 templates (study exam / lab report & research paper).
+
+**constructionestimating** — RSMeans, quantity takeoff, material takeoff, MasterFormat/CSI divisions, bid estimate/preparation/writing, estimating software (Bluebeam, PlanSwift, ProEst, On-Screen Takeoff, Sage), cost per square foot, subcontractor bid comparison. Positioned BEFORE constructionmanagement. 4+3+3 callout pool. 2 templates (study exam / cost estimate & quantity takeoff assignment).
+
+**internationallaw** — public international law (PIL), ICJ, VCLT, UNCLOS, UN Charter, state responsibility, jus cogens, erga omnes, sovereign immunity, IHL/law of armed conflict, customary international law, ICC. Positioned BEFORE general `legal` catchall. 4+3+3 callout pool. 2 templates (PIL study exam / case brief & moot court submission).
+
+**urbansociology** — urban sociology class, gentrification, neighborhood effects, urban inequality, urban ethnography, residential/racial segregation, urban ecology, Chicago school, collective efficacy, social disorganization, concentrated disadvantage, urban social movements, right to the city, displacement. Positioned BEFORE sociology. 4+3+3 callout pool. 2 templates (study exam / neighborhood ethnography & gentrification analysis paper).
+
+**politicalsociology** — political sociology class, social movement theory, social movements class/paper, collective action, resource mobilization theory, political opportunity structure, state theory, power elite, class struggle, hegemony/Gramsci, political power, ideology and power, ruling class. Positioned BEFORE urbansociology. 4+3+3 callout pool. 2 templates (study exam / social movement analysis & state power paper).
+
+**Tests**: 35 new CalloutManagerTests (3 routing + 1 false-positive guard + 3 pool tests per domain) + 10 new SuggestedSessionTemplatesTests (2 template existence tests per domain) + count guard ≥1209.
+
+Brace balance verified: CalloutMessages.swift 1253/1253 ✓; CalloutManager.swift 654/654 ✓; SuggestedSessionTemplates.swift preferredDuration count 1209 ✓.
+
+### Blocked
+Swift toolchain unavailable on Linux container — no `swift build` or `swift test` possible.
+
+### Next agent pick-up
+All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested next 5:
+- `behavioralneuroscience` — behavioral neuroscience class with lab-specific triggers: fear conditioning lab, Morris water maze, conditioned place aversion, reward circuit studies, stereotaxic surgery, elevated plus maze, open field test (distinct from psychobiologyclass which owns broad "behavioral neuroscience class/course/exam")
+- `socialepigenetics` — social epigenetics class, epigenome and environment, stress-induced methylation, early adversity and gene expression, intergenerational epigenetic inheritance (distinct from genetics and molecular biology)
+- `environmentaleconomics` — environmental economics class, Pigouvian tax, Coase theorem, externalities, cap-and-trade, ecosystem services valuation, benefit-cost analysis for environmental policy (distinct from environmentalpolicy and economics)
+- `lawandeconomics` — law and economics class, Coase theorem (legal context), efficient breach, Posner, Calabresi, optimal deterrence theory, economic analysis of tort law (distinct from microeconomics and property/tort law)
+- `medicalethics` — medical ethics class, principles of biomedical ethics (Beauchamp and Childress), autonomy, beneficence, non-maleficence, justice, informed consent, end-of-life ethics, resource allocation (distinct from bioethics which may already exist — check first)
